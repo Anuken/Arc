@@ -91,6 +91,16 @@ public final class Mathf{
         return atan2(x2 - x, y2 - y);
     }
 
+    /**Returns -1 if f<0, 1 otherwise.*/
+    public static int sign(float f){
+        return (f < 0 ? -1 : 1);
+    }
+
+    /** Returns 1 if true, -1 if false. */
+    public static int sign(boolean b){
+        return b ? 1 : -1;
+    }
+
     /** Returns a random number between 0 (inclusive) and the specified value (inclusive). */
     static public int random(int range){
         return random.nextInt(range + 1);

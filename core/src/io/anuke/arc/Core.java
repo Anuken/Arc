@@ -1,6 +1,7 @@
 package io.anuke.arc;
 
 import io.anuke.arc.assets.AssetManager;
+import io.anuke.arc.graphics.Camera;
 import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.GL30;
 import io.anuke.arc.graphics.g2d.TextureAtlas;
@@ -26,6 +27,7 @@ public class Core{
     public static Net net;
 
     public static I18NBundle bundle = I18NBundle.createEmptyBundle();
+    public static Camera camera;
     public static Scene scene;
     public static AssetManager assets;
     public static TextureAtlas atlas;

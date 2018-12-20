@@ -297,7 +297,7 @@ public class KeybindDialog extends Dialog{
         }
 
         rebindDialog.show();
-        //Timers.runTask(1f, () -> {
+        //Time.runTask(1f, () -> {
         //    getScene().setScrollFocus(rebindDialog);
         //});
     }
