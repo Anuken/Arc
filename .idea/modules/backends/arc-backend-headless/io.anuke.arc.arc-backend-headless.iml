@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id=":backends:arc-backend-headless" external.linked.project.path="$MODULE_DIR$/../../../../backends/arc-backend-headless" external.root.project.path="$MODULE_DIR$/../../../.." external.system.id="GRADLE" external.system.module.group="io.anuke.arc" external.system.module.version="1.0" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/../../../../backends/arc-backend-headless/out/production/classes" />
+    <output-test url="file://$MODULE_DIR$/../../../../backends/arc-backend-headless/out/test/classes" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../../backends/arc-backend-headless">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../backends/arc-backend-headless/src" type="java-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../../backends/arc-backend-headless/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../../backends/arc-backend-headless/build" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../../backends/arc-backend-headless/out" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="Arc.io.anuke.arc.arc" />
+  </component>
+</module>

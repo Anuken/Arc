@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id=":backends:arc-backend-robovm" external.linked.project.path="$MODULE_DIR$/../../../../backends/arc-backend-robovm" external.root.project.path="$MODULE_DIR$/../../../.." external.system.id="GRADLE" external.system.module.group="io.anuke.arc" external.system.module.version="1.0" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/../../../../backends/arc-backend-robovm/out/production/classes" />
+    <output-test url="file://$MODULE_DIR$/../../../../backends/arc-backend-robovm/out/test/classes" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../../backends/arc-backend-robovm">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../backends/arc-backend-robovm/src" type="java-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../../backends/arc-backend-robovm/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../../backends/arc-backend-robovm/build" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../../backends/arc-backend-robovm/out" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="Arc.io.anuke.arc.arc" />
+    <orderEntry type="library" name="Gradle: com.mobidevelop.robovm:robovm-rt:2.3.5" level="project" />
+    <orderEntry type="library" name="Gradle: com.mobidevelop.robovm:robovm-cocoatouch:2.3.5" level="project" />
+    <orderEntry type="library" name="Gradle: com.mobidevelop.robovm:robovm-objc:2.3.5" level="project" />
+  </component>
+</module>
