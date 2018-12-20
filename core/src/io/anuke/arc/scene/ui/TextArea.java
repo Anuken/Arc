@@ -368,7 +368,7 @@ public class TextArea extends TextField{
             Scene stage = getScene();
             if(stage != null && stage.getKeyboardFocus() == TextArea.this){
                 boolean repeat = false;
-                boolean shift = Core.input.isKeyPressed(KeyCode.SHIFT_LEFT) || Core.input.isKeyPressed(KeyCode.SHIFT_RIGHT);
+                boolean shift = Core.input.keyPress(KeyCode.SHIFT_LEFT) || Core.input.keyPress(KeyCode.SHIFT_RIGHT);
                 if(keycode == KeyCode.DOWN){
                     if(shift){
                         if(!hasSelection){

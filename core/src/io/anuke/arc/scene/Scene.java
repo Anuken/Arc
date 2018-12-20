@@ -16,6 +16,7 @@ import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.scene.event.*;
 import io.anuke.arc.scene.event.FocusListener.FocusEvent;
 import io.anuke.arc.scene.event.InputEvent.Type;
+import io.anuke.arc.scene.ui.Dialog;
 import io.anuke.arc.scene.ui.layout.Table;
 import io.anuke.arc.scene.utils.ScissorStack;
 import io.anuke.arc.utils.Disposable;
@@ -61,6 +62,18 @@ public class Scene implements InputProcessor, Disposable{
     public Scene(Skin skin, Viewport viewport){
         this(skin);
         this.viewport = viewport;
+    }
+
+    public boolean hasMouse(){
+        return hit(Core.input.mouseX(), Core.input.mouseY(), true) != null;
+    }
+
+    public boolean hasMouse(float mousex, float mousey){
+        return hit(mousex, mousey, true) != null;
+    }
+
+    public boolean hasDialog(){
+        return getKeyboardFocus() instanceof Dialog || getScrollFocus() instanceof Dialog;
     }
 
     public void draw(){

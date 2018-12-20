@@ -184,7 +184,7 @@ public class KeyBinds{
         }
     }
 
-    public class Axis implements KeybindValue{
+    public static class Axis implements KeybindValue{
         public KeyCode min, max;
         public KeyCode key;
 

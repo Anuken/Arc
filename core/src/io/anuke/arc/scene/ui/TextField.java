@@ -1074,7 +1074,7 @@ public class TextField extends Element implements Disableable{
             Scene stage = getScene();
             if(stage == null || stage.getKeyboardFocus() != TextField.this) return false;
 
-            if(OS.isMac && Core.input.isKeyPressed(KeyCode.SYM)) return true;
+            if(OS.isMac && Core.input.keyPress(KeyCode.SYM)) return true;
 
             if((character == TAB) && focusTraversal){
                 next(UIUtils.shift());

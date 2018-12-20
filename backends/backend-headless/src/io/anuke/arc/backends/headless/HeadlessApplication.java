@@ -79,7 +79,7 @@ public class HeadlessApplication implements Application{
     void mainLoop(){
         synchronized(listeners){
             for(ApplicationListener listener : listeners){
-                listener.create();
+                listener.init();
             }
         }
 

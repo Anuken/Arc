@@ -277,7 +277,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
         gl.glViewport(0, 0, this.width, this.height);
         if(!created){
             for(ApplicationListener list : app.getListeners()){
-                list.create();
+                list.init();
             }
             created = true;
             synchronized(this){

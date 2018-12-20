@@ -53,7 +53,7 @@ public class ClickListener extends InputListener{
     public void touchDragged(InputEvent event, float x, float y, int pointer){
         if(pointer != pressedPointer || cancelled) return;
         pressed = isOver(event.listenerActor, x, y);
-        if(pressed && pointer == 0 && button != null && !Core.input.isKeyPressed(button)) pressed = false;
+        if(pressed && pointer == 0 && button != null && !Core.input.keyPress(button)) pressed = false;
         if(!pressed){
             // Once outside the tap square, don't use the tap square anymore.
             invalidateTapSquare();

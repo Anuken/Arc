@@ -16,7 +16,7 @@ public class UIUtils{
     }
 
     static public boolean left(){
-        return Core.input.isKeyPressed(KeyCode.MOUSE_LEFT);
+        return Core.input.keyPress(KeyCode.MOUSE_LEFT);
     }
 
     static public boolean left(KeyCode button){
@@ -24,7 +24,7 @@ public class UIUtils{
     }
 
     static public boolean right(){
-        return Core.input.isKeyPressed(KeyCode.MOUSE_RIGHT);
+        return Core.input.keyPress(KeyCode.MOUSE_RIGHT);
     }
 
     static public boolean right(KeyCode button){
@@ -32,7 +32,7 @@ public class UIUtils{
     }
 
     static public boolean middle(){
-        return Core.input.isKeyPressed(KeyCode.MOUSE_MIDDLE);
+        return Core.input.keyPress(KeyCode.MOUSE_MIDDLE);
     }
 
     static public boolean middle(KeyCode button){
@@ -40,7 +40,7 @@ public class UIUtils{
     }
 
     static public boolean shift(){
-        return Core.input.isKeyPressed(KeyCode.SHIFT_LEFT) || Core.input.isKeyPressed(KeyCode.SHIFT_RIGHT);
+        return Core.input.keyPress(KeyCode.SHIFT_LEFT) || Core.input.keyPress(KeyCode.SHIFT_RIGHT);
     }
 
     static public boolean shift(KeyCode keycode){
@@ -49,9 +49,9 @@ public class UIUtils{
 
     static public boolean ctrl(){
         if(OS.isMac)
-            return Core.input.isKeyPressed(KeyCode.SYM);
+            return Core.input.keyPress(KeyCode.SYM);
         else
-            return Core.input.isKeyPressed(KeyCode.CONTROL_LEFT) || Core.input.isKeyPressed(KeyCode.CONTROL_RIGHT);
+            return Core.input.keyPress(KeyCode.CONTROL_LEFT) || Core.input.keyPress(KeyCode.CONTROL_RIGHT);
     }
 
     static public boolean ctrl(KeyCode keycode){
@@ -62,7 +62,7 @@ public class UIUtils{
     }
 
     static public boolean alt(){
-        return Core.input.isKeyPressed(KeyCode.ALT_LEFT) || Core.input.isKeyPressed(KeyCode.ALT_RIGHT);
+        return Core.input.keyPress(KeyCode.ALT_LEFT) || Core.input.keyPress(KeyCode.ALT_RIGHT);
     }
 
     static public boolean alt(KeyCode keycode){

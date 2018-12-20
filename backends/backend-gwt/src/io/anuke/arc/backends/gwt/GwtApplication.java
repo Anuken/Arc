@@ -211,7 +211,7 @@ public abstract class GwtApplication implements EntryPoint, Application{
         // tell listener about app creation
         try{
             for(ApplicationListener listener : listeners){
-                listener.create();
+                listener.init();
                 listener.resize(graphics.getWidth(), graphics.getHeight());
             }
         }catch(Throwable t){

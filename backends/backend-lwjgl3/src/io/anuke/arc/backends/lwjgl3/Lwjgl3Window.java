@@ -392,7 +392,7 @@ public class Lwjgl3Window implements Disposable{
 
     void initializeListener(){
         if(!listenerInitialized){
-            listener.create();
+            listener.init();
             listener.resize(graphics.getWidth(), graphics.getHeight());
             listenerInitialized = true;
         }

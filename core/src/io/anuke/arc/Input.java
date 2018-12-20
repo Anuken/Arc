@@ -113,42 +113,42 @@ public abstract class Input{
     }
 
     /** Returns whether the key is pressed. */
-    public boolean isKeyPressed(KeyCode key){
+    public boolean keyPress(KeyCode key){
         return keyboard.isKeyPressed(key);
     }
 
     /** Returns whether the key has just been pressed. */
-    public boolean isKeyTapped(KeyCode key){
+    public boolean keyTap(KeyCode key){
         return keyboard.isKeyTapped(key);
     }
 
     /** Returns whether the key has just been released. */
-    public boolean isKeyReleased(KeyCode key){
+    public boolean keyRelease(KeyCode key){
         return keyboard.isKeyReleased(key);
     }
 
     /** Returns the [-1, 1] axis value of a key. */
-    public float getAxis(KeyCode key){
+    public float axis(KeyCode key){
         return keyboard.getAxis(key);
     }
 
     /** Returns whether the keybind is pressed. */
-    public boolean isKeyPressed(KeyBind key){
+    public boolean keyPress(KeyBind key){
         return keybinds.get(key).key != null && keyboard.isKeyPressed(keybinds.get(key).key);
     }
 
     /** Returns whether the key has just been pressed. */
-    public boolean isKeyTapped(KeyBind key){
+    public boolean keyTap(KeyBind key){
         return keybinds.get(key).key != null && keyboard.isKeyTapped(keybinds.get(key).key);
     }
 
     /** Returns whether the key has just been released. */
-    public boolean isKeyReleased(KeyBind key){
+    public boolean keyRelease(KeyBind key){
         return keybinds.get(key).key != null && keyboard.isKeyReleased(keybinds.get(key).key);
     }
 
     /** Returns the [-1, 1] axis value of a key. */
-    public float getAxis(KeyBind key){
+    public float axis(KeyBind key){
         Axis axis = keybinds.get(key);
         if(axis.key != null){
             return keyboard.getAxis(axis.key);
@@ -223,7 +223,7 @@ public abstract class Input{
     /**
      * Sets whether the specified button on Android should be caught. This will prevent the app from processing the key. Will have no effect
      * on the desktop.
-     * @param catchBack whether to catch the back button
+     * @param c whether to catch the button
      */
     public void setCatch(KeyCode code, boolean c){
         if(c){

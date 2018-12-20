@@ -20,12 +20,12 @@ public interface ApplicationListener{
      * Called when the {@link Application} is first created.
      * Only gets called if the application is created before the listener is added.
      */
-    default void create(){
+    default void init(){
     }
 
     /**
      * Called when the {@link Application} is resized. This can happen at any point during a non-paused state but will never happen
-     * before a call to {@link #create()}.
+     * before a call to {@link #init()}.
      * @param width the new width in pixels
      * @param height the new height in pixels
      */

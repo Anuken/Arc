@@ -204,7 +204,7 @@ public class IOSGraphics extends Graphics implements GLKViewDelegate, GLKViewCon
             glVersion = new GLVersion(Application.ApplicationType.iOS, versionString, vendorString, rendererString);
 
             for(ApplicationListener listener : app.listeners){
-                listener.create();
+                listener.init();
                 listener.resize(width, height);
             }
             created = true;

@@ -145,7 +145,7 @@ public class Slider extends ProgressBar{
         }
 
         float oldValue = value;
-        if(!Core.input.isKeyPressed(KeyCode.SHIFT_LEFT) && !Core.input.isKeyPressed(KeyCode.SHIFT_RIGHT))
+        if(!Core.input.keyPress(KeyCode.SHIFT_LEFT) && !Core.input.keyPress(KeyCode.SHIFT_RIGHT))
             value = snap(value);
         boolean valueSet = setValue(value);
         if(value == oldValue) position = oldPosition;
