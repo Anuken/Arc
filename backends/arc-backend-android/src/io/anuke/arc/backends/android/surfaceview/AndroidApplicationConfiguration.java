@@ -30,8 +30,7 @@ public class AndroidApplicationConfiguration{
     public boolean useGyroscope = false;
 
     /**
-     * Whether to use the compass. The compass enables {@link Input#getRotationMatrix(float[])}, {@link Input#getAzimuth()},
-     * {@link Input#getPitch()}, and {@link Input#getRoll()} if {@link #useAccelerometer} is also true.
+     * Whether to use the compass. The compass enables {@link Input#getRotationMatrix(float[])}, if {@link #useAccelerometer} is also true.
      * <p>
      * If {@link #useRotationVectorSensor} is true and the rotation vector sensor is available, the compass will not be used.
      * <p>
@@ -41,7 +40,7 @@ public class AndroidApplicationConfiguration{
 
     /**
      * Whether to use Android's rotation vector software sensor, which provides cleaner data than that of {@link #useCompass} for
-     * {@link Input#getRotationMatrix(float[])}, {@link Input#getAzimuth()}, {@link Input#getPitch()}, and {@link Input#getRoll()}.
+     * {@link Input#getRotationMatrix(float[])}
      * The rotation vector sensor uses a combination of physical sensors, and it pre-filters and smoothes the data. If true,
      * {@link #useAccelerometer} is not required to enable rotation data.
      * <p>

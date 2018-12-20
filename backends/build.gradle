@@ -4,7 +4,6 @@ subprojects{
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
     sourceSets.main.java.srcDirs = ["src"]
-    sourceSets.main.resources.srcDirs = ["src"]
     
     dependencies{
         compile project(":arc")

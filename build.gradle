@@ -1,7 +1,6 @@
 apply from: "gradle/dependencies.gradle"
 
 allprojects{
-    group = 'com.github.Anuken'
     version = '1.0'
     
     buildscript{

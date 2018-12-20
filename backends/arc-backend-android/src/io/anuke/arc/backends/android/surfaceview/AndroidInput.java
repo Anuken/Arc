@@ -346,16 +346,10 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
         return true;
     }
 
-    /**
-     * Called in {@link AndroidLiveWallpaperService} on tap
-     */
     public void onTap(int x, int y){
         postTap(x, y);
     }
 
-    /**
-     * Called in {@link AndroidLiveWallpaperService} on drop
-     */
     public void onDrop(int x, int y){
         postTap(x, y);
     }
