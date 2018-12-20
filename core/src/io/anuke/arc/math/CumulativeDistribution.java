@@ -17,7 +17,7 @@ public class CumulativeDistribution<T>{
     private Array<CumulativeValue> values;
 
     public CumulativeDistribution(){
-        values = new Array<CumulativeValue>(false, 10, CumulativeValue.class);
+        values = new Array<>(false, 10, CumulativeValue.class);
     }
 
     /** Adds a value with a given interval size to the distribution */

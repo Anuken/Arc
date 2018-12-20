@@ -7,8 +7,7 @@ import io.anuke.arc.math.geom.Plane;
 import io.anuke.arc.math.geom.Vector3;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class IntersectorTest{
 
@@ -19,7 +18,7 @@ public class IntersectorTest{
     private static boolean triangleEquals(float[] base, int baseOffset, int stride, float[] comp){
         assertTrue(stride >= 3);
         assertTrue(base.length - baseOffset >= 9);
-        assertTrue(comp.length == 9);
+        assertEquals(9, comp.length);
 
         int offset = -1;
         // Find first comp vertex in base triangle
@@ -52,9 +51,9 @@ public class IntersectorTest{
         {// All back
             float[] fTriangle = {-10, 0, 10, -1, 0, 0, -12, 0, 10}; // Whole triangle on the back side
             Intersector.splitTriangle(fTriangle, plane, split);
-            assertTrue(split.numBack == 1);
-            assertTrue(split.numFront == 0);
-            assertTrue(split.total == 1);
+            assertEquals(1, split.numBack);
+            assertEquals(0, split.numFront);
+            assertEquals(1, split.total);
             assertTrue(triangleEquals(split.back, 0, 3, fTriangle));
 
             fTriangle[4] = 5f;
@@ -64,18 +63,18 @@ public class IntersectorTest{
         {// All front
             float[] fTriangle = {10, 0, 10, 1, 0, 0, 12, 0, 10}; // Whole triangle on the front side
             Intersector.splitTriangle(fTriangle, plane, split);
-            assertTrue(split.numBack == 0);
-            assertTrue(split.numFront == 1);
-            assertTrue(split.total == 1);
+            assertEquals(0, split.numBack);
+            assertEquals(1, split.numFront);
+            assertEquals(1, split.total);
             assertTrue(triangleEquals(split.front, 0, 3, fTriangle));
         }
 
         {// Two back, one front
             float[] triangle = {-10, 0, 10, 10, 0, 0, -10, 0, -10}; // ABC One vertex in front, two in back
             Intersector.splitTriangle(triangle, plane, split); // Split points are D (0,0,5) and E (0,0,-5)
-            assertTrue(split.numBack == 2);
-            assertTrue(split.numFront == 1);
-            assertTrue(split.total == 3);
+            assertEquals(2, split.numBack);
+            assertEquals(1, split.numFront);
+            assertEquals(3, split.total);
             // There is only one way to triangulate front
             assertTrue(triangleEquals(split.front, 0, 3, new float[]{0, 0, 5, 10, 0, 0, 0, 0, -5}));
 
@@ -93,9 +92,9 @@ public class IntersectorTest{
         {// Two front, one back
             float[] triangle = {10, 0, 10, -10, 0, 0, 10, 0, -10}; // ABC One vertex in back, two in front
             Intersector.splitTriangle(triangle, plane, split); // Split points are D (0,0,5) and E (0,0,-5)
-            assertTrue(split.numBack == 1);
-            assertTrue(split.numFront == 2);
-            assertTrue(split.total == 3);
+            assertEquals(1, split.numBack);
+            assertEquals(2, split.numFront);
+            assertEquals(3, split.total);
             // There is only one way to triangulate back
             assertTrue(triangleEquals(split.back, 0, 3, new float[]{0, 0, 5, -10, 0, 0, 0, 0, -5}));
 

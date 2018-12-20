@@ -139,7 +139,7 @@ public class Strings{
             return s;
         }else if(decimalPosition > 0){
             // Insert a dot in the right place
-            result.append(s.substring(0, decimalPosition));
+            result.append(s, 0, decimalPosition);
             result.append(".");
             result.append(s.substring(decimalPosition));
         }else{

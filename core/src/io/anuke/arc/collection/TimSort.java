@@ -108,8 +108,7 @@ class TimSort<T>{
 
         // Allocate temp storage (which may be increased later if necessary)
         int len = a.length;
-        T[] newArray = (T[])new Object[len < 2 * INITIAL_TMP_STORAGE_LENGTH ? len >>> 1 : INITIAL_TMP_STORAGE_LENGTH];
-        tmp = newArray;
+        tmp = (T[])new Object[len < 2 * INITIAL_TMP_STORAGE_LENGTH ? len >>> 1 : INITIAL_TMP_STORAGE_LENGTH];
 
         /*
          * Allocate runs-to-be-merged stack (which cannot be expanded). The stack length requirements are described in listsort.txt.
@@ -151,7 +150,7 @@ class TimSort<T>{
 
         /** March over the array once, left to right, finding natural runs, extending short natural runs to minRun elements, and
          * merging runs to maintain stack invariant. */
-        TimSort<T> ts = new TimSort<T>(a, c);
+        TimSort<T> ts = new TimSort<>(a, c);
         int minRun = minRunLength(nRemaining);
         do{
             // Identify next run
@@ -326,7 +325,7 @@ class TimSort<T>{
      * precede key, and the last n - k should follow it.
      */
     private static <T> int gallopLeft(T key, T[] a, int base, int len, int hint, Comparator<? super T> c){
-        assert !DEBUG || len > 0 && hint >= 0 && hint < len;
+        assert !DEBUG || hint >= 0 && hint < len;
         int lastOfs = 0;
         int ofs = 1;
         if(c.compare(key, a[base + hint]) > 0){
@@ -391,7 +390,7 @@ class TimSort<T>{
      * @return the int k, 0 <= k <= n such that a[b + k - 1] <= key < a[b + k]
      */
     private static <T> int gallopRight(T key, T[] a, int base, int len, int hint, Comparator<? super T> c){
-        assert !DEBUG || len > 0 && hint >= 0 && hint < len;
+        assert !DEBUG || hint >= 0 && hint < len;
 
         int ofs = 1;
         int lastOfs = 0;
@@ -851,8 +850,7 @@ class TimSort<T>{
             else
                 newSize = Math.min(newSize, a.length >>> 1);
 
-            T[] newArray = (T[])new Object[newSize];
-            tmp = newArray;
+            tmp = (T[])new Object[newSize];
         }
         return tmp;
     }

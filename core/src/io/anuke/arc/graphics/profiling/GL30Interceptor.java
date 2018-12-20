@@ -1199,7 +1199,6 @@ public class GL30Interceptor extends GLInterceptor implements GL30{
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, Buffer ptr){
         calls++;
         gl30.glVertexAttribPointer(indx, size, type, normalized, stride, ptr);

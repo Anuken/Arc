@@ -537,9 +537,7 @@ public class Table extends WidgetGroup{
             if(!onUp){
                 slider.moved(listener);
             }else{
-                slider.released(() -> {
-                    listener.accept(slider.getValue());
-                });
+                slider.released(() -> listener.accept(slider.getValue()));
             }
 
         }
@@ -644,7 +642,7 @@ public class Table extends WidgetGroup{
     }
 
     /** Returns the cell for the specified actor in this table, or null. */
-    public <T extends Element> Cell<T> getCell(T actor){
+    public <T extends Element> Cell getCell(T actor){
         Array<Cell> cells = this.cells;
         for(int i = 0, n = cells.size; i < n; i++){
             Cell c = cells.get(i);

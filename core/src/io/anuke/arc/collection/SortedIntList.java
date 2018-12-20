@@ -8,7 +8,7 @@ import io.anuke.arc.utils.pooling.Pool;
 public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>>{
     int size = 0;
     Node<E> first;
-    private NodePool<E> nodePool = new NodePool<E>(); // avoid allocating nodes
+    private NodePool<E> nodePool = new NodePool<>(); // avoid allocating nodes
     private Iterator iterator;
 
     /** Creates an ascending list */
@@ -117,7 +117,7 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>>{
     static class NodePool<E> extends Pool<Node<E>>{
         @Override
         protected Node<E> newObject(){
-            return new Node<E>();
+            return new Node<>();
         }
 
         public Node<E> obtain(Node<E> p, Node<E> n, E value, int index){

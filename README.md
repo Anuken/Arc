@@ -1,9 +1,3 @@
-# move along
-this repository is not for mortal eyes to see  
-
-<sup><sup>which is to say it's really bad</sup></sup>
-
-
 ### plans
 - [X] fix all backends
 - [X] convert to gradle, none of that stinky maven business

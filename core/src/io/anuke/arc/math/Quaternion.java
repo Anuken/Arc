@@ -55,11 +55,11 @@ public class Quaternion implements Serializable{
     }
 
     /** @return the euclidean length of the specified quaternion */
-    public final static float len(final float x, final float y, final float z, final float w){
+    public static float len(final float x, final float y, final float z, final float w){
         return (float)Math.sqrt(x * x + y * y + z * z + w * w);
     }
 
-    public final static float len2(final float x, final float y, final float z, final float w){
+    public static float len2(final float x, final float y, final float z, final float w){
         return x * x + y * y + z * z + w * w;
     }
 
@@ -75,8 +75,8 @@ public class Quaternion implements Serializable{
      * @param w2 the w component of the second quaternion
      * @return the dot product between the first and second quaternion.
      */
-    public final static float dot(final float x1, final float y1, final float z1, final float w1, final float x2, final float y2,
-                                  final float z2, final float w2){
+    public static float dot(final float x1, final float y1, final float z1, final float w1, final float x2, final float y2,
+                            final float z2, final float w2){
         return x1 * x2 + y1 * y2 + z1 * z2 + w1 * w2;
     }
 

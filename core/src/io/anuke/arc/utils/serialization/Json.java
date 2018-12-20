@@ -276,7 +276,7 @@ public class Json{
 
         OrderedMap<String, FieldMetadata> fields = getFields(type);
         int i = 0;
-        for(FieldMetadata metadata : new OrderedMapValues<FieldMetadata>(fields)){
+        for(FieldMetadata metadata : new OrderedMapValues<>(fields)){
             Field field = metadata.field;
             if(readDeprecated && ignoreDeprecated && field.isAnnotationPresent(Deprecated.class)) continue;
             try{

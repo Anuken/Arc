@@ -93,7 +93,7 @@ public class EarClippingTriangulator{
         IntArray vertexTypes = this.vertexTypes;
         vertexTypes.clear();
         vertexTypes.ensureCapacity(vertexCount);
-        for(int i = 0, n = vertexCount; i < n; ++i)
+        for(int i = 0; i < vertexCount; ++i)
             vertexTypes.add(classifyVertex(i));
 
         // A polygon with n vertices has a triangulation of n-2 triangles.

@@ -32,15 +32,15 @@ public class XmlReader{
     static final int xml_error = 0;
     static final int xml_en_elementBody = 15;
     static final int xml_en_main = 1;
-    private static final byte _xml_actions[] = init__xml_actions_0();
-    private static final byte _xml_key_offsets[] = init__xml_key_offsets_0();
-    private static final char _xml_trans_keys[] = init__xml_trans_keys_0();
-    private static final byte _xml_single_lengths[] = init__xml_single_lengths_0();
-    private static final byte _xml_range_lengths[] = init__xml_range_lengths_0();
-    private static final short _xml_index_offsets[] = init__xml_index_offsets_0();
-    private static final byte _xml_indicies[] = init__xml_indicies_0();
-    private static final byte _xml_trans_targs[] = init__xml_trans_targs_0();
-    private static final byte _xml_trans_actions[] = init__xml_trans_actions_0();
+    private static final byte[] _xml_actions = init__xml_actions_0();
+    private static final byte[] _xml_key_offsets = init__xml_key_offsets_0();
+    private static final char[] _xml_trans_keys = init__xml_trans_keys_0();
+    private static final byte[] _xml_single_lengths = init__xml_single_lengths_0();
+    private static final byte[] _xml_range_lengths = init__xml_range_lengths_0();
+    private static final short[] _xml_index_offsets = init__xml_index_offsets_0();
+    private static final byte[] _xml_indicies = init__xml_indicies_0();
+    private static final byte[] _xml_trans_targs = init__xml_trans_targs_0();
+    private static final byte[] _xml_trans_actions = init__xml_trans_actions_0();
     private final Array<Element> elements = new Array(8);
     private final StringBuilder textBuffer = new StringBuilder(64);
     private Element root, current;
@@ -142,7 +142,7 @@ public class XmlReader{
     }
 
     public Element parse(char[] data, int offset, int length){
-        int cs, p = offset, pe = length;
+        int cs, p = offset;
 
         int s = 0;
         String attributeName = null;
@@ -166,7 +166,7 @@ public class XmlReader{
             while(true){
                 switch(_goto_targ){
                     case 0:
-                        if(p == pe){
+                        if(p == length){
                             _goto_targ = 4;
                             continue _goto;
                         }
@@ -366,7 +366,7 @@ public class XmlReader{
                             _goto_targ = 5;
                             continue _goto;
                         }
-                        if(++p != pe){
+                        if(++p != length){
                             _goto_targ = 1;
                             continue _goto;
                         }
@@ -379,12 +379,12 @@ public class XmlReader{
 
         // line 190 "XmlReader.rl"
 
-        if(p < pe){
+        if(p < length){
             int lineNumber = 1;
             for(int i = 0; i < p; i++)
                 if(data[i] == '\n') lineNumber++;
             throw new SerializationException(
-            "Error parsing XML on line " + lineNumber + " near: " + new String(data, p, Math.min(32, pe - p)));
+            "Error parsing XML on line " + lineNumber + " near: " + new String(data, p, Math.min(32, length - p)));
         }else if(elements.size != 0){
             Element element = elements.peek();
             elements.clear();
@@ -601,7 +601,7 @@ public class XmlReader{
          * @return the children with the given name or an empty {@link Array}
          */
         public Array<Element> getChildrenByName(String name){
-            Array<Element> result = new Array<Element>();
+            Array<Element> result = new Array<>();
             if(children == null) return result;
             for(int i = 0; i < children.size; i++){
                 Element child = children.get(i);
@@ -615,7 +615,7 @@ public class XmlReader{
          * @return the children with the given name or an empty {@link Array}
          */
         public Array<Element> getChildrenByNameRecursively(String name){
-            Array<Element> result = new Array<Element>();
+            Array<Element> result = new Array<>();
             getChildrenByNameRecursively(name, result);
             return result;
         }

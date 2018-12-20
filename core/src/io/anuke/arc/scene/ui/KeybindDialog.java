@@ -105,9 +105,7 @@ public class KeybindDialog extends Dialog{
                 if(section.equals(this.section))
                     button.toggle();
 
-                button.clicked(() -> {
-                    this.section = section;
-                });
+                button.clicked(() -> this.section = section);
 
                 group.add(button);
                 content().add(button).fill();
@@ -154,10 +152,8 @@ public class KeybindDialog extends Dialog{
             table.add().height(10);
             table.row();
             if(section.device.type() == DeviceType.controller){
-                table.table(info -> {
-                    info.add("Controller Type: [#" + style.controllerColor.toString().toUpperCase() + "]" +
-                    Strings.capitalize(section.device.name())).left();
-                });
+                table.table(info -> info.add("Controller Type: [#" + style.controllerColor.toString().toUpperCase() + "]" +
+                Strings.capitalize(section.device.name())).left());
             }
             table.row();
 
@@ -272,9 +268,7 @@ public class KeybindDialog extends Dialog{
 
         if(section.device.type() == DeviceType.keyboard){
             //TODO implement
-            rebindDialog.keyDown(i -> {
-                setup();
-            });
+            rebindDialog.keyDown(i -> setup());
 
             rebindDialog.addListener(new InputListener(){
                 @Override

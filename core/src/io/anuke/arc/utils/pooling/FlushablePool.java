@@ -8,7 +8,7 @@ import io.anuke.arc.collection.Array;
  * @author Xoppa
  */
 public abstract class FlushablePool<T> extends Pool<T>{
-    protected Array<T> obtained = new Array<T>();
+    protected Array<T> obtained = new Array<>();
 
     public FlushablePool(){
         super();

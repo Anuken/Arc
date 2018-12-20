@@ -55,7 +55,8 @@ public final class PropertiesUtils{
         if(properties == null) throw new NullPointerException("ObjectMap cannot be null");
         if(reader == null) throw new NullPointerException("Reader cannot be null");
         int mode = NONE, unicode = 0, count = 0;
-        char nextChar, buf[] = new char[40];
+        char nextChar;
+        char[] buf = new char[40];
         int offset = 0, keyLength = -1, intVal;
         boolean firstChar = true;
 

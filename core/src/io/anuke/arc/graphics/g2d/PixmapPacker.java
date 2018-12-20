@@ -583,7 +583,7 @@ public class PixmapPacker implements Disposable{
             if(rgba[3] == breakA) return next;
 
             if(!startPoint && (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255))
-                System.out.println(x + "  " + y + " " + rgba + " ");
+                System.out.println(x + "  " + y + " " + Arrays.toString(rgba) + " ");
 
             next++;
         }
@@ -674,11 +674,7 @@ public class PixmapPacker implements Disposable{
 
         public void sort(Array<Pixmap> pixmaps){
             if(comparator == null){
-                comparator = new Comparator<Pixmap>(){
-                    public int compare(Pixmap o1, Pixmap o2){
-                        return Math.max(o1.getWidth(), o1.getHeight()) - Math.max(o2.getWidth(), o2.getHeight());
-                    }
-                };
+                comparator = (o1, o2) -> Math.max(o1.getWidth(), o1.getHeight()) - Math.max(o2.getWidth(), o2.getHeight());
             }
             pixmaps.sort(comparator);
         }

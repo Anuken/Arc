@@ -32,8 +32,8 @@ public class NetJavaImpl{
     private final AsyncExecutor asyncExecutor;
     public NetJavaImpl(){
         asyncExecutor = new AsyncExecutor(1);
-        connections = new ObjectMap<HttpRequest, HttpURLConnection>();
-        listeners = new ObjectMap<HttpRequest, HttpResponseListener>();
+        connections = new ObjectMap<>();
+        listeners = new ObjectMap<>();
     }
 
     public void sendHttpRequest(final HttpRequest httpRequest, final HttpResponseListener httpResponseListener){
@@ -73,58 +73,55 @@ public class NetJavaImpl{
             connection.setConnectTimeout(httpRequest.getTimeOut());
             connection.setReadTimeout(httpRequest.getTimeOut());
 
-            asyncExecutor.submit(new AsyncTask<Void>(){
-                @Override
-                public Void call(){
-                    try{
-                        // Set the content for POST and PUT (GET has the information embedded in the URL)
-                        if(doingOutPut){
-                            // we probably need to use the content as stream here instead of using it as a string.
-                            String contentAsString = httpRequest.getContent();
-                            if(contentAsString != null){
-                                OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+            asyncExecutor.submit((AsyncTask<Void>)() -> {
+                try{
+                    // Set the content for POST and PUT (GET has the information embedded in the URL)
+                    if(doingOutPut){
+                        // we probably need to use the content as stream here instead of using it as a string.
+                        String contentAsString = httpRequest.getContent();
+                        if(contentAsString != null){
+                            OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+                            try{
+                                writer.write(contentAsString);
+                            }finally{
+                                StreamUtils.closeQuietly(writer);
+                            }
+                        }else{
+                            InputStream contentAsStream = httpRequest.getContentStream();
+                            if(contentAsStream != null){
+                                OutputStream os = connection.getOutputStream();
                                 try{
-                                    writer.write(contentAsString);
+                                    StreamUtils.copyStream(contentAsStream, os);
                                 }finally{
-                                    StreamUtils.closeQuietly(writer);
-                                }
-                            }else{
-                                InputStream contentAsStream = httpRequest.getContentStream();
-                                if(contentAsStream != null){
-                                    OutputStream os = connection.getOutputStream();
-                                    try{
-                                        StreamUtils.copyStream(contentAsStream, os);
-                                    }finally{
-                                        StreamUtils.closeQuietly(os);
-                                    }
+                                    StreamUtils.closeQuietly(os);
                                 }
                             }
-                        }
-
-                        connection.connect();
-
-                        final HttpClientResponse clientResponse = new HttpClientResponse(connection);
-                        try{
-                            HttpResponseListener listener = getFromListeners(httpRequest);
-
-                            if(listener != null){
-                                listener.handleHttpResponse(clientResponse);
-                            }
-                            removeFromConnectionsAndListeners(httpRequest);
-                        }finally{
-                            connection.disconnect();
-                        }
-                    }catch(final Exception e){
-                        connection.disconnect();
-                        try{
-                            httpResponseListener.failed(e);
-                        }finally{
-                            removeFromConnectionsAndListeners(httpRequest);
                         }
                     }
 
-                    return null;
+                    connection.connect();
+
+                    final HttpClientResponse clientResponse = new HttpClientResponse(connection);
+                    try{
+                        HttpResponseListener listener = getFromListeners(httpRequest);
+
+                        if(listener != null){
+                            listener.handleHttpResponse(clientResponse);
+                        }
+                        removeFromConnectionsAndListeners(httpRequest);
+                    }finally{
+                        connection.disconnect();
+                    }
+                }catch(final Exception e){
+                    connection.disconnect();
+                    try{
+                        httpResponseListener.failed(e);
+                    }finally{
+                        removeFromConnectionsAndListeners(httpRequest);
+                    }
                 }
+
+                return null;
             });
         }catch(Exception e){
             try{
@@ -132,7 +129,6 @@ public class NetJavaImpl{
             }finally{
                 removeFromConnectionsAndListeners(httpRequest);
             }
-            return;
         }
     }
 
@@ -157,8 +153,7 @@ public class NetJavaImpl{
     }
 
     synchronized HttpResponseListener getFromListeners(HttpRequest httpRequest){
-        HttpResponseListener httpResponseListener = listeners.get(httpRequest);
-        return httpResponseListener;
+        return listeners.get(httpRequest);
     }
 
     static class HttpClientResponse implements HttpResponse{

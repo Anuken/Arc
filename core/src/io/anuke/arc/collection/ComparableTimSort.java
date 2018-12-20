@@ -87,8 +87,7 @@ class ComparableTimSort{
 
         // Allocate temp storage (which may be increased later if necessary)
         int len = a.length;
-        Object[] newArray = new Object[len < 2 * INITIAL_TMP_STORAGE_LENGTH ? len >>> 1 : INITIAL_TMP_STORAGE_LENGTH];
-        tmp = newArray;
+        tmp = new Object[len < 2 * INITIAL_TMP_STORAGE_LENGTH ? len >>> 1 : INITIAL_TMP_STORAGE_LENGTH];
 
         /*
          * Allocate runs-to-be-merged stack (which cannot be expanded). The stack length requirements are described in listsort.txt.
@@ -299,7 +298,7 @@ class ComparableTimSort{
      * precede key, and the last n - k should follow it.
      */
     private static int gallopLeft(Comparable<Object> key, Object[] a, int base, int len, int hint){
-        assert !DEBUG || len > 0 && hint >= 0 && hint < len;
+        assert !DEBUG || hint >= 0 && hint < len;
 
         int lastOfs = 0;
         int ofs = 1;
@@ -364,7 +363,7 @@ class ComparableTimSort{
      * @return the int k, 0 <= k <= n such that a[b + k - 1] <= key < a[b + k]
      */
     private static int gallopRight(Comparable<Object> key, Object[] a, int base, int len, int hint){
-        assert !DEBUG || len > 0 && hint >= 0 && hint < len;
+        assert !DEBUG || hint >= 0 && hint < len;
 
         int ofs = 1;
         int lastOfs = 0;
@@ -818,8 +817,7 @@ class ComparableTimSort{
             else
                 newSize = Math.min(newSize, a.length >>> 1);
 
-            Object[] newArray = new Object[newSize];
-            tmp = newArray;
+            tmp = new Object[newSize];
         }
         return tmp;
     }

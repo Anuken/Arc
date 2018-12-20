@@ -5,7 +5,7 @@ import io.anuke.arc.collection.Array;
 /** @author xoppa */
 public class PerformanceCounters{
     private final static float nano2seconds = 1f / 1000000000.0f;
-    public final Array<PerformanceCounter> counters = new Array<PerformanceCounter>();
+    public final Array<PerformanceCounter> counters = new Array<>();
     private long lastTick = 0L;
 
     public PerformanceCounter add(final String name, final int windowSize){

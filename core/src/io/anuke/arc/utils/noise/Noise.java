@@ -9,9 +9,9 @@ public final class Noise{
     private static final int N = 1 << NP;
     public static int seed = 100;
     //private static final int NM = N-1;
-    private static int p[] = new int[B + B + 2];
-    private static double g2[][] = new double[B + B + 2][2];
-    private static double g1[] = new double[B + B + 2];
+    private static int[] p = new int[B + B + 2];
+    private static double[][] g2 = new double[B + B + 2][2];
+    private static double[] g1 = new double[B + B + 2];
     //private static int start = 1;
     private static double[][] points = new double[32][3];
 
@@ -73,7 +73,18 @@ public final class Noise{
 
 
         int bx0, bx1, by0, by1, b00, b10, b01, b11;
-        double rx0, rx1, ry0, ry1, sx, sy, a, b, t, u, v, q[];
+        double rx0;
+        double rx1;
+        double ry0;
+        double ry1;
+        double sx;
+        double sy;
+        double a;
+        double b;
+        double t;
+        double u;
+        double v;
+        double[] q;
         int i, j;
 
         t = x + N;
@@ -117,7 +128,21 @@ public final class Noise{
     static double noise(double x, double y, double z){
 
         int bx, by, bz, b0, b1, b00, b10, b01, b11;
-        double rx0, rx1, ry0, ry1, rz, sx, sy, sz, a, b, c, d, u, v, q[];
+        double rx0;
+        double rx1;
+        double ry0;
+        double ry1;
+        double rz;
+        double sx;
+        double sy;
+        double sz;
+        double a;
+        double b;
+        double c;
+        double d;
+        double u;
+        double v;
+        double[] q;
 
         bx = (int)(Math.floor(x) % B);
         if(bx < 0){
@@ -269,7 +294,7 @@ public final class Noise{
         }
     }
 
-    private static void normalize2(double v[]){
+    private static void normalize2(double[] v){
         double s;
         s = Math.sqrt(v[0] * v[0] + v[1] * v[1]);
         v[0] = v[0] / s;

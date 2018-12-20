@@ -62,9 +62,8 @@ public class VerticalGroup extends WidgetGroup{
 
                 float width, height;
                 if(child instanceof Layout){
-                    Layout layout = child;
-                    width = layout.getPrefWidth();
-                    height = layout.getPrefHeight();
+                    width = ((Layout)child).getPrefWidth();
+                    height = ((Layout)child).getPrefHeight();
                 }else{
                     width = child.getWidth();
                     height = child.getHeight();
@@ -94,9 +93,8 @@ public class VerticalGroup extends WidgetGroup{
             for(int i = 0; i < n; i++){
                 Element child = children.get(i);
                 if(child instanceof Layout){
-                    Layout layout = child;
-                    prefWidth = Math.max(prefWidth, layout.getPrefWidth());
-                    prefHeight += layout.getPrefHeight();
+                    prefWidth = Math.max(prefWidth, ((Layout)child).getPrefWidth());
+                    prefHeight += ((Layout)child).getPrefHeight();
                 }else{
                     prefWidth = Math.max(prefWidth, child.getWidth());
                     prefHeight += child.getHeight();

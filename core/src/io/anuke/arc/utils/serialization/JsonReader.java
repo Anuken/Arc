@@ -28,16 +28,16 @@ public class JsonReader implements BaseJsonReader{
     static final int json_en_object = 5;
     static final int json_en_array = 23;
     static final int json_en_main = 1;
-    private static final byte _json_actions[] = init__json_actions_0();
-    private static final short _json_key_offsets[] = init__json_key_offsets_0();
-    private static final char _json_trans_keys[] = init__json_trans_keys_0();
-    private static final byte _json_single_lengths[] = init__json_single_lengths_0();
-    private static final byte _json_range_lengths[] = init__json_range_lengths_0();
-    private static final short _json_index_offsets[] = init__json_index_offsets_0();
-    private static final byte _json_indicies[] = init__json_indicies_0();
-    private static final byte _json_trans_targs[] = init__json_trans_targs_0();
-    private static final byte _json_trans_actions[] = init__json_trans_actions_0();
-    private static final byte _json_eof_actions[] = init__json_eof_actions_0();
+    private static final byte[] _json_actions = init__json_actions_0();
+    private static final short[] _json_key_offsets = init__json_key_offsets_0();
+    private static final char[] _json_trans_keys = init__json_trans_keys_0();
+    private static final byte[] _json_single_lengths = init__json_single_lengths_0();
+    private static final byte[] _json_range_lengths = init__json_range_lengths_0();
+    private static final short[] _json_index_offsets = init__json_index_offsets_0();
+    private static final byte[] _json_indicies = init__json_indicies_0();
+    private static final byte[] _json_trans_targs = init__json_trans_targs_0();
+    private static final byte[] _json_trans_actions = init__json_trans_actions_0();
+    private static final byte[] _json_eof_actions = init__json_eof_actions_0();
     private final Array<JsonValue> elements = new Array<>(8);
     private final Array<JsonValue> lastChild = new Array<>(8);
     private JsonValue root, current;
@@ -152,7 +152,7 @@ public class JsonReader implements BaseJsonReader{
     }
 
     public JsonValue parse(char[] data, int offset, int length){
-        int cs, p = offset, pe = length, eof = pe, top = 0;
+        int cs, p = offset, top = 0;
         int[] stack = new int[4];
 
         int s = 0;
@@ -184,7 +184,7 @@ public class JsonReader implements BaseJsonReader{
                 while(true){
                     switch(_goto_targ){
                         case 0:
-                            if(p == pe){
+                            if(p == length){
                                 _goto_targ = 4;
                                 continue _goto;
                             }
@@ -405,11 +405,11 @@ public class JsonReader implements BaseJsonReader{
                                         {
                                             int start = p - 1;
                                             if(data[p++] == '/'){
-                                                while(p != eof && data[p] != '\n')
+                                                while(p != length && data[p] != '\n')
                                                     p++;
                                                 p--;
                                             }else{
-                                                while(p + 1 < eof && data[p] != '*' || data[p + 1] != '/')
+                                                while(p + 1 < length && data[p] != '*' || data[p + 1] != '/')
                                                     p++;
                                                 p++;
                                             }
@@ -432,7 +432,7 @@ public class JsonReader implements BaseJsonReader{
                                                             needsUnescape = true;
                                                             break;
                                                         case '/':
-                                                            if(p + 1 == eof) break;
+                                                            if(p + 1 == length) break;
                                                             char c = data[p + 1];
                                                             if(c == '/' || c == '*') break outer;
                                                             break;
@@ -444,7 +444,7 @@ public class JsonReader implements BaseJsonReader{
                                                     if(debug)
                                                         System.out.println("unquotedChar (name): '" + data[p] + "'");
                                                     p++;
-                                                    if(p == eof) break;
+                                                    if(p == length) break;
                                                 }
                                             }else{
                                                 outer:
@@ -454,7 +454,7 @@ public class JsonReader implements BaseJsonReader{
                                                             needsUnescape = true;
                                                             break;
                                                         case '/':
-                                                            if(p + 1 == eof) break;
+                                                            if(p + 1 == length) break;
                                                             char c = data[p + 1];
                                                             if(c == '/' || c == '*') break outer;
                                                             break;
@@ -468,7 +468,7 @@ public class JsonReader implements BaseJsonReader{
                                                     if(debug)
                                                         System.out.println("unquotedChar (value): '" + data[p] + "'");
                                                     p++;
-                                                    if(p == eof) break;
+                                                    if(p == length) break;
                                                 }
                                             }
                                             p--;
@@ -494,7 +494,7 @@ public class JsonReader implements BaseJsonReader{
                                                 }
                                                 // if (debug) System.out.println("quotedChar: '" + data[p] + "'");
                                                 p++;
-                                                if(p == eof) break;
+                                                if(p == length) break;
                                             }
                                             p--;
                                         }
@@ -509,12 +509,12 @@ public class JsonReader implements BaseJsonReader{
                                 _goto_targ = 5;
                                 continue _goto;
                             }
-                            if(++p != pe){
+                            if(++p != length){
                                 _goto_targ = 1;
                                 continue _goto;
                             }
                         case 4:
-                            if(p == eof){
+                            if(p == length){
                                 int __acts = _json_eof_actions[cs];
                                 int __nacts = (int)_json_actions[__acts++];
                                 while(__nacts-- > 0){
@@ -620,13 +620,13 @@ public class JsonReader implements BaseJsonReader{
         current = null;
         lastChild.clear();
 
-        if(p < pe){
+        if(p < length){
             int lineNumber = 1;
             for(int i = 0; i < p; i++)
                 if(data[i] == '\n') lineNumber++;
             int start = Math.max(0, p - 32);
             throw new SerializationException("Error parsing JSON on line " + lineNumber + " near: "
-            + new String(data, start, p - start) + "*ERROR*" + new String(data, p, Math.min(64, pe - p)), parseRuntimeEx);
+            + new String(data, start, p - start) + "*ERROR*" + new String(data, p, Math.min(64, length - p)), parseRuntimeEx);
         }else if(elements.size != 0){
             JsonValue element = elements.peek();
             elements.clear();

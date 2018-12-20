@@ -14,16 +14,16 @@ public class Pixmaps{
     private static Pixmap drawPixmap;
 
     public static void flip(Pixmap pixmap){
-        Buffer pixels = pixmap.getPixels();
+        ByteBuffer pixels = pixmap.getPixels();
         int numBytes = pixmap.getWidth() * pixmap.getHeight() * 4;
         byte[] lines = new byte[numBytes];
         int numBytesPerLine = pixmap.getWidth() * 4;
         for(int i = 0; i < pixmap.getHeight(); i++){
             pixels.position((pixmap.getHeight() - i - 1) * numBytesPerLine);
-            ((ByteBuffer)pixels).get(lines, i * numBytesPerLine, numBytesPerLine);
+            pixels.get(lines, i * numBytesPerLine, numBytesPerLine);
         }
         pixels.clear();
-        ((ByteBuffer)pixels).put(lines);
+        pixels.put(lines);
     }
 
     public static Pixmap copy(Pixmap input){

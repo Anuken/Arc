@@ -75,13 +75,12 @@ public class Stack extends WidgetGroup{
             Element child = children.get(i);
             float childMaxWidth, childMaxHeight;
             if(child instanceof Layout){
-                Layout layout = child;
-                prefWidth = Math.max(prefWidth, layout.getPrefWidth());
-                prefHeight = Math.max(prefHeight, layout.getPrefHeight());
-                minWidth = Math.max(minWidth, layout.getMinWidth());
-                minHeight = Math.max(minHeight, layout.getMinHeight());
-                childMaxWidth = layout.getMaxWidth();
-                childMaxHeight = layout.getMaxHeight();
+                prefWidth = Math.max(prefWidth, ((Layout)child).getPrefWidth());
+                prefHeight = Math.max(prefHeight, ((Layout)child).getPrefHeight());
+                minWidth = Math.max(minWidth, ((Layout)child).getMinWidth());
+                minHeight = Math.max(minHeight, ((Layout)child).getMinHeight());
+                childMaxWidth = ((Layout)child).getMaxWidth();
+                childMaxHeight = ((Layout)child).getMaxHeight();
             }else{
                 prefWidth = Math.max(prefWidth, child.getWidth());
                 prefHeight = Math.max(prefHeight, child.getHeight());

@@ -16,7 +16,7 @@ public class TiledMapTileSet implements Iterable<TiledMapTile>{
 
     /** Creates empty tileset */
     public TiledMapTileSet(){
-        tiles = new IntMap<TiledMapTile>();
+        tiles = new IntMap<>();
         properties = new MapProperties();
     }
 

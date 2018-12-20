@@ -185,7 +185,6 @@ public class RidgedPerlin{
             signal = offset - signal;
 
             // Square the signal to increase the sharpness of the ridges.
-            // noinspection UnusedAssignment
             signal *= signal;
 
             // The weighting from the previous octave is applied to the signal.

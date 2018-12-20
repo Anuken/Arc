@@ -18,7 +18,7 @@ public class PooledLinkedList<T>{
         this.pool = new Pool<Item<T>>(16, maxPoolSize){
             @Override
             protected Item<T> newObject(){
-                return new Item<T>();
+                return new Item<>();
             }
         };
     }

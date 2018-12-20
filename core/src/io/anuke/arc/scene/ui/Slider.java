@@ -153,9 +153,7 @@ public class Slider extends ProgressBar{
     }
 
     public void moved(Consumer<Float> listener){
-        changed(() -> {
-            listener.accept(getValue());
-        });
+        changed(() -> listener.accept(getValue()));
     }
 
     /** Returns a snapped value. */

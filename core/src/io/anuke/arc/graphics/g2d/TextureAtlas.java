@@ -32,14 +32,12 @@ import static io.anuke.arc.graphics.Texture.TextureWrap.Repeat;
  */
 public class TextureAtlas implements Disposable{
     static final String[] tuple = new String[4];
-    static final Comparator<Region> indexComparator = new Comparator<Region>(){
-        public int compare(Region region1, Region region2){
-            int i1 = region1.index;
-            if(i1 == -1) i1 = Integer.MAX_VALUE;
-            int i2 = region2.index;
-            if(i2 == -1) i2 = Integer.MAX_VALUE;
-            return i1 - i2;
-        }
+    static final Comparator<Region> indexComparator = (region1, region2) -> {
+        int i1 = region1.index;
+        if(i1 == -1) i1 = Integer.MAX_VALUE;
+        int i2 = region2.index;
+        if(i2 == -1) i2 = Integer.MAX_VALUE;
+        return i1 - i2;
     };
     private final ObjectSet<Texture> textures = new ObjectSet<>(4);
     private final Array<AtlasRegion> regions = new Array<>();
@@ -109,7 +107,7 @@ public class TextureAtlas implements Disposable{
     }
 
     private void load(TextureAtlasData data){
-        ObjectMap<Page, Texture> pageToTexture = new ObjectMap<Page, Texture>();
+        ObjectMap<Page, Texture> pageToTexture = new ObjectMap<>();
         for(Page page : data.pages){
             Texture texture = null;
             if(page.texture == null){

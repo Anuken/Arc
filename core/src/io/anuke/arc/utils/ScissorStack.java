@@ -18,7 +18,7 @@ import io.anuke.arc.math.geom.Vector2;
 public class ScissorStack{
     static final Rectangle viewport = new Rectangle();
     static Vector2 tmp = new Vector2();
-    private static Array<Rectangle> scissors = new Array<Rectangle>();
+    private static Array<Rectangle> scissors = new Array<>();
 
     /**
      * Pushes a new scissor {@link Rectangle} onto the stack, merging it with the current top of the stack. The minimal area of

@@ -778,8 +778,7 @@ public class Encoder{
                     }
                     int distance = _repDistances[pos];
                     if(pos != 0){
-                        for(int i = pos; i >= 1; i--)
-                            _repDistances[i] = _repDistances[i - 1];
+                        System.arraycopy(_repDistances, 0, _repDistances, 1, pos);
                         _repDistances[0] = distance;
                     }
                 }else{
@@ -805,8 +804,7 @@ public class Encoder{
                         }
                     }
                     int distance = pos;
-                    for(int i = Base.kNumRepDistances - 1; i >= 1; i--)
-                        _repDistances[i] = _repDistances[i - 1];
+                    System.arraycopy(_repDistances, 0, _repDistances, 1, Base.kNumRepDistances - 1);
                     _repDistances[0] = distance;
                     _matchPriceCount++;
                 }

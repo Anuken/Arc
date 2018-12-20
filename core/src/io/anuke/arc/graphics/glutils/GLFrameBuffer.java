@@ -37,7 +37,7 @@ import java.util.Map;
  */
 public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     /** the frame buffers **/
-    protected final static Map<Application, Array<GLFrameBuffer>> buffers = new HashMap<Application, Array<GLFrameBuffer>>();
+    protected final static Map<Application, Array<GLFrameBuffer>> buffers = new HashMap<>();
 
     protected final static int GL_DEPTH24_STENCIL8_OES = 0x88F0;
     /** the default framebuffer handle, a.k.a screen. */
@@ -45,7 +45,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     /** true if we have polled for the default handle already. */
     protected static boolean defaultFramebufferHandleInitialized = false;
     /** the color buffer texture **/
-    protected Array<T> textureAttachments = new Array<T>();
+    protected Array<T> textureAttachments = new Array<>();
     /** the framebuffer handle **/
     protected int framebufferHandle;
     /** the depthbuffer render object handle **/
@@ -78,7 +78,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
 
     private static void addManagedFrameBuffer(Application app, GLFrameBuffer frameBuffer){
         Array<GLFrameBuffer> managedResources = buffers.get(app);
-        if(managedResources == null) managedResources = new Array<GLFrameBuffer>();
+        if(managedResources == null) managedResources = new Array<>();
         managedResources.add(frameBuffer);
         buffers.put(app, managedResources);
     }
@@ -432,7 +432,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     protected static abstract class GLFrameBufferBuilder<U extends GLFrameBuffer<? extends GLTexture>>{
         protected int width, height;
 
-        protected Array<FrameBufferTextureAttachmentSpec> textureAttachmentSpecs = new Array<FrameBufferTextureAttachmentSpec>();
+        protected Array<FrameBufferTextureAttachmentSpec> textureAttachmentSpecs = new Array<>();
 
         protected FrameBufferRenderBufferAttachmentSpec stencilRenderBufferSpec;
         protected FrameBufferRenderBufferAttachmentSpec depthRenderBufferSpec;

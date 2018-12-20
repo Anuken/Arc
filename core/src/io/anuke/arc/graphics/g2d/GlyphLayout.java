@@ -441,11 +441,10 @@ public class GlyphLayout implements Poolable{
                 return 0;
         }
         // Parse named color.
-        int colorStart = start;
         for(int i = start + 1; i < end; i++){
             char ch = str.charAt(i);
             if(ch != ']') continue;
-            Color namedColor = Colors.get(str.subSequence(colorStart, i).toString());
+            Color namedColor = Colors.get(str.subSequence(start, i).toString());
             if(namedColor == null) return -1; // Unknown color name.
             Color color = colorPool.obtain();
             colorStack.add(color);

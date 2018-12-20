@@ -95,7 +95,6 @@ public class ImageButton extends Button{
         if(image != null) updateImage();
     }
 
-    @SuppressWarnings("unchecked")
     public void replaceImage(Element element){
         getImageCell().setActor(element);
         addChild(element);

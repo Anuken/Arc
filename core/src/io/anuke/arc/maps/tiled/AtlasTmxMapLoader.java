@@ -32,7 +32,7 @@ import java.io.IOException;
  */
 public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasTiledMapLoaderParameters>{
 
-    protected Array<Texture> trackedTextures = new Array<Texture>();
+    protected Array<Texture> trackedTextures = new Array<>();
 
     public AtlasTmxMapLoader(){
         super(new InternalFileHandleResolver());
@@ -48,7 +48,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
     @Override
     public Array<AssetDescriptor> getDependencies(String fileName, FileHandle tmxFile, AtlasTiledMapLoaderParameters parameter){
-        Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
+        Array<AssetDescriptor> dependencies = new Array<>();
         try{
             root = xml.parse(tmxFile);
 
@@ -81,7 +81,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
             FileHandle tmxFile = resolve(fileName);
             root = xml.parse(tmxFile);
-            ObjectMap<String, TextureAtlas> atlases = new ObjectMap<String, TextureAtlas>();
+            ObjectMap<String, TextureAtlas> atlases = new ObjectMap<>();
             FileHandle atlasFile = loadAtlas(root, tmxFile);
             if(atlasFile == null){
                 throw new ArcRuntimeException("Couldn't load atlas");
@@ -353,7 +353,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
             Array<Element> tileElements = element.getChildrenByName("tile");
 
-            Array<AnimatedTiledMapTile> animatedTiles = new Array<AnimatedTiledMapTile>();
+            Array<AnimatedTiledMapTile> animatedTiles = new Array<>();
 
             for(Element tileElement : tileElements){
                 int localtid = tileElement.getIntAttribute("id", 0);
@@ -362,7 +362,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
                     Element animationElement = tileElement.getChildByName("animation");
                     if(animationElement != null){
 
-                        Array<StaticTiledMapTile> staticTiles = new Array<StaticTiledMapTile>();
+                        Array<StaticTiledMapTile> staticTiles = new Array<>();
                         IntArray intervals = new IntArray();
                         for(Element frameElement : animationElement.getChildrenByName("frame")){
                             staticTiles.add((StaticTiledMapTile)tileset.getTile(firstgid + frameElement.getIntAttribute("tileid")));

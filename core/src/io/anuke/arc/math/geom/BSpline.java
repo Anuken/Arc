@@ -191,7 +191,7 @@ public class BSpline<T extends Vector<T>> implements Path<T>{
         this.continuous = continuous;
         this.spanCount = continuous ? controlPoints.length : controlPoints.length - degree;
         if(knots == null)
-            knots = new Array<T>(spanCount);
+            knots = new Array<>(spanCount);
         else{
             knots.clear();
             knots.ensureCapacity(spanCount);

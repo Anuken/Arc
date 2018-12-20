@@ -62,7 +62,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
             this.flipY = parameters.flipY;
             FileHandle tmxFile = resolve(fileName);
             root = xml.parse(tmxFile);
-            ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
+            ObjectMap<String, Texture> textures = new ObjectMap<>();
             Array<FileHandle> textureFiles = loadTilesets(root, tmxFile);
             textureFiles.addAll(loadImages(root, tmxFile));
 
@@ -111,7 +111,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
      */
     @Override
     public Array<AssetDescriptor> getDependencies(String fileName, FileHandle tmxFile, Parameters parameter){
-        Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
+        Array<AssetDescriptor> dependencies = new Array<>();
         try{
             root = xml.parse(tmxFile);
             boolean generateMipMaps = (parameter != null && parameter.generateMipMaps);
@@ -207,7 +207,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
      * @return a list of filenames for images containing tiles
      */
     protected Array<FileHandle> loadTilesets(Element root, FileHandle tmxFile) throws IOException{
-        Array<FileHandle> images = new Array<FileHandle>();
+        Array<FileHandle> images = new Array<>();
         for(Element tileset : root.getChildrenByName("tileset")){
             String source = tileset.getAttribute("source", null);
             if(source != null){
@@ -249,7 +249,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
      * @return a list of filenames for images inside image layers
      */
     protected Array<FileHandle> loadImages(Element root, FileHandle tmxFile){
-        Array<FileHandle> images = new Array<FileHandle>();
+        Array<FileHandle> images = new Array<>();
 
         for(Element imageLayer : root.getChildrenByName("imagelayer")){
             Element image = imageLayer.getChildByName("image");
@@ -405,7 +405,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
             }
             Array<Element> tileElements = element.getChildrenByName("tile");
 
-            Array<AnimatedTiledMapTile> animatedTiles = new Array<AnimatedTiledMapTile>();
+            Array<AnimatedTiledMapTile> animatedTiles = new Array<>();
 
             for(Element tileElement : tileElements){
                 int localtid = tileElement.getIntAttribute("id", 0);
@@ -414,7 +414,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
                     Element animationElement = tileElement.getChildByName("animation");
                     if(animationElement != null){
 
-                        Array<StaticTiledMapTile> staticTiles = new Array<StaticTiledMapTile>();
+                        Array<StaticTiledMapTile> staticTiles = new Array<>();
                         IntArray intervals = new IntArray();
                         for(Element frameElement : animationElement.getChildrenByName("frame")){
                             staticTiles.add((StaticTiledMapTile)tileset.getTile(firstgid + frameElement.getIntAttribute("tileid")));

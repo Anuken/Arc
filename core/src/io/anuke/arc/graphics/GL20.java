@@ -574,19 +574,19 @@ public interface GL20{
 
     void glUniform1fv(int location, int count, FloatBuffer v);
 
-    void glUniform1fv(int location, int count, float v[], int offset);
+    void glUniform1fv(int location, int count, float[] v, int offset);
 
     void glUniform1i(int location, int x);
 
     void glUniform1iv(int location, int count, IntBuffer v);
 
-    void glUniform1iv(int location, int count, int v[], int offset);
+    void glUniform1iv(int location, int count, int[] v, int offset);
 
     void glUniform2f(int location, float x, float y);
 
     void glUniform2fv(int location, int count, FloatBuffer v);
 
-    void glUniform2fv(int location, int count, float v[], int offset);
+    void glUniform2fv(int location, int count, float[] v, int offset);
 
     void glUniform2i(int location, int x, int y);
 
@@ -604,31 +604,31 @@ public interface GL20{
 
     void glUniform3iv(int location, int count, IntBuffer v);
 
-    void glUniform3iv(int location, int count, int v[], int offset);
+    void glUniform3iv(int location, int count, int[] v, int offset);
 
     void glUniform4f(int location, float x, float y, float z, float w);
 
     void glUniform4fv(int location, int count, FloatBuffer v);
 
-    void glUniform4fv(int location, int count, float v[], int offset);
+    void glUniform4fv(int location, int count, float[] v, int offset);
 
     void glUniform4i(int location, int x, int y, int z, int w);
 
     void glUniform4iv(int location, int count, IntBuffer v);
 
-    void glUniform4iv(int location, int count, int v[], int offset);
+    void glUniform4iv(int location, int count, int[] v, int offset);
 
     void glUniformMatrix2fv(int location, int count, boolean transpose, FloatBuffer value);
 
-    void glUniformMatrix2fv(int location, int count, boolean transpose, float value[], int offset);
+    void glUniformMatrix2fv(int location, int count, boolean transpose, float[] value, int offset);
 
     void glUniformMatrix3fv(int location, int count, boolean transpose, FloatBuffer value);
 
-    void glUniformMatrix3fv(int location, int count, boolean transpose, float value[], int offset);
+    void glUniformMatrix3fv(int location, int count, boolean transpose, float[] value, int offset);
 
     void glUniformMatrix4fv(int location, int count, boolean transpose, FloatBuffer value);
 
-    void glUniformMatrix4fv(int location, int count, boolean transpose, float value[], int offset);
+    void glUniformMatrix4fv(int location, int count, boolean transpose, float[] value, int offset);
 
     void glUseProgram(int program);
 

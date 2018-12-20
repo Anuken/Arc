@@ -482,7 +482,7 @@ public class TextField extends Element implements Disableable{
 
     String insert(int position, CharSequence text, String to){
         if(to.length() == 0) return text.toString();
-        return to.substring(0, position) + text + to.substring(position, to.length());
+        return to.substring(0, position) + text + to.substring(position);
     }
 
     int delete(boolean fireChangeEvent){
@@ -491,7 +491,7 @@ public class TextField extends Element implements Disableable{
         int minIndex = Math.min(from, to);
         int maxIndex = Math.max(from, to);
         String newText = (minIndex > 0 ? text.substring(0, minIndex) : "")
-        + (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
+        + (maxIndex < text.length() ? text.substring(maxIndex) : "");
         if(fireChangeEvent)
             changeText(text, newText);
         else

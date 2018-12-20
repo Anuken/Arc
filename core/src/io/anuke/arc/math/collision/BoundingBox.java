@@ -43,11 +43,11 @@ public class BoundingBox implements Serializable{
         this.set(minimum, maximum);
     }
 
-    static final float min(final float a, final float b){
+    static float min(final float a, final float b){
         return a > b ? b : a;
     }
 
-    static final float max(final float a, final float b){
+    static float max(final float a, final float b){
         return a > b ? a : b;
     }
 

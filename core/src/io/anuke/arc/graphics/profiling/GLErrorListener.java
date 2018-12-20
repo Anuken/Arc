@@ -29,40 +29,34 @@ import static io.anuke.arc.graphics.profiling.GLInterceptor.resolveErrorNumber;
 public interface GLErrorListener{
 
     /** Listener that will log using Gdx.app.error GL error name and GL function. */
-    GLErrorListener LOGGING_LISTENER = new GLErrorListener(){
-        @Override
-        public void onError(int error){
-            String place = null;
-            try{
-                final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-                for(int i = 0; i < stack.length; i++){
-                    if("check".equals(stack[i].getMethodName())){
-                        if(i + 1 < stack.length){
-                            final StackTraceElement glMethod = stack[i + 1];
-                            place = glMethod.getMethodName();
-                        }
-                        break;
+    GLErrorListener LOGGING_LISTENER = error -> {
+        String place = null;
+        try{
+            final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+            for(int i = 0; i < stack.length; i++){
+                if("check".equals(stack[i].getMethodName())){
+                    if(i + 1 < stack.length){
+                        final StackTraceElement glMethod = stack[i + 1];
+                        place = glMethod.getMethodName();
                     }
+                    break;
                 }
-            }catch(Exception ignored){
             }
+        }catch(Exception ignored){
+        }
 
-            if(place != null){
-                Log.err("[GLProfiler] Error {0} from {1}", resolveErrorNumber(error), place);
-            }else{
-                Log.err("[GLProfiler] Error {0} at: {1}", resolveErrorNumber(error), new Exception());
-                // This will capture current stack trace for logging, if possible
-            }
+        if(place != null){
+            Log.err("[GLProfiler] Error {0} from {1}", resolveErrorNumber(error), place);
+        }else{
+            Log.err("[GLProfiler] Error {0} at: {1}", resolveErrorNumber(error), new Exception());
+            // This will capture current stack trace for logging, if possible
         }
     };
 
     // Basic implementations
     /** Listener that will throw a ArcRuntimeException with error name. */
-    GLErrorListener THROWING_LISTENER = new GLErrorListener(){
-        @Override
-        public void onError(int error){
-            throw new ArcRuntimeException("GLProfiler: Got GL error " + resolveErrorNumber(error));
-        }
+    GLErrorListener THROWING_LISTENER = error -> {
+        throw new ArcRuntimeException("GLProfiler: Got GL error " + resolveErrorNumber(error));
     };
 
     /**

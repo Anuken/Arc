@@ -10,7 +10,7 @@ import io.anuke.arc.utils.ArcRuntimeException;
  */
 public class Bezier<T extends Vector<T>> implements Path<T>{
 
-    public Array<T> points = new Array<T>();
+    public Array<T> points = new Array<>();
     private T tmp;
     private T tmp2;
     private T tmp3;
@@ -184,10 +184,9 @@ public class Bezier<T extends Vector<T>> implements Path<T>{
         // TODO: make a real approximate method
         T p1 = points.get(0);
         T p2 = points.get(points.size - 1);
-        T p3 = v;
         float l1Sqr = p1.dst2(p2);
-        float l2Sqr = p3.dst2(p2);
-        float l3Sqr = p3.dst2(p1);
+        float l2Sqr = v.dst2(p2);
+        float l3Sqr = v.dst2(p1);
         float l1 = (float)Math.sqrt(l1Sqr);
         float s = (l2Sqr + l1Sqr - l3Sqr) / (2 * l1);
         return Mathf.clamp((l1 - s) / l1, 0f, 1f);

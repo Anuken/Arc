@@ -39,7 +39,7 @@ import java.util.Map;
  */
 public class Mesh implements Disposable{
     /** list of all meshes **/
-    static final Map<Application, Array<Mesh>> meshes = new HashMap<Application, Array<Mesh>>();
+    static final Map<Application, Array<Mesh>> meshes = new HashMap<>();
     final VertexData vertices;
     final IndexData indices;
     final boolean isVertexArray;
@@ -153,7 +153,7 @@ public class Mesh implements Disposable{
 
     private static void addManagedMesh(Application app, Mesh mesh){
         Array<Mesh> managedResources = meshes.get(app);
-        if(managedResources == null) managedResources = new Array<Mesh>();
+        if(managedResources == null) managedResources = new Array<>();
         managedResources.add(mesh);
         meshes.put(app, managedResources);
     }

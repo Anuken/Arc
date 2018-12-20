@@ -12,7 +12,7 @@ public class MapObjects implements Iterable<MapObject>{
 
     /** Creates an empty set of MapObject instances */
     public MapObjects(){
-        objects = new Array<MapObject>();
+        objects = new Array<>();
     }
 
     /**
@@ -70,7 +70,7 @@ public class MapObjects implements Iterable<MapObject>{
      * @return array filled with all the objects in the collection matching type
      */
     public <T extends MapObject> Array<T> getByType(Class<T> type){
-        return getByType(type, new Array<T>());
+        return getByType(type, new Array<>());
     }
 
     /**

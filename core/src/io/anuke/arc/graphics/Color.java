@@ -123,8 +123,7 @@ public class Color{
      */
     public static float toFloatBits(int r, int g, int b, int a){
         int color = (a << 24) | (b << 16) | (g << 8) | r;
-        float floatColor = NumberUtils.intToFloatColor(color);
-        return floatColor;
+        return NumberUtils.intToFloatColor(color);
     }
 
     /**
@@ -547,11 +546,11 @@ public class Color{
 
     /** Returns the color encoded as hex string with the format RRGGBBAA. */
     public String toString(){
-        String value = Integer
-        .toHexString(((int)(255 * r) << 24) | ((int)(255 * g) << 16) | ((int)(255 * b) << 8) | ((int)(255 * a)));
+        StringBuilder value = new StringBuilder(Integer
+        .toHexString(((int)(255 * r) << 24) | ((int)(255 * g) << 16) | ((int)(255 * b) << 8) | ((int)(255 * a))));
         while(value.length() < 8)
-            value = "0" + value;
-        return value;
+            value.insert(0, "0");
+        return value.toString();
     }
 
     /**
