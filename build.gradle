@@ -1,10 +1,6 @@
-
-
 apply from: "gradle/dependencies.gradle"
 
-
 allprojects{
-    group = 'io.anuke.arc'
     version = '1.0'
     
     buildscript{
@@ -24,9 +20,10 @@ allprojects{
     }
 }
 
-configure(subprojects){
+subprojects{
     apply plugin: "idea"
     apply plugin: "java"
+    apply plugin: "maven"
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -34,6 +31,21 @@ configure(subprojects){
     compileJava{
         options.fork = true
         options.incremental = true
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    artifacts {
+        archives sourcesJar
+        archives javadocJar
     }
 }
 
