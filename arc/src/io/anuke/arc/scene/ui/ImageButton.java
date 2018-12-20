@@ -1,0 +1,219 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
+package io.anuke.arc.scene.ui;
+
+import io.anuke.arc.graphics.Color;
+import io.anuke.arc.graphics.g2d.TextureRegion;
+import io.anuke.arc.scene.Element;
+import io.anuke.arc.scene.style.Drawable;
+import io.anuke.arc.scene.style.SkinReader.ReadContext;
+import io.anuke.arc.scene.style.TextureRegionDrawable;
+import io.anuke.arc.scene.ui.layout.Cell;
+import io.anuke.arc.utils.Scaling;
+
+import static io.anuke.arc.Core.scene;
+
+/**
+ * A button with a child {@link Image} to display an image. This is useful when the button must be larger than the image and the
+ * image centered on the button. If the image is the size of the button, a {@link Button} without any children can be used, where
+ * the {@link Button.ButtonStyle#up}, {@link Button.ButtonStyle#down}, and {@link Button.ButtonStyle#checked} nine patches define
+ * the image.
+ * @author Nathan Sweet
+ */
+public class ImageButton extends Button{
+    private final Image image;
+    private ImageButtonStyle style;
+
+    public ImageButton(){
+        this(scene.skin.get(ImageButtonStyle.class));
+    }
+
+    public ImageButton(String icon){
+        this(scene.skin.get(ImageButtonStyle.class));
+        ImageButtonStyle style = new ImageButtonStyle(scene.skin.get(ImageButtonStyle.class));
+        style.imageUp = scene.skin.getDrawable(icon);
+
+        setStyle(style);
+    }
+
+    public ImageButton(String icon, String stylen){
+        this(scene.skin.get(stylen, ImageButtonStyle.class));
+        ImageButtonStyle style = new ImageButtonStyle(scene.skin.get(stylen, ImageButtonStyle.class));
+        style.imageUp = scene.skin.getDrawable(icon);
+
+        setStyle(style);
+    }
+
+    public ImageButton(TextureRegion region){
+        this(scene.skin.get(ImageButtonStyle.class));
+        ImageButtonStyle style = new ImageButtonStyle(scene.skin.get(ImageButtonStyle.class));
+        style.imageUp = new TextureRegionDrawable(region);
+
+        setStyle(style);
+    }
+
+    public ImageButton(TextureRegion region, String stylen){
+        this(scene.skin.get(ImageButtonStyle.class));
+        ImageButtonStyle style = new ImageButtonStyle(scene.skin.get(stylen, ImageButtonStyle.class));
+        style.imageUp = new TextureRegionDrawable(region);
+
+        setStyle(style);
+    }
+
+    public ImageButton(ImageButtonStyle style){
+        super(style);
+        image = new Image();
+        image.setScaling(Scaling.fit);
+        add(image);
+        setStyle(style);
+        setSize(getPrefWidth(), getPrefHeight());
+    }
+
+    public ImageButton(Drawable imageUp){
+        this(new ImageButtonStyle(null, null, null, imageUp, null, null));
+
+        ImageButtonStyle style = new ImageButtonStyle(scene.skin.get(ImageButtonStyle.class));
+        style.imageUp = imageUp;
+        setStyle(style);
+    }
+
+    public ImageButton(Drawable imageUp, Drawable imageDown){
+        this(new ImageButtonStyle(null, null, null, imageUp, imageDown, null));
+    }
+
+    public ImageButton(Drawable imageUp, Drawable imageDown, Drawable imageChecked){
+        this(new ImageButtonStyle(null, null, null, imageUp, imageDown, imageChecked));
+    }
+
+    public ImageButtonStyle getStyle(){
+        return style;
+    }
+
+    public void setStyle(ButtonStyle style){
+        if(!(style instanceof ImageButtonStyle))
+            throw new IllegalArgumentException("style must be an ImageButtonStyle.");
+        super.setStyle(style);
+        this.style = (ImageButtonStyle)style;
+        if(image != null) updateImage();
+    }
+
+    @SuppressWarnings("unchecked")
+    public void replaceImage(Element element){
+        getImageCell().setActor(element);
+        addChild(element);
+        image.remove();
+    }
+
+    /** Updates the Image with the appropriate Drawable from the style before it is drawn. */
+    protected void updateImage(){
+        Drawable drawable = null;
+        if(isDisabled() && style.imageDisabled != null)
+            drawable = style.imageDisabled;
+        else if(isPressed() && style.imageDown != null)
+            drawable = style.imageDown;
+        else if(isChecked && style.imageChecked != null)
+            drawable = (style.imageCheckedOver != null && isOver()) ? style.imageCheckedOver : style.imageChecked;
+        else if(isOver() && style.imageOver != null)
+            drawable = style.imageOver;
+        else if(style.imageUp != null)
+            drawable = style.imageUp;
+
+        Color color = image.getColor();
+
+        if(isDisabled && style.imageDisabledColor != null)
+            color = style.imageDisabledColor;
+        else if(isPressed() && style.imageDownColor != null)
+            color = style.imageDownColor;
+        else if(isChecked() && style.imageCheckedColor != null)
+            color = style.imageCheckedColor;
+        else if(style.imageUpColor != null)
+            color = style.imageUpColor;
+
+        image.setDrawable(drawable);
+        image.setColor(color);
+    }
+
+    @Override
+    public void draw(){
+        updateImage();
+        super.draw();
+    }
+
+    public Image getImage(){
+        return image;
+    }
+
+    public Cell getImageCell(){
+        return getCell(image);
+    }
+
+    public void resizeImage(float size){
+        getImageCell().size(size);
+    }
+
+    /**
+     * The style for an image button, see {@link ImageButton}.
+     * @author Nathan Sweet
+     */
+    static public class ImageButtonStyle extends ButtonStyle{
+        /** Optional. */
+        public Drawable imageUp, imageDown, imageOver, imageChecked, imageCheckedOver, imageDisabled;
+        public Color imageUpColor, imageCheckedColor, imageDownColor, imageDisabledColor;
+
+        public ImageButtonStyle(){
+        }
+
+        public ImageButtonStyle(Drawable up, Drawable down, Drawable checked, Drawable imageUp, Drawable imageDown,
+                                Drawable imageChecked){
+            super(up, down, checked);
+            this.imageUp = imageUp;
+            this.imageDown = imageDown;
+            this.imageChecked = imageChecked;
+        }
+
+        public ImageButtonStyle(ImageButtonStyle style){
+            super(style);
+            this.imageUp = style.imageUp;
+            this.imageDown = style.imageDown;
+            this.imageOver = style.imageOver;
+            this.imageChecked = style.imageChecked;
+            this.imageCheckedOver = style.imageCheckedOver;
+            this.imageDisabled = style.imageDisabled;
+            this.imageUpColor = style.imageUpColor;
+            this.imageDownColor = style.imageDownColor;
+            this.imageCheckedColor = style.imageCheckedColor;
+            this.imageDisabledColor = style.imageDisabledColor;
+        }
+
+        @Override
+        public void read(ReadContext read){
+            super.read(read);
+
+            imageUp = read.draw("imageUp");
+            imageDown = read.draw("imageDown");
+            imageOver = read.draw("imageOver");
+            imageChecked = read.draw("imageChecked");
+            imageCheckedOver = read.draw("imageCheckedOver");
+            imageDisabled = read.draw("imageDisabled");
+
+            imageUpColor = read.color("imageUpColor");
+            imageCheckedColor = read.color("imageCheckedColor");
+            imageDownColor = read.color("imageDownColor");
+            imageDisabledColor = read.color("imageDisabledColor");
+        }
+    }
+}
