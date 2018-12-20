@@ -13,9 +13,9 @@ this repository is not for mortal eyes to see
 - [ ] make spritebatch less bad
 - [ ] fix keybind dialog, as well as the whole scene thing
 - [ ] actually get it working
-- [ ] see if removing all JNI is possible
-- [ ] rename packages
-- [ ] delete this repository and create a new reorganized one
+- [X] see if removing all JNI is possible (it's probably not)
+- [X] rename packages
+- [X] delete original repository and create a new reorganized one
 - [ ] implement controller framework
 - [ ] implement controllers for each backend
 - [ ] look into jamepad but without 10mb of natives

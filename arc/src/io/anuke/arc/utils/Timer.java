@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package io.anuke.arc.utils;
 
 import io.anuke.arc.Application;
@@ -26,13 +10,13 @@ import io.anuke.arc.collection.Array;
  * Executes tasks in the future on the main loop thread.
  * @author Nathan Sweet
  */
+// TimerThread access is synchronized using threadLock.
+// Timer access is synchronized using the Timer instance.
+// Task access is synchronized using the Task instance.
 public class Timer{
-    // TimerThread access is synchronized using threadLock.
-    // Timer access is synchronized using the Timer instance.
-    // Task access is synchronized using the Task instance.
-
     static final Object threadLock = new Object();
     static TimerThread thread;
+
     final Array<Task> tasks = new Array<>(false, 8);
 
     public Timer(){
@@ -43,7 +27,7 @@ public class Timer{
      * Timer instance singleton for general application wide usage. Static methods on {@link Timer} make convenient use of this
      * instance.
      */
-    static public Timer instance(){
+    public static Timer instance(){
         synchronized(threadLock){
             TimerThread thread = thread();
             if(thread.instance == null) thread.instance = new Timer();
@@ -51,7 +35,7 @@ public class Timer{
         }
     }
 
-    static private TimerThread thread(){
+    private static TimerThread thread(){
         synchronized(threadLock){
             if(thread == null || thread.files != Core.files){
                 if(thread != null) thread.dispose();
@@ -65,7 +49,7 @@ public class Timer{
      * Schedules a task on {@link #instance}.
      * @see #postTask(Task)
      */
-    static public Task post(Task task){
+    public static Task post(Task task){
         return instance().postTask(task);
     }
 
@@ -73,7 +57,7 @@ public class Timer{
      * Schedules a task on {@link #instance}.
      * @see #scheduleTask(Task, float)
      */
-    static public Task schedule(Task task, float delaySeconds){
+    public static Task schedule(Task task, float delaySeconds){
         return instance().scheduleTask(task, delaySeconds);
     }
 
@@ -81,7 +65,7 @@ public class Timer{
      * Schedules a task on {@link #instance}.
      * @see #scheduleTask(Task, float, float)
      */
-    static public Task schedule(Task task, float delaySeconds, float intervalSeconds){
+    public static Task schedule(Task task, float delaySeconds, float intervalSeconds){
         return instance().scheduleTask(task, delaySeconds, intervalSeconds);
     }
 
@@ -89,7 +73,7 @@ public class Timer{
      * Schedules a task on {@link #instance}.
      * @see #scheduleTask(Task, float, float, int)
      */
-    static public Task schedule(Task task, float delaySeconds, float intervalSeconds, int repeatCount){
+    public static Task schedule(Task task, float delaySeconds, float intervalSeconds, int repeatCount){
         return instance().scheduleTask(task, delaySeconds, intervalSeconds, repeatCount);
     }
 
