@@ -1,12 +1,10 @@
-
-
-include ":arc"
+include ":core"
 
 include ":backends"
-include ":backends:arc-backend-android"
-include ":backends:arc-backend-headless"
-include ":backends:arc-backend-lwjgl3"
-include ":backends:arc-backend-robovm"
-include ":backends:arc-backend-gwt"
+include ":backends:backend-android"
+include ":backends:backend-headless"
+include ":backends:backend-lwjgl3"
+include ":backends:backend-robovm"
+include ":backends:backend-gwt"
 
 rootProject.name = "arc"

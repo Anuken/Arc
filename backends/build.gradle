@@ -6,6 +6,6 @@ subprojects{
     sourceSets.main.java.srcDirs = ["src"]
     
     dependencies{
-        compile project(":arc")
+        compile project(":core")
     }
 }

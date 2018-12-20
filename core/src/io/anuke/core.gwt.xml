@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module rename-to="com.badlogic.gdx">
-    <source path="gdx">
+<module rename-to="io.anuke.arc">
+    <source path="arc">
         <exclude name="assets/loaders/CubemapLoader.java"/> <!--  relies on KTXTextureData -->
         <exclude name="graphics/TextureArray.java"/> <!-- GLES 3.0 -->
         <exclude name="graphics/TextureArrayData.java"/> <!-- GLES 3.0 -->
