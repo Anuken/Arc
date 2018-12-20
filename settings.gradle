@@ -23,7 +23,4 @@ include ":backends:arc-backend-lwjgl3"
 include ":backends:arc-backend-robovm"
 include ":backends:arc-backend-gwt"
 
-//include ":extensions:arc-box2d"
-include ":extensions:arc-freetype"
-
 rootProject.name = "arc"
