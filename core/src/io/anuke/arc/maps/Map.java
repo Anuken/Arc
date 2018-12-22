@@ -4,7 +4,7 @@ import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.maps.objects.CircleMapObject;
 import io.anuke.arc.maps.objects.TextureMapObject;
 import io.anuke.arc.maps.tiled.TiledMap;
-import io.anuke.arc.utils.Disposable;
+import io.anuke.arc.util.Disposable;
 
 /**
  * A generic level map implementation.</p>

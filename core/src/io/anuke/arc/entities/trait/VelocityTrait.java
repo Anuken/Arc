@@ -1,7 +1,7 @@
 package io.anuke.arc.entities.trait;
 
 import io.anuke.arc.math.geom.Vector2;
-import io.anuke.arc.utils.Time;
+import io.anuke.arc.util.Time;
 
 public interface VelocityTrait extends MoveTrait{
 

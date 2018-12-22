@@ -9,7 +9,7 @@ import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.graphics.Pixmap.Blending;
 import io.anuke.arc.graphics.Pixmap.Format;
 import io.anuke.arc.graphics.TextureData;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 /**
  * A FacedCubemapData holds a cubemap data definition based on a {@link TextureData} per face.

@@ -1,6 +1,6 @@
 package io.anuke.arc.backends.gwt;
 
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 import com.google.gwt.webgl.client.WebGLRenderingContext;
 
 import java.nio.Buffer;

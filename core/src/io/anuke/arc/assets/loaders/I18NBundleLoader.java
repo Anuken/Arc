@@ -5,7 +5,7 @@ import io.anuke.arc.assets.AssetLoaderParameters;
 import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.utils.I18NBundle;
+import io.anuke.arc.util.I18NBundle;
 
 import java.util.Locale;
 

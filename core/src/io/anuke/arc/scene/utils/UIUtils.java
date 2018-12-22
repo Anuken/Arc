@@ -3,7 +3,7 @@ package io.anuke.arc.scene.utils;
 import io.anuke.arc.Core;
 import io.anuke.arc.input.KeyCode;
 import io.anuke.arc.scene.Element;
-import io.anuke.arc.utils.OS;
+import io.anuke.arc.util.OS;
 
 public class UIUtils{
 
@@ -16,7 +16,7 @@ public class UIUtils{
     }
 
     static public boolean left(){
-        return Core.input.keyPress(KeyCode.MOUSE_LEFT);
+        return Core.input.keyDown(KeyCode.MOUSE_LEFT);
     }
 
     static public boolean left(KeyCode button){
@@ -24,7 +24,7 @@ public class UIUtils{
     }
 
     static public boolean right(){
-        return Core.input.keyPress(KeyCode.MOUSE_RIGHT);
+        return Core.input.keyDown(KeyCode.MOUSE_RIGHT);
     }
 
     static public boolean right(KeyCode button){
@@ -32,7 +32,7 @@ public class UIUtils{
     }
 
     static public boolean middle(){
-        return Core.input.keyPress(KeyCode.MOUSE_MIDDLE);
+        return Core.input.keyDown(KeyCode.MOUSE_MIDDLE);
     }
 
     static public boolean middle(KeyCode button){
@@ -40,7 +40,7 @@ public class UIUtils{
     }
 
     static public boolean shift(){
-        return Core.input.keyPress(KeyCode.SHIFT_LEFT) || Core.input.keyPress(KeyCode.SHIFT_RIGHT);
+        return Core.input.keyDown(KeyCode.SHIFT_LEFT) || Core.input.keyDown(KeyCode.SHIFT_RIGHT);
     }
 
     static public boolean shift(KeyCode keycode){
@@ -49,9 +49,9 @@ public class UIUtils{
 
     static public boolean ctrl(){
         if(OS.isMac)
-            return Core.input.keyPress(KeyCode.SYM);
+            return Core.input.keyDown(KeyCode.SYM);
         else
-            return Core.input.keyPress(KeyCode.CONTROL_LEFT) || Core.input.keyPress(KeyCode.CONTROL_RIGHT);
+            return Core.input.keyDown(KeyCode.CONTROL_LEFT) || Core.input.keyDown(KeyCode.CONTROL_RIGHT);
     }
 
     static public boolean ctrl(KeyCode keycode){
@@ -62,7 +62,7 @@ public class UIUtils{
     }
 
     static public boolean alt(){
-        return Core.input.keyPress(KeyCode.ALT_LEFT) || Core.input.keyPress(KeyCode.ALT_RIGHT);
+        return Core.input.keyDown(KeyCode.ALT_LEFT) || Core.input.keyDown(KeyCode.ALT_RIGHT);
     }
 
     static public boolean alt(KeyCode keycode){

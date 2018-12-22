@@ -1,7 +1,7 @@
 package io.anuke.arc.backends.gwt.preloader;
 
 import io.anuke.arc.backends.gwt.preloader.AssetFilter.AssetType;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 import com.google.gwt.core.ext.*;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;

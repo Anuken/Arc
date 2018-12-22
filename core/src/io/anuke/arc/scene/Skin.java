@@ -12,11 +12,11 @@ import io.anuke.arc.graphics.g2d.TextureAtlas.AtlasRegion;
 import io.anuke.arc.graphics.g2d.TextureRegion;
 import io.anuke.arc.scene.style.*;
 import io.anuke.arc.scene.style.SkinReader.ValueReader;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.Disposable;
-import io.anuke.arc.utils.serialization.JsonReader;
-import io.anuke.arc.utils.serialization.JsonValue;
-import io.anuke.arc.utils.serialization.SerializationException;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.Disposable;
+import io.anuke.arc.util.serialization.JsonReader;
+import io.anuke.arc.util.serialization.JsonValue;
+import io.anuke.arc.util.serialization.SerializationException;
 
 /**
  * A skin stores resources for UI widgets to use (texture regions, ninepatches, fonts, colors, etc). Resources are named and can

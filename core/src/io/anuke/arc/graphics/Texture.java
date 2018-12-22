@@ -2,7 +2,6 @@ package io.anuke.arc.graphics;
 
 import io.anuke.arc.Application;
 import io.anuke.arc.Core;
-import io.anuke.arc.assets.AssetLoaderParameters.LoadedCallback;
 import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.assets.loaders.AssetLoader;
 import io.anuke.arc.assets.loaders.TextureLoader.TextureParameter;
@@ -11,7 +10,7 @@ import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.graphics.Pixmap.Format;
 import io.anuke.arc.graphics.glutils.FileTextureData;
 import io.anuke.arc.graphics.glutils.PixmapTextureData;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -12,7 +12,7 @@ import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.GL30;
 import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.graphics.glutils.GLVersion;
-import io.anuke.arc.utils.Log;
+import io.anuke.arc.util.Log;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.glkit.*;
 import org.robovm.apple.opengles.EAGLContext;

@@ -25,9 +25,9 @@ import io.anuke.arc.scene.style.SkinReader.ReadContext;
 import io.anuke.arc.scene.style.Style;
 import io.anuke.arc.scene.utils.Disableable;
 import io.anuke.arc.scene.utils.UIUtils;
-import io.anuke.arc.utils.*;
-import io.anuke.arc.utils.Timer.Task;
-import io.anuke.arc.utils.pooling.Pools;
+import io.anuke.arc.util.*;
+import io.anuke.arc.util.Timer.Task;
+import io.anuke.arc.util.pooling.Pools;
 
 import java.lang.StringBuilder;
 
@@ -423,7 +423,7 @@ public class TextField extends Element implements Disableable{
             cursorOn = true;
             return;
         }
-        long time = TimeUtils.nanoTime();
+        long time = Time.nanoTime();
         if((time - lastBlink) / 1000000000.0f > blinkTime){
             cursorOn = !cursorOn;
             lastBlink = time;
@@ -1074,7 +1074,7 @@ public class TextField extends Element implements Disableable{
             Scene stage = getScene();
             if(stage == null || stage.getKeyboardFocus() != TextField.this) return false;
 
-            if(OS.isMac && Core.input.keyPress(KeyCode.SYM)) return true;
+            if(OS.isMac && Core.input.keyDown(KeyCode.SYM)) return true;
 
             if((character == TAB) && focusTraversal){
                 next(UIUtils.shift());

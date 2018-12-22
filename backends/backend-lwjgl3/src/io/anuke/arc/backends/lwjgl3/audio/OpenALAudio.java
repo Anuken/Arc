@@ -6,7 +6,7 @@ import io.anuke.arc.audio.AudioRecorder;
 import io.anuke.arc.collection.*;
 import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.math.Mathf;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;

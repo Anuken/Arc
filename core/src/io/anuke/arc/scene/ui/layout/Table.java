@@ -13,8 +13,8 @@ import io.anuke.arc.scene.ui.*;
 import io.anuke.arc.scene.ui.Label.LabelStyle;
 import io.anuke.arc.scene.ui.TextField.TextFieldFilter;
 import io.anuke.arc.scene.utils.Elements;
-import io.anuke.arc.utils.Align;
-import io.anuke.arc.utils.pooling.Pool;
+import io.anuke.arc.util.Align;
+import io.anuke.arc.util.pooling.Pool;
 
 import static io.anuke.arc.Core.graphics;
 import static io.anuke.arc.Core.scene;

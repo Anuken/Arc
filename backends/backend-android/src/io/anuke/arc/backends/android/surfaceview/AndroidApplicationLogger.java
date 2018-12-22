@@ -2,8 +2,8 @@ package io.anuke.arc.backends.android.surfaceview;
 
 import android.util.Log;
 import io.anuke.arc.Core;
-import io.anuke.arc.utils.Log.LogHandler;
-import io.anuke.arc.utils.Strings;
+import io.anuke.arc.util.Log.LogHandler;
+import io.anuke.arc.util.Strings;
 
 public class AndroidApplicationLogger extends LogHandler{
 

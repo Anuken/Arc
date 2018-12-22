@@ -1,6 +1,6 @@
 package io.anuke.arc.graphics.glutils;
 
-import io.anuke.arc.utils.Disposable;
+import io.anuke.arc.util.Disposable;
 
 import java.nio.ShortBuffer;
 

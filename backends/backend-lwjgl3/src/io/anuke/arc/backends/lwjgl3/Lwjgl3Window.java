@@ -5,8 +5,8 @@ import io.anuke.arc.Core;
 import io.anuke.arc.Files;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.graphics.Pixmap;
-import io.anuke.arc.utils.Disposable;
-import io.anuke.arc.utils.SharedLibraryLoader;
+import io.anuke.arc.util.Disposable;
+import io.anuke.arc.util.SharedLibraryLoader;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
 

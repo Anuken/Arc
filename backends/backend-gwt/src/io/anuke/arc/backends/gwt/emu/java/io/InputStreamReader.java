@@ -10,7 +10,7 @@
 
 package java.io;
 
-import io.anuke.arc.utils.Utf8Decoder;
+import io.anuke.arc.util.Utf8Decoder;
 
 public class InputStreamReader extends Reader{
     private final InputStream in;

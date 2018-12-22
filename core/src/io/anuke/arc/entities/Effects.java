@@ -8,7 +8,7 @@ import io.anuke.arc.function.Consumer;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.geom.Position;
-import io.anuke.arc.utils.pooling.Pools;
+import io.anuke.arc.util.pooling.Pools;
 
 public class Effects{
     private static final EffectContainer container = new EffectContainer();

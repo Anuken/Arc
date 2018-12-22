@@ -2,7 +2,7 @@ package io.anuke.arc.graphics.g2d;
 
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.math.Mathf;
-import io.anuke.arc.utils.reflect.ArrayReflection;
+import io.anuke.arc.util.reflect.ArrayReflection;
 
 /**
  * <p>

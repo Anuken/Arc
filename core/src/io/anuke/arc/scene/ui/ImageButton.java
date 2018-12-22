@@ -7,7 +7,7 @@ import io.anuke.arc.scene.style.Drawable;
 import io.anuke.arc.scene.style.SkinReader.ReadContext;
 import io.anuke.arc.scene.style.TextureRegionDrawable;
 import io.anuke.arc.scene.ui.layout.Cell;
-import io.anuke.arc.utils.Scaling;
+import io.anuke.arc.util.Scaling;
 
 import static io.anuke.arc.Core.scene;
 

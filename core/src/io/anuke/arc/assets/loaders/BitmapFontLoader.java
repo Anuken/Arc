@@ -12,7 +12,7 @@ import io.anuke.arc.graphics.g2d.BitmapFont.BitmapFontData;
 import io.anuke.arc.graphics.g2d.TextureAtlas;
 import io.anuke.arc.graphics.g2d.TextureAtlas.AtlasRegion;
 import io.anuke.arc.graphics.g2d.TextureRegion;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 /**
  * {@link AssetLoader} for {@link BitmapFont} instances. Loads the font description file (.fnt) asynchronously, loads the

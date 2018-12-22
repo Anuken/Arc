@@ -2,7 +2,7 @@ package io.anuke.arc.backends.lwjgl3;
 
 import io.anuke.arc.Core;
 import io.anuke.arc.graphics.Pixmap;
-import io.anuke.arc.utils.Clipboard;
+import io.anuke.arc.util.Clipboard;
 import org.lwjgl.glfw.GLFW;
 
 /**

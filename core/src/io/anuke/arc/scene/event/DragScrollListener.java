@@ -2,8 +2,8 @@ package io.anuke.arc.scene.event;
 
 import io.anuke.arc.math.Interpolation;
 import io.anuke.arc.scene.ui.ScrollPane;
-import io.anuke.arc.utils.Timer;
-import io.anuke.arc.utils.Timer.Task;
+import io.anuke.arc.util.Timer;
+import io.anuke.arc.util.Timer.Task;
 
 /**
  * Causes a scroll pane to scroll when a drag goes outside the bounds of the scroll pane.

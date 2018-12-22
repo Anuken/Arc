@@ -6,7 +6,7 @@ import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.GL30;
 import io.anuke.arc.graphics.VertexAttribute;
 import io.anuke.arc.graphics.VertexAttributes;
-import io.anuke.arc.utils.BufferUtils;
+import io.anuke.arc.util.BufferUtils;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;

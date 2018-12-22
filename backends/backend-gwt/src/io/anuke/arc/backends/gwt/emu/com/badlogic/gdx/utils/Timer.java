@@ -1,4 +1,4 @@
-package io.anuke.arc.utils;
+package io.anuke.arc.util;
 
 import io.anuke.arc.Application;
 import io.anuke.arc.ApplicationListener;

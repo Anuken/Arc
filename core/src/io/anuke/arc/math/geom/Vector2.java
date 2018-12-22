@@ -3,8 +3,8 @@ package io.anuke.arc.math.geom;
 import io.anuke.arc.math.Interpolation;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.Matrix3;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.NumberUtils;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.NumberUtils;
 
 import java.io.Serializable;
 
@@ -439,6 +439,12 @@ public class Vector2 implements Serializable, Vector<Vector2>, Position{
             this.x = y;
             y = -x;
         }
+        return this;
+    }
+
+    public Vector2 lerpPast(Vector2 target, float alpha){
+        x = (x) + ((target.x - x) * alpha);
+        y = (y) + ((target.y - y) * alpha);
         return this;
     }
 

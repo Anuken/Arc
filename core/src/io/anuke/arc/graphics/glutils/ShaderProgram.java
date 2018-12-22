@@ -12,8 +12,8 @@ import io.anuke.arc.graphics.Mesh;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.math.geom.Vector3;
-import io.anuke.arc.utils.BufferUtils;
-import io.anuke.arc.utils.Disposable;
+import io.anuke.arc.util.BufferUtils;
+import io.anuke.arc.util.Disposable;
 
 import java.nio.*;
 

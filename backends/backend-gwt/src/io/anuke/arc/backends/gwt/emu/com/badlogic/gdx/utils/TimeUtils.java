@@ -1,4 +1,4 @@
-package io.anuke.arc.utils;
+package io.anuke.arc.util;
 
 /**
  * Wrapper around System.nanoTime() and System.currentTimeMillis(). Use this if you want to be compatible across all platforms!

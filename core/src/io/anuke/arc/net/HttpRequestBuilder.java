@@ -1,9 +1,9 @@
 package io.anuke.arc.net;
 
 import io.anuke.arc.Net.HttpRequest;
-import io.anuke.arc.utils.pooling.Pools;
-import io.anuke.arc.utils.serialization.Base64Coder;
-import io.anuke.arc.utils.serialization.Json;
+import io.anuke.arc.util.pooling.Pools;
+import io.anuke.arc.util.serialization.Base64Coder;
+import io.anuke.arc.util.serialization.Json;
 
 import java.io.InputStream;
 import java.util.Map;

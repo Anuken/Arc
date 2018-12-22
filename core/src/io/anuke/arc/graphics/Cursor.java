@@ -1,7 +1,7 @@
 package io.anuke.arc.graphics;
 
 import io.anuke.arc.Graphics;
-import io.anuke.arc.utils.Disposable;
+import io.anuke.arc.util.Disposable;
 
 /**
  * <p>

@@ -14,7 +14,7 @@ import io.anuke.arc.scene.style.Drawable;
 import io.anuke.arc.scene.style.SkinReader.ReadContext;
 import io.anuke.arc.scene.style.Style;
 import io.anuke.arc.scene.utils.Disableable;
-import io.anuke.arc.utils.pooling.Pools;
+import io.anuke.arc.util.pooling.Pools;
 
 import static io.anuke.arc.Core.graphics;
 

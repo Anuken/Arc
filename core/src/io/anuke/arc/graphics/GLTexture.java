@@ -6,7 +6,7 @@ import io.anuke.arc.graphics.Texture.TextureFilter;
 import io.anuke.arc.graphics.Texture.TextureWrap;
 import io.anuke.arc.graphics.TextureData.TextureDataType;
 import io.anuke.arc.graphics.glutils.MipMapGenerator;
-import io.anuke.arc.utils.Disposable;
+import io.anuke.arc.util.Disposable;
 
 /**
  * Class representing an OpenGL texture by its target and handle. Keeps track of its state like the TextureFilter and TextureWrap.

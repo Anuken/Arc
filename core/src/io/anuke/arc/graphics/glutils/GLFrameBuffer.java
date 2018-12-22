@@ -8,9 +8,9 @@ import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.GL30;
 import io.anuke.arc.graphics.GLTexture;
 import io.anuke.arc.graphics.Pixmap;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.BufferUtils;
-import io.anuke.arc.utils.Disposable;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.BufferUtils;
+import io.anuke.arc.util.Disposable;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

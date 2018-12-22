@@ -1,6 +1,6 @@
 package io.anuke.arc.audio;
 
-import io.anuke.arc.utils.Disposable;
+import io.anuke.arc.util.Disposable;
 
 /**
  * An AudioRecorder allows to record input from an audio device. It has a sampling rate and is either stereo or mono. Samples are

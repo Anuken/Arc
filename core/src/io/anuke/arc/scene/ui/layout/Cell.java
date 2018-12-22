@@ -11,8 +11,8 @@ import io.anuke.arc.scene.ui.Button;
 import io.anuke.arc.scene.ui.ButtonGroup;
 import io.anuke.arc.scene.ui.Label;
 import io.anuke.arc.scene.ui.TextButton;
-import io.anuke.arc.utils.Align;
-import io.anuke.arc.utils.pooling.Pool.Poolable;
+import io.anuke.arc.util.Align;
+import io.anuke.arc.util.pooling.Pool.Poolable;
 
 /**
  * A cell for a {@link Table}.

@@ -7,8 +7,8 @@ import io.anuke.arc.graphics.GL30;
 import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.graphics.Pixmap.Format;
 import io.anuke.arc.graphics.TextureData;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.BufferUtils;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.BufferUtils;
 
 import java.nio.FloatBuffer;
 

@@ -1,7 +1,7 @@
 package io.anuke.arc.backends.gwt.preloader;
 
 import io.anuke.arc.backends.gwt.preloader.AssetFilter.AssetType;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.typedarrays.shared.Int8Array;

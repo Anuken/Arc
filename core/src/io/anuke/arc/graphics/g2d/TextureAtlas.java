@@ -12,9 +12,9 @@ import io.anuke.arc.graphics.Texture.TextureFilter;
 import io.anuke.arc.graphics.Texture.TextureWrap;
 import io.anuke.arc.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
 import io.anuke.arc.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
-import io.anuke.arc.utils.Disposable;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.io.StreamUtils;
+import io.anuke.arc.util.Disposable;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.io.StreamUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

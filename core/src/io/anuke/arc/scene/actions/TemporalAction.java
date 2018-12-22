@@ -2,7 +2,7 @@ package io.anuke.arc.scene.actions;
 
 import io.anuke.arc.math.Interpolation;
 import io.anuke.arc.scene.Action;
-import io.anuke.arc.utils.pooling.Pool;
+import io.anuke.arc.util.pooling.Pool;
 
 /**
  * Base class for actions that transition over time using the percent complete.

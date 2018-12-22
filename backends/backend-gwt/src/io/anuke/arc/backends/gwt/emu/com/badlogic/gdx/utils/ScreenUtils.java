@@ -1,4 +1,4 @@
-package io.anuke.arc.utils;
+package io.anuke.arc.util;
 
 import io.anuke.arc.Core;
 import io.anuke.arc.graphics.GL20;

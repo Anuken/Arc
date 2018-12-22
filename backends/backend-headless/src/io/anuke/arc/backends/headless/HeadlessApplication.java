@@ -8,9 +8,9 @@ import io.anuke.arc.backends.headless.mock.audio.MockAudio;
 import io.anuke.arc.backends.headless.mock.graphics.MockGraphics;
 import io.anuke.arc.backends.headless.mock.input.MockInput;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.Clipboard;
-import io.anuke.arc.utils.TimeUtils;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.Clipboard;
+import io.anuke.arc.util.TimeUtils;
 
 /**
  * a headless implementation of a GDX Application primarily intended to be used in servers

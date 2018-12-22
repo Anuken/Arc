@@ -7,7 +7,7 @@ import io.anuke.arc.scene.Action;
 import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.event.EventListener;
 import io.anuke.arc.scene.event.Touchable;
-import io.anuke.arc.utils.pooling.Pools;
+import io.anuke.arc.util.pooling.Pools;
 
 /**
  * Static convenience methods for using pooled actions, intended for static import.

@@ -22,9 +22,9 @@
 
 package io.anuke.arc.backends.lwjgl3.audio;
 
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.Log;
-import io.anuke.arc.utils.io.StreamUtils;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.Log;
+import io.anuke.arc.util.io.StreamUtils;
 import com.jcraft.jogg.Packet;
 import com.jcraft.jogg.Page;
 import com.jcraft.jogg.StreamState;

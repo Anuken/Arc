@@ -1,6 +1,6 @@
 package io.anuke.arc.collection;
 
-import io.anuke.arc.utils.pooling.Pool;
+import io.anuke.arc.util.pooling.Pool;
 
 /**
  * A simple linked list that pools its nodes.

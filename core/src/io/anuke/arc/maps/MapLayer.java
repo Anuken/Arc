@@ -1,6 +1,6 @@
 package io.anuke.arc.maps;
 
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 /** Map layer containing a set of objects and properties */
 public class MapLayer{

@@ -1,6 +1,6 @@
 package io.anuke.arc.graphics.glutils;
 
-import io.anuke.arc.utils.BufferUtils;
+import io.anuke.arc.util.BufferUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;

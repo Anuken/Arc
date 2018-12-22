@@ -2,8 +2,8 @@ package io.anuke.arc.graphics;
 
 import io.anuke.arc.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.Disposable;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.Disposable;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

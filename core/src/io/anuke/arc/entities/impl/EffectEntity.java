@@ -5,8 +5,8 @@ import io.anuke.arc.entities.Effects.Effect;
 import io.anuke.arc.entities.trait.DrawTrait;
 import io.anuke.arc.entities.trait.Entity;
 import io.anuke.arc.graphics.Color;
-import io.anuke.arc.utils.pooling.Pool.Poolable;
-import io.anuke.arc.utils.pooling.Pools;
+import io.anuke.arc.util.pooling.Pool.Poolable;
+import io.anuke.arc.util.pooling.Pools;
 
 public class EffectEntity extends TimedEntity implements Poolable, DrawTrait{
     public Effect effect;

@@ -3,7 +3,7 @@ package io.anuke.arc.backends.lwjgl3;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.graphics.Cursor;
 import io.anuke.arc.graphics.Pixmap;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
 

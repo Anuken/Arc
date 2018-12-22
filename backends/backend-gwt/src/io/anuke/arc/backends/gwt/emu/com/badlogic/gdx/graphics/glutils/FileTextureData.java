@@ -6,7 +6,7 @@ import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.graphics.Pixmap.Format;
 import io.anuke.arc.graphics.TextureData;
 import io.anuke.arc.math.Mathf;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 public class FileTextureData implements TextureData{
     static public boolean copyToPOT;

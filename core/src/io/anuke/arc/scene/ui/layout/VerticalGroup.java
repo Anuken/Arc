@@ -5,7 +5,7 @@ import io.anuke.arc.collection.SnapshotArray;
 import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.event.Touchable;
 import io.anuke.arc.scene.utils.Layout;
-import io.anuke.arc.utils.Align;
+import io.anuke.arc.util.Align;
 
 /**
  * A group that lays out its children top to bottom vertically, with optional wrapping. This can be easier than using

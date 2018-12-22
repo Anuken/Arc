@@ -1,6 +1,6 @@
 package io.anuke.arc.graphics;
 
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

@@ -9,8 +9,8 @@ import io.anuke.arc.graphics.VertexAttributes.Usage;
 import io.anuke.arc.graphics.glutils.ShaderProgram;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.Matrix3;
-import io.anuke.arc.utils.Disposable;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.Disposable;
+import io.anuke.arc.util.ArcRuntimeException;
 
 import java.nio.FloatBuffer;
 

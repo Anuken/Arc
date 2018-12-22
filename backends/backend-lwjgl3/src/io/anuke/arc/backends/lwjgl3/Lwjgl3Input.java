@@ -5,8 +5,8 @@ import io.anuke.arc.graphics.glutils.HdpiMode;
 import io.anuke.arc.input.InputDevice;
 import io.anuke.arc.input.InputEventQueue;
 import io.anuke.arc.input.KeyCode;
-import io.anuke.arc.utils.Bits;
-import io.anuke.arc.utils.Disposable;
+import io.anuke.arc.util.Bits;
+import io.anuke.arc.util.Disposable;
 import org.lwjgl.glfw.*;
 
 public class Lwjgl3Input extends Input implements Disposable{

@@ -4,8 +4,8 @@ import io.anuke.arc.entities.trait.*;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.geom.Rectangle;
 import io.anuke.arc.math.geom.Vector2;
-import io.anuke.arc.utils.Time;
-import io.anuke.arc.utils.pooling.Pool.Poolable;
+import io.anuke.arc.util.Time;
+import io.anuke.arc.util.pooling.Pool.Poolable;
 
 public abstract class BulletEntity<T extends BaseBulletType> extends SolidEntity implements DamageTrait, ScaleTrait, Poolable, DrawTrait, VelocityTrait, TimeTrait{
     protected T type;

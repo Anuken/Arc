@@ -19,10 +19,10 @@ import io.anuke.arc.ApplicationListener;
 import io.anuke.arc.Core;
 import io.anuke.arc.backends.android.surfaceview.surfaceview.FillResolutionStrategy;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.Clipboard;
-import io.anuke.arc.utils.ArcNativesLoader;
-import io.anuke.arc.utils.Log;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.Clipboard;
+import io.anuke.arc.util.ArcNativesLoader;
+import io.anuke.arc.util.Log;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.ExecutorService;

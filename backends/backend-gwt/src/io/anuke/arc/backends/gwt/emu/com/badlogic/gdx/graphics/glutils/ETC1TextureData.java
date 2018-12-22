@@ -4,7 +4,7 @@ import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.graphics.Pixmap.Format;
 import io.anuke.arc.graphics.TextureData;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 public class ETC1TextureData implements TextureData{
     public ETC1TextureData(FileHandle file){

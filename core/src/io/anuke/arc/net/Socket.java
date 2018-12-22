@@ -2,7 +2,7 @@ package io.anuke.arc.net;
 
 import io.anuke.arc.Net;
 import io.anuke.arc.Net.Protocol;
-import io.anuke.arc.utils.Disposable;
+import io.anuke.arc.util.Disposable;
 
 import java.io.InputStream;
 import java.io.OutputStream;

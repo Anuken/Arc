@@ -6,7 +6,7 @@ import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.GL30;
 import io.anuke.arc.graphics.g2d.TextureAtlas;
 import io.anuke.arc.scene.Scene;
-import io.anuke.arc.utils.I18NBundle;
+import io.anuke.arc.util.I18NBundle;
 
 /**
  * Environment class holding references to the {@link Application}, {@link Graphics}, {@link Audio}, {@link Files} and

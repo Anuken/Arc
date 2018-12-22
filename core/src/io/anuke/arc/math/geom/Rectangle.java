@@ -13,9 +13,9 @@
 
 package io.anuke.arc.math.geom;
 
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.NumberUtils;
-import io.anuke.arc.utils.Scaling;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.NumberUtils;
+import io.anuke.arc.util.Scaling;
 
 import java.io.Serializable;
 

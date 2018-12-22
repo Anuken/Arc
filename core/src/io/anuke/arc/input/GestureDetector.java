@@ -2,9 +2,9 @@ package io.anuke.arc.input;
 
 import io.anuke.arc.Core;
 import io.anuke.arc.math.geom.Vector2;
-import io.anuke.arc.utils.TimeUtils;
-import io.anuke.arc.utils.Timer;
-import io.anuke.arc.utils.Timer.Task;
+import io.anuke.arc.util.Time;
+import io.anuke.arc.util.Timer;
+import io.anuke.arc.util.Timer.Task;
 
 /**
  * {@link InputProcessor} implementation that detects gestures (tap, long press, fling, pan, zoom, pinch) and hands them to a
@@ -182,10 +182,10 @@ public class GestureDetector implements InputProcessor{
 
         if(inTapRectangle){
             // handle taps
-            if(lastTapButton != button || lastTapPointer != pointer || TimeUtils.nanoTime() - lastTapTime > tapCountInterval
+            if(lastTapButton != button || lastTapPointer != pointer || Time.nanoTime() - lastTapTime > tapCountInterval
             || !isWithinTapRectangle(x, y, lastTapX, lastTapY)) tapCount = 0;
             tapCount++;
-            lastTapTime = TimeUtils.nanoTime();
+            lastTapTime = Time.nanoTime();
             lastTapX = x;
             lastTapY = y;
             lastTapButton = button;
@@ -240,7 +240,7 @@ public class GestureDetector implements InputProcessor{
      */
     public boolean isLongPressed(float duration){
         if(gestureStartTime == 0) return false;
-        return TimeUtils.nanoTime() - gestureStartTime > (long)(duration * 1000000000L);
+        return Time.nanoTime() - gestureStartTime > (long)(duration * 1000000000L);
     }
 
     public boolean isPanning(){

@@ -3,7 +3,7 @@ package io.anuke.arc.scene.event;
 import io.anuke.arc.Core;
 import io.anuke.arc.input.KeyCode;
 import io.anuke.arc.scene.Element;
-import io.anuke.arc.utils.TimeUtils;
+import io.anuke.arc.util.Time;
 
 /**
  * Detects mouse over, mouse or finger touch presses, and clicks on an element. A touch must go down over the element and is
@@ -45,7 +45,7 @@ public class ClickListener extends InputListener{
         pressedButton = button;
         touchDownX = x;
         touchDownY = y;
-        visualPressedTime = TimeUtils.millis() + (long)(visualPressedDuration * 1000);
+        visualPressedTime = Time.millis() + (long)(visualPressedDuration * 1000);
         return true;
     }
 
@@ -53,7 +53,7 @@ public class ClickListener extends InputListener{
     public void touchDragged(InputEvent event, float x, float y, int pointer){
         if(pointer != pressedPointer || cancelled) return;
         pressed = isOver(event.listenerActor, x, y);
-        if(pressed && pointer == 0 && button != null && !Core.input.keyPress(button)) pressed = false;
+        if(pressed && pointer == 0 && button != null && !Core.input.keyDown(button)) pressed = false;
         if(!pressed){
             // Once outside the tap square, don't use the tap square anymore.
             invalidateTapSquare();
@@ -68,7 +68,7 @@ public class ClickListener extends InputListener{
                 // Ignore touch up if the wrong mouse button.
                 if(touchUpOver && pointer == 0 && this.button != null && button != this.button) touchUpOver = false;
                 if(touchUpOver){
-                    long time = TimeUtils.nanoTime();
+                    long time = Time.nanoTime();
                     if(time - lastTapTime > tapCountInterval) tapCount = 0;
                     tapCount++;
                     lastTapTime = time;
@@ -138,7 +138,7 @@ public class ClickListener extends InputListener{
     public boolean isVisualPressed(){
         if(pressed) return true;
         if(visualPressedTime <= 0) return false;
-        if(visualPressedTime > TimeUtils.millis()) return true;
+        if(visualPressedTime > Time.millis()) return true;
         visualPressedTime = 0;
         return false;
     }

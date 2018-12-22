@@ -3,7 +3,7 @@ package io.anuke.arc.maps.tiled;
 import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.maps.Map;
-import io.anuke.arc.utils.Disposable;
+import io.anuke.arc.util.Disposable;
 
 /**
  * @brief Represents a tiled map, adds the concept of tiles and tilesets.

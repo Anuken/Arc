@@ -1,4 +1,4 @@
-package io.anuke.arc.utils.reflect;
+package io.anuke.arc.util.reflect;
 
 import io.anuke.gwtref.client.Type;
 

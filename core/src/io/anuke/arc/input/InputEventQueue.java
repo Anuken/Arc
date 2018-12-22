@@ -1,7 +1,7 @@
 package io.anuke.arc.input;
 
 import io.anuke.arc.collection.IntArray;
-import io.anuke.arc.utils.TimeUtils;
+import io.anuke.arc.util.Time;
 
 /**
  * Queues events that are later passed to the wrapped {@link InputProcessor}.
@@ -128,7 +128,7 @@ public class InputEventQueue implements InputProcessor{
     }
 
     private void queueTime(){
-        long time = TimeUtils.nanoTime();
+        long time = Time.nanoTime();
         queue.add((int)(time >> 32));
         queue.add((int)time);
     }

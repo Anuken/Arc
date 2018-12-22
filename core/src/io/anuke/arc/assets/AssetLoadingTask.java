@@ -5,11 +5,11 @@ import io.anuke.arc.assets.loaders.AsynchronousAssetLoader;
 import io.anuke.arc.assets.loaders.SynchronousAssetLoader;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.TimeUtils;
-import io.anuke.arc.utils.async.AsyncExecutor;
-import io.anuke.arc.utils.async.AsyncResult;
-import io.anuke.arc.utils.async.AsyncTask;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.Time;
+import io.anuke.arc.util.async.AsyncExecutor;
+import io.anuke.arc.util.async.AsyncResult;
+import io.anuke.arc.util.async.AsyncTask;
 
 /**
  * Responsible for loading an asset through an {@link AssetLoader} based on an {@link AssetDescriptor}.
@@ -37,7 +37,7 @@ class AssetLoadingTask implements AsyncTask<Void>{
         this.assetDesc = assetDesc;
         this.loader = loader;
         this.executor = threadPool;
-        startTime = TimeUtils.nanoTime();
+        startTime = Time.nanoTime();
     }
 
     /** Loads parts of the asset asynchronously if the loader is an {@link AsynchronousAssetLoader}. */

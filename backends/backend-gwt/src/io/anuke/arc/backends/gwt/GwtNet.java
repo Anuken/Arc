@@ -3,7 +3,7 @@ package io.anuke.arc.backends.gwt;
 import io.anuke.arc.Net;
 import io.anuke.arc.collection.ObjectMap;
 import io.anuke.arc.net.*;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 import com.google.gwt.http.client.*;
 import com.google.gwt.user.client.Window;
 

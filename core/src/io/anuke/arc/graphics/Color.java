@@ -1,6 +1,6 @@
 package io.anuke.arc.graphics;
 
-import io.anuke.arc.utils.NumberUtils;
+import io.anuke.arc.util.NumberUtils;
 
 /**
  * A color class, holding the r, g, b and alpha component as floats in the range [0,1]. All methods perform clamping on the

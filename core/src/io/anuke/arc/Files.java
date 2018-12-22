@@ -1,7 +1,7 @@
 package io.anuke.arc;
 
 import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 /**
  * Provides standard access to the filesystem, classpath, Android SD card, and Android assets directory.

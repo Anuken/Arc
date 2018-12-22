@@ -2,9 +2,9 @@ package io.anuke.arc.collection;
 
 import io.anuke.arc.collection.ObjectMap.Entry;
 import io.anuke.arc.math.Mathf;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.StringBuilder;
-import io.anuke.arc.utils.reflect.ArrayReflection;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.StringBuilder;
+import io.anuke.arc.util.reflect.ArrayReflection;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

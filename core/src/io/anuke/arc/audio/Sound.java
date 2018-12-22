@@ -2,7 +2,7 @@ package io.anuke.arc.audio;
 
 import io.anuke.arc.Audio;
 import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.utils.Disposable;
+import io.anuke.arc.util.Disposable;
 
 /**
  * <p>

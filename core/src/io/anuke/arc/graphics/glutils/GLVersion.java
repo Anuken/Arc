@@ -1,7 +1,7 @@
 package io.anuke.arc.graphics.glutils;
 
 import io.anuke.arc.Application;
-import io.anuke.arc.utils.Log;
+import io.anuke.arc.util.Log;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -1,6 +1,6 @@
 package io.anuke.arc.audio;
 
-import io.anuke.arc.utils.Disposable;
+import io.anuke.arc.util.Disposable;
 
 /**
  * Encapsulates an audio device in mono or stereo mode. Use the {@link #writeSamples(float[], int, int)} and

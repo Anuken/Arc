@@ -5,7 +5,7 @@ import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.graphics.Pixmap.Format;
 import io.anuke.arc.graphics.TextureData;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 /**
  * A {@link TextureData} implementation which should be used to create gl only textures. This TextureData fits perfectly for

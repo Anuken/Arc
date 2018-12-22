@@ -10,8 +10,8 @@ import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.style.Drawable;
 import io.anuke.arc.scene.style.SkinReader.ReadContext;
 import io.anuke.arc.scene.style.Style;
-import io.anuke.arc.utils.Align;
-import io.anuke.arc.utils.StringBuilder;
+import io.anuke.arc.util.Align;
+import io.anuke.arc.util.StringBuilder;
 import io.anuke.arc.Core;
 
 import static io.anuke.arc.Core.*;

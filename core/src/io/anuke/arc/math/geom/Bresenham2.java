@@ -1,8 +1,8 @@
 package io.anuke.arc.math.geom;
 
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.utils.pooling.Pool;
-import io.anuke.arc.utils.pooling.Pools;
+import io.anuke.arc.util.pooling.Pool;
+import io.anuke.arc.util.pooling.Pools;
 
 /**
  * Returns a list of points at integer coordinates for a line on a 2D grid, using the Bresenham algorithm.

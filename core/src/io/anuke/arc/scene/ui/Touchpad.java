@@ -10,7 +10,7 @@ import io.anuke.arc.scene.event.ChangeListener.ChangeEvent;
 import io.anuke.arc.scene.event.InputEvent;
 import io.anuke.arc.scene.event.InputListener;
 import io.anuke.arc.scene.style.Drawable;
-import io.anuke.arc.utils.pooling.Pools;
+import io.anuke.arc.util.pooling.Pools;
 
 import static io.anuke.arc.Core.graphics;
 

@@ -6,7 +6,7 @@ import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.graphics.Pixmap.Blending;
 import io.anuke.arc.graphics.Texture;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 public class MipMapGenerator{
 

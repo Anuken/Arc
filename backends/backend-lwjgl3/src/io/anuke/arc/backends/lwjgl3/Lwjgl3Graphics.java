@@ -9,7 +9,7 @@ import io.anuke.arc.graphics.GL30;
 import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.graphics.glutils.GLVersion;
 import io.anuke.arc.graphics.glutils.HdpiMode;
-import io.anuke.arc.utils.Disposable;
+import io.anuke.arc.util.Disposable;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;

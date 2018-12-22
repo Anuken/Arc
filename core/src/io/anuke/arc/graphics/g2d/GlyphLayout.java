@@ -6,10 +6,10 @@ import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.Colors;
 import io.anuke.arc.graphics.g2d.BitmapFont.BitmapFontData;
 import io.anuke.arc.graphics.g2d.BitmapFont.Glyph;
-import io.anuke.arc.utils.Align;
-import io.anuke.arc.utils.pooling.Pool;
-import io.anuke.arc.utils.pooling.Pool.Poolable;
-import io.anuke.arc.utils.pooling.Pools;
+import io.anuke.arc.util.Align;
+import io.anuke.arc.util.pooling.Pool;
+import io.anuke.arc.util.pooling.Pool.Poolable;
+import io.anuke.arc.util.pooling.Pools;
 
 /**
  * Stores {@link GlyphRun runs} of glyphs for a piece of text. The text may contain newlines and color markup tags.

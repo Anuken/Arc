@@ -12,8 +12,8 @@ import io.anuke.arc.graphics.Texture.TextureFilter;
 import io.anuke.arc.graphics.g2d.PixmapPacker.SkylineStrategy.SkylinePage.Row;
 import io.anuke.arc.graphics.glutils.PixmapTextureData;
 import io.anuke.arc.math.geom.Rectangle;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.Disposable;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.Disposable;
 
 import java.util.Arrays;
 import java.util.Comparator;

@@ -18,9 +18,9 @@ import io.anuke.arc.maps.MapProperties;
 import io.anuke.arc.maps.tiled.TiledMapTileLayer.Cell;
 import io.anuke.arc.maps.tiled.tiles.AnimatedTiledMapTile;
 import io.anuke.arc.maps.tiled.tiles.StaticTiledMapTile;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.serialization.XmlReader;
-import io.anuke.arc.utils.serialization.XmlReader.Element;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.serialization.XmlReader;
+import io.anuke.arc.util.serialization.XmlReader.Element;
 
 import java.io.IOException;
 import java.util.StringTokenizer;

@@ -1,7 +1,7 @@
 package io.anuke.arc.maps;
 
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.utils.reflect.ClassReflection;
+import io.anuke.arc.util.reflect.ClassReflection;
 
 import java.util.Iterator;
 

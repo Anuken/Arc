@@ -36,7 +36,7 @@
  *  IN THE SOFTWARE.
  ******************************************************************************/
 
-package io.anuke.arc.utils;
+package io.anuke.arc.util;
 
 /**
  * Utf8Decoder converts UTF-8 encoded bytes into characters properly handling buffer boundaries.

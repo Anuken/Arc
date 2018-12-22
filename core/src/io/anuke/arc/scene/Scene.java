@@ -19,11 +19,11 @@ import io.anuke.arc.scene.event.InputEvent.Type;
 import io.anuke.arc.scene.ui.Dialog;
 import io.anuke.arc.scene.ui.layout.Table;
 import io.anuke.arc.scene.utils.ScissorStack;
-import io.anuke.arc.utils.Disposable;
-import io.anuke.arc.utils.pooling.Pool.Poolable;
-import io.anuke.arc.utils.pooling.Pools;
-import io.anuke.arc.utils.viewport.ScreenViewport;
-import io.anuke.arc.utils.viewport.Viewport;
+import io.anuke.arc.util.Disposable;
+import io.anuke.arc.util.pooling.Pool.Poolable;
+import io.anuke.arc.util.pooling.Pools;
+import io.anuke.arc.util.viewport.ScreenViewport;
+import io.anuke.arc.util.viewport.Viewport;
 
 import static io.anuke.arc.Core.graphics;
 

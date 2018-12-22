@@ -113,7 +113,7 @@ public abstract class Input{
     }
 
     /** Returns whether the key is pressed. */
-    public boolean keyPress(KeyCode key){
+    public boolean keyDown(KeyCode key){
         return keyboard.isKeyPressed(key);
     }
 
@@ -133,7 +133,7 @@ public abstract class Input{
     }
 
     /** Returns whether the keybind is pressed. */
-    public boolean keyPress(KeyBind key){
+    public boolean keyDown(KeyBind key){
         return keybinds.get(key).key != null && keyboard.isKeyPressed(keybinds.get(key).key);
     }
 

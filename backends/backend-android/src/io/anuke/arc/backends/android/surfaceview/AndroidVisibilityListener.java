@@ -1,7 +1,7 @@
 package io.anuke.arc.backends.android.surfaceview;
 
 import android.view.View;
-import io.anuke.arc.utils.Log;
+import io.anuke.arc.util.Log;
 
 /**
  * Allows immersive mode support while maintaining compatibility with Android versions before API Level 19 (4.4)

@@ -5,7 +5,7 @@ import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.event.Touchable;
 import io.anuke.arc.scene.style.Drawable;
 import io.anuke.arc.scene.utils.Layout;
-import io.anuke.arc.utils.Align;
+import io.anuke.arc.util.Align;
 
 import static io.anuke.arc.Core.graphics;
 import static io.anuke.arc.Core.scene;

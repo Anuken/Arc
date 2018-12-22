@@ -1,7 +1,7 @@
 package io.anuke.arc.scene.actions;
 
 import io.anuke.arc.scene.Action;
-import io.anuke.arc.utils.pooling.Pool;
+import io.anuke.arc.util.pooling.Pool;
 
 /**
  * An action that runs a {@link Runnable}. Alternatively, the {@link #run()} method can be overridden instead of setting a

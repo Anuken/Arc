@@ -11,7 +11,7 @@ import io.anuke.arc.scene.event.*;
 import io.anuke.arc.scene.ui.ImageButton.ImageButtonStyle;
 import io.anuke.arc.scene.ui.layout.Table;
 import io.anuke.arc.scene.ui.layout.Unit;
-import io.anuke.arc.utils.Align;
+import io.anuke.arc.util.Align;
 
 import static io.anuke.arc.Core.scene;
 

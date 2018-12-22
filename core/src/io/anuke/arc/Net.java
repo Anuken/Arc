@@ -2,8 +2,8 @@ package io.anuke.arc;
 
 import io.anuke.arc.Application.ApplicationType;
 import io.anuke.arc.net.*;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.pooling.Pool.Poolable;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.pooling.Pool.Poolable;
 
 import java.io.InputStream;
 import java.io.OutputStream;

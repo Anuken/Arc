@@ -2,7 +2,6 @@ package io.anuke.arc.graphics;
 
 import io.anuke.arc.Application;
 import io.anuke.arc.Core;
-import io.anuke.arc.assets.AssetLoaderParameters.LoadedCallback;
 import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.assets.loaders.AssetLoader;
 import io.anuke.arc.assets.loaders.CubemapLoader.CubemapParameter;
@@ -14,7 +13,7 @@ import io.anuke.arc.graphics.Texture.TextureWrap;
 import io.anuke.arc.graphics.glutils.FacedCubemapData;
 import io.anuke.arc.graphics.glutils.PixmapTextureData;
 import io.anuke.arc.math.geom.Vector3;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 import java.util.HashMap;
 import java.util.Map;

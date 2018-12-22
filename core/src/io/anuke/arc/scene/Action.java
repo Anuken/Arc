@@ -2,8 +2,8 @@ package io.anuke.arc.scene;
 
 import io.anuke.arc.scene.actions.DelayAction;
 import io.anuke.arc.scene.actions.TemporalAction;
-import io.anuke.arc.utils.pooling.Pool;
-import io.anuke.arc.utils.pooling.Pool.Poolable;
+import io.anuke.arc.util.pooling.Pool;
+import io.anuke.arc.util.pooling.Pool.Poolable;
 
 /**
  * Actions attach to an {@link Element} and perform some task, often over time.

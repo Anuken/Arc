@@ -6,7 +6,7 @@ import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.event.Touchable;
 import io.anuke.arc.scene.ui.Label;
 import io.anuke.arc.scene.utils.Layout;
-import io.anuke.arc.utils.Align;
+import io.anuke.arc.util.Align;
 
 /**
  * A group that lays out its children side by side horizontally, with optional wrapping. This can be easier than using

@@ -10,8 +10,8 @@ import io.anuke.arc.scene.style.Drawable;
 import io.anuke.arc.scene.style.NinePatchDrawable;
 import io.anuke.arc.scene.style.TextureRegionDrawable;
 import io.anuke.arc.scene.style.TransformDrawable;
-import io.anuke.arc.utils.Align;
-import io.anuke.arc.utils.Scaling;
+import io.anuke.arc.util.Align;
+import io.anuke.arc.util.Scaling;
 
 import static io.anuke.arc.Core.scene;
 

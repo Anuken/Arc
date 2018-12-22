@@ -9,8 +9,8 @@ import io.anuke.arc.scene.Scene;
 import io.anuke.arc.scene.event.InputEvent;
 import io.anuke.arc.scene.event.InputListener;
 import io.anuke.arc.scene.style.Drawable;
-import io.anuke.arc.utils.Align;
-import io.anuke.arc.utils.pooling.Pools;
+import io.anuke.arc.util.Align;
+import io.anuke.arc.util.pooling.Pools;
 
 /** A multiple-line text input field, entirely based on {@link TextField} */
 public class TextArea extends TextField{
@@ -368,7 +368,7 @@ public class TextArea extends TextField{
             Scene stage = getScene();
             if(stage != null && stage.getKeyboardFocus() == TextArea.this){
                 boolean repeat = false;
-                boolean shift = Core.input.keyPress(KeyCode.SHIFT_LEFT) || Core.input.keyPress(KeyCode.SHIFT_RIGHT);
+                boolean shift = Core.input.keyDown(KeyCode.SHIFT_LEFT) || Core.input.keyDown(KeyCode.SHIFT_RIGHT);
                 if(keycode == KeyCode.DOWN){
                     if(shift){
                         if(!hasSelection){

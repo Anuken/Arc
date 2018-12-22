@@ -15,9 +15,9 @@ import io.anuke.arc.graphics.g2d.TextureAtlas.AtlasRegion;
 import io.anuke.arc.maps.MapProperties;
 import io.anuke.arc.maps.tiled.tiles.AnimatedTiledMapTile;
 import io.anuke.arc.maps.tiled.tiles.StaticTiledMapTile;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.serialization.SerializationException;
-import io.anuke.arc.utils.serialization.XmlReader.Element;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.serialization.SerializationException;
+import io.anuke.arc.util.serialization.XmlReader.Element;
 
 import java.io.IOException;
 

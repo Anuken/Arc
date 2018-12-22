@@ -3,7 +3,7 @@ package io.anuke.arc;
 import io.anuke.arc.collection.ObjectMap;
 import io.anuke.arc.collection.ObjectMap.Entry;
 import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.utils.OS;
+import io.anuke.arc.util.OS;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

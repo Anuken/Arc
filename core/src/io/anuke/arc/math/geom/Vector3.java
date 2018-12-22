@@ -4,8 +4,8 @@ import io.anuke.arc.math.Interpolation;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.math.Quaternion;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.NumberUtils;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.NumberUtils;
 
 import java.io.Serializable;
 

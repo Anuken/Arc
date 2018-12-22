@@ -6,7 +6,7 @@ import io.anuke.arc.graphics.GL30;
 import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.graphics.TextureArrayData;
 import io.anuke.arc.graphics.TextureData;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 /** @author Tomski **/
 public class FileTextureArrayData implements TextureArrayData{

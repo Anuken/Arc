@@ -13,7 +13,7 @@ import io.anuke.arc.scene.ui.layout.Container;
 import io.anuke.arc.scene.ui.layout.WidgetGroup;
 import io.anuke.arc.scene.utils.Layout;
 import io.anuke.arc.scene.utils.ScissorStack;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 import static io.anuke.arc.Core.graphics;
 

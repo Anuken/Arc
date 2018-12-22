@@ -16,11 +16,11 @@ import io.anuke.arc.maps.tiled.TiledMapTileLayer.Cell;
 import io.anuke.arc.maps.tiled.objects.TiledMapTileMapObject;
 import io.anuke.arc.math.geom.Polygon;
 import io.anuke.arc.math.geom.Polyline;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.io.StreamUtils;
-import io.anuke.arc.utils.serialization.Base64Coder;
-import io.anuke.arc.utils.serialization.XmlReader;
-import io.anuke.arc.utils.serialization.XmlReader.Element;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.io.StreamUtils;
+import io.anuke.arc.util.serialization.Base64Coder;
+import io.anuke.arc.util.serialization.XmlReader;
+import io.anuke.arc.util.serialization.XmlReader.Element;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;

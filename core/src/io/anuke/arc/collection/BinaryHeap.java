@@ -1,6 +1,6 @@
 package io.anuke.arc.collection;
 
-import io.anuke.arc.utils.StringBuilder;
+import io.anuke.arc.util.StringBuilder;
 
 @SuppressWarnings("unchecked")
 /** @author Nathan Sweet */

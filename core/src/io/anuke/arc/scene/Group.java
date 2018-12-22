@@ -306,7 +306,7 @@ public class Group extends Element implements Cullable{
     /**
      * Removes an actor from this group. If the actor will not be used again and has actions, they should be
      * {@link Element#clearActions() cleared} so the actions will be returned to their
-     * {@link Action#setPool(io.anuke.arc.utils.pooling.Pool) pool}, if any. This is not done automatically.
+     * {@link Action#setPool(io.anuke.arc.util.pooling.Pool) pool}, if any. This is not done automatically.
      * @param unfocus If true, {@link Scene#unfocus(Element)} is called.
      * @return true if the actor was removed from this group.
      */

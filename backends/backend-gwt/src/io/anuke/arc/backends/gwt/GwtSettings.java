@@ -1,7 +1,7 @@
 package io.anuke.arc.backends.gwt;
 
 import io.anuke.arc.Settings;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 public class GwtSettings extends Settings{
     String prefix;

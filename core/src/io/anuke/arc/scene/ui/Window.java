@@ -15,7 +15,7 @@ import io.anuke.arc.scene.style.SkinReader.ReadContext;
 import io.anuke.arc.scene.style.Style;
 import io.anuke.arc.scene.ui.Label.LabelStyle;
 import io.anuke.arc.scene.ui.layout.Table;
-import io.anuke.arc.utils.Align;
+import io.anuke.arc.util.Align;
 
 import static io.anuke.arc.Core.graphics;
 import static io.anuke.arc.Core.scene;

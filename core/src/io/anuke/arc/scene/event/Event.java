@@ -2,7 +2,7 @@ package io.anuke.arc.scene.event;
 
 import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.Scene;
-import io.anuke.arc.utils.pooling.Pool.Poolable;
+import io.anuke.arc.util.pooling.Pool.Poolable;
 
 /**
  * The base class for all events.

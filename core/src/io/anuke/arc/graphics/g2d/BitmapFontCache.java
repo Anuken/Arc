@@ -7,9 +7,9 @@ import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.BitmapFont.BitmapFontData;
 import io.anuke.arc.graphics.g2d.BitmapFont.Glyph;
 import io.anuke.arc.graphics.g2d.GlyphLayout.GlyphRun;
-import io.anuke.arc.utils.Align;
-import io.anuke.arc.utils.NumberUtils;
-import io.anuke.arc.utils.pooling.Pools;
+import io.anuke.arc.util.Align;
+import io.anuke.arc.util.NumberUtils;
+import io.anuke.arc.util.pooling.Pools;
 
 import static io.anuke.arc.Core.graphics;
 

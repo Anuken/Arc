@@ -14,14 +14,12 @@ import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.graphics.g2d.BitmapFont;
 import io.anuke.arc.graphics.g2d.TextureAtlas;
 import io.anuke.arc.graphics.glutils.ShaderProgram;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.Disposable;
-import io.anuke.arc.utils.I18NBundle;
-import io.anuke.arc.utils.TimeUtils;
-import io.anuke.arc.utils.async.AsyncExecutor;
-import io.anuke.arc.utils.async.ThreadUtils;
-import io.anuke.arc.utils.reflect.ClassReflection;
+import io.anuke.arc.util.*;
+import io.anuke.arc.util.async.AsyncExecutor;
+import io.anuke.arc.util.async.ThreadUtils;
+import io.anuke.arc.util.reflect.ClassReflection;
 
+import java.lang.StringBuilder;
 import java.util.Stack;
 
 /**
@@ -404,10 +402,10 @@ public class AssetManager implements Disposable{
      * @return true if all loading is finished.
      */
     public boolean update(int millis){
-        long endTime = TimeUtils.millis() + millis;
+        long endTime = Time.millis() + millis;
         while(true){
             boolean done = update();
-            if(done || TimeUtils.millis() > endTime) return done;
+            if(done || Time.millis() > endTime) return done;
             ThreadUtils.yield();
         }
     }
@@ -555,7 +553,7 @@ public class AssetManager implements Disposable{
                 task.assetDesc.params.loadedCallback.finishedLoading(this, task.assetDesc.fileName, task.assetDesc.type);
             }
 
-            long endTime = TimeUtils.nanoTime();
+            long endTime = Time.nanoTime();
 
             return true;
         }

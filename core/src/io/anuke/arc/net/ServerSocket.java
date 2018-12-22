@@ -1,8 +1,8 @@
 package io.anuke.arc.net;
 
 import io.anuke.arc.Net.Protocol;
-import io.anuke.arc.utils.Disposable;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.Disposable;
+import io.anuke.arc.util.ArcRuntimeException;
 
 /**
  * A server socket that accepts new incoming connections, returning {@link Socket} instances. The {@link #accept(SocketHints)}

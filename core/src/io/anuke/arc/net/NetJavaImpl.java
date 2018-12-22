@@ -6,10 +6,10 @@ import io.anuke.arc.Net.HttpRequest;
 import io.anuke.arc.Net.HttpResponse;
 import io.anuke.arc.Net.HttpResponseListener;
 import io.anuke.arc.collection.ObjectMap;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.async.AsyncExecutor;
-import io.anuke.arc.utils.async.AsyncTask;
-import io.anuke.arc.utils.io.StreamUtils;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.async.AsyncExecutor;
+import io.anuke.arc.util.async.AsyncTask;
+import io.anuke.arc.util.io.StreamUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

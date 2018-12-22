@@ -1,6 +1,6 @@
 package io.anuke.arc.scene.actions;
 
-import io.anuke.arc.utils.Align;
+import io.anuke.arc.util.Align;
 
 /**
  * Moves an actor from its current position to a specific position.

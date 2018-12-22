@@ -3,8 +3,8 @@ package io.anuke.arc.backends.gwt.preloader;
 import io.anuke.arc.Core;
 import io.anuke.arc.Files;
 import io.anuke.arc.Files.FileType;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.io.StreamUtils;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.io.StreamUtils;
 
 import java.io.*;
 

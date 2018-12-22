@@ -6,7 +6,7 @@ import io.anuke.arc.audio.AudioRecorder;
 import io.anuke.arc.audio.Music;
 import io.anuke.arc.audio.Sound;
 import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 public class GwtAudio implements Audio{
     @Override

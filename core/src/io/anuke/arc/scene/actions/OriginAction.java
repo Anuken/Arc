@@ -1,7 +1,7 @@
 package io.anuke.arc.scene.actions;
 
 import io.anuke.arc.scene.Action;
-import io.anuke.arc.utils.Align;
+import io.anuke.arc.util.Align;
 
 public class OriginAction extends Action{
 

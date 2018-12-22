@@ -1,6 +1,6 @@
 package io.anuke.arc.backends.gwt;
 
-import io.anuke.arc.utils.Clipboard;
+import io.anuke.arc.util.Clipboard;
 
 /** Basic implementation of clipboard in GWT. Copy-paste only works inside the libgdx application. */
 public class GwtClipboard implements Clipboard{

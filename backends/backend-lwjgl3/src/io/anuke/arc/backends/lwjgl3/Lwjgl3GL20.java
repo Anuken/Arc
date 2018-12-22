@@ -1,6 +1,6 @@
 package io.anuke.arc.backends.lwjgl3;
 
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 
@@ -13,7 +13,7 @@ class Lwjgl3GL20 implements io.anuke.arc.graphics.GL20{
 
     private void ensureBufferCapacity(int numBytes){
         if(buffer == null || buffer.capacity() < numBytes){
-            buffer = io.anuke.arc.utils.BufferUtils.newByteBuffer(numBytes);
+            buffer = io.anuke.arc.util.BufferUtils.newByteBuffer(numBytes);
             floatBuffer = buffer.asFloatBuffer();
             intBuffer = buffer.asIntBuffer();
         }

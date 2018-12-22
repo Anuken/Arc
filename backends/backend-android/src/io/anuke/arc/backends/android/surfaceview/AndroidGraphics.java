@@ -19,8 +19,8 @@ import io.anuke.arc.graphics.glutils.FrameBuffer;
 import io.anuke.arc.graphics.glutils.GLVersion;
 import io.anuke.arc.graphics.glutils.ShaderProgram;
 import io.anuke.arc.math.WindowedMean;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.Log;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.Log;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;

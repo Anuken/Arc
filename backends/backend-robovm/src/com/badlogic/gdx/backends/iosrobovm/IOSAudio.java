@@ -8,8 +8,8 @@ import io.anuke.arc.audio.Sound;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioTrack;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
 import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.Log;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.Log;
 
 public class IOSAudio implements Audio{
 

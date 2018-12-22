@@ -3,7 +3,7 @@ package io.anuke.arc.entities.impl;
 
 import io.anuke.arc.entities.trait.ScaleTrait;
 import io.anuke.arc.entities.trait.TimeTrait;
-import io.anuke.arc.utils.pooling.Pool.Poolable;
+import io.anuke.arc.util.pooling.Pool.Poolable;
 
 public abstract class TimedEntity extends BaseEntity implements ScaleTrait, TimeTrait, Poolable{
     public float time;

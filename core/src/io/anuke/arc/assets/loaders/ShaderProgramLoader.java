@@ -6,7 +6,7 @@ import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.graphics.glutils.ShaderProgram;
-import io.anuke.arc.utils.Log;
+import io.anuke.arc.util.Log;
 
 /**
  * {@link AssetLoader} for {@link ShaderProgram} instances loaded from text files. If the file suffix is ".vert", it is assumed

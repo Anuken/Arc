@@ -21,8 +21,8 @@ import io.anuke.arc.Files;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.math.Interpolation;
 import io.anuke.arc.scene.Scene;
-import io.anuke.arc.utils.Timer;
-import io.anuke.arc.utils.Timer.Task;
+import io.anuke.arc.util.Timer;
+import io.anuke.arc.util.Timer.Task;
 
 import static io.anuke.arc.math.Interpolation.fade;
 import static io.anuke.arc.scene.actions.Actions.*;

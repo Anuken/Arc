@@ -5,7 +5,7 @@ import io.anuke.arc.audio.AudioRecorder;
 import io.anuke.arc.audio.Music;
 import io.anuke.arc.audio.Sound;
 import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 /**
  * This interface encapsulates the creation and management of audio resources. It allows you to get direct access to the audio

@@ -4,9 +4,10 @@ import io.anuke.arc.Core;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.DelayedRemovalArray;
 import io.anuke.arc.function.BooleanProvider;
-import io.anuke.arc.function.IntConsumer;
+import io.anuke.arc.function.Consumer;
 import io.anuke.arc.function.Supplier;
 import io.anuke.arc.graphics.Color;
+import io.anuke.arc.input.KeyCode;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.geom.Rectangle;
 import io.anuke.arc.math.geom.Vector2;
@@ -16,10 +17,10 @@ import io.anuke.arc.scene.event.InputEvent.Type;
 import io.anuke.arc.scene.utils.Disableable;
 import io.anuke.arc.scene.utils.Layout;
 import io.anuke.arc.scene.utils.ScissorStack;
-import io.anuke.arc.utils.Align;
-import io.anuke.arc.utils.pooling.Pools;
+import io.anuke.arc.util.Align;
+import io.anuke.arc.util.pooling.Pools;
 
-import static io.anuke.arc.utils.Align.*;
+import static io.anuke.arc.util.Align.*;
 
 public class Element implements Layout{
     public final Color color = new Color(1, 1, 1, 1);
@@ -912,7 +913,7 @@ public class Element implements Layout{
         return translation;
     }
 
-    public void keyDown(int key, Runnable l){
+    public void keyDown(KeyCode key, Runnable l){
         keyDown(k -> {
             if(k == key)
                 l.run();
@@ -920,9 +921,10 @@ public class Element implements Layout{
     }
 
     /** Adds a keydown input listener. */
-    public void keyDown(IntConsumer cons){
+    public void keyDown(Consumer<KeyCode> cons){
         addListener(new InputListener(){
-            public boolean keyDown(InputEvent event, int keycode){
+            @Override
+            public boolean keyDown(InputEvent event, KeyCode keycode){
                 cons.accept(keycode);
                 return true;
             }
@@ -954,7 +956,8 @@ public class Element implements Layout{
     /** Adds a touch listener. */
     public void tapped(Runnable r){
         addListener(new InputListener(){
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
                 r.run();
                 return true;
             }
@@ -984,11 +987,10 @@ public class Element implements Layout{
     /** Adds a mouse up listener. */
     public void released(Runnable r){
         addListener(new InputListener(){
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+            @Override public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
                 return true;
             }
-
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button){
+            @Override public void touchUp(InputEvent event, float x, float y, int pointer, KeyCode button){
                 r.run();
             }
         });

@@ -30,9 +30,9 @@
     <extend-configuration-property name="gdx.reflect.include"
                                    value="io.anuke.arc.collection.Array"/>
     <extend-configuration-property name="gdx.reflect.include"
-                                   value="io.anuke.arc.utils.Disposable"/>
+                                   value="io.anuke.arc.util.Disposable"/>
     <extend-configuration-property name="gdx.reflect.include"
-                                   value="io.anuke.arc.utils.serialization.Json"/>
+                                   value="io.anuke.arc.util.serialization.Json"/>
     <extend-configuration-property name="gdx.reflect.include"
                                    value="io.anuke.arc.collection.ObjectMap"/>
     <extend-configuration-property name="gdx.reflect.include"

@@ -4,8 +4,8 @@ import io.anuke.arc.Core;
 import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.VertexAttribute;
 import io.anuke.arc.graphics.VertexAttributes;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.BufferUtils;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.BufferUtils;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;

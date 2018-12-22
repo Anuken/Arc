@@ -1,5 +1,8 @@
 include ":core"
 
+include ":extensions"
+include ":extensions:freetype"
+
 include ":backends"
 include ":backends:backend-android"
 include ":backends:backend-headless"

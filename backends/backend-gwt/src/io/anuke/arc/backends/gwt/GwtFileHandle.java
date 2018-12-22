@@ -4,7 +4,7 @@ import io.anuke.arc.Core;
 import io.anuke.arc.Files.FileType;
 import io.anuke.arc.backends.gwt.preloader.Preloader;
 import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 import java.io.*;
 import java.nio.ByteBuffer;

@@ -2,7 +2,7 @@ package io.anuke.arc.math;
 
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.math.geom.Vector3;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 import java.io.Serializable;
 

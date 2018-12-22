@@ -2,7 +2,7 @@ package io.anuke.arc.math.geom;
 
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.math.Mathf;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 /**
  * Implementation of the Bezier curve.

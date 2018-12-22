@@ -16,8 +16,8 @@
 
 package io.anuke.arc.graphics.profiling;
 
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.Log;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.Log;
 
 import static io.anuke.arc.graphics.profiling.GLInterceptor.resolveErrorNumber;
 

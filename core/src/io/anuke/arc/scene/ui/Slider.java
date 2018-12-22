@@ -13,7 +13,7 @@ import io.anuke.arc.scene.event.InputEvent;
 import io.anuke.arc.scene.event.InputListener;
 import io.anuke.arc.scene.style.Drawable;
 import io.anuke.arc.scene.style.SkinReader.ReadContext;
-import io.anuke.arc.utils.pooling.Pools;
+import io.anuke.arc.util.pooling.Pools;
 
 import static io.anuke.arc.Core.scene;
 
@@ -145,7 +145,7 @@ public class Slider extends ProgressBar{
         }
 
         float oldValue = value;
-        if(!Core.input.keyPress(KeyCode.SHIFT_LEFT) && !Core.input.keyPress(KeyCode.SHIFT_RIGHT))
+        if(!Core.input.keyDown(KeyCode.SHIFT_LEFT) && !Core.input.keyDown(KeyCode.SHIFT_RIGHT))
             value = snap(value);
         boolean valueSet = setValue(value);
         if(value == oldValue) position = oldPosition;

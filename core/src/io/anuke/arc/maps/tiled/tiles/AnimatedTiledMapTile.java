@@ -6,13 +6,13 @@ import io.anuke.arc.graphics.g2d.TextureRegion;
 import io.anuke.arc.maps.MapObjects;
 import io.anuke.arc.maps.MapProperties;
 import io.anuke.arc.maps.tiled.TiledMapTile;
-import io.anuke.arc.utils.ArcRuntimeException;
-import io.anuke.arc.utils.TimeUtils;
+import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.Time;
 
 /** @brief Represents a changing {@link TiledMapTile}. */
 public class AnimatedTiledMapTile implements TiledMapTile{
 
-    private static final long initialTimeOffset = TimeUtils.millis();
+    private static final long initialTimeOffset = Time.millis();
     private static long lastTiledMapRenderTime = 0;
     private int id;
     private BlendMode blendMode = BlendMode.ALPHA;
@@ -63,7 +63,7 @@ public class AnimatedTiledMapTile implements TiledMapTile{
      * animation and avoids having to call TimeUtils.millis() in getTextureRegion()
      */
     public static void updateAnimationBaseTime(){
-        lastTiledMapRenderTime = TimeUtils.millis() - initialTimeOffset;
+        lastTiledMapRenderTime = Time.millis() - initialTimeOffset;
     }
 
     @Override

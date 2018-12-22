@@ -1,7 +1,7 @@
 package io.anuke.arc.math.geom;
 
 import io.anuke.arc.math.Mathf;
-import io.anuke.arc.utils.NumberUtils;
+import io.anuke.arc.util.NumberUtils;
 
 import java.io.Serializable;
 

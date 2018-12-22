@@ -1,4 +1,4 @@
-package io.anuke.arc.utils.async;
+package io.anuke.arc.util.async;
 
 /**
  * GWT emulation of ThreadUtils, does nothing.

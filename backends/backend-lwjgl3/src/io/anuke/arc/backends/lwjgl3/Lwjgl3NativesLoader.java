@@ -1,6 +1,6 @@
 package io.anuke.arc.backends.lwjgl3;
 
-import io.anuke.arc.utils.ArcNativesLoader;
+import io.anuke.arc.util.ArcNativesLoader;
 
 public final class Lwjgl3NativesLoader{
 

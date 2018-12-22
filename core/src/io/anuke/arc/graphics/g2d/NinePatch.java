@@ -4,7 +4,7 @@ import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.graphics.Texture.TextureFilter;
 import io.anuke.arc.math.Mathf;
-import io.anuke.arc.utils.ArcRuntimeException;
+import io.anuke.arc.util.ArcRuntimeException;
 
 import static io.anuke.arc.Core.graphics;
 
