@@ -9,6 +9,6 @@ subprojects{
     sourceSets.main.java.srcDirs = ["src"]
 
     dependencies{
-        compile project(":core")
+        compileOnly project(":core")
     }
 }
