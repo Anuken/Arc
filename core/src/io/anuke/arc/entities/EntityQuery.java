@@ -4,8 +4,8 @@ import io.anuke.arc.entities.trait.Entity;
 import io.anuke.arc.entities.trait.SolidTrait;
 import io.anuke.arc.function.Consumer;
 import io.anuke.arc.function.Predicate;
+import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.geom.Rectangle;
-import io.anuke.arc.math.geom.Vector2;
 
 import static io.anuke.arc.entities.Entities.defaultGroup;
 
@@ -77,7 +77,7 @@ public class EntityQuery{
             if(!pred.test(e))
                 continue;
 
-            float dist = Vector2.dst(e.getX(), e.getY(), x, y);
+            float dist = Mathf.dst(e.getX(), e.getY(), x, y);
             if(dist < range)
                 if(closest == null || dist < cdist){
                     closest = e;

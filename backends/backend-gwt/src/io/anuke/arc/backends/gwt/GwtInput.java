@@ -1,14 +1,5 @@
 package io.anuke.arc.backends.gwt;
 
-import io.anuke.arc.Core;
-import io.anuke.arc.Input;
-import io.anuke.arc.collection.IntMap;
-import io.anuke.arc.collection.IntSet;
-import io.anuke.arc.collection.IntSet.IntSetIterator;
-import io.anuke.arc.input.InputProcessor;
-import io.anuke.arc.input.KeyCode;
-import io.anuke.arc.util.Bits;
-import io.anuke.arc.util.TimeUtils;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.CanvasElement;
@@ -16,6 +7,15 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.KeyCodes;
+import io.anuke.arc.Core;
+import io.anuke.arc.Input;
+import io.anuke.arc.collection.Bits;
+import io.anuke.arc.collection.IntMap;
+import io.anuke.arc.collection.IntSet;
+import io.anuke.arc.collection.IntSet.IntSetIterator;
+import io.anuke.arc.input.InputProcessor;
+import io.anuke.arc.input.KeyCode;
+import io.anuke.arc.util.Time;
 
 public class GwtInput extends Input{
     static final int MAX_TOUCHES = 20;
@@ -661,7 +661,7 @@ public class GwtInput extends Input{
                 this.touchX[0] = getRelativeX(e, canvas);
                 this.touchY[0] = getRelativeY(e, canvas);
             }
-            this.currentEventTimeStamp = TimeUtils.nanoTime();
+            this.currentEventTimeStamp = Time.nanoTime();
             if(processor != null) processor.touchDown(touchX[0], touchY[0], 0, getButton(e.getButton()));
         }
 
@@ -677,7 +677,7 @@ public class GwtInput extends Input{
                 this.touchX[0] = getRelativeX(e, canvas);
                 this.touchY[0] = getRelativeY(e, canvas);
             }
-            this.currentEventTimeStamp = TimeUtils.nanoTime();
+            this.currentEventTimeStamp = Time.nanoTime();
             if(processor != null){
                 if(touched[0])
                     processor.touchDragged(touchX[0], touchY[0], 0);
@@ -701,7 +701,7 @@ public class GwtInput extends Input{
                 this.touchX[0] = getRelativeX(e, canvas);
                 this.touchY[0] = getRelativeY(e, canvas);
             }
-            this.currentEventTimeStamp = TimeUtils.nanoTime();
+            this.currentEventTimeStamp = Time.nanoTime();
             this.touched[0] = false;
             if(processor != null) processor.touchUp(touchX[0], touchY[0], 0, getButton(e.getButton()));
         }
@@ -709,7 +709,7 @@ public class GwtInput extends Input{
             if(processor != null){
                 processor.scrolled(0, (int)getMouseWheelVelocity(e));
             }
-            this.currentEventTimeStamp = TimeUtils.nanoTime();
+            this.currentEventTimeStamp = Time.nanoTime();
             e.preventDefault();
         }
 
@@ -789,7 +789,7 @@ public class GwtInput extends Input{
                     processor.touchDown(touchX[touchId], touchY[touchId], touchId, KeyCode.MOUSE_LEFT);
                 }
             }
-            this.currentEventTimeStamp = TimeUtils.nanoTime();
+            this.currentEventTimeStamp = Time.nanoTime();
             e.preventDefault();
         }
         if(e.getType().equals("touchmove")){
@@ -806,7 +806,7 @@ public class GwtInput extends Input{
                     processor.touchDragged(touchX[touchId], touchY[touchId], touchId);
                 }
             }
-            this.currentEventTimeStamp = TimeUtils.nanoTime();
+            this.currentEventTimeStamp = Time.nanoTime();
             e.preventDefault();
         }
         if(e.getType().equals("touchcancel")){
@@ -825,7 +825,7 @@ public class GwtInput extends Input{
                     processor.touchUp(touchX[touchId], touchY[touchId], touchId, KeyCode.MOUSE_LEFT);
                 }
             }
-            this.currentEventTimeStamp = TimeUtils.nanoTime();
+            this.currentEventTimeStamp = Time.nanoTime();
             e.preventDefault();
         }
         if(e.getType().equals("touchend")){
@@ -844,7 +844,7 @@ public class GwtInput extends Input{
                     processor.touchUp(touchX[touchId], touchY[touchId], touchId, KeyCode.MOUSE_LEFT);
                 }
             }
-            this.currentEventTimeStamp = TimeUtils.nanoTime();
+            this.currentEventTimeStamp = Time.nanoTime();
             e.preventDefault();
         }
 // if(hasFocus) e.preventDefault();

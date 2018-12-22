@@ -10,7 +10,7 @@ import io.anuke.arc.backends.headless.mock.input.MockInput;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Clipboard;
-import io.anuke.arc.util.TimeUtils;
+import io.anuke.arc.util.Time;
 
 /**
  * a headless implementation of a GDX Application primarily intended to be used in servers
@@ -85,16 +85,16 @@ public class HeadlessApplication implements Application{
 
         // unlike LwjglApplication, a headless application will eat up CPU in this while loop
         // it is up to the implementation to call Thread.sleep as necessary
-        long t = TimeUtils.nanoTime() + renderInterval;
+        long t = Time.nanoTime() + renderInterval;
         if(renderInterval >= 0f){
             while(running){
-                final long n = TimeUtils.nanoTime();
+                final long n = Time.nanoTime();
                 if(t > n){
                     try{
                         Thread.sleep((t - n) / 1000000);
                     }catch(InterruptedException e){
                     }
-                    t = TimeUtils.nanoTime() + renderInterval;
+                    t = Time.nanoTime() + renderInterval;
                 }else
                     t = n + renderInterval;
 

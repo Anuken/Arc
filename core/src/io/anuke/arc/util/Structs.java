@@ -1,48 +1,12 @@
 package io.anuke.arc.util;
 
 
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.collection.IntIntMap;
-import io.anuke.arc.collection.ObjectMap;
 import io.anuke.arc.function.Consumer;
 import io.anuke.arc.function.Function;
 
 import java.util.Comparator;
 
 public class Structs{
-
-    /**Creates an array from the supplied objects.
-     * If any arrays are in the list, their contents are added into the list.
-     * This is not recursive.*/
-    public static <T> Array<T> array(Object... arrays){
-        Array<T> result = new Array<>();
-        for(Object a : arrays){
-            if(a instanceof Array){
-                result.addAll((Array<? extends T>) a);
-            }else{
-                result.add((T)a);
-            }
-        }
-        return result;
-    }
-
-    public static IntIntMap mapInt(int... values){
-        IntIntMap map = new IntIntMap();
-        for(int i = 0; i < values.length; i += 2){
-            map.put(values[i], values[i + 1]);
-        }
-        return map;
-    }
-
-    public static <K, V> ObjectMap<K, V> map(Object... values){
-        ObjectMap<K, V> map = new ObjectMap<>();
-
-        for(int i = 0; i < values.length / 2; i++){
-            map.put((K) values[i * 2], (V) values[i * 2 + 1]);
-        }
-
-        return map;
-    }
 
     public static <T> void each(Consumer<T> cons, T... objects){
         for(T t : objects){

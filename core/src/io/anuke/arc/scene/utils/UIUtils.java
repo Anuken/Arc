@@ -5,6 +5,7 @@ import io.anuke.arc.input.KeyCode;
 import io.anuke.arc.scene.Element;
 import io.anuke.arc.util.OS;
 
+//TODO remove this class?
 public class UIUtils{
 
     static public boolean isDisabled(Element element){

@@ -40,6 +40,14 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>>{
     private Values values1, values2;
     private Keys keys1, keys2;
 
+    public static IntIntMap of(int... values){
+        IntIntMap map = new IntIntMap();
+        for(int i = 0; i < values.length; i += 2){
+            map.put(values[i], values[i + 1]);
+        }
+        return map;
+    }
+
     /** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
     public IntMap(){
         this(51, 0.8f);

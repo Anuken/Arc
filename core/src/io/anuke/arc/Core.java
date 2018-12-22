@@ -23,7 +23,7 @@ public class Core{
     public static Input input;
     public static Files files;
     public static Settings settings;
-    public static KeyBinds keybinds;
+    public static KeyBinds keybinds = new KeyBinds();
     public static Net net;
 
     public static I18NBundle bundle = I18NBundle.createEmptyBundle();

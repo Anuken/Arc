@@ -6,6 +6,7 @@ import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.IntSet;
 import io.anuke.arc.function.Consumer;
 import io.anuke.arc.input.*;
+import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.math.geom.Vector3;
 
 import static io.anuke.arc.Core.keybinds;
@@ -34,6 +35,23 @@ public abstract class Input{
     protected InputMultiplexer inputMultiplexer = new InputMultiplexer(keyboard);
     /** List of caught keys for Android. */
     protected IntSet caughtKeys = new IntSet();
+    /**Return Vector2 value for various functions.*/
+    protected Vector2 mouseReturn = new Vector2();
+
+    /**Returns the unprojected mouse position in the world.*/
+    public Vector2 mouseWorld(float x, float y){
+        return Core.camera.unproject(mouseReturn.set(x, y));
+    }
+
+    /**Returns the unprojected mouse position in the world.*/
+    public Vector2 mouseWorld(){
+        return Core.camera.unproject(mouse());
+    }
+
+    /**Returns the mouse position as a vector2.*/
+    public Vector2 mouse(){
+        return mouseReturn.set(mouseX(), mouseY());
+    }
 
     /**
      * @return The x coordinate of the last touch on touch screen devices and the current mouse position on desktop for the first
@@ -239,12 +257,17 @@ public abstract class Input{
     }
 
     /**
-     * Sets the {@link InputProcessor} that will receive all touch and key input events. It will be called before the
+     * Adds a {@link InputProcessor} that will receive all touch and key input events. It will be called before the
      * {@link ApplicationListener#update()} method each frame.
      * @param processor the InputProcessor
-     */
-    public void addInputProcessor(InputProcessor processor){
+     * */
+    public void addProcessor(InputProcessor processor){
         inputMultiplexer.addProcessor(processor);
+    }
+
+    /**Removes a {@link InputProcessor} from the chain.*/
+    public void removeProcessor(InputProcessor processor){
+        inputMultiplexer.removeProcessor(processor);
     }
 
     /** @return the currently set {@link InputProcessor} or null. */

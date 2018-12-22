@@ -28,7 +28,7 @@ import io.anuke.arc.input.InputDevice;
 import io.anuke.arc.input.InputProcessor;
 import io.anuke.arc.input.KeyCode;
 import io.anuke.arc.math.geom.Vector3;
-import io.anuke.arc.util.Bits;
+import io.anuke.arc.collection.Bits;
 import io.anuke.arc.util.Log;
 import io.anuke.arc.util.pooling.Pool;
 

@@ -4,16 +4,16 @@ import io.anuke.arc.math.Mathf;
 
 /** Represents a point in 2-D space. */
 public interface Position{
-    Position X = new FixedPosition(1, 0);
-    Position Y = new FixedPosition(0, 1);
-    Position ZERO = new FixedPosition(0, 0);
-
     float getX();
 
     float getY();
 
     default float angleTo(Position other){
         return Mathf.atan2(other.getX() - getX(), other.getY() - getY());
+    }
+
+    default float angleTo(float x, float y){
+        return Mathf.atan2(x - getX(), y - getY());
     }
 
     default float dst(Position other){

@@ -1,12 +1,15 @@
 package io.anuke.arc.graphics.g2d;
 
+import io.anuke.arc.Core;
 import io.anuke.arc.collection.FloatArray;
+import io.anuke.arc.graphics.Color;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.geom.Rectangle;
 import io.anuke.arc.math.geom.Vector2;
 
 public class Lines{
     private static float stroke = 1f;
+    private static Color strokeColor = Color.WHITE.cpy();
     private static Vector2 vector = new Vector2();
     private static FloatArray floats = new FloatArray(100);
     private static FloatArray floatBuilder = new FloatArray(100);
@@ -51,11 +54,11 @@ public class Lines{
     }
 
     public static void line(float x, float y, float x2, float y2, CapStyle cap, float padding){
-        line(Draw.getBlankRegion(), x, y, x2, y2, cap, padding);
+        line(Core.atlas.white(), x, y, x2, y2, cap, padding);
     }
 
     public static void line(TextureRegion blankregion, float x, float y, float x2, float y2, CapStyle cap, float padding){
-        float length = Vector2.dst(x, y, x2, y2) + (cap == CapStyle.none ? padding * 2f : stroke / 2 + (cap == CapStyle.round ? 0 : padding * 2));
+        float length = Mathf.dst(x, y, x2, y2) + (cap == CapStyle.none ? padding * 2f : stroke / 2 + (cap == CapStyle.round ? 0 : padding * 2));
         float angle = Mathf.atan2(x2 - x, y2 - y) * Mathf.radDeg;
 
         if(cap == CapStyle.square){
@@ -354,8 +357,10 @@ public class Lines{
         rect(x - width / 2f, y - height / 2f, width, height, space);
     }
 
-    public static void stroke(float thick){
+    public static void stroke(float thick, Color color){
         stroke = thick;
+        strokeColor.set(color);
+        Core.graphics.batch().setColor(color);
     }
 
     public static float getStroke(){

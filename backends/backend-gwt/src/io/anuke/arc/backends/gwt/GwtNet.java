@@ -18,8 +18,8 @@ public class GwtNet implements Net{
 
     public GwtNet(GwtApplicationConfiguration config){
         this.config = config;
-        requests = new ObjectMap<HttpRequest, Request>();
-        listeners = new ObjectMap<HttpRequest, HttpResponseListener>();
+        requests = new ObjectMap<>();
+        listeners = new ObjectMap<>();
     }
 
     @Override

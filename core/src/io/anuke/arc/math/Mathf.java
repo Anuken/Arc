@@ -11,7 +11,7 @@ import java.util.Random;
  * @author Nathan Sweet
  */
 public final class Mathf{
-    public static final float nanoToSec = 1 / 1000000000f;
+    public static final boolean[] booleans = {true, false};
     public static final float FLOAT_ROUNDING_ERROR = 0.000001f; // 32 bits
     public static final float PI = 3.1415927f;
     public static final float PI2 = PI * 2;
@@ -34,6 +34,8 @@ public final class Mathf{
     static private final double CEIL = 0.9999999;
     static private final double BIG_ENOUGH_CEIL = 16384.999999999996;
     static private final double BIG_ENOUGH_ROUND = BIG_ENOUGH_INT + 0.5f;
+    static private final RandomXS128 seedr = new RandomXS128();
+
     public static Random random = new RandomXS128();
 
     /** Returns the sine in radians from a lookup table. */
@@ -96,6 +98,10 @@ public final class Mathf{
         return atan2(x2 - x, y2 - y);
     }
 
+    public static float sqrt(float x){
+        return (float) Math.sqrt(x);
+    }
+
     /**Returns -1 if f<0, 1 otherwise.*/
     public static int sign(float f){
         return (f < 0 ? -1 : 1);
@@ -104,6 +110,11 @@ public final class Mathf{
     /** Returns 1 if true, -1 if false. */
     public static int sign(boolean b){
         return b ? 1 : -1;
+    }
+
+    /**Converts a boolean to an integer: 1 if true, 0, if false.*/
+    public static int num(boolean b){
+        return b ? 1 : 0;
     }
 
     public static float range(float range){
@@ -176,7 +187,24 @@ public final class Mathf{
         return 1 | (random.nextInt() >> 31);
     }
 
-    // ---
+    /** Inclusive. */
+    public static int randomSeed(long seed, int min, int max){
+        seedr.setSeed(seed);
+        if(isPowerOfTwo(max)){
+            seedr.nextInt();
+        }
+        return seedr.nextInt(max - min + 1) + min;
+    }
+
+    public static float randomSeed(long seed){
+        seedr.setSeed(seed * 99999);
+        return seedr.nextFloat();
+    }
+
+    public static float randomSeedRange(long seed, float range){
+        seedr.setSeed(seed * 99999);
+        return range * (seedr.nextFloat() - 0.5f) * 2f;
+    }
 
     /**
      * Returns a triangularly distributed random number between -1.0 (exclusive) and 1.0 (exclusive), where values around zero are
@@ -198,8 +226,6 @@ public final class Mathf{
     public static float randomTriangular(float max){
         return (random.nextFloat() - random.nextFloat()) * max;
     }
-
-    // ---
 
     /**
      * Returns a triangularly distributed random number between {@code min} (inclusive) and {@code max} (exclusive), where the
@@ -255,8 +281,6 @@ public final class Mathf{
         return value;
     }
 
-    // ---
-
     public static long clamp(long value, long min, long max){
         if(value < min) return min;
         if(value > max) return max;
@@ -273,8 +297,6 @@ public final class Mathf{
     public static float clamp(float value){
         return clamp(value, 0f, 1f);
     }
-
-    // ---
 
     public static double clamp(double value, double min, double max){
         if(value < min) return min;
@@ -429,6 +451,34 @@ public final class Mathf{
         }else{
             return i % m + m;
         }
+    }
+
+    public static float len(float x, float y){
+        return (float)Math.sqrt(x * x + y * y);
+    }
+
+    public static float len2(float x, float y){
+        return x * x + y * y;
+    }
+
+    public static float dot(float x1, float y1, float x2, float y2){
+        return x1 * x2 + y1 * y2;
+    }
+
+    public static float dst(float x1, float y1){
+        return (float)Math.sqrt(x1 * x1 + y1*y1);
+    }
+
+    public static float dst(float x1, float y1, float x2, float y2){
+        final float x_d = x2 - x1;
+        final float y_d = y2 - y1;
+        return (float)Math.sqrt(x_d * x_d + y_d * y_d);
+    }
+
+    public static float dst2(float x1, float y1, float x2, float y2){
+        final float x_d = x2 - x1;
+        final float y_d = y2 - y1;
+        return x_d * x_d + y_d * y_d;
     }
 
     static private class Sin{

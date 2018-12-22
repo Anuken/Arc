@@ -10,6 +10,7 @@ import com.google.gwt.typedarrays.shared.*;
 import com.google.gwt.webgl.client.*;
 
 import java.nio.*;
+import java.nio.HasArrayBufferView;
 
 public class GwtGL20 implements GL20{
 

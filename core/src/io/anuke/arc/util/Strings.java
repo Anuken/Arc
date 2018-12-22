@@ -1,13 +1,11 @@
 package io.anuke.arc.util;
 
 public class Strings{
-
-    public static String dir(int i){
-        return i < 0 ? "left" : "right";
-    }
+    private static final int INVALID_INT = Integer.MIN_VALUE;
+    private static final float INVALID_FLOAT = Float.MIN_VALUE;
 
     public static String parseException(Throwable e, boolean stacktrace){
-        java.lang.StringBuilder build = new java.lang.StringBuilder();
+        StringBuilder build = new StringBuilder();
 
         while(e.getCause() != null){
             e = e.getCause();
@@ -68,25 +66,23 @@ public class Strings{
         return new String(new char[Math.abs((int)(time / scale) % length)]).replace("\0", replacement);
     }
 
+    /**Converts a snake_case string to Upper Case.
+     * For example: "test_string" -> "Test String"*/
     public static String capitalize(String s){
-        String out = s.substring(0, 1).toUpperCase() + s.substring(1);
-        int idx = out.indexOf('_');
-        if(idx != -1 && idx < s.length() - 2){
-            out = out.substring(0, idx) + " " + Character.toUpperCase(out.charAt(idx + 1)) + out.substring(idx + 2);
-        }
-        return out.replace("_", " ");
-    }
+        StringBuilder result = new StringBuilder(s.length());
 
-    public static String kebabToCamel(String s){
-        String out = s;
-        int idx = out.indexOf('-');
-        int lastidx = 0;
-        while(idx != -1){
-            out = out.substring(lastidx, idx) + Character.toUpperCase(out.charAt(idx + 1)) + out.substring(idx + 2);
-            lastidx = idx;
-            idx = out.indexOf(idx + 1, '-');
+        for(int i = 0; i < s.length(); i++){
+            char c = s.charAt(i);
+            if(c == '_'){
+                result.append(" ");
+            }else if(i == 0 || s.charAt(i - 1) == '_'){
+                result.append(Character.toUpperCase(c));
+            }else{
+                result.append(c);
+            }
         }
-        return out;
+
+        return result.toString();
     }
 
     public static boolean canParseInt(String s){
@@ -128,13 +124,12 @@ public class Strings{
 
     public static String toFixed(double d, int decimalPlaces){
         if(decimalPlaces < 0 || decimalPlaces > 8){
-            throw new IllegalArgumentException("Unsupported number of "
-            + "decimal places: " + decimalPlaces);
+            throw new IllegalArgumentException("Unsupported number of " + "decimal places: " + decimalPlaces);
         }
         String s = "" + Math.round(d * Math.pow(10, decimalPlaces));
         int len = s.length();
         int decimalPosition = len - decimalPlaces;
-        java.lang.StringBuilder result = new java.lang.StringBuilder();
+        StringBuilder result = new StringBuilder();
         if(decimalPlaces == 0){
             return s;
         }else if(decimalPosition > 0){
@@ -154,7 +149,7 @@ public class Strings{
     }
 
     static public String formatMillis(long val){
-        java.lang.StringBuilder buf = new java.lang.StringBuilder(20);
+        StringBuilder buf = new StringBuilder(20);
         String sgn = "";
 
         if(val < 0) sgn = "-";
@@ -168,7 +163,7 @@ public class Strings{
         return buf.toString();
     }
 
-    static private void append(java.lang.StringBuilder tgt, String pfx, int dgt, long val){
+    static private void append(StringBuilder tgt, String pfx, int dgt, long val){
         tgt.append(pfx);
         if(dgt > 1){
             int pad = (dgt - 1);

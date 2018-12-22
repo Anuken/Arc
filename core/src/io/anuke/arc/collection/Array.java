@@ -1,5 +1,8 @@
 package io.anuke.arc.collection;
 
+import io.anuke.arc.function.Consumer;
+import io.anuke.arc.function.Function;
+import io.anuke.arc.function.Predicate;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Select;
@@ -110,6 +113,29 @@ public class Array<T> implements Iterable<T>{
     static public <T> Array<T> with(T... array){
         return new Array(array);
     }
+
+    public void each(Consumer<T> consumer){
+        for(int i = 0; i < size; i++){
+            consumer.accept(items[i]);
+        }
+    }
+
+    public void map(Function<T, T> mapper){
+        for(int i = 0; i < size; i++){
+            items[i] = mapper.get(items[i]);
+        }
+    }
+
+    public T find(Predicate<T> predicate){
+        for(int i = 0; i < size; i++){
+            if(predicate.test(items[i])){
+                return items[i];
+            }
+        }
+        return null;
+    }
+
+    //TODO add more functional operations
 
     public void add(T value){
         T[] items = this.items;

@@ -86,7 +86,7 @@ public class Timer{
     public Task scheduleTask(Task task, float delaySeconds, float intervalSeconds, int repeatCount){
         if(task.repeatCount != CANCELLED)
             throw new IllegalArgumentException("The same task may not be scheduled twice.");
-        task.executeTimeMillis = TimeUtils.nanoTime() / 1000000 + (long)(delaySeconds * 1000);
+        task.executeTimeMillis = Time.nanoTime() / 1000000 + (long)(delaySeconds * 1000);
         task.intervalMillis = (long)(intervalSeconds * 1000);
         task.repeatCount = repeatCount;
         synchronized(tasks){
@@ -208,7 +208,7 @@ public class Timer{
             synchronized(instances){
                 if(app != Core.app) return;
 
-                long timeMillis = TimeUtils.nanoTime() / 1000000;
+                long timeMillis = Time.nanoTime() / 1000000;
                 long waitMillis = 5000;
                 for(int i = 0, n = instances.size; i < n; i++){
                     try{
@@ -225,7 +225,7 @@ public class Timer{
         }
 
         public void resume(){
-            long delayMillis = TimeUtils.nanoTime() / 1000000 - pauseMillis;
+            long delayMillis = Time.nanoTime() / 1000000 - pauseMillis;
             synchronized(instances){
                 for(int i = 0, n = instances.size; i < n; i++)
                     instances.get(i).delay(delayMillis);
@@ -235,7 +235,7 @@ public class Timer{
         }
 
         public void pause(){
-            pauseMillis = TimeUtils.nanoTime() / 1000000;
+            pauseMillis = Time.nanoTime() / 1000000;
             synchronized(instances){
                 app = null;
                 wake();

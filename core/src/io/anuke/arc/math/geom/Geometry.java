@@ -85,7 +85,7 @@ public final class Geometry{
     }
 
     public static Vector2[] pixelCircle(float tindex){
-        return pixelCircle(tindex, (index, x, y) -> Vector2.dst(x, y, index, index) < index - 0.5f);
+        return pixelCircle(tindex, (index, x, y) -> Mathf.dst(x, y, index, index) < index - 0.5f);
     }
 
     public static Vector2[] pixelCircle(float index, SolidChecker checker){
@@ -141,7 +141,7 @@ public final class Geometry{
     }
 
     public static float iterateLine(float start, float x1, float y1, float x2, float y2, float segment, PositionConsumer pos){
-        float len = Vector2.dst(x1, y1, x2, y2);
+        float len = Mathf.dst(x1, y1, x2, y2);
         int steps = (int)(len / segment);
         float step = 1f / steps;
 
@@ -193,6 +193,45 @@ public final class Geometry{
 
     public static GridPoint2[] getD8EdgePoints(){
         return d8edge;
+    }
+
+    public static Vector2 raycastRect(float startx, float starty, float endx, float endy, Rectangle rectangle){
+        return raycastRect(startx, starty, endx, endy, rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2,
+        rectangle.width / 2f, rectangle.height / 2f);
+    }
+
+    public static Vector2 raycastRect(float startx, float starty, float endx, float endy, float x, float y, float halfx, float halfy){
+        float deltax = endx - startx, deltay = endy - starty;
+
+        Vector2 hit = tmp1;
+
+        float paddingX = 0f;
+        float paddingY = 0f;
+
+        float scaleX = 1.0f / deltax;
+        float scaleY = 1.0f / deltay;
+        int signX = Mathf.sign(scaleX);
+        int signY = Mathf.sign(scaleY);
+        float nearTimeX = (x - signX * (halfx + paddingX) - startx) * scaleX;
+        float nearTimeY = (y - signY * (halfy + paddingY) - starty) * scaleY;
+        float farTimeX = (x + signX * (halfx + paddingX) - startx) * scaleX;
+        float farTimeY = (y + signY * (halfy + paddingY) - starty) * scaleY;
+
+        if(nearTimeX > farTimeY || nearTimeY > farTimeX)
+            return null;
+
+        float nearTime = nearTimeX > nearTimeY ? nearTimeX : nearTimeY;
+        float farTime = farTimeX < farTimeY ? farTimeX : farTimeY;
+
+        if(nearTime >= 1 || farTime <= 0)
+            return null;
+
+        float htime = Mathf.clamp(nearTime);
+        float hdeltax = htime * deltax;
+        float hdeltay = htime * deltay;
+        hit.x = startx + hdeltax;
+        hit.y = starty + hdeltay;
+        return hit;
     }
 
     /**

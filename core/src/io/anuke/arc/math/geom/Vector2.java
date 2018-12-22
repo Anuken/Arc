@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 public class Vector2 implements Serializable, Vector<Vector2>, Position{
     private static final long serialVersionUID = 913902788239530931L;
+    public static final Vector2 X = new Vector2(1, 0), Y = new Vector2(0, 1), ZERO = new Vector2(0, 0);
 
     /** the x-component of this vector **/
     public float x;
@@ -42,28 +43,12 @@ public class Vector2 implements Serializable, Vector<Vector2>, Position{
         set(v);
     }
 
-    public static float len(float x, float y){
-        return (float)Math.sqrt(x * x + y * y);
+    public Vector2 trns(float angle, float amount){
+        return set(amount, 0).rotate(angle);
     }
 
-    public static float len2(float x, float y){
-        return x * x + y * y;
-    }
-
-    public static float dot(float x1, float y1, float x2, float y2){
-        return x1 * x2 + y1 * y2;
-    }
-
-    public static float dst(float x1, float y1, float x2, float y2){
-        final float x_d = x2 - x1;
-        final float y_d = y2 - y1;
-        return (float)Math.sqrt(x_d * x_d + y_d * y_d);
-    }
-
-    public static float dst2(float x1, float y1, float x2, float y2){
-        final float x_d = x2 - x1;
-        final float y_d = y2 - y1;
-        return x_d * x_d + y_d * y_d;
+    public Vector2 trns(float angle, float x, float y){
+        return set(x, y).rotate(angle);
     }
 
     @Override

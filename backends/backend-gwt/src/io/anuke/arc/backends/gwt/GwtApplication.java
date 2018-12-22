@@ -11,7 +11,6 @@ import io.anuke.arc.collection.Array;
 import io.anuke.arc.util.Clipboard;
 import io.anuke.arc.util.Log;
 import io.anuke.arc.util.Log.LogLevel;
-import io.anuke.arc.util.TimeUtils;
 import com.google.gwt.animation.client.AnimationScheduler;
 import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 import com.google.gwt.core.client.EntryPoint;
@@ -23,6 +22,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.*;
+import io.anuke.arc.util.Time;
 
 /**
  * Implementation of an {@link Application} based on GWT. Clients have to override {@link #getConfig()} and
@@ -37,7 +37,7 @@ public abstract class GwtApplication implements EntryPoint, Application{
     GwtGraphics graphics;
     Preloader preloader;
     LoadingListener loadingListener;
-    long loadStart = TimeUtils.nanoTime();
+    long loadStart = Time.nanoTime();
     private GwtInput input;
     private GwtNet net;
     private Panel root = null;

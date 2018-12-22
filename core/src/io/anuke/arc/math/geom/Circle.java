@@ -72,7 +72,7 @@ public class Circle implements Serializable, Shape2D{
     public Circle(Vector2 center, Vector2 edge){
         this.x = center.x;
         this.y = center.y;
-        this.radius = Vector2.len(center.x - edge.x, center.y - edge.y);
+        this.radius = Mathf.len(center.x - edge.x, center.y - edge.y);
     }
 
     /**
@@ -116,7 +116,7 @@ public class Circle implements Serializable, Shape2D{
     public void set(Vector2 center, Vector2 edge){
         this.x = center.x;
         this.y = center.y;
-        this.radius = Vector2.len(center.x - edge.x, center.y - edge.y);
+        this.radius = Mathf.len(center.x - edge.x, center.y - edge.y);
     }
 
     /**

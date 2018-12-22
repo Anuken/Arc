@@ -11,9 +11,10 @@ public class Fill{
     private static TextureRegion circleRegion;
 
     public static void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4){
+        TextureRegion region = atlas.white();
         float color = graphics.batch().getColor().toFloatBits();
-        float u = Draw.getBlankRegion().getU();
-        float v = Draw.getBlankRegion().getV();
+        float u = region.getU();
+        float v = region.getV();
         vertices[0] = x1;
         vertices[1] = y1;
         vertices[2] = color;
@@ -38,7 +39,7 @@ public class Fill{
         vertices[18] = u;
         vertices[19] = v;
 
-        graphics.batch().draw().vert(Draw.getBlankRegion().getTexture(), vertices, 0, vertices.length);
+        graphics.batch().draw().vert(region.getTexture(), vertices, 0, vertices.length);
     }
 
     public static void tri(float x1, float y1, float x2, float y2, float x3, float y3){
@@ -84,6 +85,6 @@ public class Fill{
     }
 
     public static BatchRect rect(){
-        return graphics.batch().draw().tex(Draw.getBlankRegion());
+        return graphics.batch().draw().tex(atlas.white());
     }
 }

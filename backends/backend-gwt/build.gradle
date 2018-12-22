@@ -2,4 +2,6 @@ dependencies{
     compile libraries.gwt
 }
 
-sourceSets.main.java.exclude "**/System.java"
+//todo: fix?
+sourceSets.main.java.exclude "**"
+

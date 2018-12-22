@@ -61,7 +61,6 @@ public class GwtCursor implements Cursor{
         }else{
             throw new ArcRuntimeException("Unknown system cursor " + systemCursor);
         }
-
     }
 
     @Override

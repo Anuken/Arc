@@ -42,7 +42,7 @@ public class TextureAtlas implements Disposable{
     private final ObjectSet<Texture> textures = new ObjectSet<>(4);
     private final Array<AtlasRegion> regions = new Array<>();
     private final ObjectMap<String, AtlasRegion> regionmap = new ObjectMap<>();
-    private AtlasRegion error;
+    private AtlasRegion error, white;
 
     /** Creates an empty atlas to which regions can be added. */
     public TextureAtlas(){
@@ -167,6 +167,14 @@ public class TextureAtlas implements Disposable{
     /** Returns all regions in the atlas. */
     public Array<AtlasRegion> getRegions(){
         return regions;
+    }
+
+    /** Returns the blank 1x1 texture region, if it exists.*/
+    public AtlasRegion white(){
+        if(white == null){
+            white = find("white");
+        }
+        return white;
     }
 
     /**

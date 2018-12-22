@@ -1,4 +1,4 @@
-package io.anuke.arc.util;
+package io.anuke.arc.collection;
 
 /**
  * A bitset, without size limitation, allows comparison via bitwise operators to other bitfields.
