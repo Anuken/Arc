@@ -51,7 +51,7 @@ public class DelayedRemovalArray<T> extends Array<T>{
     }
 
     /** @see #DelayedRemovalArray(Object[]) */
-    static public <T> DelayedRemovalArray<T> with(T... array){
+    public static <T> DelayedRemovalArray<T> with(T... array){
         return new DelayedRemovalArray(array);
     }
 

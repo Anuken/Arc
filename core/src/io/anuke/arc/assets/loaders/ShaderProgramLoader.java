@@ -74,7 +74,7 @@ public class ShaderProgramLoader extends AsynchronousAssetLoader<ShaderProgram, 
         return shaderProgram;
     }
 
-    static public class ShaderProgramParameter extends AssetLoaderParameters<ShaderProgram>{
+    public static class ShaderProgramParameter extends AssetLoaderParameters<ShaderProgram>{
         /**
          * File name to be used for the vertex program instead of the default determined by the file name used to submit this asset
          * to AssetManager.

@@ -7,7 +7,6 @@
     <inherits name='io.anuke.arc.backends.gwt.chrome.Chrome'/>
     <inherits name="com.google.gwt.http.HTTP"/>
 
-    <inherits name="io.anuke.arc/">
     <inherits name="com.google.gwt.webgl.WebGL"/>
     <inherits name="io.anuke.gwtref.GwtReflect"/>
 
@@ -21,6 +20,23 @@
         <exclude name="**/theme/**"/>
         <exclude name="**/PreloaderBundleGenerator.java"/>
         <exclude name="**/FileWrapper.java"/>
+    </source>
+
+    <!-- TODO Check if this works! -->
+    <source path="arc">
+        <exclude name="assets/loaders/CubemapLoader.java"/> <!--  relies on KTXTextureData -->
+        <exclude name="graphics/TextureArray.java"/> <!-- GLES 3.0 -->
+        <exclude name="graphics/TextureArrayData.java"/> <!-- GLES 3.0 -->
+        <exclude name="graphics/TextureData.java"/> <!-- emulated: TextureData.Factory requires ETC1 -->
+        <exclude name="graphics/g2d/Gdx2DPixmap.java"/> <!-- Reason: JNI -->
+        <exclude name="graphics/g2d/PixmapPackerIO.java"/>
+        <exclude name="graphics/glutils/FileTextureArrayData.java"/> <!-- GLES 3.0 -->
+        <exclude name="net/NetJavaImpl.java"/> <!-- Reason: Networking -->
+        <exclude name="net/NetJavaServerSocketImpl.java"/> <!-- Reason: Networking -->
+        <exclude name="net/NetJavaSocketImpl.java"/> <!-- Reason: Networking -->
+        <exclude name="collection/AtomicQueue.java"/> <!-- Reason: No atomic support -->
+        <exclude name="utils/GdxNativesLoader.java"/> <!-- Reason: Natives -->
+        <exclude name="utils/SharedLibraryLoader.java"/> <!-- Reason: Natives -->
     </source>
 
     <define-configuration-property name="arc.assetpath" is-multi-valued="false"/>

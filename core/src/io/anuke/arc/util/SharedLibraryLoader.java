@@ -18,16 +18,16 @@ import java.util.zip.ZipFile;
  */
 public class SharedLibraryLoader{
     static private final HashSet<String> loadedLibraries = new HashSet();
-    static public boolean isWindows = System.getProperty("os.name").contains("Windows");
-    static public boolean isLinux = System.getProperty("os.name").contains("Linux");
-    static public boolean isMac = System.getProperty("os.name").contains("Mac");
-    static public boolean isIos = false;
-    static public boolean isAndroid = false;
-    static public boolean isARM = System.getProperty("os.arch").startsWith("arm");
-    static public boolean is64Bit = System.getProperty("os.arch").equals("amd64")
+    public static boolean isWindows = System.getProperty("os.name").contains("Windows");
+    public static boolean isLinux = System.getProperty("os.name").contains("Linux");
+    public static boolean isMac = System.getProperty("os.name").contains("Mac");
+    public static boolean isIos = false;
+    public static boolean isAndroid = false;
+    public static boolean isARM = System.getProperty("os.arch").startsWith("arm");
+    public static boolean is64Bit = System.getProperty("os.arch").equals("amd64")
     || System.getProperty("os.arch").equals("x86_64");
     // JDK 8 only.
-    static public String abi = (System.getProperty("sun.arch.abi") != null ? System.getProperty("sun.arch.abi") : "");
+    public static String abi = (System.getProperty("sun.arch.abi") != null ? System.getProperty("sun.arch.abi") : "");
 
     static{
         boolean isMOEiOS = "iOS".equals(System.getProperty("moe.platform.name"));
@@ -62,11 +62,11 @@ public class SharedLibraryLoader{
     }
 
     /** Sets the library as loaded, for when application code wants to handle libary loading itself. */
-    static public synchronized void setLoaded(String libraryName){
+    public static synchronized void setLoaded(String libraryName){
         loadedLibraries.add(libraryName);
     }
 
-    static public synchronized boolean isLoaded(String libraryName){
+    public static synchronized boolean isLoaded(String libraryName){
         return loadedLibraries.contains(libraryName);
     }
 

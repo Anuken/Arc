@@ -46,17 +46,17 @@ public class GwtCursor implements Cursor{
     }
 
     static String getNameForSystemCursor(SystemCursor systemCursor){
-        if(systemCursor == SystemCursor.Arrow){
+        if(systemCursor == SystemCursor.arrow){
             return "default";
-        }else if(systemCursor == SystemCursor.Crosshair){
+        }else if(systemCursor == SystemCursor.crosshair){
             return "crosshair";
-        }else if(systemCursor == SystemCursor.Hand){
+        }else if(systemCursor == SystemCursor.hand){
             return "pointer"; // Don't change to 'hand', 'hand' doesn't work in the newer IEs
-        }else if(systemCursor == SystemCursor.HorizontalResize){
+        }else if(systemCursor == SystemCursor.horizontalResize){
             return "ew-resize";
-        }else if(systemCursor == SystemCursor.VerticalResize){
+        }else if(systemCursor == SystemCursor.verticalResize){
             return "ns-resize";
-        }else if(systemCursor == SystemCursor.Ibeam){
+        }else if(systemCursor == SystemCursor.ibeam){
             return "text";
         }else{
             throw new ArcRuntimeException("Unknown system cursor " + systemCursor);

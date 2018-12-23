@@ -88,7 +88,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
      * necessary for the {@link BitmapFont}.
      * @author mzechner
      */
-    static public class BitmapFontParameter extends AssetLoaderParameters<BitmapFont>{
+    public static class BitmapFontParameter extends AssetLoaderParameters<BitmapFont>{
         /** Flips the font vertically if {@code true}. Defaults to {@code false}. **/
         public boolean flip = false;
 

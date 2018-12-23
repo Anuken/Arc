@@ -342,7 +342,7 @@ public class Window extends Table{
      * The style for a window, see {@link Window}.
      * @author Nathan Sweet
      */
-    static public class WindowStyle extends Style{
+    public static class WindowStyle extends Style{
         /** Optional. */
         public Drawable background;
         public BitmapFont titleFont;

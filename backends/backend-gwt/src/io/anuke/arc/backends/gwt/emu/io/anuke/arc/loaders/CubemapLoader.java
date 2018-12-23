@@ -68,13 +68,13 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
         return null;
     }
 
-    static public class CubemapLoaderInfo{
+    public static class CubemapLoaderInfo{
         String filename;
         CubemapData data;
         Cubemap cubemap;
     }
 
-    static public class CubemapParameter extends AssetLoaderParameters<Cubemap>{
+    public static class CubemapParameter extends AssetLoaderParameters<Cubemap>{
         /** the format of the final Texture. Uses the source images format if null **/
         public Format format = null;
         /** The texture to put the {@link TextureData} in, optional. **/

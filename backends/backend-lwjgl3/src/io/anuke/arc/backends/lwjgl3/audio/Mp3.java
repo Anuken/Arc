@@ -8,7 +8,7 @@ import java.io.ByteArrayOutputStream;
 
 /** @author Nathan Sweet */
 public class Mp3{
-    static public class Music extends OpenALMusic{
+    public static class Music extends OpenALMusic{
         // Note: This uses a slightly modified version of JLayer.
 
         private Bitstream bitstream;
@@ -81,7 +81,7 @@ public class Mp3{
         }
     }
 
-    static public class Sound extends OpenALSound{
+    public static class Sound extends OpenALSound{
         // Note: This uses a slightly modified version of JLayer.
 
         public Sound(OpenALAudio audio, FileHandle file){

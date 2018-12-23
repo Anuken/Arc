@@ -17,7 +17,7 @@ public class Lzma{
      * @param in the {@link InputStream} to compress
      * @param out the {@link OutputStream} to compress to
      */
-    static public void compress(InputStream in, OutputStream out) throws IOException{
+    public static void compress(InputStream in, OutputStream out) throws IOException{
         CommandLine params = new CommandLine();
         boolean eos = false;
         if(params.Eos) eos = true;
@@ -49,7 +49,7 @@ public class Lzma{
      * @param in the {@link InputStream} to decompress
      * @param out the {@link OutputStream} to decompress to
      */
-    static public void decompress(InputStream in, OutputStream out) throws IOException{
+    public static void decompress(InputStream in, OutputStream out) throws IOException{
         int propertiesSize = 5;
         byte[] properties = new byte[propertiesSize];
         if(in.read(properties, 0, propertiesSize) != propertiesSize)

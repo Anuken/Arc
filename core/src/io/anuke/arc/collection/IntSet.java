@@ -80,7 +80,7 @@ public class IntSet{
         hasZeroValue = set.hasZeroValue;
     }
 
-    static public IntSet with(int... array){
+    public static IntSet with(int... array){
         IntSet set = new IntSet();
         set.addAll(array);
         return set;
@@ -499,7 +499,7 @@ public class IntSet{
         return iterator2;
     }
 
-    static public class IntSetIterator{
+    public static class IntSetIterator{
         static final int INDEX_ILLEGAL = -2;
         static final int INDEX_ZERO = -1;
         final IntSet set;

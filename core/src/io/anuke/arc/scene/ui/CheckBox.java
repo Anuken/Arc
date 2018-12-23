@@ -84,7 +84,7 @@ public class CheckBox extends TextButton{
      * The style for a select box, see {@link CheckBox}.
      * @author Nathan Sweet
      */
-    static public class CheckBoxStyle extends TextButtonStyle{
+    public static class CheckBoxStyle extends TextButtonStyle{
         public Drawable checkboxOn, checkboxOff;
         /** Optional. */
         public Drawable checkboxOver, checkboxOnDisabled, checkboxOffDisabled, checkboxOnOver;

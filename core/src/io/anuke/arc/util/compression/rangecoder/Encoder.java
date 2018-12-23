@@ -33,15 +33,15 @@ public class Encoder{
             probs[i] = (kBitModelTotal >>> 1);
     }
 
-    static public int GetPrice(int Prob, int symbol){
+    public static int GetPrice(int Prob, int symbol){
         return ProbPrices[(((Prob - symbol) ^ ((-symbol))) & (kBitModelTotal - 1)) >>> kNumMoveReducingBits];
     }
 
-    static public int GetPrice0(int Prob){
+    public static int GetPrice0(int Prob){
         return ProbPrices[Prob >>> kNumMoveReducingBits];
     }
 
-    static public int GetPrice1(int Prob){
+    public static int GetPrice1(int Prob){
         return ProbPrices[(kBitModelTotal - Prob) >>> kNumMoveReducingBits];
     }
 

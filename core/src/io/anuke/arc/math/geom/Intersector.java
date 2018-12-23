@@ -617,7 +617,7 @@ public final class Intersector{
      * @param box The bounding box
      * @return Whether the ray and the bounding box intersect.
      */
-    static public boolean intersectRayBoundsFast(Ray ray, BoundingBox box){
+    public static boolean intersectRayBoundsFast(Ray ray, BoundingBox box){
         return intersectRayBoundsFast(ray, box.getCenter(tmp1), box.getDimensions(tmp2));
     }
 
@@ -628,7 +628,7 @@ public final class Intersector{
      * @param dimensions The dimensions (width, height and depth) of the bounding box
      * @return Whether the ray and the bounding box intersect.
      */
-    static public boolean intersectRayBoundsFast(Ray ray, Vector3 center, Vector3 dimensions){
+    public static boolean intersectRayBoundsFast(Ray ray, Vector3 center, Vector3 dimensions){
         final float divX = 1f / ray.direction.x;
         final float divY = 1f / ray.direction.y;
         final float divZ = 1f / ray.direction.z;
@@ -849,7 +849,7 @@ public final class Intersector{
      * area of overlap.
      * @return Whether the rectangles intersect
      */
-    static public boolean intersectRectangles(Rectangle rectangle1, Rectangle rectangle2, Rectangle intersection){
+    public static boolean intersectRectangles(Rectangle rectangle1, Rectangle rectangle2, Rectangle intersection){
         if(rectangle1.overlaps(rectangle2)){
             intersection.x = Math.max(rectangle1.x, rectangle2.x);
             intersection.width = Math.min(rectangle1.x + rectangle1.width, rectangle2.x + rectangle2.width) - intersection.x;

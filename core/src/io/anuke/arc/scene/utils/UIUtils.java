@@ -8,65 +8,65 @@ import io.anuke.arc.util.OS;
 //TODO remove this class?
 public class UIUtils{
 
-    static public boolean isDisabled(Element element){
+    public static boolean isDisabled(Element element){
         return element != null && ((element instanceof Disableable && ((Disableable)element).isDisabled()) || !element.isVisible());
     }
 
-    static public boolean portrait(){
+    public static boolean portrait(){
         return Core.graphics.getHeight() > Core.graphics.getWidth();
     }
 
-    static public boolean left(){
+    public static boolean left(){
         return Core.input.keyDown(KeyCode.MOUSE_LEFT);
     }
 
-    static public boolean left(KeyCode button){
+    public static boolean left(KeyCode button){
         return button == KeyCode.MOUSE_LEFT;
     }
 
-    static public boolean right(){
+    public static boolean right(){
         return Core.input.keyDown(KeyCode.MOUSE_RIGHT);
     }
 
-    static public boolean right(KeyCode button){
+    public static boolean right(KeyCode button){
         return button == KeyCode.MOUSE_RIGHT;
     }
 
-    static public boolean middle(){
+    public static boolean middle(){
         return Core.input.keyDown(KeyCode.MOUSE_MIDDLE);
     }
 
-    static public boolean middle(KeyCode button){
+    public static boolean middle(KeyCode button){
         return button == KeyCode.MOUSE_MIDDLE;
     }
 
-    static public boolean shift(){
+    public static boolean shift(){
         return Core.input.keyDown(KeyCode.SHIFT_LEFT) || Core.input.keyDown(KeyCode.SHIFT_RIGHT);
     }
 
-    static public boolean shift(KeyCode keycode){
+    public static boolean shift(KeyCode keycode){
         return keycode == KeyCode.SHIFT_LEFT || keycode == KeyCode.SHIFT_RIGHT;
     }
 
-    static public boolean ctrl(){
+    public static boolean ctrl(){
         if(OS.isMac)
             return Core.input.keyDown(KeyCode.SYM);
         else
             return Core.input.keyDown(KeyCode.CONTROL_LEFT) || Core.input.keyDown(KeyCode.CONTROL_RIGHT);
     }
 
-    static public boolean ctrl(KeyCode keycode){
+    public static boolean ctrl(KeyCode keycode){
         if(OS.isMac)
             return keycode == KeyCode.SYM;
         else
             return keycode == KeyCode.CONTROL_LEFT || keycode == KeyCode.CONTROL_RIGHT;
     }
 
-    static public boolean alt(){
+    public static boolean alt(){
         return Core.input.keyDown(KeyCode.ALT_LEFT) || Core.input.keyDown(KeyCode.ALT_RIGHT);
     }
 
-    static public boolean alt(KeyCode keycode){
+    public static boolean alt(KeyCode keycode){
         return keycode == KeyCode.ALT_LEFT || keycode == KeyCode.ALT_RIGHT;
     }
 }

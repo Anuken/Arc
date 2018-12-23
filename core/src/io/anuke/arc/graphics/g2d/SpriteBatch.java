@@ -18,7 +18,7 @@ import io.anuke.arc.util.pooling.Pool.Poolable;
  * @author Nathan Sweet
  */
 public class SpriteBatch implements Disposable{
-    static final int VERTEX_SIZE = 2 + 1 + 2;
+    static final int VERTEX_SIZE = 2 + 1 + 1 + 2;
     static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
 
     private final Mesh mesh;
@@ -92,7 +92,7 @@ public class SpriteBatch implements Disposable{
         mesh.setIndices(indices);
 
         if(defaultShader == null){
-            shader = createDefaultShader();
+            shader = BatchShader.create();
             ownsShader = true;
         }else
             shader = defaultShader;
@@ -101,43 +101,6 @@ public class SpriteBatch implements Disposable{
         for(int i = 0; i < rects.size; i++){
             rects.set(i, new BatchRect());
         }
-    }
-
-    /** Returns a new instance of the default shader used by SpriteBatch for GL2 when no shader is specified. */
-    public static ShaderProgram createDefaultShader(){
-        String vertexShader =
-        String.join("\n",
-        "attribute vec3 " + ShaderProgram.POSITION_ATTRIBUTE + ";",
-        "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";",
-        "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;",
-        "uniform mat3 u_projTrans;",
-        "varying vec4 v_color;",
-        "varying vec2 v_texCoords;",
-        "",
-        "void main(){",
-        "   v_color = " + ShaderProgram.COLOR_ATTRIBUTE + ";",
-        "   v_color.a = v_color.a * (255.0/254.0);",
-        "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;",
-        "   gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";",
-        "}"
-        );
-        String fragmentShader = "#ifdef GL_ES\n" //
-        + "#define LOWP lowp\n" //
-        + "precision mediump float;\n" //
-        + "#else\n" //
-        + "#define LOWP \n" //
-        + "#endif\n" //
-        + "varying LOWP vec4 v_color;\n" //
-        + "varying vec2 v_texCoords;\n" //
-        + "uniform sampler2D u_texture;\n" //
-        + "void main()\n"//
-        + "{\n" //
-        + "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
-        + "}";
-
-        ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
-        if(!shader.isCompiled()) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
-        return shader;
     }
 
     public BatchRect draw(){
@@ -420,9 +383,21 @@ public class SpriteBatch implements Disposable{
             return this;
         }
 
+        public BatchRect color(Color color, float alpha){
+            return color(color.r, color.g, color.b, color.a * alpha);
+        }
+
+        public BatchRect color(Color from, Color to, float mix){
+            float f = 1f - mix;
+            return color(from.r * f + to.r * mix, from.g * f + to.g * mix, from.b * f + to.b * mix, from.a * f + to.a * mix);
+        }
+
         public BatchRect color(Color color){
-            this.color = Color.toFloatBits(color.r * SpriteBatch.this.color.r, color.g * SpriteBatch.this.color.g,
-            color.b * SpriteBatch.this.color.b, color.a * SpriteBatch.this.color.a);
+            return color(color.r, color.g, color.b, color.a);
+        }
+
+        public BatchRect color(float r, float g, float b, float a){
+            this.color = Color.toFloatBits(r * SpriteBatch.this.color.r, g * SpriteBatch.this.color.g, b * SpriteBatch.this.color.b, a * SpriteBatch.this.color.a);
             return this;
         }
 
@@ -431,6 +406,14 @@ public class SpriteBatch implements Disposable{
             this.height = h;
             this.x = x;
             this.y = y;
+            return this;
+        }
+
+        public BatchRect center(float x, float y, float w, float h){
+            this.width = w;
+            this.height = h;
+            this.x = x - w/2;
+            this.y = y - h/2;
             return this;
         }
 
@@ -502,7 +485,7 @@ public class SpriteBatch implements Disposable{
         @Override
         public void reset(){
             region.texture = null;
-            region.u = region.v = region.u2 = region.v2 = region.regionWidth = region.regionHeight = 0;
+            region.u = region.v = region.u2 = region.v2 = region.width = region.height = 0;
             x = y = z = originX = originY = width = height = rotation = 0f;
             scaleX = scaleY = 1f;
             color = Color.WHITE_FLOAT_BITS;

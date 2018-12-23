@@ -33,7 +33,7 @@ abstract public class FocusListener implements EventListener{
      * Fired when an element gains or loses keyboard or scroll focus. Can be cancelled to prevent losing or gaining focus.
      * @author Nathan Sweet
      */
-    static public class FocusEvent extends Event{
+    public static class FocusEvent extends Event{
         public boolean focused;
         public Type type;
         public Element relatedActor;

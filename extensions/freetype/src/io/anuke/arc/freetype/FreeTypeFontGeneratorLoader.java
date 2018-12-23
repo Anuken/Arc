@@ -57,6 +57,6 @@ SynchronousAssetLoader<FreeTypeFontGenerator, FreeTypeFontGeneratorLoader.FreeTy
         return null;
     }
 
-    static public class FreeTypeFontGeneratorParameters extends AssetLoaderParameters<FreeTypeFontGenerator>{
+    public static class FreeTypeFontGeneratorParameters extends AssetLoaderParameters<FreeTypeFontGenerator>{
     }
 }

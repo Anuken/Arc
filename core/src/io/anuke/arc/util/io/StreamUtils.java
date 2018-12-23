@@ -126,7 +126,7 @@ public final class StreamUtils{
     }
 
     /** A ByteArrayOutputStream which avoids copying of the byte array if possible. */
-    static public class OptimizedByteArrayOutputStream extends ByteArrayOutputStream{
+    public static class OptimizedByteArrayOutputStream extends ByteArrayOutputStream{
         public OptimizedByteArrayOutputStream(int initialSize){
             super(initialSize);
         }

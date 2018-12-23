@@ -646,7 +646,7 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>>{
         return keys2;
     }
 
-    static public class Entry<K, V>{
+    public static class Entry<K, V>{
         public K key;
         public V value;
 
@@ -698,7 +698,7 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>>{
         }
     }
 
-    static public class Entries<K, V> extends MapIterator<K, V, Entry<K, V>>{
+    public static class Entries<K, V> extends MapIterator<K, V, Entry<K, V>>{
         private Entry<K, V> entry = new Entry();
 
         public Entries(IdentityMap<K, V> map){
@@ -727,7 +727,7 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>>{
         }
     }
 
-    static public class Values<V> extends MapIterator<Object, V, V>{
+    public static class Values<V> extends MapIterator<Object, V, V>{
         public Values(IdentityMap<?, V> map){
             super((IdentityMap<Object, V>)map);
         }
@@ -765,7 +765,7 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>>{
         }
     }
 
-    static public class Keys<K> extends MapIterator<K, Object, K>{
+    public static class Keys<K> extends MapIterator<K, Object, K>{
         public Keys(IdentityMap<K, ?> map){
             super((IdentityMap<K, Object>)map);
         }

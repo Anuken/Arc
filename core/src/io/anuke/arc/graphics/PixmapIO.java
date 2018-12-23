@@ -23,7 +23,7 @@ public class PixmapIO{
      * suffix. Throws a ArcRuntimeException in case the Pixmap couldn't be written to the file.
      * @param file the file to write the Pixmap to
      */
-    static public void writeCIM(FileHandle file, Pixmap pixmap){
+    public static void writeCIM(FileHandle file, Pixmap pixmap){
         CIM.write(file, pixmap);
     }
 
@@ -32,7 +32,7 @@ public class PixmapIO{
      * {@link PixmapIO#writeCIM(FileHandle, Pixmap)} method. Throws a ArcRuntimeException in case the file couldn't be read.
      * @param file the file to read the Pixmap from
      */
-    static public Pixmap readCIM(FileHandle file){
+    public static Pixmap readCIM(FileHandle file){
         return CIM.read(file);
     }
 
@@ -40,7 +40,7 @@ public class PixmapIO{
      * Writes the pixmap as a PNG with compression. See {@link PNG} to configure the compression level, more efficiently flip the
      * pixmap vertically, and to write out multiple PNGs with minimal allocation.
      */
-    static public void writePNG(FileHandle file, Pixmap pixmap){
+    public static void writePNG(FileHandle file, Pixmap pixmap){
         try{
             PNG writer = new PNG((int)(pixmap.getWidth() * pixmap.getHeight() * 1.5f)); // Guess at deflated size.
             try{
@@ -60,7 +60,7 @@ public class PixmapIO{
         static private final byte[] writeBuffer = new byte[BUFFER_SIZE];
         static private final byte[] readBuffer = new byte[BUFFER_SIZE];
 
-        static public void write(FileHandle file, Pixmap pixmap){
+        public static void write(FileHandle file, Pixmap pixmap){
             DataOutputStream out = null;
 
             try{
@@ -96,7 +96,7 @@ public class PixmapIO{
             }
         }
 
-        static public Pixmap read(FileHandle file){
+        public static Pixmap read(FileHandle file){
             DataInputStream in = null;
 
             try{
@@ -156,7 +156,7 @@ public class PixmapIO{
      * @author Matthias Mann
      * @author Nathan Sweet
      */
-    static public class PNG implements Disposable{
+    public static class PNG implements Disposable{
         static private final byte[] SIGNATURE = {(byte)137, 80, 78, 71, 13, 10, 26, 10};
         static private final int IHDR = 0x49484452, IDAT = 0x49444154, IEND = 0x49454E44;
         static private final byte COLOR_ARGB = 6;

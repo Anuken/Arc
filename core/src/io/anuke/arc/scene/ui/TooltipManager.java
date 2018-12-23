@@ -85,7 +85,7 @@ public class TooltipManager{
         }
     };
 
-    static public TooltipManager getInstance(){
+    public static TooltipManager getInstance(){
         if(files == null || files != Core.files){
             files = Core.files;
             instance = new TooltipManager();

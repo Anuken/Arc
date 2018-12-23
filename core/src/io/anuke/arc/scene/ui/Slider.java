@@ -192,7 +192,7 @@ public class Slider extends ProgressBar{
      * @author mzechner
      * @author Nathan Sweet
      */
-    static public class SliderStyle extends ProgressBarStyle{
+    public static class SliderStyle extends ProgressBarStyle{
         /** Optional. */
         public Drawable knobOver, knobDown;
 

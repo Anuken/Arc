@@ -152,7 +152,7 @@ public class ImageButton extends Button{
      * The style for an image button, see {@link ImageButton}.
      * @author Nathan Sweet
      */
-    static public class ImageButtonStyle extends ButtonStyle{
+    public static class ImageButtonStyle extends ButtonStyle{
         /** Optional. */
         public Drawable imageUp, imageDown, imageOver, imageChecked, imageCheckedOver, imageDisabled;
         public Color imageUpColor, imageCheckedColor, imageDownColor, imageDisabledColor;

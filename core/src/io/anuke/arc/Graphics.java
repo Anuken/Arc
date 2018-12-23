@@ -4,7 +4,6 @@ import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.Cursor.SystemCursor;
 import io.anuke.arc.graphics.g2d.BitmapFont;
 import io.anuke.arc.graphics.g2d.SpriteBatch;
-import io.anuke.arc.graphics.g2d.TextureAtlas;
 import io.anuke.arc.graphics.glutils.*;
 
 /**
@@ -26,8 +25,10 @@ import io.anuke.arc.graphics.glutils.*;
 public abstract class Graphics{
     /** One global spritebatch for drawing things. */
     private SpriteBatch batch;
-    /** One global texture atlas. */
-    private TextureAtlas atlas;
+
+    public static void setCursor(){
+
+    }
 
     /** Returns the global spritebatch instance. */
     public SpriteBatch batch(){

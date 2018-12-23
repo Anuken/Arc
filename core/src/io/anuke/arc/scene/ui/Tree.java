@@ -426,7 +426,7 @@ public class Tree extends WidgetGroup{
         return clickListener;
     }
 
-    static public class Node{
+    public static class Node{
         final Element element;
         final Array<Node> children = new Array<>(0);
         Node parent;
@@ -639,7 +639,7 @@ public class Tree extends WidgetGroup{
      * The style for a {@link Tree}.
      * @author Nathan Sweet
      */
-    static public class TreeStyle{
+    public static class TreeStyle{
         public Drawable plus, minus;
         /** Optional. */
         public Drawable over, selection, background;

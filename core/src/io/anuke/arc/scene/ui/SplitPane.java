@@ -388,7 +388,7 @@ public class SplitPane extends WidgetGroup{
      * @author mzechner
      * @author Nathan Sweet
      */
-    static public class SplitPaneStyle{
+    public static class SplitPaneStyle{
         public Drawable handle;
 
         public SplitPaneStyle(){

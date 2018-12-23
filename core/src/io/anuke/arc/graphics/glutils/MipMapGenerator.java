@@ -16,7 +16,7 @@ public class MipMapGenerator{
         // disallow, static methods only
     }
 
-    static public void setUseHardwareMipMap(boolean useHWMipMap){
+    public static void setUseHardwareMipMap(boolean useHWMipMap){
         MipMapGenerator.useHWMipMap = useHWMipMap;
     }
 

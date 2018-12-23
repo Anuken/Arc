@@ -425,7 +425,7 @@ public class Queue<T> implements Iterable<T>{
         return true;
     }
 
-    static public class QueueIterator<T> implements Iterator<T>, Iterable<T>{
+    public static class QueueIterator<T> implements Iterator<T>, Iterable<T>{
         private final Queue<T> queue;
         private final boolean allowRemove;
         int index;
@@ -474,7 +474,7 @@ public class Queue<T> implements Iterable<T>{
         }
     }
 
-    static public class QueueIterable<T> implements Iterable<T>{
+    public static class QueueIterable<T> implements Iterable<T>{
         private final Queue<T> queue;
         private final boolean allowRemove;
         private QueueIterator<T> iterator1, iterator2;

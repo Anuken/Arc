@@ -53,6 +53,8 @@ public class Color{
     public static final Color VIOLET = new Color(0xee82eeff);
     public static final Color MAROON = new Color(0xb03060ff);
 
+    private static final float[] tmpHSV = new float[3];
+
     /** the red, green, blue and alpha components **/
     public float r, g, b, a;
 
@@ -383,6 +385,20 @@ public class Color{
     }
 
     /**
+     * Sets this Color's component values.
+     * @param r Red component
+     * @param g Green component
+     * @param b Blue component
+     * @return this Color for chaining
+     */
+    public Color set(float r, float g, float b){
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        return clamp();
+    }
+
+    /**
      * Sets this color's component values through an integer representation.
      * @return this Color for chaining
      * @see #rgba8888ToColor(Color, int)
@@ -506,6 +522,27 @@ public class Color{
         r *= a;
         g *= a;
         b *= a;
+        return this;
+    }
+
+    public Color shiftHue(float amount){
+        toHsv(tmpHSV);
+        tmpHSV[0] += amount;
+        fromHsv(tmpHSV);
+        return this;
+    }
+
+    public Color shiftSaturation(float amount){
+        toHsv(tmpHSV);
+        tmpHSV[0] += amount;
+        fromHsv(tmpHSV);
+        return this;
+    }
+
+    public Color shiftValue(float amount){
+        toHsv(tmpHSV);
+        tmpHSV[0] += amount;
+        fromHsv(tmpHSV);
         return this;
     }
 

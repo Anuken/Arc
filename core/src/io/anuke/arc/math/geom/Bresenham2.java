@@ -13,44 +13,44 @@ import io.anuke.arc.util.pooling.Pools;
  * @author badlogic
  */
 public class Bresenham2{
-    private final Array<GridPoint2> points = new Array<>();
-    private final Pool<GridPoint2> pool = Pools.get(GridPoint2.class, GridPoint2::new);
+    private final Array<Point2> points = new Array<>();
+    private final Pool<Point2> pool = Pools.get(Point2.class, Point2::new);
 
     /**
-     * Returns a list of {@link GridPoint2} instances along the given line, at integer coordinates.
+     * Returns a list of {@link Point2} instances along the given line, at integer coordinates.
      * @param start the start of the line
      * @param end the end of the line
      * @return the list of points on the line at integer coordinates
      */
-    public Array<GridPoint2> line(GridPoint2 start, GridPoint2 end){
+    public Array<Point2> line(Point2 start, Point2 end){
         return line(start.x, start.y, end.x, end.y);
     }
 
     /**
-     * Returns a list of {@link GridPoint2} instances along the given line, at integer coordinates.
+     * Returns a list of {@link Point2} instances along the given line, at integer coordinates.
      * @param startX the start x coordinate of the line
      * @param startY the start y coordinate of the line
      * @param endX the end x coordinate of the line
      * @param endY the end y coordinate of the line
      * @return the list of points on the line at integer coordinates
      */
-    public Array<GridPoint2> line(int startX, int startY, int endX, int endY){
+    public Array<Point2> line(int startX, int startY, int endX, int endY){
         pool.freeAll(points);
         points.clear();
         return line(startX, startY, endX, endY, pool, points);
     }
 
     /**
-     * Returns a list of {@link GridPoint2} instances along the given line, at integer coordinates.
+     * Returns a list of {@link Point2} instances along the given line, at integer coordinates.
      * @param startX the start x coordinate of the line
      * @param startY the start y coordinate of the line
      * @param endX the end x coordinate of the line
      * @param endY the end y coordinate of the line
-     * @param pool the pool from which GridPoint2 instances are fetched
+     * @param pool the pool from which Point2 instances are fetched
      * @param output the output array, will be cleared in this method
      * @return the list of points on the line at integer coordinates
      */
-    public Array<GridPoint2> line(int startX, int startY, int endX, int endY, Pool<GridPoint2> pool, Array<GridPoint2> output){
+    public Array<Point2> line(int startX, int startY, int endX, int endY, Pool<Point2> pool, Array<Point2> output){
 
         int w = endX - startX;
         int h = endY - startY;
@@ -77,7 +77,7 @@ public class Bresenham2{
         }
         int numerator = longest >> 1;
         for(int i = 0; i <= longest; i++){
-            GridPoint2 point = pool.obtain();
+            Point2 point = pool.obtain();
             point.set(startX, startY);
             output.add(point);
             numerator += shortest;

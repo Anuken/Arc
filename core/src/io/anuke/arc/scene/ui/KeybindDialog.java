@@ -302,7 +302,7 @@ public class KeybindDialog extends Dialog{
         //});
     }
 
-    static public class KeybindDialogStyle extends Style{
+    public static class KeybindDialogStyle extends Style{
         public Color keyColor = Color.WHITE;
         public Color keyNameColor = Color.WHITE;
         public Color controllerColor = Color.WHITE;

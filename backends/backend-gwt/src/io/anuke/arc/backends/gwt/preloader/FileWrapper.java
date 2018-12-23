@@ -50,7 +50,7 @@ public class FileWrapper{
         this.type = type;
     }
 
-    static public FileWrapper tempFile(String prefix){
+    public static FileWrapper tempFile(String prefix){
         try{
             return new FileWrapper(File.createTempFile(prefix, null));
         }catch(IOException ex){
@@ -58,7 +58,7 @@ public class FileWrapper{
         }
     }
 
-    static public FileWrapper tempDirectory(String prefix){
+    public static FileWrapper tempDirectory(String prefix){
         try{
             File file = File.createTempFile(prefix, null);
             if(!file.delete()) throw new IOException("Unable to delete temp file: " + file);

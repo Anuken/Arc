@@ -13,7 +13,7 @@ public class ResolutionFileResolver implements FileHandleResolver{
         this.descriptors = descriptors;
     }
 
-    static public Resolution choose(Resolution... descriptors){
+    public static Resolution choose(Resolution... descriptors){
         int width = 0;
         if(Core.graphics.getWidth() > Core.graphics.getHeight()){
             width = Core.graphics.getHeight();

@@ -63,8 +63,8 @@ public class TextField extends Element implements Disableable{
     static private final Vector2 tmp2 = new Vector2();
     static private final Vector2 tmp3 = new Vector2();
 
-    static public float keyRepeatInitialTime = 0.4f;
-    static public float keyRepeatTime = 0.1f;
+    public static float keyRepeatInitialTime = 0.4f;
+    public static float keyRepeatTime = 0.1f;
     protected final GlyphLayout layout = new GlyphLayout();
     protected final FloatArray glyphPositions = new FloatArray();
     protected String text;
@@ -822,7 +822,7 @@ public class TextField extends Element implements Disableable{
      * {@link Input#setOnscreenKeyboardVisible(boolean)} as appropriate. Might overlap your actual rendering, so use with care!
      * @author mzechner
      */
-    static public class DefaultOnscreenKeyboard implements OnscreenKeyboard{
+    public static class DefaultOnscreenKeyboard implements OnscreenKeyboard{
         @Override
         public void show(boolean visible){
             Core.input.setOnscreenKeyboardVisible(visible);
@@ -834,7 +834,7 @@ public class TextField extends Element implements Disableable{
      * @author mzechner
      * @author Nathan Sweet
      */
-    static public class TextFieldStyle extends Style{
+    public static class TextFieldStyle extends Style{
         public BitmapFont font;
         public Color fontColor;
         /** Optional. */

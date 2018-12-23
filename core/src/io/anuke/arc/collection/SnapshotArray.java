@@ -59,7 +59,7 @@ public class SnapshotArray<T> extends Array<T>{
     }
 
     /** @see #SnapshotArray(Object[]) */
-    static public <T> SnapshotArray<T> with(T... array){
+    public static <T> SnapshotArray<T> with(T... array){
         return new SnapshotArray<>(array);
     }
 

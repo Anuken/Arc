@@ -630,7 +630,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>>{
         return keys2;
     }
 
-    static public class Entry<K>{
+    public static class Entry<K>{
         public K key;
         public float value;
 
@@ -681,7 +681,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>>{
         }
     }
 
-    static public class Entries<K> extends MapIterator<K> implements Iterable<Entry<K>>, Iterator<Entry<K>>{
+    public static class Entries<K> extends MapIterator<K> implements Iterable<Entry<K>>, Iterator<Entry<K>>{
         private Entry<K> entry = new Entry();
 
         public Entries(ObjectFloatMap<K> map){
@@ -714,7 +714,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>>{
         }
     }
 
-    static public class Values extends MapIterator<Object>{
+    public static class Values extends MapIterator<Object>{
         public Values(ObjectFloatMap<?> map){
             super((ObjectFloatMap<Object>)map);
         }
@@ -742,7 +742,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>>{
         }
     }
 
-    static public class Keys<K> extends MapIterator<K> implements Iterable<K>, Iterator<K>{
+    public static class Keys<K> extends MapIterator<K> implements Iterable<K>, Iterator<K>{
         public Keys(ObjectFloatMap<K> map){
             super(map);
         }

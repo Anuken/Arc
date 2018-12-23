@@ -607,7 +607,7 @@ public class PixmapPacker implements Disposable{
      * @author Nathan Sweet
      * @author Rob Rendell
      */
-    static public class Page{
+    public static class Page{
         final Array<String> addedRects = new Array();
         OrderedMap<String, PixmapPackerRectangle> rects = new OrderedMap();
         Pixmap image;
@@ -669,7 +669,7 @@ public class PixmapPacker implements Disposable{
      * @author Nathan Sweet
      * @author Rob Rendell
      */
-    static public class GuillotineStrategy implements PackStrategy{
+    public static class GuillotineStrategy implements PackStrategy{
         Comparator<Pixmap> comparator;
 
         public void sort(Array<Pixmap> pixmaps){
@@ -771,7 +771,7 @@ public class PixmapPacker implements Disposable{
      * Does bin packing by inserting in rows. This is good at packing images that have similar heights.
      * @author Nathan Sweet
      */
-    static public class SkylineStrategy implements PackStrategy{
+    public static class SkylineStrategy implements PackStrategy{
         Comparator<Pixmap> comparator;
 
         public void sort(Array<Pixmap> images){

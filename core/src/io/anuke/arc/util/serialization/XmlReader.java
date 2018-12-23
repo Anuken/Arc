@@ -429,7 +429,7 @@ public class XmlReader{
         current = elements.size > 0 ? elements.peek() : null;
     }
 
-    static public class Element{
+    public static class Element{
         private final String name;
         private ObjectMap<String, String> attributes;
         private Array<Element> children;

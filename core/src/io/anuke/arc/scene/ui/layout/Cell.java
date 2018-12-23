@@ -49,7 +49,7 @@ public class Cell<T extends Element> implements Poolable{
      * Returns the defaults to use for all cells. This can be used to avoid needing to set the same defaults for every table (eg,
      * for spacing).
      */
-    static public Cell defaults(){
+    public static Cell defaults(){
         if(!initialized){
             initialized = true;
 

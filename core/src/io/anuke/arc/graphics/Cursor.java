@@ -14,11 +14,11 @@ import io.anuke.arc.util.Disposable;
 public interface Cursor extends Disposable{
 
     enum SystemCursor{
-        Arrow,
-        Ibeam,
-        Crosshair,
-        Hand,
-        HorizontalResize,
-        VerticalResize
+        arrow,
+        ibeam,
+        crosshair,
+        hand,
+        horizontalResize,
+        verticalResize
     }
 }

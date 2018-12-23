@@ -91,7 +91,7 @@ public class TextButton extends Button{
      * The style for a text button, see {@link TextButton}.
      * @author Nathan Sweet
      */
-    static public class TextButtonStyle extends ButtonStyle{
+    public static class TextButtonStyle extends ButtonStyle{
         public BitmapFont font;
         /** Optional. */
         public Color fontColor, downFontColor, overFontColor, checkedFontColor, checkedOverFontColor, disabledFontColor;

@@ -369,7 +369,7 @@ public class ProgressBar extends Element implements Disableable{
      * @author mzechner
      * @author Nathan Sweet
      */
-    static public class ProgressBarStyle extends Style{
+    public static class ProgressBarStyle extends Style{
         /** The progress bar background, stretched only in one direction. Optional. */
         public Drawable background;
         /** Optional. **/

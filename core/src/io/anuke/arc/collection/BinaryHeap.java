@@ -191,7 +191,7 @@ public class BinaryHeap<T extends BinaryHeap.Node>{
     }
 
     /** @author Nathan Sweet */
-    static public class Node{
+    public static class Node{
         float value;
         int index;
 

@@ -5,42 +5,42 @@ package io.anuke.arc.util;
  * @author Nathan Sweet
  */
 public class Align{
-    static public final int center = 1 << 0;
-    static public final int top = 1 << 1;
-    static public final int bottom = 1 << 2;
-    static public final int left = 1 << 3;
-    static public final int right = 1 << 4;
+    public static final int center = 1 << 0;
+    public static final int top = 1 << 1;
+    public static final int bottom = 1 << 2;
+    public static final int left = 1 << 3;
+    public static final int right = 1 << 4;
 
-    static public final int topLeft = top | left;
-    static public final int topRight = top | right;
-    static public final int bottomLeft = bottom | left;
-    static public final int bottomRight = bottom | right;
+    public static final int topLeft = top | left;
+    public static final int topRight = top | right;
+    public static final int bottomLeft = bottom | left;
+    public static final int bottomRight = bottom | right;
 
-    static public boolean isLeft(int align){
+    public static boolean isLeft(int align){
         return (align & left) != 0;
     }
 
-    static public boolean isRight(int align){
+    public static boolean isRight(int align){
         return (align & right) != 0;
     }
 
-    static public boolean isTop(int align){
+    public static boolean isTop(int align){
         return (align & top) != 0;
     }
 
-    static public boolean isBottom(int align){
+    public static boolean isBottom(int align){
         return (align & bottom) != 0;
     }
 
-    static public boolean isCenterVertical(int align){
+    public static boolean isCenterVertical(int align){
         return (align & top) == 0 && (align & bottom) == 0;
     }
 
-    static public boolean isCenterHorizontal(int align){
+    public static boolean isCenterHorizontal(int align){
         return (align & left) == 0 && (align & right) == 0;
     }
 
-    static public String toString(int align){
+    public static String toString(int align){
         StringBuilder buffer = new StringBuilder(13);
         if((align & top) != 0)
             buffer.append("top,");

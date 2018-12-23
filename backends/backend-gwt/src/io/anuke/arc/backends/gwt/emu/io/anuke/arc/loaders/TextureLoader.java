@@ -65,7 +65,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
         return null;
     }
 
-    static public class TextureParameter extends AssetLoaderParameters<Texture>{
+    public static class TextureParameter extends AssetLoaderParameters<Texture>{
         /** the format of the final Texture. Uses the source images format if null **/
         public Format format = null;
         /** whether to generate mipmaps **/

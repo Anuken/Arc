@@ -9,7 +9,7 @@ import io.anuke.arc.math.Mathf;
 import io.anuke.arc.util.ArcRuntimeException;
 
 public class FileTextureData implements TextureData{
-    static public boolean copyToPOT;
+    public static boolean copyToPOT;
 
     final FileHandle file;
     int width = 0;

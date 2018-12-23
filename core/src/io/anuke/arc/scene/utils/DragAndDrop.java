@@ -281,7 +281,7 @@ public class DragAndDrop{
      * target. Such Actors will be added and removed from the stage automatically during the drag operation. Care should be taken
      * when using the source Actor as a payload drag actor.
      */
-    static public class Payload{
+    public static class Payload{
         Element dragActor, validDragActor, invalidDragActor;
         Object object;
 

@@ -12,7 +12,7 @@ public class TextureRegion{
     Texture texture;
     float u, v;
     float u2, v2;
-    int regionWidth, regionHeight;
+    int width, height;
 
     /** Constructs a region with no texture and no coordinates defined. */
     public TextureRegion(){
@@ -90,17 +90,17 @@ public class TextureRegion{
         float invTexWidth = 1f / texture.getWidth();
         float invTexHeight = 1f / texture.getHeight();
         set(x * invTexWidth, y * invTexHeight, (x + width) * invTexWidth, (y + height) * invTexHeight);
-        regionWidth = Math.abs(width);
-        regionHeight = Math.abs(height);
+        this.width = Math.abs(width);
+        this.height = Math.abs(height);
     }
 
     public void set(float u, float v, float u2, float v2){
         int texWidth = texture.getWidth(), texHeight = texture.getHeight();
-        regionWidth = Math.round(Math.abs(u2 - u) * texWidth);
-        regionHeight = Math.round(Math.abs(v2 - v) * texHeight);
+        width = Math.round(Math.abs(u2 - u) * texWidth);
+        height = Math.round(Math.abs(v2 - v) * texHeight);
 
         // For a 1x1 region, adjust UVs toward pixel center to avoid filtering artifacts on AMD GPUs when drawing very stretched.
-        if(regionWidth == 1 && regionHeight == 1){
+        if(width == 1 && height == 1){
             float adjustX = 0.25f / texWidth;
             u += adjustX;
             u2 -= adjustX;
@@ -141,7 +141,7 @@ public class TextureRegion{
 
     public void setU(float u){
         this.u = u;
-        regionWidth = Math.round(Math.abs(u2 - u) * texture.getWidth());
+        width = Math.round(Math.abs(u2 - u) * texture.getWidth());
     }
 
     public float getV(){
@@ -150,7 +150,7 @@ public class TextureRegion{
 
     public void setV(float v){
         this.v = v;
-        regionHeight = Math.round(Math.abs(v2 - v) * texture.getHeight());
+        height = Math.round(Math.abs(v2 - v) * texture.getHeight());
     }
 
     public float getU2(){
@@ -159,7 +159,7 @@ public class TextureRegion{
 
     public void setU2(float u2){
         this.u2 = u2;
-        regionWidth = Math.round(Math.abs(u2 - u) * texture.getWidth());
+        width = Math.round(Math.abs(u2 - u) * texture.getWidth());
     }
 
     public float getV2(){
@@ -168,7 +168,7 @@ public class TextureRegion{
 
     public void setV2(float v2){
         this.v2 = v2;
-        regionHeight = Math.round(Math.abs(v2 - v) * texture.getHeight());
+        height = Math.round(Math.abs(v2 - v) * texture.getHeight());
     }
 
     public int getX(){
@@ -189,10 +189,10 @@ public class TextureRegion{
 
     /** Returns the region's width. */
     public int getWidth(){
-        return regionWidth;
+        return width;
     }
 
-    public void setRegionWidth(int width){
+    public void setWidth(int width){
         if(isFlipX()){
             setU(u2 + width / (float)texture.getWidth());
         }else{
@@ -202,10 +202,10 @@ public class TextureRegion{
 
     /** Returns the region's height. */
     public int getHeight(){
-        return regionHeight;
+        return height;
     }
 
-    public void setRegionHeight(int height){
+    public void setHeight(int height){
         if(isFlipY()){
             setV(v2 + height / (float)texture.getHeight());
         }else{
@@ -265,8 +265,8 @@ public class TextureRegion{
     public TextureRegion[][] split(int tileWidth, int tileHeight){
         int x = getX();
         int y = getY();
-        int width = regionWidth;
-        int height = regionHeight;
+        int width = this.width;
+        int height = this.height;
 
         int rows = height / tileHeight;
         int cols = width / tileWidth;

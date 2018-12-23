@@ -59,7 +59,7 @@ public class FileHandle{
         this.type = type;
     }
 
-    static public FileHandle tempFile(String prefix){
+    public static FileHandle tempFile(String prefix){
         try{
             return new FileHandle(File.createTempFile(prefix, null));
         }catch(IOException ex){
@@ -67,7 +67,7 @@ public class FileHandle{
         }
     }
 
-    static public FileHandle tempDirectory(String prefix){
+    public static FileHandle tempDirectory(String prefix){
         try{
             File file = File.createTempFile(prefix, null);
             if(!file.delete()) throw new IOException("Unable to delete temp file: " + file);

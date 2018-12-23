@@ -10,8 +10,8 @@ import java.io.File;
  * @author Nathan Sweet
  */
 public final class Lwjgl3Files implements Files{
-    static public final String externalPath = System.getProperty("user.home") + File.separator;
-    static public final String localPath = new File("").getAbsolutePath() + File.separator;
+    public static final String externalPath = System.getProperty("user.home") + File.separator;
+    public static final String localPath = new File("").getAbsolutePath() + File.separator;
 
     @Override
     public FileHandle getFileHandle(String fileName, FileType type){

@@ -82,7 +82,7 @@ public class ObjectSet<T> implements Iterable<T>{
         size = set.size;
     }
 
-    static public <T> ObjectSet<T> with(T... array){
+    public static <T> ObjectSet<T> with(T... array){
         ObjectSet<T> set = new ObjectSet<>();
         set.addAll(array);
         return set;
@@ -510,7 +510,7 @@ public class ObjectSet<T> implements Iterable<T>{
         return iterator2;
     }
 
-    static public class ObjectSetIterator<K> implements Iterable<K>, Iterator<K>{
+    public static class ObjectSetIterator<K> implements Iterable<K>, Iterator<K>{
         final ObjectSet<K> set;
         public boolean hasNext;
         int nextIndex, currentIndex;

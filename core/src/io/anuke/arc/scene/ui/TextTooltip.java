@@ -68,7 +68,7 @@ public class TextTooltip extends Tooltip<Label>{
      * The style for a text tooltip, see {@link TextTooltip}.
      * @author Nathan Sweet
      */
-    static public class TextTooltipStyle{
+    public static class TextTooltipStyle{
         public LabelStyle label;
         /** Optional. */
         public Drawable background;

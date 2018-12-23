@@ -148,7 +148,7 @@ public class Strings{
         return result.toString();
     }
 
-    static public String formatMillis(long val){
+    public static String formatMillis(long val){
         StringBuilder buf = new StringBuilder(20);
         String sgn = "";
 

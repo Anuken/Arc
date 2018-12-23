@@ -329,7 +329,7 @@ public class ZipResourceFile{
         }
     }
 
-    static public final class ZipEntryRO{
+    public static final class ZipEntryRO{
         public final File mFile;
         public final String mFileName;
         public final String mZipFileName;

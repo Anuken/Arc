@@ -11,11 +11,14 @@ import java.util.Random;
  * @author Nathan Sweet
  */
 public final class Mathf{
+    public static final int[] signs = {-1, 1};
     public static final boolean[] booleans = {true, false};
     public static final float FLOAT_ROUNDING_ERROR = 0.000001f; // 32 bits
     public static final float PI = 3.1415927f;
     public static final float PI2 = PI * 2;
     public static final float E = 2.7182818f;
+    public static final float sqrt2 = Mathf.sqrt(2f);
+    public static final float sqrt3 = Mathf.sqrt(3f);
     /** multiply by this to convert from radians to degrees */
     public static final float radiansToDegrees = 180f / PI;
     public static final float radDeg = radiansToDegrees;
@@ -58,6 +61,10 @@ public final class Mathf{
         return Sin.table[(int)((degrees + 90) * degToIndex) & SIN_MASK];
     }
 
+    public static float absin(float in, float scl, float mag){
+        return (sin(in, scl * 2f, mag) + mag) / 2f;
+    }
+
     public static float sin(float radians, float scl, float mag){
         return sin(radians / scl) * mag;
     }
@@ -84,18 +91,6 @@ public final class Mathf{
         }
         atan = PI / 2 - z / (z * z + 0.28f);
         return y < 0f ? atan - PI : atan;
-    }
-
-    public static float trnsx(float angle, float len){
-        return len * cos(degreesToRadians * angle);
-    }
-
-    public static float trnsy(float angle, float len){
-        return len * sin(degreesToRadians * angle);
-    }
-
-    public static float angle(float x, float y, float x2, float y2){
-        return atan2(x2 - x, y2 - y);
     }
 
     public static float sqrt(float x){
@@ -450,6 +445,15 @@ public final class Mathf{
             return i % m;
         }else{
             return i % m + m;
+        }
+    }
+
+    /**Converts a 0-1 value to 0-1 when it is in [0, 1].*/
+    public static float curve(float f, float offset){
+        if(f < offset){
+            return 0f;
+        }else{
+            return (f - offset) / (1f - offset);
         }
     }
 

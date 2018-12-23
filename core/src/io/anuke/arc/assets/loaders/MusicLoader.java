@@ -47,7 +47,7 @@ public class MusicLoader extends AsynchronousAssetLoader<Music, MusicLoader.Musi
         return null;
     }
 
-    static public class MusicParameter extends AssetLoaderParameters<Music>{
+    public static class MusicParameter extends AssetLoaderParameters<Music>{
     }
 
 }

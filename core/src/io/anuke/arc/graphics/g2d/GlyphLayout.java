@@ -481,7 +481,7 @@ public class GlyphLayout implements Poolable{
      * Stores glyphs and positions for a piece of text which is a single color and does not span multiple lines.
      * @author Nathan Sweet
      */
-    static public class GlyphRun implements Poolable{
+    public static class GlyphRun implements Poolable{
         public final Color color = new Color();
         public Array<Glyph> glyphs = new Array<>();
         /**

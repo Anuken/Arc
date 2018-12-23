@@ -1274,7 +1274,7 @@ public class JsonValue implements Iterable<JsonValue>{
         object, array, stringValue, doubleValue, longValue, booleanValue, nullValue
     }
 
-    static public class PrettyPrintSettings{
+    public static class PrettyPrintSettings{
         public OutputType outputType;
 
         /** If an object on a single line fits this many columns, it won't wrap. */

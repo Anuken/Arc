@@ -70,7 +70,7 @@ public class BooleanArray{
     }
 
     /** @see #BooleanArray(boolean[]) */
-    static public BooleanArray with(boolean... array){
+    public static BooleanArray with(boolean... array){
         return new BooleanArray(array);
     }
 

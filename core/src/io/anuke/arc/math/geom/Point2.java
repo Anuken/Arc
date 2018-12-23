@@ -6,14 +6,14 @@ import java.io.Serializable;
  * A point in a 2D grid, with integer x and y coordinates
  * @author badlogic
  */
-public class GridPoint2 implements Serializable{
+public class Point2 implements Serializable{
     private static final long serialVersionUID = -4019969926331717380L;
 
     public int x;
     public int y;
 
     /** Constructs a new 2D grid point. */
-    public GridPoint2(){
+    public Point2(){
     }
 
     /**
@@ -21,7 +21,7 @@ public class GridPoint2 implements Serializable{
      * @param x X coordinate
      * @param y Y coordinate
      */
-    public GridPoint2(int x, int y){
+    public Point2(int x, int y){
         this.x = x;
         this.y = y;
     }
@@ -30,7 +30,7 @@ public class GridPoint2 implements Serializable{
      * Copy constructor
      * @param point The 2D grid point to make a copy of.
      */
-    public GridPoint2(GridPoint2 point){
+    public Point2(Point2 point){
         this.x = point.x;
         this.y = point.y;
     }
@@ -40,7 +40,7 @@ public class GridPoint2 implements Serializable{
      * @param point The 2D grid point to copy the coordinates of.
      * @return this 2D grid point for chaining.
      */
-    public GridPoint2 set(GridPoint2 point){
+    public Point2 set(Point2 point){
         this.x = point.x;
         this.y = point.y;
         return this;
@@ -52,7 +52,7 @@ public class GridPoint2 implements Serializable{
      * @param y Y coordinate
      * @return this 2D grid point for chaining.
      */
-    public GridPoint2 set(int x, int y){
+    public Point2 set(int x, int y){
         this.x = x;
         this.y = y;
         return this;
@@ -62,7 +62,7 @@ public class GridPoint2 implements Serializable{
      * @param other The other point
      * @return the squared distance between this point and the other point.
      */
-    public float dst2(GridPoint2 other){
+    public float dst2(Point2 other){
         int xd = other.x - x;
         int yd = other.y - y;
 
@@ -85,7 +85,7 @@ public class GridPoint2 implements Serializable{
      * @param other The other point
      * @return the distance between this point and the other vector.
      */
-    public float dst(GridPoint2 other){
+    public float dst(Point2 other){
         int xd = other.x - x;
         int yd = other.y - y;
 
@@ -109,7 +109,7 @@ public class GridPoint2 implements Serializable{
      * @param other The other point
      * @return this 2d grid point for chaining.
      */
-    public GridPoint2 add(GridPoint2 other){
+    public Point2 add(Point2 other){
         x += other.x;
         y += other.y;
         return this;
@@ -121,7 +121,7 @@ public class GridPoint2 implements Serializable{
      * @param y The y-coordinate of the other point
      * @return this 2d grid point for chaining.
      */
-    public GridPoint2 add(int x, int y){
+    public Point2 add(int x, int y){
         this.x += x;
         this.y += y;
         return this;
@@ -132,7 +132,7 @@ public class GridPoint2 implements Serializable{
      * @param other The other point
      * @return this 2d grid point for chaining.
      */
-    public GridPoint2 sub(GridPoint2 other){
+    public Point2 sub(Point2 other){
         x -= other.x;
         y -= other.y;
         return this;
@@ -144,7 +144,7 @@ public class GridPoint2 implements Serializable{
      * @param y The y-coordinate of the other point
      * @return this 2d grid point for chaining.
      */
-    public GridPoint2 sub(int x, int y){
+    public Point2 sub(int x, int y){
         this.x -= x;
         this.y -= y;
         return this;
@@ -153,15 +153,15 @@ public class GridPoint2 implements Serializable{
     /**
      * @return a copy of this grid point
      */
-    public GridPoint2 cpy(){
-        return new GridPoint2(this);
+    public Point2 cpy(){
+        return new Point2(this);
     }
 
     @Override
     public boolean equals(Object o){
         if(this == o) return true;
         if(o == null || o.getClass() != this.getClass()) return false;
-        GridPoint2 g = (GridPoint2)o;
+        Point2 g = (Point2)o;
         return this.x == g.x && this.y == g.y;
     }
 

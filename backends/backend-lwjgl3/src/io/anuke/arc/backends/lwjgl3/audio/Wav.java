@@ -9,7 +9,7 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 
 public class Wav{
-    static public class Music extends OpenALMusic{
+    public static class Music extends OpenALMusic{
         private WavInputStream input;
 
         public Music(OpenALAudio audio, FileHandle file){
@@ -37,7 +37,7 @@ public class Wav{
         }
     }
 
-    static public class Sound extends OpenALSound{
+    public static class Sound extends OpenALSound{
         public Sound(OpenALAudio audio, FileHandle file){
             super(audio);
             if(audio.noDevice) return;

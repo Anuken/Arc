@@ -4,7 +4,7 @@ import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.TextureRegion;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.math.Quaternion;
-import io.anuke.arc.math.geom.GridPoint2;
+import io.anuke.arc.math.geom.Point2;
 import io.anuke.arc.math.geom.Rectangle;
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.math.geom.Vector3;
@@ -37,9 +37,9 @@ public class Tmp{
     public static final Color c3 = new Color();
     public static final Color c4 = new Color();
 
-    public static final GridPoint2 g1 = new GridPoint2();
-    public static final GridPoint2 g2 = new GridPoint2();
-    public static final GridPoint2 g3 = new GridPoint2();
+    public static final Point2 g1 = new Point2();
+    public static final Point2 g2 = new Point2();
+    public static final Point2 g3 = new Point2();
 
     public static final TextureRegion tr1 = new TextureRegion();
     public static final TextureRegion tr2 = new TextureRegion();

@@ -306,7 +306,7 @@ public class Button extends Table implements Disableable{
      * The style for a button, see {@link Button}.
      * @author mzechner
      */
-    static public class ButtonStyle extends Style{
+    public static class ButtonStyle extends Style{
         /** Optional. */
         public Drawable up, down, over, checked, checkedOver, disabled;
         /** Optional. */

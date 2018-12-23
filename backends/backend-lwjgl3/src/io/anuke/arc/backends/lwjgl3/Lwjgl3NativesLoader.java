@@ -8,7 +8,7 @@ public final class Lwjgl3NativesLoader{
         System.setProperty("org.lwjgl.input.Mouse.allowNegativeMouseCoords", "true");
     }
 
-    static public void load(){
+    public static void load(){
         ArcNativesLoader.load();
     }
 }

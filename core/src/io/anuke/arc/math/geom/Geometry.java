@@ -8,40 +8,40 @@ import io.anuke.arc.math.Mathf;
 
 public final class Geometry{
     /** Points repesenting cardinal directions, starting at the left and going counter-clockwise. */
-    public final static GridPoint2[] d4 = {
-    new GridPoint2(1, 0),
-    new GridPoint2(0, 1),
-    new GridPoint2(-1, 0),
-    new GridPoint2(0, -1)
+    public final static Point2[] d4 = {
+    new Point2(1, 0),
+    new Point2(0, 1),
+    new Point2(-1, 0),
+    new Point2(0, -1)
     };
-    public final static GridPoint2[] d8 = {
-    new GridPoint2(1, 0),
-    new GridPoint2(1, 1),
-    new GridPoint2(0, 1),
-    new GridPoint2(-1, 1),
-    new GridPoint2(-1, 0),
-    new GridPoint2(-1, -1),
-    new GridPoint2(0, -1),
-    new GridPoint2(1, -1),
+    public final static Point2[] d8 = {
+    new Point2(1, 0),
+    new Point2(1, 1),
+    new Point2(0, 1),
+    new Point2(-1, 1),
+    new Point2(-1, 0),
+    new Point2(-1, -1),
+    new Point2(0, -1),
+    new Point2(1, -1),
     };
-    public final static GridPoint2[] d8edge = {
-    new GridPoint2(1, 1),
-    new GridPoint2(-1, 1),
-    new GridPoint2(-1, -1),
-    new GridPoint2(1, -1)
+    public final static Point2[] d8edge = {
+    new Point2(1, 1),
+    new Point2(-1, 1),
+    new Point2(-1, -1),
+    new Point2(1, -1)
     };
     static private final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2();
 
 
-    public static GridPoint2 d4(int i){
+    public static Point2 d4(int i){
         return d4[Mathf.mod(i, 4)];
     }
 
-    public static GridPoint2 d8(int i){
+    public static Point2 d8(int i){
         return d8[Mathf.mod(i, 8)];
     }
 
-    public static GridPoint2 d8edge(int i){
+    public static Point2 d8edge(int i){
         return d8edge[Mathf.mod(i, 4)];
     }
 
@@ -183,15 +183,15 @@ public final class Geometry{
         }
     }
 
-    public static GridPoint2[] getD4Points(){
+    public static Point2[] getD4Points(){
         return d4;
     }
 
-    public static GridPoint2[] getD8Points(){
+    public static Point2[] getD8Points(){
         return d8;
     }
 
-    public static GridPoint2[] getD8EdgePoints(){
+    public static Point2[] getD8EdgePoints(){
         return d8edge;
     }
 
@@ -309,7 +309,7 @@ public final class Geometry{
      * </pre>
      * @return barycentricOut
      */
-    static public Vector2 toBarycoord(Vector2 p, Vector2 a, Vector2 b, Vector2 c, Vector2 barycentricOut){
+    public static Vector2 toBarycoord(Vector2 p, Vector2 a, Vector2 b, Vector2 c, Vector2 barycentricOut){
         Vector2 v0 = tmp1.set(b).sub(a);
         Vector2 v1 = tmp2.set(c).sub(a);
         Vector2 v2 = tmp3.set(p).sub(a);
@@ -325,7 +325,7 @@ public final class Geometry{
     }
 
     /** Returns true if the barycentric coordinates are inside the triangle. */
-    static public boolean barycoordInsideTriangle(Vector2 barycentric){
+    public static boolean barycoordInsideTriangle(Vector2 barycentric){
         return barycentric.x >= 0 && barycentric.y >= 0 && barycentric.x + barycentric.y <= 1;
     }
 
@@ -333,7 +333,7 @@ public final class Geometry{
      * Returns interpolated values given the barycentric coordinates of a point in a triangle and the values at each vertex.
      * @return interpolatedOut
      */
-    static public Vector2 fromBarycoord(Vector2 barycentric, Vector2 a, Vector2 b, Vector2 c, Vector2 interpolatedOut){
+    public static Vector2 fromBarycoord(Vector2 barycentric, Vector2 a, Vector2 b, Vector2 c, Vector2 interpolatedOut){
         float u = 1 - barycentric.x - barycentric.y;
         interpolatedOut.x = u * a.x + barycentric.x * b.x + barycentric.y * c.x;
         interpolatedOut.y = u * a.y + barycentric.x * b.y + barycentric.y * c.y;
@@ -344,7 +344,7 @@ public final class Geometry{
      * Returns an interpolated value given the barycentric coordinates of a point in a triangle and the values at each vertex.
      * @return interpolatedOut
      */
-    static public float fromBarycoord(Vector2 barycentric, float a, float b, float c){
+    public static float fromBarycoord(Vector2 barycentric, float a, float b, float c){
         float u = 1 - barycentric.x - barycentric.y;
         return u * a + barycentric.x * b + barycentric.y * c;
     }
@@ -357,7 +357,7 @@ public final class Geometry{
      * @param c the third coefficient of the quadric equation
      * @return the lowest positive root or Float.Nan
      */
-    static public float lowestPositiveRoot(float a, float b, float c){
+    public static float lowestPositiveRoot(float a, float b, float c){
         float det = b * b - 4 * a * c;
         if(det < 0) return Float.NaN;
 
@@ -377,21 +377,21 @@ public final class Geometry{
         return Float.NaN;
     }
 
-    static public boolean colinear(float x1, float y1, float x2, float y2, float x3, float y3){
+    public static boolean colinear(float x1, float y1, float x2, float y2, float x3, float y3){
         float dx21 = x2 - x1, dy21 = y2 - y1;
         float dx32 = x3 - x2, dy32 = y3 - y2;
         float det = dx32 * dy21 - dx21 * dy32;
         return Math.abs(det) < Mathf.FLOAT_ROUNDING_ERROR;
     }
 
-    static public Vector2 triangleCentroid(float x1, float y1, float x2, float y2, float x3, float y3, Vector2 centroid){
+    public static Vector2 triangleCentroid(float x1, float y1, float x2, float y2, float x3, float y3, Vector2 centroid){
         centroid.x = (x1 + x2 + x3) / 3;
         centroid.y = (y1 + y2 + y3) / 3;
         return centroid;
     }
 
     /** Returns the circumcenter of the triangle. The input points must not be colinear. */
-    static public Vector2 triangleCircumcenter(float x1, float y1, float x2, float y2, float x3, float y3, Vector2 circumcenter){
+    public static Vector2 triangleCircumcenter(float x1, float y1, float x2, float y2, float x3, float y3, Vector2 circumcenter){
         float dx21 = x2 - x1, dy21 = y2 - y1;
         float dx32 = x3 - x2, dy32 = y3 - y2;
         float dx13 = x1 - x3, dy13 = y1 - y3;
@@ -404,7 +404,7 @@ public final class Geometry{
         return circumcenter;
     }
 
-    static public float triangleCircumradius(float x1, float y1, float x2, float y2, float x3, float y3){
+    public static float triangleCircumradius(float x1, float y1, float x2, float y2, float x3, float y3){
         float m1, m2, mx1, mx2, my1, my2, x, y;
         if(Math.abs(y2 - y1) < Mathf.FLOAT_ROUNDING_ERROR){
             m2 = -(x3 - x2) / (y3 - y2);
@@ -438,18 +438,18 @@ public final class Geometry{
      * Gary L. Miller, Dafna Talmor, Shang-Hua Teng, and Noel Walkington. A Delaunay Based Numerical Method for Three Dimensions:
      * Generation, Formulation, and Partition.
      */
-    static public float triangleQuality(float x1, float y1, float x2, float y2, float x3, float y3){
+    public static float triangleQuality(float x1, float y1, float x2, float y2, float x3, float y3){
         float length1 = (float)Math.sqrt(x1 * x1 + y1 * y1);
         float length2 = (float)Math.sqrt(x2 * x2 + y2 * y2);
         float length3 = (float)Math.sqrt(x3 * x3 + y3 * y3);
         return Math.min(length1, Math.min(length2, length3)) / triangleCircumradius(x1, y1, x2, y2, x3, y3);
     }
 
-    static public float triangleArea(float x1, float y1, float x2, float y2, float x3, float y3){
+    public static float triangleArea(float x1, float y1, float x2, float y2, float x3, float y3){
         return Math.abs((x1 - x3) * (y2 - y1) - (x1 - x2) * (y3 - y1)) * 0.5f;
     }
 
-    static public Vector2 quadrilateralCentroid(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,
+    public static Vector2 quadrilateralCentroid(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,
                                                 Vector2 centroid){
         float avgX1 = (x1 + x2 + x3) / 3;
         float avgY1 = (y1 + y2 + y3) / 3;
@@ -461,7 +461,7 @@ public final class Geometry{
     }
 
     /** Returns the centroid for the specified non-self-intersecting polygon. */
-    static public Vector2 polygonCentroid(float[] polygon, int offset, int count, Vector2 centroid){
+    public static Vector2 polygonCentroid(float[] polygon, int offset, int count, Vector2 centroid){
         if(count < 6) throw new IllegalArgumentException("A polygon must have 3 or more coordinate pairs.");
         float x = 0, y = 0;
 
@@ -499,7 +499,7 @@ public final class Geometry{
     }
 
     /** Computes the area for a convex polygon. */
-    static public float polygonArea(float[] polygon, int offset, int count){
+    public static float polygonArea(float[] polygon, int offset, int count){
         float area = 0;
         for(int i = offset, n = offset + count; i < n; i += 2){
             int y1 = i + 1;
@@ -514,11 +514,11 @@ public final class Geometry{
         return area;
     }
 
-    static public void ensureCCW(float[] polygon){
+    public static void ensureCCW(float[] polygon){
         ensureCCW(polygon, 0, polygon.length);
     }
 
-    static public void ensureCCW(float[] polygon, int offset, int count){
+    public static void ensureCCW(float[] polygon, int offset, int count){
         if(!isClockwise(polygon, offset, count)) return;
         int lastX = offset + count - 2;
         for(int i = offset, n = offset + count / 2; i < n; i += 2){
@@ -532,7 +532,7 @@ public final class Geometry{
         }
     }
 
-    static public boolean isClockwise(float[] polygon, int offset, int count){
+    public static boolean isClockwise(float[] polygon, int offset, int count){
         if(count <= 2) return false;
         float area = 0, p1x, p1y, p2x, p2y;
         for(int i = offset, n = offset + count - 3; i < n; i += 2){

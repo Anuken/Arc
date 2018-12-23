@@ -22,7 +22,7 @@ public class Timer{
         start();
     }
 
-    static public Timer instance(){
+    public static Timer instance(){
         if(instance == null){
             instance = new Timer();
         }
@@ -39,7 +39,7 @@ public class Timer{
      * Schedules a task on {@link #instance}.
      * @see #postTask(Task)
      */
-    static public Task post(Task task){
+    public static Task post(Task task){
         return instance().postTask(task);
     }
 
@@ -47,7 +47,7 @@ public class Timer{
      * Schedules a task on {@link #instance}.
      * @see #scheduleTask(Task, float)
      */
-    static public Task schedule(Task task, float delaySeconds){
+    public static Task schedule(Task task, float delaySeconds){
         return instance().scheduleTask(task, delaySeconds);
     }
 
@@ -55,7 +55,7 @@ public class Timer{
      * Schedules a task on {@link #instance}.
      * @see #scheduleTask(Task, float, float)
      */
-    static public Task schedule(Task task, float delaySeconds, float intervalSeconds){
+    public static Task schedule(Task task, float delaySeconds, float intervalSeconds){
         return instance().scheduleTask(task, delaySeconds, intervalSeconds);
     }
 
@@ -63,7 +63,7 @@ public class Timer{
      * Schedules a task on {@link #instance}.
      * @see #scheduleTask(Task, float, float, int)
      */
-    static public Task schedule(Task task, float delaySeconds, float intervalSeconds, int repeatCount){
+    public static Task schedule(Task task, float delaySeconds, float intervalSeconds, int repeatCount){
         return instance().scheduleTask(task, delaySeconds, intervalSeconds, repeatCount);
     }
 

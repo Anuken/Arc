@@ -182,6 +182,26 @@ public class RandomXS128 extends Random{
         setState(seed0, murmurHash3(seed0));
     }
 
+    public boolean chance(double chance){
+        return nextDouble() < chance;
+    }
+
+    public float range(float amount){
+        return nextFloat() * amount * 2 - amount;
+    }
+
+    public float random(float min, float max){
+        return min + (max - min) * nextFloat();
+    }
+
+    public int range(int amount){
+        return nextInt(amount * 2 + 1) - amount;
+    }
+
+    public int random(int min, int max){
+        return min + nextInt(max - min + 1);
+    }
+
     /**
      * Sets the internal state of this generator.
      * @param seed0 the first part of the internal state

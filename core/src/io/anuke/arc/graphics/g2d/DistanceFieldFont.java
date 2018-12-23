@@ -76,7 +76,7 @@ public class DistanceFieldFont extends BitmapFont{
      * Returns a new instance of the distance field shader, see https://github.com/libgdx/libgdx/wiki/Distance-field-fonts if the
      * u_smoothing uniform > 0.0. Otherwise the same code as the default SpriteBatch shader is used.
      */
-    static public ShaderProgram createDistanceFieldShader(){
+    public static ShaderProgram createDistanceFieldShader(){
         String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
         + "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
         + "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //

@@ -5,7 +5,7 @@ package io.anuke.arc.scene.actions;
  * @author Nathan Sweet
  */
 public class RepeatAction extends DelegateAction{
-    static public final int FOREVER = -1;
+    public static final int FOREVER = -1;
 
     private int repeatCount, executedCount;
     private boolean finished;

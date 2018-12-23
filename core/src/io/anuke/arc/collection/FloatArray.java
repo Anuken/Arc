@@ -68,7 +68,7 @@ public class FloatArray{
     }
 
     /** @see #FloatArray(float[]) */
-    static public FloatArray with(float... array){
+    public static FloatArray with(float... array){
         return new FloatArray(array);
     }
 

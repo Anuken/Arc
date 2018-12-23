@@ -683,7 +683,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
         return keys2;
     }
 
-    static public class Entry<K, V>{
+    public static class Entry<K, V>{
         public K key;
         public V value;
 
@@ -735,7 +735,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
         }
     }
 
-    static public class Entries<K, V> extends MapIterator<K, V, Entry<K, V>>{
+    public static class Entries<K, V> extends MapIterator<K, V, Entry<K, V>>{
         Entry<K, V> entry = new Entry();
 
         public Entries(ObjectMap<K, V> map){
@@ -764,7 +764,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
         }
     }
 
-    static public class Values<V> extends MapIterator<Object, V, V>{
+    public static class Values<V> extends MapIterator<Object, V, V>{
         public Values(ObjectMap<?, V> map){
             super((ObjectMap<Object, V>)map);
         }
@@ -800,7 +800,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
         }
     }
 
-    static public class Keys<K> extends MapIterator<K, Object, K>{
+    public static class Keys<K> extends MapIterator<K, Object, K>{
         public Keys(ObjectMap<K, ?> map){
             super((ObjectMap<K, Object>)map);
         }

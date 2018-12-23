@@ -677,7 +677,7 @@ public class IntIntMap implements Iterable<IntIntMap.Entry>{
         return keys2;
     }
 
-    static public class Entry{
+    public static class Entry{
         public int key;
         public int value;
 
@@ -736,7 +736,7 @@ public class IntIntMap implements Iterable<IntIntMap.Entry>{
         }
     }
 
-    static public class Entries extends MapIterator implements Iterable<Entry>, Iterator<Entry>{
+    public static class Entries extends MapIterator implements Iterable<Entry>, Iterator<Entry>{
         private Entry entry = new Entry();
 
         public Entries(IntIntMap map){
@@ -774,7 +774,7 @@ public class IntIntMap implements Iterable<IntIntMap.Entry>{
         }
     }
 
-    static public class Values extends MapIterator{
+    public static class Values extends MapIterator{
         public Values(IntIntMap map){
             super(map);
         }
@@ -806,7 +806,7 @@ public class IntIntMap implements Iterable<IntIntMap.Entry>{
         }
     }
 
-    static public class Keys extends MapIterator{
+    public static class Keys extends MapIterator{
         public Keys(IntIntMap map){
             super(map);
         }

@@ -36,6 +36,6 @@ public class PixmapLoader extends AsynchronousAssetLoader<Pixmap, PixmapLoader.P
         return null;
     }
 
-    static public class PixmapParameter extends AssetLoaderParameters<Pixmap>{
+    public static class PixmapParameter extends AssetLoaderParameters<Pixmap>{
     }
 }

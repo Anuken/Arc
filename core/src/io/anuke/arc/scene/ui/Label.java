@@ -369,7 +369,7 @@ public class Label extends Element{
      * The style for a label, see {@link Label}.
      * @author Nathan Sweet
      */
-    static public class LabelStyle extends Style{
+    public static class LabelStyle extends Style{
         public BitmapFont font;
         /** Optional. */
         public Color fontColor;

@@ -116,7 +116,7 @@ public class OrderedSet<T> extends ObjectSet<T>{
         return items.toString(separator);
     }
 
-    static public class OrderedSetIterator<T> extends ObjectSetIterator<T>{
+    public static class OrderedSetIterator<T> extends ObjectSetIterator<T>{
         private Array<T> items;
 
         public OrderedSetIterator(OrderedSet<T> set){

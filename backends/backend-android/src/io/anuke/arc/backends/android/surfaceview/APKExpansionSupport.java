@@ -61,7 +61,7 @@ public class APKExpansionSupport{
         return retArray;
     }
 
-    static public ZipResourceFile getResourceZipFile(String[] expansionFiles)
+    public static ZipResourceFile getResourceZipFile(String[] expansionFiles)
     throws IOException{
         ZipResourceFile apkExpansionFile = null;
         for(String expansionFilePath : expansionFiles){
@@ -74,7 +74,7 @@ public class APKExpansionSupport{
         return apkExpansionFile;
     }
 
-    static public ZipResourceFile getAPKExpansionZipFile(Context ctx,
+    public static ZipResourceFile getAPKExpansionZipFile(Context ctx,
                                                          int mainVersion, int patchVersion) throws IOException{
         String[] expansionFiles = getAPKExpansionFiles(ctx, mainVersion,
         patchVersion);

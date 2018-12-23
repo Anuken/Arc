@@ -7,7 +7,7 @@ import java.io.ByteArrayOutputStream;
 
 /** @author Nathan Sweet */
 public class Ogg{
-    static public class Music extends OpenALMusic{
+    public static class Music extends OpenALMusic{
         private OggInputStream input;
         private OggInputStream previousInput;
 
@@ -41,7 +41,7 @@ public class Ogg{
         }
     }
 
-    static public class Sound extends OpenALSound{
+    public static class Sound extends OpenALSound{
         public Sound(OpenALAudio audio, FileHandle file){
             super(audio);
             if(audio.noDevice) return;

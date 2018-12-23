@@ -150,7 +150,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
         return buffer.toString();
     }
 
-    static public class OrderedMapEntries<K, V> extends Entries<K, V>{
+    public static class OrderedMapEntries<K, V> extends Entries<K, V>{
         private Array<K> keys;
 
         public OrderedMapEntries(OrderedMap<K, V> map){
@@ -180,7 +180,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
         }
     }
 
-    static public class OrderedMapKeys<K> extends Keys<K>{
+    public static class OrderedMapKeys<K> extends Keys<K>{
         private Array<K> keys;
 
         public OrderedMapKeys(OrderedMap<K, ?> map){
@@ -211,7 +211,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
         }
     }
 
-    static public class OrderedMapValues<V> extends Values<V>{
+    public static class OrderedMapValues<V> extends Values<V>{
         private Array keys;
 
         public OrderedMapValues(OrderedMap<?, V> map){

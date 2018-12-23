@@ -76,17 +76,17 @@ public class Lwjgl3Cursor implements Cursor{
         Long glfwCursor = systemCursors.get(systemCursor);
         if(glfwCursor == null){
             long handle = 0;
-            if(systemCursor == SystemCursor.Arrow){
+            if(systemCursor == SystemCursor.arrow){
                 handle = GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR);
-            }else if(systemCursor == SystemCursor.Crosshair){
+            }else if(systemCursor == SystemCursor.crosshair){
                 handle = GLFW.glfwCreateStandardCursor(GLFW.GLFW_CROSSHAIR_CURSOR);
-            }else if(systemCursor == SystemCursor.Hand){
+            }else if(systemCursor == SystemCursor.hand){
                 handle = GLFW.glfwCreateStandardCursor(GLFW.GLFW_HAND_CURSOR);
-            }else if(systemCursor == SystemCursor.HorizontalResize){
+            }else if(systemCursor == SystemCursor.horizontalResize){
                 handle = GLFW.glfwCreateStandardCursor(GLFW.GLFW_HRESIZE_CURSOR);
-            }else if(systemCursor == SystemCursor.VerticalResize){
+            }else if(systemCursor == SystemCursor.verticalResize){
                 handle = GLFW.glfwCreateStandardCursor(GLFW.GLFW_VRESIZE_CURSOR);
-            }else if(systemCursor == SystemCursor.Ibeam){
+            }else if(systemCursor == SystemCursor.ibeam){
                 handle = GLFW.glfwCreateStandardCursor(GLFW.GLFW_IBEAM_CURSOR);
             }else{
                 throw new ArcRuntimeException("Unknown system cursor " + systemCursor);

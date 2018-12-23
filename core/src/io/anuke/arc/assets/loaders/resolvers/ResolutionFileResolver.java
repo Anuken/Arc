@@ -50,7 +50,7 @@ public class ResolutionFileResolver implements FileHandleResolver{
         this.descriptors = descriptors;
     }
 
-    static public Resolution choose(Resolution... descriptors){
+    public static Resolution choose(Resolution... descriptors){
         int w = Core.graphics.getWidth(), h = Core.graphics.getHeight();
 
         // Prefer the shortest side.

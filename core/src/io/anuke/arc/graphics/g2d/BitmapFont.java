@@ -463,7 +463,7 @@ public class BitmapFont implements Disposable{
     }
 
     /** Backing data for a {@link BitmapFont}. */
-    static public class BitmapFontData{
+    public static class BitmapFontData{
         public final Glyph[][] glyphs = new Glyph[PAGES][];
         /** An array of the image paths, for multiple texture pages. */
         public String[] imagePaths;

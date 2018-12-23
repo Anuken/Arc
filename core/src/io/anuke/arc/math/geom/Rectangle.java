@@ -25,10 +25,10 @@ import java.io.Serializable;
  */
 public class Rectangle implements Serializable, Shape2D{
     /** Static temporary rectangle. Use with care! Use only when sure other code will not also use this. */
-    static public final Rectangle tmp = new Rectangle();
+    public static final Rectangle tmp = new Rectangle();
 
     /** Static temporary rectangle. Use with care! Use only when sure other code will not also use this. */
-    static public final Rectangle tmp2 = new Rectangle();
+    public static final Rectangle tmp2 = new Rectangle();
 
     private static final long serialVersionUID = 5733252015138115702L;
     public float x, y;

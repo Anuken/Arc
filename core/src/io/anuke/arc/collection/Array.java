@@ -100,17 +100,17 @@ public class Array<T> implements Iterable<T>{
     }
 
     /** @see #Array(Class) */
-    static public <T> Array<T> of(Class<T> arrayType){
+    public static <T> Array<T> of(Class<T> arrayType){
         return new Array<>(arrayType);
     }
 
     /** @see #Array(boolean, int, Class) */
-    static public <T> Array<T> of(boolean ordered, int capacity, Class<T> arrayType){
+    public static <T> Array<T> of(boolean ordered, int capacity, Class<T> arrayType){
         return new Array<>(ordered, capacity, arrayType);
     }
 
     /** @see #Array(Object[]) */
-    static public <T> Array<T> with(T... array){
+    public static <T> Array<T> with(T... array){
         return new Array(array);
     }
 
@@ -612,7 +612,7 @@ public class Array<T> implements Iterable<T>{
         return buffer.toString();
     }
 
-    static public class ArrayIterator<T> implements Iterator<T>, Iterable<T>{
+    public static class ArrayIterator<T> implements Iterator<T>, Iterable<T>{
         private final Array<T> array;
         private final boolean allowRemove;
         int index;
@@ -657,7 +657,7 @@ public class Array<T> implements Iterable<T>{
         }
     }
 
-    static public class ArrayIterable<T> implements Iterable<T>{
+    public static class ArrayIterable<T> implements Iterable<T>{
         private final Array<T> array;
         private final boolean allowRemove;
         private ArrayIterator iterator1, iterator2;

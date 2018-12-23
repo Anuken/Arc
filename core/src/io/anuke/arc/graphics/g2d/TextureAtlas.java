@@ -412,7 +412,7 @@ public class TextureAtlas implements Disposable{
     }
 
     /** Describes the region of a packed image and provides information about the original image before it was packed. */
-    static public class AtlasRegion extends TextureRegion{
+    public static class AtlasRegion extends TextureRegion{
         /**
          * The number at the end of the original image file name, or -1 if none.<br>
          * <br>

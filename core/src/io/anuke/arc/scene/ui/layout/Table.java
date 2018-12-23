@@ -32,26 +32,26 @@ public class Table extends WidgetGroup{
             return new Cell();
         }
     };
-    static public Color debugTableColor = new Color(0, 0, 1, 1);
-    static public Color debugCellColor = new Color(1, 0, 0, 1);
-    static public Color debugActorColor = new Color(0, 1, 0, 1);
+    public static Color debugTableColor = new Color(0, 0, 1, 1);
+    public static Color debugCellColor = new Color(1, 0, 0, 1);
+    public static Color debugActorColor = new Color(0, 1, 0, 1);
     /** Value that is the top padding of the table's background. */
-    static public Value backgroundTop = context -> {
+    public static Value backgroundTop = context -> {
         Drawable background = ((Table)context).background;
         return background == null ? 0 : background.getTopHeight();
     };
     /** Value that is the left padding of the table's background. */
-    static public Value backgroundLeft = context -> {
+    public static Value backgroundLeft = context -> {
         Drawable background = ((Table)context).background;
         return background == null ? 0 : background.getLeftWidth();
     };
     /** Value that is the bottom padding of the table's background. */
-    static public Value backgroundBottom = context -> {
+    public static Value backgroundBottom = context -> {
         Drawable background = ((Table)context).background;
         return background == null ? 0 : background.getBottomHeight();
     };
     /** Value that is the right padding of the table's background. */
-    static public Value backgroundRight = context -> {
+    public static Value backgroundRight = context -> {
         Drawable background = ((Table)context).background;
         return background == null ? 0 : background.getRightWidth();
     };

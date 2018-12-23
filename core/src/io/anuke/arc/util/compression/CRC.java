@@ -3,7 +3,7 @@
 package io.anuke.arc.util.compression;
 
 public class CRC{
-    static public int[] Table = new int[256];
+    public static int[] Table = new int[256];
 
     static{
         for(int i = 0; i < 256; i++){

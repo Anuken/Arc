@@ -70,13 +70,13 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
         return null;
     }
 
-    static public class TextureLoaderInfo{
+    public static class TextureLoaderInfo{
         String filename;
         TextureData data;
         Texture texture;
     }
 
-    static public class TextureParameter extends AssetLoaderParameters<Texture>{
+    public static class TextureParameter extends AssetLoaderParameters<Texture>{
         /** the format of the final Texture. Uses the source images format if null **/
         public Format format = null;
         /** whether to generate mipmaps **/
