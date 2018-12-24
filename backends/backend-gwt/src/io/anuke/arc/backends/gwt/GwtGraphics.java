@@ -3,8 +3,7 @@ package io.anuke.arc.backends.gwt;
 import io.anuke.arc.Application;
 import io.anuke.arc.Core;
 import io.anuke.arc.Graphics;
-import io.anuke.arc.graphics.Cursor;
-import io.anuke.arc.graphics.Cursor.SystemCursor;
+import io.anuke.arc.Graphics.Cursor.SystemCursor;
 import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.GL30;
 import io.anuke.arc.graphics.Pixmap;
@@ -120,11 +119,6 @@ public class GwtGraphics extends Graphics{
     @Override
     public int getFramesPerSecond(){
         return (int)fps;
-    }
-
-    @Override
-    public GraphicsType getType(){
-        return GraphicsType.WebGL;
     }
 
     @Override

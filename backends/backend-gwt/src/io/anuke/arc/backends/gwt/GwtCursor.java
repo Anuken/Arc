@@ -1,6 +1,6 @@
 package io.anuke.arc.backends.gwt;
 
-import io.anuke.arc.graphics.Cursor;
+import io.anuke.arc.Graphics.Cursor;
 import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.util.ArcRuntimeException;
 

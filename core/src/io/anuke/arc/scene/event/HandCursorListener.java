@@ -1,6 +1,8 @@
 package io.anuke.arc.scene.event;
 
+import io.anuke.arc.Core;
 import io.anuke.arc.function.BooleanProvider;
+import io.anuke.arc.Graphics.Cursor.SystemCursor;
 import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.utils.UIUtils;
 
@@ -20,8 +22,7 @@ public class HandCursorListener extends ClickListener{
             return;
         }
 
-        //TODO implement
-        //Cursors.setHand();
+        Core.graphics.cursor(SystemCursor.hand);
         set = true;
     }
 
@@ -32,8 +33,7 @@ public class HandCursorListener extends ClickListener{
         if(!enabled.get() || !set) return;
 
         if(pointer == -1){
-            //TODO Implement
-            //Cursors.restoreCursor();
+            Core.graphics.restoreCursor();
         }
         set = false;
     }

@@ -136,6 +136,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
             @Override
             public void dispose(){
                 audio.dispose();
+                graphics.dispose();
             }
         });
 

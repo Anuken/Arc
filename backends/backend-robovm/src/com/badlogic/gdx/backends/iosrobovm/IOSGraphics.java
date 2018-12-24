@@ -6,8 +6,7 @@ import io.anuke.arc.Core;
 import io.anuke.arc.Graphics;
 import com.badlogic.gdx.backends.iosrobovm.custom.HWMachine;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.graphics.Cursor;
-import io.anuke.arc.graphics.Cursor.SystemCursor;
+import io.anuke.arc.Graphics.Cursor.SystemCursor;
 import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.GL30;
 import io.anuke.arc.graphics.Pixmap;
@@ -320,11 +319,6 @@ public class IOSGraphics extends Graphics implements GLKViewDelegate, GLKViewCon
     @Override
     public int getFramesPerSecond(){
         return fps;
-    }
-
-    @Override
-    public GraphicsType getType(){
-        return GraphicsType.iOSGL;
     }
 
     @Override

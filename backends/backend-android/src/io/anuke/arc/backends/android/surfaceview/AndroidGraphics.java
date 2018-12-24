@@ -14,7 +14,7 @@ import io.anuke.arc.Graphics;
 import io.anuke.arc.backends.android.surfaceview.surfaceview.*;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.graphics.*;
-import io.anuke.arc.graphics.Cursor.SystemCursor;
+import io.anuke.arc.Graphics.Cursor.SystemCursor;
 import io.anuke.arc.graphics.glutils.FrameBuffer;
 import io.anuke.arc.graphics.glutils.GLVersion;
 import io.anuke.arc.graphics.glutils.ShaderProgram;
@@ -510,12 +510,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
     @Override
     public float getRawDeltaTime(){
         return deltaTime;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public GraphicsType getType(){
-        return GraphicsType.AndroidGL;
     }
 
     /** {@inheritDoc} */

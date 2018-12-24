@@ -2,8 +2,7 @@ package io.anuke.arc.backends.lwjgl3;
 
 import io.anuke.arc.Application;
 import io.anuke.arc.Graphics;
-import io.anuke.arc.graphics.Cursor;
-import io.anuke.arc.graphics.Cursor.SystemCursor;
+import io.anuke.arc.Graphics.Cursor.SystemCursor;
 import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.GL30;
 import io.anuke.arc.graphics.Pixmap;
@@ -187,11 +186,6 @@ public class Lwjgl3Graphics extends Graphics implements Disposable{
     @Override
     public int getFramesPerSecond(){
         return fps;
-    }
-
-    @Override
-    public GraphicsType getType(){
-        return GraphicsType.LWJGL3;
     }
 
     @Override

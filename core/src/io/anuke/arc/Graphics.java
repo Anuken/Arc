@@ -1,10 +1,12 @@
 package io.anuke.arc;
 
 import io.anuke.arc.graphics.*;
-import io.anuke.arc.graphics.Cursor.SystemCursor;
+import io.anuke.arc.Graphics.Cursor.SystemCursor;
 import io.anuke.arc.graphics.g2d.BitmapFont;
 import io.anuke.arc.graphics.g2d.SpriteBatch;
 import io.anuke.arc.graphics.glutils.*;
+import io.anuke.arc.math.Mathf;
+import io.anuke.arc.util.Disposable;
 
 /**
  * This interface encapsulates communication with the graphics processor. Depending on the available hardware and the current
@@ -22,13 +24,11 @@ import io.anuke.arc.graphics.glutils.*;
  * loss. Explore the io.anuke.arc.graphics package for more classes that might come in handy.
  * @author mzechner
  */
-public abstract class Graphics{
+public abstract class Graphics implements Disposable{
     /** One global spritebatch for drawing things. */
-    private SpriteBatch batch;
-
-    public static void setCursor(){
-
-    }
+    private SpriteBatch batch = new SpriteBatch();
+    /** The last cursor used. Can be Cursor or SystemCursor.*/
+    private Object lastCursor;
 
     /** Returns the global spritebatch instance. */
     public SpriteBatch batch(){
@@ -90,9 +90,6 @@ public abstract class Graphics{
 
     /** @return the average number of frames per second */
     public abstract int getFramesPerSecond();
-
-    /** @return the {@link GraphicsType} of this Graphics instance */
-    public abstract GraphicsType getType();
 
     /** @return the {@link GLVersion} of this Graphics instance */
     public abstract GLVersion getGLVersion();
@@ -244,24 +241,81 @@ public abstract class Graphics{
     public abstract Cursor newCursor(Pixmap pixmap, int xHotspot, int yHotspot);
 
     /**
+     * Creates a new cursor by scaling a pixmap and adding an outline.
+     * @param pixmap The base pixmap. Unscaled.
+     * @param scaling The factor by which to scale the base pixmap.
+     * @param outlineColor The color of the cursor's outline.
+     */
+    public Cursor newCursor(Pixmap pixmap, int scaling, Color outlineColor){
+        Pixmap out = Pixmaps.outline(pixmap, outlineColor);
+        out.setColor(Color.WHITE);
+        Pixmap out2 = Pixmaps.scale(out, scaling);
+
+        if(!Mathf.isPowerOfTwo(out2.getWidth())){
+            Pixmap old = out2;
+            out2 = Pixmaps.resize(out2, Mathf.nextPowerOfTwo(out2.getWidth()), Mathf.nextPowerOfTwo(out2.getWidth()));
+            old.dispose();
+        }
+
+        out.dispose();
+        pixmap.dispose();
+
+        return newCursor(out2, out2.getWidth() / 2, out2.getHeight() / 2);
+    }
+
+    /**
+     * Creates a new cursor by file name.
+     * @param filename the name of the cursor .png file, found in the internal file "cursors/{name}.png"
+     */
+    public Cursor newCursor(String filename, int scaling, Color outlineColor){
+        return newCursor(new Pixmap(Core.files.internal("cursors/" + filename + ".png")), scaling, outlineColor);
+    }
+
+    /**Sets the cursor to the default value, e.g. {@link SystemCursor#arrow}.*/
+    public void restoreCursor(){
+        setSystemCursor(SystemCursor.arrow);
+    }
+
+    /**Sets the display cursor.*/
+    public void cursor(Cursor cursor){
+        if(lastCursor == cursor) return;
+
+        if(cursor instanceof SystemCursor){
+            if(((SystemCursor)cursor).cursor != null){
+                setCursor(((SystemCursor)cursor).cursor);
+            }else{
+                setSystemCursor((SystemCursor)cursor);
+            }
+        }else{
+            setCursor(cursor);
+        }
+
+        lastCursor = cursor;
+    }
+
+    /**
      * Only viable on the lwjgl-backend and on the gwt-backend. Browsers that support cursor:url() and support the png format (the
      * pixmap is converted to a data-url of type image/png) should also support custom cursors. Will set the mouse cursor image to
-     * the image represented by the {@link io.anuke.arc.graphics.Cursor}. It is recommended to call this function in the main render thread, and maximum one time per frame.
-     * @param cursor the mouse cursor as a {@link io.anuke.arc.graphics.Cursor}
+     * the image represented by the {@link Cursor}. It is recommended to call this function in the main render thread, and maximum one time per frame.
+     * Internal use only!
+     * @param cursor the mouse cursor as a {@link Cursor}
      */
-    public abstract void setCursor(Cursor cursor);
+    protected abstract void setCursor(Cursor cursor);
 
-    /**
-     * Sets one of the predefined {@link SystemCursor}s
-     */
-    public abstract void setSystemCursor(SystemCursor systemCursor);
+    /**Sets one of the predefined {@link SystemCursor}s.
+     * Internal use only!*/
+    protected abstract void setSystemCursor(SystemCursor systemCursor);
 
-    /**
-     * Enumeration describing different types of {@link Graphics} implementations.
-     * @author mzechner
-     */
-    public enum GraphicsType{
-        AndroidGL, LWJGL, WebGL, iOSGL, JGLFW, Mock, LWJGL3
+    @Override
+    public void dispose(){
+        if(batch != null){
+            batch.dispose();
+            batch = null;
+        }
+
+        for(SystemCursor cursor : SystemCursor.values()){
+            cursor.dispose();
+        }
     }
 
     /**
@@ -331,6 +385,42 @@ public abstract class Graphics{
         public String toString(){
             return "r: " + r + ", g: " + g + ", b: " + b + ", a: " + a + ", depth: " + depth + ", stencil: " + stencil
             + ", num samples: " + samples + ", coverage sampling: " + coverageSampling;
+        }
+    }
+
+    /**
+     * <p>
+     * Represents a mouse cursor. Create a cursor via
+     * {@link Graphics#newCursor(Pixmap, int, int)}. To
+     * set the cursor use {@link Graphics#setCursor(Cursor)}.
+     * To use one of the system cursors, call Graphics#setSystemCursor
+     * </p>
+     **/
+    public interface Cursor extends Disposable{
+
+        enum SystemCursor implements Cursor{
+            arrow,
+            ibeam,
+            crosshair,
+            hand,
+            horizontalResize,
+            verticalResize;
+
+            /**The override cursor to use when setting this cursor.*/
+            private Cursor cursor;
+
+            /**Sets the alias for this cursor.*/
+            public void set(Cursor cursor){
+                this.cursor = cursor;
+            }
+
+            @Override
+            public void dispose(){
+                if(cursor != null && !(cursor instanceof SystemCursor)){
+                    cursor.dispose();
+                    cursor = null;
+                }
+            }
         }
     }
 }

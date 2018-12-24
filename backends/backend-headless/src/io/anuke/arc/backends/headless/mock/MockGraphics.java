@@ -1,9 +1,8 @@
-package io.anuke.arc.backends.headless.mock.graphics;
+package io.anuke.arc.backends.headless.mock;
 
 import io.anuke.arc.Application;
 import io.anuke.arc.Graphics;
-import io.anuke.arc.graphics.Cursor;
-import io.anuke.arc.graphics.Cursor.SystemCursor;
+import io.anuke.arc.Graphics.Cursor.SystemCursor;
 import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.GL30;
 import io.anuke.arc.graphics.Pixmap;

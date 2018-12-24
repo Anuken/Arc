@@ -1,4 +1,4 @@
-package io.anuke.arc.backends.headless.mock.audio;
+package io.anuke.arc.backends.headless.mock;
 
 import io.anuke.arc.audio.AudioDevice;
 

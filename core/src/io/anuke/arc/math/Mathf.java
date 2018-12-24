@@ -427,7 +427,7 @@ public final class Mathf{
 
     /** @return the logarithm of value with base 2 */
     public static float log2(float value){
-        return log(2, value);
+        return (float)Math.log(value) / 0.301029996f;
     }
 
     /** Mod function that works properly for negative numbers. */

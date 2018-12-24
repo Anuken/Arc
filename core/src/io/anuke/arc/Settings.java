@@ -3,6 +3,7 @@ package io.anuke.arc;
 import io.anuke.arc.collection.ObjectMap;
 import io.anuke.arc.collection.ObjectMap.Entry;
 import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.function.Consumer;
 import io.anuke.arc.util.OS;
 
 import java.io.DataInputStream;
@@ -18,6 +19,8 @@ public class Settings{
     protected String appName;
     protected ObjectMap<String, Object> defaults = new ObjectMap<>();
     protected ObjectMap<String, Object> values = new ObjectMap<>();
+    protected Consumer<Throwable> errorHandler;
+    protected boolean hasErrored;
 
     public String getAppName(){
         return appName;
@@ -27,16 +30,41 @@ public class Settings{
         appName = name;
     }
 
+    /**Sets the error handler function.
+     * This function gets called when {@link #save} or {@link #load} fails. This can occur most often on browsers,
+     * where extensions can block writing to local storage.*/
+    public void setErrorHandler(Consumer<Throwable> handler){
+        errorHandler = handler;
+    }
+
     /** Loads all values and keybinds. */
     public void load(){
-        keybinds.save();
-        saveValues();
+        try{
+            keybinds.save();
+            saveValues();
+        }catch(Throwable error){
+            if(errorHandler != null){
+                if(!hasErrored) errorHandler.accept(error);
+            }else{
+                throw error;
+            }
+            hasErrored = true;
+        }
     }
 
     /** Saves all values and keybinds. */
     public void save(){
-        loadValues();
-        keybinds.load();
+        try{
+            loadValues();
+            keybinds.load();
+        }catch(Throwable error){
+            if(errorHandler != null){
+                if(!hasErrored) errorHandler.accept(error);
+            }else{
+                throw error;
+            }
+            hasErrored = true;
+        }
     }
 
     /** Loads a settings file into {@link values} using the specified appName. */
