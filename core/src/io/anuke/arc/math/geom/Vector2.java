@@ -5,6 +5,7 @@ import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.NumberUtils;
+import io.anuke.arc.util.Time;
 
 import java.io.Serializable;
 
@@ -430,6 +431,22 @@ public class Vector2 implements Serializable, Vector<Vector2>, Position{
     public Vector2 lerpPast(Vector2 target, float alpha){
         x = (x) + ((target.x - x) * alpha);
         y = (y) + ((target.y - y) * alpha);
+        return this;
+    }
+
+    public Vector2 lerpDelta(float tx, float ty, float alpha){
+        alpha = Mathf.clamp(alpha * Time.delta());
+        final float invAlpha = 1.0f - alpha;
+        this.x = (x * invAlpha) + (tx * alpha);
+        this.y = (y * invAlpha) + (ty * alpha);
+        return this;
+    }
+
+    public Vector2 lerpDelta(Vector2 target, float alpha){
+        alpha = Mathf.clamp(alpha * Time.delta());
+        final float invAlpha = 1.0f - alpha;
+        this.x = (x * invAlpha) + (target.x * alpha);
+        this.y = (y * invAlpha) + (target.y * alpha);
         return this;
     }
 

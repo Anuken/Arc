@@ -82,12 +82,12 @@ public class VertexArray implements VertexData{
     }
 
     @Override
-    public void bind(final ShaderProgram shader){
+    public void bind(final Shader shader){
         bind(shader, null);
     }
 
     @Override
-    public void bind(final ShaderProgram shader, final int[] locations){
+    public void bind(final Shader shader, final int[] locations){
         final int numAttributes = attributes.size();
         byteBuffer.limit(buffer.limit() * 4);
         if(locations == null){
@@ -133,12 +133,12 @@ public class VertexArray implements VertexData{
      * @param shader the shader
      */
     @Override
-    public void unbind(ShaderProgram shader){
+    public void unbind(Shader shader){
         unbind(shader, null);
     }
 
     @Override
-    public void unbind(ShaderProgram shader, int[] locations){
+    public void unbind(Shader shader, int[] locations){
         final int numAttributes = attributes.size();
         if(locations == null){
             for(int i = 0; i < numAttributes; i++){

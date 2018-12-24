@@ -124,12 +124,12 @@ public class VertexBufferObjectWithVAO implements VertexData{
      * @param shader the shader
      */
     @Override
-    public void bind(ShaderProgram shader){
+    public void bind(Shader shader){
         bind(shader, null);
     }
 
     @Override
-    public void bind(ShaderProgram shader, int[] locations){
+    public void bind(Shader shader, int[] locations){
         GL30 gl = Core.gl30;
 
         gl.glBindVertexArray(vaoHandle);
@@ -142,7 +142,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
         isBound = true;
     }
 
-    private void bindAttributes(ShaderProgram shader, int[] locations){
+    private void bindAttributes(Shader shader, int[] locations){
         boolean stillValid = this.cachedLocations.size != 0;
         final int numAttributes = attributes.size();
 
@@ -185,7 +185,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
         }
     }
 
-    private void unbindAttributes(ShaderProgram shaderProgram){
+    private void unbindAttributes(Shader shader){
         if(cachedLocations == null){
             return;
         }
@@ -195,7 +195,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
             if(location < 0){
                 continue;
             }
-            shaderProgram.disableVertexAttribute(location);
+            shader.disableVertexAttribute(location);
         }
     }
 
@@ -213,12 +213,12 @@ public class VertexBufferObjectWithVAO implements VertexData{
      * @param shader the shader
      */
     @Override
-    public void unbind(final ShaderProgram shader){
+    public void unbind(final Shader shader){
         unbind(shader, null);
     }
 
     @Override
-    public void unbind(final ShaderProgram shader, final int[] locations){
+    public void unbind(final Shader shader, final int[] locations){
         GL30 gl = Core.gl30;
         gl.glBindVertexArray(0);
         isBound = false;

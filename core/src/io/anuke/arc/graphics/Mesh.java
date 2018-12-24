@@ -436,7 +436,7 @@ public class Mesh implements Disposable{
      * ES 2.0 and when auto-bind is disabled.
      * @param shader the shader (does not bind the shader)
      */
-    public void bind(final ShaderProgram shader){
+    public void bind(final Shader shader){
         bind(shader, null);
     }
 
@@ -446,7 +446,7 @@ public class Mesh implements Disposable{
      * @param shader the shader (does not bind the shader)
      * @param locations array containing the attribute locations.
      */
-    public void bind(final ShaderProgram shader, final int[] locations){
+    public void bind(final Shader shader, final int[] locations){
         vertices.bind(shader, locations);
         if(indices.getNumIndices() > 0) indices.bind();
     }
@@ -456,7 +456,7 @@ public class Mesh implements Disposable{
      * ES 1.x and when auto-bind is disabled.
      * @param shader the shader (does not unbind the shader)
      */
-    public void unbind(final ShaderProgram shader){
+    public void unbind(final Shader shader){
         unbind(shader, null);
     }
 
@@ -466,7 +466,7 @@ public class Mesh implements Disposable{
      * @param shader the shader (does not unbind the shader)
      * @param locations array containing the attribute locations.
      */
-    public void unbind(final ShaderProgram shader, final int[] locations){
+    public void unbind(final Shader shader, final int[] locations){
         vertices.unbind(shader, locations);
         if(indices.getNumIndices() > 0) indices.unbind();
     }
@@ -483,7 +483,7 @@ public class Mesh implements Disposable{
      * </p>
      *
      * <p>
-     * This method must only be called after the {@link ShaderProgram#begin()} method has been called!
+     * This method must only be called after the {@link Shader#begin()} method has been called!
      * </p>
      *
      * <p>
@@ -491,7 +491,7 @@ public class Mesh implements Disposable{
      * </p>
      * @param primitiveType the primitive type
      */
-    public void render(ShaderProgram shader, int primitiveType){
+    public void render(Shader shader, int primitiveType){
         render(shader, primitiveType, 0, indices.getNumMaxIndices() > 0 ? getNumIndices() : getNumVertices(), autoBind);
     }
 
@@ -508,7 +508,7 @@ public class Mesh implements Disposable{
      * </p>
      *
      * <p>
-     * This method must only be called after the {@link ShaderProgram#begin()} method has been called!
+     * This method must only be called after the {@link Shader#begin()} method has been called!
      * </p>
      *
      * <p>
@@ -519,7 +519,7 @@ public class Mesh implements Disposable{
      * @param offset the offset into the vertex or index buffer
      * @param count number of vertices or indices to use
      */
-    public void render(ShaderProgram shader, int primitiveType, int offset, int count){
+    public void render(Shader shader, int primitiveType, int offset, int count){
         render(shader, primitiveType, offset, count, autoBind);
     }
 
@@ -536,7 +536,7 @@ public class Mesh implements Disposable{
      * </p>
      *
      * <p>
-     * This method must only be called after the {@link ShaderProgram#begin()} method has been called!
+     * This method must only be called after the {@link Shader#begin()} method has been called!
      * </p>
      *
      * <p>
@@ -548,7 +548,7 @@ public class Mesh implements Disposable{
      * @param count number of vertices or indices to use
      * @param autoBind overrides the autoBind member of this Mesh
      */
-    public void render(ShaderProgram shader, int primitiveType, int offset, int count, boolean autoBind){
+    public void render(Shader shader, int primitiveType, int offset, int count, boolean autoBind){
         if(count == 0) return;
 
         if(autoBind) bind(shader);

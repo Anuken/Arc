@@ -123,12 +123,12 @@ public class VertexBufferObject implements VertexData{
      * @param shader the shader
      */
     @Override
-    public void bind(ShaderProgram shader){
+    public void bind(Shader shader){
         bind(shader, null);
     }
 
     @Override
-    public void bind(ShaderProgram shader, int[] locations){
+    public void bind(Shader shader, int[] locations){
         final GL20 gl = Core.gl20;
 
         gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
@@ -177,12 +177,12 @@ public class VertexBufferObject implements VertexData{
      * @param shader the shader
      */
     @Override
-    public void unbind(final ShaderProgram shader){
+    public void unbind(final Shader shader){
         unbind(shader, null);
     }
 
     @Override
-    public void unbind(final ShaderProgram shader, final int[] locations){
+    public void unbind(final Shader shader, final int[] locations){
         final GL20 gl = Core.gl20;
         final int numAttributes = attributes.size();
         if(locations == null){

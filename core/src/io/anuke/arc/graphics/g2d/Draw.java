@@ -3,10 +3,23 @@ package io.anuke.arc.graphics.g2d;
 import io.anuke.arc.Core;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.SpriteBatch.BatchRect;
+import io.anuke.arc.graphics.glutils.Shader;
 import io.anuke.arc.util.Tmp;
 
 public class Draw{
     public static float scl = 1f;
+
+    public static void shader(Shader shader){
+        shader(shader, true);
+    }
+
+    public static void shader(Shader shader, boolean apply){
+        Core.graphics.batch().setShader(shader, apply);
+    }
+
+    public static void shader(){
+        Core.graphics.batch().setShader(null);
+    }
 
     public static void tint(Color a, Color b, float s){
         Tmp.c1.set(a).lerp(b, s);

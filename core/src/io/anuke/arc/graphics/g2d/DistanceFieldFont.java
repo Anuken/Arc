@@ -25,7 +25,7 @@ package io.anuke.arc.graphics.g2d;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.graphics.Texture.TextureFilter;
-import io.anuke.arc.graphics.glutils.ShaderProgram;
+import io.anuke.arc.graphics.glutils.Shader;
 
 import static io.anuke.arc.Core.graphics;
 
@@ -76,19 +76,19 @@ public class DistanceFieldFont extends BitmapFont{
      * Returns a new instance of the distance field shader, see https://github.com/libgdx/libgdx/wiki/Distance-field-fonts if the
      * u_smoothing uniform > 0.0. Otherwise the same code as the default SpriteBatch shader is used.
      */
-    public static ShaderProgram createDistanceFieldShader(){
-        String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
-        + "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
-        + "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
+    public static Shader createDistanceFieldShader(){
+        String vertexShader = "attribute vec4 " + Shader.POSITION_ATTRIBUTE + ";\n" //
+        + "attribute vec4 " + Shader.COLOR_ATTRIBUTE + ";\n" //
+        + "attribute vec2 " + Shader.TEXCOORD_ATTRIBUTE + "0;\n" //
         + "uniform mat4 u_projTrans;\n" //
         + "varying vec4 v_color;\n" //
         + "varying vec2 v_texCoords;\n" //
         + "\n" //
         + "void main() {\n" //
-        + "	v_color = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
+        + "	v_color = " + Shader.COLOR_ATTRIBUTE + ";\n" //
         + "	v_color.a = v_color.a * (255.0/254.0);\n" //
-        + "	v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
-        + "	gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
+        + "	v_texCoords = " + Shader.TEXCOORD_ATTRIBUTE + "0;\n" //
+        + "	gl_Position =  u_projTrans * " + Shader.POSITION_ATTRIBUTE + ";\n" //
         + "}\n";
 
         String fragmentShader = "#ifdef GL_ES\n" //
@@ -111,11 +111,7 @@ public class DistanceFieldFont extends BitmapFont{
         + "		gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
         + "	}\n" //
         + "}\n";
-
-        ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
-        if(!shader.isCompiled())
-            throw new IllegalArgumentException("Error compiling distance field shader: " + shader.getLog());
-        return shader;
+        return new Shader(vertexShader, fragmentShader);
     }
 
     protected void load(BitmapFontData data){

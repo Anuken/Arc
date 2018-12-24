@@ -17,7 +17,7 @@ import io.anuke.arc.graphics.*;
 import io.anuke.arc.Graphics.Cursor.SystemCursor;
 import io.anuke.arc.graphics.glutils.FrameBuffer;
 import io.anuke.arc.graphics.glutils.GLVersion;
-import io.anuke.arc.graphics.glutils.ShaderProgram;
+import io.anuke.arc.graphics.glutils.Shader;
 import io.anuke.arc.math.WindowedMean;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Log;
@@ -301,7 +301,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
         Texture.invalidateAllTextures(app);
         Cubemap.invalidateAllCubemaps(app);
         TextureArray.invalidateAllTextureArrays(app);
-        ShaderProgram.invalidateAllShaderPrograms(app);
+        Shader.invalidateAllShaderPrograms(app);
         FrameBuffer.invalidateAllFrameBuffers(app);
 
         logManagedCachesStatus();
@@ -529,7 +529,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
         Texture.clearAllTextures(app);
         Cubemap.clearAllCubemaps(app);
         TextureArray.clearAllTextureArrays(app);
-        ShaderProgram.clearAllShaderPrograms(app);
+        Shader.clearAllShaderPrograms(app);
         FrameBuffer.clearAllFrameBuffers(app);
 
         logManagedCachesStatus();
@@ -539,7 +539,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
         Log.infoTag(LOG_TAG, Mesh.getManagedStatus());
         Log.infoTag(LOG_TAG, Texture.getManagedStatus());
         Log.infoTag(LOG_TAG, Cubemap.getManagedStatus());
-        Log.infoTag(LOG_TAG, ShaderProgram.getManagedStatus());
+        Log.infoTag(LOG_TAG, Shader.getManagedStatus());
         Log.infoTag(LOG_TAG, FrameBuffer.getManagedStatus());
     }
 

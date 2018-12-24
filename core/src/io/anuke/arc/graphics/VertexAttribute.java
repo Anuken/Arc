@@ -1,13 +1,13 @@
 package io.anuke.arc.graphics;
 
 import io.anuke.arc.graphics.VertexAttributes.Usage;
-import io.anuke.arc.graphics.glutils.ShaderProgram;
+import io.anuke.arc.graphics.glutils.Shader;
 
 /**
  * A single vertex attribute defined by its {@link Usage}, its number of components and its shader alias. The Usage is used
  * for uniquely identifying the vertex attribute from among its {@linkplain VertexAttributes} siblings. The number of components
  * defines how many components the attribute has. The alias defines to which shader attribute this attribute should bind. The alias
- * is used by a {@link Mesh} when drawing with a {@link ShaderProgram}. The alias can be changed at any time.
+ * is used by a {@link Mesh} when drawing with a {@link Shader}. The alias can be changed at any time.
  * @author mzechner
  */
 public final class VertexAttribute{
@@ -22,7 +22,7 @@ public final class VertexAttribute{
     private final int usageIndex;
     /** the offset of this attribute in bytes, don't change this! **/
     public int offset;
-    /** the alias for the attribute used in a {@link ShaderProgram} **/
+    /** the alias for the attribute used in a {@link Shader} **/
     public String alias;
     /** optional unit/index specifier, used for texture coordinates and bone weights **/
     public int unit;
@@ -85,35 +85,35 @@ public final class VertexAttribute{
     }
 
     public static VertexAttribute Position(){
-        return new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE);
+        return new VertexAttribute(Usage.Position, 3, Shader.POSITION_ATTRIBUTE);
     }
 
     public static VertexAttribute TexCoords(int unit){
-        return new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + unit, unit);
+        return new VertexAttribute(Usage.TextureCoordinates, 2, Shader.TEXCOORD_ATTRIBUTE + unit, unit);
     }
 
     public static VertexAttribute Normal(){
-        return new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE);
+        return new VertexAttribute(Usage.Normal, 3, Shader.NORMAL_ATTRIBUTE);
     }
 
     public static VertexAttribute ColorPacked(){
-        return new VertexAttribute(Usage.ColorPacked, 4, GL20.GL_UNSIGNED_BYTE, true, ShaderProgram.COLOR_ATTRIBUTE);
+        return new VertexAttribute(Usage.ColorPacked, 4, GL20.GL_UNSIGNED_BYTE, true, Shader.COLOR_ATTRIBUTE);
     }
 
     public static VertexAttribute ColorUnpacked(){
-        return new VertexAttribute(Usage.ColorUnpacked, 4, GL20.GL_FLOAT, false, ShaderProgram.COLOR_ATTRIBUTE);
+        return new VertexAttribute(Usage.ColorUnpacked, 4, GL20.GL_FLOAT, false, Shader.COLOR_ATTRIBUTE);
     }
 
     public static VertexAttribute Tangent(){
-        return new VertexAttribute(Usage.Tangent, 3, ShaderProgram.TANGENT_ATTRIBUTE);
+        return new VertexAttribute(Usage.Tangent, 3, Shader.TANGENT_ATTRIBUTE);
     }
 
     public static VertexAttribute Binormal(){
-        return new VertexAttribute(Usage.BiNormal, 3, ShaderProgram.BINORMAL_ATTRIBUTE);
+        return new VertexAttribute(Usage.BiNormal, 3, Shader.BINORMAL_ATTRIBUTE);
     }
 
     public static VertexAttribute BoneWeight(int unit){
-        return new VertexAttribute(Usage.BoneWeight, 2, ShaderProgram.BONEWEIGHT_ATTRIBUTE + unit, unit);
+        return new VertexAttribute(Usage.BoneWeight, 2, Shader.BONEWEIGHT_ATTRIBUTE + unit, unit);
     }
 
     /**

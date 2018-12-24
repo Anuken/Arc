@@ -6,7 +6,7 @@ import io.anuke.arc.collection.Sort;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.Mesh.VertexDataType;
 import io.anuke.arc.graphics.VertexAttributes.Usage;
-import io.anuke.arc.graphics.glutils.ShaderProgram;
+import io.anuke.arc.graphics.glutils.Shader;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.util.Disposable;
@@ -28,8 +28,8 @@ public class SpriteBatch implements Disposable{
     private final Matrix3 projectionMatrix = new Matrix3();
     private final Matrix3 combinedMatrix = new Matrix3();
 
-    private final ShaderProgram shader;
-    private ShaderProgram customShader = null;
+    private final Shader shader;
+    private Shader customShader = null;
     private boolean ownsShader;
 
     private Array<BatchRect> rects;
@@ -39,7 +39,7 @@ public class SpriteBatch implements Disposable{
 
     /**
      * Constructs a new SpriteBatch with a size of 1000, one buffer, and the default shader.
-     * @see SpriteBatch#SpriteBatch(int, ShaderProgram)
+     * @see SpriteBatch#SpriteBatch(int, Shader)
      */
     public SpriteBatch(){
         this(2048, null);
@@ -47,7 +47,7 @@ public class SpriteBatch implements Disposable{
 
     /**
      * Constructs a SpriteBatch with one buffer and the default shader.
-     * @see SpriteBatch#SpriteBatch(int, ShaderProgram)
+     * @see SpriteBatch#SpriteBatch(int, Shader)
      */
     public SpriteBatch(int size){
         this(size, null);
@@ -59,20 +59,20 @@ public class SpriteBatch implements Disposable{
      * respect to the current screen resolution.
      * <p>
      * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
-     * the ones expect for shaders set with {@link #setShader(ShaderProgram)}.
+     * the ones expect for shaders set with {@link #setShader(Shader)}.
      * @param size The max number of sprites in a single batch. Max of 8191.
      * @param defaultShader The default shader to use. This is not owned by the SpriteBatch and must be disposed separately.
      */
-    public SpriteBatch(int size, ShaderProgram defaultShader){
+    public SpriteBatch(int size, Shader defaultShader){
         // 32767 is max vertex index, so 32767 / 4 vertices per sprite = 8191 sprites max.
         if(size > 8191) throw new IllegalArgumentException("Can't have more than 8191 sprites per batch: " + size);
 
         VertexDataType vertexDataType = (Core.gl30 != null) ? VertexDataType.VertexBufferObjectWithVAO : VertexDataType.VertexArray;
 
         mesh = new Mesh(vertexDataType, false, size * 4, size * 6,
-        new VertexAttribute(Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE),
-        new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
-        new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
+        new VertexAttribute(Usage.Position, 2, Shader.POSITION_ATTRIBUTE),
+        new VertexAttribute(Usage.ColorPacked, 4, Shader.COLOR_ATTRIBUTE),
+        new VertexAttribute(Usage.TextureCoordinates, 2, Shader.TEXCOORD_ATTRIBUTE + "0"));
 
         projectionMatrix.setOrtho(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
 
@@ -347,15 +347,23 @@ public class SpriteBatch implements Disposable{
         }
     }
 
-    public ShaderProgram getShader(){
+    public Shader getShader(){
         if(customShader == null){
             return shader;
         }
         return customShader;
     }
 
-    public void setShader(ShaderProgram shader){
+    public void setShader(Shader shader){
+        setShader(shader, true);
+    }
+
+    /**Sets the custom shader to be used for subsequent operations
+     * Flushes this batch.*/
+    public void setShader(Shader shader, boolean applyParams){
+        flush();
         customShader = shader;
+        if(shader != null && applyParams) shader.apply();
     }
 
     /** @return Whether there are still pending draw requests. */

@@ -5,22 +5,22 @@ import io.anuke.arc.assets.AssetLoaderParameters;
 import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.graphics.glutils.ShaderProgram;
+import io.anuke.arc.graphics.glutils.Shader;
 import io.anuke.arc.util.Log;
 
 /**
- * {@link AssetLoader} for {@link ShaderProgram} instances loaded from text files. If the file suffix is ".vert", it is assumed
+ * {@link AssetLoader} for {@link Shader} instances loaded from text files. If the file suffix is ".vert", it is assumed
  * to be a vertex shader, and a fragment shader is found using the same file name with a ".frag" suffix. And vice versa if the
  * file suffix is ".frag". These default suffixes can be changed in the ShaderProgramLoader constructor.
  * <p>
  * For all other file suffixes, the same file is used for both (and therefore should internally distinguish between the programs
- * using preprocessor directives and {@link ShaderProgram#prependVertexCode} and {@link ShaderProgram#prependFragmentCode}).
+ * using preprocessor directives and {@link Shader#prependVertexCode} and {@link Shader#prependFragmentCode}).
  * <p>
  * The above default behavior for finding the files can be overridden by explicitly setting the file names in a
  * {@link ShaderProgramParameter}. The parameter can also be used to prepend code to the programs.
  * @author cypherdare
  */
-public class ShaderProgramLoader extends AsynchronousAssetLoader<ShaderProgram, ShaderProgramLoader.ShaderProgramParameter>{
+public class ShaderProgramLoader extends AsynchronousAssetLoader<Shader, ShaderProgramLoader.ShaderProgramParameter>{
 
     private String vertexFileSuffix = ".vert";
     private String fragmentFileSuffix = ".frag";
@@ -45,7 +45,7 @@ public class ShaderProgramLoader extends AsynchronousAssetLoader<ShaderProgram, 
     }
 
     @Override
-    public ShaderProgram loadSync(AssetManager manager, String fileName, FileHandle file, ShaderProgramParameter parameter){
+    public Shader loadSync(AssetManager manager, String fileName, FileHandle file, ShaderProgramParameter parameter){
         String vertFileName = null, fragFileName = null;
         if(parameter != null){
             if(parameter.vertexFile != null) vertFileName = parameter.vertexFile;
@@ -66,15 +66,15 @@ public class ShaderProgramLoader extends AsynchronousAssetLoader<ShaderProgram, 
             if(parameter.prependFragmentCode != null) fragmentCode = parameter.prependFragmentCode + fragmentCode;
         }
 
-        ShaderProgram shaderProgram = new ShaderProgram(vertexCode, fragmentCode);
-        if((parameter == null || parameter.logOnCompileFailure) && !shaderProgram.isCompiled()){
-            Log.err("ShaderProgram " + fileName + " failed to compile:\n" + shaderProgram.getLog());
+        Shader shader = new Shader(vertexCode, fragmentCode);
+        if((parameter == null || parameter.logOnCompileFailure) && !shader.isCompiled()){
+            Log.err("Shader " + fileName + " failed to compile:\n" + shader.getLog());
         }
 
-        return shaderProgram;
+        return shader;
     }
 
-    public static class ShaderProgramParameter extends AssetLoaderParameters<ShaderProgram>{
+    public static class ShaderProgramParameter extends AssetLoaderParameters<Shader>{
         /**
          * File name to be used for the vertex program instead of the default determined by the file name used to submit this asset
          * to AssetManager.
@@ -89,12 +89,12 @@ public class ShaderProgramLoader extends AsynchronousAssetLoader<ShaderProgram, 
         public boolean logOnCompileFailure = true;
         /**
          * Code that is always added to the vertex shader code. This is added as-is, and you should include a newline (`\n`) if
-         * needed. {@linkplain ShaderProgram#prependVertexCode} is placed before this code.
+         * needed. {@linkplain Shader#prependVertexCode} is placed before this code.
          */
         public String prependVertexCode;
         /**
          * Code that is always added to the fragment shader code. This is added as-is, and you should include a newline (`\n`) if
-         * needed. {@linkplain ShaderProgram#prependFragmentCode} is placed before this code.
+         * needed. {@linkplain Shader#prependFragmentCode} is placed before this code.
          */
         public String prependFragmentCode;
     }

@@ -13,7 +13,7 @@ import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.graphics.g2d.BitmapFont;
 import io.anuke.arc.graphics.g2d.TextureAtlas;
-import io.anuke.arc.graphics.glutils.ShaderProgram;
+import io.anuke.arc.graphics.glutils.Shader;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.async.AsyncExecutor;
 import io.anuke.arc.util.async.ThreadUtils;
@@ -69,7 +69,7 @@ public class AssetManager implements Disposable{
             setLoader(TextureAtlas.class, new TextureAtlasLoader(resolver));
             setLoader(Texture.class, new TextureLoader(resolver));
             setLoader(I18NBundle.class, new I18NBundleLoader(resolver));
-            setLoader(ShaderProgram.class, new ShaderProgramLoader(resolver));
+            setLoader(Shader.class, new ShaderProgramLoader(resolver));
             setLoader(Cubemap.class, new CubemapLoader(resolver));
         }
         executor = new AsyncExecutor(1);

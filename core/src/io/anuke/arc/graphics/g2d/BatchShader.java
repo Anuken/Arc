@@ -1,22 +1,22 @@
 package io.anuke.arc.graphics.g2d;
 
-import io.anuke.arc.graphics.glutils.ShaderProgram;
+import io.anuke.arc.graphics.glutils.Shader;
 
 public class BatchShader{
     private static final String vertexShader =
     String.join("\n",
-        "attribute vec3 " + ShaderProgram.POSITION_ATTRIBUTE + ";",
-        "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";",
-        "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;",
+        "attribute vec3 " + Shader.POSITION_ATTRIBUTE + ";",
+        "attribute vec4 " + Shader.COLOR_ATTRIBUTE + ";",
+        "attribute vec2 " + Shader.TEXCOORD_ATTRIBUTE + "0;",
         "uniform mat3 u_projTrans;",
         "varying vec4 v_color;",
         "varying vec2 v_texCoords;",
         "",
         "void main(){",
-        "   v_color = " + ShaderProgram.COLOR_ATTRIBUTE + ";",
+        "   v_color = " + Shader.COLOR_ATTRIBUTE + ";",
         "   v_color.a = v_color.a * (255.0/254.0);",
-        "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;",
-        "   gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";",
+        "   v_texCoords = " + Shader.TEXCOORD_ATTRIBUTE + "0;",
+        "   gl_Position =  u_projTrans * " + Shader.POSITION_ATTRIBUTE + ";",
         "}"
     );
     private static final String fragmentShader =
@@ -38,9 +38,7 @@ public class BatchShader{
     );
 
     /** Returns a new instance of the default shader used by SpriteBatch for GL2 when no shader is specified. */
-    public static ShaderProgram create(){
-        ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
-        if(!shader.isCompiled()) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
-        return shader;
+    public static Shader create(){
+        return new Shader(vertexShader, fragmentShader);
     }
 }
