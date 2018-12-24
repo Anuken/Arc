@@ -90,6 +90,52 @@ public final class Colors{
         map.put("PURPLE", Color.PURPLE);
         map.put("VIOLET", Color.VIOLET);
         map.put("MAROON", Color.MAROON);
+
+        //lowercase versions too!
+
+        map.put("clear", Color.CLEAR);
+        map.put("black", Color.BLACK);
+
+        map.put("white", Color.WHITE);
+        map.put("lightgray", Color.LIGHT_GRAY);
+        map.put("gray", Color.GRAY);
+        map.put("darkgray", Color.DARK_GRAY);
+
+        map.put("blue", Color.BLUE);
+        map.put("navy", Color.NAVY);
+        map.put("royal", Color.ROYAL);
+        map.put("slate", Color.SLATE);
+        map.put("sky", Color.SKY);
+        map.put("cyan", Color.CYAN);
+        map.put("teal", Color.TEAL);
+
+        map.put("green", Color.GREEN);
+        map.put("charteuse", Color.CHARTREUSE);
+        map.put("lime", Color.LIME);
+        map.put("forest", Color.FOREST);
+        map.put("olive", Color.OLIVE);
+
+        map.put("yellow", Color.YELLOW);
+        map.put("gold", Color.GOLD);
+        map.put("goldenrod", Color.GOLDENROD);
+        map.put("orange", Color.ORANGE);
+
+        map.put("brown", Color.BROWN);
+        map.put("tan", Color.TAN);
+        map.put("firebrick", Color.FIREBRICK);
+
+        map.put("red", Color.RED);
+        map.put("scarlet", Color.SCARLET);
+        map.put("coral", Color.CORAL);
+        map.put("salmon", Color.SALMON);
+        map.put("pink", Color.PINK);
+        map.put("magneta", Color.MAGENTA);
+
+        map.put("purple", Color.PURPLE);
+        map.put("violet", Color.VIOLET);
+        map.put("maroon", Color.MAROON);
+        map.put("crimson", Color.SCARLET);
+        map.put("scarlet", Color.SCARLET);
     }
 
 }

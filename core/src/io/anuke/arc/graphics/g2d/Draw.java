@@ -74,4 +74,8 @@ public class Draw{
     public static BatchRect rect(String region, float x, float y){
         return rect(Core.atlas.find(region), x, y);
     }
+
+    public static void flush(){
+        Core.graphics.batch().flush();
+    }
 }
