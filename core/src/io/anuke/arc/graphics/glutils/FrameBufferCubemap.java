@@ -12,7 +12,7 @@ import io.anuke.arc.util.ArcRuntimeException;
  * <p>
  * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper class which should cover most FBO uses. It will
  * automatically create a cubemap for the color attachment and a renderbuffer for the depth buffer. You can get a hold of the
- * cubemap by {@link FrameBufferCubemap#getColorBufferTexture()}. This class will only work with OpenGL ES 2.0.
+ * cubemap by {@link FrameBufferCubemap#getTexture()}. This class will only work with OpenGL ES 2.0.
  * </p>
  *
  * <p>
@@ -145,7 +145,7 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap>{
      * @param side The side to bind
      */
     protected void bindSide(final Cubemap.CubemapSide side){
-        Core.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, side.glEnum, getColorBufferTexture().getTextureObjectHandle(), 0);
+        Core.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, side.glEnum, getTexture().getTextureObjectHandle(), 0);
     }
 
     /** Get the currently bound side. */

@@ -22,7 +22,7 @@ import java.util.Map;
  * <p>
  * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper class which should cover most FBO uses. It will
  * automatically create a gltexture for the color attachment and a renderbuffer for the depth buffer. You can get a hold of the
- * gltexture by {@link GLFrameBuffer#getColorBufferTexture()}. This class will only work with OpenGL ES 2.0.
+ * gltexture by {@link GLFrameBuffer#getTexture()}. This class will only work with OpenGL ES 2.0.
  * </p>
  *
  * <p>
@@ -116,7 +116,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     }
 
     /** Convenience method to return the first Texture attachment present in the fbo **/
-    public T getColorBufferTexture(){
+    public T getTexture(){
         return textureAttachments.first();
     }
 

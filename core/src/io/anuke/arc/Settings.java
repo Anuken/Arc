@@ -4,11 +4,13 @@ import io.anuke.arc.collection.ObjectMap;
 import io.anuke.arc.collection.ObjectMap.Entry;
 import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.function.Consumer;
+import io.anuke.arc.function.Supplier;
 import io.anuke.arc.util.OS;
+import io.anuke.arc.util.io.DefaultSerializers;
+import io.anuke.arc.util.io.ReusableByteArrayInputStream;
+import io.anuke.arc.util.io.StreamUtils.OptimizedByteArrayOutputStream;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 import static io.anuke.arc.Core.keybinds;
 
@@ -21,6 +23,31 @@ public class Settings{
     protected ObjectMap<String, Object> values = new ObjectMap<>();
     protected Consumer<Throwable> errorHandler;
     protected boolean hasErrored;
+
+    private ByteArrayOutputStream byteStream = new OptimizedByteArrayOutputStream(16);
+    private ReusableByteArrayInputStream byteInputStream = new ReusableByteArrayInputStream();
+    private DataOutputStream dataOutput = new DataOutputStream(byteStream);
+    private DataInputStream dataInput = new DataInputStream(byteInputStream);
+    private ObjectMap<Class<?>, TypeSerializer<?>> serializers = new ObjectMap<>();
+
+    public Settings(){
+        DefaultSerializers.register(this);
+    }
+
+    public TypeSerializer<?> getSerializer(Class<?> type){
+        return serializers.get(type);
+    }
+
+    public <T> void setSerializer(Class<?> type, TypeWriter<T> writer, TypeReader<T> reader){
+        serializers.put(type, new TypeSerializer<T>(){
+            @Override public void write(DataOutput stream, T object) throws IOException{ writer.write(stream, object); }
+            @Override public T read(DataInput stream) throws IOException{ return reader.read(stream); }
+        });
+    }
+
+    public <T> void setSerializer(Class<?> type, TypeSerializer<T> ser){
+        serializers.put(type, ser);
+    }
 
     public String getAppName(){
         return appName;
@@ -182,6 +209,40 @@ public class Settings{
         return values.containsKey(name);
     }
 
+    @SuppressWarnings("unchecked")
+    public void putObject(String name, Object value, Class<?> type){
+        if(!serializers.containsKey(type)){
+            throw new IllegalArgumentException(type + " does not have a serializer registered!");
+        }
+        byteStream.reset();
+
+        TypeSerializer serializer = serializers.get(type);
+        try{
+            serializer.write(dataOutput, value);
+            put(name, byteStream.toByteArray());
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getObject(String name, Class<T> type, Supplier<T> def){
+        if(!serializers.containsKey(type)){
+            throw new IllegalArgumentException("Type " + type + " does not have a serializer registered!");
+        }
+
+        TypeSerializer serializer = serializers.get(type);
+
+        try{
+            byteInputStream.setBytes(getBytes(name));
+            Object obj = serializer.read(dataInput);
+            if(obj == null) return def.get();
+            return (T)obj;
+        }catch(Exception e){
+            return def.get();
+        }
+    }
+
     public float getFloat(String name, float def){
         return (float)values.get(name, def);
     }
@@ -228,7 +289,20 @@ public class Settings{
         || object instanceof String || object instanceof byte[]){
             values.put(name, object);
         }else{
-            throw new IllegalArgumentException("Invalid object stored: " + object);
+            throw new IllegalArgumentException("Invalid object stored: " + object + ". Use putObject() for serialization.");
         }
+    }
+
+    public interface TypeSerializer<T>{
+        void write(DataOutput stream, T object) throws IOException;
+        T read(DataInput stream) throws IOException;
+    }
+
+    public interface TypeWriter<T>{
+        void write(DataOutput stream, T object) throws IOException;
+    }
+
+    public interface TypeReader<T>{
+        T read(DataInput stream) throws IOException;
     }
 }

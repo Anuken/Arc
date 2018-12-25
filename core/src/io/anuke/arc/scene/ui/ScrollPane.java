@@ -17,7 +17,7 @@ import io.anuke.arc.scene.style.Style;
 import io.anuke.arc.scene.ui.layout.WidgetGroup;
 import io.anuke.arc.scene.utils.Cullable;
 import io.anuke.arc.scene.utils.Layout;
-import io.anuke.arc.scene.utils.ScissorStack;
+import io.anuke.arc.graphics.g2d.ScissorStack;
 
 import static io.anuke.arc.Core.graphics;
 import static io.anuke.arc.Core.scene;

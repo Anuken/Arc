@@ -4,6 +4,7 @@ import io.anuke.arc.Core;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.SpriteBatch.BatchRect;
 import io.anuke.arc.graphics.glutils.Shader;
+import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.util.Tmp;
 
 public class Draw{
@@ -70,6 +71,10 @@ public class Draw{
         Core.graphics.batch().getColor().a = alpha;
     }
 
+    public static BatchRect rect(){
+        return Core.graphics.batch().draw();
+    }
+
     public static BatchRect rect(String region, float x, float y, float w, float h){
         return rect(region, x, y, w, h);
     }
@@ -90,5 +95,9 @@ public class Draw{
 
     public static void flush(){
         Core.graphics.batch().flush();
+    }
+
+    public static void projection(Matrix3 proj){
+        Core.graphics.batch().setProjection(proj);
     }
 }

@@ -18,7 +18,7 @@ import io.anuke.arc.scene.event.FocusListener.FocusEvent;
 import io.anuke.arc.scene.event.InputEvent.Type;
 import io.anuke.arc.scene.ui.Dialog;
 import io.anuke.arc.scene.ui.layout.Table;
-import io.anuke.arc.scene.utils.ScissorStack;
+import io.anuke.arc.graphics.g2d.ScissorStack;
 import io.anuke.arc.util.Disposable;
 import io.anuke.arc.util.pooling.Pool.Poolable;
 import io.anuke.arc.util.pooling.Pools;

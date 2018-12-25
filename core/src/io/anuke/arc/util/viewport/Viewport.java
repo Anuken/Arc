@@ -7,7 +7,6 @@ import io.anuke.arc.graphics.glutils.HdpiUtils;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.math.geom.Rectangle;
 import io.anuke.arc.math.geom.Vector2;
-import io.anuke.arc.util.ScissorStack;
 
 /**
  * Manages a {@link Camera} and determines how world coordinates are mapped to and from the screen.

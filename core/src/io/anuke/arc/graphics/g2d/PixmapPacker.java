@@ -608,8 +608,8 @@ public class PixmapPacker implements Disposable{
      * @author Rob Rendell
      */
     public static class Page{
-        final Array<String> addedRects = new Array();
-        OrderedMap<String, PixmapPackerRectangle> rects = new OrderedMap();
+        final Array<String> addedRects = new Array<>();
+        OrderedMap<String, PixmapPackerRectangle> rects = new OrderedMap<>();
         Pixmap image;
         Texture texture;
         boolean dirty;

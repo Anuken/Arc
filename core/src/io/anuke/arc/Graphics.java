@@ -56,9 +56,14 @@ public abstract class Graphics implements Disposable{
     public abstract void setGL30(GL30 gl30);
 
     /** Clears the color buffer using the specified color. */
-    public void clear(Color color){
-        Core.gl.glClearColor(color.r, color.g, color.b, color.a);
+    public void clear(float r, float g, float b, float a){
+        Core.gl.glClearColor(r, g, b, a);
         Core.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    }
+
+    /** Clears the color buffer using the specified color. */
+    public void clear(Color color){
+        clear(color.r, color.g, color.b, color.a);
     }
 
     /** @return the width of the client area in logical pixels. */

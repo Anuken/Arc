@@ -1,4 +1,4 @@
-package io.anuke.arc.scene.utils;
+package io.anuke.arc.graphics.g2d;
 
 import io.anuke.arc.Core;
 import io.anuke.arc.collection.Array;
@@ -52,6 +52,7 @@ public class ScissorStack{
             scissor.width = maxX - minX;
             scissor.height = Math.max(1, maxY - minY);
         }
+        Draw.flush();
         scissors.add(scissor);
         HdpiUtils.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);
         return true;

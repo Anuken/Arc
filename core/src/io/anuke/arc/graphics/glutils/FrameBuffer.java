@@ -3,6 +3,7 @@ package io.anuke.arc.graphics.glutils;
 import io.anuke.arc.Core;
 import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.Pixmap;
+import io.anuke.arc.graphics.Pixmap.Format;
 import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.graphics.Texture.TextureFilter;
 import io.anuke.arc.graphics.Texture.TextureWrap;
@@ -12,7 +13,7 @@ import io.anuke.arc.util.ArcRuntimeException;
  * <p>
  * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper class which should cover most FBO uses. It will
  * automatically create a texture for the color attachment and a renderbuffer for the depth buffer. You can get a hold of the
- * texture by {@link FrameBuffer#getColorBufferTexture()}. This class will only work with OpenGL ES 2.0.
+ * texture by {@link FrameBuffer#getTexture()}. This class will only work with OpenGL ES 2.0.
  * </p>
  *
  * <p>
@@ -26,6 +27,7 @@ import io.anuke.arc.util.ArcRuntimeException;
  * @author mzechner, realitix
  */
 public class FrameBuffer extends GLFrameBuffer<Texture>{
+    private Format format;
 
     FrameBuffer(){
     }
@@ -35,6 +37,11 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
      **/
     protected FrameBuffer(GLFrameBufferBuilder<? extends GLFrameBuffer<Texture>> bufferBuilder){
         super(bufferBuilder);
+    }
+
+    /** Creates a new FrameBuffer having the given dimensions in the format RGBA8888 and no depth buffer.*/
+    public FrameBuffer(int width, int height){
+        this(Format.RGBA8888, width, height, false, false);
     }
 
     /** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached. */
@@ -52,12 +59,21 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
      * @throws ArcRuntimeException in case the FrameBuffer could not be created
      */
     public FrameBuffer(Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil){
+        this.format = format;
         FrameBufferBuilder frameBufferBuilder = new FrameBufferBuilder(width, height);
         frameBufferBuilder.addBasicColorTextureAttachment(format);
         if(hasDepth) frameBufferBuilder.addBasicDepthRenderBuffer();
         if(hasStencil) frameBufferBuilder.addBasicStencilRenderBuffer();
         this.bufferBuilder = frameBufferBuilder;
+        build();
+    }
 
+    public void resize(int width, int height){
+        dispose();
+
+        FrameBufferBuilder frameBufferBuilder = new FrameBufferBuilder(width, height);
+        frameBufferBuilder.addBasicColorTextureAttachment(format);
+        this.bufferBuilder = frameBufferBuilder;
         build();
     }
 

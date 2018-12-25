@@ -3,13 +3,13 @@ package io.anuke.arc.graphics.g2d;
 import io.anuke.arc.Core;
 import io.anuke.arc.collection.FloatArray;
 import io.anuke.arc.graphics.Color;
+import io.anuke.arc.math.Angles;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.geom.Rectangle;
 import io.anuke.arc.math.geom.Vector2;
 
 public class Lines{
     private static float stroke = 1f;
-    private static Color strokeColor = Color.WHITE.cpy();
     private static Vector2 vector = new Vector2();
     private static FloatArray floats = new FloatArray(100);
     private static FloatArray floatBuilder = new FloatArray(100);
@@ -108,9 +108,9 @@ public class Lines{
             float y3 = points[3];
 
             if(wrap){
-                lasta = Mathf.slerp(Mathf.angle(x1, y1, x2, y2), Mathf.angle(x2, y2, x3, y3), 0.5f);
+                lasta = Mathf.slerp(Angles.angle(x1, y1, x2, y2), Angles.angle(x2, y2, x3, y3), 0.5f);
             }else{
-                lasta = Mathf.angle(x1, y1, x2, y2) + 180f;
+                lasta = Angles.angle(x1, y1, x2, y2) + 180f;
             }
         }
 
@@ -121,12 +121,12 @@ public class Lines{
             float y2 = points[(i + 3) % length];
 
             float avg;
-            float ang1 = Mathf.angle(x1, y1, x2, y2);
+            float ang1 = Angles.angle(x1, y1, x2, y2);
 
             if(wrap){
                 float x3 = points[(i + 4) % length];
                 float y3 = points[(i + 5) % length];
-                float ang2 = Mathf.angle(x2, y2, x3, y3);
+                float ang2 = Angles.angle(x2, y2, x3, y3);
 
                 avg = Mathf.slerp(ang1, ang2, 0.5f);
             }else{
@@ -357,9 +357,13 @@ public class Lines{
         rect(x - width / 2f, y - height / 2f, width, height, space);
     }
 
+    public static void stroke(float thick){
+        stroke = thick;
+    }
+
+
     public static void stroke(float thick, Color color){
         stroke = thick;
-        strokeColor.set(color);
         Core.graphics.batch().setColor(color);
     }
 
