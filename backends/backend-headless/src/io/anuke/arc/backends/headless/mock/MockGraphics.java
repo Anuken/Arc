@@ -87,11 +87,6 @@ public class MockGraphics extends Graphics{
     }
 
     @Override
-    public GraphicsType getType(){
-        return GraphicsType.Mock;
-    }
-
-    @Override
     public GLVersion getGLVersion(){
         return glVersion;
     }

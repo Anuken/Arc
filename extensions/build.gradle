@@ -9,6 +9,10 @@ subprojects{
     sourceSets.main.java.srcDirs = ["src"]
 
     dependencies{
-        compileOnly project(":core")
+        if(findProject(":arc-core") != null){
+            compileOnly project(":arc-core")
+        }else{
+            compileOnly project(":Arc:arc-core")
+        }
     }
 }
