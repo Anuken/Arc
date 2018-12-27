@@ -2,6 +2,7 @@ package io.anuke.arc.scene.ui;
 
 import io.anuke.arc.Core;
 import io.anuke.arc.graphics.Color;
+import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.graphics.g2d.NinePatch;
 import io.anuke.arc.graphics.g2d.TextureRegion;
 import io.anuke.arc.math.Interpolation;
@@ -15,8 +16,6 @@ import io.anuke.arc.scene.style.SkinReader.ReadContext;
 import io.anuke.arc.scene.style.Style;
 import io.anuke.arc.scene.utils.Disableable;
 import io.anuke.arc.util.pooling.Pools;
-
-import static io.anuke.arc.Core.graphics;
 
 /**
  * A progress bar is a widget that visually displays the progress of some activity or a value within given range. The progress
@@ -117,7 +116,7 @@ public class ProgressBar extends Element implements Disableable{
         float knobWidth = knob == null ? 0 : knob.getMinWidth();
         float percent = getVisualPercent();
 
-        graphics.batch().setColor(color.r, color.g, color.b, color.a * parentAlpha);
+        Draw.color(color.r, color.g, color.b, color.a * parentAlpha);
 
         if(vertical){
             float positionHeight = height;

@@ -4,18 +4,14 @@ import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.graphics.Camera;
 import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.GL30;
+import io.anuke.arc.graphics.g2d.SpriteBatch;
 import io.anuke.arc.graphics.g2d.TextureAtlas;
 import io.anuke.arc.scene.Scene;
 import io.anuke.arc.util.I18NBundle;
 
 /**
- * Environment class holding references to the {@link Application}, {@link Graphics}, {@link Audio}, {@link Files} and
- * {@link Input} instances. The references are held in public static fields which allows static access to all sub systems. Do not
- * use Graphics in a thread that is not the rendering thread.
- * <p>
- * This is normally a design faux pas but in this case is better than the alternatives.
- * @author mzechner
- */
+ * Note that all resources are automatically disposed of in Application#dispose.
+ * There is no need to dispose of them manually.*/
 public class Core{
     public static Application app;
     public static Graphics graphics;
@@ -28,6 +24,7 @@ public class Core{
 
     public static I18NBundle bundle = I18NBundle.createEmptyBundle();
     public static Camera camera;
+    public static SpriteBatch batch;
     public static Scene scene;
     public static AssetManager assets;
     public static TextureAtlas atlas;

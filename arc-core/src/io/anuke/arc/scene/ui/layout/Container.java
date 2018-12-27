@@ -1,13 +1,13 @@
 package io.anuke.arc.scene.ui.layout;
 
 import io.anuke.arc.graphics.Color;
+import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.event.Touchable;
 import io.anuke.arc.scene.style.Drawable;
 import io.anuke.arc.scene.utils.Layout;
 import io.anuke.arc.util.Align;
 
-import static io.anuke.arc.Core.graphics;
 import static io.anuke.arc.Core.scene;
 
 /**
@@ -44,12 +44,12 @@ public class Container<T extends Element> extends WidgetGroup{
             applyTransform(computeTransform());
             drawBackground(0, 0);
             if(clip){
-                graphics.batch().flush();
+                Draw.flush();
                 float marginLeft = this.marginLeft.get(this), marginBottom = this.marginBottom.get(this);
                 if(clipBegin(marginLeft, marginBottom, getWidth() - marginLeft - marginRight.get(this),
                 getHeight() - marginBottom - marginTop.get(this))){
                     drawChildren();
-                    graphics.batch().flush();
+                    Draw.flush();
                     clipEnd();
                 }
             }else
@@ -68,7 +68,7 @@ public class Container<T extends Element> extends WidgetGroup{
     protected void drawBackground(float x, float y){
         if(background == null) return;
         Color color = getColor();
-        graphics.batch().setColor(color.r, color.g, color.b, color.a * parentAlpha);
+        Draw.color(color.r, color.g, color.b, color.a * parentAlpha);
         background.draw(x, y, getWidth(), getHeight());
     }
 

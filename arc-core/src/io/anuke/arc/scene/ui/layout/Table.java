@@ -5,6 +5,7 @@ import io.anuke.arc.function.BooleanConsumer;
 import io.anuke.arc.function.Consumer;
 import io.anuke.arc.function.Supplier;
 import io.anuke.arc.graphics.Color;
+import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.graphics.g2d.TextureRegion;
 import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.event.Touchable;
@@ -16,7 +17,6 @@ import io.anuke.arc.scene.utils.Elements;
 import io.anuke.arc.util.Align;
 import io.anuke.arc.util.pooling.Pool;
 
-import static io.anuke.arc.Core.graphics;
 import static io.anuke.arc.Core.scene;
 
 /**
@@ -114,12 +114,12 @@ public class Table extends WidgetGroup{
             applyTransform(computeTransform());
             drawBackground(0, 0);
             if(clip){
-                graphics.batch().flush();
+                Draw.flush();
                 float padLeft = this.padLeft.get(this), padBottom = this.padBottom.get(this);
                 if(clipBegin(padLeft, padBottom, getWidth() - padLeft - padRight.get(this),
                 getHeight() - padBottom - padTop.get(this))){
                     drawChildren();
-                    graphics.batch().flush();
+                    Draw.flush();
                     clipEnd();
                 }
             }else
@@ -138,7 +138,7 @@ public class Table extends WidgetGroup{
     protected void drawBackground(float x, float y){
         if(background == null) return;
         Color color = getColor();
-        graphics.batch().setColor(color.r, color.g, color.b, color.a * parentAlpha);
+        Draw.color(color.r, color.g, color.b, color.a * parentAlpha);
         background.draw(x, y, width, height);
     }
 

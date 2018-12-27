@@ -1,5 +1,9 @@
 package io.anuke.arc.graphics.g2d;
 
+import io.anuke.arc.graphics.Color;
+import io.anuke.arc.graphics.Texture;
+import io.anuke.arc.math.Matrix3;
+
 public class CacheBatch extends SpriteBatch{
     SpriteCache cache;
 
@@ -13,14 +17,32 @@ public class CacheBatch extends SpriteBatch{
         //does nothing, since flushing like this isn't needed
     }
 
-    public int flushCache(){
+    @Override
+    public void setColor(Color tint){
+        cache.setColor(tint);
+    }
+
+    @Override
+    public void setProjection(Matrix3 projection){
+        cache.setProjectionMatrix(projection);
+    }
+
+    public void beginCache(){
         cache.beginCache();
-        for(int i = 0; i < rectAmount; i++){
-            BatchRect rect = rects.get(i);
-            cache.setPackedColor(rect.color);
-            cache.add(rect.region, rect.x, rect.y, rect.originX, rect.originY, rect.width, rect.height, rect.scaleX, rect.scaleY, rect.rotation);
-        }
+    }
+
+    public int endCache(){
         return cache.endCache();
+    }
+
+    @Override
+    void draw(Texture texture, float[] spriteVertices, int offset, int count){
+        cache.add(texture, spriteVertices, offset, count);
+    }
+
+    @Override
+    void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
+        cache.add(region, x, y, originX, originY, width, height, 1f, 1f, rotation);
     }
 
     public void beginDraw(){

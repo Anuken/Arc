@@ -1,51 +1,60 @@
 package io.anuke.arc.graphics.g2d;
 
 import io.anuke.arc.Core;
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.collection.IntMap;
-import io.anuke.arc.collection.Sort;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.Mesh.VertexDataType;
 import io.anuke.arc.graphics.VertexAttributes.Usage;
 import io.anuke.arc.graphics.glutils.Shader;
+import io.anuke.arc.math.Affine2;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.util.Disposable;
-import io.anuke.arc.util.pooling.Pool;
-import io.anuke.arc.util.pooling.Pool.Poolable;
 
 /**
  * Draws batched quads using indices.
  * @author mzechner
  * @author Nathan Sweet
+ * @see Batch
  */
 public class SpriteBatch implements Disposable{
-    static final int VERTEX_SIZE = 2 + 1 + 1 + 2;
+    static final int VERTEX_SIZE = 2 + 1 + 2;
     static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
 
-    private final Mesh mesh;
-    private final float[] vertices;
+    private Mesh mesh;
+
+    final float[] vertices;
+    int idx = 0;
+    Texture lastTexture = null;
+    float invTexWidth = 0, invTexHeight = 0;
+
+    boolean drawing = false;
 
     private final Matrix3 transformMatrix = new Matrix3();
     private final Matrix3 projectionMatrix = new Matrix3();
     private final Matrix3 combinedMatrix = new Matrix3();
 
+    private Blending blending = Blending.normal;
+
     private final Shader shader;
     private Shader customShader = null;
     private boolean ownsShader;
-    private boolean applyParams;
 
-    protected Array<BatchRect> rects;
-    protected int rectAmount;
-    protected boolean sort;
-    protected Color color = new Color(1f, 1f, 1f);
+    private final Color color = new Color(1, 1, 1, 1);
+    float colorPacked = Color.WHITE_FLOAT_BITS;
+
+    /** Number of render calls since the last {@link #begin()}. **/
+    int renderCalls = 0;
+    /** Number of rendering calls, ever. Will not be reset unless set manually. **/
+    int totalRenderCalls = 0;
+    /** The maximum number of sprites rendered in one batch so far. **/
+    int maxSpritesInBatch = 0;
 
     /**
-     * Constructs a new SpriteBatch with a size of 1000, one buffer, and the default shader.
+     * Constructs a new SpriteBatch with a size of 4096, one buffer, and the default shader.
      * @see SpriteBatch#SpriteBatch(int, Shader)
      */
-    public SpriteBatch(){
-        this(2048, null);
+    SpriteBatch(){
+        this(4096, null);
     }
 
     /**
@@ -62,7 +71,7 @@ public class SpriteBatch implements Disposable{
      * respect to the current screen resolution.
      * <p>
      * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
-     * the ones expect for shaders set with {@link #setShader(Shader)}.
+     * the ones expect for shaders set with {@link #setShader(Shader)}. See {@link #createDefaultShader()}.
      * @param size The max number of sprites in a single batch. Max of 8191.
      * @param defaultShader The default shader to use. This is not owned by the SpriteBatch and must be disposed separately.
      */
@@ -97,274 +106,298 @@ public class SpriteBatch implements Disposable{
         if(defaultShader == null){
             shader = BatchShader.create();
             ownsShader = true;
-        }else
+        }else{
             shader = defaultShader;
-
-        rects = new Array<>(size);
-        for(int i = 0; i < rects.size; i++){
-            rects.set(i, new BatchRect());
         }
     }
 
-    public BatchRect draw(){
-        if(rectAmount >= rects.size) rects.add(new BatchRect());
-        BatchRect rect = rects.get(rectAmount++);
-        rect.reset();
-        rect.color = color.toFloatBits();
-        return rect;
-    }
+    void begin(){
+        if(drawing) throw new IllegalStateException("SpriteBatch.end must be called before begin.");
+        renderCalls = 0;
 
-    /** Sets whether or not to sort draw calls by their Z. Default is false. */
-    public void setSort(boolean sort){
-        this.sort = sort;
-    }
-
-    public void flush(){
-        if(rectAmount == 0) return;
-
+        Core.gl.glDepthMask(false);
         getShader().begin();
         setupMatrices();
-        if(customShader != null && applyParams) customShader.apply();
 
-        Core.gl.glEnable(GL20.GL_BLEND);
-
-        int idx = 0;
-
-        Texture lastTexture = null;
-
-        //Z-sort draw calls if necessary
-        if(sort){
-            Sort.instance().sort(rects.items, 0, rectAmount);
-        }
-
-        Blending blending = Blending.normal;
-
-        for(int i = 0; i < rectAmount; i++){
-            BatchRect rect = rects.get(i);
-
-            if(((rect.region.texture != lastTexture) || idx >= vertices.length || blending != rect.blending) && lastTexture != null){
-                render(idx, blending, lastTexture);
-                idx = 0;
-            }
-
-            if(rect.vertices == null){
-                //bottom left and top right corner points relative to origin
-                final float worldOriginX = rect.x + rect.originX;
-                final float worldOriginY = rect.y + rect.originY;
-                float fx = -rect.originX;
-                float fy = -rect.originY;
-                float fx2 = rect.width - rect.originX;
-                float fy2 = rect.height - rect.originY;
-
-                // scale
-                if(rect.scaleX != 1 || rect.scaleY != 1){
-                    fx *= rect.scaleX;
-                    fy *= rect.scaleY;
-                    fx2 *= rect.scaleX;
-                    fy2 *= rect.scaleY;
-                }
-
-                // construct corner points, start from top left and go counter clockwise
-                final float p1x = fx;
-                final float p1y = fy;
-                final float p2x = fx;
-                final float p2y = fy2;
-                final float p3x = fx2;
-                final float p3y = fy2;
-                final float p4x = fx2;
-                final float p4y = fy;
-
-                float x1;
-                float y1;
-                float x2;
-                float y2;
-                float x3;
-                float y3;
-                float x4;
-                float y4;
-
-                // rotate
-                if(rect.rotation != 0){
-                    final float cos = Mathf.cosDeg(rect.rotation);
-                    final float sin = Mathf.sinDeg(rect.rotation);
-
-                    x1 = cos * p1x - sin * p1y;
-                    y1 = sin * p1x + cos * p1y;
-
-                    x2 = cos * p2x - sin * p2y;
-                    y2 = sin * p2x + cos * p2y;
-
-                    x3 = cos * p3x - sin * p3y;
-                    y3 = sin * p3x + cos * p3y;
-
-                    x4 = x1 + (x3 - x2);
-                    y4 = y3 - (y2 - y1);
-                }else{
-                    x1 = p1x;
-                    y1 = p1y;
-
-                    x2 = p2x;
-                    y2 = p2y;
-
-                    x3 = p3x;
-                    y3 = p3y;
-
-                    x4 = p4x;
-                    y4 = p4y;
-                }
-
-                x1 += worldOriginX;
-                y1 += worldOriginY;
-                x2 += worldOriginX;
-                y2 += worldOriginY;
-                x3 += worldOriginX;
-                y3 += worldOriginY;
-                x4 += worldOriginX;
-                y4 += worldOriginY;
-
-                final float u = rect.region.u;
-                final float v = rect.region.v2;
-                final float u2 = rect.region.u2;
-                final float v2 = rect.region.v;
-
-                float color = rect.color;
-                vertices[idx] = x1;
-                vertices[idx + 1] = y1;
-                vertices[idx + 2] = color;
-                vertices[idx + 3] = u;
-                vertices[idx + 4] = v;
-
-                vertices[idx + 5] = x2;
-                vertices[idx + 6] = y2;
-                vertices[idx + 7] = color;
-                vertices[idx + 8] = u;
-                vertices[idx + 9] = v2;
-
-                vertices[idx + 10] = x3;
-                vertices[idx + 11] = y3;
-                vertices[idx + 12] = color;
-                vertices[idx + 13] = u2;
-                vertices[idx + 14] = v2;
-
-                vertices[idx + 15] = x4;
-                vertices[idx + 16] = y4;
-                vertices[idx + 17] = color;
-                vertices[idx + 18] = u2;
-                vertices[idx + 19] = v;
-                idx += 20;
-
-                lastTexture = rect.region.texture;
-                blending = rect.blending;
-            }else{
-                System.arraycopy(rect.vertices, rect.voffset, vertices, idx, rect.vcount);
-                idx += rect.vcount;
-                lastTexture = rect.region.texture;
-
-                /*
-                int remainingVertices = verticesLength;
-                remainingVertices -= idx;
-                if(remainingVertices == 0){
-                    render(idx, blending, rect.region.texture);
-                    idx = 0;
-                    remainingVertices = verticesLength;
-                }
-                int copyCount = Math.min(remainingVertices, count);
-
-                System.arraycopy(rect.vertices, offset, vertices, idx, copyCount);
-                idx += copyCount;
-                count -= copyCount;
-                while(count > 0){
-                    offset += copyCount;
-                    render(idx, blending, rect.region.texture);
-                    idx = 0;
-                    copyCount = Math.min(verticesLength, count);
-                    System.arraycopy(rect.vertices, offset, vertices, 0, copyCount);
-                    idx += copyCount;
-                    count -= copyCount;
-                }*/
-            }
-        }
-
-        //render any residual rects
-        if(idx > 0 && lastTexture != null){
-            render(idx, blending, lastTexture);
-        }
-
-        getShader().end();
-
-        rectAmount = 0;
+        drawing = true;
     }
 
-    private void render(int idx, Blending blending, Texture texture){
+    void end(){
+        if(!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before end.");
+        if(idx > 0) flush();
+        lastTexture = null;
+        drawing = false;
+
+        Core.gl.glDepthMask(true);
+
+        getShader().end();
+    }
+
+    void setColor(Color tint){
+        color.set(tint);
+        colorPacked = tint.toFloatBits();
+    }
+
+    void setColor(float r, float g, float b, float a){
+        color.set(r, g, b, a);
+        colorPacked = color.toFloatBits();
+    }
+
+    Color getColor(){
+        return color;
+    }
+
+    void setPackedColor(float packedColor){
+        Color.abgr8888ToColor(color, packedColor);
+        this.colorPacked = packedColor;
+    }
+
+    float getPackedColor(){
+        return colorPacked;
+    }
+
+    void draw(Texture texture, float[] spriteVertices, int offset, int count){
+        if(!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
+
+        int verticesLength = vertices.length;
+        int remainingVertices = verticesLength;
+        if(texture != lastTexture){
+            switchTexture(texture);
+        }else{
+            remainingVertices -= idx;
+            if(remainingVertices == 0){
+                flush();
+                remainingVertices = verticesLength;
+            }
+        }
+        int copyCount = Math.min(remainingVertices, count);
+
+        System.arraycopy(spriteVertices, offset, vertices, idx, copyCount);
+        idx += copyCount;
+        count -= copyCount;
+        while(count > 0){
+            offset += copyCount;
+            flush();
+            copyCount = Math.min(verticesLength, count);
+            System.arraycopy(spriteVertices, offset, vertices, 0, copyCount);
+            idx += copyCount;
+            count -= copyCount;
+        }
+    }
+
+    void draw(TextureRegion region, float x, float y){
+        draw(region, x, y, region.getWidth(), region.getHeight());
+    }
+
+    void draw(TextureRegion region, float x, float y, float width, float height){
+        draw(region, x, y, 0, 0, width, height, 0);
+    }
+
+    void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
+        if(!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
+
+        float[] vertices = this.vertices;
+
+        Texture texture = region.texture;
+        if(texture != lastTexture){
+            switchTexture(texture);
+        }else if(idx == vertices.length) //
+            flush();
+
+        if(!Mathf.isZero(rotation)){
+            //bottom left and top right corner points relative to origin
+            final float worldOriginX = x + originX;
+            final float worldOriginY = y + originY;
+            float fx = -originX;
+            float fy = -originY;
+            float fx2 = width - originX;
+            float fy2 = height - originY;
+
+            float x1;
+            float y1;
+            float x2;
+            float y2;
+            float x3;
+            float y3;
+            float x4;
+            float y4;
+
+            // rotate
+            final float cos = Mathf.cosDeg(rotation);
+            final float sin = Mathf.sinDeg(rotation);
+
+            x1 = cos * fx - sin * fy;
+            y1 = sin * fx + cos * fy;
+
+            x2 = cos * fx - sin * fy2;
+            y2 = sin * fx + cos * fy2;
+
+            x3 = cos * fx2 - sin * fy2;
+            y3 = sin * fx2 + cos * fy2;
+
+            x4 = x1 + (x3 - x2);
+            y4 = y3 - (y2 - y1);
+
+            x1 += worldOriginX;
+            y1 += worldOriginY;
+            x2 += worldOriginX;
+            y2 += worldOriginY;
+            x3 += worldOriginX;
+            y3 += worldOriginY;
+            x4 += worldOriginX;
+            y4 += worldOriginY;
+
+            final float u = region.u;
+            final float v = region.v2;
+            final float u2 = region.u2;
+            final float v2 = region.v;
+
+            float color = this.colorPacked;
+            int idx = this.idx;
+            vertices[idx] = x1;
+            vertices[idx + 1] = y1;
+            vertices[idx + 2] = color;
+            vertices[idx + 3] = u;
+            vertices[idx + 4] = v;
+
+            vertices[idx + 5] = x2;
+            vertices[idx + 6] = y2;
+            vertices[idx + 7] = color;
+            vertices[idx + 8] = u;
+            vertices[idx + 9] = v2;
+
+            vertices[idx + 10] = x3;
+            vertices[idx + 11] = y3;
+            vertices[idx + 12] = color;
+            vertices[idx + 13] = u2;
+            vertices[idx + 14] = v2;
+
+            vertices[idx + 15] = x4;
+            vertices[idx + 16] = y4;
+            vertices[idx + 17] = color;
+            vertices[idx + 18] = u2;
+            vertices[idx + 19] = v;
+            this.idx = idx + 20;
+
+        }else{
+            final float fx2 = x + width;
+            final float fy2 = y + height;
+            final float u = region.u;
+            final float v = region.v2;
+            final float u2 = region.u2;
+            final float v2 = region.v;
+
+            float color = this.colorPacked;
+            int idx = this.idx;
+            vertices[idx] = x;
+            vertices[idx + 1] = y;
+            vertices[idx + 2] = color;
+            vertices[idx + 3] = u;
+            vertices[idx + 4] = v;
+
+            vertices[idx + 5] = x;
+            vertices[idx + 6] = fy2;
+            vertices[idx + 7] = color;
+            vertices[idx + 8] = u;
+            vertices[idx + 9] = v2;
+
+            vertices[idx + 10] = fx2;
+            vertices[idx + 11] = fy2;
+            vertices[idx + 12] = color;
+            vertices[idx + 13] = u2;
+            vertices[idx + 14] = v2;
+
+            vertices[idx + 15] = fx2;
+            vertices[idx + 16] = y;
+            vertices[idx + 17] = color;
+            vertices[idx + 18] = u2;
+            vertices[idx + 19] = v;
+            this.idx = idx + 20;
+        }
+    }
+
+    void draw(TextureRegion region, float width, float height, Affine2 transform){
+        if(!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
+
+        float[] vertices = this.vertices;
+
+        Texture texture = region.texture;
+        if(texture != lastTexture){
+            switchTexture(texture);
+        }else if(idx == vertices.length){
+            flush();
+        }
+
+        // construct corner points
+        float x1 = transform.m02;
+        float y1 = transform.m12;
+        float x2 = transform.m01 * height + transform.m02;
+        float y2 = transform.m11 * height + transform.m12;
+        float x3 = transform.m00 * width + transform.m01 * height + transform.m02;
+        float y3 = transform.m10 * width + transform.m11 * height + transform.m12;
+        float x4 = transform.m00 * width + transform.m02;
+        float y4 = transform.m10 * width + transform.m12;
+
+        float u = region.u;
+        float v = region.v2;
+        float u2 = region.u2;
+        float v2 = region.v;
+
+        float color = this.colorPacked;
+        int idx = this.idx;
+        vertices[idx] = x1;
+        vertices[idx + 1] = y1;
+        vertices[idx + 2] = color;
+        vertices[idx + 3] = u;
+        vertices[idx + 4] = v;
+
+        vertices[idx + 5] = x2;
+        vertices[idx + 6] = y2;
+        vertices[idx + 7] = color;
+        vertices[idx + 8] = u;
+        vertices[idx + 9] = v2;
+
+        vertices[idx + 10] = x3;
+        vertices[idx + 11] = y3;
+        vertices[idx + 12] = color;
+        vertices[idx + 13] = u2;
+        vertices[idx + 14] = v2;
+
+        vertices[idx + 15] = x4;
+        vertices[idx + 16] = y4;
+        vertices[idx + 17] = color;
+        vertices[idx + 18] = u2;
+        vertices[idx + 19] = v;
+        this.idx = idx + 20;
+    }
+
+    void flush(){
+        if(idx == 0) return;
+
+        renderCalls++;
+        totalRenderCalls++;
         int spritesInBatch = idx / 20;
+        if(spritesInBatch > maxSpritesInBatch) maxSpritesInBatch = spritesInBatch;
         int count = spritesInBatch * 6;
 
-        Core.gl.glBlendFunc(blending.src, blending.dst);
-
-        texture.bind();
+        lastTexture.bind();
         Mesh mesh = this.mesh;
         mesh.setVertices(vertices, 0, idx);
         mesh.getIndicesBuffer().position(0);
         mesh.getIndicesBuffer().limit(count);
+
+        Core.gl.glEnable(GL20.GL_BLEND);
+        if(blending != Blending.normal)
+            Core.gl.glBlendFuncSeparate(blending.src, blending.dst, blending.src, blending.dst);
+
         mesh.render(getShader(), GL20.GL_TRIANGLES, 0, count);
+
+        idx = 0;
     }
 
-    public Color getColor(){
-        return color;
-    }
-
-    public void setColor(Color color){
-        this.color.set(color);
-    }
-
-    public void setColor(float r, float g, float b, float a){
-        this.color.set(r, g, b, a);
-    }
-
-    public Matrix3 getProjection(){
-        return projectionMatrix;
-    }
-
-    public void setProjection(Matrix3 projection){
-        projectionMatrix.set(projection);
-    }
-
-    public Matrix3 getTransform(){
-        return transformMatrix;
-    }
-
-    public void setTransform(Matrix3 transform){
-        transformMatrix.set(transform);
-    }
-
-    private void setupMatrices(){
-        combinedMatrix.set(projectionMatrix).mul(transformMatrix);
-        getShader().setUniformMatrix4("u_projTrans", BatchShader.copyTransform(combinedMatrix));
-        getShader().setUniformi("u_texture", 0);
-    }
-
-    public Shader getShader(){
-        if(customShader == null){
-            return shader;
-        }
-        return customShader;
-    }
-
-    public void setShader(Shader shader){
-        setShader(shader, true);
-    }
-
-    /**Sets the custom shader to be used for subsequent operations
-     * Flushes this batch.*/
-    public void setShader(Shader shader, boolean applyParams){
+    void setBlending(Blending blending){
         flush();
-        customShader = shader;
-        this.applyParams = applyParams;
-    }
-
-    /** @return Whether there are still pending draw requests. */
-    public boolean needsFlush(){
-        return rectAmount > 0;
+        this.blending = blending;
     }
 
     @Override
@@ -373,147 +406,78 @@ public class SpriteBatch implements Disposable{
         if(ownsShader && shader != null) shader.dispose();
     }
 
-    IntMap<Pool<float[]>> pools = new IntMap<>();
-
-    float[] obtain(float[] src){
-        Pool<float[]> pool = pools.get(src.length);
-        if(pool == null){
-            pools.put(src.length, pool = new Pool<float[]>(){
-                @Override
-                protected float[] newObject(){
-                    return new float[src.length];
-                }
-            });
-        }
-        float[] result = pool.obtain();
-        System.arraycopy(src, 0, result, 0, result.length);
-        return result;
+    Matrix3 getProjection(){
+        return projectionMatrix;
     }
 
-    public class BatchRect implements Poolable, Comparable<BatchRect>{
-        final TextureRegion region = new TextureRegion();
-        float x, y, z, originX, originY, scaleX = 1f, scaleY = 1f, rotation, width, height;
-        float color = Color.WHITE_FLOAT_BITS;
-        float[] vertices;
-        int voffset, vcount;
-        Blending blending = Blending.normal;
+    Matrix3 getTransform(){
+        return transformMatrix;
+    }
 
-        public BatchRect pos(float x, float y){
-            this.x = x;
-            this.y = y;
-            return this;
+    void setProjection(Matrix3 projection){
+        if(drawing) flush();
+        projectionMatrix.set(projection);
+        if(drawing) setupMatrices();
+    }
+
+    void setTransform(Matrix3 transform){
+        if(drawing) flush();
+        transformMatrix.set(transform);
+        if(drawing) setupMatrices();
+    }
+
+    private void setupMatrices(){
+        combinedMatrix.set(projectionMatrix).mul(transformMatrix);
+        if(customShader != null){
+            customShader.setUniformMatrix("u_projTrans", combinedMatrix);
+            customShader.setUniformi("u_texture", 0);
+        }else{
+            shader.setUniformMatrix("u_projTrans", combinedMatrix);
+            shader.setUniformi("u_texture", 0);
         }
+    }
 
-        public BatchRect color(Color color, float alpha){
-            return color(color.r, color.g, color.b, color.a * alpha);
+    protected void switchTexture(Texture texture){
+        flush();
+        lastTexture = texture;
+        invTexWidth = 1.0f / texture.getWidth();
+        invTexHeight = 1.0f / texture.getHeight();
+    }
+
+    void setShader(Shader shader){
+        setShader(shader, true);
+    }
+
+    void setShader(Shader shader, boolean apply){
+        if(drawing){
+            flush();
+            if(customShader != null)
+                customShader.end();
+            else
+                this.shader.end();
         }
+        customShader = shader;
+        if(drawing){
+            if(customShader != null)
+                customShader.begin();
+            else
+                this.shader.begin();
+            setupMatrices();
 
-        public BatchRect color(Color from, Color to, float mix){
-            float f = 1f - mix;
-            return color(from.r * f + to.r * mix, from.g * f + to.g * mix, from.b * f + to.b * mix, from.a * f + to.a * mix);
-        }
-
-        public BatchRect color(Color color){
-            return color(color.r, color.g, color.b, color.a);
-        }
-
-        public BatchRect color(float r, float g, float b, float a){
-            this.color = Color.toFloatBits(r * SpriteBatch.this.color.r, g * SpriteBatch.this.color.g, b * SpriteBatch.this.color.b, a * SpriteBatch.this.color.a);
-            return this;
-        }
-
-        public BatchRect set(float x, float y, float w, float h){
-            this.width = w;
-            this.height = h;
-            this.x = x;
-            this.y = y;
-            return this;
-        }
-
-        public BatchRect center(float x, float y, float w, float h){
-            this.width = w;
-            this.height = h;
-            this.x = x - w/2;
-            this.y = y - h/2;
-            return this;
-        }
-
-        public BatchRect size(float w, float h){
-            this.width = w;
-            this.height = h;
-            return this;
-        }
-
-        public BatchRect origin(float x, float y){
-            this.originX = x;
-            this.originY = y;
-            return this;
-        }
-
-        public BatchRect scl(float x, float y){
-            this.scaleX = x;
-            this.scaleY = y;
-            return this;
-        }
-
-        public BatchRect rot(float rot){
-            this.rotation = rot;
-            return this;
-        }
-
-        public BatchRect tex(String name){
-            this.region.set(Core.atlas.find(name));
-            return this;
-        }
-
-        public BatchRect tex(Texture tex){
-            this.region.set(tex);
-            return this;
-        }
-
-        public BatchRect tex(TextureRegion region){
-            this.region.set(region);
-            return this;
-        }
-
-        public BatchRect uv(float u, float v, float u2, float v2){
-            region.set(u, v, u2, v2);
-            return this;
-        }
-
-        public BatchRect z(float z){
-            this.z = z;
-            return this;
-        }
-
-        public BatchRect blend(Blending blending){
-            this.blending = blending;
-            return this;
-        }
-
-        public BatchRect vert(Texture texture, float[] vertices, int offset, int count){
-            this.vertices = obtain(vertices);
-            this.voffset = offset;
-            this.vcount = count;
-            return tex(texture);
-        }
-
-        @Override
-        public int compareTo(BatchRect other){
-            return Float.compare(z, other.z);
-        }
-
-        @Override
-        public void reset(){
-            if(vertices != null){
-                pools.get(vertices.length).free(vertices);
+            if(shader != null && apply){
+                shader.apply();
             }
-            region.texture = null;
-            region.u = region.v = region.u2 = region.v2 = region.width = region.height = 0;
-            x = y = z = originX = originY = width = height = rotation = 0f;
-            scaleX = scaleY = 1f;
-            color = Color.WHITE_FLOAT_BITS;
-            vertices = null;
         }
+    }
+
+    Shader getShader(){
+        if(customShader == null){
+            return shader;
+        }
+        return customShader;
+    }
+
+    boolean isDrawing(){
+        return drawing;
     }
 }

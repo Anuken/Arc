@@ -3,6 +3,7 @@ package io.anuke.arc.scene.ui;
 import io.anuke.arc.graphics.Camera;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.BitmapFont;
+import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.input.KeyCode;
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.scene.Element;
@@ -17,7 +18,6 @@ import io.anuke.arc.scene.ui.Label.LabelStyle;
 import io.anuke.arc.scene.ui.layout.Table;
 import io.anuke.arc.util.Align;
 
-import static io.anuke.arc.Core.graphics;
 import static io.anuke.arc.Core.scene;
 
 /**
@@ -240,7 +240,7 @@ public class Window extends Table{
 
     protected void drawStageBackground(float x, float y, float width, float height){
         Color color = getColor();
-        graphics.batch().setColor(color.r, color.g, color.b, color.a * parentAlpha);
+        Draw.color(color.r, color.g, color.b, color.a * parentAlpha);
         style.stageBackground.draw(x, y, width, height);
     }
 

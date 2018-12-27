@@ -4,6 +4,7 @@ import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.SnapshotArray;
 import io.anuke.arc.function.Consumer;
 import io.anuke.arc.function.Predicate;
+import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.math.Affine2;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.math.geom.Rectangle;
@@ -11,8 +12,6 @@ import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.scene.event.Touchable;
 import io.anuke.arc.scene.ui.layout.Table;
 import io.anuke.arc.scene.utils.Cullable;
-
-import static io.anuke.arc.Core.graphics;
 
 /**
  * 2D scene graph node that may contain other actors.
@@ -157,8 +156,8 @@ public class Group extends Element implements Cullable{
      * be flushed. {@link #resetTransform()} will restore the transform to what it was before this call.
      */
     protected void applyTransform(Matrix3 transform){
-        oldTransform.set(graphics.batch().getTransform());
-        graphics.batch().setTransform(transform);
+        oldTransform.set(Draw.trans());
+        Draw.trans(transform);
     }
 
     /**
@@ -166,7 +165,7 @@ public class Group extends Element implements Cullable{
      * be flushed.
      */
     protected void resetTransform(){
-        graphics.batch().setTransform(oldTransform);
+        Draw.trans(oldTransform);
     }
 
     /**

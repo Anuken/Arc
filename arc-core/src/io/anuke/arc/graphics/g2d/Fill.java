@@ -1,10 +1,9 @@
 package io.anuke.arc.graphics.g2d;
 
-import io.anuke.arc.graphics.g2d.SpriteBatch.BatchRect;
+import io.anuke.arc.Core;
 import io.anuke.arc.math.Angles;
 
 import static io.anuke.arc.Core.atlas;
-import static io.anuke.arc.Core.graphics;
 
 public class Fill{
     private static float[] vertices = new float[20];
@@ -12,7 +11,7 @@ public class Fill{
 
     public static void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4){
         TextureRegion region = atlas.white();
-        float color = graphics.batch().getColor().toFloatBits();
+        float color = Core.batch.getPackedColor();
         float u = region.getU();
         float v = region.getV();
         vertices[0] = x1;
@@ -39,7 +38,7 @@ public class Fill{
         vertices[18] = u;
         vertices[19] = v;
 
-        graphics.batch().draw().vert(region.getTexture(), vertices, 0, vertices.length);
+        Draw.vert(region.getTexture(), vertices, 0, vertices.length);
     }
 
     public static void tri(float x1, float y1, float x2, float y2, float x3, float y3){
@@ -81,18 +80,26 @@ public class Fill{
             circleRegion = atlas.find("circle");
         }
 
-        graphics.batch().draw().tex(circleRegion).set(x, y, radius * 2, radius * 2);
+        Draw.rect(circleRegion, x, y, radius * 2, radius * 2);
     }
 
-    public static BatchRect rect(){
-        return graphics.batch().draw().tex(atlas.white());
+    public static void rect(float x, float y, float w, float h){
+        Draw.rect(atlas.white(), x, y, w, h);
     }
 
-    public static BatchRect square(float x, float y, float radius){
-        return rect().center(x, y, radius, radius);
+    public static void rect(float x, float y, float w, float h, float rot){
+        Draw.rect(atlas.white(), x, y, w, h, rot);
     }
 
-    public static BatchRect square(float x, float y, float radius, float rotation){
-        return rect().center(x, y, radius, radius).rot(rotation);
+    public static void crect(float x, float y, float w, float h){
+        Draw.rect(atlas.white(), x + w/2f, y + h/2f, w, h);
+    }
+
+    public static void square(float x, float y, float radius){
+        rect(x, y, radius, radius);
+    }
+
+    public static void square(float x, float y, float radius, float rotation){
+        Draw.rect(atlas.white(), x, y, radius, radius, rotation);
     }
 }

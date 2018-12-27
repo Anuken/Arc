@@ -1,5 +1,7 @@
 package io.anuke.arc.scene.ui;
 
+import io.anuke.arc.graphics.g2d.Draw;
+import io.anuke.arc.graphics.g2d.ScissorStack;
 import io.anuke.arc.input.KeyCode;
 import io.anuke.arc.math.Interpolation;
 import io.anuke.arc.math.Mathf;
@@ -17,7 +19,6 @@ import io.anuke.arc.scene.style.Style;
 import io.anuke.arc.scene.ui.layout.WidgetGroup;
 import io.anuke.arc.scene.utils.Cullable;
 import io.anuke.arc.scene.utils.Layout;
-import io.anuke.arc.graphics.g2d.ScissorStack;
 
 import static io.anuke.arc.Core.graphics;
 import static io.anuke.arc.Core.scene;
@@ -587,15 +588,15 @@ public class ScrollPane extends WidgetGroup{
         scene.calculateScissors(widgetAreaBounds, scissorBounds);
 
         // Enable scissors for widget area and draw the widget.
-        graphics.batch().flush();
+        Draw.flush();
         if(ScissorStack.pushScissors(scissorBounds)){
             drawChildren();
-            graphics.batch().flush();
+            Draw.flush();
             ScissorStack.popScissors();
         }
 
         // Render scrollbars and knobs on top.
-        graphics.batch().setColor(color.r, color.g, color.b, color.a * parentAlpha * Interpolation.fade.apply(fadeAlpha / fadeAlphaSeconds));
+        Draw.color(color.r, color.g, color.b, color.a * parentAlpha * Interpolation.fade.apply(fadeAlpha / fadeAlphaSeconds));
         if(scrollX && scrollY){
             if(style.corner != null){
                 style.corner.draw(hScrollBounds.x + hScrollBounds.width, hScrollBounds.y, vScrollBounds.width,

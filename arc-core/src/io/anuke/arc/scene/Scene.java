@@ -8,6 +8,7 @@ import io.anuke.arc.collection.SnapshotArray;
 import io.anuke.arc.function.Consumer;
 import io.anuke.arc.function.Predicate;
 import io.anuke.arc.graphics.Camera;
+import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.graphics.g2d.ScissorStack;
 import io.anuke.arc.input.InputProcessor;
 import io.anuke.arc.input.KeyCode;
@@ -82,10 +83,10 @@ public class Scene implements InputProcessor, Disposable{
 
         if(!root.isVisible()) return;
 
-        graphics.batch().setProjection(camera.projection());
+        Draw.proj(camera.projection());
 
         root.draw();
-        graphics.batch().flush();
+        Draw.flush();
     }
 
     /** Calls {@link #act(float)} with {@link Graphics#getDeltaTime()}, limited to a minimum of 30fps. */
@@ -715,8 +716,8 @@ public class Scene implements InputProcessor, Disposable{
 
     /** Calculates window scissor coordinates from local coordinates using the batch's current transformation matrix. */
     public void calculateScissors(Rectangle localRect, Rectangle scissorRect){
-        viewport.calculateScissors(graphics.batch().getTransform(), localRect, scissorRect);
-        Matrix3 transformMatrix = graphics.batch().getTransform();
+        viewport.calculateScissors(Draw.trans(), localRect, scissorRect);
+        Matrix3 transformMatrix = Draw.trans();
         viewport.calculateScissors(transformMatrix, localRect, scissorRect);
     }
 

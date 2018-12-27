@@ -13,6 +13,7 @@ public class Lines{
     private static Vector2 vector = new Vector2();
     private static FloatArray floats = new FloatArray(100);
     private static FloatArray floatBuilder = new FloatArray(100);
+    private static float[] points = new float[4 * 2];
     private static boolean building;
     private static int circleVertices = 30;
 
@@ -57,16 +58,16 @@ public class Lines{
         line(Core.atlas.white(), x, y, x2, y2, cap, padding);
     }
 
-    public static void line(TextureRegion blankregion, float x, float y, float x2, float y2, CapStyle cap, float padding){
+    public static void line(TextureRegion region, float x, float y, float x2, float y2, CapStyle cap, float padding){
         float length = Mathf.dst(x, y, x2, y2) + (cap == CapStyle.none ? padding * 2f : stroke / 2 + (cap == CapStyle.round ? 0 : padding * 2));
         float angle = Mathf.atan2(x2 - x, y2 - y) * Mathf.radDeg;
 
         if(cap == CapStyle.square){
-            Fill.rect().pos(x - stroke / 2 - padding, y - stroke / 2).origin(stroke / 2 + padding, stroke / 2).size(length, stroke).rot(angle);
+            Draw.rect(region, x - stroke / 2 - padding + length/2f, y, length, stroke, stroke / 2 + padding, stroke / 2, angle);
         }else if(cap == CapStyle.none){
-            Fill.rect().pos(x - padding, y - stroke / 2).origin(padding, stroke / 2).size(length, stroke).rot(angle);
-        }else if(cap == CapStyle.round){
-            Fill.rect().pos(x, y - stroke / 2f).origin(0, stroke / 2).size(length - stroke / 2, stroke).rot(angle);
+            Draw.rect(region, x - padding + length/2f, y, length, stroke, padding, stroke / 2, angle);
+        }else if(cap == CapStyle.round){ //TODO remove or fix
+            Draw.rect(region, x + length/2f, y, length - stroke / 2, stroke, 0, stroke / 2, angle);
             Fill.circle(x, y, stroke / 2f);
             Fill.circle(x2, y2, stroke / 2f);
         }
@@ -330,11 +331,15 @@ public class Lines{
         width += xspace * 2;
         height += yspace * 2;
 
-        Fill.rect().set(x, y, width, stroke);
-        Fill.rect().set(x, y + height, width, -stroke);
-
-        Fill.rect().set(x + width, y, -stroke, height);
-        Fill.rect().set(x, y, stroke, height);
+        points[0] = x;
+        points[1] = y;
+        points[2] = x + width;
+        points[3] = y;
+        points[4] = x + width;
+        points[5] = y + height;
+        points[6] = x;
+        points[7] = y + height;
+        polyline(points, points.length, true);
     }
 
     public static void rect(float x, float y, float width, float height){
@@ -364,7 +369,7 @@ public class Lines{
 
     public static void stroke(float thick, Color color){
         stroke = thick;
-        Core.graphics.batch().setColor(color);
+        Draw.color(color);
     }
 
     public static float getStroke(){

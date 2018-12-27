@@ -11,8 +11,6 @@ import io.anuke.arc.util.Align;
 import io.anuke.arc.util.NumberUtils;
 import io.anuke.arc.util.pooling.Pools;
 
-import static io.anuke.arc.Core.graphics;
-
 /**
  * Caches glyph geometry for a BitmapFont, providing a fast way to render static text. This saves needing to compute the glyph
  * geometry each frame.
@@ -234,14 +232,14 @@ public class BitmapFontCache{
         for(int j = 0, n = pageVertices.length; j < n; j++){
             if(idx[j] > 0){ // ignore if this texture has no glyphs
                 float[] vertices = pageVertices[j];
-                graphics.batch().draw().vert(regions.get(j).getTexture(), vertices, 0, idx[j]);
+                Draw.vert(regions.get(j).getTexture(), vertices, 0, idx[j]);
             }
         }
     }
 
     public void draw(int start, int end){
         if(pageVertices.length == 1){ // 1 page.
-            graphics.batch().draw().vert(font.getRegion().getTexture(), pageVertices[0], start * 20, (end - start) * 20);
+            Draw.vert(font.getRegion().getTexture(), pageVertices[0], start * 20, (end - start) * 20);
             return;
         }
 
@@ -270,7 +268,7 @@ public class BitmapFontCache{
             if(offset == -1 || count == 0) continue;
 
             // Render the page vertex data with the offset and count.
-            graphics.batch().draw().vert(regions.get(i).getTexture(), pageVertices[i], offset * 20, count * 20);
+            Draw.vert(regions.get(i).getTexture(), pageVertices[i], offset * 20, count * 20);
         }
     }
 

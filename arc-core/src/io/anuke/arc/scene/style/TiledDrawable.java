@@ -2,9 +2,9 @@ package io.anuke.arc.scene.style;
 
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.Texture;
+import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.graphics.g2d.TextureRegion;
-
-import static io.anuke.arc.Core.graphics;
+import io.anuke.arc.util.Tmp;
 
 /**
  * Draws a {@link TextureRegion} repeatedly to fill the area, instead of stretching it.
@@ -44,10 +44,11 @@ public class TiledDrawable extends TextureRegionDrawable{
         int fullX = (int)(width / regionWidth), fullY = (int)(height / regionHeight);
         float remainingX = width - regionWidth * fullX, remainingY = height - regionHeight * fullY;
         float startX = x, startY = y;
+        Draw.color(color);
         for(int i = 0; i < fullX; i++){
             y = startY;
             for(int ii = 0; ii < fullY; ii++){
-                graphics.batch().draw().tex(region).set(x, y, regionWidth, regionHeight).color(color);
+                Draw.rect(region, x, y, regionWidth, regionHeight);
                 y += regionHeight;
             }
             x += regionWidth;
@@ -61,13 +62,19 @@ public class TiledDrawable extends TextureRegionDrawable{
             float v = region.getV();
             y = startY;
             for(int ii = 0; ii < fullY; ii++){
-                graphics.batch().draw().tex(texture).set(x, y, remainingX, remainingY).uv(u, v2, u2, v).color(color);
+                Tmp.tr1.set(texture);
+                Tmp.tr1.set(u, v2, u2, v);
+
+                Draw.rect(Tmp.tr1, x + remainingX/2f, y + remainingY/2f, remainingX, remainingY);
                 y += regionHeight;
             }
             // Upper right corner.
             if(remainingY > 0){
                 v = v2 - remainingY / texture.getHeight();
-                graphics.batch().draw().tex(texture).set(x, y, remainingX, remainingY).uv(u, v2, u2, v).color(color);
+                Tmp.tr1.set(texture);
+                Tmp.tr1.set(u, v2, u2, v);
+
+                Draw.rect(Tmp.tr1, x + remainingX/2f, y + remainingY/2f, remainingX, remainingY);
             }
         }
         if(remainingY > 0){
@@ -76,7 +83,11 @@ public class TiledDrawable extends TextureRegionDrawable{
             float v = v2 - remainingY / texture.getHeight();
             x = startX;
             for(int i = 0; i < fullX; i++){
-                graphics.batch().draw().tex(texture).set(x, y, remainingX, remainingY).uv(u, v2, u2, v).color(color);
+
+                Tmp.tr1.set(texture);
+                Tmp.tr1.set(u, v2, u2, v);
+
+                Draw.rect(Tmp.tr1, x + remainingX/2f, y + remainingY/2f, remainingX, remainingY);
                 x += regionWidth;
             }
         }

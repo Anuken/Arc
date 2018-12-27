@@ -1,6 +1,7 @@
 package io.anuke.arc.scene.ui;
 
 import io.anuke.arc.graphics.Color;
+import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.input.KeyCode;
 import io.anuke.arc.math.geom.Circle;
 import io.anuke.arc.math.geom.Vector2;
@@ -11,8 +12,6 @@ import io.anuke.arc.scene.event.InputEvent;
 import io.anuke.arc.scene.event.InputListener;
 import io.anuke.arc.scene.style.Drawable;
 import io.anuke.arc.util.pooling.Pools;
-
-import static io.anuke.arc.Core.graphics;
 
 /**
  * An on-screen joystick. The movement area of the joystick is circular, centered on the touchpad, and its size determined by the
@@ -147,7 +146,7 @@ public class Touchpad extends Element{
         validate();
 
         Color c = getColor();
-        graphics.batch().setColor(c.r, c.g, c.b, c.a * parentAlpha);
+        Draw.color(c.r, c.g, c.b, c.a * parentAlpha);
 
         float x = getX();
         float y = getY();

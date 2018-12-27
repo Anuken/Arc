@@ -27,8 +27,6 @@ import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.graphics.Texture.TextureFilter;
 import io.anuke.arc.graphics.glutils.Shader;
 
-import static io.anuke.arc.Core.graphics;
-
 /**
  * Renders bitmap fonts using distance field textures, see the <a
  * href="https://github.com/libgdx/libgdx/wiki/Distance-field-fonts">Distance Field Fonts wiki article</a> for usage. Initialize
@@ -161,8 +159,8 @@ public class DistanceFieldFont extends BitmapFont{
         }
 
         private void setSmoothingUniform(float smoothing){
-            graphics.batch().flush();
-            graphics.batch().getShader().setUniformf("u_smoothing", smoothing);
+            Draw.flush();
+            Draw.getShader().setUniformf("u_smoothing", smoothing);
         }
 
         @Override

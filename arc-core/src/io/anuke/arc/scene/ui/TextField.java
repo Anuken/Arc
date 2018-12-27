@@ -8,6 +8,7 @@ import io.anuke.arc.function.Consumer;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.BitmapFont;
 import io.anuke.arc.graphics.g2d.BitmapFont.BitmapFontData;
+import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.graphics.g2d.GlyphLayout;
 import io.anuke.arc.graphics.g2d.GlyphLayout.GlyphRun;
 import io.anuke.arc.input.KeyCode;
@@ -31,7 +32,8 @@ import io.anuke.arc.util.pooling.Pools;
 
 import java.lang.StringBuilder;
 
-import static io.anuke.arc.Core.*;
+import static io.anuke.arc.Core.bundle;
+import static io.anuke.arc.Core.scene;
 
 /**
  * A single-line text input field.
@@ -304,7 +306,7 @@ public class TextField extends Element implements Disableable{
         float width = getWidth();
         float height = getHeight();
 
-        graphics.batch().setColor(color.r, color.g, color.b, color.a * parentAlpha);
+        Draw.color(color.r, color.g, color.b, color.a * parentAlpha);
         float bgLeftWidth = 0, bgRightWidth = 0;
         if(background != null){
             background.draw(x, y, width, height);

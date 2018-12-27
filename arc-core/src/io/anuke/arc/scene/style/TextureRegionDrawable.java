@@ -1,10 +1,10 @@
 package io.anuke.arc.scene.style;
 
 import io.anuke.arc.graphics.Color;
+import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.graphics.g2d.TextureRegion;
 import io.anuke.arc.scene.ui.layout.Unit;
-
-import static io.anuke.arc.Core.graphics;
+import io.anuke.arc.util.Tmp;
 
 /**
  * Drawable for a {@link TextureRegion}.
@@ -29,13 +29,15 @@ public class TextureRegionDrawable extends BaseDrawable implements TransformDraw
 
     @Override
     public void draw(float x, float y, float width, float height){
-        graphics.batch().draw().tex(region).pos(x, y).size(width, height).color(tint);
+        Draw.color(Tmp.c1.set(tint).mul(Draw.getColor()).toFloatBits());
+        Draw.rect(region, x, y, width, height);
     }
 
+    //TODO scaling is completely ignored
     @Override
     public void draw(float x, float y, float originX, float originY, float width, float height, float scaleX, float scaleY, float rotation){
-        graphics.batch().draw().tex(region).pos(x, y).size(width, height)
-        .origin(originX, originY).scl(scaleX, scaleY).rot(rotation).color(tint);
+        Draw.color(Tmp.c1.set(tint).mul(Draw.getColor()).toFloatBits());
+        Draw.rect(region, x, y, width, height, rotation);
     }
 
     public TextureRegion getRegion(){

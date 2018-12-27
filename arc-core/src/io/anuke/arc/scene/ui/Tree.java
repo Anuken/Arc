@@ -2,6 +2,7 @@ package io.anuke.arc.scene.ui;
 
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.graphics.Color;
+import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.Group;
 import io.anuke.arc.scene.event.ChangeListener.ChangeEvent;
@@ -13,7 +14,6 @@ import io.anuke.arc.scene.utils.Layout;
 import io.anuke.arc.scene.utils.Selection;
 import io.anuke.arc.scene.utils.UIUtils;
 
-import static io.anuke.arc.Core.graphics;
 import static io.anuke.arc.Core.scene;
 
 /**
@@ -245,7 +245,7 @@ public class Tree extends WidgetGroup{
     public void draw(){
         drawBackground();
         Color color = getColor();
-        graphics.batch().setColor(color.r, color.g, color.b, color.a * parentAlpha);
+        Draw.color(color.r, color.g, color.b, color.a * parentAlpha);
         draw(rootNodes, leftColumnWidth);
         super.draw(); // Draw elements.
     }
@@ -254,7 +254,7 @@ public class Tree extends WidgetGroup{
     protected void drawBackground(){
         if(style.background != null){
             Color color = getColor();
-            graphics.batch().setColor(color.r, color.g, color.b, color.a * parentAlpha);
+            Draw.color(color.r, color.g, color.b, color.a * parentAlpha);
             style.background.draw(getX(), getY(), getWidth(), getHeight());
         }
     }
@@ -275,10 +275,10 @@ public class Tree extends WidgetGroup{
 
             if(node.icon != null){
                 float iconY = element.getY() + Math.round((node.height - node.icon.getMinHeight()) / 2);
-                graphics.batch().setColor(element.getColor());
+                Draw.color(element.getColor());
                 node.icon.draw(x + node.element.getX() - iconSpacingRight - node.icon.getMinWidth(), y + iconY,
                 node.icon.getMinWidth(), node.icon.getMinHeight());
-                graphics.batch().setColor(Color.WHITE);
+                Draw.color(Color.WHITE);
             }
 
             if(node.children.size == 0) continue;

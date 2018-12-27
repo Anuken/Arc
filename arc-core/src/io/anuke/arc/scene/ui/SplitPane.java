@@ -1,6 +1,8 @@
 package io.anuke.arc.scene.ui;
 
 import io.anuke.arc.graphics.Color;
+import io.anuke.arc.graphics.g2d.Draw;
+import io.anuke.arc.graphics.g2d.ScissorStack;
 import io.anuke.arc.input.KeyCode;
 import io.anuke.arc.math.geom.Rectangle;
 import io.anuke.arc.math.geom.Vector2;
@@ -12,10 +14,7 @@ import io.anuke.arc.scene.style.Drawable;
 import io.anuke.arc.scene.ui.layout.Container;
 import io.anuke.arc.scene.ui.layout.WidgetGroup;
 import io.anuke.arc.scene.utils.Layout;
-import io.anuke.arc.graphics.g2d.ScissorStack;
 import io.anuke.arc.util.ArcRuntimeException;
-
-import static io.anuke.arc.Core.graphics;
 
 /**
  * A container that contains two widgets and is divided either horizontally or vertically. The user may resize the widgets. The
@@ -244,24 +243,24 @@ public class SplitPane extends WidgetGroup{
 
         applyTransform(computeTransform());
         if(firstWidget != null && firstWidget.isVisible()){
-            graphics.batch().flush();
+            Draw.flush();
             getScene().calculateScissors(firstWidgetBounds, tempScissors);
             if(ScissorStack.pushScissors(tempScissors)){
                 firstWidget.draw();
-                graphics.batch().flush();
+                Draw.flush();
                 ScissorStack.popScissors();
             }
         }
         if(secondWidget != null && secondWidget.isVisible()){
-            graphics.batch().flush();
+            Draw.flush();
             getScene().calculateScissors(secondWidgetBounds, tempScissors);
             if(ScissorStack.pushScissors(tempScissors)){
                 secondWidget.draw();
-                graphics.batch().flush();
+                Draw.flush();
                 ScissorStack.popScissors();
             }
         }
-        graphics.batch().setColor(color.r, color.g, color.b, alpha);
+        Draw.color(color.r, color.g, color.b, alpha);
         style.handle.draw(handleBounds.x, handleBounds.y, handleBounds.width, handleBounds.height);
         resetTransform();
     }

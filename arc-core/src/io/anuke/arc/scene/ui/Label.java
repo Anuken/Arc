@@ -1,9 +1,11 @@
 package io.anuke.arc.scene.ui;
 
+import io.anuke.arc.Core;
 import io.anuke.arc.function.Supplier;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.BitmapFont;
 import io.anuke.arc.graphics.g2d.BitmapFontCache;
+import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.graphics.g2d.GlyphLayout;
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.scene.Element;
@@ -12,9 +14,9 @@ import io.anuke.arc.scene.style.SkinReader.ReadContext;
 import io.anuke.arc.scene.style.Style;
 import io.anuke.arc.util.Align;
 import io.anuke.arc.util.StringBuilder;
-import io.anuke.arc.Core;
 
-import static io.anuke.arc.Core.*;
+import static io.anuke.arc.Core.bundle;
+import static io.anuke.arc.Core.scene;
 
 /**
  * A text label, with optional word wrapping.
@@ -229,7 +231,7 @@ public class Label extends Element{
         Color color = tempColor.set(getColor());
         color.a *= parentAlpha;
         if(style.background != null){
-            graphics.batch().setColor(color.r, color.g, color.b, color.a);
+            Draw.color(color.r, color.g, color.b, color.a);
             style.background.draw(x, y, width, height);
         }
         if(style.fontColor != null) color.mul(style.fontColor);

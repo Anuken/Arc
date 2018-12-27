@@ -1,9 +1,8 @@
 package io.anuke.arc;
 
-import io.anuke.arc.graphics.*;
 import io.anuke.arc.Graphics.Cursor.SystemCursor;
+import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.g2d.BitmapFont;
-import io.anuke.arc.graphics.g2d.SpriteBatch;
 import io.anuke.arc.graphics.glutils.*;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.util.Disposable;
@@ -25,22 +24,8 @@ import io.anuke.arc.util.Disposable;
  * @author mzechner
  */
 public abstract class Graphics implements Disposable{
-    /** One global spritebatch for drawing things. */
-    private SpriteBatch batch;
     /** The last cursor used. Can be Cursor or SystemCursor.*/
     private Object lastCursor;
-
-    /** Returns the global spritebatch instance. */
-    public SpriteBatch batch(){
-        if(batch == null){
-            batch = new SpriteBatch();
-        }
-        return batch;
-    }
-
-    public void useBatch(SpriteBatch batch){
-        this.batch = batch;
-    }
 
     /**
      * Returns whether OpenGL ES 3.0 is available. If it is you can get an instance of {@link GL30} via {@link #getGL30()} to
@@ -320,11 +305,6 @@ public abstract class Graphics implements Disposable{
 
     @Override
     public void dispose(){
-        if(batch != null){
-            batch.dispose();
-            batch = null;
-        }
-
         for(SystemCursor cursor : SystemCursor.values()){
             cursor.dispose();
         }

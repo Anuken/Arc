@@ -1,40 +1,56 @@
 package io.anuke.arc.graphics.g2d;
 
 import io.anuke.arc.Core;
+import io.anuke.arc.graphics.Blending;
 import io.anuke.arc.graphics.Color;
-import io.anuke.arc.graphics.g2d.SpriteBatch.BatchRect;
+import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.graphics.glutils.Shader;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.util.Tmp;
 
 public class Draw{
     private static Color[] carr = new Color[3];
-
     public static float scl = 1f;
+
+    public static Shader getShader(){
+        return Core.batch.getShader();
+    }
 
     public static void shader(Shader shader){
         shader(shader, true);
     }
 
     public static void shader(Shader shader, boolean apply){
-        Core.graphics.batch().setShader(shader, apply);
+        Core.batch.setShader(shader, apply);
     }
 
     public static void shader(){
-        Core.graphics.batch().setShader(null);
+        Core.batch.setShader(null);
+    }
+
+    public static Color getColor(){
+        return Core.batch.getColor();
     }
 
     public static void tint(Color a, Color b, float s){
         Tmp.c1.set(a).lerp(b, s);
-        Core.graphics.batch().getColor().set(Tmp.c1.r, Tmp.c1.g, Tmp.c1.b);
+        Core.batch.getColor().set(Tmp.c1.r, Tmp.c1.g, Tmp.c1.b);
     }
 
     public static void tint(Color color){
-        Core.graphics.batch().getColor().set(color.r, color.g, color.b);
+        Core.batch.getColor().set(color.r, color.g, color.b);
     }
 
     public static void color(Color color){
-        Core.graphics.batch().setColor(color);
+        Core.batch.setColor(color);
+    }
+
+    public static void color(Color color, float alpha){
+        Core.batch.setColor(color.r, color.g, color.b, alpha);
+    }
+
+    public static void color(float color){
+        Core.batch.setPackedColor(color);
     }
 
     public static void color(Color a, Color b, Color c, float progress){
@@ -46,19 +62,19 @@ public class Draw{
 
     /** Automatically mixes colors. */
     public static void color(Color a, Color b, float s){
-        Core.graphics.batch().setColor(Tmp.c1.set(a).lerp(b, s));
+        Core.batch.setColor(Tmp.c1.set(a).lerp(b, s));
     }
 
     public static void color(){
-        Core.graphics.batch().setColor(Color.WHITE);
+        Core.batch.setColor(Color.WHITE);
     }
 
     public static void color(float r, float g, float b){
-        Core.graphics.batch().setColor(r, g, b, 1f);
+        Core.batch.setColor(r, g, b, 1f);
     }
 
     public static void color(float r, float g, float b, float a){
-        Core.graphics.batch().setColor(r, g, b, a);
+        Core.batch.setColor(r, g, b, a);
     }
 
     /** Lightness color. */
@@ -71,42 +87,85 @@ public class Draw{
         color(l, l, l, a);
     }
 
+    public static void blend(Blending blending){
+        Core.batch.setBlending(blending);
+    }
+
+    public static void blend(){
+        blend(Blending.normal);
+    }
+
     //TODO replace/remove?
     public static void reset(){
         color();
     }
 
     public static void alpha(float alpha){
-        Core.graphics.batch().getColor().a = alpha;
+        Core.batch.setColor(Core.batch.getColor().r, Core.batch.getColor().g, Core.batch.getColor().b, alpha);
     }
 
-    public static BatchRect rect(){
-        return Core.graphics.batch().draw();
+    public static void rect(String region, float x, float y, float w, float h){
+        rect(Core.atlas.find(region), x, y, w, h);
     }
 
-    public static BatchRect rect(String region, float x, float y, float w, float h){
-        return rect(Core.atlas.find(region), x, y, w, h);
+    public static void rect(TextureRegion region, float x, float y, float w, float h){
+        Core.batch.draw(region, x - w /2f, y - h /2f, w, h);
     }
 
-    public static BatchRect rect(TextureRegion region, float x, float y, float w, float h){
-        return Core.graphics.batch().draw().tex(region)
-        .set(x - w /2f * scl, y - h /2f * scl, w, h);
+    public static void rect(TextureRegion region, float x, float y){
+        rect(region, x, y, region.getWidth() * scl, region.getHeight() * scl);
     }
 
-    public static BatchRect rect(TextureRegion region, float x, float y){
-        return Core.graphics.batch().draw().tex(region)
-            .set(x - region.width /2f * scl, y - region.height /2f * scl, region.width * scl, region.height * scl);
+    public static void rect(String region, float x, float y){
+        rect(Core.atlas.find(region), x, y);
     }
 
-    public static BatchRect rect(String region, float x, float y){
-        return rect(Core.atlas.find(region), x, y);
+    public static void rect(TextureRegion region, float x, float y, float w, float h, float originX, float originY, float rotation){
+        Core.batch.draw(region, x - w /2f * scl, y - h /2f * scl, originX, originY, w, h, rotation);
+    }
+
+    public static void rect(TextureRegion region, float x, float y, float w, float h, float rotation){
+        rect(region, x, y, w, h, w/2f, h/2f, rotation);
+    }
+
+    public static void rect(String region, float x, float y, float w, float h, float rotation){
+        rect(Core.atlas.find(region), x, y, w, h, w/2f, h/2f, rotation);
+    }
+
+    public static void rect(TextureRegion region, float x, float y, float rotation){
+        rect(region, x, y, region.getWidth() * scl, region.getHeight() * scl, rotation);
+    }
+
+    public static void rect(String region, float x, float y, float rotation){
+        rect(Core.atlas.find(region), x, y, rotation);
+    }
+
+    public static void vert(Texture texture, float[] vertices, int offset, int length){
+        Core.batch.draw(texture, vertices, offset, length);
     }
 
     public static void flush(){
-        Core.graphics.batch().flush();
+        Core.batch.flush();
     }
 
-    public static void projection(Matrix3 proj){
-        Core.graphics.batch().setProjection(proj);
+    public static void proj(Matrix3 proj){
+        Core.batch.setProjection(proj);
+    }
+
+    public static Matrix3 proj(){
+        return Core.batch.getProjection();
+    }
+
+    public static void trans(Matrix3 trans){
+        Core.batch.setTransform(trans);
+    }
+
+    public static Matrix3 trans(){
+        return Core.batch.getTransform();
+    }
+
+    public static TextureRegion wrap(Texture texture){
+        Tmp.tr2.set(texture);
+        return Tmp.tr2;
     }
 }

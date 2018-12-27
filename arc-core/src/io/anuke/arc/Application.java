@@ -73,6 +73,11 @@ public interface Application extends Disposable{
             Core.atlas.dispose();
             Core.atlas = null;
         }
+
+        if(Core.batch != null){
+            Core.batch.dispose();
+            Core.batch = null;
+        }
     }
 
     /** Enumeration of possible {@link Application} types */
