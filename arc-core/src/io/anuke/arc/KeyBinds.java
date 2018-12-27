@@ -63,7 +63,7 @@ public class KeyBinds{
         if(definitions == null) return;
 
         for(Section sec : sections){
-            for(DeviceType type : DeviceType.values()){
+            for(DeviceType type : sec.binds.keys()){
                 for(Entry<KeyBind, Axis> entry : sec.binds.get(type).entries()){
                     String rname = "keybind-" + sec.name + "-" + type.name() + "-" + entry.key.name();
                     save(entry.value, rname);
@@ -75,6 +75,8 @@ public class KeyBinds{
 
     /** Loads the internal keybind data from settings' map. Does not call settings.load(). */
     void load(){
+        if(definitions == null) return;
+
         for(Section sec : sections){
             for(DeviceType type : DeviceType.values()){
                 for(KeyBind def : definitions){

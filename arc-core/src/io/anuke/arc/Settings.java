@@ -67,8 +67,8 @@ public class Settings{
     /** Loads all values and keybinds. */
     public void load(){
         try{
-            keybinds.save();
-            saveValues();
+            loadValues();
+            keybinds.load();
         }catch(Throwable error){
             if(errorHandler != null){
                 if(!hasErrored) errorHandler.accept(error);
@@ -82,8 +82,8 @@ public class Settings{
     /** Saves all values and keybinds. */
     public void save(){
         try{
-            loadValues();
-            keybinds.load();
+            keybinds.save();
+            saveValues();
         }catch(Throwable error){
             if(errorHandler != null){
                 if(!hasErrored) errorHandler.accept(error);
