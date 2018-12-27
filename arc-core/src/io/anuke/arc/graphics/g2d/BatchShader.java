@@ -50,6 +50,9 @@ public class BatchShader{
 
     //mistakes were made
     public static float[] copyTransform(Matrix3 matrix){
+        val[M01] = matrix.val[Matrix3.M01];
+        val[M10] = matrix.val[Matrix3.M10];
+
         val[M00] = matrix.val[Matrix3.M00];
         val[M11] = matrix.val[Matrix3.M11];
         val[M22] = matrix.val[Matrix3.M22];

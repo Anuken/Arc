@@ -27,7 +27,8 @@ public class SpriteBatch implements Disposable{
     Texture lastTexture = null;
     float invTexWidth = 0, invTexHeight = 0;
 
-    boolean drawing = false;
+    boolean apply;
+    boolean drawing;
 
     private final Matrix3 transformMatrix = new Matrix3();
     private final Matrix3 projectionMatrix = new Matrix3();
@@ -53,7 +54,7 @@ public class SpriteBatch implements Disposable{
      * Constructs a new SpriteBatch with a size of 4096, one buffer, and the default shader.
      * @see SpriteBatch#SpriteBatch(int, Shader)
      */
-    SpriteBatch(){
+    public SpriteBatch(){
         this(4096, null);
     }
 
@@ -111,28 +112,6 @@ public class SpriteBatch implements Disposable{
         }
     }
 
-    void begin(){
-        if(drawing) throw new IllegalStateException("SpriteBatch.end must be called before begin.");
-        renderCalls = 0;
-
-        Core.gl.glDepthMask(false);
-        getShader().begin();
-        setupMatrices();
-
-        drawing = true;
-    }
-
-    void end(){
-        if(!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before end.");
-        if(idx > 0) flush();
-        lastTexture = null;
-        drawing = false;
-
-        Core.gl.glDepthMask(true);
-
-        getShader().end();
-    }
-
     void setColor(Color tint){
         color.set(tint);
         colorPacked = tint.toFloatBits();
@@ -157,7 +136,7 @@ public class SpriteBatch implements Disposable{
     }
 
     void draw(Texture texture, float[] spriteVertices, int offset, int count){
-        if(!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
+        //if(!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
         int verticesLength = vertices.length;
         int remainingVertices = verticesLength;
@@ -194,7 +173,7 @@ public class SpriteBatch implements Disposable{
     }
 
     void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
-        if(!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
+        //if(!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
         float[] vertices = this.vertices;
 
@@ -317,7 +296,7 @@ public class SpriteBatch implements Disposable{
     }
 
     void draw(TextureRegion region, float width, float height, Affine2 transform){
-        if(!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
+        //if(!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
         float[] vertices = this.vertices;
 
@@ -374,6 +353,8 @@ public class SpriteBatch implements Disposable{
     void flush(){
         if(idx == 0) return;
 
+        begin();
+
         renderCalls++;
         totalRenderCalls++;
         int spritesInBatch = idx / 20;
@@ -387,12 +368,40 @@ public class SpriteBatch implements Disposable{
         mesh.getIndicesBuffer().limit(count);
 
         Core.gl.glEnable(GL20.GL_BLEND);
-        if(blending != Blending.normal)
-            Core.gl.glBlendFuncSeparate(blending.src, blending.dst, blending.src, blending.dst);
+        //if(blending != Blending.normal)
+        Core.gl.glBlendFuncSeparate(blending.src, blending.dst, blending.src, blending.dst);
 
         mesh.render(getShader(), GL20.GL_TRIANGLES, 0, count);
 
         idx = 0;
+
+        end();
+    }
+
+    void begin(){
+        if(drawing) throw new IllegalStateException("SpriteBatch.end must be called before begin.");
+        renderCalls = 0;
+
+        Core.gl.glDepthMask(false);
+        getShader().begin();
+        setupMatrices();
+
+        if(customShader != null && apply){
+            customShader.apply();
+        }
+
+        drawing = true;
+    }
+
+    void end(){
+        if(!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before end.");
+        if(idx > 0) flush();
+        lastTexture = null;
+        drawing = false;
+
+        Core.gl.glDepthMask(true);
+
+        getShader().end();
     }
 
     void setBlending(Blending blending){
@@ -415,26 +424,19 @@ public class SpriteBatch implements Disposable{
     }
 
     void setProjection(Matrix3 projection){
-        if(drawing) flush();
+        flush();
         projectionMatrix.set(projection);
-        if(drawing) setupMatrices();
     }
 
     void setTransform(Matrix3 transform){
-        if(drawing) flush();
+        flush();
         transformMatrix.set(transform);
-        if(drawing) setupMatrices();
     }
 
     private void setupMatrices(){
         combinedMatrix.set(projectionMatrix).mul(transformMatrix);
-        if(customShader != null){
-            customShader.setUniformMatrix("u_projTrans", combinedMatrix);
-            customShader.setUniformi("u_texture", 0);
-        }else{
-            shader.setUniformMatrix("u_projTrans", combinedMatrix);
-            shader.setUniformi("u_texture", 0);
-        }
+        getShader().setUniformMatrix4("u_projTrans", BatchShader.copyTransform(combinedMatrix));
+        getShader().setUniformi("u_texture", 0);
     }
 
     protected void switchTexture(Texture texture){
@@ -449,25 +451,9 @@ public class SpriteBatch implements Disposable{
     }
 
     void setShader(Shader shader, boolean apply){
-        if(drawing){
-            flush();
-            if(customShader != null)
-                customShader.end();
-            else
-                this.shader.end();
-        }
+        flush();
         customShader = shader;
-        if(drawing){
-            if(customShader != null)
-                customShader.begin();
-            else
-                this.shader.begin();
-            setupMatrices();
-
-            if(shader != null && apply){
-                shader.apply();
-            }
-        }
+        this.apply = apply;
     }
 
     Shader getShader(){

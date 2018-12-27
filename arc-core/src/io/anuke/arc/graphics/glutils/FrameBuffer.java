@@ -74,6 +74,12 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
         FrameBufferBuilder frameBufferBuilder = new FrameBufferBuilder(width, height);
         frameBufferBuilder.addBasicColorTextureAttachment(format);
         this.bufferBuilder = frameBufferBuilder;
+        this.textureAttachments.clear();
+        this.framebufferHandle = 0;
+        this.depthbufferHandle = 0;
+        this.stencilbufferHandle = 0;
+        this.depthStencilPackedBufferHandle = 0;
+        this.hasDepthStencilPackedBuffer = this.isMRT = false;
         build();
     }
 

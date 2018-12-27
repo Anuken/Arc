@@ -1,16 +1,18 @@
 package io.anuke.arc.input;
 
+import io.anuke.arc.collection.IntFloatMap;
 import io.anuke.arc.collection.IntSet;
 
 public class KeyboardDevice extends InputDevice implements InputProcessor{
-    public final IntSet pressed = new IntSet();
-    public final IntSet lastFramePressed = new IntSet();
-    public final float[] axes = new float[KeyCode.values().length];
+    private final IntSet pressed = new IntSet();
+    private final IntSet lastFramePressed = new IntSet();
+    private final IntFloatMap axes = new IntFloatMap();
 
     @Override
     public void update(){
         lastFramePressed.clear();
         lastFramePressed.addAll(pressed);
+        axes.clear();
     }
 
     @Override
@@ -33,7 +35,7 @@ public class KeyboardDevice extends InputDevice implements InputProcessor{
 
     @Override
     public float getAxis(KeyCode keyCode){
-        return axes[keyCode.ordinal()];
+        return axes.get(keyCode.ordinal(), 0);
     }
 
     @Override
@@ -62,7 +64,7 @@ public class KeyboardDevice extends InputDevice implements InputProcessor{
 
     @Override
     public boolean scrolled(float amountX, float amountY){
-        axes[KeyCode.SCROLL.ordinal()] = amountY;
+        axes.put(KeyCode.SCROLL.ordinal(), -amountY);
         return false;
     }
 

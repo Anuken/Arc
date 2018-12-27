@@ -1,6 +1,7 @@
 package io.anuke.arc.scene.ui;
 
 import io.anuke.arc.graphics.Texture;
+import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.graphics.g2d.NinePatch;
 import io.anuke.arc.graphics.g2d.TextureRegion;
 import io.anuke.arc.math.geom.Vector2;
@@ -119,6 +120,7 @@ public class Image extends Element{
         float y = getY();
         float scaleX = getScaleX();
         float scaleY = getScaleY();
+        Draw.color(getColor());
 
         if(drawable instanceof TransformDrawable){
             float rotation = getRotation();

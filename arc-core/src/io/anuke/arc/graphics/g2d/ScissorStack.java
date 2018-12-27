@@ -72,6 +72,7 @@ public class ScissorStack{
             Rectangle scissor = scissors.peek();
             HdpiUtils.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);
         }
+        Draw.flush();
         return old;
     }
 

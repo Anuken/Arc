@@ -11,9 +11,9 @@ import io.anuke.arc.math.geom.Vector2;
 public class Lines{
     private static float stroke = 1f;
     private static Vector2 vector = new Vector2();
-    private static FloatArray floats = new FloatArray(100);
-    private static FloatArray floatBuilder = new FloatArray(100);
-    private static float[] points = new float[4 * 2];
+    private static FloatArray floats = new FloatArray(20);
+    private static FloatArray floatBuilder = new FloatArray(20);
+    private static float[] points = new float[8];
     private static boolean building;
     private static int circleVertices = 30;
 
@@ -325,21 +325,17 @@ public class Lines{
         rect(x - rad, y - rad, rad * 2, rad * 2);
     }
 
-    public static void rect(float x, float y, float width, float height, int xspace, int yspace){
+    public static void rect(float x, float y, float width, float height, float xspace, float yspace){
         x -= xspace;
         y -= yspace;
         width += xspace * 2;
         height += yspace * 2;
 
-        points[0] = x;
-        points[1] = y;
-        points[2] = x + width;
-        points[3] = y;
-        points[4] = x + width;
-        points[5] = y + height;
-        points[6] = x;
-        points[7] = y + height;
-        polyline(points, points.length, true);
+        Fill.crect(x, y, width, stroke);
+        Fill.crect(x, y + height, width, -stroke);
+
+        Fill.crect(x + width, y, -stroke, height);
+        Fill.crect(x, y, stroke, height);
     }
 
     public static void rect(float x, float y, float width, float height){
@@ -354,18 +350,9 @@ public class Lines{
         rect(x, y, width, height, space, space);
     }
 
-    public static void crect(float x, float y, float width, float height){
-        rect(x - width / 2f, y - height / 2f, width, height, 0);
-    }
-
-    public static void crect(float x, float y, float width, float height, int space){
-        rect(x - width / 2f, y - height / 2f, width, height, space);
-    }
-
     public static void stroke(float thick){
         stroke = thick;
     }
-
 
     public static void stroke(float thick, Color color){
         stroke = thick;
