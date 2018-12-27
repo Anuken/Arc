@@ -42,7 +42,6 @@ public class Button extends Table implements Disableable{
     private ButtonStyle style;
     private ClickListener clickListener;
     private boolean programmaticChangeEvents;
-    private float transitionTime;
 
     public Button(String styleName){
         initialize();
@@ -218,6 +217,7 @@ public class Button extends Table implements Disableable{
         return buttonGroup;
     }
 
+    @Override
     public void draw(){
         validate();
 
@@ -225,14 +225,6 @@ public class Button extends Table implements Disableable{
         boolean isPressed = isPressed();
         boolean isChecked = isChecked();
         boolean isOver = isOver();
-        boolean drawOver = false;
-
-        if(isOver){
-            transitionTime += Core.graphics.getDeltaTime() * 60f;
-        }else{
-            transitionTime -= Core.graphics.getDeltaTime() * 60f;
-            if(transitionTime < 0) transitionTime = 0;
-        }
 
         Drawable background = null;
         if(isDisabled && style.disabled != null)
@@ -242,14 +234,8 @@ public class Button extends Table implements Disableable{
         else if(isChecked && style.checked != null)
             background = (style.checkedOver != null && isOver) ? style.checkedOver : style.checked;
         else if(isOver && style.over != null){
-            if(transitionTime >= style.transition)
-                background = style.over;
-            else
-                drawOver = true;
+            background = style.over;
         }else if(style.up != null)
-            background = style.up;
-
-        if(drawOver)
             background = style.up;
 
         setBackground(background);
@@ -311,7 +297,7 @@ public class Button extends Table implements Disableable{
         public Drawable up, down, over, checked, checkedOver, disabled;
         /** Optional. */
         public float pressedOffsetX, pressedOffsetY, unpressedOffsetX,
-        unpressedOffsetY, checkedOffsetX, checkedOffsetY, transition = -1;
+        unpressedOffsetY, checkedOffsetX, checkedOffsetY;
 
         public ButtonStyle(){
         }
@@ -335,7 +321,6 @@ public class Button extends Table implements Disableable{
             this.unpressedOffsetY = style.unpressedOffsetY;
             this.checkedOffsetX = style.checkedOffsetX;
             this.checkedOffsetY = style.checkedOffsetY;
-            this.transition = style.transition;
         }
 
         @Override

@@ -85,7 +85,7 @@ public class Draw{
     }
 
     public static BatchRect rect(String region, float x, float y, float w, float h){
-        return rect(region, x, y, w, h);
+        return rect(Core.atlas.find(region), x, y, w, h);
     }
 
     public static BatchRect rect(TextureRegion region, float x, float y, float w, float h){

@@ -280,7 +280,7 @@ public class Skin implements Disposable{
             if(textureRegion instanceof AtlasRegion){
                 AtlasRegion region = (AtlasRegion)textureRegion;
                 if(region.splits != null){
-                    drawable = (new ScaledNinePatchDrawable(getPatch(name)));
+                    drawable = new ScaledNinePatchDrawable(getPatch(name));
                 }
             }
             if(drawable == null) drawable = new TextureRegionDrawable(textureRegion);
@@ -332,8 +332,7 @@ public class Skin implements Disposable{
     /** Returns a copy of the specified drawable. */
     public Drawable newDrawable(Drawable drawable){
         if(drawable instanceof TiledDrawable) return new TiledDrawable((TiledDrawable)drawable);
-        if(drawable instanceof TextureRegionDrawable)
-            return new TextureRegionDrawable((TextureRegionDrawable)drawable);
+        if(drawable instanceof TextureRegionDrawable) return new TextureRegionDrawable((TextureRegionDrawable)drawable);
         if(drawable instanceof NinePatchDrawable) return new NinePatchDrawable((NinePatchDrawable)drawable);
         throw new ArcRuntimeException("Unable to copy, unknown drawable type: " + drawable.getClass());
     }

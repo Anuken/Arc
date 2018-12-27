@@ -139,7 +139,7 @@ public class Table extends WidgetGroup{
         if(background == null) return;
         Color color = getColor();
         graphics.batch().setColor(color.r, color.g, color.b, color.a * parentAlpha);
-        background.draw(x, y, getWidth(), getHeight());
+        background.draw(x, y, width, height);
     }
 
     /** @see #setBackground(Drawable) */

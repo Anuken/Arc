@@ -299,7 +299,7 @@ public class Settings{
         || object instanceof String || object instanceof byte[]){
             values.put(name, object);
         }else{
-            throw new IllegalArgumentException("Invalid object stored: " + object + ". Use putObject() for serialization.");
+            throw new IllegalArgumentException("Invalid object stored: " + (object == null ? null : object.getClass()) + ". Use putObject() for serialization.");
         }
     }
 

@@ -86,12 +86,12 @@ public class Matrix3 implements Serializable{
         float tx = -(right + x) / (right - x);
         float ty = -(top + y) / (top - y);
 
-        idt();
-
         val[M00] = x_orth;
         val[M11] = y_orth;
+
         val[M02] = tx;
         val[M12] = ty;
+        val[M22] = 1f;
 
         return this;
     }

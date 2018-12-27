@@ -546,6 +546,13 @@ public class Shader implements Disposable{
         gl.glUniformMatrix3fv(location, 1, transpose, matrix.val, 0);
     }
 
+    //TODO remove
+    public void setUniformMatrix4(String name, float[] val){
+        GL20 gl = Core.gl20;
+        checkManaged();
+        gl.glUniformMatrix4fv(fetchUniformLocation(name), 1, false, val, 0);
+    }
+
     /**
      * Sets an array of uniform matrices with the given name. The {@link Shader} must be bound for this to work.
      * @param name the name of the uniform

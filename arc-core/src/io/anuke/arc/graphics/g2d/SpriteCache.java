@@ -121,7 +121,7 @@ public class SpriteCache implements Disposable{
         String vertexShader = "attribute vec4 " + Shader.POSITION_ATTRIBUTE + ";\n" //
         + "attribute vec4 " + Shader.COLOR_ATTRIBUTE + ";\n" //
         + "attribute vec2 " + Shader.TEXCOORD_ATTRIBUTE + "0;\n" //
-        + "uniform mat3 u_projectionViewMatrix;\n" //
+        + "uniform mat4 u_projectionViewMatrix;\n" //
         + "varying vec4 v_color;\n" //
         + "varying vec2 v_texCoords;\n" //
         + "\n" //

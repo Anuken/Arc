@@ -2,6 +2,7 @@ package io.anuke.arc.graphics.g2d;
 
 import io.anuke.arc.Core;
 import io.anuke.arc.collection.Array;
+import io.anuke.arc.collection.IntMap;
 import io.anuke.arc.collection.Sort;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.Mesh.VertexDataType;
@@ -10,6 +11,7 @@ import io.anuke.arc.graphics.glutils.Shader;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.util.Disposable;
+import io.anuke.arc.util.pooling.Pool;
 import io.anuke.arc.util.pooling.Pool.Poolable;
 
 /**
@@ -31,6 +33,7 @@ public class SpriteBatch implements Disposable{
     private final Shader shader;
     private Shader customShader = null;
     private boolean ownsShader;
+    private boolean applyParams;
 
     protected Array<BatchRect> rects;
     protected int rectAmount;
@@ -106,8 +109,8 @@ public class SpriteBatch implements Disposable{
     public BatchRect draw(){
         if(rectAmount >= rects.size) rects.add(new BatchRect());
         BatchRect rect = rects.get(rectAmount++);
-        rect.color = color.toFloatBits();
         rect.reset();
+        rect.color = color.toFloatBits();
         return rect;
     }
 
@@ -119,11 +122,9 @@ public class SpriteBatch implements Disposable{
     public void flush(){
         if(rectAmount == 0) return;
 
-        if(customShader != null)
-            customShader.begin();
-        else
-            shader.begin();
+        getShader().begin();
         setupMatrices();
+        if(customShader != null && applyParams) customShader.apply();
 
         Core.gl.glEnable(GL20.GL_BLEND);
 
@@ -137,7 +138,6 @@ public class SpriteBatch implements Disposable{
         }
 
         Blending blending = Blending.normal;
-        Core.gl.glBlendFunc(blending.src, blending.dst);
 
         for(int i = 0; i < rectAmount; i++){
             BatchRect rect = rects.get(i);
@@ -222,49 +222,45 @@ public class SpriteBatch implements Disposable{
                 x4 += worldOriginX;
                 y4 += worldOriginY;
 
-                final float u1, v1, u2, v2, u3, v3, u4, v4;
-                u1 = rect.region.u2;
-                v1 = rect.region.v2;
-                u2 = rect.region.u;
-                v2 = rect.region.v2;
-                u3 = rect.region.u;
-                v3 = rect.region.v;
-                u4 = rect.region.u2;
-                v4 = rect.region.v;
+                final float u = rect.region.u;
+                final float v = rect.region.v2;
+                final float u2 = rect.region.u2;
+                final float v2 = rect.region.v;
 
                 float color = rect.color;
                 vertices[idx] = x1;
                 vertices[idx + 1] = y1;
                 vertices[idx + 2] = color;
-                vertices[idx + 3] = u1;
-                vertices[idx + 4] = v1;
+                vertices[idx + 3] = u;
+                vertices[idx + 4] = v;
 
                 vertices[idx + 5] = x2;
                 vertices[idx + 6] = y2;
                 vertices[idx + 7] = color;
-                vertices[idx + 8] = u2;
+                vertices[idx + 8] = u;
                 vertices[idx + 9] = v2;
 
                 vertices[idx + 10] = x3;
                 vertices[idx + 11] = y3;
                 vertices[idx + 12] = color;
-                vertices[idx + 13] = u3;
-                vertices[idx + 14] = v3;
+                vertices[idx + 13] = u2;
+                vertices[idx + 14] = v2;
 
                 vertices[idx + 15] = x4;
                 vertices[idx + 16] = y4;
                 vertices[idx + 17] = color;
-                vertices[idx + 18] = u4;
-                vertices[idx + 19] = v4;
+                vertices[idx + 18] = u2;
+                vertices[idx + 19] = v;
                 idx += 20;
-                //end
 
                 lastTexture = rect.region.texture;
                 blending = rect.blending;
             }else{
-                int offset = rect.voffset, count = rect.vcount;
+                System.arraycopy(rect.vertices, rect.voffset, vertices, idx, rect.vcount);
+                idx += rect.vcount;
+                lastTexture = rect.region.texture;
 
-                int verticesLength = vertices.length;
+                /*
                 int remainingVertices = verticesLength;
                 remainingVertices -= idx;
                 if(remainingVertices == 0){
@@ -285,14 +281,18 @@ public class SpriteBatch implements Disposable{
                     System.arraycopy(rect.vertices, offset, vertices, 0, copyCount);
                     idx += copyCount;
                     count -= copyCount;
-                }
+                }*/
             }
         }
 
-        if(customShader != null)
-            customShader.end();
-        else
-            shader.end();
+        //render any residual rects
+        if(idx > 0 && lastTexture != null){
+            render(idx, blending, lastTexture);
+        }
+
+        getShader().end();
+
+        rectAmount = 0;
     }
 
     private void render(int idx, Blending blending, Texture texture){
@@ -306,7 +306,7 @@ public class SpriteBatch implements Disposable{
         mesh.setVertices(vertices, 0, idx);
         mesh.getIndicesBuffer().position(0);
         mesh.getIndicesBuffer().limit(count);
-        mesh.render(customShader != null ? customShader : shader, GL20.GL_TRIANGLES, 0, count);
+        mesh.render(getShader(), GL20.GL_TRIANGLES, 0, count);
     }
 
     public Color getColor(){
@@ -339,13 +339,8 @@ public class SpriteBatch implements Disposable{
 
     private void setupMatrices(){
         combinedMatrix.set(projectionMatrix).mul(transformMatrix);
-        if(customShader != null){
-            customShader.setUniformMatrix("u_projTrans", combinedMatrix);
-            customShader.setUniformi("u_texture", 0);
-        }else{
-            shader.setUniformMatrix("u_projTrans", combinedMatrix);
-            shader.setUniformi("u_texture", 0);
-        }
+        getShader().setUniformMatrix4("u_projTrans", BatchShader.copyTransform(combinedMatrix));
+        getShader().setUniformi("u_texture", 0);
     }
 
     public Shader getShader(){
@@ -364,7 +359,7 @@ public class SpriteBatch implements Disposable{
     public void setShader(Shader shader, boolean applyParams){
         flush();
         customShader = shader;
-        if(shader != null && applyParams) shader.apply();
+        this.applyParams = applyParams;
     }
 
     /** @return Whether there are still pending draw requests. */
@@ -376,6 +371,23 @@ public class SpriteBatch implements Disposable{
     public void dispose(){
         mesh.dispose();
         if(ownsShader && shader != null) shader.dispose();
+    }
+
+    IntMap<Pool<float[]>> pools = new IntMap<>();
+
+    float[] obtain(float[] src){
+        Pool<float[]> pool = pools.get(src.length);
+        if(pool == null){
+            pools.put(src.length, pool = new Pool<float[]>(){
+                @Override
+                protected float[] newObject(){
+                    return new float[src.length];
+                }
+            });
+        }
+        float[] result = pool.obtain();
+        System.arraycopy(src, 0, result, 0, result.length);
+        return result;
     }
 
     public class BatchRect implements Poolable, Comparable<BatchRect>{
@@ -480,7 +492,7 @@ public class SpriteBatch implements Disposable{
         }
 
         public BatchRect vert(Texture texture, float[] vertices, int offset, int count){
-            this.vertices = vertices;
+            this.vertices = obtain(vertices);
             this.voffset = offset;
             this.vcount = count;
             return tex(texture);
@@ -493,6 +505,9 @@ public class SpriteBatch implements Disposable{
 
         @Override
         public void reset(){
+            if(vertices != null){
+                pools.get(vertices.length).free(vertices);
+            }
             region.texture = null;
             region.u = region.v = region.u2 = region.v2 = region.width = region.height = 0;
             x = y = z = originX = originY = width = height = rotation = 0f;
