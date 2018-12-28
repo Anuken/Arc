@@ -44,7 +44,7 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>>{
 
     /**
      * Creates a new map with a load factor of 0.8.
-     * @param initialCapacity If not a power of two, it is increased to the next nearest power of two.
+     * @param initialCapacity If not a power of two, it is increased to the next Nearest power of two.
      */
     public IdentityMap(int initialCapacity){
         this(initialCapacity, 0.8f);
@@ -53,7 +53,7 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>>{
     /**
      * Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
      * growing the backing table.
-     * @param initialCapacity If not a power of two, it is increased to the next nearest power of two.
+     * @param initialCapacity If not a power of two, it is increased to the next Nearest power of two.
      */
     public IdentityMap(int initialCapacity, float loadFactor){
         if(initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);

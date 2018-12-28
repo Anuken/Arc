@@ -284,7 +284,7 @@ public final class Intersector{
         return nearestSegmentPoint(start, end, point, v2tmp).dst(point);
     }
 
-    /** Returns a point on the segment nearest to the specified point. */
+    /** Returns a point on the segment Nearest to the specified point. */
     public static Vector2 nearestSegmentPoint(Vector2 start, Vector2 end, Vector2 point, Vector2 nearest){
         float length2 = start.dst2(end);
         if(length2 == 0) return nearest.set(start);
@@ -294,7 +294,7 @@ public final class Intersector{
         return nearest.set(start.x + t * (end.x - start.x), start.y + t * (end.y - start.y));
     }
 
-    /** Returns a point on the segment nearest to the specified point. */
+    /** Returns a point on the segment Nearest to the specified point. */
     public static Vector2 nearestSegmentPoint(float startX, float startY, float endX, float endY, float pointX, float pointY,
                                               Vector2 nearest){
         final float xDiff = endX - startX;
@@ -664,10 +664,10 @@ public final class Intersector{
     }
 
     /**
-     * Intersects the given ray with list of triangles. Returns the nearest intersection point in intersection
+     * Intersects the given ray with list of triangles. Returns the Nearest intersection point in intersection
      * @param ray The ray
      * @param triangles The triangles, each successive 3 elements from a vertex
-     * @param intersection The nearest intersection point (optional)
+     * @param intersection The Nearest intersection point (optional)
      * @return Whether the ray and the triangles intersect.
      */
     public static boolean intersectRayTriangles(Ray ray, float[] triangles, Vector3 intersection){
@@ -700,12 +700,12 @@ public final class Intersector{
     }
 
     /**
-     * Intersects the given ray with list of triangles. Returns the nearest intersection point in intersection
+     * Intersects the given ray with list of triangles. Returns the Nearest intersection point in intersection
      * @param ray The ray
      * @param vertices the vertices
      * @param indices the indices, each successive 3 shorts index the 3 vertices of a triangle
      * @param vertexSize the size of a vertex in floats
-     * @param intersection The nearest intersection point (optional)
+     * @param intersection The Nearest intersection point (optional)
      * @return Whether the ray and the triangles intersect.
      */
     public static boolean intersectRayTriangles(Ray ray, float[] vertices, short[] indices, int vertexSize,
@@ -743,10 +743,10 @@ public final class Intersector{
     }
 
     /**
-     * Intersects the given ray with list of triangles. Returns the nearest intersection point in intersection
+     * Intersects the given ray with list of triangles. Returns the Nearest intersection point in intersection
      * @param ray The ray
      * @param triangles The triangles
-     * @param intersection The nearest intersection point (optional)
+     * @param intersection The Nearest intersection point (optional)
      * @return Whether the ray and the triangles intersect.
      */
     public static boolean intersectRayTriangles(Ray ray, List<Vector3> triangles, Vector3 intersection){

@@ -30,7 +30,7 @@ public class Bezier<T extends Vector<T>> implements Path<T>{
     }
 
     /**
-     * Simple linear interpolation
+     * Simple Linear interpolation
      * @param out The {@link Vector} to set to the result.
      * @param t The location (ranging 0..1) on the line.
      * @param p0 The start point.
@@ -44,7 +44,7 @@ public class Bezier<T extends Vector<T>> implements Path<T>{
     }
 
     /**
-     * Simple linear interpolation derivative
+     * Simple Linear interpolation derivative
      * @param out The {@link Vector} to set to the result.
      * @param t The location (ranging 0..1) on the line.
      * @param p0 The start point.

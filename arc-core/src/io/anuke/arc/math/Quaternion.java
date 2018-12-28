@@ -581,7 +581,7 @@ public class Quaternion implements Serializable{
     }
 
     /**
-     * Spherical linear interpolation between this quaternion and the other quaternion, based on the alpha value in the range
+     * Spherical Linear interpolation between this quaternion and the other quaternion, based on the alpha value in the range
      * [0,1]. Taken from Bones framework for JPCT, see http://www.aptalkarga.com/bones/
      * @param end the end quaternion
      * @param alpha alpha in the range [0,1]
@@ -611,7 +611,7 @@ public class Quaternion implements Serializable{
         if(d < 0.f) scale1 = -scale1;
 
         // Calculate the x, y, z and w values for the quaternion by using a
-        // special form of linear interpolation for quaternions.
+        // special form of Linear interpolation for quaternions.
         x = (scale0 * x) + (scale1 * end.x);
         y = (scale0 * y) + (scale1 * end.y);
         z = (scale0 * z) + (scale1 * end.z);

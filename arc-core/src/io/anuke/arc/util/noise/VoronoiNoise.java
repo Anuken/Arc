@@ -61,10 +61,10 @@ public class VoronoiNoise{
     /// To modify the random positions of the seed points, call the SetSeed()
     /// method.
     ///
-    /// This noise module can optionally add the distance from the nearest
+    /// This noise module can optionally add the distance from the Nearest
     /// seed to the output value.  To enable this feature, call the
     /// enableDistance() method.  This causes the points in the Voronoi cells
-    /// to increase in value the further away that point is from the nearest
+    /// to increase in value the further away that point is from the Nearest
     /// seed point.
 
     //for speed, we can approximate the sqrt term in the distance funtions

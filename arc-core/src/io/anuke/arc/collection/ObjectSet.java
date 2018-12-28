@@ -44,7 +44,7 @@ public class ObjectSet<T> implements Iterable<T>{
 
     /**
      * Creates a new set with a load factor of 0.8.
-     * @param initialCapacity If not a power of two, it is increased to the next nearest power of two.
+     * @param initialCapacity If not a power of two, it is increased to the next Nearest power of two.
      */
     public ObjectSet(int initialCapacity){
         this(initialCapacity, 0.8f);
@@ -53,7 +53,7 @@ public class ObjectSet<T> implements Iterable<T>{
     /**
      * Creates a new set with the specified initial capacity and load factor. This set will hold initialCapacity items before
      * growing the backing table.
-     * @param initialCapacity If not a power of two, it is increased to the next nearest power of two.
+     * @param initialCapacity If not a power of two, it is increased to the next Nearest power of two.
      */
     public ObjectSet(int initialCapacity, float loadFactor){
         if(initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);

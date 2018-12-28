@@ -252,7 +252,7 @@ public class ProgressBar extends Element implements Disableable{
     }
 
     /**
-     * Sets the progress bar position, rounded to the nearest step size and clamped to the minimum and maximum values.
+     * Sets the progress bar position, rounded to the Nearest step size and clamped to the minimum and maximum values.
      * {@link #clamp(float)} can be overridden to allow values outside of the progress bar's min/max range.
      * @return false if the value was not changed because the progress bar already had the value or it was canceled by a
      * listener.

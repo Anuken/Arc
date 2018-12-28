@@ -176,6 +176,17 @@ public abstract class Input{
         if(axis.key != null){
             return keyboard.getAxis(axis.key);
         }else{
+            return keyboard.isKeyPressed(axis.min) ? -1 : keyboard.isKeyPressed(axis.max) ? 1 : 0;
+        }
+    }
+
+    /** Returns the [-1, 1] axis value of a key.
+     * In the case of keyboard-based axes, this will only return a value if one of the axes was just pressed. */
+    public float axisTap(KeyBind key){
+        Axis axis = keybinds.get(key);
+        if(axis.key != null){
+            return keyboard.getAxis(axis.key);
+        }else{
             return keyboard.isKeyTapped(axis.min) ? -1 : keyboard.isKeyTapped(axis.max) ? 1 : 0;
         }
     }

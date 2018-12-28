@@ -114,7 +114,7 @@ public class PixmapPacker implements Disposable{
      * Creates a new ImagePacker which will insert all supplied pixmaps into one or more <code>pageWidth</code> by
      * <code>pageHeight</code> pixmaps using the specified strategy.
      * @param padding the number of blank pixels to insert between pixmaps.
-     * @param duplicateBorder duplicate the border pixels of the inserted images to avoid seams when rendering with bi-linear
+     * @param duplicateBorder duplicate the border pixels of the inserted images to avoid seams when rendering with bi-Linear
      * filtering on.
      * @param stripWhitespaceX strip whitespace in x axis
      * @param stripWhitespaceY strip whitespace in y axis

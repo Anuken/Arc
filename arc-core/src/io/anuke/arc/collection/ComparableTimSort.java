@@ -796,7 +796,7 @@ class ComparableTimSort{
 
     /**
      * Ensures that the external array tmp has at least the specified number of elements, increasing its size if necessary. The
-     * size increases exponentially to ensure amortized linear time complexity.
+     * size increases exponentially to ensure amortized Linear time complexity.
      * @param minCapacity the minimum required capacity of the tmp array
      * @return tmp, whether or not it grew
      */

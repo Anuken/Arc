@@ -283,7 +283,7 @@ public class NinePatch{
 
         // Add half pixel offsets on stretchable dimensions to avoid color bleeding when GL_LINEAR
         // filtering is used for the texture. This nudges the texture coordinate to the center
-        // of the texel where the neighboring pixel has 0% contribution in linear blending mode.
+        // of the texel where the neighboring pixel has 0% contribution in Linear blending mode.
         if(texture.getMagFilter() == TextureFilter.Linear || texture.getMinFilter() == TextureFilter.Linear){
             if(isStretchW){
                 float halfTexelWidth = 0.5f * 1.0f / texture.getWidth();

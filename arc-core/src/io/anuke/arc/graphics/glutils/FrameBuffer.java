@@ -66,9 +66,11 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
         if(hasStencil) frameBufferBuilder.addBasicStencilRenderBuffer();
         this.bufferBuilder = frameBufferBuilder;
         build();
+        getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
     }
 
     public void resize(int width, int height){
+        TextureFilter min = getTexture().getMinFilter(), mag = getTexture().getMagFilter();
         dispose();
 
         FrameBufferBuilder frameBufferBuilder = new FrameBufferBuilder(width, height);
@@ -81,6 +83,7 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
         this.depthStencilPackedBufferHandle = 0;
         this.hasDepthStencilPackedBuffer = this.isMRT = false;
         build();
+        getTexture().setFilter(min, mag);
     }
 
     /** See {@link GLFrameBuffer#unbind()} */

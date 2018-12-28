@@ -42,7 +42,7 @@ public class Angles{
     }
 
     public static float angle(float x, float y, float x2, float y2){
-        return Mathf.atan2(x2 - x, y2 - y);
+        return Mathf.atan2(x2 - x, y2 - y) * Mathf.radDeg;
     }
 
     public static float trnsx(float angle, float len){
@@ -63,7 +63,7 @@ public class Angles{
 
     public static float mouseAngle(float cx, float cy){
         Vector2 avector = Core.camera.project(cx, cy);
-        return Mathf.atan2(Core.input.mouseX() - avector.x, Core.input.mouseY() - avector.y);
+        return angle(Core.input.mouseX(), Core.input.mouseY(), avector.x, avector.y);
     }
 
     public static void circle(int points, Consumer<Float> cons){
