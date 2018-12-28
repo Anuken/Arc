@@ -40,6 +40,17 @@ public class Strings{
         return text;
     }
 
+    public static String join(String separator, String... strings){
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < strings.length; i++){
+            builder.append(strings[i]);
+            if(i != strings.length - 1){
+                builder.append(separator);
+            }
+        }
+        return builder.toString();
+    }
+
     /** Returns the levenshtein distance between two strings. */
     public static int levenshtein(String x, String y){
         int[][] dp = new int[x.length() + 1][y.length() + 1];

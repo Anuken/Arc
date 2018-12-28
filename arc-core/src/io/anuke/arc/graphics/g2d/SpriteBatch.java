@@ -175,13 +175,12 @@ public class SpriteBatch implements Disposable{
     void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
         //if(!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
-        float[] vertices = this.vertices;
-
         Texture texture = region.texture;
         if(texture != lastTexture){
             switchTexture(texture);
-        }else if(idx == vertices.length) //
+        }else if(idx == vertices.length){
             flush();
+        }
 
         if(!Mathf.isZero(rotation)){
             //bottom left and top right corner points relative to origin
@@ -361,16 +360,14 @@ public class SpriteBatch implements Disposable{
         if(spritesInBatch > maxSpritesInBatch) maxSpritesInBatch = spritesInBatch;
         int count = spritesInBatch * 6;
 
+        Core.gl.glEnable(GL20.GL_BLEND);
+        Core.gl.glBlendFuncSeparate(blending.src, blending.dst, blending.src, blending.dst);
+
         lastTexture.bind();
         Mesh mesh = this.mesh;
         mesh.setVertices(vertices, 0, idx);
         mesh.getIndicesBuffer().position(0);
         mesh.getIndicesBuffer().limit(count);
-
-        Core.gl.glEnable(GL20.GL_BLEND);
-        //if(blending != Blending.normal)
-        Core.gl.glBlendFuncSeparate(blending.src, blending.dst, blending.src, blending.dst);
-
         mesh.render(getShader(), GL20.GL_TRIANGLES, 0, count);
 
         idx = 0;

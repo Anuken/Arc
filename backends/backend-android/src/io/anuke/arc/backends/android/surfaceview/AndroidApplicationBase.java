@@ -16,7 +16,7 @@ import io.anuke.arc.collection.Array;
  * @author davebaol
  */
 public interface AndroidApplicationBase extends Application{
-    int MINIMUM_SDK = 11;
+    int MINIMUM_SDK = 12;
 
     /**
      * The application or activity context

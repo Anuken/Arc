@@ -911,7 +911,7 @@ public class BitmapFont implements Disposable{
          * Scales the font by the specified amounts on both axes
          * <p>
          * Note that smoother scaling can be achieved if the texture backing the BitmapFont is using {@link TextureFilter#Linear}.
-         * The default is Nearest, so use a BitmapFont constructor that takes a {@link TextureRegion}.
+         * The default is nearest, so use a BitmapFont constructor that takes a {@link TextureRegion}.
          * @throws IllegalArgumentException if scaleX or scaleY is zero.
          */
         public void setScale(float scaleX, float scaleY){

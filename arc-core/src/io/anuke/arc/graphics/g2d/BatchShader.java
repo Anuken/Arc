@@ -2,6 +2,7 @@ package io.anuke.arc.graphics.g2d;
 
 import io.anuke.arc.graphics.glutils.Shader;
 import io.anuke.arc.math.Matrix3;
+import io.anuke.arc.util.Strings;
 
 public class BatchShader{
     private static final float[] val = new float[16];
@@ -10,7 +11,7 @@ public class BatchShader{
         M21 = 6, M22 = 10, M23 = 14, M30 = 3, M31 = 7, M32 = 11, M33 = 15;
     
     private static final String vertexShader =
-    String.join("\n",
+    Strings.join("\n",
         "attribute vec4 " + Shader.POSITION_ATTRIBUTE + ";",
         "attribute vec4 " + Shader.COLOR_ATTRIBUTE + ";",
         "attribute vec2 " + Shader.TEXCOORD_ATTRIBUTE + "0;",
@@ -26,7 +27,7 @@ public class BatchShader{
         "}"
     );
     private static final String fragmentShader =
-    String.join("\n",
+    Strings.join("\n",
         "#ifdef GL_ES",
         "#define LOWP lowp",
         "precision mediump float;",

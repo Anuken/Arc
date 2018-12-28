@@ -3,8 +3,6 @@ package io.anuke.arc.backends.android.surfaceview;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -15,20 +13,20 @@ import android.os.Vibrator;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
+import android.view.View.OnGenericMotionListener;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import io.anuke.arc.Application;
 import io.anuke.arc.Core;
 import io.anuke.arc.Graphics.DisplayMode;
 import io.anuke.arc.Input;
+import io.anuke.arc.collection.Bits;
 import io.anuke.arc.input.InputDevice;
 import io.anuke.arc.input.InputProcessor;
 import io.anuke.arc.input.KeyCode;
 import io.anuke.arc.math.geom.Vector3;
-import io.anuke.arc.collection.Bits;
 import io.anuke.arc.util.Log;
 import io.anuke.arc.util.pooling.Pool;
 
@@ -42,7 +40,7 @@ import java.util.List;
  */
 
 /** @author jshapcot */
-public class AndroidInput extends Input implements OnKeyListener, OnTouchListener{
+public class AndroidInput extends Input implements OnKeyListener, OnTouchListener, OnGenericMotionListener{
     public static final int NUM_TOUCHES = 20;
     protected final float[] accelerometerValues = new float[3];
     protected final float[] gyroscopeValues = new float[3];
@@ -52,7 +50,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     protected final float[] rotationVectorValues = new float[3];
     protected final Orientation nativeOrientation;
     final boolean hasMultitouch;
-    final Application app;
+    final AndroidApplication app;
     final Context context;
     final float[] R = new float[9];
     final float[] orientation = new float[3];
@@ -95,15 +93,16 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     private float pitch = 0;
     private float roll = 0;
     private boolean justTouched = false;
-    private InputProcessor processor;
     private long currentEventTimeStamp = System.nanoTime();
     private Vector3 accel = new Vector3(), gyro = new Vector3(), orient = new Vector3();
     private SensorEventListener accelerometerListener;
     private SensorEventListener gyroscopeListener;
     private SensorEventListener compassListener;
     private SensorEventListener rotationVectorListener;
+    private final AndroidMouseHandler mouseHandler;
+    ArrayList<OnGenericMotionListener> genericMotionListeners = new ArrayList<>();
 
-    public AndroidInput(Application activity, Context context, Object view, AndroidApplicationConfiguration config){
+    public AndroidInput(AndroidApplication activity, Context context, Object view, AndroidApplicationConfiguration config){
         // we hook into View, for LWPs we call onTouch below directly from
         // within the AndroidLivewallpaperEngine#onTouchEvent() method.
         if(view instanceof View){
@@ -112,6 +111,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
             v.setOnTouchListener(this);
             v.setFocusable(true);
             v.setFocusableInTouchMode(true);
+            v.setOnGenericMotionListener(this);
             v.requestFocus();
         }
         this.config = config;
@@ -124,12 +124,13 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
         this.context = context;
         this.sleepTime = config.touchSleepTime;
         touchHandler = new AndroidMultiTouchHandler();
+        mouseHandler = new AndroidMouseHandler();
         hasMultitouch = touchHandler.supportsMultitouch(context);
 
         vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
 
         int rotation = getRotation();
-        DisplayMode mode = Core.graphics.getDisplayMode();
+        DisplayMode mode = activity.graphics.getDisplayMode();
         if(((rotation == 0 || rotation == 180) && (mode.width >= mode.height))
         || ((rotation == 90 || rotation == 270) && (mode.width <= mode.height))){
             nativeOrientation = Orientation.Landscape;
@@ -167,22 +168,9 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
             if(!info.multiline) input.setSingleLine();
             input.setSelection(text.length());
             alert.setView(input);
-            alert.setPositiveButton(context.getString(android.R.string.ok), new DialogInterface.OnClickListener(){
-                public void onClick(DialogInterface dialog, int whichButton){
-                    Core.app.post(() -> info.accepted.accept(input.getText().toString()));
-                }
-            });
-            alert.setNegativeButton(context.getString(android.R.string.cancel), new DialogInterface.OnClickListener(){
-                public void onClick(DialogInterface dialog, int whichButton){
-                    Core.app.post(() -> info.canceled.run());
-                }
-            });
-            alert.setOnCancelListener(new OnCancelListener(){
-                @Override
-                public void onCancel(DialogInterface arg0){
-                    Core.app.post(() -> info.canceled.run());
-                }
-            });
+            alert.setPositiveButton(context.getString(android.R.string.ok), (dialog, whichButton) -> Core.app.post(() -> info.accepted.accept(input.getText().toString())));
+            alert.setNegativeButton(context.getString(android.R.string.cancel), (dialog, whichButton) -> Core.app.post(() -> info.canceled.run()));
+            alert.setOnCancelListener(arg0 -> Core.app.post(() -> info.canceled.run()));
             AlertDialog dialog = alert.show();
             dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
             dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
@@ -257,62 +245,49 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
         synchronized(this){
             justTouched = false;
 
-            if(processor != null){
-                final InputProcessor processor = this.processor;
+            final InputProcessor processor = this.inputMultiplexer;
 
-                int len = keyEvents.size();
-                for(int i = 0; i < len; i++){
-                    KeyEvent e = keyEvents.get(i);
-                    currentEventTimeStamp = e.timeStamp;
-                    switch(e.type){
-                        case KeyEvent.KEY_DOWN:
-                            processor.keyDown(e.keyCode);
-                            break;
-                        case KeyEvent.KEY_UP:
-                            processor.keyUp(e.keyCode);
-                            break;
-                        case KeyEvent.KEY_TYPED:
-                            processor.keyTyped(e.keyChar);
-                    }
-                    usedKeyEvents.free(e);
+            int len = keyEvents.size();
+            for(int i = 0; i < len; i++){
+                KeyEvent e = keyEvents.get(i);
+                currentEventTimeStamp = e.timeStamp;
+                switch(e.type){
+                    case KeyEvent.KEY_DOWN:
+                        processor.keyDown(e.keyCode);
+                        break;
+                    case KeyEvent.KEY_UP:
+                        processor.keyUp(e.keyCode);
+                        break;
+                    case KeyEvent.KEY_TYPED:
+                        processor.keyTyped(e.keyChar);
                 }
-
-                len = touchEvents.size();
-                for(int i = 0; i < len; i++){
-                    TouchEvent e = touchEvents.get(i);
-                    currentEventTimeStamp = e.timeStamp;
-                    switch(e.type){
-                        case TouchEvent.TOUCH_DOWN:
-                            processor.touchDown(e.x, e.y, e.pointer, e.button);
-                            justTouched = true;
-                            break;
-                        case TouchEvent.TOUCH_UP:
-                            processor.touchUp(e.x, e.y, e.pointer, e.button);
-                            break;
-                        case TouchEvent.TOUCH_DRAGGED:
-                            processor.touchDragged(e.x, e.y, e.pointer);
-                            break;
-                        case TouchEvent.TOUCH_MOVED:
-                            processor.mouseMoved(e.x, e.y);
-                            break;
-                        case TouchEvent.TOUCH_SCROLLED:
-                            processor.scrolled(e.scrollAmountX, e.scrollAmountY);
-                    }
-                    usedTouchEvents.free(e);
-                }
-            }else{
-                int len = touchEvents.size();
-                for(int i = 0; i < len; i++){
-                    TouchEvent e = touchEvents.get(i);
-                    if(e.type == TouchEvent.TOUCH_DOWN) justTouched = true;
-                    usedTouchEvents.free(e);
-                }
-
-                len = keyEvents.size();
-                for(int i = 0; i < len; i++){
-                    usedKeyEvents.free(keyEvents.get(i));
-                }
+                usedKeyEvents.free(e);
             }
+
+            len = touchEvents.size();
+            for(int i = 0; i < len; i++){
+                TouchEvent e = touchEvents.get(i);
+                currentEventTimeStamp = e.timeStamp;
+                switch(e.type){
+                    case TouchEvent.TOUCH_DOWN:
+                        processor.touchDown(e.x, e.y, e.pointer, e.button);
+                        justTouched = true;
+                        break;
+                    case TouchEvent.TOUCH_UP:
+                        processor.touchUp(e.x, e.y, e.pointer, e.button);
+                        break;
+                    case TouchEvent.TOUCH_DRAGGED:
+                        processor.touchDragged(e.x, e.y, e.pointer);
+                        break;
+                    case TouchEvent.TOUCH_MOVED:
+                        processor.mouseMoved(e.x, e.y);
+                        break;
+                    case TouchEvent.TOUCH_SCROLLED:
+                        processor.scrolled(e.scrollAmountX, e.scrollAmountY);
+                }
+                usedTouchEvents.free(e);
+            }
+
 
             if(touchEvents.isEmpty()){
                 for(int i = 0; i < deltaX.length; i++){
@@ -360,7 +335,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
             event.timeStamp = System.nanoTime();
             event.pointer = 0;
             event.x = x;
-            event.y = y;
+            event.y = app.graphics.getHeight() - y - 1;
             event.type = TouchEvent.TOUCH_DOWN;
             touchEvents.add(event);
 
@@ -368,7 +343,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
             event.timeStamp = System.nanoTime();
             event.pointer = 0;
             event.x = x;
-            event.y = y;
+            event.y = app.graphics.getHeight() - y - 1;
             event.type = TouchEvent.TOUCH_UP;
             touchEvents.add(event);
         }
@@ -833,5 +808,17 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
                 }
             }
         }
+    }
+
+    @Override
+    public boolean onGenericMotion(View view, MotionEvent event){
+        if(mouseHandler.onGenericMotion(event, this)) return true;
+        for(int i = 0, n = genericMotionListeners.size(); i < n; i++)
+            if(genericMotionListeners.get(i).onGenericMotion(view, event)) return true;
+        return false;
+    }
+
+    public void addGenericMotionListener(OnGenericMotionListener listener){
+        genericMotionListeners.add(listener);
     }
 }

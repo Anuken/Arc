@@ -140,7 +140,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler{
         event.timeStamp = timeStamp;
         event.pointer = pointer;
         event.x = x;
-        event.y = y;
+        event.y = Core.graphics.getHeight() - y - 1;
         event.type = type;
         event.button = button;
         input.touchEvents.add(event);

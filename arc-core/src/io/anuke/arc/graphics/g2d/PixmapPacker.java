@@ -33,7 +33,7 @@ import java.util.Comparator;
  * PixmapPacker packer = new PixmapPacker(512, 512, Format.RGB565, 2, true);
  * packer.pack(&quot;First Pixmap&quot;, pixmap1);
  * packer.pack(&quot;Second Pixmap&quot;, pixmap2);
- * TextureAtlas atlas = packer.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest, false);
+ * TextureAtlas atlas = packer.generateTextureAtlas(TextureFilter.nearest, TextureFilter.nearest, false);
  * packer.dispose();
  * // ...
  * atlas.dispose();

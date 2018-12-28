@@ -18,7 +18,7 @@ import java.nio.ByteBuffer;
  * <p>
  * By default all methods use blending. You can disable blending with {@link Pixmap#setBlending(Blending)}. The
  * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)} method will scale and stretch the source image to a
- * target image. There either Nearest neighbour or bilinear filtering can be used.
+ * target image. There either nearest neighbour or bilinear filtering can be used.
  * </p>
  *
  * <p>
@@ -169,7 +169,7 @@ public class Pixmap implements Disposable{
 
     /**
      * Draws an area from another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
-     * specified target rectangle. Use {@link Pixmap#setFilter(Filter)} to specify the type of filtering to be used (Nearest
+     * specified target rectangle. Use {@link Pixmap#setFilter(Filter)} to specify the type of filtering to be used (nearest
      * neighbour or bilinear).
      * @param pixmap The other Pixmap
      * @param srcx The source x-coordinate (top left corner)

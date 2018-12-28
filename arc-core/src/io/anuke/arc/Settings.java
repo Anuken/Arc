@@ -128,8 +128,8 @@ public class Settings{
                         break;
                 }
             }
-        }catch(IOException e){
-            e.printStackTrace();
+        }catch(Exception e){
+            //error ignored, file must not be found
         }
     }
 

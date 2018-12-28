@@ -17,11 +17,12 @@ import android.widget.FrameLayout;
 import io.anuke.arc.Application;
 import io.anuke.arc.ApplicationListener;
 import io.anuke.arc.Core;
+import io.anuke.arc.Settings;
 import io.anuke.arc.backends.android.surfaceview.surfaceview.FillResolutionStrategy;
 import io.anuke.arc.collection.Array;
+import io.anuke.arc.util.ArcNativesLoader;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Clipboard;
-import io.anuke.arc.util.ArcNativesLoader;
 import io.anuke.arc.util.Log;
 
 import java.lang.reflect.Method;
@@ -46,6 +47,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
     protected AndroidAudio audio;
     protected AndroidFiles files;
     protected AndroidNet net;
+    protected Settings settings;
     protected AndroidClipboard clipboard;
     protected boolean firstResume = true;
     protected boolean useImmersiveMode = false;
@@ -115,11 +117,12 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
         }
         graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
         : config.resolutionStrategy);
-        input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
+        input = new AndroidInput(this, this, graphics.view, config);
         audio = new AndroidAudio(this, config);
         this.getFilesDir(); // workaround for Android bug #10515463
         files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
         net = new AndroidNet(this);
+        settings = new Settings();
         addListener(listener);
         this.handler = new Handler();
         this.useImmersiveMode = config.useImmersiveMode;
@@ -141,6 +144,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
         });
 
         Core.app = this;
+        Core.settings = settings;
         Core.input = input;
         Core.audio = audio;
         Core.files = files;
@@ -279,6 +283,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
     @Override
     protected void onResume(){
         Core.app = this;
+        Core.settings = settings;
         Core.input = input;
         Core.audio = audio;
         Core.files = files;

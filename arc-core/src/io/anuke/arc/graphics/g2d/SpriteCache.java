@@ -9,8 +9,8 @@ import io.anuke.arc.graphics.VertexAttributes.Usage;
 import io.anuke.arc.graphics.glutils.Shader;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.Matrix3;
-import io.anuke.arc.util.Disposable;
 import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.Disposable;
 
 import java.nio.FloatBuffer;
 
@@ -138,8 +138,7 @@ public class SpriteCache implements Disposable{
         + "varying vec4 v_color;\n" //
         + "varying vec2 v_texCoords;\n" //
         + "uniform sampler2D u_texture;\n" //
-        + "void main()\n"//
-        + "{\n" //
+        + "void main(){\n" //
         + "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
         + "}";
         return new Shader(vertexShader, fragmentShader);

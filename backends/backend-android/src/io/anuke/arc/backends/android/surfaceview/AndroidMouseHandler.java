@@ -50,7 +50,7 @@ public class AndroidMouseHandler{
         TouchEvent event = input.usedTouchEvents.obtain();
         event.timeStamp = timeStamp;
         event.x = x;
-        event.y = y;
+        event.y = Core.graphics.getHeight() - y - 1;
         event.type = type;
         event.scrollAmountX = scrollAmountX;
         event.scrollAmountY = scrollAmountY;
