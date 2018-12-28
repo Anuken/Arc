@@ -200,10 +200,10 @@ public class ScrollPane extends WidgetGroup{
 
         addListener(new InputListener(){
             @Override
-            public boolean scrolled(InputEvent event, float x, float y, float amountx, float amountY){
+            public boolean scrolled(InputEvent event, float x, float y, float sx, float sy){
                 resetFade();
-                if(scrollY) setScrollY(amountY + getMouseWheelY() * amountX);
-                if(scrollX) setScrollX(amountX + getMouseWheelX() * amountY);
+                if(scrollY) setScrollY(amountY + getMouseWheelY() * sy);
+                if(scrollX) setScrollX(amountX + getMouseWheelX() * sx);
                 return scrollX || scrollY;
             }
         });

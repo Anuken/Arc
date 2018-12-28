@@ -82,9 +82,7 @@ public class Effects{
     }
 
     private static void shake(float intensity, float duration){
-        if(shakeProvider == null)
-            throw new RuntimeException("Screenshake provider is null! Set it first.");
-
+        if(shakeProvider == null) throw new RuntimeException("Screenshake provider is null! Set it first.");
         shakeProvider.accept(intensity, duration);
     }
 

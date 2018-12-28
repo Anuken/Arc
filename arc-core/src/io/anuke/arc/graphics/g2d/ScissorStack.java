@@ -35,6 +35,7 @@ public class ScissorStack{
 
         if(scissors.size == 0){
             if(scissor.width < 1 || scissor.height < 1) return false;
+            Draw.flush();
             Core.gl.glEnable(GL20.GL_SCISSOR_TEST);
         }else{
             // merge scissors
@@ -47,12 +48,13 @@ public class ScissorStack{
             float maxY = Math.min(parent.y + parent.height, scissor.y + scissor.height);
             if(maxY - minY < 1) return false;
 
+            Draw.flush();
             scissor.x = minX;
             scissor.y = minY;
             scissor.width = maxX - minX;
             scissor.height = Math.max(1, maxY - minY);
         }
-        Draw.flush();
+
         scissors.add(scissor);
         HdpiUtils.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);
         return true;

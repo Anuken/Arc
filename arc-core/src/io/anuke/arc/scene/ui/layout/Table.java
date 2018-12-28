@@ -122,8 +122,9 @@ public class Table extends WidgetGroup{
                     Draw.flush();
                     clipEnd();
                 }
-            }else
+            }else{
                 drawChildren();
+            }
             resetTransform();
         }else{
             drawBackground(x, y);
