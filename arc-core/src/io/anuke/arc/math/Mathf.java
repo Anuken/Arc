@@ -73,6 +73,10 @@ public final class Mathf{
         return cos(radians / scl) * mag;
     }
 
+    public static float angle(float x, float y){
+        return atan2(x, y) * radDeg;
+    }
+
     /**
      * Returns atan2 in radians, faster but less accurate than Math.atan2. Average error of 0.00231 radians (0.1323 degrees),
      * largest error of 0.00488 radians (0.2796 degrees).
