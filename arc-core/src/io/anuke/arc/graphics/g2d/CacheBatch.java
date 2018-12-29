@@ -23,6 +23,11 @@ public class CacheBatch extends SpriteBatch{
     }
 
     @Override
+    void setColor(float r, float g, float b, float a){
+        cache.setColor(r, g, b, a);
+    }
+
+    @Override
     public void setPackedColor(float color){
         cache.setPackedColor(color);
     }

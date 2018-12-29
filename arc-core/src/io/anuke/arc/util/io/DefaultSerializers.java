@@ -56,7 +56,7 @@ public class DefaultSerializers{
                     TypeSerializer ser = settings.getSerializer(object.get(0).getClass());
                     if(ser == null) throw new IllegalArgumentException(object.get(0).getClass() + " does not have a serializer registered!");
 
-                    stream.writeUTF(object.get(0).getClass().getTypeName());
+                    stream.writeUTF(object.get(0).getClass().getName());
 
                     for(Object element : object){
                         ser.write(stream, element);
