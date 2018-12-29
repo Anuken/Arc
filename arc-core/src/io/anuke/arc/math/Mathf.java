@@ -74,7 +74,9 @@ public final class Mathf{
     }
 
     public static float angle(float x, float y){
-        return atan2(x, y) * radDeg;
+        float result = atan2(x, y) * radDeg;
+        if(result < 0) result += 360f;
+        return result;
     }
 
     /**
