@@ -5,6 +5,7 @@ import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.event.Touchable;
 import io.anuke.arc.scene.style.Drawable;
+import io.anuke.arc.scene.ui.layout.Value.Fixed;
 import io.anuke.arc.scene.utils.Layout;
 import io.anuke.arc.util.Align;
 
@@ -217,13 +218,13 @@ public class Container<T extends Element> extends WidgetGroup{
 
     /** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified value. */
     public Container<T> size(float size){
-        size(e -> (size));
+        size(new Fixed(size));
         return this;
     }
 
     /** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified values. */
     public Container<T> size(float width, float height){
-        size(e -> (width), e -> (height));
+        size(new Fixed(width), new Fixed(height));
         return this;
     }
 
@@ -238,7 +239,7 @@ public class Container<T extends Element> extends WidgetGroup{
 
     /** Sets the minWidth, prefWidth, and maxWidth to the specified value. */
     public Container<T> width(float width){
-        width(e -> (width));
+        width(new Fixed(width));
         return this;
     }
 
@@ -253,7 +254,7 @@ public class Container<T extends Element> extends WidgetGroup{
 
     /** Sets the minHeight, prefHeight, and maxHeight to the specified value. */
     public Container<T> height(float height){
-        height(e -> (height));
+        height(new Fixed(height));
         return this;
     }
 
@@ -288,23 +289,23 @@ public class Container<T extends Element> extends WidgetGroup{
 
     /** Sets the minWidth and minHeight to the specified value. */
     public Container<T> minSize(float size){
-        minSize(e -> (size));
+        minSize(new Fixed(size));
         return this;
     }
 
     /** Sets the minWidth and minHeight to the specified values. */
     public Container<T> minSize(float width, float height){
-        minSize(e -> (width), e -> (height));
+        minSize(new Fixed(width), new Fixed(height));
         return this;
     }
 
     public Container<T> minWidth(float minWidth){
-        this.minWidth = e -> (minWidth);
+        this.minWidth = new Fixed(minWidth);
         return this;
     }
 
     public Container<T> minHeight(float minHeight){
-        this.minHeight = e -> (minHeight);
+        this.minHeight = new Fixed(minHeight);
         return this;
     }
 
@@ -339,23 +340,23 @@ public class Container<T extends Element> extends WidgetGroup{
 
     /** Sets the prefWidth and prefHeight to the specified value. */
     public Container<T> prefSize(float width, float height){
-        prefSize(e -> (width), e -> (height));
+        prefSize(new Fixed(width), new Fixed(height));
         return this;
     }
 
     /** Sets the prefWidth and prefHeight to the specified values. */
     public Container<T> prefSize(float size){
-        prefSize(e -> (size));
+        prefSize(new Fixed(size));
         return this;
     }
 
     public Container<T> prefWidth(float prefWidth){
-        this.prefWidth = e -> (prefWidth);
+        this.prefWidth = new Fixed(prefWidth);
         return this;
     }
 
     public Container<T> prefHeight(float prefHeight){
-        this.prefHeight = e -> (prefHeight);
+        this.prefHeight = new Fixed(prefHeight);
         return this;
     }
 
@@ -390,23 +391,23 @@ public class Container<T extends Element> extends WidgetGroup{
 
     /** Sets the maxWidth and maxHeight to the specified value. */
     public Container<T> maxSize(float size){
-        maxSize(e -> (size));
+        maxSize(new Fixed(size));
         return this;
     }
 
     /** Sets the maxWidth and maxHeight to the specified values. */
     public Container<T> maxSize(float width, float height){
-        maxSize(e -> (width), e -> (height));
+        maxSize(new Fixed(width), new Fixed(height));
         return this;
     }
 
     public Container<T> maxWidth(float maxWidth){
-        this.maxWidth = e -> (maxWidth);
+        this.maxWidth = new Fixed(maxWidth);
         return this;
     }
 
     public Container<T> maxHeight(float maxHeight){
-        this.maxHeight = e -> (maxHeight);
+        this.maxHeight = new Fixed(maxHeight);
         return this;
     }
 
@@ -458,7 +459,7 @@ public class Container<T extends Element> extends WidgetGroup{
 
     /** Sets the marginTop, marginLeft, marginBottom, and marginRight to the specified value. */
     public Container<T> margin(float margin){
-        Value value = e -> (margin);
+        Value value = new Fixed(margin);
         marginTop = value;
         marginLeft = value;
         marginBottom = value;
@@ -467,30 +468,30 @@ public class Container<T extends Element> extends WidgetGroup{
     }
 
     public Container<T> margin(float top, float left, float bottom, float right){
-        marginTop = e -> (top);
-        marginLeft = e -> (left);
-        marginBottom = e -> (bottom);
-        marginRight = e -> (right);
+        marginTop = new Fixed(top);
+        marginLeft = new Fixed(left);
+        marginBottom = new Fixed(bottom);
+        marginRight = new Fixed(right);
         return this;
     }
 
     public Container<T> marginTop(float marginTop){
-        this.marginTop = e -> (marginTop);
+        this.marginTop = new Fixed(marginTop);
         return this;
     }
 
     public Container<T> marginLeft(float marginLeft){
-        this.marginLeft = e -> (marginLeft);
+        this.marginLeft = new Fixed(marginLeft);
         return this;
     }
 
     public Container<T> marginBottom(float marginBottom){
-        this.marginBottom = e -> (marginBottom);
+        this.marginBottom = new Fixed(marginBottom);
         return this;
     }
 
     public Container<T> marginRight(float marginRight){
-        this.marginRight = e -> (marginRight);
+        this.marginRight = new Fixed(marginRight);
         return this;
     }
 

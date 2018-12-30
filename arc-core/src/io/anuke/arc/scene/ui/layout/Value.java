@@ -47,4 +47,16 @@ public interface Value{
 
     /** @param context May be null. */
     float get(Element context);
+
+    class Fixed implements Value{
+        private final float value;
+
+        public Fixed(float value){
+            this.value = value;
+        }
+
+        public float get(Element context){
+            return Unit.dp.scl(value);
+        }
+    }
 }

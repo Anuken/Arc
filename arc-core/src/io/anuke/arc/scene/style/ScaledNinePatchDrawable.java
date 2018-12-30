@@ -10,6 +10,10 @@ public class ScaledNinePatchDrawable extends NinePatchDrawable{
         super(patch);
     }
 
+    public ScaledNinePatchDrawable(NinePatchDrawable drawable){
+        super(drawable);
+    }
+
     @Override
     public void draw(float x, float y, float width, float height){
         getPatch().draw(x, y, 0, 0, width / scale, height / scale, scale, scale, 0);

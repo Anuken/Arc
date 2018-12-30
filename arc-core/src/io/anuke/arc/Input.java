@@ -355,13 +355,12 @@ public abstract class Input{
     }
 
     /** Parameters for text input. */
-    public class TextInput{
+    public static class TextInput{
         public boolean multiline = false;
         public String title = "";
         public String text = "";
-        public Consumer<String> accepted = s -> {
-        };
-        public Runnable canceled = () -> {
-        };
+        public Consumer<String> accepted = s -> { };
+        public Runnable canceled = () -> { };
+        public int maxLength = -1;
     }
 }

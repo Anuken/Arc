@@ -299,6 +299,7 @@ public class IOSInput extends Input{
         uiAlertView.setAlertViewStyle(UIAlertViewStyle.PlainTextInput);
         uiAlertView.setDelegate(delegate);
 
+        //TODO no max length support
         UITextField textField = uiAlertView.getTextField(0);
         textField.setText(input.text);
 

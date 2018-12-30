@@ -10,6 +10,8 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.text.InputFilter;
+import android.text.InputFilter.LengthFilter;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
@@ -84,7 +86,6 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     private Bits keys = new Bits(KeyCode.values().length);
     private Bits justPressedKeys = new Bits(KeyCode.values().length);
     private SensorManager manager;
-    private String text = null;
     private Handler handle;
     private int sleepTime;
     private boolean compassAvailable = false;
@@ -164,9 +165,12 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
             AlertDialog.Builder alert = new AlertDialog.Builder(context);
             //alert.setTitle(info.title);
             final EditText input = new EditText(context);
-            input.setText(text);
+            input.setText(info.text);
+            if(info.maxLength != -1){
+                input.setFilters(new InputFilter[]{new LengthFilter(info.maxLength)});
+            }
             if(!info.multiline) input.setSingleLine();
-            input.setSelection(text.length());
+            input.setSelection(info.text.length());
             alert.setView(input);
             alert.setPositiveButton(context.getString(android.R.string.ok), (dialog, whichButton) -> Core.app.post(() -> info.accepted.accept(input.getText().toString())));
             alert.setNegativeButton(context.getString(android.R.string.cancel), (dialog, whichButton) -> Core.app.post(() -> info.canceled.run()));

@@ -13,6 +13,7 @@ import io.anuke.arc.scene.style.Drawable;
 import io.anuke.arc.scene.ui.*;
 import io.anuke.arc.scene.ui.Label.LabelStyle;
 import io.anuke.arc.scene.ui.TextField.TextFieldFilter;
+import io.anuke.arc.scene.ui.layout.Value.Fixed;
 import io.anuke.arc.scene.utils.Elements;
 import io.anuke.arc.util.Align;
 import io.anuke.arc.util.pooling.Pool;
@@ -744,43 +745,43 @@ public class Table extends WidgetGroup{
 
     /** Sets the marginTop, marginLeft, marginBottom, and marginRight around the table to the specified value. */
     public Table margin(float pad){
-        margin(e -> (pad));
+        margin(new Fixed(pad));
         return this;
     }
 
     public Table margin(float top, float left, float bottom, float right){
-        padTop = e -> (top);
-        padLeft = e -> (left);
-        padBottom = e -> (bottom);
-        padRight = e -> (right);
+        padTop = new Fixed(top);
+        padLeft = new Fixed(left);
+        padBottom = new Fixed(bottom);
+        padRight = new Fixed(right);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the top edge of the table. */
     public Table marginTop(float padTop){
-        this.padTop = e -> (padTop);
+        this.padTop = new Fixed(padTop);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the left edge of the table. */
     public Table marginLeft(float padLeft){
-        this.padLeft = e -> (padLeft);
+        this.padLeft = new Fixed(padLeft);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the bottom edge of the table. */
     public Table marginBottom(float padBottom){
-        this.padBottom = e -> (padBottom);
+        this.padBottom = new Fixed(padBottom);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the right edge of the table. */
     public Table marginRight(float padRight){
-        this.padRight = e -> (padRight);
+        this.padRight = new Fixed(padRight);
         sizeInvalid = true;
         return this;
     }
