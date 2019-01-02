@@ -161,7 +161,7 @@ public class Timer{
                 }
                 if(task.repeatCount == 0){
                     task.timer = null;
-                    tasks.removeAt(i);
+                    tasks.remove(i);
                     i--;
                     n--;
                 }else{

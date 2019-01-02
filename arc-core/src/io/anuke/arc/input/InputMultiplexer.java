@@ -24,7 +24,7 @@ public class InputMultiplexer implements InputProcessor{
     }
 
     public void removeProcessor(int index){
-        processors.removeAt(index);
+        processors.remove(index);
     }
 
     public void addProcessor(InputProcessor processor){

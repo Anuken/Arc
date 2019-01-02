@@ -204,6 +204,12 @@ public class Array<T> implements Iterable<T>{
         size += count;
     }
 
+    public void addAll(Iterable<? extends T> items){
+        for(T t : items){
+            add(t);
+        }
+    }
+
     public T get(int index){
         if(index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
         return items[index];
@@ -233,6 +239,10 @@ public class Array<T> implements Iterable<T>{
         T firstValue = items[first];
         items[first] = items[second];
         items[second] = firstValue;
+    }
+
+    public boolean contains(T value){
+        return contains(value, false);
     }
 
     /**
@@ -307,14 +317,14 @@ public class Array<T> implements Iterable<T>{
         if(identity || value == null){
             for(int i = 0, n = size; i < n; i++){
                 if(items[i] == value){
-                    removeAt(i);
+                    remove(i);
                     return true;
                 }
             }
         }else{
             for(int i = 0, n = size; i < n; i++){
                 if(value.equals(items[i])){
-                    removeAt(i);
+                    remove(i);
                     return true;
                 }
             }
@@ -323,7 +333,7 @@ public class Array<T> implements Iterable<T>{
     }
 
     /** Removes and returns the item at the specified index. */
-    public T removeAt(int index){
+    public T remove(int index){
         if(index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
         T[] items = this.items;
         T value = items[index];
@@ -366,7 +376,7 @@ public class Array<T> implements Iterable<T>{
                 T item = array.get(i);
                 for(int ii = 0; ii < size; ii++){
                     if(item == items[ii]){
-                        removeAt(ii);
+                        remove(ii);
                         size--;
                         break;
                     }
@@ -377,7 +387,7 @@ public class Array<T> implements Iterable<T>{
                 T item = array.get(i);
                 for(int ii = 0; ii < size; ii++){
                     if(item.equals(items[ii])){
-                        removeAt(ii);
+                        remove(ii);
                         size--;
                         break;
                     }
@@ -598,6 +608,7 @@ public class Array<T> implements Iterable<T>{
         return true;
     }
 
+    @Override
     public String toString(){
         if(size == 0) return "[]";
         T[] items = this.items;
@@ -657,7 +668,7 @@ public class Array<T> implements Iterable<T>{
         public void remove(){
             if(!allowRemove) throw new ArcRuntimeException("Remove not allowed.");
             index--;
-            array.removeAt(index);
+            array.remove(index);
         }
 
         public void reset(){

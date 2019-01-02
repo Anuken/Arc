@@ -115,9 +115,9 @@ public class SnapshotArray<T> extends Array<T>{
         return super.removeValue(value, identity);
     }
 
-    public T removeAt(int index){
+    public T remove(int index){
         modified();
-        return super.removeAt(index);
+        return super.remove(index);
     }
 
     public void removeRange(int start, int end){

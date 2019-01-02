@@ -51,7 +51,7 @@ public class MapLayers implements Iterable<MapLayer>{
 
     /** @param index removes layer at index */
     public void remove(int index){
-        layers.removeAt(index);
+        layers.remove(index);
     }
 
     /** @param layer layer to be removed */

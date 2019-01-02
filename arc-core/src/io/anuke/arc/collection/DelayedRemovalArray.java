@@ -5,7 +5,7 @@ import java.util.Comparator;
 /**
  * Queues any removals done after {@link #begin()} is called to occur once {@link #end()} is called. This can allow code out of
  * your control to remove items without affecting iteration. Between begin and end, most mutator methods will throw
- * IllegalStateException. Only {@link #removeAt(int)}, {@link #removeValue(Object, boolean)}, {@link #removeRange(int, int)},
+ * IllegalStateException. Only {@link #remove(int)}, {@link #removeValue(Object, boolean)}, {@link #removeRange(int, int)},
  * {@link #clear()}, and add methods are allowed.
  * <p>
  * Code using this class must not rely on items being removed immediately. Consider using {@link SnapshotArray} if this is a
@@ -69,16 +69,16 @@ public class DelayedRemovalArray<T> extends Array<T>{
             }else{
                 for(int i = 0, n = remove.size; i < n; i++){
                     int index = remove.pop();
-                    if(index >= clear) removeAt(index);
+                    if(index >= clear) remove(index);
                 }
                 for(int i = clear - 1; i >= 0; i--)
-                    removeAt(i);
+                    remove(i);
             }
             clear = 0;
         }
     }
 
-    private void remove(int index){
+    private void removeIntern(int index){
         if(index < clear) return;
         for(int i = 0, n = remove.size; i < n; i++){
             int removeIndex = remove.get(i);
@@ -95,24 +95,24 @@ public class DelayedRemovalArray<T> extends Array<T>{
         if(iterating > 0){
             int index = indexOf(value, identity);
             if(index == -1) return false;
-            remove(index);
+            removeIntern(index);
             return true;
         }
         return super.removeValue(value, identity);
     }
 
-    public T removeAt(int index){
+    public T remove(int index){
         if(iterating > 0){
-            remove(index);
+            removeIntern(index);
             return get(index);
         }
-        return super.removeAt(index);
+        return super.remove(index);
     }
 
     public void removeRange(int start, int end){
         if(iterating > 0){
             for(int i = end; i >= start; i--)
-                remove(i);
+                removeIntern(i);
         }else
             super.removeRange(start, end);
     }

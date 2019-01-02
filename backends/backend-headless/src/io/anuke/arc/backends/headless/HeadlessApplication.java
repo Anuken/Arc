@@ -128,7 +128,7 @@ public class HeadlessApplication implements Application{
         }
         if(executedRunnables.size == 0) return false;
         for(int i = executedRunnables.size - 1; i >= 0; i--)
-            executedRunnables.removeAt(i).run();
+            executedRunnables.remove(i).run();
         return true;
     }
 

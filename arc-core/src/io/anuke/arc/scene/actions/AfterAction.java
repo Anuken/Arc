@@ -27,7 +27,7 @@ public class AfterAction extends DelegateAction{
         for(int i = waitForActions.size - 1; i >= 0; i--){
             Action action = waitForActions.get(i);
             int index = currentActions.indexOf(action, true);
-            if(index == -1) waitForActions.removeAt(i);
+            if(index == -1) waitForActions.remove(i);
         }
         return waitForActions.size <= 0 && action.act(delta);
     }

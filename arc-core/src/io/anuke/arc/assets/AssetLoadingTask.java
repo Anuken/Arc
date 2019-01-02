@@ -146,7 +146,7 @@ class AssetLoadingTask implements AsyncTask<Void>{
             final Class type = array.get(i).type;
             for(int j = array.size - 1; j > i; --j){
                 if(type == array.get(j).type && fn.equals(array.get(j).fileName))
-                    array.removeAt(j);
+                    array.remove(j);
             }
         }
         array.ordered = ordered;

@@ -423,7 +423,7 @@ public class Scene implements InputProcessor, Disposable{
             TouchFocus focus = touchFocuses.get(i);
             if(focus.listener == listener && focus.listenerActor == listenerActor && focus.target == target
             && focus.pointer == pointer && focus.button == button){
-                touchFocuses.removeAt(i);
+                touchFocuses.remove(i);
                 Pools.free(focus);
             }
         }

@@ -73,7 +73,7 @@ public class Element implements Layout{
                     Action current = actions.get(i);
                     int actionIndex = current == action ? i : actions.indexOf(action, true);
                     if(actionIndex != -1){
-                        actions.removeAt(actionIndex);
+                        actions.remove(actionIndex);
                         action.setActor(null);
                         i--;
                     }
