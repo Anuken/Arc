@@ -98,6 +98,7 @@ public class Draw{
     //TODO replace/remove?
     public static void reset(){
         color();
+        Lines.stroke(1f);
     }
 
     public static void alpha(float alpha){

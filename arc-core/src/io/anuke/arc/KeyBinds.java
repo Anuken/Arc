@@ -85,7 +85,7 @@ public class KeyBinds{
                     Axis loaded = load(rname);
 
                     if(loaded != null){
-                        sec.binds.get(type).put(def, loaded);
+                        sec.binds.getOr(type, OrderedMap::new).put(def, loaded);
                     }
                 }
             }
@@ -204,6 +204,15 @@ public class KeyBinds{
             this.min = min;
             this.max = max;
             this.key = null;
+        }
+
+        @Override
+        public String toString(){
+            return "Axis{" +
+            "min=" + min +
+            ", max=" + max +
+            ", key=" + key +
+            '}';
         }
     }
 

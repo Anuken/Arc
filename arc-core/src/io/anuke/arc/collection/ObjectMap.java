@@ -1,5 +1,6 @@
 package io.anuke.arc.collection;
 
+import io.anuke.arc.function.Supplier;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.StringBuilder;
@@ -286,6 +287,16 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
         valueTable[index] = value;
         stashSize++;
         size++;
+    }
+
+    /** Tries to get the value. If it does not exist, it creates a new instace using {@link supplier} and places it, returning the value.*/
+    public V getOr(K key, Supplier<V> supplier){
+        V val = get(key);
+        if(val == null){
+            val = supplier.get();
+            put(key, val);
+        }
+        return val;
     }
 
     /** Returns the value for the specified key, or null if the key is not in the map. */
