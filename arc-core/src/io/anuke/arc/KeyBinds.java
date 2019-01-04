@@ -99,6 +99,20 @@ public class KeyBinds{
      * Call Core.settings.save() to flush the changes afterwards.
      */
     public void resetToDefaults(){
+        //remove pref values so it saves correctly
+        for(Section sec : sections){
+            for(DeviceType type : sec.binds.keys()){
+                for(KeyBind def : definitions){
+                    String rname = "keybind-" + sec.name + "-" + type.name() + "-" + def.name();
+                    settings.remove(rname + "-single");
+                    settings.remove(rname + "-key");
+                    settings.remove(rname + "-min");
+                    settings.remove(rname + "-max");
+                }
+            }
+        }
+
+        //clear all binds to make it display correctly
         for(Section sec : sections){
             sec.binds.clear();
         }
@@ -116,7 +130,7 @@ public class KeyBinds{
     }
 
     private Axis load(String name){
-        if(settings.getBool(name + "-single")){
+        if(settings.getBool(name + "-single", true)){
             KeyCode key = KeyCode.byOrdinal(settings.getInt(name + "-key", KeyCode.UNSET.ordinal()));
             return key == KeyCode.UNSET ? null : new Axis(key);
         }else{

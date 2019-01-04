@@ -303,6 +303,10 @@ public class Settings{
         }
     }
 
+    public void remove(String name){
+        values.remove(name);
+    }
+
     public Iterable<String> keys(){
         return values.keys();
     }

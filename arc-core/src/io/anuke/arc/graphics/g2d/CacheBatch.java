@@ -8,8 +8,12 @@ public class CacheBatch extends SpriteBatch{
     SpriteCache cache;
 
     public CacheBatch(int size){
+        this(new SpriteCache(size, false));
+    }
+
+    public CacheBatch(SpriteCache cache){
         super(0);
-        cache = new SpriteCache(size, false);
+        this.cache = cache;
     }
 
     @Override
