@@ -62,7 +62,7 @@ public class SpriteCache implements Disposable{
     /** Number of rendering calls, ever. Will not be reset unless set manually. **/
     public int totalRenderCalls = 0;
     private boolean drawing;
-    private Array<Cache> caches = new Array<>();
+    private Array<Cache> caches;
     private Cache currentCache;
     private float colorPacked = Color.WHITE_FLOAT_BITS;
     private Shader customShader = null;
@@ -79,7 +79,11 @@ public class SpriteCache implements Disposable{
      * @param useIndices If true, indexed geometry will be used.
      */
     public SpriteCache(int size, boolean useIndices){
-        this(size, createDefaultShader(), useIndices);
+        this(size, 16, createDefaultShader(), useIndices);
+    }
+
+    public SpriteCache(int size, int cacheSize, boolean useIndices){
+        this(size, cacheSize, createDefaultShader(), useIndices);
     }
 
     /**
@@ -88,7 +92,7 @@ public class SpriteCache implements Disposable{
      * Max of 8191 if indices are used.
      * @param useIndices If true, indexed geometry will be used.
      */
-    public SpriteCache(int size, Shader shader, boolean useIndices){
+    public SpriteCache(int size, int cacheSize, Shader shader, boolean useIndices){
         this.shader = shader;
 
         if(useIndices && size > 8191)
@@ -98,6 +102,7 @@ public class SpriteCache implements Disposable{
         Shader.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, Shader.COLOR_ATTRIBUTE),
         new VertexAttribute(Usage.TextureCoordinates, 2, Shader.TEXCOORD_ATTRIBUTE + "0"));
         mesh.setAutoBind(false);
+        caches = new Array<>(cacheSize);
 
         if(useIndices){
             int length = size * 6;
@@ -142,6 +147,10 @@ public class SpriteCache implements Disposable{
         + "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
         + "}";
         return new Shader(vertexShader, fragmentShader);
+    }
+
+    public Array<Cache> getCaches(){
+        return caches;
     }
 
     /** @see #setColor(Color) */
