@@ -56,12 +56,12 @@ public class CacheBatch extends SpriteBatch{
     }
 
     @Override
-    void draw(Texture texture, float[] spriteVertices, int offset, int count){
+    protected void draw(Texture texture, float[] spriteVertices, int offset, int count){
         cache.add(texture, spriteVertices, offset, count);
     }
 
     @Override
-    void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
+    protected void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
         cache.add(region, x, y, originX, originY, width, height, 1f, 1f, rotation);
     }
 

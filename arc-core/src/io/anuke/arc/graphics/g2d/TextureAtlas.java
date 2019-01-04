@@ -252,6 +252,11 @@ public class TextureAtlas implements Disposable{
         return textures;
     }
 
+    /** @return the first texture of the pages.*/
+    public Texture texture(){
+        return textures.first();
+    }
+
     /**
      * Releases all resources associated with this TextureAtlas instance. This releases all the textures backing all TextureRegions
      * and Sprites, which should no longer be used after calling dispose.
