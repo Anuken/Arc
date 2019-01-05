@@ -13,3 +13,6 @@
 - [ ] implement controller framework
 - [ ] implement controllers for each backend
 - [ ] look into jamepad but without 10mb of natives
+- [ ] add postprocessing as extension
+- [ ] add gif recorder as extension
+- [ ] add graalVM backend (?)
