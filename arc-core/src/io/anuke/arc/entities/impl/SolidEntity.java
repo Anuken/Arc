@@ -13,7 +13,7 @@ public abstract class SolidEntity extends BaseEntity implements SolidTrait{
     }
 
     @Override
-    public Vector2 getVelocity(){
+    public Vector2 velocity(){
         return velocity;
     }
 }

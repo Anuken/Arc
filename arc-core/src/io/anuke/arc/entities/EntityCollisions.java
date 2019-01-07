@@ -74,8 +74,8 @@ public class EntityCollisions{
             throw new IllegalArgumentException("No tile collider specified! Call setCollider() first.");
 
         Rectangle rect = r1;
-        entity.getHitboxTile(rect);
-        entity.getHitboxTile(r2);
+        entity.hitboxTile(rect);
+        entity.hitboxTile(r2);
         rect.x += deltax;
         rect.y += deltay;
 
@@ -147,8 +147,8 @@ public class EntityCollisions{
         SolidTrait a = (SolidTrait) entity;
         SolidTrait b = (SolidTrait) other;
 
-        a.getHitbox(this.r1);
-        b.getHitbox(this.r2);
+        a.hitbox(this.r1);
+        b.hitbox(this.r2);
 
         r1.x += (a.lastPosition().x - a.getX());
         r1.y += (a.lastPosition().y - a.getY());
@@ -230,18 +230,18 @@ public class EntityCollisions{
 
             SolidTrait solid = (SolidTrait) entity;
 
-            solid.getHitbox(r1);
+            solid.hitbox(r1);
             r1.x += (solid.lastPosition().x - solid.getX());
             r1.y += (solid.lastPosition().y - solid.getY());
 
-            solid.getHitbox(r2);
+            solid.hitbox(r2);
             r2.merge(r1);
 
             arrOut.clear();
             groupb.tree().getIntersect(arrOut, r2);
 
             for(SolidTrait sc : arrOut){
-                sc.getHitbox(r1);
+                sc.hitbox(r1);
                 if(r2.overlaps(r1) && !collided.contains(sc.getID())){
                     checkCollide(entity, sc);
                 }

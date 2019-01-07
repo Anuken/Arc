@@ -9,9 +9,9 @@ import io.anuke.arc.math.geom.Vector2;
 
 public interface SolidTrait extends QuadTreeObject, MoveTrait, VelocityTrait, Entity, Position{
 
-    void getHitbox(Rectangle rectangle);
+    void hitbox(Rectangle rectangle);
 
-    void getHitboxTile(Rectangle rectangle);
+    void hitboxTile(Rectangle rectangle);
 
     Vector2 lastPosition();
 

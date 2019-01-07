@@ -5,32 +5,32 @@ import io.anuke.arc.util.Time;
 
 public interface VelocityTrait extends MoveTrait{
 
-    Vector2 getVelocity();
+    Vector2 velocity();
 
     default void applyImpulse(float x, float y){
-        getVelocity().x += x / getMass();
-        getVelocity().y += y / getMass();
+        velocity().x += x / mass();
+        velocity().y += y / mass();
     }
 
-    default float getMaxVelocity(){
+    default float maxVelocity(){
         return Float.MAX_VALUE;
     }
 
-    default float getMass(){
+    default float mass(){
         return 1f;
     }
 
-    default float getDrag(){
+    default float drag(){
         return 0f;
     }
 
     default void updateVelocity(){
-        getVelocity().scl(1f - getDrag() * Time.delta());
+        velocity().scl(1f - drag() * Time.delta());
 
         if(this instanceof SolidTrait){
-            ((SolidTrait) this).move(getVelocity().x * Time.delta(), getVelocity().y * Time.delta());
+            ((SolidTrait) this).move(velocity().x * Time.delta(), velocity().y * Time.delta());
         }else{
-            moveBy(getVelocity().x * Time.delta(), getVelocity().y * Time.delta());
+            moveBy(velocity().x * Time.delta(), velocity().y * Time.delta());
         }
     }
 }

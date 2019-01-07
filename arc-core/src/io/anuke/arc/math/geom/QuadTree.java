@@ -38,7 +38,7 @@ public class QuadTree<T>{
     public QuadTree(int maxObjectsPerNode, Rectangle bounds){
         this(maxObjectsPerNode, 0, bounds, (obj, out) -> {
             if(obj instanceof QuadTreeObject){
-                ((QuadTreeObject) obj).getHitbox(out);
+                ((QuadTreeObject) obj).hitbox(out);
             }else{
                 throw new IllegalArgumentException("The provided object does not implement QuadTreeObject! Did you forget to pass a custom BoundingBoxProvider into the quadtree?");
             }
@@ -315,13 +315,9 @@ public class QuadTree<T>{
         }
     }
 
-    /**
-     * Represents an object in a QuadTree.
-     */
+    /**Represents an object in a QuadTree.*/
     public interface QuadTreeObject{
-        /**
-         * Fills the out parameter with this element's rough bounding box. This should never be smaller than the actual object, but may be larger.
-         */
-        void getHitbox(Rectangle out);
+        /**Fills the out parameter with this element's rough bounding box. This should never be smaller than the actual object, but may be larger.*/
+        void hitbox(Rectangle out);
     }
 }
