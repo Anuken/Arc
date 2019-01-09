@@ -3,16 +3,14 @@ package io.anuke.arc.util.io;
 
 import io.anuke.arc.Settings;
 import io.anuke.arc.Settings.TypeSerializer;
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.collection.IntArray;
-import io.anuke.arc.collection.ObjectMap;
+import io.anuke.arc.collection.*;
 import io.anuke.arc.collection.ObjectMap.Entry;
-import io.anuke.arc.collection.ObjectSet;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+@SuppressWarnings("unchecked")
 public class DefaultSerializers{
 
     public static void register(Settings settings){
@@ -172,6 +170,51 @@ public class DefaultSerializers{
                     for(int i = 0; i < size; i++){
                         Object key = keyser.read(stream);
                         Object val = valser.read(stream);
+                        map.put(key, val);
+                    }
+
+                    return map;
+                }catch(ClassNotFoundException e){
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+        });
+
+        settings.setSerializer(ObjectIntMap.class, new TypeSerializer<ObjectIntMap>(){
+            @Override
+            public void write(DataOutput stream, ObjectIntMap map) throws IOException{
+                stream.writeInt(map.size);
+                if(map.size == 0) return;
+                ObjectIntMap.Entry entry = map.entries().next();
+
+                TypeSerializer keyser = settings.getSerializer(entry.key.getClass());
+                if(keyser == null) throw new IllegalArgumentException(entry.key.getClass() + " does not have a serializer registered!");
+
+                stream.writeUTF(entry.key.getClass().getName());
+
+                for(Object e : map.entries()){
+                    ObjectIntMap.Entry en = (ObjectIntMap.Entry)e;
+                    keyser.write(stream, en.key);
+                    stream.writeInt(en.value);
+                }
+            }
+
+            @Override
+            public ObjectIntMap read(DataInput stream) throws IOException{
+                try{
+                    int size = stream.readInt();
+                    ObjectIntMap map = new ObjectIntMap();
+                    if(size == 0) return map;
+
+                    String keyt = stream.readUTF();
+
+                    TypeSerializer keyser = settings.getSerializer(Class.forName(keyt));
+                    if(keyser == null) throw new IllegalArgumentException(keyt + " does not have a serializer registered!");
+
+                    for(int i = 0; i < size; i++){
+                        Object key = keyser.read(stream);
+                        int val = stream.readInt();
                         map.put(key, val);
                     }
 

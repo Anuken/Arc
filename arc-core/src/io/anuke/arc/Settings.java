@@ -38,7 +38,7 @@ public class Settings{
         return serializers.get(type);
     }
 
-    public <T> void setSerializer(Class<?> type, TypeWriter<T> writer, TypeReader<T> reader){
+    public <T> void setSerializer(Class<T> type, TypeWriter<T> writer, TypeReader<T> reader){
         serializers.put(type, new TypeSerializer<T>(){
             @Override public void write(DataOutput stream, T object) throws IOException{ writer.write(stream, object); }
             @Override public T read(DataInput stream) throws IOException{ return reader.read(stream); }
@@ -94,7 +94,7 @@ public class Settings{
         }
     }
 
-    /** Loads a settings file into {@link values} using the specified appName. */
+    /** Loads a settings file into {@link #values} using the specified appName. */
     public void loadValues(){
         FileHandle file = getSettingsFile();
 
@@ -133,7 +133,7 @@ public class Settings{
         }
     }
 
-    /** Saves all entries from {@link values} into the correct location. */
+    /** Saves all entries from {@link #values} into the correct location. */
     public void saveValues(){
         FileHandle file = getSettingsFile();
 
