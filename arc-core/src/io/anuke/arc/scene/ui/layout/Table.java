@@ -33,9 +33,6 @@ public class Table extends WidgetGroup{
             return new Cell();
         }
     };
-    public static Color debugTableColor = new Color(0, 0, 1, 1);
-    public static Color debugCellColor = new Color(1, 0, 0, 1);
-    public static Color debugActorColor = new Color(0, 1, 0, 1);
     /** Value that is the top padding of the table's background. */
     public static Value backgroundTop = context -> {
         Drawable background = ((Table)context).background;
@@ -76,12 +73,7 @@ public class Table extends WidgetGroup{
     private float[] expandWidth, expandHeight;
     private boolean clip;
 
-    /**
-     * Creates a table with a skin, which enables the {@link #add(CharSequence)} and {@link #add(CharSequence, String)} methods to
-     * be used.
-     */
     public Table(){
-
         cellDefaults = obtainCell();
 
         setTransform(false);

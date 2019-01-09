@@ -52,6 +52,11 @@ public class Vector2 implements Serializable, Vector<Vector2>, Position{
         return set(x, y).rotate(angle);
     }
 
+    /**Snaps this vector's coordinates to integers.*/
+    public Vector2 snap(){
+        return set((int)x, (int)y);
+    }
+
     @Override
     public Vector2 cpy(){
         return new Vector2(this);

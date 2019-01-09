@@ -8,6 +8,14 @@ import java.util.Comparator;
 
 public class Structs{
 
+    public static <T, U> Comparator<T> comparing(Function<? super T, ? extends U> keyExtractor, Comparator<? super U> keyComparator){
+        return (c1, c2) -> keyComparator.compare(keyExtractor.get(c1), keyExtractor.get(c2));
+    }
+
+    public static <T, U extends Comparable<? super U>> Comparator<T> comparing(Function<? super T, ? extends U> keyExtractor){
+        return (c1, c2) -> keyExtractor.get(c1).compareTo(keyExtractor.get(c2));
+    }
+
     public static <T> void each(Consumer<T> cons, T... objects){
         for(T t : objects){
             cons.accept(t);

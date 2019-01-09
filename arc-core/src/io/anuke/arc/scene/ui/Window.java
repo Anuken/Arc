@@ -36,10 +36,11 @@ public class Window extends Table{
     boolean isMovable = false, isModal, isResizable, center = true;
     int resizeBorder = 8;
     boolean keepWithinStage = true;
-    Label titleLabel;
-    Table titleTable;
     boolean drawTitleTable;
     private WindowStyle style;
+
+    public final Label title;
+    public final Table titleTable;
 
     public Window(String title){
         this(title, scene.skin.get(WindowStyle.class));
@@ -54,8 +55,8 @@ public class Window extends Table{
         touchable(Touchable.enabled);
         setClip(true);
 
-        titleLabel = new Label(title, new LabelStyle(style.titleFont, style.titleFontColor));
-        titleLabel.setEllipsis(true);
+        this.title = new Label(title, new LabelStyle(style.titleFont, style.titleFontColor));
+        this.title.setEllipsis(true);
 
         titleTable = new Table(){
             @Override
@@ -63,7 +64,7 @@ public class Window extends Table{
                 if(drawTitleTable) super.draw();
             }
         };
-        titleTable.add(titleLabel).expandX().fillX().minWidth(0);
+        titleTable.add(this.title).expandX().fillX().minWidth(0);
         addChild(titleTable);
 
         setStyle(style);
@@ -199,7 +200,7 @@ public class Window extends Table{
         if(style == null) throw new IllegalArgumentException("style cannot be null.");
         this.style = style;
         setBackground(style.background);
-        //titleLabel.setStyle(new LabelStyle(style.titleFont, style.titleFontColor));
+        //title.setStyle(new LabelStyle(style.titleFont, style.titleFontColor));
         invalidateHierarchy();
     }
 
@@ -328,14 +329,6 @@ public class Window extends Table{
 
     public float getPrefWidth(){
         return Math.max(super.getPrefWidth(), titleTable.getPrefWidth() + getMarginLeft() + getMarginRight());
-    }
-
-    public Table getTitleTable(){
-        return titleTable;
-    }
-
-    public Label getTitleLabel(){
-        return titleLabel;
     }
 
     /**
