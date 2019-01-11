@@ -8,9 +8,7 @@ import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.Scene;
 import io.anuke.arc.scene.actions.Actions;
 import io.anuke.arc.scene.event.*;
-import io.anuke.arc.scene.ui.ImageButton.ImageButtonStyle;
 import io.anuke.arc.scene.ui.layout.Table;
-import io.anuke.arc.scene.ui.layout.Unit;
 import io.anuke.arc.util.Align;
 
 import static io.anuke.arc.Core.scene;
@@ -20,9 +18,6 @@ import static io.anuke.arc.Core.scene;
  * @author Nathan Sweet
  */
 public class Dialog extends Window{
-    //TODO just make this work properly by calculating padding
-    public static float closePadT, closePadR;
-
     private static Supplier<Action>
     defaultShowAction = () -> Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.4f, Interpolation.fade)),
     defaultHideAction = () -> Actions.fadeOut(0.4f, Interpolation.fade);
@@ -32,45 +27,32 @@ public class Dialog extends Window{
             return false;
         }
     };
-    Table contentTable, buttonTable;
     Element previousKeyboardFocus, previousScrollFocus;
     FocusListener focusListener;
 
+    public final Table cont, buttons;
+
     public Dialog(String title){
-        super(title, scene.skin.get(WindowStyle.class));
-        initialize();
+        this(title, scene.skin.get(WindowStyle.class));
     }
 
     public Dialog(String title, String windowStyleName){
-        super(title, scene.skin.get(windowStyleName, WindowStyle.class));
-        initialize();
+        this(title, scene.skin.get(windowStyleName, WindowStyle.class));
     }
 
     public Dialog(String title, WindowStyle windowStyle){
         super(title, windowStyle);
-        initialize();
-    }
-
-    public static void setHideAction(Supplier<Action> prov){
-        defaultHideAction = prov;
-    }
-
-    public static void setShowAction(Supplier<Action> prov){
-        defaultShowAction = prov;
-    }
-
-    private void initialize(){
         setModal(true);
         setMovable(false);
         setOrigin(Align.center);
 
         defaults().space(6);
-        add(contentTable = new Table()).expand().fill();
+        add(cont = new Table()).expand().fill();
         row();
-        add(buttonTable = new Table()).fillX();
+        add(buttons = new Table()).fillX();
 
-        contentTable.defaults().space(6);
-        buttonTable.defaults().space(6);
+        cont.defaults().space(6);
+        buttons.defaults().space(6);
 
         focusListener = new FocusListener(){
             public void keyboardFocusChanged(FocusEvent event, Element actor, boolean focused){
@@ -84,14 +66,22 @@ public class Dialog extends Window{
             private void focusChanged(FocusEvent event){
                 Scene stage = getScene();
                 if(isModal && stage != null && stage.root.getChildren().size > 0
-                && stage.root.getChildren().peek() == Dialog.this){ // Dialog is top most actor.
+                        && stage.root.getChildren().peek() == Dialog.this){ // Dialog is top most actor.
                     Element newFocusedActor = event.relatedActor;
                     if(newFocusedActor != null && !newFocusedActor.isDescendantOf(Dialog.this) &&
-                    !(newFocusedActor.equals(previousKeyboardFocus) || newFocusedActor.equals(previousScrollFocus)))
+                            !(newFocusedActor.equals(previousKeyboardFocus) || newFocusedActor.equals(previousScrollFocus)))
                         event.cancel();
                 }
             }
         };
+    }
+
+    public static void setHideAction(Supplier<Action> prov){
+        defaultHideAction = prov;
+    }
+
+    public static void setShowAction(Supplier<Action> prov){
+        defaultShowAction = prov;
     }
 
     protected void setScene(Scene stage){
@@ -100,44 +90,6 @@ public class Dialog extends Window{
         else
             removeListener(focusListener);
         super.setScene(stage);
-    }
-
-    public void addCloseButton(){
-        Label titleLabel = getTitleLabel();
-        Table titleTable = getTitleTable();
-
-        ImageButton closeButton = new ImageButton(scene.skin.get("close-window", ImageButtonStyle.class));
-
-        float scl = Unit.dp.scl(1f);
-
-        titleTable.add(closeButton).padRight(-getMarginRight() / scl)
-        .padTop(-10 + closePadT).size(40);
-
-        closeButton.changed(this::hide);
-
-        if(titleLabel.getLabelAlign() == Align.center && titleTable.getChildren().size == 2){
-            titleTable.getCell(titleLabel).padLeft(closeButton.getWidth() * 2);
-        }
-    }
-
-    public Table content(){
-        return contentTable;
-    }
-
-    public Table buttons(){
-        return buttonTable;
-    }
-
-    public Label title(){
-        return titleLabel;
-    }
-
-    public Table getContentTable(){
-        return contentTable;
-    }
-
-    public Table getButtonTable(){
-        return buttonTable;
     }
 
     /** Adds a show() listener. */
@@ -160,6 +112,10 @@ public class Dialog extends Window{
                 return false;
             }
         });
+    }
+
+    public void addCloseButton(){
+        //no default implementation; should be implemented by subclasses
     }
 
     public boolean isShown(){

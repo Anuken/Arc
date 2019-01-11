@@ -16,7 +16,7 @@ public class SettingsDialog extends Dialog{
 
         main = new SettingsTable();
 
-        content().add(main);
+        cont.add(main);
     }
 
     public interface StringProcessor{

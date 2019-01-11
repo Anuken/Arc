@@ -48,7 +48,7 @@ public class KeybindDialog extends Dialog{
     }
 
     private void setup(){
-        content().clear();
+        cont.clear();
 
         Section[] sections = Core.keybinds.getSections();
 
@@ -75,7 +75,7 @@ public class KeybindDialog extends Dialog{
                 button.clicked(() -> this.section = section);
 
                 group.add(button);
-                content().add(button).fill();
+                cont.add(button).fill();
             }
 
             Table table = new Table();
@@ -178,9 +178,9 @@ public class KeybindDialog extends Dialog{
             stack.add(table);
         }
 
-        content().row();
+        cont.row();
 
-        content().add(pane).growX().colspan(sections.length);
+        cont.add(pane).growX().colspan(sections.length);
 
         pack();
     }
@@ -214,7 +214,7 @@ public class KeybindDialog extends Dialog{
 
         rebindKey = name;
 
-        rebindDialog.getTitleTable().getCells().first().pad(4);
+        rebindDialog.titleTable.getCells().first().pad(4);
 
         if(section.device.type() == DeviceType.keyboard){
             rebindDialog.keyDown(i -> setup());
