@@ -5,6 +5,7 @@ import java.util.Iterator;
 public class EnumSet<T extends Enum<T>> implements Iterable<T>{
     private int i;
     private T[] set;
+    private EnumSetIterator iterator = new EnumSetIterator();
 
     private EnumSet(){
     }
@@ -28,7 +29,8 @@ public class EnumSet<T extends Enum<T>> implements Iterable<T>{
 
     @Override
     public Iterator<T> iterator(){
-        return new EnumSetIterator();
+        iterator.index = 0;
+        return iterator;
     }
 
     class EnumSetIterator implements Iterator<T>{
@@ -41,6 +43,7 @@ public class EnumSet<T extends Enum<T>> implements Iterable<T>{
 
         @Override
         public T next(){
+            if(index >= set.length) return null;
             return set[index++];
         }
     }

@@ -15,6 +15,10 @@ public interface SolidTrait extends QuadTreeObject, MoveTrait, VelocityTrait, En
 
     Vector2 lastPosition();
 
+    default boolean collidesGrid(int x, int y){
+        return true;
+    }
+
     default float getDeltaX(){
         return getX() - lastPosition().x;
     }

@@ -1,7 +1,6 @@
 package io.anuke.arc.util;
 
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.math.Matrix3;
 
 import java.nio.*;
 
@@ -219,110 +218,6 @@ public final class BufferUtils{
         int numBytes = elementsToBytes(src, numElements);
         dst.limit(dst.position() + bytesToElements(dst, numBytes));
         copyJni(src, positionInBytes(src), dst, positionInBytes(dst), numBytes);
-    }
-
-    /**
-     * Multiply float vector components within the buffer with the specified matrix. The {@link Buffer#position()} is used as the
-     * offset.
-     * @param data The buffer to transform.
-     * @param dimensions The number of components (x, y, z) of the vector (2 for xy or 3 for xyz)
-     * @param strideInBytes The offset between the first and the second vector to transform
-     * @param count The number of vectors to transform
-     * @param matrix The matrix to multiply the vector with
-     */
-    public static void transform(Buffer data, int dimensions, int strideInBytes, int count, Matrix3 matrix){
-        transform(data, dimensions, strideInBytes, count, matrix, 0);
-    }
-
-    /**
-     * Multiply float vector components within the buffer with the specified matrix. The {@link Buffer#position()} is used as the
-     * offset.
-     * @param data The buffer to transform.
-     * @param dimensions The number of components (x, y, z) of the vector (2 for xy or 3 for xyz)
-     * @param strideInBytes The offset between the first and the second vector to transform
-     * @param count The number of vectors to transform
-     * @param matrix The matrix to multiply the vector with
-     */
-    public static void transform(float[] data, int dimensions, int strideInBytes, int count, Matrix3 matrix){
-        transform(data, dimensions, strideInBytes, count, matrix, 0);
-    }
-
-    /**
-     * Multiply float vector components within the buffer with the specified matrix. The specified offset value is added to the
-     * {@link Buffer#position()} and used as the offset.
-     * @param data The buffer to transform.
-     * @param dimensions The number of components (x, y, z) of the vector (2 for xy or 3 for xyz)
-     * @param strideInBytes The offset between the first and the second vector to transform
-     * @param count The number of vectors to transform
-     * @param matrix The matrix to multiply the vector with,
-     * @param offset The offset within the buffer (in bytes relative to the current position) to the vector
-     */
-    public static void transform(Buffer data, int dimensions, int strideInBytes, int count, Matrix3 matrix, int offset){
-        switch(dimensions){
-            case 3:
-                transformV3M3Jni(data, strideInBytes, count, matrix.val, positionInBytes(data) + offset);
-                break;
-            case 2:
-                transformV2M3Jni(data, strideInBytes, count, matrix.val, positionInBytes(data) + offset);
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-
-    /**
-     * Multiply float vector components within the buffer with the specified matrix. The specified offset value is added to the
-     * {@link Buffer#position()} and used as the offset.
-     * @param data The buffer to transform.
-     * @param dimensions The number of components (x, y, z) of the vector (2 for xy or 3 for xyz)
-     * @param strideInBytes The offset between the first and the second vector to transform
-     * @param count The number of vectors to transform
-     * @param matrix The matrix to multiply the vector with,
-     * @param offset The offset within the buffer (in bytes relative to the current position) to the vector
-     */
-    public static void transform(float[] data, int dimensions, int strideInBytes, int count, Matrix3 matrix, int offset){
-        switch(dimensions){
-            case 3:
-                transformV3M3Jni(data, strideInBytes, count, matrix.val, offset);
-                break;
-            case 2:
-                transformV2M3Jni(data, strideInBytes, count, matrix.val, offset);
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-
-    public static long findFloats(Buffer vertex, int strideInBytes, Buffer vertices, int numVertices){
-        return find(vertex, positionInBytes(vertex), strideInBytes, vertices, positionInBytes(vertices), numVertices);
-    }
-
-    public static long findFloats(float[] vertex, int strideInBytes, Buffer vertices, int numVertices){
-        return find(vertex, 0, strideInBytes, vertices, positionInBytes(vertices), numVertices);
-    }
-
-    public static long findFloats(Buffer vertex, int strideInBytes, float[] vertices, int numVertices){
-        return find(vertex, positionInBytes(vertex), strideInBytes, vertices, 0, numVertices);
-    }
-
-    public static long findFloats(float[] vertex, int strideInBytes, float[] vertices, int numVertices){
-        return find(vertex, 0, strideInBytes, vertices, 0, numVertices);
-    }
-
-    public static long findFloats(Buffer vertex, int strideInBytes, Buffer vertices, int numVertices, float epsilon){
-        return find(vertex, positionInBytes(vertex), strideInBytes, vertices, positionInBytes(vertices), numVertices, epsilon);
-    }
-
-    public static long findFloats(float[] vertex, int strideInBytes, Buffer vertices, int numVertices, float epsilon){
-        return find(vertex, 0, strideInBytes, vertices, positionInBytes(vertices), numVertices, epsilon);
-    }
-
-    public static long findFloats(Buffer vertex, int strideInBytes, float[] vertices, int numVertices, float epsilon){
-        return find(vertex, positionInBytes(vertex), strideInBytes, vertices, 0, numVertices, epsilon);
-    }
-
-    public static long findFloats(float[] vertex, int strideInBytes, float[] vertices, int numVertices, float epsilon){
-        return find(vertex, 0, strideInBytes, vertices, 0, numVertices, epsilon);
     }
 
     private static int positionInBytes(Buffer dst){

@@ -35,6 +35,9 @@ public class Settings{
     }
 
     public TypeSerializer getSerializer(Class type){
+        if(type.isAnonymousClass()){
+            return serializers.get(type.getSuperclass());
+        }
         return serializers.get(type);
     }
 

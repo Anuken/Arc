@@ -84,7 +84,7 @@ public class EntityCollisions{
         for(int dx = -r; dx <= r; dx++){
             for(int dy = -r; dy <= r; dy++){
                 int wx = dx + tilex, wy = dy + tiley;
-                if(collider.solid(wx, wy)){
+                if(collider.solid(wx, wy) && entity.collidesGrid(wx, wy)){
 
                     hitboxProvider.getHitbox(wx, wy, tmp);
 

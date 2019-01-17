@@ -13,7 +13,7 @@ import io.anuke.arc.util.I18NBundle;
  * Note that all resources are automatically disposed of in Application#dispose.
  * There is no need to dispose of them manually.*/
 public class Core{
-    public static Application app_;
+    public static Application app;
     public static Graphics graphics;
     public static Audio audio;
     public static Input input;

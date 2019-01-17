@@ -306,6 +306,16 @@ public class Array<T> implements Iterable<T>{
         return removeValue(value, false);
     }
 
+    public boolean remove(Predicate<T> value){
+        for(int i = 0; i < size; i++){
+            if(value.test(items[i])){
+                remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Removes the first instance of the specified value in the array.
      * @param value May be null.
