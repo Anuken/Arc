@@ -496,6 +496,17 @@ public class Array<T> implements Iterable<T>{
         Sort.instance().sort(items, comparator, 0, size);
     }
 
+    /** Allocates a new array with all elements that match the predicate.*/
+    public Array<T> select(Predicate<T> predicate){
+        Array<T> arr = new Array<>();
+        for(int i = 0; i < size; i++){
+            if(predicate.test(items[i])){
+                arr.add(items[i]);
+            }
+        }
+        return arr;
+    }
+
     /**
      * Selects the nth-lowest element from the Array according to Comparator ranking. This might partially sort the Array. The
      * array must have a size greater than 0, or a {@link ArcRuntimeException} will be thrown.
