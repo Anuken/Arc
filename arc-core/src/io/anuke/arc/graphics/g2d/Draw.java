@@ -105,6 +105,10 @@ public class Draw{
         Core.batch.setColor(Core.batch.getColor().r, Core.batch.getColor().g, Core.batch.getColor().b, alpha);
     }
 
+    public static void drawable(String name, float x, float y, float w, float h){
+        Core.scene.skin.getDrawable(name).draw(x, y, w, h);
+    }
+
     public static void rect(String region, float x, float y, float w, float h){
         rect(Core.atlas.find(region), x, y, w, h);
     }

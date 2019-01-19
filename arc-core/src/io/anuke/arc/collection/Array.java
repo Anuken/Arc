@@ -507,6 +507,16 @@ public class Array<T> implements Iterable<T>{
         return arr;
     }
 
+    public int count(Predicate<T> predicate){
+        int count = 0;
+        for(int i = 0; i < size; i++){
+            if(predicate.test(items[i])){
+                count ++;
+            }
+        }
+        return count;
+    }
+
     /**
      * Selects the nth-lowest element from the Array according to Comparator ranking. This might partially sort the Array. The
      * array must have a size greater than 0, or a {@link ArcRuntimeException} will be thrown.
