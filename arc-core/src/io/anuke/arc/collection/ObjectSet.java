@@ -1,5 +1,6 @@
 package io.anuke.arc.collection;
 
+import io.anuke.arc.function.Predicate;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.StringBuilder;
@@ -86,6 +87,15 @@ public class ObjectSet<T> implements Iterable<T>{
         ObjectSet<T> set = new ObjectSet<>();
         set.addAll(array);
         return set;
+    }
+
+    /** Allocates a new set with all elements that match the predicate.*/
+    public ObjectSet<T> select(Predicate<T> predicate){
+        ObjectSet<T> arr = new ObjectSet<>();
+        for(T t : this){
+            if(predicate.test(t)) arr.add(t);
+        }
+        return arr;
     }
 
     /**

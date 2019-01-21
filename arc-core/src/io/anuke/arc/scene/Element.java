@@ -92,6 +92,11 @@ public class Element implements Layout{
             visible(visibility.get());
     }
 
+    public boolean hasMouse(){
+        Element e = Core.scene.hit(Core.input.mouseX(), Core.input.mouseY(), true);
+        return e == this || (e != null && e.isDescendantOf(this));
+    }
+
     @SuppressWarnings("unchecked")
     public boolean fire(Event event){
         event.targetActor = this;
