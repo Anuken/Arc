@@ -67,6 +67,7 @@ public class ScissorStack{
      * Any drawing should be flushed before popping scissors.
      */
     public static Rectangle popScissors(){
+        Draw.flush();
         Rectangle old = scissors.pop();
         if(scissors.size == 0)
             Core.gl.glDisable(GL20.GL_SCISSOR_TEST);
@@ -74,7 +75,6 @@ public class ScissorStack{
             Rectangle scissor = scissors.peek();
             HdpiUtils.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);
         }
-        Draw.flush();
         return old;
     }
 
