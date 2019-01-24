@@ -17,6 +17,11 @@ public class Log{
         useColors = colors;
     }
 
+    public static void debug(String text, Object... args){
+        if(level.ordinal() > LogLevel.debug.ordinal()) return;
+        logger.debug(text, args);
+    }
+
     public static void infoTag(String tag, String text){
         if(level.ordinal() > LogLevel.info.ordinal()) return;
         logger.info("[" + tag + "] " + text);
@@ -84,6 +89,7 @@ public class Log{
     }
 
     public enum LogLevel{
+        debug,
         info,
         warn,
         err,
@@ -91,6 +97,9 @@ public class Log{
     }
 
     public static class LogHandler{
+        public void debug(String text, Object... args){
+            print("&lc&fb" + format(text, args));
+        }
 
         public void info(String text, Object... args){
             print("&lg&fb" + format(text, args));
