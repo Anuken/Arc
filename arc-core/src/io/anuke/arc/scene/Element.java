@@ -5,6 +5,7 @@ import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.DelayedRemovalArray;
 import io.anuke.arc.function.BooleanProvider;
 import io.anuke.arc.function.Consumer;
+import io.anuke.arc.function.PositionConsumer;
 import io.anuke.arc.function.Supplier;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.input.KeyCode;
@@ -192,6 +193,28 @@ public class Element implements Layout{
      */
     public boolean remove(){
         return parent != null && parent.removeChild(this, true);
+    }
+
+
+    /**Adds a listener which listens for drag (tocuh down and move) events.
+     * Results are returned in positive deltas.*/
+    public void dragged(PositionConsumer cons){
+        addListener(new InputListener(){
+            float lastX, lastY;
+            @Override
+            public void touchDragged(InputEvent event, float mx, float my, int pointer){
+                cons.accept(mx - lastX, my - lastY);
+                lastX = mx;
+                lastY = my;
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
+                lastX = x;
+                lastY = y;
+                return true;
+            }
+        });
     }
 
     /**
