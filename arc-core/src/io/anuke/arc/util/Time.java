@@ -39,7 +39,7 @@ public class Time{
     }
 
     public static void mark(){
-        marks.add(nanoTime());
+        marks.add(nanos());
     }
 
     /** A value of -1 means mark() wasn't called beforehand. */
@@ -93,7 +93,7 @@ public class Time{
     }
 
     /** @return The current value of the system timer, in nanoseconds. */
-    public static long nanoTime(){
+    public static long nanos(){
         return System.nanoTime();
     }
 
@@ -126,7 +126,7 @@ public class Time{
      * @return - time passed since prevTime in nanoseconds
      */
     public static long timeSinceNanos(long prevTime){
-        return nanoTime() - prevTime;
+        return nanos() - prevTime;
     }
 
     /**

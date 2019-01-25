@@ -68,7 +68,7 @@ public class ClickListener extends InputListener{
                 // Ignore touch up if the wrong mouse button.
                 if(touchUpOver && pointer == 0 && this.button != null && button != this.button) touchUpOver = false;
                 if(touchUpOver){
-                    long time = Time.nanoTime();
+                    long time = Time.nanos();
                     if(time - lastTapTime > tapCountInterval) tapCount = 0;
                     tapCount++;
                     lastTapTime = time;

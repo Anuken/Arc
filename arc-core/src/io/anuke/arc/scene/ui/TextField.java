@@ -425,7 +425,7 @@ public class TextField extends Element implements Disableable{
             cursorOn = true;
             return;
         }
-        long time = Time.nanoTime();
+        long time = Time.nanos();
         if((time - lastBlink) / 1000000000.0f > blinkTime){
             cursorOn = !cursorOn;
             lastBlink = time;

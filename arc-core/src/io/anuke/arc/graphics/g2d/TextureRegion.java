@@ -273,10 +273,10 @@ public class TextureRegion{
 
         int startX = x;
         TextureRegion[][] tiles = new TextureRegion[rows][cols];
-        for(int row = 0; row < rows; row++, y += tileHeight){
+        for(int cy = 0; cy < rows; cy++, y += tileHeight){
             x = startX;
-            for(int col = 0; col < cols; col++, x += tileWidth){
-                tiles[row][col] = new TextureRegion(texture, x, y, tileWidth, tileHeight);
+            for(int cx = 0; cx < cols; cx++, x += tileWidth){
+                tiles[cx][cy] = new TextureRegion(texture, x, y, tileWidth, tileHeight);
             }
         }
 

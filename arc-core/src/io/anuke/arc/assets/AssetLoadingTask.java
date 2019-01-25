@@ -37,7 +37,7 @@ class AssetLoadingTask implements AsyncTask<Void>{
         this.assetDesc = assetDesc;
         this.loader = loader;
         this.executor = threadPool;
-        startTime = Time.nanoTime();
+        startTime = Time.nanos();
     }
 
     /** Loads parts of the asset asynchronously if the loader is an {@link AsynchronousAssetLoader}. */
