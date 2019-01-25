@@ -42,7 +42,7 @@ public class PerformanceCounter{
      * valid after at least two calls to this method.
      */
     public void tick(){
-        final long t = Time.nanoTime();
+        final long t = Time.nanos();
         if(lastTick > 0L) tick((t - lastTick) * nano2seconds);
         lastTick = t;
     }
@@ -68,7 +68,7 @@ public class PerformanceCounter{
 
     /** Start counting, call this method just before performing the task you want to keep track of. Call {@link #stop()} when done. */
     public void start(){
-        startTime = Time.nanoTime();
+        startTime = Time.nanos();
         valid = false;
     }
 
@@ -78,7 +78,7 @@ public class PerformanceCounter{
      */
     public void stop(){
         if(startTime > 0L){
-            current += (Time.nanoTime() - startTime) * nano2seconds;
+            current += (Time.nanos() - startTime) * nano2seconds;
             startTime = 0L;
             valid = true;
         }

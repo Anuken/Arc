@@ -182,10 +182,10 @@ public class GestureDetector implements InputProcessor{
 
         if(inTapRectangle){
             // handle taps
-            if(lastTapButton != button || lastTapPointer != pointer || Time.nanoTime() - lastTapTime > tapCountInterval
+            if(lastTapButton != button || lastTapPointer != pointer || Time.nanos() - lastTapTime > tapCountInterval
             || !isWithinTapRectangle(x, y, lastTapX, lastTapY)) tapCount = 0;
             tapCount++;
-            lastTapTime = Time.nanoTime();
+            lastTapTime = Time.nanos();
             lastTapX = x;
             lastTapY = y;
             lastTapButton = button;
@@ -240,7 +240,7 @@ public class GestureDetector implements InputProcessor{
      */
     public boolean isLongPressed(float duration){
         if(gestureStartTime == 0) return false;
-        return Time.nanoTime() - gestureStartTime > (long)(duration * 1000000000L);
+        return Time.nanos() - gestureStartTime > (long)(duration * 1000000000L);
     }
 
     public boolean isPanning(){

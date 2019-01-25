@@ -85,16 +85,16 @@ public class HeadlessApplication implements Application{
 
         // unlike LwjglApplication, a headless application will eat up CPU in this while loop
         // it is up to the implementation to call Thread.sleep as necessary
-        long t = Time.nanoTime() + renderInterval;
+        long t = Time.nanos() + renderInterval;
         if(renderInterval >= 0f){
             while(running){
-                final long n = Time.nanoTime();
+                final long n = Time.nanos();
                 if(t > n){
                     try{
                         Thread.sleep((t - n) / 1000000);
                     }catch(InterruptedException e){
                     }
-                    t = Time.nanoTime() + renderInterval;
+                    t = Time.nanos() + renderInterval;
                 }else
                     t = n + renderInterval;
 

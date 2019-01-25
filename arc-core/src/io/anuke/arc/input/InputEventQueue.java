@@ -128,7 +128,7 @@ public class InputEventQueue implements InputProcessor{
     }
 
     private void queueTime(){
-        long time = Time.nanoTime();
+        long time = Time.nanos();
         queue.add((int)(time >> 32));
         queue.add((int)time);
     }
