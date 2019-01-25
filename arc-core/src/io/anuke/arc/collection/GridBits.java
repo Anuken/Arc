@@ -14,12 +14,20 @@ public class GridBits{
         return bits.get(x + y*width);
     }
 
+    public void set(int x, int y){
+        bits.set(x + y * width);
+    }
+
     public void set(int x, int y, boolean b){
         if(b){
             bits.set(x + y * width);
         }else{
             bits.clear(x + y * width);
         }
+    }
+
+    public void clear(){
+        bits.clear();
     }
 
     public int width(){
