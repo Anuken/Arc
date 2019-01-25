@@ -496,6 +496,15 @@ public class Array<T> implements Iterable<T>{
         Sort.instance().sort(items, comparator, 0, size);
     }
 
+    public void selectFrom(Array<T> base, Predicate<T> predicate){
+        clear();
+        base.forEach(t -> {
+            if(predicate.test(t)){
+                add(t);
+            }
+        });
+    }
+
     /** Allocates a new array with all elements that match the predicate.*/
     public Array<T> select(Predicate<T> predicate){
         Array<T> arr = new Array<>();

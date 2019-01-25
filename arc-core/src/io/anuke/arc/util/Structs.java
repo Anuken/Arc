@@ -8,6 +8,13 @@ import java.util.Comparator;
 
 public class Structs{
 
+    public static <T> boolean contains(T[] array, T value){
+        for(int i = 0; i < array.length; i++){
+            if(array[i] == value) return true;
+        }
+        return false;
+    }
+
     public static <T, U> Comparator<T> comparing(Function<? super T, ? extends U> keyExtractor, Comparator<? super U> keyComparator){
         return (c1, c2) -> keyComparator.compare(keyExtractor.get(c1), keyExtractor.get(c2));
     }
