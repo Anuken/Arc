@@ -498,7 +498,7 @@ public class Array<T> implements Iterable<T>{
 
     public void selectFrom(Array<T> base, Predicate<T> predicate){
         clear();
-        base.forEach(t -> {
+        base.each(t -> {
             if(predicate.test(t)){
                 add(t);
             }

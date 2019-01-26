@@ -8,9 +8,10 @@ import java.util.Comparator;
 
 public class Structs{
 
+    /**Uses identity comparisons.*/
     public static <T> boolean contains(T[] array, T value){
-        for(int i = 0; i < array.length; i++){
-            if(array[i] == value) return true;
+        for(T t : array){
+            if(t == value) return true;
         }
         return false;
     }
