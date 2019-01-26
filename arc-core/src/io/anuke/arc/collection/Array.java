@@ -1,6 +1,7 @@
 package io.anuke.arc.collection;
 
 import io.anuke.arc.function.Consumer;
+import io.anuke.arc.function.FloatFunction;
 import io.anuke.arc.function.Function;
 import io.anuke.arc.function.Predicate;
 import io.anuke.arc.math.Mathf;
@@ -124,6 +125,14 @@ public class Array<T> implements Iterable<T>{
     /** @see #Array(Object[]) */
     public static <T> Array<T> with(T... array){
         return new Array(array);
+    }
+
+    public float sum(FloatFunction<T> summer){
+        float sum = 0;
+        for(int i = 0; i < size; i++){
+            sum += summer.get(items[i]);
+        }
+        return sum;
     }
 
     public void each(Consumer<T> consumer){
