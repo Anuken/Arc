@@ -11,7 +11,7 @@ public class ScreenRecorder{
     //TODO port gif recorder to extensions
     static{
         try{
-            Class<?> recorderClass = ClassReflection.forName("io.anuke.arc.gif.GifRecorder");
+            Class<?> recorderClass = ClassReflection.forName("io.anuke.arc.recorder.GifRecorder");
             Object recorder = ClassReflection.getConstructor(recorderClass).newInstance();
             Method method = ClassReflection.getMethod(recorderClass, "setExportDirectory", FileHandle.class);
             method.invoke(recorder, Core.files.local("../../desktop/gifexport"));
