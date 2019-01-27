@@ -149,6 +149,10 @@ public class Draw{
         Core.batch.draw(texture, vertices, offset, length);
     }
 
+    public static void vert(float[] vertices){
+        vert(Core.atlas.texture(), vertices, 0, vertices.length);
+    }
+
     public static void flush(){
         Core.batch.flush();
     }
