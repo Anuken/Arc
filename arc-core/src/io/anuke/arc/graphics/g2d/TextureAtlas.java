@@ -177,6 +177,10 @@ public class TextureAtlas implements Disposable{
         return white;
     }
 
+    public boolean isFound(TextureRegion region){
+        return region != error;
+    }
+
     /**
      * Returns the first region found with the specified name. This method's performance is no longer garbage.
      * @return The region, or the error region (if it is defined), or null.
