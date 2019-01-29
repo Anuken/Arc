@@ -484,9 +484,7 @@ public class SpriteCache implements Disposable{
 
         if(customShader != null){
             customShader.begin();
-            customShader.setUniformMatrix("u_proj", projectionMatrix);
-            customShader.setUniformMatrix("u_trans", transformMatrix);
-            customShader.setUniformMatrix("u_projTrans", combinedMatrix);
+            customShader.setUniformMatrix4("u_projectionViewMatrix", BatchShader.copyTransform(combinedMatrix));
             customShader.setUniformi("u_texture", 0);
             mesh.bind(customShader);
         }else{
@@ -603,6 +601,10 @@ public class SpriteCache implements Disposable{
      */
     public void setShader(Shader shader){
         customShader = shader;
+    }
+
+    public boolean isDrawing(){
+        return drawing;
     }
 
     static private class Cache{

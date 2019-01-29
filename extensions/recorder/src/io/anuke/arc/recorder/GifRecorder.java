@@ -117,7 +117,7 @@ public class GifRecorder{
 				Draw.color(Color.GREEN);
 			
 			float xs = Math.abs(Core.graphics.getWidth() / 2 + offsetx - Core.input.mouseX());
-			float ys = Math.abs(Core.graphics.getHeight() / 2 + offsety - (Core.graphics.getHeight() - Core.input.mouseY()));
+			float ys = Math.abs(Core.graphics.getHeight() / 2 + offsety - Core.input.mouseY());
 			gifx = -xs;
 			gify = -ys;
 			gifwidth = xs * 2;
@@ -129,7 +129,7 @@ public class GifRecorder{
 				Draw.color(Color.ORANGE);
 			
 			float xs = (Core.graphics.getWidth() / 2 - Core.input.mouseX());
-			float ys = (Core.graphics.getHeight() / 2 - (Core.graphics.getHeight() - Core.input.mouseY()));
+			float ys = (Core.graphics.getHeight() / 2 - Core.input.mouseY());
 			offsetx = -xs;
 			offsety = -ys;
 		}

@@ -285,6 +285,10 @@ public class Color{
         return new Color(r / 255f, g / 255f, b / 255f);
     }
 
+    public Color rand(){
+        return set(Mathf.random(), Mathf.random(), Mathf.random(), 1f);
+    }
+
     /**
      * Sets this color to the given color.
      * @param color the Color

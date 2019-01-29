@@ -268,14 +268,14 @@ public class TextureRegion{
         int width = this.width;
         int height = this.height;
 
-        int rows = height / tileHeight;
-        int cols = width / tileWidth;
+        int sw = width / tileWidth;
+        int sh = height / tileHeight;
 
         int startX = x;
-        TextureRegion[][] tiles = new TextureRegion[rows][cols];
-        for(int cy = 0; cy < rows; cy++, y += tileHeight){
+        TextureRegion[][] tiles = new TextureRegion[sw][sh];
+        for(int cy = 0; cy < sh; cy++, y += tileHeight){
             x = startX;
-            for(int cx = 0; cx < cols; cx++, x += tileWidth){
+            for(int cx = 0; cx < sw; cx++, x += tileWidth){
                 tiles[cx][cy] = new TextureRegion(texture, x, y, tileWidth, tileHeight);
             }
         }

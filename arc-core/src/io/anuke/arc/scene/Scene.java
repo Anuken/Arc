@@ -716,7 +716,6 @@ public class Scene implements InputProcessor, Disposable{
 
     /** Calculates window scissor coordinates from local coordinates using the batch's current transformation matrix. */
     public void calculateScissors(Rectangle localRect, Rectangle scissorRect){
-        viewport.calculateScissors(Draw.trans(), localRect, scissorRect);
         Matrix3 transformMatrix = Draw.trans();
         viewport.calculateScissors(transformMatrix, localRect, scissorRect);
     }

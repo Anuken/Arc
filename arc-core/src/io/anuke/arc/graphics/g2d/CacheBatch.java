@@ -2,6 +2,7 @@ package io.anuke.arc.graphics.g2d;
 
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.Texture;
+import io.anuke.arc.graphics.glutils.Shader;
 import io.anuke.arc.math.Matrix3;
 
 public class CacheBatch extends SpriteBatch{
@@ -67,6 +68,21 @@ public class CacheBatch extends SpriteBatch{
     @Override
     protected void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
         cache.add(region, x, y, originX, originY, width, height, 1f, 1f, rotation);
+    }
+
+    @Override
+    void setShader(Shader shader){
+        setShader(shader, true);
+    }
+
+    @Override
+    void setShader(Shader shader, boolean apply){
+        boolean drawing = cache.isDrawing();
+
+        if(drawing) cache.end();
+        cache.setShader(shader);
+        if(drawing) cache.begin();
+        if(apply && shader != null) shader.apply();
     }
 
     public void beginDraw(){
