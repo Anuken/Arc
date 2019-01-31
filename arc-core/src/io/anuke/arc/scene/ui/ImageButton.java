@@ -141,7 +141,7 @@ public class ImageButton extends Button{
     }
 
     public Cell getImageCell(){
-        return getCell(image);
+        return getCell(image) == null ? getCells().first() : getCell(image);
     }
 
     public void resizeImage(float size){

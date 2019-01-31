@@ -59,7 +59,6 @@ public class Queue<T> implements Iterable<T>{
      * backing array of the specified type via reflection, which is necessary only when accessing the backing array directly.
      */
     public Queue(int initialSize, Class<T> type){
-        // noinspection unchecked
         this.values = (T[])ArrayReflection.newInstance(type, initialSize);
     }
 
