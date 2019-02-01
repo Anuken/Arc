@@ -87,6 +87,8 @@ public class Effects{
     }
 
     public static void shake(float intensity, float duration, float x, float y){
+        if(Core.camera == null) return;
+
         float distance = Core.camera.position.dst(x, y);
         if(distance < 1) distance = 1;
 
