@@ -273,6 +273,10 @@ public class Array<T> implements Iterable<T>{
         return false;
     }
 
+    public int indexOf(T value){
+        return indexOf(value, false);
+    }
+
     /**
      * Returns the index of first occurrence of value in the array, or -1 if no such value exists.
      * @param value May be null.
