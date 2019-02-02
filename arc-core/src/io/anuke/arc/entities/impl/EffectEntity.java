@@ -10,7 +10,7 @@ import io.anuke.arc.util.pooling.Pools;
 
 public class EffectEntity extends TimedEntity implements Poolable, DrawTrait{
     public Effect effect;
-    public Color color = Color.WHITE;
+    public Color color = new Color(Color.WHITE);
     public Object data;
     public float rotation = 0f;
 
@@ -54,7 +54,7 @@ public class EffectEntity extends TimedEntity implements Poolable, DrawTrait{
     @Override
     public void reset(){
         effect = null;
-        color = Color.WHITE;
+        color.set(Color.WHITE);
         rotation = time = poffsetx = poffsety = 0f;
         parent = null;
         data = null;
