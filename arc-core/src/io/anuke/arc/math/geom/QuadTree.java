@@ -1,7 +1,6 @@
 package io.anuke.arc.math.geom;
 
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.entities.EntityCollisions.BoundingBoxProvider;
 import io.anuke.arc.function.Consumer;
 
 import java.util.Iterator;
@@ -319,5 +318,9 @@ public class QuadTree<T>{
     public interface QuadTreeObject{
         /**Fills the out parameter with this element's rough bounding box. This should never be smaller than the actual object, but may be larger.*/
         void hitbox(Rectangle out);
+    }
+
+    public interface BoundingBoxProvider<T>{
+        void getBoundingBox(T type, Rectangle out);
     }
 }
