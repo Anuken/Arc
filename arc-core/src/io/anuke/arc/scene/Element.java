@@ -1002,7 +1002,7 @@ public class Element implements Layout{
         });
     }
 
-    /** Adds a hover/mouse enter listener. */
+    /** Adds a hover/mouse exit listener. */
     public void exited(Runnable r){
         addListener(new InputListener(){
             @Override

@@ -52,9 +52,7 @@ public interface ApplicationListener{
     }
 
     /**
-     * Called when external files are dropped into the window,
-     * e.g from the Desktop.
-     * @param files array with absolute paths to the files
+     * Called when an external file is dropped into the window, e.g from the desktop.
      */
     default void fileDropped(FileHandle file){
     }
