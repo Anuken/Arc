@@ -370,11 +370,11 @@ public class Table extends WidgetGroup{
     }
 
     public Cell<Image> addImage(String name){
-        return add(new Image(scene.skin.getPatch(name)));
+        return add(new Image(scene.skin.getDrawable(name)));
     }
 
     public Cell<Image> addImage(String name, Color color){
-        Image image = new Image(scene.skin.getPatch(name));
+        Image image = new Image(scene.skin.getDrawable(name));
         image.setColor(color);
         return add(image);
     }
