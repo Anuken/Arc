@@ -202,6 +202,13 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
+    public Cell<T> fontScale(float scale){
+        if(element instanceof Label){
+            ((Label)element).setFontScale(scale);
+        }
+        return this;
+    }
+
     public Cell<T> color(Color color){
         getElement().setColor(color);
         return this;
