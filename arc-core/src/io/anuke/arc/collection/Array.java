@@ -156,8 +156,6 @@ public class Array<T> implements Iterable<T>{
         return null;
     }
 
-    //TODO add more functional operations
-
     public void add(T value){
         T[] items = this.items;
         if(size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));

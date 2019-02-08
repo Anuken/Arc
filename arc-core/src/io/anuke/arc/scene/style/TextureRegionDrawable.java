@@ -33,7 +33,6 @@ public class TextureRegionDrawable extends BaseDrawable implements TransformDraw
         Draw.rect(region, x + width/2f, y + height/2f, width, height);
     }
 
-    //TODO scaling is completely ignored
     @Override
     public void draw(float x, float y, float originX, float originY, float width, float height, float scaleX, float scaleY, float rotation){
         Draw.color(Tmp.c1.set(tint).mul(Draw.getColor()).toFloatBits());

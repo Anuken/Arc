@@ -546,7 +546,6 @@ public class Shader implements Disposable{
         gl.glUniformMatrix3fv(location, 1, transpose, matrix.val, 0);
     }
 
-    //TODO remove
     public void setUniformMatrix4(String name, float[] val){
         GL20 gl = Core.gl20;
         checkManaged();

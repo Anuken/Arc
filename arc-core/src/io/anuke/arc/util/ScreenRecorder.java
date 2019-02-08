@@ -8,7 +8,6 @@ import io.anuke.arc.util.reflect.Method;
 public class ScreenRecorder{
     private static Runnable record;
 
-    //TODO port gif recorder to extensions
     static{
         try{
             Class<?> recorderClass = ClassReflection.forName("io.anuke.arc.recorder.GifRecorder");

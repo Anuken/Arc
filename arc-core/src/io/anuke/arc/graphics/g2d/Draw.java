@@ -95,7 +95,6 @@ public class Draw{
         blend(Blending.normal);
     }
 
-    //TODO replace/remove?
     public static void reset(){
         color();
         Lines.stroke(1f);
