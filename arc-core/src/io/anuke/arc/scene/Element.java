@@ -516,6 +516,10 @@ public class Element implements Layout{
     protected void rotationChanged(){
     }
 
+    public void setSize(float size){
+        setSize(size, size);
+    }
+
     /** Sets the width and height. */
     public void setSize(float width, float height){
         if(this.width != width || this.height != height){
