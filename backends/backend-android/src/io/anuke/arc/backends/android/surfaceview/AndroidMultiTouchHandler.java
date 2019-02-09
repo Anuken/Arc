@@ -36,7 +36,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler{
                     if(button != KeyCode.UNKNOWN)
                         postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, realPointerIndex, button, timeStamp);
                     input.touchX[realPointerIndex] = x;
-                    input.touchY[realPointerIndex] = y;
+                    input.touchY[realPointerIndex] = Core.graphics.getHeight() - 1 - y;
                     input.deltaX[realPointerIndex] = 0;
                     input.deltaY[realPointerIndex] = 0;
                     input.touched[realPointerIndex] = (button != KeyCode.UNKNOWN);
@@ -57,7 +57,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler{
                     if(button != KeyCode.UNKNOWN)
                         postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, realPointerIndex, button, timeStamp);
                     input.touchX[realPointerIndex] = x;
-                    input.touchY[realPointerIndex] = y;
+                    input.touchY[realPointerIndex] = Core.graphics.getHeight() - 1 - y;
                     input.deltaX[realPointerIndex] = 0;
                     input.deltaY[realPointerIndex] = 0;
                     input.touched[realPointerIndex] = false;
@@ -94,9 +94,9 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler{
                         else
                             postTouchEvent(input, TouchEvent.TOUCH_MOVED, x, y, realPointerIndex, KeyCode.MOUSE_LEFT, timeStamp);
                         input.deltaX[realPointerIndex] = x - input.touchX[realPointerIndex];
-                        input.deltaY[realPointerIndex] = y - input.touchY[realPointerIndex];
+                        input.deltaY[realPointerIndex] = -(y - input.touchY[realPointerIndex]);
                         input.touchX[realPointerIndex] = x;
-                        input.touchY[realPointerIndex] = y;
+                        input.touchY[realPointerIndex] = Core.graphics.getHeight() - 1 - y;
                         input.pressure[realPointerIndex] = event.getPressure(pointerIndex);
                     }
                     break;
