@@ -9,7 +9,7 @@ import io.anuke.arc.util.OS;
 public class UIUtils{
 
     public static boolean isDisabled(Element element){
-        return element != null && ((element instanceof Disableable && ((Disableable)element).isDisabled()) || !element.isVisible());
+        return element != null && (((element instanceof Disableable && ((Disableable)element).isDisabled()) || !element.isVisible()) || isDisabled(element.getParent()));
     }
 
     public static boolean portrait(){

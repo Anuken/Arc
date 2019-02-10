@@ -18,7 +18,7 @@ public class HandCursorListener extends ClickListener{
     public void enter(InputEvent event, float x, float y, int pointer, Element fromActor){
         super.enter(event, x, y, pointer, fromActor);
 
-        if(!enabled.get() || UIUtils.isDisabled(event.targetActor) || UIUtils.isDisabled(fromActor) || pointer != -1){
+        if(pointer != -1 || !enabled.get() || UIUtils.isDisabled(event.targetActor) || UIUtils.isDisabled(fromActor)){
             return;
         }
 
