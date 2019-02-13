@@ -36,7 +36,7 @@ public class KeybindDialog extends Dialog{
     protected ObjectIntMap<Section> sectionControls = new ObjectIntMap<>();
 
     public KeybindDialog(){
-        super(bundle.get("text.keybind.title", "Rebind Keys"));
+        super(bundle.get("keybind.title", "Rebind Keys"));
         style = scene.skin.get(KeybindDialogStyle.class);
         setup();
         addCloseButton();
@@ -147,7 +147,7 @@ public class KeybindDialog extends Dialog{
                         table.add(axt).left().minWidth(90).padRight(20);
                     }
 
-                    table.addButton(bundle.get("text.settings.rebind", "Rebind"), () -> {
+                    table.addButton(bundle.get("settings.rebind", "Rebind"), () -> {
                         rebindAxis = true;
                         rebindMin = true;
                         openDialog(section, keybind);
@@ -158,7 +158,7 @@ public class KeybindDialog extends Dialog{
                     style.keyNameColor).left().padRight(40).padLeft(8);
                     table.add(keybinds.get(section, keybind).key.toString(),
                     style.keyColor).left().minWidth(90).padRight(20);
-                    table.addButton(bundle.get("text.settings.rebind", "Rebind"), () -> {
+                    table.addButton(bundle.get("settings.rebind", "Rebind"), () -> {
                         rebindAxis = false;
                         rebindMin = false;
                         openDialog(section, keybind);
@@ -169,7 +169,7 @@ public class KeybindDialog extends Dialog{
 
             table.visible(() -> this.section.equals(section));
 
-            table.addButton(bundle.get("text.settings.reset", "Reset to Defaults"), () -> {
+            table.addButton(bundle.get("settings.reset", "Reset to Defaults"), () -> {
                 keybinds.resetToDefaults();
                 setup();
                 settings.save();
