@@ -11,7 +11,7 @@ public class SettingsDialog extends Dialog{
     public SettingsTable main;
 
     public SettingsDialog(){
-        super(bundle.get("text.settings", "Settings"));
+        super(bundle.get("settings", "Settings"));
         addCloseButton();
 
         main = new SettingsTable();
@@ -119,7 +119,7 @@ public class SettingsDialog extends Dialog{
                 setting.add(this);
             }
 
-            addButton(bundle.get("text.settings.reset", "Reset to Defaults"), () -> {
+            addButton(bundle.get("settings.reset", "Reset to Defaults"), () -> {
                 for(SettingsTable.Setting setting : list){
                     if(setting.name == null || setting.title == null) continue;
                     settings.put(setting.name, settings.getDefault(setting.name));
