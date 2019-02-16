@@ -34,11 +34,11 @@ public class Draw{
 
     public static void tint(Color a, Color b, float s){
         Tmp.c1.set(a).lerp(b, s);
-        Core.batch.getColor().set(Tmp.c1.r, Tmp.c1.g, Tmp.c1.b);
+        Core.batch.setColor(Tmp.c1.r, Tmp.c1.g, Tmp.c1.b, Core.batch.getColor().a);
     }
 
     public static void tint(Color color){
-        Core.batch.getColor().set(color.r, color.g, color.b);
+        Core.batch.setColor(color.r, color.g, color.b, Core.batch.getColor().a);
     }
 
     public static void color(Color color){
