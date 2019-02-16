@@ -436,6 +436,11 @@ public class I18NBundle{
         return s;
     }
 
+    /**Returns all keys in this bundle. Does not check parent bundles.*/
+    public Iterable<String> getKeys(){
+        return properties.keys();
+    }
+
     /** Checks whether a specified key is present in this bundle. */
     public boolean has(String key){
         if(properties.containsKey(key)){
