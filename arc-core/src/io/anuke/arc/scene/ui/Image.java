@@ -121,6 +121,7 @@ public class Image extends Element{
         float scaleX = getScaleX();
         float scaleY = getScaleY();
         Draw.color(getColor());
+        Draw.alpha(parentAlpha);
 
         if(drawable instanceof TransformDrawable){
             float rotation = getRotation();
