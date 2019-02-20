@@ -5,7 +5,7 @@
 - [X] create nicer framework for cursors
 - [ ] create nicer framework for sounds
 - [X] make spritebatch less bad
-- [ ] fix keybind dialog, as well as the whole scene thing
+- [X] fix keybind dialog, as well as the whole scene thing
 - [X] actually get it working
 - [X] see if removing all JNI is possible (it's probably not)
 - [X] rename packages
