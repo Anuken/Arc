@@ -121,6 +121,17 @@ public class Angles{
         }
     }
 
+    public static void randLenVectors(long seed, float fin, int amount, float length, ParticleConsumer cons){
+        random.setSeed(seed);
+        for(int i = 0; i < amount; i++){
+            float l = random.nextFloat();
+            float scl = length * l * fin;
+            float vang = random.nextFloat() * 360f;
+            rv.set(scl, 0).rotate(vang);
+            cons.accept(rv.x, rv.y, fin * l, (1f - fin) * l);
+        }
+    }
+
     public static void randLenVectors(long seed, float fin, int amount, float length,
                                       float angle, float range, ParticleConsumer cons){
         random.setSeed(seed);
@@ -128,12 +139,12 @@ public class Angles{
             float scl = length * random.nextFloat() * fin;
             float vang = angle + random.nextFloat() * range * 2 - range;
             rv.set(scl, 0).rotate(vang);
-            cons.accept(rv.x, rv.y, fin * (random.nextFloat()));
+            cons.accept(rv.x, rv.y, fin * (random.nextFloat()), 0f);
         }
     }
 
     public interface ParticleConsumer{
-        void accept(float x, float y, float fin);
+        void accept(float x, float y, float fin, float fout);
     }
 
 }
