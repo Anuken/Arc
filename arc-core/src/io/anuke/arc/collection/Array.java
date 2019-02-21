@@ -147,6 +147,10 @@ public class Array<T> implements Iterable<T>{
         }
     }
 
+    public boolean contains(Predicate<T> predicate){
+        return find(predicate) != null;
+    }
+
     public T find(Predicate<T> predicate){
         for(int i = 0; i < size; i++){
             if(predicate.test(items[i])){
@@ -381,6 +385,10 @@ public class Array<T> implements Iterable<T>{
                 items[start + i] = items[lastIndex - i];
         }
         size -= count;
+    }
+
+    public boolean removeAll(Array<? extends T> array){
+        return removeAll(array, false);
     }
 
     /**
