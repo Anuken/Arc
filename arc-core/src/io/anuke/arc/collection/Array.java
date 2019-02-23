@@ -141,10 +141,20 @@ public class Array<T> implements Iterable<T>{
         }
     }
 
-    public void map(Function<T, T> mapper){
+    /**Replaces values without creating a new array.*/
+    public void replace(Function<T, T> mapper){
         for(int i = 0; i < size; i++){
             items[i] = mapper.get(items[i]);
         }
+    }
+
+    /**Returns a new array with the mapped values.*/
+    public <R> Array<R> map(Function<T, R> mapper){
+        Array<R> arr = new Array<>(size);
+        for(int i = 0; i < size; i++){
+            arr.add(mapper.get(items[i]));
+        }
+        return arr;
     }
 
     public boolean contains(Predicate<T> predicate){
