@@ -1,7 +1,7 @@
 package io.anuke.arc.util;
 
 import io.anuke.arc.Core;
-import io.anuke.arc.collection.DelayedRemovalArray;
+import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.LongArray;
 import io.anuke.arc.util.Timer.Task;
 import io.anuke.arc.util.pooling.Pool.Poolable;
@@ -10,7 +10,8 @@ import io.anuke.arc.util.pooling.Pools;
 public class Time{
     private static final long nanosPerMilli = 1000000;
     private static double time;
-    private static DelayedRemovalArray<DelayRun> runs = new DelayedRemovalArray<>();
+    private static Array<DelayRun> runs = new Array<>();
+    private static Array<DelayRun> removal = new Array<>();
     private static LongArray marks = new LongArray();
     private static DeltaProvider deltaimpl = () -> Math.min(Core.graphics.getDeltaTime() * 60f, 3f);
 
@@ -34,10 +35,6 @@ public class Time{
         return (float)time;
     }
 
-    public static void resetTime(float time){
-        Time.time = time;
-    }
-
     public static void mark(){
         marks.add(nanos());
     }
@@ -56,24 +53,19 @@ public class Time{
         float delta = delta();
 
         time += delta;
-
-        runs.begin();
+        removal.clear();
 
         for(DelayRun run : runs){
             run.delay -= delta;
 
-            if(run.run != null)
-                run.run.run();
-
             if(run.delay <= 0){
-                if(run.finish != null)
-                    run.finish.run();
-                runs.removeValue(run, true);
+                run.finish.run();
+                removal.add(run);
                 Pools.free(run);
             }
         }
 
-        runs.end();
+        runs.removeAll(removal);
     }
 
     public static synchronized void clear(){
@@ -144,13 +136,12 @@ public class Time{
 
     public static class DelayRun implements Poolable{
         public float delay;
-        public Runnable run;
         public Runnable finish;
 
         @Override
         public void reset(){
             delay = 0;
-            run = finish = null;
+            finish = null;
         }
     }
 }
