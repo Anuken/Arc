@@ -16,7 +16,6 @@
 
 package io.anuke.arc.collection;
 
-import io.anuke.arc.collection.Queue.QueueIterable;
 import io.anuke.arc.util.StringBuilder;
 
 import java.util.NoSuchElementException;
@@ -34,7 +33,6 @@ public class IntQueue{
      * (size == values.length).
      */
     protected int tail = 0;
-    private QueueIterable iterable;
 
     /** Creates a new Queue which can hold 16 values without needing to resize backing array. */
     public IntQueue(){
@@ -215,7 +213,6 @@ public class IntQueue{
         if(head < tail){ // index is between head and tail.
             value = values[index];
             System.arraycopy(values, index + 1, values, index, tail - index);
-            values[tail] = 0;
             this.tail--;
         }else if(index >= values.length){ // index is between 0 and tail.
             index -= values.length;
@@ -225,7 +222,6 @@ public class IntQueue{
         }else{ // index is between head and values.length.
             value = values[index];
             System.arraycopy(values, head, values, head + 1, index - head);
-            values[head] = 0;
             this.head++;
             if(this.head == values.length){
                 this.head = 0;
@@ -291,30 +287,9 @@ public class IntQueue{
         return values[i];
     }
 
-    /**
-     * Removes all values from this queue. Values in backing array are set to null to prevent memory leak, so this operates in
-     * O(n).
-     */
+    /**Removes all values from this queue; O(1).*/
     public void clear(){
         if(size == 0) return;
-        final int[] values = this.values;
-        final int head = this.head;
-        final int tail = this.tail;
-
-        if(head < tail){
-            // Continuous
-            for(int i = head; i < tail; i++){
-                values[i] = 0;
-            }
-        }else{
-            // Wrapped
-            for(int i = head; i < values.length; i++){
-                values[i] = 0;
-            }
-            for(int i = 0; i < tail; i++){
-                values[i] = 0;
-            }
-        }
         this.head = 0;
         this.tail = 0;
         this.size = 0;
