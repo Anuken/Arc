@@ -15,13 +15,17 @@ public class BatchShader{
         "attribute vec4 " + Shader.POSITION_ATTRIBUTE + ";",
         "attribute vec4 " + Shader.COLOR_ATTRIBUTE + ";",
         "attribute vec2 " + Shader.TEXCOORD_ATTRIBUTE + "0;",
+        "attribute vec4 " + Shader.MIX_COLOR_ATTRIBUTE + ";",
         "uniform mat4 u_projTrans;",
         "varying vec4 v_color;",
+        "varying vec4 v_mix_color;",
         "varying vec2 v_texCoords;",
         "",
         "void main(){",
         "   v_color = " + Shader.COLOR_ATTRIBUTE + ";",
         "   v_color.a = v_color.a * (255.0/254.0);",
+        "   v_mix_color = " + Shader.MIX_COLOR_ATTRIBUTE + ";",
+        "   v_mix_color.a *= (255.0/254.0);",
         "   v_texCoords = " + Shader.TEXCOORD_ATTRIBUTE + "0;",
         "   gl_Position = u_projTrans * " + Shader.POSITION_ATTRIBUTE + ";",
         "}"
@@ -36,11 +40,13 @@ public class BatchShader{
         "#endif",
         "",
         "varying LOWP vec4 v_color;",
+        "varying LOWP vec4 v_mix_color;",
         "varying vec2 v_texCoords;",
         "uniform sampler2D u_texture;",
         "",
         "void main(){",
-        "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);",
+        "  vec4 c = texture2D(u_texture, v_texCoords);",
+        "  gl_FragColor = v_color * mix(c, vec4(v_mix_color.rgb, c.a), v_mix_color.a);",
         "}"
     );
 

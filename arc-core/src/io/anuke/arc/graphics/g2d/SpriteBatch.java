@@ -5,7 +5,6 @@ import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.Mesh.VertexDataType;
 import io.anuke.arc.graphics.VertexAttributes.Usage;
 import io.anuke.arc.graphics.glutils.Shader;
-import io.anuke.arc.math.Affine2;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.util.Disposable;
@@ -17,7 +16,8 @@ import io.anuke.arc.util.Disposable;
  * @see Batch
  */
 public class SpriteBatch implements Disposable{
-    static final int VERTEX_SIZE = 2 + 1 + 2;
+    //xy + color + uv + mix_color
+    static final int VERTEX_SIZE = 2 + 1 + 2 + 1;
     static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
 
     private Mesh mesh;
@@ -40,7 +40,10 @@ public class SpriteBatch implements Disposable{
     private boolean ownsShader;
 
     private final Color color = new Color(1, 1, 1, 1);
-    float colorPacked = Color.WHITE_FLOAT_BITS;
+    private float colorPacked = Color.WHITE_FLOAT_BITS;
+
+    private final Color mixColor = Color.CLEAR;
+    private float mixColorPacked = Color.CLEAR_FLOAT_BITS;
 
     /** Number of render calls since the last {@link #begin()}. **/
     int renderCalls = 0;
@@ -84,7 +87,8 @@ public class SpriteBatch implements Disposable{
         mesh = new Mesh(vertexDataType, false, size * 4, size * 6,
         new VertexAttribute(Usage.Position, 2, Shader.POSITION_ATTRIBUTE),
         new VertexAttribute(Usage.ColorPacked, 4, Shader.COLOR_ATTRIBUTE),
-        new VertexAttribute(Usage.TextureCoordinates, 2, Shader.TEXCOORD_ATTRIBUTE + "0"));
+        new VertexAttribute(Usage.TextureCoordinates, 2, Shader.TEXCOORD_ATTRIBUTE + "0"),
+        new VertexAttribute(Usage.ColorPacked, 4, Shader.MIX_COLOR_ATTRIBUTE));
 
         projectionMatrix.setOrtho(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
 
@@ -132,6 +136,29 @@ public class SpriteBatch implements Disposable{
 
     protected float getPackedColor(){
         return colorPacked;
+    }
+
+    void setMixColor(Color tint){
+        mixColor.set(tint);
+        mixColorPacked = tint.toFloatBits();
+    }
+
+    void setMixColor(float r, float g, float b, float a){
+        mixColor.set(r, g, b, a);
+        mixColorPacked = mixColor.toFloatBits();
+    }
+
+    protected Color getMixColor(){
+        return mixColor;
+    }
+
+    void setPackedMixColor(float packedColor){
+        Color.abgr8888ToColor(mixColor, packedColor);
+        this.mixColorPacked = packedColor;
+    }
+
+    protected float getPackedMixColor(){
+        return mixColorPacked;
     }
 
     protected void draw(Texture texture, float[] spriteVertices, int offset, int count){
@@ -227,32 +254,37 @@ public class SpriteBatch implements Disposable{
             final float u2 = region.u2;
             final float v2 = region.v;
 
-            float color = this.colorPacked;
+            final float color = this.colorPacked;
+            final float mixColor = this.mixColorPacked;
             int idx = this.idx;
             vertices[idx] = x1;
             vertices[idx + 1] = y1;
             vertices[idx + 2] = color;
             vertices[idx + 3] = u;
             vertices[idx + 4] = v;
+            vertices[idx + 5] = mixColor;
 
-            vertices[idx + 5] = x2;
-            vertices[idx + 6] = y2;
-            vertices[idx + 7] = color;
-            vertices[idx + 8] = u;
-            vertices[idx + 9] = v2;
+            vertices[idx + 6] = x2;
+            vertices[idx + 7] = y2;
+            vertices[idx + 8] = color;
+            vertices[idx + 9] = u;
+            vertices[idx + 10] = v2;
+            vertices[idx + 11] = mixColor;
 
-            vertices[idx + 10] = x3;
-            vertices[idx + 11] = y3;
-            vertices[idx + 12] = color;
-            vertices[idx + 13] = u2;
-            vertices[idx + 14] = v2;
+            vertices[idx + 12] = x3;
+            vertices[idx + 13] = y3;
+            vertices[idx + 14] = color;
+            vertices[idx + 15] = u2;
+            vertices[idx + 16] = v2;
+            vertices[idx + 17] = mixColor;
 
-            vertices[idx + 15] = x4;
-            vertices[idx + 16] = y4;
-            vertices[idx + 17] = color;
-            vertices[idx + 18] = u2;
-            vertices[idx + 19] = v;
-            this.idx = idx + 20;
+            vertices[idx + 18] = x4;
+            vertices[idx + 19] = y4;
+            vertices[idx + 20] = color;
+            vertices[idx + 21] = u2;
+            vertices[idx + 22] = v;
+            vertices[idx + 23] = mixColor;
+            this.idx = idx + 24;
 
         }else{
             final float fx2 = x + width;
@@ -262,87 +294,38 @@ public class SpriteBatch implements Disposable{
             final float u2 = region.u2;
             final float v2 = region.v;
 
-            float color = this.colorPacked;
+            final float color = this.colorPacked;
+            final float mixColor = this.mixColorPacked;
             int idx = this.idx;
             vertices[idx] = x;
             vertices[idx + 1] = y;
             vertices[idx + 2] = color;
             vertices[idx + 3] = u;
             vertices[idx + 4] = v;
+            vertices[idx + 5] = mixColor;
 
-            vertices[idx + 5] = x;
-            vertices[idx + 6] = fy2;
-            vertices[idx + 7] = color;
-            vertices[idx + 8] = u;
-            vertices[idx + 9] = v2;
+            vertices[idx + 6] = x;
+            vertices[idx + 7] = fy2;
+            vertices[idx + 8] = color;
+            vertices[idx + 9] = u;
+            vertices[idx + 10] = v2;
+            vertices[idx + 11] = mixColor;
 
-            vertices[idx + 10] = fx2;
-            vertices[idx + 11] = fy2;
-            vertices[idx + 12] = color;
-            vertices[idx + 13] = u2;
-            vertices[idx + 14] = v2;
+            vertices[idx + 12] = fx2;
+            vertices[idx + 13] = fy2;
+            vertices[idx + 14] = color;
+            vertices[idx + 15] = u2;
+            vertices[idx + 16] = v2;
+            vertices[idx + 17] = mixColor;
 
-            vertices[idx + 15] = fx2;
-            vertices[idx + 16] = y;
-            vertices[idx + 17] = color;
-            vertices[idx + 18] = u2;
-            vertices[idx + 19] = v;
-            this.idx = idx + 20;
+            vertices[idx + 18] = fx2;
+            vertices[idx + 19] = y;
+            vertices[idx + 20] = color;
+            vertices[idx + 21] = u2;
+            vertices[idx + 22] = v;
+            vertices[idx + 23] = mixColor;
+            this.idx = idx + 24;
         }
-    }
-
-    void draw(TextureRegion region, float width, float height, Affine2 transform){
-
-        float[] vertices = this.vertices;
-
-        Texture texture = region.texture;
-        if(texture != lastTexture){
-            switchTexture(texture);
-        }else if(idx == vertices.length){
-            flush();
-        }
-
-        // construct corner points
-        float x1 = transform.m02;
-        float y1 = transform.m12;
-        float x2 = transform.m01 * height + transform.m02;
-        float y2 = transform.m11 * height + transform.m12;
-        float x3 = transform.m00 * width + transform.m01 * height + transform.m02;
-        float y3 = transform.m10 * width + transform.m11 * height + transform.m12;
-        float x4 = transform.m00 * width + transform.m02;
-        float y4 = transform.m10 * width + transform.m12;
-
-        float u = region.u;
-        float v = region.v2;
-        float u2 = region.u2;
-        float v2 = region.v;
-
-        float color = this.colorPacked;
-        int idx = this.idx;
-        vertices[idx] = x1;
-        vertices[idx + 1] = y1;
-        vertices[idx + 2] = color;
-        vertices[idx + 3] = u;
-        vertices[idx + 4] = v;
-
-        vertices[idx + 5] = x2;
-        vertices[idx + 6] = y2;
-        vertices[idx + 7] = color;
-        vertices[idx + 8] = u;
-        vertices[idx + 9] = v2;
-
-        vertices[idx + 10] = x3;
-        vertices[idx + 11] = y3;
-        vertices[idx + 12] = color;
-        vertices[idx + 13] = u2;
-        vertices[idx + 14] = v2;
-
-        vertices[idx + 15] = x4;
-        vertices[idx + 16] = y4;
-        vertices[idx + 17] = color;
-        vertices[idx + 18] = u2;
-        vertices[idx + 19] = v;
-        this.idx = idx + 20;
     }
 
     void flush(){
@@ -359,7 +342,7 @@ public class SpriteBatch implements Disposable{
 
         renderCalls++;
         totalRenderCalls++;
-        int spritesInBatch = idx / 20;
+        int spritesInBatch = idx / 24;
         if(spritesInBatch > maxSpritesInBatch) maxSpritesInBatch = spritesInBatch;
         int count = spritesInBatch * 6;
 

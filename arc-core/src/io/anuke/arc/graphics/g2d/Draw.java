@@ -5,6 +5,7 @@ import io.anuke.arc.graphics.Blending;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.graphics.glutils.Shader;
+import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.util.Tmp;
 
@@ -30,6 +31,14 @@ public class Draw{
 
     public static Color getColor(){
         return Core.batch.getColor();
+    }
+
+    public static void mixcol(Color color, float a){
+        Core.batch.setMixColor(color.r, color.g, color.b, Mathf.clamp(a));
+    }
+
+    public static void mixcol(){
+        Core.batch.setPackedMixColor(Color.CLEAR_FLOAT_BITS);
     }
 
     public static void tint(Color a, Color b, float s){
@@ -97,6 +106,7 @@ public class Draw{
 
     public static void reset(){
         color();
+        mixcol();
         Lines.stroke(1f);
     }
 

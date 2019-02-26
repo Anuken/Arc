@@ -14,8 +14,6 @@ import io.anuke.arc.util.Disposable;
 
 import java.nio.FloatBuffer;
 
-import static io.anuke.arc.graphics.g2d.SpriteBatch.VERTEX_SIZE;
-
 /**
  * Draws 2D images, optimized for geometry that does not change. Sprites and/or textures are cached and given an ID, which can
  * later be used for drawing. The size, color, and texture region for each cached image cannot be modified. This information is
@@ -47,6 +45,9 @@ import static io.anuke.arc.graphics.g2d.SpriteBatch.VERTEX_SIZE;
  * @author Nathan Sweet
  */
 public class SpriteCache implements Disposable{
+    //xy + color + uv + mix_color
+    static final int VERTEX_SIZE = 2 + 1 + 2;
+
     static private final float[] tempVertices = new float[VERTEX_SIZE * 6];
 
     private final Mesh mesh;

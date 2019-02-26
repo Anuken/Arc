@@ -41,7 +41,7 @@ public class NinePatch{
     private int middleLeft = -1, middleCenter = -1, middleRight = -1;
     private int topLeft = -1, topCenter = -1, topRight = -1;
     private float leftWidth, rightWidth, middleWidth, middleHeight, topHeight, bottomHeight;
-    private float[] vertices = new float[9 * 4 * 5];
+    private float[] vertices = new float[9 * 4 * 6];
     private int idx;
     private float padLeft = -1, padRight = -1, padTop = -1, padBottom = -1;
 
@@ -298,25 +298,30 @@ public class NinePatch{
         }
 
         final float[] vertices = this.vertices;
+        final float mixColor = Color.CLEAR_FLOAT_BITS;
 
         vertices[idx + 2] = color;
         vertices[idx + 3] = u;
         vertices[idx + 4] = v;
+        vertices[idx + 5] = mixColor;
 
-        vertices[idx + 7] = color;
-        vertices[idx + 8] = u;
-        vertices[idx + 9] = v2;
+        vertices[idx + 8] = color;
+        vertices[idx + 9] = u;
+        vertices[idx + 10] = v2;
+        vertices[idx + 11] = mixColor;
 
-        vertices[idx + 12] = color;
-        vertices[idx + 13] = u2;
-        vertices[idx + 14] = v2;
+        vertices[idx + 14] = color;
+        vertices[idx + 15] = u2;
+        vertices[idx + 16] = v2;
+        vertices[idx + 17] = mixColor;
 
-        vertices[idx + 17] = color;
-        vertices[idx + 18] = u2;
-        vertices[idx + 19] = v;
-        idx += 20;
+        vertices[idx + 20] = color;
+        vertices[idx + 21] = u2;
+        vertices[idx + 22] = v;
+        vertices[idx + 23] = mixColor;
+        idx += 24;
 
-        return idx - 20;
+        return idx - 24;
     }
 
     /** Set the coordinates and color of a ninth of the patch. */
@@ -324,21 +329,26 @@ public class NinePatch{
         final float fx2 = x + width;
         final float fy2 = y + height;
         final float[] vertices = this.vertices;
+        final float mixColor = Color.CLEAR_FLOAT_BITS;
         vertices[idx] = x;
         vertices[idx + 1] = y;
         vertices[idx + 2] = color;
+        vertices[idx + 5] = mixColor;
 
-        vertices[idx + 5] = x;
-        vertices[idx + 6] = fy2;
-        vertices[idx + 7] = color;
+        vertices[idx + 6] = x;
+        vertices[idx + 7] = fy2;
+        vertices[idx + 8] = color;
+        vertices[idx + 11] = mixColor;
 
-        vertices[idx + 10] = fx2;
-        vertices[idx + 11] = fy2;
-        vertices[idx + 12] = color;
+        vertices[idx + 12] = fx2;
+        vertices[idx + 13] = fy2;
+        vertices[idx + 14] = color;
+        vertices[idx + 17] = mixColor;
 
-        vertices[idx + 15] = fx2;
-        vertices[idx + 16] = y;
-        vertices[idx + 17] = color;
+        vertices[idx + 18] = fx2;
+        vertices[idx + 19] = y;
+        vertices[idx + 20] = color;
+        vertices[idx + 23] = mixColor;
     }
 
     private void prepareVertices(float x, float y, float width, float height){

@@ -22,8 +22,8 @@ public class BitmapFontCache{
     static private final Color tempColor = new Color(1, 1, 1, 1);
 
     private final BitmapFont font;
-    private final Array<GlyphLayout> layouts = new Array();
-    private final Array<GlyphLayout> pooledLayouts = new Array();
+    private final Array<GlyphLayout> layouts = new Array<>();
+    private final Array<GlyphLayout> pooledLayouts = new Array<>();
     private final Color color = new Color(1, 1, 1, 1);
     private boolean integer;
     private int glyphCount;
@@ -92,7 +92,7 @@ public class BitmapFontCache{
         float[][] pageVertices = this.pageVertices;
         for(int i = 0, n = pageVertices.length; i < n; i++){
             float[] vertices = pageVertices[i];
-            for(int ii = 0, nn = idx[i]; ii < nn; ii += 5){
+            for(int ii = 0, nn = idx[i]; ii < nn; ii += 6){
                 vertices[ii] += xAmount;
                 vertices[ii + 1] += yAmount;
             }
@@ -118,10 +118,10 @@ public class BitmapFontCache{
                 for(int iii = 0, nnn = glyphs.size; iii < nnn; iii++){
                     Glyph glyph = glyphs.get(iii);
                     int page = glyph.page;
-                    int offset = tempGlyphCount[page] * 20 + 2;
+                    int offset = tempGlyphCount[page] * 24 + 2;
                     tempGlyphCount[page]++;
                     float[] vertices = pageVertices[page];
-                    for(int v = 0; v < 20; v += 5)
+                    for(int v = 0; v < 24; v += 6)
                         vertices[offset + v] = colorFloat;
                 }
             }
@@ -134,7 +134,7 @@ public class BitmapFontCache{
         float prev = 0, newColor = 0;
         for(int j = 0, length = pageVertices.length; j < length; j++){
             float[] vertices = pageVertices[j];
-            for(int i = 2, n = idx[j]; i < n; i += 5){
+            for(int i = 2, n = idx[j]; i < n; i += 6){
                 float c = vertices[i];
                 if(c == prev && i != 2){
                     vertices[i] = newColor;
@@ -153,7 +153,7 @@ public class BitmapFontCache{
     public void setColors(float color){
         for(int j = 0, length = pageVertices.length; j < length; j++){
             float[] vertices = pageVertices[j];
-            for(int i = 2, n = idx[j]; i < n; i += 5)
+            for(int i = 2, n = idx[j]; i < n; i += 6)
                 vertices[i] = color;
         }
     }
@@ -184,7 +184,7 @@ public class BitmapFontCache{
     public void setColors(float color, int start, int end){
         if(pageVertices.length == 1){ // One page.
             float[] vertices = pageVertices[0];
-            for(int i = start * 20 + 2, n = end * 20; i < n; i += 5)
+            for(int i = start * 24 + 2, n = end * 24; i < n; i += 6)
                 vertices[i] = color;
             return;
         }
@@ -202,8 +202,8 @@ public class BitmapFontCache{
 
                 // If inside start and end, change its colour.
                 if(glyphIndex >= start){ // && glyphIndex < end
-                    for(int off = 0; off < 20; off += 5)
-                        vertices[off + (j * 20 + 2)] = color;
+                    for(int off = 0; off < 24; off += 6)
+                        vertices[off + (j * 24 + 2)] = color;
                 }
             }
         }
@@ -239,7 +239,7 @@ public class BitmapFontCache{
 
     public void draw(int start, int end){
         if(pageVertices.length == 1){ // 1 page.
-            Draw.vert(font.getRegion().getTexture(), pageVertices[0], start * 20, (end - start) * 20);
+            Draw.vert(font.getRegion().getTexture(), pageVertices[0], start * 24, (end - start) * 24);
             return;
         }
 
@@ -268,7 +268,7 @@ public class BitmapFontCache{
             if(offset == -1 || count == 0) continue;
 
             // Render the page vertex data with the offset and count.
-            Draw.vert(regions.get(i).getTexture(), pageVertices[i], offset * 20, count * 20);
+            Draw.vert(regions.get(i).getTexture(), pageVertices[i], offset * 24, count * 24);
         }
     }
 
@@ -328,7 +328,7 @@ public class BitmapFontCache{
                 pageGlyphIndices[page].ensureCapacity(glyphCount - pageGlyphIndices[page].items.length);
         }
 
-        int vertexCount = idx[page] + glyphCount * 20;
+        int vertexCount = idx[page] + glyphCount * 24;
         float[] vertices = pageVertices[page];
         if(vertices == null){
             pageVertices[page] = new float[vertexCount];
@@ -399,7 +399,7 @@ public class BitmapFontCache{
 
         final int page = glyph.page;
         int idx = this.idx[page];
-        this.idx[page] += 20;
+        this.idx[page] += 24;
 
         if(pageGlyphIndices != null) pageGlyphIndices[page].add(glyphCount++);
 
@@ -409,24 +409,29 @@ public class BitmapFontCache{
         vertices[idx++] = color;
         vertices[idx++] = u;
         vertices[idx++] = v;
+        idx++; //mix color = 0
 
         vertices[idx++] = x;
         vertices[idx++] = y2;
         vertices[idx++] = color;
         vertices[idx++] = u;
         vertices[idx++] = v2;
+        idx++; //mix color = 0
 
         vertices[idx++] = x2;
         vertices[idx++] = y2;
         vertices[idx++] = color;
         vertices[idx++] = u2;
         vertices[idx++] = v2;
+        idx++; //mix color = 0
 
         vertices[idx++] = x2;
         vertices[idx++] = y;
         vertices[idx++] = color;
         vertices[idx++] = u2;
         vertices[idx] = v;
+
+        //idx++; //mix color = 0
     }
 
     /**

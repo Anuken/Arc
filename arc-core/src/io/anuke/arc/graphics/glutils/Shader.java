@@ -53,6 +53,8 @@ public class Shader implements Disposable{
     public static final String NORMAL_ATTRIBUTE = "a_normal";
     /** default name for color attributes **/
     public static final String COLOR_ATTRIBUTE = "a_color";
+    /** default name for mix color attributes **/
+    public static final String MIX_COLOR_ATTRIBUTE = "a_mix_color";
     /** default name for texcoords attributes, append texture unit number **/
     public static final String TEXCOORD_ATTRIBUTE = "a_texCoord";
     /** default name for tangent attribute **/
