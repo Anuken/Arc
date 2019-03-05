@@ -4,6 +4,7 @@ import io.anuke.arc.Core;
 import io.anuke.arc.Graphics;
 import io.anuke.arc.Input;
 import io.anuke.arc.math.Matrix3;
+import io.anuke.arc.math.geom.Rectangle;
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.math.geom.Vector3;
 
@@ -117,5 +118,10 @@ public class Camera{
         worldCoords.x = viewportWidth * (worldCoords.x + 1) / 2 + viewportX;
         worldCoords.y = viewportHeight * (worldCoords.y + 1) / 2 + viewportY;
         return worldCoords;
+    }
+
+    /**Sets the specified rectangle to this camera's bounds.*/
+    public Rectangle bounds(Rectangle out){
+        return out.setSize(width, height).setCenter(position);
     }
 }
