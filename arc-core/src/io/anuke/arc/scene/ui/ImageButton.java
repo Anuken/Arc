@@ -96,7 +96,7 @@ public class ImageButton extends Button{
     }
 
     public void replaceImage(Element element){
-        getImageCell().setActor(element);
+        getImageCell().setElement(element);
         addChild(element);
         image.remove();
     }

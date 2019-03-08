@@ -84,18 +84,18 @@ public class Cell<T extends Element> implements Poolable{
     }
 
     /** Sets the element in this cell and adds the element to the cell's table. If null, removes any current element. */
-    public <A extends Element> Cell<A> setActor(A newActor){
-        if(element != newActor){
+    public <A extends Element> Cell<A> setElement(A newElement){
+        if(element != newElement){
             if(element != null) element.remove();
-            element = newActor;
-            if(newActor != null) table.addChild(newActor);
+            element = newElement;
+            if(newElement != null) table.addChild(newElement);
         }
         return (Cell<A>)this;
     }
 
     /** Removes the current element for the cell, if any. */
-    public Cell<T> clearActor(){
-        setActor(null);
+    public Cell<T> clearElement(){
+        setElement(null);
         return this;
     }
 
@@ -110,7 +110,7 @@ public class Cell<T extends Element> implements Poolable{
     }
 
     /** Returns true if the cell's element is not null. */
-    public boolean hasActor(){
+    public boolean hasElement(){
         return element != null;
     }
 
@@ -760,43 +760,11 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
-    public void setActorBounds(float x, float y, float width, float height){
+    public void setBounds(float x, float y, float width, float height){
         elementX = x;
         elementY = y;
         elementWidth = width;
         elementHeight = height;
-    }
-
-    public float getActorX(){
-        return elementX;
-    }
-
-    public void setActorX(float elementX){
-        this.elementX = elementX;
-    }
-
-    public float getActorY(){
-        return elementY;
-    }
-
-    public void setActorY(float elementY){
-        this.elementY = elementY;
-    }
-
-    public float getActorWidth(){
-        return elementWidth;
-    }
-
-    public void setActorWidth(float elementWidth){
-        this.elementWidth = elementWidth;
-    }
-
-    public float getActorHeight(){
-        return elementHeight;
-    }
-
-    public void setActorHeight(float elementHeight){
-        this.elementHeight = elementHeight;
     }
 
     public int getColumn(){

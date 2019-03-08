@@ -885,6 +885,7 @@ public class Element implements Layout{
         if(enabled) invalidateHierarchy();
     }
 
+    @Override
     public void validate(){
         if(!layoutEnabled) return;
 

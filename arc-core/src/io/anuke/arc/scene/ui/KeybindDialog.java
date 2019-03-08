@@ -182,7 +182,6 @@ public class KeybindDialog extends Dialog{
 
         cont.add(pane).growX().colspan(sections.length);
 
-        pack();
     }
 
     private void rebind(Section section, KeyBind bind, KeyCode newKey){

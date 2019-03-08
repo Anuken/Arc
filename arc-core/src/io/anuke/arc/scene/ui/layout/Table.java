@@ -900,6 +900,7 @@ public class Table extends WidgetGroup{
         return array;
     }
 
+    @Override
     public void layout(){
         float width = getWidth();
         float height = getHeight();
@@ -914,7 +915,7 @@ public class Table extends WidgetGroup{
                 float actorHeight = Math.round(c.elementHeight);
                 float actorX = Math.round(c.elementX);
                 float actorY = height - Math.round(c.elementY) - actorHeight;
-                c.setActorBounds(actorX, actorY, actorWidth, actorHeight);
+                c.setBounds(actorX, actorY, actorWidth, actorHeight);
                 Element actor = c.element;
                 if(actor != null) actor.setBounds(actorX, actorY, actorWidth, actorHeight);
             }
@@ -923,7 +924,7 @@ public class Table extends WidgetGroup{
                 Cell c = cells.get(i);
                 float actorHeight = c.elementHeight;
                 float actorY = height - c.elementY - actorHeight;
-                c.setActorY(actorY);
+                c.elementY = actorY;
                 Element actor = c.element;
                 if(actor != null) actor.setBounds(c.elementX, actorY, c.elementWidth, actorHeight);
             }
@@ -1305,11 +1306,6 @@ public class Table extends WidgetGroup{
             }else
                 currentX += spannedCellWidth + c.computedPadRight;
         }
-    }
-
-    /** @author Nathan Sweet */
-    public enum Debug{
-        none, all, table, cell, actor
     }
 
     public interface DrawRect{

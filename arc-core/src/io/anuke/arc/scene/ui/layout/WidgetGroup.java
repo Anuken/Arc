@@ -103,7 +103,7 @@ public class WidgetGroup extends Group implements Layout{
     public void invalidateHierarchy(){
         invalidate();
         Group parent = getParent();
-        if(parent instanceof Layout) parent.invalidateHierarchy();
+        if(parent != null) parent.invalidateHierarchy();
     }
 
     protected void childrenChanged(){
@@ -117,8 +117,8 @@ public class WidgetGroup extends Group implements Layout{
     public void pack(){
         setSize(getPrefWidth(), getPrefHeight());
         validate();
-        // Some situations require another layout. Eg, a wrapped label doesn't know its pref height until it knows its width, so it
-        // calls invalidateHierarchy() in layout() if its pref height has changed.
+        //Some situations require another layout. Eg, a wrapped label doesn't know its pref height until it knows its width, so it
+        //calls invalidateHierarchy() in layout() if its pref height has changed.
         if(needsLayout){
             setSize(getPrefWidth(), getPrefHeight());
             validate();
