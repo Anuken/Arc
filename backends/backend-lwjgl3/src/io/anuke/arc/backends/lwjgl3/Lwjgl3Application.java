@@ -1,8 +1,8 @@
 package io.anuke.arc.backends.lwjgl3;
 
+import io.anuke.arc.*;
 import io.anuke.arc.backends.lwjgl3.audio.OpenALAudio;
 import io.anuke.arc.backends.lwjgl3.audio.mock.MockAudio;
-import io.anuke.arc.*;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.graphics.glutils.GLVersion;
 import io.anuke.arc.util.ArcRuntimeException;

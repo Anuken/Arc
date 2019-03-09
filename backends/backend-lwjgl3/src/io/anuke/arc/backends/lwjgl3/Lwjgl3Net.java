@@ -20,15 +20,15 @@ import io.anuke.arc.Net;
 import io.anuke.arc.net.*;
 import io.anuke.arc.util.SharedLibraryLoader;
 
-import java.awt.*;
-import java.net.URI;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * LWJGL implementation of the {@link Net} API, it could be reused in other Desktop backends since it doesn't depend on LWJGL.
  * @author acoppes
  */
 public class Lwjgl3Net implements Net{
-
     NetJavaImpl netJavaImpl = new NetJavaImpl();
 
     @Override
@@ -57,21 +57,30 @@ public class Lwjgl3Net implements Net{
     }
 
     @Override
-    public boolean openURI(String URI){
-        if(SharedLibraryLoader.isMac){
-            try{
-                Class.forName("com.apple.eio.FileManager").getMethod("openURL", String.class).invoke(null, URI);
+    public boolean openURI(String url){
+        try{
+            if(SharedLibraryLoader.isMac){
+                Class.forName("com.apple.eio.FileManager").getMethod("openURL", String.class).invoke(null, url);
                 return true;
-            }catch(Exception e){
-                return false;
-            }
-        }else{
-            try{
-                Desktop.getDesktop().browse(new URI(URI));
+            }else if(SharedLibraryLoader.isLinux){
+                exec("xdg-open " + url);
                 return true;
-            }catch(Throwable t){
-                return false;
+            }else if(SharedLibraryLoader.isWindows){
+                exec("rundll32 url.dll,FileProtocolHandler " + url);
+                return true;
             }
+            return false;
+        }catch(Throwable e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void exec(String command) throws IOException{
+        BufferedReader in = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(command).getInputStream()));
+        String line;
+        while ((line = in.readLine()) != null) {
+            System.out.println(line);
         }
     }
 
