@@ -70,7 +70,7 @@ public class Log{
     }
 
     public static String format(String text, boolean useColors, Object... args){
-        text = Strings.formatArgs(text, args);
+        text = Strings.format(text, args);
 
         if(useColors){
             for(String color : ColorCodes.getColorCodes()){

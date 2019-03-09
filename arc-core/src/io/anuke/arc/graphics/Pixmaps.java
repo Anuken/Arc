@@ -4,9 +4,9 @@ import io.anuke.arc.function.IntPositionConsumer;
 import io.anuke.arc.graphics.Pixmap.Format;
 import io.anuke.arc.graphics.Texture.TextureWrap;
 import io.anuke.arc.graphics.g2d.TextureRegion;
+import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.geom.Vector2;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 /** Various pixmap utilities. */
@@ -44,6 +44,38 @@ public class Pixmaps{
             }
         }
         return pixmap;
+    }
+
+    public static Pixmap outline(Pixmap input, Color color, int thickness){
+        if(thickness == 1){
+            return outline(input, color);
+        }else{
+            Pixmap pixmap = copy(input);
+            pixmap.setColor(color);
+
+            for(int x = 0; x < pixmap.getWidth(); x++){
+                for(int y = 0; y < pixmap.getHeight(); y++){
+                    if(empty(input.getPixel(x, y))){
+                        boolean found = false;
+                        outer:
+                        for(int dx = -thickness; dx <= thickness; dx++){
+                            for(int dy = -thickness; dy <= thickness; dy++){
+                                if(Mathf.dst2(dx, dy) <= thickness * thickness && !empty(input.getPixel(x + dx, y + dy))){
+                                    found = true;
+                                    break outer;
+                                }
+                            }
+                        }
+                        if(found){
+                            pixmap.drawPixel(x, y);
+                        }
+                    }
+
+
+                }
+            }
+            return pixmap;
+        }
     }
 
     public static Pixmap outline(Pixmap input, Color color){

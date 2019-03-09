@@ -268,11 +268,42 @@ public abstract class Graphics implements Disposable{
     }
 
     /**
+     * Creates a new cursor by scaling a pixmap and adding an outline.
+     * @param pixmap The base pixmap. Unscaled.
+     * @param scaling The factor by which to scale the base pixmap.
+     * @param outlineColor The color of the cursor's outline.
+     */
+    public Cursor newCursor(Pixmap pixmap, int scaling, Color outlineColor, int outlineThickness){
+        Pixmap out = Pixmaps.outline(pixmap, outlineColor, outlineThickness);
+        out.setColor(Color.WHITE);
+        Pixmap out2 = Pixmaps.scale(out, scaling);
+
+        if(!Mathf.isPowerOfTwo(out2.getWidth())){
+            Pixmap old = out2;
+            out2 = Pixmaps.resize(out2, Mathf.nextPowerOfTwo(out2.getWidth()), Mathf.nextPowerOfTwo(out2.getWidth()));
+            old.dispose();
+        }
+
+        out.dispose();
+        pixmap.dispose();
+
+        return newCursor(out2, out2.getWidth() / 2, out2.getHeight() / 2);
+    }
+
+    /**
      * Creates a new cursor by file name.
      * @param filename the name of the cursor .png file, found in the internal file "cursors/{name}.png"
      */
     public Cursor newCursor(String filename, int scaling, Color outlineColor){
         return newCursor(new Pixmap(Core.files.internal("cursors/" + filename + ".png")), scaling, outlineColor);
+    }
+
+    /**
+     * Creates a new cursor by file name.
+     * @param filename the name of the cursor .png file, found in the internal file "cursors/{name}.png"
+     */
+    public Cursor newCursor(String filename, int scaling, Color outlineColor, int outlineScaling){
+        return newCursor(new Pixmap(Core.files.internal("cursors/" + filename + ".png")), scaling, outlineColor, outlineScaling);
     }
 
     /**Sets the cursor to the default value, e.g. {@link SystemCursor#arrow}.*/

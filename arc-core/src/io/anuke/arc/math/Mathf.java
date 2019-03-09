@@ -84,7 +84,7 @@ public final class Mathf{
      * largest error of 0.00488 radians (0.2796 degrees).
      */
     public static float atan2(float x, float y){
-        if(x == 0f){
+        if(Math.abs(x) < 0.0000001f){
             if(y > 0f) return PI / 2;
             if(y == 0f) return 0f;
             return -PI / 2;
@@ -293,7 +293,6 @@ public final class Mathf{
     }
 
     public static float clamp(float value, float min, float max){
-        if(value != value) return 0f;
         if(value < min) return min;
         if(value > max) return max;
         return value;
@@ -493,6 +492,10 @@ public final class Mathf{
 
     public static float dst(float x1, float y1){
         return (float)Math.sqrt(x1 * x1 + y1*y1);
+    }
+
+    public static float dst2(float x1, float y1){
+        return (x1 * x1 + y1*y1);
     }
 
     public static float dst(float x1, float y1, float x2, float y2){
