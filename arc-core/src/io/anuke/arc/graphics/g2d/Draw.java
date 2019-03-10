@@ -33,6 +33,10 @@ public class Draw{
         return Core.batch.getColor();
     }
 
+    public static Color getMixColor(){
+        return Core.batch.getMixColor();
+    }
+
     public static void mixcol(Color color, float a){
         Core.batch.setMixColor(color.r, color.g, color.b, Mathf.clamp(a));
     }
