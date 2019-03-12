@@ -101,7 +101,7 @@ public class Settings{
     public void loadValues(){
         FileHandle file = getSettingsFile();
 
-        try(DataInputStream stream = new DataInputStream(file.read())){
+        try(DataInputStream stream = new DataInputStream(file.read(8192))){
             int amount = stream.readInt();
             for(int i = 0; i < amount; i++){
                 String key = stream.readUTF();
@@ -140,7 +140,7 @@ public class Settings{
     public void saveValues(){
         FileHandle file = getSettingsFile();
 
-        try(DataOutputStream stream = new DataOutputStream(file.write(false))){
+        try(DataOutputStream stream = new DataOutputStream(file.write(false, 8192))){
             stream.writeInt(values.size);
 
             for(Entry<String, Object> entry : values.entries()){
