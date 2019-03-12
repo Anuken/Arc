@@ -22,6 +22,16 @@ public class Log{
         logger.debug(text, args);
     }
 
+    public static void infoList(Object... args){
+        if(level.ordinal() > LogLevel.info.ordinal()) return;
+        StringBuilder build = new StringBuilder();
+        for(Object o : args){
+            build.append(o);
+            build.append(" ");
+        }
+        info(build.toString());
+    }
+
     public static void infoTag(String tag, String text){
         if(level.ordinal() > LogLevel.info.ordinal()) return;
         logger.info("[" + tag + "] " + text);

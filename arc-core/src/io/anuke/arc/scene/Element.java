@@ -652,9 +652,9 @@ public class Element implements Layout{
     }
 
     public void setRotationOrigin(float degrees, int align){
+        setOrigin(align);
         if(this.rotation != degrees){
             this.rotation = degrees;
-            setOrigin(align);
             rotationChanged();
         }
     }
