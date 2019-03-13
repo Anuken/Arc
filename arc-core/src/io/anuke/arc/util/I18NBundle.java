@@ -466,6 +466,11 @@ public class I18NBundle{
         return formatter.format(get(key), args);
     }
 
+    /**Format, but with a number with fixed decimal places.*/
+    public String format(String key, double value, int places){
+        return formatter.format(get(key), Strings.toFixed(value, places));
+    }
+
     /**
      * Sets the value of all localized strings to String placeholder so hardcoded, unlocalized values can be easily spotted.
      * The I18NBundle won't be able to reset values after calling debug and should only be using during testing.

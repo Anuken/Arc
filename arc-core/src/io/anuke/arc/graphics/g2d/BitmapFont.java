@@ -209,6 +209,10 @@ public class BitmapFont implements Disposable{
         return layout;
     }
 
+    public GlyphLayout draw(CharSequence str, float x, float y, int halign){
+        return draw(str, x, y, 0, halign, false);
+    }
+
     /**
      * Draws text at the specified position.
      * @see BitmapFontCache#addText(CharSequence, float, float, int, int, float, int, boolean, String)
