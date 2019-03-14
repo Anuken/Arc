@@ -417,6 +417,9 @@ public class TextField extends Element implements Disableable{
             fontOffset = 0;
         glyphPositions.add(x);
 
+        visibleTextStart = Math.min(visibleTextStart, glyphPositions.size);
+        visibleTextEnd = Mathf.clamp(visibleTextEnd, visibleTextStart, glyphPositions.size);
+
         if(selectionStart > newDisplayText.length()) selectionStart = textLength;
     }
 

@@ -301,6 +301,17 @@ public class Table extends WidgetGroup{
         return add(label);
     }
 
+    public Cell<ScrollPane> pane(Consumer<Table> consumer){
+        return pane("default", consumer);
+    }
+
+    public Cell<ScrollPane> pane(String style, Consumer<Table> consumer){
+        Table table = new Table();
+        consumer.accept(table);
+        ScrollPane pane = new ScrollPane(table, style);
+        return add(pane);
+    }
+
     public Cell<ScrollPane> pane(String style, Element element){
         ScrollPane pane = new ScrollPane(element, style);
         return add(pane);
@@ -401,6 +412,14 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
+    public Cell<TextButton> addButton(Consumer<TextButton> cons, Runnable listener){
+        TextButton button = new TextButton("");
+        button.clearChildren();
+        button.clicked(listener);
+        cons.accept(button);
+        return add(button);
+    }
+
     public Cell<TextButton> addButton(String text, Runnable listener){
         TextButton button = Elements.newButton(text, listener);
         return add(button);
@@ -460,11 +479,10 @@ public class Table extends WidgetGroup{
         });
     }
 
-    public Table addTable(String background){
+    public Cell<Table> addTable(String background){
         Table table = new Table();
         table.background(background);
-        add(table);
-        return table;
+        return add(table);
     }
 
     public Cell<TextButton> addRowImageTextButton(String text, String image, float imagesize, Runnable clicked){
