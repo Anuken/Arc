@@ -73,4 +73,3 @@ libraries.junit = [
 libraries.jnigen = [
         "com.github.javaparser:javaparser-core:${versions.javaparser}"
 ]
-

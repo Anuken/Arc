@@ -18,6 +18,7 @@ import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.Group;
 import io.anuke.arc.scene.Scene;
 import io.anuke.arc.scene.event.ChangeListener.ChangeEvent;
+import io.anuke.arc.scene.event.ClickListener;
 import io.anuke.arc.scene.event.IbeamCursorListener;
 import io.anuke.arc.scene.event.InputEvent;
 import io.anuke.arc.scene.event.InputListener;
@@ -803,15 +804,9 @@ public class TextField extends Element implements Disableable{
      * @author mzechner
      */
     public interface TextFieldFilter{
+        TextFieldFilter digitsOnly = (field, c) -> Character.isDigit(c);
+
         boolean acceptChar(TextField textField, char c);
-
-        class DigitsOnlyFilter implements TextFieldFilter{
-            @Override
-            public boolean acceptChar(TextField textField, char c){
-                return Character.isDigit(c);
-            }
-
-        }
     }
 
     /**
@@ -893,7 +888,7 @@ public class TextField extends Element implements Disableable{
     }
 
     /** Basic input listener for the text field */
-    public class TextFieldClickListener extends io.anuke.arc.scene.event.ClickListener{
+    public class TextFieldClickListener extends ClickListener{
         @Override
         public void clicked(InputEvent event, float x, float y){
             int count = getTapCount() % 4;
