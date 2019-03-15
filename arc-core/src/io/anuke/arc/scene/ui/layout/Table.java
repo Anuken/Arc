@@ -3,6 +3,7 @@ package io.anuke.arc.scene.ui.layout;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.function.BooleanConsumer;
 import io.anuke.arc.function.Consumer;
+import io.anuke.arc.function.FloatConsumer;
 import io.anuke.arc.function.Supplier;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.Draw;
@@ -530,11 +531,11 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
-    public Cell<Slider> addSlider(float min, float max, float step, Consumer<Float> listener){
+    public Cell<Slider> addSlider(float min, float max, float step, FloatConsumer listener){
         return addSlider(min, max, step, 0f, listener);
     }
 
-    public Cell<Slider> addSlider(float min, float max, float step, float defvalue, Consumer<Float> listener){
+    public Cell<Slider> addSlider(float min, float max, float step, float defvalue, FloatConsumer listener){
         Slider slider = new Slider(min, max, step, false);
         slider.setValue(defvalue);
         if(listener != null)
@@ -542,7 +543,7 @@ public class Table extends WidgetGroup{
         return add(slider);
     }
 
-    public Cell<Slider> addSlider(float min, float max, float step, float defvalue, boolean onUp, Consumer<Float> listener){
+    public Cell<Slider> addSlider(float min, float max, float step, float defvalue, boolean onUp, FloatConsumer listener){
         Slider slider = new Slider(min, max, step, false);
         slider.setValue(defvalue);
         if(listener != null){
