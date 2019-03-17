@@ -14,7 +14,7 @@ public class GwtApplicationLogger extends LogHandler{
 
     @Override
     public void info(String text, Object... args){
-        String res = Strings.formatArgs(text, args);
+        String res = Strings.format(text, args);
         checkLogLabel();
         log.setText(log.getText() + "\n" + res);
         log.setCursorPos(log.getText().length() - 1);
@@ -23,7 +23,7 @@ public class GwtApplicationLogger extends LogHandler{
 
     @Override
     public void warn(String text, Object... args){
-        String res = Strings.formatArgs(text, args);
+        String res = Strings.format(text, args);
         checkLogLabel();
         log.setText(log.getText() + "\n" + res);
         log.setCursorPos(log.getText().length() - 1);
@@ -32,7 +32,7 @@ public class GwtApplicationLogger extends LogHandler{
 
     @Override
     public void err(String text, Object... args){
-        String res = Strings.formatArgs(text, args);
+        String res = Strings.format(text, args);
         checkLogLabel();
         log.setText(log.getText() + "\n" + res);
         log.setCursorPos(log.getText().length() - 1);
