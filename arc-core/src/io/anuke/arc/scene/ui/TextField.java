@@ -805,7 +805,7 @@ public class TextField extends Element implements Disableable{
      */
     public interface TextFieldFilter{
         TextFieldFilter digitsOnly = (field, c) -> Character.isDigit(c);
-        TextFieldFilter floatsOnly = (field, c) -> Character.isDigit(c) || ((field.getText().equals("0") || field.getText().isEmpty()) && c == '.');
+        TextFieldFilter floatsOnly = (field, c) -> Character.isDigit(c) || ((!field.getText().contains(".")) && c == '.');
 
         boolean acceptChar(TextField textField, char c);
     }
