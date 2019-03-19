@@ -92,4 +92,37 @@ public class Bresenham2{
         }
         return output;
     }
+
+    /**
+     * Returns a list of {@link Point2} instances along the given line at integer coordinates, with no diagonals.
+     * @param startX the start x coordinate of the line
+     * @param startY the start y coordinate of the line
+     * @param endX the end x coordinate of the line
+     * @param endY the end y coordinate of the line
+     * @param pool the pool from which Point2 instances are fetched
+     * @param output the output array, will be cleared in this method
+     * @return the list of points on the line at integer coordinates
+     */
+    public Array<Point2> lineNoDiagonal(int startX, int startY, int endX, int endY, Pool<Point2> pool, Array<Point2> output){
+        int xDist = Math.abs(endX - startX);
+        int yDist = -Math.abs(endY - startY);
+        int xStep = (startX < endX ? +1 : -1);
+        int yStep = (startY < endY ? +1 : -1);
+        int error = xDist + yDist;
+
+        output.add(pool.obtain().set(startX, startY));
+
+        while(startX != endX || startY != endY){
+            if(2 * error - yDist > xDist - 2 * error){
+                error += yDist;
+                startX += xStep;
+            }else{
+                error += xDist;
+                startY += yStep;
+            }
+
+            output.add(pool.obtain().set(startX, startY));
+        }
+        return output;
+    }
 }

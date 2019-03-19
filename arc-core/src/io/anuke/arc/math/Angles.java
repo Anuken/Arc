@@ -42,7 +42,9 @@ public class Angles{
     }
 
     public static float angle(float x, float y, float x2, float y2){
-        return Mathf.atan2(x2 - x, y2 - y) * Mathf.radDeg;
+        float ang = Mathf.atan2(x2 - x, y2 - y) * Mathf.radDeg;
+        if(ang < 0) ang += 360f;
+        return ang;
     }
 
     public static float trnsx(float angle, float len){
