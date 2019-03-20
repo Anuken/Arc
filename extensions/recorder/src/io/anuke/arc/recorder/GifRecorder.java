@@ -6,7 +6,7 @@ import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.graphics.Pixmap.Format;
-import io.anuke.arc.graphics.PixmapIO;
+import io.anuke.arc.graphics.PixmapIO.PNG;
 import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.graphics.g2d.Fill;
 import io.anuke.arc.input.KeyCode;
@@ -21,6 +21,7 @@ import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 /** Records and saves GIFs. */
 public class GifRecorder{
@@ -50,6 +51,7 @@ public class GifRecorder{
 	private boolean recording, open;
 	private boolean saving;
 	private float saveprogress;
+	private PNG png = new PNG();
 
 	public GifRecorder() {
 		this(Core.files.local("gifexport"), Core.files.local(".gifimages"));
@@ -62,6 +64,7 @@ public class GifRecorder{
 		gifheight = defaultSize;
 		this.workdirectory = workdirectory;
 		this.exportdirectory = exportdirectory;
+		png.setFlipY(true);
 	}
 
 	protected void doInput(){
@@ -172,7 +175,7 @@ public class GifRecorder{
 			if(frametime >= (60 / recordfps)){
 				byte[] pix = ScreenUtils.getFrameBufferPixels((int) (gifx + offsetx) + 1 + Core.graphics.getWidth() / 2, 
 						(int) (gify + offsety) + 1 + Core.graphics.getHeight() / 2, 
-						(int) (gifwidth) - 2, (int) (gifheight) - 2, true);
+						(int) (gifwidth) - 2, (int) (gifheight) - 2, false);
 				frames.add(pix);
 				frametime = 0;
 			}
@@ -289,14 +292,18 @@ public class GifRecorder{
 	
 	/**Takes a full-screen screenshot of the specified region saves it to a file.*/
 	public FileHandle takeScreenshot(int x, int y, int width, int height){
-		byte[] pix = ScreenUtils.getFrameBufferPixels(x, y, width, height, true);
+		try{
+			byte[] pix = ScreenUtils.getFrameBufferPixels(x, y, width, height, false);
 
-		Pixmap pixmap = createPixmap(pix, width, height);
+			Pixmap pixmap = createPixmap(pix, width, height);
 
-		FileHandle file = exportdirectory.child("screenshot-" + Time.millis() + ".png");
-		PixmapIO.writePNG(file, pixmap);
-		pixmap.dispose();
-		return file;
+			FileHandle file = exportdirectory.child("screenshot-" + Time.millis() + ".png");
+			png.write(file, pixmap);
+			pixmap.dispose();
+			return file;
+		}catch(IOException e){
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public void writeGIF(){
@@ -316,22 +323,25 @@ public class GifRecorder{
 		}
 
 		new Thread(() -> {
+			try{
+				saveprogress = 0;
+				int i = 0;
+				for(Pixmap pixmap : pixmaps){
+					png.write(Core.files.absolute(directory.file().getAbsolutePath() + "/frame" + i + ".png"), pixmap);
+					strings.add("frame" + i + ".png");
+					saveprogress += (0.5f / pixmaps.size);
+					i++;
+				}
 
-            saveprogress = 0;
-            int i = 0;
-            for(Pixmap pixmap : pixmaps){
-                PixmapIO.writePNG(Core.files.absolute(directory.file().getAbsolutePath() + "/frame" + i + ".png"), pixmap);
-                strings.add("frame" + i + ".png");
-                saveprogress += (0.5f / pixmaps.size);
-                i++;
-            }
-
-            lastRecording = compileGIF(strings, directory, writedirectory);
-            directory.deleteDirectory();
-            for(Pixmap pixmap : pixmaps){
-                pixmap.dispose();
-            }
-            saving = false;
+				lastRecording = compileGIF(strings, directory, writedirectory);
+				directory.deleteDirectory();
+				for(Pixmap pixmap : pixmaps){
+					pixmap.dispose();
+				}
+				saving = false;
+			}catch(IOException e){
+				throw new RuntimeException(e);
+			}
         }).start();
 	}
 
@@ -366,23 +376,14 @@ public class GifRecorder{
 	}
 
 	private Pixmap createPixmap(byte[] pixels, int width, int height){
+		if(!skipAlpha){
+			for(int i = 0; i < pixels.length; i += 4){
+				pixels[i + 3] = (byte)255;
+			}
+		}
+
 		Pixmap pixmap = new Pixmap(width, height, Format.RGBA8888);
 		BufferUtils.copy(pixels, 0, pixmap.getPixels(), pixels.length);
-
-		Color color = new Color();
-
-		if(!skipAlpha)
-			for(int x = 0; x < pixmap.getWidth(); x++){
-				for(int y = 0; y < pixmap.getHeight(); y++){
-					color.set(pixmap.getPixel(x, y));
-					if(color.a <= 0.999f){
-						color.a = 1f;
-						pixmap.setColor(color);
-						pixmap.drawPixel(x, y);
-					}
-				}
-			}
-
 		return pixmap;
 	}
 
