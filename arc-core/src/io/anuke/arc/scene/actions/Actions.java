@@ -306,11 +306,11 @@ public class Actions{
         return action;
     }
 
-    public static RemoveActorAction removeActor(){
+    public static RemoveActorAction remove(){
         return action(RemoveActorAction.class, RemoveActorAction::new);
     }
 
-    public static RemoveActorAction removeActor(Element removeActor){
+    public static RemoveActorAction remove(Element removeActor){
         RemoveActorAction action = action(RemoveActorAction.class, RemoveActorAction::new);
         action.setTarget(removeActor);
         return action;

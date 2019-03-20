@@ -180,7 +180,7 @@ public class Dialog extends Window{
         }
         if(action != null){
             addCaptureListener(ignoreTouchDown);
-            addAction(Actions.sequence(action, Actions.removeListener(ignoreTouchDown, true), Actions.removeActor()));
+            addAction(Actions.sequence(action, Actions.removeListener(ignoreTouchDown, true), Actions.remove()));
         }else
             remove();
     }

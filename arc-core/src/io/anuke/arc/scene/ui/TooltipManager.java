@@ -140,7 +140,7 @@ public class TooltipManager{
      */
     protected void hideAction(Tooltip tooltip){
         tooltip.container
-        .addAction(sequence(parallel(alpha(0.2f, 0.2f, fade), scaleTo(0.05f, 0.05f, 0.2f, Interpolation.fade)), removeActor()));
+        .addAction(sequence(parallel(alpha(0.2f, 0.2f, fade), scaleTo(0.05f, 0.05f, 0.2f, Interpolation.fade)), remove()));
     }
 
     public void hideAll(){
