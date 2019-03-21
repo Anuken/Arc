@@ -102,7 +102,7 @@ public class Strings{
 
     public static boolean canParsePostiveInt(String s){
         int p = parseInt(s);
-        return p > 0;
+        return p >= 0;
     }
 
     /** Returns Integer.MIN_VALUE if parsing failed. */
