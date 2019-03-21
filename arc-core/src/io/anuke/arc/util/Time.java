@@ -55,6 +55,10 @@ public class Time{
         time += delta;
         removal.clear();
 
+        if(Double.isInfinite(time) || Double.isNaN(time)){
+            time = 0;
+        }
+
         for(DelayRun run : runs){
             run.delay -= delta;
 
@@ -135,8 +139,8 @@ public class Time{
     }
 
     public static class DelayRun implements Poolable{
-        public float delay;
-        public Runnable finish;
+        private float delay;
+        private Runnable finish;
 
         @Override
         public void reset(){
