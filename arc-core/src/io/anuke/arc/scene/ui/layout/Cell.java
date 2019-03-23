@@ -141,13 +141,15 @@ public class Cell<T extends Element> implements Poolable{
     }
 
     public Cell<T> update(Consumer<T> updater){
-        getElement().update(() -> updater.accept(getElement()));
+        T t = getElement();
+        t.update(() -> updater.accept(t));
         return this;
     }
 
     public Cell<T> disabled(Predicate<T> vis){
         if(getElement() instanceof Button){
-            ((Button)getElement()).setDisabled(() -> vis.test(getElement()));
+            T t = getElement();
+            ((Button)getElement()).setDisabled(() -> vis.test(t));
         }
         return this;
     }

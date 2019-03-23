@@ -1,5 +1,6 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
+import com.badlogic.gdx.backends.iosrobovm.custom.UIAcceleration;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegate;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegateAdapter;
 import io.anuke.arc.Core;
@@ -27,7 +28,7 @@ import org.robovm.rt.bro.annotation.Pointer;
 @SuppressWarnings("deprecation")
 public class IOSInput extends Input{
     static final int MAX_TOUCHES = 20;
-    static final NSObjectWrapper<com.badlogic.gdx.backends.iosrobovm.custom.UIAcceleration> UI_ACCELERATION_WRAPPER = new NSObjectWrapper<>(com.badlogic.gdx.backends.iosrobovm.custom.UIAcceleration.class);
+    static final NSObjectWrapper<UIAcceleration> UI_ACCELERATION_WRAPPER = new NSObjectWrapper<>(UIAcceleration.class);
     private static final int POINTER_NOT_FOUND = -1;
     private static final NSObjectWrapper<UITouch> UI_TOUCH_WRAPPER = new NSObjectWrapper<>(UITouch.class);
     protected UIAccelerometerDelegate accelerometerDelegate;
