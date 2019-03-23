@@ -1,10 +1,11 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
+import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession;
+import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
 import io.anuke.arc.Application;
 import io.anuke.arc.ApplicationListener;
 import io.anuke.arc.Core;
-import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession;
-import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
+import io.anuke.arc.Settings;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.util.Clipboard;
 import io.anuke.arc.util.Log;
@@ -83,6 +84,7 @@ public class IOSApplication implements Application{
         this.audio = new IOSAudio(config);
         this.net = new IOSNet(this);
 
+        Core.settings = new Settings();
         Core.files = this.files;
         Core.graphics = this.graphics;
         Core.audio = this.audio;

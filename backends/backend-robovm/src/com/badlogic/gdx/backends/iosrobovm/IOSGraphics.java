@@ -1,18 +1,19 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
+import com.badlogic.gdx.backends.iosrobovm.custom.HWMachine;
 import io.anuke.arc.Application;
 import io.anuke.arc.ApplicationListener;
 import io.anuke.arc.Core;
 import io.anuke.arc.Graphics;
-import com.badlogic.gdx.backends.iosrobovm.custom.HWMachine;
-import io.anuke.arc.collection.Array;
 import io.anuke.arc.Graphics.Cursor.SystemCursor;
+import io.anuke.arc.collection.Array;
 import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.GL30;
 import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.graphics.glutils.GLVersion;
 import io.anuke.arc.util.Log;
 import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.glkit.*;
 import org.robovm.apple.opengles.EAGLContext;
 import org.robovm.apple.opengles.EAGLRenderingAPI;
@@ -26,7 +27,7 @@ import org.robovm.objc.annotation.Method;
 import org.robovm.rt.bro.annotation.Callback;
 import org.robovm.rt.bro.annotation.Pointer;
 
-public class IOSGraphics extends Graphics implements GLKViewDelegate, GLKViewControllerDelegate{
+public class IOSGraphics extends Graphics{
     private static final String tag = "IOSGraphics";
 
     IOSApplication app;
@@ -60,6 +61,8 @@ public class IOSGraphics extends Graphics implements GLKViewDelegate, GLKViewCon
 
     public IOSGraphics(float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, boolean useGLES30){
         this.config = config;
+
+        IOSGraphicsDelegate gdel = new IOSGraphicsDelegate();
 
         final CGRect bounds = app.getBounds();
         // setup view and OpenGL
@@ -106,7 +109,7 @@ public class IOSGraphics extends Graphics implements GLKViewDelegate, GLKViewCon
             }
 
         };
-        view.setDelegate(this);
+        view.setDelegate(gdel);
         view.setDrawableColorFormat(config.colorFormat);
         view.setDrawableDepthFormat(config.depthFormat);
         view.setDrawableStencilFormat(config.stencilFormat);
@@ -115,7 +118,7 @@ public class IOSGraphics extends Graphics implements GLKViewDelegate, GLKViewCon
 
         viewController = new IOSUIViewController(app, this);
         viewController.setView(view);
-        viewController.setDelegate(this);
+        viewController.setDelegate(gdel);
         viewController.setPreferredFramesPerSecond(config.preferredFramesPerSecond);
 
         this.app = app;
@@ -187,7 +190,6 @@ public class IOSGraphics extends Graphics implements GLKViewDelegate, GLKViewCon
         }
     }
 
-    @Override
     public void draw(GLKView view, CGRect rect){
         makeCurrent();
         // massive hack, GLKView resets the viewport on each draw call, so IOSGLES20
@@ -217,7 +219,7 @@ public class IOSGraphics extends Graphics implements GLKViewDelegate, GLKViewCon
         lastFrameTime = time;
 
         frames++;
-        if(time - framesStart >= 1000000000l){
+        if(time - framesStart >= 1000000000L){
             framesStart = time;
             fps = frames;
             frames = 0;
@@ -228,13 +230,13 @@ public class IOSGraphics extends Graphics implements GLKViewDelegate, GLKViewCon
         for(ApplicationListener listener : app.listeners){
             listener.update();
         }
+        input.processDevices();
     }
 
     void makeCurrent(){
         EAGLContext.setCurrentContext(context);
     }
 
-    @Override
     public void update(GLKViewController controller){
         makeCurrent();
         app.processRunnables();
@@ -246,9 +248,7 @@ public class IOSGraphics extends Graphics implements GLKViewDelegate, GLKViewCon
         isFrameRequested = false;
     }
 
-    @Override
-    public void willPause(GLKViewController controller, boolean pause){
-    }
+    public void willPause(GLKViewController controller, boolean pause){ }
 
     @Override
     public GL20 getGL20(){
@@ -556,6 +556,23 @@ public class IOSGraphics extends Graphics implements GLKViewDelegate, GLKViewCon
         @Override
         public boolean prefersHomeIndicatorAutoHidden(){
             return app.config.hideHomeIndicator;
+        }
+    }
+
+    class IOSGraphicsDelegate extends NSObject implements GLKViewDelegate, GLKViewControllerDelegate{
+        @Override
+        public void update(GLKViewController glkViewController){
+            IOSGraphics.this.update(glkViewController);
+        }
+
+        @Override
+        public void willPause(GLKViewController glkViewController, boolean b){
+            IOSGraphics.this.willPause(glkViewController, b);
+        }
+
+        @Override
+        public void draw(GLKView glkView, CGRect cgRect){
+            IOSGraphics.this.draw(glkView, cgRect);
         }
     }
 

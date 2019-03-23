@@ -89,9 +89,9 @@ public class Scene implements InputProcessor, Disposable{
         Draw.flush();
     }
 
-    /** Calls {@link #act(float)} with {@link Graphics#getDeltaTime()}, limited to a minimum of 30fps. */
+    /** Calls {@link #act(float)} with {@link Graphics#getDeltaTime()}. */
     public void act(){
-        act(Math.min(graphics.getDeltaTime(), 1 / 30f));
+        act(graphics.getDeltaTime());
     }
 
     /**

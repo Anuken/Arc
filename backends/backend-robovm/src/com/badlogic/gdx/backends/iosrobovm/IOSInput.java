@@ -1,11 +1,11 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
-import io.anuke.arc.Core;
-import io.anuke.arc.Input;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegate;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegateAdapter;
+import io.anuke.arc.Core;
+import io.anuke.arc.Input;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.input.InputProcessor;
+import io.anuke.arc.input.InputDevice;
 import io.anuke.arc.input.KeyCode;
 import io.anuke.arc.math.geom.Vector3;
 import io.anuke.arc.util.ArcRuntimeException;
@@ -52,7 +52,6 @@ public class IOSInput extends Input{
     Array<TouchEvent> touchEvents = new Array<>();
     TouchEvent currentEvent = null;
     float[] rotation = new float[3];
-    InputProcessor inputProcessor = null;
     Vector3 accel = new Vector3();
 
     boolean hasVibrator;
@@ -65,7 +64,7 @@ public class IOSInput extends Input{
         @Override
         public boolean shouldChangeCharacters(UITextField textField, NSRange range, String string){
             for(int i = 0; i < range.getLength(); i++){
-                app.input.inputProcessor.keyTyped((char)8);
+                app.input.inputMultiplexer.keyTyped((char)8);
             }
 
             if(string.isEmpty()){
@@ -77,7 +76,7 @@ public class IOSInput extends Input{
             string.getChars(0, string.length(), chars, 0);
 
             for(int i = 0; i < chars.length; i++){
-                app.input.inputProcessor.keyTyped(chars[i]);
+                app.input.inputMultiplexer.keyTyped(chars[i]);
             }
             Core.graphics.requestRendering();
 
@@ -96,8 +95,8 @@ public class IOSInput extends Input{
         @Override
         public boolean shouldReturn(UITextField textField){
             if(keyboardCloseOnReturn) setOnscreenKeyboardVisible(false);
-            app.input.inputProcessor.keyDown(KeyCode.ENTER);
-            app.input.inputProcessor.keyTyped((char)13);
+            app.input.inputMultiplexer.keyDown(KeyCode.ENTER);
+            app.input.inputMultiplexer.keyTyped((char)13);
             Core.graphics.requestRendering();
             return false;
         }
@@ -264,9 +263,7 @@ public class IOSInput extends Input{
 
     /**
      * Builds an {@link UIAlertView} with an added {@link UITextField} for inputting text.
-     * @param listener Text input listener
-     * @param title Dialog title
-     * @param text Text for text field
+
      * @return UiAlertView
      */
     private UIAlertView buildUIAlertView(TextInput input){
@@ -366,23 +363,27 @@ public class IOSInput extends Input{
                 currentEvent = event;
                 switch(event.phase){
                     case Began:
-                        if(inputProcessor != null)
-                            inputProcessor.touchDown(event.x, event.y, event.pointer, KeyCode.LEFT);
+                        inputMultiplexer.touchDown(event.x, event.y, event.pointer, KeyCode.MOUSE_LEFT);
                         if(numTouched >= 1) justTouched = true;
                         break;
                     case Cancelled:
                     case Ended:
-                        if(inputProcessor != null)
-                            inputProcessor.touchUp(event.x, event.y, event.pointer, KeyCode.LEFT);
+                        inputMultiplexer.touchUp(event.x, event.y, event.pointer, KeyCode.MOUSE_LEFT);
                         break;
                     case Moved:
                     case Stationary:
-                        if(inputProcessor != null) inputProcessor.touchDragged(event.x, event.y, event.pointer);
+                        inputMultiplexer.touchDragged(event.x, event.y, event.pointer);
                         break;
                 }
             }
             touchEventPool.freeAll(touchEvents);
             touchEvents.clear();
+        }
+    }
+
+    void processDevices(){
+        for(InputDevice device : devices){
+            device.update();
         }
     }
 
@@ -419,7 +420,7 @@ public class IOSInput extends Input{
                 CGPoint loc = touch.getLocationInView(touch.getWindow());
                 final CGRect bounds = app.getCachedBounds();
                 locX = (int)(loc.getX() * app.displayScaleFactor - bounds.getMinX());
-                locY = (int)(loc.getY() * app.displayScaleFactor - bounds.getMinY());
+                locY = (int)bounds.getHeight() - 1 - (int)(loc.getY() * app.displayScaleFactor - bounds.getMinY());
                 // app.debug("IOSInput","pos= "+loc+"  bounds= "+bounds+" x= "+locX+" locY= "+locY);
             }
 
@@ -537,7 +538,7 @@ public class IOSInput extends Input{
 
         @Override
         public void deleteBackward(){
-            app.input.inputProcessor.keyTyped((char)8);
+            app.input.inputMultiplexer.keyTyped((char)8);
             super.deleteBackward();
             Core.graphics.requestRendering();
         }
