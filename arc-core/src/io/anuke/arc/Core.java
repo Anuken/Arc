@@ -10,7 +10,7 @@ import io.anuke.arc.scene.Scene;
 import io.anuke.arc.util.I18NBundle;
 
 /**
- * Note that all resources are automatically disposed of in Application#dispose.
+ * Note that all resources are automatically disposed of in {@link Application#dispose()}.
  * There is no need to dispose of them manually.*/
 public class Core{
     public static Application app;
