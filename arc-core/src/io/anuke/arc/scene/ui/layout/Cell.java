@@ -219,7 +219,7 @@ public class Cell<T extends Element> implements Poolable{
     public Cell<T> checked(Predicate<T> toggle){
         T t = getElement();
         if(t instanceof Button){
-            t.update(() -> toggle.test(t));
+            t.update(() -> ((Button)t).setChecked(toggle.test(t)));
         }
         return this;
     }
