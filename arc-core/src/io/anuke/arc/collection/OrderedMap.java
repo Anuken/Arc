@@ -20,6 +20,16 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
     private Values<V> values1, values2;
     private Keys<K> keys1, keys2;
 
+    public static <K, V> OrderedMap<K, V> of(Object... values){
+        OrderedMap<K, V> map = new OrderedMap<>();
+
+        for(int i = 0; i < values.length / 2; i++){
+            map.put((K) values[i * 2], (V) values[i * 2 + 1]);
+        }
+
+        return map;
+    }
+
     public OrderedMap(){
         keys = new Array<>();
     }
