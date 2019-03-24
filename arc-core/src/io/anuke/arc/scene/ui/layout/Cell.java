@@ -7,10 +7,8 @@ import io.anuke.arc.function.Supplier;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.event.Touchable;
-import io.anuke.arc.scene.ui.Button;
-import io.anuke.arc.scene.ui.ButtonGroup;
-import io.anuke.arc.scene.ui.Label;
-import io.anuke.arc.scene.ui.TextButton;
+import io.anuke.arc.scene.ui.*;
+import io.anuke.arc.scene.ui.TextField.TextFieldValidator;
 import io.anuke.arc.scene.ui.layout.Value.Fixed;
 import io.anuke.arc.util.Align;
 import io.anuke.arc.util.pooling.Pool.Poolable;
@@ -181,6 +179,13 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
+    public Cell<T> valid(TextFieldValidator val){
+        if(getElement() instanceof TextField){
+            ((TextField)getElement()).setValidator(val);
+        }
+        return this;
+    }
+
     public Cell<T> wrap(){
         if(getElement() instanceof Label){
             ((Label)getElement()).setWrap(true);
@@ -207,6 +212,14 @@ public class Cell<T extends Element> implements Poolable{
     public Cell<T> checked(boolean toggle){
         if(getElement() instanceof Button){
             ((Button)(getElement())).setChecked(toggle);
+        }
+        return this;
+    }
+
+    public Cell<T> checked(Predicate<T> toggle){
+        T t = getElement();
+        if(t instanceof Button){
+            t.update(() -> toggle.test(t));
         }
         return this;
     }

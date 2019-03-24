@@ -468,7 +468,7 @@ public class Table extends WidgetGroup{
 
     public Cell<TextField> addField(String text, TextFieldFilter filter, Consumer<String> listener){
         TextField field = Elements.newField(text, listener);
-        field.setTextFieldFilter(filter);
+        field.setFilter(filter);
         return add(field);
     }
 

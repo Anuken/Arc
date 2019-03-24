@@ -42,7 +42,12 @@ public class OS{
         }else if(isIos || isAndroid){
             return Core.files.getLocalStoragePath();
         }else if(OS.isLinux){
-            return getProperty("user.home") + "/." + appname.toLowerCase() + "/";
+            if(System.getenv("XDG_DATA_HOME") != null){
+                String dir = System.getenv("XDG_DATA_HOME");
+                if(!dir.endsWith("/")) dir += "/";
+                return dir + appname + "/";
+            }
+            return getProperty("user.home") + "/.local/share/" + appname + "/";
         }else if(OS.isMac){
             return getProperty("user.home") + "/Library/Application Support/" + appname + "/";
         }else{ //else, probably GWT

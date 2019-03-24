@@ -116,7 +116,7 @@ public class Strings{
 
     public static boolean canParsePositiveFloat(String s){
         float p = parseFloat(s);
-        return p > 0;
+        return p >= 0;
     }
 
     /** Returns Integer.MIN_VALUE if parsing failed. */

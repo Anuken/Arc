@@ -80,6 +80,7 @@ public class TextField extends Element implements Disableable{
     Clipboard clipboard;
     InputListener inputListener;
     TextFieldListener listener;
+    TextFieldValidator validator;
     TextFieldFilter filter;
     OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
     boolean focusTraversal = true, onlyFontChars = true, disabled;
@@ -285,6 +286,7 @@ public class TextField extends Element implements Disableable{
         Scene stage = getScene();
         boolean focused = stage != null && stage.getKeyboardFocus() == this;
         return (disabled && style.disabledBackground != null) ? style.disabledBackground
+        : (!isValid() && style.invalidBackground != null) ? style.invalidBackground
         : ((focused && style.focusedBackground != null) ? style.focusedBackground : style.background);
     }
 
@@ -347,6 +349,10 @@ public class TextField extends Element implements Disableable{
                 drawCursor(cursorPatch, font, x + bgLeftWidth, y + textY);
             }
         }
+    }
+
+    public boolean isValid(){
+        return validator == null || validator.valid(text);
     }
 
     protected float getTextY(BitmapFont font, Drawable background){
@@ -568,13 +574,21 @@ public class TextField extends Element implements Disableable{
         setTextFieldListener((textField, c) -> cons.accept(c));
     }
 
-    public TextFieldFilter getTextFieldFilter(){
+    public TextFieldFilter getFilter(){
         return filter;
     }
 
     /** @param filter May be null. */
-    public void setTextFieldFilter(TextFieldFilter filter){
+    public void setFilter(TextFieldFilter filter){
         this.filter = filter;
+    }
+
+    public void setValidator(TextFieldValidator validator){
+        this.validator = validator;
+    }
+
+    public TextFieldValidator getValidator(){
+        return validator;
     }
 
     /** If true (the default), tab/shift+tab will move to the next text field. */
@@ -810,6 +824,10 @@ public class TextField extends Element implements Disableable{
         boolean acceptChar(TextField textField, char c);
     }
 
+    public interface TextFieldValidator{
+        boolean valid(String text);
+    }
+
     /**
      * An interface for onscreen keyboards. Can invoke the default keyboard or render your own keyboard!
      * @author mzechner
@@ -841,7 +859,7 @@ public class TextField extends Element implements Disableable{
         /** Optional. */
         public Color focusedFontColor, disabledFontColor;
         /** Optional. */
-        public Drawable background, focusedBackground, disabledBackground, cursor, selection;
+        public Drawable background, focusedBackground, disabledBackground, invalidBackground, cursor, selection;
         /** Optional. */
         public BitmapFont messageFont;
         /** Optional. */
@@ -874,6 +892,7 @@ public class TextField extends Element implements Disableable{
             messageFontColor = read.color("messageFontColor");
             background = read.draw("background");
             focusedBackground = read.draw("focusedBackground");
+            invalidBackground = read.draw("invalidBackground");
             disabledBackground = read.draw("disabledBackground");
             cursor = read.draw("cursor");
             selection = read.draw("selection");
@@ -1115,7 +1134,7 @@ public class TextField extends Element implements Disableable{
                     updateDisplayText();
                 }
             }
-            if(listener != null) listener.keyTyped(TextField.this, character);
+            if(listener != null && isValid()) listener.keyTyped(TextField.this, character);
             return true;
         }
     }
