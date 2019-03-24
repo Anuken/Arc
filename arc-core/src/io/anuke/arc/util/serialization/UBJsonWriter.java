@@ -1,6 +1,7 @@
 package io.anuke.arc.util.serialization;
 
 import io.anuke.arc.collection.Array;
+import io.anuke.arc.util.Strings;
 
 import java.io.Closeable;
 import java.io.DataOutputStream;
@@ -77,7 +78,7 @@ public class UBJsonWriter implements Closeable{
      */
     public UBJsonWriter name(String name) throws IOException{
         if(current == null || current.array) throw new IllegalStateException("Current item must be an object.");
-        byte[] bytes = name.getBytes("UTF-8");
+        byte[] bytes = name.getBytes(Strings.utf8);
         if(bytes.length <= Byte.MAX_VALUE){
             out.writeByte('i');
             out.writeByte(bytes.length);
@@ -189,7 +190,7 @@ public class UBJsonWriter implements Closeable{
      */
     public UBJsonWriter value(String value) throws IOException{
         checkName();
-        byte[] bytes = value.getBytes("UTF-8");
+        byte[] bytes = value.getBytes(Strings.utf8);
         out.writeByte('S');
         if(bytes.length <= Byte.MAX_VALUE){
             out.writeByte('i');
@@ -357,7 +358,7 @@ public class UBJsonWriter implements Closeable{
         out.writeByte('#');
         value(values.length);
         for(int i = 0, n = values.length; i < n; i++){
-            byte[] bytes = values[i].getBytes("UTF-8");
+            byte[] bytes = values[i].getBytes(Strings.utf8);
             if(bytes.length <= Byte.MAX_VALUE){
                 out.writeByte('i');
                 out.writeByte(bytes.length);

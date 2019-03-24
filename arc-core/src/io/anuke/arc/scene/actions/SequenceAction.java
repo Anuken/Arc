@@ -51,7 +51,7 @@ public class SequenceAction extends ParallelAction{
             if(actions.get(index).act(delta)){
                 if(actor == null) return true; // This action was removed.
                 index++;
-                if(index >= actions.size) return true;
+                return index >= actions.size;
             }
             return false;
         }finally{

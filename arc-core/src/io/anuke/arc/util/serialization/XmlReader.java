@@ -9,6 +9,7 @@ import io.anuke.arc.collection.ObjectMap.Entry;
 import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.StringBuilder;
+import io.anuke.arc.util.Strings;
 import io.anuke.arc.util.io.StreamUtils;
 
 import java.io.IOException;
@@ -125,9 +126,7 @@ public class XmlReader{
 
     public Element parse(InputStream input){
         try{
-            return parse(new InputStreamReader(input, "UTF-8"));
-        }catch(IOException ex){
-            throw new SerializationException(ex);
+            return parse(new InputStreamReader(input, Strings.utf8));
         }finally{
             StreamUtils.closeQuietly(input);
         }

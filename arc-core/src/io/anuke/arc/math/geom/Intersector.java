@@ -85,11 +85,7 @@ public final class Intersector{
             floatArray.clear();
         }
 
-        if(!(floatArray2.size == 0)){
-            return true;
-        }else{
-            return false;
-        }
+        return !(floatArray2.size == 0);
     }
 
     /**

@@ -19,7 +19,7 @@ class Lwjgl3GL20 implements io.anuke.arc.graphics.GL20{
         }
     }
 
-    private FloatBuffer toFloatBuffer(float v[], int offset, int count){
+    private FloatBuffer toFloatBuffer(float[] v, int offset, int count){
         ensureBufferCapacity(count << 2);
         floatBuffer.clear();
         floatBuffer.limit(count);
@@ -28,7 +28,7 @@ class Lwjgl3GL20 implements io.anuke.arc.graphics.GL20{
         return floatBuffer;
     }
 
-    private IntBuffer toIntBuffer(int v[], int offset, int count){
+    private IntBuffer toIntBuffer(int[] v, int offset, int count){
         ensureBufferCapacity(count << 2);
         intBuffer.clear();
         intBuffer.limit(count);
