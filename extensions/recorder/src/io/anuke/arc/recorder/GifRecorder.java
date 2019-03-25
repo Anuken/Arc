@@ -357,7 +357,7 @@ public class GifRecorder{
 			BufferedImage firstImage = ImageIO.read(new File(dirstring + "/" + strings.get(0)));
 			File file = new File(directory.file().getAbsolutePath() + "/recording" + time + ".gif");
 			ImageOutputStream output = new FileImageOutputStream(file);
-			io.anuke.gif.GifSequenceWriter writer = new io.anuke.gif.GifSequenceWriter(output, firstImage.getType(), (int) (1f / recordfps * 1000f), true);
+			GifSequenceWriter writer = new GifSequenceWriter(output, firstImage.getType(), (int) (1f / recordfps * 1000f), true);
 
 			writer.writeToSequence(firstImage);
 
