@@ -39,9 +39,8 @@ public class AssetDescriptor<T>{
 
     @Override
     public String toString(){
-        String sb = fileName +
+        return fileName +
         ", " +
         type.getName();
-        return sb;
     }
 }

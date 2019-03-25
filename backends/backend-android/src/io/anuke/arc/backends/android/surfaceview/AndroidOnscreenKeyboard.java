@@ -41,7 +41,8 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener{
     }
 
     public static TextView createView(Context context){
-        final TextView view = new TextView(context){
+        // view.setCursorVisible(false);
+        return new TextView(context){
             Editable editable = new PassThroughEditable();
 
             @Override
@@ -71,8 +72,6 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener{
                 return super.onKeyUp(keyCode, event);
             }
         };
-// view.setCursorVisible(false);
-        return view;
     }
 
     Dialog createDialog(){
@@ -102,40 +101,34 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener{
             dialog = null;
         }
         if(visible && dialog == null && !input.isPeripheralAvailable(Peripheral.HardwareKeyboard)){
-            handler.post(new Runnable(){
-                @Override
-                public void run(){
-                    dialog = createDialog();
-                    dialog.show();
+            handler.post(() -> {
+                dialog = createDialog();
+                dialog.show();
 
-                    handler.post(new Runnable(){
-                        @Override
-                        public void run(){
-                            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-                            InputMethodManager input = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                            if(input != null) input.showSoftInput(textView, InputMethodManager.SHOW_FORCED);
+                handler.post(() -> {
+                    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+                    InputMethodManager input = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if(input != null) input.showSoftInput(textView, InputMethodManager.SHOW_FORCED);
+                });
+
+                final View content = dialog.getWindow().findViewById(Window.ID_ANDROID_CONTENT);
+                content.getViewTreeObserver().addOnPreDrawListener(new OnPreDrawListener(){
+                    int[] screenloc = new int[2];
+                    private int keyboardHeight;
+                    private boolean keyboardShowing;
+
+                    @Override
+                    public boolean onPreDraw(){
+                        content.getLocationOnScreen(screenloc);
+                        keyboardHeight = Math.abs(screenloc[1]);
+                        if(keyboardHeight > 0) keyboardShowing = true;
+                        if(keyboardHeight == 0 && keyboardShowing){
+                            dialog.dismiss();
+                            dialog = null;
                         }
-                    });
-
-                    final View content = dialog.getWindow().findViewById(Window.ID_ANDROID_CONTENT);
-                    content.getViewTreeObserver().addOnPreDrawListener(new OnPreDrawListener(){
-                        int[] screenloc = new int[2];
-                        private int keyboardHeight;
-                        private boolean keyboardShowing;
-
-                        @Override
-                        public boolean onPreDraw(){
-                            content.getLocationOnScreen(screenloc);
-                            keyboardHeight = Math.abs(screenloc[1]);
-                            if(keyboardHeight > 0) keyboardShowing = true;
-                            if(keyboardHeight == 0 && keyboardShowing){
-                                dialog.dismiss();
-                                dialog = null;
-                            }
-                            return true;
-                        }
-                    });
-                }
+                        return true;
+                    }
+                });
             });
         }else{
             if(!visible && dialog != null){

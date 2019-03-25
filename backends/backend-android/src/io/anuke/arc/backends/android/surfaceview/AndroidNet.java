@@ -55,15 +55,12 @@ public class AndroidNet implements Net{
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         PackageManager pm = app.getContext().getPackageManager();
         if(pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null){
-            app.runOnUiThread(new Runnable(){
-                @Override
-                public void run(){
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    // LiveWallpaper and Daydream applications need this flag
-                    if(!(app.getContext() instanceof Activity))
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    app.startActivity(intent);
-                }
+            app.runOnUiThread(() -> {
+                Intent intent1 = new Intent(Intent.ACTION_VIEW, uri);
+                // LiveWallpaper and Daydream applications need this flag
+                if(!(app.getContext() instanceof Activity))
+                    intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                app.startActivity(intent1);
             });
             result = true;
         }

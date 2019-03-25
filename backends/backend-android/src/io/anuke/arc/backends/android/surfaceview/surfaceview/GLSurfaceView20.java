@@ -91,7 +91,7 @@ public class GLSurfaceView20 extends GLSurfaceView{
             outAttrs.imeOptions = outAttrs.imeOptions | EditorInfo.IME_FLAG_NO_EXTRACT_UI;
         }
 
-        BaseInputConnection connection = new BaseInputConnection(this, false){
+        return new BaseInputConnection(GLSurfaceView20.this, false){
             @Override
             public boolean deleteSurroundingText(int beforeLength, int afterLength){
                 int sdkVersion = android.os.Build.VERSION.SDK_INT;
@@ -117,7 +117,6 @@ public class GLSurfaceView20 extends GLSurfaceView{
                 KeyCharacterMap.VIRTUAL_KEYBOARD, 0, KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
             }
         };
-        return connection;
     }
 
     private void init(boolean translucent, int depth, int stencil){

@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Lwjgl3Cursor implements Cursor{
-    static final Array<Lwjgl3Cursor> cursors = new Array<Lwjgl3Cursor>();
+    static final Array<Lwjgl3Cursor> cursors = new Array<>();
     static final Map<SystemCursor, Long> systemCursors = new HashMap<>();
 
     final Lwjgl3Window window;

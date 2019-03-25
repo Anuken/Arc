@@ -1,6 +1,5 @@
 package io.anuke.arc.util.io;
 
-import java.io.DataInput;
 import java.io.*;
 
 /**

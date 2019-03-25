@@ -517,86 +517,81 @@ public class JsonReader implements BaseJsonReader{
                                 int __acts = _json_eof_actions[cs];
                                 int __nacts = (int)_json_actions[__acts++];
                                 while(__nacts-- > 0){
-                                    switch(_json_actions[__acts++]){
-                                        case 1:
-                                            // line 107 "JsonReader.rl"
-                                        {
-                                            String value = new String(data, s, p - s);
-                                            if(needsUnescape) value = unescape(value);
-                                            outer:
-                                            if(stringIsName){
-                                                stringIsName = false;
-                                                if(debug) System.out.println("name: " + value);
-                                                names.add(value);
-                                            }else{
-                                                String name = names.size > 0 ? names.pop() : null;
-                                                if(stringIsUnquoted){
-                                                    if(value.equals("true")){
-                                                        if(debug) System.out.println("boolean: " + name + "=true");
-                                                        bool(name, true);
-                                                        break outer;
-                                                    }else if(value.equals("false")){
-                                                        if(debug) System.out.println("boolean: " + name + "=false");
-                                                        bool(name, false);
-                                                        break outer;
-                                                    }else if(value.equals("null")){
-                                                        string(name, null);
-                                                        break outer;
-                                                    }
-                                                    boolean couldBeDouble = false, couldBeLong = true;
-                                                    outer2:
-                                                    for(int i = s; i < p; i++){
-                                                        switch(data[i]){
-                                                            case '0':
-                                                            case '1':
-                                                            case '2':
-                                                            case '3':
-                                                            case '4':
-                                                            case '5':
-                                                            case '6':
-                                                            case '7':
-                                                            case '8':
-                                                            case '9':
-                                                            case '-':
-                                                            case '+':
-                                                                break;
-                                                            case '.':
-                                                            case 'e':
-                                                            case 'E':
-                                                                couldBeDouble = true;
-                                                                couldBeLong = false;
-                                                                break;
-                                                            default:
-                                                                couldBeDouble = false;
-                                                                couldBeLong = false;
-                                                                break outer2;
-                                                        }
-                                                    }
-                                                    if(couldBeDouble){
-                                                        try{
-                                                            if(debug)
-                                                                System.out.println("double: " + name + "=" + Double.parseDouble(value));
-                                                            number(name, Double.parseDouble(value), value);
-                                                            break outer;
-                                                        }catch(NumberFormatException ignored){
-                                                        }
-                                                    }else if(couldBeLong){
-                                                        if(debug)
-                                                            System.out.println("double: " + name + "=" + Double.parseDouble(value));
-                                                        try{
-                                                            number(name, Long.parseLong(value), value);
-                                                            break outer;
-                                                        }catch(NumberFormatException ignored){
-                                                        }
+                                    if(_json_actions[__acts++] == 1){// line 107 "JsonReader.rl"
+                                        String value = new String(data, s, p - s);
+                                        if(needsUnescape) value = unescape(value);
+                                        outer:
+                                        if(stringIsName){
+                                            stringIsName = false;
+                                            if(debug) System.out.println("name: " + value);
+                                            names.add(value);
+                                        }else{
+                                            String name = names.size > 0 ? names.pop() : null;
+                                            if(stringIsUnquoted){
+                                                if(value.equals("true")){
+                                                    if(debug) System.out.println("boolean: " + name + "=true");
+                                                    bool(name, true);
+                                                    break outer;
+                                                }else if(value.equals("false")){
+                                                    if(debug) System.out.println("boolean: " + name + "=false");
+                                                    bool(name, false);
+                                                    break outer;
+                                                }else if(value.equals("null")){
+                                                    string(name, null);
+                                                    break outer;
+                                                }
+                                                boolean couldBeDouble = false, couldBeLong = true;
+                                                outer2:
+                                                for(int i = s; i < p; i++){
+                                                    switch(data[i]){
+                                                        case '0':
+                                                        case '1':
+                                                        case '2':
+                                                        case '3':
+                                                        case '4':
+                                                        case '5':
+                                                        case '6':
+                                                        case '7':
+                                                        case '8':
+                                                        case '9':
+                                                        case '-':
+                                                        case '+':
+                                                            break;
+                                                        case '.':
+                                                        case 'e':
+                                                        case 'E':
+                                                            couldBeDouble = true;
+                                                            couldBeLong = false;
+                                                            break;
+                                                        default:
+                                                            couldBeDouble = false;
+                                                            couldBeLong = false;
+                                                            break outer2;
                                                     }
                                                 }
-                                                if(debug) System.out.println("string: " + name + "=" + value);
-                                                string(name, value);
+                                                if(couldBeDouble){
+                                                    try{
+                                                        if(debug)
+                                                            System.out.println("double: " + name + "=" + Double.parseDouble(value));
+                                                        number(name, Double.parseDouble(value), value);
+                                                        break outer;
+                                                    }catch(NumberFormatException ignored){
+                                                    }
+                                                }else if(couldBeLong){
+                                                    if(debug)
+                                                        System.out.println("double: " + name + "=" + Double.parseDouble(value));
+                                                    try{
+                                                        number(name, Long.parseLong(value), value);
+                                                        break outer;
+                                                    }catch(NumberFormatException ignored){
+                                                    }
+                                                }
                                             }
-                                            stringIsUnquoted = false;
-                                            s = p;
+                                            if(debug) System.out.println("string: " + name + "=" + value);
+                                            string(name, value);
                                         }
-                                        break;
+                                        stringIsUnquoted = false;
+                                        s = p;
                                         // line 411 "JsonReader.java"
                                     }
                                 }

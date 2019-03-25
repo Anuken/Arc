@@ -73,11 +73,10 @@ public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser{
         // printConfigs(egl, display, configs);
 
         // chose the best one, taking into account multi sampling.
-        EGLConfig config = chooseConfig(egl, display, configs);
 
         // FIXME print the chosen config
         // printConfigs(egl, display, new EGLConfig[] { config });
-        return config;
+        return chooseConfig(egl, display, configs);
     }
 
     public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display, EGLConfig[] configs){
@@ -135,7 +134,6 @@ public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser{
             if(bestAA == null && hasSampleBuffers == 1 && numSamples >= mNumSamples && r == mRedSize && g == mGreenSize
             && b == mBlueSize && a == mAlphaSize){
                 bestAA = config;
-                continue;
             }
         }
 

@@ -31,13 +31,12 @@ public class FreetypeFontLoader extends AsynchronousAssetLoader<BitmapFont, Free
         if(parameter == null)
             throw new RuntimeException("FreetypeFontParameter must be set in AssetManager#load to point at a TTF file!");
         FreeTypeFontGenerator generator = manager.get(parameter.fontFileName + ".gen", FreeTypeFontGenerator.class);
-        BitmapFont font = generator.generateFont(parameter.fontParameters);
-        return font;
+        return generator.generateFont(parameter.fontParameters);
     }
 
     @Override
     public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, FreeTypeFontLoaderParameter parameter){
-        Array<AssetDescriptor> deps = new Array<AssetDescriptor>();
+        Array<AssetDescriptor> deps = new Array<>();
         deps.add(new AssetDescriptor<>(parameter.fontFileName + ".gen", FreeTypeFontGenerator.class));
         return deps;
     }

@@ -1214,8 +1214,8 @@ public final class Intersector{
     public static void splitTriangle(float[] triangle, Plane plane, SplitTriangle split){
         int stride = triangle.length / 3;
         boolean r1 = plane.testPoint(triangle[0], triangle[1], triangle[2]) == PlaneSide.Back;
-        boolean r2 = plane.testPoint(triangle[0 + stride], triangle[1 + stride], triangle[2 + stride]) == PlaneSide.Back;
-        boolean r3 = plane.testPoint(triangle[0 + stride * 2], triangle[1 + stride * 2],
+        boolean r2 = plane.testPoint(triangle[stride], triangle[1 + stride], triangle[2 + stride]) == PlaneSide.Back;
+        boolean r3 = plane.testPoint(triangle[stride * 2], triangle[1 + stride * 2],
         triangle[2 + stride * 2]) == PlaneSide.Back;
 
         split.reset();
@@ -1313,7 +1313,7 @@ public final class Intersector{
     private static void splitEdge(float[] vertices, int s, int e, int stride, Plane plane, float[] split, int offset){
         float t = Intersector.intersectLinePlane(vertices[s], vertices[s + 1], vertices[s + 2], vertices[e], vertices[e + 1],
         vertices[e + 2], plane, intersection);
-        split[offset + 0] = intersection.x;
+        split[offset] = intersection.x;
         split[offset + 1] = intersection.y;
         split[offset + 2] = intersection.z;
         for(int i = 3; i < stride; i++){

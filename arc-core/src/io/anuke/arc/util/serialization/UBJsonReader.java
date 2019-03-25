@@ -228,7 +228,7 @@ public class UBJsonReader implements BaseJsonReader{
     }
 
     protected long readUInt(final DataInputStream din) throws IOException{
-        return ((long)din.readInt() & 0xFFFFFFFF);
+        return ((long)din.readInt());
     }
 
     protected String readString(final DataInputStream din, final long size) throws IOException{

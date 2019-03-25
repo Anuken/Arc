@@ -403,7 +403,7 @@ public class IOSInput extends Input{
         // If pointer is not found
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < touchDown.length; i++){
-            sb.append(i + ":" + touchDown[i] + " ");
+            sb.append(i).append(":").append(touchDown[i]).append(" ");
         }
         Log.errTag("IOSInput", "Pointer ID lookup failed: " + ptr + ", " + sb.toString());
         return POINTER_NOT_FOUND;

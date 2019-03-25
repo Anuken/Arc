@@ -72,9 +72,9 @@ public class ZipResourceFile{
      */
     static final int kZipEntryAdj = 10000;
     /* for reading compressed files */
-    public HashMap<File, ZipFile> mZipFiles = new HashMap<File, ZipFile>();
+    public HashMap<File, ZipFile> mZipFiles = new HashMap<>();
     ByteBuffer mLEByteBuffer = ByteBuffer.allocate(4);
-    private HashMap<String, ZipEntryRO> mHashMap = new HashMap<String, ZipEntryRO>();
+    private HashMap<String, ZipEntryRO> mHashMap = new HashMap<>();
 
     public ZipResourceFile(String zipFileName) throws IOException{
         addPatchFile(zipFileName);
@@ -97,7 +97,7 @@ public class ZipResourceFile{
     }
 
     ZipEntryRO[] getEntriesAt(String path){
-        Vector<ZipEntryRO> zev = new Vector<ZipEntryRO>();
+        Vector<ZipEntryRO> zev = new Vector<>();
         Collection<ZipEntryRO> values = mHashMap.values();
         if(null == path)
             path = "";
@@ -361,10 +361,8 @@ public class ZipResourceFile{
                 int nameLen = buf.getShort(kLFHNameLen) & 0xFFFF;
                 int extraLen = buf.getShort(kLFHExtraLen) & 0xFFFF;
                 mOffset = localHdrOffset + kLFHLen + nameLen + extraLen;
-            }catch(FileNotFoundException e){
+            }catch(IOException e){
                 e.printStackTrace();
-            }catch(IOException ioe){
-                ioe.printStackTrace();
             }
         }
 

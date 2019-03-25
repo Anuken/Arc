@@ -1,4 +1,4 @@
-package io.anuke.gif;
+package io.anuke.arc.recorder;
 
 import javax.imageio.*;
 import javax.imageio.metadata.IIOMetadata;

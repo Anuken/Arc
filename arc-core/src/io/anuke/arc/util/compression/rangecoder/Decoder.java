@@ -3,7 +3,7 @@ package io.anuke.arc.util.compression.rangecoder;
 import java.io.IOException;
 
 public class Decoder{
-    static final int kTopMask = ~((1 << 24) - 1);
+    static final int kTopMask = -(1 << 24);
 
     static final int kNumBitModelTotalBits = 11;
     static final int kBitModelTotal = (1 << kNumBitModelTotalBits);

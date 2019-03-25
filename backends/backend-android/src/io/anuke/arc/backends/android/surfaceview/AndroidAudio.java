@@ -28,7 +28,7 @@ import java.util.List;
  */
 @SuppressWarnings("deprecation")
 public final class AndroidAudio implements Audio{
-    protected final List<AndroidMusic> musics = new ArrayList<AndroidMusic>();
+    protected final List<AndroidMusic> musics = new ArrayList<>();
     private final SoundPool soundPool;
     private final AudioManager manager;
 
@@ -200,7 +200,7 @@ public final class AndroidAudio implements Audio{
         }
         synchronized(musics){
             // gah i hate myself.... music.dispose() removes the music from the list...
-            ArrayList<AndroidMusic> musicsCopy = new ArrayList<AndroidMusic>(musics);
+            ArrayList<AndroidMusic> musicsCopy = new ArrayList<>(musics);
             for(AndroidMusic music : musicsCopy){
                 music.dispose();
             }

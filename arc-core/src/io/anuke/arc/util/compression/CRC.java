@@ -39,6 +39,6 @@ public class CRC{
     }
 
     public int GetDigest(){
-        return _value ^ (-1);
+        return ~_value;
     }
 }

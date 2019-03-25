@@ -214,7 +214,7 @@ public class Lwjgl3Application implements Application{
     }
 
     private void loop(){
-        Array<Lwjgl3Window> closedWindows = new Array<Lwjgl3Window>();
+        Array<Lwjgl3Window> closedWindows = new Array<>();
         while(running && windows.size > 0){
             // FIXME put it on a separate thread
             if(audio instanceof OpenALAudio){

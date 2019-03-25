@@ -99,9 +99,7 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener{
                 isPrepared = true;
             }
             player.start();
-        }catch(IllegalStateException e){
-            e.printStackTrace();
-        }catch(IOException e){
+        }catch(IllegalStateException | IOException e){
             e.printStackTrace();
         }
     }
@@ -158,9 +156,7 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener{
                 isPrepared = true;
             }
             player.seekTo((int)(position * 1000));
-        }catch(IllegalStateException e){
-            e.printStackTrace();
-        }catch(IOException e){
+        }catch(IllegalStateException | IOException e){
             e.printStackTrace();
         }
     }
@@ -178,12 +174,7 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener{
     @Override
     public void onCompletion(MediaPlayer mp){
         if(onCompletionListener != null){
-            Core.app.post(new Runnable(){
-                @Override
-                public void run(){
-                    onCompletionListener.onCompletion(AndroidMusic.this);
-                }
-            });
+            Core.app.post(() -> onCompletionListener.onCompletion(AndroidMusic.this));
         }
     }
 

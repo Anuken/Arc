@@ -15,8 +15,8 @@ import java.nio.IntBuffer;
 public class Lwjgl3Window implements Disposable{
     private final ApplicationListener listener;
     private final Lwjgl3ApplicationConfiguration config;
-    private final Array<Runnable> runnables = new Array<Runnable>();
-    private final Array<Runnable> executedRunnables = new Array<Runnable>();
+    private final Array<Runnable> runnables = new Array<>();
+    private final Array<Runnable> executedRunnables = new Array<>();
     private final IntBuffer tmpBuffer;
     private final IntBuffer tmpBuffer2;
     private long windowHandle;

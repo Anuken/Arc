@@ -155,9 +155,8 @@ public class BSpline<T extends Vector<T>> implements Path<T>{
      */
     public static <T extends Vector<T>> T calculate(final T out, final int i, final float u, final T[] points, final int degree,
                                                     final boolean continuous, final T tmp){
-        switch(degree){
-            case 3:
-                return cubic(out, i, u, points, continuous, tmp);
+        if(degree == 3){
+            return cubic(out, i, u, points, continuous, tmp);
         }
         return out;
     }

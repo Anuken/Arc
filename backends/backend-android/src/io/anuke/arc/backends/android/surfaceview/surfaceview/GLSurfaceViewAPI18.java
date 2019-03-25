@@ -205,7 +205,7 @@ public class GLSurfaceViewAPI18 extends SurfaceView implements SurfaceHolder.Cal
     private final static boolean LOG_EGL = false;
     private static final GLThreadManager sGLThreadManager = new GLThreadManager();
     private final WeakReference<GLSurfaceViewAPI18> mThisWeakRef =
-    new WeakReference<GLSurfaceViewAPI18>(this);
+    new WeakReference<>(this);
     private GLThread mGLThread;
     private Renderer mRenderer;
     private boolean mDetached;
@@ -1130,7 +1130,7 @@ public class GLSurfaceViewAPI18 extends SurfaceView implements SurfaceHolder.Cal
         private int mRenderMode;
         private boolean mRequestRender;
         private boolean mRenderComplete;
-        private ArrayList<Runnable> mEventQueue = new ArrayList<Runnable>();
+        private ArrayList<Runnable> mEventQueue = new ArrayList<>();
         private boolean mSizeChanged = true;
         private EglHelper mEglHelper;
         /**

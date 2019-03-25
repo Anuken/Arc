@@ -29,7 +29,7 @@ public class APKExpansionSupport{
     static String[] getAPKExpansionFiles(Context ctx, int mainVersion,
                                          int patchVersion){
         String packageName = ctx.getPackageName();
-        Vector<String> ret = new Vector<String>();
+        Vector<String> ret = new Vector<>();
         if(Environment.getExternalStorageState().equals(
         Environment.MEDIA_MOUNTED)){
             // Build the full path to the app's expansion files

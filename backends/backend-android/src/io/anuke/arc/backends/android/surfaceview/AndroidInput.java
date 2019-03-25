@@ -445,17 +445,15 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
 
     @Override
     public void setOnscreenKeyboardVisible(final boolean visible){
-        handle.post(new Runnable(){
-            public void run(){
-                InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                if(visible){
-                    View view = ((AndroidGraphics)Core.graphics).getView();
-                    view.setFocusable(true);
-                    view.setFocusableInTouchMode(true);
-                    manager.showSoftInput(((AndroidGraphics)Core.graphics).getView(), 0);
-                }else{
-                    manager.hideSoftInputFromWindow(((AndroidGraphics)Core.graphics).getView().getWindowToken(), 0);
-                }
+        handle.post(() -> {
+            InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            if(visible){
+                View view = ((AndroidGraphics)Core.graphics).getView();
+                view.setFocusable(true);
+                view.setFocusableInTouchMode(true);
+                manager.showSoftInput(((AndroidGraphics)Core.graphics).getView(), 0);
+            }else{
+                manager.hideSoftInputFromWindow(((AndroidGraphics)Core.graphics).getView().getWindowToken(), 0);
             }
         });
     }
@@ -642,7 +640,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
 
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < len; i++){
-            sb.append(i + ":" + realId[i] + " ");
+            sb.append(i).append(":").append(realId[i]).append(" ");
         }
         Log.infoTag("AndroidInput", "Pointer ID lookup failed: " + pointerId + ", " + sb.toString());
         return -1;

@@ -77,8 +77,8 @@ public class OpenALAudio implements Audio{
             allSources.add(sourceID);
         }
         idleSources = new IntArray(allSources);
-        soundIdToSource = new LongMap<Integer>();
-        sourceToSoundId = new IntMap<Long>();
+        soundIdToSource = new LongMap<>();
+        sourceToSoundId = new IntMap<>();
 
         FloatBuffer orientation = (FloatBuffer)BufferUtils.createFloatBuffer(6)
         .put(new float[]{0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f}).flip();

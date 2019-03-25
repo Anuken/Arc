@@ -209,7 +209,7 @@ public class Color{
     public static void rgb565ToColor(Color color, int value){
         color.r = ((value & 0x0000F800) >>> 11) / 31f;
         color.g = ((value & 0x000007E0) >>> 5) / 63f;
-        color.b = ((value & 0x0000001F) >>> 0) / 31f;
+        color.b = ((value & 0x0000001F)) / 31f;
     }
 
     /**
