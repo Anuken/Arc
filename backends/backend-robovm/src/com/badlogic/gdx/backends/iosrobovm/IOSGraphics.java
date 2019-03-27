@@ -534,7 +534,7 @@ public class IOSGraphics extends Graphics{
         }
 
         @Override
-        public UIRectEdge preferredScreenEdgesDeferringSystemGestures(){
+        public UIRectEdge getPreferredScreenEdgesDeferringSystemGestures(){
             return app.config.screenEdgesDeferringSystemGestures;
         }
 
