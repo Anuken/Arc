@@ -3,6 +3,7 @@ package io.anuke.arc.util;
 
 import io.anuke.arc.function.Consumer;
 import io.anuke.arc.function.Function;
+import io.anuke.arc.function.Predicate;
 
 import java.util.Comparator;
 
@@ -14,6 +15,13 @@ public class Structs{
             if(t == value) return true;
         }
         return false;
+    }
+
+    public static <T> T find(T[] array, Predicate<T> value){
+        for(T t : array){
+            if(value.test(t)) return t;
+        }
+        return null;
     }
 
     public static <T, U> Comparator<T> comparing(Function<? super T, ? extends U> keyExtractor, Comparator<? super U> keyComparator){
