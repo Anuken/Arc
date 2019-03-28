@@ -169,7 +169,10 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
                 input.setFilters(new InputFilter[]{new LengthFilter(info.maxLength)});
             }
             if(!info.multiline) input.setSingleLine();
-            input.setSelection(info.text.length());
+            //haha yes
+            try{
+                input.setSelection(info.text.length());
+            }catch(Exception ignored){}
             alert.setView(input);
             alert.setPositiveButton(context.getString(android.R.string.ok), (dialog, whichButton) -> Core.app.post(() -> info.accepted.accept(input.getText().toString())));
             alert.setNegativeButton(context.getString(android.R.string.cancel), (dialog, whichButton) -> Core.app.post(() -> info.canceled.run()));

@@ -1,13 +1,15 @@
 package io.anuke.arc;
 
-import io.anuke.arc.collection.Array;
 import io.anuke.arc.files.FileHandle;
 
 public abstract class ApplicationCore implements ApplicationListener{
-    protected Array<ApplicationListener> modules = new Array<>();
+    protected ApplicationListener[] modules = {};
 
     public void add(ApplicationListener module){
-        modules.add(module);
+        ApplicationListener[] news = new ApplicationListener[modules.length + 1];
+        news[news.length - 1] = module;
+        System.arraycopy(modules, 0, news, 0, modules.length);
+        modules = news;
     }
 
     public abstract void setup();
