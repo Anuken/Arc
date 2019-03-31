@@ -100,7 +100,17 @@ public class Array<T> implements Iterable<T>{
         System.arraycopy(array, start, items, 0, size);
     }
 
-    public static <T> Array<T> ofRecursive(Object... arrays){
+    /** @see #Array(Class) */
+    public static <T> Array<T> of(Class<T> arrayType){
+        return new Array<>(arrayType);
+    }
+
+    /** @see #Array(boolean, int, Class) */
+    public static <T> Array<T> of(boolean ordered, int capacity, Class<T> arrayType){
+        return new Array<>(ordered, capacity, arrayType);
+    }
+
+    public static <T> Array<T> withRecursive(Object... arrays){
         Array<T> result = new Array<>();
         for(Object a : arrays){
             if(a instanceof Array){
@@ -112,19 +122,17 @@ public class Array<T> implements Iterable<T>{
         return result;
     }
 
-    /** @see #Array(Class) */
-    public static <T> Array<T> of(Class<T> arrayType){
-        return new Array<>(arrayType);
-    }
-
-    /** @see #Array(boolean, int, Class) */
-    public static <T> Array<T> of(boolean ordered, int capacity, Class<T> arrayType){
-        return new Array<>(ordered, capacity, arrayType);
-    }
-
     /** @see #Array(Object[]) */
     public static <T> Array<T> with(T... array){
         return new Array(array);
+    }
+
+    public static <T> Array<T> with(Iterable<T> array){
+        Array<T> out = new Array<>();
+        for(T thing : array){
+            out.add((T)thing);
+        }
+        return out;
     }
 
     public float sum(FloatFunction<T> summer){
@@ -133,6 +141,12 @@ public class Array<T> implements Iterable<T>{
             sum += summer.get(items[i]);
         }
         return sum;
+    }
+
+    public void each(Predicate<T> pred, Consumer<T> consumer){
+        for(int i = 0; i < size; i++){
+            if(pred.test(items[i])) consumer.accept(items[i]);
+        }
     }
 
     public void each(Consumer<T> consumer){

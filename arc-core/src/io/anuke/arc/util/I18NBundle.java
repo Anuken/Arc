@@ -467,8 +467,8 @@ public class I18NBundle{
     }
 
     /**Format, but with a number with fixed decimal places.*/
-    public String formatDouble(String key, double value, int places){
-        return formatter.format(get(key), Strings.toFixed(value, places));
+    public String formatFloat(String key, float value, int places){
+        return formatter.format(get(key), Strings.fixed(value, places));
     }
 
     /**

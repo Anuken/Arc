@@ -1,6 +1,7 @@
 package io.anuke.arc.util;
 
 
+import io.anuke.arc.collection.Array;
 import io.anuke.arc.function.Consumer;
 import io.anuke.arc.function.Function;
 import io.anuke.arc.function.Predicate;
@@ -22,6 +23,14 @@ public class Structs{
             if(value.test(t)) return t;
         }
         return null;
+    }
+
+    public static <T> T[] filter(Class<T> type, T[] array, Predicate<T> value){
+        Array<T> out = new Array<>(true, array.length, type);
+        for(T t : array){
+            if(value.test(t)) out.add(t);
+        }
+        return out.toArray();
     }
 
     public static <T, U> Comparator<T> comparing(Function<? super T, ? extends U> keyExtractor, Comparator<? super U> keyComparator){
