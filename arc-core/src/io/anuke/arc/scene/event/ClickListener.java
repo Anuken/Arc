@@ -17,20 +17,19 @@ public class ClickListener extends InputListener{
     /** Time in seconds {@link #isVisualPressed()} reports true after a press resulting in a click is released. */
     public static float visualPressedDuration = 0.1f;
 
-    private float tapSquareSize = 14, touchDownX = -1, touchDownY = -1;
-    private int pressedPointer = -1;
-    private KeyCode pressedButton;
-    private KeyCode button = KeyCode.MOUSE_LEFT;
-    private boolean pressed, over, overAny, cancelled;
-    private long visualPressedTime;
-    private long tapCountInterval = (long)(0.4f * 1000000000L);
-    private int tapCount;
-    private long lastTapTime;
-    private boolean stop = false;
+    protected float tapSquareSize = 14, touchDownX = -1, touchDownY = -1;
+    protected int pressedPointer = -1;
+    protected KeyCode pressedButton;
+    protected KeyCode button = KeyCode.MOUSE_LEFT;
+    protected boolean pressed, over, overAny, cancelled;
+    protected long visualPressedTime;
+    protected long tapCountInterval = (long)(0.4f * 1000000000L);
+    protected int tapCount;
+    protected long lastTapTime;
+    protected boolean stop = false;
 
     /** Create a listener where {@link #clicked(InputEvent, float, float)} is only called for left clicks. */
-    public ClickListener(){
-    }
+    public ClickListener(){}
 
     public ClickListener(KeyCode button){
         this.button = button;
