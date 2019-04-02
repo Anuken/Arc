@@ -81,10 +81,11 @@ public class Circle implements Serializable, Shape2D{
      * @param y Y coordinate
      * @param radius Circle radius
      */
-    public void set(float x, float y, float radius){
+    public Circle set(float x, float y, float radius){
         this.x = x;
         this.y = y;
         this.radius = radius;
+        return this;
     }
 
     /**
@@ -92,20 +93,22 @@ public class Circle implements Serializable, Shape2D{
      * @param position Position {@link Vector2} for this circle.
      * @param radius Circle radius
      */
-    public void set(Vector2 position, float radius){
+    public Circle set(Vector2 position, float radius){
         this.x = position.x;
         this.y = position.y;
         this.radius = radius;
+        return this;
     }
 
     /**
      * Sets a new location and radius for this circle, based upon another circle.
      * @param circle The circle to copy the position and radius of.
      */
-    public void set(Circle circle){
+    public Circle set(Circle circle){
         this.x = circle.x;
         this.y = circle.y;
         this.radius = circle.radius;
+        return this;
     }
 
     /**
@@ -113,19 +116,21 @@ public class Circle implements Serializable, Shape2D{
      * @param center The new center of the circle
      * @param edge Any point on the edge of the given circle
      */
-    public void set(Vector2 center, Vector2 edge){
+    public Circle set(Vector2 center, Vector2 edge){
         this.x = center.x;
         this.y = center.y;
         this.radius = Mathf.len(center.x - edge.x, center.y - edge.y);
+        return this;
     }
 
     /**
      * Sets the x and y-coordinates of circle center from vector
      * @param position The position vector
      */
-    public void setPosition(Vector2 position){
+    public Circle setPosition(Vector2 position){
         this.x = position.x;
         this.y = position.y;
+        return this;
     }
 
     /**
@@ -133,9 +138,10 @@ public class Circle implements Serializable, Shape2D{
      * @param x The x-coordinate
      * @param y The y-coordinate
      */
-    public void setPosition(float x, float y){
+    public Circle setPosition(float x, float y){
         this.x = x;
         this.y = y;
+        return this;
     }
 
     /**

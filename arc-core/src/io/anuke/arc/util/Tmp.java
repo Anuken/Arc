@@ -4,10 +4,7 @@ import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.TextureRegion;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.math.Quaternion;
-import io.anuke.arc.math.geom.Point2;
-import io.anuke.arc.math.geom.Rectangle;
-import io.anuke.arc.math.geom.Vector2;
-import io.anuke.arc.math.geom.Vector3;
+import io.anuke.arc.math.geom.*;
 
 /**
  * Temporary stuff.
@@ -29,6 +26,10 @@ public class Tmp{
     public static final Rectangle r1 = new Rectangle();
     public static final Rectangle r2 = new Rectangle();
     public static final Rectangle r3 = new Rectangle();
+
+    public static final Circle cr1 = new Circle();
+    public static final Circle cr2 = new Circle();
+    public static final Circle cr3 = new Circle();
 
     public static final Vector2 t1 = new Vector2();
 
