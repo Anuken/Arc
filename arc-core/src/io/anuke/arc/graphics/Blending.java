@@ -3,7 +3,8 @@ package io.anuke.arc.graphics;
 /** Specific blending modes. */
 public enum Blending{
     normal(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA),
-    additive(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+    additive(GL20.GL_SRC_ALPHA, GL20.GL_ONE),
+    disabled(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
     public final int src, dst;
 

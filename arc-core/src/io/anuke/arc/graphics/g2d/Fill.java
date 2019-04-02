@@ -71,6 +71,8 @@ public class Fill{
 
         int mod = sides % 3;
 
+        if(mod == 0) return;
+
         for(int i = sides - mod - 1; i < sides; i++){
             float px = Angles.trnsx(space * i + rotation, radius);
             float py = Angles.trnsy(space * i + rotation, radius);

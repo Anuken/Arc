@@ -346,8 +346,12 @@ public class SpriteBatch implements Disposable{
         if(spritesInBatch > maxSpritesInBatch) maxSpritesInBatch = spritesInBatch;
         int count = spritesInBatch * 6;
 
-        Core.gl.glEnable(GL20.GL_BLEND);
-        Core.gl.glBlendFuncSeparate(blending.src, blending.dst, blending.src, blending.dst);
+        if(blending != Blending.disabled){
+            Core.gl.glEnable(GL20.GL_BLEND);
+            Core.gl.glBlendFuncSeparate(blending.src, blending.dst, blending.src, blending.dst);
+        }else{
+            Core.gl.glDisable(GL20.GL_BLEND);
+        }
 
         lastTexture.bind();
         Mesh mesh = this.mesh;
