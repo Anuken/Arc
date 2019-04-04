@@ -15,7 +15,7 @@ import java.io.OutputStream;
 public class UBJsonWriter implements Closeable{
 
     final DataOutputStream out;
-    private final Array<JsonObject> stack = new Array();
+    private final Array<JsonObject> stack = new Array<>();
     private JsonObject current;
     private boolean named;
 
