@@ -70,6 +70,9 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
     }
 
     public void resize(int width, int height){
+        //prevent incomplete attachment issues.
+        width = Math.max(width, 2);
+        height = Math.max(height, 2);
         TextureFilter min = getTexture().getMinFilter(), mag = getTexture().getMagFilter();
         dispose();
 
