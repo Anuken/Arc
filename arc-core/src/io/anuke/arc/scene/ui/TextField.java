@@ -1134,7 +1134,7 @@ public class TextField extends Element implements Disableable{
                     updateDisplayText();
                 }
             }
-            if(listener != null && isValid()) listener.keyTyped(TextField.this, character);
+            if(listener != null) listener.keyTyped(TextField.this, character);
             return true;
         }
     }

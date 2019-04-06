@@ -5,7 +5,7 @@ import io.anuke.arc.postprocessing.PostFilter;
 
 public final class Vignetting extends PostFilter{
     public float x = 0.8f, y = 0.25f;
-    public float intensity, saturation, saturationMul;
+    public float intensity = 1f, saturation = 1f, saturationMul = 1f;
     public Texture texLut;
     public boolean dolut, dosat;
     public float lutintensity = 1f;
@@ -31,14 +31,16 @@ public final class Vignetting extends PostFilter{
 
     @Override
     protected void update(){
-        shader.setUniformf("LutIndex", lutindex[0]);
-        shader.setUniformf("LutIndex2", lutindex[1]);
-        shader.setUniformf("LutIndexOffset", lutIndexOffset);
-
         shader.setUniformf("u_texture1", u_texture1);
-        shader.setUniformf("LutIntensity", lutintensity);
-        shader.setUniformf("LutStep", lutStep);
-        shader.setUniformf("LutStepOffset", lutStepOffset);
+
+        if(dolut){
+            shader.setUniformf("LutIndex", lutindex[0]);
+            shader.setUniformf("LutIndex2", lutindex[1]);
+            shader.setUniformf("LutIndexOffset", lutIndexOffset);
+            shader.setUniformf("LutIntensity", lutintensity);
+            shader.setUniformf("LutStep", lutStep);
+            shader.setUniformf("LutStepOffset", lutStepOffset);
+        }
 
         if(dosat){
             shader.setUniformf("Saturation", saturation);

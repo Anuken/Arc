@@ -37,6 +37,6 @@ public final class Convolve1D extends PostFilter{
     @Override
     protected void update(){
         shader.setUniform1fv("SampleWeights", weights, 0, length);
-        shader.setUniform2fv("SampleOffsets", weights, 0, length * 2);
+        shader.setUniform2fv("SampleOffsets", offsets, 0, length * 2);
     }
 }

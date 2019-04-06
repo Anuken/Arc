@@ -36,6 +36,7 @@ public class MotionFilter extends PostFilter{
 
     @Override
     public void render(FrameBuffer src, FrameBuffer dest){
+
         if(dest != null){
             setInput(src).setOutput(dest).render();
             fbo = dest;
@@ -44,11 +45,15 @@ public class MotionFilter extends PostFilter{
                 // Init frame buffer
                 fbo = new FrameBuffer(Format.RGBA8888, src.getWidth(), src.getHeight(), false);
             }
-            setInput(src).setOutput(fbo).render();
+            setInput(src).setOutput(dest).render();
 
             // Copy fbo to screen
             copyFilter.setInput(fbo).setOutput(dest).render();
         }
+
+        shader.begin();
+        shader.setUniformi("u_texture1", u_texture1);
+        shader.end();
     }
 
 }

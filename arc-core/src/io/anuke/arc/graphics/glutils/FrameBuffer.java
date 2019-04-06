@@ -66,7 +66,6 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
         if(hasStencil) frameBufferBuilder.addBasicStencilRenderBuffer();
         this.bufferBuilder = frameBufferBuilder;
         build();
-        getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
     }
 
     public void resize(int width, int height){

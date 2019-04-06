@@ -3,10 +3,12 @@ package io.anuke.arc.postprocessing.filters;
 import io.anuke.arc.Core;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.glutils.FrameBuffer;
+import io.anuke.arc.input.KeyCode;
 import io.anuke.arc.postprocessing.PostEffect;
 import io.anuke.arc.postprocessing.PostProcessor;
 import io.anuke.arc.postprocessing.filters.Blur.BlurType;
 import io.anuke.arc.postprocessing.utils.PingPongBuffer;
+import io.anuke.arc.util.ScreenUtils;
 
 public final class BloomEffect extends PostEffect{
     private PingPongBuffer pingPongBuffer;
@@ -29,7 +31,7 @@ public final class BloomEffect extends PostEffect{
         blur.passes = 2;
         threshold.threshold = 0.277f;
         combine.baseIntensity = 1f;
-        combine.baseSaturation = 0.85f;
+        combine.baseSaturation = 1f;
         combine.effectIntensity = 1.1f;
         combine.effectSaturation = 0.85f;
     }
@@ -65,6 +67,10 @@ public final class BloomEffect extends PostEffect{
         // blur pass
         blur.render(pingPongBuffer);
 
+        if(Core.input.keyTap(KeyCode.T)){
+            ScreenUtils.saveScreenshot(Core.files.external("b.png"));
+        }
+
         pingPongBuffer.end();
 
         if(blending != Blending.disabled){
@@ -74,6 +80,10 @@ public final class BloomEffect extends PostEffect{
 
         combine.setOutput(dest);
         combine.setInput(texsrc, pingPongBuffer.getResultTexture()).render();
+
+        if(Core.input.keyTap(KeyCode.T)){
+            ScreenUtils.saveScreenshot(Core.files.external("c.png"));
+        }
     }
 
     @Override

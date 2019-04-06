@@ -9,10 +9,11 @@ import io.anuke.arc.util.Disposable;
 
 /** The base class for any single-pass filter. */
 public abstract class PostFilter extends PostEffect implements Disposable{
+    public static String shaderDirectory = "shaders/";
+
     protected static final FullscreenQuad quad = new FullscreenQuad();
     protected static final String fragExtension = ".fragment";
     protected static final String vertExtension = ".vertex";
-    protected static final String shaderDirectory = "shaders/";
 
     protected static final int u_texture0 = 0;
     protected static final int u_texture1 = 1;

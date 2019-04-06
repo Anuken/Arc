@@ -1,10 +1,9 @@
 package io.anuke.arc.util;
 
 import io.anuke.arc.Core;
-import io.anuke.arc.graphics.GL20;
-import io.anuke.arc.graphics.Pixmap;
+import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.Pixmap.Format;
-import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.graphics.g2d.TextureRegion;
 import io.anuke.arc.math.Mathf;
 
@@ -16,6 +15,12 @@ import java.nio.ByteBuffer;
  * @author espitz
  */
 public final class ScreenUtils{
+
+    public static void saveScreenshot(FileHandle file){
+        Pixmap pixmap = getFrameBufferPixmap(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
+        PixmapIO.writePNG(file, pixmap);
+        pixmap.dispose();
+    }
 
     /**
      * Returns the default framebuffer contents as a {@link TextureRegion} with a width and height equal to the current screen

@@ -77,8 +77,13 @@ public class Elements{
 
     public static TextField newField(String text, Consumer<String> listener){
         TextField field = new TextField(text);
-        if(listener != null)
-            field.changed(() -> listener.accept(field.getText()));
+        if(listener != null){
+            field.changed(() -> {
+                if(field.isValid()){
+                    listener.accept(field.getText());
+                }
+            });
+        }
 
         return field;
     }
