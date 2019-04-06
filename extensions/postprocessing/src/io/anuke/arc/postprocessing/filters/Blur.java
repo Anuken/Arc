@@ -2,8 +2,9 @@ package io.anuke.arc.postprocessing.filters;
 
 import io.anuke.arc.collection.IntMap;
 import io.anuke.arc.postprocessing.utils.PingPongBuffer;
+import io.anuke.arc.util.Disposable;
 
-public final class Blur extends MultipassFilter{
+public final class Blur extends MultipassFilter implements Disposable{
     public BlurType type = BlurType.Gaussian5x5;
     public float amount = 1f;
     public int passes = 1;
@@ -20,6 +21,12 @@ public final class Blur extends MultipassFilter{
         }
     }
 
+    public void resize(int width, int height){
+        this.invWidth = 1f / (float)width;
+        this.invHeight = 1f / (float)height;
+    }
+
+    @Override
     public void dispose(){
         for(Convolve2D c : convolve.values()){
             c.dispose();
@@ -139,7 +146,7 @@ public final class Blur extends MultipassFilter{
         }
 
         if(hasdata){
-            c.updateParams();
+            c.rebind();
         }
     }
 

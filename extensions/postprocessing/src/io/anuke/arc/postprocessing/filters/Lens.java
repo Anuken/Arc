@@ -4,13 +4,13 @@ import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.postprocessing.PostFilter;
 
-public final class Lens2 extends PostFilter{
+public final class Lens extends PostFilter{
     public Vector2 viewportInverse;
     public int ghosts;
     public float haloWidth;
     public Texture lensColorTexture;
 
-    public Lens2(int width, int height){
+    public Lens(int width, int height){
         super("lensflare2");
         viewportInverse = new Vector2(1f / width, 1f / height);
     }

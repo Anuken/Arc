@@ -1,7 +1,6 @@
 package io.anuke.arc.postprocessing.filters;
 
 import io.anuke.arc.graphics.Texture;
-import io.anuke.arc.graphics.glutils.FrameBuffer;
 import io.anuke.arc.postprocessing.PostFilter;
 
 public final class Combine extends PostFilter{
@@ -10,12 +9,6 @@ public final class Combine extends PostFilter{
 
     public Combine(){
         super("combine");
-    }
-
-    public Combine setInput(FrameBuffer buffer1, FrameBuffer buffer2){
-        this.inputTexture = buffer1.getTexture();
-        this.inputTexture2 = buffer2.getTexture();
-        return this;
     }
 
     public Combine setInput(Texture texture1, Texture texture2){

@@ -1,26 +1,27 @@
-package io.anuke.arc.postprocessing.effects;
+package io.anuke.arc.postprocessing.filters;
 
 import io.anuke.arc.Core;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.glutils.FrameBuffer;
 import io.anuke.arc.postprocessing.PostEffect;
 import io.anuke.arc.postprocessing.PostProcessor;
-import io.anuke.arc.postprocessing.filters.*;
 import io.anuke.arc.postprocessing.filters.Blur.BlurType;
 import io.anuke.arc.postprocessing.utils.PingPongBuffer;
 
-public final class Bloom extends PostEffect{
+public final class BloomEffect extends PostEffect{
     private PingPongBuffer pingPongBuffer;
 
     public Blur blur;
     public Threshold threshold;
     public Combine combine;
     public Blending blending = Blending.disabled;
+    public float scaling = 1/4f;
 
-    public Bloom(int fboWidth, int fboHeight){
-        pingPongBuffer = PostProcessor.newPingPongBuffer(fboWidth, fboHeight);
+    public BloomEffect(){
+        int width = Core.graphics.getWidth(), height = Core.graphics.getHeight();
 
-        blur = new Blur(fboWidth, fboHeight);
+        pingPongBuffer = PostProcessor.newPingPongBuffer((int)(width * scaling), (int)(height * scaling));
+        blur = new Blur((int)(width * scaling), (int)(height * scaling));
         threshold = new Threshold();
         combine = new Combine();
 
@@ -31,6 +32,14 @@ public final class Bloom extends PostEffect{
         combine.baseSaturation = 0.85f;
         combine.effectIntensity = 1.1f;
         combine.effectSaturation = 0.85f;
+    }
+
+    @Override
+    public void resize(int width, int height){
+        pingPongBuffer.resize((int)(width * scaling), (int)(height * scaling));
+        blur.resize((int)(width * scaling), (int)(height * scaling));
+
+        rebind();
     }
 
     @Override
@@ -48,14 +57,14 @@ public final class Bloom extends PostEffect{
         Core.gl.glDisable(GL20.GL_BLEND);
 
         pingPongBuffer.begin();
-        {
-            // threshold / high-pass filter
-            // only areas with pixels >= threshold are blit to smaller fbo
-            threshold.setInput(texsrc).setOutput(pingPongBuffer.getSourceBuffer()).render();
 
-            // blur pass
-            blur.render(pingPongBuffer);
-        }
+        // threshold / high-pass filter
+        // only areas with pixels >= threshold are blit to smaller fbo
+        threshold.setInput(texsrc).setOutput(pingPongBuffer.getSourceBuffer()).render();
+
+        // blur pass
+        blur.render(pingPongBuffer);
+
         pingPongBuffer.end();
 
         if(blending != Blending.disabled){
@@ -63,8 +72,6 @@ public final class Bloom extends PostEffect{
             Core.gl.glBlendFunc(blending.src, blending.dst);
         }
 
-        // mix original scene and blurred threshold, modulate via
-        // set(Base|Bloom)(Saturation|Intensity)
         combine.setOutput(dest);
         combine.setInput(texsrc, pingPongBuffer.getResultTexture()).render();
     }

@@ -22,43 +22,31 @@ public final class PostProcessor implements Disposable{
 
     public final PingPongBuffer composite;
     public final Color clearColor = Color.CLEAR;
-    public final Array<PostEffect> effects = new Array<>();
     public boolean enabled = true;
 
-    private Array<PostEffect> items = new Array<>();
+    private final Array<PostEffect> effects = new Array<>();
+    private final Array<PostEffect> items = new Array<>();
     private boolean capturing, hasCaptured;
 
-    /** Construct a new PostProcessor with the given parameters and the specified texture wrap mode */
-    public PostProcessor(int fboWidth, int fboHeight){
-        composite = newPingPongBuffer(fboWidth, fboHeight);
+    public PostProcessor(){
+        composite = newPingPongBuffer(Core.graphics.getWidth(), Core.graphics.getHeight());
     }
 
-    /**
-     * Creates and returns a managed PingPongBuffer buffer, just create and forget. If rebind() is called on context loss, managed
-     * PingPongBuffers will be rebound for you.
-     * <p>
-     * This is a drop-in replacement for the same-signature PingPongBuffer's constructor.
-     */
-    public static PingPongBuffer newPingPongBuffer(int width, int height){
-        PingPongBuffer buffer = new PingPongBuffer(width, height, format, false);
-        buffers.add(buffer);
-        return buffer;
-    }
+    public void resize(int width, int height){
+        composite.resize(width, height);
 
-    /** Frees owned resources. */
-    @Override
-    public void dispose(){
         for(PostEffect effect : effects){
-            effect.dispose();
+            effect.resize(width, height);
         }
-        effects.clear();
+    }
 
-        // cleanup managed buffers, if any
-        for(int i = 0; i < buffers.size; i++){
-            buffers.get(i).dispose();
-        }
+    public void add(PostEffect effect){
+        effect.rebind();
+        effects.add(effect);
+    }
 
-        buffers.clear();
+    public void remove(PostEffect effect){
+        effects.remove(effect);
     }
 
     /** If called before capturing it will indicate if the next capture call will succeeds or not. */
@@ -186,5 +174,33 @@ public final class PostProcessor implements Disposable{
     /** Convenience method to render to screen. */
     public void render(){
         render(null);
+    }
+
+    /** Frees owned resources. */
+    @Override
+    public void dispose(){
+        for(PostEffect effect : effects){
+            effect.dispose();
+        }
+        effects.clear();
+
+        // cleanup managed buffers, if any
+        for(int i = 0; i < buffers.size; i++){
+            buffers.get(i).dispose();
+        }
+
+        buffers.clear();
+    }
+
+    /**
+     * Creates and returns a managed PingPongBuffer buffer, just create and forget. If rebind() is called on context loss, managed
+     * PingPongBuffers will be rebound for you.
+     * <p>
+     * This is a drop-in replacement for the same-signature PingPongBuffer's constructor.
+     */
+    public static PingPongBuffer newPingPongBuffer(int width, int height){
+        PingPongBuffer buffer = new PingPongBuffer(width, height, format, false);
+        buffers.add(buffer);
+        return buffer;
     }
 }

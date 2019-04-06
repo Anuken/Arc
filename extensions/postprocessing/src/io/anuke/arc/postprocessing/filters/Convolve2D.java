@@ -1,12 +1,13 @@
 package io.anuke.arc.postprocessing.filters;
 
 import io.anuke.arc.postprocessing.utils.PingPongBuffer;
+import io.anuke.arc.util.Disposable;
 
 /**
  * Encapsulates a separable 2D convolution kernel filter
  * @author bmanuel
  */
-public final class Convolve2D extends MultipassFilter{
+public final class Convolve2D extends MultipassFilter implements Disposable{
     public final int radius;
     public final int length; // NxN taps filter, w/ N=length
     public final float[] weights, offsetsHor, offsetsVert;
@@ -25,15 +26,16 @@ public final class Convolve2D extends MultipassFilter{
         offsetsVert = vert.offsets;
     }
 
+    @Override
     public void dispose(){
         hor.dispose();
         vert.dispose();
     }
 
     @Override
-    public void updateParams(){
-        hor.updateParams();
-        vert.updateParams();
+    public void rebind(){
+        hor.rebind();
+        vert.rebind();
     }
 
     @Override

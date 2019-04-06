@@ -19,4 +19,8 @@ public abstract class PostEffect implements Disposable{
 
     /** Concrete objects shall implements its own rendering, given the source and destination buffers. */
     public abstract void render(final FrameBuffer src, final FrameBuffer dest);
+
+    public void resize(int width, int height){
+
+    }
 }

@@ -43,12 +43,16 @@ public final class PingPongBuffer{
         set(owned1, owned2);
     }
 
-    /** Creates a new ping-pong buffer with the given buffers. */
-    public PingPongBuffer(FrameBuffer buffer1, FrameBuffer buffer2){
-        ownResources = false;
-        owned1 = null;
-        owned2 = null;
-        set(buffer1, buffer2);
+    public void resize(int width, int height){
+        owned1.resize(width, height);
+        owned2.resize(width, height);
+        set(owned1, owned2);
+
+        texResult = null;
+        texSrc = null;
+        bufResult = null;
+        bufSrc = null;
+        writeState = pending1 = pending2 = false;
     }
 
     /**

@@ -14,14 +14,13 @@
  * limitations under the License.
  ******************************************************************************/
 
-package io.anuke.arc.postprocessing.effects;
+package io.anuke.arc.postprocessing.filters;
 
 import io.anuke.arc.Core;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.glutils.FrameBuffer;
 import io.anuke.arc.postprocessing.PostEffect;
 import io.anuke.arc.postprocessing.PostProcessor;
-import io.anuke.arc.postprocessing.filters.*;
 import io.anuke.arc.postprocessing.filters.Blur.BlurType;
 import io.anuke.arc.postprocessing.utils.PingPongBuffer;
 
@@ -30,19 +29,19 @@ import io.anuke.arc.postprocessing.utils.PingPongBuffer;
  * includes ghost generation, halos, chromatic distortion and blur.
  * @author Toni Sagrista
  */
-public final class LensFlare2 extends PostEffect{
+public final class LensFlareEffect extends PostEffect{
     private PingPongBuffer pingPongBuffer;
 
-    public Lens2 lens;
+    public Lens lens;
     public Blur blur;
     public Bias bias;
     public Combine combine;
     public Blending blending = Blending.disabled;
 
-    public LensFlare2(int fboWidth, int fboHeight){
+    public LensFlareEffect(int fboWidth, int fboHeight){
         pingPongBuffer = PostProcessor.newPingPongBuffer(fboWidth, fboHeight);
 
-        lens = new Lens2(fboWidth, fboHeight);
+        lens = new Lens(fboWidth, fboHeight);
         blur = new Blur(fboWidth, fboHeight);
         bias = new Bias();
         combine = new Combine();

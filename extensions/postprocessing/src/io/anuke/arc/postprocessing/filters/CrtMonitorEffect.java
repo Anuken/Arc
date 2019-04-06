@@ -1,16 +1,15 @@
-package io.anuke.arc.postprocessing.effects;
+package io.anuke.arc.postprocessing.filters;
 
 import io.anuke.arc.Core;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.glutils.FrameBuffer;
 import io.anuke.arc.postprocessing.PostEffect;
 import io.anuke.arc.postprocessing.PostProcessor;
-import io.anuke.arc.postprocessing.filters.*;
 import io.anuke.arc.postprocessing.filters.Blur.BlurType;
 import io.anuke.arc.postprocessing.filters.CrtScreen.RgbMode;
 import io.anuke.arc.postprocessing.utils.PingPongBuffer;
 
-public final class CrtMonitor extends PostEffect{
+public final class CrtMonitorEffect extends PostEffect{
     private PingPongBuffer pingPongBuffer = null;
     private FrameBuffer buffer = null;
     private CrtScreen crt;
@@ -21,7 +20,7 @@ public final class CrtMonitor extends PostEffect{
     public Blending blending = Blending.disabled;
 
     // the effect is designed to work on the whole screen area, no small/mid size tricks!
-    public CrtMonitor(int fboWidth, int fboHeight, boolean barrelDistortion, boolean performBlur, RgbMode mode, int effectsSupport){
+    public CrtMonitorEffect(int fboWidth, int fboHeight, boolean barrelDistortion, boolean performBlur, RgbMode mode, int effectsSupport){
         doblur = performBlur;
 
         if(doblur){
