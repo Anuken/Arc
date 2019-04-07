@@ -25,6 +25,10 @@ public class Events{
         }
     }
 
+    public static void dispose(){
+        events.clear();
+    }
+
     public interface Event{
 
     }

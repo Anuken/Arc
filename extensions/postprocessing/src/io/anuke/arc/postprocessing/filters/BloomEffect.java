@@ -56,6 +56,12 @@ public final class BloomEffect extends PostEffect{
     public void render(final FrameBuffer src, final FrameBuffer dest){
         Texture texsrc = src.getTexture();
 
+        src.begin();
+        if(Core.input.keyTap(KeyCode.T)){
+            ScreenUtils.saveScreenshot(Core.files.external("c.png"));
+        }
+        src.end();
+
         Core.gl.glDisable(GL20.GL_BLEND);
 
         pingPongBuffer.begin();
@@ -81,9 +87,7 @@ public final class BloomEffect extends PostEffect{
         combine.setOutput(dest);
         combine.setInput(texsrc, pingPongBuffer.getResultTexture()).render();
 
-        if(Core.input.keyTap(KeyCode.T)){
-            ScreenUtils.saveScreenshot(Core.files.external("c.png"));
-        }
+
     }
 
     @Override

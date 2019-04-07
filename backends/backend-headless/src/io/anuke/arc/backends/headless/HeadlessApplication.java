@@ -117,6 +117,7 @@ public class HeadlessApplication implements Application{
                 listener.pause();
                 listener.dispose();
             }
+            dispose();
         }
     }
 

@@ -485,6 +485,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
                     listeners.get(i).dispose();
                 }
             }
+            dispose();
             Log.infoTag(LOG_TAG, "destroyed");
         }
 

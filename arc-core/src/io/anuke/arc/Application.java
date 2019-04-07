@@ -78,6 +78,8 @@ public interface Application extends Disposable{
             Core.batch.dispose();
             Core.batch = null;
         }
+
+        Events.dispose();
     }
 
     /** Enumeration of possible {@link Application} types */

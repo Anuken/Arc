@@ -296,6 +296,7 @@ public class Lwjgl3Application implements Application{
             window.dispose();
         }
         windows.clear();
+        dispose();
     }
 
     private void cleanup(){
