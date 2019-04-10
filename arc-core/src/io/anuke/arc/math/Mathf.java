@@ -458,7 +458,7 @@ public final class Mathf{
         }
     }
 
-    /**Converts a 0-1 value to 0-1 when it is in [0, 1].*/
+    /**Converts a 0-1 value to 0-1 when it is in [0, offset].*/
     public static float curve(float f, float offset){
         if(f < offset){
             return 0f;
