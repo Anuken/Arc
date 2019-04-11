@@ -5,10 +5,15 @@ import io.anuke.arc.collection.Array;
 import io.anuke.arc.function.Consumer;
 import io.anuke.arc.function.Function;
 import io.anuke.arc.function.Predicate;
+import io.anuke.arc.math.Mathf;
 
 import java.util.Comparator;
 
 public class Structs{
+
+    public static <T> T random(T[] array){
+        return array[Mathf.random(array.length - 1)];
+    }
 
     /**Uses identity comparisons.*/
     public static <T> boolean contains(T[] array, T value){
