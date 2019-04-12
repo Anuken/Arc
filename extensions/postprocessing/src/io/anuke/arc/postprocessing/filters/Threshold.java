@@ -11,7 +11,7 @@ public final class Threshold extends PostFilter{
 
     @Override
     protected void update(){
-        shader.setUniformf("treshold", threshold);
-        shader.setUniformf("tresholdInvTx", 1f / (1 - threshold));
+        shader.setUniformf("threshold", threshold);
+        shader.setUniformf("thresholdInvTx", 1f / (1 - threshold));
     }
 }

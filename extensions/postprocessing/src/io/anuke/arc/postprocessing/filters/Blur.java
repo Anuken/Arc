@@ -6,6 +6,7 @@ import io.anuke.arc.util.Disposable;
 
 public final class Blur extends MultipassFilter implements Disposable{
     public BlurType type = BlurType.Gaussian5x5;
+    /**Only affects non-b blur types.*/
     public float amount = 1f;
     public int passes = 1;
 
@@ -43,7 +44,6 @@ public final class Blur extends MultipassFilter implements Disposable{
     }
 
     private void computeBlurWeightings(){
-        boolean hasdata = true;
         Convolve2D c = convolve.get(this.type.tap.radius);
 
         float[] outWeights = c.weights;
@@ -140,36 +140,26 @@ public final class Blur extends MultipassFilter implements Disposable{
                 }
 
                 break;
-            default:
-                hasdata = false;
-                break;
         }
 
-        if(hasdata){
-            c.rebind();
-        }
+        c.rebind();
     }
 
     private void computeKernel(int blurRadius, float blurAmount, float[] outKernel){
-        int radius = blurRadius;
-
-        // float sigma = (float)radius / amount;
-        float sigma = blurAmount;
-
-        float twoSigmaSquare = 2.0f * sigma * sigma;
+        float twoSigmaSquare = 2.0f * blurAmount * blurAmount;
         float sigmaRoot = (float)Math.sqrt(twoSigmaSquare * Math.PI);
         float total = 0.0f;
         float distance = 0.0f;
         int index = 0;
 
-        for(int i = -radius; i <= radius; ++i){
+        for(int i = -blurRadius; i <= blurRadius; ++i){
             distance = i * i;
-            index = i + radius;
+            index = i + blurRadius;
             outKernel[index] = (float)Math.exp(-distance / twoSigmaSquare) / sigmaRoot;
             total += outKernel[index];
         }
 
-        int size = (radius * 2) + 1;
+        int size = (blurRadius * 2) + 1;
         for(int i = 0; i < size; ++i){
             outKernel[i] /= total;
         }
