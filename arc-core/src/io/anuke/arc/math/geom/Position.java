@@ -26,4 +26,7 @@ public interface Position{
         final float yd = getY() - y;
         return Mathf.sqrt(xd * xd + yd * yd);
     }
+    default boolean withinDst(float x, float y, float dst){
+        return Mathf.dst2(getX(), getY(), x, y) < dst*dst;
+    }
 }
