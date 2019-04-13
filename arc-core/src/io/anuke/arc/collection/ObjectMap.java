@@ -1,5 +1,6 @@
 package io.anuke.arc.collection;
 
+import io.anuke.arc.function.BiConsumer;
 import io.anuke.arc.function.Supplier;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.util.ArcRuntimeException;
@@ -96,6 +97,13 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
         System.arraycopy(map.keyTable, 0, keyTable, 0, map.keyTable.length);
         System.arraycopy(map.valueTable, 0, valueTable, 0, map.valueTable.length);
         size = map.size;
+    }
+
+    /**Iterates through key/value pairs.*/
+    public void each(BiConsumer<K, V> cons){
+        for(Entry<K, V> entry : entries()){
+            cons.accept(entry.key, entry.value);
+        }
     }
 
     /** Returns the old value associated with the specified key, or null. */

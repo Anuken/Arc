@@ -832,7 +832,7 @@ public class PixmapPacker implements Disposable{
         }
 
         static class SkylinePage extends Page{
-            Array<Row> rows = new Array();
+            Array<Row> rows = new Array<>();
 
             public SkylinePage(PixmapPacker packer){
                 super(packer);
