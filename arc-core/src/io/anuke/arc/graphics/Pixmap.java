@@ -47,6 +47,13 @@ public class Pixmap implements Disposable{
     }
 
     /**
+     * @see #Pixmap(byte[], int, int)
+     */
+    public Pixmap(byte[] encodedData){
+        this(encodedData, 0, encodedData.length);
+    }
+
+    /**
      * Creates a new Pixmap instance from the given encoded image data. The image can be encoded as JPEG, PNG or BMP.
      * @param encodedData the encoded image data
      * @param offset the offset
