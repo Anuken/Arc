@@ -4,6 +4,7 @@ include ":extensions"
 include ":extensions:freetype"
 include ":extensions:recorder"
 include ":extensions:postprocessing"
+include ":extensions:arcnet"
 
 include ":backends"
 include ":backends:backend-android"
