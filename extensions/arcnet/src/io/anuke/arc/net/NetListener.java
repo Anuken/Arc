@@ -19,10 +19,8 @@
 
 package io.anuke.arc.net;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.*;
-import java.util.function.BiConsumer;
 
 /**
  * Used to be notified about connection events.
@@ -63,65 +61,6 @@ public interface NetListener{
     }
 
     /**
-     * Wraps the listener interface and implements
-     * {@link NetListener#idle(Connection)} and
-     * {@link NetListener#received(Connection, Object)}.
-     */
-    abstract class ConnectionListener implements NetListener{
-
-        @Override
-        public abstract void disconnected(Connection arg0);
-
-        @Override
-        public abstract void connected(Connection arg0);
-
-        @Override
-        public void received(Connection connection, Object object){
-        }
-
-        @Override
-        public void idle(Connection connection){
-        }
-
-    }
-
-    /**
-     * A type listener for kryonet. Note this class uses a HashMap lookup, so is
-     * not as efficient as writing a series of "instanceof" statements.
-     * <p>
-     * Add a handler for a specific type via
-     * {@link #addHandler(Class, BiConsumer)}.
-     */
-    class TypeListener implements NetListener{
-
-        /**
-         * All type listeners.
-         */
-        private final HashMap<Class<?>, BiConsumer> listeners = new HashMap<>();
-
-        public TypeListener(){
-        }
-
-        @Override
-        public void received(Connection con, Object msg){
-            if(listeners.containsKey(msg.getClass())){
-                listeners.get(msg.getClass()).accept(con, msg);
-            }
-        }
-
-        /**
-         * Adds a handler for a specific type.
-         * @param clazz The class of the type.
-         * @param listener The listener.
-         */
-        public <T> void addTypeHandler(Class<T> clazz,
-                                       BiConsumer<? super Connection, ? super T> listener){
-            listeners.put(clazz, listener);
-        }
-
-    }
-
-    /**
      * Wraps a listener and queues notifications as {@link Runnable runnables}.
      * This allows the runnables to be processed on a different thread,
      * preventing the connection's update thread from being blocked.
@@ -136,35 +75,19 @@ public interface NetListener{
         }
 
         public void connected(final Connection connection){
-            queue(new Runnable(){
-                public void run(){
-                    listener.connected(connection);
-                }
-            });
+            queue(() -> listener.connected(connection));
         }
 
         public void disconnected(final Connection connection){
-            queue(new Runnable(){
-                public void run(){
-                    listener.disconnected(connection);
-                }
-            });
+            queue(() -> listener.disconnected(connection));
         }
 
         public void received(final Connection connection, final Object object){
-            queue(new Runnable(){
-                public void run(){
-                    listener.received(connection, object);
-                }
-            });
+            queue(() -> listener.received(connection, object));
         }
 
         public void idle(final Connection connection){
-            queue(new Runnable(){
-                public void run(){
-                    listener.idle(connection);
-                }
-            });
+            queue(() -> listener.idle(connection));
         }
 
         abstract protected void queue(Runnable runnable);
@@ -208,7 +131,7 @@ public interface NetListener{
     class LagListener extends QueuedListener{
         private final ScheduledExecutorService threadPool;
         private final int lagMillisMin, lagMillisMax;
-        final LinkedList<Runnable> runnables = new LinkedList();
+        final LinkedList<Runnable> runnables = new LinkedList<>();
 
         public LagListener(int lagMillisMin, int lagMillisMax,
                            NetListener listener){
@@ -222,16 +145,13 @@ public interface NetListener{
             synchronized(runnables){
                 runnables.addFirst(runnable);
             }
-            int lag = lagMillisMin
-            + (int)(Math.random() * (lagMillisMax - lagMillisMin));
-            threadPool.schedule(new Runnable(){
-                public void run(){
-                    Runnable runnable;
-                    synchronized(runnables){
-                        runnable = runnables.removeLast();
-                    }
-                    runnable.run();
+            int lag = lagMillisMin + (int)(Math.random() * (lagMillisMax - lagMillisMin));
+            threadPool.schedule(() -> {
+                Runnable runnable1;
+                synchronized(runnables){
+                    runnable1 = runnables.removeLast();
                 }
+                runnable1.run();
             }, lag, TimeUnit.MILLISECONDS);
         }
     }

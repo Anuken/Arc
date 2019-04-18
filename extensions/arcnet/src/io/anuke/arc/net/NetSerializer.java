@@ -39,9 +39,15 @@ public interface NetSerializer{
      * {@link #writeLength(ByteBuffer, int)} and read by
      * {@link #readLength(ByteBuffer)}.
      */
-    int getLengthLength();
+    default int getLengthLength(){
+        return 2;
+    }
 
-    void writeLength(ByteBuffer buffer, int length);
+    default void writeLength(ByteBuffer buffer, int length){
+        buffer.putShort((short)length);
+    }
 
-    int readLength(ByteBuffer buffer);
+    default int readLength(ByteBuffer buffer){
+        return buffer.getShort();
+    }
 }

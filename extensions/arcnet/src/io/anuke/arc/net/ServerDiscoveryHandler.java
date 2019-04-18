@@ -28,21 +28,6 @@ import java.nio.channels.DatagramChannel;
 
 public interface ServerDiscoveryHandler{
     /**
-     * This implementation of {@link ServerDiscoveryHandler} is responsible for
-     * providing the {@link Server} with it's default behavior.
-     */
-    ServerDiscoveryHandler DEFAULT = new ServerDiscoveryHandler(){
-        private ByteBuffer emptyBuffer = ByteBuffer.allocate(0);
-
-        @Override
-        public boolean onDiscoverHost(DatagramChannel datagramChannel,
-                                      InetSocketAddress fromAddress) throws IOException{
-            datagramChannel.send(emptyBuffer, fromAddress);
-            return true;
-        }
-    };
-
-    /**
      * Called when the {@link Server} receives a {@link DiscoverHost} packet.
      * @param fromAddress {@link InetSocketAddress} the {@link DiscoverHost} came from
      * @return true if a response was sent to {@code fromAddress}, false
@@ -50,6 +35,5 @@ public interface ServerDiscoveryHandler{
      * @throws IOException from the use of
      * {@link DatagramChannel#send(ByteBuffer, java.net.SocketAddress)}
      */
-    boolean onDiscoverHost(DatagramChannel datagramChannel,
-                           InetSocketAddress fromAddress) throws IOException;
+    void onDiscoverRecieved(DatagramChannel datagramChannel, InetSocketAddress fromAddress) throws IOException;
 }

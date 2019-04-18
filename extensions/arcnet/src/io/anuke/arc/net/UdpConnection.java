@@ -24,9 +24,6 @@ import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 
-import static io.anuke.arc.net.NetLog.DEBUG;
-import static io.anuke.arc.net.NetLog.debug;
-
 /**
  * @author Nathan Sweet <misc@n4te.com>
  */
@@ -166,9 +163,7 @@ class UdpConnection{
                 if(selectionKey != null)
                     selectionKey.selector().wakeup();
             }
-        }catch(IOException ex){
-            if(DEBUG)
-                debug("kryonet", "Unable to close UDP connection.", ex);
+        }catch(IOException ignored){
         }
     }
 

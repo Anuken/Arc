@@ -25,8 +25,6 @@ import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 
-import static io.anuke.arc.net.NetLog.*;
-
 /**
  * @author Nathan Sweet <misc@n4te.com>
  */
@@ -69,12 +67,6 @@ class TcpConnection{
             selectionKey = socketChannel.register(selector,
             SelectionKey.OP_READ);
 
-            if(DEBUG){
-                debug("kryonet", "Port " + socketChannel.socket().getLocalPort()
-                + "/TCP connected to: "
-                + socketChannel.socket().getRemoteSocketAddress());
-            }
-
             lastReadTime = lastWriteTime = System.currentTimeMillis();
 
             return selectionKey;
@@ -105,12 +97,6 @@ class TcpConnection{
             selectionKey = socketChannel.register(selector,
             SelectionKey.OP_READ);
             selectionKey.attach(this);
-
-            if(DEBUG){
-                debug("kryonet", "Port " + socketChannel.socket().getLocalPort()
-                + "/TCP connected to: "
-                + socketChannel.socket().getRemoteSocketAddress());
-            }
 
             lastReadTime = lastWriteTime = System.currentTimeMillis();
         }catch(IOException ex){
@@ -255,18 +241,6 @@ class TcpConnection{
                 selectionKey.selector().wakeup();
             }
 
-            if(DEBUG || TRACE){
-                float percentage = writeBuffer.position()
-                / (float)writeBuffer.capacity();
-                if(DEBUG && percentage > 0.75f)
-                    debug("kryonet",
-                    " TCP write buffer is approaching capacity: "
-                    + percentage + "%");
-                else if(TRACE && percentage > 0.25f)
-                    trace("kryonet", " TCP write buffer utilization: "
-                    + percentage + "%");
-            }
-
             lastWriteTime = System.currentTimeMillis();
             return end - start;
         }
@@ -280,9 +254,7 @@ class TcpConnection{
                 if(selectionKey != null)
                     selectionKey.selector().wakeup();
             }
-        }catch(IOException ex){
-            if(DEBUG)
-                debug("kryonet", "Unable to close TCP connection.", ex);
+        }catch(IOException ignored){
         }
     }
 

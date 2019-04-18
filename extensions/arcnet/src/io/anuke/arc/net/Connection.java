@@ -26,10 +26,6 @@ import java.net.Socket;
 import java.net.*;
 import java.nio.channels.SocketChannel;
 
-import static io.anuke.arc.net.NetLog.*;
-
-// BOZO - Layer to handle handshake state.
-
 /**
  * Represents a TCP and optionally a UDP connection between a {@link Client} and
  * a {@link Server}. If either underlying connection is closed or errors, both
@@ -44,7 +40,7 @@ public class Connection{
     UdpConnection udp;
     InetSocketAddress udpRemoteAddress;
     private NetListener[] listeners = {};
-    private Object listenerLock = new Object();
+    private final Object listenerLock = new Object();
     private int lastPingID;
     private long lastPingSendTime;
     private int returnTripTime;
@@ -93,24 +89,8 @@ public class Connection{
         if(object == null) throw new IllegalArgumentException("object cannot be null.");
 
         try{
-            int length = tcp.send(object);
-            if(length == 0){
-                if(TRACE) trace("kryonet", this + " TCP had nothing to send.");
-            }else if(DEBUG){
-                String objectString = object.getClass().getSimpleName();
-                if(!(object instanceof FrameworkMessage)){
-                    debug("kryonet", this + " sent TCP: " + objectString + " (" + length + ")");
-                }else if(TRACE){
-                    trace("kryonet", this + " sent TCP: " + objectString + " (" + length + ")");
-                }
-            }
-            return length;
-        }catch(IOException ex){
-            if(DEBUG) debug("kryonet", "Unable to send TCP with connection: " + this, ex);
-            close();
-            return 0;
-        }catch(ArcNetException ex){
-            if(ERROR) error("kryonet", "Unable to send TCP with connection: " + this, ex);
+            return tcp.send(object);
+        }catch(IOException | ArcNetException ex){
             close();
             return 0;
         }
@@ -131,36 +111,10 @@ public class Connection{
             throw new IllegalStateException("Connection is not connected via UDP.");
 
         try{
-            if(address == null)
-                throw new SocketException("Connection is closed.");
+            if(address == null) throw new SocketException("Connection is closed.");
 
-            int length = udp.send(object, address);
-            if(length == 0){
-                if(TRACE)
-                    trace("kryonet", this + " UDP had nothing to send.");
-            }else if(DEBUG){
-                if(length != -1){
-                    String objectString = object.getClass().getSimpleName();
-                    if(!(object instanceof FrameworkMessage)){
-                        debug("kryonet", this + " sent UDP: " + objectString
-                        + " (" + length + ")");
-                    }else if(TRACE){
-                        trace("kryonet", this + " sent UDP: " + objectString
-                        + " (" + length + ")");
-                    }
-                }else
-                    debug("kryonet", this
-                    + " was unable to send, UDP socket buffer full.");
-            }
-            return length;
-        }catch(IOException ex){
-            if(DEBUG)
-                debug("kryonet", "Unable to send UDP with connection: " + this, ex);
-            close();
-            return 0;
-        }catch(ArcNetException ex){
-            if(ERROR)
-                error("kryonet", "Unable to send UDP with connection: " + this, ex);
+            return udp.send(object, address);
+        }catch(IOException | ArcNetException ex){
             close();
             return 0;
         }
@@ -174,8 +128,6 @@ public class Connection{
             udp.close();
         if(wasConnected){
             notifyDisconnected();
-            if(INFO)
-                info("kryonet", this + " disconnected.");
         }
         setConnected(false);
     }
@@ -220,7 +172,7 @@ public class Connection{
      * TCP, the connection is considered closed. When a TCP socket is closed
      * normally, the remote end is notified immediately and this timeout is not
      * needed. However, if a socket is closed abnormally (eg, power loss),
-     * KryoNet uses this timeout to detect the problem. The timeout should be
+     * ArcNet uses this timeout to detect the problem. The timeout should be
      * set higher than the {@link #setKeepAliveTCP(int) TCP keep alive} for the
      * remote end of the connection. The keep alive ensures that the remote end
      * of the connection will be constantly sending objects, and setting the
@@ -250,9 +202,6 @@ public class Connection{
             System.arraycopy(listeners, 0, newListeners, 1, n);
             this.listeners = newListeners;
         }
-        if(TRACE)
-            trace("kryonet", "Connection listener added: "
-            + listener.getClass().getName());
     }
 
     public void removeListener(NetListener listener){
@@ -274,25 +223,9 @@ public class Connection{
             }
             this.listeners = newListeners;
         }
-        if(TRACE)
-            trace("kryonet", "Connection listener removed: "
-            + listener.getClass().getName());
     }
 
     void notifyConnected(){
-        if(INFO){
-            SocketChannel socketChannel = tcp.socketChannel;
-            if(socketChannel != null){
-                Socket socket = tcp.socketChannel.socket();
-                if(socket != null){
-                    InetSocketAddress remoteSocketAddress = (InetSocketAddress)socket
-                    .getRemoteSocketAddress();
-                    if(remoteSocketAddress != null)
-                        info("kryonet", this + " connected: "
-                        + remoteSocketAddress.getAddress());
-                }
-            }
-        }
         NetListener[] listeners = this.listeners;
         for(int i = 0, n = listeners.length; i < n; i++)
             listeners[i].connected(this);
@@ -320,9 +253,6 @@ public class Connection{
                 if(ping.id == lastPingID - 1){
                     returnTripTime = (int)(System.currentTimeMillis()
                     - lastPingSendTime);
-                    if(TRACE)
-                        trace("kryonet",
-                        this + " return trip time: " + returnTripTime);
                 }
             }else{
                 ping.isReply = true;
