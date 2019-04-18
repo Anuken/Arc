@@ -277,7 +277,7 @@ public class StringBuilder implements Appendable, CharSequence{
     final void insert0(int index, char[] value, int start, int length){
         if(0 <= index && index <= length){
             // start + length could overflow, start/length maybe MaxInt
-            if(start >= 0 && 0 <= length && length <= value.length - start){
+            if(start >= 0 && length <= value.length - start){
                 if(length != 0){
                     move(length, index);
                     System.arraycopy(value, start, chars, index, length);

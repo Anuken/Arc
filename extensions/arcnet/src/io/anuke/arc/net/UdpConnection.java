@@ -43,8 +43,7 @@ class UdpConnection{
         writeBuffer = ByteBuffer.allocateDirect(bufferSize);
     }
 
-    public void bind(Selector selector, InetSocketAddress localPort)
-    throws IOException{
+    public void bind(Selector selector, InetSocketAddress localPort) throws IOException{
         close();
         readBuffer.clear();
         writeBuffer.clear();
@@ -52,8 +51,7 @@ class UdpConnection{
             datagramChannel = selector.provider().openDatagramChannel();
             datagramChannel.socket().bind(localPort);
             datagramChannel.configureBlocking(false);
-            selectionKey = datagramChannel.register(selector,
-            SelectionKey.OP_READ);
+            selectionKey = datagramChannel.register(selector, SelectionKey.OP_READ);
 
             lastCommunicationTime = System.currentTimeMillis();
         }catch(IOException ex){
@@ -62,8 +60,7 @@ class UdpConnection{
         }
     }
 
-    public void connect(Selector selector, InetSocketAddress remoteAddress)
-    throws IOException{
+    public void connect(Selector selector, InetSocketAddress remoteAddress) throws IOException{
         close();
         readBuffer.clear();
         writeBuffer.clear();
@@ -73,17 +70,14 @@ class UdpConnection{
             datagramChannel.socket().connect(remoteAddress);
             datagramChannel.configureBlocking(false);
 
-            selectionKey = datagramChannel.register(selector,
-            SelectionKey.OP_READ);
+            selectionKey = datagramChannel.register(selector, SelectionKey.OP_READ);
 
             lastCommunicationTime = System.currentTimeMillis();
 
             connectedAddress = remoteAddress;
         }catch(IOException ex){
             close();
-            IOException ioEx = new IOException(
-            "Unable to connect to: " + remoteAddress, ex);
-            throw ioEx;
+            throw new IOException("Unable to connect to: " + remoteAddress, ex);
         }
     }
 
@@ -94,12 +88,7 @@ class UdpConnection{
         lastCommunicationTime = System.currentTimeMillis();
 
         if(!datagramChannel.isConnected())
-            return (InetSocketAddress)datagramChannel.receive(readBuffer); // always
-        // null
-        // on
-        // Android
-        // >=
-        // 5.0
+            return (InetSocketAddress)datagramChannel.receive(readBuffer); //always null on Android >= 5.0
         datagramChannel.read(readBuffer);
         return connectedAddress;
     }
@@ -135,10 +124,7 @@ class UdpConnection{
                 try{
                     serialization.write(writeBuffer, object);
                 }catch(Exception ex){
-                    throw new ArcNetException(
-                    "Error serializing object of type: "
-                    + object.getClass().getName(),
-                    ex);
+                    throw new ArcNetException("Error serializing object of type: " + object.getClass().getName(), ex);
                 }
                 writeBuffer.flip();
                 int length = writeBuffer.limit();

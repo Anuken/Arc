@@ -272,8 +272,7 @@ public class Server implements EndPoint{
                             continue;
 
                         Connection[] connections = this.connections;
-                        for(int i = 0, n = connections.length; i < n; i++){
-                            Connection connection = connections[i];
+                        for(Connection connection : connections){
                             if(fromAddress.equals(connection.udpRemoteAddress)){
                                 fromConnection = connection;
                                 break;
@@ -427,9 +426,9 @@ public class Server implements EndPoint{
     }
 
     void removeConnection(Connection connection){
-        ArrayList<Connection> temp = new ArrayList(Arrays.asList(connections));
+        ArrayList<Connection> temp = new ArrayList<>(Arrays.asList(connections));
         temp.remove(connection);
-        connections = temp.toArray(new Connection[temp.size()]);
+        connections = temp.toArray(new Connection[0]);
 
         pendingConnections.remove(connection.id);
     }

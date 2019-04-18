@@ -29,8 +29,6 @@ import java.nio.channels.*;
  * @author Nathan Sweet <misc@n4te.com>
  */
 class TcpConnection{
-    static private final int IPTOS_LOWDELAY = 0x10;
-
     SocketChannel socketChannel;
     int keepAliveMillis = 8000;
     final ByteBuffer readBuffer, writeBuffer;
@@ -44,16 +42,14 @@ class TcpConnection{
     private int currentObjectLength;
     private final Object writeLock = new Object();
 
-    public TcpConnection(NetSerializer serialization, int writeBufferSize,
-                         int objectBufferSize){
+    public TcpConnection(NetSerializer serialization, int writeBufferSize, int objectBufferSize){
         this.serialization = serialization;
         writeBuffer = ByteBuffer.allocate(writeBufferSize);
         readBuffer = ByteBuffer.allocate(objectBufferSize);
         readBuffer.flip();
     }
 
-    public SelectionKey accept(Selector selector, SocketChannel socketChannel)
-    throws IOException{
+    public SelectionKey accept(Selector selector, SocketChannel socketChannel) throws IOException{
         writeBuffer.clear();
         readBuffer.clear();
         readBuffer.flip();
@@ -76,26 +72,22 @@ class TcpConnection{
         }
     }
 
-    public void connect(Selector selector, SocketAddress remoteAddress,
-                        int timeout) throws IOException{
+    public void connect(Selector selector, SocketAddress remoteAddress, int timeout) throws IOException{
         close();
         writeBuffer.clear();
         readBuffer.clear();
         readBuffer.flip();
         currentObjectLength = 0;
         try{
-            SocketChannel socketChannel = selector.provider()
-            .openSocketChannel();
+            SocketChannel socketChannel = selector.provider().openSocketChannel();
             Socket socket = socketChannel.socket();
             socket.setTcpNoDelay(true);
             // socket.setTrafficClass(IPTOS_LOWDELAY);
-            socket.connect(remoteAddress, timeout); // Connect using blocking
-            // mode for simplicity.
+            socket.connect(remoteAddress, timeout); // Connect using blocking mode for simplicity.
             socketChannel.configureBlocking(false);
             this.socketChannel = socketChannel;
 
-            selectionKey = socketChannel.register(selector,
-            SelectionKey.OP_READ);
+            selectionKey = socketChannel.register(selector, SelectionKey.OP_READ);
             selectionKey.attach(this);
 
             lastReadTime = lastWriteTime = System.currentTimeMillis();
@@ -234,8 +226,7 @@ class TcpConnection{
             if(start == 0 && !writeToSocket()){
                 // A partial write, set OP_WRITE to be notified when more
                 // writing can occur.
-                selectionKey.interestOps(
-                SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+                selectionKey.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
             }else{
                 // Full write, wake up selector so idle event will be fired.
                 selectionKey.selector().wakeup();
@@ -259,12 +250,10 @@ class TcpConnection{
     }
 
     public boolean needsKeepAlive(long time){
-        return socketChannel != null && keepAliveMillis > 0
-        && time - lastWriteTime > keepAliveMillis;
+        return socketChannel != null && keepAliveMillis > 0 && time - lastWriteTime > keepAliveMillis;
     }
 
     public boolean isTimedOut(long time){
-        return socketChannel != null && timeoutMillis > 0
-        && time - lastReadTime > timeoutMillis;
+        return socketChannel != null && timeoutMillis > 0 && time - lastReadTime > timeoutMillis;
     }
 }
