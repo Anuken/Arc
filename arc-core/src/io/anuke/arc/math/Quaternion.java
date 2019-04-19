@@ -1,7 +1,6 @@
 package io.anuke.arc.math;
 
 import io.anuke.arc.math.geom.Vector3;
-import io.anuke.arc.util.NumberUtils;
 
 import java.io.Serializable;
 
@@ -695,10 +694,10 @@ public class Quaternion implements Serializable{
     public int hashCode(){
         final int prime = 31;
         int result = 1;
-        result = prime * result + NumberUtils.floatToRawIntBits(w);
-        result = prime * result + NumberUtils.floatToRawIntBits(x);
-        result = prime * result + NumberUtils.floatToRawIntBits(y);
-        result = prime * result + NumberUtils.floatToRawIntBits(z);
+        result = prime * result + Float.floatToRawIntBits(w);
+        result = prime * result + Float.floatToRawIntBits(x);
+        result = prime * result + Float.floatToRawIntBits(y);
+        result = prime * result + Float.floatToRawIntBits(z);
         return result;
     }
 
@@ -714,10 +713,10 @@ public class Quaternion implements Serializable{
             return false;
         }
         Quaternion other = (Quaternion)obj;
-        return (NumberUtils.floatToRawIntBits(w) == NumberUtils.floatToRawIntBits(other.w))
-        && (NumberUtils.floatToRawIntBits(x) == NumberUtils.floatToRawIntBits(other.x))
-        && (NumberUtils.floatToRawIntBits(y) == NumberUtils.floatToRawIntBits(other.y))
-        && (NumberUtils.floatToRawIntBits(z) == NumberUtils.floatToRawIntBits(other.z));
+        return (Float.floatToRawIntBits(w) == Float.floatToRawIntBits(other.w))
+        && (Float.floatToRawIntBits(x) == Float.floatToRawIntBits(other.x))
+        && (Float.floatToRawIntBits(y) == Float.floatToRawIntBits(other.y))
+        && (Float.floatToRawIntBits(z) == Float.floatToRawIntBits(other.z));
     }
 
     /**

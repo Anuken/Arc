@@ -14,7 +14,6 @@
 package io.anuke.arc.math.geom;
 
 import io.anuke.arc.math.Mathf;
-import io.anuke.arc.util.NumberUtils;
 
 import java.io.Serializable;
 
@@ -245,9 +244,9 @@ public class Circle implements Serializable, Shape2D{
     public int hashCode(){
         final int prime = 41;
         int result = 1;
-        result = prime * result + NumberUtils.floatToRawIntBits(radius);
-        result = prime * result + NumberUtils.floatToRawIntBits(x);
-        result = prime * result + NumberUtils.floatToRawIntBits(y);
+        result = prime * result + Float.floatToRawIntBits(radius);
+        result = prime * result + Float.floatToRawIntBits(x);
+        result = prime * result + Float.floatToRawIntBits(y);
         return result;
     }
 }

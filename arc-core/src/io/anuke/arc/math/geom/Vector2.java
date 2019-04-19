@@ -4,7 +4,6 @@ import io.anuke.arc.math.Interpolation;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.NumberUtils;
 import io.anuke.arc.util.Time;
 
 import java.io.Serializable;
@@ -484,8 +483,8 @@ public class Vector2 implements Serializable, Vector<Vector2>, Position{
     public int hashCode(){
         final int prime = 31;
         int result = 1;
-        result = prime * result + NumberUtils.floatToIntBits(x);
-        result = prime * result + NumberUtils.floatToIntBits(y);
+        result = prime * result + Float.floatToIntBits(x);
+        result = prime * result + Float.floatToIntBits(y);
         return result;
     }
 
@@ -495,8 +494,8 @@ public class Vector2 implements Serializable, Vector<Vector2>, Position{
         if(obj == null) return false;
         if(getClass() != obj.getClass()) return false;
         Vector2 other = (Vector2)obj;
-        if(NumberUtils.floatToIntBits(x) != NumberUtils.floatToIntBits(other.x)) return false;
-        return NumberUtils.floatToIntBits(y) == NumberUtils.floatToIntBits(other.y);
+        if(Float.floatToIntBits(x) != Float.floatToIntBits(other.x)) return false;
+        return Float.floatToIntBits(y) == Float.floatToIntBits(other.y);
     }
 
     @Override

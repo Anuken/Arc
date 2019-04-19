@@ -14,7 +14,6 @@
 package io.anuke.arc.math.geom;
 
 import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.NumberUtils;
 import io.anuke.arc.util.Scaling;
 
 import java.io.Serializable;
@@ -472,10 +471,10 @@ public class Rectangle implements Serializable, Shape2D{
     public int hashCode(){
         final int prime = 31;
         int result = 1;
-        result = prime * result + NumberUtils.floatToRawIntBits(height);
-        result = prime * result + NumberUtils.floatToRawIntBits(width);
-        result = prime * result + NumberUtils.floatToRawIntBits(x);
-        result = prime * result + NumberUtils.floatToRawIntBits(y);
+        result = prime * result + Float.floatToRawIntBits(height);
+        result = prime * result + Float.floatToRawIntBits(width);
+        result = prime * result + Float.floatToRawIntBits(x);
+        result = prime * result + Float.floatToRawIntBits(y);
         return result;
     }
 
@@ -484,10 +483,10 @@ public class Rectangle implements Serializable, Shape2D{
         if(obj == null) return false;
         if(getClass() != obj.getClass()) return false;
         Rectangle other = (Rectangle)obj;
-        if(NumberUtils.floatToRawIntBits(height) != NumberUtils.floatToRawIntBits(other.height)) return false;
-        if(NumberUtils.floatToRawIntBits(width) != NumberUtils.floatToRawIntBits(other.width)) return false;
-        if(NumberUtils.floatToRawIntBits(x) != NumberUtils.floatToRawIntBits(other.x)) return false;
-        return NumberUtils.floatToRawIntBits(y) == NumberUtils.floatToRawIntBits(other.y);
+        if(Float.floatToRawIntBits(height) != Float.floatToRawIntBits(other.height)) return false;
+        if(Float.floatToRawIntBits(width) != Float.floatToRawIntBits(other.width)) return false;
+        if(Float.floatToRawIntBits(x) != Float.floatToRawIntBits(other.x)) return false;
+        return Float.floatToRawIntBits(y) == Float.floatToRawIntBits(other.y);
     }
 
 }

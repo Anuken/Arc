@@ -5,7 +5,6 @@ import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.math.Quaternion;
 import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.NumberUtils;
 
 import java.io.Serializable;
 
@@ -585,9 +584,9 @@ public class Vector3 implements Serializable, Vector<Vector3>{
     public int hashCode(){
         final int prime = 31;
         int result = 1;
-        result = prime * result + NumberUtils.floatToIntBits(x);
-        result = prime * result + NumberUtils.floatToIntBits(y);
-        result = prime * result + NumberUtils.floatToIntBits(z);
+        result = prime * result + Float.floatToIntBits(x);
+        result = prime * result + Float.floatToIntBits(y);
+        result = prime * result + Float.floatToIntBits(z);
         return result;
     }
 
@@ -597,9 +596,9 @@ public class Vector3 implements Serializable, Vector<Vector3>{
         if(obj == null) return false;
         if(getClass() != obj.getClass()) return false;
         Vector3 other = (Vector3)obj;
-        if(NumberUtils.floatToIntBits(x) != NumberUtils.floatToIntBits(other.x)) return false;
-        if(NumberUtils.floatToIntBits(y) != NumberUtils.floatToIntBits(other.y)) return false;
-        return NumberUtils.floatToIntBits(z) == NumberUtils.floatToIntBits(other.z);
+        if(Float.floatToIntBits(x) != Float.floatToIntBits(other.x)) return false;
+        if(Float.floatToIntBits(y) != Float.floatToIntBits(other.y)) return false;
+        return Float.floatToIntBits(z) == Float.floatToIntBits(other.z);
     }
 
     @Override

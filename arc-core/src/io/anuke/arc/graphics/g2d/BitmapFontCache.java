@@ -8,7 +8,6 @@ import io.anuke.arc.graphics.g2d.BitmapFont.BitmapFontData;
 import io.anuke.arc.graphics.g2d.BitmapFont.Glyph;
 import io.anuke.arc.graphics.g2d.GlyphLayout.GlyphRun;
 import io.anuke.arc.util.Align;
-import io.anuke.arc.util.NumberUtils;
 import io.anuke.arc.util.pooling.Pools;
 
 /**
@@ -140,9 +139,9 @@ public class BitmapFontCache{
                     vertices[i] = newColor;
                 }else{
                     prev = c;
-                    int rgba = NumberUtils.floatToIntColor(c);
+                    int rgba = Color.floatToIntColor(c);
                     rgba = (rgba & 0x00FFFFFF) | alphaBits;
-                    newColor = NumberUtils.intToFloatColor(rgba);
+                    newColor = Color.intToFloatColor(rgba);
                     vertices[i] = newColor;
                 }
             }
@@ -166,7 +165,7 @@ public class BitmapFontCache{
     /** Sets the color of all text currently in the cache. Does not affect subsequently added text. */
     public void setColors(float r, float g, float b, float a){
         int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-        setColors(NumberUtils.intToFloatColor(intBits));
+        setColors(Color.intToFloatColor(intBits));
     }
 
     /**

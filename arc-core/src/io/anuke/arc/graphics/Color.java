@@ -1,7 +1,6 @@
 package io.anuke.arc.graphics;
 
 import io.anuke.arc.math.Mathf;
-import io.anuke.arc.util.NumberUtils;
 
 /**
  * A color class, holding the r, g, b and alpha component as floats in the range [0,1]. All methods perform clamping on the
@@ -122,21 +121,21 @@ public class Color{
      * @param b the blue component, 0 - 255
      * @param a the alpha component, 0 - 255
      * @return the packed color as a float
-     * @see NumberUtils#intToFloatColor(int)
+     * @see Color#intToFloatColor(int)
      */
     public static float toFloatBits(int r, int g, int b, int a){
         int color = (a << 24) | (b << 16) | (g << 8) | r;
-        return NumberUtils.intToFloatColor(color);
+        return intToFloatColor(color);
     }
 
     /**
      * Packs the color components into a 32-bit integer with the format ABGR and then converts it to a float.
      * @return the packed color as a 32-bit float
-     * @see NumberUtils#intToFloatColor(int)
+     * @see Color#intToFloatColor(int)
      */
     public static float toFloatBits(float r, float g, float b, float a){
         int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-        return NumberUtils.intToFloatColor(color);
+        return intToFloatColor(color);
     }
 
     /**
@@ -268,7 +267,7 @@ public class Color{
      * @param color The Color to be modified.
      */
     public static void abgr8888ToColor(Color color, float value){
-        int c = NumberUtils.floatToIntColor(value);
+        int c = floatToIntColor(value);
         color.a = ((c & 0xff000000) >>> 24) / 255f;
         color.b = ((c & 0x00ff0000) >>> 16) / 255f;
         color.g = ((c & 0x0000ff00) >>> 8) / 255f;
@@ -283,6 +282,26 @@ public class Color{
     /** Creates a color from 0-255 scaled RGB values. */
     public static Color fromRGB(int r, int g, int b){
         return new Color(r / 255f, g / 255f, b / 255f);
+    }
+
+    /**
+     * Converts the color from a float ABGR encoding to an int ABGR encoding. The alpha is expanded from 0-254 in the float
+     * encoding (see {@link #intToFloatColor(int)}) to 0-255, which means converting from int to float and back to int can be
+     * lossy.
+     */
+    public static int floatToIntColor(float value){
+        int intBits = Float.floatToRawIntBits(value);
+        intBits |= (int)((intBits >>> 24) * (255f / 254f)) << 24;
+        return intBits;
+    }
+
+    /**
+     * Encodes the ABGR int color as a float. The alpha is compressed to 0-254 to avoid using bits in the NaN range (see
+     * {@link Float#intBitsToFloat(int)} javadocs). Rendering which uses colors encoded as floats should expand the 0-254 back to
+     * 0-255.
+     */
+    public static float intToFloatColor(int value){
+        return Float.intBitsToFloat(value & 0xfeffffff);
     }
 
     public Color rand(){
@@ -561,21 +580,21 @@ public class Color{
 
     @Override
     public int hashCode(){
-        int result = (r != +0.0f ? NumberUtils.floatToIntBits(r) : 0);
-        result = 31 * result + (g != +0.0f ? NumberUtils.floatToIntBits(g) : 0);
-        result = 31 * result + (b != +0.0f ? NumberUtils.floatToIntBits(b) : 0);
-        result = 31 * result + (a != +0.0f ? NumberUtils.floatToIntBits(a) : 0);
+        int result = (r != +0.0f ? Float.floatToIntBits(r) : 0);
+        result = 31 * result + (g != +0.0f ? Float.floatToIntBits(g) : 0);
+        result = 31 * result + (b != +0.0f ? Float.floatToIntBits(b) : 0);
+        result = 31 * result + (a != +0.0f ? Float.floatToIntBits(a) : 0);
         return result;
     }
 
     /**
      * Packs the color components into a 32-bit integer with the format ABGR and then converts it to a float. Alpha is compressed
-     * from 0-255 to 0-254 to avoid using float bits in the NaN range (see {@link NumberUtils#intToFloatColor(int)}).
+     * from 0-255 to 0-254 to avoid using float bits in the NaN range (see {@link Color#intToFloatColor(int)}).
      * @return the packed color as a 32-bit float
      */
     public float toFloatBits(){
         int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-        return NumberUtils.intToFloatColor(color);
+        return intToFloatColor(color);
     }
 
     /**

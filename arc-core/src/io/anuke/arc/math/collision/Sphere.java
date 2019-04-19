@@ -2,7 +2,6 @@ package io.anuke.arc.math.collision;
 
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.geom.Vector3;
-import io.anuke.arc.util.NumberUtils;
 
 import java.io.Serializable;
 
@@ -41,7 +40,7 @@ public class Sphere implements Serializable{
         final int prime = 71;
         int result = 1;
         result = prime * result + this.center.hashCode();
-        result = prime * result + NumberUtils.floatToRawIntBits(this.radius);
+        result = prime * result + Float.floatToRawIntBits(this.radius);
         return result;
     }
 
