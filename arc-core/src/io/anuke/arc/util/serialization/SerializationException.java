@@ -1,7 +1,5 @@
 package io.anuke.arc.util.serialization;
 
-import io.anuke.arc.util.StringBuilder;
-
 /**
  * Indicates an error during serialization due to misconfiguration or during deserialization due to invalid input data.
  * @author Nathan Sweet

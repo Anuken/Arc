@@ -19,7 +19,6 @@ package io.anuke.arc.util.io;
 
 import io.anuke.arc.collection.ObjectMap;
 import io.anuke.arc.collection.ObjectMap.Entry;
-import io.anuke.arc.util.StringBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;

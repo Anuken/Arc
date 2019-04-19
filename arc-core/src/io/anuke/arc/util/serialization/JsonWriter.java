@@ -1,7 +1,7 @@
 package io.anuke.arc.util.serialization;
 
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.util.StringBuilder;
+import io.anuke.arc.util.Strings;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -166,19 +166,26 @@ public class JsonWriter extends Writer{
             String string = value.toString();
             if(value instanceof Number || value instanceof Boolean) return string;
             StringBuilder buffer = new StringBuilder(string);
-            buffer.replace('\\', "\\\\").replace('\r', "\\r").replace('\n', "\\n").replace('\t', "\\t");
+            Strings.replace(buffer, '\\', "\\\\");
+            Strings.replace(buffer, '\r', "\\r");
+            Strings.replace(buffer, '\n', "\\n");
+            Strings.replace(buffer, '\t', "\\t");
             if(this == OutputType.minimal && !string.equals("true") && !string.equals("false") && !string.equals("null")
             && !string.contains("//") && !string.contains("/*")){
                 int length = buffer.length();
                 if(length > 0 && buffer.charAt(length - 1) != ' ' && minimalValuePattern.matcher(buffer).matches())
                     return buffer.toString();
             }
-            return '"' + buffer.replace('"', "\\\"").toString() + '"';
+            Strings.replace(buffer, '"', "\\\"");
+            return '"' + buffer.toString() + '"';
         }
 
         public String quoteName(String value){
             StringBuilder buffer = new StringBuilder(value);
-            buffer.replace('\\', "\\\\").replace('\r', "\\r").replace('\n', "\\n").replace('\t', "\\t");
+            Strings.replace(buffer, '\\', "\\\\");
+            Strings.replace(buffer, '\r', "\\r");
+            Strings.replace(buffer, '\n', "\\n");
+            Strings.replace(buffer, '\t', "\\t");
             switch(this){
                 case minimal:
                     if(!value.contains("//") && !value.contains("/*") && minimalNamePattern.matcher(buffer).matches())
@@ -186,7 +193,8 @@ public class JsonWriter extends Writer{
                 case javascript:
                     if(javascriptPattern.matcher(buffer).matches()) return buffer.toString();
             }
-            return '"' + buffer.replace('"', "\\\"").toString() + '"';
+            Strings.replace(buffer, '"', "\\\"");
+            return '"' + buffer.toString() + '"';
         }
     }
 

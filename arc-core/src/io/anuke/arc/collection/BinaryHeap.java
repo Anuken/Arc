@@ -1,7 +1,5 @@
 package io.anuke.arc.collection;
 
-import io.anuke.arc.util.StringBuilder;
-
 @SuppressWarnings("unchecked")
 /** @author Nathan Sweet */
 public class BinaryHeap<T extends BinaryHeap.Node>{

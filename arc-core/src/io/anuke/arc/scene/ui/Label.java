@@ -13,7 +13,6 @@ import io.anuke.arc.scene.style.Drawable;
 import io.anuke.arc.scene.style.SkinReader.ReadContext;
 import io.anuke.arc.scene.style.Style;
 import io.anuke.arc.util.Align;
-import io.anuke.arc.util.StringBuilder;
 
 import static io.anuke.arc.Core.bundle;
 import static io.anuke.arc.Core.scene;
@@ -105,11 +104,10 @@ public class Label extends Element{
     }
 
     public boolean textEquals(CharSequence other){
-        int length = text.length;
-        char[] chars = text.chars;
+        int length = text.length();
         if(length != other.length()) return false;
         for(int i = 0; i < length; i++)
-            if(chars[i] != other.charAt(i)) return false;
+            if(text.charAt(i) != other.charAt(i)) return false;
         return true;
     }
 
@@ -187,7 +185,7 @@ public class Label extends Element{
         float textWidth, textHeight;
         if(wrap || text.indexOf("\n") != -1){
             // If the text can span multiple lines, determine the text's actual size so it can be aligned within the label.
-            layout.setText(font, text, 0, text.length, Color.WHITE, width, lineAlign, wrap, ellipsis);
+            layout.setText(font, text, 0, text.length(), Color.WHITE, width, lineAlign, wrap, ellipsis);
             textWidth = layout.width;
             textHeight = layout.height;
 
@@ -213,7 +211,7 @@ public class Label extends Element{
         }
         if(!cache.getFont().isFlipped()) y += textHeight;
 
-        layout.setText(font, text, 0, text.length, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
+        layout.setText(font, text, 0, text.length(), Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
         cache.setText(layout, x, y);
 
         if(fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);

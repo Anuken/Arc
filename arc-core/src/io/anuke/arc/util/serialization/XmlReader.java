@@ -8,7 +8,6 @@ import io.anuke.arc.collection.ObjectMap;
 import io.anuke.arc.collection.ObjectMap.Entry;
 import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.StringBuilder;
 import io.anuke.arc.util.Strings;
 import io.anuke.arc.util.io.StreamUtils;
 

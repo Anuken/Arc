@@ -28,8 +28,6 @@
 
 package io.anuke.arc.util.serialization;
 
-import io.anuke.arc.util.StringBuilder;
-
 public class Base64Coder{
     public static final CharMap regularMap = new CharMap('+', '/'), urlsafeMap = new CharMap('-', '_');
     // The line separator string of the operating system.

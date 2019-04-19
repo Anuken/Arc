@@ -1,7 +1,6 @@
 package io.anuke.arc.collection;
 
 import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.StringBuilder;
 
 import java.util.NoSuchElementException;
 

@@ -16,8 +16,6 @@
 
 package io.anuke.arc.collection;
 
-import io.anuke.arc.util.StringBuilder;
-
 import java.util.NoSuchElementException;
 
 /**Queue for ints.*/

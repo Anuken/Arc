@@ -4,7 +4,6 @@ import io.anuke.arc.function.BiConsumer;
 import io.anuke.arc.function.Supplier;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.StringBuilder;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

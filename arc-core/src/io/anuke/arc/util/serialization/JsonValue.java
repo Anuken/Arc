@@ -1,6 +1,5 @@
 package io.anuke.arc.util.serialization;
 
-import io.anuke.arc.util.StringBuilder;
 import io.anuke.arc.util.serialization.JsonWriter.OutputType;
 
 import java.io.IOException;
