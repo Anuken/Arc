@@ -98,15 +98,9 @@ public class Label extends Element{
 
     private void setTextInternal(CharSequence newText){
         if(newText == null) newText = "";
-        if(newText instanceof StringBuilder){
-            if(text.equals(newText)) return;
-            text.setLength(0);
-            text.append((StringBuilder)newText);
-        }else{
-            if(textEquals(newText)) return;
-            text.setLength(0);
-            text.append(newText);
-        }
+        if(textEquals(newText)) return;
+        text.setLength(0);
+        text.append(newText);
         invalidateHierarchy();
     }
 

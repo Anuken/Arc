@@ -1313,6 +1313,7 @@ public class StringBuilder implements Appendable, CharSequence{
         return this;
     }
 
+    @Override
     public int hashCode(){
         final int prime = 31;
         int result = 1;
@@ -1321,6 +1322,7 @@ public class StringBuilder implements Appendable, CharSequence{
         return result;
     }
 
+    @Override
     public boolean equals(Object obj){
         if(this == obj) return true;
         if(obj == null) return false;
