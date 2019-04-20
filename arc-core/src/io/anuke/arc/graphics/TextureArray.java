@@ -14,7 +14,6 @@ import java.util.Map;
  * @author Tomski
  */
 public class TextureArray extends GLTexture{
-
     final static Map<Application, Array<TextureArray>> managedTextureArrays = new HashMap<>();
 
     private TextureArrayData data;

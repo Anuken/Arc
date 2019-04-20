@@ -31,12 +31,15 @@ public class PerformanceCounters{
             counters.get(i).tick(deltaTime);
     }
 
-    public StringBuilder toString(final StringBuilder sb){
+    @Override
+    public String toString(){
+        counters.sort((a, b) -> -Float.compare(a.load.value, b.load.value));
+        StringBuilder sb = new StringBuilder();
         sb.setLength(0);
         for(int i = 0; i < counters.size; i++){
-            if(i != 0) sb.append("; ");
             counters.get(i).toString(sb);
+            if(i != counters.size - 1) sb.append("\n");
         }
-        return sb;
+        return sb.toString();
     }
 }

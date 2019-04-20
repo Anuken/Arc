@@ -57,7 +57,7 @@ public class PerformanceCounter{
             return;
         }
 
-        time.put(current);
+        time.put(current / nano2seconds);
 
         final float currentLoad = delta == 0f ? 0f : current / delta;
         load.put((delta > 1f) ? currentLoad : delta * currentLoad + (1f - delta) * load.latest);
@@ -103,7 +103,24 @@ public class PerformanceCounter{
 
     /** Creates a string in the form of "name [time: value, load: value]" */
     public StringBuilder toString(final StringBuilder sb){
-        sb.append(name).append(": [time: ").append(time.value).append(", load: ").append(load.value).append("]");
+
+        sb.append(name).append(":\n  time: ");
+        commas(sb, (int)time.value);
+        sb.append("\n  load: ").append((int)(load.value * 100)).append('%');
         return sb;
+    }
+
+    private void commas(StringBuilder builder, int number){
+        StringBuilder sub = new StringBuilder();
+        int index = 0;
+        while(number > 10){
+            int digit = number % 10;
+            sub.append(digit);
+            number /= 10;
+            if(++index % 3 == 0 && number >= 10){
+                sub.append(',');
+            }
+        }
+        builder.append(sub.reverse());
     }
 }
