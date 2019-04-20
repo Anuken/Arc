@@ -67,6 +67,7 @@ public class SpriteCache implements Disposable{
     private Cache currentCache;
     private float colorPacked = Color.WHITE_FLOAT_BITS;
     private Shader customShader = null;
+    private Texture lastBoundTexture;
 
     /** Creates a cache that uses indexed geometry and can contain up to 1000 images. */
     public SpriteCache(){
@@ -479,6 +480,7 @@ public class SpriteCache implements Disposable{
         if(drawing) throw new IllegalStateException("end must be called before begin.");
         if(currentCache != null) throw new IllegalStateException("endCache must be called before begin");
         renderCalls = 0;
+        lastBoundTexture = null;
         combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 
         Core.gl20.glDepthMask(false);
@@ -523,7 +525,10 @@ public class SpriteCache implements Disposable{
         int textureCount = cache.textureCount;
         for(int i = 0; i < textureCount; i++){
             int count = counts[i];
-            textures[i].bind();
+            if(lastBoundTexture != textures[i]){
+                textures[i].bind();
+                lastBoundTexture = textures[i];
+            }
             if(customShader != null)
                 mesh.render(customShader, GL20.GL_TRIANGLES, offset, count);
             else
@@ -549,7 +554,10 @@ public class SpriteCache implements Disposable{
         int[] counts = cache.counts;
         int textureCount = cache.textureCount;
         for(int i = 0; i < textureCount; i++){
-            textures[i].bind();
+            if(lastBoundTexture != textures[i]){
+                textures[i].bind();
+                lastBoundTexture = textures[i];
+            }
             int count = counts[i];
             if(count > length){
                 i = textureCount;

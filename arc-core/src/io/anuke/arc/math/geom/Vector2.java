@@ -272,6 +272,11 @@ public class Vector2 implements Serializable, Vector<Vector2>, Position{
         return "(" + x + "," + y + ")";
     }
 
+    public void clamp(float minx, float maxx, float miny, float maxy){
+        x = Mathf.clamp(x, minx, maxx);
+        y = Mathf.clamp(y, miny, maxy);
+    }
+
     /**
      * Sets this {@code Vector2} to the value represented by the specified string according to the format of {@link #toString()}.
      * @param v the string.

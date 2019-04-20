@@ -18,16 +18,13 @@ package io.anuke.arc.graphics.profiling;
 
 import io.anuke.arc.graphics.GL20;
 
-import java.nio.Buffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.nio.*;
 
 /**
  * @author Daniel Holderbaum
  * @author Jan Polák
  */
 public class GL20Interceptor extends GLInterceptor implements GL20{
-
     protected final GL20 gl20;
 
     protected GL20Interceptor(GLProfiler glProfiler, GL20 gl20){
