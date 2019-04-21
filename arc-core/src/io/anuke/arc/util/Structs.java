@@ -23,6 +23,10 @@ public class Structs{
         return false;
     }
 
+    public static <T> boolean contains(T[] array, Predicate<T> value){
+        return find(array, value) != null;
+    }
+
     public static <T> T find(T[] array, Predicate<T> value){
         for(T t : array){
             if(value.test(t)) return t;

@@ -437,6 +437,14 @@ public class FileHandle{
     }
 
     /**
+     * Writes a string without appending it.
+     * @see #writeString(String, boolean)
+     */
+    public void writeString(String string){
+        writeString(string, false);
+    }
+
+    /**
      * Writes the specified string to the file using the default charset. Parent directories will be created if necessary.
      * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
      * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or

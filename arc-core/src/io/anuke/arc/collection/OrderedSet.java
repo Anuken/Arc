@@ -38,6 +38,11 @@ public class OrderedSet<T> extends ObjectSet<T>{
         items.addAll(set.items);
     }
 
+    @Override
+    public T first(){
+        return items.first();
+    }
+
     public boolean add(T key){
         if(!super.add(key)) return false;
         items.add(key);
