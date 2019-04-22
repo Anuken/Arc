@@ -3,6 +3,7 @@ package io.anuke.arc.scene.ui;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.function.Consumer;
 import io.anuke.arc.scene.ui.layout.Table;
+import io.anuke.arc.scene.ui.layout.Unit;
 
 import static io.anuke.arc.Core.bundle;
 import static io.anuke.arc.Core.settings;
@@ -126,7 +127,7 @@ public class SettingsDialog extends Dialog{
                     settings.save();
                 }
                 rebuild();
-            }).margin(14).width(240f).pad(6).left();
+            }).margin(14).width(240f).pad(6);
 
             if(rebuilt != null) rebuilt.accept(this);
         }
@@ -164,8 +165,7 @@ public class SettingsDialog extends Dialog{
                 });
 
                 box.left();
-                table.add(box).minWidth(box.getPrefWidth() + 50).left().padTop(3f);
-                table.add().grow();
+                table.add(box).left().padTop(3f);
                 table.row();
             }
         }
@@ -202,8 +202,12 @@ public class SettingsDialog extends Dialog{
 
                 slider.change();
 
-                table.add(label).minWidth(label.getPrefWidth() + 50).left().padTop(3f);
-                table.add(slider).width(180).padTop(3f);
+                table.table(t -> {
+                    t.left().defaults().left();
+                    t.add(label).minWidth(label.getPrefWidth() / Unit.dp.scl(1f) + 50);
+                    t.add(slider).width(180);
+                }).left().padTop(3);
+
                 table.row();
             }
         }
