@@ -196,7 +196,7 @@ public class Element implements Layout{
     }
 
 
-    /**Adds a listener which listens for drag (tocuh down and move) events.
+    /**Adds a listener which listens for drag (touch down and move) events.
      * Results are returned in positive deltas.*/
     public void dragged(PositionConsumer cons){
         addListener(new InputListener(){

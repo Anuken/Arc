@@ -203,20 +203,29 @@ public class QuadTree<T>{
      * <p>
      * This will never result in false positives.
      */
-    public void getIntersect(Consumer<T> out, Rectangle toCheck){
+    public void getIntersect(Consumer<T> out, float x, float y, float width, float height){
         if(!leaf){
-            if(topLeftChild.bounds.overlaps(toCheck)) topLeftChild.getIntersect(out, toCheck);
-            if(topRightChild.bounds.overlaps(toCheck)) topRightChild.getIntersect(out, toCheck);
-            if(bottomLeftChild.bounds.overlaps(toCheck)) bottomLeftChild.getIntersect(out, toCheck);
-            if(bottomRightChild.bounds.overlaps(toCheck)) bottomRightChild.getIntersect(out, toCheck);
+            if(topLeftChild.bounds.overlaps(x, y, width, height)) topLeftChild.getIntersect(out, x, y, width, height);
+            if(topRightChild.bounds.overlaps(x, y, width, height)) topRightChild.getIntersect(out, x, y, width, height);
+            if(bottomLeftChild.bounds.overlaps(x, y, width, height)) bottomLeftChild.getIntersect(out, x, y, width, height);
+            if(bottomRightChild.bounds.overlaps(x, y, width, height)) bottomRightChild.getIntersect(out, x, y, width, height);
         }
 
         for(int i = 0; i < objects.size; i++){
             provider.getBoundingBox(objects.get(i), tmp);
-            if(tmp.overlaps(toCheck)){
+            if(tmp.overlaps(x, y, width, height)){
                 out.accept(objects.get(i));
             }
         }
+    }
+
+    /**
+     * Processes objects that may intersect the given rectangle.
+     * <p>
+     * This will never result in false positives.
+     */
+    public void getIntersect(Consumer<T> out, Rectangle rect){
+        getIntersect(out, rect.x, rect.y, rect.width, rect.height);
     }
 
     /**

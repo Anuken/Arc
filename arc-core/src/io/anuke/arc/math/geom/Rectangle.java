@@ -259,6 +259,13 @@ public class Rectangle implements Serializable, Shape2D{
     }
 
     /**
+     * @return whether this rectangle overlaps the other rectangle.
+     */
+    public boolean overlaps(float rx, float ry, float rwidth, float rheight){
+        return x < rx + rwidth && x + width > rx && y < ry + rheight && y + height > ry;
+    }
+
+    /**
      * Sets the values of the given rectangle to this rectangle.
      * @param rect the other rectangle
      * @return this rectangle for chaining

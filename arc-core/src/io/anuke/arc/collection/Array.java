@@ -142,13 +142,13 @@ public class Array<T> implements Iterable<T>{
         return sum;
     }
 
-    public <E extends T> void each(Predicate<T> pred, Consumer<E> consumer){
+    public <E extends T> void each(Predicate<? super T> pred, Consumer<E> consumer){
         for(int i = 0; i < size; i++){
             if(pred.test(items[i])) consumer.accept((E)items[i]);
         }
     }
 
-    public void each(Consumer<T> consumer){
+    public void each(Consumer<? super T> consumer){
         for(int i = 0; i < size; i++){
             consumer.accept(items[i]);
         }
