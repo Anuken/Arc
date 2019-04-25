@@ -113,11 +113,11 @@ public class PerformanceCounter{
     private void commas(StringBuilder builder, int number){
         StringBuilder sub = new StringBuilder();
         int index = 0;
-        while(number > 10){
+        while(number > 0){
             int digit = number % 10;
             sub.append(digit);
             number /= 10;
-            if(++index % 3 == 0 && number >= 10){
+            if(++index % 3 == 0 && number > 0){
                 sub.append(',');
             }
         }
