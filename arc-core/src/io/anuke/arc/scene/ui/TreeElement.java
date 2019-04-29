@@ -1,5 +1,6 @@
 package io.anuke.arc.scene.ui;
 
+import io.anuke.arc.Core;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.Draw;
@@ -23,7 +24,7 @@ import static io.anuke.arc.Core.scene;
  * {@link ChangeEvent} is fired when the selected node changes.
  * @author Nathan Sweet
  */
-public class Tree extends WidgetGroup{
+public class TreeElement extends WidgetGroup{
     final Array<Node> rootNodes = new Array<>();
     final Selection<Node> selection;
     TreeStyle style;
@@ -34,15 +35,15 @@ public class Tree extends WidgetGroup{
     private Node foundNode;
     private ClickListener clickListener;
 
-    public Tree(){
+    public TreeElement(){
         this(scene.skin.get(TreeStyle.class));
     }
 
-    public Tree(String styleName){
+    public TreeElement(String styleName){
         this(scene.skin.get(styleName, TreeStyle.class));
     }
 
-    public Tree(TreeStyle style){
+    public TreeElement(TreeStyle style){
         selection = new Selection<Node>(){
             protected void changed(){
                 switch(size()){
@@ -105,7 +106,7 @@ public class Tree extends WidgetGroup{
                 if(selection.getMultiple() && selection.hasItems() && Core.input.shift()){
                     // Select range (shift).
                     if(rangeStart == null) rangeStart = node;
-                    Node rangeStart = Tree.this.rangeStart;
+                    Node rangeStart = TreeElement.this.rangeStart;
                     if(!Core.input.ctrl()) selection.clear();
                     float start = rangeStart.element.getY(), end = node.element.getY();
                     if(start > end)
@@ -116,7 +117,7 @@ public class Tree extends WidgetGroup{
                     }
 
                     selection.fireChangeEvent();
-                    Tree.this.rangeStart = rangeStart;
+                    TreeElement.this.rangeStart = rangeStart;
                     return;
                 }
                 if(node.children.size > 0 && (!selection.getMultiple() || !Core.input.ctrl())){
@@ -140,7 +141,7 @@ public class Tree extends WidgetGroup{
 
             public void exit(InputEvent event, float x, float y, int pointer, Element toActor){
                 super.exit(event, x, y, pointer, toActor);
-                if(toActor == null || !toActor.isDescendantOf(Tree.this)) setOverNode(null);
+                if(toActor == null || !toActor.isDescendantOf(TreeElement.this)) setOverNode(null);
             }
         });
     }
@@ -441,7 +442,7 @@ public class Tree extends WidgetGroup{
         }
 
         /** Called to add the element to the tree when the node's parent is expanded. */
-        protected void addToTree(Tree tree){
+        protected void addToTree(TreeElement tree){
             tree.addChild(element);
             if(!expanded) return;
             for(int i = 0, n = children.size; i < n; i++)
@@ -449,7 +450,7 @@ public class Tree extends WidgetGroup{
         }
 
         /** Called to remove the element from the tree when the node's parent is collapsed. */
-        protected void removeFromTree(Tree tree){
+        protected void removeFromTree(TreeElement tree){
             tree.removeChild(element);
             if(!expanded) return;
             Object[] children = this.children.items;
@@ -473,7 +474,7 @@ public class Tree extends WidgetGroup{
         }
 
         public void remove(){
-            Tree tree = getTree();
+            TreeElement tree = getTree();
             if(tree != null)
                 tree.remove(this);
             else if(parent != null) //
@@ -483,14 +484,14 @@ public class Tree extends WidgetGroup{
         public void remove(Node node){
             children.removeValue(node, true);
             if(!expanded) return;
-            Tree tree = getTree();
+            TreeElement tree = getTree();
             if(tree == null) return;
             node.removeFromTree(tree);
             if(children.size == 0) expanded = false;
         }
 
         public void removeAll(){
-            Tree tree = getTree();
+            TreeElement tree = getTree();
             if(tree != null){
                 for(int i = 0, n = children.size; i < n; i++)
                     children.get(i).removeFromTree(tree);
@@ -499,10 +500,10 @@ public class Tree extends WidgetGroup{
         }
 
         /** Returns the tree this node is currently in, or null. */
-        public Tree getTree(){
+        public TreeElement getTree(){
             Group parent = element.getParent();
-            if(!(parent instanceof Tree)) return null;
-            return (Tree)parent;
+            if(!(parent instanceof TreeElement)) return null;
+            return (TreeElement)parent;
         }
 
         public Element getActor(){
@@ -517,7 +518,7 @@ public class Tree extends WidgetGroup{
             if(expanded == this.expanded) return;
             this.expanded = expanded;
             if(children.size == 0) return;
-            Tree tree = getTree();
+            TreeElement tree = getTree();
             if(tree == null) return;
             if(expanded){
                 for(int i = 0, n = children.size; i < n; i++)
@@ -536,7 +537,7 @@ public class Tree extends WidgetGroup{
 
         public void updateChildren(){
             if(!expanded) return;
-            Tree tree = getTree();
+            TreeElement tree = getTree();
             if(tree == null) return;
             for(int i = 0, n = children.size; i < n; i++)
                 children.get(i).addToTree(tree);
@@ -579,19 +580,19 @@ public class Tree extends WidgetGroup{
         public Node findNode(Object object){
             if(object == null) throw new IllegalArgumentException("object cannot be null.");
             if(object.equals(this.object)) return this;
-            return Tree.findNode(children, object);
+            return TreeElement.findNode(children, object);
         }
 
         /** Collapses all nodes under and including this node. */
         public void collapseAll(){
             setExpanded(false);
-            Tree.collapseAll(children);
+            TreeElement.collapseAll(children);
         }
 
         /** Expands all nodes under and including this node. */
         public void expandAll(){
             setExpanded(true);
-            if(children.size > 0) Tree.expandAll(children);
+            if(children.size > 0) TreeElement.expandAll(children);
         }
 
         /** Expands all parent nodes of this node. */
@@ -612,7 +613,7 @@ public class Tree extends WidgetGroup{
         }
 
         public void findExpandedObjects(Array<Object> objects){
-            if(expanded && !Tree.findExpandedObjects(children, objects)) objects.add(object);
+            if(expanded && !TreeElement.findExpandedObjects(children, objects)) objects.add(object);
         }
 
         public void restoreExpandedObjects(Array objects){
@@ -635,7 +636,7 @@ public class Tree extends WidgetGroup{
     }
 
     /**
-     * The style for a {@link Tree}.
+     * The style for a {@link TreeElement}.
      * @author Nathan Sweet
      */
     public static class TreeStyle{

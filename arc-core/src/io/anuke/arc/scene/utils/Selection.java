@@ -1,5 +1,6 @@
 package io.anuke.arc.scene.utils;
 
+import io.anuke.arc.Core;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.OrderedSet;
 import io.anuke.arc.scene.Element;
