@@ -8,6 +8,7 @@ import io.anuke.arc.function.Consumer;
 import io.anuke.arc.input.*;
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.math.geom.Vector3;
+import io.anuke.arc.util.OS;
 
 import static io.anuke.arc.Core.keybinds;
 
@@ -133,6 +134,21 @@ public abstract class Input{
      */
     public float getPressure(int pointer){
         return isTouched(pointer) ? 1f : 0f;
+    }
+
+    /** Returns whether one of the two shift keys is currently pressed.*/
+    public boolean shift(){
+        return keyDown(KeyCode.SHIFT_LEFT) || keyDown(KeyCode.SHIFT_RIGHT);
+    }
+
+    /** Returns whether one of the two control keys is currently pressed - or, on Macs, the cmd key.*/
+    public boolean ctrl(){
+        return OS.isMac ? keyDown(KeyCode.SYM) : keyDown(KeyCode.CONTROL_LEFT) || keyDown(KeyCode.CONTROL_RIGHT);
+    }
+
+    /** Returns whether one of the two alt keys is pressed.*/
+    public boolean alt(){
+        return keyDown(KeyCode.ALT_LEFT) || keyDown(KeyCode.ALT_RIGHT);
     }
 
     /** Returns whether the key is pressed. */

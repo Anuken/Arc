@@ -38,13 +38,13 @@ public class Selection<T> implements Disableable, Iterable<T>{
         if(isDisabled) return;
         snapshot();
         try{
-            if((toggle || (!required && selected.size == 1) || UIUtils.ctrl()) && selected.contains(item)){
+            if((toggle || (!required && selected.size == 1) || Core.input.ctrl()) && selected.contains(item)){
                 if(required && selected.size == 1) return;
                 selected.remove(item);
                 lastSelected = null;
             }else{
                 boolean modified = false;
-                if(!multiple || (!toggle && !UIUtils.ctrl())){
+                if(!multiple || (!toggle && !Core.input.ctrl())){
                     if(selected.size == 1 && selected.contains(item)) return;
                     modified = selected.size > 0;
                     selected.clear();

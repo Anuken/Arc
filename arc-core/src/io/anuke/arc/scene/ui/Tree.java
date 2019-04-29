@@ -12,7 +12,6 @@ import io.anuke.arc.scene.style.Drawable;
 import io.anuke.arc.scene.ui.layout.WidgetGroup;
 import io.anuke.arc.scene.utils.Layout;
 import io.anuke.arc.scene.utils.Selection;
-import io.anuke.arc.scene.utils.UIUtils;
 
 import static io.anuke.arc.Core.scene;
 
@@ -103,11 +102,11 @@ public class Tree extends WidgetGroup{
                 Node node = getNodeAt(y);
                 if(node == null) return;
                 if(node != getNodeAt(getTouchDownY())) return;
-                if(selection.getMultiple() && selection.hasItems() && UIUtils.shift()){
+                if(selection.getMultiple() && selection.hasItems() && Core.input.shift()){
                     // Select range (shift).
                     if(rangeStart == null) rangeStart = node;
                     Node rangeStart = Tree.this.rangeStart;
-                    if(!UIUtils.ctrl()) selection.clear();
+                    if(!Core.input.ctrl()) selection.clear();
                     float start = rangeStart.element.getY(), end = node.element.getY();
                     if(start > end)
                         selectNodes(rootNodes, end, start);
@@ -120,7 +119,7 @@ public class Tree extends WidgetGroup{
                     Tree.this.rangeStart = rangeStart;
                     return;
                 }
-                if(node.children.size > 0 && (!selection.getMultiple() || !UIUtils.ctrl())){
+                if(node.children.size > 0 && (!selection.getMultiple() || !Core.input.ctrl())){
                     // Toggle expanded.
                     float rowX = node.element.getX();
                     if(node.icon != null) rowX -= iconSpacingRight + node.icon.getMinWidth();

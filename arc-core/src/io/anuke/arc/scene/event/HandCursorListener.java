@@ -4,7 +4,7 @@ import io.anuke.arc.Core;
 import io.anuke.arc.Graphics.Cursor.SystemCursor;
 import io.anuke.arc.function.BooleanProvider;
 import io.anuke.arc.scene.Element;
-import io.anuke.arc.scene.utils.UIUtils;
+import io.anuke.arc.scene.utils.Disableable;
 
 public class HandCursorListener extends ClickListener{
     private BooleanProvider enabled = () -> true;
@@ -18,7 +18,7 @@ public class HandCursorListener extends ClickListener{
     public void enter(InputEvent event, float x, float y, int pointer, Element fromActor){
         super.enter(event, x, y, pointer, fromActor);
 
-        if(pointer != -1 || !enabled.get() || UIUtils.isDisabled(event.targetActor) || UIUtils.isDisabled(fromActor)){
+        if(pointer != -1 || !enabled.get() || isDisabled(event.targetActor) || isDisabled(fromActor)){
             return;
         }
 
@@ -36,5 +36,9 @@ public class HandCursorListener extends ClickListener{
             Core.graphics.restoreCursor();
         }
         set = false;
+    }
+
+    static boolean isDisabled(Element element){
+        return element != null && (((element instanceof Disableable && ((Disableable)element).isDisabled()) || !element.isVisible()) || isDisabled(element.getParent()));
     }
 }

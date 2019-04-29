@@ -26,7 +26,6 @@ import io.anuke.arc.scene.style.Drawable;
 import io.anuke.arc.scene.style.SkinReader.ReadContext;
 import io.anuke.arc.scene.style.Style;
 import io.anuke.arc.scene.utils.Disableable;
-import io.anuke.arc.scene.utils.UIUtils;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.Timer.Task;
 import io.anuke.arc.util.pooling.Pools;
@@ -971,7 +970,7 @@ public class TextField extends Element implements Disableable{
             if(stage == null || stage.getKeyboardFocus() != TextField.this) return false;
 
             boolean repeat = false;
-            boolean ctrl = UIUtils.ctrl();
+            boolean ctrl = Core.input.ctrl();
             boolean jump = ctrl && !passwordMode;
 
             if(ctrl){
@@ -1000,7 +999,7 @@ public class TextField extends Element implements Disableable{
                 }
             }
 
-            if(UIUtils.shift()){
+            if(Core.input.shift()){
                 if(keycode == KeyCode.INSERT) paste(clipboard.getContents(), true);
                 if(keycode == KeyCode.FORWARD_DEL) cut(true);
                 selection:
@@ -1097,7 +1096,7 @@ public class TextField extends Element implements Disableable{
             if(OS.isMac && Core.input.keyDown(KeyCode.SYM)) return true;
 
             if((character == TAB) && focusTraversal){
-                next(UIUtils.shift());
+                next(Core.input.shift());
             }else{
                 boolean delete = character == DELETE;
                 boolean backspace = character == BACKSPACE;

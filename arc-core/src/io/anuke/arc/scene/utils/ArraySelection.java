@@ -21,7 +21,7 @@ public class ArraySelection<T> extends Selection<T>{
         if(item == null) throw new IllegalArgumentException("item cannot be null.");
         if(isDisabled) return;
         int index = array.indexOf(item, false);
-        if(selected.size > 0 && rangeSelect && multiple && UIUtils.shift()){
+        if(selected.size > 0 && rangeSelect && multiple && Core.input.shift()){
             int oldRangeState = rangeStart;
             snapshot();
             // Select new range.
@@ -31,7 +31,7 @@ public class ArraySelection<T> extends Selection<T>{
                 end = start;
                 start = temp;
             }
-            if(!UIUtils.ctrl()) selected.clear();
+            if(!Core.input.ctrl()) selected.clear();
             for(int i = start; i <= end; i++)
                 selected.add(array.get(i));
             if(fireChangeEvent()){
