@@ -17,15 +17,14 @@ import java.util.zip.ZipFile;
  * @author Nathan Sweet
  */
 public class SharedLibraryLoader{
-    static private final HashSet<String> loadedLibraries = new HashSet();
+    static private final HashSet<String> loadedLibraries = new HashSet<>();
     public static boolean isWindows = System.getProperty("os.name").contains("Windows");
     public static boolean isLinux = System.getProperty("os.name").contains("Linux");
     public static boolean isMac = System.getProperty("os.name").contains("Mac");
     public static boolean isIos = false;
     public static boolean isAndroid = false;
     public static boolean isARM = System.getProperty("os.arch").startsWith("arm");
-    public static boolean is64Bit = System.getProperty("os.arch").equals("amd64")
-    || System.getProperty("os.arch").equals("x86_64");
+    public static boolean is64Bit = System.getProperty("os.arch").equals("amd64") || System.getProperty("os.arch").equals("x86_64");
     // JDK 8 only.
     public static String abi = (System.getProperty("sun.arch.abi") != null ? System.getProperty("sun.arch.abi") : "");
 
