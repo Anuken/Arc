@@ -3,6 +3,7 @@ package io.anuke.arc.files;
 import io.anuke.arc.Core;
 import io.anuke.arc.Files;
 import io.anuke.arc.Files.FileType;
+import io.anuke.arc.function.Consumer;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.io.StreamUtils;
 
@@ -504,6 +505,18 @@ public class FileHandle{
             throw new ArcRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
         }finally{
             StreamUtils.closeQuietly(output);
+        }
+    }
+
+    /** Recursively iterates through all files in this directory.
+     * Directories are not handled.*/
+    public void walk(Consumer<FileHandle> cons){
+        if(isDirectory()){
+            for(FileHandle file : list()){
+                file.walk(cons);
+            }
+        }else{
+            cons.accept(this);
         }
     }
 
