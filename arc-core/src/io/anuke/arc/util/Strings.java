@@ -46,12 +46,21 @@ public class Strings{
 
     public static String join(String separator, String... strings){
         StringBuilder builder = new StringBuilder();
-        for(int i = 0; i < strings.length; i++){
-            builder.append(strings[i]);
-            if(i != strings.length - 1){
-                builder.append(separator);
-            }
+        for(String s : strings){
+            builder.append(s);
+            builder.append(separator);
         }
+        builder.setLength(builder.length() - separator.length());
+        return builder.toString();
+    }
+
+    public static String join(String separator, Iterable<String> strings){
+        StringBuilder builder = new StringBuilder();
+        for(String s : strings){
+            builder.append(s);
+            builder.append(separator);
+        }
+        builder.setLength(builder.length() - separator.length());
         return builder.toString();
     }
 

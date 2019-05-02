@@ -171,11 +171,7 @@ public class Point2 implements Serializable{
 
     @Override
     public int hashCode(){
-        final int prime = 53;
-        int result = 1;
-        result = prime * result + this.x;
-        result = prime * result + this.y;
-        return result;
+        return x * 0xC13F + y * 0x91E1;
     }
 
     @Override

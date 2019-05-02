@@ -16,7 +16,7 @@ public class Pools{
     }
 
     /**
-     * Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. Note the max size is ignored
+     * Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. Note that the max size is ignored for some reason.
      * if this is not the first time this pool has been requested.
      */
     public static <T> Pool<T> get(Class<T> type, Supplier<T> supplier, int max){
