@@ -1,17 +1,12 @@
 package io.anuke.arc.collection;
 
-import io.anuke.arc.function.Consumer;
-import io.anuke.arc.function.FloatFunction;
-import io.anuke.arc.function.Function;
-import io.anuke.arc.function.Predicate;
+import io.anuke.arc.function.*;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Select;
 import io.anuke.arc.util.reflect.ArrayReflection;
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * A resizable, ordered or unordered array of objects. If unordered, this class avoids a memory copy when removing elements (the
@@ -168,6 +163,14 @@ public class Array<T> implements Iterable<T>{
             arr.add(mapper.get(items[i]));
         }
         return arr;
+    }
+
+    public <R> R reduce(R initial, BiFunction<T, R, R> reducer){
+        R result = initial;
+        for(int i = 0; i < size; i++){
+            result = reducer.get(items[i], result);
+        }
+        return result;
     }
 
     public boolean contains(Predicate<T> predicate){
