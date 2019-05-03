@@ -1,11 +1,8 @@
 package io.anuke.arc.backends.lwjgl3;
 
-import io.anuke.arc.Application;
-import io.anuke.arc.Graphics;
+import io.anuke.arc.*;
 import io.anuke.arc.Graphics.Cursor.SystemCursor;
-import io.anuke.arc.graphics.GL20;
-import io.anuke.arc.graphics.GL30;
-import io.anuke.arc.graphics.Pixmap;
+import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.glutils.GLVersion;
 import io.anuke.arc.graphics.glutils.HdpiMode;
 import io.anuke.arc.util.Disposable;
@@ -359,7 +356,14 @@ public class Lwjgl3Graphics extends Graphics implements Disposable{
     public void setUndecorated(boolean undecorated){
         Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
         config.setDecorated(!undecorated);
+        boolean maximized = window.isMaximized();
+        if(maximized && undecorated){
+            window.restoreWindow();
+        }
         GLFW.glfwSetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_DECORATED, undecorated ? GLFW.GLFW_FALSE : GLFW.GLFW_TRUE);
+        if(maximized && undecorated){
+            window.maximizeWindow();
+        }
     }
 
     @Override

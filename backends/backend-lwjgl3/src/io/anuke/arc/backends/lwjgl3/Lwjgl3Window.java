@@ -5,8 +5,7 @@ import io.anuke.arc.Core;
 import io.anuke.arc.Files;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.graphics.Pixmap;
-import io.anuke.arc.util.Disposable;
-import io.anuke.arc.util.SharedLibraryLoader;
+import io.anuke.arc.util.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
 
@@ -40,6 +39,7 @@ public class Lwjgl3Window implements Disposable{
         @Override
         public void invoke(long windowHandle, final boolean maximized){
             postRunnable(() -> {
+                Lwjgl3Window.this.maximized = maximized;
                 if(windowListener != null){
                     windowListener.maximized(maximized);
                 }
@@ -109,6 +109,8 @@ public class Lwjgl3Window implements Disposable{
         }
     };
     private boolean requestRendering = false;
+
+    protected boolean maximized;
 
     Lwjgl3Window(ApplicationListener listener, Lwjgl3ApplicationConfiguration config){
         this.listener = listener;
@@ -290,6 +292,10 @@ public class Lwjgl3Window implements Disposable{
      */
     public void maximizeWindow(){
         GLFW.glfwMaximizeWindow(windowHandle);
+    }
+
+    public boolean isMaximized(){
+        return maximized;
     }
 
     /**

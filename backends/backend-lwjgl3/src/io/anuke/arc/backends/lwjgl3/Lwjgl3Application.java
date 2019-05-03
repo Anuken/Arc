@@ -386,6 +386,7 @@ public class Lwjgl3Application implements Application{
 
     private void createWindow(Lwjgl3Window window, Lwjgl3ApplicationConfiguration config, long sharedContext){
         long windowHandle = createGlfwWindow(config, sharedContext);
+        window.maximized = config.windowMaximized;
         window.create(windowHandle);
         window.setVisible(config.initialVisible);
 
