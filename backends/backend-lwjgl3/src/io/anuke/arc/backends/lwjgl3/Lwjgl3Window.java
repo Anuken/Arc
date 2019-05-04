@@ -121,7 +121,7 @@ public class Lwjgl3Window implements Disposable{
     }
 
     static void setIcon(long windowHandle, String[] imagePaths, Files.FileType imageFileType){
-        if(SharedLibraryLoader.isMac)
+        if(OS.isMac)
             return;
 
         Pixmap[] pixmaps = new Pixmap[imagePaths.length];
@@ -137,7 +137,7 @@ public class Lwjgl3Window implements Disposable{
     }
 
     static void setIcon(long windowHandle, Pixmap[] images){
-        if(SharedLibraryLoader.isMac)
+        if(OS.isMac)
             return;
 
         GLFWImage.Buffer buffer = GLFWImage.malloc(images.length);

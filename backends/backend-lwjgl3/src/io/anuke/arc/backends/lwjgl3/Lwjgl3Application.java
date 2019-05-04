@@ -5,13 +5,8 @@ import io.anuke.arc.backends.lwjgl3.audio.OpenALAudio;
 import io.anuke.arc.backends.lwjgl3.audio.mock.MockAudio;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.graphics.glutils.GLVersion;
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.Clipboard;
-import io.anuke.arc.util.Log;
-import io.anuke.arc.util.SharedLibraryLoader;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
+import io.anuke.arc.util.*;
+import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.Callback;
 
@@ -100,7 +95,7 @@ public class Lwjgl3Application implements Application{
         if(config.useGL30){
             GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, config.gles30ContextMajorVersion);
             GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, config.gles30ContextMinorVersion);
-            if(SharedLibraryLoader.isMac){
+            if(OS.isMac){
                 // hints mandatory on OS X for GL 3.2+ context creation, but fail on Windows if the
                 // WGL_ARB_create_context extension is not available
                 // see: http://www.glfw.org/docs/latest/compat.html

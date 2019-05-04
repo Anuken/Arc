@@ -10,6 +10,8 @@ import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static io.anuke.arc.util.OS.*;
+
 /**
  * Loads shared libraries from a natives jar file (desktop) or arm folders (Android). For desktop projects, have the natives jar
  * in the classpath, for Android projects put the shared libraries in the libs/armeabi and libs/armeabi-v7a folders.
@@ -18,36 +20,6 @@ import java.util.zip.ZipFile;
  */
 public class SharedLibraryLoader{
     static private final HashSet<String> loadedLibraries = new HashSet<>();
-    public static boolean isWindows = System.getProperty("os.name").contains("Windows");
-    public static boolean isLinux = System.getProperty("os.name").contains("Linux");
-    public static boolean isMac = System.getProperty("os.name").contains("Mac");
-    public static boolean isIos = false;
-    public static boolean isAndroid = false;
-    public static boolean isARM = System.getProperty("os.arch").startsWith("arm");
-    public static boolean is64Bit = System.getProperty("os.arch").equals("amd64") || System.getProperty("os.arch").equals("x86_64");
-    // JDK 8 only.
-    public static String abi = (System.getProperty("sun.arch.abi") != null ? System.getProperty("sun.arch.abi") : "");
-
-    static{
-        boolean isMOEiOS = "iOS".equals(System.getProperty("moe.platform.name"));
-        String vm = System.getProperty("java.runtime.name");
-        if(vm != null && vm.contains("Android Runtime")){
-            isAndroid = true;
-            isWindows = false;
-            isLinux = false;
-            isMac = false;
-            is64Bit = false;
-        }
-        if(isMOEiOS || (!isAndroid && !isWindows && !isLinux && !isMac)){
-            isIos = true;
-            isAndroid = false;
-            isWindows = false;
-            isLinux = false;
-            isMac = false;
-            is64Bit = false;
-        }
-    }
-
     private String nativesJar;
 
     public SharedLibraryLoader(){

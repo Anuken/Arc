@@ -18,11 +18,9 @@ package io.anuke.arc.backends.lwjgl3;
 
 import io.anuke.arc.Net;
 import io.anuke.arc.net.*;
-import io.anuke.arc.util.SharedLibraryLoader;
+import io.anuke.arc.util.OS;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  * LWJGL implementation of the {@link Net} API, it could be reused in other Desktop backends since it doesn't depend on LWJGL.
@@ -59,13 +57,13 @@ public class Lwjgl3Net implements Net{
     @Override
     public boolean openURI(String url){
         try{
-            if(SharedLibraryLoader.isMac){
+            if(OS.isMac){
                 Class.forName("com.apple.eio.FileManager").getMethod("openURL", String.class).invoke(null, url);
                 return true;
-            }else if(SharedLibraryLoader.isLinux){
+            }else if(OS.isLinux){
                 exec("xdg-open " + url);
                 return true;
-            }else if(SharedLibraryLoader.isWindows){
+            }else if(OS.isWindows){
                 exec("rundll32 url.dll,FileProtocolHandler " + url);
                 return true;
             }
