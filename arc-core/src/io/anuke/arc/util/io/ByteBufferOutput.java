@@ -1,6 +1,7 @@
 package io.anuke.arc.util.io;
 
 import java.io.DataOutput;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
 /** DataOutput wrapper of ByteBuffer. */
@@ -87,9 +88,13 @@ public class ByteBufferOutput implements DataOutput{
 
     @Override
     public void writeUTF(String s){
-        byte[] bytes = s.getBytes();
-        if(bytes.length >= Short.MAX_VALUE) throw new IllegalArgumentException("Input string is too long!");
-        buffer.putShort((short) bytes.length);
-        buffer.put(bytes);
+        try{
+            byte[] bytes = s.getBytes("UTF-8");
+            if(bytes.length >= Short.MAX_VALUE) throw new IllegalArgumentException("Input string is too long!");
+            buffer.putShort((short)bytes.length);
+            buffer.put(bytes);
+        }catch(UnsupportedEncodingException e){
+            throw new RuntimeException(e);
+        }
     }
 }

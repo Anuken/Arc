@@ -7,7 +7,7 @@ import io.anuke.arc.function.Consumer;
 import io.anuke.arc.function.Supplier;
 import io.anuke.arc.util.OS;
 import io.anuke.arc.util.io.DefaultSerializers;
-import io.anuke.arc.util.io.ReusableByteArrayInputStream;
+import io.anuke.arc.util.io.ReusableByteInStream;
 import io.anuke.arc.util.io.StreamUtils.OptimizedByteArrayOutputStream;
 
 import java.io.*;
@@ -25,7 +25,7 @@ public class Settings{
     protected boolean hasErrored;
 
     private ByteArrayOutputStream byteStream = new OptimizedByteArrayOutputStream(16);
-    private ReusableByteArrayInputStream byteInputStream = new ReusableByteArrayInputStream();
+    private ReusableByteInStream byteInputStream = new ReusableByteInStream();
     private DataOutputStream dataOutput = new DataOutputStream(byteStream);
     private DataInputStream dataInput = new DataInputStream(byteInputStream);
     private ObjectMap<Class<?>, TypeSerializer<?>> serializers = new ObjectMap<>();

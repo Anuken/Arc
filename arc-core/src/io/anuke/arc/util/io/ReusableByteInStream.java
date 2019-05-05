@@ -3,10 +3,10 @@ package io.anuke.arc.util.io;
 import java.io.ByteArrayInputStream;
 
 /** A {@link ByteArrayInputStream} that can have its content bytes reset. */
-public class ReusableByteArrayInputStream extends ByteArrayInputStream{
+public class ReusableByteInStream extends ByteArrayInputStream{
 
     /** {@link #setBytes} must be called before this stream can be used. */
-    public ReusableByteArrayInputStream(){
+    public ReusableByteInStream(){
         super(new byte[0]);
     }
 

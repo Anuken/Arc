@@ -118,13 +118,25 @@ public class Strings{
         return p >= 0;
     }
 
-    /** Returns Integer.MIN_VALUE if parsing failed. */
-    public static int parseInt(String s){
+    public static long parseLong(String s, long defaultValue){
+        try{
+            return Long.parseLong(s);
+        }catch(Exception e){
+            return defaultValue;
+        }
+    }
+
+    public static int parseInt(String s, int defaultValue){
         try{
             return Integer.parseInt(s);
         }catch(Exception e){
-            return Integer.MIN_VALUE;
+            return defaultValue;
         }
+    }
+
+    /** Returns Integer.MIN_VALUE if parsing failed. */
+    public static int parseInt(String s){
+        return parseInt(s, Integer.MIN_VALUE);
     }
 
     public static boolean canParsePositiveFloat(String s){
@@ -144,10 +156,14 @@ public class Strings{
 
     /** Returns Float.NEGATIVE_INFINITY if parsing failed. */
     public static float parseFloat(String s){
+        return parseFloat(s, Float.MIN_VALUE);
+    }
+
+    public static float parseFloat(String s, float defaultValue){
         try{
             return Float.parseFloat(s);
         }catch(Exception e){
-            return Float.NEGATIVE_INFINITY;
+            return defaultValue;
         }
     }
 
