@@ -5,7 +5,7 @@ import io.anuke.arc.collection.ObjectMap.Entry;
 import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.function.Consumer;
 import io.anuke.arc.function.Supplier;
-import io.anuke.arc.util.OS;
+import io.anuke.arc.util.*;
 import io.anuke.arc.util.io.DefaultSerializers;
 import io.anuke.arc.util.io.ReusableByteInStream;
 import io.anuke.arc.util.io.StreamUtils.OptimizedByteArrayOutputStream;
@@ -16,19 +16,24 @@ import static io.anuke.arc.Core.keybinds;
 
 public class Settings{
     protected final static byte TYPE_BOOL = 0, TYPE_INT = 1, TYPE_LONG = 2, TYPE_FLOAT = 3, TYPE_STRING = 4, TYPE_BINARY = 5;
+    /**In miliseconds; min spacing between backups.*/
+    protected final static long backupCopyTime = 1000;
 
+    //general state data
     protected FileHandle dataDirectory;
     protected String appName;
     protected ObjectMap<String, Object> defaults = new ObjectMap<>();
     protected ObjectMap<String, Object> values = new ObjectMap<>();
     protected Consumer<Throwable> errorHandler;
+    protected long lastSaveTime;
     protected boolean hasErrored;
 
-    private ByteArrayOutputStream byteStream = new OptimizedByteArrayOutputStream(16);
-    private ReusableByteInStream byteInputStream = new ReusableByteInStream();
-    private DataOutputStream dataOutput = new DataOutputStream(byteStream);
-    private DataInputStream dataInput = new DataInputStream(byteInputStream);
-    private ObjectMap<Class<?>, TypeSerializer<?>> serializers = new ObjectMap<>();
+    //IO utility objects
+    protected ByteArrayOutputStream byteStream = new OptimizedByteArrayOutputStream(16);
+    protected ReusableByteInStream byteInputStream = new ReusableByteInStream();
+    protected DataOutputStream dataOutput = new DataOutputStream(byteStream);
+    protected DataInputStream dataInput = new DataInputStream(byteInputStream);
+    protected ObjectMap<Class<?>, TypeSerializer<?>> serializers = new ObjectMap<>();
 
     public Settings(){
         DefaultSerializers.register(this);
@@ -99,8 +104,28 @@ public class Settings{
 
     /** Loads a settings file into {@link #values} using the specified appName. */
     public void loadValues(){
-        FileHandle file = getSettingsFile();
+        //don't load settings files if neither of them exist
+        if(!getSettingsFile().exists() && !getBackupSettingsFile().exists()){
+            return;
+        }
 
+        try{
+            loadValues(getSettingsFile());
+        }catch(Exception e){
+            Log.err("Failed to load base settings file, attempting to load backup.", e);
+            try{
+                //attempt to load backup
+                loadValues(getBackupSettingsFile());
+                //copy to normal settings file for future use
+                getBackupSettingsFile().copyTo(getSettingsFile());
+                Log.info("Loaded backup settings file.");
+            }catch(Exception e2){
+                Log.err("Failed to load backup settings file.", e2);
+            }
+        }
+    }
+
+    public void loadValues(FileHandle file) throws IOException{
         try(DataInputStream stream = new DataInputStream(file.read(8192))){
             int amount = stream.readInt();
             for(int i = 0; i < amount; i++){
@@ -131,8 +156,6 @@ public class Settings{
                         break;
                 }
             }
-        }catch(Exception e){
-            //error ignored, file must not be found
         }
     }
 
@@ -172,11 +195,21 @@ public class Settings{
         }catch(IOException e){
             throw new RuntimeException("Error writing preferences: " + file, e);
         }
+
+        if(Time.millis() - lastSaveTime > backupCopyTime){
+            file.copyTo(getBackupSettingsFile());
+        }
+
+        lastSaveTime = Time.millis();
     }
 
     /** Returns the file used for writing settings to. Not available on all platforms! */
     public FileHandle getSettingsFile(){
         return getDataDirectory().child("settings.bin");
+    }
+
+    public FileHandle getBackupSettingsFile(){
+        return getDataDirectory().child("settings_backup.bin");
     }
 
     /** Returns the directory where all settings and data is placed. */
