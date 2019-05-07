@@ -177,6 +177,12 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
             put(entry.key, entry.value);
     }
 
+    /** Put all the keys of this other map into this map, and return this map for chaining. */
+    public ObjectMap<K, V> merge(ObjectMap<? extends K, ? extends V> map){
+        putAll(map);
+        return this;
+    }
+
     /** Skips checks for existing keys. */
     private void putResize(K key, V value){
         // Check for empty buckets.

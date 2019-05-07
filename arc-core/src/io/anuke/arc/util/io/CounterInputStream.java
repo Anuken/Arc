@@ -25,7 +25,8 @@ public class CounterInputStream extends FilterInputStream{
 
     @Override
     public int read(byte[] bytes, int offset, int length) throws IOException {
-        count += length;
-        return in.read(bytes, offset, length);
+        int total = in.read(bytes, offset, length);
+        count += total;
+        return total;
     }
 }

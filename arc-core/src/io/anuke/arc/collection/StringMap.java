@@ -15,6 +15,14 @@ public class StringMap extends ObjectMap<String, String>{
         return map;
     }
 
+    public StringMap(){
+
+    }
+
+    public StringMap(ObjectMap<? extends String, ? extends String> map){
+        super(map);
+    }
+
     public int getInt(String name){
         return getInt(name, 0);
     }
