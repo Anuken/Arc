@@ -1,10 +1,12 @@
 package io.anuke.arc.util.serialization;
 
 import io.anuke.arc.collection.*;
+import io.anuke.arc.collection.IntSet.IntSetIterator;
 import io.anuke.arc.collection.ObjectMap.Entry;
 import io.anuke.arc.collection.Queue;
 import io.anuke.arc.collection.OrderedMap.OrderedMapValues;
 import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.util.Log;
 import io.anuke.arc.util.io.StreamUtils;
 import io.anuke.arc.util.reflect.*;
 import io.anuke.arc.util.serialization.JsonValue.PrettyPrintSettings;
@@ -517,6 +519,28 @@ public class Json{
                 writeArrayEnd();
                 return;
             }
+            if(value instanceof ObjectSet){
+                if(knownType == null) knownType = ObjectSet.class;
+                writeObjectStart(actualType, knownType);
+                writer.name("values");
+                writeArrayStart();
+                for(Object entry : (ObjectSet)value)
+                    writeValue(entry, elementType, null);
+                writeArrayEnd();
+                writeObjectEnd();
+                return;
+            }
+            if(value instanceof IntSet){
+                if(knownType == null) knownType = IntSet.class;
+                writeObjectStart(actualType, knownType);
+                writer.name("values");
+                writeArrayStart();
+                for(IntSetIterator iter = ((IntSet)value).iterator(); iter.hasNext; )
+                    writeValue(Integer.valueOf(iter.next()), Integer.class, null);
+                writeArrayEnd();
+                writeObjectEnd();
+                return;
+            }
             if(value instanceof io.anuke.arc.collection.Queue){
                 if(knownType != null && actualType != knownType && actualType != io.anuke.arc.collection.Queue.class)
                     throw new SerializationException("Serialization of a Queue other than the known type is not supported.\n"
@@ -990,6 +1014,18 @@ public class Json{
                     for(JsonValue child = jsonData.child; child != null; child = child.next)
                         result.put(child.name, readValue(elementType, null, child));
 
+                    return (T)result;
+                }
+                if(object instanceof ObjectSet){
+                    ObjectSet result = (ObjectSet)object;
+                    for(JsonValue child = jsonData.getChild("values"); child != null; child = child.next)
+                        result.add(readValue(elementType, null, child));
+                    return (T)result;
+                }
+                if(object instanceof IntSet){
+                    IntSet result = (IntSet)object;
+                    for(JsonValue child = jsonData.getChild("values"); child != null; child = child.next)
+                        result.add(child.asInt());
                     return (T)result;
                 }
                 if(object instanceof ArrayMap){

@@ -37,9 +37,9 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
     private int stashCapacity;
     private int pushIterations;
 
-    private Entries entries1, entries2;
-    private Values values1, values2;
-    private Keys keys1, keys2;
+    Entries entries1, entries2;
+    Values values1, values2;
+    Keys keys1, keys2;
 
     public static <K, V> ObjectMap<K, V> of(Object... values){
         ObjectMap<K, V> map = new ObjectMap<>();
@@ -300,6 +300,13 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
         valueTable[index] = value;
         stashSize++;
         size++;
+    }
+
+    public V getThrow(K key, Supplier<? extends RuntimeException> error){
+        if(!containsKey(key)){
+            throw error.get();
+        }
+        return get(key);
     }
 
     /** Tries to get the value. If it does not exist, it creates a new instance using the supplier and places it, returning the value.*/
