@@ -6,7 +6,6 @@ import io.anuke.arc.collection.ObjectMap.Entry;
 import io.anuke.arc.collection.Queue;
 import io.anuke.arc.collection.OrderedMap.OrderedMapValues;
 import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.util.Log;
 import io.anuke.arc.util.io.StreamUtils;
 import io.anuke.arc.util.reflect.*;
 import io.anuke.arc.util.serialization.JsonValue.PrettyPrintSettings;
@@ -470,6 +469,10 @@ public class Json{
      * @param elementType May be null if the type is unknown.
      */
     public void writeValue(Object value, Class knownType, Class elementType){
+        if(knownType != null && knownType.isAnonymousClass()){
+            knownType = knownType.getSuperclass();
+        }
+
         try{
             if(value == null){
                 writer.value(null);
@@ -483,7 +486,7 @@ public class Json{
                 return;
             }
 
-            Class actualType = value.getClass();
+            Class actualType = value.getClass().isAnonymousClass() ? value.getClass().getSuperclass() : value.getClass();
 
             if(actualType.isPrimitive() || actualType == String.class || actualType == Integer.class || actualType == Boolean.class
             || actualType == Float.class || actualType == Long.class || actualType == Double.class || actualType == Short.class
