@@ -331,8 +331,6 @@ public class Button extends Table implements Disableable{
             checked = read.draw("checked");
             checkedOver = read.draw("checkedOver");
             disabled = read.draw("disabled");
-
-            //TODO read offsets
         }
     }
 }

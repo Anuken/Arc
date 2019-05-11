@@ -372,7 +372,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
             }
         }
 
-        //TODO verify if this works
         if(data.getData() != null){
             String scheme = data.getData().getScheme();
             if(scheme.equals("file")){
