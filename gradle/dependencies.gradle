@@ -57,9 +57,7 @@ libraries.robovm = [
         "com.mobidevelop.robovm:robovm-cocoatouch:${versions.robovm}"
 ]
 
-libraries.android = [
-        "com.android.support:support-v4:${versions.androidSupport}"
-]
+libraries.android = []
 
 libraries.gwt = [
         "com.google.gwt:gwt-user:${versions.gwt}",
