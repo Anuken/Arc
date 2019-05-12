@@ -279,6 +279,18 @@ public class Rectangle implements Serializable, Shape2D{
         return this;
     }
 
+    public Rectangle grow(float amount){
+        return grow(amount, amount);
+    }
+
+    public Rectangle grow(float amountX, float amountY){
+        x -= amountX/2f;
+        y -= amountY/2f;
+        width += amountX;
+        height += amountY;
+        return this;
+    }
+
     /**
      * Merges this rectangle with the other rectangle. The rectangle should not have negative width or negative height.
      * @param rect the other rectangle
