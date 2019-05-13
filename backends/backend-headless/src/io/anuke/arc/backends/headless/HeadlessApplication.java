@@ -1,16 +1,10 @@
 package io.anuke.arc.backends.headless;
 
-import io.anuke.arc.Application;
-import io.anuke.arc.ApplicationListener;
-import io.anuke.arc.Core;
-import io.anuke.arc.Settings;
-import io.anuke.arc.backends.headless.mock.MockAudio;
-import io.anuke.arc.backends.headless.mock.MockGraphics;
-import io.anuke.arc.backends.headless.mock.MockInput;
+import io.anuke.arc.*;
+import io.anuke.arc.backends.headless.mock.*;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.Clipboard;
-import io.anuke.arc.util.Time;
+import io.anuke.arc.function.Consumer;
+import io.anuke.arc.util.*;
 
 /**
  * a headless implementation of a GDX Application primarily intended to be used in servers
@@ -25,20 +19,22 @@ public class HeadlessApplication implements Application{
     protected final Array<ApplicationListener> listeners = new Array<>();
     protected final Array<Runnable> runnables = new Array<>();
     protected final Array<Runnable> executedRunnables = new Array<>();
+    protected final Consumer<Throwable> exceptionHandler;
     private final long renderInterval;
     protected Thread mainLoopThread;
     protected boolean running = true;
 
     public HeadlessApplication(ApplicationListener listener){
-        this(listener, null);
+        this(listener, null, t -> { throw new RuntimeException(t); });
     }
 
-    public HeadlessApplication(ApplicationListener listener, HeadlessApplicationConfiguration config){
+    public HeadlessApplication(ApplicationListener listener, HeadlessApplicationConfiguration config, Consumer<Throwable> exceptionHandler){
         if(config == null)
             config = new HeadlessApplicationConfiguration();
 
         addListener(listener);
         this.files = new HeadlessFiles();
+        this.exceptionHandler = exceptionHandler;
         this.net = new HeadlessNet();
         // the following elements are not applicable for headless applications
         // they are only implemented as mock objects
@@ -66,10 +62,7 @@ public class HeadlessApplication implements Application{
                 try{
                     HeadlessApplication.this.mainLoop();
                 }catch(Throwable t){
-                    if(t instanceof RuntimeException)
-                        throw (RuntimeException)t;
-                    else
-                        throw new ArcRuntimeException(t);
+                    exceptionHandler.accept(t);
                 }
             }
         };
