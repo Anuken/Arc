@@ -46,7 +46,6 @@ public interface Application extends Disposable{
      * <p><code>
      * final Graphics graphics = Gdx.graphics;
      */
-    //TODO move to timer task since posting things isn't really app specific and could run in an update()... somewhere
     void post(Runnable runnable);
 
     /**

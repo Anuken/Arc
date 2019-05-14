@@ -41,7 +41,7 @@ public class TexturePacker {
 	private final Settings settings;
 	private final Packer packer;
 	private final ImageProcessor imageProcessor;
-	private final Array<InputImage> inputImages = new Array();
+	private final Array<InputImage> inputImages = new Array<>();
 	private ProgressListener progress;
 
 	/** @param rootDir See {@link #setRootDir(File)}. */

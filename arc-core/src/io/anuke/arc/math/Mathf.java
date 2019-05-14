@@ -441,21 +441,13 @@ public final class Mathf{
     }
 
     /** Mod function that works properly for negative numbers. */
-    public static int mod(int i, int m){
-        if(i >= 0){
-            return i % m;
-        }else{
-            return i % m + m;
-        }
+    public static float mod(float x, float n){
+        return ((x % n) + n) % n;
     }
 
     /** Mod function that works properly for negative numbers. */
-    public static float mod(float i, float m){
-        if(i >= 0){
-            return i % m;
-        }else{
-            return i % m + m;
-        }
+    public static int mod(int x, int n){
+        return ((x % n) + n) % n;
     }
 
     /**Converts a 0-1 value to 0-1 when it is in [0, offset].*/
