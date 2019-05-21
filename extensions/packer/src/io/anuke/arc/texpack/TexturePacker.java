@@ -680,10 +680,10 @@ public class TexturePacker {
 		return false;
 	}
 
-	static public interface Packer {
-		public Array<Page> pack (Array<Rect> inputRects);
+	public interface Packer {
+		Array<Page> pack (Array<Rect> inputRects);
 
-		public Array<Page> pack (ProgressListener progress, Array<Rect> inputRects);
+		Array<Page> pack (ProgressListener progress, Array<Rect> inputRects);
 	}
 
 	static final class InputImage {
