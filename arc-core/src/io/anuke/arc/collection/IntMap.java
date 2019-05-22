@@ -39,6 +39,18 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>>{
     private Values values1, values2;
     private Keys keys1, keys2;
 
+    public static <V> IntMap<V> of(Object... values){
+        IntMap<V> map = new IntMap<>();
+
+        for(int i = 0; i < values.length / 2; i++){
+            Object key = values[i * 2];
+            int keyInt = (key instanceof Character ? ((Character) key).charValue() : (Integer)key);
+            map.put(keyInt, (V) values[i * 2 + 1]);
+        }
+
+        return map;
+    }
+
     /** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
     public IntMap(){
         this(51, 0.8f);
