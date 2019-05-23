@@ -70,6 +70,13 @@ public final class ScreenUtils{
         return pixmap;
     }
 
+    public static Pixmap getFrameBufferPixmap(int x, int y, int w, int h, boolean flip){
+        byte[] lines = getFrameBufferPixels(x, y, w, h, flip);
+        Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+        BufferUtils.copy(lines, 0, pixmap.getPixels(), lines.length);
+        return pixmap;
+    }
+
     /**
      * Returns the default framebuffer contents as a byte[] array with a length equal to screen width * height * 4. The byte[] will
      * always contain RGBA8888 data. Because of differences in screen and image origins the framebuffer contents should be flipped

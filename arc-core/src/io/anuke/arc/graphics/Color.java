@@ -308,6 +308,11 @@ public class Color{
         return set(Mathf.random(), Mathf.random(), Mathf.random(), 1f);
     }
 
+    /** Shorthand for {@link #rgba8888(Color)}.*/
+    public int rgba(){
+        return Color.rgba8888(this);
+    }
+
     /**
      * Sets this color to the given color.
      * @param color the Color
@@ -430,6 +435,11 @@ public class Color{
     public Color set(int rgba){
         rgba8888ToColor(this, rgba);
         return this;
+    }
+
+    /** Returns the sum of the RGB values of this color.*/
+    public float sum(){
+        return r + g + b;
     }
 
     /**
