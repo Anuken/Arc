@@ -34,6 +34,24 @@ public class Structs{
         return null;
     }
 
+    public static <T> int indexOf(T[] array, T value){
+        for(int i = 0; i < array.length; i++){
+            if(array[i] == value){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static <T> int indexOf(T[] array, Predicate<T> value){
+        for(int i = 0; i < array.length; i++){
+            if(value.test(array[i])){
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public static <T> T[] filter(Class<T> type, T[] array, Predicate<T> value){
         Array<T> out = new Array<>(true, array.length, type);
         for(T t : array){
