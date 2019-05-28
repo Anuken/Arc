@@ -1,6 +1,7 @@
 package io.anuke.arc.math.geom;
 
 import io.anuke.arc.collection.Array;
+import io.anuke.arc.collection.FloatArray;
 import io.anuke.arc.collection.IntArray;
 import io.anuke.arc.function.PositionConsumer;
 import io.anuke.arc.function.SegmentConsumer;
@@ -32,7 +33,6 @@ public final class Geometry{
     };
     static private final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2();
 
-
     public static Point2 d4(int i){
         return d4[Mathf.mod(i, 4)];
     }
@@ -43,6 +43,12 @@ public final class Geometry{
 
     public static Point2 d8edge(int i){
         return d8edge[Mathf.mod(i, 4)];
+    }
+
+    public static FloatArray vectorsToFloats(Array<Vector2> result){
+        FloatArray out = new FloatArray(result.size * 2);
+        result.each(v -> out.add(v.x, v.y));
+        return out;
     }
 
     public static <T extends Position> T findClosest(float x, float y, T[] list){

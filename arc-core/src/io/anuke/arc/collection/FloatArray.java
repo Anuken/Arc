@@ -1,6 +1,7 @@
 package io.anuke.arc.collection;
 
 import io.anuke.arc.math.Mathf;
+import io.anuke.arc.math.geom.Vector2;
 
 import java.util.Arrays;
 
@@ -69,6 +70,15 @@ public class FloatArray{
     /** @see #FloatArray(float[]) */
     public static FloatArray with(float... array){
         return new FloatArray(array);
+    }
+
+    /** Converts this float array to a vector2 array, with pairs used for coordinates.*/
+    public Array<Vector2> toVector2Array(){
+        Array<Vector2> out = new Array<>(size/2);
+        for(int i = 0; i < size; i+= 2){
+            out.add(new Vector2(items[i], items[i+1]));
+        }
+        return out;
     }
 
     public void add(float value){
