@@ -54,6 +54,10 @@ public class Draw{
         Core.batch.setColor(color.r, color.g, color.b, Core.batch.getColor().a);
     }
 
+    public static void colorMul(Color color, float mul){
+        color(color.r * mul, color.g * mul, color.b * mul, 1f);
+    }
+
     public static void color(Color color){
         Core.batch.setColor(color);
     }
@@ -79,7 +83,7 @@ public class Draw{
     }
 
     public static void color(){
-        Core.batch.setColor(Color.WHITE);
+        Core.batch.setPackedColor(Color.WHITE_FLOAT_BITS);
     }
 
     public static void color(float r, float g, float b){
