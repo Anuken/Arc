@@ -3,6 +3,7 @@ package io.anuke.arc.util;
 
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.function.Consumer;
+import io.anuke.arc.function.FloatFunction;
 import io.anuke.arc.function.Function;
 import io.anuke.arc.function.Predicate;
 import io.anuke.arc.math.Mathf;
@@ -90,11 +91,11 @@ public class Structs{
         return result;
     }
 
-    public static <T> T findMin(T[] arr, Function<T, Integer> proc){
+    public static <T> T findMin(T[] arr, FloatFunction<T> proc){
         T result = null;
-        int min = Integer.MAX_VALUE;
+        float min = Float.MAX_VALUE;
         for(T t : arr){
-            int val = proc.get(t);
+            float val = proc.get(t);
             if(val <= min){
                 result = t;
                 min = val;
