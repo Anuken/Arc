@@ -1,8 +1,6 @@
 package io.anuke.arc.backends.lwjgl3;
 
 import io.anuke.arc.Audio;
-import io.anuke.arc.Files;
-import io.anuke.arc.Files.FileType;
 import io.anuke.arc.Graphics.DisplayMode;
 import io.anuke.arc.Graphics.Monitor;
 import io.anuke.arc.audio.Music;
@@ -35,9 +33,6 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration{
     boolean transparentFramebuffer;
 
     int idleFPS = 60;
-
-    String preferencesDirectory = ".prefs/";
-    Files.FileType preferencesFileType = FileType.External;
 
     HdpiMode hdpiMode = HdpiMode.Logical;
 
@@ -149,8 +144,6 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration{
         samples = config.samples;
         transparentFramebuffer = config.transparentFramebuffer;
         idleFPS = config.idleFPS;
-        preferencesDirectory = config.preferencesDirectory;
-        preferencesFileType = config.preferencesFileType;
         hdpiMode = config.hdpiMode;
         debug = config.debug;
         debugStream = config.debugStream;
@@ -241,16 +234,6 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration{
      */
     public void setIdleFPS(int fps){
         this.idleFPS = fps;
-    }
-
-    /**
-     * Sets the directory where {@link Preferences} will be stored, as well as
-     * the file type to be used to store them. Defaults to "$USER_HOME/.prefs/"
-     * and {@link FileType#External}.
-     */
-    public void setPreferencesConfig(String preferencesDirectory, Files.FileType preferencesFileType){
-        this.preferencesDirectory = preferencesDirectory;
-        this.preferencesFileType = preferencesFileType;
     }
 
     /**
