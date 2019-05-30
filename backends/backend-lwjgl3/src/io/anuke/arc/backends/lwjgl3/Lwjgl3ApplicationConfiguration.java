@@ -1,8 +1,6 @@
 package io.anuke.arc.backends.lwjgl3;
 
 import io.anuke.arc.Audio;
-import io.anuke.arc.Files;
-import io.anuke.arc.Files.FileType;
 import io.anuke.arc.Graphics.DisplayMode;
 import io.anuke.arc.Graphics.Monitor;
 import io.anuke.arc.audio.Music;
