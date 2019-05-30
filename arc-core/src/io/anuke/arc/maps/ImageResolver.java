@@ -12,8 +12,7 @@ import io.anuke.arc.graphics.g2d.TextureRegion;
  */
 public interface ImageResolver{
     /**
-     * @return the Texture for the given image name or null.
-     */
+     * @return the Texture for the given image name or null.*/
     TextureRegion getImage(String name);
 
     class DirectImageResolver implements ImageResolver{
