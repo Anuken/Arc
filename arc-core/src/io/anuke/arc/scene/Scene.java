@@ -77,6 +77,15 @@ public class Scene implements InputProcessor, Disposable{
         return getKeyboardFocus() instanceof Dialog || getScrollFocus() instanceof Dialog;
     }
 
+    public Dialog getDialog(){
+        if(getKeyboardFocus() instanceof Dialog){
+            return (Dialog)getKeyboardFocus();
+        }else if(getScrollFocus() instanceof Dialog){
+            return (Dialog)getScrollFocus();
+        }
+        return null;
+    }
+
     public void draw(){
         Camera camera = viewport.getCamera();
         camera.update();
