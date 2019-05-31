@@ -165,6 +165,15 @@ public class Array<T> implements Iterable<T>{
         return arr;
     }
 
+    /**Returns a new int array with the mapped values.*/
+    public IntArray mapInt(IntFunction<T> mapper){
+        IntArray arr = new IntArray(size);
+        for(int i = 0; i < size; i++){
+            arr.add(mapper.get(items[i]));
+        }
+        return arr;
+    }
+
     public <R> R reduce(R initial, BiFunction<T, R, R> reducer){
         R result = initial;
         for(int i = 0; i < size; i++){
