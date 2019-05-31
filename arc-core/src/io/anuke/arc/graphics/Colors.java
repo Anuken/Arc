@@ -1,6 +1,6 @@
 package io.anuke.arc.graphics;
 
-import io.anuke.arc.collection.ObjectMap;
+import io.anuke.arc.collection.OrderedMap;
 
 /**
  * A general purpose class containing named colors that can be changed at will. For example, the markup language defined by the
@@ -9,17 +9,18 @@ import io.anuke.arc.collection.ObjectMap;
  */
 public final class Colors{
 
-    private static final ObjectMap<String, Color> map = new ObjectMap<>();
+    private static final OrderedMap<String, Color> map = new OrderedMap<>();
 
     static{
         reset();
     }
 
     private Colors(){
+
     }
 
     /** Returns the color map. */
-    public static ObjectMap<String, Color> getColors(){
+    public static OrderedMap<String, Color> getColors(){
         return map;
     }
 
