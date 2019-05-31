@@ -709,16 +709,20 @@ public class Array<T> implements Iterable<T>{
         return buffer.toString();
     }
 
-    public String toString(String separator){
+    public String toString(String separator, Function<T, String> stringifier){
         if(size == 0) return "";
         T[] items = this.items;
         StringBuilder buffer = new StringBuilder(32);
-        buffer.append(items[0]);
+        buffer.append(stringifier.get(items[0]));
         for(int i = 1; i < size; i++){
             buffer.append(separator);
-            buffer.append(items[i]);
+            buffer.append(stringifier.get(items[i]));
         }
         return buffer.toString();
+    }
+
+    public String toString(String separator){
+        return toString(separator, String::valueOf);
     }
 
     public static class ArrayIterator<T> implements Iterator<T>, Iterable<T>{
