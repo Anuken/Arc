@@ -5,9 +5,6 @@ import java.nio.charset.Charset;
 public class Strings{
     public static final Charset utf8 = Charset.forName("UTF-8");
 
-    private static final int INVALID_INT = Integer.MIN_VALUE;
-    private static final float INVALID_FLOAT = Float.MIN_VALUE;
-
     public static String parseException(Throwable e, boolean stacktrace){
         StringBuilder build = new StringBuilder();
 

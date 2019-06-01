@@ -7,29 +7,25 @@ import io.anuke.arc.function.Consumer;
 
 @SuppressWarnings("unchecked")
 public class Events{
-    private static ObjectMap<Class<? extends Event>, Array<Consumer<? extends Event>>> events = new ObjectMap<>();
+    private static ObjectMap<Class<?>, Array<Consumer<?>>> events = new ObjectMap<>();
 
-    public static <T extends Event> void on(Class<T> type, Consumer<T> listener){
+    public static <T> void on(Class<T> type, Consumer<T> listener){
         if(events.get(type) == null)
             events.put(type, new Array<>());
 
         events.get(type).add(listener);
     }
 
-    public static <T extends Event> void fire(T type){
+    public static <T> void fire(T type){
         if(events.get(type.getClass()) == null)
             return;
 
-        for(Consumer<? extends Event> event : events.get(type.getClass())){
+        for(Consumer<?> event : events.get(type.getClass())){
             ((Consumer<T>)event).accept(type);
         }
     }
 
     public static void dispose(){
         events.clear();
-    }
-
-    public interface Event{
-
     }
 }
