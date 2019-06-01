@@ -502,6 +502,14 @@ public class Color{
         return clamp();
     }
 
+    /** Inverts this color's RGB.*/
+    public Color inv(){
+        r = 1f - r;
+        g = 1f - g;
+        b = 1f - b;
+        return this;
+    }
+
     /**
      * Multiplies this Color's color components by the given ones.
      * @param r Red component
