@@ -16,8 +16,7 @@
 
 package io.anuke.arc.graphics.profiling;
 
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.Log;
+import io.anuke.arc.util.*;
 
 import static io.anuke.arc.graphics.profiling.GLInterceptor.resolveErrorNumber;
 
@@ -47,10 +46,14 @@ public interface GLErrorListener{
 
         if(place != null){
             Log.err("[GLProfiler] Error {0} from {1}", resolveErrorNumber(error), place);
+            throw new RuntimeException(Strings.format("[GLProfiler] Error {0} from {1}", resolveErrorNumber(error), place));
         }else{
             Log.err("[GLProfiler] Error {0} at: {1}", resolveErrorNumber(error), new Exception());
+            throw new RuntimeException(Strings.format("[GLProfiler] Error {0}", resolveErrorNumber(error)));
             // This will capture current stack trace for logging, if possible
         }
+
+
     };
 
     // Basic implementations
