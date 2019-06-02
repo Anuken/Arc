@@ -18,8 +18,8 @@ public class BitsTest{
         assertEquals(b1.hashCode(), b2.hashCode());
         assertEquals(b1, b2);
 
-        // temporarily setting/clearing a single bit causing
-        // the backing array to grow
+        //temporarily setting/clearing a single bit causing
+        //the backing array to grow
         b2.set(420);
         b2.clear(420);
 
