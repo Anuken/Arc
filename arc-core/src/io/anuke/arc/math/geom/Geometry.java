@@ -3,33 +3,34 @@ package io.anuke.arc.math.geom;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.FloatArray;
 import io.anuke.arc.collection.IntArray;
+import io.anuke.arc.function.IntPositionConsumer;
 import io.anuke.arc.function.PositionConsumer;
 import io.anuke.arc.function.SegmentConsumer;
 import io.anuke.arc.math.Mathf;
 
 public final class Geometry{
-    /** Points repesenting cardinal directions, starting at the left and going counter-clockwise. */
+    /** Points representing cardinal directions, starting at the left and going counter-clockwise. */
     public final static Point2[] d4 = {
-    new Point2(1, 0),
-    new Point2(0, 1),
-    new Point2(-1, 0),
-    new Point2(0, -1)
+        new Point2(1, 0),
+        new Point2(0, 1),
+        new Point2(-1, 0),
+        new Point2(0, -1)
     };
     public final static Point2[] d8 = {
-    new Point2(1, 0),
-    new Point2(1, 1),
-    new Point2(0, 1),
-    new Point2(-1, 1),
-    new Point2(-1, 0),
-    new Point2(-1, -1),
-    new Point2(0, -1),
-    new Point2(1, -1),
+        new Point2(1, 0),
+        new Point2(1, 1),
+        new Point2(0, 1),
+        new Point2(-1, 1),
+        new Point2(-1, 0),
+        new Point2(-1, -1),
+        new Point2(0, -1),
+        new Point2(1, -1),
     };
     public final static Point2[] d8edge = {
-    new Point2(1, 1),
-    new Point2(-1, 1),
-    new Point2(-1, -1),
-    new Point2(1, -1)
+        new Point2(1, 1),
+        new Point2(-1, 1),
+        new Point2(-1, -1),
+        new Point2(1, -1)
     };
     static private final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2();
 
@@ -43,6 +44,28 @@ public final class Geometry{
 
     public static Point2 d8edge(int i){
         return d8edge[Mathf.mod(i, 4)];
+    }
+
+    public static void circle(int x, int y, int radius, IntPositionConsumer cons){
+        for(int dx = -radius; dx <= radius; dx++){
+            for(int dy = -radius; dy <= radius; dy++){
+                if(Mathf.dst2(dx, dy, 0, 0) <= radius*radius){
+                    cons.accept(dx + x, dy + y);
+                }
+            }
+        }
+    }
+
+    public static void circle(int x, int y, int width, int height, int radius, IntPositionConsumer cons){
+        for(int dx = -radius; dx <= radius; dx++){
+            for(int dy = -radius; dy <= radius; dy++){
+                int wx = dx + x, wy = dy + y;
+                if(wx >= 0 && wy >= 0 && wx < width && wy < height
+                        && Mathf.dst2(dx, dy, 0, 0) <= radius*radius){
+                    cons.accept(wx, wy);
+                }
+            }
+        }
     }
 
     public static FloatArray vectorsToFloats(Array<Vector2> result){

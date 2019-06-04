@@ -6,7 +6,9 @@ import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Select;
 import io.anuke.arc.util.reflect.ArrayReflection;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * A resizable, ordered or unordered array of objects. If unordered, this class avoids a memory copy when removing elements (the
@@ -184,6 +186,34 @@ public class Array<T> implements Iterable<T>{
 
     public boolean contains(Predicate<T> predicate){
         return find(predicate) != null;
+    }
+
+    public T min(FloatFunction<T> func){
+        T result = null;
+        float min = Float.MAX_VALUE;
+        for(int i = 0; i < size; i++){
+            T t = items[i];
+            float val = func.get(t);
+            if(val <= min){
+                result = t;
+                min = val;
+            }
+        }
+        return result;
+    }
+
+    public T max(FloatFunction<T> func){
+        T result = null;
+        float max = Float.MIN_VALUE;
+        for(int i = 0; i < size; i++){
+            T t = items[i];
+            float val = func.get(t);
+            if(val >= max){
+                result = t;
+                max = val;
+            }
+        }
+        return result;
     }
 
     public T find(Predicate<T> predicate){
