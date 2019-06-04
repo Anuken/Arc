@@ -308,6 +308,12 @@ public class Color{
         return set(Mathf.random(), Mathf.random(), Mathf.random(), 1f);
     }
 
+    public Color randHue(){
+        fromHsv(Mathf.random(360f), 1f, 1f);
+        a = 1f;
+        return this;
+    }
+
     /** Shorthand for {@link #rgba8888(Color)}.*/
     public int rgba(){
         return Color.rgba8888(this);
