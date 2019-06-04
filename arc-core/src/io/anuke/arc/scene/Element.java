@@ -934,8 +934,7 @@ public class Element implements Layout{
         this.fillParent = fillParent;
     }
 
-    public void layout(){
-    }
+    public void layout(){}
 
     public void setTranslation(float x, float y){
         translation.x = x;
