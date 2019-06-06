@@ -4,12 +4,6 @@ import io.anuke.arc.util.Time;
 
 import java.util.Random;
 
-/**
- * Utility and fast math functions.
- * <p>
- * Thanks to Riven on JavaGaming.org for the basis of sin/cos/floor/ceil.
- * @author Nathan Sweet
- */
 public final class Mathf{
     public static final int[] signs = {-1, 1};
     public static final boolean[] booleans = {true, false};
