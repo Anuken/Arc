@@ -17,7 +17,11 @@ import java.nio.ByteBuffer;
 public final class ScreenUtils{
 
     public static void saveScreenshot(FileHandle file){
-        Pixmap pixmap = getFrameBufferPixmap(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
+        saveScreenshot(file, 0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
+    }
+
+    public static void saveScreenshot(FileHandle file, int x, int y, int width, int height){
+        Pixmap pixmap = getFrameBufferPixmap(x, y, width, height, true);
         PixmapIO.writePNG(file, pixmap);
         pixmap.dispose();
     }
