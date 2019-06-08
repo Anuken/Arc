@@ -247,6 +247,10 @@ public class Texture extends GLTexture{
             if(managedTextures.get(Core.app) != null) managedTextures.get(Core.app).removeValue(this, true);
     }
 
+    public boolean isDisposed(){
+        return glHandle == 0;
+    }
+
     public String toString(){
         if(data instanceof FileTextureData) return data.toString();
         return super.toString();

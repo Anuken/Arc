@@ -83,7 +83,7 @@ public class Fill{
     }
 
     public static void circle(float x, float y, float radius){
-        if(circleRegion == null){
+        if(circleRegion == null || circleRegion.getTexture().isDisposed()){
             circleRegion = atlas.find("circle");
         }
 
@@ -108,5 +108,9 @@ public class Fill{
 
     public static void square(float x, float y, float radius, float rotation){
         Draw.rect(atlas.white(), x, y, radius*2, radius*2, rotation);
+    }
+
+    public static void dispose(){
+        circleRegion = null;
     }
 }

@@ -1,6 +1,7 @@
 package io.anuke.arc;
 
 import io.anuke.arc.collection.Array;
+import io.anuke.arc.graphics.g2d.Fill;
 import io.anuke.arc.util.Clipboard;
 import io.anuke.arc.util.Disposable;
 
@@ -78,6 +79,7 @@ public interface Application extends Disposable{
             Core.batch = null;
         }
 
+        Fill.dispose();
         Events.dispose();
     }
 
