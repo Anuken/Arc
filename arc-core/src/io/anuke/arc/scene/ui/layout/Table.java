@@ -1,10 +1,7 @@
 package io.anuke.arc.scene.ui.layout;
 
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.function.BooleanConsumer;
-import io.anuke.arc.function.Consumer;
-import io.anuke.arc.function.FloatConsumer;
-import io.anuke.arc.function.Supplier;
+import io.anuke.arc.function.*;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.graphics.g2d.TextureRegion;
@@ -14,12 +11,12 @@ import io.anuke.arc.scene.style.Drawable;
 import io.anuke.arc.scene.ui.*;
 import io.anuke.arc.scene.ui.Label.LabelStyle;
 import io.anuke.arc.scene.ui.TextField.TextFieldFilter;
-import io.anuke.arc.scene.ui.layout.Value.Fixed;
 import io.anuke.arc.scene.utils.Elements;
 import io.anuke.arc.util.Align;
-import io.anuke.arc.util.pooling.Pool;
+import io.anuke.arc.util.pooling.*;
 
 import static io.anuke.arc.Core.scene;
+import static io.anuke.arc.scene.ui.layout.Cell.unset;
 
 /**
  * A group that sizes and positions children using table constraints. By default, {@link #getTouchable()} is
@@ -29,39 +26,18 @@ import static io.anuke.arc.Core.scene;
  * @author Nathan Sweet
  */
 public class Table extends WidgetGroup{
-    static final Pool<Cell> cellPool = new Pool<Cell>(){
-        protected Cell newObject(){
-            return new Cell();
-        }
-    };
-    /** Value that is the top padding of the table's background. */
-    public static Value backgroundTop = context -> {
-        Drawable background = ((Table)context).background;
-        return background == null ? 0 : background.getTopHeight();
-    };
-    /** Value that is the left padding of the table's background. */
-    public static Value backgroundLeft = context -> {
-        Drawable background = ((Table)context).background;
-        return background == null ? 0 : background.getLeftWidth();
-    };
-    /** Value that is the bottom padding of the table's background. */
-    public static Value backgroundBottom = context -> {
-        Drawable background = ((Table)context).background;
-        return background == null ? 0 : background.getBottomHeight();
-    };
-    /** Value that is the right padding of the table's background. */
-    public static Value backgroundRight = context -> {
-        Drawable background = ((Table)context).background;
-        return background == null ? 0 : background.getRightWidth();
-    };
     static private float[] columnWeightedWidth, rowWeightedHeight;
+    static private Pool<Cell> cellPool = Pools.get(Cell.class, Cell::new);
+
     private final Array<Cell> cells = new Array<>(4);
     private final Cell cellDefaults;
     private final Array<Cell> columnDefaults = new Array<>(2);
-    Value padTop = backgroundTop, padLeft = backgroundLeft, padBottom = backgroundBottom, padRight = backgroundRight;
+
+    float marginTop = unset, marginLeft = unset, marginBot = unset, marginRight = unset;
     int align = Align.center;
     Drawable background;
     boolean round = true;
+
     private int columns, rows;
     private boolean implicitEndRow;
     private Cell rowDefaults;
@@ -109,9 +85,9 @@ public class Table extends WidgetGroup{
             drawBackground(0, 0);
             if(clip){
                 Draw.flush();
-                float padLeft = this.padLeft.get(this), padBottom = this.padBottom.get(this);
-                if(clipBegin(padLeft, padBottom, getWidth() - padLeft - padRight.get(this),
-                getHeight() - padBottom - padTop.get(this))){
+                float padLeft = getMarginLeft(), padBottom = getMarginBottom();
+                if(clipBegin(padLeft, padBottom, getWidth() - padLeft - getMarginRight(),
+                getHeight() - padBottom - getMarginTop())){
                     drawChildren();
                     Draw.flush();
                     clipEnd();
@@ -244,12 +220,13 @@ public class Table extends WidgetGroup{
         }
         cells.add(cell);
 
+        //TODO are row/column defaults even used? hmm
         cell.set(cellDefaults);
         if(cell.column < columnDefaults.size){
             Cell columnCell = columnDefaults.get(cell.column);
-            if(columnCell != null) cell.merge(columnCell);
+            //if(columnCell != null) cell.merge(columnCell);
         }
-        cell.merge(rowDefaults);
+        //cell.merge(rowDefaults);
 
         if(element != null) addChild(element);
 
@@ -593,10 +570,10 @@ public class Table extends WidgetGroup{
      */
     public void reset(){
         clearChildren();
-        padTop = backgroundTop;
-        padLeft = backgroundLeft;
-        padBottom = backgroundBottom;
-        padRight = backgroundRight;
+        marginTop = unset;
+        marginLeft = unset;
+        marginBot = unset;
+        marginRight = unset;
         align = Align.center;
         cellDefaults.reset();
         for(int i = 0, n = columnDefaults.size; i < n; i++){
@@ -606,11 +583,8 @@ public class Table extends WidgetGroup{
         columnDefaults.clear();
     }
 
-    /**
-     * Indicates that subsequent cells should be added to a new row and returns the cell values that will be used as the defaults
-     * for all cells in the new row.
-     */
-    public Cell row(){
+    /** Indicates that subsequent cells should be added to a new row and returns this table.*/
+    public Table row(){
         if(cells.size > 0){
             if(!implicitEndRow) endRow();
             invalidate();
@@ -619,7 +593,7 @@ public class Table extends WidgetGroup{
         if(rowDefaults != null) cellPool.free(rowDefaults);
         rowDefaults = obtainCell();
         rowDefaults.clear();
-        return rowDefaults;
+        return this;
     }
 
     private void endRow(){
@@ -699,100 +673,44 @@ public class Table extends WidgetGroup{
     }
 
     /** Sets the marginTop, marginLeft, marginBottom, and marginRight around the table to the specified value. */
-    public Table margin(Value pad){
-        if(pad == null) throw new IllegalArgumentException("margin cannot be null.");
-        padTop = pad;
-        padLeft = pad;
-        padBottom = pad;
-        padRight = pad;
-        sizeInvalid = true;
-        return this;
-    }
-
-    public Table margin(Value top, Value left, Value bottom, Value right){
-        if(top == null) throw new IllegalArgumentException("top cannot be null.");
-        if(left == null) throw new IllegalArgumentException("left cannot be null.");
-        if(bottom == null) throw new IllegalArgumentException("bottom cannot be null.");
-        if(right == null) throw new IllegalArgumentException("right cannot be null.");
-        padTop = top;
-        padLeft = left;
-        padBottom = bottom;
-        padRight = right;
-        sizeInvalid = true;
-        return this;
-    }
-
-    /** Padding at the top edge of the table. */
-    public Table marginTop(Value padTop){
-        if(padTop == null) throw new IllegalArgumentException("marginTop cannot be null.");
-        this.padTop = padTop;
-        sizeInvalid = true;
-        return this;
-    }
-
-    /** Padding at the left edge of the table. */
-    public Table marginLeft(Value padLeft){
-        if(padLeft == null) throw new IllegalArgumentException("marginLeft cannot be null.");
-        this.padLeft = padLeft;
-        sizeInvalid = true;
-        return this;
-    }
-
-    /** Padding at the bottom edge of the table. */
-    public Table marginBottom(Value padBottom){
-        if(padBottom == null) throw new IllegalArgumentException("marginBottom cannot be null.");
-        this.padBottom = padBottom;
-        sizeInvalid = true;
-        return this;
-    }
-
-    /** Padding at the right edge of the table. */
-    public Table marginRight(Value padRight){
-        if(padRight == null) throw new IllegalArgumentException("marginRight cannot be null.");
-        this.padRight = padRight;
-        sizeInvalid = true;
-        return this;
-    }
-
-    /** Sets the marginTop, marginLeft, marginBottom, and marginRight around the table to the specified value. */
     public Table margin(float pad){
-        margin(new Fixed(pad));
+        margin(pad, pad, pad, pad);
         return this;
     }
 
     public Table margin(float top, float left, float bottom, float right){
-        padTop = new Fixed(top);
-        padLeft = new Fixed(left);
-        padBottom = new Fixed(bottom);
-        padRight = new Fixed(right);
+        marginTop = (top);
+        marginLeft = (left);
+        marginBot = (bottom);
+        marginRight = (right);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the top edge of the table. */
     public Table marginTop(float padTop){
-        this.padTop = new Fixed(padTop);
+        this.marginTop = (padTop);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the left edge of the table. */
     public Table marginLeft(float padLeft){
-        this.padLeft = new Fixed(padLeft);
+        this.marginLeft = (padLeft);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the bottom edge of the table. */
     public Table marginBottom(float padBottom){
-        this.padBottom = new Fixed(padBottom);
+        this.marginBot = (padBottom);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the right edge of the table. */
     public Table marginRight(float padRight){
-        this.padRight = new Fixed(padRight);
+        this.marginRight = (padRight);
         sizeInvalid = true;
         return this;
     }
@@ -841,29 +759,19 @@ public class Table extends WidgetGroup{
     }
 
     public float getMarginTop(){
-        return padTop.get(this);
+        return marginTop != unset ? marginTop : background == null ? 0f : background.getTopHeight();
     }
 
     public float getMarginLeft(){
-        return padLeft.get(this);
+        return marginLeft != unset ? marginLeft : background == null ? 0f : background.getLeftWidth();
     }
 
     public float getMarginBottom(){
-        return padBottom.get(this);
+        return marginBot != unset ? marginBot : background == null ? 0f : background.getBottomHeight();
     }
 
     public float getMarginRight(){
-        return padRight.get(this);
-    }
-
-    /** Returns {@link #getMarginLeft()} plus {@link #getMarginRight()}. */
-    public float getMarginX(){
-        return padLeft.get(this) + padRight.get(this);
-    }
-
-    /** Returns {@link #getMarginTop()} plus {@link #getMarginBottom()}. */
-    public float getMarginY(){
-        return padTop.get(this) + padBottom.get(this);
+        return marginRight != unset ? marginRight : background == null ? 0f : background.getRightWidth();
     }
 
     public int getAlign(){
@@ -979,7 +887,6 @@ public class Table extends WidgetGroup{
         float[] expandWidth = this.expandWidth = ensureSize(this.expandWidth, columns);
         float[] expandHeight = this.expandHeight = ensureSize(this.expandHeight, rows);
 
-        float spaceRightLast = 0;
         for(int i = 0; i < cellCount; i++){
             Cell c = cells.get(i);
             int column = c.column, row = c.row, colspan = c.colspan;
@@ -989,26 +896,19 @@ public class Table extends WidgetGroup{
             if(c.expandY != 0 && expandHeight[row] == 0) expandHeight[row] = c.expandY;
             if(colspan == 1 && c.expandX != 0 && expandWidth[column] == 0) expandWidth[column] = c.expandX;
 
-            // Compute combined padding/spacing for cells.
-            // Spacing between actors isn't additive, the larger is used. Also, no spacing around edges.
-            c.computedPadLeft = c.padLeft.get(a) + (column == 0 ? 0 : Math.max(0, c.spaceLeft.get(a) - spaceRightLast));
-            c.computedPadTop = c.padTop.get(a);
-            if(c.cellAboveIndex != -1){
-                Cell above = cells.get(c.cellAboveIndex);
-                c.computedPadTop += Math.max(0, c.spaceTop.get(a) - above.spaceBottom.get(a));
-            }
-            float spaceRight = c.spaceRight.get(a);
-            c.computedPadRight = c.padRight.get(a) + ((column + colspan) == columns ? 0 : spaceRight);
-            c.computedPadBottom = c.padBottom.get(a) + (row == rows - 1 ? 0 : c.spaceBottom.get(a));
-            spaceRightLast = spaceRight;
+            // Compute padding for cells.
+            c.computedPadLeft = c.padLeft;
+            c.computedPadTop = c.padTop;
+            c.computedPadRight = c.padRight;
+            c.computedPadBottom = c.padBottom;
 
             // Determine minimum and preferred cell sizes.
-            float prefWidth = Value.prefWidth.get(a);
-            float prefHeight = Value.prefHeight.get(a);
-            float minWidth = c.minWidth.get(a);
-            float minHeight = c.minHeight.get(a);
-            float maxWidth = c.maxWidth.get(a);
-            float maxHeight = c.maxHeight.get(a);
+            float prefWidth = c.prefWidth();
+            float prefHeight = c.prefHeight();
+            float minWidth = c.minWidth();
+            float minHeight = c.minHeight();
+            float maxWidth = c.maxWidth();
+            float maxHeight = c.maxHeight();
             if(prefWidth < minWidth) prefWidth = minWidth;
             if(prefHeight < minHeight) prefHeight = minHeight;
             if(maxWidth > 0 && prefWidth > maxWidth) prefWidth = maxWidth;
@@ -1079,9 +979,9 @@ public class Table extends WidgetGroup{
             int column = c.column;
 
             Element a = c.element;
-            float minWidth = c.minWidth.get(a);
-            float prefWidth = Value.prefWidth.get(a);
-            float maxWidth = c.maxWidth.get(a);
+            float minWidth = c.minWidth();
+            float prefWidth = c.prefWidth();
+            float maxWidth = c.maxWidth();
             if(prefWidth < minWidth) prefWidth = minWidth;
             if(maxWidth > 0 && prefWidth > maxWidth) prefWidth = maxWidth;
 
@@ -1115,8 +1015,8 @@ public class Table extends WidgetGroup{
             tableMinHeight += rowMinHeight[i];
             tablePrefHeight += Math.max(rowMinHeight[i], rowPrefHeight[i]);
         }
-        float hpadding = padLeft.get(this) + padRight.get(this);
-        float vpadding = padTop.get(this) + padBottom.get(this);
+        float hpadding = getMarginLeft() + getMarginRight();
+        float vpadding = getMarginTop() + getMarginBottom();
         tableMinWidth = tableMinWidth + hpadding;
         tableMinHeight = tableMinHeight + vpadding;
         tablePrefWidth = Math.max(tablePrefWidth + hpadding, tableMinWidth);
@@ -1133,10 +1033,10 @@ public class Table extends WidgetGroup{
 
         if(sizeInvalid) computeSize();
 
-        float padLeft = this.padLeft.get(this);
-        float hpadding = padLeft + padRight.get(this);
-        float padTop = this.padTop.get(this);
-        float vpadding = padTop + padBottom.get(this);
+        float padLeft = getMarginLeft();
+        float hpadding = padLeft + getMarginRight();
+        float padTop = getMarginTop();
+        float vpadding = padTop + getMarginBottom();
 
         int columns = this.columns, rows = this.rows;
         float[] expandWidth = this.expandWidth, expandHeight = this.expandHeight;
@@ -1183,7 +1083,6 @@ public class Table extends WidgetGroup{
         for(int i = 0; i < cellCount; i++){
             Cell c = cells.get(i);
             int column = c.column, row = c.row;
-            Element a = c.element;
 
             float spannedWeightedWidth = 0;
             int colspan = c.colspan;
@@ -1191,12 +1090,12 @@ public class Table extends WidgetGroup{
                 spannedWeightedWidth += columnWeightedWidth[ii];
             float weightedHeight = rowWeightedHeight[row];
 
-            float prefWidth = Value.prefWidth.get(a);
-            float prefHeight = Value.prefHeight.get(a);
-            float minWidth = c.minWidth.get(a);
-            float minHeight = c.minHeight.get(a);
-            float maxWidth = c.maxWidth.get(a);
-            float maxHeight = c.maxHeight.get(a);
+            float prefWidth = c.prefWidth();
+            float prefHeight = c.prefHeight();
+            float minWidth = c.minWidth();
+            float minHeight = c.minHeight();
+            float maxWidth = c.maxWidth();
+            float maxHeight = c.maxHeight();
             if(prefWidth < minWidth) prefWidth = minWidth;
             if(prefHeight < minHeight) prefHeight = minHeight;
             if(maxWidth > 0 && prefWidth > maxWidth) prefWidth = maxWidth;
@@ -1294,13 +1193,13 @@ public class Table extends WidgetGroup{
 
             float fillX = c.fillX, fillY = c.fillY;
             if(fillX > 0){
-                c.elementWidth = Math.max(spannedCellWidth * fillX, c.minWidth.get(c.element));
-                float maxWidth = c.maxWidth.get(c.element);
+                c.elementWidth = Math.max(spannedCellWidth * fillX, c.minWidth());
+                float maxWidth = c.maxWidth;
                 if(maxWidth > 0) c.elementWidth = Math.min(c.elementWidth, maxWidth);
             }
             if(fillY > 0){
-                c.elementHeight = Math.max(rowHeight[c.row] * fillY - c.computedPadTop - c.computedPadBottom, c.minHeight.get(c.element));
-                float maxHeight = c.maxHeight.get(c.element);
+                c.elementHeight = Math.max(rowHeight[c.row] * fillY - c.computedPadTop - c.computedPadBottom, c.minHeight());
+                float maxHeight = c.maxHeight();
                 if(maxHeight > 0) c.elementHeight = Math.min(c.elementHeight, maxHeight);
             }
 
