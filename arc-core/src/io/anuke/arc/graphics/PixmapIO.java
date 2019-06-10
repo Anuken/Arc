@@ -5,7 +5,7 @@ import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.graphics.Pixmap.Format;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Disposable;
-import io.anuke.arc.util.io.StreamUtils;
+import io.anuke.arc.util.io.Streams;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -92,7 +92,7 @@ public class PixmapIO{
             }catch(Exception e){
                 throw new ArcRuntimeException("Couldn't write Pixmap to file '" + file + "'", e);
             }finally{
-                StreamUtils.closeQuietly(out);
+                Streams.closeQuietly(out);
             }
         }
 
@@ -123,7 +123,7 @@ public class PixmapIO{
             }catch(Exception e){
                 throw new ArcRuntimeException("Couldn't read Pixmap from file '" + file + "'", e);
             }finally{
-                StreamUtils.closeQuietly(in);
+                Streams.closeQuietly(in);
             }
         }
     }
@@ -195,7 +195,7 @@ public class PixmapIO{
             try{
                 write(output, pixmap);
             }finally{
-                StreamUtils.closeQuietly(output);
+                Streams.closeQuietly(output);
             }
         }
 

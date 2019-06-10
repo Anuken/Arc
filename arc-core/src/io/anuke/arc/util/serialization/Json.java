@@ -6,7 +6,7 @@ import io.anuke.arc.collection.ObjectMap.Entry;
 import io.anuke.arc.collection.Queue;
 import io.anuke.arc.collection.OrderedMap.OrderedMapValues;
 import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.util.io.StreamUtils;
+import io.anuke.arc.util.io.Streams;
 import io.anuke.arc.util.reflect.*;
 import io.anuke.arc.util.serialization.JsonValue.PrettyPrintSettings;
 import io.anuke.arc.util.serialization.JsonWriter.OutputType;
@@ -230,7 +230,7 @@ public class Json{
         }catch(Exception ex){
             throw new SerializationException("Error writing file: " + file, ex);
         }finally{
-            StreamUtils.closeQuietly(writer);
+            Streams.closeQuietly(writer);
         }
     }
 
@@ -252,7 +252,7 @@ public class Json{
         try{
             writeValue(object, knownType, elementType);
         }finally{
-            StreamUtils.closeQuietly(this.writer);
+            Streams.closeQuietly(this.writer);
             this.writer = null;
         }
     }

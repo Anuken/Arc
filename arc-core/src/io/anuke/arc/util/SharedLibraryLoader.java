@@ -1,6 +1,6 @@
 package io.anuke.arc.util;
 
-import io.anuke.arc.util.io.StreamUtils;
+import io.anuke.arc.util.io.Streams;
 
 import java.io.*;
 import java.lang.reflect.Method;
@@ -54,7 +54,7 @@ public class SharedLibraryLoader{
             }
         }catch(Exception ex){
         }finally{
-            StreamUtils.closeQuietly(input);
+            Streams.closeQuietly(input);
         }
         return Long.toString(crc.getValue(), 16);
     }
@@ -244,8 +244,8 @@ public class SharedLibraryLoader{
                 throw new ArcRuntimeException("Error extracting file: " + sourcePath + "\nTo: " + extractedFile.getAbsolutePath(),
                 ex);
             }finally{
-                StreamUtils.closeQuietly(input);
-                StreamUtils.closeQuietly(output);
+                Streams.closeQuietly(input);
+                Streams.closeQuietly(output);
             }
         }
 

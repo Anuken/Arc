@@ -13,7 +13,7 @@ import io.anuke.arc.graphics.Texture.TextureWrap;
 import io.anuke.arc.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
 import io.anuke.arc.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 import io.anuke.arc.util.*;
-import io.anuke.arc.util.io.StreamUtils;
+import io.anuke.arc.util.io.Streams;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -361,7 +361,7 @@ public class TextureAtlas implements Disposable{
             }catch(Exception ex){
                 throw new ArcRuntimeException("Error reading pack file: " + packFile, ex);
             }finally{
-                StreamUtils.closeQuietly(reader);
+                Streams.closeQuietly(reader);
             }
 
             regions.sort(indexComparator);

@@ -17,7 +17,8 @@
 package io.anuke.arc.backends.lwjgl3;
 
 import io.anuke.arc.Net;
-import io.anuke.arc.net.*;
+import io.anuke.arc.function.Consumer;
+import io.anuke.arc.util.NetJavaImpl;
 import io.anuke.arc.util.OS;
 
 import java.io.*;
@@ -27,31 +28,11 @@ import java.io.*;
  * @author acoppes
  */
 public class Lwjgl3Net implements Net{
-    NetJavaImpl netJavaImpl = new NetJavaImpl();
+    NetJavaImpl impl = new NetJavaImpl();
 
     @Override
-    public void sendHttpRequest(HttpRequest httpRequest, HttpResponseListener httpResponseListener){
-        netJavaImpl.sendHttpRequest(httpRequest, httpResponseListener);
-    }
-
-    @Override
-    public void cancelHttpRequest(HttpRequest httpRequest){
-        netJavaImpl.cancelHttpRequest(httpRequest);
-    }
-
-    @Override
-    public ServerSocket newServerSocket(Protocol protocol, String ipAddress, int port, ServerSocketHints hints){
-        return new NetJavaServerSocketImpl(protocol, ipAddress, port, hints);
-    }
-
-    @Override
-    public ServerSocket newServerSocket(Protocol protocol, int port, ServerSocketHints hints){
-        return new NetJavaServerSocketImpl(protocol, port, hints);
-    }
-
-    @Override
-    public Socket newClientSocket(Protocol protocol, String host, int port, SocketHints hints){
-        return new NetJavaSocketImpl(protocol, host, port, hints);
+    public void http(HttpRequest httpRequest, Consumer<HttpResponse> success, Consumer<Throwable> failure){
+        impl.http(httpRequest, success, failure);
     }
 
     @Override

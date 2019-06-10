@@ -23,7 +23,7 @@ import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.BufferUtils;
 import io.anuke.arc.util.Disposable;
 import io.anuke.arc.util.Log;
-import io.anuke.arc.util.io.StreamUtils;
+import io.anuke.arc.util.io.Streams;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -97,18 +97,18 @@ public class FreeTypeFontGenerator implements Disposable{
             try{
                 if(fileSize == 0){
                     // Copy to a byte[] to get the file size, then copy to the buffer.
-                    byte[] data = StreamUtils.copyStreamToByteArray(input, 1024 * 16);
+                    byte[] data = Streams.copyStreamToByteArray(input, 1024 * 16);
                     buffer = BufferUtils.newUnsafeByteBuffer(data.length);
                     BufferUtils.copy(data, 0, buffer, data.length);
                 }else{
                     // Trust the specified file size.
                     buffer = BufferUtils.newUnsafeByteBuffer(fileSize);
-                    StreamUtils.copyStream(input, buffer);
+                    Streams.copyStream(input, buffer);
                 }
             }catch(IOException ex){
                 throw new ArcRuntimeException(ex);
             }finally{
-                StreamUtils.closeQuietly(input);
+                Streams.closeQuietly(input);
             }
         }
 

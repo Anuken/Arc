@@ -17,7 +17,8 @@
 package io.anuke.arc.backends.headless;
 
 import io.anuke.arc.Net;
-import io.anuke.arc.net.*;
+import io.anuke.arc.function.Consumer;
+import io.anuke.arc.util.NetJavaImpl;
 
 /**
  * Headless implementation of the {@link Net} API, based on LWJGL implementation
@@ -25,31 +26,11 @@ import io.anuke.arc.net.*;
  * @author Jon Renner
  */
 public class HeadlessNet implements Net{
-    NetJavaImpl netJavaImpl = new NetJavaImpl();
+    NetJavaImpl impl = new NetJavaImpl();
 
     @Override
-    public void sendHttpRequest(HttpRequest httpRequest, HttpResponseListener httpResponseListener){
-        netJavaImpl.sendHttpRequest(httpRequest, httpResponseListener);
-    }
-
-    @Override
-    public void cancelHttpRequest(HttpRequest httpRequest){
-        netJavaImpl.cancelHttpRequest(httpRequest);
-    }
-
-    @Override
-    public ServerSocket newServerSocket(Protocol protocol, String hostname, int port, ServerSocketHints hints){
-        return new NetJavaServerSocketImpl(protocol, hostname, port, hints);
-    }
-
-    @Override
-    public ServerSocket newServerSocket(Protocol protocol, int port, ServerSocketHints hints){
-        return new NetJavaServerSocketImpl(protocol, port, hints);
-    }
-
-    @Override
-    public Socket newClientSocket(Protocol protocol, String host, int port, SocketHints hints){
-        return new NetJavaSocketImpl(protocol, host, port, hints);
+    public void http(HttpRequest httpRequest, Consumer<HttpResponse> success, Consumer<Throwable> failure){
+        impl.http(httpRequest, success, failure);
     }
 
     @Override

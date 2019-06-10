@@ -17,7 +17,7 @@ import io.anuke.arc.maps.tiled.objects.TiledMapTileMapObject;
 import io.anuke.arc.math.geom.Polygon;
 import io.anuke.arc.math.geom.Polyline;
 import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.io.StreamUtils;
+import io.anuke.arc.util.io.Streams;
 import io.anuke.arc.util.serialization.Base64Coder;
 import io.anuke.arc.util.serialization.XmlReader;
 import io.anuke.arc.util.serialization.XmlReader.Element;
@@ -95,7 +95,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
                     }catch(IOException e){
                         throw new ArcRuntimeException("Error Reading TMX Layer Data - IOException: " + e.getMessage());
                     }finally{
-                        StreamUtils.closeQuietly(is);
+                        Streams.closeQuietly(is);
                     }
                 }else{
                     // any other value of 'encoding' is one we're not aware of, probably a feature of a future version of Tiled

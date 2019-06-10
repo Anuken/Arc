@@ -5,7 +5,7 @@ import io.anuke.arc.Files;
 import io.anuke.arc.Files.FileType;
 import io.anuke.arc.function.Consumer;
 import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.io.StreamUtils;
+import io.anuke.arc.util.io.Streams;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -220,7 +220,7 @@ public class FileHandle{
         try{
             return new InputStreamReader(stream, charset);
         }catch(UnsupportedEncodingException ex){
-            StreamUtils.closeQuietly(stream);
+            Streams.closeQuietly(stream);
             throw new ArcRuntimeException("Error reading file: " + this, ex);
         }
     }
@@ -275,7 +275,7 @@ public class FileHandle{
         }catch(IOException ex){
             throw new ArcRuntimeException("Error reading layout file: " + this, ex);
         }finally{
-            StreamUtils.closeQuietly(reader);
+            Streams.closeQuietly(reader);
         }
         return output.toString();
     }
@@ -287,11 +287,11 @@ public class FileHandle{
     public byte[] readBytes(){
         InputStream input = read();
         try{
-            return StreamUtils.copyStreamToByteArray(input, estimateLength());
+            return Streams.copyStreamToByteArray(input, estimateLength());
         }catch(IOException ex){
             throw new ArcRuntimeException("Error reading file: " + this, ex);
         }finally{
-            StreamUtils.closeQuietly(input);
+            Streams.closeQuietly(input);
         }
     }
 
@@ -319,7 +319,7 @@ public class FileHandle{
         }catch(IOException ex){
             throw new ArcRuntimeException("Error reading file: " + this, ex);
         }finally{
-            StreamUtils.closeQuietly(input);
+            Streams.closeQuietly(input);
         }
         return position - offset;
     }
@@ -348,7 +348,7 @@ public class FileHandle{
         }catch(Exception ex){
             throw new ArcRuntimeException("Error memory mapping file: " + this + " (" + type + ")", ex);
         }finally{
-            StreamUtils.closeQuietly(raf);
+            Streams.closeQuietly(raf);
         }
     }
 
@@ -393,12 +393,12 @@ public class FileHandle{
         OutputStream output = null;
         try{
             output = write(append);
-            StreamUtils.copyStream(input, output);
+            Streams.copyStream(input, output);
         }catch(Exception ex){
             throw new ArcRuntimeException("Error stream writing to file: " + file + " (" + type + ")", ex);
         }finally{
-            StreamUtils.closeQuietly(input);
-            StreamUtils.closeQuietly(output);
+            Streams.closeQuietly(input);
+            Streams.closeQuietly(output);
         }
 
     }
@@ -470,7 +470,7 @@ public class FileHandle{
         }catch(Exception ex){
             throw new ArcRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
         }finally{
-            StreamUtils.closeQuietly(writer);
+            Streams.closeQuietly(writer);
         }
     }
 
@@ -487,7 +487,7 @@ public class FileHandle{
         }catch(IOException ex){
             throw new ArcRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
         }finally{
-            StreamUtils.closeQuietly(output);
+            Streams.closeQuietly(output);
         }
     }
 
@@ -504,7 +504,7 @@ public class FileHandle{
         }catch(IOException ex){
             throw new ArcRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
         }finally{
-            StreamUtils.closeQuietly(output);
+            Streams.closeQuietly(output);
         }
     }
 
@@ -772,7 +772,7 @@ public class FileHandle{
                 return input.available();
             }catch(Exception ignored){
             }finally{
-                StreamUtils.closeQuietly(input);
+                Streams.closeQuietly(input);
             }
             return 0;
         }

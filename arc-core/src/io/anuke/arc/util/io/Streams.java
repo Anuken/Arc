@@ -6,7 +6,7 @@ import java.io.*;
 import java.nio.ByteBuffer;
 
 /** Provides utility methods to copy streams. */
-public final class StreamUtils{
+public final class Streams{
     public static final int DEFAULT_BUFFER_SIZE = 4096;
     public static final byte[] EMPTY_BYTES = new byte[0];
 

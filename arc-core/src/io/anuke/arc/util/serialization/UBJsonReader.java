@@ -3,7 +3,7 @@ package io.anuke.arc.util.serialization;
 import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Strings;
-import io.anuke.arc.util.io.StreamUtils;
+import io.anuke.arc.util.io.Streams;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class UBJsonReader implements BaseJsonReader{
         }catch(IOException ex){
             throw new SerializationException(ex);
         }finally{
-            StreamUtils.closeQuietly(din);
+            Streams.closeQuietly(din);
         }
     }
 
@@ -49,7 +49,7 @@ public class UBJsonReader implements BaseJsonReader{
         try{
             return parse(din, din.readByte());
         }finally{
-            StreamUtils.closeQuietly(din);
+            Streams.closeQuietly(din);
         }
     }
 

@@ -33,7 +33,7 @@ import io.anuke.arc.graphics.g2d.GlyphLayout.GlyphRun;
 import io.anuke.arc.graphics.g2d.TextureAtlas.AtlasRegion;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Disposable;
-import io.anuke.arc.util.io.StreamUtils;
+import io.anuke.arc.util.io.Streams;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -712,7 +712,7 @@ public class BitmapFont implements Disposable{
             }catch(Exception ex){
                 throw new ArcRuntimeException("Error loading font file: " + fontFile, ex);
             }finally{
-                StreamUtils.closeQuietly(reader);
+                Streams.closeQuietly(reader);
             }
         }
 

@@ -6,7 +6,7 @@ import io.anuke.arc.Core;
 import io.anuke.arc.Files.FileType;
 import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.io.StreamUtils;
+import io.anuke.arc.util.io.Streams;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -79,7 +79,7 @@ public class AndroidFileHandle extends FileHandle{
             }catch(Exception ex){
                 throw new ArcRuntimeException("Error memory mapping file: " + this + " (" + type + ")", ex);
             }finally{
-                StreamUtils.closeQuietly(input);
+                Streams.closeQuietly(input);
             }
         }
         return super.map(mode);

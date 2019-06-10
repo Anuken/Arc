@@ -6,7 +6,7 @@ package io.anuke.arc.util.serialization;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.util.Strings;
-import io.anuke.arc.util.io.StreamUtils;
+import io.anuke.arc.util.io.Streams;
 import io.anuke.arc.util.serialization.JsonValue.ValueType;
 
 import java.io.IOException;
@@ -127,7 +127,7 @@ public class JsonReader implements BaseJsonReader{
         }catch(IOException ex){
             throw new SerializationException(ex);
         }finally{
-            StreamUtils.closeQuietly(reader);
+            Streams.closeQuietly(reader);
         }
     }
 
@@ -137,7 +137,7 @@ public class JsonReader implements BaseJsonReader{
         try{
             return parse(new InputStreamReader(input, Strings.utf8));
         }finally{
-            StreamUtils.closeQuietly(input);
+            Streams.closeQuietly(input);
         }
     }
 

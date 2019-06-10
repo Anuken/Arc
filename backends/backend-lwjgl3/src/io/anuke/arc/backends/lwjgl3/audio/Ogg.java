@@ -1,7 +1,7 @@
 package io.anuke.arc.backends.lwjgl3.audio;
 
 import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.util.io.StreamUtils;
+import io.anuke.arc.util.io.Streams;
 
 import java.io.ByteArrayOutputStream;
 
@@ -28,14 +28,14 @@ public class Ogg{
         }
 
         public void reset(){
-            StreamUtils.closeQuietly(input);
+            Streams.closeQuietly(input);
             previousInput = null;
             input = null;
         }
 
         @Override
         protected void loop(){
-            StreamUtils.closeQuietly(input);
+            Streams.closeQuietly(input);
             previousInput = input;
             input = null;
         }
@@ -57,7 +57,7 @@ public class Ogg{
                 }
                 setup(output.toByteArray(), input.getChannels(), input.getSampleRate());
             }finally{
-                StreamUtils.closeQuietly(input);
+                Streams.closeQuietly(input);
             }
         }
     }

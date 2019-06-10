@@ -8,7 +8,7 @@ import io.anuke.arc.function.Supplier;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.io.DefaultSerializers;
 import io.anuke.arc.util.io.ReusableByteInStream;
-import io.anuke.arc.util.io.StreamUtils.OptimizedByteArrayOutputStream;
+import io.anuke.arc.util.io.Streams.OptimizedByteArrayOutputStream;
 
 import java.io.*;
 

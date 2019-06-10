@@ -24,7 +24,7 @@ package io.anuke.arc.backends.lwjgl3.audio;
 
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Log;
-import io.anuke.arc.util.io.StreamUtils;
+import io.anuke.arc.util.io.Streams;
 import com.jcraft.jogg.Packet;
 import com.jcraft.jogg.Page;
 import com.jcraft.jogg.StreamState;
@@ -474,6 +474,6 @@ public class OggInputStream extends InputStream{
     }
 
     public void close(){
-        StreamUtils.closeQuietly(input);
+        Streams.closeQuietly(input);
     }
 }

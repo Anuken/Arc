@@ -5,47 +5,24 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import io.anuke.arc.Net;
-import io.anuke.arc.net.*;
+import io.anuke.arc.function.Consumer;
+import io.anuke.arc.util.NetJavaImpl;
 
 /**
  * Android implementation of the {@link Net} API.
  * @author acoppes
  */
 public class AndroidNet implements Net{
-
-    // IMPORTANT: The Gdx.net classes are a currently duplicated for JGLFW/LWJGL + Android!
-    // If you make changes here, make changes in the other backend as well.
     final AndroidApplicationBase app;
-    NetJavaImpl netJavaImpl;
+    NetJavaImpl impl = new NetJavaImpl();
 
     public AndroidNet(AndroidApplicationBase app){
         this.app = app;
-        netJavaImpl = new NetJavaImpl();
     }
 
     @Override
-    public void sendHttpRequest(HttpRequest httpRequest, final HttpResponseListener httpResponseListener){
-        netJavaImpl.sendHttpRequest(httpRequest, httpResponseListener);
-    }
-
-    @Override
-    public void cancelHttpRequest(HttpRequest httpRequest){
-        netJavaImpl.cancelHttpRequest(httpRequest);
-    }
-
-    @Override
-    public ServerSocket newServerSocket(Protocol protocol, String hostname, int port, ServerSocketHints hints){
-        return new NetJavaServerSocketImpl(protocol, hostname, port, hints);
-    }
-
-    @Override
-    public ServerSocket newServerSocket(Protocol protocol, int port, ServerSocketHints hints){
-        return new NetJavaServerSocketImpl(protocol, port, hints);
-    }
-
-    @Override
-    public Socket newClientSocket(Protocol protocol, String host, int port, SocketHints hints){
-        return new NetJavaSocketImpl(protocol, host, port, hints);
+    public void http(HttpRequest httpRequest, Consumer<HttpResponse> success, Consumer<Throwable> failure){
+        impl.http(httpRequest, success, failure);
     }
 
     @Override

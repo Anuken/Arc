@@ -2,7 +2,7 @@ package io.anuke.arc.backends.lwjgl3.audio;
 
 import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.io.StreamUtils;
+import io.anuke.arc.util.io.Streams;
 
 import java.io.EOFException;
 import java.io.FilterInputStream;
@@ -32,7 +32,7 @@ public class Wav{
         }
 
         public void reset(){
-            StreamUtils.closeQuietly(input);
+            Streams.closeQuietly(input);
             input = null;
         }
     }
@@ -45,11 +45,11 @@ public class Wav{
             WavInputStream input = null;
             try{
                 input = new WavInputStream(file);
-                setup(StreamUtils.copyStreamToByteArray(input, input.dataRemaining), input.channels, input.sampleRate);
+                setup(Streams.copyStreamToByteArray(input, input.dataRemaining), input.channels, input.sampleRate);
             }catch(IOException ex){
                 throw new ArcRuntimeException("Error reading WAV file: " + file, ex);
             }finally{
-                StreamUtils.closeQuietly(input);
+                Streams.closeQuietly(input);
             }
         }
     }
@@ -90,7 +90,7 @@ public class Wav{
 
                 dataRemaining = seekToChunk('d', 'a', 't', 'a');
             }catch(Throwable ex){
-                StreamUtils.closeQuietly(this);
+                Streams.closeQuietly(this);
                 throw new ArcRuntimeException("Error reading WAV file: " + file, ex);
             }
         }
