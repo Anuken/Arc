@@ -1,6 +1,7 @@
 package io.anuke.arc.scene.ui;
 
 import io.anuke.arc.collection.Array;
+import io.anuke.arc.function.BooleanConsumer;
 import io.anuke.arc.function.Consumer;
 import io.anuke.arc.scene.ui.layout.Table;
 import io.anuke.arc.scene.ui.layout.Unit;
@@ -93,7 +94,7 @@ public class SettingsDialog extends Dialog{
             rebuild();
         }
 
-        public void checkPref(String name, String title, boolean def, Consumer<Boolean> changed){
+        public void checkPref(String name, String title, boolean def, BooleanConsumer changed){
             list.add(new CheckSetting(name, title, def, changed));
             settings.defaults(name, def);
             rebuild();
@@ -107,7 +108,7 @@ public class SettingsDialog extends Dialog{
         }
 
         /** Localized title. */
-        public void checkPref(String name, boolean def, Consumer<Boolean> changed){
+        public void checkPref(String name, boolean def, BooleanConsumer changed){
             list.add(new CheckSetting(name, bundle.get("setting." + name + ".name"), def, changed));
             settings.defaults(name, def);
             rebuild();
@@ -141,9 +142,9 @@ public class SettingsDialog extends Dialog{
 
         public class CheckSetting extends Setting{
             boolean def;
-            Consumer<Boolean> changed;
+            BooleanConsumer changed;
 
-            CheckSetting(String name, String title, boolean def, Consumer<Boolean> changed){
+            CheckSetting(String name, String title, boolean def, BooleanConsumer changed){
                 this.name = name;
                 this.title = title;
                 this.def = def;
