@@ -46,13 +46,13 @@ public class Dialog extends Window{
         setMovable(false);
         setOrigin(Align.center);
 
-        defaults().space(6);
+        defaults().pad(3);
         add(cont = new Table()).expand().fill();
         row();
         add(buttons = new Table()).fillX();
 
-        cont.defaults().space(6);
-        buttons.defaults().space(6);
+        cont.defaults().pad(3);
+        buttons.defaults().pad(3);
 
         focusListener = new FocusListener(){
             public void keyboardFocusChanged(FocusEvent event, Element actor, boolean focused){
