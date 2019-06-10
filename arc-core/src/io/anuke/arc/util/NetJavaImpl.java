@@ -49,8 +49,6 @@ public class NetJavaImpl{
             connection.setRequestMethod(method.toString());
             HttpURLConnection.setFollowRedirects(request.followRedirects);
 
-            //putIntoConnectionsAndListeners(httpRequest, httpResponseListener, connection);
-
             //set headers
             request.headers.each(connection::addRequestProperty);
 
