@@ -2,10 +2,7 @@ package io.anuke.arc.util;
 
 
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.function.Consumer;
-import io.anuke.arc.function.FloatFunction;
-import io.anuke.arc.function.Function;
-import io.anuke.arc.function.Predicate;
+import io.anuke.arc.function.*;
 import io.anuke.arc.math.Mathf;
 
 import java.util.Comparator;
@@ -67,6 +64,14 @@ public class Structs{
 
     public static <T, U extends Comparable<? super U>> Comparator<T> comparing(Function<? super T, ? extends U> keyExtractor){
         return (c1, c2) -> keyExtractor.get(c1).compareTo(keyExtractor.get(c2));
+    }
+
+    public static <T> Comparator<T> comparingFloat(FloatFunction<? super T> keyExtractor){
+        return (c1, c2) -> Float.compare(keyExtractor.get(c1), keyExtractor.get(c2));
+    }
+
+    public static <T> Comparator<T> comparingInt(IntFunction<? super T> keyExtractor){
+        return (c1, c2) -> Integer.compare(keyExtractor.get(c1), keyExtractor.get(c2));
     }
 
     public static <T> void each(Consumer<T> cons, T... objects){

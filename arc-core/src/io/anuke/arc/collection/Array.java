@@ -286,6 +286,11 @@ public class Array<T> implements Iterable<T>{
         }
     }
 
+    public void clearAdd(Array<? extends T> array){
+        clear();
+        addAll(array);
+    }
+
     public T get(int index){
         if(index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
         return items[index];
