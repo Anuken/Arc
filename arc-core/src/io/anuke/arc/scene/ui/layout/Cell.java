@@ -126,19 +126,14 @@ public class Cell<T extends Element> implements Poolable{
 
     /** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified value. */
     public Cell<T> size(float size){
-        minWidth = size;
-        minHeight = size;
-        maxWidth = size;
-        maxHeight = size;
+        minWidth = minHeight = maxWidth = maxHeight = scl(size);
         return this;
     }
 
     /** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified values. */
     public Cell<T> size(float width, float height){
-        minWidth = width;
-        minHeight = height;
-        maxWidth = width;
-        maxHeight = height;
+        minWidth = maxWidth = scl(width);
+        minHeight = maxHeight = scl(height);
         return this;
     }
 
@@ -282,53 +277,47 @@ public class Cell<T extends Element> implements Poolable{
 
     /** Sets the minWidth, prefWidth, and maxWidth to the specified value. */
     public Cell<T> width(float width){
-        minWidth = width;
-        maxWidth = width;
+        minWidth = maxWidth = scl(width);
         return this;
     }
 
     /** Sets the minHeight, prefHeight, and maxHeight to the specified value. */
     public Cell<T> height(float height){
-        minHeight = height;
-        maxHeight = height;
+        minHeight = maxHeight = scl(height);
         return this;
     }
 
     /** Sets the minWidth and minHeight to the specified value. */
     public Cell<T> minSize(float size){
-        minWidth = size;
-        minHeight = size;
+        minWidth = minHeight = scl(size);
         return this;
     }
 
     /** Sets the minWidth and minHeight to the specified values. */
     public Cell<T> minSize(float width, float height){
-        minWidth = width;
-        minHeight = height;
+        minWidth = minHeight = scl(width);
         return this;
     }
 
     public Cell<T> minWidth(float minWidth){
-        this.minWidth = minWidth;
+        this.minWidth = scl(minWidth);
         return this;
     }
 
     public Cell<T> minHeight(float minHeight){
-        this.minHeight = minHeight;
+        this.minHeight = scl(minHeight);
         return this;
     }
 
     /** Sets the maxWidth and maxHeight to the specified value. */
     public Cell<T> maxSize(float size){
-        maxWidth = size;
-        maxHeight = size;
+        maxWidth = maxHeight = scl(size);
         return this;
     }
 
     /** Sets the maxWidth and maxHeight to the specified values. */
     public Cell<T> maxSize(float width, float height){
-        maxWidth = width;
-        maxHeight = height;
+        maxWidth = maxHeight = scl(width);
         return this;
     }
 
@@ -344,38 +333,35 @@ public class Cell<T extends Element> implements Poolable{
 
     /** Sets the marginTop, marginLeft, marginBottom, and marginRight to the specified value. */
     public Cell<T> pad(float pad){
-        padTop = pad;
-        padLeft = pad;
-        padBottom = pad;
-        padRight = pad;
+        padTop = padLeft = padBottom = padRight = scl(pad);
         return this;
     }
 
     public Cell<T> pad(float top, float left, float bottom, float right){
-        padTop = top;
-        padLeft = left;
-        padBottom = bottom;
-        padRight = right;
+        padTop = scl(top);
+        padLeft = scl(left);
+        padBottom = scl(bottom);
+        padRight = scl(right);
         return this;
     }
 
     public Cell<T> padTop(float padTop){
-        this.padTop = (padTop);
+        this.padTop = scl(padTop);
         return this;
     }
 
     public Cell<T> padLeft(float padLeft){
-        this.padLeft = (padLeft);
+        this.padLeft = scl(padLeft);
         return this;
     }
 
     public Cell<T> padBottom(float padBottom){
-        this.padBottom = (padBottom);
+        this.padBottom = scl(padBottom);
         return this;
     }
 
     public Cell<T> padRight(float padRight){
-        this.padRight = (padRight);
+        this.padRight = scl(padRight);
         return this;
     }
 
@@ -575,6 +561,10 @@ public class Cell<T extends Element> implements Poolable{
         colspan = 1;
         uniformX = false;
         uniformY = false;
+    }
+
+    float scl(float value){
+        return Unit.dp.scl(value);
     }
 
     /** Reset state so the cell can be reused, setting all constraints to their {@link #defaults() default} values. */
