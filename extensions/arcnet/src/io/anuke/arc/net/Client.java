@@ -422,8 +422,7 @@ public class Client extends Connection implements EndPoint{
      * entry from expiring. Set to zero to disable. Defaults to 19000.
      */
     public void setKeepAliveUDP(int keepAliveMillis){
-        if(udp == null)
-            throw new IllegalStateException("Not connected via UDP.");
+        if(udp == null) throw new IllegalStateException("Not connected via UDP.");
         udp.keepAliveMillis = keepAliveMillis;
     }
 
@@ -442,27 +441,13 @@ public class Client extends Connection implements EndPoint{
         byte[] data = new byte[dataBuffer.limit()];
         dataBuffer.get(data);
         for(NetworkInterface iface : Collections.list(NetworkInterface.getNetworkInterfaces())){
-            for(InetAddress address : Collections.list(iface.getInetAddresses())){
-                // Java 1.5 doesn't support getting the subnet mask, so try the
-                // two most common.
-                byte[] ip = address.getAddress(); // 255.255.255.255
-                try{
-                    socket.send(new DatagramPacket(data, data.length,
-                    InetAddress.getByAddress(ip), udpPort));
-                }catch(Exception ignored){
-                }
-                ip[3] = -1; // 255.255.255.0
-                try{
-                    socket.send(new DatagramPacket(data, data.length,
-                    InetAddress.getByAddress(ip), udpPort));
-                }catch(Exception ignored){
-                }
-                ip[2] = -1; // 255.255.0.0
-                try{
-                    socket.send(new DatagramPacket(data, data.length,
-                    InetAddress.getByAddress(ip), udpPort));
-                }catch(Exception ignored){
-                }
+            if(iface.isLoopback() || !iface.isUp()){
+                continue;
+            }
+
+            for(InterfaceAddress baseAddress : iface.getInterfaceAddresses()){
+                InetAddress address = baseAddress.getBroadcast();
+                socket.send(new DatagramPacket(data, data.length, address, udpPort));
             }
         }
     }
@@ -475,9 +460,7 @@ public class Client extends Connection implements EndPoint{
      * @return the first server found, or null if no server responded.
      */
     public InetAddress discoverHost(int udpPort, int timeoutMillis){
-        DatagramSocket socket = null;
-        try{
-            socket = new DatagramSocket();
+        try(DatagramSocket socket = new DatagramSocket()){
             broadcast(udpPort, socket);
             socket.setSoTimeout(timeoutMillis);
             DatagramPacket packet = discoveryHandler.newDatagramPacket();
@@ -491,27 +474,18 @@ public class Client extends Connection implements EndPoint{
         }catch(IOException ex){
             return null;
         }finally{
-            if(socket != null)
-                socket.close();
             discoveryHandler.finish();
         }
     }
 
-    /**
-     * Broadcasts a UDP message on the LAN to discover any running servers.
-     * @param udpPort The UDP port of the server.
-     * @param timeoutMillis The number of milliseconds to wait for a response.
-     */
-    public List<InetAddress> discoverHosts(int udpPort, int timeoutMillis){
-        List<InetAddress> hosts = new ArrayList<InetAddress>();
-        DatagramSocket socket = null;
-        try{
-            socket = new DatagramSocket();
+    private List<InetAddress> discoverHostsMulticast(int udpPort, int timeoutMillis){
+        List<InetAddress> hosts = new ArrayList<>();
+        try(DatagramSocket socket = new DatagramSocket()){
+            socket.setBroadcast(true);
             broadcast(udpPort, socket);
             socket.setSoTimeout(timeoutMillis);
             while(true){
-                DatagramPacket packet = discoveryHandler
-                .newDatagramPacket();
+                DatagramPacket packet = discoveryHandler.newDatagramPacket();
                 try{
                     socket.receive(packet);
                 }catch(SocketTimeoutException ex){
@@ -523,8 +497,34 @@ public class Client extends Connection implements EndPoint{
         }catch(IOException ex){
             return hosts;
         }finally{
-            if(socket != null)
-                socket.close();
+            discoveryHandler.finish();
+        }
+    }
+
+    /**
+     * Broadcasts a UDP message on the LAN to discover any running servers.
+     * @param udpPort The UDP port of the server.
+     * @param timeoutMillis The number of milliseconds to wait for a response.
+     */
+    public List<InetAddress> discoverHosts(int udpPort, int timeoutMillis){
+        List<InetAddress> hosts = new ArrayList<>();
+        try(DatagramSocket socket = new DatagramSocket()){
+            socket.setBroadcast(true);
+            broadcast(udpPort, socket);
+            socket.setSoTimeout(timeoutMillis);
+            while(true){
+                DatagramPacket packet = discoveryHandler.newDatagramPacket();
+                try{
+                    socket.receive(packet);
+                }catch(SocketTimeoutException ex){
+                    return hosts;
+                }
+                discoveryHandler.discoveredHost(packet);
+                hosts.add(packet.getAddress());
+            }
+        }catch(IOException ex){
+            return hosts;
+        }finally{
             discoveryHandler.finish();
         }
     }
