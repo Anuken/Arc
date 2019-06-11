@@ -22,18 +22,17 @@ package io.anuke.arc.net;
 import io.anuke.arc.net.FrameworkMessage.DiscoverHost;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
+import java.net.InetAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
 
 public interface ServerDiscoveryHandler{
     /**
      * Called when the {@link Server} receives a {@link DiscoverHost} packet.
-     * @param fromAddress {@link InetSocketAddress} the {@link DiscoverHost} came from
-     * @return true if a response was sent to {@code fromAddress}, false
-     * otherwise
-     * @throws IOException from the use of
-     * {@link DatagramChannel#send(ByteBuffer, java.net.SocketAddress)}
+     * @throws IOException from sending a response.
      */
-    void onDiscoverRecieved(DatagramChannel datagramChannel, InetSocketAddress fromAddress) throws IOException;
+    void onDiscoverRecieved(InetAddress address, ReponseHandler handler) throws IOException;
+
+    interface ReponseHandler{
+        void respond(ByteBuffer buffer) throws IOException;
+    }
 }

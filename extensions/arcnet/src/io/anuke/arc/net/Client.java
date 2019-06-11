@@ -19,7 +19,9 @@
 
 package io.anuke.arc.net;
 
+import io.anuke.arc.function.*;
 import io.anuke.arc.net.FrameworkMessage.*;
+import io.anuke.arc.util.async.AsyncExecutor;
 
 import java.io.IOException;
 import java.net.*;
@@ -46,7 +48,8 @@ public class Client extends Connection implements EndPoint{
     private int connectTcpPort;
     private int connectUdpPort;
     private boolean isClosed;
-    private ClientDiscoveryHandler discoveryHandler;
+    private AsyncExecutor discoverExecutor = new AsyncExecutor(6);
+    private Supplier<DatagramPacket> discoveryPacket = () -> new DatagramPacket(new byte[256], 256);
 
     static{
         try{
@@ -86,12 +89,6 @@ public class Client extends Connection implements EndPoint{
 
         this.serialization = serialization;
 
-        this.discoveryHandler = new ClientDiscoveryHandler(){
-            @Override public DatagramPacket newDatagramPacket(){ return new DatagramPacket(new byte[0], 0); }
-            @Override public void discoveredHost(DatagramPacket datagramPacket){ }
-            @Override public void finish(){}
-        };
-
         initialize(serialization, writeBufferSize, objectBufferSize);
 
         try{
@@ -101,9 +98,8 @@ public class Client extends Connection implements EndPoint{
         }
     }
 
-    public void setDiscoveryHandler(
-    ClientDiscoveryHandler newDiscoveryHandler){
-        discoveryHandler = newDiscoveryHandler;
+    public void setDiscoveryPacket(Supplier<DatagramPacket> discoveryPacket){
+        discoveryPacket = discoveryPacket;
     }
 
     /**
@@ -441,63 +437,15 @@ public class Client extends Connection implements EndPoint{
         byte[] data = new byte[dataBuffer.limit()];
         dataBuffer.get(data);
         for(NetworkInterface iface : Collections.list(NetworkInterface.getNetworkInterfaces())){
-            if(iface.isLoopback() || !iface.isUp()){
+            if(!iface.isUp()){
                 continue;
             }
 
             for(InterfaceAddress baseAddress : iface.getInterfaceAddresses()){
                 InetAddress address = baseAddress.getBroadcast();
+                if(address == null) continue;
                 socket.send(new DatagramPacket(data, data.length, address, udpPort));
             }
-        }
-    }
-
-    /**
-     * Broadcasts a UDP message on the LAN to discover any running servers. The
-     * address of the first server to respond is returned.
-     * @param udpPort The UDP port of the server.
-     * @param timeoutMillis The number of milliseconds to wait for a response.
-     * @return the first server found, or null if no server responded.
-     */
-    public InetAddress discoverHost(int udpPort, int timeoutMillis){
-        try(DatagramSocket socket = new DatagramSocket()){
-            broadcast(udpPort, socket);
-            socket.setSoTimeout(timeoutMillis);
-            DatagramPacket packet = discoveryHandler.newDatagramPacket();
-            try{
-                socket.receive(packet);
-            }catch(SocketTimeoutException ex){
-                return null;
-            }
-            discoveryHandler.discoveredHost(packet);
-            return packet.getAddress();
-        }catch(IOException ex){
-            return null;
-        }finally{
-            discoveryHandler.finish();
-        }
-    }
-
-    private List<InetAddress> discoverHostsMulticast(int udpPort, int timeoutMillis){
-        List<InetAddress> hosts = new ArrayList<>();
-        try(DatagramSocket socket = new DatagramSocket()){
-            socket.setBroadcast(true);
-            broadcast(udpPort, socket);
-            socket.setSoTimeout(timeoutMillis);
-            while(true){
-                DatagramPacket packet = discoveryHandler.newDatagramPacket();
-                try{
-                    socket.receive(packet);
-                }catch(SocketTimeoutException ex){
-                    return hosts;
-                }
-                discoveryHandler.discoveredHost(packet);
-                hosts.add(packet.getAddress());
-            }
-        }catch(IOException ex){
-            return hosts;
-        }finally{
-            discoveryHandler.finish();
         }
     }
 
@@ -506,26 +454,55 @@ public class Client extends Connection implements EndPoint{
      * @param udpPort The UDP port of the server.
      * @param timeoutMillis The number of milliseconds to wait for a response.
      */
-    public List<InetAddress> discoverHosts(int udpPort, int timeoutMillis){
-        List<InetAddress> hosts = new ArrayList<>();
-        try(DatagramSocket socket = new DatagramSocket()){
-            socket.setBroadcast(true);
-            broadcast(udpPort, socket);
-            socket.setSoTimeout(timeoutMillis);
-            while(true){
-                DatagramPacket packet = discoveryHandler.newDatagramPacket();
-                try{
+    public void discoverHosts(int udpPort, String multicastGroup, int multicastPort, int timeoutMillis, Consumer<DatagramPacket> handler, Runnable done){
+        final boolean[] isDone = {false};
+
+        //broadcast
+        discoverExecutor.submit(() -> {
+            try(DatagramSocket socket = new DatagramSocket()){
+                socket.setBroadcast(true);
+                broadcast(udpPort, socket);
+                socket.setSoTimeout(timeoutMillis);
+                while(true){
+                    DatagramPacket packet = discoveryPacket.get();
                     socket.receive(packet);
-                }catch(SocketTimeoutException ex){
-                    return hosts;
+                    handler.accept(packet);
                 }
-                discoveryHandler.discoveredHost(packet);
-                hosts.add(packet.getAddress());
+            }finally{
+                synchronized(isDone){
+                    if(!isDone[0]){
+                        done.run();
+                        isDone[0] = true;
+                    }
+                }
             }
-        }catch(IOException ex){
-            return hosts;
-        }finally{
-            discoveryHandler.finish();
-        }
+        });
+
+        //multicast
+        discoverExecutor.submit(() -> {
+            try(DatagramSocket socket = new DatagramSocket()){
+
+                ByteBuffer dataBuffer = ByteBuffer.allocate(64);
+                serialization.write(dataBuffer, new DiscoverHost());
+                dataBuffer.flip();
+                byte[] data = new byte[dataBuffer.limit()];
+                dataBuffer.get(data);
+
+                socket.send(new DatagramPacket(data, data.length, InetAddress.getByName(multicastGroup), multicastPort));
+                socket.setSoTimeout(timeoutMillis);
+                while(true){
+                    DatagramPacket packet = discoveryPacket.get();
+                    socket.receive(packet);
+                    handler.accept(packet);
+                }
+            }finally{
+                synchronized(isDone){
+                    if(!isDone[0]){
+                        done.run();
+                        isDone[0] = true;
+                    }
+                }
+            }
+        });
     }
 }

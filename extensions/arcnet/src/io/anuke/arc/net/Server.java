@@ -22,9 +22,10 @@ package io.anuke.arc.net;
 import io.anuke.arc.collection.IntMap;
 import io.anuke.arc.function.Consumer;
 import io.anuke.arc.net.FrameworkMessage.*;
+import io.anuke.arc.util.Log;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
+import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.util.*;
@@ -49,7 +50,10 @@ public class Server implements EndPoint{
     private volatile boolean shutdown;
     private final Object updateLock = new Object();
     private Thread updateThread;
+    private int multicastPort = 21010;
     private Consumer<Exception> errorHandler = e -> {};
+    private InetAddress multicastGroup;
+    private MulticastReceiver multicast;
     private ServerDiscoveryHandler discoveryHandler;
 
     private NetListener dispatchListener = new NetListener(){
@@ -108,12 +112,21 @@ public class Server implements EndPoint{
         this.objectBufferSize = objectBufferSize;
         this.serializer = serializer;
 
-        this.discoveryHandler = (channel, address) -> channel.send(ByteBuffer.allocate(0), address);
+        this.discoveryHandler = (address, handler) -> handler.respond(ByteBuffer.allocate(0));
 
         try{
             selector = Selector.open();
         }catch(IOException ex){
             throw new RuntimeException("Error opening the selector.", ex);
+        }
+    }
+
+    public void setMulticast(String group, int multicastPort){
+        this.multicastPort = multicastPort;
+        try{
+            multicastGroup = InetAddress.getByName(group);
+        }catch(IOException e){
+            e.printStackTrace();
         }
     }
 
@@ -161,6 +174,11 @@ public class Server implements EndPoint{
                     objectBufferSize);
                     udp.bind(selector, udpPort);
                 }
+
+                if(multicastGroup != null && (udpPort == null || multicastPort != udpPort.getPort())){
+                    multicast = new MulticastReceiver(multicastPort);
+                    multicast.start();
+                }
             }catch(IOException ex){
                 close();
                 throw ex;
@@ -182,7 +200,7 @@ public class Server implements EndPoint{
             // connection.
         }
         long startTime = System.currentTimeMillis();
-        int select = 0;
+        int select;
         if(timeout > 0){
             select = selector.select(timeout);
         }else{
@@ -307,7 +325,7 @@ public class Server implements EndPoint{
                             }
                             if(object instanceof DiscoverHost){
                                 try{
-                                    discoveryHandler.onDiscoverRecieved(udp.datagramChannel, fromAddress);
+                                    discoveryHandler.onDiscoverRecieved(fromAddress.getAddress(), buff -> udp.datagramChannel.send(buff, fromAddress));
                                 }catch(IOException ignored){
                                 }
                                 continue;
@@ -550,6 +568,11 @@ public class Server implements EndPoint{
             this.serverChannel = null;
         }
 
+        if(multicast != null){
+            multicast.close();
+            multicast = null;
+        }
+
         UdpConnection udp = this.udp;
         if(udp != null){
             udp.close();
@@ -587,4 +610,46 @@ public class Server implements EndPoint{
     public Connection[] getConnections(){
         return connections;
     }
+
+    class MulticastReceiver extends Thread {
+        MulticastSocket socket = null;
+        int port;
+
+        MulticastReceiver(int port){
+            this.port = port;
+        }
+
+        void close(){
+            try{
+                interrupt();
+                if(socket != null){
+                    socket.leaveGroup(multicastGroup);
+                    socket.close();
+                }
+            }catch(IOException e){
+                errorHandler.accept(e);
+            }
+        }
+
+        @Override
+        public void run(){
+            try{
+                socket = new MulticastSocket(port);
+                socket.joinGroup(multicastGroup);
+                DatagramPacket packet = new DatagramPacket(new byte[256], 256);
+                while(true){
+                    socket.receive(packet);
+                    discoveryHandler.onDiscoverRecieved(packet.getAddress(), buffer -> {
+                        byte[] data = buffer.array();
+                        DatagramPacket out = new DatagramPacket(data, data.length);
+                        out.setSocketAddress(packet.getSocketAddress());
+                        socket.send(out);
+                    });
+                }
+            }catch(IOException e){
+                errorHandler.accept(e);
+            }
+        }
+    }
+
 }
