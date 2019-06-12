@@ -471,8 +471,8 @@ public class Client extends Connection implements EndPoint{
             }finally{
                 synchronized(isDone){
                     if(!isDone[0]){
-                        done.run();
                         isDone[0] = true;
+                        done.run();
                     }
                 }
             }
@@ -498,8 +498,8 @@ public class Client extends Connection implements EndPoint{
             }finally{
                 synchronized(isDone){
                     if(!isDone[0]){
-                        done.run();
                         isDone[0] = true;
+                        done.run();
                     }
                 }
             }

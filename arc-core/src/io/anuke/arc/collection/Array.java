@@ -286,7 +286,8 @@ public class Array<T> implements Iterable<T>{
         }
     }
 
-    public void clearAdd(Array<? extends T> array){
+    /** Sets this array's contents to the specified array.*/
+    public void set(Array<? extends T> array){
         clear();
         addAll(array);
     }
@@ -391,6 +392,7 @@ public class Array<T> implements Iterable<T>{
         return removeValue(value, false);
     }
 
+    /** Removes a single value by predicate. */
     public boolean remove(Predicate<T> value){
         for(int i = 0; i < size; i++){
             if(value.test(items[i])){
