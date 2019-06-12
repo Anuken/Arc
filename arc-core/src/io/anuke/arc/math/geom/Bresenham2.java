@@ -1,6 +1,7 @@
 package io.anuke.arc.math.geom;
 
 import io.anuke.arc.collection.Array;
+import io.anuke.arc.function.IntPositionConsumer;
 import io.anuke.arc.util.pooling.Pool;
 import io.anuke.arc.util.pooling.Pools;
 
@@ -15,6 +16,53 @@ import io.anuke.arc.util.pooling.Pools;
 public class Bresenham2{
     private final Array<Point2> points = new Array<>();
     private final Pool<Point2> pool = Pools.get(Point2.class, Point2::new);
+
+    /**
+     * Iterates through a list of {@link Point2} instances along the given line, at integer coordinates.
+     * @param startX the start x coordinate of the line
+     * @param startY the start y coordinate of the line
+     * @param endX the end x coordinate of the line
+     * @param endY the end y coordinate of the line
+     */
+    public static void line(int startX, int startY, int endX, int endY, IntPositionConsumer consumer){
+
+        int w = endX - startX;
+        int h = endY - startY;
+        int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
+        if(w < 0){
+            dx1 = -1;
+            dx2 = -1;
+        }else if(w > 0){
+            dx1 = 1;
+            dx2 = 1;
+        }
+        if(h < 0)
+            dy1 = -1;
+        else if(h > 0) dy1 = 1;
+        int longest = Math.abs(w);
+        int shortest = Math.abs(h);
+        if(longest <= shortest){
+            longest = Math.abs(h);
+            shortest = Math.abs(w);
+            if(h < 0)
+                dy2 = -1;
+            else if(h > 0) dy2 = 1;
+            dx2 = 0;
+        }
+        int numerator = longest >> 1;
+        for(int i = 0; i <= longest; i++){
+            consumer.accept(startX, startY);
+            numerator += shortest;
+            if(numerator > longest){
+                numerator -= longest;
+                startX += dx1;
+                startY += dy1;
+            }else{
+                startX += dx2;
+                startY += dy2;
+            }
+        }
+    }
 
     /**
      * Returns a list of {@link Point2} instances along the given line, at integer coordinates.

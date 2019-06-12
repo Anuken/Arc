@@ -10,10 +10,12 @@ import io.anuke.arc.scene.event.Touchable;
 import io.anuke.arc.scene.style.Drawable;
 import io.anuke.arc.scene.ui.*;
 import io.anuke.arc.scene.ui.Label.LabelStyle;
+import io.anuke.arc.scene.ui.TextButton.TextButtonStyle;
 import io.anuke.arc.scene.ui.TextField.TextFieldFilter;
 import io.anuke.arc.scene.utils.Elements;
 import io.anuke.arc.util.Align;
-import io.anuke.arc.util.pooling.*;
+import io.anuke.arc.util.pooling.Pool;
+import io.anuke.arc.util.pooling.Pools;
 
 import static io.anuke.arc.Core.scene;
 import static io.anuke.arc.scene.ui.layout.Cell.unset;
@@ -390,8 +392,8 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
-    public Cell<TextButton> addButton(Consumer<TextButton> cons, Runnable listener){
-        TextButton button = new TextButton("");
+    public Cell<Button> addButton(Consumer<Button> cons, Runnable listener){
+        Button button = new Button(scene.skin.get(TextButtonStyle.class));
         button.clearChildren();
         button.clicked(listener);
         cons.accept(button);

@@ -974,14 +974,29 @@ public class Element implements Layout{
 
     /** Adds a click listener. */
     public ClickListener clicked(Runnable r){
+        return clicked(KeyCode.MOUSE_LEFT, r);
+    }
+
+    /** Adds a click listener. */
+    public ClickListener clicked(KeyCode button, Runnable r){
+        return clicked(l -> l.setButton(button), r);
+    }
+
+    /** Adds a click listener. */
+    public ClickListener clicked(Consumer<ClickListener> tweaker, Runnable r){
+        return clicked(tweaker, e -> r.run());
+    }
+
+    public ClickListener clicked(Consumer<ClickListener> tweaker, Consumer<ClickListener> runner){
         ClickListener click;
         Element elem = this;
         addListener(click = new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                if(r != null && !(elem instanceof Disableable && ((Disableable)elem).isDisabled())) r.run();
+                if(runner != null && !(elem instanceof Disableable && ((Disableable)elem).isDisabled())) runner.accept(this);
             }
         });
+        tweaker.accept(click);
         return click;
     }
 
