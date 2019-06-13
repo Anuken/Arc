@@ -77,6 +77,45 @@ public class Timer{
         return instance().scheduleTask(task, delaySeconds, intervalSeconds, repeatCount);
     }
 
+    /**
+     * Schedules a task on {@link #instance}.
+     * @see #scheduleTask(Task, float)
+     */
+    public static Task schedule(Runnable task, float delaySeconds){
+        return instance().scheduleTask(new Task(){
+            @Override
+            public void run(){
+                task.run();
+            }
+        }, delaySeconds);
+    }
+
+    /**
+     * Schedules a task on {@link #instance}.
+     * @see #scheduleTask(Task, float, float)
+     */
+    public static Task schedule(Runnable task, float delaySeconds, float intervalSeconds){
+        return instance().scheduleTask(new Task(){
+            @Override
+            public void run(){
+                task.run();
+            }
+        }, delaySeconds, intervalSeconds);
+    }
+
+    /**
+     * Schedules a task on {@link #instance}.
+     * @see #scheduleTask(Task, float, float, int)
+     */
+    public static Task schedule(Runnable task, float delaySeconds, float intervalSeconds, int repeatCount){
+        return instance().scheduleTask(new Task(){
+            @Override
+            public void run(){
+                task.run();
+            }
+        }, delaySeconds, intervalSeconds, repeatCount);
+    }
+
     /** Schedules a task to occur once as soon as possible, but not sooner than the start of the next frame. */
     public Task postTask(Task task){
         return scheduleTask(task, 0, 0, 0);
