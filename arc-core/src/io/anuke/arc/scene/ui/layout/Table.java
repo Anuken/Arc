@@ -65,6 +65,11 @@ public class Table extends WidgetGroup{
         background(background);
     }
 
+    public Table(String background, Consumer<Table> cons){
+        this(background);
+        cons.accept(this);
+    }
+
     private Cell obtainCell(){
         Cell cell = cellPool.obtain();
         cell.setLayout(this);
