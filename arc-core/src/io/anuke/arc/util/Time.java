@@ -1,9 +1,7 @@
 package io.anuke.arc.util;
 
 import io.anuke.arc.Core;
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.collection.LongArray;
-import io.anuke.arc.util.Timer.Task;
+import io.anuke.arc.collection.*;
 import io.anuke.arc.util.pooling.Pool.Poolable;
 import io.anuke.arc.util.pooling.Pools;
 
@@ -23,12 +21,7 @@ public class Time{
     }
 
     public static synchronized void runTask(float delay, Runnable r){
-        Timer.schedule(new Task(){
-            @Override
-            public void run(){
-                r.run();
-            }
-        }, delay / 60f);
+        Timer.schedule(r, delay / 60f);
     }
 
     public static float time(){

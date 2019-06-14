@@ -25,8 +25,8 @@ public class AsyncExecutor implements Disposable{
         });
     }
 
-    public void submit(Runnable run){
-        submit(() -> {
+    public AsyncResult<Void> submit(Runnable run){
+        return submit(() -> {
            run.run();
            return null;
         });
