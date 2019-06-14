@@ -17,6 +17,10 @@ public interface Position{
         return Angles.angle(getX(), getY(), x, y);
     }
 
+    default float dst2(Position other){
+        return dst2(other.getX(), other.getY());
+    }
+
     default float dst(Position other){
         return dst(other.getX(), other.getY());
     }
@@ -26,6 +30,13 @@ public interface Position{
         final float yd = getY() - y;
         return Mathf.sqrt(xd * xd + yd * yd);
     }
+
+    default float dst2(float x, float y){
+        final float xd = getX() - x;
+        final float yd = getY() - y;
+        return (xd * xd + yd * yd);
+    }
+
     default boolean withinDst(float x, float y, float dst){
         return Mathf.dst2(getX(), getY(), x, y) < dst*dst;
     }
