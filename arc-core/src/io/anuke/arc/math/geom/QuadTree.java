@@ -2,6 +2,7 @@ package io.anuke.arc.math.geom;
 
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.function.Consumer;
+import io.anuke.arc.math.geom.QuadTree.QuadTreeObject;
 
 import java.util.Iterator;
 
@@ -12,67 +13,38 @@ import java.util.Iterator;
  *
  * @param <T> The type of object this quad tree should contain. An object only requires some way of getting rough bounds.
  * @author xSke
+ * @author Anuke
  */
-public class QuadTree<T>{
-    private static Rectangle tmp = new Rectangle();
-    private int maxObjectsPerNode;
-    private int level;
+@SuppressWarnings("unchecked")
+public class QuadTree<T extends QuadTreeObject>{
+    private static final Rectangle tmp = new Rectangle();
+    private static final int maxObjectsPerNode = 5;
+    private static final int botLeft = 0, botRight = 1, topRight = 2, topLeft = 3;
+
     private Rectangle bounds;
-    private Array<T> objects;
-    private BoundingBoxProvider<T> provider;
+    private Array<T> objects = new Array<>();
+    private QuadTree<T>[] children;
 
-    private boolean leaf;
-    private QuadTree<T> bottomLeftChild;
-    private QuadTree<T> bottomRightChild;
-    private QuadTree<T> topLeftChild;
-    private QuadTree<T> topRightChild;
-
-    /**
-     * Constructs a new quad tree.
-     *
-     * @param maxObjectsPerNode How many objects may be in a node before it will split.
-     * Should be around 3-5 for optimal results, depending on your use case.
-     * @param bounds The total bounds of this root node
-     */
-    public QuadTree(int maxObjectsPerNode, Rectangle bounds){
-        this(maxObjectsPerNode, 0, bounds, (obj, out) -> {
-            if(obj instanceof QuadTreeObject){
-                ((QuadTreeObject) obj).hitbox(out);
-            }else{
-                throw new IllegalArgumentException("The provided object does not implement QuadTreeObject! Did you forget to pass a custom BoundingBoxProvider into the quadtree?");
-            }
-        });
-    }
-
-    private QuadTree(int maxObjectsPerNode, int level, Rectangle bounds, BoundingBoxProvider provider){
-        this.level = level;
+    public QuadTree(Rectangle bounds){
         this.bounds = bounds;
-        this.maxObjectsPerNode = maxObjectsPerNode;
-        this.provider = provider;
-        objects = new Array<>();
-        leaf = true;
-    }
-
-    public void setBoundingBoxProvider(BoundingBoxProvider<T> prov){
-        this.provider = prov;
     }
 
     private void split(){
-        if(!leaf) return;
+        if(children != null) return;
 
         float subW = bounds.width / 2;
         float subH = bounds.height / 2;
 
-        leaf = false;
-        bottomLeftChild = new QuadTree<>(maxObjectsPerNode, level + 1, new Rectangle(bounds.x, bounds.y, subW, subH), provider);
-        bottomRightChild = new QuadTree<>(maxObjectsPerNode, level + 1, new Rectangle(bounds.x + subW, bounds.y, subW, subH), provider);
-        topLeftChild = new QuadTree<>(maxObjectsPerNode, level + 1, new Rectangle(bounds.x, bounds.y + subH, subW, subH), provider);
-        topRightChild = new QuadTree<>(maxObjectsPerNode, level + 1, new Rectangle(bounds.x + subW, bounds.y + subH, subW, subH), provider);
+        children = new QuadTree[4];
+        children[botLeft] = new QuadTree<>(new Rectangle(bounds.x, bounds.y, subW, subH));
+        children[botRight] = new QuadTree<>(new Rectangle(bounds.x + subW, bounds.y, subW, subH));
+        children[topLeft] = new QuadTree<>(new Rectangle(bounds.x, bounds.y + subH, subW, subH));
+        children[topRight] = new QuadTree<>(new Rectangle(bounds.x + subW, bounds.y + subH, subW, subH));
 
         // Transfer objects to children if they fit entirely in one
         for(Iterator<T> iterator = objects.iterator(); iterator.hasNext(); ){
             T obj = iterator.next();
-            provider.getBoundingBox(obj, tmp);
+            obj.hitbox(tmp);
             QuadTree<T> child = getFittingChild(tmp);
             if(child != null){
                 child.insert(obj);
@@ -82,34 +54,32 @@ public class QuadTree<T>{
     }
 
     private void unsplit(){
-        if(leaf) return;
-        leaf = true;
+        if(children == null) return;
 
-        objects.addAll(bottomLeftChild.objects);
-        objects.addAll(bottomRightChild.objects);
-        objects.addAll(topLeftChild.objects);
-        objects.addAll(topRightChild.objects);
-        bottomLeftChild = bottomRightChild = topLeftChild = topRightChild = null;
+        for(int i = 0; i < 4; i++){
+            objects.addAll(children[i].objects);
+        }
+        children = null;
     }
 
     /**
      * Inserts an object into this node or its child nodes. This will split a leaf node if it exceeds the object limit.
      */
     public void insert(T obj){
-        provider.getBoundingBox(obj, tmp);
+        obj.hitbox(tmp);
         if(!bounds.overlaps(tmp)){
             // New object not in quad tree, ignoring
             // throw an exception?
             return;
         }
 
-        if(leaf && (objects.size + 1) > maxObjectsPerNode) split();
+        if(children == null && (objects.size + 1) > maxObjectsPerNode) split();
 
-        if(leaf){
+        if(children == null){
             // Leaf, so no need to add to children, just add to root
             objects.add(obj);
         }else{
-            provider.getBoundingBox(obj, tmp);
+            obj.hitbox(tmp);
             // Add to relevant child, or root if can't fit completely in a child
             QuadTree<T> child = getFittingChild(tmp);
             if(child != null){
@@ -124,12 +94,12 @@ public class QuadTree<T>{
      * Removes an object from this node or its child nodes.
      */
     public void remove(T obj){
-        if(leaf){
+        if(children == null){
             // Leaf, no children, remove from root
             objects.removeValue(obj, true);
         }else{
             // Remove from relevant child
-            provider.getBoundingBox(obj, tmp);
+            obj.hitbox(tmp);
             QuadTree<T> child = getFittingChild(tmp);
 
             if(child != null){
@@ -146,10 +116,11 @@ public class QuadTree<T>{
     /** Removes all objects. */
     public void clear(){
         objects.clear();
-        if(bottomLeftChild != null) bottomLeftChild.clear();
-        if(bottomRightChild != null) bottomRightChild.clear();
-        if(topLeftChild != null) topLeftChild.clear();
-        if(topRightChild != null) topRightChild.clear();
+        if(children != null){
+            for(int i = 0; i < 4; i++){
+                children[i].clear();
+            }
+        }
     }
 
     private QuadTree<T> getFittingChild(Rectangle boundingBox){
@@ -164,37 +135,21 @@ public class QuadTree<T>{
         // Object can completely fit within the left quadrants
         if(boundingBox.x < verticalMidpoint && boundingBox.x + boundingBox.width < verticalMidpoint){
             if(topQuadrant){
-                return topLeftChild;
+                return children[topLeft];
             }else if(bottomQuadrant){
-                return bottomLeftChild;
+                return children[botLeft];
             }
         }
         // Object can completely fit within the right quadrants
         else if(boundingBox.x > verticalMidpoint){
             if(topQuadrant){
-                return topRightChild;
+                return children[topRight];
             }else if(bottomQuadrant){
-                return bottomRightChild;
+                return children[botRight];
             }
         }
 
         // Else, object needs to be in parent cause it can't fit completely in a quadrant
-        return null;
-    }
-
-    /**
-     * Returns the leaf node directly at the given coordinates, or null if the coordinates are outside this node's bounds.
-     */
-    public QuadTree<T> getNodeAt(float x, float y){
-        if(!bounds.contains(x, y)) return null;
-        if(leaf) return this;
-
-        if(topLeftChild.bounds.contains(x, y)) return topLeftChild.getNodeAt(x, y);
-        if(topRightChild.bounds.contains(x, y)) return topRightChild.getNodeAt(x, y);
-        if(bottomLeftChild.bounds.contains(x, y)) return bottomLeftChild.getNodeAt(x, y);
-        if(bottomRightChild.bounds.contains(x, y)) return bottomRightChild.getNodeAt(x, y);
-
-        // This should never happen
         return null;
     }
 
@@ -204,15 +159,16 @@ public class QuadTree<T>{
      * This will never result in false positives.
      */
     public void getIntersect(Consumer<T> out, float x, float y, float width, float height){
-        if(!leaf){
-            if(topLeftChild.bounds.overlaps(x, y, width, height)) topLeftChild.getIntersect(out, x, y, width, height);
-            if(topRightChild.bounds.overlaps(x, y, width, height)) topRightChild.getIntersect(out, x, y, width, height);
-            if(bottomLeftChild.bounds.overlaps(x, y, width, height)) bottomLeftChild.getIntersect(out, x, y, width, height);
-            if(bottomRightChild.bounds.overlaps(x, y, width, height)) bottomRightChild.getIntersect(out, x, y, width, height);
+        if(children != null){
+            for(int i = 0; i < 4; i++){
+                if(children[i].bounds.overlaps(x, y, width, height)){
+                    children[i].getIntersect(out, x, y, width, height);
+                }
+            }
         }
 
         for(int i = 0; i < objects.size; i++){
-            provider.getBoundingBox(objects.get(i), tmp);
+            objects.get(i).hitbox(tmp);
             if(tmp.overlaps(x, y, width, height)){
                 out.accept(objects.get(i));
             }
@@ -234,11 +190,12 @@ public class QuadTree<T>{
      * This will result in false positives, but never a false negative.
      */
     public void getIntersect(Array<T> out, Rectangle toCheck){
-        if(!leaf){
-            if(topLeftChild.bounds.overlaps(toCheck)) topLeftChild.getIntersect(out, toCheck);
-            if(topRightChild.bounds.overlaps(toCheck)) topRightChild.getIntersect(out, toCheck);
-            if(bottomLeftChild.bounds.overlaps(toCheck)) bottomLeftChild.getIntersect(out, toCheck);
-            if(bottomRightChild.bounds.overlaps(toCheck)) bottomRightChild.getIntersect(out, toCheck);
+        if(children != null){
+            for(int i = 0; i < 4; i++){
+                if(children[i].bounds.overlaps(toCheck)){
+                    children[i].getIntersect(out, toCheck);
+                }
+            }
         }
 
         out.addAll(objects);
@@ -248,35 +205,35 @@ public class QuadTree<T>{
      * Returns whether this node is a leaf node (has no child nodes)
      */
     public boolean isLeaf(){
-        return leaf;
+        return children == null;
     }
 
     /**
      * Returns the bottom left child node, or null if this node is a leaf node.
      */
     public QuadTree<T> getBottomLeftChild(){
-        return bottomLeftChild;
+        return children[botLeft];
     }
 
     /**
      * Returns the bottom right child node, or null if this node is a leaf node.
      */
     public QuadTree<T> getBottomRightChild(){
-        return bottomRightChild;
+        return children[botRight];
     }
 
     /**
      * Returns the top left child node, or null if this node is a leaf node.
      */
     public QuadTree<T> getTopLeftChild(){
-        return topLeftChild;
+        return children[topLeft];
     }
 
     /**
      * Returns the top right child node, or null if this node is a leaf node.
      */
     public QuadTree<T> getTopRightChild(){
-        return topRightChild;
+        return children[topRight];
     }
 
     /**
@@ -300,11 +257,10 @@ public class QuadTree<T>{
      */
     public int getTotalObjectCount(){
         int count = objects.size;
-        if(!leaf){
-            count += topLeftChild.getTotalObjectCount();
-            count += topRightChild.getTotalObjectCount();
-            count += bottomLeftChild.getTotalObjectCount();
-            count += bottomRightChild.getTotalObjectCount();
+        if(children != null){
+            for(int i = 0; i < 4; i++){
+                count += children[i].getTotalObjectCount();
+            }
         }
         return count;
     }
@@ -315,11 +271,10 @@ public class QuadTree<T>{
     public void getAllChildren(Array<T> out){
         out.addAll(objects);
 
-        if(!leaf){
-            topLeftChild.getAllChildren(out);
-            topRightChild.getAllChildren(out);
-            bottomLeftChild.getAllChildren(out);
-            bottomRightChild.getAllChildren(out);
+        if(children != null){
+            for(int i = 0; i < 4; i++){
+                children[i].getAllChildren(out);
+            }
         }
     }
 
@@ -327,9 +282,5 @@ public class QuadTree<T>{
     public interface QuadTreeObject{
         /**Fills the out parameter with this element's rough bounding box. This should never be smaller than the actual object, but may be larger.*/
         void hitbox(Rectangle out);
-    }
-
-    public interface BoundingBoxProvider<T>{
-        void getBoundingBox(T type, Rectangle out);
     }
 }

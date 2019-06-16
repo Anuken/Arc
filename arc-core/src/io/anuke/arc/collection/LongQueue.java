@@ -26,6 +26,13 @@ public class LongQueue{
         this.values = new long[initialSize];
     }
 
+    public LongQueue(long[] array){
+        this(Math.max(array.length, 16));
+        for(int i = 0; i < array.length; i++){
+            addLast(array[i]);
+        }
+    }
+
     /**
      * Append given object to the tail. (enqueue to tail) Unless backing array needs resizing, operates in O(1) time.
      * @param object can be null
@@ -287,6 +294,14 @@ public class LongQueue{
         this.head = 0;
         this.tail = 0;
         this.size = 0;
+    }
+
+    public long[] toArray(){
+        long[] out = new long[size];
+        for(int i = 0; i < size; i++){
+            out[i] = get(i);
+        }
+        return out;
     }
 
     public String toString(){

@@ -120,13 +120,24 @@ public class Array<T> implements Iterable<T>{
 
     /** @see #Array(Object[]) */
     public static <T> Array<T> with(T... array){
-        return new Array(array);
+        return new Array<>(array);
     }
 
     public static <T> Array<T> with(Iterable<T> array){
         Array<T> out = new Array<>();
         for(T thing : array){
             out.add((T)thing);
+        }
+        return out;
+    }
+
+    /** @see #Array(Object[]) */
+    public static <T> Array<T> select(T[] array, Predicate<T> test){
+        Array<T> out = new Array<>(array.length);
+        for(int i = 0; i < array.length; i++){
+            if(test.test(array[i])){
+                out.add(array[i]);
+            }
         }
         return out;
     }
