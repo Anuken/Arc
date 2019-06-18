@@ -535,6 +535,10 @@ public class Cell<T extends Element> implements Poolable{
         elementHeight = height;
     }
 
+    public boolean isEndRow(){
+        return endRow;
+    }
+
     public void row(){
         table.row();
     }
