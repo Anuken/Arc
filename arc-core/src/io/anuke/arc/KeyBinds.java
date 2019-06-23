@@ -153,6 +153,7 @@ public class KeyBinds{
     }
 
     public Axis get(Section section, KeyBind def){
+        if(definitions == null) throw new IllegalArgumentException("No keybinds defined! Did you forget to call setDefaults(...)?");
         return get(section, section.device.type(), def);
     }
 

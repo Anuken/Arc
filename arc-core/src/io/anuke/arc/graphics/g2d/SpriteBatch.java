@@ -13,7 +13,6 @@ import io.anuke.arc.util.Disposable;
  * Draws batched quads using indices.
  * @author mzechner
  * @author Nathan Sweet
- * @see Batch
  */
 public class SpriteBatch implements Disposable{
     //xy + color + uv + mix_color
@@ -40,10 +39,10 @@ public class SpriteBatch implements Disposable{
     private boolean ownsShader;
 
     private final Color color = new Color(1, 1, 1, 1);
-    private float colorPacked = Color.WHITE_FLOAT_BITS;
+    protected float colorPacked = Color.WHITE_FLOAT_BITS;
 
     private final Color mixColor = Color.CLEAR;
-    private float mixColorPacked = Color.CLEAR_FLOAT_BITS;
+    protected float mixColorPacked = Color.CLEAR_FLOAT_BITS;
 
     /** Number of render calls since the last {@link #begin()}. **/
     int renderCalls = 0;
@@ -328,7 +327,7 @@ public class SpriteBatch implements Disposable{
         }
     }
 
-    void flush(){
+    protected void flush(){
         if(idx == 0) return;
 
         renderCalls = 0;
