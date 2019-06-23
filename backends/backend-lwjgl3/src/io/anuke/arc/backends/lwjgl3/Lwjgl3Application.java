@@ -6,6 +6,7 @@ import io.anuke.arc.backends.lwjgl3.audio.mock.MockAudio;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.graphics.glutils.GLVersion;
 import io.anuke.arc.util.*;
+import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.Callback;
@@ -121,8 +122,12 @@ public class Lwjgl3Application implements Application{
             GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, config.windowDecorated ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
             windowHandle = GLFW.glfwCreateWindow(config.windowWidth, config.windowHeight, config.title, 0, sharedContextWindow);
         }
+
         if(windowHandle == 0){
-            throw new ArcRuntimeException("Couldn't create window");
+            PointerBuffer buffer = PointerBuffer.allocateDirect(1024);
+            int code = GLFW.glfwGetError(buffer);
+            buffer.position(0);
+            throw new ArcRuntimeException("Couldn't create window, error #" + code + " (" + buffer.getStringUTF8() +")");
         }
         Lwjgl3Window.setSizeLimits(windowHandle, config.windowMinWidth, config.windowMinHeight, config.windowMaxWidth, config.windowMaxHeight);
         if(config.fullscreenMode == null && !config.windowMaximized){
