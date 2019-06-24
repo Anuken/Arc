@@ -9,6 +9,8 @@ import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.util.Tmp;
 
+import static io.anuke.arc.Core.camera;
+
 public class Draw{
     private static Color[] carr = new Color[3];
     public static float scl = 1f;
@@ -124,6 +126,20 @@ public class Draw{
 
     public static void drawable(String name, float x, float y, float w, float h){
         Core.scene.skin.getDrawable(name).draw(x, y, w, h);
+    }
+
+    public static void fbo(Texture texture, int worldWidth, int worldHeight, int tilesize){
+        float ww = worldWidth * tilesize, wh = worldHeight * tilesize;
+        float x = camera.position.x + tilesize / 2f, y = camera.position.y + tilesize / 2f;
+        float u = (x - camera.width / 2f) / ww,
+        v = (y - camera.height / 2f) / wh,
+        u2 = (x + camera.width / 2f) / ww,
+        v2 = (y + camera.height / 2f) / wh;
+
+        Tmp.tr1.set(texture);
+        Tmp.tr1.set(u, v2, u2, v);
+
+        Draw.rect(Tmp.tr1, camera.position.x, camera.position.y, camera.width, camera.height);
     }
 
     public static void rect(String region, float x, float y, float w, float h){

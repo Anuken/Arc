@@ -272,9 +272,10 @@ public class Vector2 implements Serializable, Vector<Vector2>, Position{
         return "(" + x + "," + y + ")";
     }
 
-    public void clamp(float minx, float maxx, float miny, float maxy){
+    public Vector2 clamp(float minx, float maxx, float miny, float maxy){
         x = Mathf.clamp(x, minx, maxx);
         y = Mathf.clamp(y, miny, maxy);
+        return this;
     }
 
     /**
