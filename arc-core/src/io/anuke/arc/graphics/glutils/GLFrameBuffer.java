@@ -4,10 +4,8 @@ import io.anuke.arc.Application;
 import io.anuke.arc.Application.ApplicationType;
 import io.anuke.arc.Core;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.graphics.GL20;
-import io.anuke.arc.graphics.GL30;
-import io.anuke.arc.graphics.GLTexture;
-import io.anuke.arc.graphics.Pixmap;
+import io.anuke.arc.graphics.*;
+import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.BufferUtils;
 import io.anuke.arc.util.Disposable;
@@ -338,6 +336,19 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     /** Makes the frame buffer current so everything gets drawn to it. */
     public void bind(){
         Core.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
+    }
+
+    /** Flushes the batch, begins this buffer and clears the screen.*/
+    public void beginDraw(Color clearColor){
+        Draw.flush();
+        begin();
+        Core.graphics.clear(clearColor);
+    }
+
+    /** Flushes the batch and ends this buffer. */
+    public void endDraw(){
+        Draw.flush();
+        end();
     }
 
     /** Binds the frame buffer and sets the viewport accordingly, so everything gets drawn to it. */
