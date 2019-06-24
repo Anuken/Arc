@@ -7,7 +7,7 @@ import io.anuke.arc.postprocessing.PostEffect;
 import io.anuke.arc.postprocessing.PostProcessor;
 import io.anuke.arc.postprocessing.filters.Blur.BlurType;
 import io.anuke.arc.postprocessing.filters.CrtScreen.RgbMode;
-import io.anuke.arc.postprocessing.utils.PingPongBuffer;
+import io.anuke.arc.postprocessing.PingPongBuffer;
 
 public final class CrtMonitorEffect extends PostEffect{
     private PingPongBuffer pingPongBuffer = null;

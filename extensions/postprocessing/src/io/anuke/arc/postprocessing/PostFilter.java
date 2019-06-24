@@ -4,7 +4,6 @@ import io.anuke.arc.Core;
 import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.graphics.glutils.FrameBuffer;
 import io.anuke.arc.graphics.glutils.Shader;
-import io.anuke.arc.postprocessing.utils.FullscreenQuad;
 import io.anuke.arc.util.Disposable;
 
 /** The base class for any single-pass filter. */

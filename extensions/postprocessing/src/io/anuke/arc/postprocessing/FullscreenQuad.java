@@ -1,4 +1,4 @@
-package io.anuke.arc.postprocessing.utils;
+package io.anuke.arc.postprocessing;
 
 import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.Mesh;

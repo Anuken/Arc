@@ -22,7 +22,7 @@ import io.anuke.arc.graphics.glutils.FrameBuffer;
 import io.anuke.arc.postprocessing.PostEffect;
 import io.anuke.arc.postprocessing.PostProcessor;
 import io.anuke.arc.postprocessing.filters.Blur.BlurType;
-import io.anuke.arc.postprocessing.utils.PingPongBuffer;
+import io.anuke.arc.postprocessing.PingPongBuffer;
 
 /**
  * Pseudo lens flare implementation. This is a post-processing effect entirely, no need for light positions or anything. It

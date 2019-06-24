@@ -192,7 +192,8 @@ public abstract class Input{
         if(axis.key != null){
             return keyboard.getAxis(axis.key);
         }else{
-            return keyboard.isKeyPressed(axis.min) ? -1 : keyboard.isKeyPressed(axis.max) ? 1 : 0;
+            return keyboard.isKeyPressed(axis.min) && keyboard.isKeyPressed(axis.max) ? 0 :
+                    keyboard.isKeyPressed(axis.min) ? -1 : keyboard.isKeyPressed(axis.max) ? 1 : 0;
         }
     }
 

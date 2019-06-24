@@ -6,7 +6,6 @@ import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.Pixmap.Format;
 import io.anuke.arc.graphics.glutils.FrameBuffer;
-import io.anuke.arc.postprocessing.utils.PingPongBuffer;
 import io.anuke.arc.util.Disposable;
 
 /**
