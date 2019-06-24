@@ -3,7 +3,7 @@ package io.anuke.arc.postprocessing.filters;
 import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.postprocessing.PostFilter;
 
-public final class Vignetting extends PostFilter{
+public class Vignetting extends PostFilter{
     public float x = 0.8f, y = 0.25f;
     public float intensity = 1f, saturation = 1f, saturationMul = 1f;
     public Texture texLut;

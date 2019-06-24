@@ -1,10 +1,10 @@
 package io.anuke.arc.postprocessing.filters;
 
 import io.anuke.arc.collection.IntMap;
-import io.anuke.arc.postprocessing.utils.PingPongBuffer;
+import io.anuke.arc.postprocessing.PingPongBuffer;
 import io.anuke.arc.util.Disposable;
 
-public final class Blur extends MultipassFilter implements Disposable{
+public class Blur extends MultipassFilter implements Disposable{
     public BlurType type = BlurType.Gaussian5x5;
     /**Only affects non-b blur types.*/
     public float amount = 1f;

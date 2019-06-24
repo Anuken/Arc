@@ -194,6 +194,10 @@ public abstract class GLTexture implements Disposable{
         }
     }
 
+    public void setFilter(TextureFilter filter){
+        setFilter(filter, filter);
+    }
+
     /**
      * Sets the {@link TextureFilter} for this texture for minification and magnification. This will bind this texture!
      * @param minFilter the minification filter
