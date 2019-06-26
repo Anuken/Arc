@@ -2,8 +2,7 @@ package io.anuke.arc.collection;
 
 import io.anuke.arc.function.*;
 import io.anuke.arc.math.Mathf;
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.Select;
+import io.anuke.arc.util.*;
 import io.anuke.arc.util.reflect.ArrayReflection;
 
 import java.util.Comparator;
@@ -215,7 +214,7 @@ public class Array<T> implements Iterable<T>{
 
     public T max(FloatFunction<T> func){
         T result = null;
-        float max = Float.MIN_VALUE;
+        float max = Float.NEGATIVE_INFINITY;
         for(int i = 0; i < size; i++){
             T t = items[i];
             float val = func.get(t);
