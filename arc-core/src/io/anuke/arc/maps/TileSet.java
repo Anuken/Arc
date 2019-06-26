@@ -1,7 +1,6 @@
-package io.anuke.arc.maps.tiled;
+package io.anuke.arc.maps;
 
 import io.anuke.arc.collection.IntMap;
-import io.anuke.arc.maps.MapProperties;
 
 import java.util.Iterator;
 

@@ -1,4 +1,4 @@
-package io.anuke.arc.maps.tiled;
+package io.anuke.arc.maps;
 
 import io.anuke.arc.collection.Array;
 

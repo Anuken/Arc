@@ -1,4 +1,4 @@
-package io.anuke.arc.maps.tiled;
+package io.anuke.arc.maps.loaders;
 
 import io.anuke.arc.assets.AssetDescriptor;
 import io.anuke.arc.assets.AssetManager;
@@ -11,10 +11,9 @@ import io.anuke.arc.collection.ObjectMap;
 import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.graphics.g2d.TextureRegion;
-import io.anuke.arc.maps.ImageResolver;
-import io.anuke.arc.maps.ImageResolver.AssetManagerImageResolver;
-import io.anuke.arc.maps.ImageResolver.DirectImageResolver;
-import io.anuke.arc.maps.MapProperties;
+import io.anuke.arc.maps.*;
+import io.anuke.arc.maps.loaders.ImageResolver.AssetManagerImageResolver;
+import io.anuke.arc.maps.loaders.ImageResolver.DirectImageResolver;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.serialization.SerializationException;
 import io.anuke.arc.util.serialization.XmlReader.Element;

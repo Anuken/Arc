@@ -1,8 +1,8 @@
-package io.anuke.arc.maps.tiled;
+package io.anuke.arc.maps.objects;
 
 import io.anuke.arc.graphics.g2d.TextureRegion;
 import io.anuke.arc.maps.MapObject;
-import io.anuke.arc.maps.objects.TextureMapObject;
+import io.anuke.arc.maps.MapTile;
 
 /**
  * A {@link MapObject} with a {@link MapTile}.

@@ -1,8 +1,7 @@
-package io.anuke.arc.maps.tiled;
+package io.anuke.arc.maps;
 
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.graphics.g2d.TextureRegion;
-import io.anuke.arc.maps.*;
 
 public class MapTile{
     public int id;

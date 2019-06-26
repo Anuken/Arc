@@ -1,14 +1,11 @@
-package io.anuke.arc.maps.tiled;
-
-import io.anuke.arc.maps.MapLayer;
+package io.anuke.arc.maps;
 
 /** Layer for a TiledMap */
 public class TileLayer extends MapLayer{
-    private int width;
-    private int height;
-
-    private float tileWidth;
-    private float tileHeight;
+    public final int width;
+    public final int height;
+    public final float tileWidth;
+    public final float tileHeight;
 
     private Cell[][] cells;
 
@@ -26,26 +23,6 @@ public class TileLayer extends MapLayer{
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
         this.cells = new Cell[width][height];
-    }
-
-    /** @return layer's width in tiles */
-    public int getWidth(){
-        return width;
-    }
-
-    /** @return layer's height in tiles */
-    public int getHeight(){
-        return height;
-    }
-
-    /** @return tiles' width in pixels */
-    public float getTileWidth(){
-        return tileWidth;
-    }
-
-    /** @return tiles' height in pixels */
-    public float getTileHeight(){
-        return tileHeight;
     }
 
     /**
@@ -67,6 +44,10 @@ public class TileLayer extends MapLayer{
     public void setCell(int x, int y, Cell cell){
         if(x < 0 || x >= width || y < 0 || y >= height) return;
         cells[x][y] = cell;
+    }
+
+    public MapTile getTile(int x, int y){
+        return getCell(x, y) == null ? null : getCell(x, y).tile;
     }
 
     /** represents a cell in a TiledLayer: TiledMapTile, flip and rotation properties. */

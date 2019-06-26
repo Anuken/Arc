@@ -319,6 +319,11 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
         return val;
     }
 
+    /** Get, with a nullable key.*/
+    public V getNull(K key){
+        return key == null ? null : get(key);
+    }
+
     /** Returns the value for the specified key, or null if the key is not in the map. */
     public V get(K key){
         int hashCode = key.hashCode();
