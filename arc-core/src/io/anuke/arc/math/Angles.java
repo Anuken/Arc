@@ -65,7 +65,7 @@ public class Angles{
 
     public static float mouseAngle(float cx, float cy){
         Vector2 avector = Core.camera.project(cx, cy);
-        return angle(Core.input.mouseX(), Core.input.mouseY(), avector.x, avector.y);
+        return angle(avector.x, avector.y, Core.input.mouseX(), Core.input.mouseY());
     }
 
     public static void circle(int points, Consumer<Float> cons){

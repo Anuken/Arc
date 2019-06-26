@@ -3,10 +3,9 @@ package io.anuke.arc.maps.objects;
 import io.anuke.arc.maps.MapObject;
 import io.anuke.arc.math.geom.Circle;
 
-/** @brief Represents {@link Circle} shaped map objects */
+/** Represents {@link Circle} shaped map objects */
 public class CircleMapObject extends MapObject{
-
-    private Circle circle;
+    public final Circle circle;
 
     /** Creates a circle map object at (0,0) with r=1.0 */
     public CircleMapObject(){
@@ -22,10 +21,5 @@ public class CircleMapObject extends MapObject{
     public CircleMapObject(float x, float y, float radius){
         super();
         circle = new Circle(x, y, radius);
-    }
-
-    /** @return circle shape */
-    public Circle getCircle(){
-        return circle;
     }
 }

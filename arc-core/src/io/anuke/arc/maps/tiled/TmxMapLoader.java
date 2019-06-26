@@ -7,7 +7,6 @@ import io.anuke.arc.assets.loaders.TextureLoader;
 import io.anuke.arc.assets.loaders.TextureLoader.TextureParameter;
 import io.anuke.arc.assets.loaders.resolvers.InternalFileHandleResolver;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.collection.IntArray;
 import io.anuke.arc.collection.ObjectMap;
 import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.graphics.Texture;
@@ -16,15 +15,13 @@ import io.anuke.arc.maps.ImageResolver;
 import io.anuke.arc.maps.ImageResolver.AssetManagerImageResolver;
 import io.anuke.arc.maps.ImageResolver.DirectImageResolver;
 import io.anuke.arc.maps.MapProperties;
-import io.anuke.arc.maps.tiled.tiles.AnimatedTiledMapTile;
-import io.anuke.arc.maps.tiled.tiles.StaticTiledMapTile;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.serialization.SerializationException;
 import io.anuke.arc.util.serialization.XmlReader.Element;
 
 import java.io.IOException;
 
-/** @brief synchronous loader for TMX maps created with the Tiled tool */
+/** synchronous loader for TMX maps created with the Tiled tool */
 public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
 
     public TmxMapLoader(){
@@ -153,7 +150,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
         String staggerIndex = root.getAttribute("staggerindex", null);
         String mapBackgroundColor = root.getAttribute("backgroundcolor", null);
 
-        MapProperties mapProperties = map.getProperties();
+        MapProperties mapProperties = map.properties;
         if(mapOrientation != null){
             mapProperties.put("orientation", mapOrientation);
         }
@@ -187,7 +184,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
 
         Element properties = root.getChildByName("properties");
         if(properties != null){
-            loadProperties(map.getProperties(), properties);
+            loadProperties(map.properties, properties);
         }
         Array<Element> tilesets = root.getChildrenByName("tileset");
         for(Element element : tilesets){
@@ -196,7 +193,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
         }
         for(int i = 0, j = root.getChildCount(); i < j; i++){
             Element element = root.getChild(i);
-            loadLayer(map, map.getLayers(), element, tmxFile, imageResolver);
+            loadLayer(map, map.layers, element, tmxFile, imageResolver);
         }
         return map;
     }
@@ -350,8 +347,8 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
                 }
             }
 
-            TiledMapTileSet tileset = new TiledMapTileSet();
-            tileset.setName(name);
+            TileSet tileset = new TileSet();
+            tileset.name = name;
             tileset.getProperties().put("firstgid", firstgid);
             if(image != null){
                 TextureRegion texture = imageResolver.getImage(image.path());
@@ -373,11 +370,11 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
                 for(int y = margin; y <= stopHeight; y += tileheight + spacing){
                     for(int x = margin; x <= stopWidth; x += tilewidth + spacing){
                         TextureRegion tileRegion = new TextureRegion(texture, x, y, tilewidth, tileheight);
-                        TiledMapTile tile = new StaticTiledMapTile(tileRegion);
-                        tile.setId(id);
-                        tile.setOffsetX(offsetX);
-                        tile.setOffsetY(flipY ? -offsetY : offsetY);
-                        tileset.putTile(id++, tile);
+                        MapTile tile = new MapTile(tileRegion);
+                        tile.id = id;
+                        tile.offsetX = offsetX;
+                        tile.offsetY = flipY ? -offsetY : offsetY;
+                        tileset.put(id++, tile);
                     }
                 }
             }else{
@@ -396,37 +393,19 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
                         }
                     }
                     TextureRegion texture = imageResolver.getImage(image.path());
-                    TiledMapTile tile = new StaticTiledMapTile(texture);
-                    tile.setId(firstgid + tileElement.getIntAttribute("id"));
-                    tile.setOffsetX(offsetX);
-                    tile.setOffsetY(flipY ? -offsetY : offsetY);
-                    tileset.putTile(tile.getId(), tile);
+                    MapTile tile = new MapTile(texture);
+                    tile.id = firstgid + tileElement.getIntAttribute("id");
+                    tile.offsetX = offsetX;
+                    tile.offsetY = flipY ? -offsetY : offsetY;
+                    tileset.put(tile.id, tile);
                 }
             }
             Array<Element> tileElements = element.getChildrenByName("tile");
 
-            Array<AnimatedTiledMapTile> animatedTiles = new Array<>();
-
             for(Element tileElement : tileElements){
                 int localtid = tileElement.getIntAttribute("id", 0);
-                TiledMapTile tile = tileset.getTile(firstgid + localtid);
+                MapTile tile = tileset.get(firstgid + localtid);
                 if(tile != null){
-                    Element animationElement = tileElement.getChildByName("animation");
-                    if(animationElement != null){
-
-                        Array<StaticTiledMapTile> staticTiles = new Array<>();
-                        IntArray intervals = new IntArray();
-                        for(Element frameElement : animationElement.getChildrenByName("frame")){
-                            staticTiles.add((StaticTiledMapTile)tileset.getTile(firstgid + frameElement.getIntAttribute("tileid")));
-                            intervals.add(frameElement.getIntAttribute("duration"));
-                        }
-
-                        AnimatedTiledMapTile animatedTile = new AnimatedTiledMapTile(intervals, staticTiles);
-                        animatedTile.setId(tile.getId());
-                        animatedTiles.add(animatedTile);
-                        tile = animatedTile;
-                    }
-
                     Element objectgroupElement = tileElement.getChildByName("objectgroup");
                     if(objectgroupElement != null){
 
@@ -450,15 +429,11 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
                 }
             }
 
-            for(AnimatedTiledMapTile tile : animatedTiles){
-                tileset.putTile(tile.getId(), tile);
-            }
-
             Element properties = element.getChildByName("properties");
             if(properties != null){
                 loadProperties(tileset.getProperties(), properties);
             }
-            map.getTileSets().addTileSet(tileset);
+            map.tilesets.addTileSet(tileset);
         }
     }
 

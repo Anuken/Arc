@@ -3,10 +3,9 @@ package io.anuke.arc.maps.objects;
 import io.anuke.arc.maps.MapObject;
 import io.anuke.arc.math.geom.Rectangle;
 
-/** @brief Represents a rectangle shaped map object */
+/** Represents a rectangle shaped map object */
 public class RectangleMapObject extends MapObject{
-
-    private Rectangle rectangle;
+    public Rectangle rectangle;
 
     /** Creates a rectangle object which lower left corner is at (0, 0) with width=1 and height=1 */
     public RectangleMapObject(){
@@ -23,11 +22,6 @@ public class RectangleMapObject extends MapObject{
     public RectangleMapObject(float x, float y, float width, float height){
         super();
         rectangle = new Rectangle(x, y, width, height);
-    }
-
-    /** @return rectangle shape */
-    public Rectangle getRectangle(){
-        return rectangle;
     }
 
 }

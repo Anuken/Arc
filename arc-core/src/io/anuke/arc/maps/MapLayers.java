@@ -5,7 +5,7 @@ import io.anuke.arc.util.reflect.ClassReflection;
 
 import java.util.Iterator;
 
-/** Ordered list of {@link MapLayer} instances owned by a {@link Map} */
+/** Ordered list of {@link MapLayer} instances.*/
 public class MapLayers implements Iterable<MapLayer>{
     private Array<MapLayer> layers = new Array<>();
 
@@ -22,7 +22,7 @@ public class MapLayers implements Iterable<MapLayer>{
     public MapLayer get(String name){
         for(int i = 0, n = layers.size; i < n; i++){
             MapLayer layer = layers.get(i);
-            if(name.equals(layer.getName())){
+            if(name.equals(layer.name)){
                 return layer;
             }
         }

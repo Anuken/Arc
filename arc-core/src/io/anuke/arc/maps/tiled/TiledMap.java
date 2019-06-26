@@ -2,26 +2,16 @@ package io.anuke.arc.maps.tiled;
 
 import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.maps.Map;
+import io.anuke.arc.maps.*;
 import io.anuke.arc.util.Disposable;
 
-/**
- * @brief Represents a tiled map, adds the concept of tiles and tilesets.
- * @see Map
- */
-public class TiledMap extends Map{
-    private TiledMapTileSets tilesets;
+/** Represents a tiled map, adds the concept of tiles and tilesets.*/
+public class TiledMap implements Disposable{
+    public final Array<MapLayer> layers = new Array<>();
+    public final MapProperties properties = new MapProperties();
+    public final TileSets tilesets = new TileSets();
+
     private Array<? extends Disposable> ownedResources;
-
-    /** Creates an empty TiledMap. */
-    public TiledMap(){
-        tilesets = new TiledMapTileSets();
-    }
-
-    /** @return collection of tilesets for this map. */
-    public TiledMapTileSets getTileSets(){
-        return tilesets;
-    }
 
     /**
      * Used by loaders to set resources when loading the map directly, without {@link AssetManager}. To be disposed in
@@ -29,6 +19,11 @@ public class TiledMap extends Map{
      */
     public void setOwnedResources(Array<? extends Disposable> resources){
         this.ownedResources = resources;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends MapLayer> T getLayer(String name){
+        return (T)layers.find(l -> name.equals(l.name));
     }
 
     @Override

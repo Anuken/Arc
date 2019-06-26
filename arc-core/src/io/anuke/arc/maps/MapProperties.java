@@ -5,11 +5,10 @@ import io.anuke.arc.collection.ObjectMap;
 import java.util.Iterator;
 
 /**
- * @brief Set of string indexed values representing map elements' properties, allowing to retrieve, modify and add properties to
+ * Set of string indexed values representing map elements' properties, allowing to retrieve, modify and add properties to
  * the set.
  */
 public class MapProperties{
-
     private ObjectMap<String, Object> properties;
 
     /** Creates an empty properties set */

@@ -3,10 +3,9 @@ package io.anuke.arc.maps.objects;
 import io.anuke.arc.maps.MapObject;
 import io.anuke.arc.math.geom.Ellipse;
 
-/** @brief Represents {@link Ellipse} map objects. */
+/** Represents {@link Ellipse} map objects. */
 public class EllipseMapObject extends MapObject{
-
-    private Ellipse ellipse;
+    public final Ellipse ellipse;
 
     /** Creates an {@link Ellipse} object whose lower left corner is at (0, 0) with width=1 and height=1 */
     public EllipseMapObject(){
@@ -25,8 +24,4 @@ public class EllipseMapObject extends MapObject{
         ellipse = new Ellipse(x, y, width, height);
     }
 
-    /** @return ellipse shape */
-    public Ellipse getEllipse(){
-        return ellipse;
-    }
 }
