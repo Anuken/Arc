@@ -62,7 +62,20 @@ public class CacheBatch extends SpriteBatch{
 
     @Override
     protected void draw(Texture texture, float[] spriteVertices, int offset, int count){
-        cache.add(texture, spriteVertices, offset, count);
+        //this creates a new array, but considering it's being cached garbage probably isn't important anyway
+        float[] vertices = new float[count / 6 * 5];
+        for(int i = 0; i < count / 6; i++){
+            int index = i * 6;
+            int dest = i * 5;
+            vertices[dest] = spriteVertices[offset + index];
+            vertices[dest + 1] = spriteVertices[offset + index + 1];
+            vertices[dest + 2] = spriteVertices[offset + index + 2];
+            vertices[dest + 3] = spriteVertices[offset + index + 3];
+            vertices[dest + 4] = spriteVertices[offset + index + 4];
+        }
+
+        //TODO do some copying to fix this for non-indexed batches
+        cache.add(texture, vertices, 0, vertices.length);
     }
 
     @Override
