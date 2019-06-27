@@ -467,7 +467,7 @@ public class ScrollPane extends WidgetGroup{
             }
         }
         scrollX(Mathf.clamp(amountX, 0, maxX));
-        //scrollY(MathUtils.clamp(amountY, 0, maxY));
+        //scrollY(Mathf.clamp(amountY, 0, maxY));
 
         // Set the bounds and scroll knob sizes if scrollbars are needed.
         if(scrollX){

@@ -105,12 +105,30 @@ public class Color{
      * @see #toString()
      */
     public static Color valueOf(String hex){
-        hex = hex.charAt(0) == '#' ? hex.substring(1) : hex;
-        int r = Integer.valueOf(hex.substring(0, 2), 16);
-        int g = Integer.valueOf(hex.substring(2, 4), 16);
-        int b = Integer.valueOf(hex.substring(4, 6), 16);
-        int a = hex.length() != 8 ? 255 : Integer.valueOf(hex.substring(6, 8), 16);
-        return new Color(r / 255f, g / 255f, b / 255f, a / 255f);
+        return valueOf(new Color(), hex);
+    }
+
+    /**
+     * Returns a new color from a hex string with the format RRGGBBAA.
+     * @see #toString()
+     */
+    public static Color valueOf(Color color, String hex){
+        int offset = hex.charAt(0) == '#' ? 1 : 0;
+
+        int r = parseHex(hex, offset, offset + 2);
+        int g = parseHex(hex, offset + 2, offset + 4);
+        int b = parseHex(hex, offset + 4, offset + 6);
+        int a = hex.length() != 8 ? 255 : parseHex(hex, offset + 6, offset + 8);
+        return color.set(r / 255f, g / 255f, b / 255f, a / 255f);
+    }
+
+    private static int parseHex(String string, int from, int to){
+        int total = 0;
+        for(int i = from; i < to; i++){
+            char c = string.charAt(i);
+            total += Character.digit(c, 16) * (i == from ? 16 : 1);
+        }
+        return total;
     }
 
     /**
@@ -726,6 +744,153 @@ public class Color{
         hsv[2] = max;
 
         return hsv;
+    }
+
+    /**
+     * Converts HSV to RGB
+     *
+     * @param h     hue 0-360
+     * @param s     saturation 0-100
+     * @param v     value 0-100
+     * @param alpha 0-1
+     * @return RGB values in LibGDX {@link Color} class
+     */
+    public static Color HSVtoRGB(float h, float s, float v, float alpha) {
+        Color c = HSVtoRGB(h, s, v);
+        c.a = alpha;
+        return c;
+    }
+
+    /**
+     * Converts HSV color system to RGB
+     *
+     * @param h hue 0-360
+     * @param s saturation 0-100
+     * @param v value 0-100
+     * @return RGB values in LibGDX {@link Color} class
+     */
+    public static Color HSVtoRGB(float h, float s, float v) {
+        Color c = new Color(1, 1, 1, 1);
+        HSVtoRGB(h, s, v, c);
+        return c;
+    }
+
+    /**
+     * Converts HSV color system to RGB
+     *
+     * @param h           hue 0-360
+     * @param s           saturation 0-100
+     * @param v           value 0-100
+     * @param targetColor color that result will be stored in
+     * @return targetColor
+     */
+    public static Color HSVtoRGB(float h, float s, float v, Color targetColor) {
+        if(h == 360) h = 359;
+        int r, g, b;
+        int i;
+        float f, p, q, t;
+        h = (float) Math.max(0.0, Math.min(360.0, h));
+        s = (float) Math.max(0.0, Math.min(100.0, s));
+        v = (float) Math.max(0.0, Math.min(100.0, v));
+        s /= 100;
+        v /= 100;
+        h /= 60;
+        i = Mathf.floor(h);
+        f = h - i;
+        p = v * (1 - s);
+        q = v * (1 - s * f);
+        t = v * (1 - s * (1 - f));
+        switch(i) {
+            case 0:
+                r = Mathf.round(255 * v);
+                g = Mathf.round(255 * t);
+                b = Mathf.round(255 * p);
+                break;
+            case 1:
+                r = Mathf.round(255 * q);
+                g = Mathf.round(255 * v);
+                b = Mathf.round(255 * p);
+                break;
+            case 2:
+                r = Mathf.round(255 * p);
+                g = Mathf.round(255 * v);
+                b = Mathf.round(255 * t);
+                break;
+            case 3:
+                r = Mathf.round(255 * p);
+                g = Mathf.round(255 * q);
+                b = Mathf.round(255 * v);
+                break;
+            case 4:
+                r = Mathf.round(255 * t);
+                g = Mathf.round(255 * p);
+                b = Mathf.round(255 * v);
+                break;
+            default:
+                r = Mathf.round(255 * v);
+                g = Mathf.round(255 * p);
+                b = Mathf.round(255 * q);
+        }
+
+        targetColor.set(r / 255.0f, g / 255.0f, b / 255.0f, targetColor.a);
+        return targetColor;
+    }
+
+    /**
+     * Converts {@link Color} to HSV color system
+     *
+     * @return 3 element int array with hue (0-360), saturation (0-100) and value (0-100)
+     */
+    public static int[] RGBtoHSV(Color c) {
+        return RGBtoHSV(c.r, c.g, c.b);
+    }
+
+    /**
+     * Converts RGB to HSV color system
+     *
+     * @param r red 0-1
+     * @param g green 0-1
+     * @param b blue 0-1
+     * @return 3 element int array with hue (0-360), saturation (0-100) and value (0-100)
+     */
+    public static int[] RGBtoHSV(float r, float g, float b) {
+        float h, s, v;
+        float min, max, delta;
+
+        min = Math.min(Math.min(r, g), b);
+        max = Math.max(Math.max(r, g), b);
+        v = max;
+
+        delta = max - min;
+
+        if(max != 0)
+            s = delta / max;
+        else {
+            s = 0;
+            h = 0;
+            return new int[]{Mathf.round(h), Mathf.round(s), Mathf.round(v)};
+        }
+
+        if(delta == 0)
+            h = 0;
+        else {
+
+            if(r == max)
+                h = (g - b) / delta;
+            else if(g == max)
+                h = 2 + (b - r) / delta;
+            else
+                h = 4 + (r - g) / delta;
+        }
+
+        h *= 60;
+        if(h < 0)
+            h += 360;
+
+        s *= 100;
+        v *= 100;
+
+        return new int[]{Mathf.round(h), Mathf.round(s), Mathf.round(v)};
     }
 
     /** @return a copy of this color */

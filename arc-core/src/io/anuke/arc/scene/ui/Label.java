@@ -33,12 +33,12 @@ public class Label extends Element{
     private BitmapFontCache cache;
     private int labelAlign = Align.left;
     private int lineAlign = Align.left;
-    private boolean wrap;
-    private float lastPrefHeight;
-    private boolean prefSizeInvalid = true;
-    private float fontScaleX = 1, fontScaleY = 1;
-    private boolean fontScaleChanged = false;
-    private String ellipsis;
+    protected boolean wrap;
+    protected float lastPrefHeight;
+    protected boolean prefSizeInvalid = true;
+    protected float fontScaleX = 1, fontScaleY = 1;
+    protected boolean fontScaleChanged = false;
+    protected String ellipsis;
 
     public Label(Supplier<CharSequence> sup){
         this("", new LabelStyle(scene.skin.get(LabelStyle.class)));
