@@ -7,6 +7,7 @@ import io.anuke.arc.math.Matrix3;
 
 public class CacheBatch extends SpriteBatch{
     SpriteCache cache;
+    float[] tmpVertices = new float[20];
 
     public CacheBatch(int size){
         this(new SpriteCache(size, false));
@@ -63,7 +64,7 @@ public class CacheBatch extends SpriteBatch{
     @Override
     protected void draw(Texture texture, float[] spriteVertices, int offset, int count){
         //this creates a new array, but considering it's being cached garbage probably isn't important anyway
-        float[] vertices = new float[count / 6 * 5];
+        float[] vertices = count / 6 * 5 == tmpVertices.length ? tmpVertices : new float[count / 6 * 5];
         for(int i = 0; i < count / 6; i++){
             int index = i * 6;
             int dest = i * 5;

@@ -9,6 +9,7 @@ import io.anuke.arc.math.Mathf;
 import io.anuke.arc.scene.style.Drawable;
 import io.anuke.arc.scene.ui.Label;
 import io.anuke.arc.util.Align;
+import io.anuke.arc.util.pooling.Pools;
 import io.anuke.arc.util.reflect.ClassReflection;
 
 /**
@@ -228,7 +229,7 @@ public class TypeLabel extends Label{
      */
     public void restart(CharSequence newText){
         // Reset cache collections
-        GlyphUtils.freeAll(glyphCache);
+        Pools.freeAll(glyphCache);
         glyphCache.clear();
         glyphRunCapacities.clear();
         offsetCache.clear();
@@ -472,7 +473,7 @@ public class TypeLabel extends Label{
 
     @Override
     public boolean remove(){
-        GlyphUtils.freeAll(glyphCache);
+        Pools.freeAll(glyphCache);
         glyphCache.clear();
         return super.remove();
     }
@@ -606,7 +607,7 @@ public class TypeLabel extends Label{
         lastLayoutY = y;
 
         // Perform cache layout operation, where the magic happens
-        GlyphUtils.freeAll(glyphCache);
+        Pools.freeAll(glyphCache);
         glyphCache.clear();
         layoutCache();
     }
@@ -664,10 +665,10 @@ public class TypeLabel extends Label{
                     clone = glyphCache.get(index);
                 }
                 if(clone == null){
-                    clone = GlyphUtils.obtain();
+                    clone = Pools.obtain(TypingGlyph.class, TypingGlyph::new);
                     glyphCache.set(index, clone);
                 }
-                GlyphUtils.clone(original, clone);
+                clone.set(original);
                 clone.width *= getFontScaleX();
                 clone.height *= getFontScaleY();
                 clone.xoffset *= getFontScaleX();

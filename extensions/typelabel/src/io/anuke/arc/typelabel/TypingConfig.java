@@ -45,7 +45,7 @@ public class TypingConfig{
      * Returns a map of characters and their respective interval multipliers, of which the interval to the next char
      * should be multiplied for.
      */
-    public static ObjectFloatMap<Character> INTERVAL_MULTIPLIERS_BY_CHAR = new ObjectFloatMap<Character>();
+    public static ObjectFloatMap<Character> INTERVAL_MULTIPLIERS_BY_CHAR = new ObjectFloatMap<>();
 
     /** Map of global variables that affect all {@link TypeLabel} instances at once. */
     public static final ObjectMap<String, String> GLOBAL_VARS = new ObjectMap<>();
@@ -62,25 +62,23 @@ public class TypingConfig{
     /**
      * Registers a new effect to TypeLabel.
      *
-     * @param startTokenName Name of the token that starts the effect, such as WAVE.
-     * @param endTokenName Name of the token that ends the effect, such as ENDWAVE.
+     * @param tokenName Name of the token that starts the effect, such as WAVE.
      * @param effectClass Class of the effect, such as WaveEffect.class.
      */
-    public static void registerEffect(String startTokenName, String endTokenName, Class<? extends Effect> effectClass){
-        EFFECT_START_TOKENS.put(startTokenName.toUpperCase(), effectClass);
-        EFFECT_END_TOKENS.put(endTokenName.toUpperCase(), effectClass);
+    public static void registerEffect(String tokenName, Class<? extends Effect> effectClass){
+        EFFECT_START_TOKENS.put(tokenName.toUpperCase(), effectClass);
+        EFFECT_END_TOKENS.put("/" + tokenName.toUpperCase(), effectClass);
         dirtyEffectMaps = true;
     }
 
     /**
      * Unregisters an effect from TypeLabel.
      *
-     * @param startTokenName Name of the token that starts the effect, such as WAVE.
-     * @param endTokenName Name of the token that ends the effect, such as ENDWAVE.
+     * @param tokenName Name of the token that starts the effect, such as WAVE.
      */
-    public static void unregisterEffect(String startTokenName, String endTokenName){
-        EFFECT_START_TOKENS.remove(startTokenName.toUpperCase());
-        EFFECT_END_TOKENS.remove(endTokenName.toUpperCase());
+    public static void unregisterEffect(String tokenName){
+        EFFECT_START_TOKENS.remove(tokenName.toUpperCase());
+        EFFECT_END_TOKENS.remove("/" + tokenName.toUpperCase());
     }
 
     static{
@@ -94,16 +92,16 @@ public class TypingConfig{
         INTERVAL_MULTIPLIERS_BY_CHAR.put('\n', 20f);
 
         // Register default tokens
-        registerEffect("EASE", "ENDEASE", EaseEffect.class);
-        registerEffect("JUMP", "ENDJUMP", JumpEffect.class);
-        registerEffect("SHAKE", "ENDSHAKE", ShakeEffect.class);
-        registerEffect("SICK", "ENDSICK", SickEffect.class);
-        registerEffect("WAVE", "ENDWAVE", WaveEffect.class);
-        registerEffect("WIND", "ENDWIND", WindEffect.class);
-        registerEffect("RAINBOW", "ENDRAINBOW", RainbowEffect.class);
-        registerEffect("GRADIENT", "ENDGRADIENT", GradientEffect.class);
-        registerEffect("FADE", "ENDFADE", FadeEffect.class);
-        registerEffect("BLINK", "ENDBLINK", BlinkEffect.class);
+        registerEffect("EASE", EaseEffect.class);
+        registerEffect("JUMP", JumpEffect.class);
+        registerEffect("SHAKE", ShakeEffect.class);
+        registerEffect("SICK", SickEffect.class);
+        registerEffect("WAVE", WaveEffect.class);
+        registerEffect("WIND", WindEffect.class);
+        registerEffect("RAINBOW", RainbowEffect.class);
+        registerEffect("GRADIENT", GradientEffect.class);
+        registerEffect("FADE", FadeEffect.class);
+        registerEffect("BLINK", BlinkEffect.class);
     }
 
 }

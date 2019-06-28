@@ -1,7 +1,9 @@
 package io.anuke.arc.typelabel;
 
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.graphics.*;
+import io.anuke.arc.function.IntPositionConsumer;
+import io.anuke.arc.graphics.Color;
+import io.anuke.arc.graphics.Colors;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.typelabel.reg.*;
 import io.anuke.arc.util.reflect.*;
@@ -33,11 +35,17 @@ class Parser{
         // Remove any previous entries
         label.tokenEntries.clear();
 
+        //{color=red} (NOT NEEDED) or {var=value} or {endcolor} or {clearcolor} or {reset}
+
         // Parse all tokens with text replacements, namely color and var.
         parseReplacements(label);
 
+        //wait / event / speed / effect start / effect end
+
         // Parse all regular tokens and properly register them
         parseRegularTokens(label);
+
+        //[color] / skip
 
         // Parse color markups and register SKIP tokens
         parseColorMarkups(label);
@@ -47,6 +55,126 @@ class Parser{
         label.tokenEntries.reverse();
     }
 
+    private static void pReplacements(TypeLabel label){
+        StringBuilder text = label.getText();
+        StringBuilder result = new StringBuilder();
+        result.ensureCapacity(text.length());
+
+        int[] lastIndex = {0};
+
+        parseAllTokens(label, false, (from, to) -> {
+            String replacement = null;
+
+            if(text.charAt(from + 1) == '$'){ //variable
+                String varname = text.substring(from + 1, to);
+                if(label.getTypingListener() != null){
+                    replacement = label.getTypingListener().replaceVariable(varname);
+                }
+
+                // If replacement is null, get value from maps.
+                if(replacement == null){
+                    replacement = label.getVariables().get(varname);
+                }
+
+                // If replacement is still null, get value from global scope
+                if(replacement == null){
+                    replacement = TypingConfig.GLOBAL_VARS.get(varname);
+                }
+            }else if(seq(label, from, to, "/color")){ //end color
+                replacement = "[#" + label.getClearColor().toString() + "]";
+            }else if(seq(label, from, to, "/reset")){ //reset
+                replacement = RESET_REPLACEMENT + label.getDefaultToken();
+            }
+
+            //append prev text
+            result.append(text.subSequence(lastIndex[0], from - 1));
+
+            if(replacement == null){
+                //no variable or text with this name, just append everything
+                result.append("{").append(text.subSequence(from, to)).append("}");
+            }else{
+                //otherwise append the replaced text
+                result.append(replacement);
+            }
+
+            lastIndex[0] = to;
+        });
+
+        //append remaining text
+        result.append(text.subSequence(lastIndex[0], text.length()));
+
+        //update label text
+        label.setText(result);
+    }
+
+    private static void pRegularTokens(TypeLabel label){
+        StringBuilder text = label.getText();
+        StringBuilder result = new StringBuilder();
+        result.ensureCapacity(text.length());
+
+        int[] lastIndex = {0};
+
+        parseAllTokens(label, false, (from, to) -> {
+            float floatValue = 0;
+            String stringValue = null;
+            String name = text.substring(from, to);
+            TokenCategory category = null;
+            Effect effect = null;
+
+            if(seq(label, from, to, "wait")){
+                category = TokenCategory.WAIT;
+            }
+
+            TokenEntry entry = new TokenEntry(name, category, from, floatValue, stringValue);
+            entry.effect = effect;
+            label.tokenEntries.add(entry);
+
+            //TODO BROKEN INDEXING
+            result.append(text.subSequence(lastIndex[0], to));
+            lastIndex[0] = to;
+        });
+
+        result.append(text.subSequence(lastIndex[0], text.length()));
+    }
+
+    private static void parseAllTokens(TypeLabel label, boolean square, IntPositionConsumer handler){
+        StringBuilder text = label.getText();
+        char start = square ? '[' : '{';
+        char end = square ? ']' : '}';
+
+        for(int i = 0; i < text.length(); i++){
+            char c = text.charAt(i);
+            if(c == '\\'){
+                //escaped token, skip and continue
+                i ++;
+                continue;
+            }
+
+            //search for an end to the token
+            if(c == start){
+                for(int j = i + 1; j < text.length(); j++){
+                    if(text.charAt(j) == end){
+                        //found token end!
+                        int tokenFrom = i + 1;
+                        int tokenTo = j - 1;
+                        handler.accept(tokenFrom, tokenTo);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private static boolean seq(TypeLabel label, int from, int to, String dest){
+        if(dest.length() != to - from) return false;
+        for(int i = from; i < to; i++){
+            if(label.getText().charAt(i) != dest.charAt(i - from)){
+                return false;
+            }
+        }
+        return true;
+    }
+
     /** Parse tokens that only replace text, such as colors and variables. */
     private static void parseReplacements(TypeLabel label){
         // Get text
@@ -54,14 +182,12 @@ class Parser{
         boolean hasMarkup = label.getBitmapFontCache().getFont().getData().markupEnabled;
 
         // Create string builder
-        StringBuilder sb = new StringBuilder(text.length());
         Matcher m = PATTERN_TOKEN_STRIP.matcher(text);
         int matcherIndexOffset = 0;
 
         // Iterate through matches
         while(true){
             // Reset StringBuilder and matcher
-            sb.setLength(0);
             m.setTarget(text);
             m.setPosition(matcherIndexOffset);
 
@@ -134,14 +260,12 @@ class Parser{
 
         // Create matcher and StringBuilder
         Matcher m = PATTERN_TOKEN_STRIP.matcher(text);
-        StringBuilder sb = new StringBuilder(text.length());
         int matcherIndexOffset = 0;
 
         // Iterate through matches
         while(true){
             // Reset matcher and StringBuilder
             m.setTarget(text);
-            sb.setLength(0);
             m.setPosition(matcherIndexOffset);
 
             // Make sure there's at least one regex match
@@ -272,7 +396,7 @@ class Parser{
         if(str != null){
             try{
                 return Float.parseFloat(str);
-            }catch(Exception e){
+            }catch(Exception ignored){
             }
         }
         return defaultValue;
