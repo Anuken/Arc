@@ -12,16 +12,13 @@ import io.anuke.arc.graphics.g2d.Fill;
 import io.anuke.arc.input.KeyCode;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.math.geom.Rectangle;
-import io.anuke.arc.util.BufferUtils;
-import io.anuke.arc.util.ScreenUtils;
-import io.anuke.arc.util.Time;
+import io.anuke.arc.util.*;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 /** Records and saves GIFs. */
 public class GifRecorder{
@@ -37,7 +34,7 @@ public class GifRecorder{
 	
 	private Matrix3 matrix = new Matrix3();
 	
-	private boolean skipAlpha = false;
+	private boolean skipAlpha = true;
 	private int recordfps = 30;
 	private float gifx, gify, gifwidth, gifheight, giftime;
 	private float offsetx, offsety;
@@ -285,85 +282,42 @@ public class GifRecorder{
 		setBounds(rect.x, rect.y, rect.width, rect.height);
 	}
 	
-	/**Takes a full-screen screenshot and saves it to a file.*/
-	public FileHandle takeScreenshot(){
-		return takeScreenshot(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
-	}
-	
-	/**Takes a full-screen screenshot of the specified region saves it to a file.*/
-	public FileHandle takeScreenshot(int x, int y, int width, int height){
-		try{
-			byte[] pix = ScreenUtils.getFrameBufferPixels(x, y, width, height, false);
-
-			Pixmap pixmap = createPixmap(pix, width, height);
-
-			FileHandle file = exportdirectory.child("screenshot-" + Time.millis() + ".png");
-			png.write(file, pixmap);
-			pixmap.dispose();
-			return file;
-		}catch(IOException e){
-			throw new RuntimeException(e);
-		}
-	}
-	
 	public void writeGIF(){
 		writeGIF(workdirectory, exportdirectory);
 	}
 
 	private void writeGIF(final FileHandle directory, final FileHandle writedirectory){
-		if(saving)
-			return;
+		if(saving) return;
 		saving = true;
-		final Array<String> strings = new Array<>();
-		final Array<Pixmap> pixmaps = new Array<>();
 
-		for(byte[] bytes : frames){
-			Pixmap pixmap = createPixmap(bytes);
-			pixmaps.add(pixmap);
-		}
+		int width = (int) (gifwidth) - 2, height = (int) (gifheight) - 2;
+		saveprogress = 0f;
 
 		new Thread(() -> {
-			try{
-				saveprogress = 0;
-				int i = 0;
-				for(Pixmap pixmap : pixmaps){
-					png.write(Core.files.absolute(directory.file().getAbsolutePath() + "/frame" + i + ".png"), pixmap);
-					strings.add("frame" + i + ".png");
-					saveprogress += (0.5f / pixmaps.size);
-					i++;
-				}
-
-				lastRecording = compileGIF(strings, directory, writedirectory);
-				directory.deleteDirectory();
-				for(Pixmap pixmap : pixmaps){
-					pixmap.dispose();
-				}
-				saving = false;
-			}catch(IOException e){
-				throw new RuntimeException(e);
-			}
+			lastRecording = compileGIF(frames, width, height, writedirectory);
+			directory.deleteDirectory();
+			saving = false;
         }).start();
 	}
 
-	private File compileGIF(Array<String> strings, FileHandle inputdirectory, FileHandle directory){
-		if(strings.size == 0){
-			throw new RuntimeException("No strings!");
+	private File compileGIF(Array<byte[]> pixmaps, int width, int height, FileHandle directory){
+		if(pixmaps.size == 0){
+			throw new RuntimeException("No input files!");
 		}
 
 		try{
 			String time = "" + (int) (System.currentTimeMillis() / 1000);
-			String dirstring = inputdirectory.file().getAbsolutePath();
 			new File(directory.file().getAbsolutePath()).mkdir();
-			BufferedImage firstImage = ImageIO.read(new File(dirstring + "/" + strings.get(0)));
+			BufferedImage firstImage = toImage(pixmaps.first(), width, height);
 			File file = new File(directory.file().getAbsolutePath() + "/recording" + time + ".gif");
 			ImageOutputStream output = new FileImageOutputStream(file);
 			GifSequenceWriter writer = new GifSequenceWriter(output, firstImage.getType(), (int) (1f / recordfps * 1000f), true);
 
 			writer.writeToSequence(firstImage);
 
-			for(int i = 1; i < strings.size; i++){
-				BufferedImage after = ImageIO.read(new File(dirstring + "/" + strings.get(i)));
-				saveprogress += (0.5f / frames.size);
+			for(int i = 1; i < pixmaps.size; i++){
+				BufferedImage after = toImage(pixmaps.get(i), width, height);
+				saveprogress += (1f / frames.size);
 				writer.writeToSequence(after);
 			}
 			writer.close();
@@ -375,20 +329,35 @@ public class GifRecorder{
 		}
 	}
 
-	private Pixmap createPixmap(byte[] pixels, int width, int height){
-		if(!skipAlpha){
-			for(int i = 0; i < pixels.length; i += 4){
-				pixels[i + 3] = (byte)255;
-			}
-		}
+	private BufferedImage toImage(byte[] frames, int width, int height){
+		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-		Pixmap pixmap = new Pixmap(width, height, Format.RGBA8888);
-		BufferUtils.copy(pixels, 0, pixmap.getPixels(), pixels.length);
-		return pixmap;
+		for(int i = 0; i < width*height*4; i += 4){
+			int r = frames[i];
+			int g = frames[i + 1];
+			int b = frames[i + 2];
+			if(r < 0) r += 256;
+			if(g < 0) g += 256;
+			if(b < 0) b += 256;
+
+			int result = Color.argb8888(1f, r / 255f, g / 255f, b / 255f);
+			int index = i / 4;
+			image.setRGB(index % width, height - 1 - index / width, result);
+		}
+		return image;
 	}
 
-	private Pixmap createPixmap(byte[] pixels){
-		return createPixmap(pixels, (int) (gifwidth) - 2, (int) (gifheight) - 2);
+	private BufferedImage toImage(Pixmap pixmap){
+		Color color = new Color();
+		BufferedImage image = new BufferedImage(pixmap.getWidth(), pixmap.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		for(int x = 0; x < image.getWidth(); x++){
+			for(int y = 0; y < image.getHeight(); y++){
+				color.set(pixmap.getPixel(x, y));
+				color.a = 1f;
+				image.setRGB(x, y, Color.argb8888(color));
+			}
+		}
+		return image;
 	}
 
 	/** Default controller implementation, uses the provided keys */
