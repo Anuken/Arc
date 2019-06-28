@@ -25,31 +25,26 @@ public class GifRecorder{
 	private static final float defaultSize = 300;
 	private static BufferedImage outImage;
 
-	private KeyCode resizeKey = KeyCode.CONTROL_LEFT,
+	private KeyCode
+			resizeKey = KeyCode.CONTROL_LEFT,
 			openKey = KeyCode.E,
 			recordKey = KeyCode.T,
-			shiftKey = KeyCode.SHIFT_LEFT,
-			fullscreenKey = KeyCode.F;
-
-	private RecorderController controller = new DefaultController();
+			shiftKey = KeyCode.SHIFT_LEFT;
 	
 	private Matrix3 matrix = new Matrix3();
-	
-	private boolean skipAlpha = true;
+
 	private int recordfps = 30;
 	private float gifx, gify, gifwidth, gifheight, giftime;
 	private float offsetx, offsety;
-	private FileHandle exportdirectory, workdirectory;
+	private FileHandle exportdirectory;
 	private boolean disableGUI;
 	private float speedMultiplier = 1f;
 	
 	private Array<byte[]> frames = new Array<>();
-	private File lastRecording;
 	private float frametime;
 	private boolean recording, open;
 	private boolean saving;
 	private float saveprogress;
-	private PNG png = new PNG();
 
 	public GifRecorder() {
 		this(Core.files.local("gifexport"), Core.files.local(".gifimages"));
@@ -60,13 +55,11 @@ public class GifRecorder{
 		gify = -defaultSize / 2;
 		gifwidth = defaultSize;
 		gifheight = defaultSize;
-		this.workdirectory = workdirectory;
 		this.exportdirectory = exportdirectory;
-		png.setFlipY(true);
 	}
 
 	protected void doInput(){
-		if(controller.openKeyPressed() && !saving){
+		if(Core.input.keyTap(openKey) && !saving){
 			if(recording){
 				finishRecording();
 				clearFrames();
@@ -75,20 +68,13 @@ public class GifRecorder{
 		}
 
 		if(open){
-			if(controller.recordKeyPressed() && !saving){
+			if(Core.input.keyTap(recordKey) && !saving){
 				if(!recording){
 					startRecording();
 				}else{
 					finishRecording();
-					writeGIF(workdirectory, exportdirectory);
+					writeGIF(exportdirectory);
 				}
-			} else if (controller.fullscreenPressed()) {
-				offsetx = 0;
-				offsety = 0;
-				gifx = Core.graphics.getWidth() * -0.5f;
-				gify = Core.graphics.getHeight() * -0.5f;
-				gifwidth = Core.graphics.getWidth();
-				gifheight = Core.graphics.getHeight();
 			}
 		}
 	}
@@ -112,7 +98,7 @@ public class GifRecorder{
 		if(!disableGUI)
 			Draw.color(Color.YELLOW);
 
-		if(controller.resizeKeyPressed()){
+		if(Core.input.keyDown(resizeKey)){
 			
 			if(!disableGUI)
 				Draw.color(Color.GREEN);
@@ -125,7 +111,7 @@ public class GifRecorder{
 			gifheight = ys * 2;
 		}
 		
-		if(controller.shiftKeyPressed()){
+		if(Core.input.keyDown(shiftKey)){
 			if(!disableGUI)
 				Draw.color(Color.ORANGE);
 			
@@ -193,11 +179,6 @@ public class GifRecorder{
 	public void setGUIDisabled(boolean disabled){
 		this.disableGUI = true;
 	}
-	
-	/**Sets the controller (or class that controls input)*/
-	public void setController(RecorderController controller){
-		this.controller = controller;
-	}
 
 	public boolean isSaving(){
 		return saving;
@@ -243,10 +224,6 @@ public class GifRecorder{
 		exportdirectory = handle;
 	}
 
-	public void setWorkingDirectory(FileHandle handle){
-		workdirectory = handle;
-	}
-
 	public void setResizeKey(KeyCode key){
 		this.resizeKey = key;
 	}
@@ -263,14 +240,6 @@ public class GifRecorder{
 		recordfps = fps;
 	}
 
-	public File getLastRecording(){
-		return lastRecording;
-	}
-
-	public void setSkipAlpha(boolean skipAlpha){
-		this.skipAlpha = skipAlpha;
-	}
-
 	/** Sets the bounds for recording, relative to the center of the screen */
 	public void setBounds(float x, float y, float width, float height){
 		this.gifx = x;
@@ -282,12 +251,8 @@ public class GifRecorder{
 	public void setBounds(Rectangle rect){
 		setBounds(rect.x, rect.y, rect.width, rect.height);
 	}
-	
-	public void writeGIF(){
-		writeGIF(workdirectory, exportdirectory);
-	}
 
-	private void writeGIF(final FileHandle directory, final FileHandle writedirectory){
+	private void writeGIF(final FileHandle writedirectory){
 		if(saving) return;
 		saving = true;
 
@@ -295,8 +260,7 @@ public class GifRecorder{
 		saveprogress = 0f;
 
 		new Thread(() -> {
-			lastRecording = compileGIF(frames, width, height, writedirectory);
-			directory.deleteDirectory();
+			compileGIF(frames, width, height, writedirectory);
 			saving = false;
         }).start();
 	}
@@ -349,46 +313,5 @@ public class GifRecorder{
 			image.setRGB(index % width, height - 1 - index / width, result);
 		}
 		return image;
-	}
-
-	/** Default controller implementation, uses the provided keys */
-	class DefaultController implements RecorderController{
-		
-		public boolean openKeyPressed(){
-			return Core.input.keyTap(openKey);
-		}
-
-		public boolean recordKeyPressed(){
-			return Core.input.keyTap(recordKey);
-		}
-
-		public boolean resizeKeyPressed(){
-			return Core.input.keyDown(KeyCode.MOUSE_LEFT) && Core.input.keyDown(resizeKey);
-		}
-		
-		public boolean shiftKeyPressed(){
-			return Core.input.keyDown(KeyCode.MOUSE_LEFT) && Core.input.keyDown(shiftKey);
-		}
-
-		@Override
-		public boolean fullscreenPressed() {
-			return Core.input.keyTap(fullscreenKey);
-		}
-	}
-
-	/**
-	 * Provide an implementation and call recorder.setController() for custom
-	 * input
-	 */
-	public interface RecorderController{
-		boolean openKeyPressed();
-
-		boolean recordKeyPressed();
-
-		boolean resizeKeyPressed();
-		
-		boolean shiftKeyPressed();
-
-		boolean fullscreenPressed();
 	}
 }

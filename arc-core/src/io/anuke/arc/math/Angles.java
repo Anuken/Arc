@@ -1,9 +1,7 @@
 package io.anuke.arc.math;
 
 import io.anuke.arc.Core;
-import io.anuke.arc.function.Consumer;
-import io.anuke.arc.function.FloatConsumer;
-import io.anuke.arc.function.PositionConsumer;
+import io.anuke.arc.function.*;
 import io.anuke.arc.math.geom.Vector2;
 
 public class Angles{
@@ -68,7 +66,7 @@ public class Angles{
         return angle(avector.x, avector.y, Core.input.mouseX(), Core.input.mouseY());
     }
 
-    public static void circle(int points, Consumer<Float> cons){
+    public static void circle(int points, FloatConsumer cons){
         for(int i = 0; i < points; i++){
             cons.accept(i * 360f / points);
         }
