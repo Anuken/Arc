@@ -23,6 +23,7 @@ import java.io.*;
 /** Records and saves GIFs. */
 public class GifRecorder{
 	private static final float defaultSize = 300;
+	private static BufferedImage outImage;
 
 	private KeyCode resizeKey = KeyCode.CONTROL_LEFT,
 			openKey = KeyCode.E,
@@ -330,7 +331,10 @@ public class GifRecorder{
 	}
 
 	private BufferedImage toImage(byte[] frames, int width, int height){
-		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		if(outImage == null || outImage.getWidth() != width || outImage.getHeight() != height){
+			outImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		}
+		BufferedImage image = outImage;
 
 		for(int i = 0; i < width*height*4; i += 4){
 			int r = frames[i];
@@ -343,19 +347,6 @@ public class GifRecorder{
 			int result = Color.argb8888(1f, r / 255f, g / 255f, b / 255f);
 			int index = i / 4;
 			image.setRGB(index % width, height - 1 - index / width, result);
-		}
-		return image;
-	}
-
-	private BufferedImage toImage(Pixmap pixmap){
-		Color color = new Color();
-		BufferedImage image = new BufferedImage(pixmap.getWidth(), pixmap.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		for(int x = 0; x < image.getWidth(); x++){
-			for(int y = 0; y < image.getHeight(); y++){
-				color.set(pixmap.getPixel(x, y));
-				color.a = 1f;
-				image.setRGB(x, y, Color.argb8888(color));
-			}
 		}
 		return image;
 	}
