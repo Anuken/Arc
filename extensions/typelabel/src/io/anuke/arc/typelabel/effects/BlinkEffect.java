@@ -13,28 +13,8 @@ public class BlinkEffect extends Effect{
     private float frequency = 1; // How frequently the color pattern should move through the text.
     private float threshold = 0.5f; // Point to switch colors.
 
-    public BlinkEffect(TypeLabel label, String[] params){
+    public BlinkEffect(TypeLabel label){
         super(label);
-
-        // Color 1
-        if(params.length > 0){
-            this.color1 = paramAsColor(params[0]);
-        }
-
-        // Color 2
-        if(params.length > 1){
-            this.color2 = paramAsColor(params[1]);
-        }
-
-        // Frequency
-        if(params.length > 2){
-            this.frequency = paramAsFloat(params[2], 1);
-        }
-
-        // Threshold
-        if(params.length > 3){
-            this.threshold = paramAsFloat(params[3], 0.5f);
-        }
 
         // Validate parameters
         if(this.color1 == null) this.color1 = new Color(Color.WHITE);

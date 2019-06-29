@@ -13,28 +13,8 @@ public class RainbowEffect extends Effect{
     private float saturation = 1; // Color saturation
     private float brightness = 1; // Color brightness
 
-    public RainbowEffect(TypeLabel label, String[] params){
+    public RainbowEffect(TypeLabel label){
         super(label);
-
-        // Distance
-        if(params.length > 0){
-            this.distance = paramAsFloat(params[0], 1);
-        }
-
-        // Frequency
-        if(params.length > 1){
-            this.frequency = paramAsFloat(params[1], 1);
-        }
-
-        // Saturation
-        if(params.length > 2){
-            this.saturation = paramAsFloat(params[2], 1);
-        }
-
-        // Brightness
-        if(params.length > 3){
-            this.brightness = paramAsFloat(params[3], 1);
-        }
     }
 
     @Override

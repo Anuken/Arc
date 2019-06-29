@@ -1,15 +1,16 @@
 package io.anuke.arc.typelabel;
 
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.math.*;
+import io.anuke.arc.math.Interpolation;
+import io.anuke.arc.math.Mathf;
 
 /** Abstract text effect. */
 public abstract class Effect{
     private static final float FADEOUT_SPLIT = 0.25f;
-    protected final TypeLabel label;
+    protected final transient TypeLabel label;
     public int indexStart = -1;
     public int indexEnd = -1;
     public float duration = Float.POSITIVE_INFINITY;
+    public String endToken;
     protected float totalTime;
 
     public Effect(TypeLabel label){
@@ -83,21 +84,6 @@ public abstract class Effect{
     /** Returns the line height of the label controlling this effect. */
     protected float getLineHeight(){
         return label.getBitmapFontCache().getFont().getLineHeight() * label.getFontScaleY();
-    }
-
-    /** Returns a float value parsed from the given String, or the default value if the string couldn't be parsed. */
-    protected float paramAsFloat(String str, float defaultValue){
-        return Parser.stringToFloat(str, defaultValue);
-    }
-
-    /** Returns a boolean value parsed from the given String, or the default value if the string couldn't be parsed. */
-    protected boolean paramAsBoolean(String str){
-        return Parser.stringToBoolean(str);
-    }
-
-    /** Parses a color from the given string. Returns null if the color couldn't be parsed. */
-    protected Color paramAsColor(String str){
-        return Parser.stringToColor(str);
     }
 
 }

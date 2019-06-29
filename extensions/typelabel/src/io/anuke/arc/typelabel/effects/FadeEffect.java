@@ -15,29 +15,8 @@ public class FadeEffect extends Effect{
 
     private IntFloatMap timePassedByGlyphIndex = new IntFloatMap();
 
-    public FadeEffect(TypeLabel label, String[] params){
+    public FadeEffect(TypeLabel label){
         super(label);
-
-        // Color 1 or Alpha 1
-        if(params.length > 0){
-            this.color1 = paramAsColor(params[0]);
-            if(this.color1 == null){
-                alpha1 = paramAsFloat(params[0], 0);
-            }
-        }
-
-        // Color 2 or Alpha 2
-        if(params.length > 1){
-            this.color2 = paramAsColor(params[1]);
-            if(this.color2 == null){
-                alpha2 = paramAsFloat(params[1], 1);
-            }
-        }
-
-        // Fade duration
-        if(params.length > 2){
-            this.fadeDuration = paramAsFloat(params[2], 1);
-        }
     }
 
     @Override

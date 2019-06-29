@@ -13,28 +13,8 @@ public class GradientEffect extends Effect{
     private float distance = 1; // How extensive the rainbow effect should be.
     private float frequency = 1; // How frequently the color pattern should move through the text.
 
-    public GradientEffect(TypeLabel label, String[] params){
+    public GradientEffect(TypeLabel label){
         super(label);
-
-        // Color 1
-        if(params.length > 0){
-            this.color1 = paramAsColor(params[0]);
-        }
-
-        // Color 2
-        if(params.length > 1){
-            this.color2 = paramAsColor(params[1]);
-        }
-
-        // Distance
-        if(params.length > 2){
-            this.distance = paramAsFloat(params[2], 1);
-        }
-
-        // Frequency
-        if(params.length > 3){
-            this.frequency = paramAsFloat(params[3], 1);
-        }
 
         // Validate parameters
         if(this.color1 == null) this.color1 = new Color(Color.WHITE);

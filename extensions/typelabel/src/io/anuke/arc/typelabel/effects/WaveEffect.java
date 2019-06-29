@@ -13,28 +13,8 @@ public class WaveEffect extends Effect{
     private float frequency = 1; // How frequently the wave pattern repeats
     private float intensity = 1; // How fast the glyphs should move
 
-    public WaveEffect(TypeLabel label, String[] params){
+    public WaveEffect(TypeLabel label){
         super(label);
-
-        // Distance
-        if(params.length > 0){
-            this.distance = paramAsFloat(params[0], 1);
-        }
-
-        // Frequency
-        if(params.length > 1){
-            this.frequency = paramAsFloat(params[1], 1);
-        }
-
-        // Intensity
-        if(params.length > 2){
-            this.intensity = paramAsFloat(params[2], 1);
-        }
-
-        // Duration
-        if(params.length > 3){
-            this.duration = paramAsFloat(params[3], -1);
-        }
     }
 
     @Override

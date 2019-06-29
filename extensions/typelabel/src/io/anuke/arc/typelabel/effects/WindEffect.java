@@ -20,33 +20,8 @@ public class WindEffect extends Effect{
     private float spacing = 1; // How much space there should be between waves
     private float intensity = 1; // How strong the wind should be
 
-    public WindEffect(TypeLabel label, String[] params){
+    public WindEffect(TypeLabel label){
         super(label);
-
-        // Distance X
-        if(params.length > 0){
-            this.distanceX = paramAsFloat(params[0], 1);
-        }
-
-        // Distance Y
-        if(params.length > 1){
-            this.distanceY = paramAsFloat(params[1], 1);
-        }
-
-        // Spacing
-        if(params.length > 2){
-            this.spacing = paramAsFloat(params[2], 1);
-        }
-
-        // Intensity
-        if(params.length > 3){
-            this.intensity = paramAsFloat(params[3], 1);
-        }
-
-        // Duration
-        if(params.length > 4){
-            this.duration = paramAsFloat(params[4], -1);
-        }
     }
 
     @Override

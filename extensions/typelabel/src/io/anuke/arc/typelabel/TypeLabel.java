@@ -10,7 +10,6 @@ import io.anuke.arc.scene.style.Drawable;
 import io.anuke.arc.scene.ui.Label;
 import io.anuke.arc.util.Align;
 import io.anuke.arc.util.pooling.Pools;
-import io.anuke.arc.util.reflect.ClassReflection;
 
 /**
  * An extension of {@link Label} that progressively shows the text as if it was being typed in real time, and allows the
@@ -360,8 +359,7 @@ public class TypeLabel extends Label{
             char primitiveChar = '\u0000'; // Null character by default
             if(getText().length() > 0){
                 primitiveChar = getText().charAt(safeIndex);
-                Character ch = Character.valueOf(primitiveChar);
-                float intervalMultiplier = TypingConfig.INTERVAL_MULTIPLIERS_BY_CHAR.get(ch, 1);
+                float intervalMultiplier = TypingConfig.INTERVAL_MULTIPLIERS_BY_CHAR.get(primitiveChar, 1);
                 charCooldown += textSpeed * intervalMultiplier;
             }
 
@@ -417,16 +415,15 @@ public class TypeLabel extends Label{
                         continue;
                     }
                     case EFFECT_START:
-                    case EFFECT_END:{
+                    case EFFECT_END: {
                         // Get effect class
                         boolean isStart = category == TokenCategory.EFFECT_START;
-                        Class<? extends Effect> effectClass = isStart ? TypingConfig.EFFECT_START_TOKENS.get(token) : TypingConfig.EFFECT_END_TOKENS.get(token);
 
                         // End all effects of the same type
                         for(int i = 0; i < activeEffects.size; i++){
                             Effect effect = activeEffects.get(i);
                             if(effect.indexEnd < 0){
-                                if(ClassReflection.isAssignableFrom(effectClass, effect.getClass())){
+                                if(effect.endToken.equals(token)){
                                     effect.indexEnd = glyphCharIndex - 1;
                                 }
                             }

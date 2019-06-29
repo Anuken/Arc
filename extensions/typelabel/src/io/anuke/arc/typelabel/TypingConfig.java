@@ -1,6 +1,7 @@
 package io.anuke.arc.typelabel;
 
 import io.anuke.arc.collection.*;
+import io.anuke.arc.function.Function;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.typelabel.effects.*;
 
@@ -51,10 +52,7 @@ public class TypingConfig{
     public static final ObjectMap<String, String> GLOBAL_VARS = new ObjectMap<>();
 
     /** Map of start tokens and their effect classes. Internal use only. */
-    static final ObjectMap<String, Class<? extends Effect>> EFFECT_START_TOKENS = new ObjectMap<>();
-
-    /** Map of end tokens and their effect classes. Internal use only. */
-    static final ObjectMap<String, Class<? extends Effect>> EFFECT_END_TOKENS = new ObjectMap<>();
+    static final ObjectMap<String, Function<TypeLabel, Effect>> EFFECTS = new ObjectMap<>();
 
     /** Whether or not effect tokens are dirty and need to be recalculated. */
     static boolean dirtyEffectMaps = true;
@@ -63,11 +61,9 @@ public class TypingConfig{
      * Registers a new effect to TypeLabel.
      *
      * @param tokenName Name of the token that starts the effect, such as WAVE.
-     * @param effectClass Class of the effect, such as WaveEffect.class.
      */
-    public static void registerEffect(String tokenName, Class<? extends Effect> effectClass){
-        EFFECT_START_TOKENS.put(tokenName.toUpperCase(), effectClass);
-        EFFECT_END_TOKENS.put("/" + tokenName.toUpperCase(), effectClass);
+    public static void registerEffect(String tokenName, Function<TypeLabel, Effect> effect){
+        EFFECTS.put(tokenName, effect);
         dirtyEffectMaps = true;
     }
 
@@ -77,8 +73,7 @@ public class TypingConfig{
      * @param tokenName Name of the token that starts the effect, such as WAVE.
      */
     public static void unregisterEffect(String tokenName){
-        EFFECT_START_TOKENS.remove(tokenName.toUpperCase());
-        EFFECT_END_TOKENS.remove("/" + tokenName.toUpperCase());
+        EFFECTS.remove(tokenName);
     }
 
     static{
@@ -92,16 +87,16 @@ public class TypingConfig{
         INTERVAL_MULTIPLIERS_BY_CHAR.put('\n', 20f);
 
         // Register default tokens
-        registerEffect("EASE", EaseEffect.class);
-        registerEffect("JUMP", JumpEffect.class);
-        registerEffect("SHAKE", ShakeEffect.class);
-        registerEffect("SICK", SickEffect.class);
-        registerEffect("WAVE", WaveEffect.class);
-        registerEffect("WIND", WindEffect.class);
-        registerEffect("RAINBOW", RainbowEffect.class);
-        registerEffect("GRADIENT", GradientEffect.class);
-        registerEffect("FADE", FadeEffect.class);
-        registerEffect("BLINK", BlinkEffect.class);
+        registerEffect("ease", EaseEffect::new);
+        registerEffect("jump", JumpEffect::new);
+        registerEffect("shake", ShakeEffect::new);
+        registerEffect("sick", SickEffect::new);
+        registerEffect("wave", WaveEffect::new);
+        registerEffect("wind", WindEffect::new);
+        registerEffect("rainbow", RainbowEffect::new);
+        registerEffect("gradient", GradientEffect::new);
+        registerEffect("fade", FadeEffect::new);
+        registerEffect("blink", BlinkEffect::new);
     }
 
 }
