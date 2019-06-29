@@ -162,6 +162,10 @@ public class Draw{
         Core.batch.draw(region, x - w /2f, y - h /2f, originX, originY, w, h, rotation);
     }
 
+    public static void rect(String region, float x, float y, float w, float h, float originX, float originY, float rotation){
+        Core.batch.draw(Core.atlas.find(region), x - w /2f, y - h /2f, originX, originY, w, h, rotation);
+    }
+
     public static void rect(TextureRegion region, float x, float y, float w, float h, float rotation){
         rect(region, x, y, w, h, w/2f, h/2f, rotation);
     }
