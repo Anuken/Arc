@@ -111,7 +111,7 @@ class Parser{
             Effect effect = null;
             int indexOffset = 0;
 
-            TokenCategory tokenCategory = null;
+            TokenCategory tokenCategory = TokenCategory.EVENT;
             InternalToken tmpToken = InternalToken.fromName(text);
             if(tmpToken == null){
                 if(TypingConfig.EFFECTS.containsKey(text)){
@@ -121,11 +121,6 @@ class Parser{
                 }
             }else{
                 tokenCategory = tmpToken.category;
-            }
-
-            //skip this
-            if(tokenCategory == null){
-                return "{" + text + "}";
             }
 
             switch(tokenCategory){
@@ -140,19 +135,19 @@ class Parser{
                 }
                 case SPEED:{
                     switch(text){
-                        case "SLOWER":
+                        case "slower":
                             floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / 0.500f;
                             break;
-                        case "SLOW":
+                        case "slow":
                             floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / 0.667f;
                             break;
-                        case "NORMAL":
+                        case "normal":
                             floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR;
                             break;
-                        case "FAST":
+                        case "fast":
                             floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / 2.000f;
                             break;
-                        case "FASTER":
+                        case "faster":
                             floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / 4.000f;
                             break;
                     }
