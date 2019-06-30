@@ -2,7 +2,6 @@ package io.anuke.arc.typelabel;
 
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.function.IntPositionConsumer;
-import io.anuke.arc.util.Log;
 
 /** Utility class to parse tokens from a {@link TypeLabel}. */
 class Parser{
@@ -38,6 +37,7 @@ class Parser{
 
         // Sort token entries
         label.tokenEntries.sort();
+        //Log.info(new Json().prettyPrint(label.tokenEntries));
         label.tokenEntries.reverse();
     }
 
@@ -122,8 +122,6 @@ class Parser{
             }else{
                 tokenCategory = tmpToken.category;
             }
-
-            Log.info("Category=" + tokenCategory + " for " + text);
 
             //skip this
             if(tokenCategory == null){
@@ -215,20 +213,32 @@ class Parser{
     }
 
     private static void stripTokens(TypeLabel label){
-        //I have no idea what a 'skip' is but I probably don't need it
         baseParse(label, (text, index) -> "");
+
+        int[] offset = {0};
+        //label.tokenEntries.add(new TokenEntry("SKIP", TokenCategory.SKIP, 4, 0, new String(new char[8])));
+        //label.tokenEntries.add(new TokenEntry("SKIP", TokenCategory.SKIP, 16, 0, new String(new char[2])));
+
+        //must be a square token
+        parseAllTokens(label, true, (from, to) -> {
+            //Log.info(label.getText().substring(from - 1, to + 1));
+            //label.tokenEntries.add(new TokenEntry("SKIP", TokenCategory.SKIP, from - 2, 0, label.getText().substring(from - 1, to + 1)));
+            //Log.info("index = " + (from - 1 + offset[0]) + " from = "+ from);
+            offset[0] -= 2;
+        });
     }
 
     /** Returns the replacement string intended to be used on {RESET} tokens. */
     private static String getResetReplacement(){
         Array<String> tokens = new Array<>();
         TypingConfig.EFFECTS.keys().toArray(tokens);
+        tokens.replace(m -> "/" + m);
         tokens.add("clear");
         tokens.add("normal");
 
         StringBuilder sb = new StringBuilder();
         for(String token : tokens){
-            sb.append("{/").append(token).append('}');
+            sb.append("{").append(token).append('}');
         }
         return sb.toString();
     }

@@ -9,6 +9,7 @@ import io.anuke.arc.math.Mathf;
 import io.anuke.arc.scene.style.Drawable;
 import io.anuke.arc.scene.ui.Label;
 import io.anuke.arc.util.Align;
+import io.anuke.arc.util.Log;
 import io.anuke.arc.util.pooling.Pools;
 
 /**
@@ -355,10 +356,10 @@ public class TypeLabel extends Label{
             rawCharIndex++;
 
             // Get next character and calculate cooldown increment
-            int safeIndex = Mathf.clamp(rawCharIndex, 0, getText().length() - 1);
+            int safeIndex = Mathf.clamp(glyphCharIndex + 1, 0, glyphCache.size - 1);
             char primitiveChar = '\u0000'; // Null character by default
-            if(getText().length() > 0){
-                primitiveChar = getText().charAt(safeIndex);
+            if(glyphCache.size > 0){
+                primitiveChar = (char)glyphCache.get(safeIndex).id;//getText().charAt(safeIndex);
                 float intervalMultiplier = TypingConfig.INTERVAL_MULTIPLIERS_BY_CHAR.get(primitiveChar, 1);
                 charCooldown += textSpeed * intervalMultiplier;
             }
@@ -403,6 +404,7 @@ public class TypeLabel extends Label{
                         continue;
                     }
                     case SKIP:{
+                        Log.info("SKIP at " + rawCharIndex + " from " + rawCharIndex + " to " + (rawCharIndex + entry.stringValue.length()));
                         if(entry.stringValue != null){
                             rawCharIndex += entry.stringValue.length();
                         }
