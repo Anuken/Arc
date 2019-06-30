@@ -134,6 +134,10 @@ public class Image extends Element{
         if(drawable != null) drawable.draw(x + imageX, y + imageY, imageWidth * scaleX, imageHeight * scaleY);
     }
 
+    public TextureRegion getRegion(){
+        return ((TextureRegionDrawable)drawable).getRegion();
+    }
+
     /** @return May be null. */
     public Drawable getDrawable(){
         return drawable;

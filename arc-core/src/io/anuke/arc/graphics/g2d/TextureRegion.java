@@ -1,6 +1,7 @@
 package io.anuke.arc.graphics.g2d;
 
 import io.anuke.arc.graphics.Texture;
+import io.anuke.arc.graphics.g2d.TextureAtlas.AtlasRegion;
 
 /**
  * Defines a rectangular area of a texture. The coordinate system used has its origin in the upper left corner with the x-axis
@@ -74,6 +75,10 @@ public class TextureRegion{
     public static TextureRegion[][] split(Texture texture, int tileWidth, int tileHeight){
         TextureRegion region = new TextureRegion(texture);
         return region.split(tileWidth, tileHeight);
+    }
+
+    public AtlasRegion asAtlas(){
+        return (AtlasRegion)this;
     }
 
     /** Sets the texture and sets the coordinates to the size of the specified texture. */
