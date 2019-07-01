@@ -14,23 +14,8 @@ public class ShakeEffect extends Effect{
     private float distance = 1; // How far the glyphs should move
     private float intensity = 1; // How fast the glyphs should move
 
-    public ShakeEffect(TypeLabel label, String[] params){
+    public ShakeEffect(TypeLabel label){
         super(label);
-
-        // Distance
-        if(params.length > 0){
-            this.distance = paramAsFloat(params[0], 1);
-        }
-
-        // Intensity
-        if(params.length > 1){
-            this.intensity = paramAsFloat(params[1], 1);
-        }
-
-        // Duration
-        if(params.length > 2){
-            this.duration = paramAsFloat(params[2], -1);
-        }
     }
 
     @Override

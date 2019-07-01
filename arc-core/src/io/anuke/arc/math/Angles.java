@@ -66,6 +66,18 @@ public class Angles{
         return angle(avector.x, avector.y, Core.input.mouseX(), Core.input.mouseY());
     }
 
+    public static void loop(int max, IntConsumer i){
+        for(int j = 0; j < max; j++){
+            i.accept(j);
+        }
+    }
+
+    public static void circle(int points, float offset, FloatConsumer cons){
+        for(int i = 0; i < points; i++){
+            cons.accept(offset + i * 360f / points);
+        }
+    }
+
     public static void circle(int points, FloatConsumer cons){
         for(int i = 0; i < points; i++){
             cons.accept(i * 360f / points);

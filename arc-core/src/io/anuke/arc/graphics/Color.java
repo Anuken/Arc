@@ -118,7 +118,7 @@ public class Color{
         int r = parseHex(hex, offset, offset + 2);
         int g = parseHex(hex, offset + 2, offset + 4);
         int b = parseHex(hex, offset + 4, offset + 6);
-        int a = hex.length() != 8 ? 255 : parseHex(hex, offset + 6, offset + 8);
+        int a = hex.length() - offset != 8 ? 255 : parseHex(hex, offset + 6, offset + 8);
         return color.set(r / 255f, g / 255f, b / 255f, a / 255f);
     }
 

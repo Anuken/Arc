@@ -15,23 +15,8 @@ public class EaseEffect extends Effect{
 
     private IntFloatMap timePassedByGlyphIndex = new IntFloatMap();
 
-    public EaseEffect(TypeLabel label, String[] params){
+    public EaseEffect(TypeLabel label){
         super(label);
-
-        // Distance
-        if(params.length > 0){
-            this.distance = paramAsFloat(params[0], 1);
-        }
-
-        //Intensity
-        if(params.length > 1){
-            this.intensity = paramAsFloat(params[1], 1);
-        }
-
-        // Elastic
-        if(params.length > 2){
-            this.elastic = paramAsBoolean(params[2]);
-        }
     }
 
     @Override

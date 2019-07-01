@@ -41,11 +41,11 @@ public class Lwjgl3Graphics extends Graphics implements Disposable{
         @Override
         public void invoke(long windowHandle, final int width, final int height){
             updateFramebufferInfo();
-            gl20.glViewport(0, 0, width, height);
             if(!window.isListenerInitialized()){
                 return;
             }
             window.makeCurrent();
+            gl20.glViewport(0, 0, width, height);
             window.getListener().resize(getWidth(), getHeight());
             window.getListener().update();
             GLFW.glfwSwapBuffers(windowHandle);
