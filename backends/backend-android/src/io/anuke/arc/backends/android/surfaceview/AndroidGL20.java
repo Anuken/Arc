@@ -8,7 +8,8 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 public class AndroidGL20 implements GL20{
-    private int[] ints = {0};
+    private int[] ints = {0}, ints2 = {0}, ints3 = {0};
+    private byte[] buffer = new byte[512];
 
     public void glActiveTexture(int texture){
         GLES20.glActiveTexture(texture);
@@ -271,11 +272,27 @@ public class AndroidGL20 implements GL20{
     }
 
     public String glGetActiveAttrib(int program, int index, IntBuffer size, Buffer type){
-        return GLES20.glGetActiveAttrib(program, index, size, (IntBuffer)type);
+        //length
+        ints[0] = 0;
+        //size
+        ints2[0] = size.get(0);
+        //type
+        ints3[0] = ((IntBuffer)type).get(0);
+
+        GLES20.glGetActiveAttrib(program, index, buffer.length, ints, 0, ints2, 0, ints3, 0, buffer, 0);
+        return new String(buffer, 0, ints[0]);
     }
 
     public String glGetActiveUniform(int program, int index, IntBuffer size, Buffer type){
-        return GLES20.glGetActiveUniform(program, index, size, (IntBuffer)type);
+        //length
+        ints[0] = 0;
+        //size
+        ints2[0] = size.get(0);
+        //type
+        ints3[0] = ((IntBuffer)type).get(0);
+
+        GLES20.glGetActiveUniform(program, index, buffer.length, ints, 0, ints2, 0, ints3, 0, buffer, 0);
+        return new String(buffer, 0, ints[0]);
     }
 
     public void glGetAttachedShaders(int program, int maxcount, Buffer count, IntBuffer shaders){
