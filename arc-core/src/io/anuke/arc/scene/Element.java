@@ -47,7 +47,7 @@ public class Element implements Layout{
     private boolean visible = true;
     private Object userObject;
     private boolean needsLayout = true;
-    private boolean fillParent;
+    protected boolean fillParent;
     private boolean layoutEnabled = true;
     private BooleanProvider visibility;
     private Runnable update;

@@ -11,6 +11,7 @@ import io.anuke.arc.math.geom.Rectangle;
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.scene.event.Touchable;
 import io.anuke.arc.scene.ui.layout.Table;
+import io.anuke.arc.scene.ui.layout.Table.DrawRect;
 import io.anuke.arc.scene.utils.Cullable;
 
 /**
@@ -21,7 +22,7 @@ import io.anuke.arc.scene.utils.Cullable;
  * @author mzechner
  * @author Nathan Sweet
  */
-public class Group extends Element implements Cullable{
+public abstract class Group extends Element implements Cullable{
     static private final Vector2 tmp = new Vector2();
 
     final SnapshotArray<Element> children = new SnapshotArray<>(true, 4, Element.class);
@@ -213,6 +214,18 @@ public class Group extends Element implements Cullable{
                 ((Group)e).forEach(cons);
             }
         }
+    }
+
+    public Element fill(DrawRect rect){
+        Element e = new Element(){
+            @Override
+            public void draw(){
+                rect.draw(x, y, width, height);
+            }
+        };
+        e.setFillParent(true);
+        addChild(e);
+        return e;
     }
 
     /** Adds and returns a table. This table will fill the whole scene. */

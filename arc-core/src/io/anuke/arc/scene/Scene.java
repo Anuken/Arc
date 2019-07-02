@@ -54,7 +54,7 @@ public class Scene implements InputProcessor, Disposable{
             }
         };
 
-        root = new Group();
+        root = new Group(){};
         root.setScene(this);
 
         viewport.update(graphics.getWidth(), graphics.getHeight(), true);
