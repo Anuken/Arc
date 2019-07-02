@@ -99,6 +99,12 @@ public class CacheBatch extends SpriteBatch{
         if(apply && shader != null) shader.apply();
     }
 
+    @Override
+    public void dispose(){
+        super.dispose();
+        cache.dispose();
+    }
+
     public void beginDraw(){
         cache.begin();
     }
