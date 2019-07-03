@@ -25,6 +25,7 @@ public class Lwjgl3Application implements Application{
     private final Array<Runnable> runnables = new Array<>();
     private final Array<Runnable> executedRunnables = new Array<>();
     private Audio audio;
+    private int targetFPS = -1;
     private volatile boolean running = true;
 
     public Lwjgl3Application(ApplicationListener listener, Lwjgl3ApplicationConfiguration config){
@@ -217,6 +218,7 @@ public class Lwjgl3Application implements Application{
         Array<Lwjgl3Window> closedWindows = new Array<>();
 
         while(running && windows.size > 0){
+            long startTime = Time.nanos();
             // FIXME put it on a separate thread
             if(audio instanceof OpenALAudio){
                 ((OpenALAudio)audio).update();
@@ -274,6 +276,18 @@ public class Lwjgl3Application implements Application{
                 windows.remove(closedWindow);
             }
 
+            if(targetFPS > 0){
+                long target = (1000 * 1000000) / targetFPS; //target in nanos
+                long elapsed = Time.timeSinceNanos(startTime);
+                if(elapsed < target){
+                    try{
+                        Thread.sleep((target - elapsed) / 1000000, (int)((target - elapsed) % 1000000));
+                    }catch(InterruptedException ignored){
+                        //ignore
+                    }
+                }
+            }
+
             if(!haveWindowsRendered){
                 // Sleep a few milliseconds in case no rendering was requested
                 // with continuous rendering disabled.
@@ -313,6 +327,11 @@ public class Lwjgl3Application implements Application{
             glDebugCallback = null;
         }
         GLFW.glfwTerminate();
+    }
+
+    @Override
+    public void setTargetFPS(int fps){
+        this.targetFPS = fps;
     }
 
     @Override
