@@ -210,6 +210,11 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
     }
 
     @Override
+    public void setTargetFPS(int fps){
+        graphics.targetfps = fps;
+    }
+
+    @Override
     public void onWindowFocusChanged(boolean hasFocus){
         super.onWindowFocusChanged(hasFocus);
         useImmersiveMode(this.useImmersiveMode);

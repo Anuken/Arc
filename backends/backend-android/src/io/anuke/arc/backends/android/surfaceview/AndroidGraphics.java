@@ -19,8 +19,7 @@ import io.anuke.arc.graphics.glutils.FrameBuffer;
 import io.anuke.arc.graphics.glutils.GLVersion;
 import io.anuke.arc.graphics.glutils.Shader;
 import io.anuke.arc.math.WindowedMean;
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.Log;
+import io.anuke.arc.util.*;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -37,7 +36,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
     private static final String LOG_TAG = "AndroidGraphics";
 
     /**
-     * When {@link AndroidFragmentApplication#onPause()} or {@link AndroidApplication#onPause()} call
+     * When {@link AndroidApplication#onPause()} call
      * {@link AndroidGraphics#pause()} they <b>MUST</b> enforce continuous rendering. If not, {@link #onDrawFrame(GL10)} will not
      * be called in the GLThread while {@link #pause()} is sleeping in the Android UI Thread which will cause the
      * {@link AndroidGraphics#pause} variable never be set to false. As a result, the {@link AndroidGraphics#pause()} method will
@@ -51,7 +50,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
     protected long frameStart = System.nanoTime();
     protected long frameId = -1;
     protected int frames = 0;
-    protected int fps;
+    protected int fps, targetfps = -1;
     protected WindowedMean mean = new WindowedMean(5);
     int width;
     int height;
@@ -483,6 +482,18 @@ public class AndroidGraphics extends Graphics implements Renderer{
             }
             app.dispose();
             Log.infoTag(LOG_TAG, "destroyed");
+        }
+
+        if(targetFPS > 0){
+            long target = (1000 * 1000000) / targetfps; //target in nanos
+            long elapsed = Time.timeSinceNanos(time);
+            if(elapsed < target){
+                try{
+                    Thread.sleep((target - elapsed) / 1000000, (int)((target - elapsed) % 1000000));
+                }catch(InterruptedException ignored){
+                    //ignore
+                }
+            }
         }
 
         if(time - frameStart > 1000000000){
