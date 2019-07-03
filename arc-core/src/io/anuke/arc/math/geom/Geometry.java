@@ -224,6 +224,35 @@ public final class Geometry{
         return d8edge;
     }
 
+    public static boolean raycast(int x0f, int y0f, int x1, int y1, Raycaster cons){
+        int x0 = x0f;
+        int y0 = y0f;
+        int dx = Math.abs(x1 - x0);
+        int dy = Math.abs(y1 - y0);
+
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+
+        int err = dx - dy;
+        int e2;
+        while(true){
+
+            if(cons.accept(x0, y0)) return true;
+            if(x0 == x1 && y0 == y1) return false;
+
+            e2 = 2 * err;
+            if(e2 > -dy){
+                err = err - dy;
+                x0 = x0 + sx;
+            }
+
+            if(e2 < dx){
+                err = err + dx;
+                y0 = y0 + sy;
+            }
+        }
+    }
+
     public static Vector2 raycastRect(float startx, float starty, float endx, float endy, Rectangle rectangle){
         return raycastRect(startx, starty, endx, endy, rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2,
         rectangle.width / 2f, rectangle.height / 2f);
@@ -576,6 +605,10 @@ public final class Geometry{
         p2x = polygon[offset];
         p2y = polygon[offset + 1];
         return area + p1x * p2y - p2x * p1y < 0;
+    }
+
+    public interface Raycaster{
+        boolean accept(int x, int y);
     }
 
     public interface SolidChecker{

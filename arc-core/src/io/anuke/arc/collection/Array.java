@@ -141,6 +141,10 @@ public class Array<T> implements Iterable<T>{
         return out;
     }
 
+    public Array<T> copy(){
+        return new Array<>(this);
+    }
+
     public float sum(FloatFunction<T> summer){
         float sum = 0;
         for(int i = 0; i < size; i++){
