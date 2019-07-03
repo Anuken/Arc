@@ -50,7 +50,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
     protected long frameStart = System.nanoTime();
     protected long frameId = -1;
     protected int frames = 0;
-    protected int fps, targetfps = -1;
+    protected int fps;
     protected WindowedMean mean = new WindowedMean(5);
     int width;
     int height;
@@ -393,7 +393,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
     }
 
     @Override
-    public void onDrawFrame(javax.microedition.khronos.opengles.GL10 gl){
+    public void onDrawFrame(GL10 gl){
         long time = System.nanoTime();
         deltaTime = (time - lastFrameTime) / 1000000000.0f;
         lastFrameTime = time;
@@ -442,6 +442,8 @@ public class AndroidGraphics extends Graphics implements Renderer{
         }
 
         if(lrunning){
+            long updateTime = System.nanoTime();
+
             synchronized(app.getRunnables()){
                 app.getExecutedRunnables().clear();
                 app.getExecutedRunnables().addAll(app.getRunnables());
@@ -482,18 +484,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
             }
             app.dispose();
             Log.infoTag(LOG_TAG, "destroyed");
-        }
-
-        if(targetFPS > 0){
-            long target = (1000 * 1000000) / targetfps; //target in nanos
-            long elapsed = Time.timeSinceNanos(time);
-            if(elapsed < target){
-                try{
-                    Thread.sleep((target - elapsed) / 1000000, (int)((target - elapsed) % 1000000));
-                }catch(InterruptedException ignored){
-                    //ignore
-                }
-            }
         }
 
         if(time - frameStart > 1000000000){

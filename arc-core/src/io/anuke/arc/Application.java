@@ -24,12 +24,6 @@ public interface Application extends Disposable{
         }
     }
 
-    /** Attempts to set the target update FPS. Does nothing on most backends.
-     * A value <= 0 will disable an FPS cap entirely.*/
-    default void setTargetFPS(int fps){
-
-    }
-
     /** @return what {@link ApplicationType} this application has, e.g. Android or Desktop */
     ApplicationType getType();
 
