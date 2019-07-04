@@ -129,7 +129,7 @@ public class KeybindDialog extends Dialog{
             for(KeyBind keybind : keybinds.getKeybinds()){
                 if(lastCategory != keybind.category() && keybind.category() != null){
                     table.add(bundle.get("category." + keybind.category() + ".name", Strings.capitalize(keybind.category()))).color(Color.GRAY).colspan(3).pad(10).padBottom(4).row();
-                    table.addImage("whiteui").color(Color.GRAY).fillX().height(3).pad(6).colspan(3).padTop(0).padBottom(10).row();
+                    table.addImage("white").color(Color.GRAY).fillX().height(3).pad(6).colspan(3).padTop(0).padBottom(10).row();
                     lastCategory = keybind.category();
                 }
 
