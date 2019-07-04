@@ -70,6 +70,7 @@ public abstract class Interpolation{
     public static final PowOut pow4Out = new PowOut(4);
     public static final Pow pow5 = new Pow(5);
     public static final PowIn pow5In = new PowIn(5);
+    public static final PowIn pow10In = new PowIn(10);
     public static final PowOut pow5Out = new PowOut(5);
     public static final Interpolation sine = new Interpolation(){
         public float apply(float a){
