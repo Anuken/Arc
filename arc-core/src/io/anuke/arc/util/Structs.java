@@ -13,6 +13,10 @@ public class Structs{
         return array[Mathf.random(array.length - 1)];
     }
 
+    public static <T> T select(T... array){
+        return array[Mathf.random(array.length - 1)];
+    }
+
     /**Uses identity comparisons.*/
     public static <T> boolean contains(T[] array, T value){
         for(T t : array){
