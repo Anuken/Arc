@@ -1,5 +1,6 @@
 package io.anuke.arc.scene.ui;
 
+import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.graphics.g2d.NinePatch;
@@ -34,6 +35,12 @@ public class Image extends Element{
 
     public Image(String name){
         this(scene.skin.getDrawable(name));
+    }
+
+
+    public Image(String name, Color color){
+        this(scene.skin.getDrawable(name));
+        setColor(color);
     }
 
     /**

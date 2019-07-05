@@ -70,6 +70,11 @@ public class Table extends WidgetGroup{
         cons.accept(this);
     }
 
+    public Table(Consumer<Table> cons){
+        this();
+        cons.accept(this);
+    }
+
     private Cell obtainCell(){
         Cell cell = cellPool.obtain();
         cell.setLayout(this);

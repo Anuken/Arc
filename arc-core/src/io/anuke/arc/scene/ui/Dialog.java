@@ -3,9 +3,7 @@ package io.anuke.arc.scene.ui;
 import io.anuke.arc.Core;
 import io.anuke.arc.function.Supplier;
 import io.anuke.arc.math.Interpolation;
-import io.anuke.arc.scene.Action;
-import io.anuke.arc.scene.Element;
-import io.anuke.arc.scene.Scene;
+import io.anuke.arc.scene.*;
 import io.anuke.arc.scene.actions.Actions;
 import io.anuke.arc.scene.event.*;
 import io.anuke.arc.scene.ui.layout.Table;
@@ -147,6 +145,7 @@ public class Dialog extends Window{
         stage.setScrollFocus(this);
 
         if(action != null) addAction(action);
+        pack();
 
         return this;
     }
