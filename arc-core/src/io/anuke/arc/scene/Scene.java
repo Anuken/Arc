@@ -40,7 +40,7 @@ public class Scene implements InputProcessor, Disposable{
     private final SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray<>(true, 4, TouchFocus.class);
     private Viewport viewport;
     private int mouseScreenX, mouseScreenY;
-    private Element mouseOverActor;
+    private Element mouseOverElement;
     private Element keyboardFocus, scrollFocus;
     private boolean actionsRequestRendering = true;
 
@@ -132,10 +132,10 @@ public class Scene implements InputProcessor, Disposable{
             // Update over actor for the pointer.
             pointerOverActors[pointer] = fireEnterAndExit(overLast, pointerScreenX[pointer], pointerScreenY[pointer], pointer);
         }
-        // Update over actor for the mouse on the desktop.
+        // Update over element for the mouse on the desktop.
         ApplicationType type = Core.app.getType();
         if(type == ApplicationType.Desktop || type == ApplicationType.WebGL)
-            mouseOverActor = fireEnterAndExit(mouseOverActor, mouseScreenX, mouseScreenY, -1);
+            mouseOverElement = fireEnterAndExit(mouseOverElement, mouseScreenX, mouseScreenY, -1);
 
         root.act(delta);
     }

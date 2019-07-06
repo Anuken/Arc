@@ -8,7 +8,6 @@ import io.anuke.arc.scene.utils.Disableable;
 
 public class HandCursorListener extends ClickListener{
     private BooleanProvider enabled = () -> true;
-    private boolean set;
 
     public void setEnabled(BooleanProvider vis){
         this.enabled = vis;
@@ -23,19 +22,15 @@ public class HandCursorListener extends ClickListener{
         }
 
         Core.graphics.cursor(SystemCursor.hand);
-        set = true;
     }
 
     @Override
     public void exit(InputEvent event, float x, float y, int pointer, Element toActor){
         super.exit(event, x, y, pointer, toActor);
 
-        if(!enabled.get() || !set) return;
-
         if(pointer == -1){
             Core.graphics.restoreCursor();
         }
-        set = false;
     }
 
     static boolean isDisabled(Element element){
