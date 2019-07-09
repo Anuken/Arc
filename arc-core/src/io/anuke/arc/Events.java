@@ -17,10 +17,14 @@ public class Events{
     }
 
     public static <T> void fire(T type){
-        if(events.get(type.getClass()) == null)
+        fire(type.getClass(), type);
+    }
+
+    public static <T> void fire(Class<?> ctype, T type){
+        if(events.get(ctype) == null)
             return;
 
-        for(Consumer<?> event : events.get(type.getClass())){
+        for(Consumer<?> event : events.get(ctype)){
             ((Consumer<T>)event).accept(type);
         }
     }
