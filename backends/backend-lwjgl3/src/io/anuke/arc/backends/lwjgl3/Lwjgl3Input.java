@@ -231,29 +231,6 @@ public class Lwjgl3Input extends Input implements Disposable{
         return isTouched(pointer) ? 1 : 0;
     }
 
-    /*
-    @Override
-    public boolean isKeyPressed(KeyCode key){
-        if(key == KeyCode.ANY_KEY){
-            return pressedKeys > 0;
-        }else if(key.type == KeyType.mouse){
-            return GLFW.glfwGetMouseButton(window.getWindowHandle(), Lwjgl3InputMap.getGlfwKeyCode(key)) == GLFW.GLFW_PRESS;
-        }else if(key == KeyCode.SYM){
-            return GLFW.glfwGetKey(window.getWindowHandle(), GLFW.GLFW_KEY_LEFT_SUPER) == GLFW.GLFW_PRESS ||
-            GLFW.glfwGetKey(window.getWindowHandle(), GLFW.GLFW_KEY_RIGHT_SUPER) == GLFW.GLFW_PRESS;
-        }else{
-            return GLFW.glfwGetKey(window.getWindowHandle(), Lwjgl3InputMap.getGlfwKeyCode(key)) == GLFW.GLFW_PRESS;
-        }
-    }
-
-    @Override
-    public boolean isKeyTapped(KeyCode key){
-        if(key == KeyCode.ANY_KEY){
-            return keyJustPressed;
-        }
-        return justPressedKeys.get(key.ordinal());
-    }*/
-
     @Override
     public long getCurrentEventTime(){
         // queue sets its event time for each event dequeued/processed
