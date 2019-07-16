@@ -68,8 +68,8 @@ public class Lines{
             Draw.rect(region, x - padding + length/2f, y, length, stroke, padding, stroke / 2, angle);
         }else if(cap == CapStyle.round){ //TODO remove or fix
             Draw.rect(region, x - padding + length/2f, y, length, stroke, padding, stroke / 2, angle);
-            Fill.circle(x, y, stroke / 2f);
-            Fill.circle(x2, y2, stroke / 2f);
+            Draw.rect("hcircle", x, y, stroke, stroke, angle + 180f);
+            Draw.rect("hcircle", x2, y2, stroke, stroke, angle);
         }
     }
 

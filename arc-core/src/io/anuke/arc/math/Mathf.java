@@ -59,6 +59,10 @@ public final class Mathf{
         return (sin(in, scl * 2f, mag) + mag) / 2f;
     }
 
+    public static float tan(float radians, float scl, float mag){
+        return (sin(radians / scl)) / (cos(radians / scl)) * mag;
+    }
+
     public static float sin(float radians, float scl, float mag){
         return sin(radians / scl) * mag;
     }
