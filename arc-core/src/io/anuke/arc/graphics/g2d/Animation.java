@@ -15,7 +15,6 @@ import io.anuke.arc.util.reflect.ArrayReflection;
  * @author mzechner
  */
 public class Animation<T>{
-
     /** Length must not be modified without updating {@link #animationDuration}. See {@link #setKeyFrames(T[])}. */
     T[] keyFrames;
     private float frameDuration;
