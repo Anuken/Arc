@@ -67,9 +67,10 @@ public class Lines{
         }else if(cap == CapStyle.none){
             Draw.rect(region, x - padding + length/2f, y, length, stroke, padding, stroke / 2, angle);
         }else if(cap == CapStyle.round){ //TODO remove or fix
+            TextureRegion cir = Core.atlas.has("hcircle") ? Core.atlas.find("hcircle") : Core.atlas.find("circle");
             Draw.rect(region, x - padding + length/2f, y, length, stroke, padding, stroke / 2, angle);
-            Draw.rect("hcircle", x, y, stroke, stroke, angle + 180f);
-            Draw.rect("hcircle", x2, y2, stroke, stroke, angle);
+            Draw.rect(cir, x, y, stroke, stroke, angle + 180f);
+            Draw.rect(cir, x2, y2, stroke, stroke, angle);
         }
     }
 
