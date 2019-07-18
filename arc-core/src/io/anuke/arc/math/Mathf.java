@@ -500,6 +500,10 @@ public final class Mathf{
         return x_d * x_d + y_d * y_d;
     }
 
+    public static boolean within(float x1, float y1, float x2, float y2, float dst){
+        return dst2(x1, y1, x2, y2) < dst*dst;
+    }
+
     static private class Sin{
         static final float[] table = new float[SIN_COUNT];
 
