@@ -5,6 +5,8 @@ import java.nio.*;
 public class SDLGL{
 
     /*JNI
+    #define GLEW_STATIC
+
     #include "GL/glew.h"
 
     //copied from ios openGL source, I have no idea what I'm doing

@@ -80,11 +80,11 @@ class NativesBuild{
 
             win32.cFlags = win32.cFlags + " " + execCmd(win32crossCompilePath + "sdl2-config --cflags");
             win32.cppFlags = win32.cFlags;
-            win32.libraries = execCmd(win32crossCompilePath + "sdl2-config --static-libs") + " -lglew32 -lglu32 -lopengl32";
+            win32.libraries = execCmd(win32crossCompilePath + "sdl2-config --static-libs") + " -lglew32s -lglu32 -lopengl32";
 
             win64.cFlags = win64.cFlags + " " + execCmd(win64crossCompilePath + "sdl2-config --cflags");
             win64.cppFlags = win64.cFlags;
-            win64.libraries = execCmd(win64crossCompilePath + "sdl2-config --static-libs");
+            win64.libraries = execCmd(win64crossCompilePath + "sdl2-config --static-libs") + " -lglew32s -lglu32 -lopengl32";
         }
 
         //Generate native code, build scripts
