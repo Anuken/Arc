@@ -113,13 +113,6 @@ public class GwtGL20Debug extends GwtGL20{
     }
 
     @Override
-    public void glDeleteTextures(int n, IntBuffer textures){
-
-        super.glDeleteTextures(n, textures);
-        checkError();
-    }
-
-    @Override
     public void glDepthFunc(int func){
 
         super.glDepthFunc(func);
@@ -186,13 +179,6 @@ public class GwtGL20Debug extends GwtGL20{
     public void glFrontFace(int mode){
 
         super.glFrontFace(mode);
-        checkError();
-    }
-
-    @Override
-    public void glGenTextures(int n, IntBuffer textures){
-
-        super.glGenTextures(n, textures);
         checkError();
     }
 
@@ -415,30 +401,9 @@ public class GwtGL20Debug extends GwtGL20{
     }
 
     @Override
-    public void glDeleteBuffers(int n, IntBuffer buffers){
-
-        super.glDeleteBuffers(n, buffers);
-        checkError();
-    }
-
-    @Override
-    public void glDeleteFramebuffers(int n, IntBuffer framebuffers){
-
-        super.glDeleteFramebuffers(n, framebuffers);
-        checkError();
-    }
-
-    @Override
     public void glDeleteProgram(int program){
 
         super.glDeleteProgram(program);
-        checkError();
-    }
-
-    @Override
-    public void glDeleteRenderbuffers(int n, IntBuffer renderbuffers){
-
-        super.glDeleteRenderbuffers(n, renderbuffers);
         checkError();
     }
 
@@ -492,13 +457,6 @@ public class GwtGL20Debug extends GwtGL20{
     }
 
     @Override
-    public void glGenBuffers(int n, IntBuffer buffers){
-
-        super.glGenBuffers(n, buffers);
-        checkError();
-    }
-
-    @Override
     public void glGenerateMipmap(int target){
 
         super.glGenerateMipmap(target);
@@ -506,21 +464,7 @@ public class GwtGL20Debug extends GwtGL20{
     }
 
     @Override
-    public void glGenFramebuffers(int n, IntBuffer framebuffers){
-
-        super.glGenFramebuffers(n, framebuffers);
-        checkError();
-    }
-
-    @Override
-    public void glGenRenderbuffers(int n, IntBuffer renderbuffers){
-
-        super.glGenRenderbuffers(n, renderbuffers);
-        checkError();
-    }
-
-    @Override
-    public String glGetActiveAttrib(int program, int index, IntBuffer size, Buffer type){
+    public String glGetActiveAttrib(int program, int index, IntBuffer size, IntBuffer type){
 
         String attrib = super.glGetActiveAttrib(program, index, size, type);
         checkError();
@@ -528,18 +472,11 @@ public class GwtGL20Debug extends GwtGL20{
     }
 
     @Override
-    public String glGetActiveUniform(int program, int index, IntBuffer size, Buffer type){
+    public String glGetActiveUniform(int program, int index, IntBuffer size, IntBuffer type){
 
         String uniform = super.glGetActiveUniform(program, index, size, type);
         checkError();
         return uniform;
-    }
-
-    @Override
-    public void glGetAttachedShaders(int program, int maxcount, Buffer count, IntBuffer shaders){
-
-        super.glGetAttachedShaders(program, maxcount, count, shaders);
-        checkError();
     }
 
     @Override
@@ -673,13 +610,6 @@ public class GwtGL20Debug extends GwtGL20{
     }
 
     @Override
-    public void glGetVertexAttribPointerv(int index, int pname, Buffer pointer){
-
-        super.glGetVertexAttribPointerv(index, pname, pointer);
-        checkError();
-    }
-
-    @Override
     public boolean glIsBuffer(int buffer){
 
         boolean res = super.glIsBuffer(buffer);
@@ -760,13 +690,6 @@ public class GwtGL20Debug extends GwtGL20{
     public void glSampleCoverage(float value, boolean invert){
 
         super.glSampleCoverage(value, invert);
-        checkError();
-    }
-
-    @Override
-    public void glShaderBinary(int n, IntBuffer shaders, int binaryformat, Buffer binary, int length){
-
-        super.glShaderBinary(n, shaders, binaryformat, binary, length);
         checkError();
     }
 
@@ -1019,13 +942,6 @@ public class GwtGL20Debug extends GwtGL20{
     public void glVertexAttrib4fv(int indx, FloatBuffer values){
 
         super.glVertexAttrib4fv(indx, values);
-        checkError();
-    }
-
-    @Override
-    public void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, Buffer ptr){
-
-        super.glVertexAttribPointer(indx, size, type, normalized, stride, ptr);
         checkError();
     }
 

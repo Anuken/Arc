@@ -104,10 +104,6 @@ final public class SDL {
         SDL_DestroyWindow((SDL_Window*)handle);
     */
 
-    public static native int SDL_GL_SetAttribute(int attribute, int value); /*
-        return SDL_GL_SetAttribute((SDL_GLattr)attribute, value);
-    */
-
     public static final int
     SDL_EVENT_QUIT = 0,
     SDL_EVENT_WINDOW = 1,
@@ -164,5 +160,41 @@ final public class SDL {
             return 1;
         }
         return 0;
+    */
+
+
+    //openGL stuff
+
+    public static final int
+    SDL_GL_RED_SIZE = SDL_GL_RED_SIZE(),
+    SDL_GL_GREEN_SIZE = SDL_GL_GREEN_SIZE(),
+    SDL_GL_BLUE_SIZE = SDL_GL_BLUE_SIZE(),
+    SDL_GL_DEPTH_SIZE = SDL_GL_DEPTH_SIZE(),
+    SDL_GL_DOUBLEBUFFER = SDL_GL_DOUBLEBUFFER(),
+    SDL_GL_CONTEXT_MAJOR_VERSION = SDL_GL_CONTEXT_MAJOR_VERSION(),
+    SDL_GL_CONTEXT_MINOR_VERSION = SDL_GL_CONTEXT_MINOR_VERSION();
+
+    private static native int SDL_GL_RED_SIZE(); /* return SDL_GL_RED_SIZE; */
+    private static native int SDL_GL_GREEN_SIZE(); /* return SDL_GL_GREEN_SIZE; */
+    private static native int SDL_GL_BLUE_SIZE(); /* return SDL_GL_BLUE_SIZE; */
+    private static native int SDL_GL_DEPTH_SIZE(); /* return SDL_GL_DEPTH_SIZE; */
+    private static native int SDL_GL_DOUBLEBUFFER(); /* return SDL_GL_DOUBLEBUFFER; */
+    private static native int SDL_GL_CONTEXT_MAJOR_VERSION(); /* return SDL_GL_CONTEXT_MAJOR_VERSION; */
+    private static native int SDL_GL_CONTEXT_MINOR_VERSION(); /* return SDL_GL_CONTEXT_MINOR_VERSION; */
+
+    public static native int SDL_GL_SetAttribute(int attribute, int value); /*
+        return SDL_GL_SetAttribute((SDL_GLattr)attribute, value);
+    */
+
+    public static native long SDL_GL_CreateContext(long window); /*
+        return (jlong)SDL_GL_CreateContext((SDL_Window*)window);
+    */
+
+    public static native int SDL_GL_SetSwapInterval(int on); /*
+        return SDL_GL_SetSwapInterval(on);
+    */
+
+    public static native void SDL_GL_SwapWindow(long window); /*
+        SDL_GL_SwapWindow((SDL_Window*)window);
     */
 }

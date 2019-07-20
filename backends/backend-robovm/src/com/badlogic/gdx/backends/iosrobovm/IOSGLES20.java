@@ -72,23 +72,15 @@ public class IOSGLES20 implements GL20{
 
     public native void glCullFace(int mode);
 
-    public native void glDeleteBuffers(int n, IntBuffer buffers);
-
     public native void glDeleteBuffer(int buffer);
-
-    public native void glDeleteFramebuffers(int n, IntBuffer framebuffers);
 
     public native void glDeleteFramebuffer(int framebuffer);
 
     public native void glDeleteProgram(int program);
 
-    public native void glDeleteRenderbuffers(int n, IntBuffer renderbuffers);
-
     public native void glDeleteRenderbuffer(int renderbuffer);
 
     public native void glDeleteShader(int shader);
-
-    public native void glDeleteTextures(int n, IntBuffer textures);
 
     public native void glDeleteTexture(int texture);
 
@@ -124,29 +116,19 @@ public class IOSGLES20 implements GL20{
 
     public native void glFrontFace(int mode);
 
-    public native void glGenBuffers(int n, IntBuffer buffers);
-
     public native int glGenBuffer();
 
     public native void glGenerateMipmap(int target);
 
-    public native void glGenFramebuffers(int n, IntBuffer framebuffers);
-
     public native int glGenFramebuffer();
-
-    public native void glGenRenderbuffers(int n, IntBuffer renderbuffers);
 
     public native int glGenRenderbuffer();
 
-    public native void glGenTextures(int n, IntBuffer textures);
-
     public native int glGenTexture();
 
-    public native String glGetActiveAttrib(int program, int index, IntBuffer size, Buffer type);
+    public native String glGetActiveAttrib(int program, int index, IntBuffer size, IntBuffer type);
 
-    public native String glGetActiveUniform(int program, int index, IntBuffer size, Buffer type);
-
-    public native void glGetAttachedShaders(int program, int maxcount, Buffer count, IntBuffer shaders);
+    public native String glGetActiveUniform(int program, int index, IntBuffer size, IntBuffer type);
 
     public native int glGetAttribLocation(int program, String name);
 
@@ -192,8 +174,6 @@ public class IOSGLES20 implements GL20{
 
     public native void glGetVertexAttribiv(int index, int pname, IntBuffer params);
 
-    public native void glGetVertexAttribPointerv(int index, int pname, Buffer pointer);
-
     public native void glHint(int target, int mode);
 
     public native boolean glIsBuffer(int buffer);
@@ -227,8 +207,6 @@ public class IOSGLES20 implements GL20{
     public native void glSampleCoverage(float value, boolean invert);
 
     public native void glScissor(int x, int y, int width, int height);
-
-    public native void glShaderBinary(int n, IntBuffer shaders, int binaryformat, Buffer binary, int length);
 
     public native void glShaderSource(int shader, String string);
 

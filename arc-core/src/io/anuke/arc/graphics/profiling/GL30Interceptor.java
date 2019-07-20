@@ -124,13 +124,6 @@ public class GL30Interceptor extends GLInterceptor implements GL30{
     }
 
     @Override
-    public void glDeleteTextures(int n, IntBuffer textures){
-        calls++;
-        gl30.glDeleteTextures(n, textures);
-        check();
-    }
-
-    @Override
     public void glDeleteTexture(int texture){
         calls++;
         gl30.glDeleteTexture(texture);
@@ -208,13 +201,6 @@ public class GL30Interceptor extends GLInterceptor implements GL30{
     public void glFrontFace(int mode){
         calls++;
         gl30.glFrontFace(mode);
-        check();
-    }
-
-    @Override
-    public void glGenTextures(int n, IntBuffer textures){
-        calls++;
-        gl30.glGenTextures(n, textures);
         check();
     }
 
@@ -457,23 +443,9 @@ public class GL30Interceptor extends GLInterceptor implements GL30{
     }
 
     @Override
-    public void glDeleteBuffers(int n, IntBuffer buffers){
-        calls++;
-        gl30.glDeleteBuffers(n, buffers);
-        check();
-    }
-
-    @Override
     public void glDeleteFramebuffer(int framebuffer){
         calls++;
         gl30.glDeleteFramebuffer(framebuffer);
-        check();
-    }
-
-    @Override
-    public void glDeleteFramebuffers(int n, IntBuffer framebuffers){
-        calls++;
-        gl30.glDeleteFramebuffers(n, framebuffers);
         check();
     }
 
@@ -488,13 +460,6 @@ public class GL30Interceptor extends GLInterceptor implements GL30{
     public void glDeleteRenderbuffer(int renderbuffer){
         calls++;
         gl30.glDeleteRenderbuffer(renderbuffer);
-        check();
-    }
-
-    @Override
-    public void glDeleteRenderbuffers(int n, IntBuffer renderbuffers){
-        calls++;
-        gl30.glDeleteRenderbuffers(n, renderbuffers);
         check();
     }
 
@@ -558,13 +523,6 @@ public class GL30Interceptor extends GLInterceptor implements GL30{
     }
 
     @Override
-    public void glGenBuffers(int n, IntBuffer buffers){
-        calls++;
-        gl30.glGenBuffers(n, buffers);
-        check();
-    }
-
-    @Override
     public void glGenerateMipmap(int target){
         calls++;
         gl30.glGenerateMipmap(target);
@@ -580,13 +538,6 @@ public class GL30Interceptor extends GLInterceptor implements GL30{
     }
 
     @Override
-    public void glGenFramebuffers(int n, IntBuffer framebuffers){
-        calls++;
-        gl30.glGenFramebuffers(n, framebuffers);
-        check();
-    }
-
-    @Override
     public int glGenRenderbuffer(){
         calls++;
         int result = gl30.glGenRenderbuffer();
@@ -595,14 +546,7 @@ public class GL30Interceptor extends GLInterceptor implements GL30{
     }
 
     @Override
-    public void glGenRenderbuffers(int n, IntBuffer renderbuffers){
-        calls++;
-        gl30.glGenRenderbuffers(n, renderbuffers);
-        check();
-    }
-
-    @Override
-    public String glGetActiveAttrib(int program, int index, IntBuffer size, Buffer type){
+    public String glGetActiveAttrib(int program, int index, IntBuffer size, IntBuffer type){
         calls++;
         String result = gl30.glGetActiveAttrib(program, index, size, type);
         check();
@@ -610,18 +554,11 @@ public class GL30Interceptor extends GLInterceptor implements GL30{
     }
 
     @Override
-    public String glGetActiveUniform(int program, int index, IntBuffer size, Buffer type){
+    public String glGetActiveUniform(int program, int index, IntBuffer size, IntBuffer type){
         calls++;
         String result = gl30.glGetActiveUniform(program, index, size, type);
         check();
         return result;
-    }
-
-    @Override
-    public void glGetAttachedShaders(int program, int maxcount, Buffer count, IntBuffer shaders){
-        calls++;
-        gl30.glGetAttachedShaders(program, maxcount, count, shaders);
-        check();
     }
 
     @Override
@@ -755,13 +692,6 @@ public class GL30Interceptor extends GLInterceptor implements GL30{
     }
 
     @Override
-    public void glGetVertexAttribPointerv(int index, int pname, Buffer pointer){
-        calls++;
-        gl30.glGetVertexAttribPointerv(index, pname, pointer);
-        check();
-    }
-
-    @Override
     public boolean glIsBuffer(int buffer){
         calls++;
         boolean result = gl30.glIsBuffer(buffer);
@@ -842,13 +772,6 @@ public class GL30Interceptor extends GLInterceptor implements GL30{
     public void glSampleCoverage(float value, boolean invert){
         calls++;
         gl30.glSampleCoverage(value, invert);
-        check();
-    }
-
-    @Override
-    public void glShaderBinary(int n, IntBuffer shaders, int binaryformat, Buffer binary, int length){
-        calls++;
-        gl30.glShaderBinary(n, shaders, binaryformat, binary, length);
         check();
     }
 

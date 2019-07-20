@@ -119,13 +119,6 @@ public class GL20Interceptor extends GLInterceptor implements GL20{
     }
 
     @Override
-    public void glDeleteTextures(int n, IntBuffer textures){
-        calls++;
-        gl20.glDeleteTextures(n, textures);
-        check();
-    }
-
-    @Override
     public void glDeleteTexture(int texture){
         calls++;
         gl20.glDeleteTexture(texture);
@@ -203,13 +196,6 @@ public class GL20Interceptor extends GLInterceptor implements GL20{
     public void glFrontFace(int mode){
         calls++;
         gl20.glFrontFace(mode);
-        check();
-    }
-
-    @Override
-    public void glGenTextures(int n, IntBuffer textures){
-        calls++;
-        gl20.glGenTextures(n, textures);
         check();
     }
 
@@ -452,23 +438,9 @@ public class GL20Interceptor extends GLInterceptor implements GL20{
     }
 
     @Override
-    public void glDeleteBuffers(int n, IntBuffer buffers){
-        calls++;
-        gl20.glDeleteBuffers(n, buffers);
-        check();
-    }
-
-    @Override
     public void glDeleteFramebuffer(int framebuffer){
         calls++;
         gl20.glDeleteFramebuffer(framebuffer);
-        check();
-    }
-
-    @Override
-    public void glDeleteFramebuffers(int n, IntBuffer framebuffers){
-        calls++;
-        gl20.glDeleteFramebuffers(n, framebuffers);
         check();
     }
 
@@ -483,13 +455,6 @@ public class GL20Interceptor extends GLInterceptor implements GL20{
     public void glDeleteRenderbuffer(int renderbuffer){
         calls++;
         gl20.glDeleteRenderbuffer(renderbuffer);
-        check();
-    }
-
-    @Override
-    public void glDeleteRenderbuffers(int n, IntBuffer renderbuffers){
-        calls++;
-        gl20.glDeleteRenderbuffers(n, renderbuffers);
         check();
     }
 
@@ -553,13 +518,6 @@ public class GL20Interceptor extends GLInterceptor implements GL20{
     }
 
     @Override
-    public void glGenBuffers(int n, IntBuffer buffers){
-        calls++;
-        gl20.glGenBuffers(n, buffers);
-        check();
-    }
-
-    @Override
     public void glGenerateMipmap(int target){
         calls++;
         gl20.glGenerateMipmap(target);
@@ -575,13 +533,6 @@ public class GL20Interceptor extends GLInterceptor implements GL20{
     }
 
     @Override
-    public void glGenFramebuffers(int n, IntBuffer framebuffers){
-        calls++;
-        gl20.glGenFramebuffers(n, framebuffers);
-        check();
-    }
-
-    @Override
     public int glGenRenderbuffer(){
         calls++;
         int result = gl20.glGenRenderbuffer();
@@ -590,14 +541,7 @@ public class GL20Interceptor extends GLInterceptor implements GL20{
     }
 
     @Override
-    public void glGenRenderbuffers(int n, IntBuffer renderbuffers){
-        calls++;
-        gl20.glGenRenderbuffers(n, renderbuffers);
-        check();
-    }
-
-    @Override
-    public String glGetActiveAttrib(int program, int index, IntBuffer size, Buffer type){
+    public String glGetActiveAttrib(int program, int index, IntBuffer size, IntBuffer type){
         calls++;
         String result = gl20.glGetActiveAttrib(program, index, size, type);
         check();
@@ -605,18 +549,11 @@ public class GL20Interceptor extends GLInterceptor implements GL20{
     }
 
     @Override
-    public String glGetActiveUniform(int program, int index, IntBuffer size, Buffer type){
+    public String glGetActiveUniform(int program, int index, IntBuffer size, IntBuffer type){
         calls++;
         String result = gl20.glGetActiveUniform(program, index, size, type);
         check();
         return result;
-    }
-
-    @Override
-    public void glGetAttachedShaders(int program, int maxcount, Buffer count, IntBuffer shaders){
-        calls++;
-        gl20.glGetAttachedShaders(program, maxcount, count, shaders);
-        check();
     }
 
     @Override
@@ -750,13 +687,6 @@ public class GL20Interceptor extends GLInterceptor implements GL20{
     }
 
     @Override
-    public void glGetVertexAttribPointerv(int index, int pname, Buffer pointer){
-        calls++;
-        gl20.glGetVertexAttribPointerv(index, pname, pointer);
-        check();
-    }
-
-    @Override
     public boolean glIsBuffer(int buffer){
         calls++;
         boolean result = gl20.glIsBuffer(buffer);
@@ -837,13 +767,6 @@ public class GL20Interceptor extends GLInterceptor implements GL20{
     public void glSampleCoverage(float value, boolean invert){
         calls++;
         gl20.glSampleCoverage(value, invert);
-        check();
-    }
-
-    @Override
-    public void glShaderBinary(int n, IntBuffer shaders, int binaryformat, Buffer binary, int length){
-        calls++;
-        gl20.glShaderBinary(n, shaders, binaryformat, binary, length);
         check();
     }
 

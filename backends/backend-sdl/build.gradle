@@ -28,6 +28,7 @@ repositories {
 
 dependencies {
     compile "com.badlogicgames.gdx:gdx-jnigen:1.9.10"
+    compile project(":arc-core")
 }
 
 task deleteJniFolder(type: Delete) {
@@ -37,9 +38,8 @@ task deleteJniFolder(type: Delete) {
 
 clean.dependsOn(deleteJniFolder)
 
-
 task runTest(dependsOn: classes, type: JavaExec) {
-    main = 'jnibuild.JniTest'
+    main = 'jnibuild.Scripts'
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
 }

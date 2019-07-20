@@ -265,27 +265,9 @@ public class GwtGL20 implements GL20{
     }
 
     @Override
-    public void glDeleteBuffers(int n, IntBuffer buffers){
-        for(int i = 0; i < n; i++){
-            int id = buffers.get();
-            WebGLBuffer buffer = this.buffers.remove(id);
-            gl.deleteBuffer(buffer);
-        }
-    }
-
-    @Override
     public void glDeleteFramebuffer(int id){
         WebGLFramebuffer fb = this.frameBuffers.remove(id);
         gl.deleteFramebuffer(fb);
-    }
-
-    @Override
-    public void glDeleteFramebuffers(int n, IntBuffer framebuffers){
-        for(int i = 0; i < n; i++){
-            int id = framebuffers.get();
-            WebGLFramebuffer fb = this.frameBuffers.remove(id);
-            gl.deleteFramebuffer(fb);
-        }
     }
 
     @Override
@@ -303,15 +285,6 @@ public class GwtGL20 implements GL20{
     }
 
     @Override
-    public void glDeleteRenderbuffers(int n, IntBuffer renderbuffers){
-        for(int i = 0; i < n; i++){
-            int id = renderbuffers.get();
-            WebGLRenderbuffer rb = this.renderBuffers.remove(id);
-            gl.deleteRenderbuffer(rb);
-        }
-    }
-
-    @Override
     public void glDeleteShader(int shader){
         WebGLShader sh = shaders.remove(shader);
         gl.deleteShader(sh);
@@ -321,15 +294,6 @@ public class GwtGL20 implements GL20{
     public void glDeleteTexture(int id){
         WebGLTexture texture = this.textures.remove(id);
         gl.deleteTexture(texture);
-    }
-
-    @Override
-    public void glDeleteTextures(int n, IntBuffer textures){
-        for(int i = 0; i < n; i++){
-            int id = textures.get();
-            WebGLTexture texture = this.textures.remove(id);
-            gl.deleteTexture(texture);
-        }
     }
 
     @Override
@@ -419,15 +383,6 @@ public class GwtGL20 implements GL20{
     }
 
     @Override
-    public void glGenBuffers(int n, IntBuffer buffers){
-        for(int i = 0; i < n; i++){
-            WebGLBuffer buffer = gl.createBuffer();
-            int id = this.buffers.add(buffer);
-            buffers.put(id);
-        }
-    }
-
-    @Override
     public void glGenerateMipmap(int target){
         gl.generateMipmap(target);
     }
@@ -439,27 +394,9 @@ public class GwtGL20 implements GL20{
     }
 
     @Override
-    public void glGenFramebuffers(int n, IntBuffer framebuffers){
-        for(int i = 0; i < n; i++){
-            WebGLFramebuffer fb = gl.createFramebuffer();
-            int id = this.frameBuffers.add(fb);
-            framebuffers.put(id);
-        }
-    }
-
-    @Override
     public int glGenRenderbuffer(){
         WebGLRenderbuffer rb = gl.createRenderbuffer();
         return renderBuffers.add(rb);
-    }
-
-    @Override
-    public void glGenRenderbuffers(int n, IntBuffer renderbuffers){
-        for(int i = 0; i < n; i++){
-            WebGLRenderbuffer rb = gl.createRenderbuffer();
-            int id = this.renderBuffers.add(rb);
-            renderbuffers.put(id);
-        }
     }
 
     @Override
@@ -469,16 +406,7 @@ public class GwtGL20 implements GL20{
     }
 
     @Override
-    public void glGenTextures(int n, IntBuffer textures){
-        for(int i = 0; i < n; i++){
-            WebGLTexture texture = gl.createTexture();
-            int id = this.textures.add(texture);
-            textures.put(id);
-        }
-    }
-
-    @Override
-    public String glGetActiveAttrib(int program, int index, IntBuffer size, Buffer type){
+    public String glGetActiveAttrib(int program, int index, IntBuffer size, IntBuffer type){
         WebGLActiveInfo activeAttrib = gl.getActiveAttrib(programs.get(program), index);
         size.put(activeAttrib.getSize());
         ((IntBuffer)type).put(activeAttrib.getType());
@@ -486,17 +414,11 @@ public class GwtGL20 implements GL20{
     }
 
     @Override
-    public String glGetActiveUniform(int program, int index, IntBuffer size, Buffer type){
+    public String glGetActiveUniform(int program, int index, IntBuffer size, IntBuffer type){
         WebGLActiveInfo activeUniform = gl.getActiveUniform(programs.get(program), index);
         size.put(activeUniform.getSize());
         ((IntBuffer)type).put(activeUniform.getType());
         return activeUniform.getName();
-    }
-
-    @Override
-    public void glGetAttachedShaders(int program, int maxcount, Buffer count, IntBuffer shaders){
-        // FIXME
-        throw new ArcRuntimeException("not implemented");
     }
 
     @Override
@@ -665,11 +587,6 @@ public class GwtGL20 implements GL20{
     }
 
     @Override
-    public void glGetVertexAttribPointerv(int index, int pname, Buffer pointer){
-        throw new ArcRuntimeException("glGetVertexAttribPointer not supported by GWT WebGL backend");
-    }
-
-    @Override
     public void glHint(int target, int mode){
         gl.hint(target, mode);
     }
@@ -766,11 +683,6 @@ public class GwtGL20 implements GL20{
     @Override
     public void glScissor(int x, int y, int width, int height){
         gl.scissor(x, y, width, height);
-    }
-
-    @Override
-    public void glShaderBinary(int n, IntBuffer shaders, int binaryformat, Buffer binary, int length){
-        throw new ArcRuntimeException("glShaderBinary not supported by GWT WebGL backend");
     }
 
     @Override

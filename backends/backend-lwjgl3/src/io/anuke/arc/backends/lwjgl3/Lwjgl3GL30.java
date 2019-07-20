@@ -203,18 +203,8 @@ class Lwjgl3GL30 extends Lwjgl3GL20 implements io.anuke.arc.graphics.GL30{
     }
 
     @Override
-    public void glDeleteFramebuffers(int n, IntBuffer framebuffers){
-        GL30.glDeleteFramebuffers(framebuffers);
-    }
-
-    @Override
     public void glDeleteFramebuffer(int framebuffer){
         GL30.glDeleteFramebuffers(framebuffer);
-    }
-
-    @Override
-    public void glDeleteRenderbuffers(int n, IntBuffer renderbuffers){
-        GL30.glDeleteRenderbuffers(renderbuffers);
     }
 
     @Override
@@ -228,18 +218,8 @@ class Lwjgl3GL30 extends Lwjgl3GL20 implements io.anuke.arc.graphics.GL30{
     }
 
     @Override
-    public void glGenFramebuffers(int n, IntBuffer framebuffers){
-        GL30.glGenFramebuffers(framebuffers);
-    }
-
-    @Override
     public int glGenFramebuffer(){
         return GL30.glGenFramebuffers();
-    }
-
-    @Override
-    public void glGenRenderbuffers(int n, IntBuffer renderbuffers){
-        GL30.glGenRenderbuffers(renderbuffers);
     }
 
     @Override

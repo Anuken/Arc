@@ -337,19 +337,15 @@ public interface GL20{
 
     void glColorMask(boolean red, boolean green, boolean blue, boolean alpha);
 
-    void glCompressedTexImage2D(int target, int level, int internalformat, int width, int height, int border,
-                                int imageSize, Buffer data);
+    void glCompressedTexImage2D(int target, int level, int internalformat, int width, int height, int border, int imageSize, Buffer data);
 
-    void glCompressedTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format,
-                                   int imageSize, Buffer data);
+    void glCompressedTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int imageSize, Buffer data);
 
     void glCopyTexImage2D(int target, int level, int internalformat, int x, int y, int width, int height, int border);
 
     void glCopyTexSubImage2D(int target, int level, int xoffset, int yoffset, int x, int y, int width, int height);
 
     void glCullFace(int mode);
-
-    void glDeleteTextures(int n, IntBuffer textures);
 
     void glDeleteTexture(int texture);
 
@@ -372,8 +368,6 @@ public interface GL20{
     void glFlush();
 
     void glFrontFace(int mode);
-
-    void glGenTextures(int n, IntBuffer textures);
 
     int glGenTexture();
 
@@ -401,13 +395,11 @@ public interface GL20{
 
     void glStencilOp(int fail, int zfail, int zpass);
 
-    void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type,
-                      Buffer pixels);
+    void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, Buffer pixels);
 
     void glTexParameterf(int target, int pname, float param);
 
-    void glTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
-                         Buffer pixels);
+    void glTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, Buffer pixels);
 
     void glViewport(int x, int y, int width, int height);
 
@@ -443,17 +435,11 @@ public interface GL20{
 
     void glDeleteBuffer(int buffer);
 
-    void glDeleteBuffers(int n, IntBuffer buffers);
-
     void glDeleteFramebuffer(int framebuffer);
-
-    void glDeleteFramebuffers(int n, IntBuffer framebuffers);
 
     void glDeleteProgram(int program);
 
     void glDeleteRenderbuffer(int renderbuffer);
-
-    void glDeleteRenderbuffers(int n, IntBuffer renderbuffers);
 
     void glDeleteShader(int shader);
 
@@ -471,25 +457,17 @@ public interface GL20{
 
     int glGenBuffer();
 
-    void glGenBuffers(int n, IntBuffer buffers);
-
     void glGenerateMipmap(int target);
 
     int glGenFramebuffer();
 
-    void glGenFramebuffers(int n, IntBuffer framebuffers);
-
     int glGenRenderbuffer();
 
-    void glGenRenderbuffers(int n, IntBuffer renderbuffers);
+    // deviates
+    String glGetActiveAttrib(int program, int index, IntBuffer size, IntBuffer type);
 
     // deviates
-    String glGetActiveAttrib(int program, int index, IntBuffer size, Buffer type);
-
-    // deviates
-    String glGetActiveUniform(int program, int index, IntBuffer size, Buffer type);
-
-    void glGetAttachedShaders(int program, int maxcount, Buffer count, IntBuffer shaders);
+    String glGetActiveUniform(int program, int index, IntBuffer size, IntBuffer type);
 
     int glGetAttribLocation(int program, String name);
 
@@ -529,8 +507,6 @@ public interface GL20{
 
     void glGetVertexAttribiv(int index, int pname, IntBuffer params);
 
-    void glGetVertexAttribPointerv(int index, int pname, Buffer pointer);
-
     boolean glIsBuffer(int buffer);
 
     boolean glIsEnabled(int cap);
@@ -552,8 +528,6 @@ public interface GL20{
     void glRenderbufferStorage(int target, int internalformat, int width, int height);
 
     void glSampleCoverage(float value, boolean invert);
-
-    void glShaderBinary(int n, IntBuffer shaders, int binaryformat, Buffer binary, int length);
 
     // Deviates
     void glShaderSource(int shader, String string);

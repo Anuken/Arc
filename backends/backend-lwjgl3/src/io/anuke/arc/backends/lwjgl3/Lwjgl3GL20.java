@@ -177,17 +177,9 @@ class Lwjgl3GL20 implements io.anuke.arc.graphics.GL20{
         GL11.glCullFace(mode);
     }
 
-    public void glDeleteBuffers(int n, IntBuffer buffers){
-        GL15.glDeleteBuffers(buffers);
-    }
-
     @Override
     public void glDeleteBuffer(int buffer){
         GL15.glDeleteBuffers(buffer);
-    }
-
-    public void glDeleteFramebuffers(int n, IntBuffer framebuffers){
-        EXTFramebufferObject.glDeleteFramebuffersEXT(framebuffers);
     }
 
     @Override
@@ -199,20 +191,12 @@ class Lwjgl3GL20 implements io.anuke.arc.graphics.GL20{
         GL20.glDeleteProgram(program);
     }
 
-    public void glDeleteRenderbuffers(int n, IntBuffer renderbuffers){
-        EXTFramebufferObject.glDeleteRenderbuffersEXT(renderbuffers);
-    }
-
     public void glDeleteRenderbuffer(int renderbuffer){
         EXTFramebufferObject.glDeleteRenderbuffersEXT(renderbuffer);
     }
 
     public void glDeleteShader(int shader){
         GL20.glDeleteShader(shader);
-    }
-
-    public void glDeleteTextures(int n, IntBuffer textures){
-        GL11.glDeleteTextures(textures);
     }
 
     @Override
@@ -288,32 +272,16 @@ class Lwjgl3GL20 implements io.anuke.arc.graphics.GL20{
         GL11.glFrontFace(mode);
     }
 
-    public void glGenBuffers(int n, IntBuffer buffers){
-        GL15.glGenBuffers(buffers);
-    }
-
     public int glGenBuffer(){
         return GL15.glGenBuffers();
-    }
-
-    public void glGenFramebuffers(int n, IntBuffer framebuffers){
-        EXTFramebufferObject.glGenFramebuffersEXT(framebuffers);
     }
 
     public int glGenFramebuffer(){
         return EXTFramebufferObject.glGenFramebuffersEXT();
     }
 
-    public void glGenRenderbuffers(int n, IntBuffer renderbuffers){
-        EXTFramebufferObject.glGenRenderbuffersEXT(renderbuffers);
-    }
-
     public int glGenRenderbuffer(){
         return EXTFramebufferObject.glGenRenderbuffersEXT();
-    }
-
-    public void glGenTextures(int n, IntBuffer textures){
-        GL11.glGenTextures(textures);
     }
 
     public int glGenTexture(){
@@ -324,7 +292,7 @@ class Lwjgl3GL20 implements io.anuke.arc.graphics.GL20{
         EXTFramebufferObject.glGenerateMipmapEXT(target);
     }
 
-    public String glGetActiveAttrib(int program, int index, IntBuffer size, Buffer type){
+    public String glGetActiveAttrib(int program, int index, IntBuffer size, IntBuffer type){
         IntBuffer typeTmp = BufferUtils.createIntBuffer(2);
         String name = GL20.glGetActiveAttrib(program, index, 256, size, typeTmp);
         size.put(typeTmp.get(0));
@@ -332,16 +300,12 @@ class Lwjgl3GL20 implements io.anuke.arc.graphics.GL20{
         return name;
     }
 
-    public String glGetActiveUniform(int program, int index, IntBuffer size, Buffer type){
+    public String glGetActiveUniform(int program, int index, IntBuffer size, IntBuffer type){
         IntBuffer typeTmp = BufferUtils.createIntBuffer(2);
         String name = GL20.glGetActiveUniform(program, index, 256, size, typeTmp);
         size.put(typeTmp.get(0));
         if(type instanceof IntBuffer) ((IntBuffer)type).put(typeTmp.get(1));
         return name;
-    }
-
-    public void glGetAttachedShaders(int program, int maxcount, Buffer count, IntBuffer shaders){
-        GL20.glGetAttachedShaders(program, (IntBuffer)count, shaders);
     }
 
     public int glGetAttribLocation(int program, String name){
@@ -440,10 +404,6 @@ class Lwjgl3GL20 implements io.anuke.arc.graphics.GL20{
         GL20.glGetUniformiv(program, location, params);
     }
 
-    public void glGetVertexAttribPointerv(int index, int pname, Buffer pointer){
-        throw new UnsupportedOperationException("unsupported, won't implement");
-    }
-
     public void glGetVertexAttribfv(int index, int pname, FloatBuffer params){
         GL20.glGetVertexAttribfv(index, pname, params);
     }
@@ -528,10 +488,6 @@ class Lwjgl3GL20 implements io.anuke.arc.graphics.GL20{
 
     public void glScissor(int x, int y, int width, int height){
         GL11.glScissor(x, y, width, height);
-    }
-
-    public void glShaderBinary(int n, IntBuffer shaders, int binaryformat, Buffer binary, int length){
-        throw new UnsupportedOperationException("unsupported, won't implement");
     }
 
     public void glShaderSource(int shader, String string){

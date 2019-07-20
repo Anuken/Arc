@@ -3,6 +3,7 @@ package io.anuke.arc.backends.sdl;
 import io.anuke.arc.*;
 import io.anuke.arc.collection.*;
 import io.anuke.arc.function.*;
+import io.anuke.arc.graphics.*;
 import sdl.*;
 
 public class SdlApplication implements Application{
@@ -13,9 +14,9 @@ public class SdlApplication implements Application{
     private final SdlConfig config;
 
     private boolean running = true;
-    private long window;
+    private long window, context;
 
-    public SdlApplication(SdlConfig config){
+    public SdlApplication(ApplicationListener listener, SdlConfig config){
         this.config = config;
 
         init();
@@ -36,24 +37,41 @@ public class SdlApplication implements Application{
     private void init(){
         check(() -> SDL.SDL_Init(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_EVENTS));
 
-        int flags = SDL.SDL_WINDOW_SHOWN;
-        if(!config.windowDecorated) flags |= SDL.SDL_WINDOW_BORDERLESS;
-        if(config.windowResizable) flags |= SDL.SDL_WINDOW_RESIZABLE;
-        if(config.windowMaximized) flags |= SDL.SDL_WINDOW_MAXIMIZED;
+        //set up openGL 2.1; is this really the lowest version needed?
+        check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_CONTEXT_MAJOR_VERSION, 2));
+        check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_CONTEXT_MINOR_VERSION, 1));
 
-        window = SDL.SDL_CreateWindow(config.title, config.windowWidth, config.windowHeight, flags);
+        check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_RED_SIZE, config.r));
+        check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_GREEN_SIZE, config.g));
+        check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_BLUE_SIZE, config.b));
+        check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_DEPTH_SIZE, config.depth));
+        check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_DOUBLEBUFFER, 1));
+
+        int flags = SDL.SDL_WINDOW_SHOWN | SDL.SDL_WINDOW_OPENGL;
+        if(!config.decorated) flags |= SDL.SDL_WINDOW_BORDERLESS;
+        if(config.resizable) flags |= SDL.SDL_WINDOW_RESIZABLE;
+        if(config.maximized) flags |= SDL.SDL_WINDOW_MAXIMIZED;
+
+        window = SDL.SDL_CreateWindow(config.title, config.width, config.height, flags);
         if(window == 0) throw new SDLError();
+
+        context = SDL.SDL_GL_CreateContext(window);
+        if(context == 0) throw new SDLError();
+
+        SDL.SDL_GL_SetSwapInterval(1);
     }
 
     private void loop(){
 
         while(running){
-            //todo poll events here
             while(SDL.SDL_PollEvent(inputs)){
                 if(inputs[0] == SDL.SDL_EVENT_QUIT){
                     running = false;
                 }
             }
+
+            SDLGL.glClearColor(1f, 0f, 0f, 1f);
+            SDLGL.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
             for(ApplicationListener listener : listeners){
                 listener.update();
@@ -69,12 +87,19 @@ public class SdlApplication implements Application{
                 runnable.run();
             }
 
-            //todo swap buffers/etc
+            try{
+                Thread.sleep(16);
+            }catch(Exception e){
+
+            }
+
+            SDL.SDL_GL_SwapWindow(window);
         }
     }
 
     private void cleanup(){
-
+        SDL.SDL_DestroyWindow(window);
+        SDL.SDL_Quit();
     }
 
     private void check(IntProvider run){

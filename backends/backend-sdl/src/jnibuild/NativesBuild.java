@@ -9,6 +9,7 @@ class NativesBuild{
     static final String win32crossCompilePath = "/usr/local/cross-tools/i686-w64-mingw32/bin/";
     static final String win64crossCompilePath = "/usr/local/cross-tools/x86_64-w64-mingw32/bin/";
     static final String minSDLversion = "2.0.9";
+    static final String libs = " -lGLEW -lGLU -lGL";
     static final String macLibPath = "/usr/local/lib/libSDL2.a";
 
     public static void main(String[] args) throws Exception{
@@ -55,7 +56,7 @@ class NativesBuild{
             lin64.cppFlags = lin64.cFlags;
             lin64.linkerFlags = "-shared -m64";
             //"-L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags -l:libSDL2.a -Wl,--no-undefined -lm -ldl -lsndio -lpthread -lrt";
-            lin64.libraries = execCmd("sdl2-config --static-libs").replace("-lSDL2", "-l:libSDL2.a");
+            lin64.libraries = execCmd("sdl2-config --static-libs").replace("-lSDL2", "-l:libSDL2.a") + libs;
         }
 
         if(buildOSX){
@@ -67,7 +68,7 @@ class NativesBuild{
             mac64.cFlags = cflags + " -c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.6";
             mac64.cppFlags = mac64.cFlags;
             mac64.linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.6";
-            mac64.libraries = macLibPath + " -lm -liconv -Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal";
+            mac64.libraries = macLibPath + " -lm -liconv -Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal"  + libs;
             // we cant use:
             //   execCmd("sdl2-config --static-libs").replace("-lSDL2","-l:libSDL2.a" )
             // because OSX has Clang, not GCC.  See https://jonwillia.ms/2018/02/02/static-linking for the problem
@@ -83,7 +84,7 @@ class NativesBuild{
 
             win64.cFlags = win64.cFlags + " " + execCmd(win64crossCompilePath + "sdl2-config --cflags");
             win64.cppFlags = win64.cFlags;
-            win64.libraries = execCmd(win64crossCompilePath + "sdl2-config --static-libs");
+            win64.libraries = execCmd(win64crossCompilePath + "sdl2-config --static-libs") + libs;
         }
 
         //Generate native code, build scripts

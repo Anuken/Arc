@@ -123,17 +123,9 @@ public class AndroidGL20 implements GL20{
         GLES20.glCullFace(mode);
     }
 
-    public void glDeleteBuffers(int n, IntBuffer buffers){
-        GLES20.glDeleteBuffers(n, buffers);
-    }
-
     public void glDeleteBuffer(int buffer){
         ints[0] = buffer;
         GLES20.glDeleteBuffers(1, ints, 0);
-    }
-
-    public void glDeleteFramebuffers(int n, IntBuffer framebuffers){
-        GLES20.glDeleteFramebuffers(n, framebuffers);
     }
 
     public void glDeleteFramebuffer(int framebuffer){
@@ -145,10 +137,6 @@ public class AndroidGL20 implements GL20{
         GLES20.glDeleteProgram(program);
     }
 
-    public void glDeleteRenderbuffers(int n, IntBuffer renderbuffers){
-        GLES20.glDeleteRenderbuffers(n, renderbuffers);
-    }
-
     public void glDeleteRenderbuffer(int renderbuffer){
         ints[0] = renderbuffer;
         GLES20.glDeleteRenderbuffers(1, ints, 0);
@@ -156,10 +144,6 @@ public class AndroidGL20 implements GL20{
 
     public void glDeleteShader(int shader){
         GLES20.glDeleteShader(shader);
-    }
-
-    public void glDeleteTextures(int n, IntBuffer textures){
-        GLES20.glDeleteTextures(n, textures);
     }
 
     public void glDeleteTexture(int texture){
@@ -231,10 +215,6 @@ public class AndroidGL20 implements GL20{
         GLES20.glFrontFace(mode);
     }
 
-    public void glGenBuffers(int n, IntBuffer buffers){
-        GLES20.glGenBuffers(n, buffers);
-    }
-
     public int glGenBuffer(){
         GLES20.glGenBuffers(1, ints, 0);
         return ints[0];
@@ -244,17 +224,9 @@ public class AndroidGL20 implements GL20{
         GLES20.glGenerateMipmap(target);
     }
 
-    public void glGenFramebuffers(int n, IntBuffer framebuffers){
-        GLES20.glGenFramebuffers(n, framebuffers);
-    }
-
     public int glGenFramebuffer(){
         GLES20.glGenFramebuffers(1, ints, 0);
         return ints[0];
-    }
-
-    public void glGenRenderbuffers(int n, IntBuffer renderbuffers){
-        GLES20.glGenRenderbuffers(n, renderbuffers);
     }
 
     public int glGenRenderbuffer(){
@@ -262,16 +234,12 @@ public class AndroidGL20 implements GL20{
         return ints[0];
     }
 
-    public void glGenTextures(int n, IntBuffer textures){
-        GLES20.glGenTextures(n, textures);
-    }
-
     public int glGenTexture(){
         GLES20.glGenTextures(1, ints, 0);
         return ints[0];
     }
 
-    public String glGetActiveAttrib(int program, int index, IntBuffer size, Buffer type){
+    public String glGetActiveAttrib(int program, int index, IntBuffer size, IntBuffer type){
         //length
         ints[0] = 0;
         //size
@@ -283,7 +251,7 @@ public class AndroidGL20 implements GL20{
         return new String(buffer, 0, ints[0]);
     }
 
-    public String glGetActiveUniform(int program, int index, IntBuffer size, Buffer type){
+    public String glGetActiveUniform(int program, int index, IntBuffer size, IntBuffer type){
         //length
         ints[0] = 0;
         //size
@@ -293,10 +261,6 @@ public class AndroidGL20 implements GL20{
 
         GLES20.glGetActiveUniform(program, index, buffer.length, ints, 0, ints2, 0, ints3, 0, buffer, 0);
         return new String(buffer, 0, ints[0]);
-    }
-
-    public void glGetAttachedShaders(int program, int maxcount, Buffer count, IntBuffer shaders){
-        GLES20.glGetAttachedShaders(program, maxcount, (IntBuffer)count, shaders);
     }
 
     public int glGetAttribLocation(int program, String name){
@@ -383,10 +347,6 @@ public class AndroidGL20 implements GL20{
         GLES20.glGetVertexAttribiv(index, pname, params);
     }
 
-    public void glGetVertexAttribPointerv(int index, int pname, Buffer pointer){
-        //does nothing
-    }
-
     public void glHint(int target, int mode){
         GLES20.glHint(target, mode);
     }
@@ -453,10 +413,6 @@ public class AndroidGL20 implements GL20{
 
     public void glScissor(int x, int y, int width, int height){
         GLES20.glScissor(x, y, width, height);
-    }
-
-    public void glShaderBinary(int n, IntBuffer shaders, int binaryformat, Buffer binary, int length){
-        GLES20.glShaderBinary(n, shaders, binaryformat, binary, length);
     }
 
     public void glShaderSource(int shader, String string){

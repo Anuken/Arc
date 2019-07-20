@@ -18,11 +18,11 @@ public class SdlConfig{
     public int idleFPS = 60;
     public HdpiMode hdpiMode = HdpiMode.Logical;
 
-    public int windowWidth = 640;
-    public int windowHeight = 480;
-    public boolean windowResizable = true;
-    public boolean windowDecorated = true;
-    public boolean windowMaximized = false;
+    public int width = 640;
+    public int height = 480;
+    public boolean resizable = true;
+    public boolean decorated = true;
+    public boolean maximized = false;
 
     public String title = "Arc Application";
     public Color initialBackgroundColor = Color.BLACK;
