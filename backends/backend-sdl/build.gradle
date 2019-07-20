@@ -14,6 +14,12 @@ buildscript{
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+sourceSets{
+    jnibuild{
+        java.srcDirs = ["jnisrc/"]
+    }
+}
+
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.main.resources.srcDirs = [ "res/",
                                       "libs/linux32", "libs/linux64",
@@ -27,8 +33,13 @@ repositories {
 }
 
 dependencies {
-    compile "com.badlogicgames.gdx:gdx-jnigen:1.9.10"
-    compile project(":arc-core")
+    jnibuildCompile "com.badlogicgames.gdx:gdx-jnigen:1.9.10"
+
+    if(findProject(":arc-core") != null){
+        jnibuildCompile project(":arc-core")
+    }else{
+        jnibuildCompile project(":Arc:arc-core")
+    }
 }
 
 task deleteJniFolder(type: Delete) {
@@ -40,41 +51,41 @@ clean.dependsOn(deleteJniFolder)
 
 task runTest(dependsOn: classes, type: JavaExec) {
     main = 'jnibuild.Scripts'
-    classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.jnibuild.runtimeClasspath
     standardInput = System.in
 }
 
 task linuxNatives(dependsOn: classes, type: JavaExec) {
     main = 'jnibuild.NativesBuild'
     args = ['build-linux', 'system-SDL2']
-    classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.jnibuild.runtimeClasspath
     standardInput = System.in
 }
 
 task windowsNatives(dependsOn: classes, type: JavaExec) {
     main = 'jnibuild.NativesBuild'
     args = ['build-windows',  'system-SDL2']
-    classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.jnibuild.runtimeClasspath
     standardInput = System.in
 }
 
 task OSXNatives(dependsOn: classes, type: JavaExec) {
     main = 'jnibuild.NativesBuild'
     args = ['build-OSX', 'system-SDL2']
-    classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.jnibuild.runtimeClasspath
     standardInput = System.in
 }
 
 task allNatives(dependsOn: classes, type: JavaExec) {
     main = 'jnibuild.NativesBuild'
     args = ['build-linux', 'build-windows', 'build-OSX']
-    classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.jnibuild.runtimeClasspath
     standardInput = System.in
 }
 
 task mergejar(dependsOn: classes, type: Jar) {
-    from files(sourceSets.main.output.classesDirs)
-    from files(sourceSets.main.output.resourcesDir)
+    from files(sourceSets.jnibuild.output.classesDirs)
+    from files(sourceSets.jnibuild.output.resourcesDir)
     from {configurations.compile.collect {zipTree(it)}}
 
     manifest {

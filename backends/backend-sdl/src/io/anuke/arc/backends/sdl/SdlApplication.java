@@ -3,7 +3,7 @@ package io.anuke.arc.backends.sdl;
 import io.anuke.arc.*;
 import io.anuke.arc.collection.*;
 import io.anuke.arc.function.*;
-import io.anuke.arc.graphics.*;
+import io.anuke.arc.util.*;
 import sdl.*;
 
 public class SdlApplication implements Application{
@@ -11,21 +11,29 @@ public class SdlApplication implements Application{
     private final Array<Runnable> runnables = new Array<>();
     private final Array<Runnable> executedRunnables = new Array<>();
     private final int[] inputs = new int[8];
-    private final SdlConfig config;
 
-    private boolean running = true;
-    private long window, context;
+    final SdlGraphics graphics;
+    final SdlInput input;
+    final SdlConfig config;
+
+    boolean running = true;
+    long window, context;
 
     public SdlApplication(ApplicationListener listener, SdlConfig config){
         this.config = config;
+        this.listeners.add(listener);
 
         init();
 
         Core.app = this;
         Core.files = new SdlFiles();
         Core.net = new SdlNet();
-        Core.graphics = new SdlGraphics();
+        Core.graphics = this.graphics = new SdlGraphics(this);
+        Core.input = this.input = new SdlInput();
         Core.settings = new Settings();
+        Core.audio = new SdlAudio();
+
+        graphics.updateSize(config.width, config.height);
 
         try{
             loop();
@@ -35,6 +43,8 @@ public class SdlApplication implements Application{
     }
 
     private void init(){
+        ArcNativesLoader.load();
+
         check(() -> SDL.SDL_Init(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_EVENTS));
 
         //set up openGL 2.1; is this really the lowest version needed?
@@ -63,19 +73,31 @@ public class SdlApplication implements Application{
 
     private void loop(){
 
+        graphics.updateSize(config.width, config.height);
+        listen(ApplicationListener::init);
+
         while(running){
             while(SDL.SDL_PollEvent(inputs)){
                 if(inputs[0] == SDL.SDL_EVENT_QUIT){
                     running = false;
+                }else if(inputs[0] == SDL.SDL_EVENT_WINDOW){
+                    int type = inputs[1];
+                    if(type == SDL.SDL_WINDOWEVENT_SIZE_CHANGED){
+                        graphics.updateSize(inputs[2], inputs[3]);
+                        listen(l -> l.resize(inputs[2], inputs[3]));
+                    }
+                }else if(inputs[0] == SDL.SDL_EVENT_MOUSE_MOTION ||
+                    inputs[0] == SDL.SDL_EVENT_MOUSE_BUTTON ||
+                    inputs[0] == SDL.SDL_EVENT_MOUSE_WHEEL ||
+                    inputs[0] == SDL.SDL_EVENT_KEYBOARD){
+                    input.handleInput(inputs);
                 }
             }
 
-            SDLGL.glClearColor(1f, 0f, 0f, 1f);
-            SDLGL.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            graphics.update();
+            input.update();
 
-            for(ApplicationListener listener : listeners){
-                listener.update();
-            }
+            listen(ApplicationListener::update);
 
             synchronized(runnables){
                 executedRunnables.clear();
@@ -87,17 +109,26 @@ public class SdlApplication implements Application{
                 runnable.run();
             }
 
-            try{
-                Thread.sleep(16);
-            }catch(Exception e){
-
-            }
-
             SDL.SDL_GL_SwapWindow(window);
+            input.prepareNext();
+        }
+    }
+
+    private void listen(Consumer<ApplicationListener> cons){
+        synchronized(listeners){
+            for(ApplicationListener l : listeners){
+                cons.accept(l);
+            }
         }
     }
 
     private void cleanup(){
+        listen(l -> {
+            l.pause();
+            l.dispose();
+        });
+        dispose();
+
         SDL.SDL_DestroyWindow(window);
         SDL.SDL_Quit();
     }
@@ -121,11 +152,6 @@ public class SdlApplication implements Application{
     @Override
     public long getJavaHeap(){
         return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-    }
-
-    @Override
-    public long getNativeHeap(){
-        return 0;
     }
 
     @Override

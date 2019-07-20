@@ -6,7 +6,7 @@ import io.anuke.arc.Graphics.Cursor.SystemCursor;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.glutils.GLVersion;
 import io.anuke.arc.graphics.glutils.HdpiMode;
-import io.anuke.arc.util.Disposable;
+import io.anuke.arc.util.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
@@ -85,8 +85,7 @@ public class Lwjgl3Graphics extends Graphics implements Disposable{
         Lwjgl3Graphics.this.logicalWidth = tmpBuffer.get(0);
         Lwjgl3Graphics.this.logicalHeight = tmpBuffer2.get(0);
         Lwjgl3ApplicationConfiguration config = window.getConfig();
-        bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil,
-        config.samples, false);
+        bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples, false);
     }
 
     void update(){

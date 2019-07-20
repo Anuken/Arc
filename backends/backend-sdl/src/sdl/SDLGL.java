@@ -103,6 +103,11 @@ public class SDLGL{
 
     private static native void init(); /*
         nativeClassInit( env );
+
+        GLenum glewError = glewInit();
+        if(glewError != GLEW_OK){
+            printf("Error initializing GLEW! %s\n", glewGetErrorString(glewError));
+        }
     */
 
     public static native void glActiveTexture(int texture); /*

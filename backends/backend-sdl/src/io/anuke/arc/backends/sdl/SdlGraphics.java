@@ -4,8 +4,62 @@ import io.anuke.arc.*;
 import io.anuke.arc.Graphics.Cursor.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.glutils.*;
+import sdl.*;
 
 public class SdlGraphics extends Graphics{
+    private GL20 gl20;
+    private GLVersion glVersion;
+    private BufferFormat bufferFormat;
+    private SdlApplication app;
+
+    private long lastFrameTime = -1;
+    private float deltaTime;
+    private long frameId;
+    private long frameCounterStart = 0;
+    private int frames;
+    private int fps;
+
+    int backBufferWidth;
+    int backBufferHeight;
+    int logicalWidth;
+    int logicalHeight;
+
+    SdlGraphics(SdlApplication app){
+        this.app = app;
+        Core.gl = Core.gl20 = gl20 = new SdlGL20();
+
+        String versionString = gl20.glGetString(GL20.GL_VERSION);
+        String vendorString = gl20.glGetString(GL20.GL_VENDOR);
+        String rendererString = gl20.glGetString(GL20.GL_RENDERER);
+
+        glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
+        bufferFormat = new BufferFormat(app.config.r, app.config.g, app.config.b, app.config.a, app.config.depth, app.config.stencil, app.config.samples, false);
+    }
+
+    void update(){
+        long time = System.nanoTime();
+        if(lastFrameTime == -1)
+            lastFrameTime = time;
+        deltaTime = (time - lastFrameTime) / 1000000000.0f;
+        lastFrameTime = time;
+
+        if(time - frameCounterStart >= 1000000000){
+            fps = frames;
+            frames = 0;
+            frameCounterStart = time;
+        }
+        frames++;
+        frameId++;
+    }
+
+    void updateSize(int width, int height){
+        logicalWidth = width;
+        logicalHeight = height;
+        backBufferWidth = width;
+        backBufferHeight = height;
+
+        gl20.glViewport(0, 0, width, height);
+    }
 
     @Override
     public boolean isGL30Available(){
@@ -14,12 +68,12 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public GL20 getGL20(){
-        return null;
+        return gl20;
     }
 
     @Override
     public void setGL20(GL20 gl20){
-
+        this.gl20 = gl20;
     }
 
     @Override
@@ -34,47 +88,55 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public int getWidth(){
-        return 0;
+        if(app.config.hdpiMode == HdpiMode.Pixels){
+            return backBufferWidth;
+        }else{
+            return logicalWidth;
+        }
     }
 
     @Override
     public int getHeight(){
-        return 0;
+        if(app.config.hdpiMode == HdpiMode.Pixels){
+            return backBufferHeight;
+        }else{
+            return logicalHeight;
+        }
     }
 
     @Override
     public int getBackBufferWidth(){
-        return 0;
+        return backBufferWidth;
     }
 
     @Override
     public int getBackBufferHeight(){
-        return 0;
+        return backBufferHeight;
     }
 
     @Override
     public long getFrameId(){
-        return 0;
+        return frameId;
     }
 
     @Override
     public float getDeltaTime(){
-        return 0;
+        return deltaTime;
     }
 
     @Override
     public float getRawDeltaTime(){
-        return 0;
+        return deltaTime;
     }
 
     @Override
     public int getFramesPerSecond(){
-        return 0;
+        return fps;
     }
 
     @Override
     public GLVersion getGLVersion(){
-        return null;
+        return glVersion;
     }
 
     @Override
@@ -154,7 +216,7 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public void setTitle(String title){
-
+        SDL.SDL_SetWindowTitle(app.window, title);
     }
 
     @Override
@@ -169,12 +231,12 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public void setVSync(boolean vsync){
-
+        SDL.SDL_GL_SetSwapInterval(vsync ? 1 : 0);
     }
 
     @Override
     public BufferFormat getBufferFormat(){
-        return null;
+        return bufferFormat;
     }
 
     @Override

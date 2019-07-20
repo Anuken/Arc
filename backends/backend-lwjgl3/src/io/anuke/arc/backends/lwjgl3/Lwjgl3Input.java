@@ -1,12 +1,9 @@
 package io.anuke.arc.backends.lwjgl3;
 
-import io.anuke.arc.Input;
-import io.anuke.arc.graphics.glutils.HdpiMode;
-import io.anuke.arc.input.InputDevice;
-import io.anuke.arc.input.InputEventQueue;
-import io.anuke.arc.input.KeyCode;
-import io.anuke.arc.collection.Bits;
-import io.anuke.arc.util.Disposable;
+import io.anuke.arc.*;
+import io.anuke.arc.graphics.glutils.*;
+import io.anuke.arc.input.*;
+import io.anuke.arc.util.*;
 import org.lwjgl.glfw.*;
 
 public class Lwjgl3Input extends Input implements Disposable{
@@ -18,7 +15,6 @@ public class Lwjgl3Input extends Input implements Disposable{
     private int deltaX, deltaY;
     private boolean justTouched;
     private boolean keyJustPressed;
-    private Bits justPressedKeys = new Bits(KeyCode.values().length);
     private char lastCharacter;
     private GLFWCharCallback charCallback = new GLFWCharCallback(){
         @Override
@@ -38,7 +34,6 @@ public class Lwjgl3Input extends Input implements Disposable{
                     KeyCode gdxKey = Lwjgl3InputMap.getGdxKeyCode(key);
                     eventQueue.keyDown(gdxKey);
                     keyJustPressed = true;
-                    justPressedKeys.set(gdxKey.ordinal());
                     Lwjgl3Input.this.window.getGraphics().requestRendering();
 
                     lastCharacter = 0;
@@ -110,7 +105,6 @@ public class Lwjgl3Input extends Input implements Disposable{
                 eventQueue.touchDown(mouseX, mouseY, 0, gdxButton);
                 eventQueue.keyDown(gdxButton);
                 keyJustPressed = true;
-                justPressedKeys.set(gdxButton.ordinal());
             }else{
                 mousePressed = Math.max(0, mousePressed - 1);
                 Lwjgl3Input.this.window.getGraphics().requestRendering();
@@ -128,7 +122,6 @@ public class Lwjgl3Input extends Input implements Disposable{
     void resetPollingStates(){
         justTouched = false;
         keyJustPressed = false;
-        justPressedKeys.clear();
         eventQueue.setProcessor(null);
         eventQueue.drain();
     }
@@ -152,7 +145,6 @@ public class Lwjgl3Input extends Input implements Disposable{
 
         if(keyJustPressed){
             keyJustPressed = false;
-            justPressedKeys.clear();
         }
         deltaX = 0;
         deltaY = 0;

@@ -96,6 +96,24 @@ final public class SDL {
     private static native int SDL_WINDOW_MINIMIZED(); /* return SDL_WINDOW_MINIMIZED;*/
     private static native int SDL_WINDOW_MAXIMIZED(); /* return SDL_WINDOW_MAXIMIZED;*/
 
+    public static final int
+    SDL_WINDOWEVENT_SHOWN = SDL_WINDOWEVENT_SHOWN(),
+    SDL_WINDOWEVENT_HIDDEN = SDL_WINDOWEVENT_HIDDEN(),
+    SDL_WINDOWEVENT_RESIZED = SDL_WINDOWEVENT_RESIZED(),
+    SDL_WINDOWEVENT_SIZE_CHANGED = SDL_WINDOWEVENT_SIZE_CHANGED(),
+    SDL_WINDOWEVENT_MINIMIZED = SDL_WINDOWEVENT_MINIMIZED(),
+    SDL_WINDOWEVENT_MAXIMIZED = SDL_WINDOWEVENT_MAXIMIZED(),
+    SDL_WINDOWEVENT_RESTORED = SDL_WINDOWEVENT_RESTORED();
+
+    private static native int SDL_WINDOWEVENT_SHOWN(); /* return SDL_WINDOWEVENT_SHOWN;*/
+    private static native int SDL_WINDOWEVENT_HIDDEN(); /* return SDL_WINDOWEVENT_HIDDEN;*/
+    private static native int SDL_WINDOWEVENT_RESIZED(); /* return SDL_WINDOWEVENT_RESIZED;*/
+    private static native int SDL_WINDOWEVENT_SIZE_CHANGED(); /* return SDL_WINDOWEVENT_SIZE_CHANGED;*/
+    private static native int SDL_WINDOWEVENT_MINIMIZED(); /* return SDL_WINDOWEVENT_MINIMIZED;*/
+    private static native int SDL_WINDOWEVENT_MAXIMIZED(); /* return SDL_WINDOWEVENT_MAXIMIZED;*/
+    private static native int SDL_WINDOWEVENT_RESTORED(); /* return SDL_WINDOWEVENT_RESTORED;*/
+
+
     public static native long SDL_CreateWindow(String title, int w, int h, int flags); /*
         return (jlong)SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, flags);
     */
@@ -103,6 +121,23 @@ final public class SDL {
     public static native void SDL_DestroyWindow(long handle); /*
         SDL_DestroyWindow((SDL_Window*)handle);
     */
+
+    public static native int SDL_SetWindowFullscreen(long handle, int flags); /*
+        return SDL_SetWindowFullscreen((SDL_Window*)handle, flags);
+    */
+
+    public static native void SDL_SetWindowTitle(long handle, String title); /*
+        SDL_SetWindowTitle((SDL_Window*)handle, title);
+    */
+
+    public static final int
+    SDL_BUTTON_LEFT = SDL_BUTTON_LEFT(),
+    SDL_BUTTON_MIDDLE = SDL_BUTTON_MIDDLE(),
+    SDL_BUTTON_RIGHT = SDL_BUTTON_RIGHT();
+
+    private static native int SDL_BUTTON_LEFT(); /* return SDL_BUTTON_LEFT;*/
+    private static native int SDL_BUTTON_MIDDLE(); /* return SDL_BUTTON_MIDDLE;*/
+    private static native int SDL_BUTTON_RIGHT(); /* return SDL_BUTTON_RIGHT;*/
 
     public static final int
     SDL_EVENT_QUIT = 0,
@@ -152,6 +187,7 @@ final public class SDL {
                     data[0] = 5;
                     data[1] = (e.type == SDL_KEYDOWN);
                     data[2] = e.key.keysym.sym;
+                    data[3] = e.key.repeat;
                     break;
                 default:
                     data[0] = 6;
