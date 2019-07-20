@@ -1,0 +1,83 @@
+apply plugin: "java"
+
+buildscript{
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    }
+    dependencies{
+        classpath "com.badlogicgames.gdx:gdx-jnigen:1.9.10"
+    }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.resources.srcDirs = [ "res/",
+                                      "libs/linux32", "libs/linux64",
+                                      "libs/macosx32", "libs/macosx64",
+                                      "libs/windows32", "libs/windows64",]
+
+repositories {
+    mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+}
+
+dependencies {
+    compile "com.badlogicgames.gdx:gdx-jnigen:1.9.10"
+}
+
+task deleteJniFolder(type: Delete) {
+    delete "jni"
+    delete "docs"
+}
+
+clean.dependsOn(deleteJniFolder)
+
+
+task runTest(dependsOn: classes, type: JavaExec) {
+    main = 'jnibuild.JniTest'
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+}
+
+task linuxNatives(dependsOn: classes, type: JavaExec) {
+    main = 'jnibuild.NativesBuild'
+    args = ['build-linux', 'system-SDL2']
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+}
+
+task windowsNatives(dependsOn: classes, type: JavaExec) {
+    main = 'jnibuild.NativesBuild'
+    args = ['build-windows',  'system-SDL2']
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+}
+
+task OSXNatives(dependsOn: classes, type: JavaExec) {
+    main = 'jnibuild.NativesBuild'
+    args = ['build-OSX', 'system-SDL2']
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+}
+
+task allNatives(dependsOn: classes, type: JavaExec) {
+    main = 'jnibuild.NativesBuild'
+    args = ['build-linux', 'build-windows', 'build-OSX']
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+}
+
+task mergejar(dependsOn: classes, type: Jar) {
+    from files(sourceSets.main.output.classesDirs)
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.compile.collect {zipTree(it)}}
+
+    manifest {
+        attributes 'Main-Class': 'jnibuild.JniTest'
+    }
+}

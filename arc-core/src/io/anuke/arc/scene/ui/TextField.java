@@ -76,7 +76,6 @@ public class TextField extends Element implements Disableable{
     protected CharSequence displayText;
     protected float fontOffset, textHeight, textOffset;
     TextFieldStyle style;
-    Clipboard clipboard;
     InputListener inputListener;
     TextFieldListener listener;
     TextFieldValidator validator;
@@ -114,7 +113,6 @@ public class TextField extends Element implements Disableable{
 
     public TextField(String text, TextFieldStyle style){
         setStyle(style);
-        clipboard = Core.app.getClipboard();
         initialize();
         setText(text);
         setSize(getPrefWidth(), getPrefHeight());
@@ -444,7 +442,7 @@ public class TextField extends Element implements Disableable{
     /** Copies the contents of this TextField to the {@link Clipboard} implementation set on this TextField. */
     public void copy(){
         if(hasSelection && !passwordMode){
-            clipboard.setContents(text.substring(Math.min(cursor, selectionStart), Math.max(cursor, selectionStart)));
+            Core.app.setClipboardText(text.substring(Math.min(cursor, selectionStart), Math.max(cursor, selectionStart)));
         }
     }
 
@@ -722,10 +720,6 @@ public class TextField extends Element implements Disableable{
         this.keyboard = keyboard;
     }
 
-    public void setClipboard(Clipboard clipboard){
-        this.clipboard = clipboard;
-    }
-
     public float getPrefWidth(){
         return 150;
     }
@@ -975,7 +969,7 @@ public class TextField extends Element implements Disableable{
 
             if(ctrl){
                 if(keycode == KeyCode.V){
-                    paste(clipboard.getContents(), true);
+                    paste(Core.app.getClipboardText(), true);
                     repeat = true;
                 }
                 if(keycode == KeyCode.C || keycode == KeyCode.INSERT){
@@ -1000,7 +994,7 @@ public class TextField extends Element implements Disableable{
             }
 
             if(Core.input.shift()){
-                if(keycode == KeyCode.INSERT) paste(clipboard.getContents(), true);
+                if(keycode == KeyCode.INSERT) paste(Core.app.getClipboardText(), true);
                 if(keycode == KeyCode.FORWARD_DEL) cut(true);
                 selection:
                 {

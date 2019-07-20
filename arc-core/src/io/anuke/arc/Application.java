@@ -1,9 +1,8 @@
 package io.anuke.arc;
 
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.graphics.g2d.Fill;
-import io.anuke.arc.util.Clipboard;
-import io.anuke.arc.util.Disposable;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.graphics.g2d.*;
+import io.anuke.arc.util.*;
 
 public interface Application extends Disposable{
 
@@ -28,15 +27,21 @@ public interface Application extends Disposable{
     ApplicationType getType();
 
     /** @return the Android API level on Android, the major OS version on iOS (5, 6, 7, ..), or 0 on the desktop. */
-    int getVersion();
+    default int getVersion(){
+        return 0;
+    }
 
-    /** @return the Java heap memory use in bytes */
+    /** @return the Java heap memory use in bytes. */
     long getJavaHeap();
 
-    /** @return the Native heap memory use in bytes */
-    long getNativeHeap();
+    /** @return the Native heap memory use in bytes. Only valid on Android. */
+    default long getNativeHeap(){
+        return 0;
+    }
 
-    Clipboard getClipboard();
+    String getClipboardText();
+
+    void setClipboardText(String text);
 
     /**
      * Posts a runnable on the main loop thread.

@@ -2,8 +2,7 @@ package io.anuke.arc.backends.android.surfaceview;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
+import android.content.*;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,7 +21,6 @@ import io.anuke.arc.backends.android.surfaceview.surfaceview.FillResolutionStrat
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.util.ArcNativesLoader;
 import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.Clipboard;
 import io.anuke.arc.util.Log;
 
 import java.lang.reflect.Method;
@@ -48,7 +46,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
     protected AndroidFiles files;
     protected AndroidNet net;
     protected Settings settings;
-    protected AndroidClipboard clipboard;
+    protected ClipboardManager honeycombClipboard;
     protected boolean firstResume = true;
     protected boolean useImmersiveMode = false;
     protected boolean hideStatusBar = false;
@@ -115,8 +113,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
         if(this.getVersion() < MINIMUM_SDK){
             throw new ArcRuntimeException("Arc requires Android API Level " + MINIMUM_SDK + " or later.");
         }
-        graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
-        : config.resolutionStrategy);
+        graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy);
         input = new AndroidInput(this, this, graphics.view, config);
         audio = new AndroidAudio(this, config);
         this.getFilesDir(); // workaround for Android bug #10515463
@@ -127,7 +124,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
         this.handler = new Handler();
         this.useImmersiveMode = config.useImmersiveMode;
         this.hideStatusBar = config.hideStatusBar;
-        this.clipboard = new AndroidClipboard(this);
+        this.honeycombClipboard = (android.content.ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
 
         // Add a specialized audio lifecycle listener
         addListener(new ApplicationListener(){
@@ -336,8 +333,18 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
     }
 
     @Override
-    public Clipboard getClipboard(){
-        return clipboard;
+    public String getClipboardText(){
+        ClipData clip = honeycombClipboard.getPrimaryClip();
+        if(clip == null) return null;
+        CharSequence text = clip.getItemAt(0).getText();
+        if(text == null) return null;
+        return text.toString();
+    }
+
+    @Override
+    public void setClipboardText(String contents){
+        ClipData data = ClipData.newPlainText(contents, contents);
+        honeycombClipboard.setPrimaryClip(data);
     }
 
     @Override

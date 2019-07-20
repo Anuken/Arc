@@ -147,9 +147,13 @@ public class HeadlessApplication implements Application{
     }
 
     @Override
-    public Clipboard getClipboard(){
-        // no clipboards for headless apps
+    public String getClipboardText(){
         return null;
+    }
+
+    @Override
+    public void setClipboardText(String text){
+
     }
 
     @Override

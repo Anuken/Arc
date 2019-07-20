@@ -20,7 +20,6 @@ public class Lwjgl3Application implements Application{
     private static Callback glDebugCallback;
     private final Lwjgl3ApplicationConfiguration config;
     private final Array<Lwjgl3Window> windows = new Array<>();
-    private final Lwjgl3Clipboard clipboard;
     private final Array<ApplicationListener> listeners = new Array<>();
     private final Array<Runnable> runnables = new Array<>();
     private final Array<Runnable> executedRunnables = new Array<>();
@@ -47,7 +46,6 @@ public class Lwjgl3Application implements Application{
         Core.files = new Lwjgl3Files();
         Core.net = new Lwjgl3Net();
         Core.settings = new Settings();
-        this.clipboard = new Lwjgl3Clipboard();
 
         Lwjgl3Window window = createWindow(config, listener, 0);
         windows.add(window);
@@ -321,23 +319,8 @@ public class Lwjgl3Application implements Application{
     }
 
     @Override
-    public int getVersion(){
-        return 0;
-    }
-
-    @Override
     public long getJavaHeap(){
         return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-    }
-
-    @Override
-    public long getNativeHeap(){
-        return getJavaHeap();
-    }
-
-    @Override
-    public Clipboard getClipboard(){
-        return clipboard;
     }
 
     @Override
@@ -345,6 +328,16 @@ public class Lwjgl3Application implements Application{
         synchronized(runnables){
             runnables.add(runnable);
         }
+    }
+
+    @Override
+    public String getClipboardText(){
+        return GLFW.glfwGetClipboardString(((Lwjgl3Graphics)Core.graphics).getWindow().getWindowHandle());
+    }
+
+    @Override
+    public void setClipboardText(String content){
+        GLFW.glfwSetClipboardString(((Lwjgl3Graphics)Core.graphics).getWindow().getWindowHandle(), content);
     }
 
     @Override

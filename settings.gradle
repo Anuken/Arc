@@ -12,6 +12,7 @@ include ":backends"
 include ":backends:backend-android"
 include ":backends:backend-headless"
 include ":backends:backend-lwjgl3"
+include ":backends:backend-sdl"
 include ":backends:backend-robovm"
 include ":backends:backend-gwt"
 

@@ -56,6 +56,8 @@ arc-*.zip.MD5
 #core & extension libs/ folders that have no 3rd party dependencies in them
 /backends/arc-backend-robovm/libs/
 /extensions/arc-freetype/libs/
+/backends/backend-sdl/jni
+/backends-backend-sdl/libs
 
 #directories created by fetch.xml
 /tmp/

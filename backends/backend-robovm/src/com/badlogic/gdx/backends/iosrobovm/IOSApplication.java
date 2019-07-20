@@ -7,7 +7,6 @@ import io.anuke.arc.ApplicationListener;
 import io.anuke.arc.Core;
 import io.anuke.arc.Settings;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.util.Clipboard;
 import io.anuke.arc.util.Log;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.NSThread;
@@ -272,18 +271,13 @@ public class IOSApplication implements Application{
     }
 
     @Override
-    public Clipboard getClipboard(){
-        return new Clipboard(){
-            @Override
-            public String getContents(){
-                return UIPasteboard.getGeneralPasteboard().getString();
-            }
+    public String getClipboardText(){
+        return UIPasteboard.getGeneralPasteboard().getString();
+    }
 
-            @Override
-            public void setContents(String content){
-                UIPasteboard.getGeneralPasteboard().setString(content);
-            }
-        };
+    @Override
+    public void setClipboardText(String text){
+        UIPasteboard.getGeneralPasteboard().setString(text);
     }
 
     @Override

@@ -8,7 +8,6 @@ import io.anuke.arc.backends.gwt.preloader.Preloader.PreloaderCallback;
 import io.anuke.arc.backends.gwt.preloader.Preloader.PreloaderState;
 import io.anuke.arc.backends.gwt.soundmanager2.SoundManager;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.util.Clipboard;
 import io.anuke.arc.util.Log;
 import io.anuke.arc.util.Log.LogLevel;
 import com.google.gwt.animation.client.AnimationScheduler;
