@@ -225,7 +225,7 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public void setUndecorated(boolean undecorated){
-
+        SDL.SDL_SetWindowBordered(app.window, !undecorated);
     }
 
     @Override

@@ -125,6 +125,10 @@ final public class SDL {
         return SDL_SetWindowFullscreen((SDL_Window*)handle, flags);
     */
 
+    public static native void SDL_SetWindowBordered(long handle, boolean bordered); /*
+        SDL_SetWindowBordered((SDL_Window*)handle, (SDL_bool)bordered);
+    */
+
     public static native void SDL_SetWindowSize(long handle, int w, int h); /*
         SDL_SetWindowSize((SDL_Window*)handle, w, h);
     */

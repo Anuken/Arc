@@ -100,18 +100,18 @@ class NativesBuild{
         //Build library for all platforms and bitnesses
         if(buildWindows){
             System.out.println("##### COMPILING NATIVES FOR WINDOWS #####");
-            BuildExecutorFixed.executeAnt("jni/build-windows32.xml", "-Dhas-compiler=true clean postcompile");
-            BuildExecutorFixed.executeAnt("jni/build-windows64.xml", "-Dhas-compiler=true clean postcompile");
+            BuildExecutorFixed.executeAnt("jni/build-windows32.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
+            BuildExecutorFixed.executeAnt("jni/build-windows64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
             System.out.println();
         }
         if(buildLinux){
             System.out.println("##### COMPILING NATIVES FOR LINUX #####");
-            BuildExecutorFixed.executeAnt("jni/build-linux64.xml", "-Dhas-compiler=true clean postcompile");
+            BuildExecutorFixed.executeAnt("jni/build-linux64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
             System.out.println();
         }
         if(buildOSX){
             System.out.println("##### COMPILING NATIVES FOR OSX #####");
-            BuildExecutorFixed.executeAnt("jni/build-macosx64.xml", "-Dhas-compiler=true clean postcompile");
+            BuildExecutorFixed.executeAnt("jni/build-macosx64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
             System.out.println();
         }
 
