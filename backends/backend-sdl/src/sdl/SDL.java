@@ -113,7 +113,6 @@ final public class SDL {
     private static native int SDL_WINDOWEVENT_MAXIMIZED(); /* return SDL_WINDOWEVENT_MAXIMIZED;*/
     private static native int SDL_WINDOWEVENT_RESTORED(); /* return SDL_WINDOWEVENT_RESTORED;*/
 
-
     public static native long SDL_CreateWindow(String title, int w, int h, int flags); /*
         return (jlong)SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, flags);
     */
@@ -124,6 +123,14 @@ final public class SDL {
 
     public static native int SDL_SetWindowFullscreen(long handle, int flags); /*
         return SDL_SetWindowFullscreen((SDL_Window*)handle, flags);
+    */
+
+    public static native void SDL_SetWindowSize(long handle, int w, int h); /*
+        SDL_SetWindowSize((SDL_Window*)handle, w, h);
+    */
+
+    public static native int SDL_GetWindowFlags(long handle); /*
+        return SDL_GetWindowFlags((SDL_Window*)handle);
     */
 
     public static native void SDL_SetWindowTitle(long handle, String title); /*
@@ -220,6 +227,10 @@ final public class SDL {
 
     public static native int SDL_GL_SetAttribute(int attribute, int value); /*
         return SDL_GL_SetAttribute((SDL_GLattr)attribute, value);
+    */
+
+    public static native boolean SDL_GL_ExtensionSupported(String exte); /*
+        return SDL_GL_ExtensionSupported(exte);
     */
 
     public static native long SDL_GL_CreateContext(long window); /*

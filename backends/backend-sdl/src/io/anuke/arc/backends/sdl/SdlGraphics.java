@@ -166,7 +166,7 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public boolean supportsDisplayModeChange(){
-        return false;
+        return true;
     }
 
     @Override
@@ -206,12 +206,16 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public boolean setFullscreenMode(DisplayMode displayMode){
-        return false;
+        //TODO ignores display mode
+        SDL.SDL_SetWindowFullscreen(app.window, SDL.SDL_WINDOW_FULLSCREEN_DESKTOP);
+        return true;
     }
 
     @Override
     public boolean setWindowedMode(int width, int height){
-        return false;
+        SDL.SDL_SetWindowFullscreen(app.window, 0);
+        SDL.SDL_SetWindowSize(app.window, width, height);
+        return true;
     }
 
     @Override
@@ -226,7 +230,7 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public void setResizable(boolean resizable){
-
+        //this is utterly useless
     }
 
     @Override
@@ -241,7 +245,7 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public boolean supportsExtension(String extension){
-        return false;
+        return SDL.SDL_GL_ExtensionSupported(extension);
     }
 
     @Override
@@ -261,7 +265,7 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public boolean isFullscreen(){
-        return false;
+        return (SDL.SDL_GetWindowFlags(app.window) & SDL.SDL_WINDOW_FULLSCREEN) == SDL.SDL_WINDOW_FULLSCREEN;
     }
 
     @Override

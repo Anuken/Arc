@@ -5,6 +5,7 @@ import java.nio.*;
 public class SDLGL{
 
     /*JNI
+
     #define GLEW_STATIC
 
     #include "GL/glew.h"
