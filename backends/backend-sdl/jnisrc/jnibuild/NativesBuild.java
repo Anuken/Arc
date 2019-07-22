@@ -5,6 +5,10 @@ import com.badlogic.gdx.jnigen.BuildTarget.*;
 
 import java.io.*;
 
+//mac: install sdl2, glew, ant
+//linux: install sdl2, glew, glew utils
+//windows on linux: mingw32, mingw32 64 bit, then compile sdl2 yourself with the right targets
+//also need SDL_mixer, but that doesn't compile on windows for some reason
 class NativesBuild{
     static final String win32crossCompilePath = "/usr/local/cross-tools/i686-w64-mingw32/bin/";
     static final String win64crossCompilePath = "/usr/local/cross-tools/x86_64-w64-mingw32/bin/";
