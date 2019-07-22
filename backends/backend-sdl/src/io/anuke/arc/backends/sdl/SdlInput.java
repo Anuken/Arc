@@ -26,6 +26,16 @@ public class SdlInput extends Input{
                     queue.keyUp(key);
                 }
             }
+
+            //backspace is special
+            if(key == KeyCode.BACKSPACE && down){
+                queue.keyTyped((char)8);
+            }
+
+            //so is enter
+            if(key == KeyCode.ENTER && down){
+                queue.keyTyped((char)13);
+            }
         }else if(type == SDL.SDL_EVENT_MOUSE_BUTTON){
             boolean down = input[1] == 1;
             int keycode = input[4];
@@ -60,6 +70,14 @@ public class SdlInput extends Input{
             int sx = input[1];
             int sy = input[2];
             queue.scrolled(-sx, -sy);
+        }else if(type == SDL.SDL_EVENT_TEXT_INPUT){
+            for(int i = 0; i < 32; i++){
+                char c = (char)input[i + 1];
+                queue.keyTyped(c);
+                if(c == '\0'){
+                    break;
+                }
+            }
         }
     }
 

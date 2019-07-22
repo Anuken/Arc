@@ -11,7 +11,7 @@ public class SdlApplication implements Application{
     private final Array<ApplicationListener> listeners = new Array<>();
     private final Array<Runnable> runnables = new Array<>();
     private final Array<Runnable> executedRunnables = new Array<>();
-    private final int[] inputs = new int[8];
+    private final int[] inputs = new int[34];
 
     final SdlGraphics graphics;
     final SdlInput input;
@@ -91,6 +91,9 @@ public class SdlApplication implements Application{
         if(config.vSyncEnabled){
             SDL.SDL_GL_SetSwapInterval(1);
         }
+
+        //always have text input on
+        SDL.SDL_StartTextInput();
     }
 
     private void loop(){
@@ -115,7 +118,8 @@ public class SdlApplication implements Application{
                 }else if(inputs[0] == SDL.SDL_EVENT_MOUSE_MOTION ||
                     inputs[0] == SDL.SDL_EVENT_MOUSE_BUTTON ||
                     inputs[0] == SDL.SDL_EVENT_MOUSE_WHEEL ||
-                    inputs[0] == SDL.SDL_EVENT_KEYBOARD){
+                    inputs[0] == SDL.SDL_EVENT_KEYBOARD ||
+                    inputs[0] == SDL.SDL_EVENT_TEXT_INPUT){
                     input.handleInput(inputs);
                 }
             }

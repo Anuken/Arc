@@ -46,7 +46,6 @@ final public class SDL {
         return SDL_InitSubSystem(flags);
     */
 
-
     public static native void SDL_QuitSubSystem(int flags); /*
         SDL_QuitSubSystem(flags);
     */
@@ -212,6 +211,14 @@ final public class SDL {
         return SDL_ShowSimpleMessageBox(flags, title, message, NULL);
     */
 
+    public static native void SDL_StartTextInput(); /*
+        SDL_StartTextInput();
+    */
+
+    public static native void SDL_StopTextInput(); /*
+        SDL_StopTextInput();
+    */
+
     public static final int
     SDL_MESSAGEBOX_ERROR = SDL_MESSAGEBOX_ERROR(),
     SDL_MESSAGEBOX_WARNING = SDL_MESSAGEBOX_WARNING(),
@@ -237,7 +244,8 @@ final public class SDL {
     SDL_EVENT_MOUSE_BUTTON = 3,
     SDL_EVENT_MOUSE_WHEEL = 4,
     SDL_EVENT_KEYBOARD = 5,
-    SDL_EVENT_OTHER = 6;
+    SDL_EVENT_TEXT_INPUT = 6,
+    SDL_EVENT_OTHER = 7;
 
     /** Since passing in or returning a class here would be a pain, I have to resort to an int array.
      * @return whether or not the event was processed.
@@ -280,8 +288,17 @@ final public class SDL {
                     data[2] = e.key.keysym.sym;
                     data[3] = e.key.repeat;
                     break;
-                default:
+                case SDL_TEXTINPUT:
                     data[0] = 6;
+                    for(int i = 0; i < 32; i ++){
+                        data[i + 1] = e.text.text[i];
+                        if(e.text.text[i] == '\0'){
+                            break;
+                        }
+                    }
+                    break;
+                default:
+                    data[0] = 7;
                     break;
             }
             return 1;

@@ -9,6 +9,8 @@ public class SdlKeymap{
             case 0: return KeyCode.UNKNOWN;
             case 8: return KeyCode.BACKSPACE;
             case 9: return KeyCode.TAB;
+            case 1073741982:
+            case 13: return KeyCode.ENTER;
             case 27: return KeyCode.ESCAPE;
             case 32: return KeyCode.SPACE;
             case 43: return KeyCode.PLUS;
@@ -57,6 +59,10 @@ public class SdlKeymap{
             case 120: return KeyCode.X;
             case 121: return KeyCode.Y;
             case 122: return KeyCode.Z;
+            case 1073742048: return KeyCode.CONTROL_LEFT;
+            case 1073742052: return KeyCode.CONTROL_RIGHT;
+            case 1073742049: return KeyCode.SHIFT_LEFT;
+            case 1073742053: return KeyCode.SHIFT_RIGHT;
             case 1073741882: return KeyCode.F1;
             case 1073741883: return KeyCode.F2;
             case 1073741884: return KeyCode.F3;
