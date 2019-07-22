@@ -88,7 +88,9 @@ public class SdlApplication implements Application{
         context = SDL.SDL_GL_CreateContext(window);
         if(context == 0) throw new SDLError();
 
-        SDL.SDL_GL_SetSwapInterval(1);
+        if(config.vSyncEnabled){
+            SDL.SDL_GL_SetSwapInterval(1);
+        }
     }
 
     private void loop(){

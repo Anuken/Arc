@@ -37,6 +37,9 @@ public class SdlGraphics extends Graphics{
         cursors = new ObjectMap<>();
         glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
         bufferFormat = new BufferFormat(app.config.r, app.config.g, app.config.b, app.config.a, app.config.depth, app.config.stencil, app.config.samples, false);
+
+        clear(app.config.initialBackgroundColor);
+        SDL.SDL_GL_SwapWindow(app.window);
     }
 
     void update(){

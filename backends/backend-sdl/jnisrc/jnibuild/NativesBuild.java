@@ -10,6 +10,7 @@ class NativesBuild{
     static final String win64crossCompilePath = "/usr/local/cross-tools/x86_64-w64-mingw32/bin/";
     static final String minSDLversion = "2.0.9";
     static final String libsLinux = " -lGLEW -lGLU -lGL"; //-lSDL_mixer
+    static final String libsMac = " -lGLEW"; //-lSDL_mixer
     static final String libsWin = " -lglew32s -lglu32 -lopengl32"; //-lSDL_mixer
     static final String macLibPath = "/usr/local/lib/libSDL2.a";
 
@@ -69,7 +70,7 @@ class NativesBuild{
             mac64.cFlags = cflags + " -c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.6";
             mac64.cppFlags = mac64.cFlags;
             mac64.linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.6";
-            mac64.libraries = macLibPath + " -lm -liconv -Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal"  + libsLinux;
+            mac64.libraries = macLibPath + " -lm -liconv -Wl,-framework,CoreAudio -Wl,-framework,OpenGL,-framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal"  + libsMac;
             // we cant use:
             //   execCmd("sdl2-config --static-libs").replace("-lSDL2","-l:libSDL2.a" )
             // because OSX has Clang, not GCC.  See https://jonwillia.ms/2018/02/02/static-linking for the problem
