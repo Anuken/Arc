@@ -76,7 +76,8 @@ public class SdlApplication implements Application{
         check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_DEPTH_SIZE, config.depth));
         check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_DOUBLEBUFFER, 1));
 
-        int flags = SDL.SDL_WINDOW_SHOWN | SDL.SDL_WINDOW_OPENGL;
+        int flags = SDL.SDL_WINDOW_OPENGL;
+        if(config.initialVisible) flags |= SDL.SDL_WINDOW_SHOWN;
         if(!config.decorated) flags |= SDL.SDL_WINDOW_BORDERLESS;
         if(config.resizable) flags |= SDL.SDL_WINDOW_RESIZABLE;
         if(config.maximized) flags |= SDL.SDL_WINDOW_MAXIMIZED;
