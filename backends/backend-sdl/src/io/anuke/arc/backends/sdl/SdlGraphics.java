@@ -232,13 +232,13 @@ public class SdlGraphics extends Graphics{
     @Override
     public void setUndecorated(boolean undecorated){
         boolean maximized = (SDL.SDL_GetWindowFlags(app.window) & SDL.SDL_WINDOW_MAXIMIZED) == SDL.SDL_WINDOW_MAXIMIZED;
-        if(maximized && undecorated){
+        if(maximized){
             SDL.SDL_RestoreWindow(app.window);
         }
 
         SDL.SDL_SetWindowBordered(app.window, !undecorated);
 
-        if(maximized && undecorated){
+        if(maximized){
             SDL.SDL_MaximizeWindow(app.window);
         }
     }
