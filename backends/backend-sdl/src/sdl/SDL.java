@@ -190,6 +190,19 @@ final public class SDL {
         SDL_FreeSurface((SDL_Surface*)handle);
      */
 
+    public static native int SDL_ShowSimpleMessageBox(int flags, String title, String message); /*
+        return SDL_ShowSimpleMessageBox(flags, title, message, NULL);
+    */
+
+    public static final int
+    SDL_MESSAGEBOX_ERROR = SDL_MESSAGEBOX_ERROR(),
+    SDL_MESSAGEBOX_WARNING = SDL_MESSAGEBOX_WARNING(),
+    SDL_MESSAGEBOX_INFORMATION = SDL_MESSAGEBOX_INFORMATION();
+
+    private static native int SDL_MESSAGEBOX_ERROR(); /* return SDL_MESSAGEBOX_ERROR;*/
+    private static native int SDL_MESSAGEBOX_WARNING(); /* return SDL_MESSAGEBOX_WARNING;*/
+    private static native int SDL_MESSAGEBOX_INFORMATION(); /* return SDL_MESSAGEBOX_INFORMATION;*/
+
     public static final int
     SDL_BUTTON_LEFT = SDL_BUTTON_LEFT(),
     SDL_BUTTON_MIDDLE = SDL_BUTTON_MIDDLE(),
