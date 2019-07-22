@@ -45,7 +45,7 @@ public class SdlApplication implements Application{
     private void init(){
         ArcNativesLoader.load();
 
-        check(() -> SDL.SDL_Init(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_EVENTS));
+        check(() -> SDL.SDL_Init(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_EVENTS | SDL.SDL_INIT_AUDIO));
 
         //set up openGL 2.1; is this really the lowest version needed?
         check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_CONTEXT_MAJOR_VERSION, 2));
@@ -85,6 +85,10 @@ public class SdlApplication implements Application{
                     if(type == SDL.SDL_WINDOWEVENT_SIZE_CHANGED){
                         graphics.updateSize(inputs[2], inputs[3]);
                         listen(l -> l.resize(inputs[2], inputs[3]));
+                    }else if(type == SDL.SDL_WINDOWEVENT_SHOWN){
+                        listen(ApplicationListener::resume);
+                    }else if(type == SDL.SDL_WINDOWEVENT_HIDDEN){
+                        listen(ApplicationListener::pause);
                     }
                 }else if(inputs[0] == SDL.SDL_EVENT_MOUSE_MOTION ||
                     inputs[0] == SDL.SDL_EVENT_MOUSE_BUTTON ||
@@ -128,6 +132,7 @@ public class SdlApplication implements Application{
             l.dispose();
         });
         dispose();
+        Core.audio.dispose();
 
         SDL.SDL_DestroyWindow(window);
         SDL.SDL_Quit();

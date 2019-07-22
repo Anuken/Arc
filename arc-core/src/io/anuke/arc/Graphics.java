@@ -442,7 +442,7 @@ public abstract class Graphics implements Disposable{
             verticalResize;
 
             /**The override cursor to use when setting this cursor.*/
-            private Cursor cursor;
+            protected Cursor cursor;
 
             /**Sets the alias for this cursor.*/
             public void set(Cursor cursor){

@@ -59,7 +59,7 @@ public interface Audio{
      * @return the new Sound
      * @throws ArcRuntimeException in case the sound could not be loaded
      */
-    Sound newSound(FileHandle fileHandle);
+    Sound newSound(FileHandle file);
 
     /**
      * Creates a new {@link Music} instance which is used to play back a music stream from a file. Currently supported formats are
@@ -71,4 +71,8 @@ public interface Audio{
      * @throws ArcRuntimeException in case the music could not be loaded
      */
     Music newMusic(FileHandle file);
+
+    default void dispose(){
+
+    }
 }

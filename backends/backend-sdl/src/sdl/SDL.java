@@ -113,6 +113,30 @@ final public class SDL {
     private static native int SDL_WINDOWEVENT_MAXIMIZED(); /* return SDL_WINDOWEVENT_MAXIMIZED;*/
     private static native int SDL_WINDOWEVENT_RESTORED(); /* return SDL_WINDOWEVENT_RESTORED;*/
 
+    public static final int
+    SDL_SYSTEM_CURSOR_ARROW = SDL_SYSTEM_CURSOR_ARROW(),
+    SDL_SYSTEM_CURSOR_IBEAM = SDL_SYSTEM_CURSOR_IBEAM(),
+    SDL_SYSTEM_CURSOR_WAIT = SDL_SYSTEM_CURSOR_WAIT(),
+    SDL_SYSTEM_CURSOR_CROSSHAIR = SDL_SYSTEM_CURSOR_CROSSHAIR(),
+    SDL_SYSTEM_CURSOR_WAITARROW = SDL_SYSTEM_CURSOR_WAITARROW(),
+    SDL_SYSTEM_CURSOR_SIZEALL = SDL_SYSTEM_CURSOR_SIZEALL(),
+    SDL_SYSTEM_CURSOR_NO = SDL_SYSTEM_CURSOR_NO(),
+    SDL_SYSTEM_CURSOR_SIZENS = SDL_SYSTEM_CURSOR_SIZENS(),
+    SDL_SYSTEM_CURSOR_SIZEWE = SDL_SYSTEM_CURSOR_SIZEWE(),
+    SDL_SYSTEM_CURSOR_HAND = SDL_SYSTEM_CURSOR_HAND();
+
+    private static native int SDL_SYSTEM_CURSOR_ARROW(); /* return SDL_SYSTEM_CURSOR_ARROW;*/
+    private static native int SDL_SYSTEM_CURSOR_IBEAM(); /* return SDL_SYSTEM_CURSOR_IBEAM;*/
+    private static native int SDL_SYSTEM_CURSOR_WAIT(); /* return SDL_SYSTEM_CURSOR_WAIT;*/
+    private static native int SDL_SYSTEM_CURSOR_CROSSHAIR(); /* return SDL_SYSTEM_CURSOR_CROSSHAIR;*/
+    private static native int SDL_SYSTEM_CURSOR_WAITARROW(); /* return SDL_SYSTEM_CURSOR_WAITARROW;*/
+    private static native int SDL_SYSTEM_CURSOR_SIZEALL(); /* return SDL_SYSTEM_CURSOR_SIZEALL;*/
+    private static native int SDL_SYSTEM_CURSOR_NO(); /* return SDL_SYSTEM_CURSOR_NO;*/
+    private static native int SDL_SYSTEM_CURSOR_SIZENS(); /* return SDL_SYSTEM_CURSOR_SIZENS;*/
+    private static native int SDL_SYSTEM_CURSOR_SIZEWE(); /* return SDL_SYSTEM_CURSOR_SIZEWE;*/
+    private static native int SDL_SYSTEM_CURSOR_HAND(); /* return SDL_SYSTEM_CURSOR_HAND;*/
+
+
     public static native long SDL_CreateWindow(String title, int w, int h, int flags); /*
         return (jlong)SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, flags);
     */
@@ -140,6 +164,31 @@ final public class SDL {
     public static native void SDL_SetWindowTitle(long handle, String title); /*
         SDL_SetWindowTitle((SDL_Window*)handle, title);
     */
+
+    //expects RGBA format of bytes.
+    public static native long SDL_CreateRGBSurfaceFrom(byte[] bytes, int width, int height); /*
+        return (jlong)SDL_CreateRGBSurfaceFrom(bytes, width, height, 32, 4 * width, 0xff000000, 0x00ff0000, 0x000ff00, 0x000000ff);
+    */
+
+    public static native long SDL_CreateColorCursor(long surface, int hotx, int hoty); /*
+        return (jlong)SDL_CreateColorCursor((SDL_Surface*)surface, hotx, hoty);
+    */
+
+    public static native long SDL_CreateSystemCursor(int type); /*
+        return (jlong)SDL_CreateSystemCursor((SDL_SystemCursor)type);
+    */
+
+    public static native void SDL_SetCursor(long handle); /*
+        SDL_SetCursor((SDL_Cursor*)handle);
+    */
+
+    public static native void SDL_FreeCursor(long handle); /*
+        SDL_FreeCursor((SDL_Cursor*)handle);
+    */
+
+    public static native void SDL_FreeSurface(long handle); /*
+        SDL_FreeSurface((SDL_Surface*)handle);
+     */
 
     public static final int
     SDL_BUTTON_LEFT = SDL_BUTTON_LEFT(),

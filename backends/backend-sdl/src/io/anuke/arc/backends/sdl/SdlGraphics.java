@@ -2,6 +2,7 @@ package io.anuke.arc.backends.sdl;
 
 import io.anuke.arc.*;
 import io.anuke.arc.Graphics.Cursor.*;
+import io.anuke.arc.collection.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.glutils.*;
 import sdl.*;
@@ -11,6 +12,7 @@ public class SdlGraphics extends Graphics{
     private GLVersion glVersion;
     private BufferFormat bufferFormat;
     private SdlApplication app;
+    private ObjectMap<SystemCursor, SdlCursor> cursors;
 
     private long lastFrameTime = -1;
     private float deltaTime;
@@ -32,6 +34,7 @@ public class SdlGraphics extends Graphics{
         String vendorString = gl20.glGetString(GL20.GL_VENDOR);
         String rendererString = gl20.glGetString(GL20.GL_RENDERER);
 
+        cursors = new ObjectMap<>();
         glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
         bufferFormat = new BufferFormat(app.config.r, app.config.g, app.config.b, app.config.a, app.config.depth, app.config.stencil, app.config.samples, false);
     }
@@ -270,16 +273,56 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public Cursor newCursor(Pixmap pixmap, int xHotspot, int yHotspot){
-        return null;
+        long surface = SDL.SDL_CreateRGBSurfaceFrom(pixmap.getPixels().array(), pixmap.getWidth(), pixmap.getHeight());
+        long cursor = SDL.SDL_CreateColorCursor(surface, xHotspot, yHotspot);
+        return new SdlCursor(surface, cursor);
     }
 
     @Override
     protected void setCursor(Cursor cursor){
-
+        SDL.SDL_SetCursor(((SdlCursor)cursor).cursorHandle);
     }
 
     @Override
-    protected void setSystemCursor(SystemCursor systemCursor){
+    protected void setSystemCursor(SystemCursor cursor){
+        if(!cursors.containsKey(cursor)){
+            long handle = SDL.SDL_CreateSystemCursor(mapCursor(cursor));
+            cursors.put(cursor, new SdlCursor(0, handle));
+        }
+        SDL.SDL_SetCursor(cursors.get(cursor).cursorHandle);
+    }
 
+    @Override
+    public void dispose(){
+        super.dispose();
+
+        cursors.each((ignored, value) -> value.dispose());
+    }
+
+    private int mapCursor(SystemCursor cursor){
+        switch(cursor){
+            case arrow: return SDL.SDL_SYSTEM_CURSOR_ARROW;
+            case ibeam: return SDL.SDL_SYSTEM_CURSOR_IBEAM;
+            case crosshair: return SDL.SDL_SYSTEM_CURSOR_CROSSHAIR;
+            case hand: return SDL.SDL_SYSTEM_CURSOR_HAND;
+            case horizontalResize: return SDL.SDL_SYSTEM_CURSOR_SIZEWE;
+            case verticalResize: return SDL.SDL_SYSTEM_CURSOR_SIZENS;
+        }
+        throw new IllegalArgumentException("this is impossible.");
+    }
+
+    public static class SdlCursor implements Cursor{
+        final long surfaceHandle, cursorHandle;
+
+        public SdlCursor(long surfaceHandle, long cursorHandle){
+            this.surfaceHandle = surfaceHandle;
+            this.cursorHandle = cursorHandle;
+        }
+
+        @Override
+        public void dispose(){
+            if(cursorHandle != 0) SDL.SDL_FreeCursor(cursorHandle);
+            if(surfaceHandle != 0) SDL.SDL_FreeSurface(surfaceHandle);
+        }
     }
 }

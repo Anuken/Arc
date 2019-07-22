@@ -29,14 +29,18 @@ public interface Sound extends Disposable{
      * Plays the sound. If the sound is already playing, it will be played again, concurrently.
      * @return the id of the sound instance if successful, or -1 on failure.
      */
-    long play();
+    default long play(){
+        return play(1f);
+    }
 
     /**
      * Plays the sound. If the sound is already playing, it will be played again, concurrently.
      * @param volume the volume in the range [0,1]
      * @return the id of the sound instance if successful, or -1 on failure.
      */
-    long play(float volume);
+    default long play(float volume){
+        return play(volume, 1f, 0f);
+    }
 
     /**
      * Plays the sound. If the sound is already playing, it will be played again, concurrently.
@@ -51,7 +55,9 @@ public interface Sound extends Disposable{
      * Plays the sound, looping. If the sound is already playing, it will be played again, concurrently.
      * @return the id of the sound instance if successful, or -1 on failure.
      */
-    long loop();
+    default long loop(){
+        return loop(1f);
+    }
 
     /**
      * Plays the sound, looping. If the sound is already playing, it will be played again, concurrently. You need to stop the sound
@@ -59,7 +65,9 @@ public interface Sound extends Disposable{
      * @param volume the volume in the range [0, 1]
      * @return the id of the sound instance if successful, or -1 on failure.
      */
-    long loop(float volume);
+    default long loop(float volume){
+        return loop(1f, 1f, 0f);
+    }
 
     /**
      * Plays the sound, looping. If the sound is already playing, it will be played again, concurrently. You need to stop the sound
