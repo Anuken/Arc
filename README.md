@@ -10,8 +10,8 @@
 - [X] see if removing all JNI is possible (it's probably not)
 - [X] rename packages
 - [X] delete original repository and create a new reorganized one
-- [ ] implement controller framework
-- [ ] implement controllers for each backend
-- [ ] look into jamepad but without 10mb of natives
+- [ ] implement controller framework for each backend
+- [X] look into jamepad but without 10mb of natives (yay SDL)
 - [X] add postprocessing as extension
 - [X] add gif recorder as extension
+- [ ] implement SDL_Mixer
