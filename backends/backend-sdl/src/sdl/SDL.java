@@ -2,6 +2,8 @@ package sdl;
 
 import io.anuke.arc.util.*;
 
+import java.nio.*;
+
 final public class SDL {
     /*JNI
 
@@ -145,6 +147,22 @@ final public class SDL {
         SDL_DestroyWindow((SDL_Window*)handle);
     */
 
+    public static native void SDL_SetWindowIcon(long handle, long surface); /*
+        SDL_SetWindowIcon((SDL_Window*)handle, (SDL_Surface*)surface);
+    */
+
+    public static native void SDL_RestoreWindow(long handle); /*
+        SDL_RestoreWindow((SDL_Window*)handle);
+    */
+
+    public static native void SDL_MaximizeWindow(long handle); /*
+        SDL_MaximizeWindow((SDL_Window*)handle);
+    */
+
+    public static native void SDL_MinimizeWindow(long handle); /*
+        SDL_MinimizeWindow((SDL_Window*)handle);
+    */
+
     public static native int SDL_SetWindowFullscreen(long handle, int flags); /*
         return SDL_SetWindowFullscreen((SDL_Window*)handle, flags);
     */
@@ -166,8 +184,8 @@ final public class SDL {
     */
 
     //expects RGBA format of bytes.
-    public static native long SDL_CreateRGBSurfaceFrom(byte[] bytes, int width, int height); /*
-        return (jlong)SDL_CreateRGBSurfaceFrom(bytes, width, height, 32, 4 * width, 0xff000000, 0x00ff0000, 0x000ff00, 0x000000ff);
+    public static native long SDL_CreateRGBSurfaceFrom(ByteBuffer bytes, int width, int height); /*
+        return (jlong)SDL_CreateRGBSurfaceFrom(bytes, width, height, 32, 4 * width, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
     */
 
     public static native long SDL_CreateColorCursor(long surface, int hotx, int hoty); /*

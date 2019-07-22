@@ -228,7 +228,16 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public void setUndecorated(boolean undecorated){
+        boolean maximized = (SDL.SDL_GetWindowFlags(app.window) & SDL.SDL_WINDOW_MAXIMIZED) == SDL.SDL_WINDOW_MAXIMIZED;
+        if(maximized && undecorated){
+            SDL.SDL_RestoreWindow(app.window);
+        }
+
         SDL.SDL_SetWindowBordered(app.window, !undecorated);
+
+        if(maximized && undecorated){
+            SDL.SDL_MaximizeWindow(app.window);
+        }
     }
 
     @Override
@@ -273,7 +282,7 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public Cursor newCursor(Pixmap pixmap, int xHotspot, int yHotspot){
-        long surface = SDL.SDL_CreateRGBSurfaceFrom(pixmap.getPixels().array(), pixmap.getWidth(), pixmap.getHeight());
+        long surface = SDL.SDL_CreateRGBSurfaceFrom(pixmap.getPixels(), pixmap.getWidth(), pixmap.getHeight());
         long cursor = SDL.SDL_CreateColorCursor(surface, xHotspot, yHotspot);
         return new SdlCursor(surface, cursor);
     }

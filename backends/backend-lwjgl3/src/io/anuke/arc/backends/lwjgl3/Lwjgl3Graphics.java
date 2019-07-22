@@ -356,10 +356,12 @@ public class Lwjgl3Graphics extends Graphics implements Disposable{
     public void setUndecorated(boolean undecorated){
         Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
         config.setDecorated(!undecorated);
+
         boolean maximized = window.isMaximized();
         if(maximized && undecorated){
             window.restoreWindow();
         }
+
         GLFW.glfwSetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_DECORATED, undecorated ? GLFW.GLFW_FALSE : GLFW.GLFW_TRUE);
         if(maximized && undecorated){
             window.maximizeWindow();

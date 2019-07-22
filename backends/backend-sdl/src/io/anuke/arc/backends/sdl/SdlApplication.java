@@ -3,6 +3,7 @@ package io.anuke.arc.backends.sdl;
 import io.anuke.arc.*;
 import io.anuke.arc.collection.*;
 import io.anuke.arc.function.*;
+import io.anuke.arc.graphics.*;
 import io.anuke.arc.util.*;
 import sdl.*;
 
@@ -33,6 +34,8 @@ public class SdlApplication implements Application{
         Core.settings = new Settings();
         Core.audio = new SdlAudio();
 
+        initIcon();
+
         graphics.updateSize(config.width, config.height);
 
         try{
@@ -40,6 +43,22 @@ public class SdlApplication implements Application{
         }finally{
             cleanup();
         }
+    }
+
+    private void initIcon(){
+        if(config.windowIconPaths != null && config.windowIconPaths.length > 0){
+            String path = config.windowIconPaths[0];
+            try{
+                Pixmap p = new Pixmap(Core.files.getFileHandle(path, config.windowIconFileType));
+                long surface = SDL.SDL_CreateRGBSurfaceFrom(p.getPixels(), p.getWidth(), p.getHeight());
+                SDL.SDL_SetWindowIcon(window, surface);
+                SDL.SDL_FreeSurface(surface);
+                p.dispose();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+
     }
 
     private void init(){
