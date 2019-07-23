@@ -26,22 +26,4 @@ subprojects{
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
-
-    compileJava{
-        options.fork = true
-        options.incremental = true
-    }
-
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        from sourceSets.main.allSource
-    }
-
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        from javadoc.destinationDir
-    }
-
-    artifacts {
-        archives sourcesJar
-        archives javadocJar
-    }
 }

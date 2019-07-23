@@ -4,15 +4,13 @@ subprojects{
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
-    sourceSets.main.java.srcDirs = ["src", "../../arc-core/src"]
+    sourceSets.main.java.srcDirs = ["src"]
 
-    //no longer works for absolutely no reason, thanks gradle!
-    /*
     dependencies{
         if(findProject(":arc-core") != null){
             compileOnly project(":arc-core")
         }else{
             compileOnly project(":Arc:arc-core")
         }
-    }*/
+    }
 }
