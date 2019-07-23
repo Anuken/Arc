@@ -4,7 +4,7 @@ ext{
     testnatives = [:]
 }
 
-versions.robovm = "2.3.6"
+versions.robovm = "2.3.7"
 versions.moe = "1.4.0"
 versions.gwt = "2.8.1"
 versions.gwtPlugin = "1.0.6"
@@ -16,7 +16,6 @@ versions.androidPlugin = "3.4.0"
 versions.androidSdk = 28
 versions.androidBuildTools = "28.0.3"
 versions.androidSupport = "25.+"
-versions.javaparser = "2.3.0"
 
 libraries.lwjgl3 = [
         "org.lwjgl:lwjgl:${versions.lwjgl3}",
@@ -66,8 +65,4 @@ libraries.gwt = [
 
 libraries.junit = [
         "junit:junit:${versions.junit}"
-]
-
-libraries.jnigen = [
-        "com.github.javaparser:javaparser-core:${versions.javaparser}"
 ]
