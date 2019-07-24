@@ -24,6 +24,11 @@ allprojects{
 subprojects{
     apply plugin: "java"
 
+    compileJava{
+        options.fork = true
+        options.incremental = true
+    }
+
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 }

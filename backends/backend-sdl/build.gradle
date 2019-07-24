@@ -1,16 +1,4 @@
 apply plugin: "java"
-apply from: "jnibuilds.gradle"
-
-buildscript{
-    repositories {
-        jcenter()
-        mavenCentral()
-        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-    }
-    dependencies{
-        classpath "com.badlogicgames.gdx:gdx-jnigen:1.9.10"
-    }
-}
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -19,11 +7,20 @@ sourceSets.main.resources.srcDirs = [ "res/",
                                       "libs/linux32", "libs/linux64",
                                       "libs/macosx32", "libs/macosx64",
                                       "libs/windows32", "libs/windows64",]
+sourceSets{
+    jnibuild{
+        java.srcDirs = ["jnisrc/"]
+    }
+}
 
-repositories {
-    mavenCentral()
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-    maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+dependencies {
+    jnibuildCompile "com.badlogicgames.gdx:gdx-jnigen:1.9.10"
+
+    if(findProject(":arc-core") != null){
+        jnibuildCompile project(":arc-core")
+    }else{
+        jnibuildCompile project(":Arc:arc-core")
+    }
 }
 
 task deleteJniFolder(type: Delete) {
@@ -33,26 +30,30 @@ task deleteJniFolder(type: Delete) {
 
 clean.dependsOn(deleteJniFolder)
 
-task linuxNatives(dependsOn: classes){
-    doLast{
-        buildNatives('build-linux', 'system-SDL2');
-    }
+task windowsNatives(dependsOn: classes, type: JavaExec) {
+    main = 'jnibuild.NativesBuild'
+    args = ['build-windows']
+    classpath = sourceSets.jnibuild.runtimeClasspath
+    standardInput = System.in
 }
 
-task windowsNatives(dependsOn: classes){
-    doLast{
-        buildNatives('build-windows', 'system-SDL2');
-    }
+task linuxNatives(dependsOn: classes, type: JavaExec) {
+    main = 'jnibuild.NativesBuild'
+    args = ['build-linux']
+    classpath = sourceSets.jnibuild.runtimeClasspath
+    standardInput = System.in
 }
 
-task OSXNatives(dependsOn: classes){
-    doLast{
-        buildNatives('build-OSX', 'system-SDL2');
-    }
+task OSXNatives(dependsOn: classes, type: JavaExec) {
+    main = 'jnibuild.NativesBuild'
+    args = ['build-OSX']
+    classpath = sourceSets.jnibuild.runtimeClasspath
+    standardInput = System.in
 }
 
-task allNatives(dependsOn: classes){
-    doLast{
-        buildNatives('build-linux', 'build-windows', 'build-OSX');
-    }
+task allNatives(dependsOn: classes, type: JavaExec){
+    main = 'jnibuild.NativesBuild'
+    args = ['build-windows', 'build-linux', 'build-OSX']
+    classpath = sourceSets.jnibuild.runtimeClasspath
+    standardInput = System.in
 }
