@@ -23,6 +23,10 @@ public class StringMap extends ObjectMap<String, String>{
         super(map);
     }
 
+    public boolean getBool(String name){
+        return get(name, "").equalsIgnoreCase("true");
+    }
+
     public int getInt(String name){
         return getInt(name, 0);
     }
