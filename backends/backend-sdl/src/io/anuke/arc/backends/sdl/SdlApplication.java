@@ -68,7 +68,7 @@ public class SdlApplication implements Application{
 
         //set up openGL 2.1; is this really the lowest version needed?
         check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_CONTEXT_MAJOR_VERSION, 2));
-        check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_CONTEXT_MINOR_VERSION, 1));
+        check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_CONTEXT_MINOR_VERSION, 0));
 
         check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_RED_SIZE, config.r));
         check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_GREEN_SIZE, config.g));
