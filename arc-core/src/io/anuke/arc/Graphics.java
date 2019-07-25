@@ -367,7 +367,7 @@ public abstract class Graphics implements Disposable{
         /** the number of bits per pixel, may exclude alpha **/
         public final int bitsPerPixel;
 
-        protected DisplayMode(int width, int height, int refreshRate, int bitsPerPixel){
+        public DisplayMode(int width, int height, int refreshRate, int bitsPerPixel){
             this.width = width;
             this.height = height;
             this.refreshRate = refreshRate;
@@ -388,7 +388,7 @@ public abstract class Graphics implements Disposable{
         public final int virtualY;
         public final String name;
 
-        protected Monitor(int virtualX, int virtualY, String name){
+        public Monitor(int virtualX, int virtualY, String name){
             this.virtualX = virtualX;
             this.virtualY = virtualY;
             this.name = name;

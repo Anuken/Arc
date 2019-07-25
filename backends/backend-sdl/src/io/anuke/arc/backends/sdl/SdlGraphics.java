@@ -177,12 +177,12 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public Monitor getPrimaryMonitor(){
-        return null;
+        return getMonitor();
     }
 
     @Override
     public Monitor getMonitor(){
-        return null;
+        return new Monitor(0, 0, "Monitor");
     }
 
     @Override
@@ -202,12 +202,12 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public DisplayMode getDisplayMode(){
-        return null;
+        return new DisplayMode(getWidth(), getHeight(), 60, 32);
     }
 
     @Override
     public DisplayMode getDisplayMode(Monitor monitor){
-        return null;
+        return getDisplayMode();
     }
 
     @Override
