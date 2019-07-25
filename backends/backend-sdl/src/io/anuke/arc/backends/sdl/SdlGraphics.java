@@ -5,6 +5,7 @@ import io.anuke.arc.Graphics.Cursor.*;
 import io.anuke.arc.collection.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.glutils.*;
+import io.anuke.arc.util.*;
 import sdl.*;
 
 public class SdlGraphics extends Graphics{
@@ -37,6 +38,10 @@ public class SdlGraphics extends Graphics{
         cursors = new ObjectMap<>();
         glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
         bufferFormat = new BufferFormat(app.config.r, app.config.g, app.config.b, app.config.a, app.config.depth, app.config.stencil, app.config.samples, false);
+
+        if(!glVersion.isVersionEqualToOrHigher(2, 0)){
+            throw new ArcRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + versionString);
+        }
 
         clear(app.config.initialBackgroundColor);
         SDL.SDL_GL_SwapWindow(app.window);
