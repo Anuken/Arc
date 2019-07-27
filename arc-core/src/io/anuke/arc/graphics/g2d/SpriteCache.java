@@ -224,8 +224,6 @@ public class SpriteCache implements Disposable{
             cache.counts = new int[cache.textureCount];
             for(int i = 0, n = counts.size; i < n; i++)
                 cache.counts[i] = counts.get(i);
-
-            //mesh.getVerticesBuffer().flip();
         }else{
             // Redefine existing cache.
             if(cacheCount > cache.maxCount){
