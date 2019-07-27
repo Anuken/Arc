@@ -22,10 +22,6 @@ gen-external-apklibs/
 armeabi/
 armeabi-v7a/
 arm64-v8a/
-linux32/
-linux64/
-windows32/
-windows64/
 macosx32/
 ios32/
 Debug/
@@ -57,7 +53,6 @@ arc-*.zip.MD5
 /backends/arc-backend-robovm/libs/
 /extensions/arc-freetype/libs/
 /backends/backend-sdl/jni
-/backends-backend-sdl/libs
 
 #directories created by fetch.xml
 /tmp/
