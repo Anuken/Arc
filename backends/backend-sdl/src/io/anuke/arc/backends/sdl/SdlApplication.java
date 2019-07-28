@@ -155,7 +155,11 @@ public class SdlApplication implements Application{
     private void cleanup(){
         listen(l -> {
             l.pause();
-            l.dispose();
+            try {
+                l.dispose();
+            }catch (Throwable t){
+                t.printStackTrace();
+            }
         });
         dispose();
         Core.audio.dispose();

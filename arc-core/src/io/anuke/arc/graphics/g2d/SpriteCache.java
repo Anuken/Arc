@@ -188,10 +188,9 @@ public class SpriteCache implements Disposable{
     public void beginCache(){
         if(drawing) throw new IllegalStateException("end must be called before beginCache");
         if(currentCache != null) throw new IllegalStateException("endCache must be called before begin.");
-        int verticesPerImage = mesh.getNumIndices() > 0 ? 4 : 6;
-        currentCache = new Cache(caches.size, mesh.getVerticesBuffer().limit());
+        currentCache = new Cache(caches.size, mesh.getVerticesBuffer().position());
         caches.add(currentCache);
-        mesh.getVerticesBuffer().compact();
+        mesh.getVerticesBuffer().limit(mesh.getVerticesBuffer().capacity());
     }
 
     /**
@@ -226,7 +225,7 @@ public class SpriteCache implements Disposable{
             for(int i = 0, n = counts.size; i < n; i++)
                 cache.counts[i] = counts.get(i);
 
-            mesh.getVerticesBuffer().flip();
+            //mesh.getVerticesBuffer().flip();
         }else{
             // Redefine existing cache.
             if(cacheCount > cache.maxCount){
@@ -271,6 +270,8 @@ public class SpriteCache implements Disposable{
      */
     public void add(Texture texture, float[] vertices, int offset, int length){
         if(currentCache == null) throw new IllegalStateException("beginCache must be called before add.");
+        if(mesh.getVerticesBuffer().position() + length >= mesh.getVerticesBuffer().limit())
+            throw new IllegalStateException("Out of vertex space! Size: " + mesh.getVerticesBuffer().limit() + " Required: " + (mesh.getVerticesBuffer().position() + length));
 
         int verticesPerImage = mesh.getNumIndices() > 0 ? 4 : 6;
         int count = length / (verticesPerImage * VERTEX_SIZE) * 6;
