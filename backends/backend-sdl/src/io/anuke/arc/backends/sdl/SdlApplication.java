@@ -155,9 +155,9 @@ public class SdlApplication implements Application{
     private void cleanup(){
         listen(l -> {
             l.pause();
-            try {
+            try{
                 l.dispose();
-            }catch (Throwable t){
+            }catch(Throwable t){
                 t.printStackTrace();
             }
         });
