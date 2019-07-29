@@ -1,4 +1,66 @@
-apply from: "gradle/dependencies.gradle"
+ext{
+    versions = [:]
+    libraries = [:]
+}
+
+versions.robovm = "2.3.7"
+versions.gwt = "2.8.1"
+versions.gwtPlugin = "1.0.6"
+versions.lwjgl3 = "3.2.2"
+versions.jlayer = "1.0.1-gdx"
+versions.jorbis = "0.0.17"
+versions.junit = "4.11"
+versions.androidPlugin = "3.4.0"
+versions.androidSdk = 28
+versions.androidBuildTools = "28.0.3"
+
+libraries.lwjgl3 = [
+        "org.lwjgl:lwjgl:${versions.lwjgl3}",
+        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-macos",
+        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-windows",
+        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}",
+        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-macos",
+        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-windows",
+        "org.lwjgl:lwjgl-tinyfd:${versions.lwjgl3}",
+        "org.lwjgl:lwjgl-tinyfd:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl-tinyfd:${versions.lwjgl3}:natives-macos",
+        "org.lwjgl:lwjgl-tinyfd:${versions.lwjgl3}:natives-windows",
+        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}",
+        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-macos",
+        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-windows",
+        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}",
+        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-macos",
+        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-windows",
+        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}",
+        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-macos",
+        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-windows",
+        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}",
+        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-macos",
+        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows",
+        "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
+        "org.jcraft:jorbis:${versions.jorbis}"
+]
+
+libraries.robovm = [
+        "com.mobidevelop.robovm:robovm-rt:${versions.robovm}",
+        "com.mobidevelop.robovm:robovm-objc:${versions.robovm}",
+        "com.mobidevelop.robovm:robovm-cocoatouch:${versions.robovm}"
+]
+
+libraries.gwt = [
+        "com.google.gwt:gwt-user:${versions.gwt}",
+        "com.google.gwt:gwt-dev:${versions.gwt}"
+]
+
+libraries.junit = [
+        "junit:junit:${versions.junit}"
+]
 
 allprojects{
     group = 'com.github.Anuken'

@@ -9,6 +9,7 @@ public class SdlInput extends Input{
     private int mouseX, mouseY;
     private int deltaX, deltaY;
     private int mousePressed;
+    private byte[] strcpy = new byte[32];
 
     //handle encoded input data
     void handleInput(int[] input){
@@ -71,12 +72,20 @@ public class SdlInput extends Input{
             int sy = input[2];
             queue.scrolled(-sx, -sy);
         }else if(type == SDL.SDL_EVENT_TEXT_INPUT){
+            int length = 0;
             for(int i = 0; i < 32; i++){
                 char c = (char)input[i + 1];
-                queue.keyTyped(c);
                 if(c == '\0'){
+                    length = i;
                     break;
                 }
+            }
+            for(int i = 0; i < length; i++){
+                strcpy[i] = (byte)input[i + 1];
+            }
+            String s = new String(strcpy, 0, length);
+            for(int i = 0; i < s.length(); i++){
+                queue.keyTyped(s.charAt(i));
             }
         }
     }
