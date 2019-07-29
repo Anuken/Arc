@@ -3,23 +3,17 @@ apply plugin: "java"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-sourceSets.main.resources.srcDirs = [ "res/",
-                                      "libs/linux32", "libs/linux64",
-                                      "libs/macosx32", "libs/macosx64",
-                                      "libs/windows32", "libs/windows64",]
-sourceSets{
-    jnibuild{
-        java.srcDirs = ["jnisrc/"]
-    }
-}
+sourceSets.main.java.srcDirs = ["src/main/java"]
+sourceSets.main.resources.srcDirs = ["libs/linux32", "libs/linux64",
+                                      "libs/macosx32", "libs/macosx64","libs/windows32", "libs/windows64"]
 
 dependencies {
-    jnibuildCompile "com.badlogicgames.gdx:gdx-jnigen:1.9.10"
+    testCompile "com.badlogicgames.gdx:gdx-jnigen:1.9.10"
 
     if(findProject(":arc-core") != null){
-        jnibuildCompile project(":arc-core")
+        testCompile project(":arc-core")
     }else{
-        jnibuildCompile project(":Arc:arc-core")
+        testCompile project(":Arc:arc-core")
     }
 }
 
@@ -30,30 +24,8 @@ task deleteJniFolder(type: Delete) {
 
 clean.dependsOn(deleteJniFolder)
 
-task windowsNatives(dependsOn: classes, type: JavaExec) {
-    main = 'jnibuild.NativesBuild'
-    args = ['build-windows']
-    classpath = sourceSets.jnibuild.runtimeClasspath
-    standardInput = System.in
-}
-
-task linuxNatives(dependsOn: classes, type: JavaExec) {
-    main = 'jnibuild.NativesBuild'
-    args = ['build-linux']
-    classpath = sourceSets.jnibuild.runtimeClasspath
-    standardInput = System.in
-}
-
-task OSXNatives(dependsOn: classes, type: JavaExec) {
-    main = 'jnibuild.NativesBuild'
-    args = ['build-OSX']
-    classpath = sourceSets.jnibuild.runtimeClasspath
-    standardInput = System.in
-}
-
-task allNatives(dependsOn: classes, type: JavaExec){
-    main = 'jnibuild.NativesBuild'
-    args = ['build-windows', 'build-linux', 'build-OSX']
-    classpath = sourceSets.jnibuild.runtimeClasspath
+task sdlnatives(dependsOn: classes, type: JavaExec){
+    main = 'NativesBuild'
+    classpath = sourceSets.test.runtimeClasspath
     standardInput = System.in
 }
