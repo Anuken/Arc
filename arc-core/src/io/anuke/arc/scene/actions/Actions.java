@@ -94,6 +94,14 @@ public class Actions{
         return moveBy(amountX, amountY, duration, null);
     }
 
+    public static RunnableAction translateTo(float amountX, float amountY){
+        RunnableAction action = action(RunnableAction.class, RunnableAction::new);
+        action.setRunnable(() -> {
+            action.getActor().setTranslation(amountX, amountY);
+        });
+        return action;
+    }
+
     public static TranslateByAction translateBy(float amountX, float amountY, float duration, Interpolation interpolation){
         TranslateByAction action = action(TranslateByAction.class, TranslateByAction::new);
         action.setAmount(amountX, amountY);

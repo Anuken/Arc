@@ -172,6 +172,15 @@ public class Array<T> implements Iterable<T>{
         }
     }
 
+    /** Flattens this array of arrays into one array. Allocates a new instance.*/
+    public <R> Array<R> flatten(){
+        Array<R> arr = new Array<>();
+        for(int i = 0; i < size; i++){
+            arr.addAll((Array<R>)items[i]);
+        }
+        return arr;
+    }
+
     /**Returns a new array with the mapped values.*/
     public <R> Array<R> map(Function<T, R> mapper){
         Array<R> arr = new Array<>(size);
