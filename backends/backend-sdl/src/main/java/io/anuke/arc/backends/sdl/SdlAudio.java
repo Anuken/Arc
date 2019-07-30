@@ -48,7 +48,6 @@ public class SdlAudio extends Audio{
 
     @Override
     public void dispose(){
-        SDLMixer.quit();
         SDLMixer.closeAudio();
     }
 
