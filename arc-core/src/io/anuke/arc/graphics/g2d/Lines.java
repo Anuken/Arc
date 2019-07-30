@@ -292,6 +292,7 @@ public class Lines{
         int sides = 50;
         int max = (int)(sides * (finion + 0.001f));
         vector.set(0, 0);
+        floats.clear();
 
         for(int i = 0; i < max; i++){
             vector.set(radius, 0).setAngle(360f / sides * i + angle);
@@ -300,8 +301,10 @@ public class Lines{
 
             vector.set(radius, 0).setAngle(360f / sides * (i + 1) + angle);
 
-            line(x1 + x, y1 + y, vector.x + x, vector.y + y);
+            floats.add(x1 + x, y1 + y);
         }
+
+        polyline(floats, false);
     }
 
     public static void poly(float x, float y, int sides, float radius){

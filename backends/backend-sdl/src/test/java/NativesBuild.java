@@ -3,18 +3,18 @@ import com.badlogic.gdx.jnigen.BuildTarget.*;
 import io.anuke.arc.util.*;
 
 import java.io.*;
+import java.util.*;
 
 //mac: install sdl2, glew, ant
-//linux: install sdl2, glew, glew utils
-//windows on linux: mingw32, mingw32 64 bit, then compile sdl2 yourself with the right targets
-//also need SDL_mixer, but that doesn't compile on windows for some reason
+//linux: install sdl2, glew, glew utils, libmpg123-dev
+//windows on linux: mingw32, mingw32 64 bit, then compile sdl2 yourself with the right targets, also compile sdl2-mixer
 class NativesBuild{
     static final String win32crossCompilePath = "/usr/local/cross-tools/i686-w64-mingw32/bin/";
     static final String win64crossCompilePath = "/usr/local/cross-tools/x86_64-w64-mingw32/bin/";
     static final String minSDLversion = "2.0.9";
     static final String libsLinux = " -lGLEW -lGLU -lGL -lSDL2_mixer";
-    static final String libsMac = " -lGLEW"; //-lSDL_mixer
-    static final String libsWin = " -lglew32s -lglu32 -lopengl32"; //-lSDL_mixer
+    static final String libsMac = " -lGLEW -lSDL_mixer";
+    static final String libsWin = " -lglew32s -lglu32 -lopengl32 -lSDL_mixer";
     static final String macLibPath = "/usr/local/lib/libSDL2.a";
     static final boolean compileMac = OS.isMac;
 
@@ -51,18 +51,10 @@ class NativesBuild{
         new NativeCodeGenerator().generate("src/main/java", "build/classes/java/main", "jni");
         new AntScriptGenerator().generate(new BuildConfig("sdl-arc"), win32, win64, lin64, mac64);
 
-        //System.out.println("##### COMPILING NATIVES FOR WINDOWS #####");
         BuildExecutor.executeAnt("jni/build-windows32.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
         BuildExecutor.executeAnt("jni/build-windows64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
-        //System.out.println();
-
-        //System.out.println("##### COMPILING NATIVES FOR LINUX #####");
         BuildExecutor.executeAnt("jni/build-linux64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
-        //System.out.println();
-
-        //System.out.println("##### COMPILING NATIVES FOR OSX #####");
         if(compileMac) BuildExecutor.executeAnt("jni/build-macosx64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
-        //System.out.println();
     }
 
     private static void checkSDLVersion(String command, String version) throws FileNotFoundException{
@@ -79,8 +71,8 @@ class NativesBuild{
         }
     }
 
-    public static String execCmd(String cmd) throws java.io.IOException{
-        java.util.Scanner s = new java.util.Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A");
+    public static String execCmd(String cmd) throws IOException{
+        Scanner s = new Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A");
         return s.hasNext() ? s.next().trim() : "";
     }
 

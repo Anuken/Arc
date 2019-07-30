@@ -15,7 +15,7 @@ public class SdlAudio extends Audio{
         if(i == -1) throw new SDLError();
 
         //this seems like a good number..?
-        SDLMixer.allocateChannels(40);
+        SDLMixer.allocateChannels(64);
 
         //hook into the listener
         SDLMixer.hookMusicFinished(() -> Core.app.post(() -> {
@@ -73,13 +73,15 @@ public class SdlAudio extends Audio{
         //doesn't support setting pitch at all.
         //fantastic.
         long play(float volume, float pitch, float pan, boolean looping){
+            if(volume < 0.1f) return -1; //don't play quiet sounds, it's not worth it
             float left = 1f - (pan + 1)/2f;
             int pl = (int)(left * 254);
 
-            SDLMixer.volumeChunk(handle, (int)(volume * 128));
+            //SDLMixer.volumeChunk(handle, (int)(volume * 128));
             int sound = SDLMixer.playChannel(-1, handle, looping ? -1 : 0);
             if(sound == -1) return -1;
             SDLMixer.setPanning(sound, pl, 254 - pl);
+            SDLMixer.volume(sound, (int)(volume * 128));
             return sound;
         }
 
@@ -88,7 +90,7 @@ public class SdlAudio extends Audio{
             SDLMixer.freeChunk(handle);
         }
 
-        //don't care about any of these
+        //don't care about any of these... yet
 
         @Override public void stop(long soundId){}
         @Override public void pause(long soundId){}
