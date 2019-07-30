@@ -1,6 +1,6 @@
-package io.anuke.arc.backends.headless.mock;
+package io.anuke.arc.audio.mock;
 
-import io.anuke.arc.audio.AudioRecorder;
+import io.anuke.arc.audio.*;
 
 /**
  * The headless backend does its best to mock elements. This is intended to make code-sharing between

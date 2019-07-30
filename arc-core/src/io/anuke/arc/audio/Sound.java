@@ -1,8 +1,9 @@
 package io.anuke.arc.audio;
 
-import io.anuke.arc.Audio;
+import io.anuke.arc.*;
 import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.util.Disposable;
+import io.anuke.arc.math.*;
+import io.anuke.arc.util.*;
 
 /**
  * <p>
@@ -25,6 +26,15 @@ import io.anuke.arc.util.Disposable;
  * @author badlogicgames@gmail.com
  */
 public interface Sound extends Disposable{
+
+    /** Plays this sound at a certain position, with correct panning and volume applied.*/
+    default long at(float x, float y){
+        float dst = Mathf.dst(x, y, Core.camera.position.x, Core.camera.position.y);
+        float volume = Mathf.clamp(1f/(dst*dst/Core.audio.falloff));
+        float pan = Mathf.clamp((x - Core.camera.position.x) / (Core.camera.width), -1f, 1f);
+        return play(volume, 1f, pan);
+    }
+
     /**
      * Plays the sound. If the sound is already playing, it will be played again, concurrently.
      * @return the id of the sound instance if successful, or -1 on failure.

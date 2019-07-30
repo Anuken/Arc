@@ -1,6 +1,7 @@
 package io.anuke.arc.backends.headless;
 
 import io.anuke.arc.*;
+import io.anuke.arc.audio.mock.*;
 import io.anuke.arc.backends.headless.mock.*;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.function.Consumer;

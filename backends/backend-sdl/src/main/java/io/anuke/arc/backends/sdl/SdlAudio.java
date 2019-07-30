@@ -5,7 +5,7 @@ import io.anuke.arc.audio.*;
 import io.anuke.arc.files.*;
 import sdl.*;
 
-public class SdlAudio implements Audio{
+public class SdlAudio extends Audio{
     private SdlMusic currentlyPlaying;
 
     public SdlAudio(){
@@ -14,7 +14,7 @@ public class SdlAudio implements Audio{
         i = SDLMixer.init();
         if(i == -1) throw new SDLError();
 
-        //this seems like a good number
+        //this seems like a good number..?
         SDLMixer.allocateChannels(40);
 
         //hook into the listener
@@ -74,14 +74,13 @@ public class SdlAudio implements Audio{
         //doesn't support setting pitch at all.
         //fantastic.
         long play(float volume, float pitch, float pan, boolean looping){
-            float left = 1f - pan;
-            int pl = (int)(left * 255);
-            int pr = 254 - pl;
+            float left = 1f - (pan + 1)/2f;
+            int pl = (int)(left * 254);
 
             SDLMixer.volumeChunk(handle, (int)(volume * 128));
             int sound = SDLMixer.playChannel(-1, handle, looping ? -1 : 0);
             if(sound == -1) return -1;
-            SDLMixer.setPanning(sound, pl, pr);
+            SDLMixer.setPanning(sound, pl, 254 - pl);
             return sound;
         }
 

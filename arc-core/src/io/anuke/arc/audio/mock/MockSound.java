@@ -1,12 +1,18 @@
-package io.anuke.arc.backends.lwjgl3.audio.mock;
+package io.anuke.arc.audio.mock;
 
-import io.anuke.arc.audio.Sound;
+import io.anuke.arc.audio.*;
 
 /**
  * The headless backend does its best to mock elements. This is intended to make code-sharing between
  * server and client as simple as possible.
  */
 public class MockSound implements Sound{
+
+    @Override
+    public long at(float x, float y){
+        return 0;
+    }
+
     @Override
     public long play(){
         return 0;
