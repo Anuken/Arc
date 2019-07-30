@@ -167,14 +167,14 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener{
     }
 
     @Override
-    public void setOnCompletionListener(OnCompletionListener listener){
+    public void setCompletionListener(OnCompletionListener listener){
         onCompletionListener = listener;
     }
 
     @Override
     public void onCompletion(MediaPlayer mp){
         if(onCompletionListener != null){
-            Core.app.post(() -> onCompletionListener.onCompletion(AndroidMusic.this));
+            Core.app.post(() -> onCompletionListener.complete(AndroidMusic.this));
         }
     }
 

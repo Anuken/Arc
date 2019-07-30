@@ -73,7 +73,7 @@ public abstract class OpenALMusic implements Music{
                 filled = true;
                 alSourceQueueBuffers(sourceID, bufferID);
             }
-            if(!filled && onCompletionListener != null) onCompletionListener.onCompletion(this);
+            if(!filled && onCompletionListener != null) onCompletionListener.complete(this);
 
             if(alGetError() != AL_NO_ERROR){
                 stop();
@@ -173,7 +173,7 @@ public abstract class OpenALMusic implements Music{
         renderedSecondsQueue.pop();
         if(!filled){
             stop();
-            if(onCompletionListener != null) onCompletionListener.onCompletion(this);
+            if(onCompletionListener != null) onCompletionListener.complete(this);
         }
         alSourcef(sourceID, AL11.AL_SEC_OFFSET, position - renderedSeconds);
         if(wasPlaying){
@@ -222,7 +222,7 @@ public abstract class OpenALMusic implements Music{
         }
         if(end && alGetSourcei(sourceID, AL_BUFFERS_QUEUED) == 0){
             stop();
-            if(onCompletionListener != null) onCompletionListener.onCompletion(this);
+            if(onCompletionListener != null) onCompletionListener.complete(this);
         }
 
         // A buffer underflow will cause the source to stop.
@@ -261,7 +261,7 @@ public abstract class OpenALMusic implements Music{
         onCompletionListener = null;
     }
 
-    public void setOnCompletionListener(OnCompletionListener listener){
+    public void setCompletionListener(OnCompletionListener listener){
         onCompletionListener = listener;
     }
 

@@ -20,7 +20,7 @@ public class SdlAudio implements Audio{
         //hook into the listener
         SDLMixer.hookMusicFinished(() -> Core.app.post(() -> {
             if(currentlyPlaying != null && currentlyPlaying.listener != null){
-                currentlyPlaying.listener.onCompletion(currentlyPlaying);
+                currentlyPlaying.listener.complete(currentlyPlaying);
                 currentlyPlaying = null;
             }
         }));
@@ -192,7 +192,7 @@ public class SdlAudio implements Audio{
         }
 
         @Override
-        public void setOnCompletionListener(OnCompletionListener listener){
+        public void setCompletionListener(OnCompletionListener listener){
             this.listener = listener;
         }
     }

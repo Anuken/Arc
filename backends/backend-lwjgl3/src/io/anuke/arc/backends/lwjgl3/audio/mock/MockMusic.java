@@ -68,7 +68,7 @@ public class MockMusic implements Music{
     }
 
     @Override
-    public void setOnCompletionListener(OnCompletionListener listener){
+    public void setCompletionListener(OnCompletionListener listener){
 
     }
 }
