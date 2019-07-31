@@ -119,6 +119,7 @@ public class SdlAudio extends Audio{
         @Override
         public void play(){
             SDLMixer.playMusic(handle, looping ? -1 : 1);
+            SDLMixer.volumeMusic((int)(volume * 128));
             currentlyPlaying = this;
         }
 
@@ -160,8 +161,8 @@ public class SdlAudio extends Audio{
 
         @Override
         public void setVolume(float volume){
+            this.volume = volume;
             if(currentlyPlaying == this){
-                this.volume = volume;
                 SDLMixer.volumeMusic((int)(volume * 128));
             }
         }

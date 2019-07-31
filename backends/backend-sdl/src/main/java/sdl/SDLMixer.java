@@ -75,7 +75,9 @@ public class SDLMixer{
         Mix_FreeChunk((Mix_Chunk*)handle);
      */
 
-    public static native long loadMusicBytes(byte[] bytes, int length); /*
+    public static native long loadMusicBytes(Object obj_bytes, int length); /*
+        //bytes are freed by the program at the end anyway
+        char* bytes = (char*)env->GetPrimitiveArrayCritical((jbyteArray)obj_bytes, 0);
         return (jlong)Mix_LoadMUS_RW(SDL_RWFromMem(bytes, length), 1);
     */
 
