@@ -1,8 +1,9 @@
 package io.anuke.arc.audio;
 
 import io.anuke.arc.*;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.*;
 import io.anuke.arc.math.*;
+import io.anuke.arc.math.geom.*;
 import io.anuke.arc.util.*;
 
 /**
@@ -33,6 +34,11 @@ public interface Sound extends Disposable{
         float volume = Mathf.clamp(1f/(dst*dst/Core.audio.falloff));
         float pan = Mathf.clamp((x - Core.camera.position.x) / (Core.camera.width), -1f, 1f);
         return play(volume, 1f, pan);
+    }
+
+    /** Plays #at() with this position. */
+    default long at(Position pos){
+        return at(pos.getX(), pos.getY());
     }
 
     /**

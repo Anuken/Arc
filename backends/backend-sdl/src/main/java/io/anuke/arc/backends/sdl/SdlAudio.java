@@ -108,6 +108,7 @@ public class SdlAudio extends Audio{
         private final long handle;
         private float volume = 1f;
         private OnCompletionListener listener;
+        private boolean looping = false;
 
         public SdlMusic(FileHandle file){
             byte[] bytes = file.readBytes();
@@ -117,7 +118,7 @@ public class SdlAudio extends Audio{
 
         @Override
         public void play(){
-            SDLMixer.playMusic(handle, 1);
+            SDLMixer.playMusic(handle, looping ? -1 : 1);
             currentlyPlaying = this;
         }
 
@@ -149,7 +150,7 @@ public class SdlAudio extends Audio{
 
         @Override
         public void setLooping(boolean isLooping){
-
+            this.looping = isLooping;
         }
 
         @Override
