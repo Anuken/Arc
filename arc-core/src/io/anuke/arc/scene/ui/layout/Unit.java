@@ -20,10 +20,10 @@ public enum Unit{
                 if(Core.app.getType() == ApplicationType.Desktop){
                     scl = 1f * product;
                 }else if(Core.app.getType() == ApplicationType.WebGL){
-                    scl = 1f;
+                    scl = 1f * product;
                 }else{
                     //mobile scaling
-                    scl = Math.max(Math.round((Core.graphics.getDensity() / 1.5f + addition) / 0.5) * 0.5f, 1f);
+                    scl = Math.max(Math.round((Core.graphics.getDensity() / 1.5f + addition) / 0.5) * 0.5f, 1f) * product;
                 }
             }
             return amount * scl;

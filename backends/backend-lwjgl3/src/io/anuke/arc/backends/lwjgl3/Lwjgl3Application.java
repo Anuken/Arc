@@ -1,18 +1,18 @@
 package io.anuke.arc.backends.lwjgl3;
 
 import io.anuke.arc.*;
-import io.anuke.arc.backends.lwjgl3.audio.OpenALAudio;
-import io.anuke.arc.backends.lwjgl3.audio.mock.MockAudio;
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.graphics.glutils.GLVersion;
+import io.anuke.arc.audio.mock.*;
+import io.anuke.arc.backends.lwjgl3.audio.*;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.graphics.glutils.*;
 import io.anuke.arc.util.*;
-import org.lwjgl.PointerBuffer;
+import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
-import org.lwjgl.system.Callback;
+import org.lwjgl.system.*;
 
-import java.io.PrintStream;
-import java.nio.IntBuffer;
+import java.io.*;
+import java.nio.*;
 
 public class Lwjgl3Application implements Application{
     private static GLFWErrorCallback errorCallback;

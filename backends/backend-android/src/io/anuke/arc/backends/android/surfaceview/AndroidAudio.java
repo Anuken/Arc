@@ -27,7 +27,7 @@ import java.util.List;
  * @author mzechner
  */
 @SuppressWarnings("deprecation")
-public final class AndroidAudio implements Audio{
+public final class AndroidAudio extends Audio{
     protected final List<AndroidMusic> musics = new ArrayList<>();
     private final SoundPool soundPool;
     private final AudioManager manager;

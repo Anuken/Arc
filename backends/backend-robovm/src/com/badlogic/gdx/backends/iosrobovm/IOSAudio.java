@@ -11,7 +11,7 @@ import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Log;
 
-public class IOSAudio implements Audio{
+public class IOSAudio extends Audio{
 
     public IOSAudio(IOSApplicationConfiguration config){
         OALSimpleAudio audio = OALSimpleAudio.sharedInstance();

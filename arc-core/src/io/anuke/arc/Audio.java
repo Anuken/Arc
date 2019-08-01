@@ -5,7 +5,7 @@ import io.anuke.arc.audio.AudioRecorder;
 import io.anuke.arc.audio.Music;
 import io.anuke.arc.audio.Sound;
 import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.util.*;
 
 /**
  * This interface encapsulates the creation and management of audio resources. It allows you to get direct access to the audio
@@ -22,7 +22,12 @@ import io.anuke.arc.util.ArcRuntimeException;
  * </p>
  * @author mzechner
  */
-public interface Audio{
+public abstract class Audio implements Disposable{
+    /** Falloff when playing audio. At this distance from the camera, audio volume will be 0.*/
+    public float falloff = 12000f;
+    /** Whether to dynamically pan sounds when they are on either side of the camera.*/
+    public boolean panAudio = true;
+
     /**
      * Creates a new {@link AudioDevice} either in mono or stereo mode. The AudioDevice has to be disposed via its
      * {@link AudioDevice#dispose()} method when it is no longer used.
@@ -31,7 +36,7 @@ public interface Audio{
      * @return the AudioDevice
      * @throws ArcRuntimeException in case the device could not be created
      */
-    AudioDevice newAudioDevice(int samplingRate, boolean isMono);
+    public abstract AudioDevice newAudioDevice(int samplingRate, boolean isMono);
 
     /**
      * Creates a new {@link AudioRecorder}. The AudioRecorder has to be disposed after it is no longer used.
@@ -40,7 +45,7 @@ public interface Audio{
      * @return the AudioRecorder
      * @throws ArcRuntimeException in case the recorder could not be created
      */
-    AudioRecorder newAudioRecorder(int samplingRate, boolean isMono);
+    public abstract AudioRecorder newAudioRecorder(int samplingRate, boolean isMono);
 
     /**
      * <p>
@@ -59,7 +64,7 @@ public interface Audio{
      * @return the new Sound
      * @throws ArcRuntimeException in case the sound could not be loaded
      */
-    Sound newSound(FileHandle file);
+    public abstract Sound newSound(FileHandle file);
 
     /**
      * Creates a new {@link Music} instance which is used to play back a music stream from a file. Currently supported formats are
@@ -70,9 +75,10 @@ public interface Audio{
      * @return the new Music or null if the Music could not be loaded
      * @throws ArcRuntimeException in case the music could not be loaded
      */
-    Music newMusic(FileHandle file);
+    public abstract Music newMusic(FileHandle file);
 
-    default void dispose(){
+    @Override
+    public void dispose(){
 
     }
 }

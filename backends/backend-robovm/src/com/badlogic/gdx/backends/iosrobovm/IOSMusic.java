@@ -18,7 +18,7 @@ public class IOSMusic implements Music{
             public void didFinishPlaying(NSObject player, boolean success){
                 final OnCompletionListener listener = onCompletionListener;
                 if(listener != null){
-                    Core.app.post(() -> listener.onCompletion(IOSMusic.this));
+                    Core.app.post(() -> listener.complete(IOSMusic.this));
                 }
             }
         });
@@ -92,7 +92,7 @@ public class IOSMusic implements Music{
     }
 
     @Override
-    public void setOnCompletionListener(OnCompletionListener listener){
+    public void setCompletionListener(OnCompletionListener listener){
         this.onCompletionListener = listener;
     }
 

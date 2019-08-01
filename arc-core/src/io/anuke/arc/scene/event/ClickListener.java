@@ -16,6 +16,7 @@ import io.anuke.arc.util.Time;
 public class ClickListener extends InputListener{
     /** Time in seconds {@link #isVisualPressed()} reports true after a press resulting in a click is released. */
     public static float visualPressedDuration = 0.1f;
+    public static Runnable clicked = () -> {};
 
     protected float tapSquareSize = 14, touchDownX = -1, touchDownY = -1;
     protected int pressedPointer = -1;
@@ -72,6 +73,7 @@ public class ClickListener extends InputListener{
                     tapCount++;
                     lastTapTime = time;
 
+                    clicked.run();
                     clicked(event, x, y);
                 }
             }

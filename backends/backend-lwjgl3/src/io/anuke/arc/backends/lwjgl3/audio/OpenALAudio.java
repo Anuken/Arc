@@ -3,6 +3,7 @@ package io.anuke.arc.backends.lwjgl3.audio;
 import io.anuke.arc.Audio;
 import io.anuke.arc.audio.AudioDevice;
 import io.anuke.arc.audio.AudioRecorder;
+import io.anuke.arc.audio.mock.*;
 import io.anuke.arc.collection.*;
 import io.anuke.arc.files.FileHandle;
 import io.anuke.arc.math.Mathf;
@@ -21,7 +22,7 @@ import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.openal.ALC10.*;
 
 /** @author Nathan Sweet */
-public class OpenALAudio implements Audio{
+public class OpenALAudio extends Audio{
     private final int deviceBufferSize;
     private final int deviceBufferCount;
     Array<OpenALMusic> music = new Array<>(false, 1, OpenALMusic.class);
@@ -291,46 +292,12 @@ public class OpenALAudio implements Audio{
     }
 
     public AudioDevice newAudioDevice(int sampleRate, final boolean isMono){
-        if(noDevice) return new AudioDevice(){
-            @Override
-            public void writeSamples(float[] samples, int offset, int numSamples){
-            }
-
-            @Override
-            public void writeSamples(short[] samples, int offset, int numSamples){
-            }
-
-            @Override
-            public void setVolume(float volume){
-            }
-
-            @Override
-            public boolean isMono(){
-                return isMono;
-            }
-
-            @Override
-            public int getLatency(){
-                return 0;
-            }
-
-            @Override
-            public void dispose(){
-            }
-        };
+        if(noDevice) return new MockAudioDevice();
         return new OpenALAudioDevice(this, sampleRate, isMono, deviceBufferSize, deviceBufferCount);
     }
 
     public AudioRecorder newAudioRecorder(int samplingRate, boolean isMono){
-        if(noDevice) return new AudioRecorder(){
-            @Override
-            public void read(short[] samples, int offset, int numSamples){
-            }
-
-            @Override
-            public void dispose(){
-            }
-        };
+        if(noDevice) return new MockAudioRecorder();
         return new JavaSoundAudioRecorder(samplingRate, isMono);
     }
 

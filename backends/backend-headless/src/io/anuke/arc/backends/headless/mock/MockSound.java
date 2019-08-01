@@ -8,27 +8,7 @@ import io.anuke.arc.audio.Sound;
  */
 public class MockSound implements Sound{
     @Override
-    public long play(){
-        return 0;
-    }
-
-    @Override
-    public long play(float volume){
-        return 0;
-    }
-
-    @Override
     public long play(float volume, float pitch, float pan){
-        return 0;
-    }
-
-    @Override
-    public long loop(){
-        return 0;
-    }
-
-    @Override
-    public long loop(float volume){
         return 0;
     }
 
