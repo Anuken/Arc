@@ -3,15 +3,16 @@
 - [X] convert to gradle, none of that stinky maven business
 - [X] implement 'file drop' support for app listeners
 - [X] create nicer framework for cursors
-- [ ] create nicer framework for sounds
+- [X] create nicer framework for sounds
 - [X] make spritebatch less bad
 - [X] fix keybind dialog, as well as the whole scene thing
 - [X] actually get it working
 - [X] see if removing all JNI is possible (it's probably not)
 - [X] rename packages
 - [X] delete original repository and create a new reorganized one
-- [ ] implement controller framework for each backend
 - [X] look into jamepad but without 10mb of natives (yay SDL)
 - [X] add postprocessing as extension
 - [X] add gif recorder as extension
-- [ ] implement SDL_Mixer
+- [X] implement SDL2_Mixer
+- [ ] implement controller framework for each backend
+- [ ] implement SDL2_Mixer correct sound looping
