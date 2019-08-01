@@ -55,8 +55,7 @@ public class SdlAudio extends Audio{
         private final long handle;
 
         public SdlSound(FileHandle file){
-            byte[] bytes = file.readBytes();
-            handle = SDLMixer.loadWAVBytes(bytes, bytes.length);
+            handle = SDLMixer.loadWAV(file.toString());
             if(handle == 0) throw new SDLError();
         }
 
@@ -111,8 +110,7 @@ public class SdlAudio extends Audio{
         private boolean looping = false;
 
         public SdlMusic(FileHandle file){
-            byte[] bytes = file.readBytes();
-            handle = SDLMixer.loadMusicBytes(bytes, bytes.length);
+            handle = SDLMixer.loadMusic(file.toString());
             if(handle == 0) throw new SDLError();
         }
 

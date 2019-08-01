@@ -51,8 +51,8 @@ public class SDLMixer{
 		}
     */
 
-    public static native long loadWAVBytes(byte[] bytes, int length); /*
-        return (jlong)Mix_LoadWAV_RW(SDL_RWFromMem(bytes, length), 1);
+    public static native long loadWAV(String path); /*
+        return (jlong)Mix_LoadWAV(path);
     */
 
     public static native int playChannel(int channel, long handle, int loops); /*
@@ -75,10 +75,8 @@ public class SDLMixer{
         Mix_FreeChunk((Mix_Chunk*)handle);
      */
 
-    public static native long loadMusicBytes(Object obj_bytes, int length); /*
-        //bytes are freed by the program at the end anyway
-        char* bytes = (char*)env->GetPrimitiveArrayCritical((jbyteArray)obj_bytes, 0);
-        return (jlong)Mix_LoadMUS_RW(SDL_RWFromMem(bytes, length), 1);
+    public static native long loadMusic(String path); /*
+        return (jlong)Mix_LoadMUS(path);
     */
 
     public static native void hookMusicFinished(Runnable jcallback); /*
