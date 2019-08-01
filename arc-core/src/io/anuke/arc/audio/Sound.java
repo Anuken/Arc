@@ -28,10 +28,11 @@ import io.anuke.arc.util.*;
  */
 public interface Sound extends Disposable{
 
-    /** Plays this sound at a certain position, with correct panning and volume applied.*/
+    /** Plays this sound at a certain position, with correct panning and volume applied.
+     * Automatically uses the "sfxvolume" setting.*/
     default long at(float x, float y){
         float dst = Mathf.dst(x, y, Core.camera.position.x, Core.camera.position.y);
-        float volume = Mathf.clamp(1f/(dst*dst/Core.audio.falloff));
+        float volume = Mathf.clamp(1f/(dst*dst/Core.audio.falloff)) * Core.settings.getInt("sfxvol") / 100f;
         float pan = Mathf.clamp((x - Core.camera.position.x) / (Core.camera.width), -1f, 1f);
         return play(volume, 1f, pan);
     }
@@ -43,14 +44,16 @@ public interface Sound extends Disposable{
 
     /**
      * Plays the sound. If the sound is already playing, it will be played again, concurrently.
+     * Automatically uses the "sfxvolume" setting.
      * @return the id of the sound instance if successful, or -1 on failure.
      */
     default long play(){
-        return play(1f);
+        return play(1f * Core.settings.getInt("sfxvol") / 100f);
     }
 
     /**
      * Plays the sound. If the sound is already playing, it will be played again, concurrently.
+     * Ignores SFX volume setting.
      * @param volume the volume in the range [0,1]
      * @return the id of the sound instance if successful, or -1 on failure.
      */

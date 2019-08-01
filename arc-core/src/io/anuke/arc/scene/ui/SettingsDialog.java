@@ -51,23 +51,6 @@ public class SettingsDialog extends Dialog{
             sliderPref("screenshake", bundle.get("setting.screenshake.name", "Screen Shake"), 4, 0, 8, i -> (i / 4f) + "x");
         }
 
-        //TODO implement volume preferences
-        /*
-        public void volumePrefs(){
-
-            sliderPref("musicvol", bundle.get("setting.musicvol.name", "Music Volume"), 10, 0, 10, 1, i -> {
-                Musics.updateVolume();
-                return i * 10 + "%";
-            });
-            checkPref("mutemusic", bundle.get("setting.mutemusic.name", "Mute Music"), false, Musics::setMuted);
-
-            sliderPref("sfxvol", bundle.get("setting.sfxvol.name", "SFX Volume"), 10, 0, 10, 1, i -> i * 10 + "%");
-            checkPref("mutesound", bundle.get("setting.mutesound.name", "Mute Sound"), false, Sounds::setMuted);
-
-            Musics.setMuted(settings.getBool("mutemusic"));
-            Sounds.setMuted(settings.getBool("mutesound"));
-        }*/
-
         public void sliderPref(String name, String title, int def, int min, int max, StringProcessor s){
             sliderPref(name, title, def, min, max, 1, s);
         }
