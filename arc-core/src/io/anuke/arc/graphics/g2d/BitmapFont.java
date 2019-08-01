@@ -209,6 +209,19 @@ public class BitmapFont implements Disposable{
         return layout;
     }
 
+    public GlyphLayout draw(CharSequence str, float x, float y, Color color, float scale, boolean integer, int halign){
+        float pscale = getData().scaleX;
+        boolean pint = usesIntegerPositions();
+        setColor(color);
+        getData().setScale(scale);
+        setUseIntegerPositions(integer);
+        GlyphLayout result =  draw(str, x, y, 0, halign, false);
+        getData().setScale(pscale);
+        setUseIntegerPositions(pint);
+        setColor(Color.WHITE);
+        return result;
+    }
+
     public GlyphLayout draw(CharSequence str, float x, float y, int halign){
         return draw(str, x, y, 0, halign, false);
     }
