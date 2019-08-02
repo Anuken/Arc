@@ -23,11 +23,6 @@ final class AndroidSound implements Sound{
     }
 
     @Override
-    public long play(){
-        return play(1);
-    }
-
-    @Override
     public long play(float volume){
         if(streamIds.size == 8) streamIds.pop();
         int streamId = soundPool.play(soundId, volume, volume, 1, 0, 1);

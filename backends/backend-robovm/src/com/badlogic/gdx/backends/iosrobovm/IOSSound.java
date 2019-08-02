@@ -32,11 +32,6 @@ public class IOSSound implements Sound{
     }
 
     @Override
-    public long play(){
-        return play(1, 1, 0, false);
-    }
-
-    @Override
     public long play(float volume){
         return play(volume, 1, 0, false);
     }

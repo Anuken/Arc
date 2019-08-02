@@ -33,10 +33,6 @@ public class OpenALSound implements Sound{
         }
     }
 
-    public long play(){
-        return play(1);
-    }
-
     public long play(float volume){
         if(audio.noDevice) return 0;
         int sourceID = audio.obtainSource(false);
