@@ -8,14 +8,14 @@ import sdl.*;
 public class SdlAudio extends Audio{
     private SdlMusic currentlyPlaying;
 
-    public SdlAudio(){
-        int i = SDLMixer.openAudio(22050*2, 2, 1024);
+    public SdlAudio(SdlConfig config){
+        int i = SDLMixer.openAudio(22050*2, 2, config.audioDeviceBufferSize);
         if(i == -1) throw new SDLError();
         i = SDLMixer.init();
         if(i == -1) throw new SDLError();
 
         //this seems like a good number..?
-        SDLMixer.allocateChannels(64);
+        SDLMixer.allocateChannels(config.audioDeviceSimultaneousSources);
 
         //hook into the listener
         SDLMixer.hookMusicFinished(() -> Core.app.post(() -> {

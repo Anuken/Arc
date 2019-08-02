@@ -1,6 +1,7 @@
 package io.anuke.arc.backends.sdl;
 
 import io.anuke.arc.*;
+import io.anuke.arc.audio.mock.*;
 import io.anuke.arc.collection.*;
 import io.anuke.arc.function.*;
 import io.anuke.arc.graphics.*;
@@ -32,7 +33,7 @@ public class SdlApplication implements Application{
         Core.graphics = this.graphics = new SdlGraphics(this);
         Core.input = this.input = new SdlInput();
         Core.settings = new Settings();
-        Core.audio = new SdlAudio();
+        Core.audio = config.disableAudio ? new MockAudio() : new SdlAudio(config);
 
         initIcon();
 
