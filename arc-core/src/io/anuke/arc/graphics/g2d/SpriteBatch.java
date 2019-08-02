@@ -19,29 +19,29 @@ public class SpriteBatch implements Disposable{
     static final int VERTEX_SIZE = 2 + 1 + 2 + 1;
     static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
 
-    private Mesh mesh;
+    protected Mesh mesh;
 
-    final float[] vertices;
-    int idx = 0;
-    Texture lastTexture = null;
-    float invTexWidth = 0, invTexHeight = 0;
+    protected final float[] vertices;
+    protected int idx = 0;
+    protected Texture lastTexture = null;
+    protected float invTexWidth = 0, invTexHeight = 0;
 
-    boolean apply;
+    protected boolean apply;
 
-    private final Matrix3 transformMatrix = new Matrix3();
-    private final Matrix3 projectionMatrix = new Matrix3();
-    private final Matrix3 combinedMatrix = new Matrix3();
+    protected final Matrix3 transformMatrix = new Matrix3();
+    protected final Matrix3 projectionMatrix = new Matrix3();
+    protected final Matrix3 combinedMatrix = new Matrix3();
 
-    private Blending blending = Blending.normal;
+    protected Blending blending = Blending.normal;
 
-    private final Shader shader;
-    private Shader customShader = null;
+    protected final Shader shader;
+    protected Shader customShader = null;
     private boolean ownsShader;
 
-    private final Color color = new Color(1, 1, 1, 1);
+    protected final Color color = new Color(1, 1, 1, 1);
     protected float colorPacked = Color.WHITE_FLOAT_BITS;
 
-    private final Color mixColor = Color.CLEAR;
+    protected final Color mixColor = Color.CLEAR;
     protected float mixColorPacked = Color.CLEAR_FLOAT_BITS;
 
     /** Number of render calls since the last {@link #begin()}. **/
