@@ -1,5 +1,6 @@
 package io.anuke.arc.scene.ui.layout;
 
+import io.anuke.arc.*;
 import io.anuke.arc.function.BooleanProvider;
 import io.anuke.arc.function.Consumer;
 import io.anuke.arc.function.Predicate;
@@ -8,6 +9,9 @@ import io.anuke.arc.graphics.Color;
 import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.event.Touchable;
 import io.anuke.arc.scene.ui.*;
+import io.anuke.arc.scene.ui.Button.*;
+import io.anuke.arc.scene.ui.Label.*;
+import io.anuke.arc.scene.ui.ScrollPane.*;
 import io.anuke.arc.scene.ui.TextField.TextFieldValidator;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.pooling.Pool.Poolable;
@@ -278,6 +282,18 @@ public class Cell<T extends Element> implements Poolable{
     /** Sets the minWidth, prefWidth, and maxWidth to the specified value. */
     public Cell<T> width(float width){
         minWidth = maxWidth = scl(width);
+        return this;
+    }
+
+    /** Sets the button or label style.*/
+    public Cell<T> style(String style){
+        if(element instanceof Label){
+            ((Label)element).setStyle(Core.scene.skin.get(style, LabelStyle.class));
+        }else if(element instanceof Button){
+            ((Button)element).setStyle(Core.scene.skin.get(style, ButtonStyle.class));
+        }else if(element instanceof ScrollPane){
+            ((ScrollPane)element).setStyle(Core.scene.skin.get(style, ScrollPaneStyle.class));
+        }
         return this;
     }
 

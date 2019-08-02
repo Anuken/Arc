@@ -4,6 +4,7 @@ import io.anuke.arc.Core;
 import io.anuke.arc.Files;
 import io.anuke.arc.Files.FileType;
 import io.anuke.arc.function.Consumer;
+import io.anuke.arc.graphics.*;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.io.Streams;
 
@@ -435,6 +436,11 @@ public class FileHandle{
                 throw new ArcRuntimeException("Cannot open a stream to a directory: " + file + " (" + type + ")", ex);
             throw new ArcRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
         }
+    }
+
+    /** {@see PixmapIO#writePNG(FileHandle, Pixmap)}*/
+    public void writePNG(Pixmap pixmap){
+        PixmapIO.writePNG(this, pixmap);
     }
 
     /**
