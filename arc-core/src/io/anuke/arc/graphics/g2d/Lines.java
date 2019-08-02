@@ -59,7 +59,7 @@ public class Lines{
     }
 
     public static void line(TextureRegion region, float x, float y, float x2, float y2, CapStyle cap, float padding){
-        float length = Mathf.dst(x, y, x2, y2) + (cap == CapStyle.none || cap == CapStyle.round ? padding * 2f : stroke / 2 + (cap == CapStyle.round ? 0 : padding * 2));
+        float length = Mathf.dst(x, y, x2, y2) + (cap == CapStyle.none || cap == CapStyle.round ? padding * 2f : stroke + padding * 2);
         float angle = Mathf.atan2(x2 - x, y2 - y) * Mathf.radDeg;
 
         if(cap == CapStyle.square){
@@ -168,6 +168,10 @@ public class Lines{
                 x1 + ((i + 1f) / divisions) * dx, y1 + ((i + 1f) / divisions) * dy);
             }
         }
+    }
+
+    public static void circle(float x, float y, float rad, int vertices){
+        poly(x, y, vertices, rad);
     }
 
     public static void circle(float x, float y, float rad){

@@ -344,7 +344,7 @@ public class Table extends WidgetGroup{
 
     /** Adds a new cell with a label. */
     public Cell<Label> add(CharSequence text, Color color){
-        return add(new Label(text, new LabelStyle(scene.skin.getFont("default-font"), color)));
+        return add(new Label(text, new LabelStyle(scene.skin.getFont("default"), color)));
     }
 
     /** Adds a new cell with a label. */

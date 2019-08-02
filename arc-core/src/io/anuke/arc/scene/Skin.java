@@ -73,7 +73,7 @@ public class Skin implements Disposable{
     }
 
     public BitmapFont font(){
-        return getFont("default-font");
+        return getFont("default");
     }
 
     /** Adds all resources in the specified skin JSON file. */
