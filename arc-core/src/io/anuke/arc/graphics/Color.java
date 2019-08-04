@@ -649,11 +649,15 @@ public class Color{
 
     /** Returns the color encoded as hex string with the format RRGGBBAA. */
     public String toString(){
-        StringBuilder value = new StringBuilder(Integer
-        .toHexString(((int)(255 * r) << 24) | ((int)(255 * g) << 16) | ((int)(255 * b) << 8) | ((int)(255 * a))));
-        while(value.length() < 8)
-            value.insert(0, "0");
+        StringBuilder value = new StringBuilder();
+        toString(value);
         return value.toString();
+    }
+
+    public void toString(StringBuilder builder){
+        builder.append(Integer.toHexString(((int)(255 * r) << 24) | ((int)(255 * g) << 16) | ((int)(255 * b) << 8) | ((int)(255 * a))));
+        while(builder.length() < 8)
+            builder.insert(0, "0");
     }
 
     /**
