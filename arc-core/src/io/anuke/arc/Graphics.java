@@ -299,6 +299,15 @@ public abstract class Graphics implements Disposable{
      * Creates a new cursor by file name.
      * @param filename the name of the cursor .png file, found in the internal file "cursors/{name}.png"
      */
+    public Cursor newCursor(String filename){
+        Pixmap p = new Pixmap(Core.files.internal("cursors/" + filename + ".png"));
+        return newCursor(p, p.getWidth()/2, p.getHeight()/2);
+    }
+
+    /**
+     * Creates a new cursor by file name.
+     * @param filename the name of the cursor .png file, found in the internal file "cursors/{name}.png"
+     */
     public Cursor newCursor(String filename, int scaling, Color outlineColor){
         return newCursor(new Pixmap(Core.files.internal("cursors/" + filename + ".png")), scaling, outlineColor);
     }
