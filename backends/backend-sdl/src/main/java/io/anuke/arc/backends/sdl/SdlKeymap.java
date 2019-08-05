@@ -87,6 +87,8 @@ public class SdlKeymap{
             case 1073741942: return KeyCode.MENU;
             case 1073741951: return KeyCode.MUTE;
             case 1073741980: return KeyCode.CLEAR;
+            case 1073742050: return KeyCode.ALT_LEFT;
+            case 1073742054: return KeyCode.ALT_RIGHT;
         }
         return KeyCode.UNKNOWN;
     }
