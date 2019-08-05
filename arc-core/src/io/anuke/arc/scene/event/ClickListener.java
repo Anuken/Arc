@@ -3,7 +3,7 @@ package io.anuke.arc.scene.event;
 import io.anuke.arc.Core;
 import io.anuke.arc.input.KeyCode;
 import io.anuke.arc.scene.Element;
-import io.anuke.arc.util.Time;
+import io.anuke.arc.util.*;
 
 /**
  * Detects mouse over, mouse or finger touch presses, and clicks on an element. A touch must go down over the element and is
@@ -108,8 +108,9 @@ public class ClickListener extends InputListener{
 
     /** Returns true if the specified position is over the specified element or within the tap square. */
     public boolean isOver(Element element, float x, float y){
-        Element hit = element.hit(x, y, true);
-        return hit != null && hit.isDescendantOf(element) || inTapSquare(x, y);
+        element.localToStageCoordinates(Tmp.v1.set(x, y));
+        Element hit = Core.scene.hit(Tmp.v1.x, Tmp.v1.y, true);
+        return hit != null && hit.isDescendantOf(element);
     }
 
     public boolean inTapSquare(float x, float y){

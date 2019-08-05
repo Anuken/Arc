@@ -126,7 +126,7 @@ public class Lwjgl3InputMap{
             case GLFW_KEY_RIGHT_BRACKET:
                 return KeyCode.RIGHT_BRACKET;
             case GLFW_KEY_GRAVE_ACCENT:
-                return KeyCode.GRAVE;
+                return KeyCode.BACKTICK;
             case GLFW_KEY_WORLD_1:
             case GLFW_KEY_WORLD_2:
                 return KeyCode.UNKNOWN;
@@ -350,7 +350,7 @@ public class Lwjgl3InputMap{
                 return GLFW_KEY_BACKSLASH;
             case RIGHT_BRACKET:
                 return GLFW_KEY_RIGHT_BRACKET;
-            case GRAVE:
+            case BACKTICK:
                 return GLFW_KEY_GRAVE_ACCENT;
             case ESCAPE:
                 return GLFW_KEY_ESCAPE;

@@ -33,6 +33,7 @@ public class SdlKeymap{
             case 61: return KeyCode.EQUALS;
             case 64: return KeyCode.AT;
             case 92: return KeyCode.BACKSLASH;
+            case 96: return KeyCode.BACKTICK;
             case 97: return KeyCode.A;
             case 98: return KeyCode.B;
             case 99: return KeyCode.C;

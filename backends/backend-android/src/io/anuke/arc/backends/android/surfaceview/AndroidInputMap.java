@@ -87,7 +87,7 @@ public class AndroidInputMap{
             case 35:
                 return KeyCode.G;
             case 68:
-                return KeyCode.GRAVE;
+                return KeyCode.BACKTICK;
             case 36:
                 return KeyCode.H;
             case 79:

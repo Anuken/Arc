@@ -84,7 +84,7 @@ public enum KeyCode implements KeybindValue{
     F(KeyType.key, "F"),
     FOCUS(KeyType.key, "Focus"),
     G(KeyType.key, "G"),
-    GRAVE(KeyType.key, "`"),
+    BACKTICK(KeyType.key, "`"),
     H(KeyType.key, "H"),
     HEADSETHOOK(KeyType.key, "Headset Hook"),
     HOME(KeyType.key, "Home"),
