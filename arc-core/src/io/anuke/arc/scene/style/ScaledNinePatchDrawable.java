@@ -1,10 +1,10 @@
 package io.anuke.arc.scene.style;
 
 import io.anuke.arc.graphics.g2d.NinePatch;
-import io.anuke.arc.scene.ui.layout.Unit;
+import io.anuke.arc.scene.ui.layout.UnitScl;
 
 public class ScaledNinePatchDrawable extends NinePatchDrawable{
-    private float scale = Unit.dp.scl(1f);
+    private float scale = UnitScl.dp.scl(1f);
 
     public ScaledNinePatchDrawable(NinePatch patch){
         super(patch);

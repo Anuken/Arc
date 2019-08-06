@@ -3,7 +3,7 @@ package io.anuke.arc.scene.ui.layout;
 import io.anuke.arc.Application.ApplicationType;
 import io.anuke.arc.Core;
 
-public enum Unit{
+public enum UnitScl{
     px{
         @Override
         public float scl(float amount){

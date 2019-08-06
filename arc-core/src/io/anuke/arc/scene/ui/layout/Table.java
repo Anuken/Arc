@@ -691,38 +691,38 @@ public class Table extends WidgetGroup{
     }
 
     public Table margin(float top, float left, float bottom, float right){
-        marginTop = Unit.dp.scl(top);
-        marginLeft = Unit.dp.scl(left);
-        marginBot = Unit.dp.scl(bottom);
-        marginRight = Unit.dp.scl(right);
+        marginTop = UnitScl.dp.scl(top);
+        marginLeft = UnitScl.dp.scl(left);
+        marginBot = UnitScl.dp.scl(bottom);
+        marginRight = UnitScl.dp.scl(right);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the top edge of the table. */
     public Table marginTop(float padTop){
-        this.marginTop = Unit.dp.scl(padTop);
+        this.marginTop = UnitScl.dp.scl(padTop);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the left edge of the table. */
     public Table marginLeft(float padLeft){
-        this.marginLeft = Unit.dp.scl(padLeft);
+        this.marginLeft = UnitScl.dp.scl(padLeft);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the bottom edge of the table. */
     public Table marginBottom(float padBottom){
-        this.marginBot = Unit.dp.scl(padBottom);
+        this.marginBot = UnitScl.dp.scl(padBottom);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the right edge of the table. */
     public Table marginRight(float padRight){
-        this.marginRight = Unit.dp.scl(padRight);
+        this.marginRight = UnitScl.dp.scl(padRight);
         sizeInvalid = true;
         return this;
     }

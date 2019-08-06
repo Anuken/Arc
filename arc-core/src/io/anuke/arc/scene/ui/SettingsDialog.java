@@ -4,7 +4,7 @@ import io.anuke.arc.collection.Array;
 import io.anuke.arc.function.BooleanConsumer;
 import io.anuke.arc.function.Consumer;
 import io.anuke.arc.scene.ui.layout.Table;
-import io.anuke.arc.scene.ui.layout.Unit;
+import io.anuke.arc.scene.ui.layout.UnitScl;
 
 import static io.anuke.arc.Core.bundle;
 import static io.anuke.arc.Core.settings;
@@ -188,7 +188,7 @@ public class SettingsDialog extends Dialog{
 
                 table.table(t -> {
                     t.left().defaults().left();
-                    t.add(label).minWidth(label.getPrefWidth() / Unit.dp.scl(1f) + 50);
+                    t.add(label).minWidth(label.getPrefWidth() / UnitScl.dp.scl(1f) + 50);
                     t.add(slider).width(180);
                 }).left().padTop(3);
 

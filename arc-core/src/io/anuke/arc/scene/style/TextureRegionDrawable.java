@@ -3,7 +3,7 @@ package io.anuke.arc.scene.style;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.graphics.g2d.TextureRegion;
-import io.anuke.arc.scene.ui.layout.Unit;
+import io.anuke.arc.scene.ui.layout.UnitScl;
 import io.anuke.arc.util.Tmp;
 
 /**
@@ -45,8 +45,8 @@ public class TextureRegionDrawable extends BaseDrawable implements TransformDraw
 
     public void setRegion(TextureRegion region){
         this.region = region;
-        setMinWidth(Unit.dp.scl(region.getWidth()));
-        setMinHeight(Unit.dp.scl(region.getHeight()));
+        setMinWidth(UnitScl.dp.scl(region.getWidth()));
+        setMinHeight(UnitScl.dp.scl(region.getHeight()));
     }
 
     /** Creates a new drawable that renders the same as this drawable tinted the specified color. */
