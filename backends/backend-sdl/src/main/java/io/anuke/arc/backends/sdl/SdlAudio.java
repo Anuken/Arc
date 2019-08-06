@@ -3,6 +3,7 @@ package io.anuke.arc.backends.sdl;
 import io.anuke.arc.*;
 import io.anuke.arc.audio.*;
 import io.anuke.arc.files.*;
+import io.anuke.arc.util.*;
 import sdl.*;
 
 public class SdlAudio extends Audio{
@@ -54,6 +55,8 @@ public class SdlAudio extends Audio{
     public class SdlSound implements Sound{
         private final long handle;
 
+        private long lastPlay = 0;
+
         public SdlSound(FileHandle file){
             handle = SDLMixer.loadWAV(file.toString());
             if(handle == 0) throw new SDLError();
@@ -72,6 +75,10 @@ public class SdlAudio extends Audio{
         //doesn't support setting pitch at all.
         //fantastic.
         long play(float volume, float pitch, float pan, boolean looping){
+            if(Time.timeSinceMillis(lastPlay) < 16 * 3){
+                return -1;
+            }
+
             if(volume < 0.1f) return -1; //don't play quiet sounds, it's not worth it
             float left = 1f - (pan + 1)/2f;
             int pl = (int)(left * 254);
@@ -81,6 +88,7 @@ public class SdlAudio extends Audio{
             if(sound == -1) return -1;
             SDLMixer.setPanning(sound, pl, 254 - pl);
             SDLMixer.volume(sound, (int)(volume * 128));
+            lastPlay = Time.millis();
             return sound;
         }
 
