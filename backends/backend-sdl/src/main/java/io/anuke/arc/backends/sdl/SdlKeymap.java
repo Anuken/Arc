@@ -60,6 +60,7 @@ public class SdlKeymap{
             case 120: return KeyCode.X;
             case 121: return KeyCode.Y;
             case 122: return KeyCode.Z;
+            case 127: return KeyCode.FORWARD_DEL;
             case 1073742048: return KeyCode.CONTROL_LEFT;
             case 1073742052: return KeyCode.CONTROL_RIGHT;
             case 1073742049: return KeyCode.SHIFT_LEFT;
