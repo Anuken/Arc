@@ -4,11 +4,14 @@ import io.anuke.arc.*;
 import io.anuke.arc.input.*;
 import sdl.*;
 
+import java.nio.charset.*;
+
 public class SdlInput extends Input{
     private final InputEventQueue queue = new InputEventQueue();
     private int mouseX, mouseY;
     private int deltaX, deltaY;
     private int mousePressed;
+    private Charset charset = Charset.forName("UTF-8");
     private byte[] strcpy = new byte[32];
 
     //handle encoded input data
@@ -83,7 +86,7 @@ public class SdlInput extends Input{
             for(int i = 0; i < length; i++){
                 strcpy[i] = (byte)input[i + 1];
             }
-            String s = new String(strcpy, 0, length);
+            String s = new String(strcpy, 0, length, charset);
             for(int i = 0; i < s.length(); i++){
                 queue.keyTyped(s.charAt(i));
             }
