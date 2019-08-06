@@ -28,9 +28,19 @@ public enum Unit{
             }
             return amount * scl;
         }
+
+        @Override
+        public void setProduct(float product){
+            this.product = product;
+            scl = -1;
+        }
     };
     public float addition = 0f;
-    public float product = 1f;
+    protected float product = 1f;
 
     public abstract float scl(float amount);
+
+    public void setProduct(float product){
+        this.product = product;
+    }
 }
