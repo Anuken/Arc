@@ -35,9 +35,9 @@ public class TeaVMGraphics extends Graphics {
     long frameId = -1;
     float deltaTime;
     long lastTimeStamp;
-    long time;
+    float time;
     int frames;
-    float fps;
+    int fps;
     private GL20 gl20;
     private GLVersion glVersion;
 

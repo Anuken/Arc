@@ -81,36 +81,41 @@ public class SpriteBatch implements Disposable{
         // 32767 is max vertex index, so 32767 / 4 vertices per sprite = 8191 sprites max.
         if(size > 8191) throw new IllegalArgumentException("Can't have more than 8191 sprites per batch: " + size);
 
-        VertexDataType vertexDataType = (Core.gl30 != null) ? VertexDataType.VertexBufferObjectWithVAO : VertexDataType.VertexArray;
-
-        mesh = new Mesh(vertexDataType, false, size * 4, size * 6,
-        new VertexAttribute(Usage.Position, 2, Shader.POSITION_ATTRIBUTE),
-        new VertexAttribute(Usage.ColorPacked, 4, Shader.COLOR_ATTRIBUTE),
-        new VertexAttribute(Usage.TextureCoordinates, 2, Shader.TEXCOORD_ATTRIBUTE + "0"),
-        new VertexAttribute(Usage.ColorPacked, 4, Shader.MIX_COLOR_ATTRIBUTE));
-
         projectionMatrix.setOrtho(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
 
-        vertices = new float[size * SPRITE_SIZE];
+        if(size > 0){
+            VertexDataType vertexDataType = (Core.gl30 != null) ? VertexDataType.VertexBufferObjectWithVAO : VertexDataType.VertexArray;
 
-        int len = size * 6;
-        short[] indices = new short[len];
-        short j = 0;
-        for(int i = 0; i < len; i += 6, j += 4){
-            indices[i] = j;
-            indices[i + 1] = (short)(j + 1);
-            indices[i + 2] = (short)(j + 2);
-            indices[i + 3] = (short)(j + 2);
-            indices[i + 4] = (short)(j + 3);
-            indices[i + 5] = j;
-        }
-        mesh.setIndices(indices);
+            mesh = new Mesh(vertexDataType, false, size * 4, size * 6,
+            new VertexAttribute(Usage.Position, 2, Shader.POSITION_ATTRIBUTE),
+            new VertexAttribute(Usage.ColorPacked, 4, Shader.COLOR_ATTRIBUTE),
+            new VertexAttribute(Usage.TextureCoordinates, 2, Shader.TEXCOORD_ATTRIBUTE + "0"),
+            new VertexAttribute(Usage.ColorPacked, 4, Shader.MIX_COLOR_ATTRIBUTE));
 
-        if(defaultShader == null){
-            shader = BatchShader.create();
-            ownsShader = true;
+            vertices = new float[size * SPRITE_SIZE];
+
+            int len = size * 6;
+            short[] indices = new short[len];
+            short j = 0;
+            for(int i = 0; i < len; i += 6, j += 4){
+                indices[i] = j;
+                indices[i + 1] = (short)(j + 1);
+                indices[i + 2] = (short)(j + 2);
+                indices[i + 3] = (short)(j + 2);
+                indices[i + 4] = (short)(j + 3);
+                indices[i + 5] = j;
+            }
+            mesh.setIndices(indices);
+
+            if(defaultShader == null){
+                shader = BatchShader.create();
+                ownsShader = true;
+            }else{
+                shader = defaultShader;
+            }
         }else{
-            shader = defaultShader;
+            vertices = new float[0];
+            shader = null;
         }
     }
 

@@ -8,7 +8,7 @@ public class TeaVMLogger extends LogHandler{
 
     @Override
     public void print(String text, Object... args){
-        consoleLog(Strings.format(text, args));
+        consoleLog(Strings.format(text.substring(6), args));
     }
 
     @JSBody(params = "message", script = "console.log(\"TeaVM: \" + message);")

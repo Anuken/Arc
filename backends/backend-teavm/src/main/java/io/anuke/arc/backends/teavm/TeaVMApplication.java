@@ -11,14 +11,13 @@ public class TeaVMApplication implements Application{
     private TeaVMApplicationConfig config;
     private HTMLCanvasElement canvas;
     private TeaVMGraphics graphics;
-    private TeaVMFiles files;
-    private TeaVMAudio audio;
     private TeaVMInput input;
-    private TeaVMNet net;
-    private Array<Runnable> runnables = new Array<>();
-    private Array<ApplicationListener> listeners = new Array<>();
     private int lastWidth = -1, lastHeight = 1;
     private String clipboard = "";
+
+    private final Array<Runnable> runnables = new Array<>();
+    private final Array<Runnable> executedRunnables = new Array<>();
+    private final Array<ApplicationListener> listeners = new Array<>();
 
     public TeaVMApplication(ApplicationListener listener, TeaVMApplicationConfig config) {
         this.listeners.add(listener);
@@ -46,9 +45,9 @@ public class TeaVMApplication implements Application{
         Core.graphics = graphics = new TeaVMGraphics(canvas, config);
         Core.gl = graphics.getGL20();
         Core.gl20 = graphics.getGL20();
-        Core.files = files = new TeaVMFiles();
-        Core.net = net = new TeaVMNet();
-        Core.audio = audio = new TeaVMAudio();
+        Core.files = new TeaVMFiles();
+        Core.net = new TeaVMNet();
+        Core.audio = new TeaVMAudio();
         Core.input = input = new TeaVMInput(canvas);
         Core.settings = new TeaVMSettings();
         listen(ApplicationListener::init);
@@ -64,11 +63,13 @@ public class TeaVMApplication implements Application{
         graphics.update();
         graphics.frameId++;
 
-        int n = runnables.size;
-        for (int i = 0; i < n; ++i) {
-            runnables.get(i).run();
+        executedRunnables.clear();
+        executedRunnables.addAll(runnables);
+        runnables.clear();
+
+        for(Runnable runnable : executedRunnables){
+            runnable.run();
         }
-        runnables.removeRange(0, n - 1);
 
         if(lastWidth != canvas.getWidth() || lastHeight != canvas.getHeight()) {
             listen(l -> l.resize(canvas.getWidth(), canvas.getHeight()));

@@ -36,7 +36,7 @@ public class TeaVMSound implements Sound {
         instance.setVolume(volume);
         instance.setPan(pan, volume);
         instance.setLooping(loop);
-        instance.setOnCompletionListener(music -> {
+        instance.setCompletionListener(music -> {
             instances.remove(id);
             instance.dispose();
         });

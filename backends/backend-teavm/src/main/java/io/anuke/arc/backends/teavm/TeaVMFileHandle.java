@@ -212,7 +212,7 @@ public class TeaVMFileHandle extends FileHandle {
     @Override
     public FileHandle parent() {
         int index = file.lastIndexOf('/', file.endsWith("/") ? file.length() - 1 : file.length());
-        return index > 1 ? new TeaVMFileHandle(file.substring(0, index), type) : null;
+        return index > 1 ? new TeaVMFileHandle(file.substring(0, index), type) : this;
     }
 
     @Override
@@ -228,13 +228,13 @@ public class TeaVMFileHandle extends FileHandle {
     @Override
     public long length() {
         FSEntry entry = entry();
-        return entry != null && entry.data != null ? entry.data.length : null;
+        return entry != null && entry.data != null ? entry.data.length : 0;
     }
 
     @Override
     public long lastModified() {
         FSEntry entry = entry();
-        return entry != null ? entry.lastModified : null;
+        return entry != null ? entry.lastModified : 0;
     }
 
     @Override
