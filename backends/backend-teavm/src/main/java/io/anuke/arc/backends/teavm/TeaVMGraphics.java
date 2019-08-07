@@ -52,7 +52,7 @@ public class TeaVMGraphics extends Graphics {
         attr.setPremultipliedAlpha(config.premultipliedAlpha);
         attr.setPreserveDrawingBuffer(config.drawingBufferPreserved);
 
-        context = (WebGLRenderingContext)element.getContext("webgl");
+        context = (WebGLRenderingContext)element.getContext("webgl", attr);
         context.viewport(0, 0, element.getWidth(), element.getHeight());
         gl20 = new TeaVMGL20(context);
 
