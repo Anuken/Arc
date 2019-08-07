@@ -376,7 +376,9 @@ public class SpriteBatch implements Disposable{
 
     @Override
     public void dispose(){
-        mesh.dispose();
+        if(mesh != null){
+            mesh.dispose();
+        }
         if(ownsShader && shader != null) shader.dispose();
     }
 
