@@ -87,6 +87,7 @@ public class ScrollPane extends WidgetGroup{
         this.style = style;
         setWidget(widget);
         setSize(150, 150);
+        setTransform(true);
 
         addCaptureListener(new InputListener(){
             private float handlePosition;

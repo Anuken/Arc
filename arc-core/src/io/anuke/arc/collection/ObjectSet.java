@@ -1,6 +1,6 @@
 package io.anuke.arc.collection;
 
-import io.anuke.arc.function.Predicate;
+import io.anuke.arc.function.*;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.util.ArcRuntimeException;
 

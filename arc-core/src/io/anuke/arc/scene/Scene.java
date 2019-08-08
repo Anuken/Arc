@@ -144,6 +144,10 @@ public class Scene implements InputProcessor, Disposable{
         return root.find(name);
     }
 
+    public Element findVisible(String name){
+        return root.findVisible(name);
+    }
+
     public Element find(Predicate<Element> pred){
         return root.find(pred);
     }

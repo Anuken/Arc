@@ -29,7 +29,7 @@ public abstract class Group extends Element implements Cullable{
     private final Affine2 worldTransform = new Affine2();
     private final Matrix3 computedTransform = new Matrix3();
     private final Matrix3 oldTransform = new Matrix3();
-    boolean transform = true;
+    boolean transform = false;
     private Rectangle cullingArea;
 
     @Override
@@ -366,6 +366,22 @@ public abstract class Group extends Element implements Cullable{
             Element child = children.get(i);
             if(child instanceof Group){
                 Element actor = ((Group)child).find(name);
+                if(actor != null) return (T)actor;
+            }
+        }
+        return null;
+    }
+
+    /** Finds only visible elements.*/
+    @SuppressWarnings("unchecked")
+    public <T extends Element> T findVisible(String name){
+        Array<Element> children = this.children;
+        for(int i = 0, n = children.size; i < n; i++)
+            if(name.equals(children.get(i).getName()) && children.get(i).isVisible()) return (T)children.get(i);
+        for(int i = 0, n = children.size; i < n; i++){
+            Element child = children.get(i);
+            if(child instanceof Group && child.isVisible()){
+                Element actor = ((Group)child).findVisible(name);
                 if(actor != null) return (T)actor;
             }
         }
