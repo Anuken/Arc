@@ -17,8 +17,7 @@ import io.anuke.arc.files.FileHandle;
  * </p>
  * @author Daniel Holderbaum
  */
-public class FreeTypeFontGeneratorLoader extends
-SynchronousAssetLoader<FreeTypeFontGenerator, FreeTypeFontGeneratorLoader.FreeTypeFontGeneratorParameters>{
+public class FreeTypeFontGeneratorLoader extends SynchronousAssetLoader<FreeTypeFontGenerator, FreeTypeFontGeneratorLoader.FreeTypeFontGeneratorParameters>{
 
     public FreeTypeFontGeneratorLoader(FileHandleResolver resolver){
         super(resolver);

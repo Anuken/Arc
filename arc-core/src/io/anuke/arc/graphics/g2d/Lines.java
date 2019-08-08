@@ -1,25 +1,26 @@
 package io.anuke.arc.graphics.g2d;
 
-import io.anuke.arc.Core;
-import io.anuke.arc.collection.FloatArray;
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.math.Angles;
-import io.anuke.arc.math.Mathf;
-import io.anuke.arc.math.geom.Rectangle;
-import io.anuke.arc.math.geom.Vector2;
+import io.anuke.arc.*;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.graphics.*;
+import io.anuke.arc.math.*;
+import io.anuke.arc.math.geom.*;
 
 public class Lines{
     private static float stroke = 1f;
     private static Vector2 vector = new Vector2();
     private static FloatArray floats = new FloatArray(20);
     private static FloatArray floatBuilder = new FloatArray(20);
-    private static float[] points = new float[8];
     private static boolean building;
-    private static int circleVertices = 30;
+    private static float circlePrecision = 0.38f;
 
     /** Set the vertices used for drawing a line circle. */
-    public static void setCircleVertices(int amount){
-        circleVertices = amount;
+    public static void setCirclePrecision(float amount){
+        circlePrecision = amount;
+    }
+
+    public static int circleVertices(float rad){
+        return 11 + (int)(rad * circlePrecision);
     }
 
     public static void lineAngle(float x, float y, float angle, float length, CapStyle style){
@@ -170,12 +171,12 @@ public class Lines{
         }
     }
 
-    public static void circle(float x, float y, float rad, int vertices){
-        poly(x, y, vertices, rad);
-    }
+   // public static void circle(float x, float y, float rad, int vertices){
+    //    poly(x, y, vertices, rad);
+    //}
 
     public static void circle(float x, float y, float rad){
-        poly(x, y, circleVertices, rad);
+        poly(x, y, circleVertices(rad), rad);
     }
 
     public static void dashCircle(float x, float y, float radius){
@@ -331,6 +332,10 @@ public class Lines{
 
     public static void square(float x, float y, float rad){
         rect(x - rad, y - rad, rad * 2, rad * 2);
+    }
+
+    public static void square(float x, float y, float rad, float rot){
+        poly(x, y, 4, rad, rot - 45);
     }
 
     public static void rect(float x, float y, float width, float height, float xspace, float yspace){

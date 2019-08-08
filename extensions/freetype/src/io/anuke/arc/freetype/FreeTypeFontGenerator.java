@@ -65,7 +65,6 @@ public class FreeTypeFontGenerator implements Disposable{
     final Face face;
     final String name;
     boolean bitmapped = false;
-    private int pixelWidth, pixelHeight;
 
     /** {@link #FreeTypeFontGenerator(FileHandle, int)} */
     public FreeTypeFontGenerator(FileHandle fontFile){
@@ -82,7 +81,6 @@ public class FreeTypeFontGenerator implements Disposable{
         int fileSize = (int)fontFile.length();
 
         library = FreeType.initFreeType();
-        if(library == null) throw new ArcRuntimeException("Couldn't initialize FreeType");
 
         ByteBuffer buffer = null;
 
@@ -326,8 +324,6 @@ public class FreeTypeFontGenerator implements Disposable{
     }
 
     void setPixelSizes(int pixelWidth, int pixelHeight){
-        this.pixelWidth = pixelWidth;
-        this.pixelHeight = pixelHeight;
         if(!bitmapped && !face.setPixelSizes(pixelWidth, pixelHeight))
             throw new ArcRuntimeException("Couldn't set size for font");
     }
@@ -421,7 +417,7 @@ public class FreeTypeFontGenerator implements Disposable{
             }
         }
 
-        if(incremental) data.glyphs = new Array(charactersLength + 32);
+        if(incremental) data.glyphs = new Array<>(charactersLength + 32);
 
         Stroker stroker = null;
         if(parameter.borderWidth > 0){
