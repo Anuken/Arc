@@ -315,6 +315,15 @@ public class Settings{
         return getBool(name, (boolean)defaults.get(name, false));
     }
 
+    /** Runs the specified code once, and never again. */
+    public void getBoolOnce(String name, Runnable run){
+        if(!getBool(name, false)){
+            run.run();
+            put(name, true);
+            save();
+        }
+    }
+
     public byte[] getBytes(String name){
         return getBytes(name, (byte[])defaults.get(name, null));
     }
