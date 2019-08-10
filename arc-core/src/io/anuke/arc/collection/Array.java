@@ -105,7 +105,7 @@ public class Array<T> implements Iterable<T>{
         return new Array<>(ordered, capacity, arrayType);
     }
 
-    public static <T> Array<T> withRecursive(Object... arrays){
+    public static <T> Array<T> withArrays(Object... arrays){
         Array<T> result = new Array<>();
         for(Object a : arrays){
             if(a instanceof Array){
@@ -717,6 +717,26 @@ public class Array<T> implements Iterable<T>{
     public T random(){
         if(size == 0) return null;
         return items[Mathf.random(0, size - 1)];
+    }
+
+    /** Returns a random item from the array, excluding the specified element. If the array is empty, returns null.
+     * If this array only has one element, returns that element. */
+    public T random(T exclude){
+        if(exclude == null) return random();
+        if(size == 0) return null;
+        if(size == 1) return first();
+
+        int eidx = indexOf(exclude);
+        //this item isn't even in the array!
+        if(eidx == -1) return random();
+
+        //shift up the index
+        int index = Mathf.random(0, size - 2);
+        if(index >= eidx){
+            index ++;
+        }
+
+        return items[index];
     }
 
     /**
