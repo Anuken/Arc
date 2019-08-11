@@ -24,6 +24,8 @@ final class AndroidSound implements Sound{
 
     @Override
     public long play(float volume){
+        if(volume <= 0.001f) return -1;
+
         if(streamIds.size == 8) streamIds.pop();
         int streamId = soundPool.play(soundId, volume, volume, 1, 0, 1);
         // standardise error code with other backends

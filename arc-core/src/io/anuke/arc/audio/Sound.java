@@ -30,11 +30,17 @@ public interface Sound extends Disposable{
 
     /** Plays this sound at a certain position, with correct panning and volume applied.
      * Automatically uses the "sfxvolume" setting.*/
-    default long at(float x, float y){
+    default long at(float x, float y, float pitch){
         float dst = Mathf.dst(x, y, Core.camera.position.x, Core.camera.position.y);
         float volume = Mathf.clamp(1f/(dst*dst/Core.audio.falloff)) * Core.settings.getInt("sfxvol") / 100f;
-        float pan = Mathf.clamp((x - Core.camera.position.x) / (Core.camera.width), -1f, 1f);
-        return play(volume, 1f, pan);
+        float pan = Mathf.clamp((x - Core.camera.position.x) / (Core.camera.width / 2f), -1f, 1f);
+        return play(volume, pitch, pan);
+    }
+
+    /** Plays this sound at a certain position, with correct panning and volume applied.
+     * Automatically uses the "sfxvolume" setting.*/
+    default long at(float x, float y){
+        return at(x, y, 1f);
     }
 
     /** Plays #at() with this position. */

@@ -23,8 +23,8 @@ import io.anuke.arc.util.*;
  * @author mzechner
  */
 public abstract class Audio implements Disposable{
-    /** Falloff when playing audio. At this distance from the camera, audio volume will be 0.*/
-    public float falloff = 12000f;
+    /** Falloff when playing audio.*/
+    public float falloff = 13000f;
     /** Whether to dynamically pan sounds when they are on either side of the camera.*/
     public boolean panAudio = true;
 
