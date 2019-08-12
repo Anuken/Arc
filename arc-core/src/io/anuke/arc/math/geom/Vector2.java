@@ -51,6 +51,10 @@ public class Vector2 implements Serializable, Vector<Vector2>, Position{
         return set(x, y).rotate(angle);
     }
 
+    public Vector2 trnsExact(float angle, float amount){
+        return set(amount, 0).rotateRadExact(angle * Mathf.degreesToRadians);
+    }
+
     /**Snaps this vector's coordinates to integers.*/
     public Vector2 snap(){
         return set((int)x, (int)y);
@@ -412,6 +416,19 @@ public class Vector2 implements Serializable, Vector<Vector2>, Position{
     public Vector2 rotateRad(float radians){
         float cos = Mathf.cos(radians);
         float sin = Mathf.sin(radians);
+
+        float newX = this.x * cos - this.y * sin;
+        float newY = this.x * sin + this.y * cos;
+
+        this.x = newX;
+        this.y = newY;
+
+        return this;
+    }
+
+    public Vector2 rotateRadExact(float radians){
+        float cos = (float)Math.cos(radians);
+        float sin = (float)Math.sin(radians);
 
         float newX = this.x * cos - this.y * sin;
         float newY = this.x * sin + this.y * cos;
