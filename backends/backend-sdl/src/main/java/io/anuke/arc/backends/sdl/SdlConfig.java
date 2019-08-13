@@ -6,7 +6,7 @@ import io.anuke.arc.graphics.glutils.*;
 
 public class SdlConfig{
     public boolean disableAudio = false;
-    public int audioDeviceSimultaneousSources = 256;
+    public int audioDeviceSimultaneousSources = 64;
     public int audioDeviceBufferSize = 1024;
 
     public int r = 8, g = 8, b = 8, a = 8;

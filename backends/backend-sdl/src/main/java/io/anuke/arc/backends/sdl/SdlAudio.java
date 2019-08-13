@@ -2,23 +2,18 @@ package io.anuke.arc.backends.sdl;
 
 import io.anuke.arc.*;
 import io.anuke.arc.audio.*;
-import io.anuke.arc.collection.*;
 import io.anuke.arc.files.*;
 import io.anuke.arc.util.*;
 import sdl.*;
 
 public class SdlAudio extends Audio{
     private SdlMusic currentlyPlaying;
-    private IntQueue soundPlays = new IntQueue();
-    private int maxSounds;
 
     public SdlAudio(SdlConfig config){
         int i = SDLMixer.openAudio(22050*2, 2, config.audioDeviceBufferSize);
         if(i == -1) throw new SDLError();
         i = SDLMixer.init();
         if(i == -1) throw new SDLError();
-
-        maxSounds = config.audioDeviceSimultaneousSources;
 
         SDLMixer.allocateChannels(config.audioDeviceSimultaneousSources);
 
@@ -79,9 +74,9 @@ public class SdlAudio extends Audio{
         //doesn't support setting pitch at all.
         //fantastic.
         long play(float volume, float pitch, float pan, boolean looping){
-            //if(Time.timeSinceMillis(lastPlay) < 16 * 6){
-            //    return -1;
-            //}
+            if(Time.timeSinceMillis(lastPlay) < 16 * 6){
+                return -1;
+            }
 
             lastPlay = Time.millis();
 
