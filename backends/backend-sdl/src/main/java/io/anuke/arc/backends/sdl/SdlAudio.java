@@ -79,13 +79,13 @@ public class SdlAudio extends Audio{
         //doesn't support setting pitch at all.
         //fantastic.
         long play(float volume, float pitch, float pan, boolean looping){
-            if(Time.timeSinceMillis(lastPlay) < 16 * 6){
-                return -1;
-            }
+            //if(Time.timeSinceMillis(lastPlay) < 16 * 6){
+            //    return -1;
+            //}
 
             lastPlay = Time.millis();
 
-            //if(volume < 0.05f) return -1; //don't play quiet sounds, it's not worth it
+            if(volume < 0.06f && !looping) return -1; //don't play quiet sounds, it's not worth it
 
             float left = 1f - (pan + 1)/2f;
             int pl = (int)(left * 254);
