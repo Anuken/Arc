@@ -1,6 +1,7 @@
 package io.anuke.arc.audio;
 
 import io.anuke.arc.*;
+import io.anuke.arc.Application.*;
 import io.anuke.arc.files.*;
 import io.anuke.arc.math.*;
 import io.anuke.arc.math.geom.*;
@@ -29,10 +30,14 @@ import io.anuke.arc.util.*;
 public interface Sound extends Disposable{
 
     default float calcPan(float x, float y){
+        if(Core.app.getType() == ApplicationType.HeadlessDesktop) return 0f;
+
         return Mathf.clamp((x - Core.camera.position.x) / (Core.camera.width / 2f), -1f, 1f);
     }
 
     default float calcVolume(float x, float y){
+        if(Core.app.getType() == ApplicationType.HeadlessDesktop) return 1f;
+
         float dst = Mathf.dst(x, y, Core.camera.position.x, Core.camera.position.y);
         return Mathf.clamp(1f/(dst*dst/Core.audio.falloff)) * Core.settings.getInt("sfxvol") / 100f;
     }
