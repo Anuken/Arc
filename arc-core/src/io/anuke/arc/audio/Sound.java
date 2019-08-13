@@ -28,13 +28,19 @@ import io.anuke.arc.util.*;
  */
 public interface Sound extends Disposable{
 
+    default float calcPan(float x, float y){
+        return Mathf.clamp((x - Core.camera.position.x) / (Core.camera.width / 2f), -1f, 1f);
+    }
+
+    default float calcVolume(float x, float y){
+        float dst = Mathf.dst(x, y, Core.camera.position.x, Core.camera.position.y);
+        return Mathf.clamp(1f/(dst*dst/Core.audio.falloff)) * Core.settings.getInt("sfxvol") / 100f;
+    }
+
     /** Plays this sound at a certain position, with correct panning and volume applied.
      * Automatically uses the "sfxvolume" setting.*/
     default long at(float x, float y, float pitch){
-        float dst = Mathf.dst(x, y, Core.camera.position.x, Core.camera.position.y);
-        float volume = Mathf.clamp(1f/(dst*dst/Core.audio.falloff)) * Core.settings.getInt("sfxvol") / 100f;
-        float pan = Mathf.clamp((x - Core.camera.position.x) / (Core.camera.width / 2f), -1f, 1f);
-        return play(volume, pitch, pan);
+        return play(calcVolume(x, y), pitch, calcPan(x, y));
     }
 
     /** Plays this sound at a certain position, with correct panning and volume applied.

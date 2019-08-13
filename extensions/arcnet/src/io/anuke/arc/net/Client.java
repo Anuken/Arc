@@ -273,8 +273,7 @@ public class Client extends Connection implements EndPoint{
             isClosed = false;
             Set<SelectionKey> keys = selector.selectedKeys();
             synchronized(keys){
-                for(Iterator<SelectionKey> iter = keys.iterator(); iter
-                .hasNext(); ){
+                for(Iterator<SelectionKey> iter = keys.iterator(); iter.hasNext(); ){
                     keepAlive();
                     SelectionKey selectionKey = iter.next();
                     iter.remove();

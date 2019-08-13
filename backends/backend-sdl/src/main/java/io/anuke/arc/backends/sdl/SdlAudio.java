@@ -2,12 +2,15 @@ package io.anuke.arc.backends.sdl;
 
 import io.anuke.arc.*;
 import io.anuke.arc.audio.*;
+import io.anuke.arc.collection.*;
 import io.anuke.arc.files.*;
 import io.anuke.arc.util.*;
 import sdl.*;
 
 public class SdlAudio extends Audio{
     private SdlMusic currentlyPlaying;
+    private IntQueue soundPlays = new IntQueue();
+    private int maxSounds;
 
     public SdlAudio(SdlConfig config){
         int i = SDLMixer.openAudio(22050*2, 2, config.audioDeviceBufferSize);
@@ -15,7 +18,8 @@ public class SdlAudio extends Audio{
         i = SDLMixer.init();
         if(i == -1) throw new SDLError();
 
-        //this seems like a good number..?
+        maxSounds = config.audioDeviceSimultaneousSources;
+
         SDLMixer.allocateChannels(config.audioDeviceSimultaneousSources);
 
         //hook into the listener
@@ -75,20 +79,25 @@ public class SdlAudio extends Audio{
         //doesn't support setting pitch at all.
         //fantastic.
         long play(float volume, float pitch, float pan, boolean looping){
-            if(Time.timeSinceMillis(lastPlay) < 16 * 3){
+            if(Time.timeSinceMillis(lastPlay) < 16 * 6){
                 return -1;
             }
 
-            if(volume < 0.1f) return -1; //don't play quiet sounds, it's not worth it
+            lastPlay = Time.millis();
+
+            //if(volume < 0.05f) return -1; //don't play quiet sounds, it's not worth it
+
             float left = 1f - (pan + 1)/2f;
             int pl = (int)(left * 254);
 
             //SDLMixer.volumeChunk(handle, (int)(volume * 128));
             int sound = SDLMixer.playChannel(-1, handle, looping ? -1 : 0);
-            if(sound == -1) return -1;
+            if(sound == -1){
+                return -1;
+            }
+
             SDLMixer.setPanning(sound, pl, 254 - pl);
             SDLMixer.volume(sound, (int)(volume * 128));
-            lastPlay = Time.millis();
             return sound;
         }
 
@@ -97,9 +106,27 @@ public class SdlAudio extends Audio{
             SDLMixer.freeChunk(handle);
         }
 
-        //don't care about any of these... yet
+        @Override
+        public void setVolume(long soundId, float volume){
+            SDLMixer.volume((int)soundId, (int)(volume * 128));
+        }
 
-        @Override public void stop(long soundId){}
+        @Override
+        public void setPan(long soundId, float pan, float volume){
+            float left = 1f - (pan + 1)/2f;
+            int pl = (int)(left * 254);
+
+            SDLMixer.setPanning((int)soundId, pl, 254 - pl);
+            SDLMixer.volume((int)soundId, (int)(volume * 128));
+        }
+
+        @Override
+        public void stop(long soundId){
+            SDLMixer.haltChannel((int)soundId);
+        }
+
+        //implementing these isn't viable
+
         @Override public void pause(long soundId){}
         @Override public void resume(long soundId){}
         @Override public void stop(){}
@@ -107,8 +134,6 @@ public class SdlAudio extends Audio{
         @Override public void resume(){}
         @Override public void setLooping(long soundId, boolean looping){}
         @Override public void setPitch(long soundId, float pitch){}
-        @Override public void setVolume(long soundId, float volume){}
-        @Override public void setPan(long soundId, float pan, float volume){}
     }
 
     public class SdlMusic implements Music{

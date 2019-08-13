@@ -59,6 +59,10 @@ public class SDLMixer{
         return Mix_PlayChannel(channel, (Mix_Chunk*)handle, loops);
     */
 
+    public static native int haltChannel(int channel); /*
+        return Mix_HaltChannel(channel);
+    */
+
     public static native int volume(int channel, int volume); /*
         return Mix_Volume(channel, volume);
      */
