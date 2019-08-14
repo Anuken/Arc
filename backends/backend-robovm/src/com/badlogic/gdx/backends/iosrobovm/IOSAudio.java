@@ -19,7 +19,7 @@ public class IOSAudio extends Audio{
             audio.setAllowIpod(config.allowIpod);
             audio.setHonorSilentSwitch(!config.overrideRingerSwitch);
         }else{
-            Log.errTag("IOSAudio", "No OALSimpleAudio instance available, audio will not be availabe");
+            Log.errTag("IOSAudio", "No OALSimpleAudio instance available, audio will not be available");
         }
     }
 
