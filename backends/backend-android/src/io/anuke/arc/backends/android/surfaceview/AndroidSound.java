@@ -110,6 +110,8 @@ final class AndroidSound implements Sound{
 
     @Override
     public long play(float volume, float pitch, float pan){
+        if(volume <= 0.001f) return -1;
+
         if(streamIds.size == 8) streamIds.pop();
         float leftVolume = volume;
         float rightVolume = volume;
