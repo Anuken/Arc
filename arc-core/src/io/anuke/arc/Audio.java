@@ -24,9 +24,7 @@ import io.anuke.arc.util.*;
  */
 public abstract class Audio implements Disposable{
     /** Falloff when playing audio.*/
-    public float falloff = 13000f;
-    /** Whether to dynamically pan sounds when they are on either side of the camera.*/
-    public boolean panAudio = true;
+    public float falloff = 16000f;
 
     /**
      * Creates a new {@link AudioDevice} either in mono or stereo mode. The AudioDevice has to be disposed via its

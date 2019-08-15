@@ -34,7 +34,7 @@ public class OpenALSound implements Sound{
     }
 
     public int play(float volume){
-        if(audio.noDevice) return 0;
+        if(audio.noDevice) return -1;
         int sourceID = audio.obtainSource(false);
         if(sourceID == -1){
             // Attempt to recover by stopping the least recently played sound
@@ -57,7 +57,7 @@ public class OpenALSound implements Sound{
 
     @Override
     public int loop(float volume){
-        if(audio.noDevice) return 0;
+        if(audio.noDevice) return -1;
         int sourceID = audio.obtainSource(false);
         if(sourceID == -1) return -1;
         int soundId = (int)audio.getSoundId(sourceID);

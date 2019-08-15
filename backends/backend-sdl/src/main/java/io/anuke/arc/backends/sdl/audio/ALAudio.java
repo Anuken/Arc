@@ -238,8 +238,7 @@ public class ALAudio extends Audio{
         if(!soundIdToSource.containsKey(soundId)) return;
         int sourceId = soundIdToSource.get(soundId, 0);
 
-        alSource3f(sourceId, AL_POSITION, Mathf.cos((pan - 1) * Mathf.PI / 2), 0,
-        Mathf.sin((pan + 1) * Mathf.PI / 2));
+        alSource3f(sourceId, AL_POSITION, Mathf.cos((pan - 1) * Mathf.PI / 2), 0, Mathf.sin((pan + 1) * Mathf.PI / 2));
         alSourcef(sourceId, AL_GAIN, volume);
     }
 
