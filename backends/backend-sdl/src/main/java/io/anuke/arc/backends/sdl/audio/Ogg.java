@@ -7,11 +7,11 @@ import java.io.*;
 
 /** @author Nathan Sweet */
 public class Ogg{
-    public static class Music extends OpenALMusic{
+    public static class Music extends ALMusic{
         private OggInputStream input;
         private OggInputStream previousInput;
 
-        public Music(OpenALAudio audio, FileHandle file){
+        public Music(ALAudio audio, FileHandle file){
             super(audio, file);
             if(audio.noDevice) return;
             input = new OggInputStream(file.read());
@@ -43,8 +43,8 @@ public class Ogg{
         }
     }
 
-    public static class Sound extends OpenALSound{
-        public Sound(OpenALAudio audio, FileHandle file){
+    public static class Sound extends ALSound{
+        public Sound(ALAudio audio, FileHandle file){
             super(audio);
             if(audio.noDevice) return;
             OggInputStream input = null;

@@ -44,19 +44,26 @@ public interface Sound extends Disposable{
 
     /** Plays this sound at a certain position, with correct panning and volume applied.
      * Automatically uses the "sfxvolume" setting.*/
-    default long at(float x, float y, float pitch){
-        return play(calcVolume(x, y), pitch, calcPan(x, y));
+    default int at(float x, float y, float pitch){
+        float vol = calcVolume(x, y);
+        if(vol < 0.01f) return -1; //discard
+        return play(vol, pitch, calcPan(x, y));
     }
 
     /** Plays this sound at a certain position, with correct panning and volume applied.
      * Automatically uses the "sfxvolume" setting.*/
-    default long at(float x, float y){
+    default int at(float x, float y){
         return at(x, y, 1f);
     }
 
-    /** Plays #at() with this position. */
-    default long at(Position pos){
+    /** Plays #at() with this position.*/
+    default int at(Position pos){
         return at(pos.getX(), pos.getY());
+    }
+
+    /** Plays #at() with this position.*/
+    default int at(Position pos, float pitch){
+        return at(pos.getX(), pos.getY(), pitch);
     }
 
     /**
@@ -64,7 +71,7 @@ public interface Sound extends Disposable{
      * Automatically uses the "sfxvolume" setting.
      * @return the id of the sound instance if successful, or -1 on failure.
      */
-    default long play(){
+    default int play(){
         return play(1f * Core.settings.getInt("sfxvol") / 100f);
     }
 
@@ -74,7 +81,7 @@ public interface Sound extends Disposable{
      * @param volume the volume in the range [0,1]
      * @return the id of the sound instance if successful, or -1 on failure.
      */
-    default long play(float volume){
+    default int play(float volume){
         return play(volume, 1f, 0f);
     }
 
@@ -85,35 +92,35 @@ public interface Sound extends Disposable{
      * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
      * @return the id of the sound instance if successful, or -1 on failure.
      */
-    long play(float volume, float pitch, float pan);
+    int play(float volume, float pitch, float pan);
 
     /**
      * Plays the sound, looping. If the sound is already playing, it will be played again, concurrently.
      * @return the id of the sound instance if successful, or -1 on failure.
      */
-    default long loop(){
+    default int loop(){
         return loop(1f);
     }
 
     /**
      * Plays the sound, looping. If the sound is already playing, it will be played again, concurrently. You need to stop the sound
-     * via a call to {@link #stop(long)} using the returned id.
+     * via a call to {@link #stop(int)} using the returned id.
      * @param volume the volume in the range [0, 1]
      * @return the id of the sound instance if successful, or -1 on failure.
      */
-    default long loop(float volume){
+    default int loop(float volume){
         return loop(1f, 1f, 0f);
     }
 
     /**
      * Plays the sound, looping. If the sound is already playing, it will be played again, concurrently. You need to stop the sound
-     * via a call to {@link #stop(long)} using the returned id.
+     * via a call to {@link #stop(int)} using the returned id.
      * @param volume the volume in the range [0,1]
      * @param pitch the pitch multiplier, 1 == default, >1 == faster, <1 == slower, the value has to be between 0.5 and 2.0
      * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
      * @return the id of the sound instance if successful, or -1 on failure.
      */
-    long loop(float volume, float pitch, float pan);
+    int loop(float volume, float pitch, float pan);
 
     /** Stops playing all instances of this sound. */
     void stop();
@@ -132,28 +139,28 @@ public interface Sound extends Disposable{
      * playing, this has no effect.
      * @param soundId the sound id
      */
-    void stop(long soundId);
+    void stop(int soundId);
 
     /**
      * Pauses the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the sound is no
      * longer playing, this has no effect.
      * @param soundId the sound id
      */
-    void pause(long soundId);
+    void pause(int soundId);
 
     /**
      * Resumes the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the sound is not
      * paused, this has no effect.
      * @param soundId the sound id
      */
-    void resume(long soundId);
+    void resume(int soundId);
 
     /**
      * Sets the sound instance with the given id to be looping. If the sound is no longer playing this has no effect.s
      * @param soundId the sound id
      * @param looping whether to loop or not.
      */
-    void setLooping(long soundId, boolean looping);
+    void setLooping(int soundId, boolean looping);
 
     /**
      * Changes the pitch multiplier of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}.
@@ -161,7 +168,7 @@ public interface Sound extends Disposable{
      * @param soundId the sound id
      * @param pitch the pitch multiplier, 1 == default, >1 == faster, <1 == slower, the value has to be between 0.5 and 2.0
      */
-    void setPitch(long soundId, float pitch);
+    void setPitch(int soundId, float pitch);
 
     /**
      * Changes the volume of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the
@@ -169,7 +176,7 @@ public interface Sound extends Disposable{
      * @param soundId the sound id
      * @param volume the volume in the range 0 (silent) to 1 (max volume).
      */
-    void setVolume(long soundId, float volume);
+    void setVolume(int soundId, float volume);
 
     /**
      * Sets the panning and volume of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}.
@@ -178,5 +185,5 @@ public interface Sound extends Disposable{
      * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
      * @param volume the volume in the range [0,1].
      */
-    void setPan(long soundId, float pan, float volume);
+    void setPan(int soundId, float pan, float volume);
 }

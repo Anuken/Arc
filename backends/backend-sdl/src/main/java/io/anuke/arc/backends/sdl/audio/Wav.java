@@ -7,10 +7,10 @@ import io.anuke.arc.util.io.*;
 import java.io.*;
 
 public class Wav{
-    public static class Music extends OpenALMusic{
+    public static class Music extends ALMusic{
         private WavInputStream input;
 
-        public Music(OpenALAudio audio, FileHandle file){
+        public Music(ALAudio audio, FileHandle file){
             super(audio, file);
             input = new WavInputStream(file);
             if(audio.noDevice) return;
@@ -35,8 +35,8 @@ public class Wav{
         }
     }
 
-    public static class Sound extends OpenALSound{
-        public Sound(OpenALAudio audio, FileHandle file){
+    public static class Sound extends ALSound{
+        public Sound(ALAudio audio, FileHandle file){
             super(audio);
             if(audio.noDevice) return;
 

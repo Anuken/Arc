@@ -12,21 +12,21 @@ import java.nio.*;
 
 import static io.anuke.arc.backends.sdl.jni.AL.*;
 
-public class OpenALAudio extends Audio{
-    Array<OpenALMusic> music = new Array<>(false, 1, OpenALMusic.class);
+public class ALAudio extends Audio{
+    Array<ALMusic> music = new Array<>(false, 1, ALMusic.class);
     long device;
     long context;
     boolean noDevice = false;
     private IntArray idleSources, allSources;
-    private LongMap<Integer> soundIdToSource;
-    private IntMap<Long> sourceToSoundId;
-    private long nextSoundId = 0;
+    private IntIntMap soundIdToSource;
+    private IntIntMap sourceToSoundId;
+    private int nextSoundId = 0;
     private ObjectMap<String, SoundConstructor> soundTypes = new ObjectMap<>();
     private ObjectMap<String, MusicConstructor> musicTypes = new ObjectMap<>();
-    private OpenALSound[] recentSounds;
+    private ALSound[] recentSounds;
     private int mostRecetSound = -1;
 
-    public OpenALAudio(int simultaneousSources){
+    public ALAudio(int simultaneousSources){
         soundTypes.put("ogg", Ogg.Sound::new);
         musicTypes.put("ogg", Ogg.Music::new);
         soundTypes.put("wav", Wav.Sound::new);
@@ -60,8 +60,8 @@ public class OpenALAudio extends Audio{
             allSources.add(sourceID);
         }
         idleSources = new IntArray(allSources);
-        soundIdToSource = new LongMap<>();
-        sourceToSoundId = new IntMap<>();
+        soundIdToSource = new IntIntMap();
+        sourceToSoundId = new IntIntMap();
 
         FloatBuffer orientation = (FloatBuffer)BufferUtils.newFloatBuffer(6).put(new float[]{0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f}).flip();
         alListenerfv(AL_ORIENTATION, orientation);
@@ -70,7 +70,7 @@ public class OpenALAudio extends Audio{
         FloatBuffer position = (FloatBuffer)BufferUtils.newFloatBuffer(3).put(new float[]{0.0f, 0.0f, 0.0f}).flip();
         alListenerfv(AL_POSITION, position);
 
-        recentSounds = new OpenALSound[simultaneousSources];
+        recentSounds = new ALSound[simultaneousSources];
     }
 
     void checkError(){
@@ -81,7 +81,7 @@ public class OpenALAudio extends Audio{
     }
 
     @Override
-    public OpenALSound newSound(FileHandle file){
+    public ALSound newSound(FileHandle file){
         if(file == null) throw new IllegalArgumentException("file cannot be null.");
         SoundConstructor soundClass = soundTypes.get(file.extension().toLowerCase());
         if(soundClass == null) throw new ArcRuntimeException("Unknown file extension for sound: " + file);
@@ -89,7 +89,7 @@ public class OpenALAudio extends Audio{
     }
 
     @Override
-    public OpenALMusic newMusic(FileHandle file){
+    public ALMusic newMusic(FileHandle file){
         if(file == null) throw new IllegalArgumentException("file cannot be null.");
         MusicConstructor musicClass = musicTypes.get(file.extension().toLowerCase());
         if(musicClass == null) throw new ArcRuntimeException("Unknown file extension for music: " + file);
@@ -106,12 +106,12 @@ public class OpenALAudio extends Audio{
                     idleSources.removeIndex(i);
                 }else{
                     if(sourceToSoundId.containsKey(sourceId)){
-                        long soundId = sourceToSoundId.get(sourceId);
-                        sourceToSoundId.remove(sourceId);
-                        soundIdToSource.remove(soundId);
+                        int soundId = sourceToSoundId.get(sourceId, 0);
+                        sourceToSoundId.remove(sourceId, 0);
+                        soundIdToSource.remove(soundId, 0);
                     }
 
-                    long soundId = nextSoundId++;
+                    int soundId = nextSoundId++;
                     sourceToSoundId.put(sourceId, soundId);
                     soundIdToSource.put(soundId, sourceId);
                 }
@@ -131,8 +131,8 @@ public class OpenALAudio extends Audio{
         alSourceStop(sourceID);
         alSourcei(sourceID, AL_BUFFER, 0);
         if(sourceToSoundId.containsKey(sourceID)){
-            long soundId = sourceToSoundId.remove(sourceID);
-            soundIdToSource.remove(soundId);
+            int soundId = sourceToSoundId.remove(sourceID, 0);
+            soundIdToSource.remove(soundId, 0);
         }
         idleSources.add(sourceID);
     }
@@ -143,8 +143,8 @@ public class OpenALAudio extends Audio{
             int sourceID = idleSources.get(i);
             if(alGetSourcei(sourceID, AL_BUFFER) == bufferID){
                 if(sourceToSoundId.containsKey(sourceID)){
-                    long soundId = sourceToSoundId.remove(sourceID);
-                    soundIdToSource.remove(soundId);
+                    int soundId = sourceToSoundId.remove(sourceID, 0);
+                    soundIdToSource.remove(soundId, 0);
                 }
                 alSourceStop(sourceID);
                 alSourcei(sourceID, AL_BUFFER, 0);
@@ -158,8 +158,8 @@ public class OpenALAudio extends Audio{
             int sourceID = idleSources.get(i);
             if(alGetSourcei(sourceID, AL_BUFFER) == bufferID){
                 if(sourceToSoundId.containsKey(sourceID)){
-                    long soundId = sourceToSoundId.remove(sourceID);
-                    soundIdToSource.remove(soundId);
+                    int soundId = sourceToSoundId.remove(sourceID, 0);
+                    soundIdToSource.remove(soundId, 0);
                 }
                 alSourceStop(sourceID);
             }
@@ -192,51 +192,51 @@ public class OpenALAudio extends Audio{
             music.items[i].update();
     }
 
-    public long getSoundId(int sourceId){
+    public int getSoundId(int sourceId){
         if(!sourceToSoundId.containsKey(sourceId)) return -1;
-        return sourceToSoundId.get(sourceId);
+        return sourceToSoundId.get(sourceId, 0);
     }
 
-    public void stopSound(long soundId){
+    public void stopSound(int soundId){
         if(!soundIdToSource.containsKey(soundId)) return;
-        int sourceId = soundIdToSource.get(soundId);
+        int sourceId = soundIdToSource.get(soundId, 0);
         alSourceStop(sourceId);
     }
 
-    public void pauseSound(long soundId){
+    public void pauseSound(int soundId){
         if(!soundIdToSource.containsKey(soundId)) return;
-        int sourceId = soundIdToSource.get(soundId);
+        int sourceId = soundIdToSource.get(soundId, 0);
         alSourcePause(sourceId);
     }
 
-    public void resumeSound(long soundId){
+    public void resumeSound(int soundId){
         if(!soundIdToSource.containsKey(soundId)) return;
-        int sourceId = soundIdToSource.get(soundId);
+        int sourceId = soundIdToSource.get(soundId, 0);
         if(alGetSourcei(sourceId, AL_SOURCE_STATE) == AL_PAUSED)
             alSourcePlay(sourceId);
     }
 
-    public void setSoundGain(long soundId, float volume){
+    public void setSoundGain(int soundId, float volume){
         if(!soundIdToSource.containsKey(soundId)) return;
-        int sourceId = soundIdToSource.get(soundId);
+        int sourceId = soundIdToSource.get(soundId, 0);
         alSourcef(sourceId, AL_GAIN, volume);
     }
 
-    public void setSoundLooping(long soundId, boolean looping){
+    public void setSoundLooping(int soundId, boolean looping){
         if(!soundIdToSource.containsKey(soundId)) return;
-        int sourceId = soundIdToSource.get(soundId);
+        int sourceId = soundIdToSource.get(soundId, 0);
         alSourcei(sourceId, AL_LOOPING, looping ? AL_TRUE : AL_FALSE);
     }
 
-    public void setSoundPitch(long soundId, float pitch){
+    public void setSoundPitch(int soundId, float pitch){
         if(!soundIdToSource.containsKey(soundId)) return;
-        int sourceId = soundIdToSource.get(soundId);
+        int sourceId = soundIdToSource.get(soundId, 0);
         alSourcef(sourceId, AL_PITCH, pitch);
     }
 
-    public void setSoundPan(long soundId, float pan, float volume){
+    public void setSoundPan(int soundId, float pan, float volume){
         if(!soundIdToSource.containsKey(soundId)) return;
-        int sourceId = soundIdToSource.get(soundId);
+        int sourceId = soundIdToSource.get(soundId, 0);
 
         alSource3f(sourceId, AL_POSITION, Mathf.cos((pan - 1) * Mathf.PI / 2), 0,
         Mathf.sin((pan + 1) * Mathf.PI / 2));
@@ -271,7 +271,7 @@ public class OpenALAudio extends Audio{
      * Retains a list of the most recently played sounds and stops the sound played least recently if necessary for a new sound to
      * play
      */
-    protected void retain(OpenALSound sound, boolean stop){
+    protected void retain(ALSound sound, boolean stop){
         // Move the pointer ahead and wrap
         mostRecetSound++;
         mostRecetSound %= recentSounds.length;
@@ -285,17 +285,17 @@ public class OpenALAudio extends Audio{
     }
 
     /** Removes the disposed sound from the least recently played list */
-    public void forget(OpenALSound sound){
+    public void forget(ALSound sound){
         for(int i = 0; i < recentSounds.length; i++){
             if(recentSounds[i] == sound) recentSounds[i] = null;
         }
     }
 
     public interface SoundConstructor{
-        OpenALSound make(OpenALAudio audio, FileHandle file);
+        ALSound make(ALAudio audio, FileHandle file);
     }
 
     public interface MusicConstructor{
-        OpenALMusic make(OpenALAudio audio, FileHandle file);
+        ALMusic make(ALAudio audio, FileHandle file);
     }
 }

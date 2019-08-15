@@ -8,14 +8,14 @@ import java.io.*;
 
 /** @author Nathan Sweet */
 public class Mp3{
-    public static class Music extends OpenALMusic{
+    public static class Music extends ALMusic{
         // Note: This uses a slightly modified version of JLayer.
 
         private Bitstream bitstream;
         private OutputBuffer outputBuffer;
         private MP3Decoder decoder;
 
-        public Music(OpenALAudio audio, FileHandle file){
+        public Music(ALAudio audio, FileHandle file){
             super(audio, file);
             if(audio.noDevice) return;
             bitstream = new Bitstream(file.read());
@@ -81,10 +81,10 @@ public class Mp3{
         }
     }
 
-    public static class Sound extends OpenALSound{
+    public static class Sound extends ALSound{
         // Note: This uses a slightly modified version of JLayer.
 
-        public Sound(OpenALAudio audio, FileHandle file){
+        public Sound(ALAudio audio, FileHandle file){
             super(audio);
             if(audio.noDevice) return;
             ByteArrayOutputStream output = new ByteArrayOutputStream(4096);

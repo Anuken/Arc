@@ -11,14 +11,14 @@ import java.nio.*;
 import static io.anuke.arc.backends.sdl.jni.AL.*;
 
 /** @author Nathan Sweet */
-public abstract class OpenALMusic implements Music{
+public abstract class ALMusic implements Music{
     static private final int bufferSize = 4096 * 10;
     static private final int bufferCount = 3;
     static private final int bytesPerSample = 2;
     static private final byte[] tempBytes = new byte[bufferSize];
     static private final ByteBuffer tempBuffer = BufferUtils.newByteBuffer(bufferSize);
     protected final FileHandle file;
-    private final OpenALAudio audio;
+    private final ALAudio audio;
     protected int bufferOverhead = 0;
     private FloatArray renderedSecondsQueue = new FloatArray(bufferCount);
     private IntBuffer buffers;
@@ -30,7 +30,7 @@ public abstract class OpenALMusic implements Music{
     private float renderedSeconds, maxSecondsPerBuffer;
     private OnCompletionListener onCompletionListener;
 
-    public OpenALMusic(OpenALAudio audio, FileHandle file){
+    public ALMusic(ALAudio audio, FileHandle file){
         this.audio = audio;
         this.file = file;
         this.onCompletionListener = null;
@@ -60,7 +60,6 @@ public abstract class OpenALMusic implements Music{
                     throw new ArcRuntimeException("Unable to allocate audio buffers. AL Error: " + errorCode);
             }
 
-            //TODO fix
             alSourcei(sourceID, /*AL_DIRECT_CHANNELS_SOFT*/ 0x1033, AL_TRUE);
             alSourcei(sourceID, AL_LOOPING, AL_FALSE);
             setPan(pan, volume);

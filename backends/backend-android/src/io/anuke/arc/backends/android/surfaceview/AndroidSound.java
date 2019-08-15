@@ -23,7 +23,7 @@ final class AndroidSound implements Sound{
     }
 
     @Override
-    public long play(float volume){
+    public int play(float volume){
         if(volume <= 0.001f) return -1;
 
         if(streamIds.size == 8) streamIds.pop();
@@ -40,7 +40,7 @@ final class AndroidSound implements Sound{
     }
 
     @Override
-    public void stop(long soundId){
+    public void stop(int soundId){
         soundPool.stop((int)soundId);
     }
 
@@ -50,7 +50,7 @@ final class AndroidSound implements Sound{
     }
 
     @Override
-    public void pause(long soundId){
+    public void pause(int soundId){
         soundPool.pause((int)soundId);
     }
 
@@ -60,27 +60,27 @@ final class AndroidSound implements Sound{
     }
 
     @Override
-    public void resume(long soundId){
+    public void resume(int soundId){
         soundPool.resume((int)soundId);
     }
 
     @Override
-    public void setPitch(long soundId, float pitch){
+    public void setPitch(int soundId, float pitch){
         soundPool.setRate((int)soundId, pitch);
     }
 
     @Override
-    public void setVolume(long soundId, float volume){
+    public void setVolume(int soundId, float volume){
         soundPool.setVolume((int)soundId, volume, volume);
     }
 
     @Override
-    public long loop(){
+    public int loop(){
         return loop(1);
     }
 
     @Override
-    public long loop(float volume){
+    public int loop(float volume){
         if(streamIds.size == 8) streamIds.pop();
         int streamId = soundPool.play(soundId, volume, volume, 1, -1, 1);
         // standardise error code with other backends
@@ -90,12 +90,12 @@ final class AndroidSound implements Sound{
     }
 
     @Override
-    public void setLooping(long soundId, boolean looping){
+    public void setLooping(int soundId, boolean looping){
         soundPool.setLoop((int)soundId, looping ? -1 : 0);
     }
 
     @Override
-    public void setPan(long soundId, float pan, float volume){
+    public void setPan(int soundId, float pan, float volume){
         float leftVolume = volume;
         float rightVolume = volume;
 
@@ -109,7 +109,7 @@ final class AndroidSound implements Sound{
     }
 
     @Override
-    public long play(float volume, float pitch, float pan){
+    public int play(float volume, float pitch, float pan){
         if(volume <= 0.001f) return -1;
 
         if(streamIds.size == 8) streamIds.pop();
@@ -128,7 +128,7 @@ final class AndroidSound implements Sound{
     }
 
     @Override
-    public long loop(float volume, float pitch, float pan){
+    public int loop(float volume, float pitch, float pan){
         if(streamIds.size == 8) streamIds.pop();
         float leftVolume = volume;
         float rightVolume = volume;
