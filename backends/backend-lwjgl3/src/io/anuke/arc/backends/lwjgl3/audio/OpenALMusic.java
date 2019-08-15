@@ -1,14 +1,7 @@
 package io.anuke.arc.backends.lwjgl3.audio;
 
-import io.anuke.arc.audio.*;
-import io.anuke.arc.collection.*;
-import io.anuke.arc.files.*;
-import io.anuke.arc.math.*;
-import io.anuke.arc.util.*;
-import org.lwjgl.BufferUtils;
+import org.lwjgl.*;
 import org.lwjgl.openal.*;
-
-import java.nio.*;
 
 import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.openal.SOFTDirectChannels.AL_DIRECT_CHANNELS_SOFT;
@@ -48,17 +41,14 @@ public abstract class OpenALMusic implements Music{
     public void play(){
         if(audio.noDevice) return;
         if(sourceID == -1){
-            Log.info("begin play music");
             sourceID = audio.obtainSource(true);
             if(sourceID == -1) return;
-            Log.info("source " + sourceID);
 
             audio.music.add(this);
 
             if(buffers == null){
                 buffers = BufferUtils.createIntBuffer(bufferCount);
                 alGenBuffers(buffers);
-                Log.info(buffers.get(0));
                 int errorCode = alGetError();
                 if(errorCode != AL_NO_ERROR)
                     throw new ArcRuntimeException("Unable to allocate audio buffers. AL Error: " + errorCode);
