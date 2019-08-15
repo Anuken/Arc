@@ -4,7 +4,7 @@ import io.anuke.arc.audio.*;
 
 import java.nio.*;
 
-import static sdl.AL.*;
+import static io.anuke.arc.backends.sdl.jni.AL.*;
 
 /** @author Nathan Sweet */
 public class OpenALSound implements Sound{

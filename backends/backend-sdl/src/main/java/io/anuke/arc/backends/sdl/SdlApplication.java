@@ -7,7 +7,6 @@ import io.anuke.arc.collection.*;
 import io.anuke.arc.function.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.util.*;
-import sdl.*;
 
 public class SdlApplication implements Application{
     private final Array<ApplicationListener> listeners = new Array<>();
@@ -60,9 +59,9 @@ public class SdlApplication implements Application{
             String path = config.windowIconPaths[0];
             try{
                 Pixmap p = new Pixmap(Core.files.getFileHandle(path, config.windowIconFileType));
-                long surface = SDL.SDL_CreateRGBSurfaceFrom(p.getPixels(), p.getWidth(), p.getHeight());
-                SDL.SDL_SetWindowIcon(window, surface);
-                SDL.SDL_FreeSurface(surface);
+                long surface = io.anuke.arc.backends.sdl.jni.SDL.SDL_CreateRGBSurfaceFrom(p.getPixels(), p.getWidth(), p.getHeight());
+                io.anuke.arc.backends.sdl.jni.SDL.SDL_SetWindowIcon(window, surface);
+                io.anuke.arc.backends.sdl.jni.SDL.SDL_FreeSurface(surface);
                 p.dispose();
             }catch(Exception e){
                 e.printStackTrace();
@@ -74,36 +73,36 @@ public class SdlApplication implements Application{
     private void init(){
         ArcNativesLoader.load();
 
-        check(() -> SDL.SDL_Init(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_EVENTS | SDL.SDL_INIT_AUDIO));
+        check(() -> io.anuke.arc.backends.sdl.jni.SDL.SDL_Init(io.anuke.arc.backends.sdl.jni.SDL.SDL_INIT_VIDEO | io.anuke.arc.backends.sdl.jni.SDL.SDL_INIT_EVENTS | io.anuke.arc.backends.sdl.jni.SDL.SDL_INIT_AUDIO));
 
         //set up openGL 2.1; is this really the lowest version needed?
-        check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_CONTEXT_MAJOR_VERSION, 2));
-        check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_CONTEXT_MINOR_VERSION, 0));
+        check(() -> io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_SetAttribute(io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_CONTEXT_MAJOR_VERSION, 2));
+        check(() -> io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_SetAttribute(io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_CONTEXT_MINOR_VERSION, 0));
 
-        check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_RED_SIZE, config.r));
-        check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_GREEN_SIZE, config.g));
-        check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_BLUE_SIZE, config.b));
-        check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_DEPTH_SIZE, config.depth));
-        check(() -> SDL.SDL_GL_SetAttribute(SDL.SDL_GL_DOUBLEBUFFER, 1));
+        check(() -> io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_SetAttribute(io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_RED_SIZE, config.r));
+        check(() -> io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_SetAttribute(io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_GREEN_SIZE, config.g));
+        check(() -> io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_SetAttribute(io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_BLUE_SIZE, config.b));
+        check(() -> io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_SetAttribute(io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_DEPTH_SIZE, config.depth));
+        check(() -> io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_SetAttribute(io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_DOUBLEBUFFER, 1));
 
-        int flags = SDL.SDL_WINDOW_OPENGL;
-        if(config.initialVisible) flags |= SDL.SDL_WINDOW_SHOWN;
-        if(!config.decorated) flags |= SDL.SDL_WINDOW_BORDERLESS;
-        if(config.resizable) flags |= SDL.SDL_WINDOW_RESIZABLE;
-        if(config.maximized) flags |= SDL.SDL_WINDOW_MAXIMIZED;
+        int flags = io.anuke.arc.backends.sdl.jni.SDL.SDL_WINDOW_OPENGL;
+        if(config.initialVisible) flags |= io.anuke.arc.backends.sdl.jni.SDL.SDL_WINDOW_SHOWN;
+        if(!config.decorated) flags |= io.anuke.arc.backends.sdl.jni.SDL.SDL_WINDOW_BORDERLESS;
+        if(config.resizable) flags |= io.anuke.arc.backends.sdl.jni.SDL.SDL_WINDOW_RESIZABLE;
+        if(config.maximized) flags |= io.anuke.arc.backends.sdl.jni.SDL.SDL_WINDOW_MAXIMIZED;
 
-        window = SDL.SDL_CreateWindow(config.title, config.width, config.height, flags);
+        window = io.anuke.arc.backends.sdl.jni.SDL.SDL_CreateWindow(config.title, config.width, config.height, flags);
         if(window == 0) throw new SDLError();
 
-        context = SDL.SDL_GL_CreateContext(window);
+        context = io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_CreateContext(window);
         if(context == 0) throw new SDLError();
 
         if(config.vSyncEnabled){
-            SDL.SDL_GL_SetSwapInterval(1);
+            io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_SetSwapInterval(1);
         }
 
         //always have text input on
-        SDL.SDL_StartTextInput();
+        io.anuke.arc.backends.sdl.jni.SDL.SDL_StartTextInput();
     }
 
     private void loop(){
@@ -112,24 +111,24 @@ public class SdlApplication implements Application{
         listen(ApplicationListener::init);
 
         while(running){
-            while(SDL.SDL_PollEvent(inputs)){
-                if(inputs[0] == SDL.SDL_EVENT_QUIT){
+            while(io.anuke.arc.backends.sdl.jni.SDL.SDL_PollEvent(inputs)){
+                if(inputs[0] == io.anuke.arc.backends.sdl.jni.SDL.SDL_EVENT_QUIT){
                     running = false;
-                }else if(inputs[0] == SDL.SDL_EVENT_WINDOW){
+                }else if(inputs[0] == io.anuke.arc.backends.sdl.jni.SDL.SDL_EVENT_WINDOW){
                     int type = inputs[1];
-                    if(type == SDL.SDL_WINDOWEVENT_SIZE_CHANGED){
+                    if(type == io.anuke.arc.backends.sdl.jni.SDL.SDL_WINDOWEVENT_SIZE_CHANGED){
                         graphics.updateSize(inputs[2], inputs[3]);
                         listen(l -> l.resize(inputs[2], inputs[3]));
-                    }else if(type == SDL.SDL_WINDOWEVENT_SHOWN){
+                    }else if(type == io.anuke.arc.backends.sdl.jni.SDL.SDL_WINDOWEVENT_SHOWN){
                         listen(ApplicationListener::resume);
-                    }else if(type == SDL.SDL_WINDOWEVENT_HIDDEN){
+                    }else if(type == io.anuke.arc.backends.sdl.jni.SDL.SDL_WINDOWEVENT_HIDDEN){
                         listen(ApplicationListener::pause);
                     }
-                }else if(inputs[0] == SDL.SDL_EVENT_MOUSE_MOTION ||
-                    inputs[0] == SDL.SDL_EVENT_MOUSE_BUTTON ||
-                    inputs[0] == SDL.SDL_EVENT_MOUSE_WHEEL ||
-                    inputs[0] == SDL.SDL_EVENT_KEYBOARD ||
-                    inputs[0] == SDL.SDL_EVENT_TEXT_INPUT){
+                }else if(inputs[0] == io.anuke.arc.backends.sdl.jni.SDL.SDL_EVENT_MOUSE_MOTION ||
+                    inputs[0] == io.anuke.arc.backends.sdl.jni.SDL.SDL_EVENT_MOUSE_BUTTON ||
+                    inputs[0] == io.anuke.arc.backends.sdl.jni.SDL.SDL_EVENT_MOUSE_WHEEL ||
+                    inputs[0] == io.anuke.arc.backends.sdl.jni.SDL.SDL_EVENT_KEYBOARD ||
+                    inputs[0] == io.anuke.arc.backends.sdl.jni.SDL.SDL_EVENT_TEXT_INPUT){
                     input.handleInput(inputs);
                 }
             }
@@ -152,7 +151,7 @@ public class SdlApplication implements Application{
                 runnable.run();
             }
 
-            SDL.SDL_GL_SwapWindow(window);
+            io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_SwapWindow(window);
             input.prepareNext();
         }
     }
@@ -177,8 +176,8 @@ public class SdlApplication implements Application{
         dispose();
         Core.audio.dispose();
 
-        SDL.SDL_DestroyWindow(window);
-        SDL.SDL_Quit();
+        io.anuke.arc.backends.sdl.jni.SDL.SDL_DestroyWindow(window);
+        io.anuke.arc.backends.sdl.jni.SDL.SDL_Quit();
     }
 
     private void check(IntProvider run){
@@ -204,12 +203,12 @@ public class SdlApplication implements Application{
 
     @Override
     public String getClipboardText(){
-        return SDL.SDL_GetClipboardText();
+        return io.anuke.arc.backends.sdl.jni.SDL.SDL_GetClipboardText();
     }
 
     @Override
     public void setClipboardText(String text){
-        SDL.SDL_SetClipboardText(text);
+        io.anuke.arc.backends.sdl.jni.SDL.SDL_SetClipboardText(text);
     }
 
     @Override

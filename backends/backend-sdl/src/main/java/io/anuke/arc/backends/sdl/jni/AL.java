@@ -1,4 +1,4 @@
-package sdl;
+package io.anuke.arc.backends.sdl.jni;
 
 import java.nio.*;
 

@@ -8,7 +8,7 @@ import io.anuke.arc.util.*;
 
 import java.nio.*;
 
-import static sdl.AL.*;
+import static io.anuke.arc.backends.sdl.jni.AL.*;
 
 /** @author Nathan Sweet */
 public abstract class OpenALMusic implements Music{

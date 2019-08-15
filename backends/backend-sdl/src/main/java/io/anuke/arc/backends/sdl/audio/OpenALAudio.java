@@ -10,7 +10,7 @@ import io.anuke.arc.util.*;
 
 import java.nio.*;
 
-import static sdl.AL.*;
+import static io.anuke.arc.backends.sdl.jni.AL.*;
 
 public class OpenALAudio extends Audio{
     Array<OpenALMusic> music = new Array<>(false, 1, OpenALMusic.class);
@@ -40,7 +40,6 @@ public class OpenALAudio extends Audio{
             checkError();
             return;
         }
-        //long deviceCapabilities = createCapabilities(device);
         context = alcCreateContext(device, null);
         if(context == 0L){
             alcCloseDevice(device);
@@ -53,8 +52,6 @@ public class OpenALAudio extends Audio{
             checkError();
             return;
         }
-        Log.info("OpenAL " + alGetString(AL_VERSION));
-        //AL.createCapabilities(deviceCapabilities);
 
         allSources = new IntArray(false, simultaneousSources);
         for(int i = 0; i < simultaneousSources; i++){
@@ -66,8 +63,7 @@ public class OpenALAudio extends Audio{
         soundIdToSource = new LongMap<>();
         sourceToSoundId = new IntMap<>();
 
-        FloatBuffer orientation = (FloatBuffer)BufferUtils.newFloatBuffer(6)
-        .put(new float[]{0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f}).flip();
+        FloatBuffer orientation = (FloatBuffer)BufferUtils.newFloatBuffer(6).put(new float[]{0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f}).flip();
         alListenerfv(AL_ORIENTATION, orientation);
         FloatBuffer velocity = (FloatBuffer)BufferUtils.newFloatBuffer(3).put(new float[]{0.0f, 0.0f, 0.0f}).flip();
         alListenerfv(AL_VELOCITY, velocity);
