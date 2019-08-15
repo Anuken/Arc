@@ -8,70 +8,8 @@ public class AL{
 
     #include "AL/al.h"
     #include "AL/alc.h"
-    #include <cmath>
 
      */
-
-    public static native void test(); /*
-        alGetError();
-
-    ALCdevice *device = alcOpenDevice(NULL);
-    if (device == NULL) {
-
-        return;
-    }
-
-    ALCcontext *context = alcCreateContext(device, NULL);
-    if (!alcMakeContextCurrent(context)) {
-
-        return;
-    }
-
-    ALuint buffer;
-
-    // Set up sound buffer
-    alGenBuffers((ALuint)1, &buffer);
-
-    // Fill buffer with sine-wave
-    float freq = 440.f;
-    int seconds = 4;
-    unsigned sample_rate = 22050;
-    size_t buf_size = seconds * sample_rate;
-
-    short *samples;
-    samples = new short[buf_size];
-    for(int i=0; i<buf_size; ++i) {
-        samples[i] = (short) (32760 * sin((2.f * float(M_PI) * freq) / sample_rate * i ));
-    }
-
-    alBufferData(buffer, AL_FORMAT_MONO16, samples, buf_size, sample_rate);
-
-    ALuint source;
-
-    // Set up sound source
-    alGenSources((ALuint)1, &source);
-    alSourcef(source, AL_PITCH, 1);
-    alSourcef(source, AL_GAIN, 1);
-    alSource3f(source, AL_POSITION, 0, 0, 0);
-    alSource3f(source, AL_VELOCITY, 0, 0, 0);
-    alSourcei(source, AL_LOOPING, AL_FALSE);
-    alSourcei(source, AL_BUFFER, buffer);
-
-    // Start playing
-    alSourcePlay(source);
-
-    // Wait until the sound stops playing
-    ALenum state;
-    do {
-        alGetSourcei(source, AL_SOURCE_STATE, &state);
-    } while (state == AL_PLAYING);
-
-    // Clean up
-    alDeleteSources(1, &source);
-    alcMakeContextCurrent(NULL);
-    alcDestroyContext(context);
-    alcCloseDevice(device);
-    */
 
     //al
     public static final int AL_INVALID = -1;
