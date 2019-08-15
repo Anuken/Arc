@@ -12,9 +12,9 @@ class NativesBuild{
     static final String win32crossCompilePath = "/usr/local/cross-tools/i686-w64-mingw32/bin/";
     static final String win64crossCompilePath = "/usr/local/cross-tools/x86_64-w64-mingw32/bin/";
     static final String minSDLversion = "2.0.9";
-    static final String libsLinux = " -lGLEW -lGLU -lGL -lSDL2_mixer";
-    static final String libsMac = " -lGLEW -lSDL2_mixer";
-    static final String libsWin = " -lglew32s -lglu32 -lopengl32 -lSDL2_mixer -lwinmm"; //absolutely disgusting amount of libraries required here
+    static final String libsLinux = " -lGLEW -lGLU -lGL -lopenal";
+    static final String libsMac = " -lGLEW -lopenal";
+    static final String libsWin = " -lglew32s -lglu32 -lopengl32 -lopenal"; //absolutely disgusting amount of libraries required here
     static final String macLibPath = "/usr/local/lib/libSDL2.a";
     static final boolean compileMac = OS.isMac;
 

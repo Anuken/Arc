@@ -2,6 +2,7 @@ package io.anuke.arc.backends.sdl;
 
 import io.anuke.arc.*;
 import io.anuke.arc.audio.mock.*;
+import io.anuke.arc.backends.sdl.audio.*;
 import io.anuke.arc.collection.*;
 import io.anuke.arc.function.*;
 import io.anuke.arc.graphics.*;
@@ -17,6 +18,7 @@ public class SdlApplication implements Application{
     final SdlGraphics graphics;
     final SdlInput input;
     final SdlConfig config;
+    OpenALAudio audio;
 
     boolean running = true;
     long window, context;
@@ -35,7 +37,7 @@ public class SdlApplication implements Application{
         Core.settings = new Settings();
 
         try{
-            Core.audio = config.disableAudio ? new MockAudio() : new SdlAudio(config);
+            Core.audio = config.disableAudio ? new MockAudio() : (audio = new OpenALAudio(config.audioDeviceSimultaneousSources));
         }catch(Throwable t){
             Log.err(t);
             Log.err("Error initializing; disabling audio.");
@@ -134,6 +136,9 @@ public class SdlApplication implements Application{
 
             graphics.update();
             input.update();
+            if(audio != null){
+                audio.update();
+            }
 
             listen(ApplicationListener::update);
 

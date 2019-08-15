@@ -53,6 +53,11 @@ libraries.robovm = [
         "com.mobidevelop.robovm:robovm-cocoatouch:${versions.robovm}"
 ]
 
+libraries.sdl = [
+        "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
+        "org.jcraft:jorbis:${versions.jorbis}"
+]
+
 libraries.gwt = [
         "com.google.gwt:gwt-user:${versions.gwt}",
         "com.google.gwt:gwt-dev:${versions.gwt}"

@@ -9,6 +9,7 @@ sourceSets.main.resources.srcDirs = ["libs/linux32", "libs/linux64",
 
 dependencies {
     testCompile "com.badlogicgames.gdx:gdx-jnigen:1.9.10"
+    compile libraries.sdl
 
     if(findProject(":arc-core") != null){
         testCompile project(":arc-core")

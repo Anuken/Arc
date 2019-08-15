@@ -1,17 +1,14 @@
-package io.anuke.arc.backends.lwjgl3.audio;
+package io.anuke.arc.backends.sdl.audio;
 
 import io.anuke.arc.audio.*;
 import io.anuke.arc.collection.*;
 import io.anuke.arc.files.*;
 import io.anuke.arc.math.*;
 import io.anuke.arc.util.*;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.openal.*;
 
 import java.nio.*;
 
-import static org.lwjgl.openal.AL10.*;
-import static org.lwjgl.openal.SOFTDirectChannels.AL_DIRECT_CHANNELS_SOFT;
+import static sdl.AL.*;
 
 /** @author Nathan Sweet */
 public abstract class OpenALMusic implements Music{
@@ -19,7 +16,7 @@ public abstract class OpenALMusic implements Music{
     static private final int bufferCount = 3;
     static private final int bytesPerSample = 2;
     static private final byte[] tempBytes = new byte[bufferSize];
-    static private final ByteBuffer tempBuffer = BufferUtils.createByteBuffer(bufferSize);
+    static private final ByteBuffer tempBuffer = BufferUtils.newByteBuffer(bufferSize);
     protected final FileHandle file;
     private final OpenALAudio audio;
     protected int bufferOverhead = 0;
@@ -45,26 +42,26 @@ public abstract class OpenALMusic implements Music{
         maxSecondsPerBuffer = (float)(bufferSize - bufferOverhead) / (bytesPerSample * channels * sampleRate);
     }
 
+    @Override
     public void play(){
+
         if(audio.noDevice) return;
         if(sourceID == -1){
-            Log.info("begin play music");
             sourceID = audio.obtainSource(true);
             if(sourceID == -1) return;
-            Log.info("source " + sourceID);
 
             audio.music.add(this);
 
             if(buffers == null){
-                buffers = BufferUtils.createIntBuffer(bufferCount);
-                alGenBuffers(buffers);
-                Log.info(buffers.get(0));
+                buffers = BufferUtils.newIntBuffer(bufferCount);
+                alGenBuffers(buffers.remaining(), buffers);
                 int errorCode = alGetError();
                 if(errorCode != AL_NO_ERROR)
                     throw new ArcRuntimeException("Unable to allocate audio buffers. AL Error: " + errorCode);
             }
 
-            alSourcei(sourceID, AL_DIRECT_CHANNELS_SOFT, AL_TRUE);
+            //TODO fix
+            alSourcei(sourceID, /*AL_DIRECT_CHANNELS_SOFT*/ 0x1033, AL_TRUE);
             alSourcei(sourceID, AL_LOOPING, AL_FALSE);
             setPan(pan, volume);
 
@@ -88,6 +85,7 @@ public abstract class OpenALMusic implements Music{
         }
     }
 
+    @Override
     public void stop(){
         if(audio.noDevice) return;
         if(sourceID == -1) return;
@@ -100,36 +98,43 @@ public abstract class OpenALMusic implements Music{
         isPlaying = false;
     }
 
+    @Override
     public void pause(){
         if(audio.noDevice) return;
         if(sourceID != -1) alSourcePause(sourceID);
         isPlaying = false;
     }
 
+    @Override
     public boolean isPlaying(){
         if(audio.noDevice) return false;
         if(sourceID == -1) return false;
         return isPlaying;
     }
 
+    @Override
     public boolean isLooping(){
         return isLooping;
     }
 
+    @Override
     public void setLooping(boolean isLooping){
         this.isLooping = isLooping;
     }
 
+    @Override
     public float getVolume(){
         return this.volume;
     }
 
+    @Override
     public void setVolume(float volume){
         this.volume = volume;
         if(audio.noDevice) return;
         if(sourceID != -1) alSourcef(sourceID, AL_GAIN, volume);
     }
 
+    @Override
     public void setPan(float pan, float volume){
         this.volume = volume;
         this.pan = pan;
@@ -140,12 +145,14 @@ public abstract class OpenALMusic implements Music{
         alSourcef(sourceID, AL_GAIN, volume);
     }
 
+    @Override
     public float getPosition(){
         if(audio.noDevice) return 0;
         if(sourceID == -1) return 0;
-        return renderedSeconds + alGetSourcef(sourceID, AL11.AL_SEC_OFFSET);
+        return renderedSeconds + alGetSourcef(sourceID, AL_SEC_OFFSET);
     }
 
+    @Override
     public void setPosition(float position){
         if(audio.noDevice) return;
         if(sourceID == -1) return;
@@ -177,7 +184,7 @@ public abstract class OpenALMusic implements Music{
             stop();
             if(onCompletionListener != null) onCompletionListener.complete(this);
         }
-        alSourcef(sourceID, AL11.AL_SEC_OFFSET, position - renderedSeconds);
+        alSourcef(sourceID, AL_SEC_OFFSET, position - renderedSeconds);
         if(wasPlaying){
             alSourcePlay(sourceID);
             isPlaying = true;
@@ -250,10 +257,11 @@ public abstract class OpenALMusic implements Music{
         renderedSecondsQueue.insert(0, previousLoadedSeconds + currentBufferSeconds);
 
         tempBuffer.put(tempBytes, 0, length).flip();
-        alBufferData(bufferID, format, tempBuffer, sampleRate);
+        alBufferData(bufferID, format, tempBuffer, tempBuffer.remaining(), sampleRate);
         return true;
     }
 
+    @Override
     public void dispose(){
         stop();
         if(audio.noDevice) return;
@@ -263,6 +271,7 @@ public abstract class OpenALMusic implements Music{
         onCompletionListener = null;
     }
 
+    @Override
     public void setCompletionListener(OnCompletionListener listener){
         onCompletionListener = listener;
     }
