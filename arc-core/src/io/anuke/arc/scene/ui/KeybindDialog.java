@@ -185,6 +185,7 @@ public class KeybindDialog extends Dialog{
     }
 
     private void rebind(Section section, KeyBind bind, KeyCode newKey){
+        if(rebindKey == null) return;
         rebindDialog.hide();
         boolean isAxis = bind.defaultValue(section.device.type()) instanceof Axis;
 
