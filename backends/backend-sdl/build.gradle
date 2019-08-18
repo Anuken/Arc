@@ -5,7 +5,7 @@ targetCompatibility = 1.8
 
 sourceSets.main.java.srcDirs = ["src/main/java"]
 sourceSets.main.resources.srcDirs = ["libs/linux32", "libs/linux64",
-                                      "libs/macosx32", "libs/macosx64","libs/windows32", "libs/windows64"]
+                                      "libs/macosx32", "libs/macosx64","libs/windows32", "libs/windows64", "libs/openal"]
 
 dependencies {
     testCompile "com.badlogicgames.gdx:gdx-jnigen:1.9.10"

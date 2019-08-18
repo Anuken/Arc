@@ -12,6 +12,15 @@ final public class SDL {
     */
 
     static {
+        if(OS.isWindows){
+            //64-bit only right now. TODO fix
+            new SharedLibraryLoader(){
+                @Override
+                public String mapLibraryName(String libraryName){
+                    return libraryName + ".dll";
+                }
+            }.load("OpenAL32");
+        }
         new SharedLibraryLoader().load("sdl-arc");
     }
 

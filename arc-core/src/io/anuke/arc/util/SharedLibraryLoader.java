@@ -262,8 +262,7 @@ public class SharedLibraryLoader{
         String fileName = new File(sourcePath).getName();
 
         // Temp directory with username in path.
-        File file = new File(System.getProperty("java.io.tmpdir") + "/arc" + System.getProperty("user.name") + "/" + sourceCrc,
-        fileName);
+        File file = new File(System.getProperty("java.io.tmpdir") + "/arc" + System.getProperty("user.name") + "/" + sourceCrc, fileName);
         Throwable ex = loadFile(sourcePath, sourceCrc, file);
         if(ex == null) return;
 
