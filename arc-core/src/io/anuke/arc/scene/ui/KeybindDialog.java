@@ -181,7 +181,8 @@ public class KeybindDialog extends Dialog{
         cont.row();
 
         cont.add(pane).growX().colspan(sections.length);
-
+        Core.app.post(() -> Core.scene.setScrollFocus(pane));
+        
     }
 
     private void rebind(Section section, KeyBind bind, KeyCode newKey){

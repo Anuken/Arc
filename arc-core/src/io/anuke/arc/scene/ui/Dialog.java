@@ -72,6 +72,15 @@ public class Dialog extends Window{
                 }
             }
         };
+        
+        shown(() -> Core.app.post(() ->
+        forEach(child -> {
+
+            if(child instanceof ScrollPane){
+                Core.scene.setScrollFocus(child);
+            }
+        })));
+        
     }
 
     public static void setHideAction(Supplier<Action> prov){
