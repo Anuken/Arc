@@ -30,27 +30,16 @@ final public class SDL {
     }
 
     //core SDL methods
-
-    public static int
-    SDL_INIT_TIMER = SDL_INIT_TIMER(),
-    SDL_INIT_AUDIO = SDL_INIT_AUDIO(),
-    SDL_INIT_VIDEO = SDL_INIT_VIDEO(),
-    SDL_INIT_JOYSTICK = SDL_INIT_JOYSTICK(),
-    SDL_INIT_HAPTIC = SDL_INIT_HAPTIC(),
-    SDL_INIT_GAMECONTROLLER = SDL_INIT_GAMECONTROLLER(),
-    SDL_INIT_EVENTS = SDL_INIT_EVENTS(),
-    SDL_INIT_SENSOR = SDL_INIT_SENSOR(),
-    SDL_INIT_EVERYTHING = SDL_INIT_EVERYTHING();
-
-    private static native int SDL_INIT_TIMER(); /* return SDL_INIT_TIMER;*/
-    private static native int SDL_INIT_AUDIO(); /* return SDL_INIT_AUDIO; */
-    private static native int SDL_INIT_VIDEO(); /* return SDL_INIT_VIDEO; */
-    private static native int SDL_INIT_JOYSTICK(); /* return SDL_INIT_JOYSTICK; */
-    private static native int SDL_INIT_HAPTIC(); /* return SDL_INIT_HAPTIC; */
-    private static native int SDL_INIT_GAMECONTROLLER(); /* return SDL_INIT_GAMECONTROLLER; */
-    private static native int SDL_INIT_EVENTS(); /* return SDL_INIT_EVENTS; */
-    private static native int SDL_INIT_SENSOR(); /* return SDL_INIT_SENSOR; */
-    private static native int SDL_INIT_EVERYTHING(); /* return SDL_INIT_EVERYTHING; */
+    public static final int
+    SDL_INIT_TIMER = 0x00000001,
+    SDL_INIT_AUDIO = 0x00000010,
+    SDL_INIT_VIDEO = 0x00000020,
+    SDL_INIT_JOYSTICK = 0x00000200,
+    SDL_INIT_HAPTIC = 0x00001000,
+    SDL_INIT_GAMECONTROLLER = 0x00002000,
+    SDL_INIT_EVENTS = 0x00004000,
+    SDL_INIT_NOPARACHUTE = 0x00100000,
+    SDL_INIT_EVERYTHING = SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER;
 
     public static native int SDL_Init(int flags); /*
         return SDL_Init(flags);
@@ -91,25 +80,21 @@ final public class SDL {
     //video-related methods
 
     public static final int
-    SDL_WINDOW_FULLSCREEN = SDL_WINDOW_FULLSCREEN(),
-    SDL_WINDOW_FULLSCREEN_DESKTOP = SDL_WINDOW_FULLSCREEN_DESKTOP(),
-    SDL_WINDOW_OPENGL = SDL_WINDOW_OPENGL(),
-    SDL_WINDOW_SHOWN = SDL_WINDOW_SHOWN(),
-    SDL_WINDOW_HIDDEN = SDL_WINDOW_HIDDEN(),
-    SDL_WINDOW_BORDERLESS = SDL_WINDOW_BORDERLESS(),
-    SDL_WINDOW_RESIZABLE = SDL_WINDOW_RESIZABLE(),
-    SDL_WINDOW_MINIMIZED = SDL_WINDOW_MINIMIZED(),
-    SDL_WINDOW_MAXIMIZED = SDL_WINDOW_MAXIMIZED();
-
-    private static native int SDL_WINDOW_FULLSCREEN(); /* return SDL_WINDOW_FULLSCREEN;*/
-    private static native int SDL_WINDOW_FULLSCREEN_DESKTOP(); /* return SDL_WINDOW_FULLSCREEN_DESKTOP;*/
-    private static native int SDL_WINDOW_OPENGL(); /* return SDL_WINDOW_OPENGL;*/
-    private static native int SDL_WINDOW_SHOWN(); /* return SDL_WINDOW_SHOWN;*/
-    private static native int SDL_WINDOW_HIDDEN(); /* return SDL_WINDOW_HIDDEN;*/
-    private static native int SDL_WINDOW_BORDERLESS(); /* return SDL_WINDOW_BORDERLESS;*/
-    private static native int SDL_WINDOW_RESIZABLE(); /* return SDL_WINDOW_RESIZABLE;*/
-    private static native int SDL_WINDOW_MINIMIZED(); /* return SDL_WINDOW_MINIMIZED;*/
-    private static native int SDL_WINDOW_MAXIMIZED(); /* return SDL_WINDOW_MAXIMIZED;*/
+    SDL_WINDOW_FULLSCREEN = 0x00000001,         /**< fullscreen window */
+    SDL_WINDOW_OPENGL = 0x00000002,             /**< window usable with OpenGL context */
+    SDL_WINDOW_SHOWN = 0x00000004,              /**< window is visible */
+    SDL_WINDOW_HIDDEN = 0x00000008,             /**< window is not visible */
+    SDL_WINDOW_BORDERLESS = 0x00000010,         /**< no window decoration */
+    SDL_WINDOW_RESIZABLE = 0x00000020,          /**< window can be resized */
+    SDL_WINDOW_MINIMIZED = 0x00000040,          /**< window is minimized */
+    SDL_WINDOW_MAXIMIZED = 0x00000080,          /**< window is maximized */
+    SDL_WINDOW_INPUT_GRABBED = 0x00000100,      /**< window has grabbed input focus */
+    SDL_WINDOW_INPUT_FOCUS = 0x00000200,        /**< window has input focus */
+    SDL_WINDOW_MOUSE_FOCUS = 0x00000400,        /**< window has mouse focus */
+    SDL_WINDOW_FULLSCREEN_DESKTOP = (SDL_WINDOW_FULLSCREEN | 0x00001000),
+    SDL_WINDOW_FOREIGN = 0x00000800,            /**< window not created by SDL */
+    SDL_WINDOW_ALLOW_HIGHDPI = 0x00002000,      /**< window should be created in high-DPI mode if supported */
+    SDL_WINDOW_MOUSE_CAPTURE = 0x00004000;       /**< window has mouse captured (unrelated to INPUT_GRABBED) */
 
     public static final int
     SDL_WINDOWEVENT_SHOWN = SDL_WINDOWEVENT_SHOWN(),
@@ -234,22 +219,14 @@ final public class SDL {
     */
 
     public static final int
-    SDL_MESSAGEBOX_ERROR = SDL_MESSAGEBOX_ERROR(),
-    SDL_MESSAGEBOX_WARNING = SDL_MESSAGEBOX_WARNING(),
-    SDL_MESSAGEBOX_INFORMATION = SDL_MESSAGEBOX_INFORMATION();
-
-    private static native int SDL_MESSAGEBOX_ERROR(); /* return SDL_MESSAGEBOX_ERROR;*/
-    private static native int SDL_MESSAGEBOX_WARNING(); /* return SDL_MESSAGEBOX_WARNING;*/
-    private static native int SDL_MESSAGEBOX_INFORMATION(); /* return SDL_MESSAGEBOX_INFORMATION;*/
+    SDL_MESSAGEBOX_ERROR = 0x00000010,   /**< error dialog */
+    SDL_MESSAGEBOX_WARNING = 0x00000020,   /**< warning dialog */
+    SDL_MESSAGEBOX_INFORMATION = 0x00000040;    /**< informational dialog */
 
     public static final int
-    SDL_BUTTON_LEFT = SDL_BUTTON_LEFT(),
-    SDL_BUTTON_MIDDLE = SDL_BUTTON_MIDDLE(),
-    SDL_BUTTON_RIGHT = SDL_BUTTON_RIGHT();
-
-    private static native int SDL_BUTTON_LEFT(); /* return SDL_BUTTON_LEFT;*/
-    private static native int SDL_BUTTON_MIDDLE(); /* return SDL_BUTTON_MIDDLE;*/
-    private static native int SDL_BUTTON_RIGHT(); /* return SDL_BUTTON_RIGHT;*/
+    SDL_BUTTON_LEFT = 1,
+    SDL_BUTTON_MIDDLE = 2,
+    SDL_BUTTON_RIGHT = 3;
 
     public static final int
     SDL_EVENT_QUIT = 0,

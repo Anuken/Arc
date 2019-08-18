@@ -7,7 +7,7 @@ import io.anuke.arc.scene.*;
 import io.anuke.arc.scene.actions.Actions;
 import io.anuke.arc.scene.event.*;
 import io.anuke.arc.scene.ui.layout.Table;
-import io.anuke.arc.util.Align;
+import io.anuke.arc.util.*;
 
 import static io.anuke.arc.Core.scene;
 
@@ -72,6 +72,21 @@ public class Dialog extends Window{
                 }
             }
         };
+
+        shown(this::updateScrollFocus);
+    }
+
+    public void updateScrollFocus(){
+        boolean[] done = {false};
+
+        Core.app.post(() -> forEach(child -> {
+            if(done[0]) return;
+
+            if(child instanceof ScrollPane){
+                Core.scene.setScrollFocus(child);
+                done[0] = true;
+            }
+        }));
     }
 
     public static void setHideAction(Supplier<Action> prov){
