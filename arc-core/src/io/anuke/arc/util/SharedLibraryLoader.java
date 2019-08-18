@@ -91,7 +91,7 @@ public class SharedLibraryLoader{
         }
     }
 
-    private InputStream readFile(String path){
+    protected InputStream readFile(String path){
         if(nativesJar == null){
             InputStream input = SharedLibraryLoader.class.getResourceAsStream("/" + path);
             if(input == null) throw new ArcRuntimeException("Unable to read file for extraction: " + path);

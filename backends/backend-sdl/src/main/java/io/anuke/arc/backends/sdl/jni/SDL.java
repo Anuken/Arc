@@ -2,6 +2,7 @@ package io.anuke.arc.backends.sdl.jni;
 
 import io.anuke.arc.util.*;
 
+import java.io.*;
 import java.nio.*;
 
 final public class SDL {
@@ -13,11 +14,15 @@ final public class SDL {
 
     static {
         if(OS.isWindows){
-            //64-bit only right now. TODO fix
             new SharedLibraryLoader(){
                 @Override
                 public String mapLibraryName(String libraryName){
                     return libraryName + ".dll";
+                }
+
+                @Override
+                protected InputStream readFile(String path){
+                    return super.readFile(OS.is64Bit ? "OpenAL32.dll" : "OpenAL32bit.dll");
                 }
             }.load("OpenAL32");
         }
