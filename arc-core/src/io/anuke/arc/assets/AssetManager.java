@@ -16,7 +16,7 @@ import io.anuke.arc.graphics.g2d.TextureAtlas;
 import io.anuke.arc.graphics.glutils.Shader;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.async.AsyncExecutor;
-import io.anuke.arc.util.async.ThreadUtils;
+import io.anuke.arc.util.async.Threads;
 import io.anuke.arc.util.reflect.ClassReflection;
 
 import java.lang.StringBuilder;
@@ -406,7 +406,7 @@ public class AssetManager implements Disposable{
         while(true){
             boolean done = update();
             if(done || Time.millis() > endTime) return done;
-            ThreadUtils.yield();
+            Threads.yield();
         }
     }
 
@@ -418,7 +418,7 @@ public class AssetManager implements Disposable{
     /** Blocks until all assets are loaded. */
     public void finishLoading(){
         while(!update())
-            ThreadUtils.yield();
+            Threads.yield();
     }
 
     /**
@@ -436,7 +436,7 @@ public class AssetManager implements Disposable{
     public void finishLoadingAsset(String fileName){
         while(!isLoaded(fileName)){
             update();
-            ThreadUtils.yield();
+            Threads.yield();
         }
     }
 
