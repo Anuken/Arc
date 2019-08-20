@@ -33,4 +33,12 @@ public class Threads{
         thread.start();
         return thread;
     }
+
+    /** Starts a new daemon thread.*/
+    public static Thread daemon(String name, Runnable runnable){
+        Thread thread = new Thread(runnable, name);
+        thread.setDaemon(true);
+        thread.start();
+        return thread;
+    }
 }
