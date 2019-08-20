@@ -175,7 +175,11 @@ public class SdlApplication implements Application{
                 t.printStackTrace();
             }
         });
-        dispose();
+        try{
+            dispose();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         Core.audio.dispose();
 
         SDL_DestroyWindow(window);
