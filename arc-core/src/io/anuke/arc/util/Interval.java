@@ -34,7 +34,7 @@ public class Interval{
     }
 
     public void clear(){
-        Arrays.fill(times, 0);
+        Arrays.fill(times, Time.time());
     }
 
     public float getTime(int id){
