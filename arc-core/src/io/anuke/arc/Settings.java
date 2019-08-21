@@ -1,14 +1,12 @@
 package io.anuke.arc;
 
-import io.anuke.arc.collection.ObjectMap;
-import io.anuke.arc.collection.ObjectMap.Entry;
-import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.function.Consumer;
-import io.anuke.arc.function.Supplier;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.collection.ObjectMap.*;
+import io.anuke.arc.files.*;
+import io.anuke.arc.function.*;
 import io.anuke.arc.util.*;
-import io.anuke.arc.util.io.DefaultSerializers;
-import io.anuke.arc.util.io.ReusableByteInStream;
-import io.anuke.arc.util.io.Streams.OptimizedByteArrayOutputStream;
+import io.anuke.arc.util.io.*;
+import io.anuke.arc.util.io.Streams.*;
 
 import java.io.*;
 
@@ -193,6 +191,8 @@ public class Settings{
                 }
             }
         }catch(IOException e){
+            //file is now corrupt, delete it
+            file.delete();
             throw new RuntimeException("Error writing preferences: " + file, e);
         }
 
