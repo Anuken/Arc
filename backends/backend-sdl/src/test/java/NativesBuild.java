@@ -13,7 +13,7 @@ class NativesBuild{
     static final String win64crossCompilePath = "/usr/local/cross-tools/x86_64-w64-mingw32/bin/";
     static final String minSDLversion = "2.0.9";
     static final String libsLinux = " -lGLEW -lGLU -lGL -lopenal";
-    static final String libsMac = " -lGLEW -lopenal";
+    static final String libsMac = " -lGLEW";
     static final String libsWin = " -lglew32s -lglu32 -lopengl32 -lOpenAL32";
     static final String macLibPath = "/usr/local/lib/libSDL2.a";
     static final boolean compileMac = OS.isMac;
@@ -23,11 +23,11 @@ class NativesBuild{
             BuildTarget mac64 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);
 
             mac64.cIncludes = new String[]{};
-            mac64.cFlags = execCmd("sdl2-config --cflags") + " -c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.9";
-            mac64.cppFlags = mac64.cFlags;
-            mac64.linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.6";
-            mac64.libraries = macLibPath + " -lm -liconv -Wl,-framework,CoreAudio -Wl,-framework,OpenGL,-framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal" + libsMac;
+            mac64.cFlags = mac64.cppFlags = execCmd("sdl2-config --cflags") + " -c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.9";
+            mac64.linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.9";
+            mac64.libraries = macLibPath + " -lm -liconv -Wl,-framework,OpenAL -Wl,-framework,CoreAudio -Wl,-framework,OpenGL,-framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal" + libsMac;
 
+            new NativeCodeGenerator().generate("src/main/java", "build/classes/java/main", "jni");
             new AntScriptGenerator().generate(new BuildConfig("sdl-arc"), mac64);
 
             BuildExecutor.executeAnt("jni/build-macosx64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
