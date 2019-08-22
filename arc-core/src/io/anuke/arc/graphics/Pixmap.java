@@ -34,6 +34,11 @@ public class Pixmap implements Disposable{
     private Filter filter = Filter.BiLinear;
     private boolean disposed;
 
+    /** Uses RGBA8888.*/
+    public Pixmap(int width, int height){
+        this(width, height, Format.RGBA8888);
+    }
+
     /**
      * Creates a new Pixmap instance with the given width, height and format.
      * @param width the width in pixels
