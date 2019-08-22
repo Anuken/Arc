@@ -12,6 +12,14 @@ public class Threads{
         Thread.yield();
     }
 
+    public static void sleep(long ms){
+        try{
+            Thread.sleep(ms);
+        }catch(InterruptedException e){
+            throw new RuntimeException(e);
+        }
+    }
+
     /** Throws an exception in the main game thread.*/
     public static void throwAppException(Throwable t){
         Time.runTask(0f, () -> {
