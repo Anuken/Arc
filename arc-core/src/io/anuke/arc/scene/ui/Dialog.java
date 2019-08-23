@@ -204,6 +204,7 @@ public class Dialog extends Window{
      * milliseconds.
      */
     public void hide(){
+        if(!isShown()) return;
         setOrigin(Align.center);
         setClip(false);
         setTransform(true);
