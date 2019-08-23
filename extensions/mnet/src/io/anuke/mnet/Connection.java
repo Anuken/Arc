@@ -7,14 +7,14 @@ import java.net.InetAddress;
 public class Connection{
 
     private final MServerSocket serverSocket;
-    MSocketImpl socket;
+    MSocket socket;
     private Object request;
     private Object response;
     private boolean accepted;
     private boolean rejected;
 
 
-    public Connection(MServerSocket serverSocket, MSocketImpl socket, Object request){
+    public Connection(MServerSocket serverSocket, MSocket socket, Object request){
         this.serverSocket = serverSocket;
         this.socket = socket;
         this.request = request;

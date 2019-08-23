@@ -7,21 +7,21 @@ import java.util.Iterator;
 
 class SocketMap{
 
-    ArrayList<SocketWrap> sockets = new ArrayList<SocketWrap>();
+    ArrayList<SocketWrap> sockets = new ArrayList<>();
 
-    public void put(MSocketImpl socket){
+    public void put(MSocket socket){
         put(socket.address, socket.port, socket);
     }
 
-    public synchronized void put(InetAddress address, int port, MSocketImpl socket){
+    public synchronized void put(InetAddress address, int port, MSocket socket){
         sockets.add(new SocketWrap(address, port, socket));
     }
 
-    public MSocketImpl get(DatagramPacket packet){
+    public MSocket get(DatagramPacket packet){
         return get(packet.getAddress(), packet.getPort());
     }
 
-    public synchronized MSocketImpl get(InetAddress address, int port){
+    public synchronized MSocket get(InetAddress address, int port){
         for(SocketWrap socket : sockets){
             if(socket.address.equals(address) && socket.port == port){
                 return socket.socket;
@@ -30,7 +30,7 @@ class SocketMap{
         return null;
     }
 
-    public synchronized void remove(MSocketImpl socket){
+    public synchronized void remove(MSocket socket){
         for(Iterator<SocketWrap> iter = sockets.iterator(); iter.hasNext(); ){
             SocketWrap wrap = iter.next();
             if(wrap.socket == socket){
@@ -51,9 +51,9 @@ class SocketMap{
     static class SocketWrap{
         InetAddress address;
         int port;
-        MSocketImpl socket;
+        MSocket socket;
 
-        public SocketWrap(InetAddress address, int port, MSocketImpl socket){
+        public SocketWrap(InetAddress address, int port, MSocket socket){
             this.address = address;
             this.port = port;
             this.socket = socket;

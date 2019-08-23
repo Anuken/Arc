@@ -78,7 +78,7 @@ public class MServerSocket{
             }
             if(len <= 5) continue;
 
-            MSocketImpl mSocket = socketMap.get(packet);
+            MSocket mSocket = socketMap.get(packet);
             if(mSocket != null){
                 mSocket.receiveData(buffer, type, len);
             }else if(type == PacketType.connectionRequest){
@@ -111,7 +111,7 @@ public class MServerSocket{
             }
 
             //Создаём полупустой сокет
-            MSocketImpl socket = new MSocketImpl(udp, poll.address, poll.port, bufferSize);
+            MSocket socket = new MSocket(udp, poll.address, poll.port, bufferSize);
             //Авторизация
             Connection conn = new Connection(this, socket, poll.userRequest);
             authenticator.acceptConnection(conn);
@@ -130,9 +130,9 @@ public class MServerSocket{
         long now = System.currentTimeMillis();
         synchronized(socketMap){
             for(SocketMap.SocketWrap wrap : socketMap.sockets){
-                MSocketImpl socket = wrap.socket;
+                MSocket socket = wrap.socket;
                 if(now - socket.lastTimeReceivedMsg > socket.inactivityTimeout){
-                    socket.queue.put(new MSocketImpl.DisconnectionPacket(MSocketImpl.DisconnectionPacket.TIMED_OUT, DCType.TIME_OUT));
+                    socket.queue.put(new MSocket.DisconnectionPacket(MSocket.DisconnectionPacket.TIMED_OUT, DCType.TIME_OUT));
                 }else{
                     if(socket.isConnected()){
                         socket.checkResendAndPing();
@@ -176,7 +176,7 @@ public class MServerSocket{
         return sockets;
     }
 
-    void removeMe(MSocketImpl socket){
+    void removeMe(MSocket socket){
         socketMap.remove(socket);
     }
 

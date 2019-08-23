@@ -1,8 +1,6 @@
 package io.anuke.mnet;
 
-class Utils{
-
-
+class MUtils{
     public static String toString(byte[] a){
         return toString(a, a.length);
     }

@@ -29,7 +29,7 @@ public class DefaultCongestionManager implements CongestionManager {
     }
 
     @Override
-    public long calculateDelay(MSocketImpl.ResendPacket respondedPacket, long currentTime, long currentDelay) {
+    public long calculateDelay(MSocket.ResendPacket respondedPacket, long currentTime, long currentDelay) {
         if (respondedPacket.resends == 0) {
             noResendsDelays.add(currentTime - respondedPacket.sendTime);
         } else {
