@@ -2,6 +2,7 @@ package io.anuke.mnet;
 
 import io.anuke.arc.collection.*;
 import io.anuke.arc.function.*;
+import io.anuke.arc.util.async.*;
 
 import java.io.*;
 import java.net.*;
@@ -41,7 +42,7 @@ public class MServerSocket{
         this.serializerSupplier = serializerSupplier;
         this.serializer = serializerSupplier.get();
         this.discoverer = discoverer;
-        new Thread(this::run, "MServerSocket Thread").start();
+        Threads.daemon("MServerSocket Thread", this::run);
     }
 
     void run(){

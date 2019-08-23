@@ -1,6 +1,7 @@
 package io.anuke.mnet.broadcast;
 
 import io.anuke.arc.collection.*;
+import io.anuke.arc.util.async.*;
 import io.anuke.mnet.*;
 
 import java.io.*;
@@ -8,7 +9,6 @@ import java.net.*;
 import java.util.*;
 
 public class BroadcastServlet{
-
     private static int threadCounter;
 
     private final DatagramSocket socket;
@@ -52,13 +52,7 @@ public class BroadcastServlet{
         this.uuid = LocatorUtils.normalizeUUID(uuid);
         this.serializer = serializer;
         this.processor = processor;
-        thread = new Thread(new Runnable(){
-            @Override
-            public void run(){
-                BroadcastServlet.this.run();
-            }
-        }, "BroadcastServlet-" + threadCounter++);
-        thread.start();
+        thread = Threads.daemon("BroadcastServlet-" + threadCounter++, BroadcastServlet.this::run);
     }
 
 

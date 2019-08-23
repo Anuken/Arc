@@ -1,5 +1,7 @@
 package io.anuke.mnet;
 
+import io.anuke.arc.util.async.*;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -18,24 +20,21 @@ public class TraficCounterUDPSocket implements UDPSocket{
     public TraficCounterUDPSocket(final UDPSocket delegate, final int refreshRate, final Listener listener){
         this.delegate = delegate;
 
-        new Thread(new Runnable(){
-            @Override
-            public void run(){
-                try{
+        Threads.daemon(() -> {
+            try{
 
-                    while(!delegate.isClosed()){
-                        long before = System.currentTimeMillis();
-                        Thread.sleep(refreshRate);
-                        long timePassed = System.currentTimeMillis() - before;
+                while(!delegate.isClosed()){
+                    long before = System.currentTimeMillis();
+                    Thread.sleep(refreshRate);
+                    long timePassed = System.currentTimeMillis() - before;
 
-                        listener.tick(sendPacketCounter.getAndSet(0), sendSizeCounter.getAndSet(0), receivePacketCounter.getAndSet(0), receiveSizeCounter.getAndSet(0), timePassed);
-                    }
-                }catch(InterruptedException e){
-                    e.printStackTrace();
+                    listener.tick(sendPacketCounter.getAndSet(0), sendSizeCounter.getAndSet(0), receivePacketCounter.getAndSet(0), receiveSizeCounter.getAndSet(0), timePassed);
                 }
-
+            }catch(InterruptedException e){
+                e.printStackTrace();
             }
-        }).start();
+
+        });
     }
 
 

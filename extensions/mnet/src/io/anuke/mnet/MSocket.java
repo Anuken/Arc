@@ -2,6 +2,7 @@ package io.anuke.mnet;
 
 import io.anuke.arc.collection.*;
 import io.anuke.arc.function.*;
+import io.anuke.arc.util.async.*;
 import io.anuke.arc.util.pooling.*;
 
 import java.io.*;
@@ -150,7 +151,7 @@ public class MSocket{
     }
 
     public void connectAsync(final Object request, final int timeout, final ServerResponseHandler handler){
-        new Thread(() -> {
+        Threads.daemon(() -> {
             try{
                 ServerResponse connect = connect(request, timeout);
                 handler.handle(connect);
@@ -158,7 +159,7 @@ public class MSocket{
                 e.printStackTrace();
                 handler.handle(new ServerResponse(ResponseType.WRONG_STATE, null));
             }
-        }).start();
+        });
     }
 
     public ServerResponse connect(Object data, int timeout) throws IOException{
@@ -504,7 +505,7 @@ public class MSocket{
     }
 
     private void launchReceiveThread(){
-        new Thread(() -> {
+        Threads.daemon(() -> {
             byte[] receiveBuffer = MSocket.this.receiveBuffer;
             DatagramPacket packet = MSocket.this.receivePacket;
             UDPSocket udp = MSocket.this.udp;
@@ -527,7 +528,7 @@ public class MSocket{
                 }
 
             }
-        }).start();
+        });
     }
 
     /**

@@ -30,8 +30,10 @@ public class HighPingUDPSocket implements UDPSocket, Runnable{
         this.receivingPing = receivingPing;
         receivingPacket = new DatagramPacket(new byte[1500], 1500);
         recT = new Thread(this);
+        recT.setDaemon(true);
         sender = new Sender();
         sendT = new Thread(sender);
+        sendT.setDaemon(true);
 
         recT.start();
         sendT.start();

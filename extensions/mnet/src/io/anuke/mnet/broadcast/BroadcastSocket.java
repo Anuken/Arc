@@ -1,6 +1,7 @@
 package io.anuke.mnet.broadcast;
 
 
+import io.anuke.arc.util.async.*;
 import io.anuke.mnet.*;
 
 import java.io.*;
@@ -54,12 +55,7 @@ public class BroadcastSocket{
         this.monitor = new Object();
 
         socket.setBroadcast(true);
-        new Thread(new Runnable(){
-            @Override
-            public void run(){
-                BroadcastSocket.this.run();
-            }
-        }).start();
+        Threads.daemon(BroadcastSocket.this::run);
     }
 
     public boolean isClosed(){
@@ -99,33 +95,29 @@ public class BroadcastSocket{
             final byte[] fullPackage = LocatorUtils.createRequest(uuid, seq, serialized);
 
             this.receiver = new ReceiverBuffer(receiver);
-            searchingThread = new Thread(new Runnable(){
-                @Override
-                public void run(){
-                    final int resendCD = timeMillis / resends;
+            searchingThread = Threads.daemon(() -> {
+                final int resendCD = timeMillis / resends;
 
-                    for(int i = 0; i < resends; i++){
-                        sendData(fullPackage);
-                        try{
-                            Thread.sleep(resendCD);
-                        }catch(InterruptedException e){
-                            return;
-                        }
+                for(int i = 0; i < resends; i++){
+                    sendData(fullPackage);
+                    try{
+                        Thread.sleep(resendCD);
+                    }catch(InterruptedException e){
+                        return;
                     }
-
-                    synchronized(monitor){
-                        ReceiverBuffer receiverBuffer = BroadcastSocket.this.receiver;
-                        if(receiverBuffer != null){
-                            receiverBuffer.receiver.finished(false);
-                            BroadcastSocket.this.receiver = null;
-                            BroadcastSocket.this.searchingThread = null;
-                        }
-                    }
-
-
                 }
+
+                synchronized(monitor){
+                    ReceiverBuffer receiverBuffer = BroadcastSocket.this.receiver;
+                    if(receiverBuffer != null){
+                        receiverBuffer.receiver.finished(false);
+                        BroadcastSocket.this.receiver = null;
+                        BroadcastSocket.this.searchingThread = null;
+                    }
+                }
+
+
             });
-            searchingThread.start();
         }
         return true;
     }
