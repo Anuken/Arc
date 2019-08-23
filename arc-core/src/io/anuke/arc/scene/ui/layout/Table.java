@@ -410,6 +410,14 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
+    public Cell<Button> addButton(Consumer<Button> cons, String style, Runnable listener){
+        Button button = new Button(scene.skin.get(style, TextButtonStyle.class));
+        button.clearChildren();
+        button.clicked(listener);
+        cons.accept(button);
+        return add(button);
+    }
+
     public Cell<TextButton> addButton(String text, Runnable listener){
         TextButton button = Elements.newButton(text, listener);
         return add(button);
