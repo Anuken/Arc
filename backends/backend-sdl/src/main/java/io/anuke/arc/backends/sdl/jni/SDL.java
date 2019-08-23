@@ -30,7 +30,7 @@ final public class SDL {
 
                 @Override
                 protected InputStream readFile(String path){
-                    return super.readFile(OS.is64Bit ? "OpenAL32.dll" : "OpenAL32bit.dll");
+                    return super.readFile(OS.is64Bit ? "OpenAL.dll" : "OpenAL32.dll");
                 }
             }.load("OpenAL32");
         }
