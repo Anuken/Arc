@@ -11,7 +11,6 @@ import java.util.*;
  * Job of a server socket is to accept new connections and handle subsockets.
  */
 public class MServerSocket{
-
     final UDPSocket udp;
     final SocketMap socketMap;
     private final ServerAuthenticator authenticator;
@@ -42,7 +41,7 @@ public class MServerSocket{
         this.serializerSupplier = serializerSupplier;
         this.serializer = serializerSupplier.get();
         this.discoverer = discoverer;
-        new Thread(MServerSocket.this::run).start();
+        new Thread(this::run, "MServerSocket Thread").start();
     }
 
     void run(){

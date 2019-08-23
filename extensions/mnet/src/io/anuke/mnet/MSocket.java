@@ -1,6 +1,7 @@
 package io.anuke.mnet;
 
 import io.anuke.arc.collection.*;
+import io.anuke.arc.function.*;
 import io.anuke.arc.util.pooling.*;
 
 import java.io.*;
@@ -37,7 +38,8 @@ public class MSocket{
     private volatile SocketState state;
     private boolean isClientSocket;
     private volatile int lastInsertedSeq = -1;
-    private MSerializer serializer;
+    private MSerializer writeSerializer;
+    private MSerializer readSerializer;
     private Pool<ResendPacket> sendPacketPool = new Pool<ResendPacket>(){
         protected ResendPacket newObject(){
             return new ResendPacket();
@@ -69,17 +71,18 @@ public class MSocket{
     private float currentPing;
     private long lastPingSendTime;
 
-    public MSocket(InetAddress address, int port, MSerializer serializer) throws SocketException{
+    public MSocket(InetAddress address, int port, Supplier<MSerializer> serializer) throws SocketException{
         this(address, port, 1024, 7000, 2500, 100, serializer);
     }
 
-    public MSocket(InetAddress address, int port, int bufferSize, int inactivityTimeout, int pingFrequency, int resendFrequency, MSerializer serializer) throws SocketException{
+    public MSocket(InetAddress address, int port, int bufferSize, int inactivityTimeout, int pingFrequency, int resendFrequency, Supplier<MSerializer> serializer) throws SocketException{
         this(new JavaUDPSocket(), address, port, bufferSize, inactivityTimeout, pingFrequency, resendFrequency, serializer);
     }
 
-    public MSocket(UDPSocket udp, InetAddress address, int port, int bufferSize, int inactivityTimeout, int pingFrequency, int resendFrequency, MSerializer serializer) throws SocketException{
+    public MSocket(UDPSocket udp, InetAddress address, int port, int bufferSize, int inactivityTimeout, int pingFrequency, int resendFrequency, Supplier<MSerializer> serializer) throws SocketException{
         this.state = SocketState.NOT_CONNECTED;
-        this.serializer = serializer;
+        this.readSerializer = serializer.get();
+        this.writeSerializer = serializer.get();
         this.udp = udp;
         this.address = address;
         this.port = port;
@@ -107,8 +110,9 @@ public class MSocket{
     /**
      * Initialization done by server after Socket was accepted
      */
-    void init(MServerSocket serverSocket, byte[] fullResponseData, int inactivityTimeout, int pingFrequency, int resendFrequency, MSerializer serializer){
-        this.serializer = serializer;
+    void init(MServerSocket serverSocket, byte[] fullResponseData, int inactivityTimeout, int pingFrequency, int resendFrequency, Supplier<MSerializer> serializer){
+        this.readSerializer = serializer.get();
+        this.writeSerializer = serializer.get();
         this.state = SocketState.CONNECTED;
         this.server = serverSocket;
         this.lastTimeReceivedMsg = System.currentTimeMillis();
@@ -158,7 +162,7 @@ public class MSocket{
     }
 
     public ServerResponse connect(Object data, int timeout) throws IOException{
-        byte[] req = serializer.serialize(data);
+        byte[] req = writeSerializer.serialize(data);
         return connect(req, timeout);
     }
 
@@ -232,7 +236,7 @@ public class MSocket{
             responseData = null;
         }else{
             try{
-                responseData = serializer.deserialize(receiveBuffer, 5, len - 5);
+                responseData = readSerializer.deserialize(receiveBuffer, 5, len - 5);
             }catch(Exception e){
                 e.printStackTrace();
                 responseData = null;
@@ -254,7 +258,7 @@ public class MSocket{
     public void sendUnreliable(Object o){
         if(isConnected()){
             sendBuffer[0] = PacketType.unreliable;
-            int size = serializer.serialize(o, sendBuffer, 1);
+            int size = writeSerializer.serialize(o, sendBuffer, 1);
             sendPacket.setLength(size + 1);
             try{
                 udp.send(sendPacket);
@@ -266,7 +270,7 @@ public class MSocket{
 
     public void send(Object o){
         if(isConnected()){
-            byte[] fullPackage = serializer.serialize(o, 5);
+            byte[] fullPackage = writeSerializer.serialize(o, 5);
             int seq = this.seq.getAndIncrement();
             fullPackage[0] = PacketType.reliableRequest;
             PacketType.putInt(fullPackage, seq, 1);
@@ -276,7 +280,7 @@ public class MSocket{
     }
 
     public void sendBig(Object o){
-        byte[] big = serializer.serialize(o);
+        byte[] big = writeSerializer.serialize(o);
         int id = bigSeqCounter++;
         if(big.length < bufferSize - 5){
             sendSerialized(big);
@@ -321,7 +325,7 @@ public class MSocket{
 
             int bufferSize = this.bufferSize;
 
-            ByteBatch bb = batch.convertAndGet(serializer);
+            ByteBatch bb = batch.convertAndGet(writeSerializer);
             int i = 0;
             while(i < size){
                 int seq = this.seq.getAndIncrement();
@@ -483,10 +487,6 @@ public class MSocket{
         return port;
     }
 
-    public MSerializer getSerializer(){
-        return serializer;
-    }
-
     //********//
     //* CODE *//
     //********//
@@ -494,7 +494,7 @@ public class MSocket{
     private void deserializeAndPut(byte[] data, int offset, int length){
         Object obj;
         try{
-            obj = serializer.deserialize(data, offset, length);
+            obj = readSerializer.deserialize(data, offset, length);
         }catch(Exception e){
             e.printStackTrace();
             return;
@@ -549,7 +549,7 @@ public class MSocket{
                 }else if(seq > expectedSeq1){
                     Object obj;
                     try{
-                        obj = serializer.deserialize(fullPacket, 5, length - 5);
+                        obj = readSerializer.deserialize(fullPacket, 5, length - 5);
                     }catch(Exception e){
                         e.printStackTrace();
                         break;
@@ -575,13 +575,13 @@ public class MSocket{
                     Object[] batchPackets;
                     if(seq == expectedSeq2){
                         lastInsertedSeq = seq;
-                        batchPackets = PacketType.breakBatchDown(fullPacket, serializer);
+                        batchPackets = PacketType.breakBatchDown(fullPacket, readSerializer);
                         for(Object batchPacket : batchPackets){
                             queue.put(batchPacket);
                         }
                         updateReceiveOrderQueue();
                     }else{
-                        batchPackets = PacketType.breakBatchDown(fullPacket, serializer);
+                        batchPackets = PacketType.breakBatchDown(fullPacket, readSerializer);
                         addToWaitings(seq, batchPackets);
                     }
                 }catch(Exception ignore){
@@ -667,7 +667,7 @@ public class MSocket{
 
             Object deserialized = null;
             try{
-                deserialized = serializer.deserialize(result);
+                deserialized = readSerializer.deserialize(result);
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -778,7 +778,6 @@ public class MSocket{
             t.printStackTrace();
         }
         processing = false;
-        return;
     }
 
     void sendAck(int seq){

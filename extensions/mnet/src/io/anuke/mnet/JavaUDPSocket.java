@@ -25,7 +25,6 @@ public class JavaUDPSocket implements UDPSocket{
         this.socket = dSocket;
     }
 
-
     @Override
     public int getLocalPort(){
         return socket.getLocalPort();

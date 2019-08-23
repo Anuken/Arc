@@ -37,7 +37,7 @@ public class Connection{
     }
 
     public MSocket accept(Object response){
-        if(isMadeChoice()) throw new RuntimeException("You've already accepter or rejected connection");
+        if(isMadeChoice()) throw new RuntimeException("You've already accepted or rejected this connection.");
         accepted = true;
         this.response = response;
 
@@ -47,7 +47,7 @@ public class Connection{
         serverSocket.inactivityTimeout,
         serverSocket.pingFrequency,
         serverSocket.resendFrequency,
-        serverSocket.serializerSupplier.get());
+        serverSocket.serializerSupplier);
         serverSocket.socketMap.put(socket);
 
         send(fullResponsePacket);
@@ -55,7 +55,7 @@ public class Connection{
     }
 
     public void reject(Object response){
-        if(isMadeChoice()) throw new RuntimeException("You've already accepter or rejected connection");
+        if(isMadeChoice()) throw new RuntimeException("You've already accepted or rejected this connection.");
         rejected = true;
         this.response = response;
 
@@ -65,7 +65,7 @@ public class Connection{
         serverSocket.inactivityTimeout,
         serverSocket.pingFrequency,
         serverSocket.resendFrequency,
-        serverSocket.serializerSupplier.get());
+        serverSocket.serializerSupplier);
         serverSocket.socketMap.put(socket);
 
         send(fullResponsePacket);
