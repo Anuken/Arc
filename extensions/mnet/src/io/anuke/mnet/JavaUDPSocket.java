@@ -11,7 +11,6 @@ import java.net.SocketException;
  * Java DatagramSocket implementation
  */
 public class JavaUDPSocket implements UDPSocket{
-
     private final DatagramSocket socket;
 
     public JavaUDPSocket() throws SocketException{

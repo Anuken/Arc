@@ -8,15 +8,14 @@ import java.net.*;
 import java.util.*;
 import java.util.concurrent.atomic.*;
 
+@SuppressWarnings("unchecked")
 public class MSocket{
 
-    /**
-     * Size of receiving packet queue. If it overflows, data might be lost.
-     */
+    /** Size of receiving packet queue. If it overflows, data might be lost.*/
     public static int receivingQueueSize = 5000;
     //Очередь с принятными отсортированными сообщениями.
     //byte[] - Пакет, String - Сообщение дисконнекта, Float - пинг.
-    final AtomicQueue<Object> queue = new AtomicQueue<Object>(receivingQueueSize);
+    final AtomicQueue<Object> queue = new AtomicQueue<>(receivingQueueSize);
     final InetAddress address;
     final int port;
     //Main useful stuff

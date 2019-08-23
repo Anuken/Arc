@@ -9,7 +9,6 @@ import java.net.SocketException;
  * Simulates packet loss over UDP
  */
 public class PacketLossUDPSocket implements UDPSocket{
-
     private final UDPSocket delegate;
     private final double sendLoss;
     private final double receiveLoss;
