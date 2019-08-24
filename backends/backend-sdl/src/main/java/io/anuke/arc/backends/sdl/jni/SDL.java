@@ -20,8 +20,8 @@ final public class SDL {
 
     */
 
-    static {
-        if(OS.isWindows){
+    static{
+        if(OS.isWindows && OS.is64Bit){
             new SharedLibraryLoader(){
                 @Override
                 public String mapLibraryName(String libraryName){
