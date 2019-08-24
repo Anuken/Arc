@@ -175,8 +175,10 @@ public class Server implements EndPoint{
                     udp.bind(selector, udpPort);
                 }
 
-                discoveryReceiver = new DiscoveryReceiver(multicastPort, udpPort == null ? tcpPort.getPort() : udpPort.getPort());
-                discoveryReceiver.start();
+                if(multicastGroup != null && (udpPort == null || multicastPort != udpPort.getPort())){
+                    discoveryReceiver = new DiscoveryReceiver(multicastPort);
+                    discoveryReceiver.start();
+                }
             }catch(IOException ex){
                 close();
                 throw ex;
@@ -611,25 +613,19 @@ public class Server implements EndPoint{
 
     class DiscoveryReceiver{
         MulticastSocket socket = null;
-        DatagramSocket dsock;
-        Thread udpThread, multicastThread;
-        int multicastPort, hostPort;
+        Thread multicastThread;
+        int multicastPort;
 
-        DiscoveryReceiver(int multicastPort, int hostPort){
+        DiscoveryReceiver(int multicastPort){
             this.multicastPort = multicastPort;
-            this.hostPort = hostPort;
         }
 
         void close(){
             try{
-                if(udpThread != null) udpThread.interrupt();
                 if(multicastThread != null) multicastThread.interrupt();
                 if(socket != null){
                     socket.leaveGroup(multicastGroup);
                     socket.close();
-                }
-                if(dsock != null){
-                    dsock.close();
                 }
             }catch(IOException e){
                 errorHandler.accept(e);
@@ -637,47 +633,24 @@ public class Server implements EndPoint{
         }
 
         void start(){
-            udpThread = Threads.daemon("Server UDP Discovery", this::runUDP);
-            multicastThread = Threads.daemon("Server Multicast Discovery", this::runMulticast);
-        }
-
-        void runUDP(){
-            try{
-                dsock = new DatagramSocket(hostPort);
-                DatagramPacket packet = new DatagramPacket(new byte[256], 256);
-                while(true){
-                    dsock.receive(packet);
-                    if(packet.getData()[0] == -2 && packet.getData()[1] == 1){
+            multicastThread = Threads.daemon("Server Multicast Discovery", () -> {
+                try{
+                    socket = new MulticastSocket(multicastPort);
+                    socket.joinGroup(multicastGroup);
+                    DatagramPacket packet = new DatagramPacket(new byte[256], 256);
+                    while(true){
+                        socket.receive(packet);
                         discoveryHandler.onDiscoverRecieved(packet.getAddress(), buffer -> {
                             byte[] data = buffer.array();
                             DatagramPacket out = new DatagramPacket(data, data.length);
                             out.setSocketAddress(packet.getSocketAddress());
-                            dsock.send(out);
+                            socket.send(out);
                         });
                     }
+                }catch(IOException e){
+                    errorHandler.accept(e);
                 }
-            }catch(IOException e){
-                errorHandler.accept(e);
-            }
-        }
-
-        void runMulticast(){
-            try{
-                socket = new MulticastSocket(multicastPort);
-                socket.joinGroup(multicastGroup);
-                DatagramPacket packet = new DatagramPacket(new byte[256], 256);
-                while(true){
-                    socket.receive(packet);
-                    discoveryHandler.onDiscoverRecieved(packet.getAddress(), buffer -> {
-                        byte[] data = buffer.array();
-                        DatagramPacket out = new DatagramPacket(data, data.length);
-                        out.setSocketAddress(packet.getSocketAddress());
-                        socket.send(out);
-                    });
-                }
-            }catch(IOException e){
-                errorHandler.accept(e);
-            }
+            });
         }
     }
 
