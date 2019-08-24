@@ -17,7 +17,6 @@ public class BroadcastServlet{
     private final byte[] uuid;
     private final MSerializer serializer;
     private final BroadcastProcessor processor;
-    private final Thread thread;
     private final HashMap<Pack, byte[]> memory = new HashMap<>();
     private final AtomicQueue<Request> requestAtomicQueue = new AtomicQueue<Request>(1000);
     private volatile boolean enabled = true;
@@ -52,7 +51,7 @@ public class BroadcastServlet{
         this.uuid = LocatorUtils.normalizeUUID(uuid);
         this.serializer = serializer;
         this.processor = processor;
-        thread = Threads.daemon("BroadcastServlet-" + threadCounter++, BroadcastServlet.this::run);
+        Threads.daemon("BroadcastServlet-" + threadCounter++, BroadcastServlet.this::run);
     }
 
 
@@ -142,7 +141,6 @@ public class BroadcastServlet{
             final int seq = LocatorUtils.getSeq(receivingBuffer);
             final InetAddress address = receivingPacket.getAddress();
             final int port = receivingPacket.getPort();
-
 
             Object userRequest;
             try{

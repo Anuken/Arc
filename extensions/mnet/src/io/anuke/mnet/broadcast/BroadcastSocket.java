@@ -10,7 +10,6 @@ import java.util.*;
 import java.util.concurrent.atomic.*;
 
 public class BroadcastSocket{
-
     private final UDPSocket udp;
     private final DatagramPacket sendingPacket;
     private final DatagramPacket receivingPacket;
