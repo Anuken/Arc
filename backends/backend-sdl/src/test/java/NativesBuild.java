@@ -13,7 +13,7 @@ class NativesBuild{
     static final String win64crossCompilePath = "/usr/local/cross-tools/x86_64-w64-mingw32/bin/";
     static final String minSDLversion = "2.0.9";
     static final String libsLinux = " -Wl,-Bstatic -l:libGLEW.a -l:libGLU.a -Wl,-Bdynamic -lGL -lopenal ";
-    static final String libsMac = " -Wl,-Bstatic -l:libGLEW.a -l:libGLU.a";
+    static final String libsMac = " /usr/local/lib/libGLEW.a";
     static final String libsWin = " -lglew32s -lglu32 -lopengl32 -lOpenAL32";
     static final String macLibPath = "/usr/local/lib/libSDL2.a";
     static final boolean compileMac = OS.isMac;
