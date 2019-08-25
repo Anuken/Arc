@@ -14,3 +14,5 @@
 - [X] add postprocessing as extension
 - [X] add gif recorder as extension
 - [ ] implement controller framework for each backend
+- [ ] implement natives builds, replace old libGDX natives and classes completely
+- [ ] create build server
