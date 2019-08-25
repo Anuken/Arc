@@ -9,8 +9,7 @@ import io.anuke.arc.graphics.VertexAttributes.Usage;
 import io.anuke.arc.graphics.glutils.Shader;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.Matrix3;
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.Disposable;
+import io.anuke.arc.util.*;
 
 import java.nio.FloatBuffer;
 
@@ -269,7 +268,7 @@ public class SpriteCache implements Disposable{
     public void add(Texture texture, float[] vertices, int offset, int length){
         if(currentCache == null) throw new IllegalStateException("beginCache must be called before add.");
         if(mesh.getVerticesBuffer().position() + length >= mesh.getVerticesBuffer().limit())
-            throw new IllegalStateException("Out of vertex space! Size: " + mesh.getVerticesBuffer().limit() + " Required: " + (mesh.getVerticesBuffer().position() + length));
+            throw new IllegalStateException("Out of vertex space! Size: " + mesh.getVerticesBuffer().capacity() + " Required: " + (mesh.getVerticesBuffer().position() + length));
 
         int verticesPerImage = mesh.getNumIndices() > 0 ? 4 : 6;
         int count = length / (verticesPerImage * VERTEX_SIZE) * 6;
