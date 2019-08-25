@@ -138,7 +138,7 @@ public class SettingsDialog extends Dialog{
             public void add(SettingsTable table){
                 CheckBox box = new CheckBox(title);
 
-                box.setChecked(settings.getBool(name));
+                box.update(() -> box.setChecked(settings.getBool(name)));
 
                 box.changed(() -> {
                     settings.put(name, box.isChecked);

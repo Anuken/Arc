@@ -964,7 +964,7 @@ public class TextField extends Element implements Disableable{
             if(stage == null || stage.getKeyboardFocus() != TextField.this) return false;
 
             boolean repeat = false;
-            boolean ctrl = Core.input.ctrl();
+            boolean ctrl = Core.input.ctrl() && !Core.input.alt();
             boolean jump = ctrl && !passwordMode;
 
             if(ctrl){
