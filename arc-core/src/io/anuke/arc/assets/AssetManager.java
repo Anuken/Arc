@@ -423,6 +423,15 @@ public class AssetManager implements Disposable{
         }
     }
 
+    /** @return the asset loading task that is currently being processed.
+     * May return null if nothing is being loaded. */
+    public synchronized AssetLoadingTask getCurrentLoadingTask(){
+        if(tasks.size() > 0){
+            return tasks.firstElement();
+        }
+        return null;
+    }
+
     /**
      * Updates the AssetManager continuously for the specified number of milliseconds, yielding the CPU to the loading thread
      * between updates. This may block for less time if all loading tasks are complete. This may block for more time if the portion
