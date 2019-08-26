@@ -6,8 +6,8 @@ import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.ObjectMap;
 import io.anuke.arc.collection.ObjectSet;
 import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.Pixmap.Format;
-import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.graphics.Texture.TextureFilter;
 import io.anuke.arc.graphics.Texture.TextureWrap;
 import io.anuke.arc.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
@@ -41,7 +41,14 @@ public class TextureAtlas implements Disposable{
     private final ObjectSet<Texture> textures = new ObjectSet<>(4);
     private final Array<AtlasRegion> regions = new Array<>();
     private final ObjectMap<String, AtlasRegion> regionmap = new ObjectMap<>();
-    private AtlasRegion error, white;
+    protected AtlasRegion error, white;
+
+    /** Returns a new texture atlas with only a blank texture region.*/
+    public static TextureAtlas blankAtlas(){
+        TextureAtlas a =  new TextureAtlas();
+        a.white = new AtlasRegion(Pixmaps.blankTextureRegion());
+        return a;
+    }
 
     /** Creates an empty atlas to which regions can be added. */
     public TextureAtlas(){
@@ -490,6 +497,11 @@ public class TextureAtlas implements Disposable{
             originalHeight = region.originalHeight;
             rotate = region.rotate;
             splits = region.splits;
+        }
+
+        public AtlasRegion(TextureRegion region){
+            set(region);
+            name = "unknown";
         }
 
         @Override
