@@ -8,6 +8,7 @@ import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.ObjectIntMap;
 import io.anuke.arc.collection.ObjectMap;
 import io.anuke.arc.collection.ObjectSet;
+import io.anuke.arc.files.*;
 import io.anuke.arc.graphics.Cubemap;
 import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.graphics.Texture;
@@ -318,6 +319,33 @@ public class AssetManager implements Disposable{
      */
     public synchronized <T> void load(String fileName, Class<T> type){
         load(fileName, type, null);
+    }
+
+    /**
+     * Loads a custom one-time 'asset' that knows how to load itself.
+     * @param load the asset
+     */
+    public synchronized void load(Loadable load){
+        if(getLoader(load.getClass()) == null){
+            setLoader(load.getClass(), new AsynchronousAssetLoader(new InternalFileHandleResolver()){
+                @Override
+                public void loadAsync(AssetManager manager, String fileName, FileHandle file, AssetLoaderParameters parameter){
+                    load.loadAsync();
+                }
+
+                @Override
+                public Object loadSync(AssetManager manager, String fileName, FileHandle file, AssetLoaderParameters parameter){
+                    load.loadSync();
+                    return load;
+                }
+
+                @Override
+                public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, AssetLoaderParameters parameter){
+                    return load.getDependencies();
+                }
+            });
+        }
+        load(load.toString(), load.getClass(), null);
     }
 
     /**
