@@ -13,6 +13,6 @@
 - [X] look into jamepad but without 10mb of natives (yay SDL)
 - [X] add postprocessing as extension
 - [X] add gif recorder as extension
-- [X] implement SDL2_Mixer
 - [ ] implement controller framework for each backend
-- [ ] implement SDL2_Mixer correct sound looping
+- [ ] implement natives builds, replace old libGDX natives and classes completely
+- [ ] create build server
