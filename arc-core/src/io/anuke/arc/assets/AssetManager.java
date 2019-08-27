@@ -562,20 +562,10 @@ public class AssetManager implements Disposable{
         }
     }
 
-    AssetDescriptor last;
-    long lastTime;
-
     /**
      * Adds a {@link AssetLoadingTask} to the task stack for the given asset.
      */
     private void addTask(AssetDescriptor assetDesc){
-        if(last != null){
-            Log.info("Time to load {0}: {1}ms", last.fileName, Time.timeSinceMillis(lastTime));
-        }
-
-        last = assetDesc;
-        lastTime = Time.millis();
-
         AssetLoader loader = getLoader(assetDesc.type, assetDesc.fileName);
         if(loader == null)
             throw new ArcRuntimeException("No loader for type: " + ClassReflection.getSimpleName(assetDesc.type));

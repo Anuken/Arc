@@ -1,5 +1,6 @@
 package io.anuke.arc.collection;
 
+import io.anuke.arc.function.*;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.util.ArcRuntimeException;
 
@@ -83,6 +84,13 @@ public class IntSet{
         IntSet set = new IntSet();
         set.addAll(array);
         return set;
+    }
+
+    public void each(IntConsumer cons){
+        IntSetIterator iter = iterator();
+        while(iter.hasNext){
+            cons.accept(iter.next());
+        }
     }
 
     /** Returns true if the key was not already in the set. */
