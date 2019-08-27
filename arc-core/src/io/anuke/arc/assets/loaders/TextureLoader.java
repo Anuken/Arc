@@ -89,5 +89,8 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
         public TextureFilter magFilter = TextureFilter.Nearest;
         public TextureWrap wrapU = TextureWrap.ClampToEdge;
         public TextureWrap wrapV = TextureWrap.ClampToEdge;
+
+        public TextureParameter(){
+        }
     }
 }

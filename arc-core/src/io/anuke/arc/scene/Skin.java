@@ -354,10 +354,7 @@ public class Skin implements Disposable{
 
         if(newDrawable instanceof BaseDrawable){
             BaseDrawable named = (BaseDrawable)newDrawable;
-            if(drawable instanceof BaseDrawable)
-                named.setName(((BaseDrawable)drawable).getName() + " (" + tint + ")");
-            else
-                named.setName(" (" + tint + ")");
+            named.setName(((BaseDrawable)drawable).getName() + " (" + tint + ")");
         }
 
         return newDrawable;
@@ -366,6 +363,11 @@ public class Skin implements Disposable{
     /** Returns the {@link TextureAtlas} passed to this skin constructor, or null. */
     public TextureAtlas getAtlas(){
         return atlas;
+    }
+
+    public void setAtlas(TextureAtlas atlas){
+        this.atlas = atlas;
+        addRegions(atlas);
     }
 
     /** Disposes the {@link TextureAtlas} and all {@link Disposable} resources in the skin. */

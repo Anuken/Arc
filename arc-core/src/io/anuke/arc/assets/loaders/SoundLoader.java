@@ -48,6 +48,12 @@ public class SoundLoader extends AsynchronousAssetLoader<Sound, SoundLoader.Soun
     }
 
     public static class SoundParameter extends AssetLoaderParameters<Sound>{
+        public SoundParameter(){
+        }
+
+        public SoundParameter(LoadedCallback loadedCallback){
+            super(loadedCallback);
+        }
     }
 
 }

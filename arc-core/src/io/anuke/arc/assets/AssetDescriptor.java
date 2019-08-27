@@ -1,6 +1,8 @@
 package io.anuke.arc.assets;
 
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.*;
+import io.anuke.arc.function.*;
+import io.anuke.arc.util.reflect.*;
 
 /**
  * Describes an asset to be loaded by its filename, type and {@link AssetLoaderParameters}. Instances of this are used in
@@ -13,6 +15,12 @@ public class AssetDescriptor<T>{
     public final AssetLoaderParameters params;
     /** The resolved file. May be null if the fileName has not been resolved yet. */
     public FileHandle file;
+    /** Callback for when this asset is loaded.*/
+    public Consumer<T> loaded = t -> {};
+
+    public AssetDescriptor(Class<T> assetType){
+        this(ClassReflection.getSimpleName(assetType), assetType, null);
+    }
 
     public AssetDescriptor(String fileName, Class<T> assetType){
         this(fileName, assetType, null);

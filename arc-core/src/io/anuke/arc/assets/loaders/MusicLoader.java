@@ -48,6 +48,12 @@ public class MusicLoader extends AsynchronousAssetLoader<Music, MusicLoader.Musi
     }
 
     public static class MusicParameter extends AssetLoaderParameters<Music>{
+        public MusicParameter(){
+        }
+
+        public MusicParameter(LoadedCallback loadedCallback){
+            super(loadedCallback);
+        }
     }
 
 }

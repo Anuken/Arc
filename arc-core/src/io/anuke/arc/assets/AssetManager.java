@@ -317,15 +317,43 @@ public class AssetManager implements Disposable{
      * @param fileName the file name (interpretation depends on {@link AssetLoader})
      * @param type the type of the asset.
      */
-    public synchronized <T> void load(String fileName, Class<T> type){
-        load(fileName, type, null);
+    public synchronized <T> AssetDescriptor load(String fileName, Class<T> type){
+        return load(fileName, type, null);
     }
 
     /**
      * Loads a custom one-time 'asset' that knows how to load itself.
      * @param load the asset
      */
-    public synchronized void load(Loadable load){
+    public synchronized AssetDescriptor loadRun(String name, Class<?> type, Runnable loadasync){
+        if(getLoader(type) == null){
+            setLoader(type, new AsynchronousAssetLoader(new InternalFileHandleResolver()){
+                @Override
+                public void loadAsync(AssetManager manager, String fileName, FileHandle file, AssetLoaderParameters parameter){
+                    loadasync.run();
+                }
+
+                @Override
+                public Object loadSync(AssetManager manager, String fileName, FileHandle file, AssetLoaderParameters parameter){
+                    return type;
+                }
+
+                @Override
+                public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, AssetLoaderParameters parameter){
+                    return null;
+                }
+            });
+        }else{
+            throw new IllegalArgumentException("Class already registered or loaded: " + type);
+        }
+        return load(name, type, null);
+    }
+
+    /**
+     * Loads a custom one-time 'asset' that knows how to load itself.
+     * @param load the asset
+     */
+    public synchronized AssetDescriptor load(Loadable load){
         if(getLoader(load.getClass()) == null){
             setLoader(load.getClass(), new AsynchronousAssetLoader(new InternalFileHandleResolver()){
                 @Override
@@ -345,7 +373,7 @@ public class AssetManager implements Disposable{
                 }
             });
         }
-        load(load.toString(), load.getClass(), null);
+        return load(load.getName(), load.getClass(), null);
     }
 
     /**
@@ -354,7 +382,7 @@ public class AssetManager implements Disposable{
      * @param type the type of the asset.
      * @param parameter parameters for the AssetLoader.
      */
-    public synchronized <T> void load(String fileName, Class<T> type, AssetLoaderParameters<T> parameter){
+    public synchronized <T> AssetDescriptor load(String fileName, Class<T> type, AssetLoaderParameters<T> parameter){
         AssetLoader loader = getLoader(type, fileName);
         if(loader == null) throw new ArcRuntimeException("No loader for type: " + ClassReflection.getSimpleName(type));
 
@@ -392,14 +420,15 @@ public class AssetManager implements Disposable{
         toLoad++;
         AssetDescriptor assetDesc = new AssetDescriptor<>(fileName, type, parameter);
         loadQueue.add(assetDesc);
+        return assetDesc;
     }
 
     /**
      * Adds the given asset to the loading queue of the AssetManager.
      * @param desc the {@link AssetDescriptor}
      */
-    public synchronized void load(AssetDescriptor desc){
-        load(desc.fileName, desc.type, desc.params);
+    public synchronized AssetDescriptor load(AssetDescriptor desc){
+        return load(desc.fileName, desc.type, desc.params);
     }
 
     /**
@@ -515,6 +544,7 @@ public class AssetManager implements Disposable{
      */
     private void nextTask(){
         AssetDescriptor assetDesc = loadQueue.remove(0);
+        //Log.info("Loading asset task: {0}", assetDesc.fileName);
 
         // if the asset not meant to be reloaded and is already loaded, increase its reference count
         if(isLoaded(assetDesc.fileName)){
@@ -532,10 +562,20 @@ public class AssetManager implements Disposable{
         }
     }
 
+    AssetDescriptor last;
+    long lastTime;
+
     /**
      * Adds a {@link AssetLoadingTask} to the task stack for the given asset.
      */
     private void addTask(AssetDescriptor assetDesc){
+        if(last != null){
+            Log.info("Time to load {0}: {1}ms", last.fileName, Time.timeSinceMillis(lastTime));
+        }
+
+        last = assetDesc;
+        lastTime = Time.millis();
+
         AssetLoader loader = getLoader(assetDesc.type, assetDesc.fileName);
         if(loader == null)
             throw new ArcRuntimeException("No loader for type: " + ClassReflection.getSimpleName(assetDesc.type));
@@ -589,6 +629,8 @@ public class AssetManager implements Disposable{
             if(task.assetDesc.params != null && task.assetDesc.params.loadedCallback != null){
                 task.assetDesc.params.loadedCallback.finishedLoading(this, task.assetDesc.fileName, task.assetDesc.type);
             }
+
+            task.assetDesc.loaded.accept(task.getAsset());
 
             long endTime = Time.nanos();
 

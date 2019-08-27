@@ -52,7 +52,11 @@ public class SdlApplication implements Application{
         try{
             loop();
         }finally{
-            cleanup();
+            try{
+                cleanup();
+            }catch(Throwable error){
+                error.printStackTrace();
+            }
         }
     }
 
@@ -175,11 +179,7 @@ public class SdlApplication implements Application{
                 t.printStackTrace();
             }
         });
-        try{
-            dispose();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        dispose();
         Core.audio.dispose();
 
         SDL_DestroyWindow(window);
