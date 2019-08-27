@@ -268,6 +268,7 @@ public class TextureRegion{
      * @return a 2D array of TextureRegions indexed by [row][column].
      */
     public TextureRegion[][] split(int tileWidth, int tileHeight){
+        if(texture == null) return null;
         int x = getX();
         int y = getY();
         int width = this.width;
