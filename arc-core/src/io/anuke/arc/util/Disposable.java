@@ -7,4 +7,8 @@ package io.anuke.arc.util;
 public interface Disposable{
     /** Releases all resources of this object. */
     void dispose();
+
+    default boolean isDisposed(){
+        return false;
+    }
 }

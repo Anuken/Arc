@@ -247,6 +247,7 @@ public class Texture extends GLTexture{
             if(managedTextures.get(Core.app) != null) managedTextures.get(Core.app).removeValue(this, true);
     }
 
+    @Override
     public boolean isDisposed(){
         return glHandle == 0;
     }

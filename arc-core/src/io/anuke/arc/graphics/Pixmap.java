@@ -270,6 +270,7 @@ public class Pixmap implements Disposable{
         disposed = true;
     }
 
+    @Override
     public boolean isDisposed(){
         return disposed;
     }

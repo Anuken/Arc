@@ -361,11 +361,21 @@ public class BitmapFont implements Disposable{
     }
 
     /** Disposes the texture used by this BitmapFont's region IF this BitmapFont created the texture. */
+    @Override
     public void dispose(){
         if(ownsTexture){
             for(int i = 0; i < regions.size; i++)
                 regions.get(i).getTexture().dispose();
         }
+    }
+
+    @Override
+    public boolean isDisposed(){
+        if(ownsTexture){
+            //it's a fair assumption to say that if one region is disposed, the whole font is disposed
+            return regions.contains(t -> t.getTexture().isDisposed());
+        }
+        return false;
     }
 
     /**

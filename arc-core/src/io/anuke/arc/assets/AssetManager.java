@@ -454,9 +454,9 @@ public class AssetManager implements Disposable{
 
     /** @return the asset loading task that is currently being processed.
      * May return null if nothing is being loaded. */
-    public synchronized AssetLoadingTask getCurrentLoadingTask(){
+    public synchronized AssetDescriptor getCurrentLoading(){
         if(tasks.size() > 0){
-            return tasks.firstElement();
+            return tasks.firstElement().assetDesc;
         }
         return null;
     }
