@@ -327,20 +327,10 @@ public class AssetManager implements Disposable{
      */
     public synchronized AssetDescriptor loadRun(String name, Class<?> type, Runnable loadasync){
         if(getLoader(type) == null){
-            setLoader(type, new AsynchronousAssetLoader(new InternalFileHandleResolver()){
+            setLoader(type, new CustomLoader(){
                 @Override
                 public void loadAsync(AssetManager manager, String fileName, FileHandle file, AssetLoaderParameters parameter){
                     loadasync.run();
-                }
-
-                @Override
-                public Object loadSync(AssetManager manager, String fileName, FileHandle file, AssetLoaderParameters parameter){
-                    return type;
-                }
-
-                @Override
-                public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, AssetLoaderParameters parameter){
-                    return null;
                 }
             });
         }else{
