@@ -479,7 +479,11 @@ public class AndroidGraphics extends Graphics implements Renderer{
             Array<ApplicationListener> listeners = app.getListeners();
             synchronized(listeners){
                 for(int i = 0, n = listeners.size; i < n; ++i){
-                    listeners.get(i).dispose();
+                    try{
+                        listeners.get(i).dispose();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
                 }
             }
             app.dispose();

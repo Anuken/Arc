@@ -1,5 +1,6 @@
 package io.anuke.arc.files;
 
+import io.anuke.arc.Files.*;
 import io.anuke.arc.collection.*;
 import io.anuke.arc.util.*;
 
@@ -8,7 +9,7 @@ import java.util.*;
 import java.util.zip.*;
 
 /** A FileHandle meant for easily representing and reading the contents of a zip/jar file.*/
-public class ZipFileHandle extends FileHandleStream{
+public class ZipFileHandle extends FileHandle{
     private ZipFileHandle[] children = {};
     private ZipFileHandle parent;
 
@@ -16,7 +17,7 @@ public class ZipFileHandle extends FileHandleStream{
     private final ZipFile zip;
 
     public ZipFileHandle(FileHandle zipFileLoc){
-        super("");
+        super(new File(""), FileType.Absolute);
         zip = null;
         entry = null;
 
@@ -25,22 +26,23 @@ public class ZipFileHandle extends FileHandleStream{
             Array<ZipFileHandle> handles = Array.with(Collections.list(zip.entries()).toArray(new ZipEntry[0])).map(entry -> new ZipFileHandle(entry, zip));
             handles.add(this);
             handles.each(f -> f.init(handles));
+            parent = null;
+            handles.each(f -> f.children = handles.select(z -> z.parent == f).toArray(ZipFileHandle.class));
         }catch(IOException e){
             throw new ArcRuntimeException(e);
         }
     }
 
     private ZipFileHandle(ZipEntry entry, ZipFile file){
-        super(entry.getName());
+        super(new File(entry.getName()), FileType.Absolute);
         this.entry = entry;
         this.zip = file;
     }
 
     private void init(Array<ZipFileHandle> files){
-        parent = files.find(other -> other != this && path().startsWith(other.path()) && !path().substring(1 + other.path().length()).contains("/"));
-
-        if(isDirectory()){
-            children = files.select(z -> z != this && z.path().startsWith(path()) && !z.path().substring(1 + path().length()).contains("/")).toArray(ZipFileHandle.class);
+        parent = files.find(other -> other.isDirectory() && other != this && path().startsWith(other.path()) && !path().substring(1 + other.path().length()).contains("/"));
+        if(parent == null){
+            parent = files.peek();
         }
     }
 

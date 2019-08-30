@@ -1,18 +1,16 @@
 package io.anuke.arc.files;
 
-import io.anuke.arc.Core;
-import io.anuke.arc.Files;
-import io.anuke.arc.Files.FileType;
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.*;
+import io.anuke.arc.Files.*;
+import io.anuke.arc.function.*;
 import io.anuke.arc.graphics.*;
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.io.Streams;
+import io.anuke.arc.util.*;
+import io.anuke.arc.util.io.*;
 
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileChannel.MapMode;
+import java.nio.*;
+import java.nio.channels.*;
+import java.nio.channels.FileChannel.*;
 
 /**
  * Represents a file or directory on the filesystem, classpath, Android SD card, or Android assets directory. FileHandles are
