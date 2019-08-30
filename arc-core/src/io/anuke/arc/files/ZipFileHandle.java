@@ -47,6 +47,11 @@ public class ZipFileHandle extends FileHandle{
     }
 
     @Override
+    public boolean exists(){
+        return true;
+    }
+
+    @Override
     public FileHandle child(String name){
         for(ZipFileHandle child : children){
             if(child.name().equals(name)){
@@ -65,7 +70,6 @@ public class ZipFileHandle extends FileHandle{
     public String name(){
         return file.getName();
     }
-
 
     @Override
     public FileHandle parent(){
