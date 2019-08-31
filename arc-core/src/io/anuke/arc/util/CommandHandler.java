@@ -86,6 +86,13 @@ public class CommandHandler{
         }
     }
 
+    public void removeCommand(String text){
+        Command c = commands.get(text);
+        if(c == null) return;
+        commands.remove(text);
+        orderedCommands.remove(c);
+    }
+
     /** Register a command which handles a zero-sized list of arguments and one parameter.*/
     public <T> Command register(String text, String description, CommandRunner<T> runner){
         Command cmd = new Command(text, "", description, runner);
