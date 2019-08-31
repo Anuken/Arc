@@ -12,7 +12,7 @@ import io.anuke.arc.scene.Element;
  * @author Nathan Sweet
  * @see GestureDetector
  */
-public class ActorGestureListener implements EventListener{
+public class ElementGestureListener implements EventListener{
     static final Vector2 tmpCoords = new Vector2(), tmpCoords2 = new Vector2();
 
     private final GestureDetector detector;
@@ -20,12 +20,12 @@ public class ActorGestureListener implements EventListener{
     Element actor, touchDownTarget;
 
     /** @see GestureDetector#GestureDetector(io.anuke.arc.input.GestureDetector.GestureListener) */
-    public ActorGestureListener(){
+    public ElementGestureListener(){
         this(20, 0.4f, 1.1f, 0.15f);
     }
 
     /** @see GestureDetector#GestureDetector(float, float, float, float, io.anuke.arc.input.GestureDetector.GestureListener) */
-    public ActorGestureListener(float halfTapSquareSize, float tapCountInterval, float longPressDuration, float maxFlingDelay){
+    public ElementGestureListener(float halfTapSquareSize, float tapCountInterval, float longPressDuration, float maxFlingDelay){
         detector = new GestureDetector(halfTapSquareSize, tapCountInterval, longPressDuration, maxFlingDelay, new GestureListener(){
             private final Vector2 initialPointer1 = new Vector2(), initialPointer2 = new Vector2();
             private final Vector2 pointer1 = new Vector2(), pointer2 = new Vector2();
@@ -33,20 +33,20 @@ public class ActorGestureListener implements EventListener{
             @Override
             public boolean tap(float stageX, float stageY, int count, KeyCode button){
                 actor.stageToLocalCoordinates(tmpCoords.set(stageX, stageY));
-                ActorGestureListener.this.tap(event, tmpCoords.x, tmpCoords.y, count, button);
+                ElementGestureListener.this.tap(event, tmpCoords.x, tmpCoords.y, count, button);
                 return true;
             }
 
             @Override
             public boolean longPress(float stageX, float stageY){
                 actor.stageToLocalCoordinates(tmpCoords.set(stageX, stageY));
-                return ActorGestureListener.this.longPress(actor, tmpCoords.x, tmpCoords.y);
+                return ElementGestureListener.this.longPress(actor, tmpCoords.x, tmpCoords.y);
             }
 
             @Override
             public boolean fling(float velocityX, float velocityY, KeyCode button){
                 stageToLocalAmount(tmpCoords.set(velocityX, velocityY));
-                ActorGestureListener.this.fling(event, tmpCoords.x, tmpCoords.y, button);
+                ElementGestureListener.this.fling(event, tmpCoords.x, tmpCoords.y, button);
                 return true;
             }
 
@@ -56,13 +56,13 @@ public class ActorGestureListener implements EventListener{
                 deltaX = tmpCoords.x;
                 deltaY = tmpCoords.y;
                 actor.stageToLocalCoordinates(tmpCoords.set(stageX, stageY));
-                ActorGestureListener.this.pan(event, tmpCoords.x, tmpCoords.y, deltaX, deltaY);
+                ElementGestureListener.this.pan(event, tmpCoords.x, tmpCoords.y, deltaX, deltaY);
                 return true;
             }
 
             @Override
             public boolean zoom(float initialDistance, float distance){
-                ActorGestureListener.this.zoom(event, initialDistance, distance);
+                ElementGestureListener.this.zoom(event, initialDistance, distance);
                 return true;
             }
 
@@ -73,7 +73,7 @@ public class ActorGestureListener implements EventListener{
                 actor.stageToLocalCoordinates(initialPointer2.set(stageInitialPointer2));
                 actor.stageToLocalCoordinates(pointer1.set(stagePointer1));
                 actor.stageToLocalCoordinates(pointer2.set(stagePointer2));
-                ActorGestureListener.this.pinch(event, initialPointer1, initialPointer2, pointer1, pointer2);
+                ElementGestureListener.this.pinch(event, initialPointer1, initialPointer2, pointer1, pointer2);
                 return true;
             }
 

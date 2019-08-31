@@ -9,7 +9,7 @@ import io.anuke.arc.math.geom.Rectangle;
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.Scene;
-import io.anuke.arc.scene.event.ActorGestureListener;
+import io.anuke.arc.scene.event.ElementGestureListener;
 import io.anuke.arc.scene.event.Event;
 import io.anuke.arc.scene.event.InputEvent;
 import io.anuke.arc.scene.event.InputListener;
@@ -61,7 +61,7 @@ public class ScrollPane extends WidgetGroup{
     int draggingPointer = -1;
     private ScrollPaneStyle style;
     private Element widget;
-    private ActorGestureListener flickScrollListener;
+    private ElementGestureListener flickScrollListener;
     private boolean fadeScrollBars = false, smoothScrolling = true;
     private boolean overscrollX = true, overscrollY = true;
     private float overscrollDistance = 50, overscrollSpeedMin = 30, overscrollSpeedMax = 200;
@@ -164,7 +164,7 @@ public class ScrollPane extends WidgetGroup{
             }
         });
 
-        flickScrollListener = new ActorGestureListener(){
+        flickScrollListener = new ElementGestureListener(){
             @Override
             public void pan(InputEvent event, float x, float y, float deltaX, float deltaY){
                 resetFade();
