@@ -1,16 +1,11 @@
 package io.anuke.arc.assets.loaders;
 
-import io.anuke.arc.assets.AssetDescriptor;
-import io.anuke.arc.assets.AssetLoaderParameters;
-import io.anuke.arc.assets.AssetManager;
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.graphics.Pixmap;
-import io.anuke.arc.graphics.Pixmap.Format;
-import io.anuke.arc.graphics.Texture;
-import io.anuke.arc.graphics.Texture.TextureFilter;
-import io.anuke.arc.graphics.Texture.TextureWrap;
-import io.anuke.arc.graphics.TextureData;
+import io.anuke.arc.assets.*;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.files.*;
+import io.anuke.arc.graphics.Pixmap.*;
+import io.anuke.arc.graphics.*;
+import io.anuke.arc.graphics.Texture.*;
 
 /**
  * {@link AssetLoader} for {@link Texture} instances. The pixel data is loaded asynchronously. The texture is then created on the
@@ -30,7 +25,6 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
     public void loadAsync(AssetManager manager, String fileName, FileHandle file, TextureParameter parameter){
         info.filename = fileName;
         if(parameter == null || parameter.textureData == null){
-            Pixmap pixmap = null;
             Format format = null;
             boolean genMipMaps = false;
             info.texture = null;
