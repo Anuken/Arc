@@ -63,11 +63,11 @@ public class Server implements EndPoint{
                 listeners[i].connected(connection);
         }
 
-        public void disconnected(Connection connection){
+        public void disconnected(Connection connection, DcReason reason){
             removeConnection(connection);
             NetListener[] listeners = Server.this.listeners;
             for(int i = 0, n = listeners.length; i < n; i++)
-                listeners[i].disconnected(connection);
+                listeners[i].disconnected(connection, reason);
         }
 
         public void received(Connection connection, Object object){
@@ -234,7 +234,7 @@ public class Server implements EndPoint{
                         if(fromConnection != null){ // Must be a TCP read or
                             // write operation.
                             if(udp != null && fromConnection.udpRemoteAddress == null){
-                                fromConnection.close();
+                                fromConnection.close(DcReason.error);
                                 continue;
                             }
                             if((ops & SelectionKey.OP_READ) == SelectionKey.OP_READ){
@@ -247,14 +247,14 @@ public class Server implements EndPoint{
                                     }
                                 }catch(IOException | ArcNetException ex){
                                     errorHandler.accept(new ArcNetException("Error reading TCP from connection: " + fromConnection, ex));
-                                    fromConnection.close();
+                                    fromConnection.close(ex.getMessage() != null && ex.getMessage().contains("closed") ? DcReason.closed : DcReason.error);
                                 }
                             }
                             if((ops & SelectionKey.OP_WRITE) == SelectionKey.OP_WRITE){
                                 try{
                                     fromConnection.tcp.writeOperation();
                                 }catch(IOException ex){
-                                    fromConnection.close();
+                                    fromConnection.close(ex.getMessage() != null && ex.getMessage().contains("closed") ? DcReason.closed : DcReason.error);
                                 }
                             }
                             continue;
@@ -338,7 +338,7 @@ public class Server implements EndPoint{
                         }
                     }catch(CancelledKeyException ex){
                         if(fromConnection != null)
-                            fromConnection.close();
+                            fromConnection.close(DcReason.error);
                         else
                             selectionKey.channel().close();
                     }
@@ -350,7 +350,7 @@ public class Server implements EndPoint{
         for(int i = 0, n = connections.length; i < n; i++){
             Connection connection = connections[i];
             if(connection.tcp.isTimedOut(time)){
-                connection.close();
+                connection.close(DcReason.timeout);
             }else{
                 if(connection.tcp.needsKeepAlive(time))
                     connection.sendTCP(FrameworkMessage.keepAlive);
@@ -424,7 +424,7 @@ public class Server implements EndPoint{
             if(udp == null)
                 connection.notifyConnected();
         }catch(IOException ex){
-            connection.close();
+            connection.close(DcReason.error);
         }
     }
 
@@ -556,7 +556,7 @@ public class Server implements EndPoint{
     public void close(){
         Connection[] connections = this.connections;
         for(int i = 0, n = connections.length; i < n; i++)
-            connections[i].close();
+            connections[i].close(DcReason.closed);
         this.connections = new Connection[0];
 
         ServerSocketChannel serverChannel = this.serverChannel;

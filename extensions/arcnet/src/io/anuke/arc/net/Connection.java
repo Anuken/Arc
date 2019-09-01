@@ -91,7 +91,7 @@ public class Connection{
         try{
             return tcp.send(object);
         }catch(IOException | ArcNetException ex){
-            close();
+            close(DcReason.error);
             return 0;
         }
     }
@@ -115,19 +115,19 @@ public class Connection{
 
             return udp.send(object, address);
         }catch(IOException | ArcNetException ex){
-            close();
+            close(DcReason.error);
             return 0;
         }
     }
 
-    public void close(){
+    public void close(DcReason reason){
         boolean wasConnected = isConnected;
         isConnected = false;
         tcp.close();
         if(udp != null && udp.connectedAddress != null)
             udp.close();
         if(wasConnected){
-            notifyDisconnected();
+            notifyDisconnected(reason);
         }
         setConnected(false);
     }
@@ -231,10 +231,10 @@ public class Connection{
             listeners[i].connected(this);
     }
 
-    void notifyDisconnected(){
+    void notifyDisconnected(DcReason reason){
         NetListener[] listeners = this.listeners;
         for(int i = 0, n = listeners.length; i < n; i++)
-            listeners[i].disconnected(this);
+            listeners[i].disconnected(this, reason);
     }
 
     void notifyIdle(){

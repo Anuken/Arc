@@ -390,7 +390,7 @@ public class Client extends Connection implements EndPoint{
     }
 
     public void close(){
-        super.close();
+        super.close(DcReason.closed);
         synchronized(updateLock){ // Blocks to avoid a select while the
             // selector is used to bind the server
             // connection.
