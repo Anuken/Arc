@@ -20,13 +20,13 @@ public class Interval{
     public boolean get(int id, float time){
         if(id >= times.length) throw new RuntimeException("Out of bounds! Max timer size is " + times.length + "!");
 
-        if(Time.time() - times[id] >= time ||
-                Time.time() < times[id]){ //when 'time travel' happens, reset.
-            times[id] = Time.time();
-            return true;
-        }else{
-            return false;
-        }
+        boolean got = check(id, time);
+        if(got) times[id] = Time.time();
+        return got;
+    }
+
+    public boolean check(int id, float time){
+        return Time.time() - times[id] >= time || Time.time() < times[id];
     }
 
     public void reset(int id, float time){
