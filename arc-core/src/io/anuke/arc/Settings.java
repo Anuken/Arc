@@ -338,6 +338,12 @@ public class Settings{
         }
     }
 
+    /** Stores an object in the preference map and saves. */
+    public void putSave(String name, Object object){
+        put(name, object);
+        save();
+    }
+
     /** Stores an object in the preference map. */
     public void put(String name, Object object){
         if(object instanceof Float || object instanceof Integer || object instanceof Boolean
