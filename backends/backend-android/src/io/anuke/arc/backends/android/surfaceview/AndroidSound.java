@@ -6,6 +6,7 @@ import io.anuke.arc.audio.Sound;
 import io.anuke.arc.collection.IntArray;
 
 final class AndroidSound implements Sound{
+    private static int priority = 0;
     final SoundPool soundPool;
     final AudioManager manager;
     final int soundId;
@@ -27,7 +28,7 @@ final class AndroidSound implements Sound{
         if(volume <= 0.001f) return -1;
 
         if(streamIds.size == 8) streamIds.pop();
-        int streamId = soundPool.play(soundId, volume, volume, 1, 0, 1);
+        int streamId = soundPool.play(soundId, volume, volume, priority(), 0, 1);
         // standardise error code with other backends
         if(streamId == 0) return -1;
         streamIds.insert(0, streamId);
@@ -41,7 +42,7 @@ final class AndroidSound implements Sound{
 
     @Override
     public void stop(int soundId){
-        soundPool.stop((int)soundId);
+        soundPool.stop(soundId);
     }
 
     @Override
@@ -51,7 +52,7 @@ final class AndroidSound implements Sound{
 
     @Override
     public void pause(int soundId){
-        soundPool.pause((int)soundId);
+        soundPool.pause(soundId);
     }
 
     @Override
@@ -61,17 +62,17 @@ final class AndroidSound implements Sound{
 
     @Override
     public void resume(int soundId){
-        soundPool.resume((int)soundId);
+        soundPool.resume(soundId);
     }
 
     @Override
     public void setPitch(int soundId, float pitch){
-        soundPool.setRate((int)soundId, pitch);
+        soundPool.setRate(soundId, pitch);
     }
 
     @Override
     public void setVolume(int soundId, float volume){
-        soundPool.setVolume((int)soundId, volume, volume);
+        soundPool.setVolume(soundId, volume, volume);
     }
 
     @Override
@@ -82,7 +83,7 @@ final class AndroidSound implements Sound{
     @Override
     public int loop(float volume){
         if(streamIds.size == 8) streamIds.pop();
-        int streamId = soundPool.play(soundId, volume, volume, 1, -1, 1);
+        int streamId = soundPool.play(soundId, volume, volume, priority(), -1, 1);
         // standardise error code with other backends
         if(streamId == 0) return -1;
         streamIds.insert(0, streamId);
@@ -91,7 +92,7 @@ final class AndroidSound implements Sound{
 
     @Override
     public void setLooping(int soundId, boolean looping){
-        soundPool.setLoop((int)soundId, looping ? -1 : 0);
+        soundPool.setLoop(soundId, looping ? -1 : 0);
     }
 
     @Override
@@ -105,7 +106,7 @@ final class AndroidSound implements Sound{
             leftVolume *= (1 - Math.abs(pan));
         }
 
-        soundPool.setVolume((int)soundId, leftVolume, rightVolume);
+        soundPool.setVolume(soundId, leftVolume, rightVolume);
     }
 
     @Override
@@ -120,7 +121,7 @@ final class AndroidSound implements Sound{
         }else if(pan > 0){
             leftVolume *= (1 - Math.abs(pan));
         }
-        int streamId = soundPool.play(soundId, leftVolume, rightVolume, 1, 0, pitch);
+        int streamId = soundPool.play(soundId, leftVolume, rightVolume, priority(), 0, pitch);
         // standardise error code with other backends
         if(streamId == 0) return -1;
         streamIds.insert(0, streamId);
@@ -137,10 +138,14 @@ final class AndroidSound implements Sound{
         }else if(pan > 0){
             leftVolume *= (1 - Math.abs(pan));
         }
-        int streamId = soundPool.play(soundId, leftVolume, rightVolume, 1, -1, pitch);
+        int streamId = soundPool.play(soundId, leftVolume, rightVolume, priority(), -1, pitch);
         // standardise error code with other backends
         if(streamId == 0) return -1;
         streamIds.insert(0, streamId);
         return streamId;
+    }
+
+    int priority(){
+        return priority++;
     }
 }
