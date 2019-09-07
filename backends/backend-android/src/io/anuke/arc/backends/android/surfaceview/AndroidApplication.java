@@ -18,7 +18,8 @@ import io.anuke.arc.ApplicationListener;
 import io.anuke.arc.Core;
 import io.anuke.arc.Settings;
 import io.anuke.arc.backends.android.surfaceview.surfaceview.FillResolutionStrategy;
-import io.anuke.arc.collection.Array;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.function.*;
 import io.anuke.arc.util.ArcNativesLoader;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Log;
@@ -38,7 +39,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
     protected final Array<Runnable> runnables = new Array<>();
     protected final Array<Runnable> executedRunnables = new Array<>();
     private final ExecutorService exec = Executors.newSingleThreadExecutor();
-    private final Array<AndroidEventListener> androidEventListeners = new Array<>();
+    private final IntMap<AndroidEventListener> eventListeners = new IntMap<>();
+    private int lastEventNumber = 43;
     public Handler handler;
     protected AndroidGraphics graphics;
     protected AndroidInput input;
@@ -373,13 +375,13 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
         super.onActivityResult(requestCode, resultCode, data);
 
         // forward events to our listeners if there are any installed
-        synchronized(androidEventListeners){
-            for(int i = 0; i < androidEventListeners.size; i++){
-                androidEventListeners.get(i).onActivityResult(requestCode, resultCode, data);
+        synchronized(eventListeners){
+            if(eventListeners.containsKey(requestCode)){
+                eventListeners.get(requestCode).onActivityResult(resultCode, data);
             }
         }
 
-        if(data.getData() != null){
+        if(data != null && data.getData() != null){
             String scheme = data.getData().getScheme();
             if(scheme.equals("file")){
                 String fileName = data.getData().getEncodedPath();
@@ -393,16 +395,11 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
     }
 
     /** Adds an event listener for Android specific event such as onActivityResult(...). */
-    public void addAndroidEventListener(AndroidEventListener listener){
-        synchronized(androidEventListeners){
-            androidEventListeners.add(listener);
-        }
-    }
-
-    /** Removes an event listener for Android specific event such as onActivityResult(...). */
-    public void removeAndroidEventListener(AndroidEventListener listener){
-        synchronized(androidEventListeners){
-            androidEventListeners.removeValue(listener, true);
+    public void addResultListener(IntConsumer runner, AndroidEventListener listener){
+        synchronized(eventListeners){
+            int id = lastEventNumber++;
+            eventListeners.put(id, listener);
+            runner.accept(id);
         }
     }
 

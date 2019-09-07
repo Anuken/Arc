@@ -10,5 +10,5 @@ import android.content.Intent;
 public interface AndroidEventListener{
 
     /** Will be called if the application's onActivityResult(...) method is called. */
-    void onActivityResult(int requestCode, int resultCode, Intent data);
+    void onActivityResult(int resultCode, Intent data);
 }

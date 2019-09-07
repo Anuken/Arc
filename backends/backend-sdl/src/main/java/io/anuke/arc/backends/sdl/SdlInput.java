@@ -40,6 +40,11 @@ public class SdlInput extends Input{
             if(key == KeyCode.ENTER && down){
                 queue.keyTyped((char)13);
             }
+
+            //so is enter
+            if(key == KeyCode.FORWARD_DEL && down){
+                queue.keyTyped((char)127);
+            }
         }else if(type == SDL.SDL_EVENT_MOUSE_BUTTON){
             boolean down = input[1] == 1;
             int keycode = input[4];
