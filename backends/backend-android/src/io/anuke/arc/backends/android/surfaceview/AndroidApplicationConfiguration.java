@@ -70,7 +70,7 @@ public class AndroidApplicationConfiguration{
      * hide status bar buttons on Android 4.x and higher (API 14+). Doesn't work if "android:targetSdkVersion" less 11 or if API
      * less 14. default: false
      **/
-    public boolean hideStatusBar = false;
+    public boolean hideStatusBar = true;
 
     /** whether to disable Android audio support. default: false */
     public boolean disableAudio = false;
@@ -84,11 +84,8 @@ public class AndroidApplicationConfiguration{
     /** the {@link ResolutionStrategy}. default: {@link FillResolutionStrategy} **/
     public ResolutionStrategy resolutionStrategy = new FillResolutionStrategy();
 
-    /** if the app is a livewallpaper, whether it should get full touch events **/
-    public boolean getTouchEventsForLiveWallpaper = false;
-
     /** set this to true to enable Android 4.4 KitKat's 'Immersive mode' **/
-    public boolean useImmersiveMode = false;
+    public boolean useImmersiveMode = true;
 
     /**
      * Experimental, whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0.
@@ -97,12 +94,4 @@ public class AndroidApplicationConfiguration{
      */
     @Deprecated
     public boolean useGL30 = false;
-
-    /**
-     * whether to use {@link io.anuke.arc.backends.android.surfaceview.surfaceview.GLSurfaceView20API18} in place of the classic
-     * {@link io.anuke.arc.backends.android.surfaceview.surfaceview.GLSurfaceView20} on Android API 10 and lower.
-     * In case this is true {@link io.anuke.arc.backends.android.surfaceview.surfaceview.GLSurfaceView20API18} will be used.
-     * This implementation properly supports attach to and detach from window. default: false
-     */
-    public boolean useGLSurfaceView20API18 = false;
 }

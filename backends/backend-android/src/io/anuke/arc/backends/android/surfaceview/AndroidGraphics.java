@@ -1,31 +1,25 @@
 package io.anuke.arc.backends.android.surfaceview;
 
-import android.opengl.GLSurfaceView;
-import android.opengl.GLSurfaceView.EGLConfigChooser;
-import android.opengl.GLSurfaceView.Renderer;
-import android.util.DisplayMetrics;
-import android.view.Display;
-import android.view.View;
-import android.view.WindowManager.LayoutParams;
-import io.anuke.arc.Application;
-import io.anuke.arc.ApplicationListener;
-import io.anuke.arc.Core;
-import io.anuke.arc.Graphics;
+import android.opengl.*;
+import android.opengl.GLSurfaceView.*;
+import android.util.*;
+import android.view.*;
+import android.view.WindowManager.*;
+import io.anuke.arc.*;
+import io.anuke.arc.Graphics.Cursor.*;
 import io.anuke.arc.backends.android.surfaceview.surfaceview.*;
-import io.anuke.arc.collection.Array;
+import io.anuke.arc.collection.*;
 import io.anuke.arc.graphics.*;
-import io.anuke.arc.Graphics.Cursor.SystemCursor;
-import io.anuke.arc.graphics.glutils.FrameBuffer;
-import io.anuke.arc.graphics.glutils.GLVersion;
-import io.anuke.arc.graphics.glutils.Shader;
-import io.anuke.arc.math.WindowedMean;
+import io.anuke.arc.graphics.glutils.*;
+import io.anuke.arc.math.*;
+import io.anuke.arc.util.Log;
 import io.anuke.arc.util.*;
 
-import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
-import javax.microedition.khronos.opengles.GL10;
+import javax.microedition.khronos.egl.*;
+import javax.microedition.khronos.opengles.*;
 
 /**
  * An implementation of {@link Graphics} for Android.
@@ -44,7 +38,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
      */
     static volatile boolean enforceContinuousRendering = false;
     protected final AndroidApplicationConfiguration config;
-    final View view;
+    final GLSurfaceView20 view;
     protected long lastFrameTime = System.nanoTime();
     protected float deltaTime = 0;
     protected long frameStart = System.nanoTime();
@@ -85,59 +79,35 @@ public class AndroidGraphics extends Graphics implements Renderer{
         this.config = config;
         this.app = application;
         view = createGLSurfaceView(application, resolutionStrategy);
-        preserveEGLContextOnPause();
+        view.setPreserveEGLContextOnPause(true);
         if(focusableView){
             view.setFocusable(true);
             view.setFocusableInTouchMode(true);
         }
     }
 
-    protected void preserveEGLContextOnPause(){
-        int sdkVersion = android.os.Build.VERSION.SDK_INT;
-        if((sdkVersion >= 11 && view instanceof GLSurfaceView20) || view instanceof GLSurfaceView20API18){
-            try{
-                view.getClass().getMethod("setPreserveEGLContextOnPause", boolean.class).invoke(view, true);
-            }catch(Exception e){
-                Log.infoTag(LOG_TAG, "Method GLSurfaceView.setPreserveEGLContextOnPause not found");
-            }
-        }
-    }
-
-    protected View createGLSurfaceView(AndroidApplicationBase application, final ResolutionStrategy resolutionStrategy){
+    protected GLSurfaceView20 createGLSurfaceView(AndroidApplicationBase application, final ResolutionStrategy resolutionStrategy){
         if(!checkGL20()) throw new ArcRuntimeException("Arc requires OpenGL ES 2.0");
 
         EGLConfigChooser configChooser = getEglConfigChooser();
-        int sdkVersion = android.os.Build.VERSION.SDK_INT;
-        if(sdkVersion <= 10 && config.useGLSurfaceView20API18){
-            GLSurfaceView20API18 view = new GLSurfaceView20API18(application.getContext(), resolutionStrategy);
-            if(configChooser != null)
-                view.setEGLConfigChooser(configChooser);
-            else
-                view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-            view.setRenderer(this);
-            return view;
-        }else{
-            GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy, config.useGL30 ? 3 : 2);
-            if(configChooser != null)
-                view.setEGLConfigChooser(configChooser);
-            else
-                view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-            view.setRenderer(this);
-            return view;
-        }
+        GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy, config.useGL30 ? 3 : 2);
+        if(configChooser != null)
+            view.setEGLConfigChooser(configChooser);
+        else
+            view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+        view.setRenderer(this);
+        return view;
     }
 
     public void onPauseGLSurfaceView(){
         if(view != null){
-            if(view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).onPause();
-            if(view instanceof GLSurfaceView) ((GLSurfaceView)view).onPause();
+            view.onPause();
         }
     }
 
     public void onResumeGLSurfaceView(){
         if(view != null){
-            if(view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).onResume();
-            if(view instanceof GLSurfaceView) ((GLSurfaceView)view).onResume();
+            view.onResume();
         }
     }
 
@@ -667,9 +637,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
         if(view != null){
             // ignore setContinuousRendering(false) while pausing
             this.isContinuous = enforceContinuousRendering || isContinuous;
-            int renderMode = this.isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
-            if(view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).setRenderMode(renderMode);
-            if(view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
+            view.setRenderMode(this.isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY);
             mean.clear();
         }
     }
@@ -677,8 +645,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
     @Override
     public void requestRendering(){
         if(view != null){
-            if(view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).requestRender();
-            if(view instanceof GLSurfaceView) ((GLSurfaceView)view).requestRender();
+            view.requestRender();
         }
     }
 

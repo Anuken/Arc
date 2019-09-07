@@ -8,7 +8,6 @@ import android.view.View;
  * @author christoph widulle
  */
 public class RatioResolutionStrategy implements ResolutionStrategy{
-
     private final float ratio;
 
     public RatioResolutionStrategy(float ratio){

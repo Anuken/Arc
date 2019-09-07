@@ -1,14 +1,10 @@
 package io.anuke.arc.util;
 
-import io.anuke.arc.util.io.Streams;
+import io.anuke.arc.util.io.*;
 
 import java.io.*;
-import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.UUID;
-import java.util.zip.CRC32;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.*;
+import java.util.zip.*;
 
 import static io.anuke.arc.util.OS.*;
 
@@ -205,14 +201,10 @@ public class SharedLibraryLoader{
 
     private boolean canExecute(File file){
         try{
-            Method canExecute = File.class.getMethod("canExecute");
-            if((Boolean)canExecute.invoke(file)) return true;
-
-            Method setExecutable = File.class.getMethod("setExecutable", boolean.class, boolean.class);
-            setExecutable.invoke(file, true, false);
-
-            return (Boolean)canExecute.invoke(file);
-        }catch(Exception ignored){
+            if(file.canExecute()) return true;
+            file.setExecutable(true, false);
+            return file.canExecute();
+        }catch(Throwable ignored){
         }
         return false;
     }

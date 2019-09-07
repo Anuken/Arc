@@ -1,32 +1,20 @@
 package io.anuke.arc.backends.android.surfaceview;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
+import android.annotation.*;
+import android.app.*;
 import android.content.*;
-import android.content.res.Configuration;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Debug;
-import android.os.Handler;
-import android.view.Gravity;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
+import android.content.res.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
 import io.anuke.arc.Application;
-import io.anuke.arc.ApplicationListener;
-import io.anuke.arc.Core;
-import io.anuke.arc.Settings;
-import io.anuke.arc.backends.android.surfaceview.surfaceview.FillResolutionStrategy;
+import io.anuke.arc.*;
+import io.anuke.arc.backends.android.surfaceview.surfaceview.*;
 import io.anuke.arc.collection.*;
 import io.anuke.arc.function.*;
-import io.anuke.arc.util.ArcNativesLoader;
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.Log;
+import io.anuke.arc.util.*;
 
-import java.lang.reflect.Method;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 /**
  * An implementation of the {@link Application} interface for Android. Create an {@link Activity} that derives from this class. In
@@ -126,7 +114,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
         this.handler = new Handler();
         this.useImmersiveMode = config.useImmersiveMode;
         this.hideStatusBar = config.hideStatusBar;
-        this.honeycombClipboard = (android.content.ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+        this.honeycombClipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
 
         // Add a specialized audio lifecycle listener
         addListener(new ApplicationListener(){
@@ -166,11 +154,9 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
         useImmersiveMode(this.useImmersiveMode);
         if(this.useImmersiveMode && getVersion() >= Build.VERSION_CODES.KITKAT){
             try{
-                Class<?> vlistener = Class.forName("io.anuke.arc.backends.android.surfaceview.AndroidVisibilityListener");
-                Object o = vlistener.newInstance();
-                Method method = vlistener.getDeclaredMethod("createListener", AndroidApplicationBase.class);
-                method.invoke(o, this);
-            }catch(Exception e){
+                View rootView = getApplicationWindow().getDecorView();
+                rootView.setOnSystemUiVisibilityChangeListener(arg0 -> getHandler().post(() -> useImmersiveMode(true)));
+            }catch(Throwable e){
                 Log.err("[AndroidApplication] Failed to create AndroidVisibilityListener", e);
             }
         }
@@ -194,18 +180,11 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     protected void hideStatusBar(boolean hide){
-        if(!hide || getVersion() < 11) return;
+        if(!hide) return;
 
-        View rootView = getWindow().getDecorView();
-
-        try{
-            Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-            if(getVersion() <= 13) m.invoke(rootView, 0x0);
-            m.invoke(rootView, 0x1);
-        }catch(Exception e){
-            Log.err("[AndroidApplication] Can't hide status bar", e);
-        }
+        getWindow().getDecorView().setSystemUiVisibility(0x1);
     }
 
     @Override
@@ -229,16 +208,9 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
     public void useImmersiveMode(boolean use){
         if(!use || getVersion() < Build.VERSION_CODES.KITKAT) return;
 
-        View view = getWindow().getDecorView();
-        try{
-            Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-            int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN
-            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-            m.invoke(view, code);
-        }catch(Exception e){
-            Log.err("[AndroidApplication] Can't set immersive mode", e);
-        }
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN
+        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
     @Override
@@ -431,5 +403,16 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
     @Override
     public Handler getHandler(){
         return this.handler;
+    }
+
+    /**
+     * A listener for special Android events such onActivityResult(...). This can be used by e.g. extensions to plug into the Android
+     * system.
+     * @author noblemaster
+     */
+    public static interface AndroidEventListener{
+
+        /** Will be called if the application's onActivityResult(...) method is called. */
+        void onActivityResult(int resultCode, Intent data);
     }
 }

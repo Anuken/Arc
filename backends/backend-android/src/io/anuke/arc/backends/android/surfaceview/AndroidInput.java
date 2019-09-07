@@ -830,4 +830,10 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     public void addGenericMotionListener(OnGenericMotionListener listener){
         genericMotionListeners.add(listener);
     }
+
+    public static interface AndroidTouchHandler{
+        void onTouch(MotionEvent event, AndroidInput input);
+
+        boolean supportsMultitouch(Context app);
+    }
 }
