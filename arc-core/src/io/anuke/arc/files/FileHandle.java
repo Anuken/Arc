@@ -49,7 +49,7 @@ public class FileHandle{
         this.type = FileType.Absolute;
     }
 
-    protected FileHandle(String fileName, FileType type){
+    public FileHandle(String fileName, FileType type){
         this.type = type;
         file = new File(fileName);
     }
