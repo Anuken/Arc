@@ -402,9 +402,7 @@ public class Client extends Connection implements EndPoint{
         }
     }
 
-    /**
-     * Releases the resources used by this client, which may no longer be used.
-     */
+    /** Releases the resources used by this client, which may no longer be used.*/
     public void dispose() throws IOException{
         close();
         selector.close();
