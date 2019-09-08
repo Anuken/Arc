@@ -19,7 +19,7 @@ import io.anuke.arc.scene.ui.ScrollPane.ScrollPaneStyle;
 import io.anuke.arc.scene.ui.Slider.SliderStyle;
 import io.anuke.arc.scene.ui.TextButton.TextButtonStyle;
 import io.anuke.arc.scene.ui.TextField.TextFieldStyle;
-import io.anuke.arc.scene.ui.Window.WindowStyle;
+import io.anuke.arc.scene.ui.Dialog.WindowStyle;
 import io.anuke.arc.util.serialization.JsonValue;
 import io.anuke.arc.util.serialization.SerializationException;
 
