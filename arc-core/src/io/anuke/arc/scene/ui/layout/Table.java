@@ -884,7 +884,6 @@ public class Table extends WidgetGroup{
         }
     }
 
-    @SuppressWarnings("unused")
     private void computeSize(){
         sizeInvalid = false;
 
@@ -898,19 +897,18 @@ public class Table extends WidgetGroup{
         }
 
         int columns = this.columns, rows = this.rows;
-        float[] columnMinWidth = this.columnMinWidth = ensureSize(this.columnMinWidth, columns);
-        float[] rowMinHeight = this.rowMinHeight = ensureSize(this.rowMinHeight, rows);
-        float[] columnPrefWidth = this.columnPrefWidth = ensureSize(this.columnPrefWidth, columns);
-        float[] rowPrefHeight = this.rowPrefHeight = ensureSize(this.rowPrefHeight, rows);
-        float[] columnWidth = this.columnWidth = ensureSize(this.columnWidth, columns);
-        float[] rowHeight = this.rowHeight = ensureSize(this.rowHeight, rows);
-        float[] expandWidth = this.expandWidth = ensureSize(this.expandWidth, columns);
-        float[] expandHeight = this.expandHeight = ensureSize(this.expandHeight, rows);
+        this.columnMinWidth = ensureSize(this.columnMinWidth, columns);
+        this.rowMinHeight = ensureSize(this.rowMinHeight, rows);
+        this.columnPrefWidth = ensureSize(this.columnPrefWidth, columns);
+        this.rowPrefHeight = ensureSize(this.rowPrefHeight, rows);
+        this.columnWidth = ensureSize(this.columnWidth, columns);
+        this.rowHeight = ensureSize(this.rowHeight, rows);
+        this.expandWidth = ensureSize(this.expandWidth, columns);
+        this.expandHeight = ensureSize(this.expandHeight, rows);
 
         for(int i = 0; i < cellCount; i++){
             Cell c = cells.get(i);
             int column = c.column, row = c.row, colspan = c.colspan;
-            Element a = c.element;
 
             // Collect rows that expand and colspan=1 columns that expand.
             if(c.expandY != 0 && expandHeight[row] == 0) expandHeight[row] = c.expandY;

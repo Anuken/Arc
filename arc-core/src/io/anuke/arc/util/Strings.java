@@ -5,6 +5,17 @@ import java.nio.charset.Charset;
 public class Strings{
     public static final Charset utf8 = Charset.forName("UTF-8");
 
+    public static String getFinalMesage(Throwable e){
+        String message = e.getMessage();
+        while(e.getCause() != null){
+            e = e.getCause();
+            if(e.getMessage() != null){
+                message = e.getMessage();
+            }
+        }
+        return message;
+    }
+
     public static String parseException(Throwable e, boolean stacktrace){
         StringBuilder build = new StringBuilder();
 
@@ -14,10 +25,10 @@ public class Strings{
                 name = name.substring(name.lastIndexOf('.') + 1);
             }
 
-            build.append(name);
+            build.append("> ").append(name);
             if(e.getMessage() != null){
                 build.append(": ");
-                build.append(e.getMessage());
+                build.append("'").append(e.getMessage()).append("'");
             }
 
             if(stacktrace){

@@ -1,22 +1,16 @@
 package io.anuke.arc.scene.ui;
 
-import io.anuke.arc.graphics.Camera;
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.graphics.g2d.BitmapFont;
-import io.anuke.arc.graphics.g2d.Draw;
-import io.anuke.arc.input.KeyCode;
-import io.anuke.arc.math.geom.Vector2;
-import io.anuke.arc.scene.Element;
-import io.anuke.arc.scene.Scene;
-import io.anuke.arc.scene.event.InputEvent;
-import io.anuke.arc.scene.event.InputListener;
-import io.anuke.arc.scene.event.Touchable;
-import io.anuke.arc.scene.style.Drawable;
-import io.anuke.arc.scene.style.SkinReader.ReadContext;
-import io.anuke.arc.scene.style.Style;
-import io.anuke.arc.scene.ui.Label.LabelStyle;
-import io.anuke.arc.scene.ui.layout.Table;
-import io.anuke.arc.util.Align;
+import io.anuke.arc.graphics.*;
+import io.anuke.arc.graphics.g2d.*;
+import io.anuke.arc.input.*;
+import io.anuke.arc.math.geom.*;
+import io.anuke.arc.scene.*;
+import io.anuke.arc.scene.event.*;
+import io.anuke.arc.scene.style.*;
+import io.anuke.arc.scene.style.SkinReader.*;
+import io.anuke.arc.scene.ui.Label.*;
+import io.anuke.arc.scene.ui.layout.*;
+import io.anuke.arc.util.*;
 
 import static io.anuke.arc.Core.scene;
 
@@ -36,7 +30,6 @@ public class Window extends Table{
     boolean isMovable = false, isModal, isResizable, center = true;
     int resizeBorder = 8;
     boolean keepWithinStage = true;
-    boolean drawTitleTable;
     private WindowStyle style;
 
     public final Label title;
@@ -58,14 +51,9 @@ public class Window extends Table{
         this.title = new Label(title, new LabelStyle(style.titleFont, style.titleFontColor));
         this.title.setEllipsis(true);
 
-        titleTable = new Table(){
-            @Override
-            public void draw(){
-                if(drawTitleTable) super.draw();
-            }
-        };
+        titleTable = new Table();
         titleTable.add(this.title).expandX().fillX().minWidth(0);
-        addChild(titleTable);
+        add(titleTable).growX().row();
 
         setStyle(style);
         setWidth(150);
@@ -245,23 +233,6 @@ public class Window extends Table{
         style.stageBackground.draw(x, y, width, height);
     }
 
-    protected void drawDefaultBackground(float x, float y){
-        super.drawBackground(x, y);
-    }
-
-    protected void drawBackground(float x, float y){
-        super.drawBackground(x, y);
-
-        // Manually draw the title table before clipping is done.
-        titleTable.getColor().a = getColor().a;
-        float padTop = getMarginTop(), padLeft = getMarginLeft();
-        titleTable.setSize(getWidth() - padLeft - getMarginRight(), padTop);
-        titleTable.setPosition(padLeft, getHeight() - padTop);
-        drawTitleTable = true;
-        titleTable.draw();
-        drawTitleTable = false; // Avoid drawing the title table again in drawChildren.
-    }
-
     public Element hit(float x, float y, boolean touchable){
         Element hit = super.hit(x, y, touchable);
         if(hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled)) return this;
@@ -325,10 +296,6 @@ public class Window extends Table{
 
     public boolean isDragging(){
         return dragging;
-    }
-
-    public float getPrefWidth(){
-        return Math.max(super.getPrefWidth(), titleTable.getPrefWidth() + getMarginLeft() + getMarginRight());
     }
 
     /**

@@ -1,27 +1,17 @@
 package io.anuke.arc.scene.ui;
 
-import io.anuke.arc.graphics.g2d.Draw;
-import io.anuke.arc.graphics.g2d.ScissorStack;
-import io.anuke.arc.input.KeyCode;
-import io.anuke.arc.math.Interpolation;
-import io.anuke.arc.math.Mathf;
-import io.anuke.arc.math.geom.Rectangle;
-import io.anuke.arc.math.geom.Vector2;
-import io.anuke.arc.scene.Element;
-import io.anuke.arc.scene.Scene;
-import io.anuke.arc.scene.event.ElementGestureListener;
-import io.anuke.arc.scene.event.Event;
-import io.anuke.arc.scene.event.InputEvent;
-import io.anuke.arc.scene.event.InputListener;
-import io.anuke.arc.scene.style.Drawable;
-import io.anuke.arc.scene.style.SkinReader.ReadContext;
-import io.anuke.arc.scene.style.Style;
-import io.anuke.arc.scene.ui.layout.WidgetGroup;
-import io.anuke.arc.scene.utils.Cullable;
-import io.anuke.arc.scene.utils.Layout;
+import io.anuke.arc.graphics.g2d.*;
+import io.anuke.arc.input.*;
+import io.anuke.arc.math.*;
+import io.anuke.arc.math.geom.*;
+import io.anuke.arc.scene.*;
+import io.anuke.arc.scene.event.*;
+import io.anuke.arc.scene.style.*;
+import io.anuke.arc.scene.style.SkinReader.*;
+import io.anuke.arc.scene.ui.layout.*;
+import io.anuke.arc.scene.utils.*;
 
-import static io.anuke.arc.Core.graphics;
-import static io.anuke.arc.Core.scene;
+import static io.anuke.arc.Core.*;
 
 /**
  * A group that scrolls a child widget using scrollbars and/or mouse or touch dragging.
@@ -573,13 +563,14 @@ public class ScrollPane extends WidgetGroup{
 
         widget.setPosition(x, y);
 
+        /*
         if(widget instanceof Cullable){
             widgetCullingArea.x = -widget.getX() + widgetAreaBounds.x;
             widgetCullingArea.y = -widget.getY() + widgetAreaBounds.y;
             widgetCullingArea.width = widgetAreaBounds.width;
             widgetCullingArea.height = widgetAreaBounds.height;
             ((Cullable)widget).setCullingArea(widgetCullingArea);
-        }
+        }*/
 
         // Draw the background ninepatch.
         if(style.background != null) style.background.draw(0, 0, getWidth(), getHeight());
@@ -589,10 +580,8 @@ public class ScrollPane extends WidgetGroup{
         scene.calculateScissors(widgetAreaBounds, scissorBounds);
 
         // Enable scissors for widget area and draw the widget.
-        Draw.flush();
         if(ScissorStack.pushScissors(scissorBounds)){
             drawChildren();
-            Draw.flush();
             ScissorStack.popScissors();
         }
 
