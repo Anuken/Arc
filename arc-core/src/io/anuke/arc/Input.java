@@ -376,6 +376,7 @@ public abstract class Input{
         public boolean multiline = false;
         public String title = "";
         public String text = "";
+        public boolean numeric;
         public Consumer<String> accepted = s -> { };
         public Runnable canceled = () -> { };
         public int maxLength = -1;

@@ -35,4 +35,8 @@ public interface Drawable{
     float getMinHeight();
 
     void setMinHeight(float minHeight);
+
+    default float imageSize(){
+        return this instanceof TextureRegionDrawable ? ((TextureRegionDrawable)this).getRegion().getWidth() : getMinWidth();
+    }
 }

@@ -1,39 +1,25 @@
 package io.anuke.arc.backends.android.surfaceview;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.os.Handler;
-import android.os.Vibrator;
-import android.text.InputFilter;
-import android.text.InputFilter.LengthFilter;
-import android.view.MotionEvent;
-import android.view.Surface;
-import android.view.View;
-import android.view.View.OnGenericMotionListener;
-import android.view.View.OnKeyListener;
-import android.view.View.OnTouchListener;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import io.anuke.arc.Core;
-import io.anuke.arc.Graphics.DisplayMode;
-import io.anuke.arc.Input;
-import io.anuke.arc.collection.Bits;
+import android.app.*;
+import android.content.*;
+import android.hardware.*;
+import android.os.*;
+import android.text.*;
+import android.text.InputFilter.*;
+import android.view.*;
+import android.view.View.*;
+import android.view.inputmethod.*;
+import android.widget.*;
+import io.anuke.arc.*;
+import io.anuke.arc.Graphics.*;
+import io.anuke.arc.collection.*;
 import io.anuke.arc.input.InputDevice;
-import io.anuke.arc.input.InputProcessor;
-import io.anuke.arc.input.KeyCode;
-import io.anuke.arc.math.geom.Vector3;
-import io.anuke.arc.util.Log;
-import io.anuke.arc.util.pooling.Pool;
+import io.anuke.arc.input.*;
+import io.anuke.arc.math.geom.*;
+import io.anuke.arc.util.*;
+import io.anuke.arc.util.pooling.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * An implementation of the {@link Input} interface for Android.
@@ -165,6 +151,9 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
             //alert.setTitle(info.title);
             final EditText input = new EditText(context);
             input.setText(info.text);
+            if(info.numeric){
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+            }
             if(info.maxLength != -1){
                 input.setFilters(new InputFilter[]{new LengthFilter(info.maxLength)});
             }

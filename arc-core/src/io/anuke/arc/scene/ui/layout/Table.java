@@ -434,6 +434,7 @@ public class Table extends WidgetGroup{
     public Cell<ImageButton> addImageButton(Drawable icon, ImageButtonStyle style, Runnable listener){
         ImageButton button = new ImageButton(icon, style);
         button.clicked(listener);
+        button.resizeImage(icon.imageSize());
         return add(button);
     }
 
@@ -479,7 +480,7 @@ public class Table extends WidgetGroup{
     }
 
     public Cell<TextButton> addImageTextButton(String text, Drawable image, Runnable clicked){
-        return addImageTextButton(text, image, image.getMinWidth(), clicked);
+        return addImageTextButton(text, image, image.imageSize(), clicked);
     }
 
     public Cell<TextButton> addImageTextButton(String text, Drawable image, float imagesize, Runnable clicked){
@@ -500,7 +501,7 @@ public class Table extends WidgetGroup{
 
     public Cell<TextButton> addImageTextButton(String text, Drawable image, TextButtonStyle style, Runnable clicked){
         TextButton button = new TextButton(text, style);
-        button.add(new Image(image)).size(image.getMinWidth());
+        button.add(new Image(image)).size(image.imageSize());
         button.getCells().reverse();
         button.clicked(clicked);
         return add(button);
@@ -520,7 +521,7 @@ public class Table extends WidgetGroup{
         button.add(new Image(image));
         button.getCells().reverse();
         button.clicked(clicked);
-        button.getLabelCell().padLeft(-image.getMinWidth());
+        button.getLabelCell().padLeft(-image.imageSize());
         return add(button);
     }
 

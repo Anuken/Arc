@@ -300,6 +300,9 @@ public class IOSInput extends Input{
         //TODO no max length support
         UITextField textField = uiAlertView.getTextField(0);
         textField.setText(input.text);
+        if(input.numeric){
+            textField.setKeyboardType(UIKeyboardType.NumberPad);
+        }
 
         return uiAlertView;
     }
