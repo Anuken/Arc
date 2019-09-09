@@ -872,11 +872,11 @@ public class Element implements Layout{
         return 0;
     }
 
-    public final float getMaxWidth(){
+    public float getMaxWidth(){
         return 0;
     }
 
-    public final float getMaxHeight(){
+    public float getMaxHeight(){
         return 0;
     }
 

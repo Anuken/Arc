@@ -284,6 +284,7 @@ public class Dialog extends Table{
         style.stageBackground.draw(x, y, width, height);
     }
 
+    @Override
     public Element hit(float x, float y, boolean touchable){
         Element hit = super.hit(x, y, touchable);
         if(hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled)) return this;

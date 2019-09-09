@@ -12,6 +12,7 @@ public class Collapser extends WidgetGroup{
     private boolean collapsed;
     private boolean actionRunning;
     private float currentHeight;
+    private float seconds = 0.5f;
 
     public Collapser(Consumer<Table> cons, boolean collapsed){
         this.table = new Table();
@@ -79,7 +80,7 @@ public class Collapser extends WidgetGroup{
     public void layout(){
         if(table == null) return;
 
-        table.setBounds(0, 0, table.getPrefWidth(), table.getPrefHeight());
+        table.setBounds(0, 0, getWidth(), getHeight());
 
         if(!actionRunning){
             if(collapsed)
@@ -115,6 +116,16 @@ public class Collapser extends WidgetGroup{
     }
 
     @Override
+    public float getMinWidth(){
+        return 0;
+    }
+
+    @Override
+    public float getMinHeight(){
+        return 0;
+    }
+
+    @Override
     protected void childrenChanged(){
         super.childrenChanged();
         if(getChildren().size > 1) throw new ArcRuntimeException("Only one actor can be added to CollapsibleWidget");
@@ -124,13 +135,13 @@ public class Collapser extends WidgetGroup{
         @Override
         public boolean act(float delta){
             if(collapsed){
-                currentHeight -= delta * table.getPrefHeight();
+                currentHeight -= delta * table.getPrefHeight() / seconds;
                 if(currentHeight <= 0){
                     currentHeight = 0;
                     actionRunning = false;
                 }
             }else{
-                currentHeight += delta * table.getPrefHeight();
+                currentHeight += delta * table.getPrefHeight() / seconds;
                 if(currentHeight > table.getPrefHeight()){
                     currentHeight = table.getPrefHeight();
                     actionRunning = false;

@@ -557,15 +557,13 @@ public class ScrollPane extends WidgetGroup{
 
         widget.setPosition(x, y);
 
-        //TODO fix
-        /*
         if(widget instanceof Cullable){
             widgetCullingArea.x = -widget.getX() + widgetAreaBounds.x;
             widgetCullingArea.y = -widget.getY() + widgetAreaBounds.y;
             widgetCullingArea.width = widgetAreaBounds.width;
             widgetCullingArea.height = widgetAreaBounds.height;
             ((Cullable)widget).setCullingArea(widgetCullingArea);
-        }*/
+        }
 
         // Draw the background ninepatch.
         if(style.background != null) style.background.draw(0, 0, getWidth(), getHeight());
@@ -648,10 +646,12 @@ public class ScrollPane extends WidgetGroup{
         return height;
     }
 
+    @Override
     public float getMinWidth(){
         return 0;
     }
 
+    @Override
     public float getMinHeight(){
         return 0;
     }
