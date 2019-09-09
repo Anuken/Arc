@@ -218,7 +218,7 @@ public class BitmapFont implements Disposable{
         GlyphLayout result =  draw(str, x, y, 0, halign, false);
         getData().setScale(pscale);
         setUseIntegerPositions(pint);
-        setColor(Color.WHITE);
+        setColor(Color.white);
         return result;
     }
 

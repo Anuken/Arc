@@ -64,7 +64,7 @@ public class SpriteCache implements Disposable{
     private boolean drawing;
     private Array<Cache> caches;
     private Cache currentCache;
-    private float colorPacked = Color.WHITE_FLOAT_BITS;
+    private float colorPacked = Color.whiteFloatBits;
     private Shader customShader = null;
     private Texture lastBoundTexture;
 
@@ -164,7 +164,7 @@ public class SpriteCache implements Disposable{
         return color;
     }
 
-    /** Sets the color used to tint images when they are added to the SpriteCache. Default is {@link Color#WHITE}. */
+    /** Sets the color used to tint images when they are added to the SpriteCache. Default is {@link Color#white}. */
     public void setColor(Color tint){
         color.set(tint);
         colorPacked = tint.toFloatBits();

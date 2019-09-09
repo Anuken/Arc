@@ -628,11 +628,11 @@ public class FreeTypeFontGenerator implements Disposable{
         glyph.xadvance = FreeType.toInt(metrics.getHoriAdvance()) + (int)parameter.borderWidth + parameter.spaceX;
 
         if(bitmapped){
-            mainPixmap.setColor(Color.CLEAR);
+            mainPixmap.setColor(Color.clear);
             mainPixmap.fill();
             ByteBuffer buf = mainBitmap.getBuffer();
-            int whiteIntBits = Color.WHITE.toIntBits();
-            int clearIntBits = Color.CLEAR.toIntBits();
+            int whiteIntBits = Color.white.toIntBits();
+            int clearIntBits = Color.clear.toIntBits();
             for(int h = 0; h < glyph.height; h++){
                 int idx = h * mainBitmap.getPitch();
                 for(int w = 0; w < (glyph.width + glyph.xoffset); w++){
@@ -767,7 +767,7 @@ public class FreeTypeFontGenerator implements Disposable{
         /** Strength of hinting */
         public Hinting hinting = Hinting.AutoMedium;
         /** Foreground color (required for non-black borders) */
-        public Color color = Color.WHITE;
+        public Color color = Color.white;
         /** Glyph gamma. Values > 1 reduce antialiasing. */
         public float gamma = 1.8f;
         /** Number of times to render the glyph. Useful with a shadow or border, so it doesn't show through the glyph. */
@@ -775,7 +775,7 @@ public class FreeTypeFontGenerator implements Disposable{
         /** Border width in pixels, 0 to disable */
         public float borderWidth = 0;
         /** Border color; only used if borderWidth > 0 */
-        public Color borderColor = Color.BLACK;
+        public Color borderColor = Color.black;
         /** true for straight (mitered), false for rounded borders */
         public boolean borderStraight = false;
         /** Values < 1 increase the border size. */

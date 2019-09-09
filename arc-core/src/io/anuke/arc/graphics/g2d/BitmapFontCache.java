@@ -378,7 +378,7 @@ public class BitmapFontCache{
             }
         }
 
-        currentTint = Color.WHITE_FLOAT_BITS; // Cached glyphs have changed, reset the current tint.
+        currentTint = Color.whiteFloatBits; // Cached glyphs have changed, reset the current tint.
     }
 
     private void addGlyph(Glyph glyph, float x, float y, float color){

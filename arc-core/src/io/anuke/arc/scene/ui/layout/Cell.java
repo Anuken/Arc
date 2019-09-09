@@ -581,7 +581,7 @@ public class Cell<T extends Element> implements Poolable{
     }
 
     float scl(float value){
-        return UnitScl.dp.scl(value);
+        return Scl.scl(value);
     }
 
     /** Reset state so the cell can be reused, setting all constraints to their {@link #defaults() default} values. */

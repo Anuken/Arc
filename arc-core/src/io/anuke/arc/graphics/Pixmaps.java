@@ -173,7 +173,7 @@ public class Pixmaps{
 
     public static Pixmap blankPixmap(){
         Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
-        pixmap.setColor(Color.WHITE);
+        pixmap.setColor(Color.white);
         pixmap.fill();
         return pixmap;
     }

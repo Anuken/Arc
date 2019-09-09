@@ -119,8 +119,8 @@ public class KeybindDialog extends Dialog{
 
             for(KeyBind keybind : keybinds.getKeybinds()){
                 if(lastCategory != keybind.category() && keybind.category() != null){
-                    table.add(bundle.get("category." + keybind.category() + ".name", Strings.capitalize(keybind.category()))).color(Color.GRAY).colspan(3).pad(10).padBottom(4).row();
-                    table.addImage().color(Color.GRAY).fillX().height(3).pad(6).colspan(3).padTop(0).padBottom(10).row();
+                    table.add(bundle.get("category." + keybind.category() + ".name", Strings.capitalize(keybind.category()))).color(Color.gray).colspan(3).pad(10).padBottom(4).row();
+                    table.addImage().color(Color.gray).fillX().height(3).pad(6).colspan(3).padTop(0).padBottom(10).row();
                     lastCategory = keybind.category();
                 }
 
@@ -241,8 +241,8 @@ public class KeybindDialog extends Dialog{
     }
 
     public static class KeybindDialogStyle extends Style{
-        public Color keyColor = Color.WHITE;
-        public Color keyNameColor = Color.WHITE;
-        public Color controllerColor = Color.WHITE;
+        public Color keyColor = Color.white;
+        public Color keyNameColor = Color.white;
+        public Color controllerColor = Color.white;
     }
 }

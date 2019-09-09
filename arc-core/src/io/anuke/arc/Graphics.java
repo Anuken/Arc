@@ -257,7 +257,7 @@ public abstract class Graphics implements Disposable{
      */
     public Cursor newCursor(Pixmap pixmap, int scaling, Color outlineColor){
         Pixmap out = Pixmaps.outline(pixmap, outlineColor);
-        out.setColor(Color.WHITE);
+        out.setColor(Color.white);
         Pixmap out2 = Pixmaps.scale(out, scaling);
 
         if(!Mathf.isPowerOfTwo(out2.getWidth())){
@@ -280,7 +280,7 @@ public abstract class Graphics implements Disposable{
      */
     public Cursor newCursor(Pixmap pixmap, int scaling, Color outlineColor, int outlineThickness){
         Pixmap out = Pixmaps.outline(pixmap, outlineColor, outlineThickness);
-        out.setColor(Color.WHITE);
+        out.setColor(Color.white);
         Pixmap out2 = Pixmaps.scale(out, scaling);
 
         if(!Mathf.isPowerOfTwo(out2.getWidth())){

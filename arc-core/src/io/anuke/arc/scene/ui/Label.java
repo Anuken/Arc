@@ -134,7 +134,7 @@ public class Label extends Element{
         if(wrap && ellipsis == null){
             float width = getWidth();
             if(style.background != null) width -= style.background.getLeftWidth() + style.background.getRightWidth();
-            prefSizeLayout.setText(cache.getFont(), text, Color.WHITE, width, Align.left, true);
+            prefSizeLayout.setText(cache.getFont(), text, Color.white, width, Align.left, true);
         }else
             prefSizeLayout.setText(cache.getFont(), text);
         prefSize.set(prefSizeLayout.width, prefSizeLayout.height);
@@ -169,7 +169,7 @@ public class Label extends Element{
         float textWidth, textHeight;
         if(wrap || text.indexOf("\n") != -1){
             // If the text can span multiple lines, determine the text's actual size so it can be aligned within the label.
-            layout.setText(font, text, 0, text.length(), Color.WHITE, width, lineAlign, wrap, ellipsis);
+            layout.setText(font, text, 0, text.length(), Color.white, width, lineAlign, wrap, ellipsis);
             textWidth = layout.width;
             textHeight = layout.height;
 
@@ -195,7 +195,7 @@ public class Label extends Element{
         }
         if(!cache.getFont().isFlipped()) y += textHeight;
 
-        layout.setText(font, text, 0, text.length(), Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
+        layout.setText(font, text, 0, text.length(), Color.white, textWidth, lineAlign, wrap, ellipsis);
         cache.setText(layout, x, y);
 
         if(fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);

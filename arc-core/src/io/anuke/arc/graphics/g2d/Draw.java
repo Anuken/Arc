@@ -7,7 +7,6 @@ import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.graphics.glutils.Shader;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.Matrix3;
-import io.anuke.arc.scene.style.*;
 import io.anuke.arc.util.Tmp;
 
 import static io.anuke.arc.Core.camera;
@@ -45,7 +44,7 @@ public class Draw{
     }
 
     public static void mixcol(){
-        Core.batch.setPackedMixColor(Color.CLEAR_FLOAT_BITS);
+        Core.batch.setPackedMixColor(Color.clearFloatBits);
     }
 
     public static void tint(Color a, Color b, float s){
@@ -86,7 +85,7 @@ public class Draw{
     }
 
     public static void color(){
-        Core.batch.setPackedColor(Color.WHITE_FLOAT_BITS);
+        Core.batch.setPackedColor(Color.whiteFloatBits);
     }
 
     public static void color(float r, float g, float b){

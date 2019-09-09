@@ -35,7 +35,7 @@ public class NinePatch{
     public static final int BOTTOM_RIGHT = 8;
 
     static private final Color tmpDrawColor = new Color();
-    private final Color color = new Color(Color.WHITE);
+    private final Color color = new Color(Color.white);
     private Texture texture;
     private int bottomLeft = -1, bottomCenter = -1, bottomRight = -1;
     private int middleLeft = -1, middleCenter = -1, middleRight = -1;
@@ -216,7 +216,7 @@ public class NinePatch{
     }
 
     private void load(TextureRegion[] patches){
-        final float color = Color.WHITE_FLOAT_BITS; // placeholder color, overwritten at draw time
+        final float color = Color.whiteFloatBits; // placeholder color, overwritten at draw time
 
         if(patches[BOTTOM_LEFT] != null){
             bottomLeft = add(patches[BOTTOM_LEFT], color, false, false);
@@ -298,7 +298,7 @@ public class NinePatch{
         }
 
         final float[] vertices = this.vertices;
-        final float mixColor = Color.CLEAR_FLOAT_BITS;
+        final float mixColor = Color.clearFloatBits;
 
         vertices[idx + 2] = color;
         vertices[idx + 3] = u;
@@ -329,7 +329,7 @@ public class NinePatch{
         final float fx2 = x + width;
         final float fy2 = y + height;
         final float[] vertices = this.vertices;
-        final float mixColor = Color.CLEAR_FLOAT_BITS;
+        final float mixColor = Color.clearFloatBits;
         vertices[idx] = x;
         vertices[idx + 1] = y;
         vertices[idx + 2] = color;
@@ -405,7 +405,7 @@ public class NinePatch{
 
     /**
      * Copy given color. The color will be blended with the batch color, then combined with the texture colors at
-     * {@link NinePatch#draw(Batch, float, float, float, float) draw} time. Default is {@link Color#WHITE}.
+     * {@link NinePatch#draw(Batch, float, float, float, float) draw} time. Default is {@link Color#white}.
      */
     public void setColor(Color color){
         this.color.set(color);

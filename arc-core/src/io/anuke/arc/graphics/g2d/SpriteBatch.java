@@ -39,10 +39,10 @@ public class SpriteBatch implements Disposable{
     private boolean ownsShader;
 
     protected final Color color = new Color(1, 1, 1, 1);
-    protected float colorPacked = Color.WHITE_FLOAT_BITS;
+    protected float colorPacked = Color.whiteFloatBits;
 
-    protected final Color mixColor = Color.CLEAR;
-    protected float mixColorPacked = Color.CLEAR_FLOAT_BITS;
+    protected final Color mixColor = Color.clear;
+    protected float mixColorPacked = Color.clearFloatBits;
 
     /** Number of render calls since the last {@link #begin()}. **/
     int renderCalls = 0;

@@ -471,7 +471,7 @@ public class Table extends WidgetGroup{
     public Cell<TextButton> addRowImageTextButton(String text, Drawable image, Runnable clicked){
         TextButton button = new TextButton(text);
         button.clearChildren();
-        button.add(new Image(image)).update(i -> i.setColor(button.isDisabled() ? Color.GRAY : Color.WHITE));
+        button.add(new Image(image)).update(i -> i.setColor(button.isDisabled() ? Color.gray : Color.white));
         button.row();
         button.add(button.getLabel()).padTop(4);
         button.clicked(clicked);
@@ -704,38 +704,38 @@ public class Table extends WidgetGroup{
     }
 
     public Table margin(float top, float left, float bottom, float right){
-        marginTop = UnitScl.dp.scl(top);
-        marginLeft = UnitScl.dp.scl(left);
-        marginBot = UnitScl.dp.scl(bottom);
-        marginRight = UnitScl.dp.scl(right);
+        marginTop = Scl.scl(top);
+        marginLeft = Scl.scl(left);
+        marginBot = Scl.scl(bottom);
+        marginRight = Scl.scl(right);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the top edge of the table. */
     public Table marginTop(float padTop){
-        this.marginTop = UnitScl.dp.scl(padTop);
+        this.marginTop = Scl.scl(padTop);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the left edge of the table. */
     public Table marginLeft(float padLeft){
-        this.marginLeft = UnitScl.dp.scl(padLeft);
+        this.marginLeft = Scl.scl(padLeft);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the bottom edge of the table. */
     public Table marginBottom(float padBottom){
-        this.marginBot = UnitScl.dp.scl(padBottom);
+        this.marginBot = Scl.scl(padBottom);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the right edge of the table. */
     public Table marginRight(float padRight){
-        this.marginRight = UnitScl.dp.scl(padRight);
+        this.marginRight = Scl.scl(padRight);
         sizeInvalid = true;
         return this;
     }

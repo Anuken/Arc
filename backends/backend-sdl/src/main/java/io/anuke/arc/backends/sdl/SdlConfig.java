@@ -20,7 +20,7 @@ public class SdlConfig{
     public boolean maximized = false;
 
     public String title = "Arc Application";
-    public Color initialBackgroundColor = Color.BLACK;
+    public Color initialBackgroundColor = Color.black;
     public boolean initialVisible = true;
     public boolean vSyncEnabled = true;
 

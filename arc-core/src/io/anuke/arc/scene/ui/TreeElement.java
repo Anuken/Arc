@@ -274,7 +274,7 @@ public class TreeElement extends WidgetGroup{
                 Draw.color(element.getColor());
                 node.icon.draw(x + node.element.getX() - iconSpacingRight - node.icon.getMinWidth(), y + iconY,
                 node.icon.getMinWidth(), node.icon.getMinHeight());
-                Draw.color(Color.WHITE);
+                Draw.color(Color.white);
             }
 
             if(node.children.size == 0) continue;
