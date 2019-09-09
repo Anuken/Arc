@@ -1,7 +1,6 @@
 package io.anuke.arc.scene.ui;
 
 import io.anuke.arc.scene.style.Drawable;
-import io.anuke.arc.scene.style.SkinReader.ReadContext;
 import io.anuke.arc.scene.ui.layout.Cell;
 import io.anuke.arc.util.Align;
 import io.anuke.arc.util.Scaling;
@@ -18,11 +17,7 @@ public class CheckBox extends TextButton{
     private CheckBoxStyle style;
 
     public CheckBox(String text){
-        this(text, scene.skin.get(CheckBoxStyle.class));
-    }
-
-    public CheckBox(String text, String styleName){
-        this(text, scene.skin.get(styleName, CheckBoxStyle.class));
+        this(text, scene.getStyle(CheckBoxStyle.class));
     }
 
     public CheckBox(String text, CheckBoxStyle style){
@@ -88,17 +83,5 @@ public class CheckBox extends TextButton{
         public Drawable checkboxOn, checkboxOff;
         /** Optional. */
         public Drawable checkboxOver, checkboxOnDisabled, checkboxOffDisabled, checkboxOnOver;
-
-        @Override
-        public void read(ReadContext read){
-            super.read(read);
-            checkboxOn = read.rdraw("checkboxOn");
-            checkboxOff = read.rdraw("checkboxOff");
-
-            checkboxOver = read.draw("checkboxOver");
-            checkboxOnDisabled = read.draw("checkboxOnDisabled");
-            checkboxOffDisabled = read.draw("checkboxOffDisabled");
-            checkboxOnOver = read.draw("checkboxOnOver");
-        }
     }
 }

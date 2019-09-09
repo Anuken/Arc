@@ -10,6 +10,7 @@ import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.math.geom.Rectangle;
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.scene.event.Touchable;
+import io.anuke.arc.scene.style.*;
 import io.anuke.arc.scene.ui.layout.Table;
 import io.anuke.arc.scene.ui.layout.Table.DrawRect;
 import io.anuke.arc.scene.utils.Cullable;
@@ -234,7 +235,7 @@ public abstract class Group extends Element implements Cullable{
     }
 
     /** Adds and returns a table. This table will fill the whole scene. */
-    public void fill(String background, Consumer<Table> cons){
+    public void fill(Drawable background, Consumer<Table> cons){
         Table table = background == null ? new Table() : new Table(background);
         table.setFillParent(true);
         addChild(table);

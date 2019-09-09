@@ -1,37 +1,32 @@
 package io.anuke.arc.scene;
 
-import io.anuke.arc.Application.ApplicationType;
-import io.anuke.arc.Core;
-import io.anuke.arc.Graphics;
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.collection.SnapshotArray;
-import io.anuke.arc.function.Consumer;
-import io.anuke.arc.function.Predicate;
-import io.anuke.arc.graphics.Camera;
-import io.anuke.arc.graphics.g2d.Draw;
-import io.anuke.arc.graphics.g2d.ScissorStack;
-import io.anuke.arc.input.InputProcessor;
-import io.anuke.arc.input.KeyCode;
-import io.anuke.arc.math.Matrix3;
-import io.anuke.arc.math.geom.Rectangle;
-import io.anuke.arc.math.geom.Vector2;
+import io.anuke.arc.Application.*;
+import io.anuke.arc.*;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.function.*;
+import io.anuke.arc.graphics.*;
+import io.anuke.arc.graphics.g2d.*;
+import io.anuke.arc.input.*;
+import io.anuke.arc.math.*;
+import io.anuke.arc.math.geom.*;
 import io.anuke.arc.scene.event.*;
-import io.anuke.arc.scene.event.FocusListener.FocusEvent;
-import io.anuke.arc.scene.event.InputEvent.Type;
-import io.anuke.arc.scene.ui.Dialog;
-import io.anuke.arc.scene.ui.layout.Table;
-import io.anuke.arc.util.Disposable;
-import io.anuke.arc.util.pooling.Pool.Poolable;
-import io.anuke.arc.util.pooling.Pools;
-import io.anuke.arc.util.viewport.ScreenViewport;
-import io.anuke.arc.util.viewport.Viewport;
+import io.anuke.arc.scene.event.FocusListener.*;
+import io.anuke.arc.scene.event.InputEvent.*;
+import io.anuke.arc.scene.style.*;
+import io.anuke.arc.scene.ui.*;
+import io.anuke.arc.scene.ui.layout.*;
+import io.anuke.arc.util.*;
+import io.anuke.arc.util.pooling.Pool.*;
+import io.anuke.arc.util.pooling.*;
+import io.anuke.arc.util.viewport.*;
 
 import static io.anuke.arc.Core.graphics;
 
 
 public class Scene implements InputProcessor, Disposable{
-    public final Skin skin;
+    //public final Skin skin;
     public final Group root;
+    private final ObjectMap<Class, Object> styleDefaults = new ObjectMap<>();
     private final Vector2 tempCoords = new Vector2();
     private final Element[] pointerOverActors = new Element[20];
     private final boolean[] pointerTouched = new boolean[20];
@@ -44,8 +39,7 @@ public class Scene implements InputProcessor, Disposable{
     private Element keyboardFocus, scrollFocus;
     private boolean actionsRequestRendering = true;
 
-    public Scene(Skin skin){
-        this.skin = skin;
+    public Scene(){
         this.viewport = new ScreenViewport(){
             @Override
             public void calculateScissors(Matrix3 batchTransform, Rectangle area, Rectangle scissor){
@@ -60,9 +54,18 @@ public class Scene implements InputProcessor, Disposable{
         viewport.update(graphics.getWidth(), graphics.getHeight(), true);
     }
 
-    public Scene(Skin skin, Viewport viewport){
-        this(skin);
+    public Scene( Viewport viewport){
+        this();
         this.viewport = viewport;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getStyle(Class<T> type){
+        return (T)styleDefaults.getThrow(type, () -> new IllegalArgumentException("No default style for type: " + type.getSimpleName()));
+    }
+
+    public <T> void addStyle(Class<T> type, T style){
+        styleDefaults.put(type, style);
     }
 
     public boolean hasMouse(){
@@ -170,7 +173,7 @@ public class Scene implements InputProcessor, Disposable{
     }
 
     /** Adds and returns a table. This table will fill the whole scene. */
-    public Table table(String style, Consumer<Table> cons){
+    public Table table(Drawable style, Consumer<Table> cons){
         Table table = new Table(style);
         table.setFillParent(true);
         add(table);
@@ -763,7 +766,7 @@ public class Scene implements InputProcessor, Disposable{
 
     @Override
     public void dispose(){
-        skin.dispose();
+        //skin.dispose();
     }
 
     /**

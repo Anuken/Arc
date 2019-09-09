@@ -1,20 +1,17 @@
 package io.anuke.arc.scene.ui.layout;
 
-import io.anuke.arc.*;
-import io.anuke.arc.function.BooleanProvider;
-import io.anuke.arc.function.Consumer;
-import io.anuke.arc.function.Predicate;
-import io.anuke.arc.function.Supplier;
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.scene.Element;
-import io.anuke.arc.scene.event.Touchable;
+import io.anuke.arc.function.*;
+import io.anuke.arc.graphics.*;
+import io.anuke.arc.scene.*;
+import io.anuke.arc.scene.event.*;
+import io.anuke.arc.scene.style.*;
 import io.anuke.arc.scene.ui.*;
 import io.anuke.arc.scene.ui.Button.*;
 import io.anuke.arc.scene.ui.Label.*;
 import io.anuke.arc.scene.ui.ScrollPane.*;
-import io.anuke.arc.scene.ui.TextField.TextFieldValidator;
+import io.anuke.arc.scene.ui.TextField.*;
 import io.anuke.arc.util.*;
-import io.anuke.arc.util.pooling.Pool.Poolable;
+import io.anuke.arc.util.pooling.Pool.*;
 
 /**
  * A cell for a {@link Table}.
@@ -286,13 +283,13 @@ public class Cell<T extends Element> implements Poolable{
     }
 
     /** Sets the button or label style.*/
-    public Cell<T> style(String style){
+    public Cell<T> style(Style style){
         if(element instanceof Label){
-            ((Label)element).setStyle(Core.scene.skin.get(style, LabelStyle.class));
+            ((Label)element).setStyle((LabelStyle)style);
         }else if(element instanceof Button){
-            ((Button)element).setStyle(Core.scene.skin.get(style, ButtonStyle.class));
+            ((Button)element).setStyle((ButtonStyle)style);
         }else if(element instanceof ScrollPane){
-            ((ScrollPane)element).setStyle(Core.scene.skin.get(style, ScrollPaneStyle.class));
+            ((ScrollPane)element).setStyle((ScrollPaneStyle)style);
         }
         return this;
     }

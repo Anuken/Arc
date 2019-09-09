@@ -4,7 +4,6 @@ import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.TextureRegion;
 import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.style.Drawable;
-import io.anuke.arc.scene.style.SkinReader.ReadContext;
 import io.anuke.arc.scene.style.TextureRegionDrawable;
 import io.anuke.arc.scene.ui.layout.Cell;
 import io.anuke.arc.util.Scaling;
@@ -23,36 +22,28 @@ public class ImageButton extends Button{
     private ImageButtonStyle style;
 
     public ImageButton(){
-        this(scene.skin.get(ImageButtonStyle.class));
+        this(scene.getStyle(ImageButtonStyle.class));
     }
 
-    public ImageButton(String icon){
-        this(scene.skin.get(ImageButtonStyle.class));
-        ImageButtonStyle style = new ImageButtonStyle(scene.skin.get(ImageButtonStyle.class));
-        style.imageUp = scene.skin.getDrawable(icon);
-
-        setStyle(style);
-    }
-
-    public ImageButton(String icon, String stylen){
-        this(scene.skin.get(stylen, ImageButtonStyle.class));
-        ImageButtonStyle style = new ImageButtonStyle(scene.skin.get(stylen, ImageButtonStyle.class));
-        style.imageUp = scene.skin.getDrawable(icon);
+    public ImageButton(Drawable icon, ImageButtonStyle stylen){
+        this(stylen);
+        ImageButtonStyle style = new ImageButtonStyle(stylen);
+        style.imageUp = icon;
 
         setStyle(style);
     }
 
     public ImageButton(TextureRegion region){
-        this(scene.skin.get(ImageButtonStyle.class));
-        ImageButtonStyle style = new ImageButtonStyle(scene.skin.get(ImageButtonStyle.class));
+        this(scene.getStyle(ImageButtonStyle.class));
+        ImageButtonStyle style = new ImageButtonStyle(scene.getStyle(ImageButtonStyle.class));
         style.imageUp = new TextureRegionDrawable(region);
 
         setStyle(style);
     }
 
-    public ImageButton(TextureRegion region, String stylen){
-        this(scene.skin.get(ImageButtonStyle.class));
-        ImageButtonStyle style = new ImageButtonStyle(scene.skin.get(stylen, ImageButtonStyle.class));
+    public ImageButton(TextureRegion region, ImageButtonStyle stylen){
+        this(stylen);
+        ImageButtonStyle style = new ImageButtonStyle(stylen);
         style.imageUp = new TextureRegionDrawable(region);
 
         setStyle(style);
@@ -70,7 +61,7 @@ public class ImageButton extends Button{
     public ImageButton(Drawable imageUp){
         this(new ImageButtonStyle(null, null, null, imageUp, null, null));
 
-        ImageButtonStyle style = new ImageButtonStyle(scene.skin.get(ImageButtonStyle.class));
+        ImageButtonStyle style = new ImageButtonStyle(scene.getStyle(ImageButtonStyle.class));
         style.imageUp = imageUp;
         setStyle(style);
     }
@@ -180,23 +171,6 @@ public class ImageButton extends Button{
             this.imageDownColor = style.imageDownColor;
             this.imageCheckedColor = style.imageCheckedColor;
             this.imageDisabledColor = style.imageDisabledColor;
-        }
-
-        @Override
-        public void read(ReadContext read){
-            super.read(read);
-
-            imageUp = read.draw("imageUp");
-            imageDown = read.draw("imageDown");
-            imageOver = read.draw("imageOver");
-            imageChecked = read.draw("imageChecked");
-            imageCheckedOver = read.draw("imageCheckedOver");
-            imageDisabled = read.draw("imageDisabled");
-
-            imageUpColor = read.color("imageUpColor");
-            imageCheckedColor = read.color("imageCheckedColor");
-            imageDownColor = read.color("imageDownColor");
-            imageDisabledColor = read.color("imageDisabledColor");
         }
     }
 }

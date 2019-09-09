@@ -1,27 +1,21 @@
 package io.anuke.arc.graphics.g2d;
 
-import io.anuke.arc.Core;
-import io.anuke.arc.Files.FileType;
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.collection.ObjectMap;
-import io.anuke.arc.collection.ObjectSet;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.*;
+import io.anuke.arc.Files.*;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.files.*;
+import io.anuke.arc.graphics.Pixmap.*;
 import io.anuke.arc.graphics.*;
-import io.anuke.arc.graphics.Pixmap.Format;
-import io.anuke.arc.graphics.Texture.TextureFilter;
-import io.anuke.arc.graphics.Texture.TextureWrap;
-import io.anuke.arc.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
-import io.anuke.arc.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
+import io.anuke.arc.graphics.Texture.*;
+import io.anuke.arc.graphics.g2d.TextureAtlas.TextureAtlasData.*;
+import io.anuke.arc.scene.style.*;
 import io.anuke.arc.util.*;
-import io.anuke.arc.util.io.Streams;
+import io.anuke.arc.util.io.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Comparator;
+import java.io.*;
+import java.util.*;
 
-import static io.anuke.arc.graphics.Texture.TextureWrap.ClampToEdge;
-import static io.anuke.arc.graphics.Texture.TextureWrap.Repeat;
+import static io.anuke.arc.graphics.Texture.TextureWrap.*;
 
 /**
  * Loads images from texture atlases created by TexturePacker.<br>
@@ -40,6 +34,7 @@ public class TextureAtlas implements Disposable{
     };
     private final ObjectSet<Texture> textures = new ObjectSet<>(4);
     private final Array<AtlasRegion> regions = new Array<>();
+    private final ObjectMap<String, Drawable> drawables = new ObjectMap<>();
     private final ObjectMap<String, AtlasRegion> regionmap = new ObjectMap<>();
     protected AtlasRegion error, white;
 
@@ -221,6 +216,36 @@ public class TextureAtlas implements Disposable{
 
     public boolean has(String s){
         return regionmap.containsKey(s);
+    }
+
+    /** Always creates a new drawable by name.
+     * If nothing is found, returns an 'error' texture region drawable. */
+    public Drawable drawable(String name){
+        if(drawables.containsKey(name)){
+            return drawables.get(name);
+        }
+
+        Drawable out = null;
+
+        if(has(name)){
+            AtlasRegion region = find(name);
+
+            if(region.splits != null){
+                int[] splits = region.splits;
+                NinePatch patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
+                int[] pads = region.pads;
+                if(pads != null) patch.setPadding(pads[0], pads[1], pads[2], pads[3]);
+                out = new NinePatchDrawable(patch);
+            }else{
+                out = new TextureRegionDrawable(region);
+            }
+        }
+
+        if(error == null && out == null) throw new IllegalArgumentException("No drawable '" + name + "' found.");
+        if(out == null) out = new TextureRegionDrawable(error);
+        drawables.put(name, out);
+
+        return out;
     }
 
     /**

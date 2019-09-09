@@ -50,6 +50,11 @@ public class TextureRegionDrawable extends BaseDrawable implements TransformDraw
     }
 
     /** Creates a new drawable that renders the same as this drawable tinted the specified color. */
+    public Drawable tint(float r, float g, float b, float a){
+        return tint(Tmp.c1.set(r, g, b, a));
+    }
+
+    /** Creates a new drawable that renders the same as this drawable tinted the specified color. */
     public Drawable tint(Color tint){
         TextureRegionDrawable drawable = new TextureRegionDrawable(region);
         drawable.tint.set(tint);

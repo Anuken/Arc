@@ -23,7 +23,6 @@ import io.anuke.arc.scene.event.IbeamCursorListener;
 import io.anuke.arc.scene.event.InputEvent;
 import io.anuke.arc.scene.event.InputListener;
 import io.anuke.arc.scene.style.Drawable;
-import io.anuke.arc.scene.style.SkinReader.ReadContext;
 import io.anuke.arc.scene.style.Style;
 import io.anuke.arc.scene.utils.Disableable;
 import io.anuke.arc.util.*;
@@ -104,11 +103,7 @@ public class TextField extends Element implements Disableable{
     }
 
     public TextField(String text){
-        this(text, scene.skin.get(TextFieldStyle.class));
-    }
-
-    public TextField(String text, String styleName){
-        this(text, scene.skin.get(styleName, TextFieldStyle.class));
+        this(text, scene.getStyle(TextFieldStyle.class));
     }
 
     public TextField(String text, TextFieldStyle style){
@@ -873,22 +868,6 @@ public class TextField extends Element implements Disableable{
             if(style.focusedFontColor != null) this.focusedFontColor = new Color(style.focusedFontColor);
             if(style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
             this.selection = style.selection;
-        }
-
-        @Override
-        public void read(ReadContext read){
-            font = read.rfont("font");
-            messageFont = read.font("messageFont");
-            fontColor = read.color("fontColor");
-            focusedFontColor = read.color("focusedFontColor");
-            disabledFontColor = read.color("disabledFontColor");
-            messageFontColor = read.color("messageFontColor");
-            background = read.draw("background");
-            focusedBackground = read.draw("focusedBackground");
-            invalidBackground = read.draw("invalidBackground");
-            disabledBackground = read.draw("disabledBackground");
-            cursor = read.draw("cursor");
-            selection = read.draw("selection");
         }
     }
 

@@ -3,7 +3,6 @@ package io.anuke.arc.scene.ui;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.BitmapFont;
 import io.anuke.arc.scene.style.Drawable;
-import io.anuke.arc.scene.style.SkinReader.ReadContext;
 import io.anuke.arc.scene.ui.Label.LabelStyle;
 import io.anuke.arc.scene.ui.layout.Cell;
 import io.anuke.arc.util.Align;
@@ -19,11 +18,7 @@ public class TextButton extends Button{
     private TextButtonStyle style;
 
     public TextButton(String text){
-        this(text, scene.skin.get(TextButtonStyle.class));
-    }
-
-    public TextButton(String text, String styleName){
-        this(text, scene.skin.get(styleName, TextButtonStyle.class));
+        this(text, scene.getStyle(TextButtonStyle.class));
     }
 
     public TextButton(String text, TextButtonStyle style){
@@ -113,19 +108,6 @@ public class TextButton extends Button{
             if(style.checkedFontColor != null) this.checkedFontColor = new Color(style.checkedFontColor);
             if(style.checkedOverFontColor != null) this.checkedFontColor = new Color(style.checkedOverFontColor);
             if(style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
-        }
-
-        @Override
-        public void read(ReadContext read){
-            super.read(read);
-
-            font = read.rfont("font");
-            fontColor = read.color("fontColor");
-            downFontColor = read.color("downFontColor");
-            overFontColor = read.color("overFontColor");
-            checkedFontColor = read.color("checkedFontColor");
-            checkedOverFontColor = read.color("checkedOverFontColor");
-            disabledFontColor = read.color("disabledFontColor");
         }
     }
 }

@@ -7,7 +7,6 @@ import io.anuke.arc.math.geom.*;
 import io.anuke.arc.scene.*;
 import io.anuke.arc.scene.event.*;
 import io.anuke.arc.scene.style.*;
-import io.anuke.arc.scene.style.SkinReader.*;
 import io.anuke.arc.scene.ui.layout.*;
 import io.anuke.arc.scene.utils.*;
 
@@ -63,12 +62,7 @@ public class ScrollPane extends WidgetGroup{
 
     /** @param widget May be null. */
     public ScrollPane(Element widget){
-        this(widget, scene.skin.get(ScrollPaneStyle.class));
-    }
-
-    /** @param widget May be null. */
-    public ScrollPane(Element widget, String styleName){
-        this(widget, scene.skin.get(styleName, ScrollPaneStyle.class));
+        this(widget, scene.getStyle(ScrollPaneStyle.class));
     }
 
     /** @param widget May be null. */
@@ -563,6 +557,7 @@ public class ScrollPane extends WidgetGroup{
 
         widget.setPosition(x, y);
 
+        //TODO fix
         /*
         if(widget instanceof Cullable){
             widgetCullingArea.x = -widget.getX() + widgetAreaBounds.x;
@@ -1072,16 +1067,6 @@ public class ScrollPane extends WidgetGroup{
             this.hScrollKnob = style.hScrollKnob;
             this.vScroll = style.vScroll;
             this.vScrollKnob = style.vScrollKnob;
-        }
-
-        @Override
-        public void read(ReadContext read){
-            background = read.draw("background");
-            corner = read.draw("corner");
-            hScroll = read.draw("hScroll");
-            hScrollKnob = read.draw("hScrollKnob");
-            vScroll = read.draw("vScroll");
-            vScrollKnob = read.draw("vScrollKnob");
         }
     }
 }

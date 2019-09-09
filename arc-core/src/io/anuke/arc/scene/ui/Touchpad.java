@@ -1,12 +1,12 @@
 package io.anuke.arc.scene.ui;
 
+import io.anuke.arc.*;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.input.KeyCode;
 import io.anuke.arc.math.geom.Circle;
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.scene.Element;
-import io.anuke.arc.scene.Skin;
 import io.anuke.arc.scene.event.ChangeListener.ChangeEvent;
 import io.anuke.arc.scene.event.InputEvent;
 import io.anuke.arc.scene.event.InputListener;
@@ -35,15 +35,9 @@ public class Touchpad extends Element{
     private float deadzoneRadius;
 
     /** @param deadzoneRadius The distance in pixels from the center of the touchpad required for the knob to be moved. */
-    public Touchpad(float deadzoneRadius, Skin skin){
-        this(deadzoneRadius, skin.get(TouchpadStyle.class));
+    public Touchpad(float deadzoneRadius){
+        this(deadzoneRadius, Core.scene.getStyle(TouchpadStyle.class));
     }
-
-    /** @param deadzoneRadius The distance in pixels from the center of the touchpad required for the knob to be moved. */
-    public Touchpad(float deadzoneRadius, Skin skin, String styleName){
-        this(deadzoneRadius, skin.get(styleName, TouchpadStyle.class));
-    }
-
     /** @param deadzoneRadius The distance in pixels from the center of the touchpad required for the knob to be moved. */
     public Touchpad(float deadzoneRadius, TouchpadStyle style){
         if(deadzoneRadius < 0) throw new IllegalArgumentException("deadzoneRadius must be > 0");

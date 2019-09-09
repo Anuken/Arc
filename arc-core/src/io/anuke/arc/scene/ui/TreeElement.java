@@ -36,11 +36,7 @@ public class TreeElement extends WidgetGroup{
     private ClickListener clickListener;
 
     public TreeElement(){
-        this(scene.skin.get(TreeStyle.class));
-    }
-
-    public TreeElement(String styleName){
-        this(scene.skin.get(styleName, TreeStyle.class));
+        this(scene.getStyle(TreeStyle.class));
     }
 
     public TreeElement(TreeStyle style){

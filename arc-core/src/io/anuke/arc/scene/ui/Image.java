@@ -1,21 +1,12 @@
 package io.anuke.arc.scene.ui;
 
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.graphics.Texture;
-import io.anuke.arc.graphics.g2d.Draw;
-import io.anuke.arc.graphics.g2d.NinePatch;
-import io.anuke.arc.graphics.g2d.TextureRegion;
-import io.anuke.arc.math.geom.Vector2;
-import io.anuke.arc.scene.Element;
-import io.anuke.arc.scene.Skin;
-import io.anuke.arc.scene.style.Drawable;
-import io.anuke.arc.scene.style.NinePatchDrawable;
-import io.anuke.arc.scene.style.TextureRegionDrawable;
-import io.anuke.arc.scene.style.TransformDrawable;
-import io.anuke.arc.util.Align;
-import io.anuke.arc.util.Scaling;
-
-import static io.anuke.arc.Core.scene;
+import io.anuke.arc.*;
+import io.anuke.arc.graphics.*;
+import io.anuke.arc.graphics.g2d.*;
+import io.anuke.arc.math.geom.*;
+import io.anuke.arc.scene.*;
+import io.anuke.arc.scene.style.*;
+import io.anuke.arc.util.*;
 
 /**
  * Displays a {@link Drawable}, scaled various way within the widgets bounds. The preferred size is the min size of the drawable.
@@ -30,16 +21,12 @@ public class Image extends Element{
 
     /** Creates an image with no region or patch, stretched, and aligned center. */
     public Image(){
-        this((Drawable)null);
-    }
-
-    public Image(String name){
-        this(scene.skin.getDrawable(name));
+        this(Core.atlas.has("whiteui") ? Core.atlas.find("whiteui") : Core.atlas.find("white"));
     }
 
 
-    public Image(String name, Color color){
-        this(scene.skin.getDrawable(name));
+    public Image(Drawable name, Color color){
+        this(name);
         setColor(color);
     }
 
@@ -62,11 +49,6 @@ public class Image extends Element{
     /** Creates an image stretched, and aligned center. */
     public Image(Texture texture){
         this(new TextureRegionDrawable(new TextureRegion(texture)));
-    }
-
-    /** Creates an image stretched, and aligned center. */
-    public Image(Skin skin, String drawableName){
-        this(skin.getDrawable(drawableName), Scaling.stretch, Align.center);
     }
 
     /**
@@ -152,10 +134,6 @@ public class Image extends Element{
 
     public void setDrawable(TextureRegion region){
         setDrawable(new TextureRegionDrawable(region));
-    }
-
-    public void setDrawable(String drawableName){
-        setDrawable(scene.skin.getDrawable(drawableName));
     }
 
     /** @param drawable May be null. */

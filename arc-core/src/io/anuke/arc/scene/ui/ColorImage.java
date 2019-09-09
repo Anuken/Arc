@@ -6,7 +6,6 @@ public class ColorImage extends Image{
     private Color set;
 
     public ColorImage(Color set){
-        super("white");
         this.set = set;
     }
 

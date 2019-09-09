@@ -33,10 +33,6 @@ public class TextArea extends TextField{
         super(text);
     }
 
-    public TextArea(String text, String styleName){
-        super(text, styleName);
-    }
-
     public TextArea(String text, TextFieldStyle style){
         super(text, style);
     }

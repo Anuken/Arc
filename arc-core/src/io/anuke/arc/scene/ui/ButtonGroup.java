@@ -10,8 +10,8 @@ import io.anuke.arc.collection.Array;
  * @author Nathan Sweet
  */
 public class ButtonGroup<T extends Button>{
-    private final Array<T> buttons = new Array();
-    private Array<T> checkedButtons = new Array(1);
+    private final Array<T> buttons = new Array<>();
+    private Array<T> checkedButtons = new Array<>(1);
     private int minCheckCount, maxCheckCount = 1;
     private boolean uncheckLast = true;
     private T lastChecked;

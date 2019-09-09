@@ -11,7 +11,6 @@ import io.anuke.arc.scene.*;
 import io.anuke.arc.scene.actions.*;
 import io.anuke.arc.scene.event.*;
 import io.anuke.arc.scene.style.*;
-import io.anuke.arc.scene.style.SkinReader.*;
 import io.anuke.arc.scene.ui.Label.*;
 import io.anuke.arc.scene.ui.layout.*;
 import io.anuke.arc.util.*;
@@ -44,7 +43,7 @@ public class Dialog extends Table{
     boolean isMovable = false, isModal = true, isResizable = false, center = true;
     int resizeBorder = 8;
     boolean keepWithinStage = true;
-    private WindowStyle style;
+    private DialogStyle style;
 
     Element previousKeyboardFocus, previousScrollFocus;
     FocusListener focusListener;
@@ -54,14 +53,10 @@ public class Dialog extends Table{
     public final Table titleTable;
 
     public Dialog(String title){
-        this(title, scene.skin.get(WindowStyle.class));
+        this(title, scene.getStyle(DialogStyle.class));
     }
 
-    public Dialog(String title, String styleName){
-        this(title, scene.skin.get(styleName, WindowStyle.class));
-    }
-
-    public Dialog(String title, WindowStyle style){
+    public Dialog(String title, DialogStyle style){
         if(title == null) throw new IllegalArgumentException("title cannot be null.");
         touchable(Touchable.enabled);
         setClip(true);
@@ -233,14 +228,14 @@ public class Dialog extends Table{
     }
 
     /**
-     * Returns the window's style. Modifying the returned style may not have an effect until {@link #setStyle(WindowStyle)} is
+     * Returns the window's style. Modifying the returned style may not have an effect until {@link #setStyle(DialogStyle)} is
      * called.
      */
-    public WindowStyle getStyle(){
+    public DialogStyle getStyle(){
         return style;
     }
 
-    public void setStyle(WindowStyle style){
+    public void setStyle(DialogStyle style){
         if(style == null) throw new IllegalArgumentException("style cannot be null.");
         this.style = style;
         setBackground(style.background);
@@ -490,11 +485,8 @@ public class Dialog extends Table{
         hide(defaultHideAction.get());
     }
 
-    /**
-     * The style for a window, see {@link Dialog}.
-     * @author Nathan Sweet
-     */
-    public static class WindowStyle extends Style{
+
+    public static class DialogStyle extends Style{
         /** Optional. */
         public Drawable background;
         public BitmapFont titleFont;
@@ -502,16 +494,5 @@ public class Dialog extends Table{
         public Color titleFontColor = new Color(1, 1, 1, 1);
         /** Optional. */
         public Drawable stageBackground;
-
-        public WindowStyle(){
-        }
-
-        @Override
-        public void read(ReadContext read){
-            background = read.draw("background");
-            titleFont = read.rfont("titleFont");
-            titleFontColor = read.color("titleFontColor");
-            stageBackground = read.draw("stageBackground");
-        }
     }
 }

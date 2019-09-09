@@ -7,6 +7,7 @@ import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.graphics.glutils.Shader;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.Matrix3;
+import io.anuke.arc.scene.style.*;
 import io.anuke.arc.util.Tmp;
 
 import static io.anuke.arc.Core.camera;
@@ -122,10 +123,6 @@ public class Draw{
 
     public static void alpha(float alpha){
         Core.batch.setColor(Core.batch.getColor().r, Core.batch.getColor().g, Core.batch.getColor().b, alpha);
-    }
-
-    public static void drawable(String name, float x, float y, float w, float h){
-        Core.scene.skin.getDrawable(name).draw(x, y, w, h);
     }
 
     public static void fbo(Texture texture, int worldWidth, int worldHeight, int tilesize){
