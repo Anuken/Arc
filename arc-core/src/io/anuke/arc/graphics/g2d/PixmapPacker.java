@@ -583,9 +583,6 @@ public class PixmapPacker implements Disposable{
             rgba[3] = (int)(c.a * 255);
             if(rgba[3] == breakA) return next;
 
-            if(!startPoint && (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255))
-                System.out.println(x + "  " + y + " " + Arrays.toString(rgba) + " ");
-
             next++;
         }
 
