@@ -170,12 +170,24 @@ public class TextureAtlas implements Disposable{
         return regions;
     }
 
+    /** Returns the region map in the atlas. */
+    public ObjectMap<String, AtlasRegion> getRegionMap(){
+        return regionmap;
+    }
+
     /** Returns the blank 1x1 texture region, if it exists.*/
     public AtlasRegion white(){
         if(white == null){
             white = find("white");
         }
         return white;
+    }
+
+    /** Finds and sets error region as name. */
+    public boolean setErrorRegion(String name) {
+        if(error != null || !has(name)) return false;
+        error = find(name);
+        return true;
     }
 
     public boolean isFound(TextureRegion region){

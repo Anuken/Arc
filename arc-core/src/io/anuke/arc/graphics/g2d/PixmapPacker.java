@@ -377,6 +377,7 @@ public class PixmapPacker implements Disposable{
                     region.originalHeight = rect.originalHeight;
 
                     atlas.getRegions().add(region);
+                    atlas.getRegionMap().put(name, region);
                 }
                 page.addedRects.clear();
                 atlas.getTextures().add(page.texture);
@@ -581,9 +582,6 @@ public class PixmapPacker implements Disposable{
             rgba[2] = (int)(c.b * 255);
             rgba[3] = (int)(c.a * 255);
             if(rgba[3] == breakA) return next;
-
-            if(!startPoint && (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255))
-                System.out.println(x + "  " + y + " " + Arrays.toString(rgba) + " ");
 
             next++;
         }
@@ -846,8 +844,8 @@ public class PixmapPacker implements Disposable{
     }
 
     public static class PixmapPackerRectangle extends Rectangle{
-        int[] splits;
-        int[] pads;
+        public int[] splits;
+        public int[] pads;
         int offsetX, offsetY;
         int originalWidth, originalHeight;
 
