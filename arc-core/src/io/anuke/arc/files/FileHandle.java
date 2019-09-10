@@ -129,6 +129,11 @@ public class FileHandle{
         return file.getPath().replace('\\', '/');
     }
 
+    /** @return the absolute path to this file without backslashes.*/
+    public String absolutePath(){
+        return file.getAbsolutePath().replace('\\', '/');
+    }
+
     /** @return the name of the file, without any parent paths. */
     public String name(){
         return file.getName();

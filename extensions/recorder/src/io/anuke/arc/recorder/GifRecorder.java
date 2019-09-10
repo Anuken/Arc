@@ -268,9 +268,9 @@ public class GifRecorder{
 
 		try{
 			String time = "" + (int) (System.currentTimeMillis() / 1000);
-			new File(directory.file().getAbsolutePath()).mkdir();
+			new File(directory.absolutePath()).mkdir();
 			BufferedImage firstImage = toImage(pixmaps.first(), width, height);
-			File file = new File(directory.file().getAbsolutePath() + "/recording" + time + ".gif");
+			File file = new File(directory.absolutePath() + "/recording" + time + ".gif");
 			ImageOutputStream output = new FileImageOutputStream(file);
 			GifSequenceWriter writer = new GifSequenceWriter(output, firstImage.getType(), (int) (1f / recordfps * 1000f), true);
 
