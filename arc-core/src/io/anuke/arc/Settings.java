@@ -14,8 +14,6 @@ import static io.anuke.arc.Core.keybinds;
 
 public class Settings{
     protected final static byte TYPE_BOOL = 0, TYPE_INT = 1, TYPE_LONG = 2, TYPE_FLOAT = 3, TYPE_STRING = 4, TYPE_BINARY = 5;
-    /**In miliseconds; min spacing between backups.*/
-    protected final static long backupCopyTime = 1000;
 
     //general state data
     protected FileHandle dataDirectory;
@@ -23,7 +21,6 @@ public class Settings{
     protected ObjectMap<String, Object> defaults = new ObjectMap<>();
     protected ObjectMap<String, Object> values = new ObjectMap<>();
     protected Consumer<Throwable> errorHandler;
-    protected long lastSaveTime;
     protected boolean hasErrored;
 
     //IO utility objects
@@ -190,17 +187,14 @@ public class Settings{
                     stream.write((byte[])value);
                 }
             }
-        }catch(IOException e){
+        }catch(Throwable e){
             //file is now corrupt, delete it
             file.delete();
             throw new RuntimeException("Error writing preferences: " + file, e);
         }
 
-        if(Time.millis() - lastSaveTime > backupCopyTime){
-            file.copyTo(getBackupSettingsFile());
-        }
-
-        lastSaveTime = Time.millis();
+        //back up the save file
+        file.copyTo(getBackupSettingsFile());
     }
 
     /** Returns the file used for writing settings to. Not available on all platforms! */
