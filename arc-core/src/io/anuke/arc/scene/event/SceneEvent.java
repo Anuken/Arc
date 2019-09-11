@@ -12,14 +12,14 @@ import io.anuke.arc.util.pooling.Pool.Poolable;
  * An element's capture listeners can {@link #stop()} an event to prevent child elements from seeing it.
  * <p>
  * An Event may be marked as "handled" which will end its propagation outside of the Stage (see {@link #handle()}). The default
- * {@link Element#fire(Event)} will mark events handled if an {@link EventListener} returns true.
+ * {@link Element#fire(SceneEvent)} will mark events handled if an {@link EventListener} returns true.
  * <p>
  * A cancelled event will be stopped and handled. Additionally, many elements will undo the side-effects of a canceled event. (See
  * {@link #cancel()}.)
  * @see InputEvent
- * @see Element#fire(Event)
+ * @see Element#fire(SceneEvent)
  */
-public class Event implements Poolable{
+public class SceneEvent implements Poolable{
     public Element targetActor;
     public Element listenerActor;
 

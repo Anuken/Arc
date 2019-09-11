@@ -3,7 +3,7 @@ package io.anuke.arc.scene.event;
 public class VisibilityListener implements EventListener{
 
     @Override
-    public boolean handle(Event event){
+    public boolean handle(SceneEvent event){
         if(event instanceof VisibilityEvent){
             if(((VisibilityEvent)event).isHide()){
                 return hidden();

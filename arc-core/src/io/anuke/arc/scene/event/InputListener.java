@@ -11,7 +11,7 @@ import io.anuke.arc.scene.Element;
 public class InputListener implements EventListener{
     static private final Vector2 tmpCoords = new Vector2();
 
-    public boolean handle(Event e){
+    public boolean handle(SceneEvent e){
         if(!(e instanceof InputEvent)) return false;
         InputEvent event = (InputEvent)e;
 
@@ -52,7 +52,7 @@ public class InputListener implements EventListener{
     /**
      * Called when a mouse button or a finger touch goes down on the element. If true is returned, this listener will receive all
      * touchDragged and touchUp events, even those not over this element, until touchUp is received. Also when true is returned, the
-     * event is {@link Event#handle() handled}.
+     * event is {@link SceneEvent#handle() handled}.
      * @see InputEvent
      */
     public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
@@ -61,7 +61,7 @@ public class InputListener implements EventListener{
 
     /**
      * Called when a mouse button or a finger touch goes up anywhere, but only if touchDown previously returned true for the mouse
-     * button or touch. The touchUp event is always {@link Event#handle() handled}.
+     * button or touch. The touchUp event is always {@link SceneEvent#handle() handled}.
      * @see InputEvent
      */
     public void touchUp(InputEvent event, float x, float y, int pointer, KeyCode button){
@@ -69,7 +69,7 @@ public class InputListener implements EventListener{
 
     /**
      * Called when a mouse button or a finger touch is moved anywhere, but only if touchDown previously returned true for the mouse
-     * button or touch. The touchDragged event is always {@link Event#handle() handled}.
+     * button or touch. The touchDragged event is always {@link SceneEvent#handle() handled}.
      * @see InputEvent
      */
     public void touchDragged(InputEvent event, float x, float y, int pointer){
@@ -77,7 +77,7 @@ public class InputListener implements EventListener{
 
     /**
      * Called any time the mouse is moved when a button is not down. This event only occurs on the desktop. When true is returned,
-     * the event is {@link Event#handle() handled}.
+     * the event is {@link SceneEvent#handle() handled}.
      * @see InputEvent
      */
     public boolean mouseMoved(InputEvent event, float x, float y){
@@ -102,22 +102,22 @@ public class InputListener implements EventListener{
     public void exit(InputEvent event, float x, float y, int pointer, Element toActor){
     }
 
-    /** Called when the mouse wheel has been scrolled. When true is returned, the event is {@link Event#handle() handled}. */
+    /** Called when the mouse wheel has been scrolled. When true is returned, the event is {@link SceneEvent#handle() handled}. */
     public boolean scrolled(InputEvent event, float x, float y, float amountX, float amountY){
         return false;
     }
 
-    /** Called when a key goes down. When true is returned, the event is {@link Event#handle() handled}. */
+    /** Called when a key goes down. When true is returned, the event is {@link SceneEvent#handle() handled}. */
     public boolean keyDown(InputEvent event, KeyCode keycode){
         return false;
     }
 
-    /** Called when a key goes up. When true is returned, the event is {@link Event#handle() handled}. */
+    /** Called when a key goes up. When true is returned, the event is {@link SceneEvent#handle() handled}. */
     public boolean keyUp(InputEvent event, KeyCode keycode){
         return false;
     }
 
-    /** Called when a key is typed. When true is returned, the event is {@link Event#handle() handled}. */
+    /** Called when a key is typed. When true is returned, the event is {@link SceneEvent#handle() handled}. */
     public boolean keyTyped(InputEvent event, char character){
         return false;
     }

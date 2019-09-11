@@ -99,7 +99,7 @@ public class Element implements Layout{
     }
 
     @SuppressWarnings("unchecked")
-    public boolean fire(Event event){
+    public boolean fire(SceneEvent event){
         event.targetActor = this;
 
         // Collect ancestors so event propagation is unaffected by hierarchy changes.
@@ -141,7 +141,7 @@ public class Element implements Layout{
         }
     }
 
-    public boolean notify(Event event, boolean capture){
+    public boolean notify(SceneEvent event, boolean capture){
         if(event.targetActor == null) throw new IllegalArgumentException("The event target cannot be null.");
 
         DelayedRemovalArray<EventListener> listeners = capture ? captureListeners : this.listeners;
@@ -218,7 +218,7 @@ public class Element implements Layout{
     }
 
     /**
-     * Add a listener to receive events that {@link #hit(float, float, boolean) hit} this actor. See {@link #fire(Event)}.
+     * Add a listener to receive events that {@link #hit(float, float, boolean) hit} this actor. See {@link #fire(SceneEvent)}.
      * @see InputListener
      * @see ClickListener
      */
@@ -242,7 +242,7 @@ public class Element implements Layout{
 
     /**
      * Adds a listener that is only notified during the capture phase.
-     * @see #fire(Event)
+     * @see #fire(SceneEvent)
      */
     public boolean addCaptureListener(EventListener listener){
         if(listener == null) throw new IllegalArgumentException("listener cannot be null.");

@@ -173,7 +173,7 @@ public class ScrollPane extends WidgetGroup{
             }
 
             @Override
-            public boolean handle(Event event){
+            public boolean handle(SceneEvent event){
                 if(super.handle(event)){
                     if(((InputEvent)event).type == InputEvent.Type.touchDown) flingTimer = 0;
                     return true;

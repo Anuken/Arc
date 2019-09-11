@@ -7,7 +7,7 @@ import io.anuke.arc.scene.Element;
  * @author Nathan Sweet
  */
 abstract public class ChangeListener implements EventListener{
-    public boolean handle(Event event){
+    public boolean handle(SceneEvent event){
         if(!(event instanceof ChangeEvent)) return false;
         changed((ChangeEvent)event, event.targetActor);
         return false;
@@ -20,6 +20,6 @@ abstract public class ChangeListener implements EventListener{
      * Fired when something in an actor has changed. This is a generic event, exactly what changed in an actor will vary.
      * @author Nathan Sweet
      */
-    public static class ChangeEvent extends Event{
+    public static class ChangeEvent extends SceneEvent{
     }
 }

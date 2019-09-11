@@ -213,7 +213,7 @@ public class Scene implements InputProcessor, Disposable{
     }
 
     /**
-     * Applies a touch down event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the
+     * Applies a touch down event to the stage and returns true if an actor in the scene {@link SceneEvent#handle() handled} the
      * event.
      */
     @Override
@@ -246,7 +246,7 @@ public class Scene implements InputProcessor, Disposable{
     }
 
     /**
-     * Applies a touch moved event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the
+     * Applies a touch moved event to the stage and returns true if an actor in the scene {@link SceneEvent#handle() handled} the
      * event. Only {@link InputListener listeners} that returned true for touchDown will receive this event.
      */
     public boolean touchDragged(int screenX, int screenY, int pointer){
@@ -283,7 +283,7 @@ public class Scene implements InputProcessor, Disposable{
     }
 
     /**
-     * Applies a touch up event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the event.
+     * Applies a touch up event to the stage and returns true if an actor in the scene {@link SceneEvent#handle() handled} the event.
      * Only {@link InputListener listeners} that returned true for touchDown will receive this event.
      */
     @Override
@@ -322,7 +322,7 @@ public class Scene implements InputProcessor, Disposable{
     }
 
     /**
-     * Applies a mouse moved event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the
+     * Applies a mouse moved event to the stage and returns true if an actor in the scene {@link SceneEvent#handle() handled} the
      * event. This event only occurs on the desktop.
      */
     @Override
@@ -349,7 +349,7 @@ public class Scene implements InputProcessor, Disposable{
     }
 
     /**
-     * Applies a mouse scroll event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the
+     * Applies a mouse scroll event to the stage and returns true if an actor in the scene {@link SceneEvent#handle() handled} the
      * event. This event only occurs on the desktop.
      */
     @Override
@@ -372,7 +372,7 @@ public class Scene implements InputProcessor, Disposable{
 
     /**
      * Applies a key down event to the actor that has {@link Scene#setKeyboardFocus(Element) keyboard focus}, if any, and returns
-     * true if the event was {@link Event#handle() handled}.
+     * true if the event was {@link SceneEvent#handle() handled}.
      */
     @Override
     public boolean keyDown(KeyCode keyCode){
@@ -388,7 +388,7 @@ public class Scene implements InputProcessor, Disposable{
 
     /**
      * Applies a key up event to the actor that has {@link Scene#setKeyboardFocus(Element) keyboard focus}, if any, and returns true
-     * if the event was {@link Event#handle() handled}.
+     * if the event was {@link SceneEvent#handle() handled}.
      */
     @Override
     public boolean keyUp(KeyCode keyCode){
@@ -404,7 +404,7 @@ public class Scene implements InputProcessor, Disposable{
 
     /**
      * Applies a key typed event to the actor that has {@link Scene#setKeyboardFocus(Element) keyboard focus}, if any, and returns
-     * true if the event was {@link Event#handle() handled}.
+     * true if the event was {@link SceneEvent#handle() handled}.
      */
     @Override
     public boolean keyTyped(char character){

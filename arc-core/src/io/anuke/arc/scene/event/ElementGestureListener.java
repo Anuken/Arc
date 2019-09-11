@@ -84,7 +84,7 @@ public class ElementGestureListener implements EventListener{
         });
     }
 
-    public boolean handle(Event e){
+    public boolean handle(SceneEvent e){
         if(!(e instanceof InputEvent)) return false;
         InputEvent event = (InputEvent)e;
 

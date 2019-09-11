@@ -7,13 +7,14 @@ import io.anuke.arc.function.Consumer;
 
 @SuppressWarnings("unchecked")
 public class Events{
-    private static ObjectMap<Class<?>, Array<Consumer<?>>> events = new ObjectMap<>();
+    private static ObjectMap<Object, Array<Consumer<?>>> events = new ObjectMap<>();
 
     public static <T> void on(Class<T> type, Consumer<T> listener){
-        if(events.get(type) == null)
-            events.put(type, new Array<>());
+        events.getOr(type, Array::new).add(listener);
+    }
 
-        events.get(type).add(listener);
+    public static void on(Object type, Runnable listener){
+        events.getOr(type, Array::new).add(e -> listener.run());
     }
 
     public static <T> void fire(T type){
@@ -21,12 +22,8 @@ public class Events{
     }
 
     public static <T> void fire(Class<?> ctype, T type){
-        if(events.get(ctype) == null)
-            return;
-
-        for(Consumer<?> event : events.get(ctype)){
-            ((Consumer<T>)event).accept(type);
-        }
+        if(events.get(type) != null) events.get(type).each(e -> ((Consumer<T>)e).accept(type));
+        if(events.get(ctype) != null) events.get(ctype).each(e -> ((Consumer<T>)e).accept(type));
     }
 
     public static void dispose(){
