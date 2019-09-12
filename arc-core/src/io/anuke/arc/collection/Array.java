@@ -16,6 +16,8 @@ import java.util.NoSuchElementException;
  */
 @SuppressWarnings("unchecked")
 public class Array<T> implements Iterable<T>{
+    /** Debugging variable to count total number of iterators allocated.*/
+    public static int iteratorsAllocated = 0;
     /**
      * Provides direct access to the underlying array. If the Array's generic type is not Object, this field may only be accessed
      * if the {@link Array#Array(boolean, int, Class)} constructor was used.
@@ -806,7 +808,9 @@ public class Array<T> implements Iterable<T>{
 
     /**
      * Returns an iterator for the items in the array. Remove is supported. Note that the same iterator instance is returned each
-     * time this method is called. Use the {@link ArrayIterator} constructor for nested or multithreaded iteration.
+     * time this method is called, unless you are using nested loops.
+     * <b>Never, ever</b> access this iterator's method manually, e.g. hasNext()/next().
+     * Note that calling 'break' while iterating will permanently clog this iterator, falling back to an implementation that allocates new ones.
      */
     @Override
     public Iterator<T> iterator(){
@@ -814,59 +818,10 @@ public class Array<T> implements Iterable<T>{
         return iterable.iterator();
     }
 
-    public static class ArrayIterator<T> implements Iterator<T>, Iterable<T>{
-        private final Array<T> array;
-        private final boolean allowRemove;
-        int index;
-        boolean valid = true;
-
-        public ArrayIterator(Array<T> array){
-            this(array, true);
-        }
-
-        public ArrayIterator(Array<T> array, boolean allowRemove){
-            this.array = array;
-            this.allowRemove = allowRemove;
-        }
-
-        @Override
-        public boolean hasNext(){
-            if(!valid){
-                throw new ArcRuntimeException("#iterator() cannot be used nested.");
-            }
-            return index < array.size;
-        }
-
-        @Override
-        public T next(){
-            if(index >= array.size) throw new NoSuchElementException(String.valueOf(index));
-            if(!valid){
-                throw new ArcRuntimeException("#iterator() cannot be used nested.");
-            }
-            return array.items[index++];
-        }
-
-        @Override
-        public void remove(){
-            if(!allowRemove) throw new ArcRuntimeException("Remove not allowed.");
-            index--;
-            array.remove(index);
-        }
-
-        public void reset(){
-            index = 0;
-        }
-
-        @Override
-        public Iterator<T> iterator(){
-            return this;
-        }
-    }
-
     public static class ArrayIterable<T> implements Iterable<T>{
         private final Array<T> array;
         private final boolean allowRemove;
-        private ArrayIterator iterator1, iterator2;
+        private ArrayIterator iterator1 = new ArrayIterator(), iterator2 = new ArrayIterator();
 
         public ArrayIterable(Array<T> array){
             this(array, true);
@@ -879,20 +834,47 @@ public class Array<T> implements Iterable<T>{
 
         @Override
         public Iterator<T> iterator(){
-            if(iterator1 == null){
-                iterator1 = new ArrayIterator(array, allowRemove);
-                iterator2 = new ArrayIterator(array, allowRemove);
-            }
-            if(!iterator1.valid){
+            if(iterator1.done){
                 iterator1.index = 0;
-                iterator1.valid = true;
-                iterator2.valid = false;
+                iterator1.done = false;
                 return iterator1;
             }
-            iterator2.index = 0;
-            iterator2.valid = true;
-            iterator1.valid = false;
-            return iterator2;
+
+            if(iterator2.done){
+                iterator2.index = 0;
+                iterator2.done = false;
+                return iterator2;
+            }
+            //allocate new iterator in the case of 3+ nested loops.
+            return new ArrayIterator();
+        }
+
+        private class ArrayIterator implements Iterator<T>{
+            int index;
+            boolean done = true;
+
+            {
+                iteratorsAllocated ++;
+            }
+
+            @Override
+            public boolean hasNext(){
+                if(index >= array.size) done = true;
+                return index < array.size;
+            }
+
+            @Override
+            public T next(){
+                if(index >= array.size) throw new NoSuchElementException(String.valueOf(index));
+                return array.items[index++];
+            }
+
+            @Override
+            public void remove(){
+                if(!allowRemove) throw new ArcRuntimeException("Remove not allowed.");
+                index--;
+                array.remove(index);
+            }
         }
     }
 }
