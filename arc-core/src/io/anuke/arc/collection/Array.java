@@ -147,8 +147,16 @@ public class Array<T> implements Iterable<T>{
         return new Array<>(this);
     }
 
-    public float sum(FloatFunction<T> summer){
+    public float sumf(FloatFunction<T> summer){
         float sum = 0;
+        for(int i = 0; i < size; i++){
+            sum += summer.get(items[i]);
+        }
+        return sum;
+    }
+
+    public int sum(IntFunction<T> summer){
+        int sum = 0;
         for(int i = 0; i < size; i++){
             sum += summer.get(items[i]);
         }
