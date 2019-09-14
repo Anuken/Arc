@@ -88,6 +88,12 @@ public class ObjectSet<T> implements Iterable<T>{
         return set;
     }
 
+    public static <T> ObjectSet<T> with(Array<T> array){
+        ObjectSet<T> set = new ObjectSet<>();
+        set.addAll(array);
+        return set;
+    }
+
     /** Allocates a new set with all elements that match the predicate.*/
     public ObjectSet<T> select(Predicate<T> predicate){
         ObjectSet<T> arr = new ObjectSet<>();
