@@ -2,6 +2,7 @@ package io.anuke.arc.graphics;
 
 import io.anuke.arc.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
+import io.anuke.arc.function.*;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Disposable;
 
@@ -93,6 +94,14 @@ public class Pixmap implements Disposable{
         this.pixmap = pixmap;
     }
 
+    public void each(IntPositionConsumer cons){
+        for(int x = 0; x < getWidth(); x++){
+            for(int y = 0; y < getHeight(); y++){
+                cons.accept(x, y);
+            }
+        }
+    }
+
     /**
      * Sets the color for the following drawing operations
      * @param color the color, encoded as RGBA8888
@@ -154,6 +163,10 @@ public class Pixmap implements Disposable{
 // * @param width The stroke width in pixels.
 // */
 // public void setStrokeWidth (int width);
+
+    public void drawPixmap(Pixmap pixmap){
+        drawPixmap(pixmap, 0, 0);
+    }
 
     /**
      * Draws an area from another Pixmap to this Pixmap.
