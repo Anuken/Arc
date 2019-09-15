@@ -17,8 +17,8 @@ public class GradientEffect extends Effect{
         super(label);
 
         // Validate parameters
-        if(this.color1 == null) this.color1 = new Color(Color.WHITE);
-        if(this.color2 == null) this.color2 = new Color(Color.WHITE);
+        if(this.color1 == null) this.color1 = new Color(Color.white);
+        if(this.color2 == null) this.color2 = new Color(Color.white);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class GradientEffect extends Effect{
         float progress = calculateProgress(frequencyMod, distanceMod * localIndex, true);
 
         // Calculate color
-        if(glyph.color == null) glyph.color = new Color(Color.WHITE);
+        if(glyph.color == null) glyph.color = new Color(Color.white);
         glyph.color.set(color1).lerp(color2, progress);
     }
 

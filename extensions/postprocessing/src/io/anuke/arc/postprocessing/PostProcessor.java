@@ -20,7 +20,7 @@ public final class PostProcessor implements Disposable{
     private static final Array<PingPongBuffer> buffers = new Array<>();
 
     public final PingPongBuffer composite;
-    public final Color clearColor = Color.CLEAR;
+    public final Color clearColor = Color.clear;
     public boolean enabled = true;
 
     private final Array<PostEffect> effects = new Array<>();

@@ -568,7 +568,7 @@ public class TypeLabel extends Label{
         // if (wrap || text.indexOf("\n") != -1)
         {
             // If the text can span multiple lines, determine the text's actual size so it can be aligned within the label.
-            layout.setText(font, text, 0, text.length(), Color.WHITE, width, lineAlign, wrap, ellipsis);
+            layout.setText(font, text, 0, text.length(), Color.white, width, lineAlign, wrap, ellipsis);
             textWidth = layout.width;
             textHeight = layout.height;
 
@@ -595,7 +595,7 @@ public class TypeLabel extends Label{
         if(!cache.getFont().isFlipped()) y += textHeight;
 
         // Don't set the layout or cache now, since we progressively update both over time.
-        // layout.setText(font, text, 0, text.length, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
+        // layout.setText(font, text, 0, text.length, Color.white, textWidth, lineAlign, wrap, ellipsis);
         // cache.setText(layout, x, y);
         if(fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
 

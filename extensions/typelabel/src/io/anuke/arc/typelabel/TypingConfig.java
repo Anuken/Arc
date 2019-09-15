@@ -40,7 +40,7 @@ public class TypingConfig{
     public static int CHAR_LIMIT_PER_FRAME = -1;
 
     /** Default color for the {@code CLEARCOLOR} token. Can be overriden by {@link TypeLabel#getClearColor()}. */
-    public static Color DEFAULT_CLEAR_COLOR = new Color(Color.WHITE);
+    public static Color DEFAULT_CLEAR_COLOR = new Color(Color.white);
 
     /**
      * Returns a map of characters and their respective interval multipliers, of which the interval to the next char

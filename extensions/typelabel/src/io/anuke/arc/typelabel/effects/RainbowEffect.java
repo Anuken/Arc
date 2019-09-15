@@ -26,7 +26,7 @@ public class RainbowEffect extends Effect{
 
         // Calculate color
         if(glyph.color == null){
-            glyph.color = new Color(Color.WHITE);
+            glyph.color = new Color(Color.white);
         }
         Color.HSVtoRGB(360f * progress, saturation * 100f, brightness * 100f, glyph.color);
     }
