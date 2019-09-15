@@ -2,6 +2,7 @@ package io.anuke.arc.files;
 
 import io.anuke.arc.*;
 import io.anuke.arc.Files.*;
+import io.anuke.arc.collection.*;
 import io.anuke.arc.function.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.util.*;
@@ -684,6 +685,11 @@ public class FileHandle{
                     @Override
                     public FileHandle[] list(){
                         return children;
+                    }
+
+                    @Override
+                    public FileHandle[] list(FilenameFilter filter){
+                        return Array.with(list()).select(f -> filter.accept(f.file, f.name())).toArray(FileHandle.class);
                     }
                 };
             }else{
