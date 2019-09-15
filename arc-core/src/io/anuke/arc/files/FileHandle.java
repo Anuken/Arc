@@ -656,10 +656,43 @@ public class FileHandle{
     public FileHandle parent(){
         File parent = file.getParentFile();
         if(parent == null){
-            if(type == FileType.Absolute)
-                parent = new File("/");
-            else
-                parent = new File("");
+            if(OS.isWindows){
+                return new FileHandle("", type){
+                    File[] roots = File.listRoots();
+                    FileHandle[] children = new FileHandle[roots.length];
+                    {
+                        for(int i = 0; i < roots.length; i++){
+                            children[i] = new FileHandle(roots[i]);
+                        }
+                    }
+
+                    @Override
+                    public boolean isDirectory(){
+                        return true;
+                    }
+
+                    @Override
+                    public boolean exists(){
+                        return true;
+                    }
+
+                    @Override
+                    public FileHandle child(String name){
+                        return new FileHandle(new File(name));
+                    }
+
+                    @Override
+                    public FileHandle[] list(){
+                        return children;
+                    }
+                };
+            }else{
+                if(type == FileType.Absolute){
+                    parent = new File("/");
+                }else{
+                    parent = new File("");
+                }
+            }
         }
         return new FileHandle(parent, type);
     }
