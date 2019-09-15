@@ -160,7 +160,7 @@ public class TextureUnpacker {
 	private BufferedImage extractNinePatch (BufferedImage page, Region region, File outputDirFile) {
 		BufferedImage splitImage = extractImage(page, region, outputDirFile, NINEPATCH_PADDING);
 		Graphics2D g2 = splitImage.createGraphics();
-		g2.setColor(Color.BLACK);
+		g2.setColor(Color.black);
 
 		// Draw the four lines to save the ninepatch's padding and splits
 		int startX = region.splits[0] + NINEPATCH_PADDING;
