@@ -660,11 +660,10 @@ public class FileHandle{
         if(parent == null){
             if(OS.isWindows){
                 return new FileHandle("", type){
-                    FileHandle[] children = Arrays.stream(File.listRoots()).map(FileHandle::new).toArray(FileHandle[]::new);
+                    FileHandle[] children = Array.with(File.listRoots()).map(FileHandle::new).toArray(FileHandle.class);
 
                     @Override
-                    public FileHandle parent()
-                    {
+                    public FileHandle parent(){
                         return this;
                     }
 
