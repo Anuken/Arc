@@ -12,6 +12,7 @@ import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.nio.channels.FileChannel.*;
+import java.util.Arrays;
 
 /**
  * Represents a file or directory on the filesystem, classpath, Android SD card, or Android assets directory. FileHandles are
@@ -137,7 +138,7 @@ public class FileHandle{
 
     /** @return the name of the file, without any parent paths. */
     public String name(){
-        return file.getName();
+        return file.getName().isEmpty() ? file.getPath() : file.getName();
     }
 
     /** Returns the file extension (without the dot) or an empty string if the file name doesn't contain a dot. */
@@ -659,12 +660,11 @@ public class FileHandle{
         if(parent == null){
             if(OS.isWindows){
                 return new FileHandle("", type){
-                    File[] roots = File.listRoots();
-                    FileHandle[] children = new FileHandle[roots.length];
-                    {
-                        for(int i = 0; i < roots.length; i++){
-                            children[i] = new FileHandle(roots[i]);
-                        }
+                    FileHandle[] children = Array.with(File.listRoots()).map(FileHandle::new).toArray(FileHandle.class);
+
+                    @Override
+                    public FileHandle parent(){
+                        return this;
                     }
 
                     @Override
@@ -688,8 +688,8 @@ public class FileHandle{
                     }
 
                     @Override
-                    public FileHandle[] list(FilenameFilter filter){
-                        return Array.with(list()).select(f -> filter.accept(f.file, f.name())).toArray(FileHandle.class);
+                    public FileHandle[] list(FileFilter filter){
+                        return Array.with(list()).select(f -> filter.accept(f.file)).toArray(FileHandle.class);
                     }
                 };
             }else{
