@@ -83,17 +83,6 @@ public final class SdlFiles implements Files{
             return new SdlFileHandle(new File(file.getParent(), name), type);
         }
     
-        public FileHandle parent(){
-            File parent = file.getParentFile();
-            if(parent == null){
-                if(type == FileType.Absolute)
-                    parent = new File("/");
-                else
-                    parent = new File("");
-            }
-            return new SdlFileHandle(parent, type);
-        }
-    
         public File file(){
             if(type == FileType.External) return new File(externalPath, file.getPath());
             if(type == FileType.Local) return new File(localPath, file.getPath());
