@@ -8,7 +8,7 @@ import io.anuke.arc.function.Consumer;
 import io.anuke.arc.input.*;
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.math.geom.Vector3;
-import io.anuke.arc.util.OS;
+import io.anuke.arc.util.*;
 
 import static io.anuke.arc.Core.keybinds;
 
@@ -25,7 +25,7 @@ import static io.anuke.arc.Core.keybinds;
  * </p>
  * @author mzechner
  */
-public abstract class Input{
+public abstract class Input implements Disposable{
     /** Controller stick deadzone. */
     protected final static float deadzone = 0.3f;
     /** The default input device (keyboard) */
@@ -380,5 +380,10 @@ public abstract class Input{
         public Consumer<String> accepted = s -> { };
         public Runnable canceled = () -> { };
         public int maxLength = -1;
+    }
+
+    @Override
+    public void dispose(){
+        inputMultiplexer = new InputMultiplexer();
     }
 }
