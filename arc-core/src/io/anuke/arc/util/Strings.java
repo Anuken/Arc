@@ -16,6 +16,13 @@ public class Strings{
         return message;
     }
 
+    public static Throwable getFinalCause(Throwable e){
+        while(e.getCause() != null){
+            e = e.getCause();
+        }
+        return e;
+    }
+
     public static String parseException(Throwable e, boolean stacktrace){
         StringBuilder build = new StringBuilder();
 
