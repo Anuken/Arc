@@ -12,8 +12,7 @@ import static io.anuke.arc.backends.sdl.jni.SDL.*;
 
 public class SdlApplication implements Application{
     private final Array<ApplicationListener> listeners = new Array<>();
-    private final Array<Runnable> runnables = new Array<>();
-    private final Array<Runnable> executedRunnables = new Array<>();
+    private final TaskQueue runnables = new TaskQueue();
     private final int[] inputs = new int[34];
 
     final SdlGraphics graphics;
@@ -147,15 +146,7 @@ public class SdlApplication implements Application{
 
             listen(ApplicationListener::update);
 
-            synchronized(runnables){
-                executedRunnables.clear();
-                executedRunnables.addAll(runnables);
-                runnables.clear();
-            }
-
-            for(Runnable runnable : executedRunnables){
-                runnable.run();
-            }
+            runnables.run();
 
             SDL_GL_SwapWindow(window);
             input.prepareNext();
@@ -219,9 +210,7 @@ public class SdlApplication implements Application{
 
     @Override
     public void post(Runnable runnable){
-        synchronized(runnables){
-            runnables.add(runnable);
-        }
+        runnables.post(runnable);
     }
 
     @Override
