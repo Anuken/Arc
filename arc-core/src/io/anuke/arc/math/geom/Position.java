@@ -37,6 +37,10 @@ public interface Position{
         return (xd * xd + yd * yd);
     }
 
+    default boolean withinDst(Position other, float dst){
+        return withinDst(other.getX(), other.getY(), dst);
+    }
+
     default boolean withinDst(float x, float y, float dst){
         return Mathf.dst2(getX(), getY(), x, y) < dst*dst;
     }
