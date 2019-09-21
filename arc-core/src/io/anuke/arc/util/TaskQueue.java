@@ -18,6 +18,12 @@ public class TaskQueue{
         }
     }
 
+    public void clear(){
+        synchronized(runnables){
+            runnables.clear();
+        }
+    }
+
     public void post(Runnable runnable){
         synchronized(runnables){
             runnables.add(runnable);
