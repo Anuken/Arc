@@ -8,6 +8,8 @@ import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.glutils.*;
 import io.anuke.arc.util.*;
 
+import static io.anuke.arc.backends.sdl.jni.SDL.*;
+
 public class SdlGraphics extends Graphics{
     private GL20 gl20;
     private GLVersion glVersion;
@@ -39,12 +41,16 @@ public class SdlGraphics extends Graphics{
         glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
         bufferFormat = new BufferFormat(app.config.r, app.config.g, app.config.b, app.config.a, app.config.depth, app.config.stencil, app.config.samples, false);
 
-        if(!glVersion.isVersionEqualToOrHigher(2, 0)){
+        if(!glVersion.isVersionEqualToOrHigher(2, 0) || !supportsFBO()){
             throw new ArcRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + versionString);
         }
 
         clear(app.config.initialBackgroundColor);
-        io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_SwapWindow(app.window);
+        SDL_GL_SwapWindow(app.window);
+    }
+
+    boolean supportsFBO(){
+        return glVersion.isVersionEqualToOrHigher(3, 0) || SDL_GL_ExtensionSupported("GL_EXT_framebuffer_object") || SDL_GL_ExtensionSupported("GL_ARB_framebuffer_object");
     }
 
     void update(){
@@ -218,33 +224,33 @@ public class SdlGraphics extends Graphics{
     @Override
     public boolean setFullscreenMode(DisplayMode displayMode){
         //TODO ignores display mode
-        io.anuke.arc.backends.sdl.jni.SDL.SDL_SetWindowFullscreen(app.window, io.anuke.arc.backends.sdl.jni.SDL.SDL_WINDOW_FULLSCREEN_DESKTOP);
+        SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
         return true;
     }
 
     @Override
     public boolean setWindowedMode(int width, int height){
-        io.anuke.arc.backends.sdl.jni.SDL.SDL_SetWindowFullscreen(app.window, 0);
-        io.anuke.arc.backends.sdl.jni.SDL.SDL_SetWindowSize(app.window, width, height);
+        SDL_SetWindowFullscreen(app.window, 0);
+        SDL_SetWindowSize(app.window, width, height);
         return true;
     }
 
     @Override
     public void setTitle(String title){
-        io.anuke.arc.backends.sdl.jni.SDL.SDL_SetWindowTitle(app.window, title);
+        SDL_SetWindowTitle(app.window, title);
     }
 
     @Override
     public void setUndecorated(boolean undecorated){
-        boolean maximized = (io.anuke.arc.backends.sdl.jni.SDL.SDL_GetWindowFlags(app.window) & io.anuke.arc.backends.sdl.jni.SDL.SDL_WINDOW_MAXIMIZED) == io.anuke.arc.backends.sdl.jni.SDL.SDL_WINDOW_MAXIMIZED;
+        boolean maximized = (SDL_GetWindowFlags(app.window) & SDL_WINDOW_MAXIMIZED) == SDL_WINDOW_MAXIMIZED;
         if(maximized){
-            io.anuke.arc.backends.sdl.jni.SDL.SDL_RestoreWindow(app.window);
+            SDL_RestoreWindow(app.window);
         }
 
-        io.anuke.arc.backends.sdl.jni.SDL.SDL_SetWindowBordered(app.window, !undecorated);
+        SDL_SetWindowBordered(app.window, !undecorated);
 
         if(maximized){
-            io.anuke.arc.backends.sdl.jni.SDL.SDL_MaximizeWindow(app.window);
+            SDL_MaximizeWindow(app.window);
         }
     }
 
@@ -255,7 +261,7 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public void setVSync(boolean vsync){
-        io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_SetSwapInterval(vsync ? 1 : 0);
+        SDL_GL_SetSwapInterval(vsync ? 1 : 0);
     }
 
     @Override
@@ -265,7 +271,7 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public boolean supportsExtension(String extension){
-        return io.anuke.arc.backends.sdl.jni.SDL.SDL_GL_ExtensionSupported(extension);
+        return SDL_GL_ExtensionSupported(extension);
     }
 
     @Override
@@ -285,28 +291,28 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public boolean isFullscreen(){
-        return (io.anuke.arc.backends.sdl.jni.SDL.SDL_GetWindowFlags(app.window) & io.anuke.arc.backends.sdl.jni.SDL.SDL_WINDOW_FULLSCREEN) == io.anuke.arc.backends.sdl.jni.SDL.SDL_WINDOW_FULLSCREEN;
+        return (SDL_GetWindowFlags(app.window) & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN;
     }
 
     @Override
     public Cursor newCursor(Pixmap pixmap, int xHotspot, int yHotspot){
-        long surface = io.anuke.arc.backends.sdl.jni.SDL.SDL_CreateRGBSurfaceFrom(pixmap.getPixels(), pixmap.getWidth(), pixmap.getHeight());
-        long cursor = io.anuke.arc.backends.sdl.jni.SDL.SDL_CreateColorCursor(surface, xHotspot, yHotspot);
+        long surface = SDL_CreateRGBSurfaceFrom(pixmap.getPixels(), pixmap.getWidth(), pixmap.getHeight());
+        long cursor = SDL_CreateColorCursor(surface, xHotspot, yHotspot);
         return new SdlCursor(surface, cursor);
     }
 
     @Override
     protected void setCursor(Cursor cursor){
-        io.anuke.arc.backends.sdl.jni.SDL.SDL_SetCursor(((SdlCursor)cursor).cursorHandle);
+        SDL_SetCursor(((SdlCursor)cursor).cursorHandle);
     }
 
     @Override
     protected void setSystemCursor(SystemCursor cursor){
         if(!cursors.containsKey(cursor)){
-            long handle = io.anuke.arc.backends.sdl.jni.SDL.SDL_CreateSystemCursor(mapCursor(cursor));
+            long handle = SDL_CreateSystemCursor(mapCursor(cursor));
             cursors.put(cursor, new SdlCursor(0, handle));
         }
-        io.anuke.arc.backends.sdl.jni.SDL.SDL_SetCursor(cursors.get(cursor).cursorHandle);
+        SDL_SetCursor(cursors.get(cursor).cursorHandle);
     }
 
     @Override
@@ -318,12 +324,12 @@ public class SdlGraphics extends Graphics{
 
     private int mapCursor(SystemCursor cursor){
         switch(cursor){
-            case arrow: return io.anuke.arc.backends.sdl.jni.SDL.SDL_SYSTEM_CURSOR_ARROW;
-            case ibeam: return io.anuke.arc.backends.sdl.jni.SDL.SDL_SYSTEM_CURSOR_IBEAM;
-            case crosshair: return io.anuke.arc.backends.sdl.jni.SDL.SDL_SYSTEM_CURSOR_CROSSHAIR;
-            case hand: return io.anuke.arc.backends.sdl.jni.SDL.SDL_SYSTEM_CURSOR_HAND;
-            case horizontalResize: return io.anuke.arc.backends.sdl.jni.SDL.SDL_SYSTEM_CURSOR_SIZEWE;
-            case verticalResize: return io.anuke.arc.backends.sdl.jni.SDL.SDL_SYSTEM_CURSOR_SIZENS;
+            case arrow: return SDL_SYSTEM_CURSOR_ARROW;
+            case ibeam: return SDL_SYSTEM_CURSOR_IBEAM;
+            case crosshair: return SDL_SYSTEM_CURSOR_CROSSHAIR;
+            case hand: return SDL_SYSTEM_CURSOR_HAND;
+            case horizontalResize: return SDL_SYSTEM_CURSOR_SIZEWE;
+            case verticalResize: return SDL_SYSTEM_CURSOR_SIZENS;
         }
         throw new IllegalArgumentException("this is impossible.");
     }
@@ -338,7 +344,7 @@ public class SdlGraphics extends Graphics{
 
         @Override
         public void dispose(){
-            if(cursorHandle != 0) io.anuke.arc.backends.sdl.jni.SDL.SDL_FreeCursor(cursorHandle);
+            if(cursorHandle != 0) SDL_FreeCursor(cursorHandle);
             if(surfaceHandle != 0) SDL.SDL_FreeSurface(surfaceHandle);
         }
     }
