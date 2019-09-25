@@ -492,6 +492,17 @@ public class Array<T> implements Iterable<T>{
         size -= count;
     }
 
+    /** @return this object */
+    public Array<T> removeAll(Predicate<T> pred){
+        Iterator<T> iter = iterator();
+        while(iter.hasNext()){
+            if(pred.test(iter.next())){
+                iter.remove();
+            }
+        }
+        return this;
+    }
+
     public boolean removeAll(Array<? extends T> array){
         return removeAll(array, false);
     }
