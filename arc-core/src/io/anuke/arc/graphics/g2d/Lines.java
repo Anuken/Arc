@@ -11,7 +11,7 @@ public class Lines{
     private static Vector2 vector = new Vector2();
     private static FloatArray floats = new FloatArray(20);
     private static FloatArray floatBuilder = new FloatArray(20);
-    private static boolean building;
+    private static boolean building, precise;
     private static float circlePrecision = 0.38f;
 
     /** Set the vertices used for drawing a line circle. */
@@ -61,7 +61,7 @@ public class Lines{
 
     public static void line(TextureRegion region, float x, float y, float x2, float y2, CapStyle cap, float padding){
         float length = Mathf.dst(x, y, x2, y2) + (cap == CapStyle.none || cap == CapStyle.round ? padding * 2f : stroke + padding * 2);
-        float angle = Mathf.atan2(x2 - x, y2 - y) * Mathf.radDeg;
+        float angle = (precise ? (float)Math.atan2(y2 - y, x2 - x) : Mathf.atan2(x2 - x, y2 - y)) * Mathf.radDeg;
 
         if(cap == CapStyle.square){
             Draw.rect(region, x - stroke / 2 - padding + length/2f, y, length, stroke, stroke / 2 + padding, stroke / 2, angle);
@@ -73,6 +73,10 @@ public class Lines{
             Draw.rect(cir, x, y, stroke, stroke, angle + 180f);
             Draw.rect(cir, x2, y2, stroke, stroke, angle);
         }
+    }
+
+    public static void precise(boolean precise){
+        Lines.precise = precise;
     }
 
     public static void linePoint(float x, float y){
