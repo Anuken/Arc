@@ -184,8 +184,13 @@ public class Json{
             }
 
             if(ignoreDeprecated && !readDeprecated && field.isAnnotationPresent(Deprecated.class)) continue;
+            FieldMetadata data = new FieldMetadata(field);
 
-            nameToField.put(field.getName(), new FieldMetadata(field));
+            if(field.isAnnotationPresent(JsonType.class)){
+                data.elementType = field.getDeclaredAnnotation(JsonType.class).getAnnotation(JsonType.class).value();
+            }
+
+            nameToField.put(field.getName(), data);
         }
         typeToFields.put(type, nameToField);
         return nameToField;
@@ -1229,6 +1234,10 @@ public class Json{
 
     public String prettyPrint(String json, PrettyPrintSettings settings){
         return new JsonReader().parse(json).prettyPrint(settings);
+    }
+
+    public @interface JsonType{
+        Class<?> value();
     }
 
     public interface Serializer<T>{
