@@ -38,7 +38,19 @@ final public class SDL {
                 @Override public String mapLibraryName(String libraryName){ return "lib" +libraryName + ".so"; }
             }.load("openal");
         }
-        new SharedLibraryLoader().load("sdl-arc");
+        new SharedLibraryLoader(){
+            @Override
+            protected Throwable loadFile(String sourcePath, String sourceCrc, File extractedFile){
+                if(OS.isWindows){
+                    try{
+                        extractFile(OS.is64Bit ? "OpenAL.dll" : "OpenAL32.dll", sourceCrc,
+                        new File(extractedFile.getParentFile() == null ? "OpenAL32.dll" : (extractedFile.getParentFile() + "/OpenAL32.dll")));
+                    }catch(Throwable ignored){
+                    }
+                }
+                return super.loadFile(sourcePath, sourceCrc, extractedFile);
+            }
+        }.load("sdl-arc");
     }
 
     //core SDL methods
