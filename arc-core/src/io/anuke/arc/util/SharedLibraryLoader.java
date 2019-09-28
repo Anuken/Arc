@@ -254,7 +254,7 @@ public class SharedLibraryLoader{
 
         String fileName = new File(sourcePath).getName();
 
-        // Temp directory with username in path.
+        // Temp directory with arc in path.
         File file = new File(System.getProperty("java.io.tmpdir") + "/arc/" + sourceCrc, fileName);
         Throwable result;
         if((result = loadFile(sourcePath, sourceCrc, file)) == null) return;
