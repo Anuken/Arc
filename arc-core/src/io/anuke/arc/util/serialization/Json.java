@@ -153,7 +153,7 @@ public class Json{
         metadata.elementType = elementType;
     }
 
-    private OrderedMap<String, FieldMetadata> getFields(Class type){
+    public OrderedMap<String, FieldMetadata> getFields(Class type){
         OrderedMap<String, FieldMetadata> fields = typeToFields.get(type);
         if(fields != null) return fields;
 
@@ -878,8 +878,7 @@ public class Json{
                     if(debug) System.out.println("Ignoring unknown field: " + child.name + " (" + type.getName() + ")");
                     continue;
                 }else{
-                    SerializationException ex = new SerializationException(
-                    "Field not found: " + child.name + " (" + type.getName() + ")");
+                    SerializationException ex = new SerializationException("Field not found: " + child.name + " (" + type.getName() + ")");
                     ex.addTrace(child.trace());
                     throw ex;
                 }
@@ -1252,9 +1251,9 @@ public class Json{
         void read(Json json, JsonValue jsonData);
     }
 
-    static private class FieldMetadata{
-        final Field field;
-        Class elementType;
+    static public class FieldMetadata{
+        public final Field field;
+        public Class elementType;
 
         public FieldMetadata(Field field){
             this.field = field;
