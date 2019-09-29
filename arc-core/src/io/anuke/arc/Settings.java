@@ -106,6 +106,9 @@ public class Settings{
 
         try{
             loadValues(getSettingsFile());
+
+            //back up the save file, as the values have now been loaded successfully
+            getSettingsFile().copyTo(getBackupSettingsFile());
         }catch(Exception e){
             Log.err("Failed to load base settings file, attempting to load backup.", e);
             try{
@@ -192,9 +195,6 @@ public class Settings{
             file.delete();
             throw new RuntimeException("Error writing preferences: " + file, e);
         }
-
-        //back up the save file
-        file.copyTo(getBackupSettingsFile());
     }
 
     /** Returns the file used for writing settings to. Not available on all platforms! */
