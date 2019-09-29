@@ -139,7 +139,7 @@ public class I18NBundle{
     private static I18NBundle createBundleImpl(FileHandle baseFileHandle, Locale locale, String encoding){
         if(baseFileHandle == null || locale == null || encoding == null) throw new NullPointerException();
 
-        I18NBundle bundle = null;
+        I18NBundle bundle;
         I18NBundle baseBundle = null;
         Locale targetLocale = locale;
         do{
@@ -441,6 +441,11 @@ public class I18NBundle{
         return properties.keys();
     }
 
+    /** @return the internal property map. Can be modified. */
+    public ObjectMap<String, String> getProperties(){
+        return properties;
+    }
+
     /** Checks whether a specified key is present in this bundle. */
     public boolean has(String key){
         if(properties.containsKey(key)){
@@ -482,5 +487,10 @@ public class I18NBundle{
         for(String s : keys){
             properties.put(s, placeholder);
         }
+    }
+
+    /** @return the parent bundle. */
+    public I18NBundle getParent(){
+        return parent;
     }
 }

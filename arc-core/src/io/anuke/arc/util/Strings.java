@@ -131,6 +131,24 @@ public class Strings{
         return result.toString();
     }
 
+    /**Converts a Space Separated ostring to camelCase.
+     * For example: "Camel Case" -> "camelCase"*/
+    public static String camelize(String s){
+        StringBuilder result = new StringBuilder(s.length());
+
+        for(int i = 0; i < s.length(); i++){
+            char c = s.charAt(i);
+            if(i == 0){
+                result.append(Character.toLowerCase(c));
+            }else if(c != ' '){
+                result.append(c);
+            }
+
+        }
+
+        return result.toString();
+    }
+
     public static boolean canParseInt(String s){
         return parseInt(s) != Integer.MIN_VALUE;
     }
