@@ -59,7 +59,6 @@ public class ScrollPane extends WidgetGroup{
     private boolean scrollbarsOnTop;
     private boolean variableSizeKnobs = true;
 
-
     /** @param widget May be null. */
     public ScrollPane(Element widget){
         this(widget, scene.getStyle(ScrollPaneStyle.class));
@@ -76,10 +75,16 @@ public class ScrollPane extends WidgetGroup{
         addCaptureListener(new InputListener(){
             private float handlePosition;
 
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Element fromActor){
+                requestScroll();
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
                 if(draggingPointer != -1) return false;
-                if(pointer == 0 && button != 0) return false;
-                getScene().setScrollFocus(ScrollPane.this);
+                if(pointer == 0 && button != KeyCode.MOUSE_LEFT) return false;
+                requestScroll();
 
                 if(!flickScroll) resetFade();
 
@@ -114,11 +119,13 @@ public class ScrollPane extends WidgetGroup{
                 return false;
             }
 
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button){
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, KeyCode button){
                 if(pointer != draggingPointer) return;
                 cancel();
             }
 
+            @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer){
                 if(pointer != draggingPointer) return;
                 if(touchScrollH){
@@ -142,6 +149,7 @@ public class ScrollPane extends WidgetGroup{
                 }
             }
 
+            @Override
             public boolean mouseMoved(InputEvent event, float x, float y){
                 if(!flickScroll) resetFade();
                 return false;
@@ -194,10 +202,13 @@ public class ScrollPane extends WidgetGroup{
         });
 
         addCaptureListener(new InputListener(){
+            boolean on = false;
+
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
                 Element actor = ScrollPane.this.hit(x, y, true);
-                if(actor instanceof Slider){
+                on = flickScroll;
+                if(actor instanceof Slider && on){
                     ScrollPane.this.setFlickScroll(false);
                     return true;
                 }
@@ -207,7 +218,9 @@ public class ScrollPane extends WidgetGroup{
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, KeyCode button){
-                ScrollPane.this.setFlickScroll(true);
+                if(on){
+                    ScrollPane.this.setFlickScroll(true);
+                }
                 super.touchUp(event, x, y, pointer, button);
             }
         });
@@ -457,7 +470,7 @@ public class ScrollPane extends WidgetGroup{
         // Set the bounds and scroll knob sizes if scrollbars are needed.
         if(scrollX){
             if(hScrollKnob != null){
-                float hScrollHeight = style.hScroll != null ? style.hScroll.getMinHeight() : hScrollKnob.getMinHeight();
+                float hScrollHeight = hScrollKnob.getMinHeight();
                 // The corner gap where the two scroll bars intersect might have to flip from right to left.
                 float boundsX = vScrollOnRight ? bgLeftWidth : bgLeftWidth + scrollbarWidth;
                 // Scrollbar on the top or bottom.
@@ -479,7 +492,7 @@ public class ScrollPane extends WidgetGroup{
         }
         if(scrollY){
             if(vScrollKnob != null){
-                float vScrollWidth = style.vScroll != null ? style.vScroll.getMinWidth() : vScrollKnob.getMinWidth();
+                float vScrollWidth = vScrollKnob.getMinWidth();
                 // the small gap where the two scroll bars intersect might have to flip from bottom to top
                 float boundsX, boundsY;
                 if(hScrollOnBottom){

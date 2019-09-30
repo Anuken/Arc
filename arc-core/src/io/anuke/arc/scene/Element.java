@@ -98,6 +98,22 @@ public class Element implements Layout{
         return e == this || (e != null && e.isDescendantOf(this));
     }
 
+    public boolean hasKeyboard(){
+        return Core.scene.getKeyboardFocus() == this;
+    }
+
+    public boolean hasScroll(){
+        return Core.scene.getScrollFocus() == this;
+    }
+
+    public void requestKeyboard(){
+        Core.scene.setKeyboardFocus(this);
+    }
+
+    public void requestScroll(){
+        Core.scene.setScrollFocus(this);
+    }
+
     @SuppressWarnings("unchecked")
     public boolean fire(SceneEvent event){
         event.targetActor = this;
