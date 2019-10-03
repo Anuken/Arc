@@ -1,22 +1,17 @@
 package io.anuke.arc.graphics.g2d;
 
-import io.anuke.arc.Core;
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.collection.OrderedMap;
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.graphics.Pixmap;
+import io.anuke.arc.*;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.Pixmap.Blending;
-import io.anuke.arc.graphics.Pixmap.Format;
-import io.anuke.arc.graphics.Texture;
-import io.anuke.arc.graphics.Texture.TextureFilter;
-import io.anuke.arc.graphics.g2d.PixmapPacker.SkylineStrategy.SkylinePage.Row;
-import io.anuke.arc.graphics.glutils.PixmapTextureData;
-import io.anuke.arc.math.geom.Rectangle;
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.Disposable;
+import io.anuke.arc.graphics.Pixmap.*;
+import io.anuke.arc.graphics.Texture.*;
+import io.anuke.arc.graphics.g2d.PixmapPacker.SkylineStrategy.SkylinePage.*;
+import io.anuke.arc.graphics.glutils.*;
+import io.anuke.arc.math.geom.*;
+import io.anuke.arc.util.*;
 
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
 
 /**
  * Packs {@link Pixmap pixmaps} into one or more {@link Page pages} to generate an atlas of pixmap instances. Provides means to
@@ -348,6 +343,11 @@ public class PixmapPacker implements Disposable{
         return atlas;
     }
 
+    public synchronized void updateAll(TextureAtlas atlas, TextureFilter filter){
+        getPages().each(page -> page.updateTexture(filter, filter, false));
+        getPages().each(page -> page.getRects().each((name, rect) -> Core.atlas.addRegion(name, page.getTexture(), (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height)));
+    }
+
     /**
      * Updates the {@link TextureAtlas}, adding any new {@link Pixmap} instances packed since the last call to this method. This
      * can be used to insert Pixmap instances on a separate thread via {@link #pack(String, Pixmap)} and update the TextureAtlas on
@@ -551,7 +551,7 @@ public class PixmapPacker implements Disposable{
             }
         }
 
-        int[] pads = new int[]{startX, endX, startY, endY};
+        int[] pads = {startX, endX, startY, endY};
 
         if(splits != null && Arrays.equals(pads, splits)){
             return null;
@@ -618,6 +618,10 @@ public class PixmapPacker implements Disposable{
             final Color transparentColor = packer.getTransparentColor();
             this.image.setColor(transparentColor);
             this.image.fill();
+        }
+
+        public Page(Pixmap pixmap){
+            this.image = pixmap;
         }
 
         public Pixmap getPixmap(){
@@ -751,11 +755,20 @@ public class PixmapPacker implements Disposable{
             public boolean full;
         }
 
-        static class GuillotinePage extends Page{
+        public static class GuillotinePage extends Page{
             Node root;
 
             public GuillotinePage(PixmapPacker packer){
                 super(packer);
+                root = new Node();
+                root.rect.x = packer.padding;
+                root.rect.y = packer.padding;
+                root.rect.width = packer.pageWidth - packer.padding * 2;
+                root.rect.height = packer.pageHeight - packer.padding * 2;
+            }
+
+            public GuillotinePage(PixmapPacker packer, Pixmap base){
+                super(base);
                 root = new Node();
                 root.rect.x = packer.padding;
                 root.rect.y = packer.padding;
@@ -849,7 +862,7 @@ public class PixmapPacker implements Disposable{
         int offsetX, offsetY;
         int originalWidth, originalHeight;
 
-        PixmapPackerRectangle(int x, int y, int width, int height){
+        public PixmapPackerRectangle(int x, int y, int width, int height){
             super(x, y, width, height);
             this.offsetX = 0;
             this.offsetY = 0;
@@ -857,7 +870,7 @@ public class PixmapPacker implements Disposable{
             this.originalHeight = height;
         }
 
-        PixmapPackerRectangle(int x, int y, int width, int height, int left, int top, int originalWidth, int originalHeight){
+        public PixmapPackerRectangle(int x, int y, int width, int height, int left, int top, int originalWidth, int originalHeight){
             super(x, y, width, height);
             this.offsetX = left;
             this.offsetY = top;

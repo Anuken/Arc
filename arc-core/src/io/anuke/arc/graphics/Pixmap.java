@@ -3,6 +3,7 @@ package io.anuke.arc.graphics;
 import io.anuke.arc.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import io.anuke.arc.function.*;
+import io.anuke.arc.graphics.g2d.*;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Disposable;
 
@@ -164,6 +165,18 @@ public class Pixmap implements Disposable{
 // */
 // public void setStrokeWidth (int width);
 
+    public void draw(PixmapRegion region){
+        drawPixmap(region.pixmap, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height);
+    }
+
+    public void draw(PixmapRegion region, int x, int y){
+        drawPixmap(region.pixmap, region.x, region.y, region.width, region.height, x, y, region.width, region.height);
+    }
+
+    public void draw(PixmapRegion region, int x, int y, int width, int height){
+        drawPixmap(region.pixmap, region.x, region.y, region.width, region.height, x, y, width, height);
+    }
+
     public void drawPixmap(Pixmap pixmap){
         drawPixmap(pixmap, 0, 0);
     }
@@ -288,12 +301,16 @@ public class Pixmap implements Disposable{
         return disposed;
     }
 
+    public void draw(int x, int y, Color color){
+        pixmap.setPixel(x, y, color.rgba());
+    }
+
     /**
      * Draws a pixel at the given location with the current color.
      * @param x the x-coordinate
      * @param y the y-coordinate
      */
-    public void drawPixel(int x, int y){
+    public void draw(int x, int y){
         pixmap.setPixel(x, y, color);
     }
 
@@ -303,7 +320,7 @@ public class Pixmap implements Disposable{
      * @param y the y-coordinate
      * @param color the color in RGBA8888 format.
      */
-    public void drawPixel(int x, int y, int color){
+    public void draw(int x, int y, int color){
         pixmap.setPixel(x, y, color);
     }
 

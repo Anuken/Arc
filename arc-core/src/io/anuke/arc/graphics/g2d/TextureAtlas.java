@@ -36,6 +36,7 @@ public class TextureAtlas implements Disposable{
     private final Array<AtlasRegion> regions = new Array<>();
     private final ObjectMap<String, Drawable> drawables = new ObjectMap<>();
     private final ObjectMap<String, AtlasRegion> regionmap = new ObjectMap<>();
+    private final ObjectMap<Texture, Pixmap> pixmaps = new ObjectMap<>();
     protected AtlasRegion error, white;
 
     /** Returns a new texture atlas with only a blank texture region.*/
@@ -144,6 +145,22 @@ public class TextureAtlas implements Disposable{
         }
 
         error = find("error");
+    }
+
+    public PixmapRegion getPixmap(String name){
+        return getPixmap(find(name));
+    }
+
+    public PixmapRegion getPixmap(AtlasRegion region){
+        if(region.pixmapRegion == null){
+            Pixmap pix = pixmaps.getOr(region.texture, () -> {
+                if(!region.texture.getTextureData().isPrepared()) region.texture.getTextureData().prepare();
+                return region.texture.getTextureData().consumePixmap();
+            });
+            region.pixmapRegion = new PixmapRegion(pix, region.getX(), region.getY(), region.getWidth(), region.getHeight());
+        }
+
+        return region.pixmapRegion;
     }
 
     /** Adds a region to the atlas. The specified texture will be disposed when the atlas is disposed. */
@@ -311,7 +328,11 @@ public class TextureAtlas implements Disposable{
     public void dispose(){
         for(Texture texture : textures)
             texture.dispose();
+        for(Pixmap pixmap : pixmaps.values())
+            if(!pixmap.isDisposed())
+                pixmap.dispose();
         textures.clear();
+        pixmaps.clear();
     }
 
     public static class TextureAtlasData{
@@ -465,6 +486,8 @@ public class TextureAtlas implements Disposable{
 
     /** Describes the region of a packed image and provides information about the original image before it was packed. */
     public static class AtlasRegion extends TextureRegion{
+        private PixmapRegion pixmapRegion;
+
         /**
          * The number at the end of the original image file name, or -1 if none.<br>
          * <br>
