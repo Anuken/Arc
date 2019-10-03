@@ -343,11 +343,6 @@ public class PixmapPacker implements Disposable{
         return atlas;
     }
 
-    public synchronized void updateAll(TextureAtlas atlas, TextureFilter filter){
-        getPages().each(page -> page.updateTexture(filter, filter, false));
-        getPages().each(page -> page.getRects().each((name, rect) -> Core.atlas.addRegion(name, page.getTexture(), (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height)));
-    }
-
     /**
      * Updates the {@link TextureAtlas}, adding any new {@link Pixmap} instances packed since the last call to this method. This
      * can be used to insert Pixmap instances on a separate thread via {@link #pack(String, Pixmap)} and update the TextureAtlas on
