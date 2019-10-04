@@ -1,19 +1,19 @@
 package io.anuke.arc.util.serialization;
 
 import io.anuke.arc.collection.*;
-import io.anuke.arc.collection.IntSet.IntSetIterator;
-import io.anuke.arc.collection.ObjectMap.Entry;
+import io.anuke.arc.collection.IntSet.*;
+import io.anuke.arc.collection.ObjectMap.*;
 import io.anuke.arc.collection.Queue;
-import io.anuke.arc.collection.OrderedMap.OrderedMapValues;
-import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.util.*;
-import io.anuke.arc.util.io.Streams;
+import io.anuke.arc.collection.OrderedMap.*;
+import io.anuke.arc.files.*;
+import io.anuke.arc.util.ArcAnnotate.*;
+import io.anuke.arc.util.io.*;
 import io.anuke.arc.util.reflect.*;
-import io.anuke.arc.util.serialization.JsonValue.PrettyPrintSettings;
-import io.anuke.arc.util.serialization.JsonWriter.OutputType;
+import io.anuke.arc.util.serialization.JsonValue.*;
+import io.anuke.arc.util.serialization.JsonWriter.*;
 
 import java.io.*;
-import java.security.AccessControlException;
+import java.security.*;
 import java.util.*;
 
 /**
@@ -886,7 +886,7 @@ public class Json{
             }
             Field field = metadata.field;
             try{
-                field.set(object, readValue(field.getType(), metadata.elementType, child));
+                field.set(object, readValue(field.getType(), metadata.elementType, child, metadata.keyType));
             }catch(ReflectionException ex){
                 throw new SerializationException("Error accessing field: " + field.getName() + " (" + type.getName() + ")", ex);
             }catch(SerializationException ex){
@@ -968,12 +968,16 @@ public class Json{
         return readValue(type, null, jsonData);
     }
 
+    public <T> T readValue(Class<T> type, Class elementType, JsonValue jsonData){
+        return readValue(type, elementType, jsonData, null);
+    }
+
     /**
      * @param type May be null if the type is unknown.
      * @param elementType May be null if the type is unknown.
      * @return May be null.
      */
-    public <T> T readValue(Class<T> type, Class elementType, JsonValue jsonData){
+    public <T> T readValue(Class<T> type, Class elementType, JsonValue jsonData, Class keytype){
         if(jsonData == null) return null;
 
         if(jsonData.isObject()){
@@ -1019,8 +1023,10 @@ public class Json{
                 // JSON object special cases.
                 if(object instanceof ObjectMap){
                     ObjectMap result = (ObjectMap)object;
-                    for(JsonValue child = jsonData.child; child != null; child = child.next)
-                        result.put(child.name, readValue(elementType, null, child));
+                    for(JsonValue child = jsonData.child; child != null; child = child.next){
+
+                        result.put(keytype != null ? readValue(keytype, null, new JsonValue(child.name)) : child.name, readValue(elementType, null, child));
+                    }
 
                     return (T)result;
                 }
@@ -1254,13 +1260,16 @@ public class Json{
 
     static public class FieldMetadata{
         public final Field field;
-        public Class elementType;
+        public @Nullable Class elementType;
+        public @Nullable Class keyType;
 
         public FieldMetadata(Field field){
+            boolean isMap = ClassReflection.isAssignableFrom(ObjectMap.class, field.getType())
+            || ClassReflection.isAssignableFrom(Map.class, field.getType());
+
             this.field = field;
-            int index = (ClassReflection.isAssignableFrom(ObjectMap.class, field.getType())
-            || ClassReflection.isAssignableFrom(Map.class, field.getType())) ? 1 : 0;
-            this.elementType = field.getElementType(index);
+            this.elementType = field.getElementType(isMap ? 1 : 0);
+            keyType = isMap ? field.getElementType(0) : null;
         }
     }
 

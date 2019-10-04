@@ -163,6 +163,10 @@ public class TextureAtlas implements Disposable{
         return region.pixmapRegion;
     }
 
+    public PixmapRegion getPixmap(TextureRegion region){
+        return getPixmap((AtlasRegion)region);
+    }
+
     /** Adds a region to the atlas. The specified texture will be disposed when the atlas is disposed. */
     public AtlasRegion addRegion(String name, Texture texture, int x, int y, int width, int height){
         textures.add(texture);

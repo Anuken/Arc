@@ -152,8 +152,8 @@ public class PixmapPacker implements Disposable{
      */
     public synchronized Rectangle pack(String name, Pixmap image){
         if(disposed) return null;
-        if(name != null && getRect(name) != null)
-            throw new ArcRuntimeException("Pixmap has already been packed with name: " + name);
+        //if(name != null && getRect(name) != null)
+        //    throw new ArcRuntimeException("Pixmap has already been packed with name: " + name);
 
         boolean isPatch = name != null && name.endsWith(".9");
 
