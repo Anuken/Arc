@@ -641,6 +641,17 @@ public class Array<T> implements Iterable<T>{
         return this;
     }
 
+    /** Note that this allocates a new set.*/
+    public Array<T> distinct(){
+        ObjectSet<T> set = ObjectSet.with(this);
+        removeAll(t -> !set.contains(t));
+        return this;
+    }
+
+    public <R extends T> Array<R> as(Class<R> type){
+        return (Array<R>)this;
+    }
+
     /** Allocates a new array with all elements that match the predicate.*/
     public Array<T> select(Predicate<T> predicate){
         Array<T> arr = new Array<>();
