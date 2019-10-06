@@ -39,7 +39,6 @@ public class GestureDetector implements InputProcessor{
     private boolean panning;
     private float tapRectangleCenterX, tapRectangleCenterY;
     private long gestureStartTime;
-    private boolean[] down = new boolean[10];
 
     /**
      * Creates a new GestureDetector with default values: halfTapSquareSize=20, tapCountInterval=0.4f, longPressDuration=1.1f,
@@ -88,7 +87,6 @@ public class GestureDetector implements InputProcessor{
 
     public boolean touchDown(float x, float y, int pointer, KeyCode button){
         if(pointer > 1) return false;
-        down[pointer] = true;
 
         if(pointer == 0){
             pointer1.set(x, y);
@@ -128,7 +126,7 @@ public class GestureDetector implements InputProcessor{
     }
 
     public boolean touchDragged(float x, float y, int pointer){
-        if(pointer > 1 || !down[pointer]) return false;
+        if(pointer > 1) return false;
         if(longPressFired) return false;
 
         if(pointer == 0)
@@ -170,7 +168,6 @@ public class GestureDetector implements InputProcessor{
 
     public boolean touchUp(float x, float y, int pointer, KeyCode button){
         if(pointer > 1) return false;
-        down[pointer] = false;
 
         // check if we are still tapping.
         if(inTapRectangle && !isWithinTapRectangle(x, y, tapRectangleCenterX, tapRectangleCenterY))

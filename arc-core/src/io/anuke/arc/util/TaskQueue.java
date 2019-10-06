@@ -18,6 +18,10 @@ public class TaskQueue{
         }
     }
 
+    public int size(){
+        return runnables.size;
+    }
+
     public void clear(){
         synchronized(runnables){
             runnables.clear();

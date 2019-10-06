@@ -28,7 +28,9 @@ final class AndroidSound implements Sound{
     }
 
     private void run(Runnable run){
-        queue.post(run);
+        if(queue.size() < 22){
+            queue.post(run);
+        }
     }
 
     private int map(int i){
