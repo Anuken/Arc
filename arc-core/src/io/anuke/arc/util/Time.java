@@ -8,6 +8,7 @@ import io.anuke.arc.util.pooling.Pools;
 public class Time{
     private static final long nanosPerMilli = 1000000;
     private static double time;
+    private static double globalTime;
     private static Array<DelayRun> runs = new Array<>();
     private static Array<DelayRun> removal = new Array<>();
     private static LongArray marks = new LongArray();
@@ -28,6 +29,10 @@ public class Time{
         return (float)time;
     }
 
+    public static float globalTime(){
+        return (float)globalTime;
+    }
+
     public static void mark(){
         marks.add(nanos());
     }
@@ -41,8 +46,12 @@ public class Time{
         }
     }
 
+    public static void updateGlobal(){
+        globalTime += Core.graphics.getDeltaTime()*60f;
+    }
+
     /** Use normal delta time (e. g. gdx delta * 60) */
-    public static synchronized void update(){
+    public static void update(){
         float delta = delta();
 
         time += delta;
