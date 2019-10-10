@@ -12,7 +12,6 @@ import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.nio.channels.FileChannel.*;
-import java.util.Arrays;
 
 /**
  * Represents a file or directory on the filesystem, classpath, Android SD card, or Android assets directory. FileHandles are
@@ -256,7 +255,7 @@ public class FileHandle{
      * @throws ArcRuntimeException if the file handle represents a directory, doesn't exist, or could not be read.
      */
     public String readString(){
-        return readString(null);
+        return readString("UTF-8");
     }
 
     /**
@@ -463,7 +462,7 @@ public class FileHandle{
      * {@link FileType#Internal} file, or if it could not be written.
      */
     public void writeString(String string, boolean append){
-        writeString(string, append, null);
+        writeString(string, append, "UTF-8");
     }
 
     /**
