@@ -213,7 +213,7 @@ public class FileHandle{
      * @throws ArcRuntimeException if the file handle represents a directory, doesn't exist, or could not be read.
      */
     public Reader reader(){
-        return new InputStreamReader(read());
+        return reader("UTF-8");
     }
 
     /**
@@ -235,7 +235,7 @@ public class FileHandle{
      * @throws ArcRuntimeException if the file handle represents a directory, doesn't exist, or could not be read.
      */
     public BufferedReader reader(int bufferSize){
-        return new BufferedReader(new InputStreamReader(read()), bufferSize);
+        return reader(bufferSize, "UTF-8");
     }
 
     /**
@@ -415,7 +415,7 @@ public class FileHandle{
      * {@link FileType#Internal} file, or if it could not be written.
      */
     public Writer writer(boolean append){
-        return writer(append, null);
+        return writer(append, "UTF-8");
     }
 
     /**
