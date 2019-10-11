@@ -1,9 +1,20 @@
 package io.anuke.arc.util;
 
+import io.anuke.arc.collection.*;
+
 import java.nio.charset.Charset;
 
 public class Strings{
     public static final Charset utf8 = Charset.forName("UTF-8");
+
+    public static Array<Throwable> getCauses(Throwable e){
+        Array<Throwable> arr = new Array<>();
+        while(e != null){
+            arr.add(e);
+            e = e.getCause();
+        }
+        return arr;
+    }
 
     public static String getFinalMesage(Throwable e){
         String message = e.getMessage();
