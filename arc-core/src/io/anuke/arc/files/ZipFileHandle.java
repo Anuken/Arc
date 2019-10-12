@@ -3,6 +3,7 @@ package io.anuke.arc.files;
 import io.anuke.arc.Files.*;
 import io.anuke.arc.collection.*;
 import io.anuke.arc.util.*;
+import io.anuke.arc.util.ArcAnnotate.*;
 
 import java.io.*;
 import java.util.*;
@@ -13,7 +14,7 @@ public class ZipFileHandle extends FileHandle{
     private ZipFileHandle[] children = {};
     private ZipFileHandle parent;
 
-    private final ZipEntry entry;
+    private final @Nullable ZipEntry entry;
     private final ZipFile zip;
 
     public ZipFileHandle(FileHandle zipFileLoc){
@@ -23,11 +24,32 @@ public class ZipFileHandle extends FileHandle{
 
         try{
             ZipFile zip = new ZipFile(zipFileLoc.file());
-            Array<ZipFileHandle> handles = Array.with(Collections.list(zip.entries()).toArray(new ZipEntry[0])).map(entry -> new ZipFileHandle(entry, zip));
-            handles.add(this);
-            handles.each(f -> f.init(handles));
+            Array<String> names = Array.with(Collections.list(zip.entries())).map(ZipEntry::getName);
+            ObjectSet<String> paths = new ObjectSet<>();
+
+            for(String path : names){
+                if(path.endsWith("/")) path = path.substring(0, path.length() - 1);
+
+                paths.add(path);
+                while(path.contains("/")){
+                    int index = path.lastIndexOf('/');
+                    path = path.substring(0, index);
+                    paths.add(path);
+                }
+            }
+
+            Array<ZipFileHandle> files = Array.with(paths).map(s -> zip.getEntry(s) != null ?
+                new ZipFileHandle(zip.getEntry(s), zip) : new ZipFileHandle(s, zip));
+
+            files.add(this);
+
+            //find parents
+            files.each(file -> file.parent = files.find(other -> other.isDirectory() && other != file
+                && file.path().startsWith(other.path()) && !file.path().substring(1 + other.path().length()).contains("/")));
+            //transform parents into children
+            files.each(file -> file.children = files.select(f -> f.parent == file).toArray(ZipFileHandle.class));
+
             parent = null;
-            handles.each(f -> f.children = handles.select(z -> z.parent == f).toArray(ZipFileHandle.class));
         }catch(IOException e){
             throw new ArcRuntimeException(e);
         }
@@ -39,11 +61,10 @@ public class ZipFileHandle extends FileHandle{
         this.zip = file;
     }
 
-    private void init(Array<ZipFileHandle> files){
-        parent = files.find(other -> other.isDirectory() && other != this && path().startsWith(other.path()) && !path().substring(1 + other.path().length()).contains("/"));
-        if(parent == null){
-            parent = files.peek();
-        }
+    private ZipFileHandle(String path, ZipFile file){
+        super(new File(path), FileType.Absolute);
+        this.entry = null;
+        this.zip = file;
     }
 
     @Override
