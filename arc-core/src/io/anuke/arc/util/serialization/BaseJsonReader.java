@@ -7,5 +7,7 @@ import java.io.InputStream;
 public interface BaseJsonReader{
     JsonValue parse(InputStream input);
 
-    JsonValue parse(FileHandle file);
+    default JsonValue parse(FileHandle file){
+        return parse(file.read());
+    }
 }

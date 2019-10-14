@@ -13,9 +13,9 @@ import java.util.regex.Pattern;
  * Builder style API for emitting JSON.
  * @author Nathan Sweet
  */
-public class JsonWriter extends Writer{
+public class JsonWriter extends Writer implements BaseJsonWriter{
     final Writer writer;
-    private final Array<JsonObject> stack = new Array();
+    private final Array<JsonObject> stack = new Array<>();
     private JsonObject current;
     private boolean named;
     private OutputType outputType = OutputType.json;
@@ -30,6 +30,7 @@ public class JsonWriter extends Writer{
     }
 
     /** Sets the type of JSON output. Default is {@link OutputType#minimal}. */
+    @Override
     public void setOutputType(OutputType outputType){
         this.outputType = outputType;
     }
@@ -38,11 +39,13 @@ public class JsonWriter extends Writer{
      * When true, quotes long, double, BigInteger, BigDecimal types to prevent truncation in languages like JavaScript and PHP.
      * This is not necessary when using libgdx, which handles these types without truncation. Default is false.
      */
+    @Override
     public void setQuoteLongValues(boolean quoteLongValues){
         this.quoteLongValues = quoteLongValues;
     }
 
-    public JsonWriter name(String name) throws IOException{
+    @Override
+    public BaseJsonWriter name(String name) throws IOException{
         if(current == null || current.array) throw new IllegalStateException("Current item must be an object.");
         if(!current.needsComma)
             current.needsComma = true;
@@ -54,19 +57,22 @@ public class JsonWriter extends Writer{
         return this;
     }
 
-    public JsonWriter object() throws IOException{
+    @Override
+    public BaseJsonWriter object() throws IOException{
         requireCommaOrName();
         stack.add(current = new JsonObject(false));
         return this;
     }
 
-    public JsonWriter array() throws IOException{
+    @Override
+    public BaseJsonWriter array() throws IOException{
         requireCommaOrName();
         stack.add(current = new JsonObject(true));
         return this;
     }
 
-    public JsonWriter value(Object value) throws IOException{
+    @Override
+    public BaseJsonWriter value(Object value) throws IOException{
         if(quoteLongValues
         && (value instanceof Long || value instanceof Double || value instanceof BigDecimal || value instanceof BigInteger)){
             value = value.toString();
@@ -77,13 +83,6 @@ public class JsonWriter extends Writer{
         }
         requireCommaOrName();
         writer.write(outputType.quoteValue(value));
-        return this;
-    }
-
-    /** Writes the specified JSON value, without quoting or escaping. */
-    public JsonWriter json(String json) throws IOException{
-        requireCommaOrName();
-        writer.write(json);
         return this;
     }
 
@@ -100,38 +99,40 @@ public class JsonWriter extends Writer{
         }
     }
 
-    public JsonWriter object(String name) throws IOException{
+    @Override
+    public BaseJsonWriter object(String name) throws IOException{
         return name(name).object();
     }
 
-    public JsonWriter array(String name) throws IOException{
+    @Override
+    public BaseJsonWriter array(String name) throws IOException{
         return name(name).array();
     }
 
-    public JsonWriter set(String name, Object value) throws IOException{
+    @Override
+    public BaseJsonWriter set(String name, Object value) throws IOException{
         return name(name).value(value);
     }
 
-    /** Writes the specified JSON value, without quoting or escaping. */
-    public JsonWriter json(String name, String json) throws IOException{
-        return name(name).json(json);
-    }
-
-    public JsonWriter pop() throws IOException{
+    @Override
+    public BaseJsonWriter pop() throws IOException{
         if(named) throw new IllegalStateException("Expected an object, array, or value since a name was set.");
         stack.pop().close();
         current = stack.size == 0 ? null : stack.peek();
         return this;
     }
 
+    @Override
     public void write(char[] cbuf, int off, int len) throws IOException{
         writer.write(cbuf, off, len);
     }
 
+    @Override
     public void flush() throws IOException{
         writer.flush();
     }
 
+    @Override
     public void close() throws IOException{
         while(stack.size > 0)
             pop();

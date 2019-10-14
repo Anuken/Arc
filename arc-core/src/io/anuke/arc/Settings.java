@@ -7,11 +7,13 @@ import io.anuke.arc.function.*;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.io.*;
 import io.anuke.arc.util.io.Streams.*;
+import io.anuke.arc.util.serialization.*;
 
 import java.io.*;
 
 import static io.anuke.arc.Core.keybinds;
 
+@SuppressWarnings("unchecked")
 public class Settings{
     protected final static byte TYPE_BOOL = 0, TYPE_INT = 1, TYPE_LONG = 2, TYPE_FLOAT = 3, TYPE_STRING = 4, TYPE_BINARY = 5;
 
@@ -29,14 +31,30 @@ public class Settings{
     protected DataOutputStream dataOutput = new DataOutputStream(byteStream);
     protected DataInputStream dataInput = new DataInputStream(byteInputStream);
     protected ObjectMap<Class<?>, TypeSerializer<?>> serializers = new ObjectMap<>();
+    protected UBJsonReader ureader = new UBJsonReader();
+    protected Json json = new Json();
 
     public Settings(){
         DefaultSerializers.register(this);
     }
 
     public TypeSerializer getSerializer(Class type){
-        if(type.isAnonymousClass()){
-            return serializers.get(type.getSuperclass());
+        if(type.isAnonymousClass()) type = type.getSuperclass();
+        Class ftype = type;
+
+        if(!serializers.containsKey(type)){
+            return new TypeSerializer(){
+                @Override
+                public void write(DataOutput stream, Object object) throws IOException{
+                    json.toUBJson(object, ftype, (OutputStream)stream);
+                }
+
+                @Override
+                public Object read(DataInput stream) throws IOException{
+                    JsonValue value = ureader.parse((InputStream)stream);
+                    return json.readValue(ftype, value);
+                }
+            };
         }
         return serializers.get(type);
     }
@@ -245,6 +263,7 @@ public class Settings{
 
     @SuppressWarnings("unchecked")
     public void putObject(String name, Object value, Class<?> type){
+        getSerializer(type);
         if(!serializers.containsKey(type)){
             throw new IllegalArgumentException(type + " does not have a serializer registered!");
         }
@@ -261,6 +280,7 @@ public class Settings{
 
     @SuppressWarnings("unchecked")
     public <T> T getObject(String name, Class<T> type, Supplier<T> def){
+        getSerializer(type);
         if(!serializers.containsKey(type)){
             throw new IllegalArgumentException("Type " + type + " does not have a serializer registered!");
         }

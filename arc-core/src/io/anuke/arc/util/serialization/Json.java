@@ -30,7 +30,7 @@ public class Json{
     private final ObjectMap<Class, Serializer> classToSerializer = new ObjectMap();
     private final ObjectMap<Class, Object[]> classToDefaultValues = new ObjectMap();
     private final Object[] equals1 = {null}, equals2 = {null};
-    private JsonWriter writer;
+    private BaseJsonWriter writer;
     private String typeName = "class";
     private boolean usePrototypes = true;
     private OutputType outputType;
@@ -197,12 +197,19 @@ public class Json{
         return nameToField;
     }
 
+
     public String toJson(Object object){
         return toJson(object, object == null ? null : object.getClass(), (Class)null);
     }
 
     public String toJson(Object object, Class knownType){
         return toJson(object, knownType, (Class)null);
+    }
+
+
+    public void toUBJson(Object object, Class knownType, OutputStream stream){
+        this.writer = new UBJsonWriter(stream);
+        toJson(object, knownType, (Class)null);
     }
 
     /**
@@ -263,7 +270,7 @@ public class Json{
         }
     }
 
-    public JsonWriter getWriter(){
+    public BaseJsonWriter getWriter(){
         return writer;
     }
 
