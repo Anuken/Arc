@@ -302,6 +302,7 @@ final public class SDL {
                     data[1] = (e.type == SDL_KEYDOWN);
                     data[2] = e.key.keysym.sym;
                     data[3] = e.key.repeat;
+                    data[4] = e.key.keysym.scancode;
                     break;
                 case SDL_TEXTINPUT:
                     data[0] = 6;
