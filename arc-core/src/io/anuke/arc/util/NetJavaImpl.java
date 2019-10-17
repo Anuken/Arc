@@ -91,14 +91,14 @@ public class NetJavaImpl{
                         connection.disconnect();
                     }
 
-                }catch(Exception e){
+                }catch(Throwable e){
                     connection.disconnect();
                     failure.accept(e);
                 }
 
                 return null;
             });
-        }catch(Exception e){
+        }catch(Throwable e){
             failure.accept(e);
         }
     }

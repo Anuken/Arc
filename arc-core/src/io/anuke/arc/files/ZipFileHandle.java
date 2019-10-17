@@ -28,13 +28,11 @@ public class ZipFileHandle extends FileHandle{
             ObjectSet<String> paths = new ObjectSet<>();
 
             for(String path : names){
-                if(path.endsWith("/")) path = path.substring(0, path.length() - 1);
-
                 paths.add(path);
-                while(path.contains("/")){
-                    int index = path.lastIndexOf('/');
+                while(path.contains("/") && !path.equals("/") && path.substring(0, path.length() - 1).contains("/")){
+                    int index = path.endsWith("/") ? path.substring(0, path.length() - 1).lastIndexOf('/') : path.lastIndexOf('/');
                     path = path.substring(0, index);
-                    paths.add(path);
+                    paths.add(path.endsWith("/") ? path : path + "/");
                 }
             }
 
