@@ -24,7 +24,7 @@ public class ZipFileHandle extends FileHandle{
 
         try{
             ZipFile zip = new ZipFile(zipFileLoc.file());
-            Array<String> names = Array.with(Collections.list(zip.entries())).map(ZipEntry::getName);
+            Array<String> names = Array.with(Collections.list(zip.entries())).map(ZipEntry::getName).map(s -> s.startsWith("/") ? s.substring(1) : s);
             ObjectSet<String> paths = new ObjectSet<>();
 
             for(String path : names){
