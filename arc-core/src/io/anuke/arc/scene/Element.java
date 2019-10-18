@@ -707,8 +707,9 @@ public class Element implements Layout{
      * Set the actor's name, which is used for identification convenience and by {@link #toString()}.
      * @param name May be null.
      */
-    public void setName(String name){
+    public Element setName(String name){
         this.name = name;
+        return this;
     }
 
     /** Changes the z-order for this actor so it is in front of all siblings. */
@@ -1075,8 +1076,9 @@ public class Element implements Layout{
         });
     }
 
-    public void update(Runnable r){
+    public Element update(Runnable r){
         update = r;
+        return this;
     }
 
     public Element visible(BooleanProvider vis){
