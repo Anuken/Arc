@@ -19,9 +19,9 @@ public class SdlInput extends Input{
         int type = input[0];
         if(type == SDL.SDL_EVENT_KEYBOARD){
             boolean down = input[1] == 1;
-            int keycode = input[2];
+            int keycode = input[4];
 
-            KeyCode key = SdlKeymap.getCode(keycode);
+            KeyCode key = SdlScanmap.getCode(keycode);
             //only process non-repeats
             if(input[3] == 0){
                 if(down){

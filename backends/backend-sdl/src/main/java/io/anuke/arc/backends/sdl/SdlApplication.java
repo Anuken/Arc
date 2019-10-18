@@ -72,7 +72,6 @@ public class SdlApplication implements Application{
                 e.printStackTrace();
             }
         }
-
     }
 
     private void init(){
