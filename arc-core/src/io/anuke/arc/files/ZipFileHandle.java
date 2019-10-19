@@ -24,7 +24,8 @@ public class ZipFileHandle extends FileHandle{
 
         try{
             ZipFile zip = new ZipFile(zipFileLoc.file());
-            Array<String> names = Array.with(Collections.list(zip.entries())).map(ZipEntry::getName).map(s -> s.startsWith("/") ? s.substring(1) : s);
+
+            Array<String> names = Array.with(Collections.list(zip.entries())).map(ZipEntry::getName);
             ObjectSet<String> paths = new ObjectSet<>();
 
             for(String path : names){
@@ -34,6 +35,11 @@ public class ZipFileHandle extends FileHandle{
                     path = path.substring(0, index);
                     paths.add(path.endsWith("/") ? path : path + "/");
                 }
+            }
+
+            if(paths.contains("/")){
+                file = new File("/");
+                paths.remove("/");
             }
 
             Array<ZipFileHandle> files = Array.with(paths).map(s -> zip.getEntry(s) != null ?
