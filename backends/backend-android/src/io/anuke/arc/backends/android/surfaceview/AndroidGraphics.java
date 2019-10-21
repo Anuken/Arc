@@ -9,6 +9,7 @@ import io.anuke.arc.*;
 import io.anuke.arc.Graphics.Cursor.*;
 import io.anuke.arc.backends.android.surfaceview.surfaceview.*;
 import io.anuke.arc.collection.*;
+import io.anuke.arc.function.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.glutils.*;
 import io.anuke.arc.math.*;
@@ -412,7 +413,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
         }
 
         if(lrunning){
-            long updateTime = System.nanoTime();
 
             synchronized(app.getRunnables()){
                 app.getExecutedRunnables().clear();
@@ -420,17 +420,22 @@ public class AndroidGraphics extends Graphics implements Renderer{
                 app.getRunnables().clear();
             }
 
-            for(int i = 0; i < app.getExecutedRunnables().size; i++){
-                app.getExecutedRunnables().get(i).run();
-            }
+            runProtected(() -> {
+                for(int i = 0; i < app.getExecutedRunnables().size; i++){
+                    app.getExecutedRunnables().get(i).run();
+                }
+            });
+
             ((AndroidInput)Core.input).processEvents();
             frameId++;
             Array<ApplicationListener> listeners = app.getListeners();
-            synchronized(listeners){
-                for(int i = 0, n = listeners.size; i < n; ++i){
-                    listeners.get(i).update();
+            runProtected(() -> {
+                synchronized(listeners){
+                    for(int i = 0, n = listeners.size; i < n; ++i){
+                        listeners.get(i).update();
+                    }
                 }
-            }
+            });
 
             ((AndroidInput)Core.input).processDevices();
         }
@@ -466,6 +471,23 @@ public class AndroidGraphics extends Graphics implements Renderer{
             frameStart = time;
         }
         frames++;
+    }
+
+    private void runProtected(Runnable run){
+        try{
+            run.run();
+        }catch(Throwable t){
+            if(config.errorHandler != null){
+                app.getListeners().clear();
+                app.getExecutedRunnables().clear();
+                app.getRunnables().clear();
+                Consumer<Throwable> handler = config.errorHandler;
+                config.errorHandler = null;
+                handler.accept(t);
+            }else{
+                throw new RuntimeException(t);
+            }
+        }
     }
 
     @Override

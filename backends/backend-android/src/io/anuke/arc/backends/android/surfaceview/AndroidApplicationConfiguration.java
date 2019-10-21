@@ -1,12 +1,12 @@
 package io.anuke.arc.backends.android.surfaceview;
 
-import android.hardware.SensorManager;
-import android.media.SoundPool;
-import io.anuke.arc.Core;
-import io.anuke.arc.Input;
-import io.anuke.arc.audio.Sound;
-import io.anuke.arc.backends.android.surfaceview.surfaceview.FillResolutionStrategy;
-import io.anuke.arc.backends.android.surfaceview.surfaceview.ResolutionStrategy;
+import android.hardware.*;
+import android.media.*;
+import io.anuke.arc.*;
+import io.anuke.arc.audio.*;
+import io.anuke.arc.backends.android.surfaceview.surfaceview.*;
+import io.anuke.arc.function.*;
+import io.anuke.arc.util.ArcAnnotate.*;
 
 /**
  * Class defining the configuration of an {@link AndroidApplication}. Allows you to disable the use of the accelerometer to save
@@ -86,6 +86,9 @@ public class AndroidApplicationConfiguration{
 
     /** set this to true to enable Android 4.4 KitKat's 'Immersive mode' **/
     public boolean useImmersiveMode = true;
+
+    /** handles any errors in the main loop.*/
+    public @Nullable Consumer<Throwable> errorHandler;
 
     /**
      * Experimental, whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0.

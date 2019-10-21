@@ -235,6 +235,18 @@ public class Lines{
         }
     }
 
+    public static void poly2(float x, float y, int sides, float radius, float angle){
+        vector.set(0, 0);
+
+        beginLine();
+        for(int i = 0; i < sides; i++){
+            vector.set(radius, 0).setAngle(360f / sides * i + angle + 90);
+
+            linePoint(vector.x + x, vector.y + y);
+        }
+        endLine();
+    }
+
     public static void polySeg(int sides, int from, int to, float x, float y, float radius, float angle){
         vector.set(0, 0);
 

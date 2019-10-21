@@ -7,6 +7,7 @@ import io.anuke.arc.Core;
 import io.anuke.arc.Graphics;
 import io.anuke.arc.Graphics.Cursor.SystemCursor;
 import io.anuke.arc.collection.Array;
+import io.anuke.arc.function.*;
 import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.GL30;
 import io.anuke.arc.graphics.Pixmap;
@@ -227,9 +228,11 @@ public class IOSGraphics extends Graphics{
 
         input.processEvents();
         frameId++;
-        for(ApplicationListener listener : app.listeners){
-            listener.update();
-        }
+        runProtected(() -> {
+            for(ApplicationListener listener : app.listeners){
+                listener.update();
+            }
+        });
         input.processDevices();
     }
 
@@ -239,13 +242,30 @@ public class IOSGraphics extends Graphics{
 
     public void update(GLKViewController controller){
         makeCurrent();
-        app.processRunnables();
+        runProtected(app::processRunnables);
         // pause the GLKViewController render loop if we are no longer continuous
         // and if we haven't requested a frame in the last loop iteration
         if(!isContinuous && !isFrameRequested){
             viewController.setPaused(true);
         }
         isFrameRequested = false;
+    }
+
+    private void runProtected(Runnable run){
+        try{
+            run.run();
+        }catch(Throwable t){
+            if(config.errorHandler != null){
+                app.getListeners().clear();
+                app.executedRunnables.clear();
+                app.runnables.clear();
+                Consumer<Throwable> handler = config.errorHandler;
+                config.errorHandler = null;
+                handler.accept(t);
+            }else{
+                throw new RuntimeException(t);
+            }
+        }
     }
 
     public void willPause(GLKViewController controller, boolean pause){ }
