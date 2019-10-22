@@ -130,7 +130,7 @@ public final class Colors{
         map.put("coral", Color.coral);
         map.put("salmon", Color.salmon);
         map.put("pink", Color.pink);
-        map.put("magneta", Color.magenta);
+        map.put("magenta", Color.magenta);
 
         map.put("purple", Color.purple);
         map.put("violet", Color.violet);
