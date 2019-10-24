@@ -175,6 +175,7 @@ public class Json{
             if(field.isTransient()) continue;
             if(field.isStatic()) continue;
             if(field.isSynthetic()) continue;
+            if(type.isEnum()) continue;
 
             if(!field.isAccessible()){
                 try{
