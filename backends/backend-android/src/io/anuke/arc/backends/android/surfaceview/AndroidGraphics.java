@@ -10,7 +10,6 @@ import io.anuke.arc.Graphics.Cursor.*;
 import io.anuke.arc.backends.android.surfaceview.surfaceview.*;
 import io.anuke.arc.collection.*;
 import io.anuke.arc.func.*;
-import io.anuke.arc.function.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.glutils.*;
 import io.anuke.arc.math.*;

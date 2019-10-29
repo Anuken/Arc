@@ -12,7 +12,6 @@ import io.anuke.arc.*;
 import io.anuke.arc.backends.android.surfaceview.surfaceview.*;
 import io.anuke.arc.collection.*;
 import io.anuke.arc.func.*;
-import io.anuke.arc.function.*;
 import io.anuke.arc.util.*;
 
 import java.util.concurrent.*;

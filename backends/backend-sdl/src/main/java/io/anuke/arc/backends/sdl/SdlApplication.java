@@ -5,7 +5,6 @@ import io.anuke.arc.audio.mock.*;
 import io.anuke.arc.backends.sdl.audio.*;
 import io.anuke.arc.collection.*;
 import io.anuke.arc.func.*;
-import io.anuke.arc.function.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.util.*;
 

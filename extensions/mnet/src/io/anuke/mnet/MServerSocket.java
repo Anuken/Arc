@@ -1,7 +1,6 @@
 package io.anuke.mnet;
 
 import io.anuke.arc.collection.*;
-import io.anuke.arc.function.*;
 import io.anuke.arc.util.async.*;
 
 import java.io.*;

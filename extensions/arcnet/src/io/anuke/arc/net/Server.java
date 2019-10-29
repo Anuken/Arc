@@ -21,7 +21,6 @@ package io.anuke.arc.net;
 
 import io.anuke.arc.collection.*;
 import io.anuke.arc.func.*;
-import io.anuke.arc.function.*;
 import io.anuke.arc.net.FrameworkMessage.*;
 import io.anuke.arc.util.async.*;
 

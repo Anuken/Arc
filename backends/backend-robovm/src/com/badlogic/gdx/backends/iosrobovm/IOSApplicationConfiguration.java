@@ -2,7 +2,6 @@ package com.badlogic.gdx.backends.iosrobovm;
 
 import io.anuke.arc.*;
 import io.anuke.arc.func.*;
-import io.anuke.arc.function.*;
 import io.anuke.arc.util.ArcAnnotate.*;
 import org.robovm.apple.glkit.*;
 import org.robovm.apple.uikit.*;
