@@ -136,7 +136,7 @@ public class Label extends Element{
             if(style.background != null) width -= style.background.getLeftWidth() + style.background.getRightWidth();
             prefSizeLayout.setText(cache.getFont(), text, Color.white, width, Align.left, true);
         }else
-            prefSizeLayout.setText(cache.getFont(), text);
+            prefSizeLayout.setText(cache.getFont(), text, 0, text.length(), Color.white, width, lineAlign, wrap, ellipsis);
         prefSize.set(prefSizeLayout.width, prefSizeLayout.height);
     }
 
