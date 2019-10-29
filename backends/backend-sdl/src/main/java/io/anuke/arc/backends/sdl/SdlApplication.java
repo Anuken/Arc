@@ -4,6 +4,7 @@ import io.anuke.arc.*;
 import io.anuke.arc.audio.mock.*;
 import io.anuke.arc.backends.sdl.audio.*;
 import io.anuke.arc.collection.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.function.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.util.*;
@@ -152,10 +153,10 @@ public class SdlApplication implements Application{
         }
     }
 
-    private void listen(Consumer<ApplicationListener> cons){
+    private void listen(Cons<ApplicationListener> cons){
         synchronized(listeners){
             for(ApplicationListener l : listeners){
-                cons.accept(l);
+                cons.get(l);
             }
         }
     }
@@ -176,7 +177,7 @@ public class SdlApplication implements Application{
         SDL_Quit();
     }
 
-    private void check(IntProvider run){
+    private void check(Intp run){
         if(run.get() != 0){
             throw new SDLError();
         }

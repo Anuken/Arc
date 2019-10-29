@@ -9,6 +9,7 @@ import io.anuke.arc.*;
 import io.anuke.arc.Graphics.Cursor.*;
 import io.anuke.arc.backends.android.surfaceview.surfaceview.*;
 import io.anuke.arc.collection.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.function.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.glutils.*;
@@ -481,9 +482,9 @@ public class AndroidGraphics extends Graphics implements Renderer{
                 app.getListeners().clear();
                 app.getExecutedRunnables().clear();
                 app.getRunnables().clear();
-                Consumer<Throwable> handler = config.errorHandler;
+                Cons<Throwable> handler = config.errorHandler;
                 config.errorHandler = null;
-                handler.accept(t);
+                handler.get(t);
             }else{
                 throw new RuntimeException(t);
             }

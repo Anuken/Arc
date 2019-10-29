@@ -19,7 +19,7 @@
 
 package io.anuke.arc.net;
 
-import io.anuke.arc.function.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.net.FrameworkMessage.*;
 import io.anuke.arc.util.async.*;
 
@@ -49,7 +49,7 @@ public class Client extends Connection implements EndPoint{
     private int connectUdpPort;
     private boolean isClosed;
     private AsyncExecutor discoverExecutor = new AsyncExecutor(6);
-    private Supplier<DatagramPacket> discoveryPacket = () -> new DatagramPacket(new byte[256], 256);
+    private Prov<DatagramPacket> discoveryPacket = () -> new DatagramPacket(new byte[256], 256);
 
     static{
         try{
@@ -98,7 +98,7 @@ public class Client extends Connection implements EndPoint{
         }
     }
 
-    public void setDiscoveryPacket(Supplier<DatagramPacket> discoveryPacket){
+    public void setDiscoveryPacket(Prov<DatagramPacket> discoveryPacket){
         discoveryPacket = discoveryPacket;
     }
 
@@ -451,7 +451,7 @@ public class Client extends Connection implements EndPoint{
      * @param udpPort The UDP port of the server.
      * @param timeoutMillis The number of milliseconds to wait for a response.
      */
-    public void discoverHosts(int udpPort, String multicastGroup, int multicastPort, int timeoutMillis, Consumer<DatagramPacket> handler, Runnable done){
+    public void discoverHosts(int udpPort, String multicastGroup, int multicastPort, int timeoutMillis, Cons<DatagramPacket> handler, Runnable done){
         final boolean[] isDone = {false};
 
         //broadcast
@@ -463,7 +463,7 @@ public class Client extends Connection implements EndPoint{
                 while(true){
                     DatagramPacket packet = discoveryPacket.get();
                     socket.receive(packet);
-                    handler.accept(packet);
+                    handler.get(packet);
                 }
             }finally{
                 synchronized(isDone){
@@ -490,7 +490,7 @@ public class Client extends Connection implements EndPoint{
                 while(true){
                     DatagramPacket packet = discoveryPacket.get();
                     socket.receive(packet);
-                    handler.accept(packet);
+                    handler.get(packet);
                 }
             }finally{
                 synchronized(isDone){

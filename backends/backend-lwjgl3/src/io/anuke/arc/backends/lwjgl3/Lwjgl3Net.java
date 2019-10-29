@@ -1,7 +1,7 @@
 package io.anuke.arc.backends.lwjgl3;
 
 import io.anuke.arc.Net;
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.func.Cons;
 import io.anuke.arc.util.NetJavaImpl;
 import io.anuke.arc.util.OS;
 
@@ -15,7 +15,7 @@ public class Lwjgl3Net implements Net{
     NetJavaImpl impl = new NetJavaImpl();
 
     @Override
-    public void http(HttpRequest httpRequest, Consumer<HttpResponse> success, Consumer<Throwable> failure){
+    public void http(HttpRequest httpRequest, Cons<HttpResponse> success, Cons<Throwable> failure){
         impl.http(httpRequest, success, failure);
     }
 

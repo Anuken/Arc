@@ -7,6 +7,7 @@ import io.anuke.arc.Core;
 import io.anuke.arc.Graphics;
 import io.anuke.arc.Graphics.Cursor.SystemCursor;
 import io.anuke.arc.collection.Array;
+import io.anuke.arc.func.*;
 import io.anuke.arc.function.*;
 import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.GL30;
@@ -259,9 +260,9 @@ public class IOSGraphics extends Graphics{
                 app.getListeners().clear();
                 app.executedRunnables.clear();
                 app.runnables.clear();
-                Consumer<Throwable> handler = config.errorHandler;
+                Cons<Throwable> handler = config.errorHandler;
                 config.errorHandler = null;
-                handler.accept(t);
+                handler.get(t);
             }else{
                 throw new RuntimeException(t);
             }

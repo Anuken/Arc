@@ -163,7 +163,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
                 input.setSelection(info.text.length());
             }catch(Exception ignored){}
             alert.setView(input);
-            alert.setPositiveButton(context.getString(android.R.string.ok), (dialog, whichButton) -> Core.app.post(() -> info.accepted.accept(input.getText().toString())));
+            alert.setPositiveButton(context.getString(android.R.string.ok), (dialog, whichButton) -> Core.app.post(() -> info.accepted.get(input.getText().toString())));
             alert.setNegativeButton(context.getString(android.R.string.cancel), (dialog, whichButton) -> Core.app.post(() -> info.canceled.run()));
             alert.setOnCancelListener(arg0 -> Core.app.post(() -> info.canceled.run()));
             AlertDialog dialog = alert.show();

@@ -277,7 +277,7 @@ public class IOSInput extends Input{
                 }else if(clicked == 1){
                     // user clicked "Ok" button
                     UITextField textField = view.getTextField(0);
-                    input.accepted.accept(textField.getText());
+                    input.accepted.get(textField.getText());
                 }
                 delegate = null;
             }

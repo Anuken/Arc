@@ -1,6 +1,7 @@
 package io.anuke.arc.backends.sdl;
 
 import io.anuke.arc.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.function.*;
 import io.anuke.arc.util.*;
 
@@ -14,7 +15,7 @@ public class SdlNet implements Net{
     NetJavaImpl impl = new NetJavaImpl();
 
     @Override
-    public void http(HttpRequest httpRequest, Consumer<HttpResponse> success, Consumer<Throwable> failure){
+    public void http(HttpRequest httpRequest, Cons<HttpResponse> success, Cons<Throwable> failure){
         impl.http(httpRequest, success, failure);
     }
 

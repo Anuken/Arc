@@ -5,6 +5,7 @@ import android.media.*;
 import io.anuke.arc.*;
 import io.anuke.arc.audio.*;
 import io.anuke.arc.backends.android.surfaceview.surfaceview.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.function.*;
 import io.anuke.arc.util.ArcAnnotate.*;
 
@@ -88,7 +89,8 @@ public class AndroidApplicationConfiguration{
     public boolean useImmersiveMode = true;
 
     /** handles any errors in the main loop.*/
-    public @Nullable Consumer<Throwable> errorHandler;
+    public @Nullable
+    Cons<Throwable> errorHandler;
 
     /**
      * Experimental, whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0.

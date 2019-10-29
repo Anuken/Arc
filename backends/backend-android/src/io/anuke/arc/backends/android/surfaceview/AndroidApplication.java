@@ -11,6 +11,7 @@ import io.anuke.arc.Application;
 import io.anuke.arc.*;
 import io.anuke.arc.backends.android.surfaceview.surfaceview.*;
 import io.anuke.arc.collection.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.function.*;
 import io.anuke.arc.util.*;
 
@@ -367,11 +368,11 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
     }
 
     /** Adds an event listener for Android specific event such as onActivityResult(...). */
-    public void addResultListener(IntConsumer runner, AndroidEventListener listener){
+    public void addResultListener(Intc runner, AndroidEventListener listener){
         synchronized(eventListeners){
             int id = lastEventNumber++;
             eventListeners.put(id, listener);
-            runner.accept(id);
+            runner.get(id);
         }
     }
 
