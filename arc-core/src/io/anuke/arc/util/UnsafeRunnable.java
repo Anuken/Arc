@@ -1,6 +1,6 @@
-package io.anuke.arc.func;
+package io.anuke.arc.util;
 
 /**A runnable where anything might happen.*/
-public interface Urun{
+public interface UnsafeRunnable{
     void run() throws Throwable;
 }
