@@ -1,6 +1,6 @@
 package io.anuke.arc.scene.utils;
 
-import io.anuke.arc.function.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.scene.style.*;
 import io.anuke.arc.scene.ui.*;
@@ -9,10 +9,10 @@ import io.anuke.arc.scene.ui.TextButton.*;
 
 public class Elements{
 
-    public static CheckBox newCheck(String text, BooleanConsumer listener){
+    public static CheckBox newCheck(String text, Boolc listener){
         CheckBox button = new CheckBox(text);
         if(listener != null)
-            button.changed(() -> listener.accept(button.isChecked()));
+            button.changed(() -> listener.get(button.isChecked()));
         return button;
     }
 
@@ -64,12 +64,12 @@ public class Elements{
         return button;
     }
 
-    public static TextField newField(String text, Consumer<String> listener){
+    public static TextField newField(String text, Cons<String> listener){
         TextField field = new TextField(text);
         if(listener != null){
             field.changed(() -> {
                 if(field.isValid()){
-                    listener.accept(field.getText());
+                    listener.get(field.getText());
                 }
             });
         }

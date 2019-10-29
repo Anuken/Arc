@@ -3,7 +3,7 @@ package io.anuke.arc.util;
 
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.ObjectMap;
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.func.Cons;
 
 /** Parses command syntax. */
 public class CommandHandler{
@@ -116,12 +116,12 @@ public class CommandHandler{
         return cmd;
     }
 
-    public Command register(String text, String description, Consumer<String[]> runner){
-        return register(text, description, (args, p) -> runner.accept(args));
+    public Command register(String text, String description, Cons<String[]> runner){
+        return register(text, description, (args, p) -> runner.get(args));
     }
 
-    public Command register(String text, String params, String description, Consumer<String[]> runner){
-        return register(text, params, description, (args, p) -> runner.accept(args));
+    public Command register(String text, String params, String description, Cons<String[]> runner){
+        return register(text, params, description, (args, p) -> runner.get(args));
     }
 
     public Array<Command> getCommandList(){

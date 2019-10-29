@@ -1,7 +1,7 @@
 package io.anuke.arc.scene.ui;
 
 import io.anuke.arc.Core;
-import io.anuke.arc.function.FloatConsumer;
+import io.anuke.arc.func.Floatc;
 import io.anuke.arc.graphics.g2d.NinePatch;
 import io.anuke.arc.graphics.g2d.TextureRegion;
 import io.anuke.arc.input.KeyCode;
@@ -147,8 +147,8 @@ public class Slider extends ProgressBar{
         return valueSet;
     }
 
-    public void moved(FloatConsumer listener){
-        changed(() -> listener.accept(getValue()));
+    public void moved(Floatc listener){
+        changed(() -> listener.get(getValue()));
     }
 
     /** Returns a snapped value. */

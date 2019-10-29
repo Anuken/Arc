@@ -2,14 +2,14 @@ package io.anuke.arc.scene.event;
 
 import io.anuke.arc.Core;
 import io.anuke.arc.Graphics.Cursor.SystemCursor;
-import io.anuke.arc.function.BooleanProvider;
+import io.anuke.arc.func.Boolp;
 import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.utils.Disableable;
 
 public class HandCursorListener extends ClickListener{
-    private BooleanProvider enabled = () -> true;
+    private Boolp enabled = () -> true;
 
-    public void setEnabled(BooleanProvider vis){
+    public void setEnabled(Boolp vis){
         this.enabled = vis;
     }
 

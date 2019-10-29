@@ -1,6 +1,6 @@
 package io.anuke.arc.collection;
 
-import io.anuke.arc.function.*;
+import io.anuke.arc.func.Boolf;
 import io.anuke.arc.math.*;
 
 import java.util.*;
@@ -93,10 +93,10 @@ public class ObjectSet<T> implements Iterable<T>{
     }
 
     /** Allocates a new set with all elements that match the predicate.*/
-    public ObjectSet<T> select(Predicate<T> predicate){
+    public ObjectSet<T> select(Boolf<T> predicate){
         ObjectSet<T> arr = new ObjectSet<>();
         for(T t : this){
-            if(predicate.test(t)) arr.add(t);
+            if(predicate.get(t)) arr.add(t);
         }
         return arr;
     }

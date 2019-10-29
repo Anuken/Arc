@@ -1,6 +1,6 @@
 package io.anuke.arc.scene.actions;
 
-import io.anuke.arc.function.Supplier;
+import io.anuke.arc.func.Prov;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.math.Interpolation;
 import io.anuke.arc.scene.Action;
@@ -15,7 +15,7 @@ import io.anuke.arc.util.pooling.Pools;
  */
 public class Actions{
     /** Returns a new or pooled action of the specified type. */
-    public static <T extends Action> T action(Class<T> type, Supplier<T> sup){
+    public static <T extends Action> T action(Class<T> type, Prov<T> sup){
         T action = Pools.obtain(type, sup);
         action.setPool(Pools.get(type, sup));
         return action;

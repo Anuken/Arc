@@ -3,7 +3,7 @@ package io.anuke.arc;
 import io.anuke.arc.collection.*;
 import io.anuke.arc.collection.ObjectMap.*;
 import io.anuke.arc.files.*;
-import io.anuke.arc.function.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.io.*;
 import io.anuke.arc.util.io.Streams.*;
@@ -22,7 +22,7 @@ public class Settings{
     protected String appName;
     protected ObjectMap<String, Object> defaults = new ObjectMap<>();
     protected ObjectMap<String, Object> values = new ObjectMap<>();
-    protected Consumer<Throwable> errorHandler;
+    protected Cons<Throwable> errorHandler;
     protected boolean hasErrored;
 
     //IO utility objects
@@ -81,7 +81,7 @@ public class Settings{
     /**Sets the error handler function.
      * This function gets called when {@link #save} or {@link #load} fails. This can occur most often on browsers,
      * where extensions can block writing to local storage.*/
-    public void setErrorHandler(Consumer<Throwable> handler){
+    public void setErrorHandler(Cons<Throwable> handler){
         errorHandler = handler;
     }
 
@@ -92,7 +92,7 @@ public class Settings{
             keybinds.load();
         }catch(Throwable error){
             if(errorHandler != null){
-                if(!hasErrored) errorHandler.accept(error);
+                if(!hasErrored) errorHandler.get(error);
             }else{
                 throw error;
             }
@@ -107,7 +107,7 @@ public class Settings{
             saveValues();
         }catch(Throwable error){
             if(errorHandler != null){
-                if(!hasErrored) errorHandler.accept(error);
+                if(!hasErrored) errorHandler.get(error);
             }else{
                 throw error;
             }
@@ -279,7 +279,7 @@ public class Settings{
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getObject(String name, Class<T> type, Supplier<T> def){
+    public <T> T getObject(String name, Class<T> type, Prov<T> def){
         getSerializer(type);
         if(!serializers.containsKey(type)){
             throw new IllegalArgumentException("Type " + type + " does not have a serializer registered!");

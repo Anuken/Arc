@@ -1,6 +1,6 @@
 package io.anuke.arc.collection;
 
-import io.anuke.arc.function.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.reflect.ArrayReflection;
@@ -133,10 +133,10 @@ public class Array<T> implements Iterable<T>{
     }
 
     /** @see #Array(Object[]) */
-    public static <T> Array<T> select(T[] array, Predicate<T> test){
+    public static <T> Array<T> select(T[] array, Boolf<T> test){
         Array<T> out = new Array<>(array.length);
         for(int i = 0; i < array.length; i++){
-            if(test.test(array[i])){
+            if(test.get(array[i])){
                 out.add(array[i]);
             }
         }
@@ -147,7 +147,7 @@ public class Array<T> implements Iterable<T>{
         return new Array<>(this);
     }
 
-    public float sumf(FloatFunction<T> summer){
+    public float sumf(Floatf<T> summer){
         float sum = 0;
         for(int i = 0; i < size; i++){
             sum += summer.get(items[i]);
@@ -155,7 +155,7 @@ public class Array<T> implements Iterable<T>{
         return sum;
     }
 
-    public int sum(IntFunction<T> summer){
+    public int sum(Intf<T> summer){
         int sum = 0;
         for(int i = 0; i < size; i++){
             sum += summer.get(items[i]);
@@ -163,20 +163,20 @@ public class Array<T> implements Iterable<T>{
         return sum;
     }
 
-    public <E extends T> void each(Predicate<? super T> pred, Consumer<E> consumer){
+    public <E extends T> void each(Boolf<? super T> pred, Cons<E> consumer){
         for(int i = 0; i < size; i++){
-            if(pred.test(items[i])) consumer.accept((E)items[i]);
+            if(pred.get(items[i])) consumer.get((E)items[i]);
         }
     }
 
-    public void each(Consumer<? super T> consumer){
+    public void each(Cons<? super T> consumer){
         for(int i = 0; i < size; i++){
-            consumer.accept(items[i]);
+            consumer.get(items[i]);
         }
     }
 
     /**Replaces values without creating a new array.*/
-    public void replace(Function<T, T> mapper){
+    public void replace(Func<T, T> mapper){
         for(int i = 0; i < size; i++){
             items[i] = mapper.get(items[i]);
         }
@@ -192,7 +192,7 @@ public class Array<T> implements Iterable<T>{
     }
 
     /**Returns a new array with the mapped values.*/
-    public <R> Array<R> map(Function<T, R> mapper){
+    public <R> Array<R> map(Func<T, R> mapper){
         Array<R> arr = new Array<>(size);
         for(int i = 0; i < size; i++){
             arr.add(mapper.get(items[i]));
@@ -201,7 +201,7 @@ public class Array<T> implements Iterable<T>{
     }
 
     /**Returns a new int array with the mapped values.*/
-    public IntArray mapInt(IntFunction<T> mapper){
+    public IntArray mapInt(Intf<T> mapper){
         IntArray arr = new IntArray(size);
         for(int i = 0; i < size; i++){
             arr.add(mapper.get(items[i]));
@@ -209,7 +209,7 @@ public class Array<T> implements Iterable<T>{
         return arr;
     }
 
-    public <R> R reduce(R initial, BiFunction<T, R, R> reducer){
+    public <R> R reduce(R initial, Func2<T, R, R> reducer){
         R result = initial;
         for(int i = 0; i < size; i++){
             result = reducer.get(items[i], result);
@@ -217,11 +217,11 @@ public class Array<T> implements Iterable<T>{
         return result;
     }
 
-    public boolean contains(Predicate<T> predicate){
+    public boolean contains(Boolf<T> predicate){
         return find(predicate) != null;
     }
 
-    public T min(FloatFunction<T> func){
+    public T min(Floatf<T> func){
         T result = null;
         float min = Float.MAX_VALUE;
         for(int i = 0; i < size; i++){
@@ -235,7 +235,7 @@ public class Array<T> implements Iterable<T>{
         return result;
     }
 
-    public T max(FloatFunction<T> func){
+    public T max(Floatf<T> func){
         T result = null;
         float max = Float.NEGATIVE_INFINITY;
         for(int i = 0; i < size; i++){
@@ -249,9 +249,9 @@ public class Array<T> implements Iterable<T>{
         return result;
     }
 
-    public T find(Predicate<T> predicate){
+    public T find(Boolf<T> predicate){
         for(int i = 0; i < size; i++){
-            if(predicate.test(items[i])){
+            if(predicate.get(items[i])){
                 return items[i];
             }
         }
@@ -426,9 +426,9 @@ public class Array<T> implements Iterable<T>{
     }
 
     /** Removes a single value by predicate. */
-    public boolean remove(Predicate<T> value){
+    public boolean remove(Boolf<T> value){
         for(int i = 0; i < size; i++){
-            if(value.test(items[i])){
+            if(value.get(items[i])){
                 remove(i);
                 return true;
             }
@@ -493,10 +493,10 @@ public class Array<T> implements Iterable<T>{
     }
 
     /** @return this object */
-    public Array<T> removeAll(Predicate<T> pred){
+    public Array<T> removeAll(Boolf<T> pred){
         Iterator<T> iter = iterator();
         while(iter.hasNext()){
-            if(pred.test(iter.next())){
+            if(pred.get(iter.next())){
                 iter.remove();
             }
         }
@@ -631,10 +631,10 @@ public class Array<T> implements Iterable<T>{
         Sort.instance().sort(items, comparator, 0, size);
     }
 
-    public Array<T> selectFrom(Array<T> base, Predicate<T> predicate){
+    public Array<T> selectFrom(Array<T> base, Boolf<T> predicate){
         clear();
         base.each(t -> {
-            if(predicate.test(t)){
+            if(predicate.get(t)){
                 add(t);
             }
         });
@@ -653,20 +653,20 @@ public class Array<T> implements Iterable<T>{
     }
 
     /** Allocates a new array with all elements that match the predicate.*/
-    public Array<T> select(Predicate<T> predicate){
+    public Array<T> select(Boolf<T> predicate){
         Array<T> arr = new Array<>();
         for(int i = 0; i < size; i++){
-            if(predicate.test(items[i])){
+            if(predicate.get(items[i])){
                 arr.add(items[i]);
             }
         }
         return arr;
     }
 
-    public int count(Predicate<T> predicate){
+    public int count(Boolf<T> predicate){
         int count = 0;
         for(int i = 0; i < size; i++){
-            if(predicate.test(items[i])){
+            if(predicate.get(items[i])){
                 count ++;
             }
         }
@@ -820,7 +820,7 @@ public class Array<T> implements Iterable<T>{
         return buffer.toString();
     }
 
-    public String toString(String separator, Function<T, String> stringifier){
+    public String toString(String separator, Func<T, String> stringifier){
         if(size == 0) return "";
         T[] items = this.items;
         StringBuilder buffer = new StringBuilder(32);

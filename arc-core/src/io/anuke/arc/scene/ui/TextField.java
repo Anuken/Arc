@@ -4,7 +4,7 @@ import io.anuke.arc.Core;
 import io.anuke.arc.Input;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.FloatArray;
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.func.Cons;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.BitmapFont;
 import io.anuke.arc.graphics.g2d.BitmapFont.BitmapFontData;
@@ -562,8 +562,8 @@ public class TextField extends Element implements Disableable{
         this.listener = listener;
     }
 
-    public void typed(Consumer<Character> cons){
-        setTextFieldListener((textField, c) -> cons.accept(c));
+    public void typed(Cons<Character> cons){
+        setTextFieldListener((textField, c) -> cons.get(c));
     }
 
     public TextFieldFilter getFilter(){

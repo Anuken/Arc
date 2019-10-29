@@ -1,7 +1,7 @@
 package io.anuke.arc.assets;
 
 import io.anuke.arc.files.*;
-import io.anuke.arc.function.*;
+import io.anuke.arc.func.Cons;
 import io.anuke.arc.util.reflect.*;
 
 /**
@@ -16,7 +16,7 @@ public class AssetDescriptor<T>{
     /** The resolved file. May be null if the fileName has not been resolved yet. */
     public FileHandle file;
     /** Callback for when this asset is loaded.*/
-    public Consumer<T> loaded = t -> {};
+    public Cons<T> loaded = t -> {};
 
     public AssetDescriptor(Class<T> assetType){
         this(ClassReflection.getSimpleName(assetType), assetType, null);

@@ -1,6 +1,6 @@
 package io.anuke.arc.graphics;
 
-import io.anuke.arc.function.IntPositionConsumer;
+import io.anuke.arc.func.Intc2;
 import io.anuke.arc.graphics.Pixmap.*;
 import io.anuke.arc.graphics.Texture.TextureWrap;
 import io.anuke.arc.graphics.g2d.TextureRegion;
@@ -152,10 +152,10 @@ public class Pixmaps{
         return (i & 0x000000ff) == 0;
     }
 
-    public static void traverse(Pixmap input, IntPositionConsumer t){
+    public static void traverse(Pixmap input, Intc2 t){
         for(int x = 0; x < input.getWidth(); x++){
             for(int y = 0; y < input.getHeight(); y++){
-                t.accept(x, y);
+                t.get(x, y);
             }
         }
     }

@@ -2,7 +2,7 @@ package io.anuke.arc.graphics;
 
 import io.anuke.arc.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
-import io.anuke.arc.function.*;
+import io.anuke.arc.func.Intc2;
 import io.anuke.arc.graphics.g2d.*;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Disposable;
@@ -95,10 +95,10 @@ public class Pixmap implements Disposable{
         this.pixmap = pixmap;
     }
 
-    public void each(IntPositionConsumer cons){
+    public void each(Intc2 cons){
         for(int x = 0; x < getWidth(); x++){
             for(int y = 0; y < getHeight(); y++){
-                cons.accept(x, y);
+                cons.get(x, y);
             }
         }
     }

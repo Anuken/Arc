@@ -3,13 +3,13 @@ package io.anuke.arc;
 
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.ObjectMap;
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.func.Cons;
 
 @SuppressWarnings("unchecked")
 public class Events{
-    private static ObjectMap<Object, Array<Consumer<?>>> events = new ObjectMap<>();
+    private static ObjectMap<Object, Array<Cons<?>>> events = new ObjectMap<>();
 
-    public static <T> void on(Class<T> type, Consumer<T> listener){
+    public static <T> void on(Class<T> type, Cons<T> listener){
         events.getOr(type, Array::new).add(listener);
     }
 
@@ -22,8 +22,8 @@ public class Events{
     }
 
     public static <T> void fire(Class<?> ctype, T type){
-        if(events.get(type) != null) events.get(type).each(e -> ((Consumer<T>)e).accept(type));
-        if(events.get(ctype) != null) events.get(ctype).each(e -> ((Consumer<T>)e).accept(type));
+        if(events.get(type) != null) events.get(type).each(e -> ((Cons<T>)e).get(type));
+        if(events.get(ctype) != null) events.get(ctype).each(e -> ((Cons<T>)e).get(type));
     }
 
     public static void dispose(){

@@ -1,7 +1,7 @@
 package io.anuke.arc;
 
 import io.anuke.arc.collection.*;
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.func.Cons;
 
 import java.io.InputStream;
 
@@ -27,15 +27,15 @@ public interface Net{
      * @param success The listener to call once the HTTP response is ready to be processed.
      * @param failure The listener to call if the request fails.
      */
-    void http(HttpRequest httpRequest, Consumer<HttpResponse> success, Consumer<Throwable> failure);
+    void http(HttpRequest httpRequest, Cons<HttpResponse> success, Cons<Throwable> failure);
 
     /** Sends a basic HTTP GET request.*/
-    default void httpGet(String url, Consumer<HttpResponse> success, Consumer<Throwable> failure){
+    default void httpGet(String url, Cons<HttpResponse> success, Cons<Throwable> failure){
         http(new HttpRequest().method(HttpMethod.GET).url(url), success, failure);
     }
 
     /** Sends a basic HTTP POST request.*/
-    default void httpPost(String url, String content, Consumer<HttpResponse> success, Consumer<Throwable> failure){
+    default void httpPost(String url, String content, Cons<HttpResponse> success, Cons<Throwable> failure){
         http(new HttpRequest().method(HttpMethod.POST).content(content).url(url), success, failure);
     }
 

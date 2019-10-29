@@ -1,6 +1,6 @@
 package io.anuke.arc.scene.ui.layout;
 
-import io.anuke.arc.function.*;
+import io.anuke.arc.func.Cons;
 import io.anuke.arc.graphics.g2d.*;
 import io.anuke.arc.scene.*;
 import io.anuke.arc.scene.event.*;
@@ -14,11 +14,11 @@ public class Collapser extends WidgetGroup{
     private float currentHeight;
     private float seconds = 0.5f;
 
-    public Collapser(Consumer<Table> cons, boolean collapsed){
+    public Collapser(Cons<Table> cons, boolean collapsed){
         this.table = new Table();
         this.collapsed = collapsed;
         setTransform(true);
-        cons.accept(table);
+        cons.get(table);
 
         updateTouchable();
         addChild(table);

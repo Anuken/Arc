@@ -1,6 +1,6 @@
 package io.anuke.arc.collection;
 
-import io.anuke.arc.function.*;
+import io.anuke.arc.func.Intc;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.util.ArcRuntimeException;
 
@@ -86,10 +86,10 @@ public class IntSet{
         return set;
     }
 
-    public void each(IntConsumer cons){
+    public void each(Intc cons){
         IntSetIterator iter = iterator();
         while(iter.hasNext){
-            cons.accept(iter.next());
+            cons.get(iter.next());
         }
     }
 

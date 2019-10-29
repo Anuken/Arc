@@ -3,7 +3,7 @@ package io.anuke.arc.files;
 import io.anuke.arc.*;
 import io.anuke.arc.Files.*;
 import io.anuke.arc.collection.*;
-import io.anuke.arc.function.*;
+import io.anuke.arc.func.Cons;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.io.*;
@@ -520,13 +520,13 @@ public class FileHandle{
 
     /** Recursively iterates through all files in this directory.
      * Directories are not handled.*/
-    public void walk(Consumer<FileHandle> cons){
+    public void walk(Cons<FileHandle> cons){
         if(isDirectory()){
             for(FileHandle file : list()){
                 file.walk(cons);
             }
         }else{
-            cons.accept(this);
+            cons.get(this);
         }
     }
 

@@ -3,7 +3,7 @@ package io.anuke.arc.scene;
 import io.anuke.arc.Application.*;
 import io.anuke.arc.*;
 import io.anuke.arc.collection.*;
-import io.anuke.arc.function.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.g2d.*;
 import io.anuke.arc.input.*;
@@ -151,7 +151,7 @@ public class Scene implements InputProcessor, Disposable{
         return root.findVisible(name);
     }
 
-    public Element find(Predicate<Element> pred){
+    public Element find(Boolf<Element> pred){
         return root.find(pred);
     }
 
@@ -164,20 +164,20 @@ public class Scene implements InputProcessor, Disposable{
     }
 
     /** Adds and returns a table. This table will fill the whole scene. */
-    public Table table(Consumer<Table> cons){
+    public Table table(Cons<Table> cons){
         Table table = new Table();
         table.setFillParent(true);
         add(table);
-        cons.accept(table);
+        cons.get(table);
         return table;
     }
 
     /** Adds and returns a table. This table will fill the whole scene. */
-    public Table table(Drawable style, Consumer<Table> cons){
+    public Table table(Drawable style, Cons<Table> cons){
         Table table = new Table(style);
         table.setFillParent(true);
         add(table);
-        cons.accept(table);
+        cons.get(table);
         return table;
     }
 

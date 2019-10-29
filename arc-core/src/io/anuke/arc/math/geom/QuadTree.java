@@ -1,7 +1,7 @@
 package io.anuke.arc.math.geom;
 
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.func.Cons;
 import io.anuke.arc.math.geom.QuadTree.QuadTreeObject;
 
 import java.util.Iterator;
@@ -158,7 +158,7 @@ public class QuadTree<T extends QuadTreeObject>{
      * <p>
      * This will never result in false positives.
      */
-    public void getIntersect(Consumer<T> out, float x, float y, float width, float height){
+    public void getIntersect(Cons<T> out, float x, float y, float width, float height){
         if(children != null){
             for(int i = 0; i < 4; i++){
                 if(children[i].bounds.overlaps(x, y, width, height)){
@@ -170,7 +170,7 @@ public class QuadTree<T extends QuadTreeObject>{
         for(int i = 0; i < objects.size; i++){
             objects.get(i).hitbox(tmp);
             if(tmp.overlaps(x, y, width, height)){
-                out.accept(objects.get(i));
+                out.get(objects.get(i));
             }
         }
     }
@@ -180,7 +180,7 @@ public class QuadTree<T extends QuadTreeObject>{
      * <p>
      * This will never result in false positives.
      */
-    public void getIntersect(Consumer<T> out, Rectangle rect){
+    public void getIntersect(Cons<T> out, Rectangle rect){
         getIntersect(out, rect.x, rect.y, rect.width, rect.height);
     }
 

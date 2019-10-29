@@ -4,7 +4,7 @@ import io.anuke.arc.Net;
 import io.anuke.arc.Net.*;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.ObjectMap;
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.func.Cons;
 import io.anuke.arc.util.async.AsyncExecutor;
 import io.anuke.arc.util.io.Streams;
 
@@ -22,9 +22,9 @@ import java.util.Map;
 public class NetJavaImpl{
     private final AsyncExecutor asyncExecutor = new AsyncExecutor(6);
 
-    public void http(HttpRequest request, Consumer<HttpResponse> success, Consumer<Throwable> failure){
+    public void http(HttpRequest request, Cons<HttpResponse> success, Cons<Throwable> failure){
         if(request.url == null){
-            failure.accept(new ArcRuntimeException("can't process a HTTP request without URL set"));
+            failure.get(new ArcRuntimeException("can't process a HTTP request without URL set"));
             return;
         }
 
@@ -86,20 +86,20 @@ public class NetJavaImpl{
 
                     HttpClientResponse clientResponse = new HttpClientResponse(connection);
                     try{
-                        success.accept(clientResponse);
+                        success.get(clientResponse);
                     }finally{
                         connection.disconnect();
                     }
 
                 }catch(Throwable e){
                     connection.disconnect();
-                    failure.accept(e);
+                    failure.get(e);
                 }
 
                 return null;
             });
         }catch(Throwable e){
-            failure.accept(e);
+            failure.get(e);
         }
     }
 

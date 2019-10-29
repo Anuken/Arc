@@ -4,7 +4,7 @@ import io.anuke.arc.KeyBinds.Axis;
 import io.anuke.arc.KeyBinds.KeyBind;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.IntSet;
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.func.Cons;
 import io.anuke.arc.input.*;
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.math.geom.Vector3;
@@ -377,7 +377,7 @@ public abstract class Input implements Disposable{
         public String title = "";
         public String text = "";
         public boolean numeric;
-        public Consumer<String> accepted = s -> { };
+        public Cons<String> accepted = s -> { };
         public Runnable canceled = () -> { };
         public int maxLength = -1;
     }

@@ -1,8 +1,8 @@
 package io.anuke.arc.scene.ui;
 
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.function.BooleanConsumer;
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.func.Boolc;
+import io.anuke.arc.func.Cons;
 import io.anuke.arc.scene.ui.layout.Table;
 import io.anuke.arc.scene.ui.layout.Scl;
 
@@ -27,13 +27,13 @@ public class SettingsDialog extends Dialog{
 
     public static class SettingsTable extends Table{
         protected Array<Setting> list = new Array<>();
-        protected Consumer<SettingsTable> rebuilt;
+        protected Cons<SettingsTable> rebuilt;
 
         public SettingsTable(){
             left();
         }
 
-        public SettingsTable(Consumer<SettingsTable> rebuilt){
+        public SettingsTable(Cons<SettingsTable> rebuilt){
             this.rebuilt = rebuilt;
             left();
         }
@@ -77,7 +77,7 @@ public class SettingsDialog extends Dialog{
             rebuild();
         }
 
-        public void checkPref(String name, String title, boolean def, BooleanConsumer changed){
+        public void checkPref(String name, String title, boolean def, Boolc changed){
             list.add(new CheckSetting(name, title, def, changed));
             settings.defaults(name, def);
             rebuild();
@@ -91,7 +91,7 @@ public class SettingsDialog extends Dialog{
         }
 
         /** Localized title. */
-        public void checkPref(String name, boolean def, BooleanConsumer changed){
+        public void checkPref(String name, boolean def, Boolc changed){
             list.add(new CheckSetting(name, bundle.get("setting." + name + ".name"), def, changed));
             settings.defaults(name, def);
             rebuild();
@@ -113,7 +113,7 @@ public class SettingsDialog extends Dialog{
                 rebuild();
             }).margin(14).width(240f).pad(6);
 
-            if(rebuilt != null) rebuilt.accept(this);
+            if(rebuilt != null) rebuilt.get(this);
         }
 
         public abstract static class Setting{
@@ -125,9 +125,9 @@ public class SettingsDialog extends Dialog{
 
         public class CheckSetting extends Setting{
             boolean def;
-            BooleanConsumer changed;
+            Boolc changed;
 
-            CheckSetting(String name, String title, boolean def, BooleanConsumer changed){
+            CheckSetting(String name, String title, boolean def, Boolc changed){
                 this.name = name;
                 this.title = title;
                 this.def = def;
@@ -144,7 +144,7 @@ public class SettingsDialog extends Dialog{
                     settings.put(name, box.isChecked);
                     settings.save();
                     if(changed != null){
-                        changed.accept(box.isChecked);
+                        changed.get(box.isChecked);
                     }
                 });
 

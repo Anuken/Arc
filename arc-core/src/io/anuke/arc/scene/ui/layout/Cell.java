@@ -1,6 +1,6 @@
 package io.anuke.arc.scene.ui.layout;
 
-import io.anuke.arc.function.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.scene.*;
 import io.anuke.arc.scene.event.*;
@@ -143,16 +143,16 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
-    public Cell<T> update(Consumer<T> updater){
+    public Cell<T> update(Cons<T> updater){
         T t = get();
-        t.update(() -> updater.accept(t));
+        t.update(() -> updater.get(t));
         return this;
     }
 
-    public Cell<T> disabled(Predicate<T> vis){
+    public Cell<T> disabled(Boolf<T> vis){
         if(get() instanceof Button){
             T t = get();
-            ((Button) get()).setDisabled(() -> vis.test(t));
+            ((Button) get()).setDisabled(() -> vis.get(t));
         }
         return this;
     }
@@ -169,12 +169,12 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
-    public Cell<T> touchable(Supplier<Touchable> touchable){
+    public Cell<T> touchable(Prov<Touchable> touchable){
         get().touchable(touchable);
         return this;
     }
 
-    public Cell<T> visible(BooleanProvider prov){
+    public Cell<T> visible(Boolp prov){
         get().visible(prov);
         return this;
     }
@@ -221,10 +221,10 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
-    public Cell<T> checked(Predicate<T> toggle){
+    public Cell<T> checked(Boolf<T> toggle){
         T t = get();
         if(t instanceof Button){
-            t.update(() -> ((Button)t).setChecked(toggle.test(t)));
+            t.update(() -> ((Button)t).setChecked(toggle.get(t)));
         }
         return this;
     }

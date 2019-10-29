@@ -2,7 +2,7 @@ package io.anuke.arc.util.pooling;
 
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.ObjectMap;
-import io.anuke.arc.function.Supplier;
+import io.anuke.arc.func.Prov;
 
 /**
  * Stores a map of {@link Pool}s by type for convenient static access.
@@ -19,7 +19,7 @@ public class Pools{
      * Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. Note that the max size is ignored for some reason.
      * if this is not the first time this pool has been requested.
      */
-    public static <T> Pool<T> get(Class<T> type, Supplier<T> supplier, int max){
+    public static <T> Pool<T> get(Class<T> type, Prov<T> supplier, int max){
         Pool<T> pool = typePools.get(type);
         if(pool == null){
             pool = new Pool<T>(4, max){
@@ -37,7 +37,7 @@ public class Pools{
      * Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. The max size of the pool used
      * is 100.
      */
-    public static <T> Pool<T> get(Class<T> type, Supplier<T> supplier){
+    public static <T> Pool<T> get(Class<T> type, Prov<T> supplier){
         return get(type, supplier, 100);
     }
 
@@ -46,12 +46,12 @@ public class Pools{
         typePools.put(type, pool);
     }
 
-    /** Obtains an object from the {@link #get(Class, Supplier) pool}. */
-    public static synchronized <T> T obtain(Class<T> type, Supplier<T> supplier){
+    /** Obtains an object from the {@link #get(Class, Prov) pool}. */
+    public static synchronized <T> T obtain(Class<T> type, Prov<T> supplier){
         return get(type, supplier).obtain();
     }
 
-    /** Frees an object from the {@link #get(Class, Supplier) pool}. */
+    /** Frees an object from the {@link #get(Class, Prov) pool}. */
     public static synchronized void free(Object object){
         if(object == null) throw new IllegalArgumentException("Object cannot be null.");
         Pool pool = typePools.get(object.getClass());
@@ -60,7 +60,7 @@ public class Pools{
     }
 
     /**
-     * Frees the specified objects from the {@link #get(Class, Supplier) pool}. Null objects within the array are silently ignored. Objects
+     * Frees the specified objects from the {@link #get(Class, Prov) pool}. Null objects within the array are silently ignored. Objects
      * don't need to be from the same pool.
      */
     public static void freeAll(Array objects){
@@ -68,7 +68,7 @@ public class Pools{
     }
 
     /**
-     * Frees the specified objects from the {@link #get(Class, Supplier) pool}. Null objects within the array are silently ignored.
+     * Frees the specified objects from the {@link #get(Class, Prov) pool}. Null objects within the array are silently ignored.
      * @param samePool If true, objects don't need to be from the same pool but the pool must be looked up for each object.
      */
     public static void freeAll(Array objects, boolean samePool){

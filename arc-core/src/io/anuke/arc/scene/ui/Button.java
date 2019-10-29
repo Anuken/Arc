@@ -2,7 +2,7 @@ package io.anuke.arc.scene.ui;
 
 import io.anuke.arc.*;
 import io.anuke.arc.collection.*;
-import io.anuke.arc.function.*;
+import io.anuke.arc.func.Boolp;
 import io.anuke.arc.math.geom.*;
 import io.anuke.arc.scene.*;
 import io.anuke.arc.scene.event.ChangeListener.*;
@@ -30,7 +30,7 @@ import static io.anuke.arc.Core.*;
 public class Button extends Table implements Disableable{
     boolean isChecked, isDisabled;
     ButtonGroup buttonGroup;
-    BooleanProvider disabledProvider;
+    Boolp disabledProvider;
     private ButtonStyle style;
     private ClickListener clickListener;
     private boolean programmaticChangeEvents;
@@ -140,7 +140,7 @@ public class Button extends Table implements Disableable{
         return isDisabled;
     }
 
-    public void setDisabled(BooleanProvider prov){
+    public void setDisabled(Boolp prov){
         this.disabledProvider = prov;
     }
 

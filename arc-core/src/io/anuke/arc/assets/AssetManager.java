@@ -610,7 +610,7 @@ public class AssetManager implements Disposable{
                 task.assetDesc.params.loadedCallback.finishedLoading(this, task.assetDesc.fileName, task.assetDesc.type);
             }
 
-            task.assetDesc.loaded.accept(task.getAsset());
+            task.assetDesc.loaded.get(task.getAsset());
 
             long endTime = Time.nanos();
 

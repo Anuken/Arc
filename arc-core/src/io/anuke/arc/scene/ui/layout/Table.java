@@ -1,7 +1,7 @@
 package io.anuke.arc.scene.ui.layout;
 
 import io.anuke.arc.collection.*;
-import io.anuke.arc.function.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.g2d.*;
 import io.anuke.arc.scene.*;
@@ -66,14 +66,14 @@ public class Table extends WidgetGroup{
         background(background);
     }
 
-    public Table(Drawable background, Consumer<Table> cons){
+    public Table(Drawable background, Cons<Table> cons){
         this(background);
-        cons.accept(this);
+        cons.get(this);
     }
 
-    public Table(Consumer<Table> cons){
+    public Table(Cons<Table> cons){
         this();
-        cons.accept(this);
+        cons.get(this);
     }
 
     private Cell obtainCell(){
@@ -244,28 +244,28 @@ public class Table extends WidgetGroup{
         return add(table);
     }
 
-    public Cell<Table> table(Consumer<Table> cons){
+    public Cell<Table> table(Cons<Table> cons){
         Table table = new Table();
-        cons.accept(table);
+        cons.get(table);
         return add(table);
     }
 
-    public Cell<Table> table(Drawable background, Consumer<Table> cons){
+    public Cell<Table> table(Drawable background, Cons<Table> cons){
         return table(background, Align.center, cons);
     }
 
-    public Cell<Table> table(Drawable background, int align, Consumer<Table> cons){
+    public Cell<Table> table(Drawable background, int align, Cons<Table> cons){
         Table table = new Table(background);
         table.align(align);
-        cons.accept(table);
+        cons.get(table);
         return add(table);
     }
 
-    public Cell<Label> label(Supplier<CharSequence> text){
+    public Cell<Label> label(Prov<CharSequence> text){
         return add(new Label(text));
     }
 
-    public Cell<Label> labelWrap(Supplier<CharSequence> text){
+    public Cell<Label> labelWrap(Prov<CharSequence> text){
         Label label = new Label(text);
         label.setWrap(true);
         return add(label);
@@ -277,13 +277,13 @@ public class Table extends WidgetGroup{
         return add(label);
     }
 
-    public Cell<ScrollPane> pane(Consumer<Table> consumer){
+    public Cell<ScrollPane> pane(Cons<Table> consumer){
         return pane(scene.getStyle(ScrollPaneStyle.class), consumer);
     }
 
-    public Cell<ScrollPane> pane(ScrollPaneStyle style, Consumer<Table> consumer){
+    public Cell<ScrollPane> pane(ScrollPaneStyle style, Cons<Table> consumer){
         Table table = new Table();
-        consumer.accept(table);
+        consumer.get(table);
         ScrollPane pane = new ScrollPane(table, style);
         return add(pane);
     }
@@ -369,37 +369,37 @@ public class Table extends WidgetGroup{
         return add(new Image(region));
     }
 
-    public Cell<CheckBox> addCheck(String text, BooleanConsumer listener){
+    public Cell<CheckBox> addCheck(String text, Boolc listener){
         CheckBox button = Elements.newCheck(text, listener);
         return add(button);
     }
 
-    public Cell<CheckBox> addCheck(String text, boolean checked, BooleanConsumer listener){
+    public Cell<CheckBox> addCheck(String text, boolean checked, Boolc listener){
         CheckBox button = Elements.newCheck(text, listener);
         button.setChecked(checked);
         return add(button);
     }
 
-    public Cell<CheckBox> addCheck(String text, float imagesize, boolean checked, BooleanConsumer listener){
+    public Cell<CheckBox> addCheck(String text, float imagesize, boolean checked, Boolc listener){
         CheckBox button = Elements.newCheck(text, listener);
         button.getImageCell().size(imagesize);
         button.setChecked(checked);
         return add(button);
     }
 
-    public Cell<Button> addButton(Consumer<Button> cons, Runnable listener){
+    public Cell<Button> addButton(Cons<Button> cons, Runnable listener){
         Button button = new Button();
         button.clearChildren();
         button.clicked(listener);
-        cons.accept(button);
+        cons.get(button);
         return add(button);
     }
 
-    public Cell<Button> addButton(Consumer<Button> cons, ButtonStyle style, Runnable listener){
+    public Cell<Button> addButton(Cons<Button> cons, ButtonStyle style, Runnable listener){
         Button button = new Button(style);
         button.clearChildren();
         button.clicked(listener);
-        cons.accept(button);
+        cons.get(button);
         return add(button);
     }
 
@@ -438,24 +438,24 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
-    public Cell<TextField> addField(String text, Consumer<String> listener){
+    public Cell<TextField> addField(String text, Cons<String> listener){
         TextField field = Elements.newField(text, listener);
         return add(field);
     }
 
-    public Cell<TextArea> addArea(String text, Consumer<String> listener){
+    public Cell<TextArea> addArea(String text, Cons<String> listener){
         TextArea area = new TextArea(text);
-        area.changed(() -> listener.accept(area.getText()));
+        area.changed(() -> listener.get(area.getText()));
         return add(area);
     }
 
-    public Cell<TextArea> addArea(String text, TextFieldStyle style, Consumer<String> listener){
+    public Cell<TextArea> addArea(String text, TextFieldStyle style, Cons<String> listener){
         TextArea area = new TextArea(text, style);
-        area.changed(() -> listener.accept(area.getText()));
+        area.changed(() -> listener.get(area.getText()));
         return add(area);
     }
 
-    public Cell<TextField> addField(String text, TextFieldFilter filter, Consumer<String> listener){
+    public Cell<TextField> addField(String text, TextFieldFilter filter, Cons<String> listener){
         TextField field = Elements.newField(text, listener);
         field.setFilter(filter);
         return add(field);
@@ -534,11 +534,11 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
-    public Cell<Slider> addSlider(float min, float max, float step, FloatConsumer listener){
+    public Cell<Slider> addSlider(float min, float max, float step, Floatc listener){
         return addSlider(min, max, step, 0f, listener);
     }
 
-    public Cell<Slider> addSlider(float min, float max, float step, float defvalue, FloatConsumer listener){
+    public Cell<Slider> addSlider(float min, float max, float step, float defvalue, Floatc listener){
         Slider slider = new Slider(min, max, step, false);
         slider.setValue(defvalue);
         if(listener != null)
@@ -546,14 +546,14 @@ public class Table extends WidgetGroup{
         return add(slider);
     }
 
-    public Cell<Slider> addSlider(float min, float max, float step, float defvalue, boolean onUp, FloatConsumer listener){
+    public Cell<Slider> addSlider(float min, float max, float step, float defvalue, boolean onUp, Floatc listener){
         Slider slider = new Slider(min, max, step, false);
         slider.setValue(defvalue);
         if(listener != null){
             if(!onUp){
                 slider.moved(listener);
             }else{
-                slider.released(() -> listener.accept(slider.getValue()));
+                slider.released(() -> listener.get(slider.getValue()));
             }
 
         }

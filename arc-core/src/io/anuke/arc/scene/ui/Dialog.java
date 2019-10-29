@@ -1,7 +1,7 @@
 package io.anuke.arc.scene.ui;
 
 import io.anuke.arc.*;
-import io.anuke.arc.function.*;
+import io.anuke.arc.func.Prov;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.g2d.*;
 import io.anuke.arc.input.*;
@@ -25,7 +25,7 @@ import static io.anuke.arc.Core.scene;
  * @author Nathan Sweet
  */
 public class Dialog extends Table{
-    private static Supplier<Action>
+    private static Prov<Action>
     defaultShowAction = () -> Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.4f, Interpolation.fade)),
     defaultHideAction = () -> Actions.fadeOut(0.4f, Interpolation.fade);
     protected InputListener ignoreTouchDown = new InputListener(){
@@ -363,11 +363,11 @@ public class Dialog extends Table{
         }));
     }
 
-    public static void setHideAction(Supplier<Action> prov){
+    public static void setHideAction(Prov<Action> prov){
         defaultHideAction = prov;
     }
 
-    public static void setShowAction(Supplier<Action> prov){
+    public static void setShowAction(Prov<Action> prov){
         defaultShowAction = prov;
     }
 

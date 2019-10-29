@@ -1,7 +1,7 @@
 package io.anuke.arc.scene.ui;
 
 import io.anuke.arc.Core;
-import io.anuke.arc.function.Supplier;
+import io.anuke.arc.func.Prov;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.BitmapFont;
 import io.anuke.arc.graphics.g2d.BitmapFontCache;
@@ -39,7 +39,7 @@ public class Label extends Element{
     protected boolean fontScaleChanged = false;
     protected String ellipsis;
 
-    public Label(Supplier<CharSequence> sup){
+    public Label(Prov<CharSequence> sup){
         this("", new LabelStyle(scene.getStyle(LabelStyle.class)));
         update(() -> setText(sup.get()));
         try{
