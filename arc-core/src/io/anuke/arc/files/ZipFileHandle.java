@@ -73,15 +73,14 @@ public class ZipFileHandle extends FileHandle{
 
     @Override
     public boolean delete(){
-        if(entry == null && parent == null){
-            try{
-                zip.close();
-                Log.info("Closed zip file.");
-            }catch(IOException e){
-                Log.err(e);
-                return false;
-            }
+        try{
+            zip.close();
+            Log.info("Closed zip file.");
+        }catch(IOException e){
+            Log.err(e);
+            return false;
         }
+
         return super.delete();
     }
 
