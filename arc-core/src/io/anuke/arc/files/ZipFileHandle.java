@@ -75,7 +75,6 @@ public class ZipFileHandle extends FileHandle{
     public boolean delete(){
         try{
             zip.close();
-            Log.info("Closed zip file.");
         }catch(IOException e){
             Log.err(e);
             return false;
