@@ -76,7 +76,9 @@ public class ZipFileHandle extends FileHandle{
         if(entry == null && parent == null){
             try{
                 zip.close();
+                Log.info("Closed zip file.");
             }catch(IOException e){
+                Log.err(e);
                 return false;
             }
         }
