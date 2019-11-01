@@ -72,6 +72,18 @@ public class ZipFileHandle extends FileHandle{
     }
 
     @Override
+    public boolean delete(){
+        if(entry == null && parent == null){
+            try{
+                zip.close();
+            }catch(IOException e){
+                return false;
+            }
+        }
+        return super.delete();
+    }
+
+    @Override
     public boolean exists(){
         return true;
     }
