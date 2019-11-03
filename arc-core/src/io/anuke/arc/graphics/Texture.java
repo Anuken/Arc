@@ -71,10 +71,21 @@ public class Texture extends GLTexture{
         this(GL20.GL_TEXTURE_2D, Core.gl.glGenTexture(), data);
     }
 
+    /** For use in mocking only! */
+    private Texture(){
+        super(0, 0);
+    }
+
     protected Texture(int glTarget, int glHandle, TextureData data){
         super(glTarget, glHandle);
         load(data);
         if(data.isManaged()) addManagedTexture(Core.app, this);
+    }
+
+    public static Texture createEmpty(TextureData data){
+        Texture tex = new Texture();
+        tex.data = data;
+        return tex;
     }
 
     private static void addManagedTexture(Application app, Texture texture){
