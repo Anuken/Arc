@@ -15,15 +15,14 @@ public class ZipFileHandle extends FileHandle{
     private ZipFileHandle parent;
 
     private final @Nullable ZipEntry entry;
-    private final ZipFile zip;
+    private final @NonNull ZipFile zip;
 
     public ZipFileHandle(FileHandle zipFileLoc){
         super(new File(""), FileType.Absolute);
-        zip = null;
         entry = null;
 
         try{
-            ZipFile zip = new ZipFile(zipFileLoc.file());
+            zip = new ZipFile(zipFileLoc.file());
 
             Array<String> names = Array.with(Collections.list(zip.entries())).map(ZipEntry::getName);
             ObjectSet<String> paths = new ObjectSet<>();
