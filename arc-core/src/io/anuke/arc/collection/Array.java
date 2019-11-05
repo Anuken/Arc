@@ -221,6 +221,28 @@ public class Array<T> implements Iterable<T>{
         return find(predicate) != null;
     }
 
+    public T min(Comparator<T> func){
+        T result = null;
+        for(int i = 0; i < size; i++){
+            T t = items[i];
+            if(result == null || func.compare(result, t) > 0){
+                result = t;
+            }
+        }
+        return result;
+    }
+
+    public T max(Comparator<T> func){
+        T result = null;
+        for(int i = 0; i < size; i++){
+            T t = items[i];
+            if(result == null || func.compare(result, t) < 0){
+                result = t;
+            }
+        }
+        return result;
+    }
+
     public T min(Floatf<T> func){
         T result = null;
         float min = Float.MAX_VALUE;
