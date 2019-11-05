@@ -42,7 +42,7 @@ public class SdlNet implements Net{
     public boolean openFolder(String file){
         try{
             if(OS.isWindows){
-                exec("explorer.exe " + file);
+                exec("explorer.exe /select," + file);
                 return true;
             }else if(OS.isLinux){
                 exec("xdg-open " + file);
