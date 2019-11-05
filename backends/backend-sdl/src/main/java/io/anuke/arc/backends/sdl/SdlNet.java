@@ -38,6 +38,25 @@ public class SdlNet implements Net{
         }
     }
 
+    @Override
+    public boolean openFolder(String file){
+        try{
+            if(OS.isWindows){
+                exec("explorer.exe " + file);
+                return true;
+            }else if(OS.isLinux){
+                exec("xdg-open " + file);
+                return true;
+            }else if(OS.isMac){
+                exec("open " + file);
+            }
+            return false;
+        }catch(Throwable e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     private void exec(String command) throws IOException{
         BufferedReader in = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(command).getInputStream()));
         String line;
