@@ -108,6 +108,7 @@ public class SdlScanmap{
             case 80: return KeyCode.LEFT;
             case 81: return KeyCode.DOWN;
             case 82: return KeyCode.UP;
+            case 101: return KeyCode.APPLICATION;
             case 102: return KeyCode.POWER;
             case 118: return KeyCode.MENU;
             case 127: return KeyCode.MUTE;

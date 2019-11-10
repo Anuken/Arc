@@ -51,6 +51,7 @@ public enum KeyCode implements KeybindValue{
     A(KeyType.key, "A"),
     ALT_LEFT(KeyType.key, "L-Alt"),
     ALT_RIGHT(KeyType.key, "R-Alt"),
+    APPLICATION(KeyType.key, "Application"),
     APOSTROPHE(KeyType.key, "'"),
     ASTERISK(KeyType.key, "*"),
     AT(KeyType.key, "@"),
