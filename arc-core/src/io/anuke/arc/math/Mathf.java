@@ -85,6 +85,12 @@ public final class Mathf{
         return result;
     }
 
+    public static float angleExact(float x, float y){
+        float result = (float)Math.atan2(y, x) * radDeg;
+        if(result < 0) result += 360f;
+        return result;
+    }
+
     /**
      * Returns atan2 in radians, faster but less accurate than Math.atan2. Average error of 0.00231 radians (0.1323 degrees),
      * largest error of 0.00488 radians (0.2796 degrees).
