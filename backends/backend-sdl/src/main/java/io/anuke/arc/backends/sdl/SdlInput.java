@@ -49,7 +49,7 @@ public class SdlInput extends Input{
             boolean down = input[1] == 1;
             int keycode = input[4];
             int x = input[2], y = Core.graphics.getHeight() - input[3];
-            KeyCode key = keycode == SDL.SDL_BUTTON_LEFT ? KeyCode.MOUSE_LEFT : keycode == SDL.SDL_BUTTON_RIGHT ? KeyCode.MOUSE_RIGHT : keycode == SDL.SDL_BUTTON_MIDDLE ? KeyCode.MOUSE_MIDDLE : null;
+            KeyCode key = keycode == SDL.SDL_BUTTON_LEFT ? KeyCode.MOUSE_LEFT : keycode == SDL.SDL_BUTTON_RIGHT ? KeyCode.MOUSE_RIGHT : keycode == SDL.SDL_BUTTON_MIDDLE ? KeyCode.MOUSE_MIDDLE : keycode == SDL.SDL_BUTTON_X1 ? KeyCode.MOUSE_BACK : keycode == SDL.SDL_BUTTON_X2 ? KeyCode.MOUSE_FORWARD : null;
             if(key != null){
                 if(down){
                     mousePressed ++;
