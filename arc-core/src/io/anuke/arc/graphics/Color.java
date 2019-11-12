@@ -534,6 +534,26 @@ public class Color{
         return this;
     }
 
+    public Color r(float r){
+        this.r = r;
+        return this;
+    }
+
+    public Color g(float g){
+        this.g = g;
+        return this;
+    }
+
+    public Color b(float b){
+        this.b = b;
+        return this;
+    }
+
+    public Color a(float a){
+        this.a = a;
+        return this;
+    }
+
     /**
      * Multiplies this Color's color components by the given ones.
      * @param r Red component
