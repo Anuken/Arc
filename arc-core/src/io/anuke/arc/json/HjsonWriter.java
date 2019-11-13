@@ -25,20 +25,11 @@ import java.io.*;
 import java.util.regex.*;
 
 class HjsonWriter{
-    private HjsonDsfProvider[] dsfProviders;
-
+    static String eol = System.getProperty("line.separator");
     static Pattern needsEscapeName = Pattern.compile("[,\\{\\[\\}\\]\\s:#\"']|//|/\\*");
 
-    public HjsonWriter(HjsonOptions options){
-        if(options != null){
-            dsfProviders = options.dsf.clone();
-        }else{
-            dsfProviders = new HjsonDsfProvider[0];
-        }
-    }
-
     void nl(Writer tw, int level) throws IOException{
-        tw.write(JsonValue.eol);
+        tw.write(eol);
         for(int i = 0; i < level; i++) tw.write("  ");
     }
 
@@ -46,14 +37,6 @@ class HjsonWriter{
         if(value == null){
             tw.write(separator);
             tw.write("null");
-            return;
-        }
-
-        // check for DSF
-        String dsfValue = HjsonDsf.stringify(dsfProviders, value);
-        if(dsfValue != null){
-            tw.write(separator);
-            tw.write(dsfValue);
             return;
         }
 
@@ -68,9 +51,9 @@ class HjsonWriter{
 
                 for(JsonObject.Member pair : obj){
                     nl(tw, level + 1);
-                    tw.write(escapeName(pair.getName()));
+                    tw.write(escapeName(pair.name));
                     tw.write(":");
-                    save(pair.getValue(), tw, level + 1, " ", false);
+                    save(pair.value, tw, level + 1, " ", false);
                 }
 
                 if(obj.size() > 0) nl(tw, level);

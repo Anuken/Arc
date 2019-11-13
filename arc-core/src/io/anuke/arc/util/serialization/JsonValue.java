@@ -1,5 +1,6 @@
 package io.anuke.arc.util.serialization;
 
+import io.anuke.arc.util.ArcAnnotate.*;
 import io.anuke.arc.util.serialization.JsonWriter.OutputType;
 
 import java.io.IOException;
@@ -23,12 +24,10 @@ import java.util.NoSuchElementException;
  */
 public class JsonValue implements Iterable<JsonValue>{
     public String name;
-    /** May be null. */
-    public JsonValue child, next, prev, parent;
+    public @Nullable JsonValue child, next, prev, parent;
     public int size;
     private ValueType type;
-    /** May be null. */
-    private String stringValue;
+    private @Nullable String stringValue;
     private double doubleValue;
     private long longValue;
 

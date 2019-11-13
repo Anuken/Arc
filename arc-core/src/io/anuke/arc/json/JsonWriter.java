@@ -26,7 +26,7 @@ import java.io.*;
 
 
 class JsonWriter{
-
+    static String eol = System.getProperty("line.separator");
     boolean format;
 
     public JsonWriter(boolean format){
@@ -35,7 +35,7 @@ class JsonWriter{
 
     void nl(Writer tw, int level) throws IOException{
         if(format){
-            tw.write(JsonValue.eol);
+            tw.write(eol);
             for(int i = 0; i < level; i++) tw.write("  ");
         }
     }
@@ -51,14 +51,13 @@ class JsonWriter{
                     if(following) tw.write(",");
                     nl(tw, level + 1);
                     tw.write('\"');
-                    tw.write(escapeString(pair.getName()));
+                    tw.write(escapeString(pair.name));
                     tw.write("\":");
                     //save(, tw, level+1, " ", false);
-                    JsonValue v = pair.getValue();
+                    JsonValue v = pair.value;
                     JsonValue.JsonType vType = v.getType();
                     if(format && vType != JsonValue.JsonType.array && vType != JsonValue.JsonType.object) tw.write(" ");
-                    if(v == null) tw.write("null");
-                    else save(v, tw, level + 1);
+                    save(v, tw, level + 1);
                     following = true;
                 }
                 if(following) nl(tw, level);

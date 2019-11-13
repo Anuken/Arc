@@ -33,20 +33,14 @@ class HjsonParser{
     private int current;
     private StringBuilder captureBuffer, peek;
     private boolean capture;
-    private HjsonDsfProvider[] dsfProviders;
 
-    HjsonParser(String string, HjsonOptions options){
+    HjsonParser(String string){
         buffer = string;
         reset();
-        if(options != null){
-            dsfProviders = options.dsf.clone();
-        }else{
-            dsfProviders = new HjsonDsfProvider[0];
-        }
     }
 
-    HjsonParser(Reader reader, HjsonOptions options) throws IOException{
-        this(readToEnd(reader), options);
+    HjsonParser(Reader reader) throws IOException{
+        this(readToEnd(reader));
     }
 
     static String readToEnd(Reader reader) throws IOException{
@@ -95,7 +89,7 @@ class HjsonParser{
         }
     }
 
-    JsonValue checkTrailing(JsonValue v) throws ParseException, IOException{
+    JsonValue checkTrailing(JsonValue v) throws JsonParseException, IOException{
         skipWhiteSpace();
         if(!isEndOfText()) throw error("Extra characters in input: " + current);
         return v;
@@ -148,7 +142,7 @@ class HjsonParser{
                 }
                 if(isEol){
                     // remove any whitespace at the end (ignored in quoteless strings)
-                    return HjsonDsf.parse(dsfProviders, value.toString().trim());
+                    return new JsonValue(value.toString().trim());
                 }
             }
             value.append((char)current);
@@ -276,7 +270,7 @@ class HjsonParser{
     }
 
     private JsonValue readString() throws IOException{
-        return new JsonString(readStringInternal(true));
+        return new JsonValue(readStringInternal(true));
     }
 
     private String readStringInternal(boolean allowML) throws IOException{
@@ -388,7 +382,7 @@ class HjsonParser{
 
         if(idx < len && !foundStop) return null;
 
-        return new JsonNumber(Double.parseDouble(value.substring(0, last)));
+        return new JsonValue(Double.parseDouble(value.substring(0, last)));
     }
 
     static JsonValue tryParseNumber(String value, boolean stopAtNext) throws IOException{
@@ -481,17 +475,17 @@ class HjsonParser{
         return captured;
     }
 
-    private ParseException expected(String expected){
+    private JsonParseException expected(String expected){
         if(isEndOfText()){
             return error("Unexpected end of input");
         }
         return error("Expected " + expected);
     }
 
-    private ParseException error(String message){
+    private JsonParseException error(String message){
         int column = index - lineOffset;
         int offset = isEndOfText() ? index : index - 1;
-        return new ParseException(message, offset, line, column - 1);
+        return new JsonParseException(message, offset, line, column - 1);
     }
 
     static boolean isWhiteSpace(int ch){
@@ -510,5 +504,19 @@ class HjsonParser{
 
     private boolean isEndOfText(){
         return current == -1;
+    }
+
+    /** An unchecked exception to indicate that an input does not qualify as valid JSON.*/
+    public static class JsonParseException extends RuntimeException{
+        public final int offset;
+        public final int line;
+        public final int column;
+
+        JsonParseException(String message, int offset, int line, int column){
+            super(message + " at " + line + ":" + column);
+            this.offset = offset;
+            this.line = line;
+            this.column = column;
+        }
     }
 }

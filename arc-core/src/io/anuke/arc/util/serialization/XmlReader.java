@@ -28,10 +28,6 @@ import java.io.Reader;
 @SuppressWarnings("unchecked")
 public class XmlReader{
     static final int xml_start = 1;
-    static final int xml_first_final = 34;
-    static final int xml_error = 0;
-    static final int xml_en_elementBody = 15;
-    static final int xml_en_main = 1;
     private static final byte[] _xml_actions = init__xml_actions_0();
     private static final byte[] _xml_key_offsets = init__xml_key_offsets_0();
     private static final char[] _xml_trans_keys = init__xml_trans_keys_0();
@@ -182,8 +178,7 @@ public class XmlReader{
                                 int _lower = _keys;
                                 int _mid;
                                 int _upper = _keys + _klen - 1;
-                                while(true){
-                                    if(_upper < _lower) break;
+                                while(_upper >= _lower){
 
                                     _mid = _lower + ((_upper - _lower) >> 1);
                                     if(data[p] < _xml_trans_keys[_mid])
