@@ -21,67 +21,7 @@
  ******************************************************************************/
 package io.anuke.arc.json;
 
-/**
- * Defines options for Hjson
- */
+/** Defines options for Hjson */
 public class HjsonOptions{
-    private HjsonDsfProvider[] dsf;
-    private boolean legacyRoot;
-
-    public HjsonOptions(){
-        dsf = new HjsonDsfProvider[0];
-        legacyRoot = true;
-    }
-
-    /**
-     * Returns the DSF providers.
-     * @return providers.
-     */
-    public HjsonDsfProvider[] getDsfProviders(){
-        return dsf.clone();
-    }
-
-    /**
-     * Sets the DSF providers.
-     * @param value value
-     */
-    public void setDsfProviders(HjsonDsfProvider[] value){
-        dsf = value.clone();
-    }
-
-    /**
-     * Detects whether objects without root braces are supported.
-     * @return <code>true</code> if this feature is enabled.
-     */
-    public boolean getParseLegacyRoot(){
-        return legacyRoot;
-    }
-
-    /**
-     * Sets whether root braces should be emitted.
-     * @param value value
-     */
-    public void setParseLegacyRoot(boolean value){
-        legacyRoot = value;
-    }
-
-    /**
-     * Detects whether root braces should be emitted.
-     * @return <code>true</code> if this feature is enabled.
-     * @deprecated will always return true.
-     */
-    @Deprecated
-    public boolean getEmitRootBraces(){
-        return true;
-    }
-
-    /**
-     * Sets whether root braces should be emitted.
-     * @param value value
-     * @deprecated root braces are always emitted.
-     */
-    @Deprecated
-    public void setEmitRootBraces(boolean value){
-    }
-
+    public HjsonDsfProvider[] dsf = {};
 }

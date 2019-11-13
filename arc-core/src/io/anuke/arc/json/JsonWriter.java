@@ -55,8 +55,8 @@ class JsonWriter{
                     tw.write("\":");
                     //save(, tw, level+1, " ", false);
                     JsonValue v = pair.getValue();
-                    JsonType vType = v.getType();
-                    if(format && vType != JsonType.array && vType != JsonType.object) tw.write(" ");
+                    JsonValue.JsonType vType = v.getType();
+                    if(format && vType != JsonValue.JsonType.array && vType != JsonValue.JsonType.object) tw.write(" ");
                     if(v == null) tw.write("null");
                     else save(v, tw, level + 1);
                     following = true;
@@ -72,8 +72,8 @@ class JsonWriter{
                 for(int i = 0; i < n; i++){
                     if(following) tw.write(",");
                     JsonValue v = arr.get(i);
-                    JsonType vType = v.getType();
-                    if(vType != JsonType.array && vType != JsonType.object) nl(tw, level + 1);
+                    JsonValue.JsonType vType = v.getType();
+                    if(vType != JsonValue.JsonType.array && vType != JsonValue.JsonType.object) nl(tw, level + 1);
                     save(v, tw, level + 1);
                     following = true;
                 }

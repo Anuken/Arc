@@ -25,9 +25,6 @@ package io.anuke.arc.json;
 import java.io.*;
 
 class HjsonParser{
-    private static final int MIN_BUFFER_SIZE = 10;
-    private static final int DEFAULT_BUFFER_SIZE = 1024;
-
     private final String buffer;
     private Reader reader;
     private int index;
@@ -36,19 +33,15 @@ class HjsonParser{
     private int current;
     private StringBuilder captureBuffer, peek;
     private boolean capture;
-    private boolean legacyRoot;
-
     private HjsonDsfProvider[] dsfProviders;
 
     HjsonParser(String string, HjsonOptions options){
         buffer = string;
         reset();
         if(options != null){
-            dsfProviders = options.getDsfProviders();
-            legacyRoot = options.getParseLegacyRoot();
+            dsfProviders = options.dsf.clone();
         }else{
             dsfProviders = new HjsonDsfProvider[0];
-            legacyRoot = true;
         }
     }
 
@@ -75,34 +68,30 @@ class HjsonParser{
     }
 
     JsonValue parse() throws IOException{
-        // Braces for the root object are optional
+        //braces for the root object are optional
 
         read();
         skipWhiteSpace();
 
-        if(legacyRoot){
-            switch(current){
-                case '[':
-                case '{':
-                    return checkTrailing(readValue());
-                default:
+        switch(current){
+            case '[':
+            case '{':
+                return checkTrailing(readValue());
+            default:
+                try{
+                    // assume we have a root object without braces
+                    return checkTrailing(readObject(true));
+                }catch(Exception exception){
+                    // test if we are dealing with a single JSON value instead (true/false/null/num/"")
+                    reset();
+                    read();
+                    skipWhiteSpace();
                     try{
-                        // assume we have a root object without braces
-                        return checkTrailing(readObject(true));
-                    }catch(Exception exception){
-                        // test if we are dealing with a single JSON value instead (true/false/null/num/"")
-                        reset();
-                        read();
-                        skipWhiteSpace();
-                        try{
-                            return checkTrailing(readValue());
-                        }catch(Exception ignored){
-                        }
-                        throw exception; // throw original error
+                        return checkTrailing(readValue());
+                    }catch(Exception ignored){
                     }
-            }
-        }else{
-            return checkTrailing(readValue());
+                    throw exception; // throw original error
+                }
         }
     }
 
@@ -242,7 +231,7 @@ class HjsonParser{
         int indent = index - lineOffset - 4;
 
         // skip white/to (newline)
-        for(; ; ){
+        while(true){
             if(isWhiteSpace(current) && current != '\n') read();
             else break;
         }

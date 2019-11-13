@@ -25,29 +25,21 @@ package io.anuke.arc.json;
  * A interface to support Domain Specific Formats for Hjson.
  */
 public interface HjsonDsfProvider{
-    /**
-     * Gets the name of this DSF.
-     * @return name
-     */
+    /** Gets the name of this DSF.*/
     String getName();
 
-    /**
-     * Gets the description of this DSF.
-     * @return description
-     */
+    /** Gets the description of this DSF.*/
     String getDescription();
 
     /**
      * Tries to parse the text as a DSF value.
      * @param text the DSF value
-     * @return JsonValue
      */
     JsonValue parse(String text);
 
     /**
      * Stringifies DSF values.
      * @param value the JSON value
-     * @return string
      */
     String stringify(JsonValue value);
 }

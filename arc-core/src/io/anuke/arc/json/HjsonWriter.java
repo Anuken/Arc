@@ -31,7 +31,7 @@ class HjsonWriter{
 
     public HjsonWriter(HjsonOptions options){
         if(options != null){
-            dsfProviders = options.getDsfProviders();
+            dsfProviders = options.dsf.clone();
         }else{
             dsfProviders = new HjsonDsfProvider[0];
         }

@@ -22,8 +22,6 @@
  ******************************************************************************/
 package io.anuke.arc.json;
 
-@SuppressWarnings("serial")
-// use default serial UID
 class JsonLiteral extends JsonValue{
     static final JsonValue NULL = new JsonLiteral(Iv.N);
     static final JsonValue TRUE = new JsonLiteral(Iv.T);

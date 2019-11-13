@@ -24,9 +24,6 @@ package io.anuke.arc.json;
 
 import java.math.*;
 
-
-@SuppressWarnings("serial")
-// use default serial UID
 class JsonNumber extends JsonValue{
     private final double value;
 

@@ -22,8 +22,6 @@
  ******************************************************************************/
 package io.anuke.arc.json;
 
-@SuppressWarnings("serial")
-// use default serial UID
 class JsonString extends JsonValue{
     private final String string;
 
