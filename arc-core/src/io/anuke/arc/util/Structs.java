@@ -5,9 +5,23 @@ import io.anuke.arc.collection.Array;
 import io.anuke.arc.func.*;
 import io.anuke.arc.math.Mathf;
 
-import java.util.Comparator;
+import java.util.*;
 
 public class Structs{
+
+    /** Remove all values that match this predicate. */
+    public static <T> void filter(Iterable<T> iterable, Boolf<T> removal){
+        filter(iterable.iterator(), removal);
+    }
+
+    /** Remove all values that match this predicate. */
+    public static <T> void filter(Iterator<T> it, Boolf<T> removal){
+        while(it.hasNext()){
+            if(removal.get(it.next())){
+                it.remove();
+            }
+        }
+    }
 
     public static <T> T random(T[] array){
         return array[Mathf.random(array.length - 1)];
