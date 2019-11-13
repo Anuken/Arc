@@ -212,7 +212,7 @@ public class SpriteBatch implements Disposable{
             flush();
         }
 
-        if(!Mathf.isZero(rotation)){
+        if(!Mathf.zero(rotation)){
             //bottom left and top right corner points relative to origin
             final float worldOriginX = x + originX;
             final float worldOriginY = y + originY;

@@ -411,7 +411,7 @@ public final class Mathf{
     }
 
     /** Returns true if the value is zero (using the default tolerance as upper bound) */
-    public static boolean isZero(float value){
+    public static boolean zero(float value){
         return Math.abs(value) <= FLOAT_ROUNDING_ERROR;
     }
 
@@ -419,7 +419,7 @@ public final class Mathf{
      * Returns true if the value is zero.
      * @param tolerance represent an upper bound below which the value is considered zero.
      */
-    public static boolean isZero(float value, float tolerance){
+    public static boolean zero(float value, float tolerance){
         return Math.abs(value) <= tolerance;
     }
 
@@ -428,7 +428,7 @@ public final class Mathf{
      * @param a the first value.
      * @param b the second value.
      */
-    public static boolean isEqual(float a, float b){
+    public static boolean equal(float a, float b){
         return Math.abs(a - b) <= FLOAT_ROUNDING_ERROR;
     }
 
@@ -438,7 +438,7 @@ public final class Mathf{
      * @param b the second value.
      * @param tolerance represent an upper bound below which the two values are considered equal.
      */
-    public static boolean isEqual(float a, float b, float tolerance){
+    public static boolean equal(float a, float b, float tolerance){
         return Math.abs(a - b) <= tolerance;
     }
 

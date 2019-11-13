@@ -456,12 +456,12 @@ public class Vector3 implements Serializable, Vector<Vector3>{
 
     @Override
     public boolean isPerpendicular(Vector3 vector){
-        return Mathf.isZero(dot(vector));
+        return Mathf.zero(dot(vector));
     }
 
     @Override
     public boolean isPerpendicular(Vector3 vector, float epsilon){
-        return Mathf.isZero(dot(vector), epsilon);
+        return Mathf.zero(dot(vector), epsilon);
     }
 
     @Override

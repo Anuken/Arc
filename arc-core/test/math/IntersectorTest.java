@@ -24,8 +24,8 @@ public class IntersectorTest{
         // Find first comp vertex in base triangle
         for(int i = 0; i < 3; i++){
             int b = baseOffset + i * stride;
-            if(Mathf.isEqual(base[b], comp[0]) && Mathf.isEqual(base[b + 1], comp[1])
-            && Mathf.isEqual(base[b + 2], comp[2])){
+            if(Mathf.equal(base[b], comp[0]) && Mathf.equal(base[b + 1], comp[1])
+            && Mathf.equal(base[b + 2], comp[2])){
                 offset = i;
                 break;
             }
@@ -35,8 +35,8 @@ public class IntersectorTest{
         for(int i = 0; i < 3; i++){
             int b = baseOffset + ((offset + i) * stride) % (3 * stride);
             int c = i * stride;
-            if(!Mathf.isEqual(base[b], comp[c]) || !Mathf.isEqual(base[b + 1], comp[c + 1])
-            || !Mathf.isEqual(base[b + 2], comp[c + 2])){
+            if(!Mathf.equal(base[b], comp[c]) || !Mathf.equal(base[b + 1], comp[c + 1])
+            || !Mathf.equal(base[b + 2], comp[c + 2])){
                 return false;
             }
         }
