@@ -8,33 +8,8 @@ import io.anuke.arc.util.*;
 import java.io.*;
 import java.util.regex.*;
 
-/**
- * Represents a JSON value. This can be a JSON <strong>object</strong>, an <strong> array</strong>,
- * a <strong>number</strong>, a <strong>string</strong>, or one of the literals
- * <strong>true</strong>, <strong>false</strong>, and <strong>null</strong>.
- * <p>
- * The literals <strong>true</strong>, <strong>false</strong>, and <strong>null</strong> are
- * represented by the constants {@link #TRUE}, {@link #FALSE}, and {@link #NULL}.
- * </p>
- * <p>
- * Instances that represent JSON <strong>numbers</strong>, <strong>strings</strong> and
- * <strong>boolean</strong> values can be created using the static factory methods
- * {@link #valueOf(String)}, {@link #valueOf(long)}, {@link #valueOf(double)}, etc.
- * </p>
- * <p>
- * In order to find out whether an instance of this class is of a certain type, the methods
- * {@link #isObject()}, {@link #isArray()}, {@link #isString()}, {@link #isNumber()} etc. can be
- * used.
- * </p>
- * <p>
- * If the type of a JSON value is known, the methods {@link #asObject()}, {@link #asArray()},
- * {@link #asString()}, {@link #asInt()}, etc. can be used to get this value directly in the
- * appropriate target type.
- * </p>
- * <p>
- * This class is <strong>not supposed to be extended</strong> by clients.
- * </p>
- */
+/** An hsjon parser. Can be used as a standard json value.
+ * Output can be converted to standard JSON. This class is heavily based upon the Hjson Java implementation.*/
 public class Jval{
     private static final String eol = System.getProperty("line.separator");
 
@@ -47,10 +22,6 @@ public class Jval{
 
     /** Internal value. May be a string, number, boolean, JsonArray of objects, JsonMap of objects or null. */
     private @Nullable Object value;
-
-    Jval(){
-
-    }
 
     Jval(Object value){
         this.value = value;
@@ -295,9 +266,7 @@ public class Jval{
             fill += len;
         }
 
-        /**
-         * Flushes the internal buffer but does not flush the wrapped writer.
-         */
+        /**  Flushes the internal buffer but does not flush the wrapped writer.*/
         @Override
         public void flush() throws IOException{
             writer.write(buffer, 0, fill);
@@ -647,7 +616,7 @@ public class Jval{
             return ch >= '0' && ch <= '9';
         }
 
-        static Jval tryParseNumber(StringBuilder value, boolean stopAtNext) throws IOException{
+        static Jval tryParseNumber(StringBuilder value, boolean stopAtNext){
             int idx = 0, len = value.length();
             if(idx < len && value.charAt(idx) == '-') idx++;
 
@@ -700,8 +669,8 @@ public class Jval{
             return new Jval(Double.parseDouble(str));
         }
 
-        static Jval tryParseNumber(String value, boolean stopAtNext) throws IOException{
-            return tryParseNumber(new StringBuilder(value), stopAtNext);
+        static Jval tryParseNumber(String value) throws IOException{
+            return tryParseNumber(new StringBuilder(value), true);
         }
 
         private boolean readIf(char ch) throws IOException{
@@ -909,7 +878,7 @@ public class Jval{
             }
 
             char left = value.charAt(0), right = value.charAt(value.length() - 1);
-            char left1 = value.length() > 1 ? value.charAt(1) : '\0', left2 = value.length() > 2 ? value.charAt(2) : '\0';
+            char left1 = value.length() > 1 ? value.charAt(1) : '\0';
             boolean doEscape = false;
             char[] valuec = value.toCharArray();
             for(char ch : valuec){
@@ -926,7 +895,7 @@ public class Jval{
             left == '#' ||
             left == '/' && (left1 == '*' || left1 == '/') ||
             isPunctuatorChar(left) ||
-            Hparser.tryParseNumber(value, true) != null ||
+            Hparser.tryParseNumber(value) != null ||
             startsWithKeyword(value)){
 
                 boolean noEscape = true;
@@ -990,26 +959,11 @@ public class Jval{
         }
 
         static boolean needsQuotes(char c){
-            switch(c){
-                case '\t':
-                case '\f':
-                case '\b':
-                case '\n':
-                case '\r':
-                    return true;
-                default:
-                    return false;
-            }
+            return c == '\t' || c == '\f' || c == '\b' || c == '\n' || c == '\r';
         }
 
         static boolean needsEscape(char c){
-            switch(c){
-                case '\"':
-                case '\\':
-                    return true;
-                default:
-                    return needsQuotes(c);
-            }
+            return c == '\"' || c == '\\' || needsQuotes(c);
         }
 
         static boolean needsEscapeML(char c){
@@ -1120,22 +1074,14 @@ public class Jval{
 
         private static String getEscapedChar(char c){
             switch(c){
-                case '\"':
-                    return "\\\"";
-                case '\t':
-                    return "\\t";
-                case '\n':
-                    return "\\n";
-                case '\r':
-                    return "\\r";
-                case '\f':
-                    return "\\f";
-                case '\b':
-                    return "\\b";
-                case '\\':
-                    return "\\\\";
-                default:
-                    return null;
+                case '\"': return "\\\"";
+                case '\t': return "\\t";
+                case '\n': return "\\n";
+                case '\r': return "\\r";
+                case '\f': return "\\f";
+                case '\b': return "\\b";
+                case '\\': return "\\\\";
+                default: return null;
             }
         }
     }
