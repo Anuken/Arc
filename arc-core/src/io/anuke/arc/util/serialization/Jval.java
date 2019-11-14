@@ -13,14 +13,11 @@ import java.util.regex.*;
 public class Jval{
     private static final String eol = System.getProperty("line.separator");
 
-    /** Represents the JSON literal <code>true</code>.*/
     public static final Jval TRUE = new Jval(true);
-    /** Represents the JSON literal <code>false</code>.*/
     public static final Jval FALSE = new Jval(false);
-    /** Represents the JSON literal <code>null</code>.*/
     public static final Jval NULL = new Jval(null);
 
-    /** Internal value. May be a string, number, boolean, JsonArray of objects, JsonMap of objects or null. */
+    /** Internal value. May be a string, number, boolean, JsonArray, JsonMap or null. */
     private @Nullable Object value;
 
     Jval(Object value){
@@ -60,13 +57,13 @@ public class Jval{
         }
     }
 
-    public JsonType getType(){
-        return value == null ? JsonType.nil :
-                value instanceof Number ? JsonType.number :
-                value instanceof String ? JsonType.string :
-                value instanceof Boolean ? JsonType.bool :
-                value instanceof JsonMap ? JsonType.object :
-                value instanceof JsonArray ? JsonType.array : null;
+    public Jtype getType(){
+        return value == null ? Jtype.nil :
+                value instanceof Number ? Jtype.number :
+                value instanceof String ? Jtype.string :
+                value instanceof Boolean ? Jtype.bool :
+                value instanceof JsonMap ? Jtype.object :
+                value instanceof JsonArray ? Jtype.array : null;
     }
 
     public static Jval valueOf(int value){ return new Jval(value); }
@@ -87,7 +84,6 @@ public class Jval{
 
     public JsonMap asObject(){ if(!(value instanceof JsonMap)) throw new UnsupportedOperationException("Not an object: " + toString()); return (JsonMap)value; }
     public JsonArray asArray(){ if(!(value instanceof JsonArray)) throw new UnsupportedOperationException("Not an array: " + toString()); return (JsonArray)value; }
-
     public int asInt(){ return asNumber().intValue(); }
     public long asLong(){ return asNumber().longValue(); }
     public float asFloat(){ return asNumber().floatValue(); }
@@ -141,7 +137,7 @@ public class Jval{
      * @throws IOException if an I/O error occurs in the writer
      */
     public void writeTo(Writer writer) throws IOException{
-        writeTo(writer, JsonFormat.plain);
+        writeTo(writer, Jformat.plain);
     }
 
     /**
@@ -153,7 +149,7 @@ public class Jval{
      * @param format controls the formatting
      * @throws IOException if an I/O error occurs in the writer
      */
-    public void writeTo(Writer writer, JsonFormat format) throws IOException{
+    public void writeTo(Writer writer, Jformat format) throws IOException{
         WritingBuffer buffer = new WritingBuffer(writer, 128);
         switch(format){
             case plain:
@@ -172,7 +168,7 @@ public class Jval{
     /** Returns the JSON string for this value in its minimal form, without any additional whitespace.*/
     @Override
     public String toString(){
-        JsonType type = getType();
+        Jtype type = getType();
         switch(type){
             case nil: return "null";
             case number: return (value.toString().endsWith(".0") ? value.toString().replace(".0", "") : value.toString()).replace('E', 'e');
@@ -180,7 +176,7 @@ public class Jval{
             case bool: return value.toString();
         }
 
-        return toString(JsonFormat.plain);
+        return toString(Jformat.plain);
     }
 
     /**
@@ -188,7 +184,7 @@ public class Jval{
      * @param format controls the formatting
      * @return a JSON/Hjson string that represents this value
      */
-    public String toString(JsonFormat format){
+    public String toString(Jformat format){
         StringWriter writer = new StringWriter();
         try{
             writeTo(writer, format);
@@ -279,7 +275,7 @@ public class Jval{
     }
 
     /** The ToString format. */
-    public enum JsonFormat{
+    public enum Jformat{
         /** JSON (no whitespace). */
         plain,
         /** Formatted JSON. */
@@ -292,7 +288,7 @@ public class Jval{
      * Defines the known json types.
      * There is no null type as the primitive will be null instead of the JsonValue containing null.
      */
-    public enum JsonType{
+    public enum Jtype{
         string, number, object, array, bool, nil,
     }
 
@@ -1007,8 +1003,8 @@ public class Jval{
                         tw.write("\":");
                         //save(, tw, level+1, " ", false);
                         Jval v = pair.value;
-                        JsonType vType = v.getType();
-                        if(format && vType != JsonType.array && vType != JsonType.object) tw.write(" ");
+                        Jtype vType = v.getType();
+                        if(format && vType != Jtype.array && vType != Jtype.object) tw.write(" ");
                         save(v, tw, level + 1);
                         following = true;
                     }
@@ -1023,8 +1019,8 @@ public class Jval{
                     for(int i = 0; i < n; i++){
                         if(following) tw.write(",");
                         Jval v = arr.get(i);
-                        JsonType vType = v.getType();
-                        if(vType != JsonType.array && vType != JsonType.object) nl(tw, level + 1);
+                        Jtype vType = v.getType();
+                        if(vType != Jtype.array && vType != Jtype.object) nl(tw, level + 1);
                         save(v, tw, level + 1);
                         following = true;
                     }

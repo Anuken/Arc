@@ -60,6 +60,6 @@ public class JvalTest{
         "\n" +
         "  ");
 
-        Log.info(val.toString(JsonFormat.formatted));
+        Log.info(val.toString(Jformat.formatted));
     }
 }
