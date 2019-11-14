@@ -2,7 +2,7 @@ package io.anuke.arc.util;
 
 import io.anuke.arc.*;
 
-/** An extremely simply utility class used for checking whether the application has re-initialized.*/
+/** An extremely simple utility class used for checking whether the application has re-initialized.*/
 public class StaticReset{
     private Files files;
 
