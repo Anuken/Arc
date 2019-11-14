@@ -11,12 +11,12 @@ public class OS{
     static public boolean isAndroid = false;
     static public boolean isARM = System.getProperty("os.arch").startsWith("arm") || System.getProperty("os.arch").startsWith("aarch64");
     static public boolean is64Bit = System.getProperty("os.arch").contains("64") || System.getProperty("os.arch").startsWith("armv8");
-    static public boolean isChromebook = System.getProperty("os.name").contains("Chrome");
+    static public boolean isChromeOS = System.getProperty("os.name").contains("Chrome");
 
     static {
         boolean isMOEiOS = "iOS".equals(System.getProperty("moe.platform.name"));
         String vm = System.getProperty("java.runtime.name");
-        if (vm != null && vm.contains("Android Runtime")) { //Can be both isAndroid and isChromebook
+        if (vm != null && vm.contains("Android Runtime")) { //Can be both isAndroid and isChromeOS
             isAndroid = true;
             isWindows = false;
             isLinux = false;
@@ -36,7 +36,7 @@ public class OS{
     public static String getAppDataDirectoryString(String appname){
         if(OS.isWindows){
             return getEnv("AppData") + "\\\\" + appname;
-        }else if(isIos || isAndroid || isChromebook){
+        }else if(isIos || isAndroid || isChromeOS){
             return Core.files.getLocalStoragePath();
         }else if(OS.isLinux){
             if(System.getenv("XDG_DATA_HOME") != null){
