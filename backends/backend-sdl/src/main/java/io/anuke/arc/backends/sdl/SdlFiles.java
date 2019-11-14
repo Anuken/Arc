@@ -60,10 +60,6 @@ public final class SdlFiles implements Files{
         return true;
     }
 
-    /**
-     * @author mzechner
-     * @author Nathan Sweet
-     */
     public static final class SdlFileHandle extends FileHandle{
         public SdlFileHandle(String fileName, FileType type){
             super(fileName, type);
