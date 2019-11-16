@@ -1,7 +1,6 @@
 package io.anuke.arc.collection;
 
 import io.anuke.arc.util.*;
-import io.anuke.arc.util.reflect.*;
 
 import java.util.*;
 
@@ -41,7 +40,7 @@ public class Queue<T> implements Iterable<T>{
      * backing array of the specified type via reflection, which is necessary only when accessing the backing array directly.
      */
     public Queue(int initialSize, Class<T> type){
-        this.values = (T[])ArrayReflection.newInstance(type, initialSize);
+        this.values = (T[])java.lang.reflect.Array.newInstance(type, initialSize);
     }
 
     /**
@@ -104,7 +103,7 @@ public class Queue<T> implements Iterable<T>{
         final int head = this.head;
         final int tail = this.tail;
 
-        @SuppressWarnings("unchecked") final T[] newArray = (T[])ArrayReflection.newInstance(values.getClass().getComponentType(), newSize);
+        @SuppressWarnings("unchecked") final T[] newArray = (T[])java.lang.reflect.Array.newInstance(values.getClass().getComponentType(), newSize);
         if(head < tail){
             // Continuous
             System.arraycopy(values, head, newArray, 0, tail - head);

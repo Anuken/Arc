@@ -1,8 +1,7 @@
 package io.anuke.arc.assets;
 
 import io.anuke.arc.files.*;
-import io.anuke.arc.func.Cons;
-import io.anuke.arc.util.reflect.*;
+import io.anuke.arc.func.*;
 
 /**
  * Describes an asset to be loaded by its filename, type and {@link AssetLoaderParameters}. Instances of this are used in
@@ -19,7 +18,7 @@ public class AssetDescriptor<T>{
     public Cons<T> loaded = t -> {};
 
     public AssetDescriptor(Class<T> assetType){
-        this(ClassReflection.getSimpleName(assetType), assetType, null);
+        this(assetType.getSimpleName(), assetType, null);
     }
 
     public AssetDescriptor(String fileName, Class<T> assetType){

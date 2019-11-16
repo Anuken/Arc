@@ -1,27 +1,17 @@
 package io.anuke.arc.assets;
 
 import io.anuke.arc.assets.loaders.*;
-import io.anuke.arc.assets.loaders.resolvers.InternalFileHandleResolver;
-import io.anuke.arc.audio.Music;
-import io.anuke.arc.audio.Sound;
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.collection.ObjectIntMap;
-import io.anuke.arc.collection.ObjectMap;
-import io.anuke.arc.collection.ObjectSet;
+import io.anuke.arc.assets.loaders.resolvers.*;
+import io.anuke.arc.audio.*;
+import io.anuke.arc.collection.*;
 import io.anuke.arc.files.*;
-import io.anuke.arc.graphics.Cubemap;
-import io.anuke.arc.graphics.Pixmap;
-import io.anuke.arc.graphics.Texture;
-import io.anuke.arc.graphics.g2d.BitmapFont;
-import io.anuke.arc.graphics.g2d.TextureAtlas;
-import io.anuke.arc.graphics.glutils.Shader;
+import io.anuke.arc.graphics.*;
+import io.anuke.arc.graphics.g2d.*;
+import io.anuke.arc.graphics.glutils.*;
 import io.anuke.arc.util.*;
-import io.anuke.arc.util.async.AsyncExecutor;
-import io.anuke.arc.util.async.Threads;
-import io.anuke.arc.util.reflect.ClassReflection;
+import io.anuke.arc.util.async.*;
 
-import java.lang.StringBuilder;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * Loads and stores assets like textures, bitmapfonts, tile maps, sounds, music and so on.
@@ -323,7 +313,6 @@ public class AssetManager implements Disposable{
 
     /**
      * Loads a custom one-time 'asset' that knows how to load itself.
-     * @param load the asset
      */
     public synchronized AssetDescriptor loadRun(String name, Class<?> type, Runnable loadasync){
         if(getLoader(type) == null){
@@ -374,7 +363,7 @@ public class AssetManager implements Disposable{
      */
     public synchronized <T> AssetDescriptor load(String fileName, Class<T> type, AssetLoaderParameters<T> parameter){
         AssetLoader loader = getLoader(type, fileName);
-        if(loader == null) throw new ArcRuntimeException("No loader for type: " + ClassReflection.getSimpleName(type));
+        if(loader == null) throw new ArcRuntimeException("No loader for type: " + type.getSimpleName());
 
         // reset stats
         if(loadQueue.size == 0){
@@ -390,7 +379,7 @@ public class AssetManager implements Disposable{
             AssetDescriptor desc = loadQueue.get(i);
             if(desc.fileName.equals(fileName) && !desc.type.equals(type)) throw new ArcRuntimeException(
             "Asset with name '" + fileName + "' already in preload queue, but has different type (expected: "
-            + ClassReflection.getSimpleName(type) + ", found: " + ClassReflection.getSimpleName(desc.type) + ")");
+            + type.getSimpleName() + ", found: " + desc.type.getSimpleName() + ")");
         }
 
         // check task list
@@ -398,14 +387,14 @@ public class AssetManager implements Disposable{
             AssetDescriptor desc = tasks.get(i).assetDesc;
             if(desc.fileName.equals(fileName) && !desc.type.equals(type)) throw new ArcRuntimeException(
             "Asset with name '" + fileName + "' already in task list, but has different type (expected: "
-            + ClassReflection.getSimpleName(type) + ", found: " + ClassReflection.getSimpleName(desc.type) + ")");
+            + type.getSimpleName() + ", found: " + desc.type.getSimpleName() + ")");
         }
 
         // check loaded assets
         Class otherType = assetTypes.get(fileName);
         if(otherType != null && !otherType.equals(type))
             throw new ArcRuntimeException("Asset with name '" + fileName + "' already loaded, but has different type (expected: "
-            + ClassReflection.getSimpleName(type) + ", found: " + ClassReflection.getSimpleName(otherType) + ")");
+            + type.getSimpleName() + ", found: " + otherType.getSimpleName() + ")");
 
         toLoad++;
         AssetDescriptor assetDesc = new AssetDescriptor<>(fileName, type, parameter);
@@ -558,7 +547,7 @@ public class AssetManager implements Disposable{
     private void addTask(AssetDescriptor assetDesc){
         AssetLoader loader = getLoader(assetDesc.type, assetDesc.fileName);
         if(loader == null)
-            throw new ArcRuntimeException("No loader for type: " + ClassReflection.getSimpleName(assetDesc.type));
+            throw new ArcRuntimeException("No loader for type: " + assetDesc.type.getSimpleName());
         tasks.push(new AssetLoadingTask(this, assetDesc, loader, executor));
         peakTasks++;
     }
@@ -799,7 +788,7 @@ public class AssetManager implements Disposable{
             RefCountedContainer assetRef = assets.get(type).get(fileName);
             Array<String> dependencies = assetDependencies.get(fileName);
 
-            sb.append(ClassReflection.getSimpleName(type));
+            sb.append(type.getSimpleName());
 
             sb.append(", refs: ");
             sb.append(assetRef.getRefCount());

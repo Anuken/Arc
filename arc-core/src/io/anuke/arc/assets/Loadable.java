@@ -1,7 +1,6 @@
 package io.anuke.arc.assets;
 
 import io.anuke.arc.collection.*;
-import io.anuke.arc.util.reflect.*;
 
 public interface Loadable{
     default void loadAsync(){
@@ -13,7 +12,7 @@ public interface Loadable{
     }
 
     default String getName(){
-        return ClassReflection.getSimpleName(getClass());
+        return getClass().getSimpleName();
     }
 
     default Array<AssetDescriptor> getDependencies(){
