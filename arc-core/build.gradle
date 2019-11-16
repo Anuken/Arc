@@ -2,5 +2,5 @@ sourceSets.main.java.srcDirs = ["src"]
 sourceSets.test.java.srcDirs = ["test"]
 
 dependencies{
-    testCompile libraries.junit
+    testImplementation libraries.junit
 }

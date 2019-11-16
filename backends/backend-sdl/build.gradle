@@ -8,13 +8,13 @@ sourceSets.main.resources.srcDirs = ["libs/linux32", "libs/linux64",
                                       "libs/macosx32", "libs/macosx64","libs/windows32", "libs/windows64", "libs/openal"]
 
 dependencies {
-    testCompile "com.badlogicgames.gdx:gdx-jnigen:1.9.10"
+    testImplementation "com.badlogicgames.gdx:gdx-jnigen:1.9.10"
     compile libraries.sdl
 
     if(findProject(":arc-core") != null){
-        testCompile project(":arc-core")
+        testImplementation project(":arc-core")
     }else{
-        testCompile project(":Arc:arc-core")
+        testImplementation project(":Arc:arc-core")
     }
 }
 
