@@ -9,6 +9,10 @@ import java.util.*;
 
 public class Structs{
 
+    public static <T> T[] arr(T... array){
+        return array;
+    }
+
     /** Remove all values that match this predicate. */
     public static <T> void filter(Iterable<T> iterable, Boolf<T> removal){
         filter(iterable.iterator(), removal);

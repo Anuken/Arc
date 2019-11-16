@@ -49,7 +49,7 @@ public final class Geometry{
     public static void circle(int x, int y, int radius, Intc2 cons){
         for(int dx = -radius; dx <= radius; dx++){
             for(int dy = -radius; dy <= radius; dy++){
-                if(Mathf.dst2(dx, dy, 0, 0) <= radius*radius){
+                if(Mathf.within(dx, dy, radius)){
                     cons.get(dx + x, dy + y);
                 }
             }
@@ -60,8 +60,7 @@ public final class Geometry{
         for(int dx = -radius; dx <= radius; dx++){
             for(int dy = -radius; dy <= radius; dy++){
                 int wx = dx + x, wy = dy + y;
-                if(wx >= 0 && wy >= 0 && wx < width && wy < height
-                        && Mathf.dst2(dx, dy, 0, 0) <= radius*radius){
+                if(wx >= 0 && wy >= 0 && wx < width && wy < height && Mathf.within(dx, dy, radius)){
                     cons.get(wx, wy);
                 }
             }
