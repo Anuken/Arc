@@ -518,6 +518,10 @@ public final class Mathf{
         return dst2(x1, y1, x2, y2) < dst*dst;
     }
 
+    public static boolean within(float x1, float y1, float dst){
+        return dst2(x1, y1) < dst*dst;
+    }
+
     static private class Sin{
         static final float[] table = new float[SIN_COUNT];
 
