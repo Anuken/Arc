@@ -51,24 +51,28 @@ public class SettingsDialog extends Dialog{
             sliderPref("screenshake", bundle.get("setting.screenshake.name", "Screen Shake"), 4, 0, 8, i -> (i / 4f) + "x");
         }
 
-        public void sliderPref(String name, String title, int def, int min, int max, StringProcessor s){
-            sliderPref(name, title, def, min, max, 1, s);
+        public SliderSetting sliderPref(String name, String title, int def, int min, int max, StringProcessor s){
+            return sliderPref(name, title, def, min, max, 1, s);
         }
 
-        public void sliderPref(String name, String title, int def, int min, int max, int step, StringProcessor s){
-            list.add(new SliderSetting(name, title, def, min, max, step, s));
+        public SliderSetting sliderPref(String name, String title, int def, int min, int max, int step, StringProcessor s){
+            SliderSetting res;
+            list.add(res = new SliderSetting(name, title, def, min, max, step, s));
             settings.defaults(name, def);
             rebuild();
+            return res;
         }
 
-        public void sliderPref(String name, int def, int min, int max, StringProcessor s){
-            sliderPref(name, def, min, max, 1, s);
+        public SliderSetting sliderPref(String name, int def, int min, int max, StringProcessor s){
+            return sliderPref(name, def, min, max, 1, s);
         }
 
-        public void sliderPref(String name, int def, int min, int max, int step, StringProcessor s){
-            list.add(new SliderSetting(name, bundle.get("setting." + name + ".name"), def, min, max, step, s));
+        public SliderSetting sliderPref(String name, int def, int min, int max, int step, StringProcessor s){
+            SliderSetting res;
+            list.add(res = new SliderSetting(name, bundle.get("setting." + name + ".name"), def, min, max, step, s));
             settings.defaults(name, def);
             rebuild();
+            return res;
         }
 
         public void checkPref(String name, String title, boolean def){
@@ -160,6 +164,7 @@ public class SettingsDialog extends Dialog{
             int max;
             int step;
             StringProcessor sp;
+            float[] values = null;
 
             SliderSetting(String name, String title, int def, int min, int max, int step, StringProcessor s){
                 this.name = name;
@@ -176,6 +181,9 @@ public class SettingsDialog extends Dialog{
                 Slider slider = new Slider(min, max, step, false);
 
                 slider.setValue(settings.getInt(name));
+                if(values != null){
+                    slider.setSnapToValues(values, 1f);
+                }
 
                 Label label = new Label(title);
                 slider.changed(() -> {
