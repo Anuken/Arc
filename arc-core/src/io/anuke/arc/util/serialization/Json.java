@@ -1091,6 +1091,12 @@ public class Json{
                     result.add(readValue(elementType, null, child));
                 return (T)result;
             }
+            if(ObjectSet.class.isAssignableFrom(type)){
+                ObjectSet result = type == ObjectSet.class ? new ObjectSet() : (ObjectSet)newInstance(type);
+                for(JsonValue child = jsonData.child; child != null; child = child.next)
+                    result.add(readValue(elementType, null, child));
+                return (T)result;
+            }
             if(io.anuke.arc.collection.Queue.class.isAssignableFrom(type)){
                 io.anuke.arc.collection.Queue result = type == io.anuke.arc.collection.Queue.class ? new io.anuke.arc.collection.Queue() : (Queue)newInstance(type);
                 for(JsonValue child = jsonData.child; child != null; child = child.next)
