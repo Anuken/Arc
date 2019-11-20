@@ -1,7 +1,6 @@
 package io.anuke.arc.util.serialization;
 
 import io.anuke.arc.collection.*;
-import io.anuke.arc.util.serialization.Jval.Hparser.*;
 import io.anuke.arc.util.ArcAnnotate.*;
 import io.anuke.arc.util.*;
 
@@ -73,8 +72,8 @@ public class Jval{
     public static Jval valueOf(String string){ return string == null ? NULL : new Jval(string); }
     public static Jval valueOf(boolean value){ return value ? TRUE : FALSE; }
 
-    public boolean isObject(){ return false; }
-    public boolean isArray(){ return false; }
+    public boolean isObject(){ return value instanceof JsonMap; }
+    public boolean isArray(){ return value instanceof JsonArray; }
     public boolean isNumber(){ return value instanceof Number; }
     public boolean isString(){ return value instanceof Structs; }
     public boolean isBoolean(){ return value instanceof Boolean; }
@@ -95,6 +94,21 @@ public class Jval{
     public Jval get(String name){
         if(name == null) throw new NullPointerException("name is null");
         return asObject().get(name);
+    }
+
+    public void add(String name, Jval val){
+        if(name == null) throw new NullPointerException("name is null");
+        asObject().put(name, val);
+    }
+
+    public Jval remove(String name){
+        if(name == null) throw new NullPointerException("name is null");
+        return asObject().removeKey(name);
+    }
+
+    public boolean has(String name){
+        if(name == null) throw new NullPointerException("name is null");
+        return asObject().containsKey(name);
     }
 
     public int getInt(String name, int defaultValue){
@@ -159,7 +173,7 @@ public class Jval{
                 new Jwriter(true).save(this, buffer, 0);
                 break;
             case hjson:
-                new Hwriter().save(this, buffer, 0, "", true);
+                new Hwriter().save(this, buffer, -1, "", true);
                 break;
         }
         buffer.flush();
@@ -203,12 +217,12 @@ public class Jval{
     }
 
     /** Alias class of whatever is used to store json maps (objects). */
-    static class JsonMap extends ArrayMap<String, Jval>{
+    public static class JsonMap extends ArrayMap<String, Jval>{
 
     }
 
     /** Alias class of json arrays. */
-    static class JsonArray extends Array<Jval>{
+    public static class JsonArray extends Array<Jval>{
 
     }
 
@@ -391,7 +405,7 @@ public class Jval{
             value.append((char)current);
             while(true){
                 read();
-                boolean isEol = current < 0 || current == '\r' || current == '\n';
+                boolean isEol = current < 0 || current == '\r' || current == '\n'/* || current == ']' || current == ','*/;
                 if(isEol || current == ',' ||
                 current == '}' || current == ']' ||
                 current == '#' ||
@@ -816,27 +830,26 @@ public class Jval{
                 case object:
                     JsonMap obj = value.asObject();
                     if(!noIndent){
-                        if(obj.size > 0) nl(tw, level);
-                        else tw.write(separator);
+                        tw.write(" ");
                     }
-                    tw.write('{');
+                    if(level >= 0) tw.write('{');
+                    int index = 0;
 
                     for(ObjectMap.Entry<String, Jval> pair : obj){
-                        nl(tw, level + 1);
+                        if(!(index++ == 0 && level < 0)) nl(tw, level + 1);
                         tw.write(escapeName(pair.key));
                         tw.write(":");
                         save(pair.value, tw, level + 1, " ", false);
                     }
 
                     if(obj.size > 0) nl(tw, level);
-                    tw.write('}');
+                    if(level >= 0) tw.write('}');
                     break;
                 case array:
                     JsonArray arr = value.asArray();
                     int n = arr.size;
                     if(!noIndent){
-                        if(n > 0) nl(tw, level);
-                        else tw.write(separator);
+                        tw.write(" ");
                     }
                     tw.write('[');
                     for(int i = 0; i < n; i++){
@@ -955,7 +968,7 @@ public class Jval{
         }
 
         static boolean needsQuotes(char c){
-            return c == '\t' || c == '\f' || c == '\b' || c == '\n' || c == '\r';
+            return c == '\t' || c == '\f' || c == '\b' || c == '\n' || c == '\r'/* || c == ']' || c == ','*/;
         }
 
         static boolean needsEscape(char c){
