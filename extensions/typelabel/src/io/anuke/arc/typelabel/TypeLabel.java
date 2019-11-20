@@ -647,7 +647,7 @@ public class TypeLabel extends Label{
             for(int j = 0; j < glyphs.size; j++){
 
                 // Detect and store layout line breaks
-                if(!Mathf.isEqual(run.y, lastY)){
+                if(!Mathf.equal(run.y, lastY)){
                     lastY = run.y;
                     layoutLineBreaks.add(index);
                 }

@@ -1,7 +1,7 @@
 package io.anuke.arc.typelabel;
 
 import io.anuke.arc.collection.*;
-import io.anuke.arc.function.Function;
+import io.anuke.arc.func.*;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.typelabel.effects.*;
 
@@ -52,7 +52,7 @@ public class TypingConfig{
     public static final ObjectMap<String, String> GLOBAL_VARS = new ObjectMap<>();
 
     /** Map of start tokens and their effect classes. Internal use only. */
-    static final ObjectMap<String, Function<TypeLabel, Effect>> EFFECTS = new ObjectMap<>();
+    static final ObjectMap<String, Func<TypeLabel, Effect>> EFFECTS = new ObjectMap<>();
 
     /** Whether or not effect tokens are dirty and need to be recalculated. */
     static boolean dirtyEffectMaps = true;
@@ -62,7 +62,7 @@ public class TypingConfig{
      *
      * @param tokenName Name of the token that starts the effect, such as WAVE.
      */
-    public static void registerEffect(String tokenName, Function<TypeLabel, Effect> effect){
+    public static void registerEffect(String tokenName, Func<TypeLabel, Effect> effect){
         EFFECTS.put(tokenName, effect);
         dirtyEffectMaps = true;
     }
