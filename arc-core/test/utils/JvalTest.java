@@ -1,5 +1,7 @@
 package utils;
 
+import io.anuke.arc.Files.*;
+import io.anuke.arc.files.*;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.serialization.*;
 import io.anuke.arc.util.serialization.Jval.*;
@@ -61,5 +63,38 @@ public class JvalTest{
         "  ");
 
         Log.info(val.toString(Jformat.formatted));
+    }
+
+    @Test
+    public void benchmarkJson(){
+        FileHandle file = new FileHandle("generated.json", FileType.Classpath);
+        String text = file.readString();
+
+        Runnable hjson = () -> {
+            Jval val = Jval.read(text);
+        };
+
+        Runnable json = () -> {
+            JsonValue value = new JsonReader().parse(text);
+        };
+
+        //warmup
+        int iterations = 10000;
+        for(int i = 0; i < iterations; i++){
+            hjson.run();
+            json.run();
+        }
+
+        Time.mark();
+        for(int i = 0; i < iterations; i++){
+            json.run();
+        }
+        Log.info("Time taken to parse json: {0}ms", Time.elapsed());
+
+        Time.mark();
+        for(int i = 0; i < iterations; i++){
+            hjson.run();
+        }
+        Log.info("Time taken to parse H-json: {0}ms", Time.elapsed());
     }
 }
