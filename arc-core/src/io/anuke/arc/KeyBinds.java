@@ -118,6 +118,20 @@ public class KeyBinds{
         }
     }
 
+    /**
+     * Resets a keybind to its default value.
+     * Call Core.settings.save() to flush the change afterwards.
+     */
+    public void resetToDefault(Section section, KeyBind bind){
+        String rname = "keybind-" + section.name + "-" + section.device.name() + "-" + bind.name();
+        settings.remove(rname + "-single");
+        settings.remove(rname + "-key");
+        settings.remove(rname + "-min");
+        settings.remove(rname + "-max");
+
+        section.binds.getOr(section.device.type(), OrderedMap::new).remove(bind);
+    }
+
     private void save(Axis axis, String name){
         settings.put(name + "-single", axis.key != null);
 
