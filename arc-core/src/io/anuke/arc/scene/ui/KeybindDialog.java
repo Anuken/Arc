@@ -155,7 +155,7 @@ public class KeybindDialog extends Dialog{
                         openDialog(section, keybind);
                     }).width(110f);
                 }
-                table.addButton(bundle.get("settings.reset_key", "Reset"), () -> {
+                table.addButton(bundle.get("settings.resetKey", "Reset"), () -> {
                     keybinds.resetToDefault(section, keybind);
                     setup();
                     settings.save();
