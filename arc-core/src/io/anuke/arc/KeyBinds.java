@@ -129,12 +129,7 @@ public class KeyBinds{
         settings.remove(rname + "-min");
         settings.remove(rname + "-max");
 
-        KeybindValue value = bind.defaultValue(section.device.type());
-        if(value instanceof Axis){
-            section.binds.getOr(section.device.type(), OrderedMap::new).put(bind, (Axis) value);
-        }else if(value instanceof KeyCode){
-            section.binds.getOr(section.device.type(), OrderedMap::new).put(bind, new Axis((KeyCode) value));
-        }
+        section.binds.getOr(section.device.type(), OrderedMap::new).remove(bind);
     }
 
     private void save(Axis axis, String name){
