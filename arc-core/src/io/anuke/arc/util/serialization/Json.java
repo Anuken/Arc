@@ -1149,7 +1149,7 @@ public class Json{
             if(type == null || type == String.class) return (T)string;
             try{
                 if(type == int.class || type == Integer.class) return (T)Integer.valueOf(string);
-                if(type == float.class || type == Float.class) return (T)Float.valueOf(string);
+                if(type == float.class || type == Float.class) return string.endsWith("f") ? (T)Float.valueOf(string.substring(0, string.length() - 1)) : string.endsWith("f,") ? (T)Float.valueOf(string.substring(0, string.length() - 2)) : (T)Float.valueOf(string);
                 if(type == long.class || type == Long.class) return (T)Long.valueOf(string);
                 if(type == double.class || type == Double.class) return (T)Double.valueOf(string);
                 if(type == short.class || type == Short.class) return (T)Short.valueOf(string);
