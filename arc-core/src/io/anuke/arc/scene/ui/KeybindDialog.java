@@ -104,7 +104,7 @@ public class KeybindDialog extends Dialog{
                 }
             }).disabled(sectionControls.get(section, 0) + 1 >= devices.size).size(40);
 
-            table.add(stable).colspan(3);
+            table.add(stable).colspan(4);
 
             table.row();
             table.add().height(10);
@@ -119,8 +119,8 @@ public class KeybindDialog extends Dialog{
 
             for(KeyBind keybind : keybinds.getKeybinds()){
                 if(lastCategory != keybind.category() && keybind.category() != null){
-                    table.add(bundle.get("category." + keybind.category() + ".name", Strings.capitalize(keybind.category()))).color(Color.gray).colspan(3).pad(10).padBottom(4).row();
-                    table.addImage().color(Color.gray).fillX().height(3).pad(6).colspan(3).padTop(0).padBottom(10).row();
+                    table.add(bundle.get("category." + keybind.category() + ".name", Strings.capitalize(keybind.category()))).color(Color.gray).colspan(4).pad(10).padBottom(4).row();
+                    table.addImage().color(Color.gray).fillX().height(3).pad(6).colspan(4).padTop(0).padBottom(10).row();
                     lastCategory = keybind.category();
                 }
 
@@ -157,8 +157,8 @@ public class KeybindDialog extends Dialog{
                 }
                 table.addButton(bundle.get("settings.resetKey", "Reset"), () -> {
                     keybinds.resetToDefault(section, keybind);
-                    setup();
                     settings.save();
+                    setup();
                 }).width(100f);
                 table.row();
             }
