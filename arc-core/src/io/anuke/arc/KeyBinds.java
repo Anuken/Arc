@@ -130,9 +130,9 @@ public class KeyBinds{
         settings.remove(rname + "-max");
 
         KeybindValue value = bind.defaultValue(section.device.type());
-        if (value instanceof Axis) {
+        if(value instanceof Axis){
             section.binds.getOr(section.device.type(), OrderedMap::new).put(bind, (Axis) value);
-        } else if (value instanceof KeyCode) {
+        }else if(value instanceof KeyCode){
             section.binds.getOr(section.device.type(), OrderedMap::new).put(bind, new Axis((KeyCode) value));
         }
     }
