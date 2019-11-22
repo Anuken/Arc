@@ -405,7 +405,7 @@ public class Jval{
             value.append((char)current);
             while(true){
                 read();
-                boolean isEol = current < 0 || current == '\r' || current == '\n'/* || current == ']' || current == ','*/;
+                boolean isEol = current < 0 || current == '\r' || current == '\n' /*|| current == ',' || current == ']' */;
                 if(isEol || current == ',' ||
                 current == '}' || current == ']' ||
                 current == '#' ||
@@ -566,7 +566,7 @@ public class Jval{
             startCapture();
             while(current != exitCh){
                 if(current == '\\') readEscape();
-                else if(current < 0x20) throw expected("valid string character");
+                //else if(current < 0x20) throw expected("valid string character");
                 else read();
             }
             String string = endCapture();
@@ -585,6 +585,7 @@ public class Jval{
             switch(current){
                 case '"':
                 case '\'':
+                case '#':
                 case '/':
                 case '\\':
                     captureBuffer.append((char)current);

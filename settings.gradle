@@ -5,7 +5,6 @@ include ":extensions:freetype"
 include ":extensions:recorder"
 include ":extensions:postprocessing"
 include ":extensions:arcnet"
-include ":extensions:mnet"
 include ":extensions:typelabel"
 include ":extensions:packer"
 
