@@ -35,7 +35,6 @@ public class Jval{
      * @param reader the reader to read the Hjson value from
      * @return the Hjson value that has been read
      * @throws IOException if an I/O error occurs in the reader
-     * @throws JsonParseException if the input is not valid Hjson
      */
     public static Jval read(Reader reader) throws IOException{
         return new Hparser(reader).parse();
@@ -45,7 +44,6 @@ public class Jval{
      * Reads a Hjson value from the given string.
      * @param text the string that contains the Hjson value
      * @return the Hjson value that has been read
-     * @throws JsonParseException if the input is not valid Hjson
      */
     public static Jval read(String text){
         try{

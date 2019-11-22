@@ -6,7 +6,6 @@ import io.anuke.arc.collection.ObjectMap.*;
 import io.anuke.arc.input.*;
 import io.anuke.arc.input.InputDevice.*;
 import io.anuke.arc.math.*;
-import io.anuke.arc.util.*;
 
 import static io.anuke.arc.Core.*;
 
@@ -79,7 +78,6 @@ public class KeyBinds{
             for(DeviceType type : DeviceType.values()){
                 for(KeyBind def : definitions){
                     String rname = "keybind-" + sec.name + "-" + type.name() + "-" + def.name();
-                    Log.info("Load " + rname);
 
                     Axis loaded = load(rname);
 
