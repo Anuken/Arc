@@ -603,6 +603,17 @@ public class Json{
                 writeObjectEnd();
                 return;
             }
+
+            if(value instanceof ObjectIntMap){
+                if(knownType == null) knownType = ObjectIntMap.class;
+                writeObjectStart(actualType, knownType);
+                for(ObjectIntMap.Entry entry : ((ObjectIntMap<?>)value).entries()){
+                    writer.name(convertToString(entry.key));
+                    writer.value(entry.value);
+                }
+                writeObjectEnd();
+                return;
+            }
             if(value instanceof ArrayMap){
                 if(knownType == null) knownType = ArrayMap.class;
                 writeObjectStart(actualType, knownType);
@@ -1035,6 +1046,14 @@ public class Json{
 
                     return (T)result;
                 }
+                if(object instanceof ObjectIntMap){
+                    ObjectIntMap result = (ObjectIntMap)object;
+                    for(JsonValue child = jsonData.child; child != null; child = child.next){
+                        result.put(elementType != null ? readValue(elementType, null, new JsonValue(child.name)) : child.name, child.asInt());
+                    }
+
+                    return (T)result;
+                }
                 if(object instanceof ObjectSet){
                     ObjectSet result = (ObjectSet)object;
                     for(JsonValue child = jsonData.getChild("values"); child != null; child = child.next)
@@ -1195,7 +1214,7 @@ public class Json{
         return enumNames ? e.name() : e.toString();
     }
 
-    private String convertToString(Object object){
+    protected String convertToString(Object object){
         if(object instanceof Enum) return convertToString((Enum)object);
         if(object instanceof Class) return ((Class)object).getName();
         return String.valueOf(object);
