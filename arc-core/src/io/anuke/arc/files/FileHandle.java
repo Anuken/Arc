@@ -3,7 +3,7 @@ package io.anuke.arc.files;
 import io.anuke.arc.*;
 import io.anuke.arc.Files.*;
 import io.anuke.arc.collection.*;
-import io.anuke.arc.func.Cons;
+import io.anuke.arc.func.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.io.*;
@@ -528,6 +528,18 @@ public class FileHandle{
         }else{
             cons.get(this);
         }
+    }
+
+    /** Recursively iterates through all files in this directory and adds them to an array.
+     * Directories are not handled. */
+    public Array<FileHandle> findAll(Boolf<FileHandle> test){
+        Array<FileHandle> out = new Array<>();
+        walk(f -> {
+            if(test.get(f)){
+                out.add(f);
+            }
+        });
+        return out;
     }
 
     /**

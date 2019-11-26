@@ -1,14 +1,13 @@
 package io.anuke.arc.graphics;
 
-import io.anuke.arc.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
-import io.anuke.arc.func.Intc2;
+import com.badlogic.gdx.graphics.g2d.*;
+import io.anuke.arc.files.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.graphics.g2d.*;
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.Disposable;
+import io.anuke.arc.util.*;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.io.*;
+import java.nio.*;
 
 /**
  * <p>
@@ -158,13 +157,6 @@ public class Pixmap implements Disposable{
         pixmap.drawRect(x, y, width, height, color);
     }
 
-// /**
-// * Sets the width in pixels of strokes.
-// *
-// * @param width The stroke width in pixels.
-// */
-// public void setStrokeWidth (int width);
-
     public void draw(PixmapRegion region){
         drawPixmap(region.pixmap, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height);
     }
@@ -175,6 +167,14 @@ public class Pixmap implements Disposable{
 
     public void draw(PixmapRegion region, int x, int y, int width, int height){
         drawPixmap(region.pixmap, region.x, region.y, region.width, region.height, x, y, width, height);
+    }
+
+    public void draw(PixmapRegion region, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight){
+        drawPixmap(region.pixmap, x, y, region.x + srcx, region.y + srcy, srcWidth, srcHeight);
+    }
+
+    public void draw(PixmapRegion region, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight){
+        drawPixmap(region.pixmap, region.x + srcx, region.y + srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight);
     }
 
     public void drawPixmap(Pixmap pixmap){
@@ -219,8 +219,7 @@ public class Pixmap implements Disposable{
      * @param dstWidth The target width
      * @param dstHeight the target height
      */
-    public void drawPixmap(Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth,
-                           int dstHeight){
+    public void drawPixmap(Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight){
         this.pixmap.drawPixmap(pixmap.pixmap, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight);
     }
 
