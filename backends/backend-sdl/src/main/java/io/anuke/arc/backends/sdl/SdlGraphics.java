@@ -91,6 +91,7 @@ public class SdlGraphics extends Graphics{
     @Override
     public void setGL20(GL20 gl20){
         this.gl20 = gl20;
+        Core.gl = Core.gl20 = gl20;
     }
 
     @Override

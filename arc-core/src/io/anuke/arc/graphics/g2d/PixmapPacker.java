@@ -297,6 +297,11 @@ public class PixmapPacker implements Disposable{
         return atlas;
     }
 
+    public synchronized void updateTextureAtlas(TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter,
+                                                boolean useMipMaps){
+        updateTextureAtlas(atlas, minFilter, magFilter, useMipMaps, true);
+    }
+
     /**
      * Updates the {@link TextureAtlas}, adding any new {@link Pixmap} instances packed since the last call to this method. This
      * can be used to insert Pixmap instances on a separate thread via {@link #pack(String, Pixmap)} and update the TextureAtlas on
