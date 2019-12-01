@@ -632,7 +632,6 @@ public class AssetManager implements Disposable{
      * Handles a runtime/loading error in {@link #update()} by optionally invoking the {@link AssetErrorListener}.
      */
     private void handleTaskError(Throwable t){
-
         if(tasks.isEmpty()) throw new ArcRuntimeException(t);
 
         // pop the faulty task from the stack
@@ -652,6 +651,10 @@ public class AssetManager implements Disposable{
         // inform the listener that something bad happened
         if(listener != null){
             listener.error(assetDesc, t);
+        }
+
+        if(assetDesc.errored != null){
+            assetDesc.errored.get(t);
         }else{
             throw new ArcRuntimeException(t);
         }

@@ -2,6 +2,7 @@ package io.anuke.arc.assets;
 
 import io.anuke.arc.files.*;
 import io.anuke.arc.func.*;
+import io.anuke.arc.util.ArcAnnotate.*;
 
 /**
  * Describes an asset to be loaded by its filename, type and {@link AssetLoaderParameters}. Instances of this are used in
@@ -16,6 +17,8 @@ public class AssetDescriptor<T>{
     public FileHandle file;
     /** Callback for when this asset is loaded.*/
     public Cons<T> loaded = t -> {};
+    /** Callback for when this asset has an error.*/
+    public @Nullable Cons<Throwable> errored = null;
 
     public AssetDescriptor(Class<T> assetType){
         this(assetType.getSimpleName(), assetType, null);
