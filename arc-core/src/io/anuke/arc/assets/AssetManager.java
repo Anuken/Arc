@@ -601,8 +601,6 @@ public class AssetManager implements Disposable{
 
             task.assetDesc.loaded.get(task.getAsset());
 
-            long endTime = Time.nanos();
-
             return true;
         }
         return false;
