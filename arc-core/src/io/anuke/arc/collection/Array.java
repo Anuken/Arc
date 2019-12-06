@@ -650,6 +650,10 @@ public class Array<T> implements Iterable<T>{
         Sort.instance().sort(items, comparator, 0, size);
     }
 
+    public void sort(Floatf<? super T> comparator){
+        Sort.instance().sort(items, Structs.comparingFloat(comparator), 0, size);
+    }
+
     public Array<T> selectFrom(Array<T> base, Boolf<T> predicate){
         clear();
         base.each(t -> {
