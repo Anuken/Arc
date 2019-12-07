@@ -315,11 +315,24 @@ public class AssetManager implements Disposable{
      * Loads a custom one-time 'asset' that knows how to load itself.
      */
     public synchronized AssetDescriptor loadRun(String name, Class<?> type, Runnable loadasync){
+        return loadRun(name, type, loadasync, () -> {});
+    }
+
+    /**
+     * Loads a custom one-time 'asset' that knows how to load itself.
+     */
+    public synchronized AssetDescriptor loadRun(String name, Class<?> type, Runnable loadasync, Runnable loadsync){
         if(getLoader(type) == null){
             setLoader(type, new CustomLoader(){
                 @Override
                 public void loadAsync(AssetManager manager, String fileName, FileHandle file, AssetLoaderParameters parameter){
                     loadasync.run();
+                }
+
+                @Override
+                public Object loadSync(AssetManager manager, String fileName, FileHandle file, AssetLoaderParameters parameter){
+                    loadsync.run();
+                    return super.loadSync(manager, fileName, file, parameter);
                 }
             });
         }else{
