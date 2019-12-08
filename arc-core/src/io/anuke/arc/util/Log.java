@@ -7,13 +7,7 @@ public class Log{
     private static final Object[] empty = {};
     private static boolean useColors = true;
     private static LogLevel level = LogLevel.info;
-    private static LogHandler logger =
-        (level, text, args) -> System.out.println(format((
-            level == LogLevel.debug ? "&lc&fb" :
-            level == LogLevel.info ? "&lg&fb" :
-            level == LogLevel.warn ? "&ly&fb" :
-            level == LogLevel.err ? "&lr&fb" :
-            "") + text + "&fr", args));;
+    private static LogHandler logger = new DefaultLogHandler();
 
     public static void setLogger(LogHandler log){
         logger = log;
@@ -113,6 +107,18 @@ public class Log{
 
     public interface LogHandler{
         void log(LogLevel level, String text, Object... args);
+    }
+
+    public static class DefaultLogHandler implements LogHandler{
+        @Override
+        public void log(LogLevel level, String text, Object... args){
+            System.out.println(format((
+                level == LogLevel.debug ? "&lc&fb" :
+                level == LogLevel.info ? "&lg&fb" :
+                level == LogLevel.warn ? "&ly&fb" :
+                level == LogLevel.err ? "&lr&fb" :
+                "") + text + "&fr", args));
+        }
     }
 
     public static class NoopLogHandler implements LogHandler{
