@@ -8,6 +8,7 @@ import io.anuke.arc.collection.Queue;
 import io.anuke.arc.collection.OrderedMap.*;
 import io.anuke.arc.files.*;
 import io.anuke.arc.util.ArcAnnotate.*;
+import io.anuke.arc.util.*;
 import io.anuke.arc.util.io.*;
 import io.anuke.arc.util.serialization.JsonValue.*;
 import io.anuke.arc.util.serialization.JsonWriter.*;
@@ -892,7 +893,7 @@ public class Json{
             if(metadata == null){
                 if(child.name.equals(typeName)) continue;
                 if(ignoreUnknownFields || ignoreUnknownField(type, child.name)){
-                    if(debug) System.out.println("Ignoring unknown field: " + child.name + " (" + type.getName() + ")");
+                    if(debug) Log.warn("Ignoring unknown field: " + child.name + " (" + type.getName() + ")");
                     continue;
                 }else{
                     SerializationException ex = new SerializationException("Field not found: " + child.name + " (" + type.getName() + ")");
