@@ -148,6 +148,9 @@ public class Scene implements InputProcessor, Disposable{
         if(type == ApplicationType.Desktop || type == ApplicationType.WebGL)
             mouseOverElement = fireEnterAndExit(mouseOverElement, mouseScreenX, mouseScreenY, -1);
 
+        if(scrollFocus != null && (!scrollFocus.isVisible() || scrollFocus.getScene() == null)) scrollFocus = null;
+        if(keyboardFocus != null && (!keyboardFocus.isVisible() || keyboardFocus.getScene() == null)) keyboardFocus = null;
+
         root.act(delta);
     }
 
