@@ -80,6 +80,14 @@ public class Structs{
         return out.toArray();
     }
 
+    public static <T> Comparator<T> comps(Comparator<T> first, Comparator<T> second){
+        return (a, b) -> {
+            int value = first.compare(a, b);
+            if(value != 0) return value;
+            return second.compare(a, b);
+        };
+    }
+
     public static <T, U> Comparator<T> comparing(Func<? super T, ? extends U> keyExtractor, Comparator<? super U> keyComparator){
         return (c1, c2) -> keyComparator.compare(keyExtractor.get(c1), keyExtractor.get(c2));
     }
