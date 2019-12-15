@@ -12,6 +12,7 @@ import java.io.IOException;
 
 @SuppressWarnings("unchecked")
 public class DefaultSerializers{
+    public static StringMap typeMappings = new StringMap();
 
     public static void register(Settings settings){
         settings.setSerializer(IntArray.class, new TypeSerializer<IntArray>(){
@@ -72,7 +73,7 @@ public class DefaultSerializers{
 
                     String type = stream.readUTF();
 
-                    TypeSerializer ser = settings.getSerializer(Class.forName(type));
+                    TypeSerializer ser = settings.getSerializer(lookup(type));
                     if(ser == null) throw new IllegalArgumentException(type + " does not have a serializer registered!");
 
 
@@ -114,7 +115,7 @@ public class DefaultSerializers{
 
                     String type = stream.readUTF();
 
-                    TypeSerializer ser = settings.getSerializer(Class.forName(type));
+                    TypeSerializer ser = settings.getSerializer(lookup(type));
                     if(ser == null)
                         throw new IllegalArgumentException(type + " does not have a serializer registered!");
 
@@ -162,8 +163,8 @@ public class DefaultSerializers{
                     String keyt = stream.readUTF();
                     String valt = stream.readUTF();
 
-                    TypeSerializer keyser = settings.getSerializer(Class.forName(keyt));
-                    TypeSerializer valser = settings.getSerializer(Class.forName(valt));
+                    TypeSerializer keyser = settings.getSerializer(lookup(keyt));
+                    TypeSerializer valser = settings.getSerializer(lookup(valt));
                     if(keyser == null) throw new IllegalArgumentException(keyt + " does not have a serializer registered!");
                     if(valser == null) throw new IllegalArgumentException(valt + " does not have a serializer registered!");
 
@@ -209,7 +210,7 @@ public class DefaultSerializers{
 
                     String keyt = stream.readUTF();
 
-                    TypeSerializer keyser = settings.getSerializer(Class.forName(keyt));
+                    TypeSerializer keyser = settings.getSerializer(lookup(keyt));
                     if(keyser == null) throw new IllegalArgumentException(keyt + " does not have a serializer registered!");
 
                     for(int i = 0; i < size; i++){
@@ -225,5 +226,9 @@ public class DefaultSerializers{
                 }
             }
         });
+    }
+    
+    private static Class<?> lookup(String name) throws ClassNotFoundException{
+        return Class.forName(typeMappings.get(name, name));
     }
 }

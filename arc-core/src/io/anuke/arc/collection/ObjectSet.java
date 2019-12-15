@@ -1,7 +1,8 @@
 package io.anuke.arc.collection;
 
-import io.anuke.arc.func.Boolf;
+import io.anuke.arc.func.*;
 import io.anuke.arc.math.*;
+import io.anuke.arc.util.*;
 
 import java.util.*;
 
@@ -18,7 +19,7 @@ import java.util.*;
  * @author Nathan Sweet
  */
 @SuppressWarnings("unchecked")
-public class ObjectSet<T> implements Iterable<T>{
+public class ObjectSet<T> implements Iterable<T>, Eachable<T>{
     private static final int PRIME1 = 0xbe1f14b1;
     private static final int PRIME2 = 0xb4b82e39;
     private static final int PRIME3 = 0xced1c241;
@@ -99,6 +100,13 @@ public class ObjectSet<T> implements Iterable<T>{
             if(predicate.get(t)) arr.add(t);
         }
         return arr;
+    }
+
+    @Override
+    public void each(Cons<T> cons){
+        for(T t : this){
+            cons.get(t);
+        }
     }
 
     /**
