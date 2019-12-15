@@ -84,6 +84,10 @@ public class Scene implements InputProcessor, Disposable{
         return getKeyboardFocus() != null;
     }
 
+    public boolean hasScroll(){
+        return getScrollFocus() != null;
+    }
+
     public Dialog getDialog(){
         if(getKeyboardFocus() instanceof Dialog){
             return (Dialog)getKeyboardFocus();
