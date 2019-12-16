@@ -1,19 +1,15 @@
 package io.anuke.arc.graphics;
 
-import io.anuke.arc.Application;
-import io.anuke.arc.Core;
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.graphics.VertexAttributes.Usage;
+import io.anuke.arc.*;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.graphics.VertexAttributes.*;
 import io.anuke.arc.graphics.glutils.*;
-import io.anuke.arc.math.Matrix3;
-import io.anuke.arc.math.geom.Vector2;
-import io.anuke.arc.util.Disposable;
-import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.math.*;
+import io.anuke.arc.math.geom.*;
+import io.anuke.arc.util.*;
 
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.*;
+import java.util.*;
 
 /**
  * <p>
@@ -44,6 +40,7 @@ public class Mesh implements Disposable{
     final IndexData indices;
     final boolean isVertexArray;
     boolean autoBind = true;
+
     protected Mesh(VertexData vertices, IndexData indices, boolean isVertexArray){
         this.vertices = vertices;
         this.indices = indices;
