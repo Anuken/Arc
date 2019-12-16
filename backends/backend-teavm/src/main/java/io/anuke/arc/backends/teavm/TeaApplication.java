@@ -10,18 +10,17 @@ import org.teavm.jso.browser.*;
 import org.teavm.jso.dom.html.*;
 
 public class TeaApplication implements Application{
-    private TeaVMApplicationConfig config;
+    private TeaApplicationConfig config;
     private HTMLCanvasElement canvas;
     private TeaGraphics graphics;
     private TeaInput input;
     private int lastWidth = -1, lastHeight = 1;
     private String clipboard = "";
 
-    private final Array<Runnable> runnables = new Array<>();
-    private final Array<Runnable> executedRunnables = new Array<>();
+    private final TaskQueue queue = new TaskQueue();
     private final Array<ApplicationListener> listeners = new Array<>();
 
-    public TeaApplication(ApplicationListener listener, TeaVMApplicationConfig config){
+    public TeaApplication(ApplicationListener listener, TeaApplicationConfig config){
         this.listeners.add(listener);
         this.config = config;
     }
@@ -42,7 +41,7 @@ public class TeaApplication implements Application{
     private void startArc(){
         canvas = config.canvas;
 
-        Log.setLogger(new TeaVMLogger());
+        Log.setLogger(new TeaLogger());
 
         Core.app = this;
         Core.graphics = graphics = new TeaGraphics(canvas, config);
@@ -59,19 +58,20 @@ public class TeaApplication implements Application{
     }
 
     private void delayedStep(){
-        Window.setTimeout(this::step, 10);
+        Window.requestAnimationFrame(d -> step());
     }
 
     private void step(){
         graphics.update();
         graphics.frameId++;
 
-        executedRunnables.clear();
-        executedRunnables.addAll(runnables);
-        runnables.clear();
+        queue.run();
 
-        for(Runnable runnable : executedRunnables){
-            runnable.run();
+        Window window = Window.current();
+
+        if(window.getInnerWidth() != canvas.getWidth() || window.getInnerHeight() != canvas.getHeight()){
+            canvas.setWidth(window.getInnerWidth());
+            canvas.setHeight(window.getInnerHeight());
         }
 
         if(lastWidth != canvas.getWidth() || lastHeight != canvas.getHeight()){
@@ -79,6 +79,7 @@ public class TeaApplication implements Application{
             lastWidth = canvas.getWidth();
             lastHeight = canvas.getHeight();
         }
+
         listen(ApplicationListener::update);
         input.prepareNext();
         delayedStep();
@@ -107,7 +108,7 @@ public class TeaApplication implements Application{
 
     @Override
     public void post(Runnable runnable){
-        runnables.add(runnable);
+        queue.post(runnable);
     }
 
     @Override
@@ -116,15 +117,10 @@ public class TeaApplication implements Application{
     }
 
     @Override
-    public long getJavaHeap(){
-        return 0;
-    }
-
-    @Override
     public void exit(){
     }
 
-    public static class TeaVMApplicationConfig{
+    public static class TeaApplicationConfig{
         public HTMLCanvasElement canvas;
         public boolean antialiasEnabled = false;
         public boolean stencilEnabled = false;
@@ -133,7 +129,7 @@ public class TeaApplication implements Application{
         public boolean drawingBufferPreserved = false;
     }
 
-    public static class TeaVMLogger implements LogHandler{
+    public static class TeaLogger implements LogHandler{
 
         @Override
         public void log(LogLevel level, String text, Object... args){

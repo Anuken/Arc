@@ -47,11 +47,7 @@ public class TimerEmulator{
     /** Schedules a task to occur once after the specified delay and then a number of additional times at the specified interval. */
     public static Timer.Task scheduleTask(Timer.Task task, float delaySeconds, float intervalSeconds, int repeatCount){
         //if (task.repeatCount != CANCELLED) throw new IllegalArgumentException("The same task may not be scheduled twice.");
-
-        int[] iid = {0};
-
-        iid[0] = Window.setTimeout(task::run, (int)(delaySeconds * 1000));
-
+        Window.setTimeout(task::run, (int)(delaySeconds * 1000));
         return task;
     }
 

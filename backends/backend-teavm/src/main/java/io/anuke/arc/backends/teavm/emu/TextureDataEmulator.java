@@ -11,9 +11,6 @@ import io.anuke.arc.graphics.glutils.*;
 @SuppressWarnings("unused")
 public class TextureDataEmulator{
     public static TextureData loadFromFile(Fi file, Format format, boolean useMipMaps){
-        if(file == null){
-            return null;
-        }
-        return new FileTextureData(file, new Pixmap(file), format, useMipMaps);
+        return file == null ? null : new FileTextureData(file, new Pixmap(file), format, useMipMaps);
     }
 }
