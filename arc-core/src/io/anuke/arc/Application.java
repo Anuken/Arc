@@ -32,7 +32,9 @@ public interface Application extends Disposable{
     }
 
     /** @return the Java heap memory use in bytes. */
-    long getJavaHeap();
+    default long getJavaHeap(){
+        return 0;
+    }
 
     /** @return the Native heap memory use in bytes. Only valid on Android. */
     default long getNativeHeap(){

@@ -19,7 +19,7 @@ import java.io.InputStream;
  * @author noblemaster
  * @author arielsan
  */
-public abstract class Net{
+public class Net{
     private NetJavaImpl impl = new NetJavaImpl();
 
     /**
@@ -52,7 +52,9 @@ public abstract class Net{
      * @param URI the URI to be opened.
      * @return false if it is known the uri was not opened, true otherwise.
      */
-    public abstract boolean openURI(String URI);
+    public boolean openURI(String URI){
+        return false;
+    }
 
     /** Open a folder in the system's file browser.
      * @return whether this operation was successful. */

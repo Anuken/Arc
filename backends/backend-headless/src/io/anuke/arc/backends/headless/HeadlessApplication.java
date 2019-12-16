@@ -3,9 +3,10 @@ package io.anuke.arc.backends.headless;
 import io.anuke.arc.*;
 import io.anuke.arc.audio.mock.*;
 import io.anuke.arc.backends.headless.mock.*;
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.func.Cons;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.util.*;
+import io.anuke.arc.util.async.*;
 
 /**
  * a headless implementation of a GDX Application primarily intended to be used in servers
@@ -13,7 +14,6 @@ import io.anuke.arc.util.*;
  */
 public class HeadlessApplication implements Application{
     protected final HeadlessFiles files;
-    protected final HeadlessNet net;
     protected final MockAudio audio;
     protected final MockInput input;
     protected final MockGraphics graphics;
@@ -36,7 +36,6 @@ public class HeadlessApplication implements Application{
         addListener(listener);
         this.files = new HeadlessFiles();
         this.exceptionHandler = exceptionHandler;
-        this.net = new HeadlessNet();
         // the following elements are not applicable for headless applications
         // they are only implemented as mock objects
         this.graphics = new MockGraphics();
@@ -46,7 +45,7 @@ public class HeadlessApplication implements Application{
         Core.settings = new Settings();
         Core.app = this;
         Core.files = files;
-        Core.net = net;
+        Core.net = new Net();
         Core.audio = audio;
         Core.graphics = graphics;
         Core.input = input;
@@ -84,10 +83,7 @@ public class HeadlessApplication implements Application{
             while(running){
                 final long n = Time.nanos();
                 if(t > n){
-                    try{
-                        Thread.sleep((t - n) / 1000000);
-                    }catch(InterruptedException e){
-                    }
+                    Threads.sleep((t - n) / 1000000);
                     t = Time.nanos() + renderInterval;
                 }else
                     t = n + renderInterval;
@@ -115,16 +111,15 @@ public class HeadlessApplication implements Application{
         }
     }
 
-    public boolean executeRunnables(){
+    public void executeRunnables(){
         synchronized(runnables){
             for(int i = runnables.size - 1; i >= 0; i--)
                 executedRunnables.add(runnables.get(i));
             runnables.clear();
         }
-        if(executedRunnables.size == 0) return false;
+        if(executedRunnables.size == 0) return;
         for(int i = executedRunnables.size - 1; i >= 0; i--)
             executedRunnables.remove(i).run();
-        return true;
     }
 
     @Override
@@ -133,18 +128,8 @@ public class HeadlessApplication implements Application{
     }
 
     @Override
-    public int getVersion(){
-        return 0;
-    }
-
-    @Override
     public long getJavaHeap(){
         return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-    }
-
-    @Override
-    public long getNativeHeap(){
-        return getJavaHeap();
     }
 
     @Override
@@ -172,5 +157,10 @@ public class HeadlessApplication implements Application{
     @Override
     public void exit(){
         post(() -> running = false);
+    }
+
+    public static class HeadlessApplicationConfiguration{
+        /** The minimum time (in seconds) between each call to the render method or negative to not call the render method at all. */
+        public float renderInterval = 1f / 60f;
     }
 }
