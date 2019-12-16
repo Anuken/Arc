@@ -112,7 +112,7 @@ public class NetJavaImpl{
             try{
                 this.status = Net.HttpStatus.byCode(connection.getResponseCode());
             }catch(IOException e){
-                this.status = Net.HttpStatus.UNNOWN_STATUS;
+                this.status = Net.HttpStatus.UNKNOWN_STATUS;
             }
         }
 

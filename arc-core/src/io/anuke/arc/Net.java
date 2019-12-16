@@ -10,8 +10,8 @@ import java.io.InputStream;
  * communication.</p>
  * <p>
  * To perform an HTTP request create a {@link HttpRequest} with the HTTP method (see {@link HttpMethod} for common methods) and
- * invoke {@link #sendHttpRequest(HttpRequest, HttpResponseListener)} with it and a {@link HttpResponseListener}. After the HTTP
- * request was processed, the {@link HttpResponseListener} is called with a {@link HttpResponse} with the HTTP response values and
+ * invoke {@link #httpPost(String, String, Cons, Cons)} with it and a listener. After the HTTP
+ * request was processed, the listener is called with a {@link HttpResponse} with the HTTP response values and
  * an status code to determine if the request was successful or not.</p>
  * <p>
  * @author mzechner
@@ -21,7 +21,7 @@ import java.io.InputStream;
 public interface Net{
 
     /**
-     * Process the specified {@link HttpRequest} and reports the {@link HttpResponse} to the specified {@link HttpResponseListener}
+     * Process the specified {@link HttpRequest} and reports the {@link HttpResponse} to the specified listener.
      * .
      * @param httpRequest The {@link HttpRequest} to be performed.
      * @param success The listener to call once the HTTP response is ready to be processed.
@@ -64,7 +64,7 @@ public interface Net{
          * <b>Note</b>: This method may only be called once per response.
          * </p>
          * @return the result as a byte[] or null in case of a timeout or if the operation was canceled/terminated abnormally. The
-         * timeout is specified when creating the HTTP request, with {@link HttpRequest#setTimeOut(int)}
+         * timeout is specified when creating the HTTP request, with {@link HttpRequest#timeout(int)}
          */
         byte[] getResult();
 
@@ -74,14 +74,13 @@ public interface Net{
          * <b>Note</b>: This method may only be called once per response.
          * </p>
          * @return the result as a string or null in case of a timeout or if the operation was canceled/terminated abnormally. The
-         * timeout is specified when creating the HTTP request, with {@link HttpRequest#setTimeOut(int)}
+         * timeout is specified when creating the HTTP request, with {@link HttpRequest#timeout(int)}
          */
         String getResultAsString();
 
         /**
          * Returns the data of the HTTP response as an {@link InputStream}. <b><br>
-         * Warning:</b> Do not store a reference to this InputStream outside of
-         * {@link HttpResponseListener#handle(HttpResponse)}. The underlying HTTP connection will be closed after that
+         * Warning:</b> Do not store a reference to this InputStream. The underlying HTTP connection will be closed after that
          * callback finishes executing. Reading from the InputStream after it's connection has been closed will lead to exception.
          * @return An {@link InputStream} with the {@link HttpResponse} data.
          */
@@ -177,7 +176,7 @@ public interface Net{
 
     /** Defines the status of an HTTP request.*/
     enum HttpStatus{
-        UNNOWN_STATUS(-1),
+        UNKNOWN_STATUS(-1),
 
         CONTINUE(100),
         SWITCHING_PROTOCOLS(101),
@@ -250,7 +249,7 @@ public interface Net{
                     byCode.put(status.code, status);
                 }
             }
-            return byCode.get(code, UNNOWN_STATUS);
+            return byCode.get(code, UNKNOWN_STATUS);
         }
     }
 }
