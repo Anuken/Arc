@@ -75,9 +75,10 @@ public class TeaApplication implements Application{
         }
 
         if(lastWidth != canvas.getWidth() || lastHeight != canvas.getHeight()){
-            listen(l -> l.resize(canvas.getWidth(), canvas.getHeight()));
             lastWidth = canvas.getWidth();
             lastHeight = canvas.getHeight();
+            Core.gl.glViewport(0, 0, lastWidth, lastHeight);
+            listen(l -> l.resize(canvas.getWidth(), canvas.getHeight()));
         }
 
         listen(ApplicationListener::update);

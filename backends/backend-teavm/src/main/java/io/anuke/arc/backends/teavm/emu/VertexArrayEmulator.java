@@ -108,13 +108,6 @@ public class VertexArrayEmulator implements VertexData{
     /**
      * Binds this VertexBufferObject for rendering via glDrawArrays or
      * glDrawElements
-     *
-     * @param shader
-     *            the shader
-     */
-    /**
-     * Binds this VertexBufferObject for rendering via glDrawArrays or
-     * glDrawElements
      * @param shader the shader
      */
     @Override

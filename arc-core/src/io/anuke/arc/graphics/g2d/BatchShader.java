@@ -2,7 +2,9 @@ package io.anuke.arc.graphics.g2d;
 
 import io.anuke.arc.graphics.glutils.Shader;
 import io.anuke.arc.math.Matrix3;
-import io.anuke.arc.util.Strings;
+import io.anuke.arc.util.*;
+
+import java.util.*;
 
 public class BatchShader{
     private static final float[] val = new float[16];
