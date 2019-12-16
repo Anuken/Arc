@@ -235,7 +235,7 @@ public class Timer{
         volatile Timer timer;
 
         public Task(){
-            app = Core.app; // Store which app to post (eg for multiple LwjglAWTCanvas).
+            app = Core.app; // Store which app to post
             if(app == null) throw new IllegalStateException("Gdx.app not available.");
         }
 

@@ -1,5 +1,6 @@
 package io.anuke.arc.graphics.g2d;
 
+import io.anuke.arc.Application.*;
 import io.anuke.arc.ApplicationListener;
 import io.anuke.arc.Core;
 import io.anuke.arc.collection.Array;
@@ -18,7 +19,7 @@ import java.nio.FloatBuffer;
  * later be used for drawing. The size, color, and texture region for each cached image cannot be modified. This information is
  * stored in video memory and does not have to be sent to the GPU each time it is drawn.<br>
  * <br>
- * To cache {@link Sprite sprites} or {@link Texture textures}, first call {@link SpriteCache#beginCache()}, then call the
+ * To cache {@link Texture textures}, first call {@link SpriteCache#beginCache()}, then call the
  * appropriate add method to define the images. To complete the cache, call {@link SpriteCache#endCache()} and store the returned
  * cache ID.<br>
  * <br>
@@ -251,6 +252,10 @@ public class SpriteCache implements Disposable{
         textures.clear();
         counts.clear();
 
+        if(Core.app.getType() == ApplicationType.WebGL){
+            mesh.getVerticesBuffer().position(0);
+        }
+
         return cache.id;
     }
 
@@ -479,9 +484,7 @@ public class SpriteCache implements Disposable{
         if(currentCache != null) throw new IllegalStateException("endCache must be called before begin");
         renderCalls = 0;
         lastBoundTexture = null;
-        combinedMatrix.set(projectionMatrix).mul(transformMatrix);
-
-        Core.gl20.glDepthMask(false);
+        combinedMatrix.set(projectionMatrix);
 
         if(customShader != null){
             customShader.begin();

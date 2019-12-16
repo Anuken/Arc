@@ -51,6 +51,41 @@ public class TimerEmulator{
         return task;
     }
 
+    public static Task schedule(Runnable task, float delaySeconds){
+        return scheduleTask(new Task(){
+            @Override
+            public void run(){
+                task.run();
+            }
+        }, delaySeconds);
+    }
+
+    /**
+     * Schedules a task on {@link #instance}.
+     * @see #scheduleTask(Task, float, float)
+     */
+    public static Task schedule(Runnable task, float delaySeconds, float intervalSeconds){
+        return scheduleTask(new Task(){
+            @Override
+            public void run(){
+                task.run();
+            }
+        }, delaySeconds, intervalSeconds);
+    }
+
+    /**
+     * Schedules a task on {@link #instance}.
+     * @see #scheduleTask(Task, float, float, int)
+     */
+    public static Task schedule(Runnable task, float delaySeconds, float intervalSeconds, int repeatCount){
+        return scheduleTask(new Task(){
+            @Override
+            public void run(){
+                task.run();
+            }
+        }, delaySeconds, intervalSeconds, repeatCount);
+    }
+
     /** Stops the timer, tasks will not be executed and time that passes will not be applied to the task delays. */
     public void stop(){
 

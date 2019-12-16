@@ -343,7 +343,7 @@ public abstract class Graphics implements Disposable{
     }
 
     /**
-     * Only viable on the lwjgl-backend and on web. Browsers that support cursor:url() and support the png format (the
+     * Only viable on desktop and web. Browsers that support cursor:url() and support the png format (the
      * pixmap is converted to a data-url of type image/png) should also support custom cursors. Will set the mouse cursor image to
      * the image represented by the {@link Cursor}. It is recommended to call this function in the main render thread, and maximum one time per frame.
      * Internal use only!

@@ -22,8 +22,7 @@ public class GLProfiler{
 
     /**
      * Create a new instance of GLProfiler to monitor a {@link Graphics} instance's gl calls
-     * @param graphics instance to monitor with this instance, With Lwjgl 2.x you can pass in Gdx.graphics, with Lwjgl3 use
-     * Lwjgl3Window.getGraphics()
+     * @param graphics instance to monitor with this instance
      */
     public GLProfiler(Graphics graphics){
         this.graphics = graphics;

@@ -5,10 +5,6 @@ import io.anuke.arc.util.*;
 
 import java.io.*;
 
-/**
- * LWJGL implementation of the {@link Net} API, it could be reused in other Desktop backends since it doesn't depend on LWJGL.
- * @author acoppes
- */
 public class SdlNet extends Net{
 
     @Override
