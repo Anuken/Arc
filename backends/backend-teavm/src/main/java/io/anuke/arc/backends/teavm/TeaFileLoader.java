@@ -1,6 +1,6 @@
 package io.anuke.arc.backends.teavm;
 
-import io.anuke.arc.backends.teavm.TeaVMFi.*;
+import io.anuke.arc.backends.teavm.TeaFi.*;
 import io.anuke.arc.util.*;
 import org.teavm.jso.ajax.*;
 import org.teavm.jso.browser.*;
@@ -12,8 +12,7 @@ import org.teavm.jso.json.*;
 
 import java.util.*;
 
-
-public class TeaVMFileLoader{
+public class TeaFileLoader{
     private static final Window window = Window.current();
     private static final XMLHttpRequest xhr = XMLHttpRequest.create();
 
@@ -76,7 +75,7 @@ public class TeaVMFileLoader{
     private static void loadDescription(Queue<Task> tasks){
         @SuppressWarnings("unchecked")
         JSArrayReader<FileDescriptor> rootFiles = (JSArrayReader<FileDescriptor>)JSON.parse(xhr.getResponseText());
-        initEntry(TeaVMFi.root, rootFiles, "assets", tasks);
+        initEntry(TeaFi.root, rootFiles, "assets", tasks);
     }
 
     private static void initEntry(FSEntry parent, JSArrayReader<FileDescriptor> descList, String fullPath,
@@ -173,5 +172,10 @@ public class TeaVMFileLoader{
         void complete();
 
         void error();
+    }
+
+    public static interface TeaVMFilePreloadListener{
+        void error();
+        void complete();
     }
 }

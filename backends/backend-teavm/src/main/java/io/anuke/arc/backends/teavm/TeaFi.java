@@ -9,7 +9,7 @@ import org.teavm.jso.dom.html.*;
 import java.io.*;
 import java.util.*;
 
-public class TeaVMFi extends Fi{
+public class TeaFi extends Fi{
     public static final FSEntry root = new FSEntry();
     private final String file;
     private final FileType type;
@@ -22,16 +22,16 @@ public class TeaVMFi extends Fi{
         public HTMLImageElement imageElem;
     }
 
-    public TeaVMFi(String fileName, FileType type){
-        if(type != FileType.Internal && type != FileType.Classpath){
+    public TeaFi(String fileName, FileType type){
+        if(type != FileType.internal && type != FileType.classpath){
             throw new ArcRuntimeException("FileType '" + type + "' Not supported in GWT backend");
         }
         this.file = fixSlashes(fileName);
         this.type = type;
     }
 
-    public TeaVMFi(String path){
-        this.type = FileType.Internal;
+    public TeaFi(String path){
+        this.type = FileType.internal;
         this.file = fixSlashes(path);
     }
 
@@ -174,7 +174,7 @@ public class TeaVMFi extends Fi{
         Fi[] result = new Fi[entry.childEntries.size];
         int index = 0;
         for(String childName : entry.childEntries.keys()){
-            result[index++] = new TeaVMFi(file + "/" + childName, type);
+            result[index++] = new TeaFi(file + "/" + childName, type);
         }
         return result;
     }
@@ -189,7 +189,7 @@ public class TeaVMFi extends Fi{
         int index = 0;
         for(String childName : entry.childEntries.keys()){
             if(childName.endsWith(suffix)){
-                result[index++] = new TeaVMFi(file + "/" + childName, type);
+                result[index++] = new TeaFi(file + "/" + childName, type);
             }
         }
         return index == result.length ? result : Arrays.copyOf(result, index);

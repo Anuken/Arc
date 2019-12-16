@@ -11,53 +11,64 @@ versions.junit = "4.11"
 versions.androidPlugin = "3.4.0"
 versions.androidSdk = 28
 versions.androidBuildTools = "28.0.3"
+versions.teavm = '0.7.0-dev-943'
+versions.reflections = '0.9.11'
 
 libraries.lwjgl3 = [
-        "org.lwjgl:lwjgl:${versions.lwjgl3}",
-        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux",
-        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-macos",
-        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-windows",
-        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}",
-        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux",
-        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-macos",
-        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-windows",
-        "org.lwjgl:lwjgl-tinyfd:${versions.lwjgl3}",
-        "org.lwjgl:lwjgl-tinyfd:${versions.lwjgl3}:natives-linux",
-        "org.lwjgl:lwjgl-tinyfd:${versions.lwjgl3}:natives-macos",
-        "org.lwjgl:lwjgl-tinyfd:${versions.lwjgl3}:natives-windows",
-        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}",
-        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux",
-        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-macos",
-        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-windows",
-        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}",
-        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux",
-        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-macos",
-        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-windows",
-        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}",
-        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux",
-        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-macos",
-        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-windows",
-        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}",
-        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux",
-        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-macos",
-        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows",
-        "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
-        "org.jcraft:jorbis:${versions.jorbis}"
+    "org.lwjgl:lwjgl:${versions.lwjgl3}",
+    "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux",
+    "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-macos",
+    "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-windows",
+    "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}",
+    "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux",
+    "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-macos",
+    "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-windows",
+    "org.lwjgl:lwjgl-tinyfd:${versions.lwjgl3}",
+    "org.lwjgl:lwjgl-tinyfd:${versions.lwjgl3}:natives-linux",
+    "org.lwjgl:lwjgl-tinyfd:${versions.lwjgl3}:natives-macos",
+    "org.lwjgl:lwjgl-tinyfd:${versions.lwjgl3}:natives-windows",
+    "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}",
+    "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux",
+    "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-macos",
+    "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-windows",
+    "org.lwjgl:lwjgl-openal:${versions.lwjgl3}",
+    "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux",
+    "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-macos",
+    "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-windows",
+    "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}",
+    "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux",
+    "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-macos",
+    "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-windows",
+    "org.lwjgl:lwjgl-stb:${versions.lwjgl3}",
+    "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux",
+    "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-macos",
+    "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows",
+    "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
+    "org.jcraft:jorbis:${versions.jorbis}"
 ]
 
 libraries.robovm = [
-        "com.mobidevelop.robovm:robovm-rt:${versions.robovm}",
-        "com.mobidevelop.robovm:robovm-objc:${versions.robovm}",
-        "com.mobidevelop.robovm:robovm-cocoatouch:${versions.robovm}"
+    "com.mobidevelop.robovm:robovm-rt:${versions.robovm}",
+    "com.mobidevelop.robovm:robovm-objc:${versions.robovm}",
+    "com.mobidevelop.robovm:robovm-cocoatouch:${versions.robovm}"
 ]
 
 libraries.sdl = [
-        "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
-        "org.jcraft:jorbis:${versions.jorbis}"
+    "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
+    "org.jcraft:jorbis:${versions.jorbis}"
 ]
 
 libraries.junit = [
-        "junit:junit:${versions.junit}"
+    "junit:junit:${versions.junit}"
+]
+
+libraries.teavm = [
+     "org.teavm:teavm-core:$versions.teavm",
+     "org.teavm:teavm-classlib:$versions.teavm",
+     "org.teavm:teavm-jso:$versions.teavm",
+     "org.teavm:teavm-jso-apis:$versions.teavm",
+     "org.teavm:teavm-jso-impl:$versions.teavm",
+     "org.reflections:reflections:$versions.reflections"
 ]
 
 allprojects{
@@ -77,6 +88,7 @@ allprojects{
         mavenCentral()
         jcenter()
         maven{ url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven{ url "https://dl.bintray.com/konsoletyper/teavm" }
         google()
     }
 }

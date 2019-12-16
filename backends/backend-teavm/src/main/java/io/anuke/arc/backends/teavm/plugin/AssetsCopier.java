@@ -15,12 +15,12 @@ public class AssetsCopier implements RendererListener{
     private Json json = new Json(OutputType.json);
 
     @Override
-    public void begin(RenderingManager context, BuildTarget buildTarget) throws IOException{
+    public void begin(RenderingManager context, BuildTarget buildTarget){
         json.setElementType(FileDescriptor.class, "childFiles", FileDescriptor.class);
     }
 
     @Override
-    public void complete() throws IOException{
+    public void complete(){
         Fi main = new Fi("teavm/build/teavm");
         Fi assets = main.child("assets");
         main.child("filesystem.json").writeString("[" + Array.with(assets.list()).toString(",\n", s -> json.toJson(new FileDescriptor(s.file()))) + "]");

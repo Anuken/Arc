@@ -3,7 +3,7 @@ package io.anuke.arc.backends.teavm;
 import io.anuke.arc.*;
 import io.anuke.arc.util.*;
 
-public class TeaVMSettings extends Settings{
+public class TeaSettings extends Settings{
     String prefix;
 
     @Override
@@ -17,16 +17,16 @@ public class TeaVMSettings extends Settings{
 
         try{
             // remove all old values
-            for(int i = 0; i < TeaVMFiles.localStorage.getLength(); i++){
-                String key = TeaVMFiles.localStorage.key(i);
-                if(key.startsWith(prefix)) TeaVMFiles.localStorage.removeItem(key);
+            for(int i = 0; i < TeaFiles.localStorage.getLength(); i++){
+                String key = TeaFiles.localStorage.key(i);
+                if(key.startsWith(prefix)) TeaFiles.localStorage.removeItem(key);
             }
 
             // push new values to LocalStorage
             for(String key : values.keys()){
                 String storageKey = toStorageKey(key, values.get(key));
                 String storageValue = "" + values.get(key).toString();
-                TeaVMFiles.localStorage.setItem(storageKey, storageValue);
+                TeaFiles.localStorage.setItem(storageKey, storageValue);
             }
 
         }catch(Exception e){
@@ -36,12 +36,11 @@ public class TeaVMSettings extends Settings{
 
     @Override
     public void loadValues(){
-
         try{
-            for(int i = 0; i < TeaVMFiles.localStorage.getLength(); i++){
-                String key = TeaVMFiles.localStorage.key(i);
+            for(int i = 0; i < TeaFiles.localStorage.getLength(); i++){
+                String key = TeaFiles.localStorage.key(i);
                 if(key.startsWith(prefix)){
-                    String value = TeaVMFiles.localStorage.getItem(key);
+                    String value = TeaFiles.localStorage.getItem(key);
                     values.put(key.substring(prefix.length(), key.length() - 1), toObject(key, value));
                 }
             }

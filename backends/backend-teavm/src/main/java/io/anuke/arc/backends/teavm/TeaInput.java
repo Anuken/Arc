@@ -5,8 +5,7 @@ import io.anuke.arc.input.*;
 import org.teavm.jso.dom.events.*;
 import org.teavm.jso.dom.html.*;
 
-
-public class TeaVMInput extends Input implements EventListener{
+public class TeaInput extends Input implements EventListener{
     static final int MAX_TOUCHES = 20;
     private boolean justTouched = false;
     private boolean[] touched = new boolean[MAX_TOUCHES];
@@ -18,7 +17,7 @@ public class TeaVMInput extends Input implements EventListener{
     private final HTMLCanvasElement canvas;
     private boolean hasFocus = true;
 
-    public TeaVMInput(HTMLCanvasElement canvas){
+    public TeaInput(HTMLCanvasElement canvas){
         this.canvas = canvas;
         hookEvents();
     }
@@ -112,6 +111,7 @@ public class TeaVMInput extends Input implements EventListener{
         return false;
     }
 
+    //TODO this is broken
     protected int getRelativeX(MouseEvent e, HTMLCanvasElement target){
 //        System.out.println("left " + target.getOffsetHeight() + " " + target.getAbsoluteLeft() + " " + target.getScrollLeft());
         //float xScaleRatio = target.getWidth() * 1f / target.getClientWidth();
@@ -182,7 +182,7 @@ public class TeaVMInput extends Input implements EventListener{
                 this.touchX[0] = getRelativeX(mouseEvent, canvas);
                 this.touchY[0] = getRelativeY(mouseEvent, canvas);
             }
-            inputMultiplexer.touchDown(touchX[0], touchY[0], 0, TeaVMKeymap.getButton(mouseEvent.getButton()));
+            inputMultiplexer.touchDown(touchX[0], touchY[0], 0, TeaKeymap.getButton(mouseEvent.getButton()));
             e.preventDefault();
             e.stopPropagation();
         }
@@ -224,7 +224,7 @@ public class TeaVMInput extends Input implements EventListener{
                 this.touchY[0] = getRelativeY(mouseEvent, canvas);
             }
             this.touched[0] = false;
-            inputMultiplexer.touchUp(touchX[0], touchY[0], 0, TeaVMKeymap.getButton(mouseEvent.getButton()));
+            inputMultiplexer.touchUp(touchX[0], touchY[0], 0, TeaKeymap.getButton(mouseEvent.getButton()));
             e.preventDefault();
             e.stopPropagation();
         }
@@ -238,7 +238,7 @@ public class TeaVMInput extends Input implements EventListener{
 
         if(e.getType().equals("keydown") && hasFocus){
             KeyboardEvent keyEvent = (KeyboardEvent)e;
-            KeyCode code = TeaVMKeymap.getCode(keyEvent.getKeyCode());
+            KeyCode code = TeaKeymap.getCode(keyEvent.getKeyCode());
             if(code == KeyCode.BACKSPACE){
                 inputMultiplexer.keyDown(code);
                 inputMultiplexer.keyTyped('\b');
@@ -259,7 +259,7 @@ public class TeaVMInput extends Input implements EventListener{
 
         if(e.getType().equals("keyup") && hasFocus){
             KeyboardEvent keyEvent = (KeyboardEvent)e;
-            KeyCode code = TeaVMKeymap.getCode(keyEvent.getKeyCode());
+            KeyCode code = TeaKeymap.getCode(keyEvent.getKeyCode());
             inputMultiplexer.keyUp(code);
             e.preventDefault();
             e.stopPropagation();

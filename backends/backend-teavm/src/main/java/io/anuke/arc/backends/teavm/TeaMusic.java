@@ -6,18 +6,18 @@ import org.teavm.jso.dom.events.*;
 import org.teavm.jso.dom.html.*;
 
 
-public class TeaVMMusic implements Music{
+public class TeaMusic implements Music{
     private static Window window = Window.current();
     private HTMLAudioElement element;
     private boolean started;
     private OnCompletionListener listener;
 
-    public TeaVMMusic(TeaVMFi file){
+    public TeaMusic(TeaFi file){
         element = (HTMLAudioElement)window.getDocument().createElement("audio");
         element.setSrc("assets/" + file.path());
         element.addEventListener("ended", (EventListener)evt -> {
             if(listener != null){
-                listener.complete(TeaVMMusic.this);
+                listener.complete(TeaMusic.this);
             }
         });
         window.getDocument().getBody().appendChild(element);

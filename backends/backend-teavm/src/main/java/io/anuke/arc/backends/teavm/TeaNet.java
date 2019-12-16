@@ -8,7 +8,7 @@ import org.teavm.jso.browser.*;
 
 import java.io.*;
 
-public class TeaVMNet extends Net{
+public class TeaNet extends Net{
 
     @Override
     public void http(HttpRequest httpRequest, Cons<HttpResponse> success, Cons<Throwable> failure){

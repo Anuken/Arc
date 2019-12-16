@@ -3,12 +3,12 @@ package io.anuke.arc.backends.teavm;
 import io.anuke.arc.audio.*;
 import io.anuke.arc.collection.*;
 
-public class TeaVMSound implements Sound{
-    private TeaVMFi file;
-    private IntMap<TeaVMMusic> instances = new IntMap<>();
+public class TeaSound implements Sound{
+    private TeaFi file;
+    private IntMap<TeaMusic> instances = new IntMap<>();
     private int nextId;
 
-    public TeaVMSound(TeaVMFi file){
+    public TeaSound(TeaFi file){
         this.file = file;
     }
 
@@ -24,7 +24,7 @@ public class TeaVMSound implements Sound{
 
     private int play(float volume, float pitch, float pan, boolean loop){
         final int id = nextId++;
-        final TeaVMMusic instance = new TeaVMMusic(file);
+        final TeaMusic instance = new TeaMusic(file);
         instance.setVolume(volume);
         instance.setPan(pan, volume);
         instance.setLooping(loop);
@@ -39,7 +39,7 @@ public class TeaVMSound implements Sound{
 
     @Override
     public void stop(){
-        for(TeaVMMusic music : instances.values()){
+        for(TeaMusic music : instances.values()){
             music.dispose();
         }
         instances.clear();
@@ -47,14 +47,14 @@ public class TeaVMSound implements Sound{
 
     @Override
     public void pause(){
-        for(TeaVMMusic music : instances.values()){
+        for(TeaMusic music : instances.values()){
             music.pause();
         }
     }
 
     @Override
     public void resume(){
-        for(TeaVMMusic music : instances.values()){
+        for(TeaMusic music : instances.values()){
             music.play();
         }
     }
@@ -66,7 +66,7 @@ public class TeaVMSound implements Sound{
 
     @Override
     public void stop(int soundId){
-        TeaVMMusic music = instances.get(soundId);
+        TeaMusic music = instances.get(soundId);
         if(music != null){
             music.stop();
         }
@@ -74,7 +74,7 @@ public class TeaVMSound implements Sound{
 
     @Override
     public void pause(int soundId){
-        TeaVMMusic music = instances.get(soundId);
+        TeaMusic music = instances.get(soundId);
         if(music != null){
             music.pause();
         }
@@ -82,7 +82,7 @@ public class TeaVMSound implements Sound{
 
     @Override
     public void resume(int soundId){
-        TeaVMMusic music = instances.get(soundId);
+        TeaMusic music = instances.get(soundId);
         if(music != null){
             music.play();
         }
@@ -90,7 +90,7 @@ public class TeaVMSound implements Sound{
 
     @Override
     public void setLooping(int soundId, boolean looping){
-        TeaVMMusic music = instances.get(soundId);
+        TeaMusic music = instances.get(soundId);
         if(music != null){
             music.setLooping(looping);
         }
@@ -102,7 +102,7 @@ public class TeaVMSound implements Sound{
 
     @Override
     public void setVolume(int soundId, float volume){
-        TeaVMMusic music = instances.get(soundId);
+        TeaMusic music = instances.get(soundId);
         if(music != null){
             music.setVolume(volume);
         }
@@ -110,7 +110,7 @@ public class TeaVMSound implements Sound{
 
     @Override
     public void setPan(int soundId, float pan, float volume){
-        TeaVMMusic music = instances.get(soundId);
+        TeaMusic music = instances.get(soundId);
         if(music != null){
             music.setPan(pan, volume);
         }

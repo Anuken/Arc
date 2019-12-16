@@ -1,35 +1,15 @@
-repositories {
-    mavenCentral()
-    maven { url "https://dl.bintray.com/konsoletyper/teavm"}
-    jcenter()
-}
-
-ext {
-    teavmVersion = '0.6.0-dev-816'
-    //jacksonVersion = '2.5.0'
-    reflectionsVersion = '0.9.11'
-}
-
-sourceSets {
-    main {
-        java {
+sourceSets{
+    main{
+        java{
             srcDirs = ["src/main/java"]
         }
-        resources {
+        resources{
             srcDirs = ["src/main/resources"]
         }
     }
 }
 
-dependencies {
-    compile "org.teavm:teavm-core:$teavmVersion"
-    compile "org.teavm:teavm-classlib:$teavmVersion"
-    compile "org.teavm:teavm-jso:$teavmVersion"
-    compile "org.teavm:teavm-jso-apis:$teavmVersion"
-    compile "org.teavm:teavm-jso-impl:$teavmVersion"
-    compile "org.reflections:reflections:$reflectionsVersion"
-    //compile "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
-    //compile "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
-    //compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+dependencies{
+    compile libraries.teavm
 }
 

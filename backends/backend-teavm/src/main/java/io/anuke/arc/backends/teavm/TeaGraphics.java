@@ -10,9 +10,9 @@ import org.teavm.jso.dom.html.*;
 import org.teavm.jso.webgl.*;
 
 
-public class TeaVMGraphics extends Graphics{
+public class TeaGraphics extends Graphics{
     private HTMLCanvasElement element;
-    private TeaVMApplicationConfig config;
+    private TeaApplication.TeaVMApplicationConfig config;
     private WebGLRenderingContext context;
     long frameId = -1;
     float deltaTime;
@@ -23,7 +23,7 @@ public class TeaVMGraphics extends Graphics{
     private GL20 gl20;
     private GLVersion glVersion;
 
-    public TeaVMGraphics(HTMLCanvasElement element, TeaVMApplicationConfig config){
+    public TeaGraphics(HTMLCanvasElement element, TeaApplication.TeaVMApplicationConfig config){
         this.element = element;
         this.config = config;
 
@@ -36,7 +36,7 @@ public class TeaVMGraphics extends Graphics{
 
         context = (WebGLRenderingContext)element.getContext("webgl", attr);
         context.viewport(0, 0, element.getWidth(), element.getHeight());
-        gl20 = new TeaVMGL20(context);
+        gl20 = new TeaGL20(context);
 
         String versionString = gl20.glGetString(GL20.GL_VERSION);
         String vendorString = gl20.glGetString(GL20.GL_VENDOR);

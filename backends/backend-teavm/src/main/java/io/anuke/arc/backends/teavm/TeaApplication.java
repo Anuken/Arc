@@ -4,14 +4,16 @@ import io.anuke.arc.*;
 import io.anuke.arc.collection.*;
 import io.anuke.arc.func.*;
 import io.anuke.arc.util.*;
+import io.anuke.arc.util.Log.*;
+import org.teavm.jso.*;
 import org.teavm.jso.browser.*;
 import org.teavm.jso.dom.html.*;
 
-public class TeaVMApplication implements Application{
+public class TeaApplication implements Application{
     private TeaVMApplicationConfig config;
     private HTMLCanvasElement canvas;
-    private TeaVMGraphics graphics;
-    private TeaVMInput input;
+    private TeaGraphics graphics;
+    private TeaInput input;
     private int lastWidth = -1, lastHeight = 1;
     private String clipboard = "";
 
@@ -19,13 +21,13 @@ public class TeaVMApplication implements Application{
     private final Array<Runnable> executedRunnables = new Array<>();
     private final Array<ApplicationListener> listeners = new Array<>();
 
-    public TeaVMApplication(ApplicationListener listener, TeaVMApplicationConfig config){
+    public TeaApplication(ApplicationListener listener, TeaVMApplicationConfig config){
         this.listeners.add(listener);
         this.config = config;
     }
 
     public void start(){
-        TeaVMFileLoader.loadFiles(new TeaVMFilePreloadListener(){
+        TeaFileLoader.loadFiles(new TeaFileLoader.TeaVMFilePreloadListener(){
             @Override
             public void error(){
             }
@@ -43,14 +45,14 @@ public class TeaVMApplication implements Application{
         Log.setLogger(new TeaVMLogger());
 
         Core.app = this;
-        Core.graphics = graphics = new TeaVMGraphics(canvas, config);
+        Core.graphics = graphics = new TeaGraphics(canvas, config);
         Core.gl = graphics.getGL20();
         Core.gl20 = graphics.getGL20();
-        Core.files = new TeaVMFiles();
-        Core.net = new TeaVMNet();
-        Core.audio = new TeaVMAudio();
-        Core.input = input = new TeaVMInput(canvas);
-        Core.settings = new TeaVMSettings();
+        Core.files = new TeaFiles();
+        Core.net = new TeaNet();
+        Core.audio = new TeaAudio();
+        Core.input = input = new TeaInput(canvas);
+        Core.settings = new TeaSettings();
         listen(ApplicationListener::init);
         listen(l -> l.resize(canvas.getWidth(), canvas.getHeight()));
         delayedStep();
@@ -122,4 +124,23 @@ public class TeaVMApplication implements Application{
     public void exit(){
     }
 
+    public static class TeaVMApplicationConfig{
+        public HTMLCanvasElement canvas;
+        public boolean antialiasEnabled = false;
+        public boolean stencilEnabled = false;
+        public boolean alphaEnabled = false;
+        public boolean premultipliedAlpha = true;
+        public boolean drawingBufferPreserved = false;
+    }
+
+    public static class TeaVMLogger implements LogHandler{
+
+        @Override
+        public void log(LogLevel level, String text, Object... args){
+            consoleLog("[" + level.name() + "]: " + Strings.format(text, args));
+        }
+
+        @JSBody(params = "message", script = "console.log(\"Arc: \" + message);")
+        native static public void consoleLog(String message);
+    }
 }

@@ -2,6 +2,7 @@ package io.anuke.arc.backends.teavm.emu;
 
 import io.anuke.arc.backends.teavm.*;
 import io.anuke.arc.backends.teavm.plugin.Annotations.*;
+import io.anuke.arc.files.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.Pixmap.Blending;
 import io.anuke.arc.graphics.Pixmap.*;
@@ -37,9 +38,9 @@ public class PixmapEmulator implements Disposable{
     Uint8ClampedArray pixels;
     private ByteBuffer pixelsBuffer;
 
-    public PixmapEmulator(FileHandle file){
-        TeaVMFi teavmFile = (TeaVMFi)file;
-        TeaVMFi.FSEntry entry = teavmFile.entry();
+    public PixmapEmulator(Fi file){
+        TeaFi teavmFile = (TeaFi)file;
+        TeaFi.FSEntry entry = teavmFile.entry();
         HTMLImageElement img = entry.imageElem;
         if(img == null){
             throw new ArcRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");

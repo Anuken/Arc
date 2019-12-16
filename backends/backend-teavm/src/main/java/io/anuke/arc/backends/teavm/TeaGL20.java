@@ -10,8 +10,7 @@ import org.teavm.jso.webgl.*;
 
 import java.nio.*;
 
-
-public class TeaVMGL20 implements GL20{
+public class TeaGL20 implements GL20{
     private static final Window window = Window.current();
     final IntMap<WebGLProgram> programs = new IntMap<>();
     int nextProgramId = 1;
@@ -35,7 +34,7 @@ public class TeaVMGL20 implements GL20{
 
     final WebGLRenderingContext gl;
 
-    protected TeaVMGL20(WebGLRenderingContext gl){
+    protected TeaGL20(WebGLRenderingContext gl){
         this.gl = wrapContext(gl);
         this.gl.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 0);
     }
