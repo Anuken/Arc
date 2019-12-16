@@ -1,10 +1,8 @@
 package io.anuke.arc.collection;
 
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.reflect.ArrayReflection;
+import io.anuke.arc.util.*;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * A resizable, ordered array of objects with efficient add and remove at the beginning and end. Values in the backing array may
@@ -42,7 +40,7 @@ public class Queue<T> implements Iterable<T>{
      * backing array of the specified type via reflection, which is necessary only when accessing the backing array directly.
      */
     public Queue(int initialSize, Class<T> type){
-        this.values = (T[])ArrayReflection.newInstance(type, initialSize);
+        this.values = (T[])java.lang.reflect.Array.newInstance(type, initialSize);
     }
 
     /**
@@ -105,7 +103,7 @@ public class Queue<T> implements Iterable<T>{
         final int head = this.head;
         final int tail = this.tail;
 
-        @SuppressWarnings("unchecked") final T[] newArray = (T[])ArrayReflection.newInstance(values.getClass().getComponentType(), newSize);
+        @SuppressWarnings("unchecked") final T[] newArray = (T[])java.lang.reflect.Array.newInstance(values.getClass().getComponentType(), newSize);
         if(head < tail){
             // Continuous
             System.arraycopy(values, head, newArray, 0, tail - head);
@@ -202,12 +200,17 @@ public class Queue<T> implements Iterable<T>{
         return -1;
     }
 
+    public boolean remove(T value){
+        return remove(value, false);
+    }
+
+
     /**
      * Removes the first instance of the specified value in the queue.
      * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
      * @return true if value was found and removed, false otherwise
      */
-    public boolean removeValue(T value, boolean identity){
+    public boolean remove(T value, boolean identity){
         int index = indexOf(value, identity);
         if(index == -1) return false;
         removeIndex(index);
@@ -333,7 +336,7 @@ public class Queue<T> implements Iterable<T>{
 
     /**
      * Returns an iterator for the items in the queue. Remove is supported. Note that the same iterator instance is returned each
-     * time this method is called. Use the {@link QueueIterator} constructor for nested or multithreaded iteration.
+     * time this method is called. Use the constructor for nested or multithreaded iteration.
      */
     public Iterator<T> iterator(){
         if(iterable == null) iterable = new QueueIterable<>(this);
@@ -407,59 +410,10 @@ public class Queue<T> implements Iterable<T>{
         return true;
     }
 
-    public static class QueueIterator<T> implements Iterator<T>, Iterable<T>{
-        private final Queue<T> queue;
-        private final boolean allowRemove;
-        int index;
-        boolean valid = true;
-
-// QueueIterable<T> iterable;
-
-        public QueueIterator(Queue<T> queue){
-            this(queue, true);
-        }
-
-        public QueueIterator(Queue<T> queue, boolean allowRemove){
-            this.queue = queue;
-            this.allowRemove = allowRemove;
-        }
-
-        public boolean hasNext(){
-            if(!valid){
-// System.out.println(iterable.lastAcquire);
-                throw new ArcRuntimeException("#iterator() cannot be used nested.");
-            }
-            return index < queue.size;
-        }
-
-        public T next(){
-            if(index >= queue.size) throw new NoSuchElementException(String.valueOf(index));
-            if(!valid){
-// System.out.println(iterable.lastAcquire);
-                throw new ArcRuntimeException("#iterator() cannot be used nested.");
-            }
-            return queue.get(index++);
-        }
-
-        public void remove(){
-            if(!allowRemove) throw new ArcRuntimeException("Remove not allowed.");
-            index--;
-            queue.removeIndex(index);
-        }
-
-        public void reset(){
-            index = 0;
-        }
-
-        public Iterator<T> iterator(){
-            return this;
-        }
-    }
-
     public static class QueueIterable<T> implements Iterable<T>{
         private final Queue<T> queue;
         private final boolean allowRemove;
-        private QueueIterator<T> iterator1, iterator2;
+        private QueueIterator iterator1, iterator2;
 
         public QueueIterable(Queue<T> queue){
             this(queue, true);
@@ -470,21 +424,59 @@ public class Queue<T> implements Iterable<T>{
             this.allowRemove = allowRemove;
         }
 
+        @Override
         public Iterator<T> iterator(){
             if(iterator1 == null){
-                iterator1 = new QueueIterator<>(queue, allowRemove);
-                iterator2 = new QueueIterator<>(queue, allowRemove);
+                iterator1 = new QueueIterator();
+                iterator2 = new QueueIterator();
             }
-            if(!iterator1.valid){
+
+            if(iterator1.done){
                 iterator1.index = 0;
-                iterator1.valid = true;
-                iterator2.valid = false;
+                iterator1.done = false;
                 return iterator1;
             }
-            iterator2.index = 0;
-            iterator2.valid = true;
-            iterator1.valid = false;
-            return iterator2;
+
+            if(iterator2.done){
+                iterator2.index = 0;
+                iterator2.done = false;
+                return iterator2;
+            }
+            //allocate new iterator in the case of 3+ nested loops.
+            return new QueueIterator();
+        }
+
+        private class QueueIterator implements Iterator<T>, Iterable<T>{
+            int index;
+            boolean done = true;
+
+            @Override
+            public boolean hasNext(){
+                if(index >= queue.size) done = true;
+                return index < queue.size;
+            }
+
+            @Override
+            public T next(){
+                if(index >= queue.size) throw new NoSuchElementException(String.valueOf(index));
+                return queue.get(index++);
+            }
+
+            @Override
+            public void remove(){
+                if(!allowRemove) throw new ArcRuntimeException("Remove not allowed.");
+                index--;
+                queue.removeIndex(index);
+            }
+
+            public void reset(){
+                index = 0;
+            }
+
+            @Override
+            public Iterator<T> iterator(){
+                return this;
+            }
         }
     }
 }

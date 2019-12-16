@@ -132,6 +132,12 @@ public class TextureRegion{
         set(region.getX() + x, region.getY() + y, width, height);
     }
 
+    /** Sets the texture to that of the specified region and sets the coordinates relative to the specified region. */
+    public void set(Texture texture, int x, int y, int width, int height){
+        this.texture = texture;
+        set(x, y, width, height);
+    }
+
     public Texture getTexture(){
         return texture;
     }
@@ -268,6 +274,7 @@ public class TextureRegion{
      * @return a 2D array of TextureRegions indexed by [row][column].
      */
     public TextureRegion[][] split(int tileWidth, int tileHeight){
+        if(texture == null) return null;
         int x = getX();
         int y = getY();
         int width = this.width;

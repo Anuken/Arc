@@ -1,7 +1,7 @@
 package io.anuke.arc.collection;
 
-import io.anuke.arc.function.BiConsumer;
-import io.anuke.arc.function.Supplier;
+import io.anuke.arc.func.Cons2;
+import io.anuke.arc.func.Prov;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.util.ArcRuntimeException;
 
@@ -99,9 +99,9 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
     }
 
     /**Iterates through key/value pairs.*/
-    public void each(BiConsumer<K, V> cons){
+    public void each(Cons2<K, V> cons){
         for(Entry<K, V> entry : entries()){
-            cons.accept(entry.key, entry.value);
+            cons.get(entry.key, entry.value);
         }
     }
 
@@ -302,7 +302,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
         size++;
     }
 
-    public V getThrow(K key, Supplier<? extends RuntimeException> error){
+    public V getThrow(K key, Prov<? extends RuntimeException> error){
         if(!containsKey(key)){
             throw error.get();
         }
@@ -310,7 +310,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
     }
 
     /** Tries to get the value. If it does not exist, it creates a new instance using the supplier and places it, returning the value.*/
-    public V getOr(K key, Supplier<V> supplier){
+    public V getOr(K key, Prov<V> supplier){
         V val = get(key);
         if(val == null){
             val = supplier.get();

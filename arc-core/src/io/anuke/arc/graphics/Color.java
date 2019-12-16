@@ -8,50 +8,50 @@ import io.anuke.arc.math.Mathf;
  * @author mzechner
  */
 public class Color{
-    public static final Color WHITE = new Color(1, 1, 1, 1);
-    public static final Color LIGHT_GRAY = new Color(0xbfbfbfff);
-    public static final Color GRAY = new Color(0x7f7f7fff);
-    public static final Color DARK_GRAY = new Color(0x3f3f3fff);
-    public static final Color BLACK = new Color(0, 0, 0, 1);
-    public static final Color CLEAR = new Color(0, 0, 0, 0);
+    public static final Color white = new Color(1, 1, 1, 1);
+    public static final Color lightGray = new Color(0xbfbfbfff);
+    public static final Color gray = new Color(0x7f7f7fff);
+    public static final Color darkGray = new Color(0x3f3f3fff);
+    public static final Color black = new Color(0, 0, 0, 1);
+    public static final Color clear = new Color(0, 0, 0, 0);
 
     /** Convenience for frequently used <code>WHITE.toFloatBits()</code> */
-    public static final float WHITE_FLOAT_BITS = WHITE.toFloatBits();
-    public static final float CLEAR_FLOAT_BITS = CLEAR.toFloatBits();
+    public static final float whiteFloatBits = white.toFloatBits();
+    public static final float clearFloatBits = clear.toFloatBits();
 
-    public static final Color BLUE = new Color(0, 0, 1, 1);
-    public static final Color NAVY = new Color(0, 0, 0.5f, 1);
-    public static final Color ROYAL = new Color(0x4169e1ff);
-    public static final Color SLATE = new Color(0x708090ff);
-    public static final Color SKY = new Color(0x87ceebff);
-    public static final Color CYAN = new Color(0, 1, 1, 1);
-    public static final Color TEAL = new Color(0, 0.5f, 0.5f, 1);
+    public static final Color blue = new Color(0, 0, 1, 1);
+    public static final Color navy = new Color(0, 0, 0.5f, 1);
+    public static final Color royal = new Color(0x4169e1ff);
+    public static final Color slate = new Color(0x708090ff);
+    public static final Color sky = new Color(0x87ceebff);
+    public static final Color cyan = new Color(0, 1, 1, 1);
+    public static final Color teal = new Color(0, 0.5f, 0.5f, 1);
 
-    public static final Color GREEN = new Color(0x00ff00ff);
-    public static final Color CHARTREUSE = new Color(0x7fff00ff);
-    public static final Color LIME = new Color(0x32cd32ff);
-    public static final Color FOREST = new Color(0x228b22ff);
-    public static final Color OLIVE = new Color(0x6b8e23ff);
+    public static final Color green = new Color(0x00ff00ff);
+    public static final Color acid = new Color(0x7fff00ff);
+    public static final Color lime = new Color(0x32cd32ff);
+    public static final Color forest = new Color(0x228b22ff);
+    public static final Color olive = new Color(0x6b8e23ff);
 
-    public static final Color YELLOW = new Color(0xffff00ff);
-    public static final Color GOLD = new Color(0xffd700ff);
-    public static final Color GOLDENROD = new Color(0xdaa520ff);
-    public static final Color ORANGE = new Color(0xffa500ff);
+    public static final Color yellow = new Color(0xffff00ff);
+    public static final Color gold = new Color(0xffd700ff);
+    public static final Color goldenrod = new Color(0xdaa520ff);
+    public static final Color orange = new Color(0xffa500ff);
 
-    public static final Color BROWN = new Color(0x8b4513ff);
-    public static final Color TAN = new Color(0xd2b48cff);
-    public static final Color FIREBRICK = new Color(0xb22222ff);
+    public static final Color brown = new Color(0x8b4513ff);
+    public static final Color tan = new Color(0xd2b48cff);
+    public static final Color brick = new Color(0xb22222ff);
 
-    public static final Color RED = new Color(0xff0000ff);
-    public static final Color SCARLET = new Color(0xff341cff);
-    public static final Color CORAL = new Color(0xff7f50ff);
-    public static final Color SALMON = new Color(0xfa8072ff);
-    public static final Color PINK = new Color(0xff69b4ff);
-    public static final Color MAGENTA = new Color(1, 0, 1, 1);
+    public static final Color red = new Color(0xff0000ff);
+    public static final Color scarlet = new Color(0xff341cff);
+    public static final Color coral = new Color(0xff7f50ff);
+    public static final Color salmon = new Color(0xfa8072ff);
+    public static final Color pink = new Color(0xff69b4ff);
+    public static final Color magenta = new Color(1, 0, 1, 1);
 
-    public static final Color PURPLE = new Color(0xa020f0ff);
-    public static final Color VIOLET = new Color(0xee82eeff);
-    public static final Color MAROON = new Color(0xb03060ff);
+    public static final Color purple = new Color(0xa020f0ff);
+    public static final Color violet = new Color(0xee82eeff);
+    public static final Color maroon = new Color(0xb03060ff);
 
     private static final float[] tmpHSV = new float[3];
 
@@ -531,6 +531,26 @@ public class Color{
         r = 1f - r;
         g = 1f - g;
         b = 1f - b;
+        return this;
+    }
+
+    public Color r(float r){
+        this.r = r;
+        return this;
+    }
+
+    public Color g(float g){
+        this.g = g;
+        return this;
+    }
+
+    public Color b(float b){
+        this.b = b;
+        return this;
+    }
+
+    public Color a(float a){
+        this.a = a;
         return this;
     }
 

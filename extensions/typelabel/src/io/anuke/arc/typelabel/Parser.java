@@ -1,7 +1,7 @@
 package io.anuke.arc.typelabel;
 
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.function.IntPositionConsumer;
+import io.anuke.arc.func.*;
 
 /** Utility class to parse tokens from a {@link TypeLabel}. */
 class Parser{
@@ -171,7 +171,7 @@ class Parser{
         });
     }
 
-    private static void parseAllTokens(TypeLabel label, boolean square, IntPositionConsumer handler){
+    private static void parseAllTokens(TypeLabel label, boolean square, Intc2 handler){
         StringBuilder text = label.getText();
 
         for(int i = 0; i < text.length(); i++){
@@ -189,7 +189,7 @@ class Parser{
                         //found token end!
                         int tokenFrom = i + 1;
                         int tokenTo = j;
-                        handler.accept(tokenFrom, tokenTo);
+                        handler.get(tokenFrom, tokenTo);
                         break;
                     }
                 }
@@ -199,7 +199,7 @@ class Parser{
                         //found token end!
                         int tokenFrom = i + 1;
                         int tokenTo = j;
-                        handler.accept(tokenFrom, tokenTo);
+                        handler.get(tokenFrom, tokenTo);
                         break;
                     }
                 }

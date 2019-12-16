@@ -5,9 +5,7 @@ import io.anuke.arc.input.*;
 import org.teavm.jso.dom.events.*;
 import org.teavm.jso.dom.html.*;
 
-/**
- * @author Alexey Andreev
- */
+
 public class TeaVMInput extends Input implements EventListener{
     static final int MAX_TOUCHES = 20;
     private boolean justTouched = false;

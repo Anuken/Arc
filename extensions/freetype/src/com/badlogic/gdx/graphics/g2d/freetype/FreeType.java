@@ -1,7 +1,7 @@
 package com.badlogic.gdx.graphics.g2d.freetype;
 
 import io.anuke.arc.collection.LongMap;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.graphics.Pixmap.Blending;
@@ -60,7 +60,7 @@ public class FreeType {
 			FT_Done_FreeType((FT_Library)library);
 		*/
 
-		public Face newFace(FileHandle font, int faceIndex) {
+		public Face newFace(Fi font, int faceIndex) {
 			byte[] data = font.readBytes();
 			return newMemoryFace(data, data.length, faceIndex);
 		}
@@ -619,7 +619,7 @@ public class FreeType {
 			Pixmap pixmap;
 			int pixelMode = getPixelMode();
 			int rowBytes = Math.abs(getPitch()); // We currently ignore negative pitch.
-			if (color == Color.WHITE && pixelMode == FT_PIXEL_MODE_GRAY && rowBytes == width && gamma == 1) {
+			if (color == Color.white && pixelMode == FT_PIXEL_MODE_GRAY && rowBytes == width && gamma == 1) {
 				pixmap = new Pixmap(width, rows, Format.Alpha);
 				BufferUtils.copy(src, pixmap.getPixels(), pixmap.getPixels().capacity());
 			} else {

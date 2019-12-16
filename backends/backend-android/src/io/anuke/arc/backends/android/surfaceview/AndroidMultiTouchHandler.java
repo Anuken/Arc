@@ -12,7 +12,7 @@ import io.anuke.arc.util.Log;
  * pointers.
  * @author badlogicgames@gmail.com
  */
-public class AndroidMultiTouchHandler implements AndroidTouchHandler{
+public class AndroidMultiTouchHandler implements AndroidInput.AndroidTouchHandler{
     public void onTouch(MotionEvent event, AndroidInput input){
         final int action = event.getAction() & MotionEvent.ACTION_MASK;
         int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
@@ -32,7 +32,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler{
                     input.realId[realPointerIndex] = pointerId;
                     x = (int)event.getX(pointerIndex);
                     y = (int)event.getY(pointerIndex);
-                    if(android.os.Build.VERSION.SDK_INT >= 14) button = toGdxButton(event.getButtonState());
+                    button = toGdxButton(event.getButtonState());
                     if(button != KeyCode.UNKNOWN)
                         postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, realPointerIndex, button, timeStamp);
                     input.touchX[realPointerIndex] = x;

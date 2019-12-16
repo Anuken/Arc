@@ -1,20 +1,17 @@
 package io.anuke.arc.scene.ui.layout;
 
-import io.anuke.arc.*;
-import io.anuke.arc.function.BooleanProvider;
-import io.anuke.arc.function.Consumer;
-import io.anuke.arc.function.Predicate;
-import io.anuke.arc.function.Supplier;
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.scene.Element;
-import io.anuke.arc.scene.event.Touchable;
+import io.anuke.arc.func.*;
+import io.anuke.arc.graphics.*;
+import io.anuke.arc.scene.*;
+import io.anuke.arc.scene.event.*;
+import io.anuke.arc.scene.style.*;
 import io.anuke.arc.scene.ui.*;
 import io.anuke.arc.scene.ui.Button.*;
 import io.anuke.arc.scene.ui.Label.*;
 import io.anuke.arc.scene.ui.ScrollPane.*;
-import io.anuke.arc.scene.ui.TextField.TextFieldValidator;
+import io.anuke.arc.scene.ui.TextField.*;
 import io.anuke.arc.util.*;
-import io.anuke.arc.util.pooling.Pool.Poolable;
+import io.anuke.arc.util.pooling.Pool.*;
 
 /**
  * A cell for a {@link Table}.
@@ -146,16 +143,16 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
-    public Cell<T> update(Consumer<T> updater){
+    public Cell<T> update(Cons<T> updater){
         T t = get();
-        t.update(() -> updater.accept(t));
+        t.update(() -> updater.get(t));
         return this;
     }
 
-    public Cell<T> disabled(Predicate<T> vis){
+    public Cell<T> disabled(Boolf<T> vis){
         if(get() instanceof Button){
             T t = get();
-            ((Button) get()).setDisabled(() -> vis.test(t));
+            ((Button) get()).setDisabled(() -> vis.get(t));
         }
         return this;
     }
@@ -172,12 +169,12 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
-    public Cell<T> touchable(Supplier<Touchable> touchable){
+    public Cell<T> touchable(Prov<Touchable> touchable){
         get().touchable(touchable);
         return this;
     }
 
-    public Cell<T> visible(BooleanProvider prov){
+    public Cell<T> visible(Boolp prov){
         get().visible(prov);
         return this;
     }
@@ -224,10 +221,10 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
-    public Cell<T> checked(Predicate<T> toggle){
+    public Cell<T> checked(Boolf<T> toggle){
         T t = get();
         if(t instanceof Button){
-            t.update(() -> ((Button)t).setChecked(toggle.test(t)));
+            t.update(() -> ((Button)t).setChecked(toggle.get(t)));
         }
         return this;
     }
@@ -286,13 +283,13 @@ public class Cell<T extends Element> implements Poolable{
     }
 
     /** Sets the button or label style.*/
-    public Cell<T> style(String style){
+    public Cell<T> style(Style style){
         if(element instanceof Label){
-            ((Label)element).setStyle(Core.scene.skin.get(style, LabelStyle.class));
+            ((Label)element).setStyle((LabelStyle)style);
         }else if(element instanceof Button){
-            ((Button)element).setStyle(Core.scene.skin.get(style, ButtonStyle.class));
+            ((Button)element).setStyle((ButtonStyle)style);
         }else if(element instanceof ScrollPane){
-            ((ScrollPane)element).setStyle(Core.scene.skin.get(style, ScrollPaneStyle.class));
+            ((ScrollPane)element).setStyle((ScrollPaneStyle)style);
         }
         return this;
     }
@@ -584,7 +581,7 @@ public class Cell<T extends Element> implements Poolable{
     }
 
     float scl(float value){
-        return UnitScl.dp.scl(value);
+        return Scl.scl(value);
     }
 
     /** Reset state so the cell can be reused, setting all constraints to their {@link #defaults() default} values. */

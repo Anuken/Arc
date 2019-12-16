@@ -10,35 +10,39 @@ public class Fill{
     private static TextureRegion circleRegion;
 
     public static void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4){
-        TextureRegion region = atlas.white();
         float color = Core.batch.getPackedColor();
+        quad(x1, y1, color, x2, y2, color, x3, y3, color, x4, y4, color);
+    }
+
+    public static void quad(float x1, float y1, float c1, float x2, float y2, float c2, float x3, float y3, float c3, float x4, float y4, float c4){
+        TextureRegion region = atlas.white();
         float mcolor = Core.batch.getPackedMixColor();
         float u = region.getU();
         float v = region.getV();
         vertices[0] = x1;
         vertices[1] = y1;
-        vertices[2] = color;
+        vertices[2] = c1;
         vertices[3] = u;
         vertices[4] = v;
         vertices[5] = mcolor;
 
         vertices[6] = x2;
         vertices[7] = y2;
-        vertices[8] = color;
+        vertices[8] = c2;
         vertices[9] = u;
         vertices[10] = v;
         vertices[11] = mcolor;
 
         vertices[12] = x3;
         vertices[13] = y3;
-        vertices[14] = color;
+        vertices[14] = c3;
         vertices[15] = u;
         vertices[16] = v;
         vertices[17] = mcolor;
 
         vertices[18] = x4;
         vertices[19] = y4;
-        vertices[20] = color;
+        vertices[20] = c4;
         vertices[21] = u;
         vertices[22] = v;
         vertices[23] = mcolor;

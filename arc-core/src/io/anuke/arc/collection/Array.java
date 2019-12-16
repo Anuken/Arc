@@ -1,13 +1,10 @@
 package io.anuke.arc.collection;
 
-import io.anuke.arc.function.*;
-import io.anuke.arc.math.Mathf;
+import io.anuke.arc.func.*;
+import io.anuke.arc.math.*;
 import io.anuke.arc.util.*;
-import io.anuke.arc.util.reflect.ArrayReflection;
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * A resizable, ordered or unordered array of objects. If unordered, this class avoids a memory copy when removing elements (the
@@ -16,6 +13,8 @@ import java.util.NoSuchElementException;
  */
 @SuppressWarnings("unchecked")
 public class Array<T> implements Iterable<T>{
+    /** Debugging variable to count total number of iterators allocated.*/
+    public static int iteratorsAllocated = 0;
     /**
      * Provides direct access to the underlying array. If the Array's generic type is not Object, this field may only be accessed
      * if the {@link Array#Array(boolean, int, Class)} constructor was used.
@@ -55,7 +54,7 @@ public class Array<T> implements Iterable<T>{
      */
     public Array(boolean ordered, int capacity, Class arrayType){
         this.ordered = ordered;
-        items = (T[])ArrayReflection.newInstance(arrayType, capacity);
+        items = (T[])java.lang.reflect.Array.newInstance(arrayType, capacity);
     }
 
     /** Creates an ordered array with {@link #items} of the specified type and a capacity of 16. */
@@ -105,7 +104,7 @@ public class Array<T> implements Iterable<T>{
         return new Array<>(ordered, capacity, arrayType);
     }
 
-    public static <T> Array<T> withRecursive(Object... arrays){
+    public static <T> Array<T> withArrays(Object... arrays){
         Array<T> result = new Array<>();
         for(Object a : arrays){
             if(a instanceof Array){
@@ -131,10 +130,10 @@ public class Array<T> implements Iterable<T>{
     }
 
     /** @see #Array(Object[]) */
-    public static <T> Array<T> select(T[] array, Predicate<T> test){
+    public static <T> Array<T> select(T[] array, Boolf<T> test){
         Array<T> out = new Array<>(array.length);
         for(int i = 0; i < array.length; i++){
-            if(test.test(array[i])){
+            if(test.get(array[i])){
                 out.add(array[i]);
             }
         }
@@ -145,7 +144,7 @@ public class Array<T> implements Iterable<T>{
         return new Array<>(this);
     }
 
-    public float sum(FloatFunction<T> summer){
+    public float sumf(Floatf<T> summer){
         float sum = 0;
         for(int i = 0; i < size; i++){
             sum += summer.get(items[i]);
@@ -153,20 +152,28 @@ public class Array<T> implements Iterable<T>{
         return sum;
     }
 
-    public <E extends T> void each(Predicate<? super T> pred, Consumer<E> consumer){
+    public int sum(Intf<T> summer){
+        int sum = 0;
         for(int i = 0; i < size; i++){
-            if(pred.test(items[i])) consumer.accept((E)items[i]);
+            sum += summer.get(items[i]);
+        }
+        return sum;
+    }
+
+    public <E extends T> void each(Boolf<? super T> pred, Cons<E> consumer){
+        for(int i = 0; i < size; i++){
+            if(pred.get(items[i])) consumer.get((E)items[i]);
         }
     }
 
-    public void each(Consumer<? super T> consumer){
+    public void each(Cons<? super T> consumer){
         for(int i = 0; i < size; i++){
-            consumer.accept(items[i]);
+            consumer.get(items[i]);
         }
     }
 
     /**Replaces values without creating a new array.*/
-    public void replace(Function<T, T> mapper){
+    public void replace(Func<T, T> mapper){
         for(int i = 0; i < size; i++){
             items[i] = mapper.get(items[i]);
         }
@@ -182,7 +189,7 @@ public class Array<T> implements Iterable<T>{
     }
 
     /**Returns a new array with the mapped values.*/
-    public <R> Array<R> map(Function<T, R> mapper){
+    public <R> Array<R> map(Func<T, R> mapper){
         Array<R> arr = new Array<>(size);
         for(int i = 0; i < size; i++){
             arr.add(mapper.get(items[i]));
@@ -191,7 +198,7 @@ public class Array<T> implements Iterable<T>{
     }
 
     /**Returns a new int array with the mapped values.*/
-    public IntArray mapInt(IntFunction<T> mapper){
+    public IntArray mapInt(Intf<T> mapper){
         IntArray arr = new IntArray(size);
         for(int i = 0; i < size; i++){
             arr.add(mapper.get(items[i]));
@@ -199,7 +206,7 @@ public class Array<T> implements Iterable<T>{
         return arr;
     }
 
-    public <R> R reduce(R initial, BiFunction<T, R, R> reducer){
+    public <R> R reduce(R initial, Func2<T, R, R> reducer){
         R result = initial;
         for(int i = 0; i < size; i++){
             result = reducer.get(items[i], result);
@@ -207,11 +214,33 @@ public class Array<T> implements Iterable<T>{
         return result;
     }
 
-    public boolean contains(Predicate<T> predicate){
+    public boolean contains(Boolf<T> predicate){
         return find(predicate) != null;
     }
 
-    public T min(FloatFunction<T> func){
+    public T min(Comparator<T> func){
+        T result = null;
+        for(int i = 0; i < size; i++){
+            T t = items[i];
+            if(result == null || func.compare(result, t) > 0){
+                result = t;
+            }
+        }
+        return result;
+    }
+
+    public T max(Comparator<T> func){
+        T result = null;
+        for(int i = 0; i < size; i++){
+            T t = items[i];
+            if(result == null || func.compare(result, t) < 0){
+                result = t;
+            }
+        }
+        return result;
+    }
+
+    public T min(Floatf<T> func){
         T result = null;
         float min = Float.MAX_VALUE;
         for(int i = 0; i < size; i++){
@@ -225,7 +254,7 @@ public class Array<T> implements Iterable<T>{
         return result;
     }
 
-    public T max(FloatFunction<T> func){
+    public T max(Floatf<T> func){
         T result = null;
         float max = Float.NEGATIVE_INFINITY;
         for(int i = 0; i < size; i++){
@@ -239,9 +268,9 @@ public class Array<T> implements Iterable<T>{
         return result;
     }
 
-    public T find(Predicate<T> predicate){
+    public T find(Boolf<T> predicate){
         for(int i = 0; i < size; i++){
-            if(predicate.test(items[i])){
+            if(predicate.get(items[i])){
                 return items[i];
             }
         }
@@ -416,9 +445,9 @@ public class Array<T> implements Iterable<T>{
     }
 
     /** Removes a single value by predicate. */
-    public boolean remove(Predicate<T> value){
+    public boolean remove(Boolf<T> value){
         for(int i = 0; i < size; i++){
-            if(value.test(items[i])){
+            if(value.get(items[i])){
                 remove(i);
                 return true;
             }
@@ -480,6 +509,17 @@ public class Array<T> implements Iterable<T>{
                 items[start + i] = items[lastIndex - i];
         }
         size -= count;
+    }
+
+    /** @return this object */
+    public Array<T> removeAll(Boolf<T> pred){
+        Iterator<T> iter = iterator();
+        while(iter.hasNext()){
+            if(pred.get(iter.next())){
+                iter.remove();
+            }
+        }
+        return this;
     }
 
     public boolean removeAll(Array<? extends T> array){
@@ -591,7 +631,7 @@ public class Array<T> implements Iterable<T>{
     /** Creates a new backing array with the specified size containing the current items. */
     protected T[] resize(int newSize){
         T[] items = this.items;
-        T[] newItems = (T[])ArrayReflection.newInstance(items.getClass().getComponentType(), newSize);
+        T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), newSize);
         System.arraycopy(items, 0, newItems, 0, Math.min(size, newItems.length));
         this.items = newItems;
         return newItems;
@@ -610,31 +650,46 @@ public class Array<T> implements Iterable<T>{
         Sort.instance().sort(items, comparator, 0, size);
     }
 
-    public Array<T> selectFrom(Array<T> base, Predicate<T> predicate){
+    public void sort(Floatf<? super T> comparator){
+        Sort.instance().sort(items, Structs.comparingFloat(comparator), 0, size);
+    }
+
+    public Array<T> selectFrom(Array<T> base, Boolf<T> predicate){
         clear();
         base.each(t -> {
-            if(predicate.test(t)){
+            if(predicate.get(t)){
                 add(t);
             }
         });
         return this;
     }
 
+    /** Note that this allocates a new set.*/
+    public Array<T> distinct(){
+        ObjectSet<T> set = ObjectSet.with(this);
+        removeAll(t -> !set.contains(t));
+        return this;
+    }
+
+    public <R extends T> Array<R> as(Class<R> type){
+        return (Array<R>)this;
+    }
+
     /** Allocates a new array with all elements that match the predicate.*/
-    public Array<T> select(Predicate<T> predicate){
+    public Array<T> select(Boolf<T> predicate){
         Array<T> arr = new Array<>();
         for(int i = 0; i < size; i++){
-            if(predicate.test(items[i])){
+            if(predicate.get(items[i])){
                 arr.add(items[i]);
             }
         }
         return arr;
     }
 
-    public int count(Predicate<T> predicate){
+    public int count(Boolf<T> predicate){
         int count = 0;
         for(int i = 0; i < size; i++){
-            if(predicate.test(items[i])){
+            if(predicate.get(items[i])){
                 count ++;
             }
         }
@@ -692,16 +747,6 @@ public class Array<T> implements Iterable<T>{
     }
 
     /**
-     * Returns an iterator for the items in the array. Remove is supported. Note that the same iterator instance is returned each
-     * time this method is called. Use the {@link ArrayIterator} constructor for nested or multithreaded iteration.
-     */
-    @Override
-    public Iterator<T> iterator(){
-        if(iterable == null) iterable = new ArrayIterable(this);
-        return iterable.iterator();
-    }
-
-    /**
      * Reduces the size of the array to the specified size. If the array is already smaller than the specified size, no action is
      * taken.
      */
@@ -719,6 +764,26 @@ public class Array<T> implements Iterable<T>{
         return items[Mathf.random(0, size - 1)];
     }
 
+    /** Returns a random item from the array, excluding the specified element. If the array is empty, returns null.
+     * If this array only has one element, returns that element. */
+    public T random(T exclude){
+        if(exclude == null) return random();
+        if(size == 0) return null;
+        if(size == 1) return first();
+
+        int eidx = indexOf(exclude);
+        //this item isn't even in the array!
+        if(eidx == -1) return random();
+
+        //shift up the index
+        int index = Mathf.random(0, size - 2);
+        if(index >= eidx){
+            index ++;
+        }
+
+        return items[index];
+    }
+
     /**
      * Returns the items as an array. Note the array is typed, so the {@link #Array(Class)} constructor must have been used.
      * Otherwise use {@link #toArray(Class)} to specify the array type.
@@ -728,7 +793,7 @@ public class Array<T> implements Iterable<T>{
     }
 
     public <V> V[] toArray(Class type){
-        V[] result = (V[])ArrayReflection.newInstance(type, size);
+        V[] result = (V[])java.lang.reflect.Array.newInstance(type, size);
         System.arraycopy(items, 0, result, 0, size);
         return result;
     }
@@ -778,7 +843,7 @@ public class Array<T> implements Iterable<T>{
         return buffer.toString();
     }
 
-    public String toString(String separator, Function<T, String> stringifier){
+    public String toString(String separator, Func<T, String> stringifier){
         if(size == 0) return "";
         T[] items = this.items;
         StringBuilder buffer = new StringBuilder(32);
@@ -794,55 +859,22 @@ public class Array<T> implements Iterable<T>{
         return toString(separator, String::valueOf);
     }
 
-    public static class ArrayIterator<T> implements Iterator<T>, Iterable<T>{
-        private final Array<T> array;
-        private final boolean allowRemove;
-        int index;
-        boolean valid = true;
-
-        public ArrayIterator(Array<T> array){
-            this(array, true);
-        }
-
-        public ArrayIterator(Array<T> array, boolean allowRemove){
-            this.array = array;
-            this.allowRemove = allowRemove;
-        }
-
-        public boolean hasNext(){
-            if(!valid){
-                throw new ArcRuntimeException("#iterator() cannot be used nested.");
-            }
-            return index < array.size;
-        }
-
-        public T next(){
-            if(index >= array.size) throw new NoSuchElementException(String.valueOf(index));
-            if(!valid){
-                throw new ArcRuntimeException("#iterator() cannot be used nested.");
-            }
-            return array.items[index++];
-        }
-
-        public void remove(){
-            if(!allowRemove) throw new ArcRuntimeException("Remove not allowed.");
-            index--;
-            array.remove(index);
-        }
-
-        public void reset(){
-            index = 0;
-        }
-
-        public Iterator<T> iterator(){
-            return this;
-        }
+    /**
+     * Returns an iterator for the items in the array. Remove is supported. Note that the same iterator instance is returned each
+     * time this method is called, unless you are using nested loops.
+     * <b>Never, ever</b> access this iterator's method manually, e.g. hasNext()/next().
+     * Note that calling 'break' while iterating will permanently clog this iterator, falling back to an implementation that allocates new ones.
+     */
+    @Override
+    public Iterator<T> iterator(){
+        if(iterable == null) iterable = new ArrayIterable(this);
+        return iterable.iterator();
     }
 
     public static class ArrayIterable<T> implements Iterable<T>{
         private final Array<T> array;
         private final boolean allowRemove;
-        private ArrayIterator iterator1, iterator2;
+        private ArrayIterator iterator1 = new ArrayIterator(), iterator2 = new ArrayIterator();
 
         public ArrayIterable(Array<T> array){
             this(array, true);
@@ -853,21 +885,49 @@ public class Array<T> implements Iterable<T>{
             this.allowRemove = allowRemove;
         }
 
+        @Override
         public Iterator<T> iterator(){
-            if(iterator1 == null){
-                iterator1 = new ArrayIterator(array, allowRemove);
-                iterator2 = new ArrayIterator(array, allowRemove);
-            }
-            if(!iterator1.valid){
+            if(iterator1.done){
                 iterator1.index = 0;
-                iterator1.valid = true;
-                iterator2.valid = false;
+                iterator1.done = false;
                 return iterator1;
             }
-            iterator2.index = 0;
-            iterator2.valid = true;
-            iterator1.valid = false;
-            return iterator2;
+
+            if(iterator2.done){
+                iterator2.index = 0;
+                iterator2.done = false;
+                return iterator2;
+            }
+            //allocate new iterator in the case of 3+ nested loops.
+            return new ArrayIterator();
+        }
+
+        private class ArrayIterator implements Iterator<T>{
+            int index;
+            boolean done = true;
+
+            {
+                iteratorsAllocated ++;
+            }
+
+            @Override
+            public boolean hasNext(){
+                if(index >= array.size) done = true;
+                return index < array.size;
+            }
+
+            @Override
+            public T next(){
+                if(index >= array.size) throw new NoSuchElementException(String.valueOf(index));
+                return array.items[index++];
+            }
+
+            @Override
+            public void remove(){
+                if(!allowRemove) throw new ArcRuntimeException("Remove not allowed.");
+                index--;
+                array.remove(index);
+            }
         }
     }
 }

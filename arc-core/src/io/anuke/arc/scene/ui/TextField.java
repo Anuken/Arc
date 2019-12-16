@@ -4,7 +4,7 @@ import io.anuke.arc.Core;
 import io.anuke.arc.Input;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.FloatArray;
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.func.Cons;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.BitmapFont;
 import io.anuke.arc.graphics.g2d.BitmapFont.BitmapFontData;
@@ -23,7 +23,6 @@ import io.anuke.arc.scene.event.IbeamCursorListener;
 import io.anuke.arc.scene.event.InputEvent;
 import io.anuke.arc.scene.event.InputListener;
 import io.anuke.arc.scene.style.Drawable;
-import io.anuke.arc.scene.style.SkinReader.ReadContext;
 import io.anuke.arc.scene.style.Style;
 import io.anuke.arc.scene.utils.Disableable;
 import io.anuke.arc.util.*;
@@ -104,11 +103,7 @@ public class TextField extends Element implements Disableable{
     }
 
     public TextField(String text){
-        this(text, scene.skin.get(TextFieldStyle.class));
-    }
-
-    public TextField(String text, String styleName){
-        this(text, scene.skin.get(styleName, TextFieldStyle.class));
+        this(text, scene.getStyle(TextFieldStyle.class));
     }
 
     public TextField(String text, TextFieldStyle style){
@@ -567,8 +562,8 @@ public class TextField extends Element implements Disableable{
         this.listener = listener;
     }
 
-    public void typed(Consumer<Character> cons){
-        setTextFieldListener((textField, c) -> cons.accept(c));
+    public void typed(Cons<Character> cons){
+        setTextFieldListener((textField, c) -> cons.get(c));
     }
 
     public TextFieldFilter getFilter(){
@@ -874,22 +869,6 @@ public class TextField extends Element implements Disableable{
             if(style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
             this.selection = style.selection;
         }
-
-        @Override
-        public void read(ReadContext read){
-            font = read.rfont("font");
-            messageFont = read.font("messageFont");
-            fontColor = read.color("fontColor");
-            focusedFontColor = read.color("focusedFontColor");
-            disabledFontColor = read.color("disabledFontColor");
-            messageFontColor = read.color("messageFontColor");
-            background = read.draw("background");
-            focusedBackground = read.draw("focusedBackground");
-            invalidBackground = read.draw("invalidBackground");
-            disabledBackground = read.draw("disabledBackground");
-            cursor = read.draw("cursor");
-            selection = read.draw("selection");
-        }
     }
 
     class KeyRepeatTask extends Task{
@@ -964,7 +943,7 @@ public class TextField extends Element implements Disableable{
             if(stage == null || stage.getKeyboardFocus() != TextField.this) return false;
 
             boolean repeat = false;
-            boolean ctrl = Core.input.ctrl();
+            boolean ctrl = Core.input.ctrl() && !Core.input.alt();
             boolean jump = ctrl && !passwordMode;
 
             if(ctrl){
@@ -1113,7 +1092,7 @@ public class TextField extends Element implements Disableable{
                     }
                     if(add && !remove){
                         // Character may be added to the text.
-                        if(!enter && filter != null && !filter.acceptChar(TextField.this, character)) return true;
+                        if(filter != null && !filter.acceptChar(TextField.this, character)) return true;
                         if(!withinMaxLength(text.length())) return true;
                         String insertion = enter ? "\r" : String.valueOf(character);
                         text = insert(cursor++, insertion, text);

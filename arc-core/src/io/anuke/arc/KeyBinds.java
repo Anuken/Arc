@@ -1,16 +1,13 @@
 package io.anuke.arc;
 
 
-import io.anuke.arc.collection.ObjectMap;
-import io.anuke.arc.collection.ObjectMap.Entry;
-import io.anuke.arc.collection.OrderedMap;
-import io.anuke.arc.input.InputDevice;
-import io.anuke.arc.input.InputDevice.DeviceType;
-import io.anuke.arc.input.KeyCode;
-import io.anuke.arc.math.Mathf;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.collection.ObjectMap.*;
+import io.anuke.arc.input.*;
+import io.anuke.arc.input.InputDevice.*;
+import io.anuke.arc.math.*;
 
-import static io.anuke.arc.Core.input;
-import static io.anuke.arc.Core.settings;
+import static io.anuke.arc.Core.*;
 
 /**
  * Stores keybinds.
@@ -116,6 +113,20 @@ public class KeyBinds{
         for(Section sec : sections){
             sec.binds.clear();
         }
+    }
+
+    /**
+     * Resets a keybind to its default value.
+     * Call Core.settings.save() to flush the change afterwards.
+     */
+    public void resetToDefault(Section section, KeyBind bind){
+        String rname = "keybind-" + section.name + "-" + section.device.type().name() + "-" + bind.name();
+        settings.remove(rname + "-single");
+        settings.remove(rname + "-key");
+        settings.remove(rname + "-min");
+        settings.remove(rname + "-max");
+
+        section.binds.each((device, bindings) -> bindings.remove(bind));
     }
 
     private void save(Axis axis, String name){

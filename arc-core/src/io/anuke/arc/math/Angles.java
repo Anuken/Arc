@@ -1,7 +1,7 @@
 package io.anuke.arc.math;
 
 import io.anuke.arc.Core;
-import io.anuke.arc.function.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.math.geom.Vector2;
 
 public class Angles{
@@ -66,70 +66,70 @@ public class Angles{
         return angle(avector.x, avector.y, Core.input.mouseX(), Core.input.mouseY());
     }
 
-    public static void loop(int max, IntConsumer i){
+    public static void loop(int max, Intc i){
         for(int j = 0; j < max; j++){
-            i.accept(j);
+            i.get(j);
         }
     }
 
-    public static void circle(int points, float offset, FloatConsumer cons){
+    public static void circle(int points, float offset, Floatc cons){
         for(int i = 0; i < points; i++){
-            cons.accept(offset + i * 360f / points);
+            cons.get(offset + i * 360f / points);
         }
     }
 
-    public static void circle(int points, FloatConsumer cons){
+    public static void circle(int points, Floatc cons){
         for(int i = 0; i < points; i++){
-            cons.accept(i * 360f / points);
+            cons.get(i * 360f / points);
         }
     }
 
-    public static void circleVectors(int points, float length, PositionConsumer pos){
+    public static void circleVectors(int points, float length, Floatc2 pos){
         for(int i = 0; i < points; i++){
             float f = i * 360f / points;
-            pos.accept(trnsx(f, length), trnsy(f, length));
+            pos.get(trnsx(f, length), trnsy(f, length));
         }
     }
 
-    public static void circleVectors(int points, float length, float offset, PositionConsumer pos){
+    public static void circleVectors(int points, float length, float offset, Floatc2 pos){
         for(int i = 0; i < points; i++){
             float f = i * 360f / points + offset;
-            pos.accept(trnsx(f, length), trnsy(f, length));
+            pos.get(trnsx(f, length), trnsy(f, length));
         }
     }
 
-    public static void shotgun(int points, float spacing, float offset, FloatConsumer cons){
+    public static void shotgun(int points, float spacing, float offset, Floatc cons){
         for(int i = 0; i < points; i++){
-            cons.accept(i * spacing - (points - 1) * spacing / 2f + offset);
+            cons.get(i * spacing - (points - 1) * spacing / 2f + offset);
         }
     }
 
-    public static void randVectors(long seed, int amount, float length, PositionConsumer cons){
+    public static void randVectors(long seed, int amount, float length, Floatc2 cons){
         random.setSeed(seed);
         for(int i = 0; i < amount; i++){
             float vang = random.nextFloat() * 360f;
             rv.set(length, 0).rotate(vang);
-            cons.accept(rv.x, rv.y);
+            cons.get(rv.x, rv.y);
         }
     }
 
-    public static void randLenVectors(long seed, int amount, float length, PositionConsumer cons){
+    public static void randLenVectors(long seed, int amount, float length, Floatc2 cons){
         random.setSeed(seed);
         for(int i = 0; i < amount; i++){
             float scl = length * random.nextFloat();
             float vang = random.nextFloat() * 360f;
             rv.set(scl, 0).rotate(vang);
-            cons.accept(rv.x, rv.y);
+            cons.get(rv.x, rv.y);
         }
     }
 
-    public static void randLenVectors(long seed, int amount, float length, float angle, float range, PositionConsumer cons){
+    public static void randLenVectors(long seed, int amount, float length, float angle, float range, Floatc2 cons){
         random.setSeed(seed);
         for(int i = 0; i < amount; i++){
             float scl = length * random.nextFloat();
             float vang = angle + random.nextFloat() * range * 2 - range;
             rv.set(scl, 0).rotate(vang);
-            cons.accept(rv.x, rv.y);
+            cons.get(rv.x, rv.y);
         }
     }
 

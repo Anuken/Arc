@@ -1,6 +1,6 @@
 package io.anuke.arc.util.serialization;
 
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Strings;
 import io.anuke.arc.util.io.Streams;
@@ -37,7 +37,7 @@ public class UBJsonReader implements BaseJsonReader{
     }
 
     @Override
-    public JsonValue parse(FileHandle file){
+    public JsonValue parse(Fi file){
         try{
             return parse(file.read(8192));
         }catch(Exception ex){

@@ -192,7 +192,13 @@ public enum KeyCode implements KeybindValue{
     F10(KeyType.key, "F10"),
     F11(KeyType.key, "F11"),
     F12(KeyType.key, "F12"),
-    UNSET(KeyType.key, "Unset");
+    UNSET(KeyType.key, "Unset"),
+    APPLICATION(KeyType.key, "Application"),
+    ASTERISK(KeyType.key, "*"),
+    CAPS_LOCK(KeyType.key, "Caps Lock"),
+    PAUSE(KeyType.key, "Pause"),
+    PRINT_SCREEN(KeyType.key, "Print Screen"),
+    SCROLL_LOCK(KeyType.key, "Scroll Lock");
 
     public static final KeyCode[] all = values();
     public final KeyType type;

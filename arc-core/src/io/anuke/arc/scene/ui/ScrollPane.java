@@ -1,27 +1,16 @@
 package io.anuke.arc.scene.ui;
 
-import io.anuke.arc.graphics.g2d.Draw;
-import io.anuke.arc.graphics.g2d.ScissorStack;
-import io.anuke.arc.input.KeyCode;
-import io.anuke.arc.math.Interpolation;
-import io.anuke.arc.math.Mathf;
-import io.anuke.arc.math.geom.Rectangle;
-import io.anuke.arc.math.geom.Vector2;
-import io.anuke.arc.scene.Element;
-import io.anuke.arc.scene.Scene;
-import io.anuke.arc.scene.event.ActorGestureListener;
-import io.anuke.arc.scene.event.Event;
-import io.anuke.arc.scene.event.InputEvent;
-import io.anuke.arc.scene.event.InputListener;
-import io.anuke.arc.scene.style.Drawable;
-import io.anuke.arc.scene.style.SkinReader.ReadContext;
-import io.anuke.arc.scene.style.Style;
-import io.anuke.arc.scene.ui.layout.WidgetGroup;
-import io.anuke.arc.scene.utils.Cullable;
-import io.anuke.arc.scene.utils.Layout;
+import io.anuke.arc.graphics.g2d.*;
+import io.anuke.arc.input.*;
+import io.anuke.arc.math.*;
+import io.anuke.arc.math.geom.*;
+import io.anuke.arc.scene.*;
+import io.anuke.arc.scene.event.*;
+import io.anuke.arc.scene.style.*;
+import io.anuke.arc.scene.ui.layout.*;
+import io.anuke.arc.scene.utils.*;
 
-import static io.anuke.arc.Core.graphics;
-import static io.anuke.arc.Core.scene;
+import static io.anuke.arc.Core.*;
 
 /**
  * A group that scrolls a child widget using scrollbars and/or mouse or touch dragging.
@@ -61,7 +50,7 @@ public class ScrollPane extends WidgetGroup{
     int draggingPointer = -1;
     private ScrollPaneStyle style;
     private Element widget;
-    private ActorGestureListener flickScrollListener;
+    private ElementGestureListener flickScrollListener;
     private boolean fadeScrollBars = false, smoothScrolling = true;
     private boolean overscrollX = true, overscrollY = true;
     private float overscrollDistance = 50, overscrollSpeedMin = 30, overscrollSpeedMax = 200;
@@ -70,15 +59,9 @@ public class ScrollPane extends WidgetGroup{
     private boolean scrollbarsOnTop;
     private boolean variableSizeKnobs = true;
 
-
     /** @param widget May be null. */
     public ScrollPane(Element widget){
-        this(widget, scene.skin.get(ScrollPaneStyle.class));
-    }
-
-    /** @param widget May be null. */
-    public ScrollPane(Element widget, String styleName){
-        this(widget, scene.skin.get(styleName, ScrollPaneStyle.class));
+        this(widget, scene.getStyle(ScrollPaneStyle.class));
     }
 
     /** @param widget May be null. */
@@ -87,14 +70,21 @@ public class ScrollPane extends WidgetGroup{
         this.style = style;
         setWidget(widget);
         setSize(150, 150);
+        setTransform(true);
 
         addCaptureListener(new InputListener(){
             private float handlePosition;
 
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Element fromActor){
+                requestScroll();
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
                 if(draggingPointer != -1) return false;
-                if(pointer == 0 && button != 0) return false;
-                getScene().setScrollFocus(ScrollPane.this);
+                if(pointer == 0 && button != KeyCode.MOUSE_LEFT) return false;
+                requestScroll();
 
                 if(!flickScroll) resetFade();
 
@@ -129,11 +119,13 @@ public class ScrollPane extends WidgetGroup{
                 return false;
             }
 
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button){
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, KeyCode button){
                 if(pointer != draggingPointer) return;
                 cancel();
             }
 
+            @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer){
                 if(pointer != draggingPointer) return;
                 if(touchScrollH){
@@ -157,13 +149,14 @@ public class ScrollPane extends WidgetGroup{
                 }
             }
 
+            @Override
             public boolean mouseMoved(InputEvent event, float x, float y){
                 if(!flickScroll) resetFade();
                 return false;
             }
         });
 
-        flickScrollListener = new ActorGestureListener(){
+        flickScrollListener = new ElementGestureListener(){
             @Override
             public void pan(InputEvent event, float x, float y, float deltaX, float deltaY){
                 resetFade();
@@ -188,7 +181,7 @@ public class ScrollPane extends WidgetGroup{
             }
 
             @Override
-            public boolean handle(Event event){
+            public boolean handle(SceneEvent event){
                 if(super.handle(event)){
                     if(((InputEvent)event).type == InputEvent.Type.touchDown) flingTimer = 0;
                     return true;
@@ -209,10 +202,13 @@ public class ScrollPane extends WidgetGroup{
         });
 
         addCaptureListener(new InputListener(){
+            boolean on = false;
+
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
                 Element actor = ScrollPane.this.hit(x, y, true);
-                if(actor instanceof Slider){
+                on = flickScroll;
+                if(actor instanceof Slider && on){
                     ScrollPane.this.setFlickScroll(false);
                     return true;
                 }
@@ -222,7 +218,9 @@ public class ScrollPane extends WidgetGroup{
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, KeyCode button){
-                ScrollPane.this.setFlickScroll(true);
+                if(on){
+                    ScrollPane.this.setFlickScroll(true);
+                }
                 super.touchUp(event, x, y, pointer, button);
             }
         });
@@ -472,7 +470,7 @@ public class ScrollPane extends WidgetGroup{
         // Set the bounds and scroll knob sizes if scrollbars are needed.
         if(scrollX){
             if(hScrollKnob != null){
-                float hScrollHeight = style.hScroll != null ? style.hScroll.getMinHeight() : hScrollKnob.getMinHeight();
+                float hScrollHeight = hScrollKnob.getMinHeight();
                 // The corner gap where the two scroll bars intersect might have to flip from right to left.
                 float boundsX = vScrollOnRight ? bgLeftWidth : bgLeftWidth + scrollbarWidth;
                 // Scrollbar on the top or bottom.
@@ -494,7 +492,7 @@ public class ScrollPane extends WidgetGroup{
         }
         if(scrollY){
             if(vScrollKnob != null){
-                float vScrollWidth = style.vScroll != null ? style.vScroll.getMinWidth() : vScrollKnob.getMinWidth();
+                float vScrollWidth = vScrollKnob.getMinWidth();
                 // the small gap where the two scroll bars intersect might have to flip from bottom to top
                 float boundsX, boundsY;
                 if(hScrollOnBottom){
@@ -588,10 +586,8 @@ public class ScrollPane extends WidgetGroup{
         scene.calculateScissors(widgetAreaBounds, scissorBounds);
 
         // Enable scissors for widget area and draw the widget.
-        Draw.flush();
         if(ScissorStack.pushScissors(scissorBounds)){
             drawChildren();
-            Draw.flush();
             ScissorStack.popScissors();
         }
 
@@ -663,10 +659,12 @@ public class ScrollPane extends WidgetGroup{
         return height;
     }
 
+    @Override
     public float getMinWidth(){
         return 0;
     }
 
+    @Override
     public float getMinHeight(){
         return 0;
     }
@@ -1082,16 +1080,6 @@ public class ScrollPane extends WidgetGroup{
             this.hScrollKnob = style.hScrollKnob;
             this.vScroll = style.vScroll;
             this.vScrollKnob = style.vScrollKnob;
-        }
-
-        @Override
-        public void read(ReadContext read){
-            background = read.draw("background");
-            corner = read.draw("corner");
-            hScroll = read.draw("hScroll");
-            hScrollKnob = read.draw("hScrollKnob");
-            vScroll = read.draw("vScroll");
-            vScrollKnob = read.draw("vScrollKnob");
         }
     }
 }

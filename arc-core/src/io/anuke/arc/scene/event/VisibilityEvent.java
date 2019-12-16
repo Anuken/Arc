@@ -1,6 +1,6 @@
 package io.anuke.arc.scene.event;
 
-public class VisibilityEvent extends Event{
+public class VisibilityEvent extends SceneEvent{
     private boolean hide;
 
     public VisibilityEvent(){

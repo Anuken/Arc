@@ -2,11 +2,8 @@ package io.anuke.arc.recorder;
 
 import io.anuke.arc.Core;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Color;
-import io.anuke.arc.graphics.Pixmap;
-import io.anuke.arc.graphics.Pixmap.Format;
-import io.anuke.arc.graphics.PixmapIO.PNG;
 import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.graphics.g2d.Fill;
 import io.anuke.arc.input.KeyCode;
@@ -14,7 +11,6 @@ import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.math.geom.Rectangle;
 import io.anuke.arc.util.*;
 
-import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
@@ -36,7 +32,7 @@ public class GifRecorder{
 	private int recordfps = 30;
 	private float gifx, gify, gifwidth, gifheight, giftime;
 	private float offsetx, offsety;
-	private FileHandle exportdirectory;
+	private Fi exportdirectory;
 	private boolean disableGUI;
 	private float speedMultiplier = 1f;
 	
@@ -50,7 +46,7 @@ public class GifRecorder{
 		this(Core.files.local("gifexport"), Core.files.local(".gifimages"));
 	}
 
-	public GifRecorder(FileHandle exportdirectory, FileHandle workdirectory) {
+	public GifRecorder(Fi exportdirectory, Fi workdirectory) {
 		gifx = -defaultSize / 2;
 		gify = -defaultSize / 2;
 		gifwidth = defaultSize;
@@ -96,12 +92,12 @@ public class GifRecorder{
 		float wy = Core.graphics.getHeight() / 2;
 		
 		if(!disableGUI)
-			Draw.color(Color.YELLOW);
+			Draw.color(Color.yellow);
 
 		if(Core.input.keyDown(resizeKey)){
 			
 			if(!disableGUI)
-				Draw.color(Color.GREEN);
+				Draw.color(Color.green);
 			
 			float xs = Math.abs(Core.graphics.getWidth() / 2 + offsetx - Core.input.mouseX());
 			float ys = Math.abs(Core.graphics.getHeight() / 2 + offsety - Core.input.mouseY());
@@ -113,7 +109,7 @@ public class GifRecorder{
 		
 		if(Core.input.keyDown(shiftKey)){
 			if(!disableGUI)
-				Draw.color(Color.ORANGE);
+				Draw.color(Color.orange);
 			
 			float xs = (Core.graphics.getWidth() / 2 - Core.input.mouseX());
 			float ys = (Core.graphics.getHeight() / 2 - Core.input.mouseY());
@@ -124,7 +120,7 @@ public class GifRecorder{
 		if(!disableGUI){
 			
 			if(recording)
-				Draw.color(Color.RED);
+				Draw.color(Color.red);
 
 			Fill.crect(gifx + wx + offsetx, gify + wy + offsety, gifwidth, 1f);
 			Fill.crect(gifx + wx + offsetx, gify + wy + gifheight + offsety, gifwidth, 1f);
@@ -133,14 +129,14 @@ public class GifRecorder{
 
 			if(saving){
 				if(!disableGUI)
-					Draw.color(Color.BLACK);
+					Draw.color(Color.black);
 
 				float w = 200, h = 50;
 				Fill.crect(Core.graphics.getWidth() / 2 - w / 2, Core.graphics.getHeight() / 2 - h / 2, w, h);
 
 				//this just blends red and green
-				Color a = Color.RED;
-				Color b = Color.GREEN;
+				Color a = Color.red;
+				Color b = Color.green;
 
 				float s = saveprogress;
 				float i = 1f - saveprogress;
@@ -150,7 +146,7 @@ public class GifRecorder{
 				Fill.crect(Core.graphics.getWidth() / 2 - w / 2, Core.graphics.getHeight() / 2 - h / 2, w * saveprogress, h);
 			}
 
-			Draw.color(Color.WHITE);
+			Draw.color(Color.white);
 		}
 
 		if(recording){
@@ -220,7 +216,7 @@ public class GifRecorder{
 		recording = false;
 	}
 
-	public void setExportDirectory(FileHandle handle){
+	public void setExportDirectory(Fi handle){
 		exportdirectory = handle;
 	}
 
@@ -252,7 +248,7 @@ public class GifRecorder{
 		setBounds(rect.x, rect.y, rect.width, rect.height);
 	}
 
-	private void writeGIF(final FileHandle writedirectory){
+	private void writeGIF(final Fi writedirectory){
 		if(saving) return;
 		saving = true;
 
@@ -265,16 +261,16 @@ public class GifRecorder{
         }).start();
 	}
 
-	private File compileGIF(Array<byte[]> pixmaps, int width, int height, FileHandle directory){
+	private File compileGIF(Array<byte[]> pixmaps, int width, int height, Fi directory){
 		if(pixmaps.size == 0){
 			throw new RuntimeException("No input files!");
 		}
 
 		try{
 			String time = "" + (int) (System.currentTimeMillis() / 1000);
-			new File(directory.file().getAbsolutePath()).mkdir();
+			new File(directory.absolutePath()).mkdir();
 			BufferedImage firstImage = toImage(pixmaps.first(), width, height);
-			File file = new File(directory.file().getAbsolutePath() + "/recording" + time + ".gif");
+			File file = new File(directory.absolutePath() + "/recording" + time + ".gif");
 			ImageOutputStream output = new FileImageOutputStream(file);
 			GifSequenceWriter writer = new GifSequenceWriter(output, firstImage.getType(), (int) (1f / recordfps * 1000f), true);
 

@@ -1,7 +1,7 @@
 package io.anuke.arc.graphics.glutils;
 
 import io.anuke.arc.Core;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.GL30;
 import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.graphics.TextureArrayData;
@@ -17,7 +17,7 @@ public class FileTextureArrayData implements TextureArrayData{
     private Pixmap.Format format;
     private int depth;
 
-    public FileTextureArrayData(Pixmap.Format format, boolean useMipMaps, FileHandle[] files){
+    public FileTextureArrayData(Pixmap.Format format, boolean useMipMaps, Fi[] files){
         this.format = format;
         this.useMipMaps = useMipMaps;
         this.depth = files.length;

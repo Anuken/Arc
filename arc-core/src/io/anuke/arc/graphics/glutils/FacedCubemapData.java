@@ -1,7 +1,7 @@
 package io.anuke.arc.graphics.glutils;
 
 import io.anuke.arc.Core;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Cubemap.CubemapSide;
 import io.anuke.arc.graphics.CubemapData;
 import io.anuke.arc.graphics.GL20;
@@ -28,8 +28,8 @@ public class FacedCubemapData implements CubemapData{
     }
 
     /** Construct a Cubemap with the specified texture files for the sides, optionally generating mipmaps. */
-    public FacedCubemapData(FileHandle positiveX, FileHandle negativeX, FileHandle positiveY, FileHandle negativeY,
-                            FileHandle positiveZ, FileHandle negativeZ){
+    public FacedCubemapData(Fi positiveX, Fi negativeX, Fi positiveY, Fi negativeY,
+                            Fi positiveZ, Fi negativeZ){
         this(TextureData.Factory.loadFromFile(positiveX, false), TextureData.Factory.loadFromFile(negativeX,
         false), TextureData.Factory.loadFromFile(positiveY, false), TextureData.Factory.loadFromFile(
         negativeY, false), TextureData.Factory.loadFromFile(positiveZ, false), TextureData.Factory
@@ -37,8 +37,8 @@ public class FacedCubemapData implements CubemapData{
     }
 
     /** Construct a Cubemap with the specified texture files for the sides, optionally generating mipmaps. */
-    public FacedCubemapData(FileHandle positiveX, FileHandle negativeX, FileHandle positiveY, FileHandle negativeY,
-                            FileHandle positiveZ, FileHandle negativeZ, boolean useMipMaps){
+    public FacedCubemapData(Fi positiveX, Fi negativeX, Fi positiveY, Fi negativeY,
+                            Fi positiveZ, Fi negativeZ, boolean useMipMaps){
         this(TextureData.Factory.loadFromFile(positiveX, useMipMaps), TextureData.Factory.loadFromFile(
         negativeX, useMipMaps), TextureData.Factory.loadFromFile(positiveY, useMipMaps), TextureData.Factory
         .loadFromFile(negativeY, useMipMaps), TextureData.Factory.loadFromFile(positiveZ, useMipMaps),
@@ -88,13 +88,13 @@ public class FacedCubemapData implements CubemapData{
     }
 
     /**
-     * Loads the texture specified using the {@link FileHandle} and sets it to specified side, overwriting any previous data set to
+     * Loads the texture specified using the {@link Fi} and sets it to specified side, overwriting any previous data set to
      * that side. Note that you need to reload through {@link Cubemap#load(CubemapData)} any cubemap using this data for the change
      * to be taken in account.
      * @param side The {@link CubemapSide}
-     * @param file The texture {@link FileHandle}
+     * @param file The texture {@link Fi}
      */
-    public void load(CubemapSide side, FileHandle file){
+    public void load(CubemapSide side, Fi file){
         data[side.index] = TextureData.Factory.loadFromFile(file, false);
     }
 

@@ -1,18 +1,3 @@
-/*
- *  Copyright 2015 Alexey Andreev.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
 package io.anuke.arc.backends.teavm.plugin;
 
 import io.anuke.arc.collection.*;
@@ -25,26 +10,23 @@ import org.teavm.vm.spi.*;
 
 import java.io.*;
 
-/**
- *
- * @author Alexey Andreev
- */
-public class AssetsCopier implements RendererListener {
+
+public class AssetsCopier implements RendererListener{
     private Json json = new Json(OutputType.json);
 
     @Override
-    public void begin(RenderingManager context, BuildTarget buildTarget) throws IOException {
+    public void begin(RenderingManager context, BuildTarget buildTarget) throws IOException{
         json.setElementType(FileDescriptor.class, "childFiles", FileDescriptor.class);
     }
 
     @Override
-    public void complete() throws IOException {
-        FileHandle main = new FileHandle("teavm/build/teavm");
-        FileHandle assets = main.child("assets");
+    public void complete() throws IOException{
+        Fi main = new Fi("teavm/build/teavm");
+        Fi assets = main.child("assets");
         main.child("filesystem.json").writeString("[" + Array.with(assets.list()).toString(",\n", s -> json.toJson(new FileDescriptor(s.file()))) + "]");
     }
 
-    class FileDescriptor {
+    class FileDescriptor{
         FileDescriptor[] childFiles = new FileDescriptor[0];
         String name;
         boolean directory;

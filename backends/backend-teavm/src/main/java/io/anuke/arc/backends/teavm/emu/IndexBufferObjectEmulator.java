@@ -9,7 +9,7 @@ import io.anuke.arc.util.*;
 import java.nio.*;
 
 @Replace(IndexBufferObject.class)
-public class IndexBufferObjectEmulator implements IndexData {
+public class IndexBufferObjectEmulator implements IndexData{
     ShortBuffer buffer;
     int bufferHandle;
     final boolean isDirect;
@@ -19,13 +19,10 @@ public class IndexBufferObjectEmulator implements IndexData {
 
     /**
      * Creates a new IndexBufferObject.
-     *
-     * @param isStatic
-     *            whether the index buffer is static
-     * @param maxIndices
-     *            the maximum number of indices this buffer can hold
+     * @param isStatic whether the index buffer is static
+     * @param maxIndices the maximum number of indices this buffer can hold
      */
-    public IndexBufferObjectEmulator(boolean isStatic, int maxIndices) {
+    public IndexBufferObjectEmulator(boolean isStatic, int maxIndices){
         isDirect = true;
         buffer = BufferUtils.newShortBuffer(maxIndices);
         buffer.flip();
@@ -35,11 +32,9 @@ public class IndexBufferObjectEmulator implements IndexData {
 
     /**
      * Creates a new IndexBufferObject to be used with vertex arrays.
-     *
-     * @param maxIndices
-     *            the maximum number of indices this buffer can hold
+     * @param maxIndices the maximum number of indices this buffer can hold
      */
-    public IndexBufferObjectEmulator(int maxIndices) {
+    public IndexBufferObjectEmulator(int maxIndices){
         this.isDirect = true;
         buffer = BufferUtils.newShortBuffer(maxIndices);
         buffer.flip();
@@ -48,19 +43,19 @@ public class IndexBufferObjectEmulator implements IndexData {
     }
 
     @Override
-    public void updateIndices(int targetOffset, short[] indices, int offset, int count) {
+    public void updateIndices(int targetOffset, short[] indices, int offset, int count){
 
     }
 
     /** @return the number of indices currently stored in this buffer */
     @Override
-    public int getNumIndices() {
+    public int getNumIndices(){
         return buffer.limit();
     }
 
     /** @return the maximum number of indices this IndexBufferObject can store. */
     @Override
-    public int getNumMaxIndices() {
+    public int getNumMaxIndices(){
         return buffer.capacity();
     }
 
@@ -75,35 +70,31 @@ public class IndexBufferObjectEmulator implements IndexData {
      * This can be called in between calls to {@link #bind()} and
      * {@link #unbind()}. The index data will be updated instantly.
      * </p>
-     *
-     * @param indices
-     *            the vertex data
-     * @param offset
-     *            the offset to start copying the data from
-     * @param count
-     *            the number of shorts to copy
+     * @param indices the vertex data
+     * @param offset the offset to start copying the data from
+     * @param count the number of shorts to copy
      */
     @Override
-    public void setIndices(short[] indices, int offset, int count) {
+    public void setIndices(short[] indices, int offset, int count){
         isDirty = true;
         buffer.clear();
         buffer.put(indices, offset, count);
         buffer.flip();
 
-        if (isBound) {
+        if(isBound){
             Core.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, buffer.limit(), buffer, usage);
             isDirty = false;
         }
     }
 
     @Override
-    public void setIndices(ShortBuffer indices) {
+    public void setIndices(ShortBuffer indices){
         isDirty = true;
         buffer.clear();
         buffer.put(indices);
         buffer.flip();
 
-        if (isBound) {
+        if(isBound){
             Core.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, buffer.limit(), buffer, usage);
             isDirty = false;
         }
@@ -115,23 +106,22 @@ public class IndexBufferObjectEmulator implements IndexData {
      * they wil be uploaded on the call to {@link #bind()}. If you need
      * immediate uploading use {@link #setIndices(short[], int, int)}.
      * </p>
-     *
      * @return the underlying short buffer.
      */
     @Override
-    public ShortBuffer getBuffer() {
+    public ShortBuffer getBuffer(){
         isDirty = true;
         return buffer;
     }
 
     /** Binds this IndexBufferObject for rendering with glDrawElements. */
     @Override
-    public void bind() {
-        if (bufferHandle == 0)
+    public void bind(){
+        if(bufferHandle == 0)
             throw new ArcRuntimeException("No buffer allocated!");
 
         Core.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
-        if (isDirty) {
+        if(isDirty){
             Core.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, buffer.limit(), buffer, usage);
             isDirty = false;
         }
@@ -140,7 +130,7 @@ public class IndexBufferObjectEmulator implements IndexData {
 
     /** Unbinds this IndexBufferObject. */
     @Override
-    public void unbind() {
+    public void unbind(){
         Core.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
         isBound = false;
     }
@@ -150,14 +140,14 @@ public class IndexBufferObjectEmulator implements IndexData {
      * created. Use this in case of a context loss.
      */
     @Override
-    public void invalidate() {
+    public void invalidate(){
         bufferHandle = Core.gl20.glGenBuffer();
         isDirty = true;
     }
 
     /** Disposes this IndexBufferObject and all its associated OpenGL resources. */
     @Override
-    public void dispose() {
+    public void dispose(){
         GL20 gl = Core.gl20;
         gl.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
         gl.glDeleteBuffer(bufferHandle);

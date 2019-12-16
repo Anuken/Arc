@@ -85,6 +85,12 @@ public final class Mathf{
         return result;
     }
 
+    public static float angleExact(float x, float y){
+        float result = (float)Math.atan2(y, x) * radDeg;
+        if(result < 0) result += 360f;
+        return result;
+    }
+
     /**
      * Returns atan2 in radians, faster but less accurate than Math.atan2. Average error of 0.00231 radians (0.1323 degrees),
      * largest error of 0.00488 radians (0.2796 degrees).
@@ -405,7 +411,7 @@ public final class Mathf{
     }
 
     /** Returns true if the value is zero (using the default tolerance as upper bound) */
-    public static boolean isZero(float value){
+    public static boolean zero(float value){
         return Math.abs(value) <= FLOAT_ROUNDING_ERROR;
     }
 
@@ -413,7 +419,7 @@ public final class Mathf{
      * Returns true if the value is zero.
      * @param tolerance represent an upper bound below which the value is considered zero.
      */
-    public static boolean isZero(float value, float tolerance){
+    public static boolean zero(float value, float tolerance){
         return Math.abs(value) <= tolerance;
     }
 
@@ -422,7 +428,7 @@ public final class Mathf{
      * @param a the first value.
      * @param b the second value.
      */
-    public static boolean isEqual(float a, float b){
+    public static boolean equal(float a, float b){
         return Math.abs(a - b) <= FLOAT_ROUNDING_ERROR;
     }
 
@@ -432,7 +438,7 @@ public final class Mathf{
      * @param b the second value.
      * @param tolerance represent an upper bound below which the two values are considered equal.
      */
-    public static boolean isEqual(float a, float b, float tolerance){
+    public static boolean equal(float a, float b, float tolerance){
         return Math.abs(a - b) <= tolerance;
     }
 
@@ -510,6 +516,10 @@ public final class Mathf{
 
     public static boolean within(float x1, float y1, float x2, float y2, float dst){
         return dst2(x1, y1, x2, y2) < dst*dst;
+    }
+
+    public static boolean within(float x1, float y1, float dst){
+        return dst2(x1, y1) < dst*dst;
     }
 
     static private class Sin{

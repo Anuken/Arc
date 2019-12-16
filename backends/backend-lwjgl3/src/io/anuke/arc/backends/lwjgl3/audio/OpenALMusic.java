@@ -1,15 +1,14 @@
 package io.anuke.arc.backends.lwjgl3.audio;
 
-import io.anuke.arc.audio.Music;
-import io.anuke.arc.collection.FloatArray;
-import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.math.Mathf;
-import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.audio.*;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.files.*;
+import io.anuke.arc.math.*;
+import io.anuke.arc.util.*;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.openal.AL11;
+import org.lwjgl.openal.*;
 
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
+import java.nio.*;
 
 import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.openal.SOFTDirectChannels.AL_DIRECT_CHANNELS_SOFT;
@@ -21,7 +20,7 @@ public abstract class OpenALMusic implements Music{
     static private final int bytesPerSample = 2;
     static private final byte[] tempBytes = new byte[bufferSize];
     static private final ByteBuffer tempBuffer = BufferUtils.createByteBuffer(bufferSize);
-    protected final FileHandle file;
+    protected final Fi file;
     private final OpenALAudio audio;
     protected int bufferOverhead = 0;
     private FloatArray renderedSecondsQueue = new FloatArray(bufferCount);
@@ -34,7 +33,7 @@ public abstract class OpenALMusic implements Music{
     private float renderedSeconds, maxSecondsPerBuffer;
     private OnCompletionListener onCompletionListener;
 
-    public OpenALMusic(OpenALAudio audio, FileHandle file){
+    public OpenALMusic(OpenALAudio audio, Fi file){
         this.audio = audio;
         this.file = file;
         this.onCompletionListener = null;

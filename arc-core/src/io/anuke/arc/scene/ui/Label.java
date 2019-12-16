@@ -1,7 +1,7 @@
 package io.anuke.arc.scene.ui;
 
 import io.anuke.arc.Core;
-import io.anuke.arc.function.Supplier;
+import io.anuke.arc.func.Prov;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.BitmapFont;
 import io.anuke.arc.graphics.g2d.BitmapFontCache;
@@ -10,7 +10,6 @@ import io.anuke.arc.graphics.g2d.GlyphLayout;
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.scene.Element;
 import io.anuke.arc.scene.style.Drawable;
-import io.anuke.arc.scene.style.SkinReader.ReadContext;
 import io.anuke.arc.scene.style.Style;
 import io.anuke.arc.util.Align;
 
@@ -40,8 +39,8 @@ public class Label extends Element{
     protected boolean fontScaleChanged = false;
     protected String ellipsis;
 
-    public Label(Supplier<CharSequence> sup){
-        this("", new LabelStyle(scene.skin.get(LabelStyle.class)));
+    public Label(Prov<CharSequence> sup){
+        this("", new LabelStyle(scene.getStyle(LabelStyle.class)));
         update(() -> setText(sup.get()));
         try{
             setText(sup.get());
@@ -50,27 +49,7 @@ public class Label extends Element{
     }
 
     public Label(CharSequence text){
-        this(text, scene.skin.get(LabelStyle.class));
-    }
-
-    public Label(CharSequence text, String styleName){
-        this(text, scene.skin.get(styleName, LabelStyle.class));
-    }
-
-    /**
-     * Creates a label, using a {@link LabelStyle} that has a BitmapFont with the specified name from the skin and the specified
-     * color.
-     */
-    public Label(CharSequence text, String fontName, Color color){
-        this(text, new LabelStyle(scene.skin.getFont(fontName), color));
-    }
-
-    /**
-     * Creates a label, using a {@link LabelStyle} that has a BitmapFont with the specified name and the specified color from the
-     * skin.
-     */
-    public Label(CharSequence text, String fontName, String colorName){
-        this(text, new LabelStyle(scene.skin.getFont(fontName), scene.skin.getColor(colorName)));
+        this(text, scene.getStyle(LabelStyle.class));
     }
 
     public Label(CharSequence text, LabelStyle style){
@@ -155,9 +134,9 @@ public class Label extends Element{
         if(wrap && ellipsis == null){
             float width = getWidth();
             if(style.background != null) width -= style.background.getLeftWidth() + style.background.getRightWidth();
-            prefSizeLayout.setText(cache.getFont(), text, Color.WHITE, width, Align.left, true);
+            prefSizeLayout.setText(cache.getFont(), text, Color.white, width, Align.left, true);
         }else
-            prefSizeLayout.setText(cache.getFont(), text);
+            prefSizeLayout.setText(cache.getFont(), text, 0, text.length(), Color.white, width, lineAlign, wrap, ellipsis);
         prefSize.set(prefSizeLayout.width, prefSizeLayout.height);
     }
 
@@ -190,7 +169,7 @@ public class Label extends Element{
         float textWidth, textHeight;
         if(wrap || text.indexOf("\n") != -1){
             // If the text can span multiple lines, determine the text's actual size so it can be aligned within the label.
-            layout.setText(font, text, 0, text.length(), Color.WHITE, width, lineAlign, wrap, ellipsis);
+            layout.setText(font, text, 0, text.length(), Color.white, width, lineAlign, wrap, ellipsis);
             textWidth = layout.width;
             textHeight = layout.height;
 
@@ -216,7 +195,7 @@ public class Label extends Element{
         }
         if(!cache.getFont().isFlipped()) y += textHeight;
 
-        layout.setText(font, text, 0, text.length(), Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
+        layout.setText(font, text, 0, text.length(), Color.white, textWidth, lineAlign, wrap, ellipsis);
         cache.setText(layout, x, y);
 
         if(fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
@@ -387,13 +366,6 @@ public class Label extends Element{
             this.font = style.font;
             if(style.fontColor != null) fontColor = new Color(style.fontColor);
             background = style.background;
-        }
-
-        @Override
-        public void read(ReadContext read){
-            font = read.rfont("font");
-            fontColor = read.color("fontColor");
-            background = read.draw("background");
         }
     }
 }

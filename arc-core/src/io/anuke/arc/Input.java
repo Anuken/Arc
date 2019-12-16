@@ -4,18 +4,18 @@ import io.anuke.arc.KeyBinds.Axis;
 import io.anuke.arc.KeyBinds.KeyBind;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.IntSet;
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.func.Cons;
 import io.anuke.arc.input.*;
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.math.geom.Vector3;
-import io.anuke.arc.util.OS;
+import io.anuke.arc.util.*;
 
 import static io.anuke.arc.Core.keybinds;
 
 /**
  * <p>
  * Interface to the input facilities. This allows polling the state of the keyboard, the touch screen and the accelerometer. On
- * some backends (desktop, gwt, etc) the touch screen is replaced by mouse input. The accelerometer is of course not available on
+ * some backends (desktop) the touch screen is replaced by mouse input. The accelerometer is of course not available on
  * all backends.
  * </p>
  *
@@ -25,7 +25,7 @@ import static io.anuke.arc.Core.keybinds;
  * </p>
  * @author mzechner
  */
-public abstract class Input{
+public abstract class Input implements Disposable{
     /** Controller stick deadzone. */
     protected final static float deadzone = 0.3f;
     /** The default input device (keyboard) */
@@ -376,8 +376,14 @@ public abstract class Input{
         public boolean multiline = false;
         public String title = "";
         public String text = "";
-        public Consumer<String> accepted = s -> { };
+        public boolean numeric;
+        public Cons<String> accepted = s -> { };
         public Runnable canceled = () -> { };
         public int maxLength = -1;
+    }
+
+    @Override
+    public void dispose(){
+        inputMultiplexer = new InputMultiplexer();
     }
 }

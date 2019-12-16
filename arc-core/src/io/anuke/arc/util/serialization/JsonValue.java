@@ -1,5 +1,6 @@
 package io.anuke.arc.util.serialization;
 
+import io.anuke.arc.util.ArcAnnotate.*;
 import io.anuke.arc.util.serialization.JsonWriter.OutputType;
 
 import java.io.IOException;
@@ -23,12 +24,10 @@ import java.util.NoSuchElementException;
  */
 public class JsonValue implements Iterable<JsonValue>{
     public String name;
-    /** May be null. */
-    public JsonValue child, next, prev, parent;
+    public @Nullable JsonValue child, next, prev, parent;
     public int size;
     private ValueType type;
-    /** May be null. */
-    private String stringValue;
+    private @Nullable String stringValue;
     private double doubleValue;
     private long longValue;
 
@@ -195,7 +194,7 @@ public class JsonValue implements Iterable<JsonValue>{
             case nullValue:
                 return null;
         }
-        throw new IllegalStateException("Value cannot be converted to string: " + type);
+        throw typeMismatch("string");
     }
 
     /**
@@ -213,7 +212,7 @@ public class JsonValue implements Iterable<JsonValue>{
             case booleanValue:
                 return longValue != 0 ? 1 : 0;
         }
-        throw new IllegalStateException("Value cannot be converted to float: " + type);
+        throw typeMismatch("float");
     }
 
     /**
@@ -231,7 +230,7 @@ public class JsonValue implements Iterable<JsonValue>{
             case booleanValue:
                 return longValue != 0 ? 1 : 0;
         }
-        throw new IllegalStateException("Value cannot be converted to double: " + type);
+        throw typeMismatch("double");
     }
 
     /**
@@ -249,7 +248,7 @@ public class JsonValue implements Iterable<JsonValue>{
             case booleanValue:
                 return longValue != 0 ? 1 : 0;
         }
-        throw new IllegalStateException("Value cannot be converted to long: " + type);
+        throw typeMismatch("long");
     }
 
     /**
@@ -267,7 +266,7 @@ public class JsonValue implements Iterable<JsonValue>{
             case booleanValue:
                 return longValue != 0 ? 1 : 0;
         }
-        throw new IllegalStateException("Value cannot be converted to int: " + type);
+        throw typeMismatch("int");
     }
 
     /**
@@ -285,7 +284,7 @@ public class JsonValue implements Iterable<JsonValue>{
             case booleanValue:
                 return longValue != 0;
         }
-        throw new IllegalStateException("Value cannot be converted to boolean: " + type);
+        throw typeMismatch("boolean");
     }
 
     /**
@@ -303,7 +302,7 @@ public class JsonValue implements Iterable<JsonValue>{
             case booleanValue:
                 return longValue != 0 ? (byte)1 : 0;
         }
-        throw new IllegalStateException("Value cannot be converted to byte: " + type);
+        throw typeMismatch("byte");
     }
 
     /**
@@ -321,7 +320,7 @@ public class JsonValue implements Iterable<JsonValue>{
             case booleanValue:
                 return longValue != 0 ? (short)1 : 0;
         }
-        throw new IllegalStateException("Value cannot be converted to short: " + type);
+        throw typeMismatch("short");
     }
 
     /**
@@ -339,7 +338,7 @@ public class JsonValue implements Iterable<JsonValue>{
             case booleanValue:
                 return longValue != 0 ? (char)1 : 0;
         }
-        throw new IllegalStateException("Value cannot be converted to char: " + type);
+        throw typeMismatch("char");
     }
 
     /**
@@ -591,6 +590,14 @@ public class JsonValue implements Iterable<JsonValue>{
             array[i] = v;
         }
         return array;
+    }
+
+    private void mismatch(String type){
+        throw typeMismatch(type);
+    }
+
+    private RuntimeException typeMismatch(String type){
+        return new IllegalStateException("\"" + (name == null ? "value" : name) + "\" should be a " + type + ", but it is a " + this.type + ".");
     }
 
     /**

@@ -1,5 +1,3 @@
-
-
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
  *
@@ -22,32 +20,39 @@ import io.anuke.arc.backends.teavm.plugin.Annotations.*;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.async.*;
 
-/** GWT emulation of AsynchExecutor, will call tasks immediately :DDDDD
- * @author badlogic */
+/**
+ * GWT emulation of AsynchExecutor, will call tasks immediately :DDDDD
+ * @author badlogic
+ */
 @Replace(AsyncExecutor.class)
 public class AsyncExecutorEmulator implements Disposable{
 
-    /** Creates a new AsynchExecutor that allows maxConcurrent {@link Runnable} instances to run in parallel.
-     * @param maxConcurrent */
-    public AsyncExecutorEmulator (int maxConcurrent) {
+    /**
+     * Creates a new AsynchExecutor that allows maxConcurrent {@link Runnable} instances to run in parallel.
+     */
+    public AsyncExecutorEmulator(int maxConcurrent){
     }
 
-    /** Submits a {@link Runnable} to be executed asynchronously. If maxConcurrent runnables are already running, the runnable will
+    /**
+     * Submits a {@link Runnable} to be executed asynchronously. If maxConcurrent runnables are already running, the runnable will
      * be queued.
-     * @param task the task to execute asynchronously */
-    public <T> AsyncResult<T> submit (final AsyncTask<T> task) {
+     * @param task the task to execute asynchronously
+     */
+    public <T> AsyncResult<T> submit(final AsyncTask<T> task){
         T result = null;
-        try {
+        try{
             result = task.call();
-        } catch (Throwable t) {
+        }catch(Throwable t){
             throw new ArcRuntimeException("Could not submit AsyncTask: " + t.getMessage(), t);
         }
         return null;
     }
 
-    /** Waits for running {@link AsyncTask} instances to finish, then destroys any resources like threads. Can not be used after
-     * this method is called. */
+    /**
+     * Waits for running {@link AsyncTask} instances to finish, then destroys any resources like threads. Can not be used after
+     * this method is called.
+     */
     @Override
-    public void dispose () {
+    public void dispose(){
     }
 }

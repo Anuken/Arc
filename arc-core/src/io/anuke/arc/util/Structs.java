@@ -2,12 +2,30 @@ package io.anuke.arc.util;
 
 
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.function.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.math.Mathf;
 
-import java.util.Comparator;
+import java.util.*;
 
 public class Structs{
+
+    public static <T> T[] arr(T... array){
+        return array;
+    }
+
+    /** Remove all values that match this predicate. */
+    public static <T> void filter(Iterable<T> iterable, Boolf<T> removal){
+        filter(iterable.iterator(), removal);
+    }
+
+    /** Remove all values that match this predicate. */
+    public static <T> void filter(Iterator<T> it, Boolf<T> removal){
+        while(it.hasNext()){
+            if(removal.get(it.next())){
+                it.remove();
+            }
+        }
+    }
 
     public static <T> T random(T[] array){
         return array[Mathf.random(array.length - 1)];
@@ -25,13 +43,13 @@ public class Structs{
         return false;
     }
 
-    public static <T> boolean contains(T[] array, Predicate<T> value){
+    public static <T> boolean contains(T[] array, Boolf<T> value){
         return find(array, value) != null;
     }
 
-    public static <T> T find(T[] array, Predicate<T> value){
+    public static <T> T find(T[] array, Boolf<T> value){
         for(T t : array){
-            if(value.test(t)) return t;
+            if(value.get(t)) return t;
         }
         return null;
     }
@@ -45,48 +63,56 @@ public class Structs{
         return -1;
     }
 
-    public static <T> int indexOf(T[] array, Predicate<T> value){
+    public static <T> int indexOf(T[] array, Boolf<T> value){
         for(int i = 0; i < array.length; i++){
-            if(value.test(array[i])){
+            if(value.get(array[i])){
                 return i;
             }
         }
         return -1;
     }
 
-    public static <T> T[] filter(Class<T> type, T[] array, Predicate<T> value){
+    public static <T> T[] filter(Class<T> type, T[] array, Boolf<T> value){
         Array<T> out = new Array<>(true, array.length, type);
         for(T t : array){
-            if(value.test(t)) out.add(t);
+            if(value.get(t)) out.add(t);
         }
         return out.toArray();
     }
 
-    public static <T, U> Comparator<T> comparing(Function<? super T, ? extends U> keyExtractor, Comparator<? super U> keyComparator){
+    public static <T> Comparator<T> comps(Comparator<T> first, Comparator<T> second){
+        return (a, b) -> {
+            int value = first.compare(a, b);
+            if(value != 0) return value;
+            return second.compare(a, b);
+        };
+    }
+
+    public static <T, U> Comparator<T> comparing(Func<? super T, ? extends U> keyExtractor, Comparator<? super U> keyComparator){
         return (c1, c2) -> keyComparator.compare(keyExtractor.get(c1), keyExtractor.get(c2));
     }
 
-    public static <T, U extends Comparable<? super U>> Comparator<T> comparing(Function<? super T, ? extends U> keyExtractor){
+    public static <T, U extends Comparable<? super U>> Comparator<T> comparing(Func<? super T, ? extends U> keyExtractor){
         return (c1, c2) -> keyExtractor.get(c1).compareTo(keyExtractor.get(c2));
     }
 
-    public static <T> Comparator<T> comparingFloat(FloatFunction<? super T> keyExtractor){
+    public static <T> Comparator<T> comparingFloat(Floatf<? super T> keyExtractor){
         return (c1, c2) -> Float.compare(keyExtractor.get(c1), keyExtractor.get(c2));
     }
 
-    public static <T> Comparator<T> comparingInt(IntFunction<? super T> keyExtractor){
+    public static <T> Comparator<T> comparingInt(Intf<? super T> keyExtractor){
         return (c1, c2) -> Integer.compare(keyExtractor.get(c1), keyExtractor.get(c2));
     }
 
-    public static <T> void each(Consumer<T> cons, T... objects){
+    public static <T> void each(Cons<T> cons, T... objects){
         for(T t : objects){
-            cons.accept(t);
+            cons.get(t);
         }
     }
 
-    public static <T> void forEach(Iterable<T> i, Consumer<T> cons){
+    public static <T> void forEach(Iterable<T> i, Cons<T> cons){
         for(T t : i){
-            cons.accept(t);
+            cons.get(t);
         }
     }
 
@@ -100,7 +126,7 @@ public class Structs{
         return result;
     }
 
-    public static <T> T findMin(T[] arr, FloatFunction<T> proc){
+    public static <T> T findMin(T[] arr, Floatf<T> proc){
         T result = null;
         float min = Float.MAX_VALUE;
         for(T t : arr){
@@ -123,10 +149,10 @@ public class Structs{
         return result;
     }
 
-    public static <T> T findMin(Iterable<T> arr, Predicate<T> allow, Comparator<T> comp){
+    public static <T> T findMin(Iterable<T> arr, Boolf<T> allow, Comparator<T> comp){
         T result = null;
         for(T t : arr){
-            if(allow.test(t) && (result == null || comp.compare(result, t) < 0)){
+            if(allow.get(t) && (result == null || comp.compare(result, t) < 0)){
                 result = t;
             }
         }

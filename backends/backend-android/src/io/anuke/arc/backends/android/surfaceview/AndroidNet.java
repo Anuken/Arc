@@ -1,28 +1,20 @@
 package io.anuke.arc.backends.android.surfaceview;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import io.anuke.arc.Net;
-import io.anuke.arc.function.Consumer;
-import io.anuke.arc.util.NetJavaImpl;
+import android.app.*;
+import android.content.*;
+import android.content.pm.*;
+import android.net.*;
+import io.anuke.arc.*;
 
 /**
  * Android implementation of the {@link Net} API.
  * @author acoppes
  */
-public class AndroidNet implements Net{
+public class AndroidNet extends Net{
     final AndroidApplicationBase app;
-    NetJavaImpl impl = new NetJavaImpl();
 
     public AndroidNet(AndroidApplicationBase app){
         this.app = app;
-    }
-
-    @Override
-    public void http(HttpRequest httpRequest, Consumer<HttpResponse> success, Consumer<Throwable> failure){
-        impl.http(httpRequest, success, failure);
     }
 
     @Override

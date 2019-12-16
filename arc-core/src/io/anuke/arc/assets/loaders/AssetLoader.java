@@ -3,7 +3,7 @@ package io.anuke.arc.assets.loaders;
 import io.anuke.arc.assets.AssetDescriptor;
 import io.anuke.arc.assets.AssetLoaderParameters;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 
 /**
  * Abstract base class for asset loaders.
@@ -12,7 +12,7 @@ import io.anuke.arc.files.FileHandle;
  * @author mzechner
  */
 public abstract class AssetLoader<T, P extends AssetLoaderParameters<T>>{
-    /** {@link FileHandleResolver} used to map from plain asset names to {@link FileHandle} instances **/
+    /** {@link FileHandleResolver} used to map from plain asset names to {@link Fi} instances **/
     private FileHandleResolver resolver;
 
     /**
@@ -26,7 +26,7 @@ public abstract class AssetLoader<T, P extends AssetLoaderParameters<T>>{
      * @param fileName file name to resolve
      * @return handle to the file, as resolved by the {@link FileHandleResolver} set on the loader
      */
-    public FileHandle resolve(String fileName){
+    public Fi resolve(String fileName){
         return resolver.resolve(fileName);
     }
 
@@ -37,5 +37,5 @@ public abstract class AssetLoader<T, P extends AssetLoaderParameters<T>>{
      * @param parameter parameters for loading the asset
      * @return other assets that the asset depends on and need to be loaded first or null if there are no dependencies.
      */
-    public abstract Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, P parameter);
+    public abstract Array<AssetDescriptor> getDependencies(String fileName, Fi file, P parameter);
 }

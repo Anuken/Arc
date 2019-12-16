@@ -4,7 +4,7 @@ import io.anuke.arc.audio.AudioDevice;
 import io.anuke.arc.audio.AudioRecorder;
 import io.anuke.arc.audio.Music;
 import io.anuke.arc.audio.Sound;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.util.*;
 
 /**
@@ -23,10 +23,8 @@ import io.anuke.arc.util.*;
  * @author mzechner
  */
 public abstract class Audio implements Disposable{
-    /** Falloff when playing audio. At this distance from the camera, audio volume will be 0.*/
-    public float falloff = 12000f;
-    /** Whether to dynamically pan sounds when they are on either side of the camera.*/
-    public boolean panAudio = true;
+    /** Falloff when playing audio.*/
+    public float falloff = 16000f;
 
     /**
      * Creates a new {@link AudioDevice} either in mono or stereo mode. The AudioDevice has to be disposed via its
@@ -50,7 +48,7 @@ public abstract class Audio implements Disposable{
     /**
      * <p>
      * Creates a new {@link Sound} which is used to play back audio effects such as gun shots or explosions. The Sound's audio data
-     * is retrieved from the file specified via the {@link FileHandle}. Note that the complete audio data is loaded into RAM. You
+     * is retrieved from the file specified via the {@link Fi}. Note that the complete audio data is loaded into RAM. You
      * should therefore not load big audio files with this methods. The current upper limit for decoded audio is 1 MB.
      * </p>
      *
@@ -64,7 +62,7 @@ public abstract class Audio implements Disposable{
      * @return the new Sound
      * @throws ArcRuntimeException in case the sound could not be loaded
      */
-    public abstract Sound newSound(FileHandle file);
+    public abstract Sound newSound(Fi file);
 
     /**
      * Creates a new {@link Music} instance which is used to play back a music stream from a file. Currently supported formats are
@@ -75,7 +73,7 @@ public abstract class Audio implements Disposable{
      * @return the new Music or null if the Music could not be loaded
      * @throws ArcRuntimeException in case the music could not be loaded
      */
-    public abstract Music newMusic(FileHandle file);
+    public abstract Music newMusic(Fi file);
 
     @Override
     public void dispose(){

@@ -155,6 +155,10 @@ public abstract class GLTexture implements Disposable{
         }
     }
 
+    public void setWrap(TextureWrap wrap){
+        setWrap(wrap, wrap);
+    }
+
     /**
      * Sets the {@link TextureWrap} for this texture on the u and v axis. This will bind this texture!
      * @param u the u wrap

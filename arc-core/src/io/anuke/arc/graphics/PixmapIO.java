@@ -1,7 +1,7 @@
 package io.anuke.arc.graphics;
 
 import io.anuke.arc.collection.ByteArray;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Pixmap.Format;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Disposable;
@@ -23,16 +23,16 @@ public class PixmapIO{
      * suffix. Throws a ArcRuntimeException in case the Pixmap couldn't be written to the file.
      * @param file the file to write the Pixmap to
      */
-    public static void writeCIM(FileHandle file, Pixmap pixmap){
+    public static void writeCIM(Fi file, Pixmap pixmap){
         CIM.write(file, pixmap);
     }
 
     /**
      * Reads the {@link Pixmap} from the given file, assuming the Pixmap was written with the
-     * {@link PixmapIO#writeCIM(FileHandle, Pixmap)} method. Throws a ArcRuntimeException in case the file couldn't be read.
+     * {@link PixmapIO#writeCIM(Fi, Pixmap)} method. Throws a ArcRuntimeException in case the file couldn't be read.
      * @param file the file to read the Pixmap from
      */
-    public static Pixmap readCIM(FileHandle file){
+    public static Pixmap readCIM(Fi file){
         return CIM.read(file);
     }
 
@@ -40,7 +40,7 @@ public class PixmapIO{
      * Writes the pixmap as a PNG with compression. See {@link PNG} to configure the compression level, more efficiently flip the
      * pixmap vertically, and to write out multiple PNGs with minimal allocation.
      */
-    public static void writePNG(FileHandle file, Pixmap pixmap){
+    public static void writePNG(Fi file, Pixmap pixmap){
         try{
             PNG writer = new PNG((int)(pixmap.getWidth() * pixmap.getHeight() * 1.5f)); // Guess at deflated size.
             try{
@@ -60,7 +60,7 @@ public class PixmapIO{
         static private final byte[] writeBuffer = new byte[BUFFER_SIZE];
         static private final byte[] readBuffer = new byte[BUFFER_SIZE];
 
-        public static void write(FileHandle file, Pixmap pixmap){
+        public static void write(Fi file, Pixmap pixmap){
             DataOutputStream out = null;
 
             try{
@@ -96,7 +96,7 @@ public class PixmapIO{
             }
         }
 
-        public static Pixmap read(FileHandle file){
+        public static Pixmap read(Fi file){
             DataInputStream in = null;
 
             try{
@@ -190,7 +190,7 @@ public class PixmapIO{
             deflater.setLevel(level);
         }
 
-        public void write(FileHandle file, Pixmap pixmap) throws IOException{
+        public void write(Fi file, Pixmap pixmap) throws IOException{
             OutputStream output = file.write(false);
             try{
                 write(output, pixmap);

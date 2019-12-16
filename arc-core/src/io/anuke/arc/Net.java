@@ -1,7 +1,8 @@
 package io.anuke.arc;
 
 import io.anuke.arc.collection.*;
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.func.Cons;
+import io.anuke.arc.util.*;
 
 import java.io.InputStream;
 
@@ -10,32 +11,35 @@ import java.io.InputStream;
  * communication.</p>
  * <p>
  * To perform an HTTP request create a {@link HttpRequest} with the HTTP method (see {@link HttpMethod} for common methods) and
- * invoke {@link #sendHttpRequest(HttpRequest, HttpResponseListener)} with it and a {@link HttpResponseListener}. After the HTTP
- * request was processed, the {@link HttpResponseListener} is called with a {@link HttpResponse} with the HTTP response values and
+ * invoke {@link #httpPost(String, String, Cons, Cons)} with it and a listener. After the HTTP
+ * request was processed, the listener is called with a {@link HttpResponse} with the HTTP response values and
  * an status code to determine if the request was successful or not.</p>
  * <p>
  * @author mzechner
  * @author noblemaster
  * @author arielsan
  */
-public interface Net{
+public abstract class Net{
+    private NetJavaImpl impl = new NetJavaImpl();
 
     /**
-     * Process the specified {@link HttpRequest} and reports the {@link HttpResponse} to the specified {@link HttpResponseListener}
+     * Process the specified {@link HttpRequest} and reports the {@link HttpResponse} to the specified listener.
      * .
      * @param httpRequest The {@link HttpRequest} to be performed.
      * @param success The listener to call once the HTTP response is ready to be processed.
      * @param failure The listener to call if the request fails.
      */
-    void http(HttpRequest httpRequest, Consumer<HttpResponse> success, Consumer<Throwable> failure);
+    public void http(HttpRequest httpRequest, Cons<HttpResponse> success, Cons<Throwable> failure){
+        impl.http(httpRequest, success, failure);
+    }
 
     /** Sends a basic HTTP GET request.*/
-    default void httpGet(String url, Consumer<HttpResponse> success, Consumer<Throwable> failure){
+    public void httpGet(String url, Cons<HttpResponse> success, Cons<Throwable> failure){
         http(new HttpRequest().method(HttpMethod.GET).url(url), success, failure);
     }
 
     /** Sends a basic HTTP POST request.*/
-    default void httpPost(String url, String content, Consumer<HttpResponse> success, Consumer<Throwable> failure){
+    public void httpPost(String url, String content, Cons<HttpResponse> success, Cons<Throwable> failure){
         http(new HttpRequest().method(HttpMethod.POST).content(content).url(url), success, failure);
     }
 
@@ -48,17 +52,23 @@ public interface Net{
      * @param URI the URI to be opened.
      * @return false if it is known the uri was not opened, true otherwise.
      */
-    boolean openURI(String URI);
+    public abstract boolean openURI(String URI);
+
+    /** Open a folder in the system's file browser.
+     * @return whether this operation was successful. */
+    public boolean openFolder(String file){
+        return false;
+    }
 
     /** HTTP response interface with methods to get the response data as a byte[], a {@link String} or an {@link InputStream}. */
-    interface HttpResponse{
+    public interface HttpResponse{
         /**
          * Returns the data of the HTTP response as a byte[].
          * <p>
          * <b>Note</b>: This method may only be called once per response.
          * </p>
          * @return the result as a byte[] or null in case of a timeout or if the operation was canceled/terminated abnormally. The
-         * timeout is specified when creating the HTTP request, with {@link HttpRequest#setTimeOut(int)}
+         * timeout is specified when creating the HTTP request, with {@link HttpRequest#timeout(int)}
          */
         byte[] getResult();
 
@@ -68,14 +78,13 @@ public interface Net{
          * <b>Note</b>: This method may only be called once per response.
          * </p>
          * @return the result as a string or null in case of a timeout or if the operation was canceled/terminated abnormally. The
-         * timeout is specified when creating the HTTP request, with {@link HttpRequest#setTimeOut(int)}
+         * timeout is specified when creating the HTTP request, with {@link HttpRequest#timeout(int)}
          */
         String getResultAsString();
 
         /**
          * Returns the data of the HTTP response as an {@link InputStream}. <b><br>
-         * Warning:</b> Do not store a reference to this InputStream outside of
-         * {@link HttpResponseListener#handle(HttpResponse)}. The underlying HTTP connection will be closed after that
+         * Warning:</b> Do not store a reference to this InputStream. The underlying HTTP connection will be closed after that
          * callback finishes executing. Reading from the InputStream after it's connection has been closed will lead to exception.
          * @return An {@link InputStream} with the {@link HttpResponse} data.
          */
@@ -97,11 +106,11 @@ public interface Net{
     }
 
     /** Provides all HTTP methods to use when creating a {@link HttpRequest}.*/
-    enum HttpMethod{
+    public enum HttpMethod{
         GET, POST, PUT, DELETE, HEAD, CONNECT, OPTIONS, TRACE
     }
 
-    class HttpRequest{
+    public static class HttpRequest{
         /** The HTTP method. */
         public HttpMethod method;
         /** The URL to send this request to.*/
@@ -121,7 +130,7 @@ public interface Net{
         /**Length of the content stream.*/
         public long contentLength;
 
-        /**Sets whether 301 and 302 redirects are followed. By default true. Can't be changed in the GWT backend because this uses
+        /**Sets whether 301 and 302 redirects are followed. By default true. Can't be changed in the web backend because this uses
          * XmlHttpRequests which always redirect.*/
         public boolean followRedirects = true;
         /** Whether a cross-origin request will include credentials. By default false. */
@@ -170,8 +179,8 @@ public interface Net{
     }
 
     /** Defines the status of an HTTP request.*/
-    enum HttpStatus{
-        UNNOWN_STATUS(-1),
+    public enum HttpStatus{
+        UNKNOWN_STATUS(-1),
 
         CONTINUE(100),
         SWITCHING_PROTOCOLS(101),
@@ -244,7 +253,7 @@ public interface Net{
                     byCode.put(status.code, status);
                 }
             }
-            return byCode.get(code, UNNOWN_STATUS);
+            return byCode.get(code, UNKNOWN_STATUS);
         }
     }
 }

@@ -39,12 +39,12 @@ public class SpriteBatch implements Disposable{
     private boolean ownsShader;
 
     protected final Color color = new Color(1, 1, 1, 1);
-    protected float colorPacked = Color.WHITE_FLOAT_BITS;
+    protected float colorPacked = Color.whiteFloatBits;
 
-    protected final Color mixColor = Color.CLEAR;
-    protected float mixColorPacked = Color.CLEAR_FLOAT_BITS;
+    protected final Color mixColor = Color.clear;
+    protected float mixColorPacked = Color.clearFloatBits;
 
-    /** Number of render calls since the last {@link #begin()}. **/
+    /** Number of render calls. **/
     int renderCalls = 0;
     /** Number of rendering calls, ever. Will not be reset unless set manually. **/
     int totalRenderCalls = 0;
@@ -73,7 +73,7 @@ public class SpriteBatch implements Disposable{
      * respect to the current screen resolution.
      * <p>
      * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
-     * the ones expect for shaders set with {@link #setShader(Shader)}. See {@link #createDefaultShader()}.
+     * the ones expect for shaders set with {@link #setShader(Shader)}.
      * @param size The max number of sprites in a single batch. Max of 8191.
      * @param defaultShader The default shader to use. This is not owned by the SpriteBatch and must be disposed separately.
      */
@@ -117,6 +117,12 @@ public class SpriteBatch implements Disposable{
             vertices = new float[0];
             shader = null;
         }
+    }
+
+    protected SpriteBatch(Object empty){
+        vertices = null;
+        mesh = null;
+        shader = null;
     }
 
     void setColor(Color tint){
@@ -210,7 +216,7 @@ public class SpriteBatch implements Disposable{
             flush();
         }
 
-        if(!Mathf.isZero(rotation)){
+        if(!Mathf.zero(rotation)){
             //bottom left and top right corner points relative to origin
             final float worldOriginX = x + originX;
             final float worldOriginY = y + originY;

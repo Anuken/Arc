@@ -6,7 +6,7 @@ import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.assets.loaders.AssetLoader;
 import io.anuke.arc.assets.loaders.CubemapLoader.CubemapParameter;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Pixmap.Format;
 import io.anuke.arc.graphics.Texture.TextureFilter;
 import io.anuke.arc.graphics.Texture.TextureWrap;
@@ -35,14 +35,14 @@ public class Cubemap extends GLTexture{
     }
 
     /** Construct a Cubemap with the specified texture files for the sides, does not generate mipmaps. */
-    public Cubemap(FileHandle positiveX, FileHandle negativeX, FileHandle positiveY, FileHandle negativeY, FileHandle positiveZ,
-                   FileHandle negativeZ){
+    public Cubemap(Fi positiveX, Fi negativeX, Fi positiveY, Fi negativeY, Fi positiveZ,
+                   Fi negativeZ){
         this(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ, false);
     }
 
     /** Construct a Cubemap with the specified texture files for the sides, optionally generating mipmaps. */
-    public Cubemap(FileHandle positiveX, FileHandle negativeX, FileHandle positiveY, FileHandle negativeY, FileHandle positiveZ,
-                   FileHandle negativeZ, boolean useMipMaps){
+    public Cubemap(Fi positiveX, Fi negativeX, Fi positiveY, Fi negativeY, Fi positiveZ,
+                   Fi negativeZ, boolean useMipMaps){
         this(TextureData.Factory.loadFromFile(positiveX, useMipMaps), TextureData.Factory.loadFromFile(negativeX, useMipMaps),
         TextureData.Factory.loadFromFile(positiveY, useMipMaps), TextureData.Factory.loadFromFile(negativeY, useMipMaps),
         TextureData.Factory.loadFromFile(positiveZ, useMipMaps), TextureData.Factory.loadFromFile(negativeZ, useMipMaps));

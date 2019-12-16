@@ -1,6 +1,6 @@
 package io.anuke.arc.graphics.g2d;
 
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.PixmapIO;
 import io.anuke.arc.graphics.Texture.TextureFilter;
 import io.anuke.arc.graphics.g2d.PixmapPacker.Page;
@@ -21,7 +21,7 @@ public class PixmapPackerIO{
      * @param packer the PixmapPacker to be written
      * @throws IOException if the atlas file can not be written
      */
-    public void save(FileHandle file, PixmapPacker packer) throws IOException{
+    public void save(Fi file, PixmapPacker packer) throws IOException{
         save(file, packer, new SaveParameters());
     }
 
@@ -33,12 +33,12 @@ public class PixmapPackerIO{
      * @param parameters the SaveParameters specifying how to save the PixmapPacker
      * @throws IOException if the atlas file can not be written
      */
-    public void save(FileHandle file, PixmapPacker packer, SaveParameters parameters) throws IOException{
+    public void save(Fi file, PixmapPacker packer, SaveParameters parameters) throws IOException{
         Writer writer = file.writer(false);
         int index = 0;
         for(Page page : packer.pages){
             if(page.rects.size > 0){
-                FileHandle pageFile = file.sibling(file.nameWithoutExtension() + "_" + (++index) + parameters.format.getExtension());
+                Fi pageFile = file.sibling(file.nameWithoutExtension() + "_" + (++index) + parameters.format.getExtension());
                 switch(parameters.format){
                     case CIM:{
                         PixmapIO.writeCIM(pageFile, page.image);

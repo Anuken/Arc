@@ -1,7 +1,7 @@
 package io.anuke.arc.math.geom;
 
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.function.IntPositionConsumer;
+import io.anuke.arc.func.Intc2;
 import io.anuke.arc.util.pooling.Pool;
 import io.anuke.arc.util.pooling.Pools;
 
@@ -24,7 +24,7 @@ public class Bresenham2{
      * @param endX the end x coordinate of the line
      * @param endY the end y coordinate of the line
      */
-    public static void line(int startX, int startY, int endX, int endY, IntPositionConsumer consumer){
+    public static void line(int startX, int startY, int endX, int endY, Intc2 consumer){
 
         int w = endX - startX;
         int h = endY - startY;
@@ -51,7 +51,7 @@ public class Bresenham2{
         }
         int numerator = longest >> 1;
         for(int i = 0; i <= longest; i++){
-            consumer.accept(startX, startY);
+            consumer.get(startX, startY);
             numerator += shortest;
             if(numerator > longest){
                 numerator -= longest;

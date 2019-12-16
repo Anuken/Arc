@@ -44,7 +44,7 @@ public class Draw{
     }
 
     public static void mixcol(){
-        Core.batch.setPackedMixColor(Color.CLEAR_FLOAT_BITS);
+        Core.batch.setPackedMixColor(Color.clearFloatBits);
     }
 
     public static void tint(Color a, Color b, float s){
@@ -85,7 +85,7 @@ public class Draw{
     }
 
     public static void color(){
-        Core.batch.setPackedColor(Color.WHITE_FLOAT_BITS);
+        Core.batch.setPackedColor(Color.whiteFloatBits);
     }
 
     public static void color(float r, float g, float b){
@@ -122,10 +122,6 @@ public class Draw{
 
     public static void alpha(float alpha){
         Core.batch.setColor(Core.batch.getColor().r, Core.batch.getColor().g, Core.batch.getColor().b, alpha);
-    }
-
-    public static void drawable(String name, float x, float y, float w, float h){
-        Core.scene.skin.getDrawable(name).draw(x, y, w, h);
     }
 
     public static void fbo(Texture texture, int worldWidth, int worldHeight, int tilesize){

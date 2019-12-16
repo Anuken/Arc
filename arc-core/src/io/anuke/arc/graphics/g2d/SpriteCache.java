@@ -9,8 +9,7 @@ import io.anuke.arc.graphics.VertexAttributes.Usage;
 import io.anuke.arc.graphics.glutils.Shader;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.Matrix3;
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.Disposable;
+import io.anuke.arc.util.*;
 
 import java.nio.FloatBuffer;
 
@@ -65,7 +64,7 @@ public class SpriteCache implements Disposable{
     private boolean drawing;
     private Array<Cache> caches;
     private Cache currentCache;
-    private float colorPacked = Color.WHITE_FLOAT_BITS;
+    private float colorPacked = Color.whiteFloatBits;
     private Shader customShader = null;
     private Texture lastBoundTexture;
 
@@ -165,7 +164,7 @@ public class SpriteCache implements Disposable{
         return color;
     }
 
-    /** Sets the color used to tint images when they are added to the SpriteCache. Default is {@link Color#WHITE}. */
+    /** Sets the color used to tint images when they are added to the SpriteCache. Default is {@link Color#white}. */
     public void setColor(Color tint){
         color.set(tint);
         colorPacked = tint.toFloatBits();
@@ -269,7 +268,7 @@ public class SpriteCache implements Disposable{
     public void add(Texture texture, float[] vertices, int offset, int length){
         if(currentCache == null) throw new IllegalStateException("beginCache must be called before add.");
         if(mesh.getVerticesBuffer().position() + length >= mesh.getVerticesBuffer().limit())
-            throw new IllegalStateException("Out of vertex space! Size: " + mesh.getVerticesBuffer().limit() + " Required: " + (mesh.getVerticesBuffer().position() + length));
+            throw new IllegalStateException("Out of vertex space! Size: " + mesh.getVerticesBuffer().capacity() + " Required: " + (mesh.getVerticesBuffer().position() + length));
 
         int verticesPerImage = mesh.getNumIndices() > 0 ? 4 : 6;
         int count = length / (verticesPerImage * VERTEX_SIZE) * 6;

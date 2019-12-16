@@ -1,7 +1,0 @@
-dependencies{
-    compile libraries.gwt
-}
-
-//todo: fix?
-sourceSets.main.java.exclude "**"
-

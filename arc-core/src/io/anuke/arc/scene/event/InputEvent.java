@@ -9,7 +9,7 @@ import io.anuke.arc.scene.Scene;
  * Event for actor input: touch, mouse, keyboard, and scroll.
  * @see InputListener
  */
-public class InputEvent extends Event{
+public class InputEvent extends SceneEvent{
     public Type type;
     public float stageX, stageY;
     public int pointer;

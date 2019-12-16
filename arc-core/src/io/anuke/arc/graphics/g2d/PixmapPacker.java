@@ -1,22 +1,16 @@
 package io.anuke.arc.graphics.g2d;
 
-import io.anuke.arc.Core;
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.collection.OrderedMap;
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.graphics.Pixmap;
-import io.anuke.arc.graphics.Pixmap.Blending;
-import io.anuke.arc.graphics.Pixmap.Format;
-import io.anuke.arc.graphics.Texture;
-import io.anuke.arc.graphics.Texture.TextureFilter;
-import io.anuke.arc.graphics.g2d.PixmapPacker.SkylineStrategy.SkylinePage.Row;
-import io.anuke.arc.graphics.glutils.PixmapTextureData;
-import io.anuke.arc.math.geom.Rectangle;
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.Disposable;
+import io.anuke.arc.*;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.graphics.*;
+import io.anuke.arc.graphics.Pixmap.*;
+import io.anuke.arc.graphics.Texture.*;
+import io.anuke.arc.graphics.g2d.PixmapPacker.SkylineStrategy.SkylinePage.*;
+import io.anuke.arc.graphics.glutils.*;
+import io.anuke.arc.math.geom.*;
+import io.anuke.arc.util.*;
 
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
 
 /**
  * Packs {@link Pixmap pixmaps} into one or more {@link Page pages} to generate an atlas of pixmap instances. Provides means to
@@ -156,86 +150,40 @@ public class PixmapPacker implements Disposable{
      * name.
      */
     public synchronized Rectangle pack(String name, Pixmap image){
+        return pack(name, new PixmapRegion(image));
+    }
+
+    /**
+     * Inserts the pixmap. If name was not null, you can later retrieve the image's position in the output image via
+     * {@link #getRect(String)}.
+     * @param name If null, the image cannot be looked up by name.
+     * @return Rectangle describing the area the pixmap was rendered to.
+     * @throws ArcRuntimeException in case the image did not fit due to the page size being too small or providing a duplicate
+     * name.
+     */
+    public synchronized Rectangle pack(String name, PixmapRegion image){
         if(disposed) return null;
-        if(name != null && getRect(name) != null)
-            throw new ArcRuntimeException("Pixmap has already been packed with name: " + name);
+        //TODO should duplicates be allowed?
+        //if(name != null && getRect(name) != null)
+        //    throw new ArcRuntimeException("Pixmap has already been packed with name: " + name);
 
         boolean isPatch = name != null && name.endsWith(".9");
 
         PixmapPackerRectangle rect;
         Pixmap pixmapToDispose = null;
         if(isPatch){
-            rect = new PixmapPackerRectangle(0, 0, image.getWidth() - 2, image.getHeight() - 2);
-            pixmapToDispose = new Pixmap(image.getWidth() - 2, image.getHeight() - 2, image.getFormat());
+            rect = new PixmapPackerRectangle(0, 0, image.width - 2, image.height - 2);
+            pixmapToDispose = new Pixmap(image.width - 2, image.height - 2, image.pixmap.getFormat());
             rect.splits = getSplits(image);
             rect.pads = getPads(image, rect.splits);
-            pixmapToDispose.drawPixmap(image, 0, 0, 1, 1, image.getWidth() - 1, image.getHeight() - 1);
-            image = pixmapToDispose;
+            pixmapToDispose.draw(image, 0, 0, 1, 1, image.width - 1, image.height - 1);
+            image = new PixmapRegion(pixmapToDispose);
             name = name.split("\\.")[0];
         }else{
-            if(stripWhitespaceX || stripWhitespaceY){
-                int originalWidth = image.getWidth();
-                int originalHeight = image.getHeight();
-                //Strip whitespace, manipulate the pixmap and return corrected Rect
-                int top = 0;
-                int bottom = image.getHeight();
-                if(stripWhitespaceY){
-                    outer:
-                    for(int y = 0; y < image.getHeight(); y++){
-                        for(int x = 0; x < image.getWidth(); x++){
-                            int pixel = image.getPixel(x, y);
-                            int alpha = ((pixel & 0x000000ff));
-                            if(alpha > alphaThreshold) break outer;
-                        }
-                        top++;
-                    }
-                    outer:
-                    for(int y = image.getHeight(); --y >= top; ){
-                        for(int x = 0; x < image.getWidth(); x++){
-                            int pixel = image.getPixel(x, y);
-                            int alpha = ((pixel & 0x000000ff));
-                            if(alpha > alphaThreshold) break outer;
-                        }
-                        bottom--;
-                    }
-                }
-                int left = 0;
-                int right = image.getWidth();
-                if(stripWhitespaceX){
-                    outer:
-                    for(int x = 0; x < image.getWidth(); x++){
-                        for(int y = top; y < bottom; y++){
-                            int pixel = image.getPixel(x, y);
-                            int alpha = ((pixel & 0x000000ff));
-                            if(alpha > alphaThreshold) break outer;
-                        }
-                        left++;
-                    }
-                    outer:
-                    for(int x = image.getWidth(); --x >= left; ){
-                        for(int y = top; y < bottom; y++){
-                            int pixel = image.getPixel(x, y);
-                            int alpha = ((pixel & 0x000000ff));
-                            if(alpha > alphaThreshold) break outer;
-                        }
-                        right--;
-                    }
-                }
-
-                int newWidth = right - left;
-                int newHeight = bottom - top;
-
-                pixmapToDispose = new Pixmap(newWidth, newHeight, image.getFormat());
-                pixmapToDispose.drawPixmap(image, 0, 0, left, top, newWidth, newHeight);
-                image = pixmapToDispose;
-
-                rect = new PixmapPackerRectangle(0, 0, newWidth, newHeight, left, top, originalWidth, originalHeight);
-            }else{
-                rect = new PixmapPackerRectangle(0, 0, image.getWidth(), image.getHeight());
-            }
+            rect = new PixmapPackerRectangle(0, 0, image.width, image.height);
         }
 
-        if(rect.getWidth() > pageWidth || rect.getHeight() > pageHeight){
+        if(rect.width > pageWidth || rect.height > pageHeight){
             if(name == null) throw new ArcRuntimeException("Page size too small for pixmap.");
             throw new ArcRuntimeException("Page size too small for pixmap: " + name);
         }
@@ -249,28 +197,29 @@ public class PixmapPacker implements Disposable{
         int rectX = (int)rect.x, rectY = (int)rect.y, rectWidth = (int)rect.width, rectHeight = (int)rect.height;
 
         if(packToTexture && !duplicateBorder && page.texture != null && !page.dirty){
+            //TODO this may not work correctly since the pixmap is only a region
             page.texture.bind();
-            Core.gl.glTexSubImage2D(page.texture.glTarget, 0, rectX, rectY, rectWidth, rectHeight, image.getGLFormat(),
-            image.getGLType(), image.getPixels());
+            Core.gl.glTexSubImage2D(page.texture.glTarget, 0, rectX, rectY, rectWidth, rectHeight, image.pixmap.getGLFormat(),
+            image.pixmap.getGLType(), image.pixmap.getPixels());
         }else
             page.dirty = true;
 
-        page.image.setBlending(Blending.None);
+        page.image.setBlending(Pixmap.Blending.None);
 
-        page.image.drawPixmap(image, rectX, rectY);
+        page.image.draw(image, rectX, rectY);
 
         if(duplicateBorder){
-            int imageWidth = image.getWidth(), imageHeight = image.getHeight();
+            int imageWidth = image.width, imageHeight = image.height;
             // Copy corner pixels to fill corners of the padding.
-            page.image.drawPixmap(image, 0, 0, 1, 1, rectX - 1, rectY - 1, 1, 1);
-            page.image.drawPixmap(image, imageWidth - 1, 0, 1, 1, rectX + rectWidth, rectY - 1, 1, 1);
-            page.image.drawPixmap(image, 0, imageHeight - 1, 1, 1, rectX - 1, rectY + rectHeight, 1, 1);
-            page.image.drawPixmap(image, imageWidth - 1, imageHeight - 1, 1, 1, rectX + rectWidth, rectY + rectHeight, 1, 1);
+            page.image.draw(image, 0, 0, 1, 1, rectX - 1, rectY - 1, 1, 1);
+            page.image.draw(image, imageWidth - 1, 0, 1, 1, rectX + rectWidth, rectY - 1, 1, 1);
+            page.image.draw(image, 0, imageHeight - 1, 1, 1, rectX - 1, rectY + rectHeight, 1, 1);
+            page.image.draw(image, imageWidth - 1, imageHeight - 1, 1, 1, rectX + rectWidth, rectY + rectHeight, 1, 1);
             // Copy edge pixels into padding.
-            page.image.drawPixmap(image, 0, 0, imageWidth, 1, rectX, rectY - 1, rectWidth, 1);
-            page.image.drawPixmap(image, 0, imageHeight - 1, imageWidth, 1, rectX, rectY + rectHeight, rectWidth, 1);
-            page.image.drawPixmap(image, 0, 0, 1, imageHeight, rectX - 1, rectY, 1, rectHeight);
-            page.image.drawPixmap(image, imageWidth - 1, 0, 1, imageHeight, rectX + rectWidth, rectY, 1, rectHeight);
+            page.image.draw(image, 0, 0, imageWidth, 1, rectX, rectY - 1, rectWidth, 1);
+            page.image.draw(image, 0, imageHeight - 1, imageWidth, 1, rectX, rectY + rectHeight, rectWidth, 1);
+            page.image.draw(image, 0, 0, 1, imageHeight, rectX - 1, rectY, 1, rectHeight);
+            page.image.draw(image, imageWidth - 1, 0, 1, imageHeight, rectX + rectWidth, rectY, 1, rectHeight);
         }
 
         if(pixmapToDispose != null){
@@ -344,8 +293,13 @@ public class PixmapPacker implements Disposable{
      */
     public synchronized TextureAtlas generateTextureAtlas(TextureFilter minFilter, TextureFilter magFilter, boolean useMipMaps){
         TextureAtlas atlas = new TextureAtlas();
-        updateTextureAtlas(atlas, minFilter, magFilter, useMipMaps);
+        updateTextureAtlas(atlas, minFilter, magFilter, useMipMaps, true);
         return atlas;
+    }
+
+    public synchronized void updateTextureAtlas(TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter,
+                                                boolean useMipMaps){
+        updateTextureAtlas(atlas, minFilter, magFilter, useMipMaps, true);
     }
 
     /**
@@ -355,7 +309,7 @@ public class PixmapPacker implements Disposable{
      * will no longer dispose the page pixmaps.
      */
     public synchronized void updateTextureAtlas(TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter,
-                                                boolean useMipMaps){
+                                                boolean useMipMaps, boolean clearRects){
         updatePageTextures(minFilter, magFilter, useMipMaps);
         for(Page page : pages){
             if(page.addedRects.size > 0){
@@ -377,8 +331,9 @@ public class PixmapPacker implements Disposable{
                     region.originalHeight = rect.originalHeight;
 
                     atlas.getRegions().add(region);
+                    atlas.getRegionMap().put(name, region);
                 }
-                page.addedRects.clear();
+                if(clearRects) page.addedRects.clear();
                 atlas.getTextures().add(page.texture);
             }
         }
@@ -468,7 +423,7 @@ public class PixmapPacker implements Disposable{
         this.transparentColor.set(color);
     }
 
-    private int[] getSplits(Pixmap raster){
+    private int[] getSplits(PixmapRegion raster){
 
         int startX = getSplitPoint(raster, 1, 0, true, true);
         int endX = getSplitPoint(raster, startX, 0, false, true);
@@ -485,26 +440,26 @@ public class PixmapPacker implements Disposable{
         // Subtraction here is because the coordinates were computed before the 1px border was stripped.
         if(startX != 0){
             startX--;
-            endX = raster.getWidth() - 2 - (endX - 1);
+            endX = raster.width - 2 - (endX - 1);
         }else{
             // If no start point was ever found, we assume full stretch.
-            endX = raster.getWidth() - 2;
+            endX = raster.width - 2;
         }
         if(startY != 0){
             startY--;
-            endY = raster.getHeight() - 2 - (endY - 1);
+            endY = raster.height - 2 - (endY - 1);
         }else{
             // If no start point was ever found, we assume full stretch.
-            endY = raster.getHeight() - 2;
+            endY = raster.height - 2;
         }
 
         return new int[]{startX, endX, startY, endY};
     }
 
-    private int[] getPads(Pixmap raster, int[] splits){
+    private int[] getPads(PixmapRegion raster, int[] splits){
 
-        int bottom = raster.getHeight() - 1;
-        int right = raster.getWidth() - 1;
+        int bottom = raster.height - 1;
+        int right = raster.width - 1;
 
         int startX = getSplitPoint(raster, 1, bottom, true, true);
         int startY = getSplitPoint(raster, right, 1, true, false);
@@ -531,10 +486,10 @@ public class PixmapPacker implements Disposable{
         }else{
             if(startX > 0){
                 startX--;
-                endX = raster.getWidth() - 2 - (endX - 1);
+                endX = raster.width - 2 - (endX - 1);
             }else{
                 // If no start point was ever found, we assume full stretch.
-                endX = raster.getWidth() - 2;
+                endX = raster.width - 2;
             }
         }
         if(startY == 0 && endY == 0){
@@ -543,14 +498,14 @@ public class PixmapPacker implements Disposable{
         }else{
             if(startY > 0){
                 startY--;
-                endY = raster.getHeight() - 2 - (endY - 1);
+                endY = raster.height- 2 - (endY - 1);
             }else{
                 // If no start point was ever found, we assume full stretch.
-                endY = raster.getHeight() - 2;
+                endY = raster.height - 2;
             }
         }
 
-        int[] pads = new int[]{startX, endX, startY, endY};
+        int[] pads = {startX, endX, startY, endY};
 
         if(splits != null && Arrays.equals(pads, splits)){
             return null;
@@ -559,11 +514,11 @@ public class PixmapPacker implements Disposable{
         return pads;
     }
 
-    private int getSplitPoint(Pixmap raster, int startX, int startY, boolean startPoint, boolean xAxis){
+    private int getSplitPoint(PixmapRegion raster, int startX, int startY, boolean startPoint, boolean xAxis){
         int[] rgba = new int[4];
 
         int next = xAxis ? startX : startY;
-        int end = xAxis ? raster.getWidth() : raster.getHeight();
+        int end = xAxis ? raster.width : raster.height;
         int breakA = startPoint ? 255 : 0;
 
         int x = startX;
@@ -581,9 +536,6 @@ public class PixmapPacker implements Disposable{
             rgba[2] = (int)(c.b * 255);
             rgba[3] = (int)(c.a * 255);
             if(rgba[3] == breakA) return next;
-
-            if(!startPoint && (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255))
-                System.out.println(x + "  " + y + " " + Arrays.toString(rgba) + " ");
 
             next++;
         }
@@ -622,6 +574,10 @@ public class PixmapPacker implements Disposable{
             this.image.fill();
         }
 
+        public Page(Pixmap pixmap){
+            this.image = pixmap;
+        }
+
         public Pixmap getPixmap(){
             return image;
         }
@@ -652,7 +608,9 @@ public class PixmapPacker implements Disposable{
                     @Override
                     public void dispose(){
                         super.dispose();
-                        image.dispose();
+                        if(!image.isDisposed()){
+                            image.dispose();
+                        }
                     }
                 };
                 texture.setFilter(minFilter, magFilter);
@@ -753,11 +711,20 @@ public class PixmapPacker implements Disposable{
             public boolean full;
         }
 
-        static class GuillotinePage extends Page{
+        public static class GuillotinePage extends Page{
             Node root;
 
             public GuillotinePage(PixmapPacker packer){
                 super(packer);
+                root = new Node();
+                root.rect.x = packer.padding;
+                root.rect.y = packer.padding;
+                root.rect.width = packer.pageWidth - packer.padding * 2;
+                root.rect.height = packer.pageHeight - packer.padding * 2;
+            }
+
+            public GuillotinePage(PixmapPacker packer, Pixmap base){
+                super(base);
                 root = new Node();
                 root.rect.x = packer.padding;
                 root.rect.y = packer.padding;
@@ -846,12 +813,12 @@ public class PixmapPacker implements Disposable{
     }
 
     public static class PixmapPackerRectangle extends Rectangle{
-        int[] splits;
-        int[] pads;
+        public int[] splits;
+        public int[] pads;
         int offsetX, offsetY;
         int originalWidth, originalHeight;
 
-        PixmapPackerRectangle(int x, int y, int width, int height){
+        public PixmapPackerRectangle(int x, int y, int width, int height){
             super(x, y, width, height);
             this.offsetX = 0;
             this.offsetY = 0;
@@ -859,7 +826,7 @@ public class PixmapPacker implements Disposable{
             this.originalHeight = height;
         }
 
-        PixmapPackerRectangle(int x, int y, int width, int height, int left, int top, int originalWidth, int originalHeight){
+        public PixmapPackerRectangle(int x, int y, int width, int height, int left, int top, int originalWidth, int originalHeight){
             super(x, y, width, height);
             this.offsetX = left;
             this.offsetY = top;

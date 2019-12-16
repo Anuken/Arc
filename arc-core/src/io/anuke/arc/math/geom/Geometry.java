@@ -3,9 +3,9 @@ package io.anuke.arc.math.geom;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.FloatArray;
 import io.anuke.arc.collection.IntArray;
-import io.anuke.arc.function.IntPositionConsumer;
-import io.anuke.arc.function.PositionConsumer;
-import io.anuke.arc.function.SegmentConsumer;
+import io.anuke.arc.func.Intc2;
+import io.anuke.arc.func.Floatc2;
+import io.anuke.arc.func.Floatc4;
 import io.anuke.arc.math.Mathf;
 
 public final class Geometry{
@@ -46,23 +46,22 @@ public final class Geometry{
         return d8edge[Mathf.mod(i, 4)];
     }
 
-    public static void circle(int x, int y, int radius, IntPositionConsumer cons){
+    public static void circle(int x, int y, int radius, Intc2 cons){
         for(int dx = -radius; dx <= radius; dx++){
             for(int dy = -radius; dy <= radius; dy++){
-                if(Mathf.dst2(dx, dy, 0, 0) <= radius*radius){
-                    cons.accept(dx + x, dy + y);
+                if(Mathf.within(dx, dy, radius)){
+                    cons.get(dx + x, dy + y);
                 }
             }
         }
     }
 
-    public static void circle(int x, int y, int width, int height, int radius, IntPositionConsumer cons){
+    public static void circle(int x, int y, int width, int height, int radius, Intc2 cons){
         for(int dx = -radius; dx <= radius; dx++){
             for(int dy = -radius; dy <= radius; dy++){
                 int wx = dx + x, wy = dy + y;
-                if(wx >= 0 && wy >= 0 && wx < width && wy < height
-                        && Mathf.dst2(dx, dy, 0, 0) <= radius*radius){
-                    cons.accept(wx, wy);
+                if(wx >= 0 && wy >= 0 && wx < width && wy < height && Mathf.within(dx, dy, radius)){
+                    cons.get(wx, wy);
                 }
             }
         }
@@ -169,7 +168,7 @@ public final class Geometry{
         return v;
     }
 
-    public static float iterateLine(float start, float x1, float y1, float x2, float y2, float segment, PositionConsumer pos){
+    public static float iterateLine(float start, float x1, float y1, float x2, float y2, float segment, Floatc2 pos){
         float len = Mathf.dst(x1, y1, x2, y2);
         int steps = (int)(len / segment);
         float step = 1f / steps;
@@ -180,14 +179,14 @@ public final class Geometry{
             float s = step * i;
             tmp1.set(x1, y1);
             tmp1.lerp(tmp2, s);
-            pos.accept(tmp1.x, tmp1.y);
+            pos.get(tmp1.x, tmp1.y);
             offset -= step;
         }
 
         return offset;
     }
 
-    public static void iteratePolySegments(float[] vertices, SegmentConsumer it){
+    public static void iteratePolySegments(float[] vertices, Floatc4 it){
         for(int i = 0; i < vertices.length; i += 2){
             float x = vertices[i];
             float y = vertices[i + 1];
@@ -200,15 +199,15 @@ public final class Geometry{
                 y2 = vertices[i + 3];
             }
 
-            it.accept(x, y, x2, y2);
+            it.get(x, y, x2, y2);
         }
     }
 
-    public static void iteratePolygon(PositionConsumer path, float[] vertices){
+    public static void iteratePolygon(Floatc2 path, float[] vertices){
         for(int i = 0; i < vertices.length; i += 2){
             float x = vertices[i];
             float y = vertices[i + 1];
-            path.accept(x, y);
+            path.get(x, y);
         }
     }
 

@@ -7,7 +7,7 @@ import io.anuke.arc.scene.Element;
  * @author Nathan Sweet
  */
 abstract public class FocusListener implements EventListener{
-    public boolean handle(Event event){
+    public boolean handle(SceneEvent event){
         if(!(event instanceof FocusEvent)) return false;
         FocusEvent focusEvent = (FocusEvent)event;
         switch(focusEvent.type){
@@ -33,7 +33,7 @@ abstract public class FocusListener implements EventListener{
      * Fired when an element gains or loses keyboard or scroll focus. Can be cancelled to prevent losing or gaining focus.
      * @author Nathan Sweet
      */
-    public static class FocusEvent extends Event{
+    public static class FocusEvent extends SceneEvent{
         public boolean focused;
         public Type type;
         public Element relatedActor;

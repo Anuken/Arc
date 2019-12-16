@@ -1,25 +1,26 @@
 package io.anuke.arc.graphics.g2d;
 
-import io.anuke.arc.Core;
-import io.anuke.arc.collection.FloatArray;
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.math.Angles;
-import io.anuke.arc.math.Mathf;
-import io.anuke.arc.math.geom.Rectangle;
-import io.anuke.arc.math.geom.Vector2;
+import io.anuke.arc.*;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.graphics.*;
+import io.anuke.arc.math.*;
+import io.anuke.arc.math.geom.*;
 
 public class Lines{
     private static float stroke = 1f;
     private static Vector2 vector = new Vector2();
     private static FloatArray floats = new FloatArray(20);
     private static FloatArray floatBuilder = new FloatArray(20);
-    private static float[] points = new float[8];
-    private static boolean building;
-    private static int circleVertices = 30;
+    private static boolean building, precise;
+    private static float circlePrecision = 0.38f;
 
     /** Set the vertices used for drawing a line circle. */
-    public static void setCircleVertices(int amount){
-        circleVertices = amount;
+    public static void setCirclePrecision(float amount){
+        circlePrecision = amount;
+    }
+
+    public static int circleVertices(float rad){
+        return 11 + (int)(rad * circlePrecision);
     }
 
     public static void lineAngle(float x, float y, float angle, float length, CapStyle style){
@@ -60,7 +61,7 @@ public class Lines{
 
     public static void line(TextureRegion region, float x, float y, float x2, float y2, CapStyle cap, float padding){
         float length = Mathf.dst(x, y, x2, y2) + (cap == CapStyle.none || cap == CapStyle.round ? padding * 2f : stroke + padding * 2);
-        float angle = Mathf.atan2(x2 - x, y2 - y) * Mathf.radDeg;
+        float angle = (precise ? (float)Math.atan2(y2 - y, x2 - x) : Mathf.atan2(x2 - x, y2 - y)) * Mathf.radDeg;
 
         if(cap == CapStyle.square){
             Draw.rect(region, x - stroke / 2 - padding + length/2f, y, length, stroke, stroke / 2 + padding, stroke / 2, angle);
@@ -72,6 +73,10 @@ public class Lines{
             Draw.rect(cir, x, y, stroke, stroke, angle + 180f);
             Draw.rect(cir, x2, y2, stroke, stroke, angle);
         }
+    }
+
+    public static void precise(boolean precise){
+        Lines.precise = precise;
     }
 
     public static void linePoint(float x, float y){
@@ -170,12 +175,12 @@ public class Lines{
         }
     }
 
-    public static void circle(float x, float y, float rad, int vertices){
-        poly(x, y, vertices, rad);
-    }
+   // public static void circle(float x, float y, float rad, int vertices){
+    //    poly(x, y, vertices, rad);
+    //}
 
     public static void circle(float x, float y, float rad){
-        poly(x, y, circleVertices, rad);
+        poly(x, y, circleVertices(rad), rad);
     }
 
     public static void dashCircle(float x, float y, float radius){
@@ -228,6 +233,18 @@ public class Lines{
 
             line(x1 + x, y1 + y, vector.x + x, vector.y + y);
         }
+    }
+
+    public static void poly2(float x, float y, int sides, float radius, float angle){
+        vector.set(0, 0);
+
+        beginLine();
+        for(int i = 0; i < sides; i++){
+            vector.set(radius, 0).setAngle(360f / sides * i + angle + 90);
+
+            linePoint(vector.x + x, vector.y + y);
+        }
+        endLine();
     }
 
     public static void polySeg(int sides, int from, int to, float x, float y, float radius, float angle){
@@ -331,6 +348,10 @@ public class Lines{
 
     public static void square(float x, float y, float rad){
         rect(x - rad, y - rad, rad * 2, rad * 2);
+    }
+
+    public static void square(float x, float y, float rad, float rot){
+        poly(x, y, 4, rad, rot - 45);
     }
 
     public static void rect(float x, float y, float width, float height, float xspace, float yspace){

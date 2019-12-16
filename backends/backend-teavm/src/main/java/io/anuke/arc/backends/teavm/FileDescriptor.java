@@ -1,14 +1,10 @@
 package io.anuke.arc.backends.teavm;
 
-import org.teavm.jso.core.JSArrayReader;
-import org.teavm.jso.JSObject;
-import org.teavm.jso.JSProperty;
+import org.teavm.jso.*;
+import org.teavm.jso.core.*;
 
-/**
- *
- * @author Alexey Andreev
- */
-public interface FileDescriptor extends JSObject {
+
+public interface FileDescriptor extends JSObject{
     @JSProperty
     String getName();
 

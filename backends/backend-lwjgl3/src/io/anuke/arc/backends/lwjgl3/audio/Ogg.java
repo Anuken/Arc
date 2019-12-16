@@ -1,6 +1,6 @@
 package io.anuke.arc.backends.lwjgl3.audio;
 
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.util.io.Streams;
 
 import java.io.ByteArrayOutputStream;
@@ -11,7 +11,7 @@ public class Ogg{
         private OggInputStream input;
         private OggInputStream previousInput;
 
-        public Music(OpenALAudio audio, FileHandle file){
+        public Music(OpenALAudio audio, Fi file){
             super(audio, file);
             if(audio.noDevice) return;
             input = new OggInputStream(file.read());
@@ -42,7 +42,7 @@ public class Ogg{
     }
 
     public static class Sound extends OpenALSound{
-        public Sound(OpenALAudio audio, FileHandle file){
+        public Sound(OpenALAudio audio, Fi file){
             super(audio);
             if(audio.noDevice) return;
             OggInputStream input = null;

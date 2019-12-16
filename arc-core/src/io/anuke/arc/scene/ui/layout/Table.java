@@ -1,21 +1,22 @@
 package io.anuke.arc.scene.ui.layout;
 
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.function.*;
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.graphics.g2d.Draw;
-import io.anuke.arc.graphics.g2d.TextureRegion;
-import io.anuke.arc.scene.Element;
-import io.anuke.arc.scene.event.Touchable;
-import io.anuke.arc.scene.style.Drawable;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.func.*;
+import io.anuke.arc.graphics.*;
+import io.anuke.arc.graphics.g2d.*;
+import io.anuke.arc.scene.*;
+import io.anuke.arc.scene.event.*;
+import io.anuke.arc.scene.style.*;
 import io.anuke.arc.scene.ui.*;
-import io.anuke.arc.scene.ui.Label.LabelStyle;
-import io.anuke.arc.scene.ui.TextButton.TextButtonStyle;
-import io.anuke.arc.scene.ui.TextField.TextFieldFilter;
-import io.anuke.arc.scene.utils.Elements;
-import io.anuke.arc.util.Align;
-import io.anuke.arc.util.pooling.Pool;
-import io.anuke.arc.util.pooling.Pools;
+import io.anuke.arc.scene.ui.Button.*;
+import io.anuke.arc.scene.ui.ImageButton.*;
+import io.anuke.arc.scene.ui.Label.*;
+import io.anuke.arc.scene.ui.ScrollPane.*;
+import io.anuke.arc.scene.ui.TextButton.*;
+import io.anuke.arc.scene.ui.TextField.*;
+import io.anuke.arc.scene.utils.*;
+import io.anuke.arc.util.*;
+import io.anuke.arc.util.pooling.*;
 
 import static io.anuke.arc.Core.scene;
 import static io.anuke.arc.scene.ui.layout.Cell.unset;
@@ -59,20 +60,20 @@ public class Table extends WidgetGroup{
         touchable(Touchable.childrenOnly);
     }
 
-    public Table(String background){
+    public Table(Drawable background){
         this();
 
         background(background);
     }
 
-    public Table(String background, Consumer<Table> cons){
+    public Table(Drawable background, Cons<Table> cons){
         this(background);
-        cons.accept(this);
+        cons.get(this);
     }
 
-    public Table(Consumer<Table> cons){
+    public Table(Cons<Table> cons){
         this();
-        cons.accept(this);
+        cons.get(this);
     }
 
     private Cell obtainCell(){
@@ -131,23 +132,8 @@ public class Table extends WidgetGroup{
         return this;
     }
 
-    /** @see #setBackground(String) */
-    public Table background(String drawableName){
-        setBackground(drawableName);
-        return this;
-    }
-
     public Drawable getBackground(){
         return background;
-    }
-
-    /**
-     * Sets the background drawable from the skin and adjusts the table's padding to match the background.
-     * @see #setBackground(Drawable)
-     */
-    public void setBackground(String drawableName){
-        if(scene.skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
-        setBackground(scene.skin.getDrawable(drawableName));
     }
 
     /** @param background May be null to clear the background. */
@@ -250,36 +236,36 @@ public class Table extends WidgetGroup{
     }
 
     public Cell<Table> table(){
-        return table((String)null);
+        return table((Drawable)null);
     }
 
-    public Cell<Table> table(String background){
+    public Cell<Table> table(Drawable background){
         Table table = new Table(background);
         return add(table);
     }
 
-    public Cell<Table> table(Consumer<Table> cons){
+    public Cell<Table> table(Cons<Table> cons){
         Table table = new Table();
-        cons.accept(table);
+        cons.get(table);
         return add(table);
     }
 
-    public Cell<Table> table(String background, Consumer<Table> cons){
+    public Cell<Table> table(Drawable background, Cons<Table> cons){
         return table(background, Align.center, cons);
     }
 
-    public Cell<Table> table(String background, int align, Consumer<Table> cons){
+    public Cell<Table> table(Drawable background, int align, Cons<Table> cons){
         Table table = new Table(background);
         table.align(align);
-        cons.accept(table);
+        cons.get(table);
         return add(table);
     }
 
-    public Cell<Label> label(Supplier<CharSequence> text){
+    public Cell<Label> label(Prov<CharSequence> text){
         return add(new Label(text));
     }
 
-    public Cell<Label> labelWrap(Supplier<CharSequence> text){
+    public Cell<Label> labelWrap(Prov<CharSequence> text){
         Label label = new Label(text);
         label.setWrap(true);
         return add(label);
@@ -291,24 +277,24 @@ public class Table extends WidgetGroup{
         return add(label);
     }
 
-    public Cell<ScrollPane> pane(Consumer<Table> consumer){
-        return pane("default", consumer);
+    public Cell<ScrollPane> pane(Cons<Table> consumer){
+        return pane(scene.getStyle(ScrollPaneStyle.class), consumer);
     }
 
-    public Cell<ScrollPane> pane(String style, Consumer<Table> consumer){
+    public Cell<ScrollPane> pane(ScrollPaneStyle style, Cons<Table> consumer){
         Table table = new Table();
-        consumer.accept(table);
+        consumer.get(table);
         ScrollPane pane = new ScrollPane(table, style);
         return add(pane);
     }
 
-    public Cell<ScrollPane> pane(String style, Element element){
+    public Cell<ScrollPane> pane(ScrollPaneStyle style, Element element){
         ScrollPane pane = new ScrollPane(element, style);
         return add(pane);
     }
 
     public Cell<ScrollPane> pane(Element element){
-        return pane("default", element);
+        return pane(scene.getStyle(ScrollPaneStyle.class), element);
     }
 
     /** Adds a new cell with a label. */
@@ -324,8 +310,8 @@ public class Table extends WidgetGroup{
     }
 
     /** Adds a new cell with a label. */
-    public Cell<Label> add(CharSequence text, String labelStyleName, float scl){
-        Label l = new Label(text, scene.skin.get(labelStyleName, LabelStyle.class));
+    public Cell<Label> add(CharSequence text, LabelStyle labelStyle, float scl){
+        Label l = new Label(text, labelStyle);
         l.setFontScale(scl);
         return add(l);
     }
@@ -338,18 +324,13 @@ public class Table extends WidgetGroup{
     }
 
     /** Adds a new cell with a label. */
-    public Cell<Label> add(CharSequence text, String labelStyleName){
-        return add(new Label(text, scene.skin.get(labelStyleName, LabelStyle.class)));
+    public Cell<Label> add(CharSequence text, LabelStyle labelStyle){
+        return add(new Label(text, labelStyle));
     }
 
     /** Adds a new cell with a label. */
     public Cell<Label> add(CharSequence text, Color color){
-        return add(new Label(text, new LabelStyle(scene.skin.getFont("default"), color)));
-    }
-
-    /** Adds a new cell with a label. */
-    public Cell<Label> add(CharSequence text, String fontName, String colorName){
-        return add(new Label(text, new LabelStyle(scene.skin.getFont(fontName), scene.skin.getColor(colorName))));
+        return add(new Label(text, new LabelStyle(scene.getStyle(LabelStyle.class).font, color)));
     }
 
     /** Adds a cell without an element. */
@@ -370,12 +351,16 @@ public class Table extends WidgetGroup{
         return add(stack);
     }
 
-    public Cell<Image> addImage(String name){
-        return add(new Image(scene.skin.getDrawable(name)));
+    public Cell<Image> addImage(){
+        return add(new Image());
     }
 
-    public Cell<Image> addImage(String name, Color color){
-        Image image = new Image(scene.skin.getDrawable(name));
+    public Cell<Image> addImage(Drawable name){
+        return add(new Image(name));
+    }
+
+    public Cell<Image> addImage(Drawable name, Color color){
+        Image image = new Image(name);
         image.setColor(color);
         return add(image);
     }
@@ -384,29 +369,37 @@ public class Table extends WidgetGroup{
         return add(new Image(region));
     }
 
-    public Cell<CheckBox> addCheck(String text, BooleanConsumer listener){
+    public Cell<CheckBox> addCheck(String text, Boolc listener){
         CheckBox button = Elements.newCheck(text, listener);
         return add(button);
     }
 
-    public Cell<CheckBox> addCheck(String text, boolean checked, BooleanConsumer listener){
+    public Cell<CheckBox> addCheck(String text, boolean checked, Boolc listener){
         CheckBox button = Elements.newCheck(text, listener);
         button.setChecked(checked);
         return add(button);
     }
 
-    public Cell<CheckBox> addCheck(String text, float imagesize, boolean checked, BooleanConsumer listener){
+    public Cell<CheckBox> addCheck(String text, float imagesize, boolean checked, Boolc listener){
         CheckBox button = Elements.newCheck(text, listener);
         button.getImageCell().size(imagesize);
         button.setChecked(checked);
         return add(button);
     }
 
-    public Cell<Button> addButton(Consumer<Button> cons, Runnable listener){
-        Button button = new Button(scene.skin.get(TextButtonStyle.class));
+    public Cell<Button> addButton(Cons<Button> cons, Runnable listener){
+        Button button = new Button();
         button.clearChildren();
         button.clicked(listener);
-        cons.accept(button);
+        cons.get(button);
+        return add(button);
+    }
+
+    public Cell<Button> addButton(Cons<Button> cons, ButtonStyle style, Runnable listener){
+        Button button = new Button(style);
+        button.clearChildren();
+        button.clicked(listener);
+        cons.get(button);
         return add(button);
     }
 
@@ -415,47 +408,54 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
-    public Cell<TextButton> addButton(String text, String style, Runnable listener){
+    public Cell<TextButton> addButton(String text, TextButtonStyle style, Runnable listener){
         TextButton button = Elements.newButton(text, style, listener);
         return add(button);
     }
 
-    public Cell<ImageButton> addImageButton(String icon, Runnable listener){
+    public Cell<ImageButton> addImageButton(Drawable icon, Runnable listener){
         ImageButton button = Elements.newImageButton(icon, listener);
         return add(button);
     }
 
-    public Cell<ImageButton> addImageButton(String icon, float isize, Runnable listener){
+    public Cell<ImageButton> addImageButton(Drawable icon, float isize, Runnable listener){
         ImageButton button = Elements.newImageButton(icon, listener);
         button.resizeImage(isize);
         return add(button);
     }
 
-    public Cell<ImageButton> addImageButton(String icon, String style, float isize, Runnable listener){
+    public Cell<ImageButton> addImageButton(Drawable icon, ImageButtonStyle style, float isize, Runnable listener){
         ImageButton button = new ImageButton(icon, style);
         button.clicked(listener);
         button.resizeImage(isize);
         return add(button);
     }
 
-    public Cell<TextField> addField(String text, Consumer<String> listener){
+    public Cell<ImageButton> addImageButton(Drawable icon, ImageButtonStyle style, Runnable listener){
+        ImageButton button = new ImageButton(icon, style);
+        button.clicked(listener);
+        button.resizeImage(icon.imageSize());
+        return add(button);
+    }
+
+    public Cell<TextField> addField(String text, Cons<String> listener){
         TextField field = Elements.newField(text, listener);
         return add(field);
     }
 
-    public Cell<TextArea> addArea(String text, Consumer<String> listener){
+    public Cell<TextArea> addArea(String text, Cons<String> listener){
         TextArea area = new TextArea(text);
-        area.changed(() -> listener.accept(area.getText()));
+        area.changed(() -> listener.get(area.getText()));
         return add(area);
     }
 
-    public Cell<TextArea> addArea(String text, String style, Consumer<String> listener){
+    public Cell<TextArea> addArea(String text, TextFieldStyle style, Cons<String> listener){
         TextArea area = new TextArea(text, style);
-        area.changed(() -> listener.accept(area.getText()));
+        area.changed(() -> listener.get(area.getText()));
         return add(area);
     }
 
-    public Cell<TextField> addField(String text, TextFieldFilter filter, Consumer<String> listener){
+    public Cell<TextField> addField(String text, TextFieldFilter filter, Cons<String> listener){
         TextField field = Elements.newField(text, listener);
         field.setFilter(filter);
         return add(field);
@@ -469,24 +469,21 @@ public class Table extends WidgetGroup{
         });
     }
 
-    public Cell<Table> addTable(String background){
-        Table table = new Table();
-        table.background(background);
-        return add(table);
-    }
-
-    public Cell<TextButton> addRowImageTextButton(String text, String image, float imagesize, Runnable clicked){
+    public Cell<TextButton> addRowImageTextButton(String text, Drawable image, Runnable clicked){
         TextButton button = new TextButton(text);
         button.clearChildren();
-        button.add(new Image(image)).size(imagesize).update(i -> i.setColor(button.isDisabled() ? Color.GRAY : Color.WHITE));
+        button.add(new Image(image)).update(i -> i.setColor(button.isDisabled() ? Color.gray : Color.white));
         button.row();
         button.add(button.getLabel()).padTop(4);
         button.clicked(clicked);
         return add(button);
     }
 
+    public Cell<TextButton> addImageTextButton(String text, Drawable image, Runnable clicked){
+        return addImageTextButton(text, image, image.imageSize(), clicked);
+    }
 
-    public Cell<TextButton> addImageTextButton(String text, String image, float imagesize, Runnable clicked){
+    public Cell<TextButton> addImageTextButton(String text, Drawable image, float imagesize, Runnable clicked){
         TextButton button = new TextButton(text);
         button.add(new Image(image)).size(imagesize);
         button.getCells().reverse();
@@ -494,7 +491,7 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
-    public Cell<TextButton> addImageTextButton(String text, String image, String style, float imagesize, Runnable clicked){
+    public Cell<TextButton> addImageTextButton(String text, Drawable image, TextButtonStyle style, float imagesize, Runnable clicked){
         TextButton button = new TextButton(text, style);
         button.add(new Image(image)).size(imagesize);
         button.getCells().reverse();
@@ -502,7 +499,15 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
-    public Cell<TextButton> addCenteredImageTextButton(String text, String image, float imagesize, Runnable clicked){
+    public Cell<TextButton> addImageTextButton(String text, Drawable image, TextButtonStyle style, Runnable clicked){
+        TextButton button = new TextButton(text, style);
+        button.add(new Image(image)).size(image.imageSize());
+        button.getCells().reverse();
+        button.clicked(clicked);
+        return add(button);
+    }
+
+    public Cell<TextButton> addCenteredImageTextButton(String text, Drawable image, float imagesize, Runnable clicked){
         TextButton button = new TextButton(text);
         button.add(new Image(image)).size(imagesize);
         button.getCells().reverse();
@@ -511,7 +516,16 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
-    public Cell<TextButton> addCenteredImageTextButton(String text, String image, String style, float imagesize, Runnable clicked){
+    public Cell<TextButton> addCenteredImageTextButton(String text, Drawable image, Runnable clicked){
+        TextButton button = new TextButton(text);
+        button.add(new Image(image));
+        button.getCells().reverse();
+        button.clicked(clicked);
+        button.getLabelCell().padLeft(-image.imageSize());
+        return add(button);
+    }
+
+    public Cell<TextButton> addCenteredImageTextButton(String text, Drawable image, TextButtonStyle style, float imagesize, Runnable clicked){
         TextButton button = new TextButton(text, style);
         button.add(new Image(image)).size(imagesize);
         button.getCells().reverse();
@@ -520,11 +534,11 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
-    public Cell<Slider> addSlider(float min, float max, float step, FloatConsumer listener){
+    public Cell<Slider> addSlider(float min, float max, float step, Floatc listener){
         return addSlider(min, max, step, 0f, listener);
     }
 
-    public Cell<Slider> addSlider(float min, float max, float step, float defvalue, FloatConsumer listener){
+    public Cell<Slider> addSlider(float min, float max, float step, float defvalue, Floatc listener){
         Slider slider = new Slider(min, max, step, false);
         slider.setValue(defvalue);
         if(listener != null)
@@ -532,14 +546,14 @@ public class Table extends WidgetGroup{
         return add(slider);
     }
 
-    public Cell<Slider> addSlider(float min, float max, float step, float defvalue, boolean onUp, FloatConsumer listener){
+    public Cell<Slider> addSlider(float min, float max, float step, float defvalue, boolean onUp, Floatc listener){
         Slider slider = new Slider(min, max, step, false);
         slider.setValue(defvalue);
         if(listener != null){
             if(!onUp){
                 slider.moved(listener);
             }else{
-                slider.released(() -> listener.accept(slider.getValue()));
+                slider.released(() -> listener.get(slider.getValue()));
             }
 
         }
@@ -691,38 +705,38 @@ public class Table extends WidgetGroup{
     }
 
     public Table margin(float top, float left, float bottom, float right){
-        marginTop = UnitScl.dp.scl(top);
-        marginLeft = UnitScl.dp.scl(left);
-        marginBot = UnitScl.dp.scl(bottom);
-        marginRight = UnitScl.dp.scl(right);
+        marginTop = Scl.scl(top);
+        marginLeft = Scl.scl(left);
+        marginBot = Scl.scl(bottom);
+        marginRight = Scl.scl(right);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the top edge of the table. */
     public Table marginTop(float padTop){
-        this.marginTop = UnitScl.dp.scl(padTop);
+        this.marginTop = Scl.scl(padTop);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the left edge of the table. */
     public Table marginLeft(float padLeft){
-        this.marginLeft = UnitScl.dp.scl(padLeft);
+        this.marginLeft = Scl.scl(padLeft);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the bottom edge of the table. */
     public Table marginBottom(float padBottom){
-        this.marginBot = UnitScl.dp.scl(padBottom);
+        this.marginBot = Scl.scl(padBottom);
         sizeInvalid = true;
         return this;
     }
 
     /** Padding at the right edge of the table. */
     public Table marginRight(float padRight){
-        this.marginRight = UnitScl.dp.scl(padRight);
+        this.marginRight = Scl.scl(padRight);
         sizeInvalid = true;
         return this;
     }
@@ -876,7 +890,6 @@ public class Table extends WidgetGroup{
         }
     }
 
-    @SuppressWarnings("unused")
     private void computeSize(){
         sizeInvalid = false;
 
@@ -890,19 +903,18 @@ public class Table extends WidgetGroup{
         }
 
         int columns = this.columns, rows = this.rows;
-        float[] columnMinWidth = this.columnMinWidth = ensureSize(this.columnMinWidth, columns);
-        float[] rowMinHeight = this.rowMinHeight = ensureSize(this.rowMinHeight, rows);
-        float[] columnPrefWidth = this.columnPrefWidth = ensureSize(this.columnPrefWidth, columns);
-        float[] rowPrefHeight = this.rowPrefHeight = ensureSize(this.rowPrefHeight, rows);
-        float[] columnWidth = this.columnWidth = ensureSize(this.columnWidth, columns);
-        float[] rowHeight = this.rowHeight = ensureSize(this.rowHeight, rows);
-        float[] expandWidth = this.expandWidth = ensureSize(this.expandWidth, columns);
-        float[] expandHeight = this.expandHeight = ensureSize(this.expandHeight, rows);
+        this.columnMinWidth = ensureSize(this.columnMinWidth, columns);
+        this.rowMinHeight = ensureSize(this.rowMinHeight, rows);
+        this.columnPrefWidth = ensureSize(this.columnPrefWidth, columns);
+        this.rowPrefHeight = ensureSize(this.rowPrefHeight, rows);
+        this.columnWidth = ensureSize(this.columnWidth, columns);
+        this.rowHeight = ensureSize(this.rowHeight, rows);
+        this.expandWidth = ensureSize(this.expandWidth, columns);
+        this.expandHeight = ensureSize(this.expandHeight, rows);
 
         for(int i = 0; i < cellCount; i++){
             Cell c = cells.get(i);
             int column = c.column, row = c.row, colspan = c.colspan;
-            Element a = c.element;
 
             // Collect rows that expand and colspan=1 columns that expand.
             if(c.expandY != 0 && expandHeight[row] == 0) expandHeight[row] = c.expandY;

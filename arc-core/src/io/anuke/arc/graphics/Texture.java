@@ -6,7 +6,7 @@ import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.assets.loaders.AssetLoader;
 import io.anuke.arc.assets.loaders.TextureLoader.TextureParameter;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Pixmap.Format;
 import io.anuke.arc.graphics.glutils.FileTextureData;
 import io.anuke.arc.graphics.glutils.PixmapTextureData;
@@ -39,15 +39,15 @@ public class Texture extends GLTexture{
         this(Core.files.internal(internalPath));
     }
 
-    public Texture(FileHandle file){
+    public Texture(Fi file){
         this(file, null, false);
     }
 
-    public Texture(FileHandle file, boolean useMipMaps){
+    public Texture(Fi file, boolean useMipMaps){
         this(file, null, useMipMaps);
     }
 
-    public Texture(FileHandle file, Format format, boolean useMipMaps){
+    public Texture(Fi file, Format format, boolean useMipMaps){
         this(TextureData.Factory.loadFromFile(file, format, useMipMaps));
     }
 
@@ -71,10 +71,21 @@ public class Texture extends GLTexture{
         this(GL20.GL_TEXTURE_2D, Core.gl.glGenTexture(), data);
     }
 
+    /** For use in mocking only! */
+    private Texture(){
+        super(0, 0);
+    }
+
     protected Texture(int glTarget, int glHandle, TextureData data){
         super(glTarget, glHandle);
         load(data);
         if(data.isManaged()) addManagedTexture(Core.app, this);
+    }
+
+    public static Texture createEmpty(TextureData data){
+        Texture tex = new Texture();
+        tex.data = data;
+        return tex;
     }
 
     private static void addManagedTexture(Application app, Texture texture){
@@ -247,6 +258,7 @@ public class Texture extends GLTexture{
             if(managedTextures.get(Core.app) != null) managedTextures.get(Core.app).removeValue(this, true);
     }
 
+    @Override
     public boolean isDisposed(){
         return glHandle == 0;
     }

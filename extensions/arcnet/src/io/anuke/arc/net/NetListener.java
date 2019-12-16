@@ -40,7 +40,7 @@ public interface NetListener{
      * Called when the remote end is no longer connected. There is no guarantee
      * as to what thread will invoke this method.
      */
-    default void disconnected(Connection connection){
+    default void disconnected(Connection connection, DcReason reason){
     }
 
     /**
@@ -78,8 +78,8 @@ public interface NetListener{
             queue(() -> listener.connected(connection));
         }
 
-        public void disconnected(final Connection connection){
-            queue(() -> listener.disconnected(connection));
+        public void disconnected(final Connection connection, DcReason reason){
+            queue(() -> listener.disconnected(connection, reason));
         }
 
         public void received(final Connection connection, final Object object){

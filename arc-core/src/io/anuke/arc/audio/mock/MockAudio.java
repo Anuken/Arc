@@ -21,12 +21,12 @@ public class MockAudio extends Audio{
     }
 
     @Override
-    public Sound newSound(FileHandle fileHandle){
+    public Sound newSound(Fi fileHandle){
         return new MockSound();
     }
 
     @Override
-    public Music newMusic(FileHandle file){
+    public Music newMusic(Fi file){
         return new MockMusic();
     }
 }

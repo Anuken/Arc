@@ -84,6 +84,10 @@ public interface Application extends Disposable{
             Core.batch = null;
         }
 
+        if(Core.input != null){
+            Core.input.dispose();
+        }
+
         Fill.dispose();
         Events.dispose();
     }

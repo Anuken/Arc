@@ -2,14 +2,15 @@ package io.anuke.arc.scene;
 
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.SnapshotArray;
-import io.anuke.arc.function.Consumer;
-import io.anuke.arc.function.Predicate;
+import io.anuke.arc.func.Cons;
+import io.anuke.arc.func.Boolf;
 import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.math.Affine2;
 import io.anuke.arc.math.Matrix3;
 import io.anuke.arc.math.geom.Rectangle;
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.scene.event.Touchable;
+import io.anuke.arc.scene.style.*;
 import io.anuke.arc.scene.ui.layout.Table;
 import io.anuke.arc.scene.ui.layout.Table.DrawRect;
 import io.anuke.arc.scene.utils.Cullable;
@@ -29,7 +30,7 @@ public abstract class Group extends Element implements Cullable{
     private final Affine2 worldTransform = new Affine2();
     private final Matrix3 computedTransform = new Matrix3();
     private final Matrix3 oldTransform = new Matrix3();
-    boolean transform = true;
+    boolean transform = false;
     private Rectangle cullingArea;
 
     @Override
@@ -207,9 +208,9 @@ public abstract class Group extends Element implements Cullable{
     }
 
     /** Recursively iterates through every child of this group. */
-    public void forEach(Consumer<Element> cons){
+    public void forEach(Cons<Element> cons){
         for(Element e : getChildren()){
-            cons.accept(e);
+            cons.get(e);
             if(e instanceof Group){
                 ((Group)e).forEach(cons);
             }
@@ -229,16 +230,16 @@ public abstract class Group extends Element implements Cullable{
     }
 
     /** Adds and returns a table. This table will fill the whole scene. */
-    public void fill(Consumer<Table> cons){
+    public void fill(Cons<Table> cons){
         fill(null, cons);
     }
 
     /** Adds and returns a table. This table will fill the whole scene. */
-    public void fill(String background, Consumer<Table> cons){
+    public void fill(Drawable background, Cons<Table> cons){
         Table table = background == null ? new Table() : new Table(background);
         table.setFillParent(true);
         addChild(table);
-        cons.accept(table);
+        cons.get(table);
     }
 
     /**
@@ -372,12 +373,28 @@ public abstract class Group extends Element implements Cullable{
         return null;
     }
 
-    /** Find element by a predicate. */
+    /** Finds only visible elements.*/
     @SuppressWarnings("unchecked")
-    public <T extends Element> T find(Predicate<Element> pred){
+    public <T extends Element> T findVisible(String name){
         Array<Element> children = this.children;
         for(int i = 0, n = children.size; i < n; i++)
-            if(pred.test(children.get(i))) return (T)children.get(i);
+            if(name.equals(children.get(i).getName()) && children.get(i).isVisible()) return (T)children.get(i);
+        for(int i = 0, n = children.size; i < n; i++){
+            Element child = children.get(i);
+            if(child instanceof Group && child.isVisible()){
+                Element actor = ((Group)child).findVisible(name);
+                if(actor != null) return (T)actor;
+            }
+        }
+        return null;
+    }
+
+    /** Find element by a predicate. */
+    @SuppressWarnings("unchecked")
+    public <T extends Element> T find(Boolf<Element> pred){
+        Array<Element> children = this.children;
+        for(int i = 0, n = children.size; i < n; i++)
+            if(pred.get(children.get(i))) return (T)children.get(i);
 
         for(int i = 0, n = children.size; i < n; i++){
             Element child = children.get(i);

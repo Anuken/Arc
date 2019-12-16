@@ -2,7 +2,6 @@ package io.anuke.arc.backends.teavm.emu;
 
 import io.anuke.arc.backends.teavm.*;
 import io.anuke.arc.backends.teavm.plugin.Annotations.*;
-import io.anuke.arc.files.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.Pixmap.Blending;
 import io.anuke.arc.graphics.Pixmap.*;
@@ -16,10 +15,7 @@ import org.teavm.jso.typedarrays.*;
 import java.nio.*;
 import java.util.*;
 
-/**
- *
- * @author Alexey Andreev
- */
+
 @Replace(Pixmap.class)
 public class PixmapEmulator implements Disposable{
     private static final Window window = Window.current();
@@ -41,11 +37,11 @@ public class PixmapEmulator implements Disposable{
     Uint8ClampedArray pixels;
     private ByteBuffer pixelsBuffer;
 
-    public PixmapEmulator(FileHandle file) {
-        TeaVMFileHandle teavmFile = (TeaVMFileHandle) file;
-        TeaVMFileHandle.FSEntry entry = teavmFile.entry();
+    public PixmapEmulator(FileHandle file){
+        TeaVMFi teavmFile = (TeaVMFi)file;
+        TeaVMFi.FSEntry entry = teavmFile.entry();
         HTMLImageElement img = entry.imageElem;
-        if (img == null) {
+        if(img == null){
             throw new ArcRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
         }
         create(img.getWidth(), img.getHeight(), Format.RGBA8888);
@@ -54,81 +50,81 @@ public class PixmapEmulator implements Disposable{
         context.setGlobalCompositeOperation("source-over");
     }
 
-    public PixmapEmulator(HTMLImageElement img) {
+    public PixmapEmulator(HTMLImageElement img){
         create(img.getWidth(), img.getHeight(), Format.RGBA8888);
         context.drawImage(img, 0, 0);
     }
 
-    public PixmapEmulator(int width, int height, Pixmap.Format format) {
+    public PixmapEmulator(int width, int height, Pixmap.Format format){
         create(width, height, format);
     }
 
-    private void create(int width, int height, @SuppressWarnings("unused") Pixmap.Format format2) {
+    private void create(int width, int height, @SuppressWarnings("unused") Pixmap.Format format2){
         this.width = width;
         this.height = height;
         this.format = Format.RGBA8888;
-        canvas = (HTMLCanvasElement) document.createElement("canvas");
+        canvas = (HTMLCanvasElement)document.createElement("canvas");
         canvas.getStyle().setProperty("display", "none");
         document.getBody().appendChild(canvas);
         canvas.setWidth(width);
         canvas.setHeight(height);
-        context = (CanvasRenderingContext2D) canvas.getContext("2d");
+        context = (CanvasRenderingContext2D)canvas.getContext("2d");
         context.setGlobalCompositeOperation("source-over");
         id = nextId++;
         pixmaps.put(id, this);
     }
 
-    public static String make(int r2, int g2, int b2, float a2) {
+    public static String make(int r2, int g2, int b2, float a2){
         return "rgba(" + r2 + "," + g2 + "," + b2 + "," + a2 + ")";
     }
 
-    public void setBlending(Blending blending) {
+    public void setBlending(Blending blending){
         this.blending = blending;
-        for (PixmapEmulator pixmap : pixmaps.values()) {
+        for(PixmapEmulator pixmap : pixmaps.values()){
             pixmap.context.setGlobalCompositeOperation("source-over");
         }
     }
 
-    public Blending getBlending() {
+    public Blending getBlending(){
         return blending;
     }
 
-    public void setFilter(@SuppressWarnings("unused") Filter filter) {
+    public void setFilter(@SuppressWarnings("unused") Filter filter){
     }
 
-    public Format getFormat() {
+    public Format getFormat(){
         return format;
     }
 
-    public int getGLInternalFormat() {
+    public int getGLInternalFormat(){
         return GL20.GL_RGBA;
     }
 
-    public int getGLFormat() {
+    public int getGLFormat(){
         return GL20.GL_RGBA;
     }
 
-    public int getGLType() {
+    public int getGLType(){
         return GL20.GL_UNSIGNED_BYTE;
     }
 
-    public int getWidth() {
+    public int getWidth(){
         return width;
     }
 
-    public int getHeight() {
+    public int getHeight(){
         return height;
     }
 
     @Override
-    public void dispose() {
+    public void dispose(){
         PixmapEmulator pixmap = pixmaps.remove(id);
-        if (pixmap.canvas != null) {
+        if(pixmap.canvas != null){
             pixmap.canvas.getParentNode().removeChild(pixmap.canvas);
         }
     }
 
-    public void setColor(int color) {
+    public void setColor(int color){
         r = (color >>> 24) & 0xff;
         g = (color >>> 16) & 0xff;
         b = (color >>> 8) & 0xff;
@@ -138,65 +134,65 @@ public class PixmapEmulator implements Disposable{
         context.setStrokeStyle(this.color);
     }
 
-    public void setColor(float r, float g, float b, float a) {
-        this.r = (int) (r * 255);
-        this.g = (int) (g * 255);
-        this.b = (int) (b * 255);
+    public void setColor(float r, float g, float b, float a){
+        this.r = (int)(r * 255);
+        this.g = (int)(g * 255);
+        this.b = (int)(b * 255);
         this.a = a;
         color = make(this.r, this.g, this.b, this.a);
         context.setFillStyle(color);
         context.setStrokeStyle(this.color);
     }
 
-    public void setColor(Color color) {
+    public void setColor(Color color){
         setColor(color.r, color.g, color.b, color.a);
     }
 
-    public void fill() {
+    public void fill(){
         rectangle(0, 0, getWidth(), getHeight(), DrawType.FILL);
     }
 
-    public void drawLine(int x, int y, int x2, int y2) {
+    public void drawLine(int x, int y, int x2, int y2){
         line(x, y, x2, y2, DrawType.STROKE);
     }
 
-    public void drawRectangle(int x, int y, int width, int height) {
+    public void drawRectangle(int x, int y, int width, int height){
         rectangle(x, y, width, height, DrawType.STROKE);
     }
 
-    public void drawPixmap(PixmapEmulator pixmap, int x, int y) {
+    public void drawPixmap(PixmapEmulator pixmap, int x, int y){
         HTMLCanvasElement image = pixmap.canvas;
         image(image, 0, 0, image.getWidth(), image.getHeight(), x, y, image.getWidth(), image.getHeight());
     }
 
-    public void drawPixmap(PixmapEmulator pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight) {
+    public void drawPixmap(PixmapEmulator pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight){
         HTMLCanvasElement image = pixmap.canvas;
         image(image, srcx, srcy, srcWidth, srcHeight, x, y, srcWidth, srcHeight);
     }
 
     public void drawPixmap(PixmapEmulator pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty,
-            int dstWidth, int dstHeight) {
+                           int dstWidth, int dstHeight){
         image(pixmap.canvas, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight);
     }
 
-    public void fillRectangle(int x, int y, int width, int height) {
+    public void fillRectangle(int x, int y, int width, int height){
         rectangle(x, y, width, height, DrawType.FILL);
     }
 
-    public void drawCircle(int x, int y, int radius) {
+    public void drawCircle(int x, int y, int radius){
         circle(x, y, radius, DrawType.STROKE);
     }
 
-    public void fillCircle(int x, int y, int radius) {
+    public void fillCircle(int x, int y, int radius){
         circle(x, y, radius, DrawType.FILL);
     }
 
-    public void fillTriangle(int x1, int y1, int x2, int y2, int x3, int y3) {
+    public void fillTriangle(int x1, int y1, int x2, int y2, int x3, int y3){
         triangle(x1, y1, x2, y2, x3, y3, DrawType.FILL);
     }
 
-    public int getPixel(int x, int y) {
-        if (pixels == null) {
+    public int getPixel(int x, int y){
+        if(pixels == null){
             pixels = context.getImageData(0, 0, width, height).getData();
         }
         int i = x * 4 + y * width * 4;
@@ -207,8 +203,8 @@ public class PixmapEmulator implements Disposable{
         return (r << 24) | (g << 16) | (b << 8) | (a);
     }
 
-    public ByteBuffer getPixels() {
-        if (pixels == null) {
+    public ByteBuffer getPixels(){
+        if(pixels == null){
             pixels = context.getImageData(0, 0, width, height).getData();
         }
         return ByteBuffer.wrap(bufferAsArray(pixels.getBuffer()));
@@ -217,17 +213,17 @@ public class PixmapEmulator implements Disposable{
     @GeneratedBy(PixmapNativeGenerator.class)
     private native byte[] bufferAsArray(ArrayBuffer array);
 
-    public void drawPixel(int x, int y) {
+    public void drawPixel(int x, int y){
         rectangle(x, y, 1, 1, DrawType.FILL);
     }
 
-    public void drawPixel(int x, int y, int color) {
+    public void drawPixel(int x, int y, int color){
         setColor(color);
         drawPixel(x, y);
     }
 
-    private void circle(int x, int y, int radius, DrawType drawType) {
-        if (blending == Blending.None) {
+    private void circle(int x, int y, int radius, DrawType drawType){
+        if(blending == Blending.None){
             context.setFillStyle(clearColor);
             context.setStrokeStyle(clearColor);
             context.setGlobalCompositeOperation("clear");
@@ -246,8 +242,8 @@ public class PixmapEmulator implements Disposable{
         pixels = null;
     }
 
-    private void line(int x, int y, int x2, int y2, DrawType drawType) {
-        if (blending == Blending.None) {
+    private void line(int x, int y, int x2, int y2, DrawType drawType){
+        if(blending == Blending.None){
             context.setFillStyle(clearColor);
             context.setStrokeStyle(clearColor);
             context.setGlobalCompositeOperation("clear");
@@ -267,8 +263,8 @@ public class PixmapEmulator implements Disposable{
         context.closePath();
     }
 
-    private void rectangle(int x, int y, int width, int height, DrawType drawType) {
-        if (blending == Blending.None) {
+    private void rectangle(int x, int y, int width, int height, DrawType drawType){
+        if(blending == Blending.None){
             context.setFillStyle(clearColor);
             context.setStrokeStyle(clearColor);
             context.setGlobalCompositeOperation("clear");
@@ -287,8 +283,8 @@ public class PixmapEmulator implements Disposable{
         pixels = null;
     }
 
-    private void triangle(int x1, int y1, int x2, int y2, int x3, int y3, DrawType drawType) {
-        if (blending == Blending.None) {
+    private void triangle(int x1, int y1, int x2, int y2, int x3, int y3, DrawType drawType){
+        if(blending == Blending.None){
             context.setFillStyle(clearColor);
             context.setStrokeStyle(clearColor);
             context.setGlobalCompositeOperation("clear");
@@ -314,8 +310,8 @@ public class PixmapEmulator implements Disposable{
     }
 
     private void image(HTMLCanvasElement image, int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY,
-            int dstWidth, int dstHeight) {
-        if (blending == Blending.None) {
+                       int dstWidth, int dstHeight){
+        if(blending == Blending.None){
             context.setFillStyle(clearColor);
             context.setStrokeStyle(clearColor);
             context.setGlobalCompositeOperation("clear");
@@ -331,8 +327,8 @@ public class PixmapEmulator implements Disposable{
         pixels = null;
     }
 
-    private void fillOrStrokePath(DrawType drawType) {
-        switch (drawType) {
+    private void fillOrStrokePath(DrawType drawType){
+        switch(drawType){
             case FILL:
                 context.fill();
                 break;
@@ -342,7 +338,7 @@ public class PixmapEmulator implements Disposable{
         }
     }
 
-    private enum DrawType {
+    private enum DrawType{
         FILL, STROKE
     }
 }

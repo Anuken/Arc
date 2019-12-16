@@ -1,7 +1,7 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
 import io.anuke.arc.Files;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import org.robovm.apple.foundation.NSBundle;
 
 public class IOSFiles implements Files{
@@ -13,38 +13,38 @@ public class IOSFiles implements Files{
     static final String internalPath = NSBundle.getMainBundle().getBundlePath();
 
     public IOSFiles(){
-        new FileHandle(externalPath).mkdirs();
-        new FileHandle(localPath).mkdirs();
+        new Fi(externalPath).mkdirs();
+        new Fi(localPath).mkdirs();
     }
 
     @Override
-    public FileHandle getFileHandle(String fileName, FileType type){
-        return new IOSFileHandle(fileName, type);
+    public Fi getFileHandle(String fileName, FileType type){
+        return new IOSFi(fileName, type);
     }
 
     @Override
-    public FileHandle classpath(String path){
-        return new IOSFileHandle(path, FileType.Classpath);
+    public Fi classpath(String path){
+        return new IOSFi(path, FileType.Classpath);
     }
 
     @Override
-    public FileHandle internal(String path){
-        return new IOSFileHandle(path, FileType.Internal);
+    public Fi internal(String path){
+        return new IOSFi(path, FileType.Internal);
     }
 
     @Override
-    public FileHandle external(String path){
-        return new IOSFileHandle(path, FileType.External);
+    public Fi external(String path){
+        return new IOSFi(path, FileType.External);
     }
 
     @Override
-    public FileHandle absolute(String path){
-        return new IOSFileHandle(path, FileType.Absolute);
+    public Fi absolute(String path){
+        return new IOSFi(path, FileType.Absolute);
     }
 
     @Override
-    public FileHandle local(String path){
-        return new IOSFileHandle(path, FileType.Local);
+    public Fi local(String path){
+        return new IOSFi(path, FileType.Local);
     }
 
     @Override

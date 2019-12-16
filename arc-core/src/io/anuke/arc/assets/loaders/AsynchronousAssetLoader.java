@@ -2,7 +2,7 @@ package io.anuke.arc.assets.loaders;
 
 import io.anuke.arc.assets.AssetLoaderParameters;
 import io.anuke.arc.assets.AssetManager;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 
 /**
  * Base class for asynchronous {@link AssetLoader} instances. Such loaders try to load parts of an OpenGL resource, like the
@@ -21,11 +21,11 @@ public abstract class AsynchronousAssetLoader<T, P extends AssetLoaderParameters
      * @param file the resolved file to load
      * @param parameter the parameters to use for loading the asset
      */
-    public abstract void loadAsync(AssetManager manager, String fileName, FileHandle file, P parameter);
+    public abstract void loadAsync(AssetManager manager, String fileName, Fi file, P parameter);
 
     /**
      * Loads the OpenGL part of the asset.
      * @param file the resolved file to load
      */
-    public abstract T loadSync(AssetManager manager, String fileName, FileHandle file, P parameter);
+    public abstract T loadSync(AssetManager manager, String fileName, Fi file, P parameter);
 }

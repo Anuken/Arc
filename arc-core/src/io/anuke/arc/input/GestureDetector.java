@@ -1,10 +1,9 @@
 package io.anuke.arc.input;
 
-import io.anuke.arc.Core;
-import io.anuke.arc.math.geom.Vector2;
-import io.anuke.arc.util.Time;
-import io.anuke.arc.util.Timer;
-import io.anuke.arc.util.Timer.Task;
+import io.anuke.arc.*;
+import io.anuke.arc.math.geom.*;
+import io.anuke.arc.util.*;
+import io.anuke.arc.util.Timer.*;
 
 /**
  * {@link InputProcessor} implementation that detects gestures (tap, long press, fling, pan, zoom, pinch) and hands them to a

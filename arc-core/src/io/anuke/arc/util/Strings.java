@@ -1,9 +1,38 @@
 package io.anuke.arc.util;
 
+import io.anuke.arc.collection.*;
+
 import java.nio.charset.Charset;
 
 public class Strings{
     public static final Charset utf8 = Charset.forName("UTF-8");
+
+    public static Array<Throwable> getCauses(Throwable e){
+        Array<Throwable> arr = new Array<>();
+        while(e != null){
+            arr.add(e);
+            e = e.getCause();
+        }
+        return arr;
+    }
+
+    public static String getFinalMesage(Throwable e){
+        String message = e.getMessage();
+        while(e.getCause() != null){
+            e = e.getCause();
+            if(e.getMessage() != null){
+                message = e.getMessage();
+            }
+        }
+        return message;
+    }
+
+    public static Throwable getFinalCause(Throwable e){
+        while(e.getCause() != null){
+            e = e.getCause();
+        }
+        return e;
+    }
 
     public static String parseException(Throwable e, boolean stacktrace){
         StringBuilder build = new StringBuilder();
@@ -14,10 +43,10 @@ public class Strings{
                 name = name.substring(name.lastIndexOf('.') + 1);
             }
 
-            build.append(name);
+            build.append("> ").append(name);
             if(e.getMessage() != null){
                 build.append(": ");
-                build.append(e.getMessage());
+                build.append("'").append(e.getMessage()).append("'");
             }
 
             if(stacktrace){
@@ -108,6 +137,24 @@ public class Strings{
             }else{
                 result.append(c);
             }
+        }
+
+        return result.toString();
+    }
+
+    /**Converts a Space Separated ostring to camelCase.
+     * For example: "Camel Case" -> "camelCase"*/
+    public static String camelize(String s){
+        StringBuilder result = new StringBuilder(s.length());
+
+        for(int i = 0; i < s.length(); i++){
+            char c = s.charAt(i);
+            if(i == 0){
+                result.append(Character.toLowerCase(c));
+            }else if(c != ' '){
+                result.append(c);
+            }
+
         }
 
         return result.toString();

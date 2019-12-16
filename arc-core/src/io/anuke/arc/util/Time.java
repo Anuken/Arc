@@ -1,17 +1,19 @@
 package io.anuke.arc.util;
 
-import io.anuke.arc.Core;
+import io.anuke.arc.*;
 import io.anuke.arc.collection.*;
-import io.anuke.arc.util.pooling.Pool.Poolable;
-import io.anuke.arc.util.pooling.Pools;
+import io.anuke.arc.func.*;
+import io.anuke.arc.util.pooling.Pool.*;
+import io.anuke.arc.util.pooling.*;
 
 public class Time{
     private static final long nanosPerMilli = 1000000;
     private static double time;
+    private static double globalTime;
     private static Array<DelayRun> runs = new Array<>();
     private static Array<DelayRun> removal = new Array<>();
     private static LongArray marks = new LongArray();
-    private static DeltaProvider deltaimpl = () -> Math.min(Core.graphics.getDeltaTime() * 60f, 3f);
+    private static Floatp deltaimpl = () -> Math.min(Core.graphics.getDeltaTime() * 60f, 3f);
 
     public static synchronized void run(float delay, Runnable r){
         DelayRun run = Pools.obtain(DelayRun.class, DelayRun::new);
@@ -28,6 +30,10 @@ public class Time{
         return (float)time;
     }
 
+    public static float globalTime(){
+        return (float)globalTime;
+    }
+
     public static void mark(){
         marks.add(nanos());
     }
@@ -41,8 +47,12 @@ public class Time{
         }
     }
 
+    public static void updateGlobal(){
+        globalTime += Core.graphics.getDeltaTime()*60f;
+    }
+
     /** Use normal delta time (e. g. gdx delta * 60) */
-    public static synchronized void update(){
+    public static void update(){
         float delta = delta();
 
         time += delta;
@@ -73,7 +83,7 @@ public class Time{
         return deltaimpl.get();
     }
 
-    public static void setDeltaProvider(DeltaProvider impl){
+    public static void setDeltaProvider(Floatp impl){
         deltaimpl = impl;
     }
 
@@ -125,10 +135,6 @@ public class Time{
      */
     public static long timeSinceMillis(long prevTime){
         return millis() - prevTime;
-    }
-
-    public interface DeltaProvider{
-        float get();
     }
 
     public static class DelayRun implements Poolable{

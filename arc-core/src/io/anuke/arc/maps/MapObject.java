@@ -8,5 +8,5 @@ public class MapObject{
     public float opacity = 1.0f;
     public boolean visible = true;
     public MapProperties properties = new MapProperties();
-    public Color color = Color.WHITE.cpy();
+    public Color color = Color.white.cpy();
 }

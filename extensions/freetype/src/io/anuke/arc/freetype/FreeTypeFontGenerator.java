@@ -3,7 +3,7 @@ package io.anuke.arc.freetype;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.*;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.graphics.Pixmap.Format;
@@ -65,24 +65,22 @@ public class FreeTypeFontGenerator implements Disposable{
     final Face face;
     final String name;
     boolean bitmapped = false;
-    private int pixelWidth, pixelHeight;
 
-    /** {@link #FreeTypeFontGenerator(FileHandle, int)} */
-    public FreeTypeFontGenerator(FileHandle fontFile){
+    /** {@link #FreeTypeFontGenerator(Fi, int)} */
+    public FreeTypeFontGenerator(Fi fontFile){
         this(fontFile, 0);
     }
 
     /**
-     * Creates a new generator from the given font file. Uses {@link FileHandle#length()} to determine the file size. If the file
+     * Creates a new generator from the given font file. Uses {@link Fi#length()} to determine the file size. If the file
      * length could not be determined (it was 0), an extra copy of the font bytes is performed. Throws a
      * {@link ArcRuntimeException} if loading did not succeed.
      */
-    public FreeTypeFontGenerator(FileHandle fontFile, int faceIndex){
+    public FreeTypeFontGenerator(Fi fontFile, int faceIndex){
         name = fontFile.pathWithoutExtension();
         int fileSize = (int)fontFile.length();
 
         library = FreeType.initFreeType();
-        if(library == null) throw new ArcRuntimeException("Couldn't initialize FreeType");
 
         ByteBuffer buffer = null;
 
@@ -326,8 +324,6 @@ public class FreeTypeFontGenerator implements Disposable{
     }
 
     void setPixelSizes(int pixelWidth, int pixelHeight){
-        this.pixelWidth = pixelWidth;
-        this.pixelHeight = pixelHeight;
         if(!bitmapped && !face.setPixelSizes(pixelWidth, pixelHeight))
             throw new ArcRuntimeException("Couldn't set size for font");
     }
@@ -421,7 +417,7 @@ public class FreeTypeFontGenerator implements Disposable{
             }
         }
 
-        if(incremental) data.glyphs = new Array(charactersLength + 32);
+        if(incremental) data.glyphs = new Array<>(charactersLength + 32);
 
         Stroker stroker = null;
         if(parameter.borderWidth > 0){
@@ -632,16 +628,16 @@ public class FreeTypeFontGenerator implements Disposable{
         glyph.xadvance = FreeType.toInt(metrics.getHoriAdvance()) + (int)parameter.borderWidth + parameter.spaceX;
 
         if(bitmapped){
-            mainPixmap.setColor(Color.CLEAR);
+            mainPixmap.setColor(Color.clear);
             mainPixmap.fill();
             ByteBuffer buf = mainBitmap.getBuffer();
-            int whiteIntBits = Color.WHITE.toIntBits();
-            int clearIntBits = Color.CLEAR.toIntBits();
+            int whiteIntBits = Color.white.toIntBits();
+            int clearIntBits = Color.clear.toIntBits();
             for(int h = 0; h < glyph.height; h++){
                 int idx = h * mainBitmap.getPitch();
                 for(int w = 0; w < (glyph.width + glyph.xoffset); w++){
                     int bit = (buf.get(idx + (w / 8)) >>> (7 - (w % 8))) & 1;
-                    mainPixmap.drawPixel(w, h, ((bit == 1) ? whiteIntBits : clearIntBits));
+                    mainPixmap.draw(w, h, ((bit == 1) ? whiteIntBits : clearIntBits));
                 }
             }
         }
@@ -771,7 +767,7 @@ public class FreeTypeFontGenerator implements Disposable{
         /** Strength of hinting */
         public Hinting hinting = Hinting.AutoMedium;
         /** Foreground color (required for non-black borders) */
-        public Color color = Color.WHITE;
+        public Color color = Color.white;
         /** Glyph gamma. Values > 1 reduce antialiasing. */
         public float gamma = 1.8f;
         /** Number of times to render the glyph. Useful with a shadow or border, so it doesn't show through the glyph. */
@@ -779,7 +775,7 @@ public class FreeTypeFontGenerator implements Disposable{
         /** Border width in pixels, 0 to disable */
         public float borderWidth = 0;
         /** Border color; only used if borderWidth > 0 */
-        public Color borderColor = Color.BLACK;
+        public Color borderColor = Color.black;
         /** true for straight (mitered), false for rounded borders */
         public boolean borderStraight = false;
         /** Values < 1 increase the border size. */

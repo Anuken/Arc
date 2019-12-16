@@ -1,14 +1,10 @@
 package io.anuke.arc.util;
 
-import io.anuke.arc.util.io.Streams;
+import io.anuke.arc.util.io.*;
 
 import java.io.*;
-import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.UUID;
-import java.util.zip.CRC32;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.*;
+import java.util.zip.*;
 
 import static io.anuke.arc.util.OS.*;
 
@@ -62,7 +58,7 @@ public class SharedLibraryLoader{
     /** Maps a platform independent library name to a platform dependent name. */
     public String mapLibraryName(String libraryName){
         if(isWindows) return libraryName + (is64Bit ? "64.dll" : ".dll");
-        if(isLinux) return "lib" + libraryName + (isARM ? "arm" + abi : "") + (is64Bit ? "64.so" : ".so");
+        if(isLinux) return "lib" + libraryName + (isARM ? "arm" : "") + (is64Bit ? "64.so" : ".so");
         if(isMac) return "lib" + libraryName + (is64Bit ? "64.dylib" : ".dylib");
         return libraryName;
     }
@@ -91,7 +87,7 @@ public class SharedLibraryLoader{
         }
     }
 
-    private InputStream readFile(String path){
+    protected InputStream readFile(String path){
         if(nativesJar == null){
             InputStream input = SharedLibraryLoader.class.getResourceAsStream("/" + path);
             if(input == null) throw new ArcRuntimeException("Unable to read file for extraction: " + path);
@@ -205,19 +201,15 @@ public class SharedLibraryLoader{
 
     private boolean canExecute(File file){
         try{
-            Method canExecute = File.class.getMethod("canExecute");
-            if((Boolean)canExecute.invoke(file)) return true;
-
-            Method setExecutable = File.class.getMethod("setExecutable", boolean.class, boolean.class);
-            setExecutable.invoke(file, true, false);
-
-            return (Boolean)canExecute.invoke(file);
-        }catch(Exception ignored){
+            if(file.canExecute()) return true;
+            file.setExecutable(true, false);
+            return file.canExecute();
+        }catch(Throwable ignored){
         }
         return false;
     }
 
-    private File extractFile(String sourcePath, String sourceCrc, File extractedFile) throws IOException{
+    protected File extractFile(String sourcePath, String sourceCrc, File extractedFile) throws IOException{
         String extractedCrc = null;
         if(extractedFile.exists()){
             try{
@@ -232,7 +224,9 @@ public class SharedLibraryLoader{
             FileOutputStream output = null;
             try{
                 input = readFile(sourcePath);
-                extractedFile.getParentFile().mkdirs();
+                if(extractedFile.getParentFile() != null){
+                    extractedFile.getParentFile().mkdirs();
+                }
                 output = new FileOutputStream(extractedFile);
                 byte[] buffer = new byte[4096];
                 while(true){
@@ -241,8 +235,7 @@ public class SharedLibraryLoader{
                     output.write(buffer, 0, length);
                 }
             }catch(IOException ex){
-                throw new ArcRuntimeException("Error extracting file: " + sourcePath + "\nTo: " + extractedFile.getAbsolutePath(),
-                ex);
+                throw new ArcRuntimeException("Error extracting file: " + sourcePath + "\nTo: " + extractedFile.getAbsolutePath(), ex);
             }finally{
                 Streams.closeQuietly(input);
                 Streams.closeQuietly(output);
@@ -261,11 +254,10 @@ public class SharedLibraryLoader{
 
         String fileName = new File(sourcePath).getName();
 
-        // Temp directory with username in path.
-        File file = new File(System.getProperty("java.io.tmpdir") + "/arc" + System.getProperty("user.name") + "/" + sourceCrc,
-        fileName);
-        Throwable ex = loadFile(sourcePath, sourceCrc, file);
-        if(ex == null) return;
+        // Temp directory with arc in path.
+        File file = new File(System.getProperty("java.io.tmpdir") + "/arc/" + sourceCrc, fileName);
+        Throwable result;
+        if((result = loadFile(sourcePath, sourceCrc, file)) == null) return;
 
         // System provided temp directory.
         try{
@@ -282,6 +274,10 @@ public class SharedLibraryLoader{
         file = new File(".temp/" + sourceCrc, fileName);
         if(loadFile(sourcePath, sourceCrc, file) == null) return;
 
+        // Right next to the directory.
+        file = new File(fileName);
+        if(loadFile(sourcePath, sourceCrc, file) == null) return;
+
         // Fallback to java.library.path location, eg for applets.
         file = new File(System.getProperty("java.library.path"), sourcePath);
         if(file.exists()){
@@ -289,11 +285,11 @@ public class SharedLibraryLoader{
             return;
         }
 
-        throw new ArcRuntimeException(ex);
+        throw new ArcRuntimeException(result);
     }
 
     /** @return null if the file was extracted and loaded. */
-    private Throwable loadFile(String sourcePath, String sourceCrc, File extractedFile){
+    protected Throwable loadFile(String sourcePath, String sourceCrc, File extractedFile){
         try{
             System.load(extractFile(sourcePath, sourceCrc, extractedFile).getAbsolutePath());
             return null;

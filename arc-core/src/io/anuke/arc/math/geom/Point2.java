@@ -161,6 +161,10 @@ public class Point2 implements Serializable{
         return this.x == x && this.y == y;
     }
 
+    public static boolean equals(int x, int y, int ox, int oy){
+        return x == ox && y  == oy;
+    }
+
     @Override
     public boolean equals(Object o){
         if(this == o) return true;

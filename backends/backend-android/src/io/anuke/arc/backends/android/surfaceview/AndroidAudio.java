@@ -1,36 +1,35 @@
 package io.anuke.arc.backends.android.surfaceview;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.SoundPool;
-import android.os.Build;
-import io.anuke.arc.Audio;
-import io.anuke.arc.Files.FileType;
-import io.anuke.arc.audio.AudioDevice;
-import io.anuke.arc.audio.AudioRecorder;
-import io.anuke.arc.audio.Music;
-import io.anuke.arc.audio.Sound;
-import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.util.ArcRuntimeException;
+import android.app.*;
+import android.content.*;
+import android.content.res.*;
+import android.media.*;
+import android.os.*;
+import io.anuke.arc.*;
+import io.anuke.arc.Files.*;
+import io.anuke.arc.audio.*;
+import io.anuke.arc.files.*;
+import io.anuke.arc.util.TaskQueue;
+import io.anuke.arc.util.*;
+import io.anuke.arc.util.async.*;
 
-import java.io.FileDescriptor;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * An implementation of the {@link Audio} interface for Android.
  * @author mzechner
  */
 @SuppressWarnings("deprecation")
-public final class AndroidAudio extends Audio{
+public final class AndroidAudio extends Audio implements Runnable{
+    private static final int updateInterval = 60;
     protected final List<AndroidMusic> musics = new ArrayList<>();
     private final SoundPool soundPool;
     private final AudioManager manager;
+    private final int maxSounds;
+
+    final Thread thread;
+    final TaskQueue queue = new TaskQueue();
 
     public AndroidAudio(Context context, AndroidApplicationConfiguration config){
         if(!config.disableAudio){
@@ -47,9 +46,32 @@ public final class AndroidAudio extends Audio{
             if(context instanceof Activity){
                 ((Activity)context).setVolumeControlStream(AudioManager.STREAM_MUSIC);
             }
+
+            maxSounds = config.maxSimultaneousSounds;
+            thread = Threads.daemon(this);
         }else{
+            maxSounds = 0;
+            thread = null;
             soundPool = null;
             manager = null;
+        }
+    }
+
+    @Override
+    public void run(){
+        while(true){
+            try{
+                synchronized(soundPool){
+                    queue.run();
+                }
+                Thread.sleep(1000 / updateInterval);
+            }catch(InterruptedException e){
+                return;
+            }catch(Exception e){
+                Core.app.post(() -> {
+                    throw new RuntimeException(e);
+                });
+            }
         }
     }
 
@@ -66,7 +88,9 @@ public final class AndroidAudio extends Audio{
                     music.wasPlaying = false;
             }
         }
-        this.soundPool.autoPause();
+        synchronized(soundPool){
+            this.soundPool.autoPause();
+        }
     }
 
     protected void resume(){
@@ -78,7 +102,9 @@ public final class AndroidAudio extends Audio{
                 if(musics.get(i).wasPlaying) musics.get(i).play();
             }
         }
-        this.soundPool.autoResume();
+        synchronized(soundPool){
+            this.soundPool.autoResume();
+        }
     }
 
     /** {@inheritDoc} */
@@ -92,11 +118,11 @@ public final class AndroidAudio extends Audio{
 
     /** {@inheritDoc} */
     @Override
-    public Music newMusic(FileHandle file){
+    public Music newMusic(Fi file){
         if(soundPool == null){
             throw new ArcRuntimeException("Android audio is not enabled by the application config.");
         }
-        AndroidFileHandle aHandle = (AndroidFileHandle)file;
+        AndroidFi aHandle = (AndroidFi)file;
 
         MediaPlayer mediaPlayer = new MediaPlayer();
 
@@ -135,7 +161,7 @@ public final class AndroidAudio extends Audio{
      * Creates a new Music instance from the provided FileDescriptor. It is the caller's responsibility to close the file
      * descriptor. It is safe to do so as soon as this call returns.
      * @param fd the FileDescriptor from which to create the Music
-     * @see Audio#newMusic(FileHandle)
+     * @see Audio#newMusic(Fi)
      */
     public Music newMusic(FileDescriptor fd){
         if(soundPool == null){
@@ -160,15 +186,24 @@ public final class AndroidAudio extends Audio{
 
     /** {@inheritDoc} */
     @Override
-    public Sound newSound(FileHandle file){
+    public Sound newSound(Fi file){
         if(soundPool == null){
             throw new ArcRuntimeException("Android audio is not enabled by the application config.");
         }
-        AndroidFileHandle aHandle = (AndroidFileHandle)file;
+        //make sure the file is of type AndroidFileHandle, and if not, make it so
+        if(!(file instanceof AndroidFi)){
+            Fi destination = Core.files.local("__android_audio__").child(file.name());
+            if(!destination.exists() || destination.length() != file.length()){
+                file.copyTo(destination);
+            }
+            file = destination;
+        }
+
+        AndroidFi aHandle = (AndroidFi)file;
         if(aHandle.type() == FileType.Internal){
             try{
                 AssetFileDescriptor descriptor = aHandle.getAssetFileDescriptor();
-                AndroidSound sound = new AndroidSound(soundPool, manager, soundPool.load(descriptor, 1));
+                AndroidSound sound = new AndroidSound(soundPool, manager, queue, maxSounds, soundPool.load(descriptor, 1));
                 descriptor.close();
                 return sound;
             }catch(IOException ex){
@@ -177,7 +212,7 @@ public final class AndroidAudio extends Audio{
             }
         }else{
             try{
-                return new AndroidSound(soundPool, manager, soundPool.load(aHandle.file().getPath(), 1));
+                return new AndroidSound(soundPool, manager, queue, maxSounds, soundPool.load(aHandle.file().getPath(), 1));
             }catch(Exception ex){
                 throw new ArcRuntimeException("Error loading audio file: " + file, ex);
             }
@@ -204,6 +239,9 @@ public final class AndroidAudio extends Audio{
             for(AndroidMusic music : musicsCopy){
                 music.dispose();
             }
+        }
+        if(thread != null){
+            thread.interrupt();
         }
         soundPool.release();
     }

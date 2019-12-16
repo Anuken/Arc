@@ -19,14 +19,14 @@
 
 package io.anuke.arc.net;
 
-import io.anuke.arc.collection.IntMap;
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.net.FrameworkMessage.*;
-import io.anuke.arc.util.Log;
+import io.anuke.arc.util.async.*;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.*;
-import java.nio.ByteBuffer;
+import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
 
@@ -51,9 +51,9 @@ public class Server implements EndPoint{
     private final Object updateLock = new Object();
     private Thread updateThread;
     private int multicastPort = 21010;
-    private Consumer<Exception> errorHandler = e -> {};
+    private Cons<Exception> errorHandler = e -> {};
     private InetAddress multicastGroup;
-    private MulticastReceiver multicast;
+    private DiscoveryReceiver discoveryReceiver;
     private ServerDiscoveryHandler discoveryHandler;
 
     private NetListener dispatchListener = new NetListener(){
@@ -63,11 +63,11 @@ public class Server implements EndPoint{
                 listeners[i].connected(connection);
         }
 
-        public void disconnected(Connection connection){
+        public void disconnected(Connection connection, DcReason reason){
             removeConnection(connection);
             NetListener[] listeners = Server.this.listeners;
             for(int i = 0, n = listeners.length; i < n; i++)
-                listeners[i].disconnected(connection);
+                listeners[i].disconnected(connection, reason);
         }
 
         public void received(Connection connection, Object object){
@@ -130,7 +130,7 @@ public class Server implements EndPoint{
         }
     }
 
-    public void setErrorHandler(Consumer<Exception> handler){
+    public void setErrorHandler(Cons<Exception> handler){
         this.errorHandler = handler;
     }
 
@@ -176,8 +176,8 @@ public class Server implements EndPoint{
                 }
 
                 if(multicastGroup != null && (udpPort == null || multicastPort != udpPort.getPort())){
-                    multicast = new MulticastReceiver(multicastPort);
-                    multicast.start();
+                    discoveryReceiver = new DiscoveryReceiver(multicastPort);
+                    discoveryReceiver.start();
                 }
             }catch(IOException ex){
                 close();
@@ -234,7 +234,7 @@ public class Server implements EndPoint{
                         if(fromConnection != null){ // Must be a TCP read or
                             // write operation.
                             if(udp != null && fromConnection.udpRemoteAddress == null){
-                                fromConnection.close();
+                                fromConnection.close(DcReason.error);
                                 continue;
                             }
                             if((ops & SelectionKey.OP_READ) == SelectionKey.OP_READ){
@@ -246,15 +246,15 @@ public class Server implements EndPoint{
                                         fromConnection.notifyReceived(object);
                                     }
                                 }catch(IOException | ArcNetException ex){
-                                    errorHandler.accept(new ArcNetException("Error reading TCP from connection: " + fromConnection, ex));
-                                    fromConnection.close();
+                                    errorHandler.get(new ArcNetException("Error reading TCP from connection: " + fromConnection, ex));
+                                    fromConnection.close(ex.getMessage() != null && ex.getMessage().contains("closed") ? DcReason.closed : DcReason.error);
                                 }
                             }
                             if((ops & SelectionKey.OP_WRITE) == SelectionKey.OP_WRITE){
                                 try{
                                     fromConnection.tcp.writeOperation();
                                 }catch(IOException ex){
-                                    fromConnection.close();
+                                    fromConnection.close(ex.getMessage() != null && ex.getMessage().contains("closed") ? DcReason.closed : DcReason.error);
                                 }
                             }
                             continue;
@@ -269,7 +269,7 @@ public class Server implements EndPoint{
                                 if(socketChannel != null)
                                     acceptOperation(socketChannel);
                             }catch(IOException ex){
-                                errorHandler.accept(ex);
+                                errorHandler.get(ex);
                             }
                             continue;
                         }
@@ -283,7 +283,7 @@ public class Server implements EndPoint{
                         try{
                             fromAddress = udp.readFromAddress();
                         }catch(IOException ex){
-                            errorHandler.accept(ex);
+                            errorHandler.get(ex);
                             continue;
                         }
                         if(fromAddress == null)
@@ -301,7 +301,7 @@ public class Server implements EndPoint{
                         try{
                             object = udp.readObject();
                         }catch(ArcNetException ex){
-                            errorHandler.accept(new ArcNetException("Error reading UDP from connection: " + (fromConnection == null ? fromAddress : fromAddress), ex));
+                            errorHandler.get(new ArcNetException("Error reading UDP from connection: " + (fromConnection == null ? fromAddress : fromAddress), ex));
                             continue;
                         }
 
@@ -338,7 +338,7 @@ public class Server implements EndPoint{
                         }
                     }catch(CancelledKeyException ex){
                         if(fromConnection != null)
-                            fromConnection.close();
+                            fromConnection.close(DcReason.error);
                         else
                             selectionKey.channel().close();
                     }
@@ -350,7 +350,7 @@ public class Server implements EndPoint{
         for(int i = 0, n = connections.length; i < n; i++){
             Connection connection = connections[i];
             if(connection.tcp.isTimedOut(time)){
-                connection.close();
+                connection.close(DcReason.timeout);
             }else{
                 if(connection.tcp.needsKeepAlive(time))
                     connection.sendTCP(FrameworkMessage.keepAlive);
@@ -424,7 +424,7 @@ public class Server implements EndPoint{
             if(udp == null)
                 connection.notifyConnected();
         }catch(IOException ex){
-            connection.close();
+            connection.close(DcReason.error);
         }
     }
 
@@ -556,7 +556,7 @@ public class Server implements EndPoint{
     public void close(){
         Connection[] connections = this.connections;
         for(int i = 0, n = connections.length; i < n; i++)
-            connections[i].close();
+            connections[i].close(DcReason.closed);
         this.connections = new Connection[0];
 
         ServerSocketChannel serverChannel = this.serverChannel;
@@ -568,9 +568,9 @@ public class Server implements EndPoint{
             this.serverChannel = null;
         }
 
-        if(multicast != null){
-            multicast.close();
-            multicast = null;
+        if(discoveryReceiver != null){
+            discoveryReceiver.close();
+            discoveryReceiver = null;
         }
 
         UdpConnection udp = this.udp;
@@ -611,44 +611,46 @@ public class Server implements EndPoint{
         return connections;
     }
 
-    class MulticastReceiver extends Thread {
+    class DiscoveryReceiver{
         MulticastSocket socket = null;
-        int port;
+        Thread multicastThread;
+        int multicastPort;
 
-        MulticastReceiver(int port){
-            this.port = port;
+        DiscoveryReceiver(int multicastPort){
+            this.multicastPort = multicastPort;
         }
 
         void close(){
             try{
-                interrupt();
+                if(multicastThread != null) multicastThread.interrupt();
                 if(socket != null){
                     socket.leaveGroup(multicastGroup);
                     socket.close();
                 }
             }catch(IOException e){
-                errorHandler.accept(e);
+                errorHandler.get(e);
             }
         }
 
-        @Override
-        public void run(){
-            try{
-                socket = new MulticastSocket(port);
-                socket.joinGroup(multicastGroup);
-                DatagramPacket packet = new DatagramPacket(new byte[256], 256);
-                while(true){
-                    socket.receive(packet);
-                    discoveryHandler.onDiscoverRecieved(packet.getAddress(), buffer -> {
-                        byte[] data = buffer.array();
-                        DatagramPacket out = new DatagramPacket(data, data.length);
-                        out.setSocketAddress(packet.getSocketAddress());
-                        socket.send(out);
-                    });
+        void start(){
+            multicastThread = Threads.daemon("Server Multicast Discovery", () -> {
+                try{
+                    socket = new MulticastSocket(multicastPort);
+                    socket.joinGroup(multicastGroup);
+                    DatagramPacket packet = new DatagramPacket(new byte[256], 256);
+                    while(true){
+                        socket.receive(packet);
+                        discoveryHandler.onDiscoverRecieved(packet.getAddress(), buffer -> {
+                            byte[] data = buffer.array();
+                            DatagramPacket out = new DatagramPacket(data, data.length);
+                            out.setSocketAddress(packet.getSocketAddress());
+                            socket.send(out);
+                        });
+                    }
+                }catch(IOException e){
+                    errorHandler.get(e);
                 }
-            }catch(IOException e){
-                errorHandler.accept(e);
-            }
+            });
         }
     }
 

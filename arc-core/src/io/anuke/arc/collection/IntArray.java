@@ -71,6 +71,14 @@ public class IntArray{
         return new IntArray(array);
     }
 
+    public int sum(){
+        int sum = 0;
+        for(int i = 0; i < size; i++){
+            sum += items[i];
+        }
+        return sum;
+    }
+
     public void add(int value){
         int[] items = this.items;
         if(size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));

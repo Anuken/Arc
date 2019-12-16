@@ -4,8 +4,6 @@ ext{
 }
 
 versions.robovm = "2.3.7"
-versions.gwt = "2.8.1"
-versions.gwtPlugin = "1.0.6"
 versions.lwjgl3 = "3.2.2"
 versions.jlayer = "1.0.1-gdx"
 versions.jorbis = "0.0.17"
@@ -53,9 +51,9 @@ libraries.robovm = [
         "com.mobidevelop.robovm:robovm-cocoatouch:${versions.robovm}"
 ]
 
-libraries.gwt = [
-        "com.google.gwt:gwt-user:${versions.gwt}",
-        "com.google.gwt:gwt-dev:${versions.gwt}"
+libraries.sdl = [
+        "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
+        "org.jcraft:jorbis:${versions.jorbis}"
 ]
 
 libraries.junit = [

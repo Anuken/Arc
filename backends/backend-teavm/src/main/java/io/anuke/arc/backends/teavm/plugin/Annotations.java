@@ -1,7 +1,6 @@
 package io.anuke.arc.backends.teavm.plugin;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.*;
 
 public class Annotations{
 

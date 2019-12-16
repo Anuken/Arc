@@ -1,11 +1,10 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
-import io.anuke.arc.Core;
-import org.robovm.apple.glkit.GLKViewDrawableColorFormat;
-import org.robovm.apple.glkit.GLKViewDrawableDepthFormat;
-import org.robovm.apple.glkit.GLKViewDrawableMultisample;
-import org.robovm.apple.glkit.GLKViewDrawableStencilFormat;
-import org.robovm.apple.uikit.UIRectEdge;
+import io.anuke.arc.*;
+import io.anuke.arc.func.*;
+import io.anuke.arc.util.ArcAnnotate.*;
+import org.robovm.apple.glkit.*;
+import org.robovm.apple.uikit.*;
 
 public class IOSApplicationConfiguration{
     /** whether to enable screen dimming. */
@@ -52,6 +51,11 @@ public class IOSApplicationConfiguration{
      * </ul>
      */
     public float displayScaleSmallScreenIfRetina = 1.0f;
+
+    /** handles any errors in the main loop.*/
+    public @Nullable
+    Cons<Throwable> errorHandler;
+
     /**
      * Scale factor to use on large screens without retina display, i.e. iPad 1+2 (has no effect on retina screens).
      * <ul>

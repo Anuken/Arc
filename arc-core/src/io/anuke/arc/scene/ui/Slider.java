@@ -1,7 +1,7 @@
 package io.anuke.arc.scene.ui;
 
 import io.anuke.arc.Core;
-import io.anuke.arc.function.FloatConsumer;
+import io.anuke.arc.func.Floatc;
 import io.anuke.arc.graphics.g2d.NinePatch;
 import io.anuke.arc.graphics.g2d.TextureRegion;
 import io.anuke.arc.input.KeyCode;
@@ -12,7 +12,6 @@ import io.anuke.arc.scene.event.HandCursorListener;
 import io.anuke.arc.scene.event.InputEvent;
 import io.anuke.arc.scene.event.InputListener;
 import io.anuke.arc.scene.style.Drawable;
-import io.anuke.arc.scene.style.SkinReader.ReadContext;
 import io.anuke.arc.util.pooling.Pools;
 
 import static io.anuke.arc.Core.scene;
@@ -36,11 +35,7 @@ public class Slider extends ProgressBar{
     private float threshold;
 
     public Slider(float min, float max, float stepSize, boolean vertical){
-        this(min, max, stepSize, vertical, scene.skin.get("default-" + (vertical ? "vertical" : "horizontal"), SliderStyle.class));
-    }
-
-    public Slider(float min, float max, float stepSize, boolean vertical, String styleName){
-        this(min, max, stepSize, vertical, scene.skin.get(styleName, SliderStyle.class));
+        this(min, max, stepSize, vertical, scene.getStyle(SliderStyle.class));
     }
 
     /**
@@ -152,8 +147,8 @@ public class Slider extends ProgressBar{
         return valueSet;
     }
 
-    public void moved(FloatConsumer listener){
-        changed(() -> listener.accept(getValue()));
+    public void moved(Floatc listener){
+        changed(() -> listener.get(getValue()));
     }
 
     /** Returns a snapped value. */
@@ -195,12 +190,5 @@ public class Slider extends ProgressBar{
     public static class SliderStyle extends ProgressBarStyle{
         /** Optional. */
         public Drawable knobOver, knobDown;
-
-        @Override
-        public void read(ReadContext read){
-            super.read(read);
-            knobOver = read.draw("knobOver");
-            knobDown = read.draw("knobDown");
-        }
     }
 }

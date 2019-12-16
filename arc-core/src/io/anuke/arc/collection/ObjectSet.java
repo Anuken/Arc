@@ -1,11 +1,10 @@
 package io.anuke.arc.collection;
 
-import io.anuke.arc.function.Predicate;
-import io.anuke.arc.math.Mathf;
-import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.func.*;
+import io.anuke.arc.math.*;
+import io.anuke.arc.util.*;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * An unordered set where the keys are objects. This implementation uses cuckoo hashing using 3 hashes, random walking, and a
@@ -20,7 +19,7 @@ import java.util.NoSuchElementException;
  * @author Nathan Sweet
  */
 @SuppressWarnings("unchecked")
-public class ObjectSet<T> implements Iterable<T>{
+public class ObjectSet<T> implements Iterable<T>, Eachable<T>{
     private static final int PRIME1 = 0xbe1f14b1;
     private static final int PRIME2 = 0xb4b82e39;
     private static final int PRIME3 = 0xced1c241;
@@ -88,13 +87,26 @@ public class ObjectSet<T> implements Iterable<T>{
         return set;
     }
 
+    public static <T> ObjectSet<T> with(Array<T> array){
+        ObjectSet<T> set = new ObjectSet<>();
+        set.addAll(array);
+        return set;
+    }
+
     /** Allocates a new set with all elements that match the predicate.*/
-    public ObjectSet<T> select(Predicate<T> predicate){
+    public ObjectSet<T> select(Boolf<T> predicate){
         ObjectSet<T> arr = new ObjectSet<>();
         for(T t : this){
-            if(predicate.test(t)) arr.add(t);
+            if(predicate.get(t)) arr.add(t);
         }
         return arr;
+    }
+
+    @Override
+    public void each(Cons<T> cons){
+        for(T t : this){
+            cons.get(t);
+        }
     }
 
     /**
@@ -502,44 +514,45 @@ public class ObjectSet<T> implements Iterable<T>{
      * Returns an iterator for the keys in the set. Remove is supported. Note that the same iterator instance is returned each
      * time this method is called. Use the {@link ObjectSetIterator} constructor for nested or multithreaded iteration.
      */
-    public ObjectSetIterator<T> iterator(){
+    public ObjectSetIterator iterator(){
         if(iterator1 == null){
-            iterator1 = new ObjectSetIterator(this);
-            iterator2 = new ObjectSetIterator(this);
+            iterator1 = new ObjectSetIterator();
+            iterator2 = new ObjectSetIterator();
         }
-        if(!iterator1.valid){
+
+        if(iterator1.done){
             iterator1.reset();
-            iterator1.valid = true;
-            iterator2.valid = false;
             return iterator1;
         }
-        iterator2.reset();
-        iterator2.valid = true;
-        iterator1.valid = false;
-        return iterator2;
+
+        if(iterator2.done){
+            iterator2.reset();
+            return iterator2;
+        }
+        //no finished iterators
+        return new ObjectSetIterator();
     }
 
-    public static class ObjectSetIterator<K> implements Iterable<K>, Iterator<K>{
-        final ObjectSet<K> set;
+    public class ObjectSetIterator implements Iterable<T>, Iterator<T>{
         public boolean hasNext;
         int nextIndex, currentIndex;
-        boolean valid = true;
+        boolean done;
 
-        public ObjectSetIterator(ObjectSet<K> set){
-            this.set = set;
+        public ObjectSetIterator(){
             reset();
+            done = true;
         }
 
         public void reset(){
             currentIndex = -1;
             nextIndex = -1;
             findNextIndex();
+            done = false;
         }
 
         private void findNextIndex(){
             hasNext = false;
-            K[] keyTable = set.keyTable;
-            for(int n = set.capacity + set.stashSize; ++nextIndex < n; ){
+            for(int n = capacity + stashSize; ++nextIndex < n; ){
                 if(keyTable[nextIndex] != null){
                     hasNext = true;
                     break;
@@ -547,47 +560,52 @@ public class ObjectSet<T> implements Iterable<T>{
             }
         }
 
+        @Override
         public void remove(){
             if(currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
-            if(currentIndex >= set.capacity){
-                set.removeStashIndex(currentIndex);
+            if(currentIndex >= capacity){
+                removeStashIndex(currentIndex);
                 nextIndex = currentIndex - 1;
                 findNextIndex();
             }else{
-                set.keyTable[currentIndex] = null;
+                keyTable[currentIndex] = null;
             }
             currentIndex = -1;
-            set.size--;
+            size--;
         }
 
+        @Override
         public boolean hasNext(){
-            if(!valid) throw new ArcRuntimeException("#iterator() cannot be used nested.");
+            if(!hasNext){
+                done = true;
+            }
             return hasNext;
         }
 
-        public K next(){
+        @Override
+        public T next(){
             if(!hasNext) throw new NoSuchElementException();
-            if(!valid) throw new ArcRuntimeException("#iterator() cannot be used nested.");
-            K key = set.keyTable[nextIndex];
+            T key = keyTable[nextIndex];
             currentIndex = nextIndex;
             findNextIndex();
             return key;
         }
 
-        public ObjectSetIterator<K> iterator(){
+        @Override
+        public ObjectSetIterator iterator(){
             return this;
         }
 
         /** Adds the remaining values to the array. */
-        public Array<K> toArray(Array<K> array){
+        public Array<T> toArray(Array<T> array){
             while(hasNext)
                 array.add(next());
             return array;
         }
 
         /** Returns a new array containing the remaining values. */
-        public Array<K> toArray(){
-            return toArray(new Array(true, set.size));
+        public Array<T> toArray(){
+            return toArray(new Array(true, size));
         }
     }
 }

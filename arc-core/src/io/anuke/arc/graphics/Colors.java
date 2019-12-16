@@ -50,93 +50,93 @@ public final class Colors{
     /** Resets the color map to the predefined colors. */
     public static void reset(){
         map.clear();
-        map.put("CLEAR", Color.CLEAR);
-        map.put("BLACK", Color.BLACK);
+        map.put("CLEAR", Color.clear);
+        map.put("BLACK", Color.black);
 
-        map.put("WHITE", Color.WHITE);
-        map.put("LIGHT_GRAY", Color.LIGHT_GRAY);
-        map.put("GRAY", Color.GRAY);
-        map.put("DARK_GRAY", Color.DARK_GRAY);
+        map.put("WHITE", Color.white);
+        map.put("LIGHT_GRAY", Color.lightGray);
+        map.put("GRAY", Color.gray);
+        map.put("DARK_GRAY", Color.darkGray);
 
-        map.put("BLUE", Color.BLUE);
-        map.put("NAVY", Color.NAVY);
-        map.put("ROYAL", Color.ROYAL);
-        map.put("SLATE", Color.SLATE);
-        map.put("SKY", Color.SKY);
-        map.put("CYAN", Color.CYAN);
-        map.put("TEAL", Color.TEAL);
+        map.put("BLUE", Color.blue);
+        map.put("NAVY", Color.navy);
+        map.put("ROYAL", Color.royal);
+        map.put("SLATE", Color.slate);
+        map.put("SKY", Color.sky);
+        map.put("CYAN", Color.cyan);
+        map.put("TEAL", Color.teal);
 
-        map.put("GREEN", Color.GREEN);
-        map.put("CHARTREUSE", Color.CHARTREUSE);
-        map.put("LIME", Color.LIME);
-        map.put("FOREST", Color.FOREST);
-        map.put("OLIVE", Color.OLIVE);
+        map.put("GREEN", Color.green);
+        map.put("ACID", Color.acid);
+        map.put("LIME", Color.lime);
+        map.put("FOREST", Color.forest);
+        map.put("OLIVE", Color.olive);
 
-        map.put("YELLOW", Color.YELLOW);
-        map.put("GOLD", Color.GOLD);
-        map.put("GOLDENROD", Color.GOLDENROD);
-        map.put("ORANGE", Color.ORANGE);
+        map.put("YELLOW", Color.yellow);
+        map.put("GOLD", Color.gold);
+        map.put("GOLDENROD", Color.goldenrod);
+        map.put("ORANGE", Color.orange);
 
-        map.put("BROWN", Color.BROWN);
-        map.put("TAN", Color.TAN);
-        map.put("FIREBRICK", Color.FIREBRICK);
+        map.put("BROWN", Color.brown);
+        map.put("TAN", Color.tan);
+        map.put("BRICK", Color.brick);
 
-        map.put("RED", Color.RED);
-        map.put("SCARLET", Color.SCARLET);
-        map.put("CORAL", Color.CORAL);
-        map.put("SALMON", Color.SALMON);
-        map.put("PINK", Color.PINK);
-        map.put("MAGENTA", Color.MAGENTA);
+        map.put("RED", Color.red);
+        map.put("SCARLET", Color.scarlet);
+        map.put("CORAL", Color.coral);
+        map.put("SALMON", Color.salmon);
+        map.put("PINK", Color.pink);
+        map.put("MAGENTA", Color.magenta);
 
-        map.put("PURPLE", Color.PURPLE);
-        map.put("VIOLET", Color.VIOLET);
-        map.put("MAROON", Color.MAROON);
+        map.put("PURPLE", Color.purple);
+        map.put("VIOLET", Color.violet);
+        map.put("MAROON", Color.maroon);
 
         //lowercase versions too!
 
-        map.put("clear", Color.CLEAR);
-        map.put("black", Color.BLACK);
+        map.put("clear", Color.clear);
+        map.put("black", Color.black);
 
-        map.put("white", Color.WHITE);
-        map.put("lightgray", Color.LIGHT_GRAY);
-        map.put("gray", Color.GRAY);
-        map.put("darkgray", Color.DARK_GRAY);
+        map.put("white", Color.white);
+        map.put("lightgray", Color.lightGray);
+        map.put("gray", Color.gray);
+        map.put("darkgray", Color.darkGray);
 
-        map.put("blue", Color.BLUE);
-        map.put("navy", Color.NAVY);
-        map.put("royal", Color.ROYAL);
-        map.put("slate", Color.SLATE);
-        map.put("sky", Color.SKY);
-        map.put("cyan", Color.CYAN);
-        map.put("teal", Color.TEAL);
+        map.put("blue", Color.blue);
+        map.put("navy", Color.navy);
+        map.put("royal", Color.royal);
+        map.put("slate", Color.slate);
+        map.put("sky", Color.sky);
+        map.put("cyan", Color.cyan);
+        map.put("teal", Color.teal);
 
-        map.put("green", Color.GREEN);
-        map.put("charteuse", Color.CHARTREUSE);
-        map.put("lime", Color.LIME);
-        map.put("forest", Color.FOREST);
-        map.put("olive", Color.OLIVE);
+        map.put("green", Color.green);
+        map.put("acid", Color.acid);
+        map.put("lime", Color.lime);
+        map.put("forest", Color.forest);
+        map.put("olive", Color.olive);
 
-        map.put("yellow", Color.YELLOW);
-        map.put("gold", Color.GOLD);
-        map.put("goldenrod", Color.GOLDENROD);
-        map.put("orange", Color.ORANGE);
+        map.put("yellow", Color.yellow);
+        map.put("gold", Color.gold);
+        map.put("goldenrod", Color.goldenrod);
+        map.put("orange", Color.orange);
 
-        map.put("brown", Color.BROWN);
-        map.put("tan", Color.TAN);
-        map.put("firebrick", Color.FIREBRICK);
+        map.put("brown", Color.brown);
+        map.put("tan", Color.tan);
+        map.put("brick", Color.brick);
 
-        map.put("red", Color.RED);
-        map.put("scarlet", Color.SCARLET);
-        map.put("coral", Color.CORAL);
-        map.put("salmon", Color.SALMON);
-        map.put("pink", Color.PINK);
-        map.put("magneta", Color.MAGENTA);
+        map.put("red", Color.red);
+        map.put("scarlet", Color.scarlet);
+        map.put("coral", Color.coral);
+        map.put("salmon", Color.salmon);
+        map.put("pink", Color.pink);
+        map.put("magenta", Color.magenta);
 
-        map.put("purple", Color.PURPLE);
-        map.put("violet", Color.VIOLET);
-        map.put("maroon", Color.MAROON);
-        map.put("crimson", Color.SCARLET);
-        map.put("scarlet", Color.SCARLET);
+        map.put("purple", Color.purple);
+        map.put("violet", Color.violet);
+        map.put("maroon", Color.maroon);
+        map.put("crimson", Color.scarlet);
+        map.put("scarlet", Color.scarlet);
     }
 
 }

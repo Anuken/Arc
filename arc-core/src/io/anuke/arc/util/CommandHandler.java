@@ -3,21 +3,33 @@ package io.anuke.arc.util;
 
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.ObjectMap;
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.func.Cons;
 
 /** Parses command syntax. */
 public class CommandHandler{
     private final ObjectMap<String, Command> commands = new ObjectMap<>();
     private final Array<Command> orderedCommands = new Array<>();
-    private final String prefix;
+    private String prefix;
 
+    /** Creates a command handler with a specific command prefix.*/
     public CommandHandler(String prefix){
         this.prefix = prefix;
     }
 
-    public Response handleMessage(String message){
+    public void setPrefix(String prefix){
+        this.prefix = prefix;
+    }
+
+    /** Handles a message with no additional parameters.*/
+    public CommandResponse handleMessage(String message){
+        return handleMessage(message, null);
+    }
+
+    /** Handles a message with optional extra parameters. Runs the command if successful.
+     * @return a response detailing whether or not the command was handled, and what went wrong, if applicable. */
+    public CommandResponse handleMessage(String message, Object params){
         if(message == null || (!message.startsWith(prefix)))
-            return new Response(ResponseType.noCommand, null, null);
+            return new CommandResponse(ResponseType.noCommand, null, null);
 
         message = message.substring(prefix.length());
 
@@ -34,7 +46,7 @@ public class CommandHandler{
 
             while(true){
                 if(index >= command.params.length && !argstr.isEmpty()){
-                    return new Response(ResponseType.manyArguments, command, commandstr);
+                    return new CommandResponse(ResponseType.manyArguments, command, commandstr);
                 }else if(argstr.isEmpty()) break;
 
                 if(command.params[index].optional || index >= command.params.length - 1 || command.params[index + 1].optional){
@@ -49,7 +61,7 @@ public class CommandHandler{
                 int next = argstr.indexOf(" ");
                 if(next == -1){
                     if(!satisfied){
-                        return new Response(ResponseType.fewArguments, command, commandstr);
+                        return new CommandResponse(ResponseType.fewArguments, command, commandstr);
                     }
                     result.add(argstr);
                     break;
@@ -63,32 +75,56 @@ public class CommandHandler{
             }
 
             if(!satisfied && command.params.length > 0 && !command.params[0].optional){
-                return new Response(ResponseType.fewArguments, command, commandstr);
+                return new CommandResponse(ResponseType.fewArguments, command, commandstr);
             }
 
-            command.runner.accept(result.toArray(String.class));
+            command.runner.accept(result.toArray(String.class), params);
 
-            return new Response(ResponseType.valid, command, commandstr);
+            return new CommandResponse(ResponseType.valid, command, commandstr);
         }else{
-            return new Response(ResponseType.unknownCommand, null, commandstr);
+            return new CommandResponse(ResponseType.unknownCommand, null, commandstr);
         }
     }
 
-    public Command register(String text, String description, Consumer<String[]> runner){
+    public void removeCommand(String text){
+        Command c = commands.get(text);
+        if(c == null) return;
+        commands.remove(text);
+        orderedCommands.remove(c);
+    }
+
+    /** Register a command which handles a zero-sized list of arguments and one parameter.*/
+    public <T> Command register(String text, String description, CommandRunner<T> runner){
         Command cmd = new Command(text, "", description, runner);
         commands.put(text.toLowerCase(), cmd);
         orderedCommands.add(cmd);
         return cmd;
     }
 
-    public Command register(String text, String params, String description, Consumer<String[]> runner){
+    /** Register a command which handles a list of arguments and one handler-specific parameter. <br>
+     * argeter syntax is as follows: <br>
+     * &lt;mandatory-arg-1&gt; &lt;mandatory-arg-2&gt; ... &lt;mandatory-arg-n&gt; [optional-arg-1] [optional-arg-2] <br>
+     * Angle brackets indicate mandatory arguments. Square brackets to indicate optional arguments. <br>
+     * All mandatory arguments must come before optional arguments. Arg names must not have spaces in them. <br>
+     * You may also use the ... syntax after the arg name to designate that everything after it will not be split into extra arguments. 
+     * There may only be one such argument, and it must be at the end. For example, the syntax
+     * &lt;arg1&gt [arg2...] will require a first argument, and then take any text after that and put it in the second argument, optionally.*/
+    public <T> Command register(String text, String params, String description, CommandRunner<T> runner){
         Command cmd = new Command(text, params, description, runner);
         commands.put(text.toLowerCase(), cmd);
         orderedCommands.add(cmd);
         return cmd;
     }
 
-    public Iterable<Command> getCommandList(){
+    public Command register(String text, String description, Cons<String[]> runner){
+        return register(text, description, (args, p) -> runner.get(args));
+    }
+
+    public Command register(String text, String params, String description, Cons<String[]> runner){
+        return register(text, params, description, (args, p) -> runner.get(args));
+    }
+
+    public Array<Command> getCommandList(){
         return orderedCommands;
     }
 
@@ -101,9 +137,9 @@ public class CommandHandler{
         public final String paramText;
         public final String description;
         public final CommandParam[] params;
-        public final Consumer<String[]> runner;
+        private final CommandRunner runner;
 
-        public Command(String text, String paramText, String description, Consumer<String[]> runner){
+        public Command(String text, String paramText, String description, CommandRunner runner){
             this.text = text;
             this.paramText = paramText;
             this.runner = runner;
@@ -153,6 +189,10 @@ public class CommandHandler{
         }
     }
 
+    public interface CommandRunner<T>{
+        void accept(String[] args, T parameter);
+    }
+
     public static class CommandParam{
         public final String name;
         public final boolean optional;
@@ -165,12 +205,12 @@ public class CommandHandler{
         }
     }
 
-    public static class Response{
+    public class CommandResponse{
         public final ResponseType type;
         public final Command command;
         public final String runCommand;
 
-        public Response(ResponseType type, Command command, String runCommand){
+        public CommandResponse(ResponseType type, Command command, String runCommand){
             this.type = type;
             this.command = command;
             this.runCommand = runCommand;

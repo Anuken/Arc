@@ -6,7 +6,7 @@ import io.anuke.arc.assets.AssetLoaderParameters;
 import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.audio.Sound;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 
 /**
  * {@link AssetLoader} to load {@link Sound} instances.
@@ -31,23 +31,29 @@ public class SoundLoader extends AsynchronousAssetLoader<Sound, SoundLoader.Soun
     }
 
     @Override
-    public void loadAsync(AssetManager manager, String fileName, FileHandle file, SoundParameter parameter){
+    public void loadAsync(AssetManager manager, String fileName, Fi file, SoundParameter parameter){
         sound = Core.audio.newSound(file);
     }
 
     @Override
-    public Sound loadSync(AssetManager manager, String fileName, FileHandle file, SoundParameter parameter){
+    public Sound loadSync(AssetManager manager, String fileName, Fi file, SoundParameter parameter){
         Sound sound = this.sound;
         this.sound = null;
         return sound;
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, SoundParameter parameter){
+    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, SoundParameter parameter){
         return null;
     }
 
     public static class SoundParameter extends AssetLoaderParameters<Sound>{
+        public SoundParameter(){
+        }
+
+        public SoundParameter(LoadedCallback loadedCallback){
+            super(loadedCallback);
+        }
     }
 
 }

@@ -6,7 +6,7 @@ import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.assets.loaders.FileHandleResolver;
 import io.anuke.arc.assets.loaders.SynchronousAssetLoader;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 
 /**
  * Makes {@link FreeTypeFontGenerator} managable via {@link AssetManager}.
@@ -17,15 +17,14 @@ import io.anuke.arc.files.FileHandle;
  * </p>
  * @author Daniel Holderbaum
  */
-public class FreeTypeFontGeneratorLoader extends
-SynchronousAssetLoader<FreeTypeFontGenerator, FreeTypeFontGeneratorLoader.FreeTypeFontGeneratorParameters>{
+public class FreeTypeFontGeneratorLoader extends SynchronousAssetLoader<FreeTypeFontGenerator, FreeTypeFontGeneratorLoader.FreeTypeFontGeneratorParameters>{
 
     public FreeTypeFontGeneratorLoader(FileHandleResolver resolver){
         super(resolver);
     }
 
     @Override
-    public FreeTypeFontGenerator load(AssetManager assetManager, String fileName, FileHandle file,
+    public FreeTypeFontGenerator load(AssetManager assetManager, String fileName, Fi file,
                                       FreeTypeFontGeneratorParameters parameter){
         FreeTypeFontGenerator generator = null;
         if(file.extension().equals("gen")){
@@ -37,7 +36,7 @@ SynchronousAssetLoader<FreeTypeFontGenerator, FreeTypeFontGeneratorLoader.FreeTy
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, FreeTypeFontGeneratorParameters parameter){
+    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, FreeTypeFontGeneratorParameters parameter){
         return null;
     }
 

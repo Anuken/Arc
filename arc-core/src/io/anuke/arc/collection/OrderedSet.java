@@ -1,8 +1,6 @@
 package io.anuke.arc.collection;
 
-import io.anuke.arc.util.ArcRuntimeException;
-
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * An {@link ObjectSet} that also stores keys in an {@link Array} using the insertion order. {@link #iterator() Iteration} is
@@ -15,7 +13,7 @@ import java.util.NoSuchElementException;
 
 public class OrderedSet<T> extends ObjectSet<T>{
     final Array<T> items;
-    OrderedSetIterator<T> iterator1, iterator2;
+    OrderedSetIterator iterator1, iterator2;
 
     public OrderedSet(){
         items = new Array<>();
@@ -85,23 +83,27 @@ public class OrderedSet<T> extends ObjectSet<T>{
         return items;
     }
 
-    public OrderedSetIterator<T> iterator(){
+    @Override
+    public OrderedSetIterator iterator(){
         if(iterator1 == null){
-            iterator1 = new OrderedSetIterator<>(this);
-            iterator2 = new OrderedSetIterator<>(this);
+            iterator1 = new OrderedSetIterator();
+            iterator2 = new OrderedSetIterator();
         }
-        if(!iterator1.valid){
+
+        if(iterator1.done){
             iterator1.reset();
-            iterator1.valid = true;
-            iterator2.valid = false;
             return iterator1;
         }
-        iterator2.reset();
-        iterator2.valid = true;
-        iterator1.valid = false;
-        return iterator2;
+
+        if(iterator2.done){
+            iterator2.reset();
+            return iterator2;
+        }
+
+        return new OrderedSetIterator();
     }
 
+    @Override
     public String toString(){
         if(size == 0) return "{}";
         T[] items = this.items.items;
@@ -120,32 +122,29 @@ public class OrderedSet<T> extends ObjectSet<T>{
         return items.toString(separator);
     }
 
-    public static class OrderedSetIterator<T> extends ObjectSetIterator<T>{
-        private Array<T> items;
+    public class OrderedSetIterator extends ObjectSetIterator{
 
-        public OrderedSetIterator(OrderedSet<T> set){
-            super(set);
-            items = set.items;
-        }
-
+        @Override
         public void reset(){
+            super.reset();
             nextIndex = 0;
-            hasNext = set.size > 0;
+            hasNext = size > 0;
         }
 
+        @Override
         public T next(){
             if(!hasNext) throw new NoSuchElementException();
-            if(!valid) throw new ArcRuntimeException("#iterator() cannot be used nested.");
             T key = items.get(nextIndex);
             nextIndex++;
-            hasNext = nextIndex < set.size;
+            hasNext = nextIndex < size;
             return key;
         }
 
+        @Override
         public void remove(){
             if(nextIndex < 0) throw new IllegalStateException("next must be called before remove.");
             nextIndex--;
-            ((OrderedSet)set).removeIndex(nextIndex);
+            removeIndex(nextIndex);
         }
     }
 }

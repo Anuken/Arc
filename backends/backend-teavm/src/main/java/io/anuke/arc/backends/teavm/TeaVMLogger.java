@@ -1,16 +1,16 @@
 package io.anuke.arc.backends.teavm;
 
-import io.anuke.arc.util.*;
 import io.anuke.arc.util.Log.*;
-import org.teavm.jso.JSBody;
+import io.anuke.arc.util.*;
+import org.teavm.jso.*;
 
-public class TeaVMLogger extends LogHandler{
+public class TeaVMLogger implements LogHandler{
 
     @Override
-    public void print(String text, Object... args){
-        consoleLog(Strings.format(text.substring(6), args));
+    public void log(LogLevel level, String text, Object... args){
+        consoleLog("[" + level.name() + "]: " + Strings.format(text, args));
     }
 
-    @JSBody(params = "message", script = "console.log(\"TeaVM: \" + message);")
+    @JSBody(params = "message", script = "console.log(\"Arc: \" + message);")
     native static public void consoleLog(String message);
 }

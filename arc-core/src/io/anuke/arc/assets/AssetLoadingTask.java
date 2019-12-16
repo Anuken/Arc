@@ -4,9 +4,8 @@ import io.anuke.arc.assets.loaders.AssetLoader;
 import io.anuke.arc.assets.loaders.AsynchronousAssetLoader;
 import io.anuke.arc.assets.loaders.SynchronousAssetLoader;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.Time;
+import io.anuke.arc.files.Fi;
+import io.anuke.arc.util.*;
 import io.anuke.arc.util.async.AsyncExecutor;
 import io.anuke.arc.util.async.AsyncResult;
 import io.anuke.arc.util.async.AsyncTask;
@@ -62,9 +61,9 @@ class AssetLoadingTask implements AsyncTask<Void>{
 
     /**
      * Updates the loading of the asset. In case the asset is loaded with an {@link AsynchronousAssetLoader}, the loaders
-     * {@link AsynchronousAssetLoader#loadAsync(AssetManager, String, FileHandle, AssetLoaderParameters)} method is first called on
+     * {@link AsynchronousAssetLoader#loadAsync(AssetManager, String, Fi, AssetLoaderParameters)} method is first called on
      * a worker thread. Once this method returns, the rest of the asset is loaded on the rendering thread via
-     * {@link AsynchronousAssetLoader#loadSync(AssetManager, String, FileHandle, AssetLoaderParameters)}.
+     * {@link AsynchronousAssetLoader#loadSync(AssetManager, String, Fi, AssetLoaderParameters)}.
      * @return true in case the asset was fully loaded, false otherwise
      */
     public boolean update(){
@@ -129,7 +128,7 @@ class AssetLoadingTask implements AsyncTask<Void>{
         }
     }
 
-    private FileHandle resolve(AssetLoader loader, AssetDescriptor assetDesc){
+    private Fi resolve(AssetLoader loader, AssetDescriptor assetDesc){
         if(assetDesc.file == null) assetDesc.file = loader.resolve(assetDesc.fileName);
         return assetDesc.file;
     }

@@ -1,16 +1,11 @@
 package io.anuke.arc.assets.loaders;
 
-import io.anuke.arc.assets.AssetDescriptor;
-import io.anuke.arc.assets.AssetLoaderParameters;
-import io.anuke.arc.assets.AssetManager;
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.graphics.Pixmap;
-import io.anuke.arc.graphics.Pixmap.Format;
-import io.anuke.arc.graphics.Texture;
-import io.anuke.arc.graphics.Texture.TextureFilter;
-import io.anuke.arc.graphics.Texture.TextureWrap;
-import io.anuke.arc.graphics.TextureData;
+import io.anuke.arc.assets.*;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.files.*;
+import io.anuke.arc.graphics.Pixmap.*;
+import io.anuke.arc.graphics.*;
+import io.anuke.arc.graphics.Texture.*;
 
 /**
  * {@link AssetLoader} for {@link Texture} instances. The pixel data is loaded asynchronously. The texture is then created on the
@@ -27,10 +22,9 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
     }
 
     @Override
-    public void loadAsync(AssetManager manager, String fileName, FileHandle file, TextureParameter parameter){
+    public void loadAsync(AssetManager manager, String fileName, Fi file, TextureParameter parameter){
         info.filename = fileName;
         if(parameter == null || parameter.textureData == null){
-            Pixmap pixmap = null;
             Format format = null;
             boolean genMipMaps = false;
             info.texture = null;
@@ -50,7 +44,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
     }
 
     @Override
-    public Texture loadSync(AssetManager manager, String fileName, FileHandle file, TextureParameter parameter){
+    public Texture loadSync(AssetManager manager, String fileName, Fi file, TextureParameter parameter){
         if(info == null) return null;
         Texture texture = info.texture;
         if(texture != null){
@@ -66,7 +60,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, TextureParameter parameter){
+    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, TextureParameter parameter){
         return null;
     }
 
@@ -89,5 +83,8 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
         public TextureFilter magFilter = TextureFilter.Nearest;
         public TextureWrap wrapU = TextureWrap.ClampToEdge;
         public TextureWrap wrapV = TextureWrap.ClampToEdge;
+
+        public TextureParameter(){
+        }
     }
 }

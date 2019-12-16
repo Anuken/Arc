@@ -1,6 +1,6 @@
 package io.anuke.arc.graphics;
 
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Pixmap.Format;
 import io.anuke.arc.graphics.glutils.FileTextureData;
 import io.anuke.arc.graphics.glutils.MipMapGenerator;
@@ -79,11 +79,11 @@ public interface TextureData{
      */
     class Factory{
 
-        public static TextureData loadFromFile(FileHandle file, boolean useMipMaps){
+        public static TextureData loadFromFile(Fi file, boolean useMipMaps){
             return loadFromFile(file, null, useMipMaps);
         }
 
-        public static TextureData loadFromFile(FileHandle file, Format format, boolean useMipMaps){
+        public static TextureData loadFromFile(Fi file, Format format, boolean useMipMaps){
             if(file == null) return null;
             if(file.name().endsWith(".cim")) return new FileTextureData(file, PixmapIO.readCIM(file), format, useMipMaps);
             return new FileTextureData(file, new Pixmap(file), format, useMipMaps);

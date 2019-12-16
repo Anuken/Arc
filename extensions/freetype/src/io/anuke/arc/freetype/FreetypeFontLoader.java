@@ -6,7 +6,7 @@ import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.assets.loaders.AsynchronousAssetLoader;
 import io.anuke.arc.assets.loaders.FileHandleResolver;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import io.anuke.arc.graphics.g2d.BitmapFont;
 
@@ -21,13 +21,13 @@ public class FreetypeFontLoader extends AsynchronousAssetLoader<BitmapFont, Free
     }
 
     @Override
-    public void loadAsync(AssetManager manager, String fileName, FileHandle file, FreeTypeFontLoaderParameter parameter){
+    public void loadAsync(AssetManager manager, String fileName, Fi file, FreeTypeFontLoaderParameter parameter){
         if(parameter == null)
             throw new RuntimeException("FreetypeFontParameter must be set in AssetManager#load to point at a TTF file!");
     }
 
     @Override
-    public BitmapFont loadSync(AssetManager manager, String fileName, FileHandle file, FreeTypeFontLoaderParameter parameter){
+    public BitmapFont loadSync(AssetManager manager, String fileName, Fi file, FreeTypeFontLoaderParameter parameter){
         if(parameter == null)
             throw new RuntimeException("FreetypeFontParameter must be set in AssetManager#load to point at a TTF file!");
         FreeTypeFontGenerator generator = manager.get(parameter.fontFileName + ".gen", FreeTypeFontGenerator.class);
@@ -35,7 +35,7 @@ public class FreetypeFontLoader extends AsynchronousAssetLoader<BitmapFont, Free
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, FreeTypeFontLoaderParameter parameter){
+    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, FreeTypeFontLoaderParameter parameter){
         Array<AssetDescriptor> deps = new Array<>();
         deps.add(new AssetDescriptor<>(parameter.fontFileName + ".gen", FreeTypeFontGenerator.class));
         return deps;
@@ -46,5 +46,13 @@ public class FreetypeFontLoader extends AsynchronousAssetLoader<BitmapFont, Free
         public String fontFileName;
         /** the parameters used to generate the font, e.g. size, characters, etc. **/
         public FreeTypeFontParameter fontParameters = new FreeTypeFontParameter();
+
+        public FreeTypeFontLoaderParameter(){
+        }
+
+        public FreeTypeFontLoaderParameter(String fontFileName, FreeTypeFontParameter fontParameters){
+            this.fontFileName = fontFileName;
+            this.fontParameters = fontParameters;
+        }
     }
 }

@@ -1,10 +1,10 @@
 package io.anuke.arc.scene.ui;
 
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.function.BooleanConsumer;
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.func.Boolc;
+import io.anuke.arc.func.Cons;
 import io.anuke.arc.scene.ui.layout.Table;
-import io.anuke.arc.scene.ui.layout.UnitScl;
+import io.anuke.arc.scene.ui.layout.Scl;
 
 import static io.anuke.arc.Core.bundle;
 import static io.anuke.arc.Core.settings;
@@ -27,13 +27,13 @@ public class SettingsDialog extends Dialog{
 
     public static class SettingsTable extends Table{
         protected Array<Setting> list = new Array<>();
-        protected Consumer<SettingsTable> rebuilt;
+        protected Cons<SettingsTable> rebuilt;
 
         public SettingsTable(){
             left();
         }
 
-        public SettingsTable(Consumer<SettingsTable> rebuilt){
+        public SettingsTable(Cons<SettingsTable> rebuilt){
             this.rebuilt = rebuilt;
             left();
         }
@@ -51,24 +51,28 @@ public class SettingsDialog extends Dialog{
             sliderPref("screenshake", bundle.get("setting.screenshake.name", "Screen Shake"), 4, 0, 8, i -> (i / 4f) + "x");
         }
 
-        public void sliderPref(String name, String title, int def, int min, int max, StringProcessor s){
-            sliderPref(name, title, def, min, max, 1, s);
+        public SliderSetting sliderPref(String name, String title, int def, int min, int max, StringProcessor s){
+            return sliderPref(name, title, def, min, max, 1, s);
         }
 
-        public void sliderPref(String name, String title, int def, int min, int max, int step, StringProcessor s){
-            list.add(new SliderSetting(name, title, def, min, max, step, s));
+        public SliderSetting sliderPref(String name, String title, int def, int min, int max, int step, StringProcessor s){
+            SliderSetting res;
+            list.add(res = new SliderSetting(name, title, def, min, max, step, s));
             settings.defaults(name, def);
             rebuild();
+            return res;
         }
 
-        public void sliderPref(String name, int def, int min, int max, StringProcessor s){
-            sliderPref(name, def, min, max, 1, s);
+        public SliderSetting sliderPref(String name, int def, int min, int max, StringProcessor s){
+            return sliderPref(name, def, min, max, 1, s);
         }
 
-        public void sliderPref(String name, int def, int min, int max, int step, StringProcessor s){
-            list.add(new SliderSetting(name, bundle.get("setting." + name + ".name"), def, min, max, step, s));
+        public SliderSetting sliderPref(String name, int def, int min, int max, int step, StringProcessor s){
+            SliderSetting res;
+            list.add(res = new SliderSetting(name, bundle.get("setting." + name + ".name"), def, min, max, step, s));
             settings.defaults(name, def);
             rebuild();
+            return res;
         }
 
         public void checkPref(String name, String title, boolean def){
@@ -77,7 +81,7 @@ public class SettingsDialog extends Dialog{
             rebuild();
         }
 
-        public void checkPref(String name, String title, boolean def, BooleanConsumer changed){
+        public void checkPref(String name, String title, boolean def, Boolc changed){
             list.add(new CheckSetting(name, title, def, changed));
             settings.defaults(name, def);
             rebuild();
@@ -91,7 +95,7 @@ public class SettingsDialog extends Dialog{
         }
 
         /** Localized title. */
-        public void checkPref(String name, boolean def, BooleanConsumer changed){
+        public void checkPref(String name, boolean def, Boolc changed){
             list.add(new CheckSetting(name, bundle.get("setting." + name + ".name"), def, changed));
             settings.defaults(name, def);
             rebuild();
@@ -113,7 +117,7 @@ public class SettingsDialog extends Dialog{
                 rebuild();
             }).margin(14).width(240f).pad(6);
 
-            if(rebuilt != null) rebuilt.accept(this);
+            if(rebuilt != null) rebuilt.get(this);
         }
 
         public abstract static class Setting{
@@ -125,9 +129,9 @@ public class SettingsDialog extends Dialog{
 
         public class CheckSetting extends Setting{
             boolean def;
-            BooleanConsumer changed;
+            Boolc changed;
 
-            CheckSetting(String name, String title, boolean def, BooleanConsumer changed){
+            CheckSetting(String name, String title, boolean def, Boolc changed){
                 this.name = name;
                 this.title = title;
                 this.def = def;
@@ -138,13 +142,13 @@ public class SettingsDialog extends Dialog{
             public void add(SettingsTable table){
                 CheckBox box = new CheckBox(title);
 
-                box.setChecked(settings.getBool(name));
+                box.update(() -> box.setChecked(settings.getBool(name)));
 
                 box.changed(() -> {
                     settings.put(name, box.isChecked);
                     settings.save();
                     if(changed != null){
-                        changed.accept(box.isChecked);
+                        changed.get(box.isChecked);
                     }
                 });
 
@@ -160,6 +164,7 @@ public class SettingsDialog extends Dialog{
             int max;
             int step;
             StringProcessor sp;
+            float[] values = null;
 
             SliderSetting(String name, String title, int def, int min, int max, int step, StringProcessor s){
                 this.name = name;
@@ -176,6 +181,9 @@ public class SettingsDialog extends Dialog{
                 Slider slider = new Slider(min, max, step, false);
 
                 slider.setValue(settings.getInt(name));
+                if(values != null){
+                    slider.setSnapToValues(values, 1f);
+                }
 
                 Label label = new Label(title);
                 slider.changed(() -> {
@@ -188,7 +196,7 @@ public class SettingsDialog extends Dialog{
 
                 table.table(t -> {
                     t.left().defaults().left();
-                    t.add(label).minWidth(label.getPrefWidth() / UnitScl.dp.scl(1f) + 50);
+                    t.add(label).minWidth(label.getPrefWidth() / Scl.scl(1f) + 50);
                     t.add(slider).width(180);
                 }).left().padTop(3);
 

@@ -1,31 +1,28 @@
 package io.anuke.arc;
 
-import io.anuke.arc.collection.ObjectMap;
-import io.anuke.arc.collection.ObjectMap.Entry;
-import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.function.Consumer;
-import io.anuke.arc.function.Supplier;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.collection.ObjectMap.*;
+import io.anuke.arc.files.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.util.*;
-import io.anuke.arc.util.io.DefaultSerializers;
-import io.anuke.arc.util.io.ReusableByteInStream;
-import io.anuke.arc.util.io.Streams.OptimizedByteArrayOutputStream;
+import io.anuke.arc.util.io.*;
+import io.anuke.arc.util.io.Streams.*;
+import io.anuke.arc.util.serialization.*;
 
 import java.io.*;
 
 import static io.anuke.arc.Core.keybinds;
 
+@SuppressWarnings("unchecked")
 public class Settings{
     protected final static byte TYPE_BOOL = 0, TYPE_INT = 1, TYPE_LONG = 2, TYPE_FLOAT = 3, TYPE_STRING = 4, TYPE_BINARY = 5;
-    /**In miliseconds; min spacing between backups.*/
-    protected final static long backupCopyTime = 1000;
 
     //general state data
-    protected FileHandle dataDirectory;
+    protected Fi dataDirectory;
     protected String appName;
     protected ObjectMap<String, Object> defaults = new ObjectMap<>();
     protected ObjectMap<String, Object> values = new ObjectMap<>();
-    protected Consumer<Throwable> errorHandler;
-    protected long lastSaveTime;
+    protected Cons<Throwable> errorHandler;
     protected boolean hasErrored;
 
     //IO utility objects
@@ -34,14 +31,30 @@ public class Settings{
     protected DataOutputStream dataOutput = new DataOutputStream(byteStream);
     protected DataInputStream dataInput = new DataInputStream(byteInputStream);
     protected ObjectMap<Class<?>, TypeSerializer<?>> serializers = new ObjectMap<>();
+    protected UBJsonReader ureader = new UBJsonReader();
+    protected Json json = new Json();
 
     public Settings(){
         DefaultSerializers.register(this);
     }
 
     public TypeSerializer getSerializer(Class type){
-        if(type.isAnonymousClass()){
-            return serializers.get(type.getSuperclass());
+        if(type.isAnonymousClass()) type = type.getSuperclass();
+        Class ftype = type;
+
+        if(!serializers.containsKey(type)){
+            return new TypeSerializer(){
+                @Override
+                public void write(DataOutput stream, Object object) throws IOException{
+                    json.toUBJson(object, ftype, (OutputStream)stream);
+                }
+
+                @Override
+                public Object read(DataInput stream) throws IOException{
+                    JsonValue value = ureader.parse((InputStream)stream);
+                    return json.readValue(ftype, value);
+                }
+            };
         }
         return serializers.get(type);
     }
@@ -68,7 +81,7 @@ public class Settings{
     /**Sets the error handler function.
      * This function gets called when {@link #save} or {@link #load} fails. This can occur most often on browsers,
      * where extensions can block writing to local storage.*/
-    public void setErrorHandler(Consumer<Throwable> handler){
+    public void setErrorHandler(Cons<Throwable> handler){
         errorHandler = handler;
     }
 
@@ -79,7 +92,7 @@ public class Settings{
             keybinds.load();
         }catch(Throwable error){
             if(errorHandler != null){
-                if(!hasErrored) errorHandler.accept(error);
+                if(!hasErrored) errorHandler.get(error);
             }else{
                 throw error;
             }
@@ -94,7 +107,7 @@ public class Settings{
             saveValues();
         }catch(Throwable error){
             if(errorHandler != null){
-                if(!hasErrored) errorHandler.accept(error);
+                if(!hasErrored) errorHandler.get(error);
             }else{
                 throw error;
             }
@@ -111,6 +124,9 @@ public class Settings{
 
         try{
             loadValues(getSettingsFile());
+
+            //back up the save file, as the values have now been loaded successfully
+            getSettingsFile().copyTo(getBackupSettingsFile());
         }catch(Exception e){
             Log.err("Failed to load base settings file, attempting to load backup.", e);
             try{
@@ -125,7 +141,7 @@ public class Settings{
         }
     }
 
-    public void loadValues(FileHandle file) throws IOException{
+    public void loadValues(Fi file) throws IOException{
         try(DataInputStream stream = new DataInputStream(file.read(8192))){
             int amount = stream.readInt();
             for(int i = 0; i < amount; i++){
@@ -161,7 +177,7 @@ public class Settings{
 
     /** Saves all entries from {@link #values} into the correct location. */
     public void saveValues(){
-        FileHandle file = getSettingsFile();
+        Fi file = getSettingsFile();
 
         try(DataOutputStream stream = new DataOutputStream(file.write(false, 8192))){
             stream.writeInt(values.size);
@@ -192,33 +208,29 @@ public class Settings{
                     stream.write((byte[])value);
                 }
             }
-        }catch(IOException e){
+        }catch(Throwable e){
+            //file is now corrupt, delete it
+            file.delete();
             throw new RuntimeException("Error writing preferences: " + file, e);
         }
-
-        if(Time.millis() - lastSaveTime > backupCopyTime){
-            file.copyTo(getBackupSettingsFile());
-        }
-
-        lastSaveTime = Time.millis();
     }
 
     /** Returns the file used for writing settings to. Not available on all platforms! */
-    public FileHandle getSettingsFile(){
+    public Fi getSettingsFile(){
         return getDataDirectory().child("settings.bin");
     }
 
-    public FileHandle getBackupSettingsFile(){
+    public Fi getBackupSettingsFile(){
         return getDataDirectory().child("settings_backup.bin");
     }
 
     /** Returns the directory where all settings and data is placed. */
-    public FileHandle getDataDirectory(){
+    public Fi getDataDirectory(){
         return dataDirectory == null ? Core.files.absolute(OS.getAppDataDirectoryString(appName)) : dataDirectory;
     }
 
     /** Sets the settings file where everything is written to. */
-    public void setDataDirectory(FileHandle file){
+    public void setDataDirectory(Fi file){
         this.dataDirectory = file;
     }
 
@@ -251,6 +263,7 @@ public class Settings{
 
     @SuppressWarnings("unchecked")
     public void putObject(String name, Object value, Class<?> type){
+        getSerializer(type);
         if(!serializers.containsKey(type)){
             throw new IllegalArgumentException(type + " does not have a serializer registered!");
         }
@@ -266,7 +279,8 @@ public class Settings{
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getObject(String name, Class<T> type, Supplier<T> def){
+    public <T> T getObject(String name, Class<T> type, Prov<T> def){
+        getSerializer(type);
         if(!serializers.containsKey(type)){
             throw new IllegalArgumentException("Type " + type + " does not have a serializer registered!");
         }
@@ -315,6 +329,15 @@ public class Settings{
         return getBool(name, (boolean)defaults.get(name, false));
     }
 
+    /** Runs the specified code once, and never again. */
+    public void getBoolOnce(String name, Runnable run){
+        if(!getBool(name, false)){
+            run.run();
+            put(name, true);
+            save();
+        }
+    }
+
     public byte[] getBytes(String name){
         return getBytes(name, (byte[])defaults.get(name, null));
     }
@@ -327,6 +350,12 @@ public class Settings{
         for(Entry<String, Object> entry : map.entries()){
             put(entry.key, entry.value);
         }
+    }
+
+    /** Stores an object in the preference map and saves. */
+    public void putSave(String name, Object object){
+        put(name, object);
+        save();
     }
 
     /** Stores an object in the preference map. */

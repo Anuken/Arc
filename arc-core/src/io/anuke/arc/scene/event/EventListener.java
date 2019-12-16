@@ -9,7 +9,7 @@ package io.anuke.arc.scene.event;
 public interface EventListener{
     /**
      * Try to handle the given event, if it is applicable.
-     * @return true if the event should be considered {@link Event#handle() handled} by scene2d.
+     * @return true if the event should be considered {@link SceneEvent#handle() handled} by scene2d.
      */
-    boolean handle(Event event);
+    boolean handle(SceneEvent event);
 }

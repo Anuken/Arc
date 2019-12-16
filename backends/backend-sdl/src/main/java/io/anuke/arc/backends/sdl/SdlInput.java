@@ -1,8 +1,8 @@
 package io.anuke.arc.backends.sdl;
 
 import io.anuke.arc.*;
+import io.anuke.arc.backends.sdl.jni.*;
 import io.anuke.arc.input.*;
-import sdl.*;
 
 import java.nio.charset.*;
 
@@ -19,9 +19,9 @@ public class SdlInput extends Input{
         int type = input[0];
         if(type == SDL.SDL_EVENT_KEYBOARD){
             boolean down = input[1] == 1;
-            int keycode = input[2];
+            int keycode = input[4];
 
-            KeyCode key = SdlKeymap.getCode(keycode);
+            KeyCode key = SdlScanmap.getCode(keycode);
             //only process non-repeats
             if(input[3] == 0){
                 if(down){
@@ -40,11 +40,16 @@ public class SdlInput extends Input{
             if(key == KeyCode.ENTER && down){
                 queue.keyTyped((char)13);
             }
+
+            //so is enter
+            if(key == KeyCode.FORWARD_DEL && down){
+                queue.keyTyped((char)127);
+            }
         }else if(type == SDL.SDL_EVENT_MOUSE_BUTTON){
             boolean down = input[1] == 1;
             int keycode = input[4];
             int x = input[2], y = Core.graphics.getHeight() - input[3];
-            KeyCode key = keycode == SDL.SDL_BUTTON_LEFT ? KeyCode.MOUSE_LEFT : keycode == SDL.SDL_BUTTON_RIGHT ? KeyCode.MOUSE_RIGHT : keycode == SDL.SDL_BUTTON_MIDDLE ? KeyCode.MOUSE_MIDDLE : null;
+            KeyCode key = keycode == SDL.SDL_BUTTON_LEFT ? KeyCode.MOUSE_LEFT : keycode == SDL.SDL_BUTTON_RIGHT ? KeyCode.MOUSE_RIGHT : keycode == SDL.SDL_BUTTON_MIDDLE ? KeyCode.MOUSE_MIDDLE : keycode == SDL.SDL_BUTTON_X1 ? KeyCode.MOUSE_BACK : keycode == SDL.SDL_BUTTON_X2 ? KeyCode.MOUSE_FORWARD : null;
             if(key != null){
                 if(down){
                     mousePressed ++;

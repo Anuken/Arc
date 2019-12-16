@@ -1,6 +1,6 @@
 package io.anuke.arc.backends.lwjgl3.audio;
 
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.io.Streams;
 
@@ -12,7 +12,7 @@ public class Wav{
     public static class Music extends OpenALMusic{
         private WavInputStream input;
 
-        public Music(OpenALAudio audio, FileHandle file){
+        public Music(OpenALAudio audio, Fi file){
             super(audio, file);
             input = new WavInputStream(file);
             if(audio.noDevice) return;
@@ -38,7 +38,7 @@ public class Wav{
     }
 
     public static class Sound extends OpenALSound{
-        public Sound(OpenALAudio audio, FileHandle file){
+        public Sound(OpenALAudio audio, Fi file){
             super(audio);
             if(audio.noDevice) return;
 
@@ -58,7 +58,7 @@ public class Wav{
     static private class WavInputStream extends FilterInputStream{
         int channels, sampleRate, dataRemaining;
 
-        WavInputStream(FileHandle file){
+        WavInputStream(Fi file){
             super(file.read());
             try{
                 if(read() != 'R' || read() != 'I' || read() != 'F' || read() != 'F')

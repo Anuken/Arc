@@ -5,28 +5,24 @@ import io.anuke.arc.audio.*;
 import io.anuke.arc.files.*;
 import io.anuke.arc.util.*;
 
-/**
- *
- * @author Alexey Andreev
- */
-public class TeaVMAudio extends Audio {
+public class TeaVMAudio extends Audio{
     @Override
-    public AudioDevice newAudioDevice(int samplingRate, boolean isMono) {
+    public AudioDevice newAudioDevice(int samplingRate, boolean isMono){
         throw new ArcRuntimeException("AudioDevice not supported by TeaVM backend");
     }
 
     @Override
-    public AudioRecorder newAudioRecorder(int samplingRate, boolean isMono) {
+    public AudioRecorder newAudioRecorder(int samplingRate, boolean isMono){
         throw new ArcRuntimeException("AudioDevice not supported by TeaVM backend");
     }
 
     @Override
-    public Sound newSound(FileHandle fileHandle) {
-        return new TeaVMSound((TeaVMFileHandle)fileHandle);
+    public Sound newSound(Fi fileHandle){
+        return new TeaVMSound((TeaVMFi)fileHandle);
     }
 
     @Override
-    public Music newMusic(FileHandle file) {
-        return new TeaVMMusic((TeaVMFileHandle)file);
+    public Music newMusic(Fi file){
+        return new TeaVMMusic((TeaVMFi)file);
     }
 }

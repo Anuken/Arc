@@ -10,7 +10,7 @@ import io.anuke.arc.util.*;
 import java.nio.*;
 
 @Replace(VertexBufferObject.class)
-public class VertexBufferObjectEmulator implements VertexData {
+public class VertexBufferObjectEmulator implements VertexData{
     final VertexAttributes attributes;
     final FloatBuffer buffer;
     int bufferHandle;
@@ -19,43 +19,36 @@ public class VertexBufferObjectEmulator implements VertexData {
     boolean isDirty = false;
     boolean isBound = false;
 
-    public VertexBufferObjectEmulator(int numVertices, VertexAttribute... attributes) {
+    public VertexBufferObjectEmulator(int numVertices, VertexAttribute... attributes){
         this(numVertices, new VertexAttributes(attributes));
     }
 
-    /** Constructs a new interleaved VertexArray
-     *
+    /**
+     * Constructs a new interleaved VertexArray
      * @param numVertices the maximum number of vertices
-     * @param attributes the {@link VertexAttributes} */
-    public VertexBufferObjectEmulator(int numVertices, VertexAttributes attributes) {
+     * @param attributes the {@link VertexAttributes}
+     */
+    public VertexBufferObjectEmulator(int numVertices, VertexAttributes attributes){
         this(false, numVertices, attributes);
     }
 
     /**
      * Constructs a new interleaved VertexBufferObject.
-     *
-     * @param isStatic
-     *            whether the vertex data is static.
-     * @param numVertices
-     *            the maximum number of vertices
-     * @param attributes
-     *            the {@link VertexAttribute}s.
+     * @param isStatic whether the vertex data is static.
+     * @param numVertices the maximum number of vertices
+     * @param attributes the {@link VertexAttribute}s.
      */
-    public VertexBufferObjectEmulator(boolean isStatic, int numVertices, VertexAttribute... attributes) {
+    public VertexBufferObjectEmulator(boolean isStatic, int numVertices, VertexAttribute... attributes){
         this(isStatic, numVertices, new VertexAttributes(attributes));
     }
 
     /**
      * Constructs a new interleaved VertexBufferObject.
-     *
-     * @param isStatic
-     *            whether the vertex data is static.
-     * @param numVertices
-     *            the maximum number of vertices
-     * @param attributes
-     *            the {@link VertexAttributes}.
+     * @param isStatic whether the vertex data is static.
+     * @param numVertices the maximum number of vertices
+     * @param attributes the {@link VertexAttributes}.
      */
-    public VertexBufferObjectEmulator(boolean isStatic, int numVertices, VertexAttributes attributes) {
+    public VertexBufferObjectEmulator(boolean isStatic, int numVertices, VertexAttributes attributes){
         this.isStatic = isStatic;
         this.attributes = attributes;
 
@@ -66,35 +59,35 @@ public class VertexBufferObjectEmulator implements VertexData {
     }
 
     @Override
-    public VertexAttributes getAttributes() {
+    public VertexAttributes getAttributes(){
         return attributes;
     }
 
     @Override
-    public int getNumVertices() {
+    public int getNumVertices(){
         return buffer.limit() / (attributes.vertexSize / 4);
     }
 
     @Override
-    public int getNumMaxVertices() {
+    public int getNumMaxVertices(){
         return buffer.capacity() / (attributes.vertexSize / 4);
     }
 
     @Override
-    public FloatBuffer getBuffer() {
+    public FloatBuffer getBuffer(){
         isDirty = true;
         return buffer;
     }
 
-    private void bufferChanged() {
-        if (isBound) {
+    private void bufferChanged(){
+        if(isBound){
             Core.gl20.glBufferData(GL20.GL_ARRAY_BUFFER, buffer.limit(), buffer, usage);
             isDirty = false;
         }
     }
 
     @Override
-    public void setVertices(float[] vertices, int offset, int count) {
+    public void setVertices(float[] vertices, int offset, int count){
         isDirty = true;
         BufferUtils.copy(vertices, buffer, count, offset);
         buffer.position(0);
@@ -103,7 +96,7 @@ public class VertexBufferObjectEmulator implements VertexData {
     }
 
     @Override
-    public void updateVertices(int targetOffset, float[] vertices, int sourceOffset, int count) {
+    public void updateVertices(int targetOffset, float[] vertices, int sourceOffset, int count){
         isDirty = true;
         final int pos = buffer.position();
         buffer.position(targetOffset);
@@ -122,57 +115,55 @@ public class VertexBufferObjectEmulator implements VertexData {
     /**
      * Binds this VertexBufferObject for rendering via glDrawArrays or
      * glDrawElements
-     *
-     * @param shader
-     *            the shader
+     * @param shader the shader
      */
     @Override
-    public void bind(Shader shader) {
+    public void bind(Shader shader){
         bind(shader, null);
     }
 
     @Override
-    public void bind(Shader shader, int[] locations) {
+    public void bind(Shader shader, int[] locations){
         final GL20 gl = Core.gl20;
 
         gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
-        if (isDirty) {
+        if(isDirty){
             gl.glBufferData(GL20.GL_ARRAY_BUFFER, buffer.limit(), buffer, usage);
             isDirty = false;
         }
 
         final int numAttributes = attributes.size();
-        if (locations == null) {
-            for (int i = 0; i < numAttributes; i++) {
+        if(locations == null){
+            for(int i = 0; i < numAttributes; i++){
                 final VertexAttribute attribute = attributes.get(i);
                 final int location = shader.getAttributeLocation(attribute.alias);
-                if (location < 0) {
+                if(location < 0){
                     continue;
                 }
                 shader.enableVertexAttribute(location);
 
-                if (attribute.usage == Usage.ColorPacked)
+                if(attribute.usage == Usage.ColorPacked)
                     shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true,
-                            attributes.vertexSize, attribute.offset);
+                    attributes.vertexSize, attribute.offset);
                 else
                     shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false,
-                            attributes.vertexSize, attribute.offset);
+                    attributes.vertexSize, attribute.offset);
             }
-        } else {
-            for (int i = 0; i < numAttributes; i++) {
+        }else{
+            for(int i = 0; i < numAttributes; i++){
                 final VertexAttribute attribute = attributes.get(i);
                 final int location = locations[i];
-                if (location < 0) {
+                if(location < 0){
                     continue;
                 }
                 shader.enableVertexAttribute(location);
 
-                if (attribute.usage == Usage.ColorPacked)
+                if(attribute.usage == Usage.ColorPacked)
                     shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true,
-                            attributes.vertexSize, attribute.offset);
+                    attributes.vertexSize, attribute.offset);
                 else
                     shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false,
-                            attributes.vertexSize, attribute.offset);
+                    attributes.vertexSize, attribute.offset);
             }
         }
         isBound = true;
@@ -180,27 +171,25 @@ public class VertexBufferObjectEmulator implements VertexData {
 
     /**
      * Unbinds this VertexBufferObject.
-     *
-     * @param shader
-     *            the shader
+     * @param shader the shader
      */
     @Override
-    public void unbind(final Shader shader) {
+    public void unbind(final Shader shader){
         unbind(shader, null);
     }
 
     @Override
-    public void unbind(final Shader shader, final int[] locations) {
+    public void unbind(final Shader shader, final int[] locations){
         final GL20 gl = Core.gl20;
         final int numAttributes = attributes.size();
-        if (locations == null) {
-            for (int i = 0; i < numAttributes; i++) {
+        if(locations == null){
+            for(int i = 0; i < numAttributes; i++){
                 shader.disableVertexAttribute(attributes.get(i).alias);
             }
-        } else {
-            for (int i = 0; i < numAttributes; i++) {
+        }else{
+            for(int i = 0; i < numAttributes; i++){
                 final int location = locations[i];
-                if (location >= 0) {
+                if(location >= 0){
                     shader.disableVertexAttribute(location);
                 }
             }
@@ -214,14 +203,14 @@ public class VertexBufferObjectEmulator implements VertexData {
      * created. Use this in case of a context loss.
      */
     @Override
-    public void invalidate() {
+    public void invalidate(){
         bufferHandle = Core.gl20.glGenBuffer();
         isDirty = true;
     }
 
     /** Disposes of all resources this VertexBufferObject uses. */
     @Override
-    public void dispose() {
+    public void dispose(){
         GL20 gl = Core.gl20;
         gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
         gl.glDeleteBuffer(bufferHandle);

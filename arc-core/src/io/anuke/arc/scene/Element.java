@@ -3,10 +3,10 @@ package io.anuke.arc.scene;
 import io.anuke.arc.Core;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.DelayedRemovalArray;
-import io.anuke.arc.function.BooleanProvider;
-import io.anuke.arc.function.Consumer;
-import io.anuke.arc.function.PositionConsumer;
-import io.anuke.arc.function.Supplier;
+import io.anuke.arc.func.Boolp;
+import io.anuke.arc.func.Cons;
+import io.anuke.arc.func.Floatc2;
+import io.anuke.arc.func.Prov;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.input.KeyCode;
 import io.anuke.arc.math.Mathf;
@@ -49,9 +49,9 @@ public class Element implements Layout{
     private boolean needsLayout = true;
     protected boolean fillParent;
     private boolean layoutEnabled = true;
-    private BooleanProvider visibility;
+    private Boolp visibility;
     private Runnable update;
-    private Supplier<Touchable> touchableSupplier = null;
+    private Prov<Touchable> touchableSupplier = null;
 
     /** Draws the element. Does nothing by default. */
     public void draw(){
@@ -98,8 +98,24 @@ public class Element implements Layout{
         return e == this || (e != null && e.isDescendantOf(this));
     }
 
+    public boolean hasKeyboard(){
+        return Core.scene.getKeyboardFocus() == this;
+    }
+
+    public boolean hasScroll(){
+        return Core.scene.getScrollFocus() == this;
+    }
+
+    public void requestKeyboard(){
+        Core.scene.setKeyboardFocus(this);
+    }
+
+    public void requestScroll(){
+        Core.scene.setScrollFocus(this);
+    }
+
     @SuppressWarnings("unchecked")
-    public boolean fire(Event event){
+    public boolean fire(SceneEvent event){
         event.targetActor = this;
 
         // Collect ancestors so event propagation is unaffected by hierarchy changes.
@@ -141,7 +157,7 @@ public class Element implements Layout{
         }
     }
 
-    public boolean notify(Event event, boolean capture){
+    public boolean notify(SceneEvent event, boolean capture){
         if(event.targetActor == null) throw new IllegalArgumentException("The event target cannot be null.");
 
         DelayedRemovalArray<EventListener> listeners = capture ? captureListeners : this.listeners;
@@ -198,12 +214,12 @@ public class Element implements Layout{
 
     /**Adds a listener which listens for drag (touch down and move) events.
      * Results are returned in positive deltas.*/
-    public void dragged(PositionConsumer cons){
+    public void dragged(Floatc2 cons){
         addListener(new InputListener(){
             float lastX, lastY;
             @Override
             public void touchDragged(InputEvent event, float mx, float my, int pointer){
-                cons.accept(mx - lastX, my - lastY);
+                cons.get(mx - lastX, my - lastY);
                 lastX = mx;
                 lastY = my;
             }
@@ -218,7 +234,7 @@ public class Element implements Layout{
     }
 
     /**
-     * Add a listener to receive events that {@link #hit(float, float, boolean) hit} this actor. See {@link #fire(Event)}.
+     * Add a listener to receive events that {@link #hit(float, float, boolean) hit} this actor. See {@link #fire(SceneEvent)}.
      * @see InputListener
      * @see ClickListener
      */
@@ -242,7 +258,7 @@ public class Element implements Layout{
 
     /**
      * Adds a listener that is only notified during the capture phase.
-     * @see #fire(Event)
+     * @see #fire(SceneEvent)
      */
     public boolean addCaptureListener(EventListener listener){
         if(listener == null) throw new IllegalArgumentException("listener cannot be null.");
@@ -691,8 +707,9 @@ public class Element implements Layout{
      * Set the actor's name, which is used for identification convenience and by {@link #toString()}.
      * @param name May be null.
      */
-    public void setName(String name){
+    public Element setName(String name){
         this.name = name;
+        return this;
     }
 
     /** Changes the z-order for this actor so it is in front of all siblings. */
@@ -872,11 +889,11 @@ public class Element implements Layout{
         return 0;
     }
 
-    public final float getMaxWidth(){
+    public float getMaxWidth(){
         return 0;
     }
 
-    public final float getMaxHeight(){
+    public float getMaxHeight(){
         return 0;
     }
 
@@ -953,11 +970,11 @@ public class Element implements Layout{
     }
 
     /** Adds a keydown input listener. */
-    public void keyDown(Consumer<KeyCode> cons){
+    public void keyDown(Cons<KeyCode> cons){
         addListener(new InputListener(){
             @Override
             public boolean keyDown(InputEvent event, KeyCode keycode){
-                cons.accept(keycode);
+                cons.get(keycode);
                 return true;
             }
         });
@@ -983,20 +1000,20 @@ public class Element implements Layout{
     }
 
     /** Adds a click listener. */
-    public ClickListener clicked(Consumer<ClickListener> tweaker, Runnable r){
+    public ClickListener clicked(Cons<ClickListener> tweaker, Runnable r){
         return clicked(tweaker, e -> r.run());
     }
 
-    public ClickListener clicked(Consumer<ClickListener> tweaker, Consumer<ClickListener> runner){
+    public ClickListener clicked(Cons<ClickListener> tweaker, Cons<ClickListener> runner){
         ClickListener click;
         Element elem = this;
         addListener(click = new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                if(runner != null && !(elem instanceof Disableable && ((Disableable)elem).isDisabled())) runner.accept(this);
+                if(runner != null && !(elem instanceof Disableable && ((Disableable)elem).isDisabled())) runner.get(this);
             }
         });
-        tweaker.accept(click);
+        tweaker.get(click);
         return click;
     }
 
@@ -1059,16 +1076,17 @@ public class Element implements Layout{
         });
     }
 
-    public void update(Runnable r){
+    public Element update(Runnable r){
         update = r;
+        return this;
     }
 
-    public Element visible(BooleanProvider vis){
+    public Element visible(Boolp vis){
         visibility = vis;
         return this;
     }
 
-    public void touchable(Supplier<Touchable> touch){
+    public void touchable(Prov<Touchable> touch){
         this.touchableSupplier = touch;
     }
 

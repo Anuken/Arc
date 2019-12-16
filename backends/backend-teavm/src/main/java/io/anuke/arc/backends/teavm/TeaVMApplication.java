@@ -2,7 +2,7 @@ package io.anuke.arc.backends.teavm;
 
 import io.anuke.arc.*;
 import io.anuke.arc.collection.*;
-import io.anuke.arc.function.*;
+import io.anuke.arc.func.*;
 import io.anuke.arc.util.*;
 import org.teavm.jso.browser.*;
 import org.teavm.jso.dom.html.*;
@@ -19,24 +19,25 @@ public class TeaVMApplication implements Application{
     private final Array<Runnable> executedRunnables = new Array<>();
     private final Array<ApplicationListener> listeners = new Array<>();
 
-    public TeaVMApplication(ApplicationListener listener, TeaVMApplicationConfig config) {
+    public TeaVMApplication(ApplicationListener listener, TeaVMApplicationConfig config){
         this.listeners.add(listener);
         this.config = config;
     }
 
-    public void start() {
-        TeaVMFileLoader.loadFiles(new TeaVMFilePreloadListener() {
+    public void start(){
+        TeaVMFileLoader.loadFiles(new TeaVMFilePreloadListener(){
             @Override
-            public void error() {
+            public void error(){
             }
+
             @Override
-            public void complete() {
+            public void complete(){
                 startArc();
             }
         });
     }
 
-    private void startArc() {
+    private void startArc(){
         canvas = config.canvas;
 
         Log.setLogger(new TeaVMLogger());
@@ -55,11 +56,11 @@ public class TeaVMApplication implements Application{
         delayedStep();
     }
 
-    private void delayedStep() {
+    private void delayedStep(){
         Window.setTimeout(this::step, 10);
     }
 
-    private void step() {
+    private void step(){
         graphics.update();
         graphics.frameId++;
 
@@ -71,7 +72,7 @@ public class TeaVMApplication implements Application{
             runnable.run();
         }
 
-        if(lastWidth != canvas.getWidth() || lastHeight != canvas.getHeight()) {
+        if(lastWidth != canvas.getWidth() || lastHeight != canvas.getHeight()){
             listen(l -> l.resize(canvas.getWidth(), canvas.getHeight()));
             lastWidth = canvas.getWidth();
             lastHeight = canvas.getHeight();
@@ -81,9 +82,9 @@ public class TeaVMApplication implements Application{
         delayedStep();
     }
 
-    private void listen(Consumer<ApplicationListener> cons){
+    private void listen(Cons<ApplicationListener> cons){
         for(ApplicationListener l : listeners){
-            cons.accept(l);
+            cons.get(l);
         }
     }
 
@@ -108,17 +109,17 @@ public class TeaVMApplication implements Application{
     }
 
     @Override
-    public ApplicationType getType() {
+    public ApplicationType getType(){
         return ApplicationType.WebGL;
     }
 
     @Override
-    public long getJavaHeap() {
+    public long getJavaHeap(){
         return 0;
     }
 
     @Override
-    public void exit() {
+    public void exit(){
     }
 
 }

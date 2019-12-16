@@ -8,7 +8,7 @@ import io.anuke.arc.assets.loaders.TextureLoader.TextureParameter;
 import io.anuke.arc.assets.loaders.resolvers.InternalFileHandleResolver;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.ObjectMap;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.graphics.g2d.TextureRegion;
 import io.anuke.arc.maps.*;
@@ -56,13 +56,13 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
         try{
             this.convertObjectToTileSpace = parameters.convertObjectToTileSpace;
             this.flipY = parameters.flipY;
-            FileHandle tmxFile = resolve(fileName);
+            Fi tmxFile = resolve(fileName);
             root = xml.parse(tmxFile);
             ObjectMap<String, Texture> textures = new ObjectMap<>();
-            Array<FileHandle> textureFiles = loadTilesets(root, tmxFile);
+            Array<Fi> textureFiles = loadTilesets(root, tmxFile);
             textureFiles.addAll(loadImages(root, tmxFile));
 
-            for(FileHandle textureFile : textureFiles){
+            for(Fi textureFile : textureFiles){
                 Texture texture = new Texture(textureFile, parameters.generateMipMaps);
                 texture.setFilter(parameters.textureMinFilter, parameters.textureMagFilter);
                 textures.put(textureFile.path(), texture);
@@ -78,7 +78,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
     }
 
     @Override
-    public void loadAsync(AssetManager manager, String fileName, FileHandle tmxFile, TmxMapLoader.Parameters parameter){
+    public void loadAsync(AssetManager manager, String fileName, Fi tmxFile, TmxMapLoader.Parameters parameter){
         map = null;
 
         if(parameter != null){
@@ -96,7 +96,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
     }
 
     @Override
-    public TiledMap loadSync(AssetManager manager, String fileName, FileHandle file, TmxMapLoader.Parameters parameter){
+    public TiledMap loadSync(AssetManager manager, String fileName, Fi file, TmxMapLoader.Parameters parameter){
         return map;
     }
 
@@ -106,7 +106,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
      * @return dependencies for the given .tmx file
      */
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, FileHandle tmxFile, Parameters parameter){
+    public Array<AssetDescriptor> getDependencies(String fileName, Fi tmxFile, Parameters parameter){
         Array<AssetDescriptor> dependencies = new Array<>();
         try{
             root = xml.parse(tmxFile);
@@ -117,10 +117,10 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
                 texParams.minFilter = parameter.textureMinFilter;
                 texParams.magFilter = parameter.textureMagFilter;
             }
-            for(FileHandle image : loadTilesets(root, tmxFile)){
+            for(Fi image : loadTilesets(root, tmxFile)){
                 dependencies.add(new AssetDescriptor(image, Texture.class, texParams));
             }
-            for(FileHandle image : loadImages(root, tmxFile)){
+            for(Fi image : loadImages(root, tmxFile)){
                 dependencies.add(new AssetDescriptor(image, Texture.class, texParams));
             }
             return dependencies;
@@ -136,7 +136,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
      * @param imageResolver the {@link ImageResolver}
      * @return the {@link TiledMap}
      */
-    protected TiledMap loadTilemap(Element root, FileHandle tmxFile, ImageResolver imageResolver){
+    protected TiledMap loadTilemap(Element root, Fi tmxFile, ImageResolver imageResolver){
         TiledMap map = new TiledMap();
 
         String mapOrientation = root.getAttribute("orientation", null);
@@ -202,22 +202,22 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
      * @param root the root XML element
      * @return a list of filenames for images containing tiles
      */
-    protected Array<FileHandle> loadTilesets(Element root, FileHandle tmxFile) throws IOException{
-        Array<FileHandle> images = new Array<>();
+    protected Array<Fi> loadTilesets(Element root, Fi tmxFile) throws IOException{
+        Array<Fi> images = new Array<>();
         for(Element tileset : root.getChildrenByName("tileset")){
             String source = tileset.getAttribute("source", null);
             if(source != null){
-                FileHandle tsxFile = getRelativeFileHandle(tmxFile, source);
+                Fi tsxFile = getRelativeFileHandle(tmxFile, source);
                 tileset = xml.parse(tsxFile);
                 Element imageElement = tileset.getChildByName("image");
                 if(imageElement != null){
                     String imageSource = tileset.getChildByName("image").getAttribute("source");
-                    FileHandle image = getRelativeFileHandle(tsxFile, imageSource);
+                    Fi image = getRelativeFileHandle(tsxFile, imageSource);
                     images.add(image);
                 }else{
                     for(Element tile : tileset.getChildrenByName("tile")){
                         String imageSource = tile.getChildByName("image").getAttribute("source");
-                        FileHandle image = getRelativeFileHandle(tsxFile, imageSource);
+                        Fi image = getRelativeFileHandle(tsxFile, imageSource);
                         images.add(image);
                     }
                 }
@@ -225,12 +225,12 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
                 Element imageElement = tileset.getChildByName("image");
                 if(imageElement != null){
                     String imageSource = tileset.getChildByName("image").getAttribute("source");
-                    FileHandle image = getRelativeFileHandle(tmxFile, imageSource);
+                    Fi image = getRelativeFileHandle(tmxFile, imageSource);
                     images.add(image);
                 }else{
                     for(Element tile : tileset.getChildrenByName("tile")){
                         String imageSource = tile.getChildByName("image").getAttribute("source");
-                        FileHandle image = getRelativeFileHandle(tmxFile, imageSource);
+                        Fi image = getRelativeFileHandle(tmxFile, imageSource);
                         images.add(image);
                     }
                 }
@@ -244,15 +244,15 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
      * @param root the root XML element
      * @return a list of filenames for images inside image layers
      */
-    protected Array<FileHandle> loadImages(Element root, FileHandle tmxFile){
-        Array<FileHandle> images = new Array<>();
+    protected Array<Fi> loadImages(Element root, Fi tmxFile){
+        Array<Fi> images = new Array<>();
 
         for(Element imageLayer : root.getChildrenByName("imagelayer")){
             Element image = imageLayer.getChildByName("image");
             String source = image.getAttribute("source", null);
 
             if(source != null){
-                FileHandle handle = getRelativeFileHandle(tmxFile, source);
+                Fi handle = getRelativeFileHandle(tmxFile, source);
 
                 if(!images.contains(handle, false)){
                     images.add(handle);
@@ -290,7 +290,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
      * @param tmxFile the Filehandle of the tmx file
      * @param imageResolver the {@link ImageResolver}
      */
-    protected void loadTileSet(TiledMap map, Element element, FileHandle tmxFile, ImageResolver imageResolver){
+    protected void loadTileSet(TiledMap map, Element element, Fi tmxFile, ImageResolver imageResolver){
         if(element.getName().equals("tileset")){
             String name = element.get("name", null);
             int firstgid = element.getIntAttribute("firstgid", 1);
@@ -306,9 +306,9 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
             String imageSource = "";
             int imageWidth = 0, imageHeight = 0;
 
-            FileHandle image = null;
+            Fi image = null;
             if(source != null){
-                FileHandle tsx = getRelativeFileHandle(tmxFile, source);
+                Fi tsx = getRelativeFileHandle(tmxFile, source);
                 try{
                     element = xml.parse(tsx);
                     name = element.get("name", null);

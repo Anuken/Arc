@@ -59,6 +59,8 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
      * @throws ArcRuntimeException in case the FrameBuffer could not be created
      */
     public FrameBuffer(Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil){
+        width = Math.max(width, 2);
+        height = Math.max(height, 2);
         this.format = format;
         FrameBufferBuilder frameBufferBuilder = new FrameBufferBuilder(width, height);
         frameBufferBuilder.addBasicColorTextureAttachment(format);

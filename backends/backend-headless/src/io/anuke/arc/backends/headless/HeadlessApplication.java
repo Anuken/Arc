@@ -4,7 +4,7 @@ import io.anuke.arc.*;
 import io.anuke.arc.audio.mock.*;
 import io.anuke.arc.backends.headless.mock.*;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.func.Cons;
 import io.anuke.arc.util.*;
 
 /**
@@ -20,7 +20,7 @@ public class HeadlessApplication implements Application{
     protected final Array<ApplicationListener> listeners = new Array<>();
     protected final Array<Runnable> runnables = new Array<>();
     protected final Array<Runnable> executedRunnables = new Array<>();
-    protected final Consumer<Throwable> exceptionHandler;
+    protected final Cons<Throwable> exceptionHandler;
     private final long renderInterval;
     protected Thread mainLoopThread;
     protected boolean running = true;
@@ -29,7 +29,7 @@ public class HeadlessApplication implements Application{
         this(listener, null, t -> { throw new RuntimeException(t); });
     }
 
-    public HeadlessApplication(ApplicationListener listener, HeadlessApplicationConfiguration config, Consumer<Throwable> exceptionHandler){
+    public HeadlessApplication(ApplicationListener listener, HeadlessApplicationConfiguration config, Cons<Throwable> exceptionHandler){
         if(config == null)
             config = new HeadlessApplicationConfiguration();
 
@@ -63,7 +63,7 @@ public class HeadlessApplication implements Application{
                 try{
                     HeadlessApplication.this.mainLoop();
                 }catch(Throwable t){
-                    exceptionHandler.accept(t);
+                    exceptionHandler.get(t);
                 }
             }
         };

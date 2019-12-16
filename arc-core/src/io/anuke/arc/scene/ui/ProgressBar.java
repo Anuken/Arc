@@ -1,21 +1,14 @@
 package io.anuke.arc.scene.ui;
 
-import io.anuke.arc.Core;
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.graphics.g2d.Draw;
-import io.anuke.arc.graphics.g2d.NinePatch;
-import io.anuke.arc.graphics.g2d.TextureRegion;
-import io.anuke.arc.math.Interpolation;
-import io.anuke.arc.math.Mathf;
-import io.anuke.arc.scene.Element;
-import io.anuke.arc.scene.Scene;
-import io.anuke.arc.scene.Skin;
-import io.anuke.arc.scene.event.ChangeListener.ChangeEvent;
-import io.anuke.arc.scene.style.Drawable;
-import io.anuke.arc.scene.style.SkinReader.ReadContext;
-import io.anuke.arc.scene.style.Style;
-import io.anuke.arc.scene.utils.Disableable;
-import io.anuke.arc.util.pooling.Pools;
+import io.anuke.arc.*;
+import io.anuke.arc.graphics.*;
+import io.anuke.arc.graphics.g2d.*;
+import io.anuke.arc.math.*;
+import io.anuke.arc.scene.*;
+import io.anuke.arc.scene.event.ChangeListener.*;
+import io.anuke.arc.scene.style.*;
+import io.anuke.arc.scene.utils.*;
+import io.anuke.arc.util.pooling.*;
 
 /**
  * A progress bar is a widget that visually displays the progress of some activity or a value within given range. The progress
@@ -41,14 +34,6 @@ public class ProgressBar extends Element implements Disableable{
     private Interpolation animateInterpolation = Interpolation.linear;
     private Interpolation visualInterpolation = Interpolation.linear;
     private boolean round = true;
-
-    public ProgressBar(float min, float max, float stepSize, boolean vertical, Skin skin){
-        this(min, max, stepSize, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), ProgressBarStyle.class));
-    }
-
-    public ProgressBar(float min, float max, float stepSize, boolean vertical, Skin skin, String styleName){
-        this(min, max, stepSize, vertical, skin.get(styleName, ProgressBarStyle.class));
-    }
 
     /**
      * Creates a new progress bar. If horizontal, its width is determined by the prefWidth parameter, and its height is determined by the
@@ -395,18 +380,6 @@ public class ProgressBar extends Element implements Disableable{
             this.knobAfter = style.knobAfter;
             this.disabledKnobBefore = style.disabledKnobBefore;
             this.disabledKnobAfter = style.disabledKnobAfter;
-        }
-
-        @Override
-        public void read(ReadContext read){
-            background = read.draw("background");
-            disabledBackground = read.draw("disabledBackground");
-            knob = read.draw("knob");
-            disabledKnob = read.draw("disabledKnob");
-            knobBefore = read.draw("knobBefore");
-            knobAfter = read.draw("knobAfter");
-            disabledKnobBefore = read.draw("disabledKnobBefore");
-            disabledKnobAfter = read.draw("disabledKnobAfter");
         }
     }
 }

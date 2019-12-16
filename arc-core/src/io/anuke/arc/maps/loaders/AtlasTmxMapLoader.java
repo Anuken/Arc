@@ -6,7 +6,7 @@ import io.anuke.arc.assets.loaders.FileHandleResolver;
 import io.anuke.arc.assets.loaders.resolvers.InternalFileHandleResolver;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.ObjectMap;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.graphics.Texture.TextureFilter;
 import io.anuke.arc.graphics.g2d.TextureAtlas;
@@ -43,7 +43,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, FileHandle tmxFile, AtlasTiledMapLoaderParameters parameter){
+    public Array<AssetDescriptor> getDependencies(String fileName, Fi tmxFile, AtlasTiledMapLoaderParameters parameter){
         Array<AssetDescriptor> dependencies = new Array<>();
         try{
             root = xml.parse(tmxFile);
@@ -54,7 +54,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
                     String name = property.getAttribute("name");
                     String value = property.getAttribute("value");
                     if(name.startsWith("atlas")){
-                        FileHandle atlasHandle = getRelativeFileHandle(tmxFile, value);
+                        Fi atlasHandle = getRelativeFileHandle(tmxFile, value);
                         dependencies.add(new AssetDescriptor<>(atlasHandle, TextureAtlas.class));
                     }
                 }
@@ -75,10 +75,10 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
                 flipY = true;
             }
 
-            FileHandle tmxFile = resolve(fileName);
+            Fi tmxFile = resolve(fileName);
             root = xml.parse(tmxFile);
             ObjectMap<String, TextureAtlas> atlases = new ObjectMap<>();
-            FileHandle atlasFile = loadAtlas(root, tmxFile);
+            Fi atlasFile = loadAtlas(root, tmxFile);
             if(atlasFile == null){
                 throw new ArcRuntimeException("Couldn't load atlas");
             }
@@ -97,7 +97,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
     }
 
     /** May return null. */
-    protected FileHandle loadAtlas(Element root, FileHandle tmxFile) throws IOException{
+    protected Fi loadAtlas(Element root, Fi tmxFile) throws IOException{
         Element e = root.getChildByName("properties");
 
         if(e != null){
@@ -118,7 +118,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
                 }
             }
         }
-        FileHandle atlasFile = tmxFile.sibling(tmxFile.nameWithoutExtension() + ".atlas");
+        Fi atlasFile = tmxFile.sibling(tmxFile.nameWithoutExtension() + ".atlas");
         return atlasFile.exists() ? atlasFile : null;
     }
 
@@ -130,7 +130,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
     }
 
     @Override
-    public void loadAsync(AssetManager manager, String fileName, FileHandle tmxFile, AtlasTiledMapLoaderParameters parameter){
+    public void loadAsync(AssetManager manager, String fileName, Fi tmxFile, AtlasTiledMapLoaderParameters parameter){
         map = null;
 
         if(parameter != null){
@@ -149,7 +149,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
     }
 
     @Override
-    public TiledMap loadSync(AssetManager manager, String fileName, FileHandle file, AtlasTiledMapLoaderParameters parameter){
+    public TiledMap loadSync(AssetManager manager, String fileName, Fi file, AtlasTiledMapLoaderParameters parameter){
         if(parameter != null){
             setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
         }
@@ -157,7 +157,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
         return map;
     }
 
-    protected TiledMap loadMap(Element root, FileHandle tmxFile, AtlasResolver resolver){
+    protected TiledMap loadMap(Element root, Fi tmxFile, AtlasResolver resolver){
         TiledMap map = new TiledMap();
 
         String mapOrientation = root.getAttribute("orientation", null);
@@ -209,7 +209,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
         return map;
     }
 
-    protected void loadTileset(TiledMap map, Element element, FileHandle tmxFile, AtlasResolver resolver){
+    protected void loadTileset(TiledMap map, Element element, Fi tmxFile, AtlasResolver resolver){
         if(element.getName().equals("tileset")){
             String name = element.get("name", null);
             int firstgid = element.getIntAttribute("firstgid", 1);
@@ -225,9 +225,9 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
             String imageSource = "";
             int imageWidth = 0, imageHeight = 0;
 
-            FileHandle image = null;
+            Fi image = null;
             if(source != null){
-                FileHandle tsx = getRelativeFileHandle(tmxFile, source);
+                Fi tsx = getRelativeFileHandle(tmxFile, source);
                 try{
                     element = xml.parse(tsx);
                     name = element.get("name", null);
@@ -267,7 +267,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
             String atlasFilePath = map.properties.get("atlas");
             if(atlasFilePath == null){
-                FileHandle atlasFile = tmxFile.sibling(tmxFile.nameWithoutExtension() + ".atlas");
+                Fi atlasFile = tmxFile.sibling(tmxFile.nameWithoutExtension() + ".atlas");
                 if(atlasFile.exists()) atlasFilePath = atlasFile.name();
             }
             if(atlasFilePath == null){
@@ -275,7 +275,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
             }
 
             // get the TextureAtlas for this tileset
-            FileHandle atlasHandle = getRelativeFileHandle(tmxFile, atlasFilePath);
+            Fi atlasHandle = getRelativeFileHandle(tmxFile, atlasFilePath);
             atlasHandle = resolve(atlasHandle.path());
             TextureAtlas atlas = resolver.getAtlas(atlasHandle.path());
             String regionsName = name;

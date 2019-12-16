@@ -1,16 +1,11 @@
 package io.anuke.arc.util;
 
-import io.anuke.arc.collection.ObjectMap;
-import io.anuke.arc.files.FileHandle;
-import io.anuke.arc.util.io.PropertiesUtils;
-import io.anuke.arc.util.io.Streams;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.files.*;
+import io.anuke.arc.util.io.*;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.MissingResourceException;
+import java.io.*;
+import java.util.*;
 
 /**
  * A {@code I18NBundle} provides {@code Locale}-specific resources loaded from property files. A bundle contains a number of named
@@ -63,8 +58,7 @@ public class I18NBundle{
     private TextFormatter formatter;
 
     /**
-     * Returns the flag indicating whether to use the simplified message pattern syntax (default is false). This flag is always
-     * assumed to be true on GWT backend.
+     * Returns the flag indicating whether to use the simplified message pattern syntax (default is false).
      */
     public static boolean getSimpleFormatter(){
         return simpleFormatter;
@@ -72,7 +66,7 @@ public class I18NBundle{
 
     /**
      * Sets the flag indicating whether to use the simplified message pattern. The flag must be set before calling the factory
-     * methods {@code createBundle}. Notice that this method has no effect on the GWT backend where it's always assumed to be true.
+     * methods {@code createBundle}.
      */
     public static void setSimpleFormatter(boolean enabled){
         simpleFormatter = enabled;
@@ -93,7 +87,7 @@ public class I18NBundle{
      * @throws NullPointerException if <code>baseFileHandle</code> is <code>null</code>
      * @throws MissingResourceException if no bundle for the specified base file handle can be found
      */
-    public static I18NBundle createBundle(FileHandle baseFileHandle){
+    public static I18NBundle createBundle(Fi baseFileHandle){
         return createBundleImpl(baseFileHandle, Locale.getDefault(), DEFAULT_ENCODING);
     }
 
@@ -106,7 +100,7 @@ public class I18NBundle{
      * @throws NullPointerException if <code>baseFileHandle</code> or <code>locale</code> is <code>null</code>
      * @throws MissingResourceException if no bundle for the specified base file handle can be found
      */
-    public static I18NBundle createBundle(FileHandle baseFileHandle, Locale locale){
+    public static I18NBundle createBundle(Fi baseFileHandle, Locale locale){
         return createBundleImpl(baseFileHandle, locale, DEFAULT_ENCODING);
     }
 
@@ -118,7 +112,7 @@ public class I18NBundle{
      * @throws NullPointerException if <code>baseFileHandle</code> or <code>encoding</code> is <code>null</code>
      * @throws MissingResourceException if no bundle for the specified base file handle can be found
      */
-    public static I18NBundle createBundle(FileHandle baseFileHandle, String encoding){
+    public static I18NBundle createBundle(Fi baseFileHandle, String encoding){
         return createBundleImpl(baseFileHandle, Locale.getDefault(), encoding);
     }
 
@@ -132,14 +126,14 @@ public class I18NBundle{
      * <code>null</code>
      * @throws MissingResourceException if no bundle for the specified base file handle can be found
      */
-    public static I18NBundle createBundle(FileHandle baseFileHandle, Locale locale, String encoding){
+    public static I18NBundle createBundle(Fi baseFileHandle, Locale locale, String encoding){
         return createBundleImpl(baseFileHandle, locale, encoding);
     }
 
-    private static I18NBundle createBundleImpl(FileHandle baseFileHandle, Locale locale, String encoding){
+    private static I18NBundle createBundleImpl(Fi baseFileHandle, Locale locale, String encoding){
         if(baseFileHandle == null || locale == null || encoding == null) throw new NullPointerException();
 
-        I18NBundle bundle = null;
+        I18NBundle bundle;
         I18NBundle baseBundle = null;
         Locale targetLocale = locale;
         do{
@@ -151,7 +145,7 @@ public class I18NBundle{
 
             // Check the loaded bundle (if any)
             if(bundle != null){
-                Locale bundleLocale = bundle.getLocale(); // WTH? GWT can't access bundle.locale directly
+                Locale bundleLocale = bundle.locale;
                 boolean isBaseBundle = bundleLocale.equals(ROOT_LOCALE);
 
                 if(!isBaseBundle || bundleLocale.equals(locale)){
@@ -162,7 +156,7 @@ public class I18NBundle{
                     // Found the bundle for the only candidate locale
                     break;
                 }
-                if(isBaseBundle && baseBundle == null){
+                if(baseBundle == null){
                     // Store the base bundle and keep on processing the remaining fallback locales
                     baseBundle = bundle;
                 }
@@ -273,7 +267,7 @@ public class I18NBundle{
         return locale.equals(defaultLocale) ? null : defaultLocale;
     }
 
-    private static I18NBundle loadBundleChain(FileHandle baseFileHandle, String encoding, List<Locale> candidateLocales,
+    private static I18NBundle loadBundleChain(Fi baseFileHandle, String encoding, List<Locale> candidateLocales,
                                               int candidateIndex, I18NBundle baseBundle){
         Locale targetLocale = candidateLocales.get(candidateIndex);
         I18NBundle parent = null;
@@ -295,11 +289,11 @@ public class I18NBundle{
     }
 
     // Tries to load the bundle for the given locale.
-    private static I18NBundle loadBundle(FileHandle baseFileHandle, String encoding, Locale targetLocale){
+    private static I18NBundle loadBundle(Fi baseFileHandle, String encoding, Locale targetLocale){
         I18NBundle bundle = null;
         Reader reader = null;
         try{
-            FileHandle fileHandle = toFileHandle(baseFileHandle, targetLocale);
+            Fi fileHandle = toFileHandle(baseFileHandle, targetLocale);
             if(checkFileExistence(fileHandle)){
                 // Instantiate the bundle
                 bundle = new I18NBundle();
@@ -308,8 +302,6 @@ public class I18NBundle{
                 reader = fileHandle.reader(encoding);
                 bundle.load(reader);
             }
-        }catch(IOException e){
-            throw new ArcRuntimeException(e);
         }finally{
             Streams.closeQuietly(reader);
         }
@@ -322,7 +314,7 @@ public class I18NBundle{
 
     // On Android this is much faster than fh.exists(), see https://github.com/libgdx/libgdx/issues/2342
     // Also this should fix a weird problem on iOS, see https://github.com/libgdx/libgdx/issues/2345
-    private static boolean checkFileExistence(FileHandle fh){
+    private static boolean checkFileExistence(Fi fh){
         try{
             fh.read().close();
             return true;
@@ -349,7 +341,7 @@ public class I18NBundle{
      * @return the file handle for the bundle
      * @throws NullPointerException if <code>baseFileHandle</code> or <code>locale</code> is <code>null</code>
      */
-    private static FileHandle toFileHandle(FileHandle baseFileHandle, Locale locale){
+    private static Fi toFileHandle(Fi baseFileHandle, Locale locale){
         StringBuilder sb = new StringBuilder(baseFileHandle.name());
         if(!locale.equals(ROOT_LOCALE)){
             String language = locale.getLanguage();
@@ -376,11 +368,8 @@ public class I18NBundle{
     /**
      * Load the properties from the specified reader.
      * @param reader the reader
-     * @throws IOException if an error occurred when reading from the input stream.
      */
-    // NOTE:
-    // This method can't be private otherwise GWT can't access it from loadBundle()
-    protected void load(Reader reader) throws IOException{
+    private void load(Reader reader){
         properties = new ObjectMap<>();
         PropertiesUtils.load(properties, reader);
     }
@@ -441,6 +430,11 @@ public class I18NBundle{
         return properties.keys();
     }
 
+    /** @return the internal property map. Can be modified. */
+    public ObjectMap<String, String> getProperties(){
+        return properties;
+    }
+
     /** Checks whether a specified key is present in this bundle. */
     public boolean has(String key){
         if(properties.containsKey(key)){
@@ -482,5 +476,10 @@ public class I18NBundle{
         for(String s : keys){
             properties.put(s, placeholder);
         }
+    }
+
+    /** @return the parent bundle. */
+    public I18NBundle getParent(){
+        return parent;
     }
 }

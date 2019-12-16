@@ -241,7 +241,7 @@ public class Quaternion implements Serializable{
      */
     public Quaternion nor(){
         float len = len2();
-        if(len != 0.f && !Mathf.isEqual(len, 1f)){
+        if(len != 0.f && !Mathf.equal(len, 1f)){
             len = (float)Math.sqrt(len);
             w /= len;
             x /= len;
@@ -381,15 +381,15 @@ public class Quaternion implements Serializable{
 
     /** @return If this quaternion is an identity Quaternion */
     public boolean isIdentity(){
-        return Mathf.isZero(x) && Mathf.isZero(y) && Mathf.isZero(z) && Mathf.isEqual(w, 1f);
+        return Mathf.zero(x) && Mathf.zero(y) && Mathf.zero(z) && Mathf.equal(w, 1f);
     }
 
     // todo : the setFromAxis(v3,float) method should replace the set(v3,float) method
 
     /** @return If this quaternion is an identity Quaternion */
     public boolean isIdentity(final float tolerance){
-        return Mathf.isZero(x, tolerance) && Mathf.isZero(y, tolerance) && Mathf.isZero(z, tolerance)
-        && Mathf.isEqual(w, 1f, tolerance);
+        return Mathf.zero(x, tolerance) && Mathf.zero(y, tolerance) && Mathf.zero(z, tolerance)
+        && Mathf.equal(w, 1f, tolerance);
     }
 
     /**
@@ -861,7 +861,7 @@ public class Quaternion implements Serializable{
     public float getAngleAroundRad(final float axisX, final float axisY, final float axisZ){
         final float d = Vector3.dot(this.x, this.y, this.z, axisX, axisY, axisZ);
         final float l2 = Quaternion.len2(axisX * d, axisY * d, axisZ * d, this.w);
-        return Mathf.isZero(l2) ? 0f : (float)(2.0 * Math.acos(Mathf.clamp(
+        return Mathf.zero(l2) ? 0f : (float)(2.0 * Math.acos(Mathf.clamp(
         (float)((d < 0 ? -this.w : this.w) / Math.sqrt(l2)), -1f, 1f)));
     }
 

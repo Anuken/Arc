@@ -1,31 +1,28 @@
 package io.anuke.arc.util;
 
 import io.anuke.arc.Core;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 
 public class OS{
-    public static boolean isWindows = getPropertyNotNull("os.name").contains("Windows");
-    public static boolean isLinux = getPropertyNotNull("os.name").contains("Linux");
-    public static boolean isMac = getPropertyNotNull("os.name").contains("Mac");
-    public static boolean isIos = false;
-    public static boolean isAndroid = false;
-    public static boolean isARM = getPropertyNotNull("os.arch").startsWith("arm");
-    public static boolean is64Bit = getPropertyNotNull("os.arch").equals("amd64") || getPropertyNotNull("os.arch").equals("x86_64");
+    static public boolean isWindows = System.getProperty("os.name").contains("Windows");
+    static public boolean isLinux = System.getProperty("os.name").contains("Linux");
+    static public boolean isMac = System.getProperty("os.name").contains("Mac");
+    static public boolean isIos = false;
+    static public boolean isAndroid = false;
+    static public boolean isARM = System.getProperty("os.arch").startsWith("arm") || System.getProperty("os.arch").startsWith("aarch64");
+    static public boolean is64Bit = System.getProperty("os.arch").contains("64") || System.getProperty("os.arch").startsWith("armv8");
 
-    // JDK 8 only.
-    public static String abi = (getPropertyNotNull("sun.arch.abi") != null ? getPropertyNotNull("sun.arch.abi") : "");
-
-    static{
-        boolean isMOEiOS = "iOS".equals(getPropertyNotNull("moe.platform.name"));
-        String vm = getPropertyNotNull("java.runtime.name");
-        if(vm != null && vm.contains("Android Runtime")){
+    static {
+        boolean isMOEiOS = "iOS".equals(System.getProperty("moe.platform.name"));
+        String vm = System.getProperty("java.runtime.name");
+        if (vm != null && vm.contains("Android Runtime")) {
             isAndroid = true;
             isWindows = false;
             isLinux = false;
             isMac = false;
             is64Bit = false;
         }
-        if(isMOEiOS || (!isAndroid && !isWindows && !isLinux && !isMac)){
+        if (isMOEiOS || (!isAndroid && !isWindows && !isLinux && !isMac)) {
             isIos = true;
             isAndroid = false;
             isWindows = false;
@@ -49,12 +46,12 @@ public class OS{
             return getProperty("user.home") + "/.local/share/" + appname + "/";
         }else if(OS.isMac){
             return getProperty("user.home") + "/Library/Application Support/" + appname + "/";
-        }else{ //else, probably GWT
+        }else{ //else, probably web
             return null;
         }
     }
 
-    public static FileHandle getAppDataDirectory(String appname){
+    public static Fi getAppDataDirectory(String appname){
         return Core.files.absolute(getAppDataDirectoryString(appname));
     }
 

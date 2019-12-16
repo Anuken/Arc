@@ -1,7 +1,7 @@
 package io.anuke.arc.assets.loaders.resolvers;
 
 import io.anuke.arc.assets.loaders.FileHandleResolver;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 
 /**
  * {@link FileHandleResolver} that adds a prefix to the filename before passing it to the base resolver. Can be used e.g. to use a
@@ -34,7 +34,7 @@ public class PrefixFileHandleResolver implements FileHandleResolver{
     }
 
     @Override
-    public FileHandle resolve(String fileName){
+    public Fi resolve(String fileName){
         return baseResolver.resolve(prefix + fileName);
     }
 }

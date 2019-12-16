@@ -51,6 +51,10 @@ public class Vector2 implements Serializable, Vector<Vector2>, Position{
         return set(x, y).rotate(angle);
     }
 
+    public Vector2 trnsExact(float angle, float amount){
+        return set(amount, 0).rotateRadExact(angle * Mathf.degreesToRadians);
+    }
+
     /**Snaps this vector's coordinates to integers.*/
     public Vector2 snap(){
         return set((int)x, (int)y);
@@ -422,6 +426,19 @@ public class Vector2 implements Serializable, Vector<Vector2>, Position{
         return this;
     }
 
+    public Vector2 rotateRadExact(float radians){
+        float cos = (float)Math.cos(radians);
+        float sin = (float)Math.sin(radians);
+
+        float newX = this.x * cos - this.y * sin;
+        float newY = this.x * sin + this.y * cos;
+
+        this.x = newX;
+        this.y = newY;
+
+        return this;
+    }
+
     /**
      * Rotates the Vector2 by the given angle around reference vector, counter-clockwise assuming the y-axis points up.
      * @param radians the angle in radians
@@ -561,12 +578,12 @@ public class Vector2 implements Serializable, Vector<Vector2>, Position{
 
     @Override
     public boolean isOnLine(Vector2 other){
-        return Mathf.isZero(x * other.y - y * other.x);
+        return Mathf.zero(x * other.y - y * other.x);
     }
 
     @Override
     public boolean isOnLine(Vector2 other, float epsilon){
-        return Mathf.isZero(x * other.y - y * other.x, epsilon);
+        return Mathf.zero(x * other.y - y * other.x, epsilon);
     }
 
     @Override
@@ -591,12 +608,12 @@ public class Vector2 implements Serializable, Vector<Vector2>, Position{
 
     @Override
     public boolean isPerpendicular(Vector2 vector){
-        return Mathf.isZero(dot(vector));
+        return Mathf.zero(dot(vector));
     }
 
     @Override
     public boolean isPerpendicular(Vector2 vector, float epsilon){
-        return Mathf.isZero(dot(vector), epsilon);
+        return Mathf.zero(dot(vector), epsilon);
     }
 
     @Override

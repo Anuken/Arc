@@ -1,12 +1,10 @@
 package io.anuke.arc.collection;
 
-import io.anuke.arc.collection.ObjectMap.Entry;
-import io.anuke.arc.math.Mathf;
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.reflect.ArrayReflection;
+import io.anuke.arc.collection.ObjectMap.*;
+import io.anuke.arc.math.*;
+import io.anuke.arc.util.*;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * An ordered or unordered map of objects. This implementation uses arrays to store the keys and values, which means
@@ -56,8 +54,8 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
      */
     public ArrayMap(boolean ordered, int capacity, Class keyArrayType, Class valueArrayType){
         this.ordered = ordered;
-        keys = (K[])ArrayReflection.newInstance(keyArrayType, capacity);
-        values = (V[])ArrayReflection.newInstance(valueArrayType, capacity);
+        keys = (K[])java.lang.reflect.Array.newInstance(keyArrayType, capacity);
+        values = (V[])java.lang.reflect.Array.newInstance(valueArrayType, capacity);
     }
 
     /** Creates an ordered map with {@link #keys} and {@link #values} of the specified type and a capacity of 16. */
@@ -361,11 +359,11 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
     }
 
     protected void resize(int newSize){
-        K[] newKeys = (K[])ArrayReflection.newInstance(keys.getClass().getComponentType(), newSize);
+        K[] newKeys = (K[])java.lang.reflect.Array.newInstance(keys.getClass().getComponentType(), newSize);
         System.arraycopy(keys, 0, newKeys, 0, Math.min(size, newKeys.length));
         this.keys = newKeys;
 
-        V[] newValues = (V[])ArrayReflection.newInstance(values.getClass().getComponentType(), newSize);
+        V[] newValues = (V[])java.lang.reflect.Array.newInstance(values.getClass().getComponentType(), newSize);
         System.arraycopy(values, 0, newValues, 0, Math.min(size, newValues.length));
         this.values = newValues;
     }

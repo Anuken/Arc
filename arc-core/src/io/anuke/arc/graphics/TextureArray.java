@@ -3,7 +3,7 @@ package io.anuke.arc.graphics;
 import io.anuke.arc.Application;
 import io.anuke.arc.Core;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.util.ArcRuntimeException;
 
 import java.util.HashMap;
@@ -22,15 +22,15 @@ public class TextureArray extends GLTexture{
         this(getInternalHandles(internalPaths));
     }
 
-    public TextureArray(FileHandle... files){
+    public TextureArray(Fi... files){
         this(false, files);
     }
 
-    public TextureArray(boolean useMipMaps, FileHandle... files){
+    public TextureArray(boolean useMipMaps, Fi... files){
         this(useMipMaps, Pixmap.Format.RGBA8888, files);
     }
 
-    public TextureArray(boolean useMipMaps, Pixmap.Format format, FileHandle... files){
+    public TextureArray(boolean useMipMaps, Pixmap.Format format, Fi... files){
         this(TextureArrayData.Factory.loadFromFiles(format, useMipMaps, files));
     }
 
@@ -46,8 +46,8 @@ public class TextureArray extends GLTexture{
         if(data.isManaged()) addManagedTexture(Core.app, this);
     }
 
-    private static FileHandle[] getInternalHandles(String... internalPaths){
-        FileHandle[] handles = new FileHandle[internalPaths.length];
+    private static Fi[] getInternalHandles(String... internalPaths){
+        Fi[] handles = new Fi[internalPaths.length];
         for(int i = 0; i < internalPaths.length; i++){
             handles[i] = Core.files.internal(internalPaths[i]);
         }

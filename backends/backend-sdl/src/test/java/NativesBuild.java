@@ -5,59 +5,65 @@ import io.anuke.arc.util.*;
 import java.io.*;
 import java.util.*;
 
-//mac: install sdl2, glew, ant
-//linux: install sdl2, glew, glew utils, libmpg123-dev
-//windows on linux: mingw32, mingw32 64 bit, then compile sdl2 yourself with the right targets, also compile sdl2-mixer
+//mac: install sdl2, glew, ant, openal dev packages
+//linux: install sdl2, glew, glew utils, openal dev packages
+//windows on linux: mingw32, mingw32 64 bit, then compile sdl2 yourself with the right targets, also get the files from the openal SDK and put them in the right places (include/lib directories)
 class NativesBuild{
     static final String win32crossCompilePath = "/usr/local/cross-tools/i686-w64-mingw32/bin/";
     static final String win64crossCompilePath = "/usr/local/cross-tools/x86_64-w64-mingw32/bin/";
     static final String minSDLversion = "2.0.9";
-    static final String libsLinux = " -lGLEW -lGLU -lGL -lSDL2_mixer";
-    static final String libsMac = " -lGLEW -lSDL2_mixer";
-    static final String libsWin = " -lglew32s -lglu32 -lopengl32 -lSDL2_mixer -lwinmm"; //absolutely disgusting amount of libraries required here
+    static final String libsLinux = " -Wl,-Bstatic -l:libGLEW.a -l:libGLU.a -Wl,-Bdynamic -lGL -lopenal ";
+    static final String libsMac = " /usr/local/lib/libGLEW.a";
+    static final String libsWin = " -lglew32s -lglu32 -lopengl32 -lOpenAL32";
     static final String macLibPath = "/usr/local/lib/libSDL2.a";
     static final boolean compileMac = OS.isMac;
 
     public static void main(String[] args) throws Exception{
-        BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
-        BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
-        BuildTarget win64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
-        BuildTarget mac64 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);
+        if(compileMac){
+            BuildTarget mac64 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);
 
-        checkSDLVersion("sdl2-config", minSDLversion);
-        checkSDLVersion(win32crossCompilePath + "sdl2-config", minSDLversion);
-        checkSDLVersion(win64crossCompilePath + "sdl2-config", minSDLversion);
+            mac64.cIncludes = new String[]{};
+            mac64.cFlags = mac64.cppFlags = execCmd("sdl2-config --cflags") + " -c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.9";
+            mac64.linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.9";
+            mac64.libraries = macLibPath + " -lm -liconv -Wl,-framework,OpenAL -Wl,-framework,CoreAudio -Wl,-framework,OpenGL,-framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal" + libsMac;
 
-        lin64.cIncludes = new String[]{};
-        lin64.cFlags = lin64.cFlags + " " + execCmd("sdl2-config --cflags");
-        lin64.cppFlags = lin64.cFlags;
-        lin64.linkerFlags = "-shared -m64";
-        lin64.libraries = execCmd("sdl2-config --static-libs").replace("-lSDL2", "-l:libSDL2.a") + libsLinux;
+            new NativeCodeGenerator().generate("src/main/java", "build/classes/java/main", "jni");
+            new AntScriptGenerator().generate(new BuildConfig("sdl-arc"), mac64);
 
-        mac64.cIncludes = new String[]{};
-        mac64.cFlags = execCmd("sdl2-config --cflags") + " -c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.6";
-        mac64.cppFlags = mac64.cFlags;
-        mac64.linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.6";
-        mac64.libraries = macLibPath + " -lm -liconv -Wl,-framework,CoreAudio -Wl,-framework,OpenGL,-framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal"  + libsMac;
+            BuildExecutor.executeAnt("jni/build-macosx64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
+        }else{
+            BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
+            BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
+            BuildTarget win64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
 
-        win32.cFlags = win32.cFlags + " -Wl,--unresolved-symbols=all " + execCmd(win32crossCompilePath + "sdl2-config --cflags");
-        win32.cppFlags = win32.cFlags;
-        win32.libraries = execCmd(win32crossCompilePath + "sdl2-config --static-libs") + libsWin;
+            checkSDLVersion("sdl2-config", minSDLversion);
+            checkSDLVersion(win32crossCompilePath + "sdl2-config", minSDLversion);
+            checkSDLVersion(win64crossCompilePath + "sdl2-config", minSDLversion);
 
-        win64.cFlags = win64.cFlags + " -Wl,--unresolved-symbols=ignore-all " + execCmd(win64crossCompilePath + "sdl2-config --cflags");
-        win64.cppFlags = win64.cFlags;
-        win64.libraries = execCmd(win64crossCompilePath + "sdl2-config --static-libs")  + libsWin;
+            lin64.cIncludes = new String[]{};
+            lin64.cFlags = lin64.cFlags + " " + execCmd("sdl2-config --cflags");
+            lin64.cppFlags = lin64.cFlags;
+            lin64.linkerFlags = "-shared -m64";
+            lin64.libraries = execCmd("sdl2-config --static-libs").replace("-lSDL2", "-l:libSDL2.a") + libsLinux;
 
-        new NativeCodeGenerator().generate("src/main/java", "build/classes/java/main", "jni");
-        new AntScriptGenerator().generate(new BuildConfig("sdl-arc"), win32, win64, lin64, mac64);
+            win32.cFlags = win32.cFlags + " " + execCmd(win32crossCompilePath + "sdl2-config --cflags");
+            win32.cppFlags = win32.cFlags;
+            win32.libraries = execCmd(win32crossCompilePath + "sdl2-config --static-libs") + libsWin;
 
-        //new FileHandle("jni/build-windows32.xml").writeString(new FileHandle("jni/build-windows32.xml").readString().replace("-Wl,--no-undefined ", ""));
-       // new FileHandle("jni/build-windows64.xml").writeString(new FileHandle("jni/build-windows64.xml").readString().replace("-Wl,--no-undefined ", ""));
+            win64.cFlags = win64.cFlags + " " + execCmd(win64crossCompilePath + "sdl2-config --cflags");
+            win64.cppFlags = win64.cFlags;
+            win64.libraries = execCmd(win64crossCompilePath + "sdl2-config --static-libs") + libsWin;
 
-        BuildExecutor.executeAnt("jni/build-windows32.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
-        BuildExecutor.executeAnt("jni/build-windows64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
-        BuildExecutor.executeAnt("jni/build-linux64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
-        if(compileMac) BuildExecutor.executeAnt("jni/build-macosx64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
+            new NativeCodeGenerator().generate("src/main/java", "build/classes/java/main", "jni");
+            new AntScriptGenerator().generate(new BuildConfig("sdl-arc"), win32, win64, lin64);
+
+            BuildExecutor.executeAnt("jni/build-windows32.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
+            BuildExecutor.executeAnt("jni/build-windows64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
+            BuildExecutor.executeAnt("jni/build-linux64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
+            exec("strip", "libs/windows32/sdl-arc.dll");
+            exec("strip", "libs/windows64/sdl-arc64.dll");
+            exec("strip", "libs/linux64/sdl-arc.so");
+        }
     }
 
     private static void checkSDLVersion(String command, String version) throws FileNotFoundException{
@@ -72,6 +78,11 @@ class NativesBuild{
         if(compareVersions(sdl, version) < 0){
             throw new FileNotFoundException("\n!!! SDL version must be >= " + version + ". Current version: " + sdl);
         }
+    }
+
+    public static String exec(String... cmd) throws IOException{
+        Scanner s = new Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A");
+        return s.hasNext() ? s.next().trim() : "";
     }
 
     public static String execCmd(String cmd) throws IOException{

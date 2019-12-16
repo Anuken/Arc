@@ -2,7 +2,7 @@ package io.anuke.arc.scene.ui;
 
 import io.anuke.arc.*;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.func.Cons;
 import io.anuke.arc.input.KeyCode;
 import io.anuke.arc.math.Interpolation;
 import io.anuke.arc.math.geom.Vector2;
@@ -28,16 +28,16 @@ public class Tooltip extends InputListener{
     Element targetActor;
     Runnable show;
 
-    public Tooltip(Consumer<Table> contents){
+    public Tooltip(Cons<Table> contents){
         this(contents, Tooltips.getInstance());
     }
 
-    public Tooltip(Consumer<Table> contents, Runnable show){
+    public Tooltip(Cons<Table> contents, Runnable show){
         this(contents, Tooltips.getInstance());
         this.show = show;
     }
 
-    public Tooltip(Consumer<Table> contents, Tooltips manager){
+    public Tooltip(Cons<Table> contents, Tooltips manager){
         this.manager = manager;
 
         container = new Table(){
@@ -46,7 +46,7 @@ public class Tooltip extends InputListener{
                 if(targetActor != null && targetActor.getScene() == null) remove();
             }
         };
-        contents.accept(container);
+        contents.get(container);
         container.touchable(Touchable.disabled);
     }
 

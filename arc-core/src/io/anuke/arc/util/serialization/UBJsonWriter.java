@@ -1,7 +1,8 @@
 package io.anuke.arc.util.serialization;
 
-import io.anuke.arc.collection.Array;
+import io.anuke.arc.collection.*;
 import io.anuke.arc.util.Strings;
+import io.anuke.arc.util.serialization.JsonWriter.*;
 
 import java.io.Closeable;
 import java.io.DataOutputStream;
@@ -12,8 +13,7 @@ import java.io.OutputStream;
  * Builder style API for emitting UBJSON.
  * @author Justin Shapcott
  */
-public class UBJsonWriter implements Closeable{
-
+public class UBJsonWriter implements Closeable, BaseJsonWriter{
     final DataOutputStream out;
     private final Array<JsonObject> stack = new Array<>();
     private JsonObject current;
@@ -24,10 +24,17 @@ public class UBJsonWriter implements Closeable{
         this.out = (DataOutputStream)out;
     }
 
+    public void reset(){
+        stack.clear();
+        current = null;
+        named = false;
+    }
+
     /**
      * Begins a new object container. To finish the object call {@link #pop()}.
      * @return This writer, for chaining
      */
+    @Override
     public UBJsonWriter object() throws IOException{
         if(current != null){
             if(!current.array){
@@ -43,6 +50,7 @@ public class UBJsonWriter implements Closeable{
      * Begins a new named object container, having the given name. To finish the object call {@link #pop()}.
      * @return This writer, for chaining
      */
+    @Override
     public UBJsonWriter object(String name) throws IOException{
         name(name).object();
         return this;
@@ -52,6 +60,7 @@ public class UBJsonWriter implements Closeable{
      * Begins a new array container. To finish the array call {@link #pop()}.
      * @return this writer, for chaining.
      */
+    @Override
     public UBJsonWriter array() throws IOException{
         if(current != null){
             if(!current.array){
@@ -67,6 +76,7 @@ public class UBJsonWriter implements Closeable{
      * Begins a new named array container, having the given name. To finish the array call {@link #pop()}.
      * @return this writer, for chaining.
      */
+    @Override
     public UBJsonWriter array(String name) throws IOException{
         name(name).array();
         return this;
@@ -76,6 +86,7 @@ public class UBJsonWriter implements Closeable{
      * Appends a name for the next object, array, or value.
      * @return this writer, for chaining
      */
+    @Override
     public UBJsonWriter name(String name) throws IOException{
         if(current == null || current.array) throw new IllegalStateException("Current item must be an object.");
         byte[] bytes = name.getBytes(Strings.utf8);
@@ -422,6 +433,7 @@ public class UBJsonWriter implements Closeable{
      * appropriate value method.
      * @return this writer, for chaining
      */
+    @Override
     public UBJsonWriter value(Object object) throws IOException{
         if(object == null){
             return value();
@@ -452,6 +464,26 @@ public class UBJsonWriter implements Closeable{
         out.writeByte('Z');
         return this;
     }
+
+    @Override
+    public void setOutputType(OutputType outputType){
+        //irrelevant
+    }
+
+    @Override
+    public void setQuoteLongValues(boolean quoteLongValues){
+        //irrelevant
+    }
+
+    /**
+     * Appends a named value to the stream.
+     * @return this writer, for chaining
+     */
+    @Override
+    public UBJsonWriter set(String name, Object value) throws IOException{
+        return name(name).value(value);
+    }
+
 
     /**
      * Appends a named {@code byte} value to the stream.
@@ -618,6 +650,7 @@ public class UBJsonWriter implements Closeable{
      * Ends the current object or array and pops it off of the element stack.
      * @return This writer, for chaining
      */
+    @Override
     public UBJsonWriter pop() throws IOException{
         return pop(false);
     }
@@ -638,6 +671,7 @@ public class UBJsonWriter implements Closeable{
     }
 
     /** Closes the underlying output stream and releases any system resources associated with the stream. */
+    @Override
     public void close() throws IOException{
         while(stack.size > 0)
             pop();

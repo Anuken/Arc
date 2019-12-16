@@ -6,8 +6,8 @@ import io.anuke.arc.util.pooling.Pool;
  * A sorted double linked list which uses ints for indexing
  */
 public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>>{
-    int size = 0;
-    Node<E> first;
+    public int size = 0;
+    public Node<E> first;
     private NodePool<E> nodePool = new NodePool<>(); // avoid allocating nodes
     private Iterator iterator;
 
@@ -71,6 +71,33 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>>{
             }
         }
         return match;
+    }
+
+    public E remove (int index) {
+        if (first != null) {
+            Node<E> c = first;
+            if (c.index == index){
+                first = first.n;
+                nodePool.free(c);
+                size--;
+                return c.value;
+            }
+            while (c.n != null && c.index < index) {
+                c = c.n;
+            }
+            if (c.index == index) {
+                if (c.p != null){
+                    c.p.n = c.n;
+                }
+                if (c.n != null){
+                    c.n.p = c.p;
+                }
+                nodePool.free(c);
+                size--;
+                return c.value;
+            }
+        }
+        return null;
     }
 
     /** Clears list */

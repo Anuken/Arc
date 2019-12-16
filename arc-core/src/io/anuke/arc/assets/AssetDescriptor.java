@@ -1,6 +1,8 @@
 package io.anuke.arc.assets;
 
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.*;
+import io.anuke.arc.func.*;
+import io.anuke.arc.util.ArcAnnotate.*;
 
 /**
  * Describes an asset to be loaded by its filename, type and {@link AssetLoaderParameters}. Instances of this are used in
@@ -12,14 +14,22 @@ public class AssetDescriptor<T>{
     public final Class<T> type;
     public final AssetLoaderParameters params;
     /** The resolved file. May be null if the fileName has not been resolved yet. */
-    public FileHandle file;
+    public Fi file;
+    /** Callback for when this asset is loaded.*/
+    public Cons<T> loaded = t -> {};
+    /** Callback for when this asset has an error.*/
+    public @Nullable Cons<Throwable> errored = null;
+
+    public AssetDescriptor(Class<T> assetType){
+        this(assetType.getSimpleName(), assetType, null);
+    }
 
     public AssetDescriptor(String fileName, Class<T> assetType){
         this(fileName, assetType, null);
     }
 
     /** Creates an AssetDescriptor with an already resolved name. */
-    public AssetDescriptor(FileHandle file, Class<T> assetType){
+    public AssetDescriptor(Fi file, Class<T> assetType){
         this(file, assetType, null);
     }
 
@@ -30,7 +40,7 @@ public class AssetDescriptor<T>{
     }
 
     /** Creates an AssetDescriptor with an already resolved name. */
-    public AssetDescriptor(FileHandle file, Class<T> assetType, AssetLoaderParameters<T> params){
+    public AssetDescriptor(Fi file, Class<T> assetType, AssetLoaderParameters<T> params){
         this.fileName = file.path().replaceAll("\\\\", "/");
         this.file = file;
         this.type = assetType;

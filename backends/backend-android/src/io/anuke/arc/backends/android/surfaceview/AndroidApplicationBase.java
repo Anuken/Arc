@@ -24,14 +24,10 @@ public interface AndroidApplicationBase extends Application{
      */
     Context getContext();
 
-    /**
-     * A set of usable runnables
-     */
+    /** A set of usable runnables*/
     Array<Runnable> getRunnables();
 
-    /**
-     * The currently executed runnables
-     */
+    /** The currently executed runnables*/
     Array<Runnable> getExecutedRunnables();
 
     /**

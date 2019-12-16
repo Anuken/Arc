@@ -5,63 +5,60 @@ import io.anuke.arc.files.*;
 import io.anuke.arc.util.*;
 import org.teavm.jso.browser.*;
 
-/**
- *
- * @author Alexey Andreev
- */
-public class TeaVMFiles implements Files {
+
+public class TeaVMFiles implements Files{
     public static final Storage localStorage = Storage.getLocalStorage();
 
     @Override
-    public FileHandle getFileHandle(String path, FileType type) {
-        if (type != FileType.Internal) {
+    public Fi getFileHandle(String path, FileType type){
+        if(type != FileType.Internal){
             throw new ArcRuntimeException("FileType '" + type + "' not supported in GWT backend");
         }
-        return new TeaVMFileHandle(path, type);
+        return new TeaVMFi(path, type);
     }
 
     @Override
-    public FileHandle classpath(String path) {
-        return new TeaVMFileHandle(path, FileType.Classpath);
+    public Fi classpath(String path){
+        return new TeaVMFi(path, FileType.Classpath);
     }
 
     @Override
-    public FileHandle internal(String path) {
-        return new TeaVMFileHandle(path, FileType.Internal);
+    public Fi internal(String path){
+        return new TeaVMFi(path, FileType.Internal);
     }
 
     @Override
-    public FileHandle external(String path) {
+    public Fi external(String path){
         throw new ArcRuntimeException("External files not supported in GWT backend");
     }
 
     @Override
-    public FileHandle absolute(String path) {
+    public Fi absolute(String path){
         throw new ArcRuntimeException("Absolute files not supported in GWT backend");
     }
 
     @Override
-    public FileHandle local(String path) {
+    public Fi local(String path){
         throw new ArcRuntimeException("local files not supported in GWT backend");
     }
 
     @Override
-    public String getExternalStoragePath() {
+    public String getExternalStoragePath(){
         return null;
     }
 
     @Override
-    public boolean isExternalStorageAvailable() {
+    public boolean isExternalStorageAvailable(){
         return false;
     }
 
     @Override
-    public String getLocalStoragePath() {
+    public String getLocalStoragePath(){
         return null;
     }
 
     @Override
-    public boolean isLocalStorageAvailable() {
+    public boolean isLocalStorageAvailable(){
         return false;
     }
 }

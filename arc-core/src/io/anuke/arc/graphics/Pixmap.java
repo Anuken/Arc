@@ -1,12 +1,13 @@
 package io.anuke.arc.graphics;
 
-import io.anuke.arc.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.Disposable;
+import com.badlogic.gdx.graphics.g2d.*;
+import io.anuke.arc.files.*;
+import io.anuke.arc.func.*;
+import io.anuke.arc.graphics.g2d.*;
+import io.anuke.arc.util.*;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.io.*;
+import java.nio.*;
 
 /**
  * <p>
@@ -33,6 +34,11 @@ public class Pixmap implements Disposable{
     private Blending blending = Blending.SourceOver;
     private Filter filter = Filter.BiLinear;
     private boolean disposed;
+
+    /** Uses RGBA8888.*/
+    public Pixmap(int width, int height){
+        this(width, height, Format.RGBA8888);
+    }
 
     /**
      * Creates a new Pixmap instance with the given width, height and format.
@@ -70,9 +76,9 @@ public class Pixmap implements Disposable{
     /**
      * Creates a new Pixmap instance from the given file. The file must be a Png, Jpeg or Bitmap. Paletted formats are not
      * supported.
-     * @param file the {@link FileHandle}
+     * @param file the {@link Fi}
      */
-    public Pixmap(FileHandle file){
+    public Pixmap(Fi file){
         try{
             byte[] bytes = file.readBytes();
             pixmap = new Gdx2DPixmap(bytes, 0, bytes.length, 0);
@@ -86,6 +92,14 @@ public class Pixmap implements Disposable{
      */
     public Pixmap(Gdx2DPixmap pixmap){
         this.pixmap = pixmap;
+    }
+
+    public void each(Intc2 cons){
+        for(int x = 0; x < getWidth(); x++){
+            for(int y = 0; y < getHeight(); y++){
+                cons.get(x, y);
+            }
+        }
     }
 
     /**
@@ -143,12 +157,29 @@ public class Pixmap implements Disposable{
         pixmap.drawRect(x, y, width, height, color);
     }
 
-// /**
-// * Sets the width in pixels of strokes.
-// *
-// * @param width The stroke width in pixels.
-// */
-// public void setStrokeWidth (int width);
+    public void draw(PixmapRegion region){
+        drawPixmap(region.pixmap, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height);
+    }
+
+    public void draw(PixmapRegion region, int x, int y){
+        drawPixmap(region.pixmap, region.x, region.y, region.width, region.height, x, y, region.width, region.height);
+    }
+
+    public void draw(PixmapRegion region, int x, int y, int width, int height){
+        drawPixmap(region.pixmap, region.x, region.y, region.width, region.height, x, y, width, height);
+    }
+
+    public void draw(PixmapRegion region, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight){
+        drawPixmap(region.pixmap, x, y, region.x + srcx, region.y + srcy, srcWidth, srcHeight);
+    }
+
+    public void draw(PixmapRegion region, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight){
+        drawPixmap(region.pixmap, region.x + srcx, region.y + srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight);
+    }
+
+    public void drawPixmap(Pixmap pixmap){
+        drawPixmap(pixmap, 0, 0);
+    }
 
     /**
      * Draws an area from another Pixmap to this Pixmap.
@@ -188,8 +219,7 @@ public class Pixmap implements Disposable{
      * @param dstWidth The target width
      * @param dstHeight the target height
      */
-    public void drawPixmap(Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth,
-                           int dstHeight){
+    public void drawPixmap(Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight){
         this.pixmap.drawPixmap(pixmap.pixmap, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight);
     }
 
@@ -265,8 +295,13 @@ public class Pixmap implements Disposable{
         disposed = true;
     }
 
+    @Override
     public boolean isDisposed(){
         return disposed;
+    }
+
+    public void draw(int x, int y, Color color){
+        pixmap.setPixel(x, y, color.rgba());
     }
 
     /**
@@ -274,7 +309,7 @@ public class Pixmap implements Disposable{
      * @param x the x-coordinate
      * @param y the y-coordinate
      */
-    public void drawPixel(int x, int y){
+    public void draw(int x, int y){
         pixmap.setPixel(x, y, color);
     }
 
@@ -284,7 +319,7 @@ public class Pixmap implements Disposable{
      * @param y the y-coordinate
      * @param color the color in RGBA8888 format.
      */
-    public void drawPixel(int x, int y, int color){
+    public void draw(int x, int y, int color){
         pixmap.setPixel(x, y, color);
     }
 

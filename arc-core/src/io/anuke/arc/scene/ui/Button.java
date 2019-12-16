@@ -1,26 +1,18 @@
 package io.anuke.arc.scene.ui;
 
-import io.anuke.arc.Core;
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.function.BooleanProvider;
-import io.anuke.arc.math.geom.Vector2;
-import io.anuke.arc.scene.Element;
-import io.anuke.arc.scene.Scene;
-import io.anuke.arc.scene.Skin;
-import io.anuke.arc.scene.event.ChangeListener.ChangeEvent;
-import io.anuke.arc.scene.event.ClickListener;
-import io.anuke.arc.scene.event.HandCursorListener;
-import io.anuke.arc.scene.event.InputEvent;
-import io.anuke.arc.scene.event.Touchable;
-import io.anuke.arc.scene.style.Drawable;
-import io.anuke.arc.scene.style.SkinReader.ReadContext;
-import io.anuke.arc.scene.style.Style;
-import io.anuke.arc.scene.ui.layout.Table;
-import io.anuke.arc.scene.utils.Disableable;
-import io.anuke.arc.util.pooling.Pools;
+import io.anuke.arc.*;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.func.Boolp;
+import io.anuke.arc.math.geom.*;
+import io.anuke.arc.scene.*;
+import io.anuke.arc.scene.event.ChangeListener.*;
+import io.anuke.arc.scene.event.*;
+import io.anuke.arc.scene.style.*;
+import io.anuke.arc.scene.ui.layout.*;
+import io.anuke.arc.scene.utils.*;
+import io.anuke.arc.util.pooling.*;
 
-import static io.anuke.arc.Core.input;
-import static io.anuke.arc.Core.scene;
+import static io.anuke.arc.Core.*;
 
 /**
  * A button is a {@link Table} with a checked state and additional {@link ButtonStyle style} fields for pressed, unpressed, and
@@ -38,27 +30,10 @@ import static io.anuke.arc.Core.scene;
 public class Button extends Table implements Disableable{
     boolean isChecked, isDisabled;
     ButtonGroup buttonGroup;
-    BooleanProvider disabledProvider;
+    Boolp disabledProvider;
     private ButtonStyle style;
     private ClickListener clickListener;
     private boolean programmaticChangeEvents;
-
-    public Button(String styleName){
-        initialize();
-        setStyle(scene.skin.get(styleName, ButtonStyle.class));
-        setSize(getPrefWidth(), getPrefHeight());
-    }
-
-    public Button(Element child, String styleName){
-        this(child, scene.skin.get(styleName, ButtonStyle.class));
-    }
-
-    public Button(Element child, ButtonStyle style){
-        initialize();
-        add(child);
-        setStyle(style);
-        setSize(getPrefWidth(), getPrefHeight());
-    }
 
     public Button(ButtonStyle style){
         initialize();
@@ -69,6 +44,22 @@ public class Button extends Table implements Disableable{
     /** Creates a button without setting the style or size. At least a style must be set before using this button. */
     public Button(){
         initialize();
+        this.style = scene.getStyle(ButtonStyle.class);
+
+        Drawable background;
+        if(isPressed() && !isDisabled()){
+            background = style.down == null ? style.up : style.down;
+        }else{
+            if(isDisabled() && style.disabled != null)
+                background = style.disabled;
+            else if(isChecked && style.checked != null)
+                background = (isOver() && style.checkedOver != null) ? style.checkedOver : style.checked;
+            else if(isOver() && style.over != null)
+                background = style.over;
+            else
+                background = style.up;
+        }
+        setBackground(background);
     }
 
     public Button(Drawable up){
@@ -81,10 +72,6 @@ public class Button extends Table implements Disableable{
 
     public Button(Drawable up, Drawable down, Drawable checked){
         this(new ButtonStyle(up, down, checked));
-    }
-
-    public Button(Element child, Skin skin){
-        this(child, skin.get(ButtonStyle.class));
     }
 
     @Override
@@ -153,7 +140,7 @@ public class Button extends Table implements Disableable{
         return isDisabled;
     }
 
-    public void setDisabled(BooleanProvider prov){
+    public void setDisabled(Boolp prov){
         this.disabledProvider = prov;
     }
 
@@ -321,16 +308,6 @@ public class Button extends Table implements Disableable{
             this.unpressedOffsetY = style.unpressedOffsetY;
             this.checkedOffsetX = style.checkedOffsetX;
             this.checkedOffsetY = style.checkedOffsetY;
-        }
-
-        @Override
-        public void read(ReadContext read){
-            up = read.draw("up");
-            down = read.draw("down");
-            over = read.draw("over");
-            checked = read.draw("checked");
-            checkedOver = read.draw("checkedOver");
-            disabled = read.draw("disabled");
         }
     }
 }

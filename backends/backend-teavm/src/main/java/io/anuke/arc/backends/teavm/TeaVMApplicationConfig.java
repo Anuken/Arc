@@ -1,8 +1,8 @@
 package io.anuke.arc.backends.teavm;
 
-import org.teavm.jso.dom.html.HTMLCanvasElement;
+import org.teavm.jso.dom.html.*;
 
-public class TeaVMApplicationConfig {
+public class TeaVMApplicationConfig{
     public HTMLCanvasElement canvas;
     public boolean antialiasEnabled = false;
     public boolean stencilEnabled = false;

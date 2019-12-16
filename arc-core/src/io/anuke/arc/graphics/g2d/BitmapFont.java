@@ -25,7 +25,7 @@ package io.anuke.arc.graphics.g2d;
 import io.anuke.arc.Core;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.FloatArray;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.graphics.Texture.TextureFilter;
@@ -78,7 +78,7 @@ public class BitmapFont implements Disposable{
      * @param region The texture region containing the glyphs. The glyphs must be relative to the lower left corner (ie, the region
      * should not be flipped). If the region is null the glyph images are loaded from the image path in the font file.
      */
-    public BitmapFont(FileHandle fontFile, TextureRegion region){
+    public BitmapFont(Fi fontFile, TextureRegion region){
         this(fontFile, region, false);
     }
 
@@ -90,7 +90,7 @@ public class BitmapFont implements Disposable{
      * should not be flipped). If the region is null the glyph images are loaded from the image path in the font file.
      * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
      */
-    public BitmapFont(FileHandle fontFile, TextureRegion region, boolean flip){
+    public BitmapFont(Fi fontFile, TextureRegion region, boolean flip){
         this(new BitmapFontData(fontFile, flip), region, true);
     }
 
@@ -98,7 +98,7 @@ public class BitmapFont implements Disposable{
      * Creates a BitmapFont from a BMFont file. The image file name is read from the BMFont file and the image is loaded from the
      * same directory. The font data is not flipped.
      */
-    public BitmapFont(FileHandle fontFile){
+    public BitmapFont(Fi fontFile){
         this(fontFile, false);
     }
 
@@ -107,7 +107,7 @@ public class BitmapFont implements Disposable{
      * same directory.
      * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
      */
-    public BitmapFont(FileHandle fontFile, boolean flip){
+    public BitmapFont(Fi fontFile, boolean flip){
         this(new BitmapFontData(fontFile, flip), (TextureRegion)null, true);
     }
 
@@ -116,7 +116,7 @@ public class BitmapFont implements Disposable{
      * ignored.
      * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
      */
-    public BitmapFont(FileHandle fontFile, FileHandle imageFile, boolean flip){
+    public BitmapFont(Fi fontFile, Fi imageFile, boolean flip){
         this(fontFile, imageFile, flip, true);
     }
 
@@ -126,7 +126,7 @@ public class BitmapFont implements Disposable{
      * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
      * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts.
      */
-    public BitmapFont(FileHandle fontFile, FileHandle imageFile, boolean flip, boolean integer){
+    public BitmapFont(Fi fontFile, Fi imageFile, boolean flip, boolean integer){
         this(new BitmapFontData(fontFile, flip), new TextureRegion(new Texture(imageFile, false)), integer);
         ownsTexture = true;
     }
@@ -164,7 +164,7 @@ public class BitmapFont implements Disposable{
             int n = data.imagePaths.length;
             regions = new Array<>(n);
             for(int i = 0; i < n; i++){
-                FileHandle file;
+                Fi file;
                 if(data.fontFile == null)
                     file = Core.files.internal(data.imagePaths[i]);
                 else
@@ -218,7 +218,7 @@ public class BitmapFont implements Disposable{
         GlyphLayout result =  draw(str, x, y, 0, halign, false);
         getData().setScale(pscale);
         setUseIntegerPositions(pint);
-        setColor(Color.WHITE);
+        setColor(Color.white);
         return result;
     }
 
@@ -361,11 +361,21 @@ public class BitmapFont implements Disposable{
     }
 
     /** Disposes the texture used by this BitmapFont's region IF this BitmapFont created the texture. */
+    @Override
     public void dispose(){
         if(ownsTexture){
             for(int i = 0; i < regions.size; i++)
                 regions.get(i).getTexture().dispose();
         }
+    }
+
+    @Override
+    public boolean isDisposed(){
+        if(ownsTexture){
+            //it's a fair assumption to say that if one region is disposed, the whole font is disposed
+            return regions.contains(t -> t.getTexture().isDisposed());
+        }
+        return false;
     }
 
     /**
@@ -484,7 +494,7 @@ public class BitmapFont implements Disposable{
         public final Glyph[][] glyphs = new Glyph[PAGES][];
         /** An array of the image paths, for multiple texture pages. */
         public String[] imagePaths;
-        public FileHandle fontFile;
+        public Fi fontFile;
         public boolean flipped;
         public float padTop, padRight, padBottom, padLeft;
         /** The distance from one line of text to the next. To set this value, use {@link #setLineHeight(float)}. */
@@ -527,19 +537,19 @@ public class BitmapFont implements Disposable{
         'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
         /**
-         * Creates an empty BitmapFontData for configuration before calling {@link #load(FileHandle, boolean)}, to subclass, or to
+         * Creates an empty BitmapFontData for configuration before calling {@link #load(Fi, boolean)}, to subclass, or to
          * populate yourself, e.g. using stb-truetype or FreeType.
          */
         public BitmapFontData(){
         }
 
-        public BitmapFontData(FileHandle fontFile, boolean flip){
+        public BitmapFontData(Fi fontFile, boolean flip){
             this.fontFile = fontFile;
             this.flipped = flip;
             load(fontFile, flip);
         }
 
-        public void load(FileHandle fontFile, boolean flip){
+        public void load(Fi fontFile, boolean flip){
             if(imagePaths != null) throw new IllegalStateException("Already loaded.");
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(fontFile.read()), 512);
@@ -920,7 +930,7 @@ public class BitmapFont implements Disposable{
             return imagePaths;
         }
 
-        public FileHandle getFontFile(){
+        public Fi getFontFile(){
             return fontFile;
         }
 

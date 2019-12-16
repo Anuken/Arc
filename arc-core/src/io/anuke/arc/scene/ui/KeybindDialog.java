@@ -1,26 +1,16 @@
 package io.anuke.arc.scene.ui;
 
-import io.anuke.arc.Application.ApplicationType;
-import io.anuke.arc.Core;
-import io.anuke.arc.KeyBinds.Axis;
-import io.anuke.arc.KeyBinds.KeyBind;
-import io.anuke.arc.KeyBinds.Section;
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.collection.ObjectIntMap;
-import io.anuke.arc.collection.OrderedMap;
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.input.InputDevice;
-import io.anuke.arc.input.InputDevice.DeviceType;
-import io.anuke.arc.input.KeyCode;
-import io.anuke.arc.scene.event.InputEvent;
-import io.anuke.arc.scene.event.InputListener;
-import io.anuke.arc.scene.style.SkinReader.ReadContext;
-import io.anuke.arc.scene.style.Style;
-import io.anuke.arc.scene.ui.layout.Stack;
-import io.anuke.arc.scene.ui.layout.Table;
-import io.anuke.arc.util.Align;
-import io.anuke.arc.util.Strings;
-import io.anuke.arc.util.Time;
+import io.anuke.arc.Application.*;
+import io.anuke.arc.*;
+import io.anuke.arc.KeyBinds.*;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.graphics.*;
+import io.anuke.arc.input.*;
+import io.anuke.arc.input.InputDevice.*;
+import io.anuke.arc.scene.event.*;
+import io.anuke.arc.scene.style.*;
+import io.anuke.arc.scene.ui.layout.*;
+import io.anuke.arc.util.*;
 
 import static io.anuke.arc.Core.*;
 
@@ -37,7 +27,7 @@ public class KeybindDialog extends Dialog{
 
     public KeybindDialog(){
         super(bundle.get("keybind.title", "Rebind Keys"));
-        style = scene.skin.get(KeybindDialogStyle.class);
+        style = scene.getStyle(KeybindDialogStyle.class);
         setup();
         addCloseButton();
     }
@@ -54,7 +44,7 @@ public class KeybindDialog extends Dialog{
 
         Stack stack = new Stack();
         ButtonGroup<TextButton> group = new ButtonGroup<>();
-        ScrollPane pane = new ScrollPane(stack, style.paneStyle);
+        ScrollPane pane = new ScrollPane(stack);
         pane.setFadeScrollBars(false);
         this.section = sections[0];
 
@@ -68,7 +58,8 @@ public class KeybindDialog extends Dialog{
             }
 
             if(sections.length != 1){
-                TextButton button = new TextButton(bundle.get("section." + section.name + ".name", Strings.capitalize(section.name)), "toggle");
+                //TODO toggle style
+                TextButton button = new TextButton(bundle.get("section." + section.name + ".name", Strings.capitalize(section.name))/*, "toggle"*/);
                 if(section.equals(this.section))
                     button.toggle();
 
@@ -113,7 +104,7 @@ public class KeybindDialog extends Dialog{
                 }
             }).disabled(sectionControls.get(section, 0) + 1 >= devices.size).size(40);
 
-            table.add(stable).colspan(3);
+            table.add(stable).colspan(4);
 
             table.row();
             table.add().height(10);
@@ -128,8 +119,8 @@ public class KeybindDialog extends Dialog{
 
             for(KeyBind keybind : keybinds.getKeybinds()){
                 if(lastCategory != keybind.category() && keybind.category() != null){
-                    table.add(bundle.get("category." + keybind.category() + ".name", Strings.capitalize(keybind.category()))).color(Color.GRAY).colspan(3).pad(10).padBottom(4).row();
-                    table.addImage("white").color(Color.GRAY).fillX().height(3).pad(6).colspan(3).padTop(0).padBottom(10).row();
+                    table.add(bundle.get("category." + keybind.category() + ".name", Strings.capitalize(keybind.category()))).color(Color.gray).colspan(4).pad(10).padBottom(4).row();
+                    table.addImage().color(Color.gray).fillX().height(3).pad(6).colspan(4).padTop(0).padBottom(10).row();
                     lastCategory = keybind.category();
                 }
 
@@ -152,19 +143,24 @@ public class KeybindDialog extends Dialog{
                         rebindMin = true;
                         openDialog(section, keybind);
                     }).width(110f);
-                    table.row();
                 }else{
                     table.add(bundle.get("keybind." + keybind.name() + ".name", Strings.capitalize(keybind.name())),
                     style.keyNameColor).left().padRight(40).padLeft(8);
                     table.add(keybinds.get(section, keybind).key.toString(),
                     style.keyColor).left().minWidth(90).padRight(20);
+
                     table.addButton(bundle.get("settings.rebind", "Rebind"), () -> {
                         rebindAxis = false;
                         rebindMin = false;
                         openDialog(section, keybind);
                     }).width(110f);
-                    table.row();
                 }
+                table.addButton(bundle.get("settings.resetKey", "Reset"), () -> {
+                    keybinds.resetToDefault(section, keybind);
+                    settings.save();
+                    setup();
+                }).width(100f);
+                table.row();
             }
 
             table.visible(() -> this.section.equals(section));
@@ -185,6 +181,7 @@ public class KeybindDialog extends Dialog{
     }
 
     private void rebind(Section section, KeyBind bind, KeyCode newKey){
+        if(rebindKey == null) return;
         rebindDialog.hide();
         boolean isAxis = bind.defaultValue(section.device.type()) instanceof Axis;
 
@@ -209,7 +206,7 @@ public class KeybindDialog extends Dialog{
     }
 
     private void openDialog(Section section, KeyBind name){
-        rebindDialog = new Dialog(rebindAxis ? bundle.get("keybind.press.axis", "Press an axis or key...") : bundle.get("keybind.press", "Press a key..."), "dialog");
+        rebindDialog = new Dialog(rebindAxis ? bundle.get("keybind.press.axis", "Press an axis or key...") : bundle.get("keybind.press", "Press a key..."));
 
         rebindKey = name;
 
@@ -249,17 +246,8 @@ public class KeybindDialog extends Dialog{
     }
 
     public static class KeybindDialogStyle extends Style{
-        public Color keyColor = Color.WHITE;
-        public Color keyNameColor = Color.WHITE;
-        public Color controllerColor = Color.WHITE;
-        public String paneStyle = "default";
-
-        @Override
-        public void read(ReadContext read){
-            keyColor = read.color("keyColor");
-            keyNameColor = read.color("keyNameColor");
-            controllerColor = read.color("controllerColor");
-            paneStyle = read.str("paneStyle", "default");
-        }
+        public Color keyColor = Color.white;
+        public Color keyNameColor = Color.white;
+        public Color controllerColor = Color.white;
     }
 }
