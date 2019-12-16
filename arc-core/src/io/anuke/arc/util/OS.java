@@ -46,7 +46,7 @@ public class OS{
             return getProperty("user.home") + "/.local/share/" + appname + "/";
         }else if(OS.isMac){
             return getProperty("user.home") + "/Library/Application Support/" + appname + "/";
-        }else{ //else, probably GWT
+        }else{ //else, probably web
             return null;
         }
     }

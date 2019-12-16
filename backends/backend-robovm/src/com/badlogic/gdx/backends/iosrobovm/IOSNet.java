@@ -1,24 +1,15 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
-import io.anuke.arc.Net;
-import io.anuke.arc.func.Cons;
-import io.anuke.arc.util.NetJavaImpl;
-import org.robovm.apple.dispatch.DispatchQueue;
-import org.robovm.apple.foundation.NSURL;
-import org.robovm.apple.uikit.UIApplication;
-import org.robovm.apple.uikit.UIApplicationOpenURLOptions;
+import io.anuke.arc.*;
+import org.robovm.apple.dispatch.*;
+import org.robovm.apple.foundation.*;
+import org.robovm.apple.uikit.*;
 
-public class IOSNet implements Net{
+public class IOSNet extends Net{
     final UIApplication uiApp;
-    NetJavaImpl impl = new NetJavaImpl();
 
     public IOSNet(IOSApplication app){
         uiApp = app.uiApp;
-    }
-
-    @Override
-    public void http(HttpRequest httpRequest, Cons<HttpResponse> success, Cons<Throwable> failure){
-        impl.http(httpRequest, success, failure);
     }
 
     @Override

@@ -1,16 +1,11 @@
 package io.anuke.arc.util;
 
-import io.anuke.arc.collection.ObjectMap;
-import io.anuke.arc.files.Fi;
-import io.anuke.arc.util.io.PropertiesUtils;
-import io.anuke.arc.util.io.Streams;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.files.*;
+import io.anuke.arc.util.io.*;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.MissingResourceException;
+import java.io.*;
+import java.util.*;
 
 /**
  * A {@code I18NBundle} provides {@code Locale}-specific resources loaded from property files. A bundle contains a number of named
@@ -374,11 +369,8 @@ public class I18NBundle{
     /**
      * Load the properties from the specified reader.
      * @param reader the reader
-     * @throws IOException if an error occurred when reading from the input stream.
      */
-    // NOTE:
-    // This method can't be private otherwise GWT can't access it from loadBundle()
-    protected void load(Reader reader){
+    private void load(Reader reader){
         properties = new ObjectMap<>();
         PropertiesUtils.load(properties, reader);
     }

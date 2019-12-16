@@ -1,9 +1,7 @@
 package io.anuke.arc.backends.lwjgl3;
 
-import io.anuke.arc.Net;
-import io.anuke.arc.func.Cons;
-import io.anuke.arc.util.NetJavaImpl;
-import io.anuke.arc.util.OS;
+import io.anuke.arc.*;
+import io.anuke.arc.util.*;
 
 import java.io.*;
 
@@ -11,13 +9,7 @@ import java.io.*;
  * LWJGL implementation of the {@link Net} API, it could be reused in other Desktop backends since it doesn't depend on LWJGL.
  * @author acoppes
  */
-public class Lwjgl3Net implements Net{
-    NetJavaImpl impl = new NetJavaImpl();
-
-    @Override
-    public void http(HttpRequest httpRequest, Cons<HttpResponse> success, Cons<Throwable> failure){
-        impl.http(httpRequest, success, failure);
-    }
+public class Lwjgl3Net extends Net{
 
     @Override
     public boolean openURI(String url){

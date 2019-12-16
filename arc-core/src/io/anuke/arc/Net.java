@@ -2,6 +2,7 @@ package io.anuke.arc;
 
 import io.anuke.arc.collection.*;
 import io.anuke.arc.func.Cons;
+import io.anuke.arc.util.*;
 
 import java.io.InputStream;
 
@@ -18,7 +19,8 @@ import java.io.InputStream;
  * @author noblemaster
  * @author arielsan
  */
-public interface Net{
+public abstract class Net{
+    private NetJavaImpl impl = new NetJavaImpl();
 
     /**
      * Process the specified {@link HttpRequest} and reports the {@link HttpResponse} to the specified listener.
@@ -27,15 +29,17 @@ public interface Net{
      * @param success The listener to call once the HTTP response is ready to be processed.
      * @param failure The listener to call if the request fails.
      */
-    void http(HttpRequest httpRequest, Cons<HttpResponse> success, Cons<Throwable> failure);
+    public void http(HttpRequest httpRequest, Cons<HttpResponse> success, Cons<Throwable> failure){
+        impl.http(httpRequest, success, failure);
+    }
 
     /** Sends a basic HTTP GET request.*/
-    default void httpGet(String url, Cons<HttpResponse> success, Cons<Throwable> failure){
+    public void httpGet(String url, Cons<HttpResponse> success, Cons<Throwable> failure){
         http(new HttpRequest().method(HttpMethod.GET).url(url), success, failure);
     }
 
     /** Sends a basic HTTP POST request.*/
-    default void httpPost(String url, String content, Cons<HttpResponse> success, Cons<Throwable> failure){
+    public void httpPost(String url, String content, Cons<HttpResponse> success, Cons<Throwable> failure){
         http(new HttpRequest().method(HttpMethod.POST).content(content).url(url), success, failure);
     }
 
@@ -48,16 +52,16 @@ public interface Net{
      * @param URI the URI to be opened.
      * @return false if it is known the uri was not opened, true otherwise.
      */
-    boolean openURI(String URI);
+    public abstract boolean openURI(String URI);
 
     /** Open a folder in the system's file browser.
      * @return whether this operation was successful. */
-    default boolean openFolder(String file){
+    public boolean openFolder(String file){
         return false;
     }
 
     /** HTTP response interface with methods to get the response data as a byte[], a {@link String} or an {@link InputStream}. */
-    interface HttpResponse{
+    public interface HttpResponse{
         /**
          * Returns the data of the HTTP response as a byte[].
          * <p>
@@ -102,11 +106,11 @@ public interface Net{
     }
 
     /** Provides all HTTP methods to use when creating a {@link HttpRequest}.*/
-    enum HttpMethod{
+    public enum HttpMethod{
         GET, POST, PUT, DELETE, HEAD, CONNECT, OPTIONS, TRACE
     }
 
-    class HttpRequest{
+    public static class HttpRequest{
         /** The HTTP method. */
         public HttpMethod method;
         /** The URL to send this request to.*/
@@ -175,7 +179,7 @@ public interface Net{
     }
 
     /** Defines the status of an HTTP request.*/
-    enum HttpStatus{
+    public enum HttpStatus{
         UNKNOWN_STATUS(-1),
 
         CONTINUE(100),

@@ -172,7 +172,7 @@ public final class PropertiesUtils{
                             }
                             break;
                     }
-                    // if (Character.isWhitespace(nextChar)) { <-- not supported by GWT; replaced with isSpace.
+
                     if(Character.isWhitespace(nextChar)){
                         if(mode == CONTINUE){
                             mode = IGNORE;

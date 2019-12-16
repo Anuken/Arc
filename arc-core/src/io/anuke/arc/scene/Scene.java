@@ -781,10 +781,10 @@ public class Scene implements InputProcessor, Disposable{
     }
 
     /**
-     * Internal class for managing touch focus. Public only for GWT.
+     * Internal class for managing touch focus.
      * @author Nathan Sweet
      */
-    public static final class TouchFocus implements Poolable{
+    private static final class TouchFocus implements Poolable{
         EventListener listener;
         Element listenerActor, target;
         int pointer;
