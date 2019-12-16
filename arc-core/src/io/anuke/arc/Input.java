@@ -15,7 +15,7 @@ import static io.anuke.arc.Core.keybinds;
 /**
  * <p>
  * Interface to the input facilities. This allows polling the state of the keyboard, the touch screen and the accelerometer. On
- * some backends (desktop, gwt, etc) the touch screen is replaced by mouse input. The accelerometer is of course not available on
+ * some backends (desktop) the touch screen is replaced by mouse input. The accelerometer is of course not available on
  * all backends.
  * </p>
  *

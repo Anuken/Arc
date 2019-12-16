@@ -130,7 +130,7 @@ public abstract class Net{
         /**Length of the content stream.*/
         public long contentLength;
 
-        /**Sets whether 301 and 302 redirects are followed. By default true. Can't be changed in the GWT backend because this uses
+        /**Sets whether 301 and 302 redirects are followed. By default true. Can't be changed in the web backend because this uses
          * XmlHttpRequests which always redirect.*/
         public boolean followRedirects = true;
         /** Whether a cross-origin request will include credentials. By default false. */

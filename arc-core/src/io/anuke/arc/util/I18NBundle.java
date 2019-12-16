@@ -58,8 +58,7 @@ public class I18NBundle{
     private TextFormatter formatter;
 
     /**
-     * Returns the flag indicating whether to use the simplified message pattern syntax (default is false). This flag is always
-     * assumed to be true on GWT backend.
+     * Returns the flag indicating whether to use the simplified message pattern syntax (default is false).
      */
     public static boolean getSimpleFormatter(){
         return simpleFormatter;
@@ -67,7 +66,7 @@ public class I18NBundle{
 
     /**
      * Sets the flag indicating whether to use the simplified message pattern. The flag must be set before calling the factory
-     * methods {@code createBundle}. Notice that this method has no effect on the GWT backend where it's always assumed to be true.
+     * methods {@code createBundle}.
      */
     public static void setSimpleFormatter(boolean enabled){
         simpleFormatter = enabled;
@@ -146,7 +145,7 @@ public class I18NBundle{
 
             // Check the loaded bundle (if any)
             if(bundle != null){
-                Locale bundleLocale = bundle.getLocale(); // WTH? GWT can't access bundle.locale directly
+                Locale bundleLocale = bundle.locale;
                 boolean isBaseBundle = bundleLocale.equals(ROOT_LOCALE);
 
                 if(!isBaseBundle || bundleLocale.equals(locale)){
@@ -157,7 +156,7 @@ public class I18NBundle{
                     // Found the bundle for the only candidate locale
                     break;
                 }
-                if(isBaseBundle && baseBundle == null){
+                if(baseBundle == null){
                     // Store the base bundle and keep on processing the remaining fallback locales
                     baseBundle = bundle;
                 }
