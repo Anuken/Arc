@@ -10,7 +10,7 @@ public class Wav{
     public static class Music extends ALMusic{
         private WavInputStream input;
 
-        public Music(ALAudio audio, FileHandle file){
+        public Music(ALAudio audio, Fi file){
             super(audio, file);
             input = new WavInputStream(file);
             if(audio.noDevice) return;
@@ -36,7 +36,7 @@ public class Wav{
     }
 
     public static class Sound extends ALSound{
-        public Sound(ALAudio audio, FileHandle file){
+        public Sound(ALAudio audio, Fi file){
             super(audio);
             if(audio.noDevice) return;
 
@@ -56,7 +56,7 @@ public class Wav{
     static private class WavInputStream extends FilterInputStream{
         int channels, sampleRate, dataRemaining;
 
-        WavInputStream(FileHandle file){
+        WavInputStream(Fi file){
             super(file.read());
             try{
                 if(read() != 'R' || read() != 'I' || read() != 'F' || read() != 'F')

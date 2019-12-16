@@ -1,7 +1,7 @@
 package io.anuke.arc.util;
 
 import io.anuke.arc.Core;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 
 public class OS{
     static public boolean isWindows = System.getProperty("os.name").contains("Windows");
@@ -51,7 +51,7 @@ public class OS{
         }
     }
 
-    public static FileHandle getAppDataDirectory(String appname){
+    public static Fi getAppDataDirectory(String appname){
         return Core.files.absolute(getAppDataDirectoryString(appname));
     }
 

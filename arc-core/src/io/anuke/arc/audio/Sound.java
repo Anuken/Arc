@@ -14,7 +14,7 @@ import io.anuke.arc.util.*;
  * </p>
  *
  * <p>
- * Sound instances are created via a call to {@link Audio#newSound(FileHandle)}.
+ * Sound instances are created via a call to {@link Audio#newSound(Fi)}.
  * </p>
  *
  * <p>

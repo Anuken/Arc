@@ -1,6 +1,6 @@
 package io.anuke.arc.graphics;
 
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.glutils.FileTextureArrayData;
 
 /**
@@ -56,7 +56,7 @@ public interface TextureArrayData{
      */
     class Factory{
 
-        public static TextureArrayData loadFromFiles(Pixmap.Format format, boolean useMipMaps, FileHandle... files){
+        public static TextureArrayData loadFromFiles(Pixmap.Format format, boolean useMipMaps, Fi... files){
             return new FileTextureArrayData(format, useMipMaps, files);
         }
 

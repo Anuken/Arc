@@ -4,7 +4,7 @@ import io.anuke.arc.assets.AssetDescriptor;
 import io.anuke.arc.assets.AssetLoaderParameters;
 import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.glutils.Shader;
 import io.anuke.arc.util.Log;
 
@@ -36,16 +36,16 @@ public class ShaderProgramLoader extends AsynchronousAssetLoader<Shader, ShaderP
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, ShaderProgramParameter parameter){
+    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, ShaderProgramParameter parameter){
         return null;
     }
 
     @Override
-    public void loadAsync(AssetManager manager, String fileName, FileHandle file, ShaderProgramParameter parameter){
+    public void loadAsync(AssetManager manager, String fileName, Fi file, ShaderProgramParameter parameter){
     }
 
     @Override
-    public Shader loadSync(AssetManager manager, String fileName, FileHandle file, ShaderProgramParameter parameter){
+    public Shader loadSync(AssetManager manager, String fileName, Fi file, ShaderProgramParameter parameter){
         String vertFileName = null, fragFileName = null;
         if(parameter != null){
             if(parameter.vertexFile != null) vertFileName = parameter.vertexFile;
@@ -57,8 +57,8 @@ public class ShaderProgramLoader extends AsynchronousAssetLoader<Shader, ShaderP
         if(fragFileName == null && fileName.endsWith(vertexFileSuffix)){
             fragFileName = fileName.substring(0, fileName.length() - vertexFileSuffix.length()) + fragmentFileSuffix;
         }
-        FileHandle vertexFile = vertFileName == null ? file : resolve(vertFileName);
-        FileHandle fragmentFile = fragFileName == null ? file : resolve(fragFileName);
+        Fi vertexFile = vertFileName == null ? file : resolve(vertFileName);
+        Fi fragmentFile = fragFileName == null ? file : resolve(fragFileName);
         String vertexCode = vertexFile.readString();
         String fragmentCode = vertexFile.equals(fragmentFile) ? vertexCode : fragmentFile.readString();
         if(parameter != null){

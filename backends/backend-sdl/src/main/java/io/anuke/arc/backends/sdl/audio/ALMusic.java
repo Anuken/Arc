@@ -17,7 +17,7 @@ public abstract class ALMusic implements Music{
     static private final int bytesPerSample = 2;
     static private final byte[] tempBytes = new byte[bufferSize];
     static private final ByteBuffer tempBuffer = BufferUtils.newByteBuffer(bufferSize);
-    protected final FileHandle file;
+    protected final Fi file;
     private final ALAudio audio;
     protected int bufferOverhead = 0;
     private FloatArray renderedSecondsQueue = new FloatArray(bufferCount);
@@ -30,7 +30,7 @@ public abstract class ALMusic implements Music{
     private float renderedSeconds, maxSecondsPerBuffer;
     private OnCompletionListener onCompletionListener;
 
-    public ALMusic(ALAudio audio, FileHandle file){
+    public ALMusic(ALAudio audio, Fi file){
         this.audio = audio;
         this.file = file;
         this.onCompletionListener = null;

@@ -221,12 +221,12 @@ public class Json{
         return buffer.toString();
     }
 
-    public void toJson(Object object, FileHandle file){
+    public void toJson(Object object, Fi file){
         toJson(object, object == null ? null : object.getClass(), null, file);
     }
 
     /** @param knownType May be null if the type is unknown. */
-    public void toJson(Object object, Class knownType, FileHandle file){
+    public void toJson(Object object, Class knownType, Fi file){
         toJson(object, knownType, null, file);
     }
 
@@ -234,7 +234,7 @@ public class Json{
      * @param knownType May be null if the type is unknown.
      * @param elementType May be null if the type is unknown.
      */
-    public void toJson(Object object, Class knownType, Class elementType, FileHandle file){
+    public void toJson(Object object, Class knownType, Class elementType, Fi file){
         Writer writer = null;
         try{
             writer = file.writer(false, "UTF-8");
@@ -784,7 +784,7 @@ public class Json{
      * @param type May be null if the type is unknown.
      * @return May be null.
      */
-    public <T> T fromJson(Class<T> type, FileHandle file){
+    public <T> T fromJson(Class<T> type, Fi file){
         try{
             return readValue(type, null, new JsonReader().parse(file));
         }catch(Exception ex){
@@ -797,7 +797,7 @@ public class Json{
      * @param elementType May be null if the type is unknown.
      * @return May be null.
      */
-    public <T> T fromJson(Class<T> type, Class elementType, FileHandle file){
+    public <T> T fromJson(Class<T> type, Class elementType, Fi file){
         try{
             return readValue(type, elementType, new JsonReader().parse(file));
         }catch(Exception ex){

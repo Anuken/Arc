@@ -59,24 +59,24 @@ public class TextureAtlas implements Disposable{
     }
 
     /** Loads the specified pack file, using the parent directory of the pack file to find the page images. */
-    public TextureAtlas(FileHandle packFile){
+    public TextureAtlas(Fi packFile){
         this(packFile, packFile.parent());
     }
 
     /**
      * @param flip If true, all regions loaded will be flipped for use with a perspective where 0,0 is the upper left corner.
-     * @see #TextureAtlas(FileHandle)
+     * @see #TextureAtlas(Fi)
      */
-    public TextureAtlas(FileHandle packFile, boolean flip){
+    public TextureAtlas(Fi packFile, boolean flip){
         this(packFile, packFile.parent(), flip);
     }
 
-    public TextureAtlas(FileHandle packFile, FileHandle imagesDir){
+    public TextureAtlas(Fi packFile, Fi imagesDir){
         this(packFile, imagesDir, false);
     }
 
     /** @param flip If true, all regions loaded will be flipped for use with a perspective where 0,0 is the upper left corner. */
-    public TextureAtlas(FileHandle packFile, FileHandle imagesDir, boolean flip){
+    public TextureAtlas(Fi packFile, Fi imagesDir, boolean flip){
         this(new TextureAtlasData(packFile, imagesDir, flip));
     }
 
@@ -343,7 +343,7 @@ public class TextureAtlas implements Disposable{
         final Array<Page> pages = new Array<>();
         final Array<Region> regions = new Array<>();
 
-        public TextureAtlasData(FileHandle packFile, FileHandle imagesDir, boolean flip){
+        public TextureAtlasData(Fi packFile, Fi imagesDir, boolean flip){
             BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 64);
             try{
                 Page pageImage = null;
@@ -353,7 +353,7 @@ public class TextureAtlas implements Disposable{
                     if(line.trim().length() == 0)
                         pageImage = null;
                     else if(pageImage == null){
-                        FileHandle file = imagesDir.child(line);
+                        Fi file = imagesDir.child(line);
 
                         float width = 0, height = 0;
                         if(readTuple(reader) == 2){ // size is only optional for an atlas packed with an old TexturePacker.
@@ -445,7 +445,7 @@ public class TextureAtlas implements Disposable{
         }
 
         public static class Page{
-            public final FileHandle textureFile;
+            public final Fi textureFile;
             public final float width, height;
             public final boolean useMipMaps;
             public final Format format;
@@ -455,7 +455,7 @@ public class TextureAtlas implements Disposable{
             public final TextureWrap vWrap;
             public Texture texture;
 
-            public Page(FileHandle handle, float width, float height, boolean useMipMaps, Format format, TextureFilter minFilter,
+            public Page(Fi handle, float width, float height, boolean useMipMaps, Format format, TextureFilter minFilter,
                         TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap){
                 this.width = width;
                 this.height = height;

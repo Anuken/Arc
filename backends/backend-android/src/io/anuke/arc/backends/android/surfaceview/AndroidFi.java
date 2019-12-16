@@ -4,7 +4,7 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import io.anuke.arc.Core;
 import io.anuke.arc.Files.FileType;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.io.Streams;
 
@@ -17,33 +17,33 @@ import java.nio.channels.FileChannel;
  * @author mzechner
  * @author Nathan Sweet
  */
-public class AndroidFileHandle extends FileHandle{
+public class AndroidFi extends Fi{
     // The asset manager, or null if this is not an internal file.
     final private AssetManager assets;
 
-    AndroidFileHandle(AssetManager assets, String fileName, FileType type){
+    AndroidFi(AssetManager assets, String fileName, FileType type){
         super(fileName.replace('\\', '/'), type);
         this.assets = assets;
     }
 
-    AndroidFileHandle(AssetManager assets, File file, FileType type){
+    AndroidFi(AssetManager assets, File file, FileType type){
         super(file, type);
         this.assets = assets;
     }
 
-    public FileHandle child(String name){
+    public Fi child(String name){
         name = name.replace('\\', '/');
-        if(file.getPath().length() == 0) return new AndroidFileHandle(assets, new File(name), type);
-        return new AndroidFileHandle(assets, new File(file, name), type);
+        if(file.getPath().length() == 0) return new AndroidFi(assets, new File(name), type);
+        return new AndroidFi(assets, new File(file, name), type);
     }
 
-    public FileHandle sibling(String name){
+    public Fi sibling(String name){
         name = name.replace('\\', '/');
         if(file.getPath().length() == 0) throw new ArcRuntimeException("Cannot get the sibling of the root.");
         return Core.files.getFileHandle(new File(file.getParent(), name).getPath(), type); //this way we can find the sibling even if it's inside the obb
     }
 
-    public FileHandle parent(){
+    public Fi parent(){
         File parent = file.getParentFile();
         if(parent == null){
             if(type == FileType.Absolute)
@@ -51,7 +51,7 @@ public class AndroidFileHandle extends FileHandle{
             else
                 parent = new File("");
         }
-        return new AndroidFileHandle(assets, parent, type);
+        return new AndroidFi(assets, parent, type);
     }
 
     public InputStream read(){
@@ -85,13 +85,13 @@ public class AndroidFileHandle extends FileHandle{
         return super.map(mode);
     }
 
-    public FileHandle[] list(){
+    public Fi[] list(){
         if(type == FileType.Internal){
             try{
                 String[] relativePaths = assets.list(file.getPath());
-                FileHandle[] handles = new FileHandle[relativePaths.length];
+                Fi[] handles = new Fi[relativePaths.length];
                 for(int i = 0, n = handles.length; i < n; i++)
-                    handles[i] = new AndroidFileHandle(assets, new File(file, relativePaths[i]), type);
+                    handles[i] = new AndroidFi(assets, new File(file, relativePaths[i]), type);
                 return handles;
             }catch(Exception ex){
                 throw new ArcRuntimeException("Error listing children: " + file + " (" + type + ")", ex);
@@ -100,21 +100,21 @@ public class AndroidFileHandle extends FileHandle{
         return super.list();
     }
 
-    public FileHandle[] list(FileFilter filter){
+    public Fi[] list(FileFilter filter){
         if(type == FileType.Internal){
             try{
                 String[] relativePaths = assets.list(file.getPath());
-                FileHandle[] handles = new FileHandle[relativePaths.length];
+                Fi[] handles = new Fi[relativePaths.length];
                 int count = 0;
                 for(int i = 0, n = handles.length; i < n; i++){
                     String path = relativePaths[i];
-                    FileHandle child = new AndroidFileHandle(assets, new File(file, path), type);
+                    Fi child = new AndroidFi(assets, new File(file, path), type);
                     if(!filter.accept(child.file())) continue;
                     handles[count] = child;
                     count++;
                 }
                 if(count < relativePaths.length){
-                    FileHandle[] newHandles = new FileHandle[count];
+                    Fi[] newHandles = new Fi[count];
                     System.arraycopy(handles, 0, newHandles, 0, count);
                     handles = newHandles;
                 }
@@ -126,20 +126,20 @@ public class AndroidFileHandle extends FileHandle{
         return super.list(filter);
     }
 
-    public FileHandle[] list(FilenameFilter filter){
+    public Fi[] list(FilenameFilter filter){
         if(type == FileType.Internal){
             try{
                 String[] relativePaths = assets.list(file.getPath());
-                FileHandle[] handles = new FileHandle[relativePaths.length];
+                Fi[] handles = new Fi[relativePaths.length];
                 int count = 0;
                 for(int i = 0, n = handles.length; i < n; i++){
                     String path = relativePaths[i];
                     if(!filter.accept(file, path)) continue;
-                    handles[count] = new AndroidFileHandle(assets, new File(file, path), type);
+                    handles[count] = new AndroidFi(assets, new File(file, path), type);
                     count++;
                 }
                 if(count < relativePaths.length){
-                    FileHandle[] newHandles = new FileHandle[count];
+                    Fi[] newHandles = new Fi[count];
                     System.arraycopy(handles, 0, newHandles, 0, count);
                     handles = newHandles;
                 }
@@ -151,20 +151,20 @@ public class AndroidFileHandle extends FileHandle{
         return super.list(filter);
     }
 
-    public FileHandle[] list(String suffix){
+    public Fi[] list(String suffix){
         if(type == FileType.Internal){
             try{
                 String[] relativePaths = assets.list(file.getPath());
-                FileHandle[] handles = new FileHandle[relativePaths.length];
+                Fi[] handles = new Fi[relativePaths.length];
                 int count = 0;
                 for(int i = 0, n = handles.length; i < n; i++){
                     String path = relativePaths[i];
                     if(!path.endsWith(suffix)) continue;
-                    handles[count] = new AndroidFileHandle(assets, new File(file, path), type);
+                    handles[count] = new AndroidFi(assets, new File(file, path), type);
                     count++;
                 }
                 if(count < relativePaths.length){
-                    FileHandle[] newHandles = new FileHandle[count];
+                    Fi[] newHandles = new Fi[count];
                     System.arraycopy(handles, 0, newHandles, 0, count);
                     handles = newHandles;
                 }

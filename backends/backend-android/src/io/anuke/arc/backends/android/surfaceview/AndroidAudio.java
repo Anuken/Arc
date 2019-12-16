@@ -118,11 +118,11 @@ public final class AndroidAudio extends Audio implements Runnable{
 
     /** {@inheritDoc} */
     @Override
-    public Music newMusic(FileHandle file){
+    public Music newMusic(Fi file){
         if(soundPool == null){
             throw new ArcRuntimeException("Android audio is not enabled by the application config.");
         }
-        AndroidFileHandle aHandle = (AndroidFileHandle)file;
+        AndroidFi aHandle = (AndroidFi)file;
 
         MediaPlayer mediaPlayer = new MediaPlayer();
 
@@ -161,7 +161,7 @@ public final class AndroidAudio extends Audio implements Runnable{
      * Creates a new Music instance from the provided FileDescriptor. It is the caller's responsibility to close the file
      * descriptor. It is safe to do so as soon as this call returns.
      * @param fd the FileDescriptor from which to create the Music
-     * @see Audio#newMusic(FileHandle)
+     * @see Audio#newMusic(Fi)
      */
     public Music newMusic(FileDescriptor fd){
         if(soundPool == null){
@@ -186,20 +186,20 @@ public final class AndroidAudio extends Audio implements Runnable{
 
     /** {@inheritDoc} */
     @Override
-    public Sound newSound(FileHandle file){
+    public Sound newSound(Fi file){
         if(soundPool == null){
             throw new ArcRuntimeException("Android audio is not enabled by the application config.");
         }
         //make sure the file is of type AndroidFileHandle, and if not, make it so
-        if(!(file instanceof AndroidFileHandle)){
-            FileHandle destination = Core.files.local("__android_audio__").child(file.name());
+        if(!(file instanceof AndroidFi)){
+            Fi destination = Core.files.local("__android_audio__").child(file.name());
             if(!destination.exists() || destination.length() != file.length()){
                 file.copyTo(destination);
             }
             file = destination;
         }
 
-        AndroidFileHandle aHandle = (AndroidFileHandle)file;
+        AndroidFi aHandle = (AndroidFi)file;
         if(aHandle.type() == FileType.Internal){
             try{
                 AssetFileDescriptor descriptor = aHandle.getAssetFileDescriptor();

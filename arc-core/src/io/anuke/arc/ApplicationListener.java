@@ -1,6 +1,6 @@
 package io.anuke.arc;
 
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 
 /**
  * <p>
@@ -54,6 +54,6 @@ public interface ApplicationListener{
     /**
      * Called when an external file is dropped into the window, e.g from the desktop.
      */
-    default void fileDropped(FileHandle file){
+    default void fileDropped(Fi file){
     }
 }

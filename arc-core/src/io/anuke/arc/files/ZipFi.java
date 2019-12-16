@@ -10,14 +10,14 @@ import java.util.*;
 import java.util.zip.*;
 
 /** A FileHandle meant for easily representing and reading the contents of a zip/jar file.*/
-public class ZipFileHandle extends FileHandle{
-    private ZipFileHandle[] children = {};
-    private ZipFileHandle parent;
+public class ZipFi extends Fi{
+    private ZipFi[] children = {};
+    private ZipFi parent;
 
     private final @Nullable ZipEntry entry;
     private final @NonNull ZipFile zip;
 
-    public ZipFileHandle(FileHandle zipFileLoc){
+    public ZipFi(Fi zipFileLoc){
         super(new File(""), FileType.Absolute);
         entry = null;
 
@@ -41,8 +41,8 @@ public class ZipFileHandle extends FileHandle{
                 paths.remove("/");
             }
 
-            Array<ZipFileHandle> files = Array.with(paths).map(s -> zip.getEntry(s) != null ?
-                new ZipFileHandle(zip.getEntry(s), zip) : new ZipFileHandle(s, zip));
+            Array<ZipFi> files = Array.with(paths).map(s -> zip.getEntry(s) != null ?
+                new ZipFi(zip.getEntry(s), zip) : new ZipFi(s, zip));
 
             files.add(this);
 
@@ -50,7 +50,7 @@ public class ZipFileHandle extends FileHandle{
             files.each(file -> file.parent = files.find(other -> other.isDirectory() && other != file
                 && file.path().startsWith(other.path()) && !file.path().substring(1 + other.path().length()).contains("/")));
             //transform parents into children
-            files.each(file -> file.children = files.select(f -> f.parent == file).toArray(ZipFileHandle.class));
+            files.each(file -> file.children = files.select(f -> f.parent == file).toArray(ZipFi.class));
 
             parent = null;
         }catch(IOException e){
@@ -58,13 +58,13 @@ public class ZipFileHandle extends FileHandle{
         }
     }
 
-    private ZipFileHandle(ZipEntry entry, ZipFile file){
+    private ZipFi(ZipEntry entry, ZipFile file){
         super(new File(entry.getName()), FileType.Absolute);
         this.entry = entry;
         this.zip = file;
     }
 
-    private ZipFileHandle(String path, ZipFile file){
+    private ZipFi(String path, ZipFile file){
         super(new File(path), FileType.Absolute);
         this.entry = null;
         this.zip = file;
@@ -88,13 +88,13 @@ public class ZipFileHandle extends FileHandle{
     }
 
     @Override
-    public FileHandle child(String name){
-        for(ZipFileHandle child : children){
+    public Fi child(String name){
+        for(ZipFi child : children){
             if(child.name().equals(name)){
                 return child;
             }
         }
-        return new FileHandle(new File(file, name)){
+        return new Fi(new File(file, name)){
             @Override
             public boolean exists(){
                 return false;
@@ -108,12 +108,12 @@ public class ZipFileHandle extends FileHandle{
     }
 
     @Override
-    public FileHandle parent(){
+    public Fi parent(){
         return parent;
     }
 
     @Override
-    public FileHandle[] list(){
+    public Fi[] list(){
         return children;
     }
 

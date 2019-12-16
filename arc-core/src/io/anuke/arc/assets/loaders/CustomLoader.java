@@ -13,13 +13,13 @@ public abstract class CustomLoader extends AsynchronousAssetLoader{
     }
 
     @Override
-    public Object loadSync(AssetManager manager, String fileName, FileHandle file, AssetLoaderParameters parameter){
+    public Object loadSync(AssetManager manager, String fileName, Fi file, AssetLoaderParameters parameter){
         loaded.run();
         return this;
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, AssetLoaderParameters parameter){
+    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, AssetLoaderParameters parameter){
         return null;
     }
 }

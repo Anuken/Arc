@@ -2,7 +2,7 @@ package io.anuke.arc.recorder;
 
 import io.anuke.arc.Core;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.Draw;
 import io.anuke.arc.graphics.g2d.Fill;
@@ -32,7 +32,7 @@ public class GifRecorder{
 	private int recordfps = 30;
 	private float gifx, gify, gifwidth, gifheight, giftime;
 	private float offsetx, offsety;
-	private FileHandle exportdirectory;
+	private Fi exportdirectory;
 	private boolean disableGUI;
 	private float speedMultiplier = 1f;
 	
@@ -46,7 +46,7 @@ public class GifRecorder{
 		this(Core.files.local("gifexport"), Core.files.local(".gifimages"));
 	}
 
-	public GifRecorder(FileHandle exportdirectory, FileHandle workdirectory) {
+	public GifRecorder(Fi exportdirectory, Fi workdirectory) {
 		gifx = -defaultSize / 2;
 		gify = -defaultSize / 2;
 		gifwidth = defaultSize;
@@ -216,7 +216,7 @@ public class GifRecorder{
 		recording = false;
 	}
 
-	public void setExportDirectory(FileHandle handle){
+	public void setExportDirectory(Fi handle){
 		exportdirectory = handle;
 	}
 
@@ -248,7 +248,7 @@ public class GifRecorder{
 		setBounds(rect.x, rect.y, rect.width, rect.height);
 	}
 
-	private void writeGIF(final FileHandle writedirectory){
+	private void writeGIF(final Fi writedirectory){
 		if(saving) return;
 		saving = true;
 
@@ -261,7 +261,7 @@ public class GifRecorder{
         }).start();
 	}
 
-	private File compileGIF(Array<byte[]> pixmaps, int width, int height, FileHandle directory){
+	private File compileGIF(Array<byte[]> pixmaps, int width, int height, Fi directory){
 		if(pixmaps.size == 0){
 			throw new RuntimeException("No input files!");
 		}

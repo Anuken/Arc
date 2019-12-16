@@ -6,7 +6,7 @@ package io.anuke.arc.util.serialization;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.ObjectMap;
 import io.anuke.arc.collection.ObjectMap.Entry;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Strings;
 import io.anuke.arc.util.io.Streams;
@@ -127,7 +127,7 @@ public class XmlReader{
         }
     }
 
-    public Element parse(FileHandle file){
+    public Element parse(Fi file){
         try{
             return parse(file.reader("UTF-8"));
         }catch(Exception ex){

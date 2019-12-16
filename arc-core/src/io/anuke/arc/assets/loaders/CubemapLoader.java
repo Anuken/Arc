@@ -4,7 +4,7 @@ import io.anuke.arc.assets.AssetDescriptor;
 import io.anuke.arc.assets.AssetLoaderParameters;
 import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Cubemap;
 import io.anuke.arc.graphics.CubemapData;
 import io.anuke.arc.graphics.Pixmap;
@@ -28,7 +28,7 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
     }
 
     @Override
-    public void loadAsync(AssetManager manager, String fileName, FileHandle file, CubemapParameter parameter){
+    public void loadAsync(AssetManager manager, String fileName, Fi file, CubemapParameter parameter){
         info.filename = fileName;
         if(parameter == null || parameter.cubemapData == null){
             Pixmap pixmap = null;
@@ -48,7 +48,7 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
     }
 
     @Override
-    public Cubemap loadSync(AssetManager manager, String fileName, FileHandle file, CubemapParameter parameter){
+    public Cubemap loadSync(AssetManager manager, String fileName, Fi file, CubemapParameter parameter){
         if(info == null) return null;
         Cubemap cubemap = info.cubemap;
         if(cubemap != null){
@@ -64,7 +64,7 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, CubemapParameter parameter){
+    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, CubemapParameter parameter){
         return null;
     }
 

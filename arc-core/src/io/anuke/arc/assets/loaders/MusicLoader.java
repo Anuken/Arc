@@ -6,7 +6,7 @@ import io.anuke.arc.assets.AssetLoaderParameters;
 import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.audio.Music;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 
 /**
  * {@link AssetLoader} for {@link Music} instances. The Music instance is loaded synchronously.
@@ -31,19 +31,19 @@ public class MusicLoader extends AsynchronousAssetLoader<Music, MusicLoader.Musi
     }
 
     @Override
-    public void loadAsync(AssetManager manager, String fileName, FileHandle file, MusicParameter parameter){
+    public void loadAsync(AssetManager manager, String fileName, Fi file, MusicParameter parameter){
         music = Core.audio.newMusic(file);
     }
 
     @Override
-    public Music loadSync(AssetManager manager, String fileName, FileHandle file, MusicParameter parameter){
+    public Music loadSync(AssetManager manager, String fileName, Fi file, MusicParameter parameter){
         Music music = this.music;
         this.music = null;
         return music;
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, MusicParameter parameter){
+    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, MusicParameter parameter){
         return null;
     }
 

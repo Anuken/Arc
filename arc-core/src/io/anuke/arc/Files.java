@@ -1,6 +1,6 @@
 package io.anuke.arc;
 
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.util.ArcRuntimeException;
 
 /**
@@ -15,22 +15,22 @@ public interface Files{
      * @throws ArcRuntimeException if the type is classpath or internal and the file does not exist.
      * @see FileType
      */
-    FileHandle getFileHandle(String path, FileType type);
+    Fi getFileHandle(String path, FileType type);
 
     /** Convenience method that returns a {@link FileType#Classpath} file handle. */
-    FileHandle classpath(String path);
+    Fi classpath(String path);
 
     /** Convenience method that returns a {@link FileType#Internal} file handle. */
-    FileHandle internal(String path);
+    Fi internal(String path);
 
     /** Convenience method that returns a {@link FileType#External} file handle. */
-    FileHandle external(String path);
+    Fi external(String path);
 
     /** Convenience method that returns a {@link FileType#Absolute} file handle. */
-    FileHandle absolute(String path);
+    Fi absolute(String path);
 
     /** Convenience method that returns a {@link FileType#Local} file handle. */
-    FileHandle local(String path);
+    Fi local(String path);
 
     /**
      * Returns the external storage path directory. This is the SD card on Android and the home directory of the current user on
@@ -61,8 +61,8 @@ public interface Files{
     enum FileType{
         /**
          * Path relative to the root of the classpath. Classpath files are always readonly. Note that classpath files are not
-         * compatible with some functionality on Android, such as {@link Audio#newSound(FileHandle)} and
-         * {@link Audio#newMusic(FileHandle)}.
+         * compatible with some functionality on Android, such as {@link Audio#newSound(Fi)} and
+         * {@link Audio#newMusic(Fi)}.
          */
         Classpath,
 

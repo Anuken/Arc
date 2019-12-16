@@ -7,7 +7,7 @@ import io.anuke.arc.audio.Music;
 import io.anuke.arc.audio.Sound;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioTrack;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.util.ArcRuntimeException;
 import io.anuke.arc.util.Log;
 
@@ -34,12 +34,12 @@ public class IOSAudio extends Audio{
     }
 
     @Override
-    public Sound newSound(FileHandle fileHandle){
+    public Sound newSound(Fi fileHandle){
         return new IOSSound(fileHandle);
     }
 
     @Override
-    public Music newMusic(FileHandle fileHandle){
+    public Music newMusic(Fi fileHandle){
         String path = fileHandle.file().getPath().replace('\\', '/');
         OALAudioTrack track = OALAudioTrack.create();
         if(track != null){

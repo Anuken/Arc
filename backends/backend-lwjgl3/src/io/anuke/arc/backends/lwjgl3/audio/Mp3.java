@@ -1,6 +1,6 @@
 package io.anuke.arc.backends.lwjgl3.audio;
 
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.util.ArcRuntimeException;
 import javazoom.jl.decoder.*;
 
@@ -15,7 +15,7 @@ public class Mp3{
         private OutputBuffer outputBuffer;
         private MP3Decoder decoder;
 
-        public Music(OpenALAudio audio, FileHandle file){
+        public Music(OpenALAudio audio, Fi file){
             super(audio, file);
             if(audio.noDevice) return;
             bitstream = new Bitstream(file.read());
@@ -84,7 +84,7 @@ public class Mp3{
     public static class Sound extends OpenALSound{
         // Note: This uses a slightly modified version of JLayer.
 
-        public Sound(OpenALAudio audio, FileHandle file){
+        public Sound(OpenALAudio audio, Fi file){
             super(audio);
             if(audio.noDevice) return;
             ByteArrayOutputStream output = new ByteArrayOutputStream(4096);

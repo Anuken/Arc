@@ -23,11 +23,11 @@ import java.nio.channels.FileChannel.*;
  * @author mzechner
  * @author Nathan Sweet
  */
-public class FileHandle{
+public class Fi{
     protected File file;
     protected FileType type;
 
-    protected FileHandle(){
+    protected Fi(){
     }
 
     /**
@@ -35,7 +35,7 @@ public class FileHandle{
      * Do not use this constructor in case you write something cross-platform. Use the {@link Files} interface instead.
      * @param fileName the filename.
      */
-    public FileHandle(String fileName){
+    public Fi(String fileName){
         this.file = new File(fileName);
         this.type = FileType.Absolute;
     }
@@ -45,35 +45,39 @@ public class FileHandle{
      * backends. Do not use this constructor in case you write something cross-platform. Use the {@link Files} interface instead.
      * @param file the file.
      */
-    public FileHandle(File file){
+    public Fi(File file){
         this.file = file;
         this.type = FileType.Absolute;
     }
 
-    public FileHandle(String fileName, FileType type){
+    public Fi(String fileName, FileType type){
         this.type = type;
         file = new File(fileName);
     }
 
-    protected FileHandle(File file, FileType type){
+    protected Fi(File file, FileType type){
         this.file = file;
         this.type = type;
     }
 
-    public static FileHandle tempFile(String prefix){
+    public static Fi get(String path){
+        return new Fi(path);
+    }
+
+    public static Fi tempFile(String prefix){
         try{
-            return new FileHandle(File.createTempFile(prefix, null));
+            return new Fi(File.createTempFile(prefix, null));
         }catch(IOException ex){
             throw new ArcRuntimeException("Unable to create temp file.", ex);
         }
     }
 
-    public static FileHandle tempDirectory(String prefix){
+    public static Fi tempDirectory(String prefix){
         try{
             File file = File.createTempFile(prefix, null);
             if(!file.delete()) throw new IOException("Unable to delete temp file: " + file);
             if(!file.mkdir()) throw new IOException("Unable to create temp directory: " + file);
-            return new FileHandle(file);
+            return new Fi(file);
         }catch(IOException ex){
             throw new ArcRuntimeException("Unable to create temp file.", ex);
         }
@@ -100,7 +104,7 @@ public class FileHandle{
         return file.delete();
     }
 
-    static private void copyFile(FileHandle source, FileHandle dest){
+    static private void copyFile(Fi source, Fi dest){
         try{
             dest.write(source.read(), false);
         }catch(Exception ex){
@@ -109,12 +113,12 @@ public class FileHandle{
         }
     }
 
-    static private void copyDirectory(FileHandle sourceDir, FileHandle destDir){
+    static private void copyDirectory(Fi sourceDir, Fi destDir){
         destDir.mkdirs();
-        FileHandle[] files = sourceDir.list();
+        Fi[] files = sourceDir.list();
         for(int i = 0, n = files.length; i < n; i++){
-            FileHandle srcFile = files[i];
-            FileHandle destFile = destDir.child(srcFile.name());
+            Fi srcFile = files[i];
+            Fi destFile = destDir.child(srcFile.name());
             if(srcFile.isDirectory())
                 copyDirectory(srcFile, destFile);
             else
@@ -187,7 +191,7 @@ public class FileHandle{
     public InputStream read(){
         if(type == FileType.Classpath || (type == FileType.Internal && !file().exists())
         || (type == FileType.Local && !file().exists())){
-            InputStream input = FileHandle.class.getResourceAsStream("/" + file.getPath().replace('\\', '/'));
+            InputStream input = Fi.class.getResourceAsStream("/" + file.getPath().replace('\\', '/'));
             if(input == null) throw new ArcRuntimeException("File not found: " + file + " (" + type + ")");
             return input;
         }
@@ -520,9 +524,9 @@ public class FileHandle{
 
     /** Recursively iterates through all files in this directory.
      * Directories are not handled.*/
-    public void walk(Cons<FileHandle> cons){
+    public void walk(Cons<Fi> cons){
         if(isDirectory()){
-            for(FileHandle file : list()){
+            for(Fi file : list()){
                 file.walk(cons);
             }
         }else{
@@ -532,8 +536,8 @@ public class FileHandle{
 
     /** Recursively iterates through all files in this directory and adds them to an array.
      * Directories are not handled. */
-    public Array<FileHandle> findAll(Boolf<FileHandle> test){
-        Array<FileHandle> out = new Array<>();
+    public Array<Fi> findAll(Boolf<Fi> test){
+        Array<Fi> out = new Array<>();
         walk(f -> {
             if(test.get(f)){
                 out.add(f);
@@ -548,11 +552,11 @@ public class FileHandle{
      * array.
      * @throws ArcRuntimeException if this file is an {@link FileType#Classpath} file.
      */
-    public FileHandle[] list(){
+    public Fi[] list(){
         if(type == FileType.Classpath) throw new ArcRuntimeException("Cannot list a classpath directory: " + file);
         String[] relativePaths = file().list();
-        if(relativePaths == null) return new FileHandle[0];
-        FileHandle[] handles = new FileHandle[relativePaths.length];
+        if(relativePaths == null) return new Fi[0];
+        Fi[] handles = new Fi[relativePaths.length];
         for(int i = 0, n = relativePaths.length; i < n; i++)
             handles[i] = child(relativePaths[i]);
         return handles;
@@ -565,22 +569,22 @@ public class FileHandle{
      * @param filter the {@link FileFilter} to filter files
      * @throws ArcRuntimeException if this file is an {@link FileType#Classpath} file.
      */
-    public FileHandle[] list(FileFilter filter){
+    public Fi[] list(FileFilter filter){
         if(type == FileType.Classpath) throw new ArcRuntimeException("Cannot list a classpath directory: " + file);
         File file = file();
         String[] relativePaths = file.list();
-        if(relativePaths == null) return new FileHandle[0];
-        FileHandle[] handles = new FileHandle[relativePaths.length];
+        if(relativePaths == null) return new Fi[0];
+        Fi[] handles = new Fi[relativePaths.length];
         int count = 0;
         for(int i = 0, n = relativePaths.length; i < n; i++){
             String path = relativePaths[i];
-            FileHandle child = child(path);
+            Fi child = child(path);
             if(!filter.accept(child.file())) continue;
             handles[count] = child;
             count++;
         }
         if(count < relativePaths.length){
-            FileHandle[] newHandles = new FileHandle[count];
+            Fi[] newHandles = new Fi[count];
             System.arraycopy(handles, 0, newHandles, 0, count);
             handles = newHandles;
         }
@@ -594,12 +598,12 @@ public class FileHandle{
      * @param filter the {@link FilenameFilter} to filter files
      * @throws ArcRuntimeException if this file is an {@link FileType#Classpath} file.
      */
-    public FileHandle[] list(FilenameFilter filter){
+    public Fi[] list(FilenameFilter filter){
         if(type == FileType.Classpath) throw new ArcRuntimeException("Cannot list a classpath directory: " + file);
         File file = file();
         String[] relativePaths = file.list();
-        if(relativePaths == null) return new FileHandle[0];
-        FileHandle[] handles = new FileHandle[relativePaths.length];
+        if(relativePaths == null) return new Fi[0];
+        Fi[] handles = new Fi[relativePaths.length];
         int count = 0;
         for(int i = 0, n = relativePaths.length; i < n; i++){
             String path = relativePaths[i];
@@ -608,7 +612,7 @@ public class FileHandle{
             count++;
         }
         if(count < relativePaths.length){
-            FileHandle[] newHandles = new FileHandle[count];
+            Fi[] newHandles = new Fi[count];
             System.arraycopy(handles, 0, newHandles, 0, count);
             handles = newHandles;
         }
@@ -621,11 +625,11 @@ public class FileHandle{
      * will return a zero length array.
      * @throws ArcRuntimeException if this file is an {@link FileType#Classpath} file.
      */
-    public FileHandle[] list(String suffix){
+    public Fi[] list(String suffix){
         if(type == FileType.Classpath) throw new ArcRuntimeException("Cannot list a classpath directory: " + file);
         String[] relativePaths = file().list();
-        if(relativePaths == null) return new FileHandle[0];
-        FileHandle[] handles = new FileHandle[relativePaths.length];
+        if(relativePaths == null) return new Fi[0];
+        Fi[] handles = new Fi[relativePaths.length];
         int count = 0;
         for(int i = 0, n = relativePaths.length; i < n; i++){
             String path = relativePaths[i];
@@ -634,7 +638,7 @@ public class FileHandle{
             count++;
         }
         if(count < relativePaths.length){
-            FileHandle[] newHandles = new FileHandle[count];
+            Fi[] newHandles = new Fi[count];
             System.arraycopy(handles, 0, newHandles, 0, count);
             handles = newHandles;
         }
@@ -652,29 +656,29 @@ public class FileHandle{
     }
 
     /** Returns a handle to the child with the specified name. */
-    public FileHandle child(String name){
-        if(file.getPath().length() == 0) return new FileHandle(new File(name), type);
-        return new FileHandle(new File(file, name), type);
+    public Fi child(String name){
+        if(file.getPath().length() == 0) return new Fi(new File(name), type);
+        return new Fi(new File(file, name), type);
     }
 
     /**
      * Returns a handle to the sibling with the specified name.
      * @throws ArcRuntimeException if this file is the root.
      */
-    public FileHandle sibling(String name){
+    public Fi sibling(String name){
         if(file.getPath().length() == 0) throw new ArcRuntimeException("Cannot get the sibling of the root.");
-        return new FileHandle(new File(file.getParent(), name), type);
+        return new Fi(new File(file.getParent(), name), type);
     }
 
-    public FileHandle parent(){
+    public Fi parent(){
         File parent = file.getParentFile();
         if(parent == null){
             if(OS.isWindows){
-                return new FileHandle("", type){
-                    FileHandle[] children = Array.with(File.listRoots()).map(FileHandle::new).toArray(FileHandle.class);
+                return new Fi("", type){
+                    Fi[] children = Array.with(File.listRoots()).map(Fi::new).toArray(Fi.class);
 
                     @Override
-                    public FileHandle parent(){
+                    public Fi parent(){
                         return this;
                     }
 
@@ -689,18 +693,18 @@ public class FileHandle{
                     }
 
                     @Override
-                    public FileHandle child(String name){
-                        return new FileHandle(new File(name));
+                    public Fi child(String name){
+                        return new Fi(new File(name));
                     }
 
                     @Override
-                    public FileHandle[] list(){
+                    public Fi[] list(){
                         return children;
                     }
 
                     @Override
-                    public FileHandle[] list(FileFilter filter){
-                        return Array.with(list()).select(f -> filter.accept(f.file)).toArray(FileHandle.class);
+                    public Fi[] list(FileFilter filter){
+                        return Array.with(list()).select(f -> filter.accept(f.file)).toArray(Fi.class);
                     }
                 };
             }else{
@@ -711,7 +715,7 @@ public class FileHandle{
                 }
             }
         }
-        return new FileHandle(parent, type);
+        return new Fi(parent, type);
     }
 
     /** @throws ArcRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
@@ -731,7 +735,7 @@ public class FileHandle{
                 if(file().exists()) return true;
                 // Fall through.
             case Classpath:
-                return FileHandle.class.getResource("/" + file.getPath().replace('\\', '/')) != null;
+                return Fi.class.getResource("/" + file.getPath().replace('\\', '/')) != null;
         }
         return file().exists();
     }
@@ -784,7 +788,7 @@ public class FileHandle{
      * @throws ArcRuntimeException if the destination file handle is a {@link FileType#Classpath} or {@link FileType#Internal}
      * file, or copying failed.
      */
-    public void copyTo(FileHandle dest){
+    public void copyTo(Fi dest){
         if(!isDirectory()){
             if(dest.isDirectory()) dest = dest.child(name());
             copyFile(this, dest);
@@ -804,7 +808,7 @@ public class FileHandle{
      * @throws ArcRuntimeException if the source or destination file handle is a {@link FileType#Classpath} or
      * {@link FileType#Internal} file.
      */
-    public void moveTo(FileHandle dest){
+    public void moveTo(Fi dest){
         switch(type){
             case Classpath:
                 throw new ArcRuntimeException("Cannot move a classpath file: " + file);
@@ -849,8 +853,8 @@ public class FileHandle{
 
     @Override
     public boolean equals(Object obj){
-        if(!(obj instanceof FileHandle)) return false;
-        FileHandle other = (FileHandle)obj;
+        if(!(obj instanceof Fi)) return false;
+        Fi other = (Fi)obj;
         return type == other.type && path().equals(other.path());
     }
 

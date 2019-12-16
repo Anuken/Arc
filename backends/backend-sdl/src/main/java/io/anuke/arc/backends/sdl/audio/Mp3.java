@@ -15,7 +15,7 @@ public class Mp3{
         private OutputBuffer outputBuffer;
         private MP3Decoder decoder;
 
-        public Music(ALAudio audio, FileHandle file){
+        public Music(ALAudio audio, Fi file){
             super(audio, file);
             if(audio.noDevice) return;
             bitstream = new Bitstream(file.read());
@@ -84,7 +84,7 @@ public class Mp3{
     public static class Sound extends ALSound{
         // Note: This uses a slightly modified version of JLayer.
 
-        public Sound(ALAudio audio, FileHandle file){
+        public Sound(ALAudio audio, Fi file){
             super(audio);
             if(audio.noDevice) return;
             ByteArrayOutputStream output = new ByteArrayOutputStream(4096);

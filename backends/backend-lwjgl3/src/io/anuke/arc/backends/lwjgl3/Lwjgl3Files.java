@@ -1,7 +1,7 @@
 package io.anuke.arc.backends.lwjgl3;
 
 import io.anuke.arc.Files;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.util.*;
 
 import java.io.File;
@@ -15,33 +15,33 @@ public final class Lwjgl3Files implements Files{
     public static final String localPath = new File("").getAbsolutePath() + File.separator;
 
     @Override
-    public FileHandle getFileHandle(String fileName, FileType type){
-        return new Lwjgl3FileHandle(fileName, type);
+    public Fi getFileHandle(String fileName, FileType type){
+        return new Lwjgl3Fi(fileName, type);
     }
 
     @Override
-    public FileHandle classpath(String path){
-        return new Lwjgl3FileHandle(path, FileType.Classpath);
+    public Fi classpath(String path){
+        return new Lwjgl3Fi(path, FileType.Classpath);
     }
 
     @Override
-    public FileHandle internal(String path){
-        return new Lwjgl3FileHandle(path, FileType.Internal);
+    public Fi internal(String path){
+        return new Lwjgl3Fi(path, FileType.Internal);
     }
 
     @Override
-    public FileHandle external(String path){
-        return new Lwjgl3FileHandle(path, FileType.External);
+    public Fi external(String path){
+        return new Lwjgl3Fi(path, FileType.External);
     }
 
     @Override
-    public FileHandle absolute(String path){
-        return new Lwjgl3FileHandle(path, FileType.Absolute);
+    public Fi absolute(String path){
+        return new Lwjgl3Fi(path, FileType.Absolute);
     }
 
     @Override
-    public FileHandle local(String path){
-        return new Lwjgl3FileHandle(path, FileType.Local);
+    public Fi local(String path){
+        return new Lwjgl3Fi(path, FileType.Local);
     }
 
     @Override
@@ -68,26 +68,26 @@ public final class Lwjgl3Files implements Files{
      * @author mzechner
      * @author Nathan Sweet
      */
-    public static final class Lwjgl3FileHandle extends FileHandle{
-        public Lwjgl3FileHandle(String fileName, FileType type){
+    public static final class Lwjgl3Fi extends Fi{
+        public Lwjgl3Fi(String fileName, FileType type){
             super(fileName, type);
         }
 
-        public Lwjgl3FileHandle(File file, FileType type){
+        public Lwjgl3Fi(File file, FileType type){
             super(file, type);
         }
 
-        public FileHandle child(String name){
-            if(file.getPath().length() == 0) return new Lwjgl3FileHandle(new File(name), type);
-            return new Lwjgl3FileHandle(new File(file, name), type);
+        public Fi child(String name){
+            if(file.getPath().length() == 0) return new Lwjgl3Fi(new File(name), type);
+            return new Lwjgl3Fi(new File(file, name), type);
         }
 
-        public FileHandle sibling(String name){
+        public Fi sibling(String name){
             if(file.getPath().length() == 0) throw new ArcRuntimeException("Cannot get the sibling of the root.");
-            return new Lwjgl3FileHandle(new File(file.getParent(), name), type);
+            return new Lwjgl3Fi(new File(file.getParent(), name), type);
         }
 
-        public FileHandle parent(){
+        public Fi parent(){
             File parent = file.getParentFile();
             if(parent == null){
                 if(type == FileType.Absolute)
@@ -95,7 +95,7 @@ public final class Lwjgl3Files implements Files{
                 else
                     parent = new File("");
             }
-            return new Lwjgl3FileHandle(parent, type);
+            return new Lwjgl3Fi(parent, type);
         }
 
         public File file(){

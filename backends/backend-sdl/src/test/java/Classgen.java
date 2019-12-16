@@ -5,7 +5,7 @@ import io.anuke.arc.util.*;
 public class Classgen{
 
     public static void main(String[] args){
-        String str = new FileHandle("/home/anuke/work/alc.h").readString();
+        String str = new Fi("/home/anuke/work/alc.h").readString();
         StringMap map = StringMap.of(
         "ALuint", "int",
         "ALint", "int",

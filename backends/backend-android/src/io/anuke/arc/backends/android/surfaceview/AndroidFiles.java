@@ -7,7 +7,7 @@ import android.content.res.AssetManager;
 import android.os.Environment;
 import io.anuke.arc.Core;
 import io.anuke.arc.Files;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.util.ArcRuntimeException;
 
 import java.io.IOException;
@@ -34,19 +34,19 @@ public class AndroidFiles implements Files{
     }
 
     @Override
-    public FileHandle getFileHandle(String path, FileType type){
-        FileHandle handle = new AndroidFileHandle(type == FileType.Internal ? assets : null, path, type);
+    public Fi getFileHandle(String path, FileType type){
+        Fi handle = new AndroidFi(type == FileType.Internal ? assets : null, path, type);
         if(expansionFile != null && type == FileType.Internal) handle = getZipFileHandleIfExists(handle, path);
         return handle;
     }
 
-    private FileHandle getZipFileHandleIfExists(FileHandle handle, String path){
+    private Fi getZipFileHandleIfExists(Fi handle, String path){
         try{
             assets.open(path).close(); // Check if file exists.
             return handle;
         }catch(Exception ex){
             // try APK expansion instead
-            FileHandle zipHandle = new AndroidZipFileHandle(path);
+            Fi zipHandle = new AndroidZipFi(path);
             if(!zipHandle.isDirectory())
                 return zipHandle;
             else if(zipHandle.exists()) return zipHandle;
@@ -55,30 +55,30 @@ public class AndroidFiles implements Files{
     }
 
     @Override
-    public FileHandle classpath(String path){
-        return new AndroidFileHandle(null, path, FileType.Classpath);
+    public Fi classpath(String path){
+        return new AndroidFi(null, path, FileType.Classpath);
     }
 
     @Override
-    public FileHandle internal(String path){
-        FileHandle handle = new AndroidFileHandle(assets, path, FileType.Internal);
+    public Fi internal(String path){
+        Fi handle = new AndroidFi(assets, path, FileType.Internal);
         if(expansionFile != null) handle = getZipFileHandleIfExists(handle, path);
         return handle;
     }
 
     @Override
-    public FileHandle external(String path){
-        return new AndroidFileHandle(null, path, FileType.External);
+    public Fi external(String path){
+        return new AndroidFi(null, path, FileType.External);
     }
 
     @Override
-    public FileHandle absolute(String path){
-        return new AndroidFileHandle(null, path, FileType.Absolute);
+    public Fi absolute(String path){
+        return new AndroidFi(null, path, FileType.Absolute);
     }
 
     @Override
-    public FileHandle local(String path){
-        return new AndroidFileHandle(null, path, FileType.Local);
+    public Fi local(String path){
+        return new AndroidFi(null, path, FileType.Local);
     }
 
     @Override

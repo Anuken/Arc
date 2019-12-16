@@ -4,23 +4,23 @@ import android.content.res.AssetFileDescriptor;
 import io.anuke.arc.Core;
 import io.anuke.arc.Files.FileType;
 import io.anuke.arc.backends.android.surfaceview.ZipResourceFile.ZipEntryRO;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.util.ArcRuntimeException;
 
 import java.io.*;
 
 /** @author sarkanyi */
-public class AndroidZipFileHandle extends AndroidFileHandle{
+public class AndroidZipFi extends AndroidFi{
     private AssetFileDescriptor assetFd;
     private ZipResourceFile expansionFile;
     private String path;
 
-    public AndroidZipFileHandle(String fileName){
+    public AndroidZipFi(String fileName){
         super(null, fileName, FileType.Internal);
         initialize();
     }
 
-    public AndroidZipFileHandle(File file, FileType type){
+    public AndroidZipFi(File file, FileType type){
         super(null, file, type);
         initialize();
     }
@@ -57,50 +57,50 @@ public class AndroidZipFileHandle extends AndroidFileHandle{
     }
 
     @Override
-    public FileHandle child(String name){
+    public Fi child(String name){
         if(file.getPath().length() == 0)
-            return new AndroidZipFileHandle(new File(name), type);
-        return new AndroidZipFileHandle(new File(file, name), type);
+            return new AndroidZipFi(new File(name), type);
+        return new AndroidZipFi(new File(file, name), type);
     }
 
     @Override
-    public FileHandle sibling(String name){
+    public Fi sibling(String name){
         if(file.getPath().length() == 0)
             throw new ArcRuntimeException("Cannot get the sibling of the root.");
         return Core.files.getFileHandle(new File(file.getParent(), name).getPath(), type); //this way we can find the sibling even if it's not inside the obb
     }
 
     @Override
-    public FileHandle parent(){
+    public Fi parent(){
         File parent = file.getParentFile();
         if(parent == null)
             parent = new File("");
-        return new AndroidZipFileHandle(parent.getPath());
+        return new AndroidZipFi(parent.getPath());
     }
 
     @Override
-    public FileHandle[] list(){
+    public Fi[] list(){
         ZipEntryRO[] zipEntries = expansionFile.getEntriesAt(getPath());
-        FileHandle[] handles = new FileHandle[zipEntries.length];
+        Fi[] handles = new Fi[zipEntries.length];
         for(int i = 0, n = handles.length; i < n; i++)
-            handles[i] = new AndroidZipFileHandle(zipEntries[i].mFileName);
+            handles[i] = new AndroidZipFi(zipEntries[i].mFileName);
         return handles;
     }
 
     @Override
-    public FileHandle[] list(FileFilter filter){
+    public Fi[] list(FileFilter filter){
         ZipEntryRO[] zipEntries = expansionFile.getEntriesAt(getPath());
-        FileHandle[] handles = new FileHandle[zipEntries.length];
+        Fi[] handles = new Fi[zipEntries.length];
         int count = 0;
         for(int i = 0, n = handles.length; i < n; i++){
-            FileHandle child = new AndroidZipFileHandle(zipEntries[i].mFileName);
+            Fi child = new AndroidZipFi(zipEntries[i].mFileName);
             if(!filter.accept(child.file()))
                 continue;
             handles[count] = child;
             count++;
         }
         if(count < zipEntries.length){
-            FileHandle[] newHandles = new FileHandle[count];
+            Fi[] newHandles = new Fi[count];
             System.arraycopy(handles, 0, newHandles, 0, count);
             handles = newHandles;
         }
@@ -108,19 +108,19 @@ public class AndroidZipFileHandle extends AndroidFileHandle{
     }
 
     @Override
-    public FileHandle[] list(FilenameFilter filter){
+    public Fi[] list(FilenameFilter filter){
         ZipEntryRO[] zipEntries = expansionFile.getEntriesAt(getPath());
-        FileHandle[] handles = new FileHandle[zipEntries.length];
+        Fi[] handles = new Fi[zipEntries.length];
         int count = 0;
         for(int i = 0, n = handles.length; i < n; i++){
             String path = zipEntries[i].mFileName;
             if(!filter.accept(file, path))
                 continue;
-            handles[count] = new AndroidZipFileHandle(path);
+            handles[count] = new AndroidZipFi(path);
             count++;
         }
         if(count < zipEntries.length){
-            FileHandle[] newHandles = new FileHandle[count];
+            Fi[] newHandles = new Fi[count];
             System.arraycopy(handles, 0, newHandles, 0, count);
             handles = newHandles;
         }
@@ -128,19 +128,19 @@ public class AndroidZipFileHandle extends AndroidFileHandle{
     }
 
     @Override
-    public FileHandle[] list(String suffix){
+    public Fi[] list(String suffix){
         ZipEntryRO[] zipEntries = expansionFile.getEntriesAt(getPath());
-        FileHandle[] handles = new FileHandle[zipEntries.length];
+        Fi[] handles = new Fi[zipEntries.length];
         int count = 0;
         for(int i = 0, n = handles.length; i < n; i++){
             String path = zipEntries[i].mFileName;
             if(!path.endsWith(suffix))
                 continue;
-            handles[count] = new AndroidZipFileHandle(path);
+            handles[count] = new AndroidZipFi(path);
             count++;
         }
         if(count < zipEntries.length){
-            FileHandle[] newHandles = new FileHandle[count];
+            Fi[] newHandles = new Fi[count];
             System.arraycopy(handles, 0, newHandles, 0, count);
             handles = newHandles;
         }

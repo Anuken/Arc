@@ -1,7 +1,7 @@
 package io.anuke.arc.backends.headless;
 
 import io.anuke.arc.Files;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 
 import java.io.File;
 
@@ -14,33 +14,33 @@ public final class HeadlessFiles implements Files{
     public static final String localPath = new File("").getAbsolutePath() + File.separator;
 
     @Override
-    public FileHandle getFileHandle(String fileName, FileType type){
-        return new HeadlessFileHandle(fileName, type);
+    public Fi getFileHandle(String fileName, FileType type){
+        return new HeadlessFi(fileName, type);
     }
 
     @Override
-    public FileHandle classpath(String path){
-        return new HeadlessFileHandle(path, FileType.Classpath);
+    public Fi classpath(String path){
+        return new HeadlessFi(path, FileType.Classpath);
     }
 
     @Override
-    public FileHandle internal(String path){
-        return new HeadlessFileHandle(path, FileType.Internal);
+    public Fi internal(String path){
+        return new HeadlessFi(path, FileType.Internal);
     }
 
     @Override
-    public FileHandle external(String path){
-        return new HeadlessFileHandle(path, FileType.External);
+    public Fi external(String path){
+        return new HeadlessFi(path, FileType.External);
     }
 
     @Override
-    public FileHandle absolute(String path){
-        return new HeadlessFileHandle(path, FileType.Absolute);
+    public Fi absolute(String path){
+        return new HeadlessFi(path, FileType.Absolute);
     }
 
     @Override
-    public FileHandle local(String path){
-        return new HeadlessFileHandle(path, FileType.Local);
+    public Fi local(String path){
+        return new HeadlessFi(path, FileType.Local);
     }
 
     @Override

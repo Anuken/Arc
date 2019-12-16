@@ -5,7 +5,7 @@ import io.anuke.arc.Core;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.ObjectIntMap;
 import io.anuke.arc.collection.ObjectMap;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.GL20;
 import io.anuke.arc.graphics.Mesh;
@@ -139,7 +139,7 @@ public class Shader implements Disposable{
         }
     }
 
-    public Shader(FileHandle vertexShader, FileHandle fragmentShader){
+    public Shader(Fi vertexShader, Fi fragmentShader){
         this(vertexShader.readString(), fragmentShader.readString());
     }
 

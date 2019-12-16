@@ -4,7 +4,7 @@ import io.anuke.arc.assets.AssetDescriptor;
 import io.anuke.arc.assets.AssetLoaderParameters;
 import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.util.I18NBundle;
 
 import java.util.Locale;
@@ -37,7 +37,7 @@ public class I18NBundleLoader extends AsynchronousAssetLoader<I18NBundle, I18NBu
     }
 
     @Override
-    public void loadAsync(AssetManager manager, String fileName, FileHandle file, I18NBundleParameter parameter){
+    public void loadAsync(AssetManager manager, String fileName, Fi file, I18NBundleParameter parameter){
         this.bundle = null;
         Locale locale;
         String encoding;
@@ -56,14 +56,14 @@ public class I18NBundleLoader extends AsynchronousAssetLoader<I18NBundle, I18NBu
     }
 
     @Override
-    public I18NBundle loadSync(AssetManager manager, String fileName, FileHandle file, I18NBundleParameter parameter){
+    public I18NBundle loadSync(AssetManager manager, String fileName, Fi file, I18NBundleParameter parameter){
         I18NBundle bundle = this.bundle;
         this.bundle = null;
         return bundle;
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, I18NBundleParameter parameter){
+    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, I18NBundleParameter parameter){
         return null;
     }
 

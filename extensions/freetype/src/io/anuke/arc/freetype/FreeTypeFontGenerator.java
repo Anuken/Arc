@@ -3,7 +3,7 @@ package io.anuke.arc.freetype;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.*;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.graphics.Pixmap.Format;
@@ -66,17 +66,17 @@ public class FreeTypeFontGenerator implements Disposable{
     final String name;
     boolean bitmapped = false;
 
-    /** {@link #FreeTypeFontGenerator(FileHandle, int)} */
-    public FreeTypeFontGenerator(FileHandle fontFile){
+    /** {@link #FreeTypeFontGenerator(Fi, int)} */
+    public FreeTypeFontGenerator(Fi fontFile){
         this(fontFile, 0);
     }
 
     /**
-     * Creates a new generator from the given font file. Uses {@link FileHandle#length()} to determine the file size. If the file
+     * Creates a new generator from the given font file. Uses {@link Fi#length()} to determine the file size. If the file
      * length could not be determined (it was 0), an extra copy of the font bytes is performed. Throws a
      * {@link ArcRuntimeException} if loading did not succeed.
      */
-    public FreeTypeFontGenerator(FileHandle fontFile, int faceIndex){
+    public FreeTypeFontGenerator(Fi fontFile, int faceIndex){
         name = fontFile.pathWithoutExtension();
         int fileSize = (int)fontFile.length();
 

@@ -325,12 +325,12 @@ public class AssetManager implements Disposable{
         if(getLoader(type) == null){
             setLoader(type, new CustomLoader(){
                 @Override
-                public void loadAsync(AssetManager manager, String fileName, FileHandle file, AssetLoaderParameters parameter){
+                public void loadAsync(AssetManager manager, String fileName, Fi file, AssetLoaderParameters parameter){
                     loadasync.run();
                 }
 
                 @Override
-                public Object loadSync(AssetManager manager, String fileName, FileHandle file, AssetLoaderParameters parameter){
+                public Object loadSync(AssetManager manager, String fileName, Fi file, AssetLoaderParameters parameter){
                     loadsync.run();
                     return super.loadSync(manager, fileName, file, parameter);
                 }
@@ -349,18 +349,18 @@ public class AssetManager implements Disposable{
         if(getLoader(load.getClass()) == null){
             setLoader(load.getClass(), new AsynchronousAssetLoader(new InternalFileHandleResolver()){
                 @Override
-                public void loadAsync(AssetManager manager, String fileName, FileHandle file, AssetLoaderParameters parameter){
+                public void loadAsync(AssetManager manager, String fileName, Fi file, AssetLoaderParameters parameter){
                     load.loadAsync();
                 }
 
                 @Override
-                public Object loadSync(AssetManager manager, String fileName, FileHandle file, AssetLoaderParameters parameter){
+                public Object loadSync(AssetManager manager, String fileName, Fi file, AssetLoaderParameters parameter){
                     load.loadSync();
                     return load;
                 }
 
                 @Override
-                public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, AssetLoaderParameters parameter){
+                public Array<AssetDescriptor> getDependencies(String fileName, Fi file, AssetLoaderParameters parameter){
                     return load.getDependencies();
                 }
             });

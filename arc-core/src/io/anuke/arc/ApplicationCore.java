@@ -1,6 +1,6 @@
 package io.anuke.arc;
 
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 
 public abstract class ApplicationCore implements ApplicationListener{
     protected ApplicationListener[] modules = {};
@@ -59,7 +59,7 @@ public abstract class ApplicationCore implements ApplicationListener{
     }
 
     @Override
-    public void fileDropped(FileHandle file){
+    public void fileDropped(Fi file){
         for(ApplicationListener listener : modules){
             listener.fileDropped(file);
         }

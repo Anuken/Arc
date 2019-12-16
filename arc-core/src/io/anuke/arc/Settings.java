@@ -18,7 +18,7 @@ public class Settings{
     protected final static byte TYPE_BOOL = 0, TYPE_INT = 1, TYPE_LONG = 2, TYPE_FLOAT = 3, TYPE_STRING = 4, TYPE_BINARY = 5;
 
     //general state data
-    protected FileHandle dataDirectory;
+    protected Fi dataDirectory;
     protected String appName;
     protected ObjectMap<String, Object> defaults = new ObjectMap<>();
     protected ObjectMap<String, Object> values = new ObjectMap<>();
@@ -141,7 +141,7 @@ public class Settings{
         }
     }
 
-    public void loadValues(FileHandle file) throws IOException{
+    public void loadValues(Fi file) throws IOException{
         try(DataInputStream stream = new DataInputStream(file.read(8192))){
             int amount = stream.readInt();
             for(int i = 0; i < amount; i++){
@@ -177,7 +177,7 @@ public class Settings{
 
     /** Saves all entries from {@link #values} into the correct location. */
     public void saveValues(){
-        FileHandle file = getSettingsFile();
+        Fi file = getSettingsFile();
 
         try(DataOutputStream stream = new DataOutputStream(file.write(false, 8192))){
             stream.writeInt(values.size);
@@ -216,21 +216,21 @@ public class Settings{
     }
 
     /** Returns the file used for writing settings to. Not available on all platforms! */
-    public FileHandle getSettingsFile(){
+    public Fi getSettingsFile(){
         return getDataDirectory().child("settings.bin");
     }
 
-    public FileHandle getBackupSettingsFile(){
+    public Fi getBackupSettingsFile(){
         return getDataDirectory().child("settings_backup.bin");
     }
 
     /** Returns the directory where all settings and data is placed. */
-    public FileHandle getDataDirectory(){
+    public Fi getDataDirectory(){
         return dataDirectory == null ? Core.files.absolute(OS.getAppDataDirectoryString(appName)) : dataDirectory;
     }
 
     /** Sets the settings file where everything is written to. */
-    public void setDataDirectory(FileHandle file){
+    public void setDataDirectory(Fi file){
         this.dataDirectory = file;
     }
 

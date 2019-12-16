@@ -6,7 +6,7 @@ import com.badlogic.gdx.backends.iosrobovm.objectal.ALChannelSource;
 import com.badlogic.gdx.backends.iosrobovm.objectal.ALSource;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
 import io.anuke.arc.collection.IntArray;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import org.robovm.apple.foundation.NSArray;
 
 /**
@@ -24,7 +24,7 @@ public class IOSSound implements Sound{
     private NSArray<ALSource> sourcePool;
     private IntArray streamIds = new IntArray(8);
 
-    public IOSSound(FileHandle filePath){
+    public IOSSound(Fi filePath){
         soundPath = filePath.file().getPath().replace('\\', '/');
         soundBuffer = OALSimpleAudio.sharedInstance().preloadEffect(soundPath);
         channel = OALSimpleAudio.sharedInstance().getChannelSource();

@@ -4,7 +4,7 @@ import io.anuke.arc.assets.AssetDescriptor;
 import io.anuke.arc.assets.AssetLoaderParameters;
 import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.graphics.Texture.TextureFilter;
 import io.anuke.arc.graphics.g2d.BitmapFont;
@@ -28,7 +28,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, BitmapFontParameter parameter){
+    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, BitmapFontParameter parameter){
         Array<AssetDescriptor> deps = new Array();
         if(parameter != null && parameter.bitmapFontData != null){
             data = parameter.bitmapFontData;
@@ -41,7 +41,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
         }else{
             for(int i = 0; i < data.getImagePaths().length; i++){
                 String path = data.getImagePath(i);
-                FileHandle resolved = resolve(path);
+                Fi resolved = resolve(path);
 
                 TextureLoader.TextureParameter textureParams = new TextureLoader.TextureParameter();
 
@@ -60,11 +60,11 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
     }
 
     @Override
-    public void loadAsync(AssetManager manager, String fileName, FileHandle file, BitmapFontParameter parameter){
+    public void loadAsync(AssetManager manager, String fileName, Fi file, BitmapFontParameter parameter){
     }
 
     @Override
-    public BitmapFont loadSync(AssetManager manager, String fileName, FileHandle file, BitmapFontParameter parameter){
+    public BitmapFont loadSync(AssetManager manager, String fileName, Fi file, BitmapFontParameter parameter){
         if(parameter != null && parameter.atlasName != null){
             TextureAtlas atlas = manager.get(parameter.atlasName, TextureAtlas.class);
             String name = file.sibling(data.imagePaths[0]).nameWithoutExtension();

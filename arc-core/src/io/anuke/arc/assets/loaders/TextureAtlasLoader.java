@@ -5,7 +5,7 @@ import io.anuke.arc.assets.AssetLoaderParameters;
 import io.anuke.arc.assets.AssetManager;
 import io.anuke.arc.assets.loaders.TextureLoader.TextureParameter;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Texture;
 import io.anuke.arc.graphics.g2d.TextureAtlas;
 import io.anuke.arc.graphics.g2d.TextureAtlas.TextureAtlasData;
@@ -25,7 +25,7 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
     }
 
     @Override
-    public TextureAtlas load(AssetManager assetManager, String fileName, FileHandle file, TextureAtlasParameter parameter){
+    public TextureAtlas load(AssetManager assetManager, String fileName, Fi file, TextureAtlasParameter parameter){
         for(Page page : data.getPages()){
             page.texture = assetManager.get(page.textureFile.path().replaceAll("\\\\", "/"), Texture.class);
         }
@@ -36,8 +36,8 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, FileHandle atlasFile, TextureAtlasParameter parameter){
-        FileHandle imgDir = atlasFile.parent();
+    public Array<AssetDescriptor> getDependencies(String fileName, Fi atlasFile, TextureAtlasParameter parameter){
+        Fi imgDir = atlasFile.parent();
 
         if(parameter != null)
             data = new TextureAtlasData(atlasFile, imgDir, parameter.flip);

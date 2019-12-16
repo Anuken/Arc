@@ -4,7 +4,7 @@ import io.anuke.arc.assets.AssetLoaderParameters;
 import io.anuke.arc.assets.loaders.AsynchronousAssetLoader;
 import io.anuke.arc.assets.loaders.FileHandleResolver;
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.Texture.TextureFilter;
 import io.anuke.arc.graphics.g2d.TextureRegion;
@@ -102,9 +102,9 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         return b & 0xFF;
     }
 
-    protected static FileHandle getRelativeFileHandle(FileHandle file, String path){
+    protected static Fi getRelativeFileHandle(Fi file, String path){
         StringTokenizer tokenizer = new StringTokenizer(path, "\\/");
-        FileHandle result = file.parent();
+        Fi result = file.parent();
         while(tokenizer.hasMoreElements()){
             String token = tokenizer.nextToken();
             if(token.equals(".."))
@@ -116,7 +116,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         return result;
     }
 
-    protected void loadTileGroup(TiledMap map, Array<MapLayer> parentLayers, Element element, FileHandle tmxFile, ImageResolver imageResolver){
+    protected void loadTileGroup(TiledMap map, Array<MapLayer> parentLayers, Element element, Fi tmxFile, ImageResolver imageResolver){
         if(element.getName().equals("group")){
             MapGroupLayer groupLayer = new MapGroupLayer();
             loadBasicLayerInfo(groupLayer, element);
@@ -139,7 +139,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         }
     }
 
-    protected void loadLayer(TiledMap map, Array<MapLayer> parentLayers, Element element, FileHandle tmxFile, ImageResolver imageResolver){
+    protected void loadLayer(TiledMap map, Array<MapLayer> parentLayers, Element element, Fi tmxFile, ImageResolver imageResolver){
         String name = element.getName();
         if(name.equals("group")){
             loadTileGroup(map, parentLayers, element, tmxFile, imageResolver);
@@ -205,7 +205,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         }
     }
 
-    protected void loadImageLayer(TiledMap map, Array<MapLayer> parentLayers, Element element, FileHandle tmxFile, ImageResolver imageResolver){
+    protected void loadImageLayer(TiledMap map, Array<MapLayer> parentLayers, Element element, Fi tmxFile, ImageResolver imageResolver){
         if(element.getName().equals("imagelayer")){
             int x = 0;
             int y = 0;
@@ -227,7 +227,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 
             if(image != null){
                 String source = image.getAttribute("source");
-                FileHandle handle = getRelativeFileHandle(tmxFile, source);
+                Fi handle = getRelativeFileHandle(tmxFile, source);
                 texture = imageResolver.getImage(handle.path());
                 y -= texture.getHeight();
             }

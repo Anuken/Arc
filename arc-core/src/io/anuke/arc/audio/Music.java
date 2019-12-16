@@ -3,7 +3,7 @@ package io.anuke.arc.audio;
 import io.anuke.arc.Application;
 import io.anuke.arc.ApplicationListener;
 import io.anuke.arc.Audio;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.util.Disposable;
 
 /**
@@ -13,7 +13,7 @@ import io.anuke.arc.util.Disposable;
  * </p>
  *
  * <p>
- * Music instances are created via {@link Audio#newMusic(FileHandle)}.
+ * Music instances are created via {@link Audio#newMusic(Fi)}.
  * </p>
  *
  * <p>

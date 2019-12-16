@@ -1,6 +1,6 @@
 package io.anuke.arc.graphics.glutils;
 
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Pixmap;
 import io.anuke.arc.graphics.Pixmap.Format;
 import io.anuke.arc.graphics.PixmapIO;
@@ -9,7 +9,7 @@ import io.anuke.arc.util.ArcRuntimeException;
 
 public class FileTextureData implements TextureData{
 
-    final FileHandle file;
+    final Fi file;
     int width = 0;
     int height = 0;
     Format format;
@@ -17,7 +17,7 @@ public class FileTextureData implements TextureData{
     boolean useMipMaps;
     boolean isPrepared = false;
 
-    public FileTextureData(FileHandle file, Pixmap preloadedPixmap, Format format, boolean useMipMaps){
+    public FileTextureData(Fi file, Pixmap preloadedPixmap, Format format, boolean useMipMaps){
         this.file = file;
         this.pixmap = preloadedPixmap;
         this.format = format;
@@ -88,7 +88,7 @@ public class FileTextureData implements TextureData{
         return true;
     }
 
-    public FileHandle getFileHandle(){
+    public Fi getFileHandle(){
         return file;
     }
 

@@ -14,7 +14,7 @@ public class AssetDescriptor<T>{
     public final Class<T> type;
     public final AssetLoaderParameters params;
     /** The resolved file. May be null if the fileName has not been resolved yet. */
-    public FileHandle file;
+    public Fi file;
     /** Callback for when this asset is loaded.*/
     public Cons<T> loaded = t -> {};
     /** Callback for when this asset has an error.*/
@@ -29,7 +29,7 @@ public class AssetDescriptor<T>{
     }
 
     /** Creates an AssetDescriptor with an already resolved name. */
-    public AssetDescriptor(FileHandle file, Class<T> assetType){
+    public AssetDescriptor(Fi file, Class<T> assetType){
         this(file, assetType, null);
     }
 
@@ -40,7 +40,7 @@ public class AssetDescriptor<T>{
     }
 
     /** Creates an AssetDescriptor with an already resolved name. */
-    public AssetDescriptor(FileHandle file, Class<T> assetType, AssetLoaderParameters<T> params){
+    public AssetDescriptor(Fi file, Class<T> assetType, AssetLoaderParameters<T> params){
         this.fileName = file.path().replaceAll("\\\\", "/");
         this.file = file;
         this.type = assetType;

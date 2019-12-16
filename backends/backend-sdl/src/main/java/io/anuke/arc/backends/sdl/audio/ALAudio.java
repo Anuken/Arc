@@ -81,7 +81,7 @@ public class ALAudio extends Audio{
     }
 
     @Override
-    public ALSound newSound(FileHandle file){
+    public ALSound newSound(Fi file){
         if(file == null) throw new IllegalArgumentException("file cannot be null.");
         SoundConstructor soundClass = soundTypes.get(file.extension().toLowerCase());
         if(soundClass == null) throw new ArcRuntimeException("Unknown file extension for sound: " + file);
@@ -89,7 +89,7 @@ public class ALAudio extends Audio{
     }
 
     @Override
-    public ALMusic newMusic(FileHandle file){
+    public ALMusic newMusic(Fi file){
         if(file == null) throw new IllegalArgumentException("file cannot be null.");
         MusicConstructor musicClass = musicTypes.get(file.extension().toLowerCase());
         if(musicClass == null) throw new ArcRuntimeException("Unknown file extension for music: " + file);
@@ -291,10 +291,10 @@ public class ALAudio extends Audio{
     }
 
     public interface SoundConstructor{
-        ALSound make(ALAudio audio, FileHandle file);
+        ALSound make(ALAudio audio, Fi file);
     }
 
     public interface MusicConstructor{
-        ALMusic make(ALAudio audio, FileHandle file);
+        ALMusic make(ALAudio audio, Fi file);
     }
 }

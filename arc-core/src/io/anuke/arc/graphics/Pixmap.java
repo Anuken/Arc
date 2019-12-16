@@ -76,9 +76,9 @@ public class Pixmap implements Disposable{
     /**
      * Creates a new Pixmap instance from the given file. The file must be a Png, Jpeg or Bitmap. Paletted formats are not
      * supported.
-     * @param file the {@link FileHandle}
+     * @param file the {@link Fi}
      */
-    public Pixmap(FileHandle file){
+    public Pixmap(Fi file){
         try{
             byte[] bytes = file.readBytes();
             pixmap = new Gdx2DPixmap(bytes, 0, bytes.length, 0);

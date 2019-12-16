@@ -1,7 +1,7 @@
 package io.anuke.arc.util;
 
 import io.anuke.arc.Core;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.Pixmap.Format;
 import io.anuke.arc.graphics.g2d.TextureRegion;
@@ -16,11 +16,11 @@ import java.nio.ByteBuffer;
  */
 public final class ScreenUtils{
 
-    public static void saveScreenshot(FileHandle file){
+    public static void saveScreenshot(Fi file){
         saveScreenshot(file, 0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
     }
 
-    public static void saveScreenshot(FileHandle file, int x, int y, int width, int height){
+    public static void saveScreenshot(Fi file, int x, int y, int width, int height){
         Pixmap pixmap = getFrameBufferPixmap(x, y, width, height, true);
         PixmapIO.writePNG(file, pixmap);
         pixmap.dispose();

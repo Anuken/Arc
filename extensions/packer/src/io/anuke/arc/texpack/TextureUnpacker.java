@@ -1,6 +1,6 @@
 package io.anuke.arc.texpack;
 
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.g2d.TextureAtlas.TextureAtlasData;
 import io.anuke.arc.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
 import io.anuke.arc.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
@@ -218,7 +218,7 @@ public class TextureUnpacker {
 		if (outputDir == null) outputDir = (new File(atlasParentPath, DEFAULT_OUTPUT_PATH)).getAbsolutePath();
 
 		// Opens the atlas file from the specified filename
-		TextureAtlasData atlas = new TextureAtlasData(new FileHandle(atlasFile), new FileHandle(imageDir), false);
+		TextureAtlasData atlas = new TextureAtlasData(new Fi(atlasFile), new Fi(imageDir), false);
 		unpacker.splitAtlas(atlas, outputDir);
 	}
 }

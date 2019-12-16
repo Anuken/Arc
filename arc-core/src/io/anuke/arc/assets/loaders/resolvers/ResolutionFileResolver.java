@@ -2,7 +2,7 @@ package io.anuke.arc.assets.loaders.resolvers;
 
 import io.anuke.arc.Core;
 import io.anuke.arc.assets.loaders.FileHandleResolver;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 
 /**
  * This {@link FileHandleResolver} uses a given list of {@link Resolution}s to determine the best match based on the current
@@ -72,17 +72,17 @@ public class ResolutionFileResolver implements FileHandleResolver{
     }
 
     @Override
-    public FileHandle resolve(String fileName){
+    public Fi resolve(String fileName){
         Resolution bestResolution = choose(descriptors);
-        FileHandle originalHandle = new FileHandle(fileName);
-        FileHandle handle = baseResolver.resolve(resolve(originalHandle, bestResolution.folder));
+        Fi originalHandle = new Fi(fileName);
+        Fi handle = baseResolver.resolve(resolve(originalHandle, bestResolution.folder));
         if(!handle.exists()) handle = baseResolver.resolve(fileName);
         return handle;
     }
 
-    protected String resolve(FileHandle originalHandle, String suffix){
+    protected String resolve(Fi originalHandle, String suffix){
         String parentString = "";
-        FileHandle parent = originalHandle.parent();
+        Fi parent = originalHandle.parent();
         if(parent != null && !parent.name().equals("")){
             parentString = parent + "/";
         }

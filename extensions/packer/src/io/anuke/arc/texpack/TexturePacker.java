@@ -2,7 +2,7 @@ package io.anuke.arc.texpack;
 
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.FloatArray;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Pixmap.Format;
 import io.anuke.arc.graphics.Texture.TextureFilter;
 import io.anuke.arc.graphics.Texture.TextureWrap;
@@ -188,7 +188,7 @@ public class TexturePacker {
 				outputFile = new File(packDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + "." + settings.outputFormat);
 				if (!outputFile.exists()) break;
 			}
-			new FileHandle(outputFile).parent().mkdirs();
+			new Fi(outputFile).parent().mkdirs();
 			page.imageName = outputFile.getName();
 
 			BufferedImage canvas = new BufferedImage(width, height, getBufferedImageType(settings.format));
@@ -329,7 +329,7 @@ public class TexturePacker {
 
 		if (packFile.exists()) {
 			// Make sure there aren't duplicate names.
-			TextureAtlasData textureAtlasData = new TextureAtlasData(new FileHandle(packFile), new FileHandle(packFile), false);
+			TextureAtlasData textureAtlasData = new TextureAtlasData(new Fi(packFile), new Fi(packFile), false);
 			for (Page page : pages) {
 				for (Rect rect : page.outputRects) {
 					String rectName = Rect.getAtlasName(rect.name, settings.flattenPaths);
@@ -568,7 +568,7 @@ public class TexturePacker {
 		}
 
 		static public String getAtlasName (String name, boolean flattenPaths) {
-			return flattenPaths ? new FileHandle(name).name() : name;
+			return flattenPaths ? new Fi(name).name() : name;
 		}
 	}
 

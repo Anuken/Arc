@@ -4,7 +4,7 @@
 package io.anuke.arc.util.serialization;
 
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.util.Strings;
 import io.anuke.arc.util.io.Streams;
 import io.anuke.arc.util.serialization.JsonValue.ValueType;
@@ -141,7 +141,7 @@ public class JsonReader implements BaseJsonReader{
         }
     }
 
-    public JsonValue parse(FileHandle file){
+    public JsonValue parse(Fi file){
         try{
             return parse(file.reader("UTF-8"));
         }catch(Exception ex){

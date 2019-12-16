@@ -22,7 +22,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
     }
 
     @Override
-    public void loadAsync(AssetManager manager, String fileName, FileHandle file, TextureParameter parameter){
+    public void loadAsync(AssetManager manager, String fileName, Fi file, TextureParameter parameter){
         info.filename = fileName;
         if(parameter == null || parameter.textureData == null){
             Format format = null;
@@ -44,7 +44,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
     }
 
     @Override
-    public Texture loadSync(AssetManager manager, String fileName, FileHandle file, TextureParameter parameter){
+    public Texture loadSync(AssetManager manager, String fileName, Fi file, TextureParameter parameter){
         if(info == null) return null;
         Texture texture = info.texture;
         if(texture != null){
@@ -60,7 +60,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, TextureParameter parameter){
+    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, TextureParameter parameter){
         return null;
     }
 

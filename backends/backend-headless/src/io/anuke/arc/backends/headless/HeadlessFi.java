@@ -1,7 +1,7 @@
 package io.anuke.arc.backends.headless;
 
 import io.anuke.arc.Files.FileType;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.util.ArcRuntimeException;
 
 import java.io.File;
@@ -10,26 +10,26 @@ import java.io.File;
  * @author mzechner
  * @author Nathan Sweet
  */
-public final class HeadlessFileHandle extends FileHandle{
-    public HeadlessFileHandle(String fileName, FileType type){
+public final class HeadlessFi extends Fi{
+    public HeadlessFi(String fileName, FileType type){
         super(fileName, type);
     }
 
-    public HeadlessFileHandle(File file, FileType type){
+    public HeadlessFi(File file, FileType type){
         super(file, type);
     }
 
-    public FileHandle child(String name){
-        if(file.getPath().length() == 0) return new HeadlessFileHandle(new File(name), type);
-        return new HeadlessFileHandle(new File(file, name), type);
+    public Fi child(String name){
+        if(file.getPath().length() == 0) return new HeadlessFi(new File(name), type);
+        return new HeadlessFi(new File(file, name), type);
     }
 
-    public FileHandle sibling(String name){
+    public Fi sibling(String name){
         if(file.getPath().length() == 0) throw new ArcRuntimeException("Cannot get the sibling of the root.");
-        return new HeadlessFileHandle(new File(file.getParent(), name), type);
+        return new HeadlessFi(new File(file.getParent(), name), type);
     }
 
-    public FileHandle parent(){
+    public Fi parent(){
         File parent = file.getParentFile();
         if(parent == null){
             if(type == FileType.Absolute)
@@ -37,7 +37,7 @@ public final class HeadlessFileHandle extends FileHandle{
             else
                 parent = new File("");
         }
-        return new HeadlessFileHandle(parent, type);
+        return new HeadlessFi(parent, type);
     }
 
     public File file(){

@@ -23,7 +23,7 @@
 package io.anuke.arc.graphics.g2d;
 
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.files.FileHandle;
+import io.anuke.arc.files.Fi;
 import io.anuke.arc.graphics.Texture.TextureFilter;
 import io.anuke.arc.graphics.glutils.Shader;
 
@@ -46,27 +46,27 @@ public class DistanceFieldFont extends BitmapFont{
         super(data, region, integer);
     }
 
-    public DistanceFieldFont(FileHandle fontFile, boolean flip){
+    public DistanceFieldFont(Fi fontFile, boolean flip){
         super(fontFile, flip);
     }
 
-    public DistanceFieldFont(FileHandle fontFile, FileHandle imageFile, boolean flip, boolean integer){
+    public DistanceFieldFont(Fi fontFile, Fi imageFile, boolean flip, boolean integer){
         super(fontFile, imageFile, flip, integer);
     }
 
-    public DistanceFieldFont(FileHandle fontFile, FileHandle imageFile, boolean flip){
+    public DistanceFieldFont(Fi fontFile, Fi imageFile, boolean flip){
         super(fontFile, imageFile, flip);
     }
 
-    public DistanceFieldFont(FileHandle fontFile, TextureRegion region, boolean flip){
+    public DistanceFieldFont(Fi fontFile, TextureRegion region, boolean flip){
         super(fontFile, region, flip);
     }
 
-    public DistanceFieldFont(FileHandle fontFile, TextureRegion region){
+    public DistanceFieldFont(Fi fontFile, TextureRegion region){
         super(fontFile, region);
     }
 
-    public DistanceFieldFont(FileHandle fontFile){
+    public DistanceFieldFont(Fi fontFile){
         super(fontFile);
     }
 
