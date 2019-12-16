@@ -1,28 +1,28 @@
 package io.anuke.arc.util;
 
-import io.anuke.arc.Core;
-import io.anuke.arc.files.Fi;
+import io.anuke.arc.*;
+import io.anuke.arc.files.*;
 
 public class OS{
-    static public boolean isWindows = System.getProperty("os.name").contains("Windows");
-    static public boolean isLinux = System.getProperty("os.name").contains("Linux");
-    static public boolean isMac = System.getProperty("os.name").contains("Mac");
+    static public boolean isWindows = getPropertyNotNull("os.name").contains("Windows");
+    static public boolean isLinux = getPropertyNotNull("os.name").contains("Linux");
+    static public boolean isMac = getPropertyNotNull("os.name").contains("Mac");
     static public boolean isIos = false;
     static public boolean isAndroid = false;
-    static public boolean isARM = System.getProperty("os.arch").startsWith("arm") || System.getProperty("os.arch").startsWith("aarch64");
-    static public boolean is64Bit = System.getProperty("os.arch").contains("64") || System.getProperty("os.arch").startsWith("armv8");
+    static public boolean isARM = getPropertyNotNull("os.arch").startsWith("arm") || getPropertyNotNull("os.arch").startsWith("aarch64");
+    static public boolean is64Bit = getPropertyNotNull("os.arch").contains("64") || getPropertyNotNull("os.arch").startsWith("armv8");
 
-    static {
+    static{
         boolean isMOEiOS = "iOS".equals(System.getProperty("moe.platform.name"));
         String vm = System.getProperty("java.runtime.name");
-        if (vm != null && vm.contains("Android Runtime")) {
+        if(vm != null && vm.contains("Android Runtime")){
             isAndroid = true;
             isWindows = false;
             isLinux = false;
             isMac = false;
             is64Bit = false;
         }
-        if (isMOEiOS || (!isAndroid && !isWindows && !isLinux && !isMac)) {
+        if(isMOEiOS || (!isAndroid && !isWindows && !isLinux && !isMac)){
             isIos = true;
             isAndroid = false;
             isWindows = false;

@@ -2,6 +2,7 @@ package io.anuke.arc.backends.teavm;
 
 import io.anuke.arc.*;
 import io.anuke.arc.Graphics.Cursor.*;
+import io.anuke.arc.backends.teavm.TeaApplication.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.glutils.*;
 import org.teavm.jso.browser.*;
@@ -12,7 +13,7 @@ import org.teavm.jso.webgl.*;
 
 public class TeaGraphics extends Graphics{
     private HTMLCanvasElement element;
-    private TeaApplication.TeaVMApplicationConfig config;
+    private TeaApplicationConfig config;
     private WebGLRenderingContext context;
     long frameId = -1;
     float deltaTime;
@@ -23,7 +24,7 @@ public class TeaGraphics extends Graphics{
     private GL20 gl20;
     private GLVersion glVersion;
 
-    public TeaGraphics(HTMLCanvasElement element, TeaApplication.TeaVMApplicationConfig config){
+    public TeaGraphics(HTMLCanvasElement element, TeaApplicationConfig config){
         this.element = element;
         this.config = config;
 
