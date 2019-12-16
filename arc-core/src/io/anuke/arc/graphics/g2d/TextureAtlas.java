@@ -51,7 +51,7 @@ public class TextureAtlas implements Disposable{
     }
 
     /**
-     * Loads the specified pack file using {@link FileType#Internal}, using the parent directory of the pack file to find the page
+     * Loads the specified pack file using {@link FileType#internal}, using the parent directory of the pack file to find the page
      * images.
      */
     public TextureAtlas(String internalPackFile){

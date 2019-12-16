@@ -34,9 +34,9 @@ public class AndroidFiles implements Files{
     }
 
     @Override
-    public Fi getFileHandle(String path, FileType type){
-        Fi handle = new AndroidFi(type == FileType.Internal ? assets : null, path, type);
-        if(expansionFile != null && type == FileType.Internal) handle = getZipFileHandleIfExists(handle, path);
+    public Fi get(String path, FileType type){
+        Fi handle = new AndroidFi(type == FileType.internal ? assets : null, path, type);
+        if(expansionFile != null && type == FileType.internal) handle = getZipFileHandleIfExists(handle, path);
         return handle;
     }
 
@@ -52,33 +52,6 @@ public class AndroidFiles implements Files{
             else if(zipHandle.exists()) return zipHandle;
         }
         return handle;
-    }
-
-    @Override
-    public Fi classpath(String path){
-        return new AndroidFi(null, path, FileType.Classpath);
-    }
-
-    @Override
-    public Fi internal(String path){
-        Fi handle = new AndroidFi(assets, path, FileType.Internal);
-        if(expansionFile != null) handle = getZipFileHandleIfExists(handle, path);
-        return handle;
-    }
-
-    @Override
-    public Fi external(String path){
-        return new AndroidFi(null, path, FileType.External);
-    }
-
-    @Override
-    public Fi absolute(String path){
-        return new AndroidFi(null, path, FileType.Absolute);
-    }
-
-    @Override
-    public Fi local(String path){
-        return new AndroidFi(null, path, FileType.Local);
     }
 
     @Override

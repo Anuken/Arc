@@ -18,33 +18,8 @@ public class IOSFiles implements Files{
     }
 
     @Override
-    public Fi getFileHandle(String fileName, FileType type){
+    public Fi get(String fileName, FileType type){
         return new IOSFi(fileName, type);
-    }
-
-    @Override
-    public Fi classpath(String path){
-        return new IOSFi(path, FileType.Classpath);
-    }
-
-    @Override
-    public Fi internal(String path){
-        return new IOSFi(path, FileType.Internal);
-    }
-
-    @Override
-    public Fi external(String path){
-        return new IOSFi(path, FileType.External);
-    }
-
-    @Override
-    public Fi absolute(String path){
-        return new IOSFi(path, FileType.Absolute);
-    }
-
-    @Override
-    public Fi local(String path){
-        return new IOSFi(path, FileType.Local);
     }
 
     @Override

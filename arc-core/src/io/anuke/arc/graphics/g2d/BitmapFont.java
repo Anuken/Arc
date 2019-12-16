@@ -168,7 +168,7 @@ public class BitmapFont implements Disposable{
                 if(data.fontFile == null)
                     file = Core.files.internal(data.imagePaths[i]);
                 else
-                    file = Core.files.getFileHandle(data.imagePaths[i], data.fontFile.type());
+                    file = Core.files.get(data.imagePaths[i], data.fontFile.type());
                 regions.add(new TextureRegion(new Texture(file, false)));
             }
             ownsTexture = true;

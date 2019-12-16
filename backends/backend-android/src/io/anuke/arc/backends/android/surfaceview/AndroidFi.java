@@ -40,13 +40,13 @@ public class AndroidFi extends Fi{
     public Fi sibling(String name){
         name = name.replace('\\', '/');
         if(file.getPath().length() == 0) throw new ArcRuntimeException("Cannot get the sibling of the root.");
-        return Core.files.getFileHandle(new File(file.getParent(), name).getPath(), type); //this way we can find the sibling even if it's inside the obb
+        return Core.files.get(new File(file.getParent(), name).getPath(), type); //this way we can find the sibling even if it's inside the obb
     }
 
     public Fi parent(){
         File parent = file.getParentFile();
         if(parent == null){
-            if(type == FileType.Absolute)
+            if(type == FileType.absolute)
                 parent = new File("/");
             else
                 parent = new File("");
@@ -55,7 +55,7 @@ public class AndroidFi extends Fi{
     }
 
     public InputStream read(){
-        if(type == FileType.Internal){
+        if(type == FileType.internal){
             try{
                 return assets.open(file.getPath());
             }catch(IOException ex){
@@ -66,7 +66,7 @@ public class AndroidFi extends Fi{
     }
 
     public ByteBuffer map(FileChannel.MapMode mode){
-        if(type == FileType.Internal){
+        if(type == FileType.internal){
             FileInputStream input = null;
             try{
                 AssetFileDescriptor fd = getAssetFileDescriptor();
@@ -86,7 +86,7 @@ public class AndroidFi extends Fi{
     }
 
     public Fi[] list(){
-        if(type == FileType.Internal){
+        if(type == FileType.internal){
             try{
                 String[] relativePaths = assets.list(file.getPath());
                 Fi[] handles = new Fi[relativePaths.length];
@@ -101,7 +101,7 @@ public class AndroidFi extends Fi{
     }
 
     public Fi[] list(FileFilter filter){
-        if(type == FileType.Internal){
+        if(type == FileType.internal){
             try{
                 String[] relativePaths = assets.list(file.getPath());
                 Fi[] handles = new Fi[relativePaths.length];
@@ -127,7 +127,7 @@ public class AndroidFi extends Fi{
     }
 
     public Fi[] list(FilenameFilter filter){
-        if(type == FileType.Internal){
+        if(type == FileType.internal){
             try{
                 String[] relativePaths = assets.list(file.getPath());
                 Fi[] handles = new Fi[relativePaths.length];
@@ -152,7 +152,7 @@ public class AndroidFi extends Fi{
     }
 
     public Fi[] list(String suffix){
-        if(type == FileType.Internal){
+        if(type == FileType.internal){
             try{
                 String[] relativePaths = assets.list(file.getPath());
                 Fi[] handles = new Fi[relativePaths.length];
@@ -177,7 +177,7 @@ public class AndroidFi extends Fi{
     }
 
     public boolean isDirectory(){
-        if(type == FileType.Internal){
+        if(type == FileType.internal){
             try{
                 return assets.list(file.getPath()).length > 0;
             }catch(IOException ex){
@@ -188,7 +188,7 @@ public class AndroidFi extends Fi{
     }
 
     public boolean exists(){
-        if(type == FileType.Internal){
+        if(type == FileType.internal){
             String fileName = file.getPath();
             try{
                 assets.open(fileName).close(); // Check if file exists.
@@ -206,7 +206,7 @@ public class AndroidFi extends Fi{
     }
 
     public long length(){
-        if(type == FileType.Internal){
+        if(type == FileType.internal){
             try(AssetFileDescriptor fileDescriptor = assets.openFd(file.getPath())){
                 return fileDescriptor.getLength();
             }catch(IOException ignored){
@@ -220,7 +220,7 @@ public class AndroidFi extends Fi{
     }
 
     public File file(){
-        if(type == FileType.Local) return new File(Core.files.getLocalStoragePath(), file.getPath());
+        if(type == FileType.local) return new File(Core.files.getLocalStoragePath(), file.getPath());
         return super.file();
     }
 

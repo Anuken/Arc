@@ -15,33 +15,8 @@ public final class Lwjgl3Files implements Files{
     public static final String localPath = new File("").getAbsolutePath() + File.separator;
 
     @Override
-    public Fi getFileHandle(String fileName, FileType type){
+    public Fi get(String fileName, FileType type){
         return new Lwjgl3Fi(fileName, type);
-    }
-
-    @Override
-    public Fi classpath(String path){
-        return new Lwjgl3Fi(path, FileType.Classpath);
-    }
-
-    @Override
-    public Fi internal(String path){
-        return new Lwjgl3Fi(path, FileType.Internal);
-    }
-
-    @Override
-    public Fi external(String path){
-        return new Lwjgl3Fi(path, FileType.External);
-    }
-
-    @Override
-    public Fi absolute(String path){
-        return new Lwjgl3Fi(path, FileType.Absolute);
-    }
-
-    @Override
-    public Fi local(String path){
-        return new Lwjgl3Fi(path, FileType.Local);
     }
 
     @Override
@@ -90,7 +65,7 @@ public final class Lwjgl3Files implements Files{
         public Fi parent(){
             File parent = file.getParentFile();
             if(parent == null){
-                if(type == FileType.Absolute)
+                if(type == FileType.absolute)
                     parent = new File("/");
                 else
                     parent = new File("");
@@ -99,8 +74,8 @@ public final class Lwjgl3Files implements Files{
         }
 
         public File file(){
-            if(type == FileType.External) return new File(externalPath, file.getPath());
-            if(type == FileType.Local) return new File(localPath, file.getPath());
+            if(type == FileType.external) return new File(externalPath, file.getPath());
+            if(type == FileType.local) return new File(localPath, file.getPath());
             return file;
         }
     }

@@ -126,7 +126,7 @@ public class Lwjgl3Window implements Disposable{
 
         Pixmap[] pixmaps = new Pixmap[imagePaths.length];
         for(int i = 0; i < imagePaths.length; i++){
-            pixmaps[i] = new Pixmap(Core.files.getFileHandle(imagePaths[i], imageFileType));
+            pixmaps[i] = new Pixmap(Core.files.get(imagePaths[i], imageFileType));
         }
 
         setIcon(windowHandle, pixmaps);

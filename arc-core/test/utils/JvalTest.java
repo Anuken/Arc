@@ -67,7 +67,7 @@ public class JvalTest{
 
     @Test
     public void benchmarkJson(){
-        Fi file = new Fi("generated.json", FileType.Classpath);
+        Fi file = new Fi("generated.json", FileType.classpath);
         String text = file.readString();
 
         Runnable hjson = () -> {

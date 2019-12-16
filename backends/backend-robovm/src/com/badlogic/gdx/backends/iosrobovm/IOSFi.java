@@ -25,7 +25,7 @@ public class IOSFi extends Fi{
     public Fi parent(){
         File parent = file.getParentFile();
         if(parent == null){
-            if(type == FileType.Absolute)
+            if(type == FileType.absolute)
                 parent = new File("/");
             else
                 parent = new File("");
@@ -41,9 +41,9 @@ public class IOSFi extends Fi{
 
     @Override
     public File file(){
-        if(type == FileType.Internal) return new File(IOSFiles.internalPath, file.getPath());
-        if(type == FileType.External) return new File(IOSFiles.externalPath, file.getPath());
-        if(type == FileType.Local) return new File(IOSFiles.localPath, file.getPath());
+        if(type == FileType.internal) return new File(IOSFiles.internalPath, file.getPath());
+        if(type == FileType.external) return new File(IOSFiles.externalPath, file.getPath());
+        if(type == FileType.local) return new File(IOSFiles.localPath, file.getPath());
         return file;
     }
 

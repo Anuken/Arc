@@ -16,7 +16,7 @@ public class AndroidZipFi extends AndroidFi{
     private String path;
 
     public AndroidZipFi(String fileName){
-        super(null, fileName, FileType.Internal);
+        super(null, fileName, FileType.internal);
         initialize();
     }
 
@@ -67,7 +67,7 @@ public class AndroidZipFi extends AndroidFi{
     public Fi sibling(String name){
         if(file.getPath().length() == 0)
             throw new ArcRuntimeException("Cannot get the sibling of the root.");
-        return Core.files.getFileHandle(new File(file.getParent(), name).getPath(), type); //this way we can find the sibling even if it's not inside the obb
+        return Core.files.get(new File(file.getParent(), name).getPath(), type); //this way we can find the sibling even if it's not inside the obb
     }
 
     @Override

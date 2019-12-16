@@ -18,7 +18,7 @@ public class ZipFi extends Fi{
     private final @NonNull ZipFile zip;
 
     public ZipFi(Fi zipFileLoc){
-        super(new File(""), FileType.Absolute);
+        super(new File(""), FileType.absolute);
         entry = null;
 
         try{
@@ -59,13 +59,13 @@ public class ZipFi extends Fi{
     }
 
     private ZipFi(ZipEntry entry, ZipFile file){
-        super(new File(entry.getName()), FileType.Absolute);
+        super(new File(entry.getName()), FileType.absolute);
         this.entry = entry;
         this.zip = file;
     }
 
     private ZipFi(String path, ZipFile file){
-        super(new File(path), FileType.Absolute);
+        super(new File(path), FileType.absolute);
         this.entry = null;
         this.zip = file;
     }

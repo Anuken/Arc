@@ -12,9 +12,9 @@ import java.io.OutputStream;
  * @author Nathan Sweet
  */
 public abstract class FiStream extends Fi{
-    /** Create an {@link FileType#Absolute} file at the given location. */
+    /** Create an {@link FileType#absolute} file at the given location. */
     public FiStream(String path){
-        super(new File(path), FileType.Absolute);
+        super(new File(path), FileType.absolute);
     }
 
     public boolean isDirectory(){

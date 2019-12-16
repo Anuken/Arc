@@ -37,7 +37,7 @@ public class Fi{
      */
     public Fi(String fileName){
         this.file = new File(fileName);
-        this.type = FileType.Absolute;
+        this.type = FileType.absolute;
     }
 
     /**
@@ -47,7 +47,7 @@ public class Fi{
      */
     public Fi(File file){
         this.file = file;
-        this.type = FileType.Absolute;
+        this.type = FileType.absolute;
     }
 
     public Fi(String fileName, FileType type){
@@ -177,10 +177,10 @@ public class Fi{
 
     /**
      * Returns a java.io.File that represents this file handle. Note the returned file will only be usable for
-     * {@link FileType#Absolute} and {@link FileType#External} file handles.
+     * {@link FileType#absolute} and {@link FileType#external} file handles.
      */
     public File file(){
-        if(type == FileType.External) return new File(Core.files.getExternalStoragePath(), file.getPath());
+        if(type == FileType.external) return new File(Core.files.getExternalStoragePath(), file.getPath());
         return file;
     }
 
@@ -189,8 +189,8 @@ public class Fi{
      * @throws ArcRuntimeException if the file handle represents a directory, doesn't exist, or could not be read.
      */
     public InputStream read(){
-        if(type == FileType.Classpath || (type == FileType.Internal && !file().exists())
-        || (type == FileType.Local && !file().exists())){
+        if(type == FileType.classpath || (type == FileType.internal && !file().exists())
+        || (type == FileType.local && !file().exists())){
             InputStream input = Fi.class.getResourceAsStream("/" + file.getPath().replace('\\', '/'));
             if(input == null) throw new ArcRuntimeException("File not found: " + file + " (" + type + ")");
             return input;
@@ -335,7 +335,7 @@ public class Fi{
 
     /**
      * Attempts to memory map this file in READ_ONLY mode. Android files must not be compressed.
-     * @throws ArcRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#Classpath} file.
+     * @throws ArcRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#classpath} file.
      */
     public ByteBuffer map(){
         return map(MapMode.READ_ONLY);
@@ -343,10 +343,10 @@ public class Fi{
 
     /**
      * Attempts to memory map this file. Android files must not be compressed.
-     * @throws ArcRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#Classpath} file.
+     * @throws ArcRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#classpath} file.
      */
     public ByteBuffer map(FileChannel.MapMode mode){
-        if(type == FileType.Classpath) throw new ArcRuntimeException("Cannot map a classpath file: " + this);
+        if(type == FileType.classpath) throw new ArcRuntimeException("Cannot map a classpath file: " + this);
         RandomAccessFile raf = null;
         try{
             raf = new RandomAccessFile(file, mode == MapMode.READ_ONLY ? "r" : "rw");
@@ -364,12 +364,12 @@ public class Fi{
     /**
      * Returns a stream for writing to this file. Parent directories will be created if necessary.
      * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
-     * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-     * {@link FileType#Internal} file, or if it could not be written.
+     * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#classpath} or
+     * {@link FileType#internal} file, or if it could not be written.
      */
     public OutputStream write(boolean append){
-        if(type == FileType.Classpath) throw new ArcRuntimeException("Cannot write to a classpath file: " + file);
-        if(type == FileType.Internal) throw new ArcRuntimeException("Cannot write to an internal file: " + file);
+        if(type == FileType.classpath) throw new ArcRuntimeException("Cannot write to a classpath file: " + file);
+        if(type == FileType.internal) throw new ArcRuntimeException("Cannot write to an internal file: " + file);
         parent().mkdirs();
         try{
             return new FileOutputStream(file(), append);
@@ -384,8 +384,8 @@ public class Fi{
      * Returns a buffered stream for writing to this file. Parent directories will be created if necessary.
      * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
      * @param bufferSize The size of the buffer.
-     * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-     * {@link FileType#Internal} file, or if it could not be written.
+     * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#classpath} or
+     * {@link FileType#internal} file, or if it could not be written.
      */
     public OutputStream write(boolean append, int bufferSize){
         return new BufferedOutputStream(write(append), bufferSize);
@@ -395,8 +395,8 @@ public class Fi{
      * Reads the remaining bytes from the specified stream and writes them to this file. The stream is closed. Parent directories
      * will be created if necessary.
      * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
-     * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-     * {@link FileType#Internal} file, or if it could not be written.
+     * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#classpath} or
+     * {@link FileType#internal} file, or if it could not be written.
      */
     public void write(InputStream input, boolean append){
         OutputStream output = null;
@@ -415,8 +415,8 @@ public class Fi{
     /**
      * Returns a writer for writing to this file using the default charset. Parent directories will be created if necessary.
      * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
-     * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-     * {@link FileType#Internal} file, or if it could not be written.
+     * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#classpath} or
+     * {@link FileType#internal} file, or if it could not be written.
      */
     public Writer writer(boolean append){
         return writer(append, "UTF-8");
@@ -426,12 +426,12 @@ public class Fi{
      * Returns a writer for writing to this file. Parent directories will be created if necessary.
      * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
      * @param charset May be null to use the default charset.
-     * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-     * {@link FileType#Internal} file, or if it could not be written.
+     * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#classpath} or
+     * {@link FileType#internal} file, or if it could not be written.
      */
     public Writer writer(boolean append, String charset){
-        if(type == FileType.Classpath) throw new ArcRuntimeException("Cannot write to a classpath file: " + file);
-        if(type == FileType.Internal) throw new ArcRuntimeException("Cannot write to an internal file: " + file);
+        if(type == FileType.classpath) throw new ArcRuntimeException("Cannot write to a classpath file: " + file);
+        if(type == FileType.internal) throw new ArcRuntimeException("Cannot write to an internal file: " + file);
         parent().mkdirs();
         try{
             FileOutputStream output = new FileOutputStream(file(), append);
@@ -462,8 +462,8 @@ public class Fi{
     /**
      * Writes the specified string to the file using the default charset. Parent directories will be created if necessary.
      * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
-     * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-     * {@link FileType#Internal} file, or if it could not be written.
+     * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#classpath} or
+     * {@link FileType#internal} file, or if it could not be written.
      */
     public void writeString(String string, boolean append){
         writeString(string, append, "UTF-8");
@@ -473,8 +473,8 @@ public class Fi{
      * Writes the specified string to the file using the specified charset. Parent directories will be created if necessary.
      * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
      * @param charset May be null to use the default charset.
-     * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-     * {@link FileType#Internal} file, or if it could not be written.
+     * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#classpath} or
+     * {@link FileType#internal} file, or if it could not be written.
      */
     public void writeString(String string, boolean append, String charset){
         Writer writer = null;
@@ -491,8 +491,8 @@ public class Fi{
     /**
      * Writes the specified bytes to the file. Parent directories will be created if necessary.
      * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
-     * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-     * {@link FileType#Internal} file, or if it could not be written.
+     * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#classpath} or
+     * {@link FileType#internal} file, or if it could not be written.
      */
     public void writeBytes(byte[] bytes, boolean append){
         OutputStream output = write(append);
@@ -508,8 +508,8 @@ public class Fi{
     /**
      * Writes the specified bytes to the file. Parent directories will be created if necessary.
      * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
-     * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-     * {@link FileType#Internal} file, or if it could not be written.
+     * @throws ArcRuntimeException if this file handle represents a directory, if it is a {@link FileType#classpath} or
+     * {@link FileType#internal} file, or if it could not be written.
      */
     public void writeBytes(byte[] bytes, int offset, int length, boolean append){
         OutputStream output = write(append);
@@ -548,12 +548,12 @@ public class Fi{
 
     /**
      * Returns the paths to the children of this directory. Returns an empty list if this file handle represents a file and not a
-     * directory. On the desktop, an {@link FileType#Internal} handle to a directory on the classpath will return a zero length
+     * directory. On the desktop, an {@link FileType#internal} handle to a directory on the classpath will return a zero length
      * array.
-     * @throws ArcRuntimeException if this file is an {@link FileType#Classpath} file.
+     * @throws ArcRuntimeException if this file is an {@link FileType#classpath} file.
      */
     public Fi[] list(){
-        if(type == FileType.Classpath) throw new ArcRuntimeException("Cannot list a classpath directory: " + file);
+        if(type == FileType.classpath) throw new ArcRuntimeException("Cannot list a classpath directory: " + file);
         String[] relativePaths = file().list();
         if(relativePaths == null) return new Fi[0];
         Fi[] handles = new Fi[relativePaths.length];
@@ -564,13 +564,13 @@ public class Fi{
 
     /**
      * Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
-     * handle represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the
+     * handle represents a file and not a directory. On the desktop, an {@link FileType#internal} handle to a directory on the
      * classpath will return a zero length array.
      * @param filter the {@link FileFilter} to filter files
-     * @throws ArcRuntimeException if this file is an {@link FileType#Classpath} file.
+     * @throws ArcRuntimeException if this file is an {@link FileType#classpath} file.
      */
     public Fi[] list(FileFilter filter){
-        if(type == FileType.Classpath) throw new ArcRuntimeException("Cannot list a classpath directory: " + file);
+        if(type == FileType.classpath) throw new ArcRuntimeException("Cannot list a classpath directory: " + file);
         File file = file();
         String[] relativePaths = file.list();
         if(relativePaths == null) return new Fi[0];
@@ -593,13 +593,13 @@ public class Fi{
 
     /**
      * Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
-     * handle represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the
+     * handle represents a file and not a directory. On the desktop, an {@link FileType#internal} handle to a directory on the
      * classpath will return a zero length array.
      * @param filter the {@link FilenameFilter} to filter files
-     * @throws ArcRuntimeException if this file is an {@link FileType#Classpath} file.
+     * @throws ArcRuntimeException if this file is an {@link FileType#classpath} file.
      */
     public Fi[] list(FilenameFilter filter){
-        if(type == FileType.Classpath) throw new ArcRuntimeException("Cannot list a classpath directory: " + file);
+        if(type == FileType.classpath) throw new ArcRuntimeException("Cannot list a classpath directory: " + file);
         File file = file();
         String[] relativePaths = file.list();
         if(relativePaths == null) return new Fi[0];
@@ -621,12 +621,12 @@ public class Fi{
 
     /**
      * Returns the paths to the children of this directory with the specified suffix. Returns an empty list if this file handle
-     * represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the classpath
+     * represents a file and not a directory. On the desktop, an {@link FileType#internal} handle to a directory on the classpath
      * will return a zero length array.
-     * @throws ArcRuntimeException if this file is an {@link FileType#Classpath} file.
+     * @throws ArcRuntimeException if this file is an {@link FileType#classpath} file.
      */
     public Fi[] list(String suffix){
-        if(type == FileType.Classpath) throw new ArcRuntimeException("Cannot list a classpath directory: " + file);
+        if(type == FileType.classpath) throw new ArcRuntimeException("Cannot list a classpath directory: " + file);
         String[] relativePaths = file().list();
         if(relativePaths == null) return new Fi[0];
         Fi[] handles = new Fi[relativePaths.length];
@@ -647,11 +647,11 @@ public class Fi{
 
     /**
      * Returns true if this file is a directory. Always returns false for classpath files. On Android, an
-     * {@link FileType#Internal} handle to an empty directory will return false. On the desktop, an {@link FileType#Internal}
+     * {@link FileType#internal} handle to an empty directory will return false. On the desktop, an {@link FileType#internal}
      * handle to a directory on the classpath will return false.
      */
     public boolean isDirectory(){
-        if(type == FileType.Classpath) return false;
+        if(type == FileType.classpath) return false;
         return file().isDirectory();
     }
 
@@ -708,7 +708,7 @@ public class Fi{
                     }
                 };
             }else{
-                if(type == FileType.Absolute){
+                if(type == FileType.absolute){
                     parent = new File("/");
                 }else{
                     parent = new File("");
@@ -718,23 +718,23 @@ public class Fi{
         return new Fi(parent, type);
     }
 
-    /** @throws ArcRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
+    /** @throws ArcRuntimeException if this file handle is a {@link FileType#classpath} or {@link FileType#internal} file. */
     public void mkdirs(){
-        if(type == FileType.Classpath) throw new ArcRuntimeException("Cannot mkdirs with a classpath file: " + file);
-        if(type == FileType.Internal) throw new ArcRuntimeException("Cannot mkdirs with an internal file: " + file);
+        if(type == FileType.classpath) throw new ArcRuntimeException("Cannot mkdirs with a classpath file: " + file);
+        if(type == FileType.internal) throw new ArcRuntimeException("Cannot mkdirs with an internal file: " + file);
         file().mkdirs();
     }
 
     /**
-     * Returns true if the file exists. On Android, a {@link FileType#Classpath} or {@link FileType#Internal} handle to a
+     * Returns true if the file exists. On Android, a {@link FileType#classpath} or {@link FileType#internal} handle to a
      * directory will always return false. Note that this can be very slow for internal files on Android!
      */
     public boolean exists(){
         switch(type){
-            case Internal:
+            case internal:
                 if(file().exists()) return true;
                 // Fall through.
-            case Classpath:
+            case classpath:
                 return Fi.class.getResource("/" + file.getPath().replace('\\', '/')) != null;
         }
         return file().exists();
@@ -742,27 +742,27 @@ public class Fi{
 
     /**
      * Deletes this file or empty directory and returns success. Will not delete a directory that has children.
-     * @throws ArcRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file.
+     * @throws ArcRuntimeException if this file handle is a {@link FileType#classpath} or {@link FileType#internal} file.
      */
     public boolean delete(){
-        if(type == FileType.Classpath) throw new ArcRuntimeException("Cannot delete a classpath file: " + file);
-        if(type == FileType.Internal) throw new ArcRuntimeException("Cannot delete an internal file: " + file);
+        if(type == FileType.classpath) throw new ArcRuntimeException("Cannot delete a classpath file: " + file);
+        if(type == FileType.internal) throw new ArcRuntimeException("Cannot delete an internal file: " + file);
         return file().delete();
     }
 
     /**
      * Deletes this file or directory and all children, recursively.
-     * @throws ArcRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file.
+     * @throws ArcRuntimeException if this file handle is a {@link FileType#classpath} or {@link FileType#internal} file.
      */
     public boolean deleteDirectory(){
-        if(type == FileType.Classpath) throw new ArcRuntimeException("Cannot delete a classpath file: " + file);
-        if(type == FileType.Internal) throw new ArcRuntimeException("Cannot delete an internal file: " + file);
+        if(type == FileType.classpath) throw new ArcRuntimeException("Cannot delete a classpath file: " + file);
+        if(type == FileType.internal) throw new ArcRuntimeException("Cannot delete an internal file: " + file);
         return deleteDirectory(file());
     }
 
     /**
      * Deletes all children of this directory, recursively.
-     * @throws ArcRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file.
+     * @throws ArcRuntimeException if this file handle is a {@link FileType#classpath} or {@link FileType#internal} file.
      */
     public void emptyDirectory(){
         emptyDirectory(false);
@@ -770,11 +770,11 @@ public class Fi{
 
     /**
      * Deletes all children of this directory, recursively. Optionally preserving the folder structure.
-     * @throws ArcRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file.
+     * @throws ArcRuntimeException if this file handle is a {@link FileType#classpath} or {@link FileType#internal} file.
      */
     public void emptyDirectory(boolean preserveTree){
-        if(type == FileType.Classpath) throw new ArcRuntimeException("Cannot delete a classpath file: " + file);
-        if(type == FileType.Internal) throw new ArcRuntimeException("Cannot delete an internal file: " + file);
+        if(type == FileType.classpath) throw new ArcRuntimeException("Cannot delete a classpath file: " + file);
+        if(type == FileType.internal) throw new ArcRuntimeException("Cannot delete an internal file: " + file);
         emptyDirectory(file(), preserveTree);
     }
 
@@ -785,7 +785,7 @@ public class Fi{
      * this handle is a directory, then 1) if the destination is a file, ArcRuntimeException is thrown, or 2) if the destination is
      * a directory, this directory is copied into it recursively, overwriting existing files, or 3) if the destination doesn't
      * exist, {@link #mkdirs()} is called on the destination and this directory is copied into it recursively.
-     * @throws ArcRuntimeException if the destination file handle is a {@link FileType#Classpath} or {@link FileType#Internal}
+     * @throws ArcRuntimeException if the destination file handle is a {@link FileType#classpath} or {@link FileType#internal}
      * file, or copying failed.
      */
     public void copyTo(Fi dest){
@@ -805,17 +805,17 @@ public class Fi{
 
     /**
      * Moves this file to the specified file, overwriting the file if it already exists.
-     * @throws ArcRuntimeException if the source or destination file handle is a {@link FileType#Classpath} or
-     * {@link FileType#Internal} file.
+     * @throws ArcRuntimeException if the source or destination file handle is a {@link FileType#classpath} or
+     * {@link FileType#internal} file.
      */
     public void moveTo(Fi dest){
         switch(type){
-            case Classpath:
+            case classpath:
                 throw new ArcRuntimeException("Cannot move a classpath file: " + file);
-            case Internal:
+            case internal:
                 throw new ArcRuntimeException("Cannot move an internal file: " + file);
-            case Absolute:
-            case External:
+            case absolute:
+            case external:
                 // Try rename for efficiency and to change case on case-insensitive file systems.
                 if(file().renameTo(dest.file())) return;
         }
@@ -829,7 +829,7 @@ public class Fi{
      * determined.
      */
     public long length(){
-        if(type == FileType.Classpath || (type == FileType.Internal && !file.exists())){
+        if(type == FileType.classpath || (type == FileType.internal && !file.exists())){
             InputStream input = read();
             try{
                 return input.available();
@@ -844,8 +844,8 @@ public class Fi{
 
     /**
      * Returns the last modified time in milliseconds for this file. Zero is returned if the file doesn't exist. Zero is returned
-     * for {@link FileType#Classpath} files. On Android, zero is returned for {@link FileType#Internal} files. On the desktop, zero
-     * is returned for {@link FileType#Internal} files on the classpath.
+     * for {@link FileType#classpath} files. On Android, zero is returned for {@link FileType#internal} files. On the desktop, zero
+     * is returned for {@link FileType#internal} files on the classpath.
      */
     public long lastModified(){
         return file().lastModified();

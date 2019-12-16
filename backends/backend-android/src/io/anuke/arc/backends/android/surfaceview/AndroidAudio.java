@@ -126,7 +126,7 @@ public final class AndroidAudio extends Audio implements Runnable{
 
         MediaPlayer mediaPlayer = new MediaPlayer();
 
-        if(aHandle.type() == FileType.Internal){
+        if(aHandle.type() == FileType.internal){
             try{
                 AssetFileDescriptor descriptor = aHandle.getAssetFileDescriptor();
                 mediaPlayer.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
@@ -200,7 +200,7 @@ public final class AndroidAudio extends Audio implements Runnable{
         }
 
         AndroidFi aHandle = (AndroidFi)file;
-        if(aHandle.type() == FileType.Internal){
+        if(aHandle.type() == FileType.internal){
             try{
                 AssetFileDescriptor descriptor = aHandle.getAssetFileDescriptor();
                 AndroidSound sound = new AndroidSound(soundPool, manager, queue, maxSounds, soundPool.load(descriptor, 1));

@@ -15,22 +15,32 @@ public interface Files{
      * @throws ArcRuntimeException if the type is classpath or internal and the file does not exist.
      * @see FileType
      */
-    Fi getFileHandle(String path, FileType type);
+    Fi get(String path, FileType type);
 
-    /** Convenience method that returns a {@link FileType#Classpath} file handle. */
-    Fi classpath(String path);
+    /** Convenience method that returns a {@link FileType#classpath} file handle. */
+    default Fi classpath(String path){
+        return get(path, FileType.classpath);
+    }
 
-    /** Convenience method that returns a {@link FileType#Internal} file handle. */
-    Fi internal(String path);
+    /** Convenience method that returns a {@link FileType#internal} file handle. */
+    default Fi internal(String path){
+        return get(path, FileType.internal);
+    }
 
-    /** Convenience method that returns a {@link FileType#External} file handle. */
-    Fi external(String path);
+    /** Convenience method that returns a {@link FileType#external} file handle. */
+    default Fi external(String path){
+        return get(path, FileType.external);
+    }
 
-    /** Convenience method that returns a {@link FileType#Absolute} file handle. */
-    Fi absolute(String path);
+    /** Convenience method that returns a {@link FileType#absolute} file handle. */
+    default Fi absolute(String path){
+        return get(path, FileType.absolute);
+    }
 
-    /** Convenience method that returns a {@link FileType#Local} file handle. */
-    Fi local(String path);
+    /** Convenience method that returns a {@link FileType#local} file handle. */
+    default Fi local(String path){
+        return get(path, FileType.local);
+    }
 
     /**
      * Returns the external storage path directory. This is the SD card on Android and the home directory of the current user on
@@ -64,25 +74,25 @@ public interface Files{
          * compatible with some functionality on Android, such as {@link Audio#newSound(Fi)} and
          * {@link Audio#newMusic(Fi)}.
          */
-        Classpath,
+        classpath,
 
         /**
          * Path relative to the asset directory on Android and to the application's root directory on the desktop. On the desktop,
          * if the file is not found, then the classpath is checked. This enables files to be found when using JWS or applets.
          * Internal files are always readonly.
          */
-        Internal,
+        internal,
 
         /** Path relative to the root of the SD card on Android and to the home directory of the current user on the desktop. */
-        External,
+        external,
 
         /**
          * Path that is a fully qualified, absolute filesystem path. To ensure portability across platforms use absolute files only
          * when absolutely (heh) necessary.
          */
-        Absolute,
+        absolute,
 
         /** Path relative to the private files directory on Android and to the application's root directory on the desktop. */
-        Local
+        local
     }
 }

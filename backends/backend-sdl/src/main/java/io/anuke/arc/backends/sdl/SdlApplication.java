@@ -63,7 +63,7 @@ public class SdlApplication implements Application{
         if(config.windowIconPaths != null && config.windowIconPaths.length > 0){
             String path = config.windowIconPaths[0];
             try{
-                Pixmap p = new Pixmap(Core.files.getFileHandle(path, config.windowIconFileType));
+                Pixmap p = new Pixmap(Core.files.get(path, config.windowIconFileType));
                 long surface = SDL_CreateRGBSurfaceFrom(p.getPixels(), p.getWidth(), p.getHeight());
                 SDL_SetWindowIcon(window, surface);
                 SDL_FreeSurface(surface);

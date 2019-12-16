@@ -119,11 +119,11 @@ public class Lwjgl3WindowConfiguration{
 
     /**
      * Sets the icon that will be used in the window's title bar. Has no effect in macOS, which doesn't use window icons.
-     * @param filePaths One or more {@linkplain FileType#Internal internal} image paths. Must be JPEG, PNG, or BMP format.
+     * @param filePaths One or more {@linkplain FileType#internal internal} image paths. Must be JPEG, PNG, or BMP format.
      * The one closest to the system's desired size will be scaled. Good sizes include 16x16, 32x32 and 48x48.
      */
     public void setWindowIcon(String... filePaths){
-        setWindowIcon(FileType.Internal, filePaths);
+        setWindowIcon(FileType.internal, filePaths);
     }
 
     /**
