@@ -6,7 +6,7 @@ import io.anuke.arc.util.io.*;
 import java.io.*;
 
 @Emulate(Streams.class)
-public class StreamUtilsEmu{
+public class StreamsEmu{
 
     public static void closeQuietly(Closeable c){
 

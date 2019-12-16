@@ -8,24 +8,23 @@ import org.teavm.classlib.java.util.*;
 import org.teavm.jso.browser.*;
 
 @Replace(Timer.class)
-public class TimerEmulator{
+public class TimerEmu{
     static private final int CANCELLED = -1;
     static private final int FOREVER = -2;
-    static TTimer thread = new TTimer();
 
     /** Timer instance for general application wide usage. Static methods on Timer make convenient use of this instance. */
-    static TimerEmulator instance = new TimerEmulator();
+    static TimerEmu instance = new TimerEmu();
 
-    static public TimerEmulator instance(){
+    static public TimerEmu instance(){
         if(instance == null){
-            instance = new TimerEmulator();
+            instance = new TimerEmu();
         }
         return instance;
     }
 
     private final Array<Task> tasks = new Array<>(false, 8);
 
-    public TimerEmulator(){
+    public TimerEmu(){
 
     }
 

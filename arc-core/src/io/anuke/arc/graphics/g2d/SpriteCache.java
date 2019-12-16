@@ -484,7 +484,7 @@ public class SpriteCache implements Disposable{
         if(currentCache != null) throw new IllegalStateException("endCache must be called before begin");
         renderCalls = 0;
         lastBoundTexture = null;
-        combinedMatrix.set(projectionMatrix);
+        combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 
         if(customShader != null){
             customShader.begin();

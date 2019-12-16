@@ -9,7 +9,7 @@ import java.nio.*;
 
 @Emulate(BufferUtils.class)
 @SuppressWarnings("unused")
-public class BufferUtilsEmulator{
+public class BufferUtilsEmu{
 
     private static void freeMemory(ByteBuffer buffer){
     }

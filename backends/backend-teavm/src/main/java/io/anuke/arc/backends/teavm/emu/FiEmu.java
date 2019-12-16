@@ -8,23 +8,23 @@ import io.anuke.arc.util.*;
 import java.io.*;
 
 @Replace(Fi.class)
-public class FileHandleEmulator{
+public class FiEmu{
     protected File file;
     protected FileType type;
 
-    protected FileHandleEmulator(){
+    protected FiEmu(){
     }
 
-    public FileHandleEmulator(String fileName){
+    public FiEmu(String fileName){
     }
 
-    public FileHandleEmulator(File file){
+    public FiEmu(File file){
     }
 
-    protected FileHandleEmulator(String fileName, FileType type){
+    protected FiEmu(String fileName, FileType type){
     }
 
-    protected FileHandleEmulator(File file, FileType type){
+    protected FiEmu(File file, FileType type){
     }
 
     public String path(){

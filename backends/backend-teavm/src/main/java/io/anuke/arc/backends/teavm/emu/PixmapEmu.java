@@ -2,6 +2,7 @@ package io.anuke.arc.backends.teavm.emu;
 
 import io.anuke.arc.backends.teavm.*;
 import io.anuke.arc.backends.teavm.plugin.Annotations.*;
+import io.anuke.arc.collection.*;
 import io.anuke.arc.files.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.Pixmap.Blending;
@@ -18,27 +19,26 @@ import java.util.*;
 
 
 @Replace(Pixmap.class)
-public class PixmapEmulator implements Disposable{
+public class PixmapEmu implements Disposable{
     private static final Window window = Window.current();
     private static final HTMLDocument document = window.getDocument();
-    public static Map<Integer, PixmapEmulator> pixmaps = new HashMap<>();
-    static int nextId = 0;
+    private static int nextId = 0;
+    private static String clearColor = make(255, 255, 255, 1.0f);
+    public static IntMap<PixmapEmu> pixmaps = new IntMap<>();
+
     int width;
     int height;
     Format format;
     HTMLCanvasElement canvas;
     CanvasRenderingContext2D context;
     int id;
-    IntBuffer buffer;
     int r = 255, g = 255, b = 255;
     float a;
     String color = make(r, g, b, a);
-    static String clearColor = make(255, 255, 255, 1.0f);
     private Blending blending;
     Uint8ClampedArray pixels;
-    private ByteBuffer pixelsBuffer;
 
-    public PixmapEmulator(Fi file){
+    public PixmapEmu(Fi file){
         TeaFi teavmFile = (TeaFi)file;
         TeaFi.FSEntry entry = teavmFile.entry();
         HTMLImageElement img = entry.imageElem;
@@ -51,12 +51,12 @@ public class PixmapEmulator implements Disposable{
         context.setGlobalCompositeOperation("source-over");
     }
 
-    public PixmapEmulator(HTMLImageElement img){
+    public PixmapEmu(HTMLImageElement img){
         create(img.getWidth(), img.getHeight(), Format.RGBA8888);
         context.drawImage(img, 0, 0);
     }
 
-    public PixmapEmulator(int width, int height, Pixmap.Format format){
+    public PixmapEmu(int width, int height, Pixmap.Format format){
         create(width, height, format);
     }
 
@@ -81,7 +81,7 @@ public class PixmapEmulator implements Disposable{
 
     public void setBlending(Blending blending){
         this.blending = blending;
-        for(PixmapEmulator pixmap : pixmaps.values()){
+        for(PixmapEmu pixmap : pixmaps.values()){
             pixmap.context.setGlobalCompositeOperation("source-over");
         }
     }
@@ -119,7 +119,7 @@ public class PixmapEmulator implements Disposable{
 
     @Override
     public void dispose(){
-        PixmapEmulator pixmap = pixmaps.remove(id);
+        PixmapEmu pixmap = pixmaps.remove(id);
         if(pixmap.canvas != null){
             pixmap.canvas.getParentNode().removeChild(pixmap.canvas);
         }
@@ -161,17 +161,17 @@ public class PixmapEmulator implements Disposable{
         rectangle(x, y, width, height, DrawType.STROKE);
     }
 
-    public void drawPixmap(PixmapEmulator pixmap, int x, int y){
+    public void drawPixmap(PixmapEmu pixmap, int x, int y){
         HTMLCanvasElement image = pixmap.canvas;
         image(image, 0, 0, image.getWidth(), image.getHeight(), x, y, image.getWidth(), image.getHeight());
     }
 
-    public void drawPixmap(PixmapEmulator pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight){
+    public void drawPixmap(PixmapEmu pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight){
         HTMLCanvasElement image = pixmap.canvas;
         image(image, srcx, srcy, srcWidth, srcHeight, x, y, srcWidth, srcHeight);
     }
 
-    public void drawPixmap(PixmapEmulator pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty,
+    public void drawPixmap(PixmapEmu pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty,
                            int dstWidth, int dstHeight){
         image(pixmap.canvas, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight);
     }

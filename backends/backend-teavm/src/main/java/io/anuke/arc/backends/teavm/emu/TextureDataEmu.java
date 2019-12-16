@@ -9,7 +9,7 @@ import io.anuke.arc.graphics.glutils.*;
 
 @Emulate(TextureData.Factory.class)
 @SuppressWarnings("unused")
-public class TextureDataEmulator{
+public class TextureDataEmu{
     public static TextureData loadFromFile(Fi file, Format format, boolean useMipMaps){
         return file == null ? null : new FileTextureData(file, new Pixmap(file), format, useMipMaps);
     }

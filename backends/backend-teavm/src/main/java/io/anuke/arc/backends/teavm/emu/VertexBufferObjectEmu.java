@@ -9,8 +9,8 @@ import io.anuke.arc.util.*;
 
 import java.nio.*;
 
-@Replace(VertexArray.class)
-public class VertexArrayEmulator implements VertexData{
+@Replace(VertexBufferObject.class)
+public class VertexBufferObjectEmu implements VertexData{
     final VertexAttributes attributes;
     final FloatBuffer buffer;
     int bufferHandle;
@@ -19,7 +19,7 @@ public class VertexArrayEmulator implements VertexData{
     boolean isDirty = false;
     boolean isBound = false;
 
-    public VertexArrayEmulator(int numVertices, VertexAttribute... attributes){
+    public VertexBufferObjectEmu(int numVertices, VertexAttribute... attributes){
         this(numVertices, new VertexAttributes(attributes));
     }
 
@@ -28,7 +28,7 @@ public class VertexArrayEmulator implements VertexData{
      * @param numVertices the maximum number of vertices
      * @param attributes the {@link VertexAttributes}
      */
-    public VertexArrayEmulator(int numVertices, VertexAttributes attributes){
+    public VertexBufferObjectEmu(int numVertices, VertexAttributes attributes){
         this(false, numVertices, attributes);
     }
 
@@ -38,7 +38,7 @@ public class VertexArrayEmulator implements VertexData{
      * @param numVertices the maximum number of vertices
      * @param attributes the {@link VertexAttribute}s.
      */
-    public VertexArrayEmulator(boolean isStatic, int numVertices, VertexAttribute... attributes){
+    public VertexBufferObjectEmu(boolean isStatic, int numVertices, VertexAttribute... attributes){
         this(isStatic, numVertices, new VertexAttributes(attributes));
     }
 
@@ -48,7 +48,7 @@ public class VertexArrayEmulator implements VertexData{
      * @param numVertices the maximum number of vertices
      * @param attributes the {@link VertexAttributes}.
      */
-    public VertexArrayEmulator(boolean isStatic, int numVertices, VertexAttributes attributes){
+    public VertexBufferObjectEmu(boolean isStatic, int numVertices, VertexAttributes attributes){
         this.isStatic = isStatic;
         this.attributes = attributes;
 
@@ -108,6 +108,13 @@ public class VertexArrayEmulator implements VertexData{
     /**
      * Binds this VertexBufferObject for rendering via glDrawArrays or
      * glDrawElements
+     *
+     * @param shader
+     *            the shader
+     */
+    /**
+     * Binds this VertexBufferObject for rendering via glDrawArrays or
+     * glDrawElements
      * @param shader the shader
      */
     @Override
@@ -136,9 +143,11 @@ public class VertexArrayEmulator implements VertexData{
                 shader.enableVertexAttribute(location);
 
                 if(attribute.usage == Usage.ColorPacked)
-                    shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, attributes.vertexSize, attribute.offset);
+                    shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true,
+                    attributes.vertexSize, attribute.offset);
                 else
-                    shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, attributes.vertexSize, attribute.offset);
+                    shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false,
+                    attributes.vertexSize, attribute.offset);
             }
         }else{
             for(int i = 0; i < numAttributes; i++){

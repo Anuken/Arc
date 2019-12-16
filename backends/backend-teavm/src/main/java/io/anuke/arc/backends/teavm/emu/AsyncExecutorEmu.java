@@ -6,9 +6,9 @@ import io.anuke.arc.util.async.*;
 
 
 @Replace(AsyncExecutor.class)
-public class AsyncExecutorEmulator implements Disposable{
+public class AsyncExecutorEmu implements Disposable{
 
-    public AsyncExecutorEmulator(int maxConcurrent){}
+    public AsyncExecutorEmu(int maxConcurrent){}
 
     public <T> AsyncResult<T> submit(final AsyncTask<T> task){
         try{

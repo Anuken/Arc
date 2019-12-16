@@ -9,7 +9,7 @@ import io.anuke.arc.util.*;
 import java.nio.*;
 
 @Replace(IndexArray.class)
-public class IndexArrayEmulator implements IndexData{
+public class IndexArrayEmu implements IndexData{
     ShortBuffer buffer;
     int bufferHandle;
     final boolean isDirect;
@@ -22,7 +22,7 @@ public class IndexArrayEmulator implements IndexData{
      * @param isStatic whether the index buffer is static
      * @param maxIndices the maximum number of indices this buffer can hold
      */
-    public IndexArrayEmulator(boolean isStatic, int maxIndices){
+    public IndexArrayEmu(boolean isStatic, int maxIndices){
         isDirect = true;
         buffer = BufferUtils.newShortBuffer(maxIndices);
         buffer.flip();
@@ -34,7 +34,7 @@ public class IndexArrayEmulator implements IndexData{
      * Creates a new IndexBufferObject to be used with vertex arrays.
      * @param maxIndices the maximum number of indices this buffer can hold
      */
-    public IndexArrayEmulator(int maxIndices){
+    public IndexArrayEmu(int maxIndices){
         this.isDirect = true;
         buffer = BufferUtils.newShortBuffer(maxIndices);
         buffer.flip();
