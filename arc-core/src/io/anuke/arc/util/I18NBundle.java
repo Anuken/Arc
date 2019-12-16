@@ -308,8 +308,6 @@ public class I18NBundle{
                 reader = fileHandle.reader(encoding);
                 bundle.load(reader);
             }
-        }catch(IOException e){
-            throw new ArcRuntimeException(e);
         }finally{
             Streams.closeQuietly(reader);
         }
@@ -380,7 +378,7 @@ public class I18NBundle{
      */
     // NOTE:
     // This method can't be private otherwise GWT can't access it from loadBundle()
-    protected void load(Reader reader) throws IOException{
+    protected void load(Reader reader){
         properties = new ObjectMap<>();
         PropertiesUtils.load(properties, reader);
     }
