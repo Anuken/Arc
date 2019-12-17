@@ -2,7 +2,9 @@ package io.anuke.arc.util;
 
 import io.anuke.arc.collection.*;
 
-import java.nio.charset.Charset;
+import java.io.*;
+import java.net.*;
+import java.nio.charset.*;
 
 public class Strings{
     public static final Charset utf8 = Charset.forName("UTF-8");
@@ -71,6 +73,15 @@ public class Strings{
 
 
         return build.toString();
+    }
+
+    public static String encode(String str){
+        try{
+            return URLEncoder.encode(str, "UTF-8");
+        }catch(UnsupportedEncodingException why){
+            //why the HECK does this even throw an exception
+            throw new RuntimeException(why);
+        }
     }
 
     public static String format(String text, Object... args){
