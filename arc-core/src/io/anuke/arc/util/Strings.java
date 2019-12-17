@@ -16,6 +16,11 @@ public class Strings{
         return arr;
     }
 
+    public static String getSimpleMessage(Throwable e){
+        Throwable fcause = getFinalCause(e);
+        return fcause.getMessage() == null ? fcause.getClass().getSimpleName() : fcause.getClass().getSimpleName() + ": " + fcause.getMessage();
+    }
+
     public static String getFinalMesage(Throwable e){
         String message = e.getMessage();
         while(e.getCause() != null){
