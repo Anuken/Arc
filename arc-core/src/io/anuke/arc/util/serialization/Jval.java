@@ -99,6 +99,10 @@ public class Jval{
         asObject().put(name, val);
     }
 
+    public void add(String name, String val){
+        add(name, valueOf(val));
+    }
+
     public Jval remove(String name){
         if(name == null) throw new NullPointerException("name is null");
         return asObject().removeKey(name);
@@ -1005,7 +1009,6 @@ public class Jval{
             switch(value.getType()){
                 case object:
                     JsonMap obj = value.asObject();
-                    tw.write(' ');
                     tw.write('{');
                     for(ObjectMap.Entry<String, Jval> pair : obj){
                         if(following) tw.write(",");
@@ -1026,13 +1029,13 @@ public class Jval{
                 case array:
                     JsonArray arr = value.asArray();
                     int n = arr.size;
-                    tw.write(' ');
+                    if(level != 0) tw.write(' ');
                     tw.write('[');
                     for(int i = 0; i < n; i++){
                         if(following) tw.write(",");
                         Jval v = arr.get(i);
                         Jtype vType = v.getType();
-                        if(vType != Jtype.array && vType != Jtype.object) nl(tw, level + 1);
+                        if(vType != Jtype.array) nl(tw, level + 1);
                         save(v, tw, level + 1);
                         following = true;
                     }

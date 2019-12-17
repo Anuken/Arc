@@ -3,6 +3,8 @@ package io.anuke.arc.util;
 import io.anuke.arc.*;
 import io.anuke.arc.files.*;
 
+import java.io.*;
+
 public class OS{
     static public boolean isWindows = getPropertyNotNull("os.name").contains("Windows");
     static public boolean isLinux = getPropertyNotNull("os.name").contains("Linux");
@@ -48,6 +50,20 @@ public class OS{
             return getProperty("user.home") + "/Library/Application Support/" + appname + "/";
         }else{ //else, probably web
             return null;
+        }
+    }
+
+    public static String exec(String... args){
+        try{
+            BufferedReader in = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(args).getInputStream()));
+            StringBuilder result = new StringBuilder();
+            String line;
+            while((line = in.readLine()) != null){
+                result.append(line).append("\n");
+            }
+            return result.toString();
+        }catch(IOException e){
+            throw new RuntimeException(e);
         }
     }
 
