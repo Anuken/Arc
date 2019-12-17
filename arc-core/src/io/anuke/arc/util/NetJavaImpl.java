@@ -107,13 +107,9 @@ public class NetJavaImpl{
         private final HttpURLConnection connection;
         private Net.HttpStatus status;
 
-        public HttpClientResponse(HttpURLConnection connection){
+        public HttpClientResponse(HttpURLConnection connection) throws IOException{
             this.connection = connection;
-            try{
-                this.status = Net.HttpStatus.byCode(connection.getResponseCode());
-            }catch(IOException e){
-                this.status = Net.HttpStatus.UNKNOWN_STATUS;
-            }
+            this.status = Net.HttpStatus.byCode(connection.getResponseCode());
         }
 
         @Override
@@ -173,7 +169,9 @@ public class NetJavaImpl{
             ObjectMap<String, Array<String>> out = new ObjectMap<>();
             Map<String, List<String>> fields = connection.getHeaderFields();
             for(String key : fields.keySet()){
-                out.put(key, Array.with(fields.get(key).toArray(new String[0])));
+                if(key != null){
+                    out.put(key, Array.with(fields.get(key).toArray(new String[0])));
+                }
             }
             return out;
         }

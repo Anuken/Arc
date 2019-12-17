@@ -120,7 +120,7 @@ public class Net{
         public ObjectMap<String, String> headers = new ObjectMap<>();
         /**The time to wait for the HTTP request to be processed, use 0 to block until it is done. The timeout is used for both
          * the timeout when establishing TCP connection, and the timeout until the first byte of data is received.*/
-        public int timeout = 1000;
+        public int timeout = 2000;
 
         /**The content to be used in the HTTP request: A string encoded in the corresponding Content-Encoding set in the headers, with the data to send with the
          * HTTP request. For example, in case of HTTP GET, the content is used as the query string of the GET while on a
