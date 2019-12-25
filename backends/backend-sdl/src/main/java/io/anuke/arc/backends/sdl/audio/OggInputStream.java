@@ -24,8 +24,8 @@ package io.anuke.arc.backends.sdl.audio;
 
 import com.jcraft.jogg.*;
 import com.jcraft.jorbis.*;
-import io.anuke.arc.util.*;
-import io.anuke.arc.util.io.*;
+import arc.util.*;
+import arc.util.io.*;
 
 import java.io.*;
 import java.nio.*;

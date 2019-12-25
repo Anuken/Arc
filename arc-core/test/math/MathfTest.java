@@ -1,6 +1,6 @@
 package math;
 
-import io.anuke.arc.math.Mathf;
+import arc.math.Mathf;
 import org.junit.Assert;
 import org.junit.Test;
 

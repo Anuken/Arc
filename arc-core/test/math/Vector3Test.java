@@ -1,6 +1,6 @@
 package math;
 
-import io.anuke.arc.math.geom.Vector3;
+import arc.math.geom.Vector3;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

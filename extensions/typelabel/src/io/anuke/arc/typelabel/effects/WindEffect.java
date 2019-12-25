@@ -1,7 +1,7 @@
 package io.anuke.arc.typelabel.effects;
 
 import io.anuke.arc.typelabel.*;
-import io.anuke.arc.util.noise.Simplex;
+import arc.util.noise.Simplex;
 
 /** Moves the text in a wind pattern. */
 public class WindEffect extends Effect{

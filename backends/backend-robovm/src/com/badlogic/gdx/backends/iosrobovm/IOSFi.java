@@ -1,8 +1,8 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
-import io.anuke.arc.Files.FileType;
-import io.anuke.arc.files.Fi;
-import io.anuke.arc.util.ArcRuntimeException;
+import arc.Files.FileType;
+import arc.files.Fi;
+import arc.util.ArcRuntimeException;
 
 import java.io.File;
 

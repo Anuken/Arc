@@ -1,6 +1,6 @@
 package io.anuke.arc.typelabel.effects;
 
-import io.anuke.arc.math.Interpolation;
+import arc.math.Interpolation;
 import io.anuke.arc.typelabel.*;
 
 /** Moves the text vertically in a sine wave pattern. */

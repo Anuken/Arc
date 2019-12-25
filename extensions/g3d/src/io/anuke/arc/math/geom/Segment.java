@@ -1,4 +1,4 @@
-package io.anuke.arc.math.geom;
+package arc.math.geom;
 
 import java.io.Serializable;
 

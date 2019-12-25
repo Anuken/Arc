@@ -1,8 +1,8 @@
 package io.anuke.arc.backends.sdl;
 
-import io.anuke.arc.*;
-import io.anuke.arc.files.*;
-import io.anuke.arc.util.*;
+import arc.*;
+import arc.files.*;
+import arc.util.*;
 
 import java.io.*;
 

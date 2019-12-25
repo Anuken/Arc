@@ -1,6 +1,6 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
-import io.anuke.arc.*;
+import arc.*;
 import org.robovm.apple.dispatch.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.uikit.*;

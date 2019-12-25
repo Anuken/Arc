@@ -1,6 +1,6 @@
-package io.anuke.arc.math.geom;
+package arc.math.geom;
 
-import io.anuke.arc.math.Mathf;
+import arc.math.Mathf;
 
 import java.io.Serializable;
 

@@ -1,6 +1,6 @@
 import com.badlogic.gdx.jnigen.*;
 import com.badlogic.gdx.jnigen.BuildTarget.*;
-import io.anuke.arc.util.*;
+import arc.util.*;
 
 import java.io.*;
 import java.util.*;

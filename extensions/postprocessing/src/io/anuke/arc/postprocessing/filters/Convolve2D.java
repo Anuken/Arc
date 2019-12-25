@@ -1,7 +1,7 @@
 package io.anuke.arc.postprocessing.filters;
 
 import io.anuke.arc.postprocessing.PingPongBuffer;
-import io.anuke.arc.util.Disposable;
+import arc.util.Disposable;
 
 /**
  * Encapsulates a separable 2D convolution kernel filter

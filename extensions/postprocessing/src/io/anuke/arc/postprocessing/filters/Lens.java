@@ -1,7 +1,7 @@
 package io.anuke.arc.postprocessing.filters;
 
-import io.anuke.arc.graphics.Texture;
-import io.anuke.arc.math.geom.Vector2;
+import arc.graphics.Texture;
+import arc.math.geom.Vector2;
 import io.anuke.arc.postprocessing.PostFilter;
 
 public final class Lens extends PostFilter{

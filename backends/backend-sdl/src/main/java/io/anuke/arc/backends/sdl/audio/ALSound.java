@@ -1,6 +1,6 @@
 package io.anuke.arc.backends.sdl.audio;
 
-import io.anuke.arc.audio.*;
+import arc.audio.*;
 
 import java.nio.*;
 

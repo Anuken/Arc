@@ -1,10 +1,10 @@
 package utils;
 
-import io.anuke.arc.Files.*;
-import io.anuke.arc.files.*;
-import io.anuke.arc.util.*;
-import io.anuke.arc.util.serialization.*;
-import io.anuke.arc.util.serialization.Jval.*;
+import arc.Files.*;
+import arc.files.*;
+import arc.util.*;
+import arc.util.serialization.*;
+import arc.util.serialization.Jval.*;
 import org.junit.*;
 
 public class JvalTest{

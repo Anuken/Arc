@@ -2,7 +2,7 @@ package io.anuke.arc.backends.teavm.emu;
 
 import com.badlogic.gdx.utils.BufferUtils;
 import io.anuke.arc.backends.teavm.plugin.Annotations.*;
-import io.anuke.arc.util.*;
+import arc.util.*;
 
 import java.nio.*;
 

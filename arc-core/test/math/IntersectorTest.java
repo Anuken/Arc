@@ -1,10 +1,10 @@
 package math;
 
-import io.anuke.arc.math.Mathf;
-import io.anuke.arc.math.geom.Intersector;
-import io.anuke.arc.math.geom.Intersector.SplitTriangle;
-import io.anuke.arc.math.geom.Plane;
-import io.anuke.arc.math.geom.Vector3;
+import arc.math.Mathf;
+import arc.math.geom.Intersector;
+import arc.math.geom.Intersector.SplitTriangle;
+import arc.math.geom.Plane;
+import arc.math.geom.Vector3;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

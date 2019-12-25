@@ -1,8 +1,8 @@
 package io.anuke.arc.backends.teavm;
 
 import io.anuke.arc.*;
-import io.anuke.arc.files.*;
-import io.anuke.arc.util.*;
+import arc.files.*;
+import arc.util.*;
 import org.teavm.jso.browser.*;
 
 public class TeaFiles implements Files{

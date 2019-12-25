@@ -1,8 +1,8 @@
 package com.badlogic.gdx.graphics.g2d;
 
-import io.anuke.arc.graphics.GL20;
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.Disposable;
+import arc.graphics.GL20;
+import arc.util.ArcRuntimeException;
+import arc.util.Disposable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

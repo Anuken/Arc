@@ -1,6 +1,6 @@
 package io.anuke.arc.backends.teavm;
 
-import io.anuke.arc.audio.*;
+import arc.audio.*;
 import org.teavm.jso.browser.*;
 import org.teavm.jso.dom.events.*;
 import org.teavm.jso.dom.html.*;

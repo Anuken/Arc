@@ -14,9 +14,9 @@
  * limitations under the License.
  ******************************************************************************/
 
-package io.anuke.arc.math.geom;
+package arc.math.geom;
 
-import io.anuke.arc.math.*;
+import arc.math.*;
 
 /** Encapsulates a <a href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> 4 by 4 matrix. Like
  * the {@link Vector3} class it allows the chaining of methods by returning a reference to itself. For example:

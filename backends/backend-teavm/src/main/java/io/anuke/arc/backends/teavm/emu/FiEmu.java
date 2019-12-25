@@ -2,8 +2,8 @@ package io.anuke.arc.backends.teavm.emu;
 
 import io.anuke.arc.Files.*;
 import io.anuke.arc.backends.teavm.plugin.Annotations.*;
-import io.anuke.arc.files.*;
-import io.anuke.arc.util.*;
+import arc.files.*;
+import arc.util.*;
 
 import java.io.*;
 

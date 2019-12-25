@@ -1,6 +1,6 @@
 package io.anuke.arc.backends.teavm;
 
-import io.anuke.arc.input.*;
+import arc.input.*;
 import org.teavm.jso.dom.events.*;
 
 public class TeaKeymap{

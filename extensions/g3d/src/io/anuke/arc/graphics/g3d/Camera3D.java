@@ -1,7 +1,7 @@
-package io.anuke.arc.graphics.g3d;
+package arc.graphics.g3d;
 
-import io.anuke.arc.math.geom.*;
-import io.anuke.arc.util.*;
+import arc.math.geom.*;
+import arc.util.*;
 
 public class Camera3D{
     /** field of view. */

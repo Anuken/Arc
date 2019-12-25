@@ -1,7 +1,7 @@
 package io.anuke.arc.backends.sdl.audio;
 
-import io.anuke.arc.files.*;
-import io.anuke.arc.util.*;
+import arc.files.*;
+import arc.util.*;
 import javazoom.jl.decoder.*;
 
 import java.io.*;

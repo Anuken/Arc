@@ -1,7 +1,7 @@
 package io.anuke.arc.backends.sdl;
 
 import io.anuke.arc.backends.sdl.jni.SDLGL;
-import io.anuke.arc.graphics.*;
+import arc.graphics.*;
 
 import java.nio.*;
 

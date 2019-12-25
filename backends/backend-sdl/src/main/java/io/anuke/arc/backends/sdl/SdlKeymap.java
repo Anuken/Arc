@@ -1,6 +1,6 @@
 package io.anuke.arc.backends.sdl;
 
-import io.anuke.arc.input.*;
+import arc.input.*;
 
 public class SdlKeymap{
 

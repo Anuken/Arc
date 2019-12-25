@@ -1,6 +1,6 @@
 package io.anuke.arc.postprocessing.filters;
 
-import io.anuke.arc.graphics.Texture;
+import arc.graphics.Texture;
 import io.anuke.arc.postprocessing.PostFilter;
 
 public final class Combine extends PostFilter{

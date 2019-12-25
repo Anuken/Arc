@@ -1,7 +1,7 @@
 package io.anuke.arc.backends.teavm;
 
 import io.anuke.arc.backends.teavm.TeaFi.*;
-import io.anuke.arc.util.*;
+import arc.util.*;
 import org.teavm.jso.ajax.*;
 import org.teavm.jso.browser.*;
 import org.teavm.jso.core.*;

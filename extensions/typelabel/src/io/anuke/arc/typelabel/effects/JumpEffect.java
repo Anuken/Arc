@@ -1,6 +1,6 @@
 package io.anuke.arc.typelabel.effects;
 
-import io.anuke.arc.math.Interpolation;
+import arc.math.Interpolation;
 import io.anuke.arc.typelabel.*;
 
 /** Makes the text jumps and falls as if there was gravity. */

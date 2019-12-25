@@ -1,6 +1,6 @@
 package io.anuke.arc.typelabel.effects;
 
-import io.anuke.arc.graphics.Color;
+import arc.graphics.Color;
 import io.anuke.arc.typelabel.*;
 
 /** Tints the text in a rainbow pattern. */

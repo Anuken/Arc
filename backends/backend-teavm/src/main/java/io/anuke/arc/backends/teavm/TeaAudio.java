@@ -1,9 +1,9 @@
 package io.anuke.arc.backends.teavm;
 
 import io.anuke.arc.*;
-import io.anuke.arc.audio.*;
-import io.anuke.arc.files.*;
-import io.anuke.arc.util.*;
+import arc.audio.*;
+import arc.files.*;
+import arc.util.*;
 
 public class TeaAudio extends Audio{
     @Override

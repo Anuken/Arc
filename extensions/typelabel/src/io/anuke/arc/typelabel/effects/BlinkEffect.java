@@ -1,7 +1,7 @@
 package io.anuke.arc.typelabel.effects;
 
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.math.Mathf;
+import arc.graphics.Color;
+import arc.math.Mathf;
 import io.anuke.arc.typelabel.*;
 
 /** Blinks the entire text in two different colors at once, without interpolation. */

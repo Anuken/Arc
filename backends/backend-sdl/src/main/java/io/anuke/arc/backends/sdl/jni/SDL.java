@@ -1,6 +1,6 @@
 package io.anuke.arc.backends.sdl.jni;
 
-import io.anuke.arc.util.*;
+import arc.util.*;
 
 import java.io.*;
 import java.nio.*;

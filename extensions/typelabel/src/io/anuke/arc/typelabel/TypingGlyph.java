@@ -1,9 +1,9 @@
 package io.anuke.arc.typelabel;
 
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.graphics.g2d.BitmapFont.Glyph;
-import io.anuke.arc.graphics.g2d.GlyphLayout.GlyphRun;
-import io.anuke.arc.util.pooling.Pool.Poolable;
+import arc.graphics.Color;
+import arc.graphics.g2d.BitmapFont.Glyph;
+import arc.graphics.g2d.GlyphLayout.GlyphRun;
+import arc.util.pooling.Pool.Poolable;
 
 /** Extension of {@link Glyph} with additional data exposed to the user. */
 public class TypingGlyph extends Glyph implements Poolable{

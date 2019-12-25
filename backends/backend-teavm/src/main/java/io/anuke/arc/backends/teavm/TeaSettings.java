@@ -1,7 +1,7 @@
 package io.anuke.arc.backends.teavm;
 
 import io.anuke.arc.*;
-import io.anuke.arc.util.*;
+import arc.util.*;
 
 public class TeaSettings extends Settings{
     String prefix;

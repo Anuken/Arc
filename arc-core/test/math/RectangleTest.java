@@ -1,6 +1,6 @@
 package math;
 
-import io.anuke.arc.math.geom.Rectangle;
+import arc.math.geom.Rectangle;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

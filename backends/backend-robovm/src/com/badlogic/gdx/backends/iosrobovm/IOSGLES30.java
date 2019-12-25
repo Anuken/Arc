@@ -1,6 +1,6 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
-import io.anuke.arc.graphics.GL30;
+import arc.graphics.GL30;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;

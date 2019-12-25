@@ -1,7 +1,7 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
-import io.anuke.arc.Core;
-import io.anuke.arc.audio.Music;
+import arc.Core;
+import arc.audio.Music;
 import com.badlogic.gdx.backends.iosrobovm.objectal.AVAudioPlayerDelegateAdapter;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioTrack;
 import org.robovm.apple.foundation.NSObject;

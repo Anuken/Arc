@@ -1,8 +1,8 @@
 package io.anuke.arc.backends.teavm.emu;
 
 import io.anuke.arc.backends.teavm.plugin.Annotations.*;
-import io.anuke.arc.util.*;
-import io.anuke.arc.util.async.*;
+import arc.util.*;
+import arc.util.async.*;
 
 
 @Replace(AsyncExecutor.class)

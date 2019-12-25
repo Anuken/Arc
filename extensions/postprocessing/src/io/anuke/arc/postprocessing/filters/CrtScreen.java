@@ -1,7 +1,7 @@
 package io.anuke.arc.postprocessing.filters;
 
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.math.Mathf;
+import arc.graphics.Color;
+import arc.math.Mathf;
 import io.anuke.arc.postprocessing.PostFilter;
 
 public final class CrtScreen extends PostFilter{

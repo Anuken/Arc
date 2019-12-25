@@ -1,7 +1,7 @@
 package io.anuke.arc.typelabel;
 
-import io.anuke.arc.math.Interpolation;
-import io.anuke.arc.math.Mathf;
+import arc.math.Interpolation;
+import arc.math.Mathf;
 
 /** Abstract text effect. */
 public abstract class Effect{
