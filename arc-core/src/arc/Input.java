@@ -54,7 +54,7 @@ public abstract class Input implements Disposable{
         return Core.camera.unproject(mouse());
     }
 
-    /**Returns the mouse position as a vector2.*/
+    /**Returns the mouse position as a Vec2.*/
     public Vec2 mouse(){
         return mouseReturn.set(mouseX(), mouseY());
     }

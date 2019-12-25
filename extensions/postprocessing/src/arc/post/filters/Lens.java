@@ -1,18 +1,18 @@
 package arc.post.filters;
 
 import arc.graphics.Texture;
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 import arc.post.PostFilter;
 
 public final class Lens extends PostFilter{
-    public Vector2 viewportInverse;
+    public Vec2 viewportInverse;
     public int ghosts;
     public float haloWidth;
     public Texture lensColorTexture;
 
     public Lens(int width, int height){
         super("lensflare2");
-        viewportInverse = new Vector2(1f / width, 1f / height);
+        viewportInverse = new Vec2(1f / width, 1f / height);
     }
 
     public void setViewportSize(float width, float height){

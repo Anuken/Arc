@@ -19,7 +19,7 @@ package arc.math.geom;
 import arc.math.*;
 
 /** Encapsulates a <a href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> 4 by 4 matrix. Like
- * the {@link Vector3} class it allows the chaining of methods by returning a reference to itself. For example:
+ * the {@link Vec3} class it allows the chaining of methods by returning a reference to itself. For example:
  * 
  * <pre>
  * Matrix4 mat = new Matrix4().trn(position).mul(camera.combined);
@@ -28,45 +28,45 @@ import arc.math.*;
  * @author badlogicgames@gmail.com */
 public class Matrix4{
 	/** XX: Typically the unrotated X component for scaling, also the cosine of the angle when rotated on the Y and/or Z axis. On
-	 * Vector3 multiplication this value is multiplied with the source X component and added to the target X component. */
+	 * Vec3 multiplication this value is multiplied with the source X component and added to the target X component. */
 	public static final int M00 = 0;
-	/** XY: Typically the negative sine of the angle when rotated on the Z axis. On Vector3 multiplication this value is multiplied
+	/** XY: Typically the negative sine of the angle when rotated on the Z axis. On Vec3 multiplication this value is multiplied
 	 * with the source Y component and added to the target X component. */
 	public static final int M01 = 4;
-	/** XZ: Typically the sine of the angle when rotated on the Y axis. On Vector3 multiplication this value is multiplied with the
+	/** XZ: Typically the sine of the angle when rotated on the Y axis. On Vec3 multiplication this value is multiplied with the
 	 * source Z component and added to the target X component. */
 	public static final int M02 = 8;
-	/** XW: Typically the translation of the X component. On Vector3 multiplication this value is added to the target X component. */
+	/** XW: Typically the translation of the X component. On Vec3 multiplication this value is added to the target X component. */
 	public static final int M03 = 12;
-	/** YX: Typically the sine of the angle when rotated on the Z axis. On Vector3 multiplication this value is multiplied with the
+	/** YX: Typically the sine of the angle when rotated on the Z axis. On Vec3 multiplication this value is multiplied with the
 	 * source X component and added to the target Y component. */
 	public static final int M10 = 1;
 	/** YY: Typically the unrotated Y component for scaling, also the cosine of the angle when rotated on the X and/or Z axis. On
-	 * Vector3 multiplication this value is multiplied with the source Y component and added to the target Y component. */
+	 * Vec3 multiplication this value is multiplied with the source Y component and added to the target Y component. */
 	public static final int M11 = 5;
-	/** YZ: Typically the negative sine of the angle when rotated on the X axis. On Vector3 multiplication this value is multiplied
+	/** YZ: Typically the negative sine of the angle when rotated on the X axis. On Vec3 multiplication this value is multiplied
 	 * with the source Z component and added to the target Y component. */
 	public static final int M12 = 9;
-	/** YW: Typically the translation of the Y component. On Vector3 multiplication this value is added to the target Y component. */
+	/** YW: Typically the translation of the Y component. On Vec3 multiplication this value is added to the target Y component. */
 	public static final int M13 = 13;
-	/** ZX: Typically the negative sine of the angle when rotated on the Y axis. On Vector3 multiplication this value is multiplied
+	/** ZX: Typically the negative sine of the angle when rotated on the Y axis. On Vec3 multiplication this value is multiplied
 	 * with the source X component and added to the target Z component. */
 	public static final int M20 = 2;
-	/** ZY: Typical the sine of the angle when rotated on the X axis. On Vector3 multiplication this value is multiplied with the
+	/** ZY: Typical the sine of the angle when rotated on the X axis. On Vec3 multiplication this value is multiplied with the
 	 * source Y component and added to the target Z component. */
 	public static final int M21 = 6;
 	/** ZZ: Typically the unrotated Z component for scaling, also the cosine of the angle when rotated on the X and/or Y axis. On
-	 * Vector3 multiplication this value is multiplied with the source Z component and added to the target Z component. */
+	 * Vec3 multiplication this value is multiplied with the source Z component and added to the target Z component. */
 	public static final int M22 = 10;
-	/** ZW: Typically the translation of the Z component. On Vector3 multiplication this value is added to the target Z component. */
+	/** ZW: Typically the translation of the Z component. On Vec3 multiplication this value is added to the target Z component. */
 	public static final int M23 = 14;
-	/** WX: Typically the value zero. On Vector3 multiplication this value is ignored. */
+	/** WX: Typically the value zero. On Vec3 multiplication this value is ignored. */
 	public static final int M30 = 3;
-	/** WY: Typically the value zero. On Vector3 multiplication this value is ignored. */
+	/** WY: Typically the value zero. On Vec3 multiplication this value is ignored. */
 	public static final int M31 = 7;
-	/** WZ: Typically the value zero. On Vector3 multiplication this value is ignored. */
+	/** WZ: Typically the value zero. On Vec3 multiplication this value is ignored. */
 	public static final int M32 = 11;
-	/** WW: Typically the value one. On Vector3 multiplication this value is ignored. */
+	/** WW: Typically the value one. On Vec3 multiplication this value is ignored. */
 	public static final int M33 = 15;
 
 	private static final float tmp[] = new float[16];
@@ -104,7 +104,7 @@ public class Matrix4{
 	 * @param position The translation
 	 * @param rotation The rotation, must be normalized
 	 * @param scale The scale */
-	public Matrix4 (Vector3 position, Quaternion rotation, Vector3 scale) {
+	public Matrix4 (Vec3 position, Quaternion rotation, Vec3 scale) {
 		set(position, rotation, scale);
 	}
 
@@ -150,7 +150,7 @@ public class Matrix4{
 	 * @param position The translation
 	 * @param orientation The rotation, must be normalized
 	 * @return This matrix for chaining */
-	public Matrix4 set (Vector3 position, Quaternion orientation) {
+	public Matrix4 set (Vec3 position, Quaternion orientation) {
 		return set(position.x, position.y, position.z, orientation.x, orientation.y, orientation.z, orientation.w);
 	}
 
@@ -198,7 +198,7 @@ public class Matrix4{
 	 * @param orientation The rotation, must be normalized
 	 * @param scale The scale
 	 * @return This matrix for chaining */
-	public Matrix4 set (Vector3 position, Quaternion orientation, Vector3 scale) {
+	public Matrix4 set (Vec3 position, Quaternion orientation, Vec3 scale) {
 		return set(position.x, position.y, position.z, orientation.x, orientation.y, orientation.z, orientation.w, scale.x,
 			scale.y, scale.z);
 	}
@@ -252,7 +252,7 @@ public class Matrix4{
 	 * @param yAxis The y-axis.
 	 * @param zAxis The z-axis.
 	 * @param pos The translation vector. */
-	public Matrix4 set (Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, Vector3 pos) {
+	public Matrix4 set (Vec3 xAxis, Vec3 yAxis, Vec3 zAxis, Vec3 pos) {
 		val[M00] = xAxis.x;
 		val[M01] = xAxis.y;
 		val[M02] = xAxis.z;
@@ -281,7 +281,7 @@ public class Matrix4{
 	 * 
 	 * @param vector The translation vector to add to the current matrix. (This vector is not modified)
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 trn (Vector3 vector) {
+	public Matrix4 trn (Vec3 vector) {
 		val[M03] += vector.x;
 		val[M13] += vector.y;
 		val[M23] += vector.z;
@@ -610,7 +610,7 @@ public class Matrix4{
 	 * 
 	 * @param vector The translation vector
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 setTranslation (Vector3 vector) {
+	public Matrix4 setTranslation (Vec3 vector) {
 		val[M03] = vector.x;
 		val[M13] = vector.y;
 		val[M23] = vector.z;
@@ -635,7 +635,7 @@ public class Matrix4{
 	 * 
 	 * @param vector The translation vector
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 setToTranslation (Vector3 vector) {
+	public Matrix4 setToTranslation (Vec3 vector) {
 		idt();
 		val[M03] = vector.x;
 		val[M13] = vector.y;
@@ -664,7 +664,7 @@ public class Matrix4{
 	 * @param translation The translation vector
 	 * @param scaling The scaling vector
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 setToTranslationAndScaling (Vector3 translation, Vector3 scaling) {
+	public Matrix4 setToTranslationAndScaling (Vec3 translation, Vec3 scaling) {
 		idt();
 		val[M03] = translation.x;
 		val[M13] = translation.y;
@@ -705,7 +705,7 @@ public class Matrix4{
 	 * @param axis The axis
 	 * @param degrees The angle in degrees
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 setToRotation (Vector3 axis, float degrees) {
+	public Matrix4 setToRotation (Vec3 axis, float degrees) {
 		if (degrees == 0) {
 			idt();
 			return this;
@@ -718,7 +718,7 @@ public class Matrix4{
 	 * @param axis The axis
 	 * @param radians The angle in radians
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 setToRotationRad (Vector3 axis, float radians) {
+	public Matrix4 setToRotationRad (Vec3 axis, float radians) {
 		if (radians == 0) {
 			idt();
 			return this;
@@ -760,7 +760,7 @@ public class Matrix4{
 	 * @param v1 The base vector
 	 * @param v2 The target vector
 	 * @return This matrix for the purpose of chaining methods together */
-	public Matrix4 setToRotation (final Vector3 v1, final Vector3 v2) {
+	public Matrix4 setToRotation (final Vec3 v1, final Vec3 v2) {
 		return set(quat.setFromCross(v1, v2));
 	}
 
@@ -800,7 +800,7 @@ public class Matrix4{
 	 * 
 	 * @param vector The scaling vector
 	 * @return This matrix for chaining. */
-	public Matrix4 setToScaling (Vector3 vector) {
+	public Matrix4 setToScaling (Vec3 vector) {
 		idt();
 		val[M00] = vector.x;
 		val[M11] = vector.y;
@@ -822,9 +822,9 @@ public class Matrix4{
 		return this;
 	}
 
-	static final Vector3 l_vez = new Vector3();
-	static final Vector3 l_vex = new Vector3();
-	static final Vector3 l_vey = new Vector3();
+	static final Vec3 l_vez = new Vec3();
+	static final Vec3 l_vex = new Vec3();
+	static final Vec3 l_vey = new Vec3();
 
 	/** Sets the matrix to a look at matrix with a direction and an up vector. Multiply with a translation matrix to get a camera
 	 * model view matrix.
@@ -832,7 +832,7 @@ public class Matrix4{
 	 * @param direction The direction vector
 	 * @param up The up vector
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 setToLookAt (Vector3 direction, Vector3 up) {
+	public Matrix4 setToLookAt (Vec3 direction, Vec3 up) {
 		l_vez.set(direction).nor();
 		l_vex.set(direction).nor();
 		l_vex.crs(up).nor();
@@ -851,7 +851,7 @@ public class Matrix4{
 		return this;
 	}
 
-	static final Vector3 tmpVec = new Vector3();
+	static final Vec3 tmpVec = new Vec3();
 	static final Matrix4 tmpMat = new Matrix4();
 
 	/** Sets this matrix to a look at matrix with the given position, target and up vector.
@@ -860,7 +860,7 @@ public class Matrix4{
 	 * @param target the target
 	 * @param up the up vector
 	 * @return This matrix */
-	public Matrix4 setToLookAt (Vector3 position, Vector3 target, Vector3 up) {
+	public Matrix4 setToLookAt (Vec3 position, Vec3 target, Vec3 up) {
 		tmpVec.set(target).sub(position);
 		setToLookAt(tmpVec, up);
 		this.mul(tmpMat.setToTranslation(-position.x, -position.y, -position.z));
@@ -868,11 +868,11 @@ public class Matrix4{
 		return this;
 	}
 
-	static final Vector3 right = new Vector3();
-	static final Vector3 tmpForward = new Vector3();
-	static final Vector3 tmpUp = new Vector3();
+	static final Vec3 right = new Vec3();
+	static final Vec3 tmpForward = new Vec3();
+	static final Vec3 tmpUp = new Vec3();
 
-	public Matrix4 setToWorld (Vector3 position, Vector3 forward, Vector3 up) {
+	public Matrix4 setToWorld (Vec3 position, Vec3 forward, Vec3 up) {
 		tmpForward.set(forward).nor();
 		right.set(tmpForward).crs(up).nor();
 		tmpUp.set(right).crs(tmpForward).nor();
@@ -1062,7 +1062,7 @@ public class Matrix4{
 		return this;
 	}
 
-	public Matrix4 scl (Vector3 scale) {
+	public Matrix4 scl (Vec3 scale) {
 		val[M00] *= scale.x;
 		val[M11] *= scale.y;
 		val[M22] *= scale.z;
@@ -1083,7 +1083,7 @@ public class Matrix4{
 		return this;
 	}
 
-	public Vector3 getTranslation (Vector3 position) {
+	public Vec3 getTranslation (Vec3 position) {
 		position.x = val[M03];
 		position.y = val[M13];
 		position.z = val[M23];
@@ -1140,7 +1140,7 @@ public class Matrix4{
 
 	/** @param scale The vector which will receive the (non-negative) scale components on each axis.
 	 * @return The provided vector for chaining. */
-	public Vector3 getScale (Vector3 scale) {
+	public Vec3 getScale (Vec3 scale) {
 		return scale.set(getScaleX(), getScaleY(), getScaleZ());
 	}
 
@@ -1164,7 +1164,7 @@ public class Matrix4{
 	/** Multiplies the vector with the given matrix. The matrix array is assumed to hold a 4x4 column major matrix as you can get
 	 * from {@link Matrix4#val}. The vector array is assumed to hold a 3-component vector, with x being the first element, y being
 	 * the second and z being the last component. The result is stored in the vector array. This is the same as
-	 * Vector3#mul(Matrix4).
+	 * Vec3#mul(Matrix4).
 	 * @param mat the matrix
 	 * @param vec the vector. */
 	public static void mulVec (float[] mat, float[] vec){
@@ -1175,7 +1175,7 @@ public class Matrix4{
 	 * from {@link Matrix4#val}. The vectors array is assumed to hold 3-component vectors. Offset specifies the offset into the
 	 * array where the x-component of the first vector is located. The numVecs parameter specifies the number of vectors stored in
 	 * the vectors array. The stride parameter specifies the number of floats between subsequent vectors and must be >= 3. This is
-	 * the same as Vector3#mul(Matrix4) applied to multiple vectors.
+	 * the same as Vec3#mul(Matrix4) applied to multiple vectors.
 	 * 
 	 * @param mat the matrix
 	 * @param vecs the vectors
@@ -1189,7 +1189,7 @@ public class Matrix4{
 	/** Multiplies the vector with the given matrix, performing a division by w. The matrix array is assumed to hold a 4x4 column
 	 * major matrix as you can get from {@link Matrix4#val}. The vector array is assumed to hold a 3-component vector, with x being
 	 * the first element, y being the second and z being the last component. The result is stored in the vector array. This is the
-	 * same as Vector3#prj(Matrix4).
+	 * same as Vec3#prj(Matrix4).
 	 * @param mat the matrix
 	 * @param vec the vector. */
 	public static void prj (float[] mat, float[] vec){
@@ -1200,7 +1200,7 @@ public class Matrix4{
 	 * major matrix as you can get from {@link Matrix4#val}. The vectors array is assumed to hold 3-component vectors. Offset
 	 * specifies the offset into the array where the x-component of the first vector is located. The numVecs parameter specifies
 	 * the number of vectors stored in the vectors array. The stride parameter specifies the number of floats between subsequent
-	 * vectors and must be >= 3. This is the same as Vector3#prj(Matrix4) applied to multiple vectors.
+	 * vectors and must be >= 3. This is the same as Vec3#prj(Matrix4) applied to multiple vectors.
 	 * 
 	 * @param mat the matrix
 	 * @param vecs the vectors
@@ -1214,7 +1214,7 @@ public class Matrix4{
 	/** Multiplies the vector with the top most 3x3 sub-matrix of the given matrix. The matrix array is assumed to hold a 4x4 column
 	 * major matrix as you can get from {@link Matrix4#val}. The vector array is assumed to hold a 3-component vector, with x being
 	 * the first element, y being the second and z being the last component. The result is stored in the vector array. This is the
-	 * same as Vector3#rot(Matrix4).
+	 * same as Vec3#rot(Matrix4).
 	 * @param mat the matrix
 	 * @param vec the vector. */
 	public static void rot (float[] mat, float[] vec){
@@ -1225,7 +1225,7 @@ public class Matrix4{
 	 * column major matrix as you can get from {@link Matrix4#val}. The vectors array is assumed to hold 3-component vectors.
 	 * Offset specifies the offset into the array where the x-component of the first vector is located. The numVecs parameter
 	 * specifies the number of vectors stored in the vectors array. The stride parameter specifies the number of floats between
-	 * subsequent vectors and must be >= 3. This is the same as Vector3#rot(Matrix4) applied to multiple vectors.
+	 * subsequent vectors and must be >= 3. This is the same as Vec3#rot(Matrix4) applied to multiple vectors.
 	 * 
 	 * @param mat the matrix
 	 * @param vecs the vectors
@@ -1257,7 +1257,7 @@ public class Matrix4{
 	 * glTranslate/glRotate/glScale
 	 * @param translation
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 translate (Vector3 translation) {
+	public Matrix4 translate (Vec3 translation) {
 		return translate(translation.x, translation.y, translation.z);
 	}
 
@@ -1295,7 +1295,7 @@ public class Matrix4{
 	 * @param axis The vector axis to rotate around.
 	 * @param degrees The angle in degrees.
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 rotate (Vector3 axis, float degrees) {
+	public Matrix4 rotate (Vec3 axis, float degrees) {
 		if (degrees == 0) return this;
 		quat.set(axis, degrees);
 		return rotate(quat);
@@ -1307,7 +1307,7 @@ public class Matrix4{
 	 * @param axis The vector axis to rotate around.
 	 * @param radians The angle in radians.
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 rotateRad (Vector3 axis, float radians) {
+	public Matrix4 rotateRad (Vec3 axis, float radians) {
 		if (radians == 0) return this;
 		quat.setFromAxisRad(axis, radians);
 		return rotate(quat);
@@ -1354,7 +1354,7 @@ public class Matrix4{
 	 * @param v1 The base vector
 	 * @param v2 The target vector
 	 * @return This matrix for the purpose of chaining methods together */
-	public Matrix4 rotate (final Vector3 v1, final Vector3 v2) {
+	public Matrix4 rotate (final Vec3 v1, final Vec3 v2) {
 		return rotate(quat.setFromCross(v1, v2));
 	}
 

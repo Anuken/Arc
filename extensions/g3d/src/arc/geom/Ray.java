@@ -8,9 +8,9 @@ import java.io.Serializable;
  */
 public class Ray implements Serializable{
     private static final long serialVersionUID = -620692054835390878L;
-    static Vector3 tmp = new Vector3();
-    public final Vector3 origin = new Vector3();
-    public final Vector3 direction = new Vector3();
+    static Vec3 tmp = new Vec3();
+    public final Vec3 origin = new Vec3();
+    public final Vec3 direction = new Vec3();
 
     public Ray(){
     }
@@ -20,7 +20,7 @@ public class Ray implements Serializable{
      * @param origin The starting position
      * @param direction The direction
      */
-    public Ray(Vector3 origin, Vector3 direction){
+    public Ray(Vec3 origin, Vec3 direction){
         this.origin.set(origin);
         this.direction.set(direction).nor();
     }
@@ -36,7 +36,7 @@ public class Ray implements Serializable{
      * @param distance The distance from the end point to the start point.
      * @return The out param
      */
-    public Vector3 getEndPoint(final Vector3 out, final float distance){
+    public Vec3 getEndPoint(final Vec3 out, final float distance){
         return out.set(direction).scl(distance).add(origin);
     }
 
@@ -51,7 +51,7 @@ public class Ray implements Serializable{
      * @param direction The direction
      * @return this ray for chaining
      */
-    public Ray set(Vector3 origin, Vector3 direction){
+    public Ray set(Vec3 origin, Vec3 direction){
         this.origin.set(origin);
         this.direction.set(direction);
         return this;

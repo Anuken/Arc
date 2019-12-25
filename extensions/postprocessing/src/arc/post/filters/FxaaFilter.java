@@ -1,6 +1,6 @@
 package arc.post.filters;
 
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 import arc.post.PostFilter;
 
 /**
@@ -8,20 +8,20 @@ import arc.post.PostFilter;
  * @author Toni Sagrista
  */
 public final class FxaaFilter extends PostFilter{
-    public Vector2 viewportInverse;
+    public Vec2 viewportInverse;
     public float reduceMin;
     public float reduceMul;
     public float spanMax;
 
     public FxaaFilter(int viewportWidth, int viewportHeight){
-        this(new Vector2(viewportWidth, viewportHeight), 1f / 128f, 1f / 8f, 8f);
+        this(new Vec2(viewportWidth, viewportHeight), 1f / 128f, 1f / 8f, 8f);
     }
 
     public FxaaFilter(int viewportWidth, int viewportHeight, float fxaa_reduce_min, float fxaa_reduce_mul, float fxaa_span_max){
-        this(new Vector2(viewportWidth, viewportHeight), fxaa_reduce_min, fxaa_reduce_mul, fxaa_span_max);
+        this(new Vec2(viewportWidth, viewportHeight), fxaa_reduce_min, fxaa_reduce_mul, fxaa_span_max);
     }
 
-    public FxaaFilter(Vector2 viewportSize, float fxaa_reduce_min, float fxaa_reduce_mul, float fxaa_span_max){
+    public FxaaFilter(Vec2 viewportSize, float fxaa_reduce_min, float fxaa_reduce_mul, float fxaa_span_max){
         super("fxaa");
         this.viewportInverse = viewportSize;
         this.viewportInverse.x = 1f / this.viewportInverse.x;

@@ -10,17 +10,17 @@ public class Segment implements Serializable{
     private static final long serialVersionUID = 2739667069736519602L;
 
     /** the starting position **/
-    public final Vector3 a = new Vector3();
+    public final Vec3 a = new Vec3();
 
     /** the ending position **/
-    public final Vector3 b = new Vector3();
+    public final Vec3 b = new Vec3();
 
     /**
      * Constructs a new Segment from the two points given.
      * @param a the first point
      * @param b the second point
      */
-    public Segment(Vector3 a, Vector3 b){
+    public Segment(Vec3 a, Vec3 b){
         this.a.set(a);
         this.b.set(b);
     }

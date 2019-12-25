@@ -1,6 +1,6 @@
 package arc.post.filters;
 
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 import arc.post.PostFilter;
 
 /**
@@ -8,13 +8,13 @@ import arc.post.PostFilter;
  * @author Toni Sagrista
  */
 public final class NfaaFilter extends PostFilter{
-    public Vector2 viewportInverse;
+    public Vec2 viewportInverse;
 
     public NfaaFilter(int viewportWidth, int viewportHeight){
-        this(new Vector2(viewportWidth, viewportHeight));
+        this(new Vec2(viewportWidth, viewportHeight));
     }
 
-    public NfaaFilter(Vector2 viewportSize){
+    public NfaaFilter(Vec2 viewportSize){
         super("nfaa");
         this.viewportInverse = viewportSize;
         this.viewportInverse.x = 1f / this.viewportInverse.x;

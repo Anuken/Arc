@@ -13,11 +13,11 @@ public class Camera3D{
     /** the viewport width and height **/
     public float width, height;
     /** the position of the camera **/
-    public final Vector3 position = new Vector3();
+    public final Vec3 position = new Vec3();
     /** the unit length direction vector of the camera **/
-    public final Vector3 direction = new Vector3(0, 0, -1);
+    public final Vec3 direction = new Vec3(0, 0, -1);
     /** the unit length up vector of the camera **/
-    public final Vector3 up = new Vector3(0, 1, 0);
+    public final Vec3 up = new Vec3(0, 1, 0);
 
     /** the combined projection and view matrix **/
     private final Matrix4 combined = new Matrix4();

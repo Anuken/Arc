@@ -9,25 +9,25 @@ import arc.math.geom.Ray;
 import java.util.*;
 
 public class Intersector3D{
-    private final static Vector3 v0 = new Vector3();
-    private final static Vector3 v1 = new Vector3();
-    private final static Vector3 v2 = new Vector3();
-    private final static Vector2 ip = new Vector2();
-    private final static Vector2 ep1 = new Vector2();
-    private final static Vector2 ep2 = new Vector2();
-    private final static Vector2 s = new Vector2();
-    private final static Vector2 e = new Vector2();
-    private static final Plane p = new Plane(new Vector3(), 0);
-    private static final Vector3 i = new Vector3();
-    private static final Vector3 dir = new Vector3();
-    private static final Vector3 start = new Vector3();
-    static Vector3 best = new Vector3();
-    static Vector3 tmp = new Vector3();
-    static Vector3 tmp1 = new Vector3();
-    static Vector3 tmp2 = new Vector3();
-    static Vector3 tmp3 = new Vector3();
-    static Vector2 v2tmp = new Vector2();
-    static Vector3 intersection = new Vector3();
+    private final static Vec3 v0 = new Vec3();
+    private final static Vec3 v1 = new Vec3();
+    private final static Vec3 v2 = new Vec3();
+    private final static Vec2 ip = new Vec2();
+    private final static Vec2 ep1 = new Vec2();
+    private final static Vec2 ep2 = new Vec2();
+    private final static Vec2 s = new Vec2();
+    private final static Vec2 e = new Vec2();
+    private static final Plane p = new Plane(new Vec3(), 0);
+    private static final Vec3 i = new Vec3();
+    private static final Vec3 dir = new Vec3();
+    private static final Vec3 start = new Vec3();
+    static Vec3 best = new Vec3();
+    static Vec3 tmp = new Vec3();
+    static Vec3 tmp1 = new Vec3();
+    static Vec3 tmp2 = new Vec3();
+    static Vec3 tmp3 = new Vec3();
+    static Vec2 v2tmp = new Vec2();
+    static Vec3 intersection = new Vec3();
 
     /**
      * Intersects a {@link Ray} and a {@link Plane}. The intersection point is stored in intersection in case an intersection is
@@ -37,7 +37,7 @@ public class Intersector3D{
      * @param intersection The vector the intersection point is written to (optional)
      * @return Whether an intersection is present.
      */
-    public static boolean intersectRayPlane(Ray ray, Plane plane, Vector3 intersection){
+    public static boolean intersectRayPlane(Ray ray, Plane plane, Vec3 intersection){
         float denom = ray.direction.dot(plane.getNormal());
         if(denom != 0){
             float t = -(ray.origin.dot(plane.getNormal()) + plane.getD()) / denom;
@@ -58,9 +58,9 @@ public class Intersector3D{
      * (point2 - point1) where t is the return value of this method.
      */
     public static float intersectLinePlane(float x, float y, float z, float x2, float y2, float z2, Plane plane,
-                                           Vector3 intersection){
-        Vector3 direction = tmp.set(x2, y2, z2).sub(x, y, z);
-        Vector3 origin = tmp2.set(x, y, z);
+                                           Vec3 intersection){
+        Vec3 direction = tmp.set(x2, y2, z2).sub(x, y, z);
+        Vec3 origin = tmp2.set(x, y, z);
         float denom = direction.dot(plane.getNormal());
         if(denom != 0){
             float t = -(origin.dot(plane.getNormal()) + plane.getD()) / denom;
@@ -83,11 +83,11 @@ public class Intersector3D{
      * @param intersection The intersection point (optional)
      * @return True in case an intersection is present.
      */
-    public static boolean intersectRayTriangle(Ray ray, Vector3 t1, Vector3 t2, Vector3 t3, Vector3 intersection){
-        Vector3 edge1 = v0.set(t2).sub(t1);
-        Vector3 edge2 = v1.set(t3).sub(t1);
+    public static boolean intersectRayTriangle(Ray ray, Vec3 t1, Vec3 t2, Vec3 t3, Vec3 intersection){
+        Vec3 edge1 = v0.set(t2).sub(t1);
+        Vec3 edge2 = v1.set(t3).sub(t1);
 
-        Vector3 pvec = v2.set(ray.direction).crs(edge2);
+        Vec3 pvec = v2.set(ray.direction).crs(edge2);
         float det = edge1.dot(pvec);
         if(Mathf.zero(det)){
             p.set(t1, t2, t3);
@@ -100,11 +100,11 @@ public class Intersector3D{
 
         det = 1.0f / det;
 
-        Vector3 tvec = i.set(ray.origin).sub(t1);
+        Vec3 tvec = i.set(ray.origin).sub(t1);
         float u = tvec.dot(pvec) * det;
         if(u < 0.0f || u > 1.0f) return false;
 
-        Vector3 qvec = tvec.crs(edge1);
+        Vec3 qvec = tvec.crs(edge1);
         float v = ray.direction.dot(qvec) * det;
         if(v < 0.0f || u + v > 1.0f) return false;
 
@@ -130,7 +130,7 @@ public class Intersector3D{
      * @param intersection The intersection point (optional, can be null)
      * @return Whether an intersection is present.
      */
-    public static boolean intersectRaySphere(Ray ray, Vector3 center, float radius, Vector3 intersection){
+    public static boolean intersectRaySphere(Ray ray, Vec3 center, float radius, Vec3 intersection){
         final float len = ray.direction.dot(center.x - ray.origin.x, center.y - ray.origin.y, center.z - ray.origin.z);
         if(len < 0.f) // behind the ray
             return false;
@@ -161,7 +161,7 @@ public class Intersector3D{
      * @param intersection The intersection point (optional)
      * @return Whether an intersection is present.
      */
-    public static boolean intersectRayBounds(Ray ray, BoundingBox box, Vector3 intersection){
+    public static boolean intersectRayBounds(Ray ray, BoundingBox box, Vec3 intersection){
         if(box.contains(ray.origin)){
             if(intersection != null) intersection.set(ray.origin);
             return true;
@@ -273,7 +273,7 @@ public class Intersector3D{
      * @param dimensions The dimensions (width, height and depth) of the bounding box
      * @return Whether the ray and the bounding box intersect.
      */
-    public static boolean intersectRayBoundsFast(Ray ray, Vector3 center, Vector3 dimensions){
+    public static boolean intersectRayBoundsFast(Ray ray, Vec3 center, Vec3 dimensions){
         final float divX = 1f / ray.direction.x;
         final float divY = 1f / ray.direction.y;
         final float divZ = 1f / ray.direction.z;
@@ -308,8 +308,8 @@ public class Intersector3D{
         return max >= 0 && max >= min;
     }
 
-    public static boolean intersectSegmentPlane(Vector3 start, Vector3 end, Plane plane, Vector3 intersection){
-        Vector3 dir = v0.set(end).sub(start);
+    public static boolean intersectSegmentPlane(Vec3 start, Vec3 end, Plane plane, Vec3 intersection){
+        Vec3 dir = v0.set(end).sub(start);
         float denom = dir.dot(plane.getNormal());
         if(denom == 0f) return false;
         float t = -(start.dot(plane.getNormal()) + plane.getD()) / denom;
@@ -326,7 +326,7 @@ public class Intersector3D{
      * @param intersection The nearest intersection point (optional)
      * @return Whether the ray and the triangles intersect.
      */
-    public static boolean intersectRayTriangles(Ray ray, float[] triangles, Vector3 intersection){
+    public static boolean intersectRayTriangles(Ray ray, float[] triangles, Vec3 intersection){
         float min_dist = Float.MAX_VALUE;
         boolean hit = false;
 
@@ -365,7 +365,7 @@ public class Intersector3D{
      * @return Whether the ray and the triangles intersect.
      */
     public static boolean intersectRayTriangles(Ray ray, float[] vertices, short[] indices, int vertexSize,
-                                                Vector3 intersection){
+                                                Vec3 intersection){
         float min_dist = Float.MAX_VALUE;
         boolean hit = false;
 
@@ -405,7 +405,7 @@ public class Intersector3D{
      * @param intersection The nearest intersection point (optional)
      * @return Whether the ray and the triangles intersect.
      */
-    public static boolean intersectRayTriangles(Ray ray, List<Vector3> triangles, Vector3 intersection){
+    public static boolean intersectRayTriangles(Ray ray, List<Vec3> triangles, Vec3 intersection){
         float min_dist = Float.MAX_VALUE;
         boolean hit = false;
 

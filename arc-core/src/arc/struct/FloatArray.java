@@ -72,8 +72,8 @@ public class FloatArray{
         return new FloatArray(array);
     }
 
-    /** Converts this float array to a vector2 array, with pairs used for coordinates.*/
-    public Array<Vec2> toVector2Array(){
+    /** Converts this float array to a Vec2 array, with pairs used for coordinates.*/
+    public Array<Vec2> toVec2Array(){
         Array<Vec2> out = new Array<>(size/2);
         for(int i = 0; i < size; i+= 2){
             out.add(new Vec2(items[i], items[i+1]));

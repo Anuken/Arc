@@ -12,7 +12,7 @@ public class Sphere implements Serializable{
     private static final long serialVersionUID = -6487336868908521596L;
     private static final float PI_4_3 = Mathf.PI * 4f / 3f;
     /** the center of the sphere **/
-    public final Vector3 center;
+    public final Vec3 center;
     /** the radius of the sphere **/
     public float radius;
 
@@ -21,8 +21,8 @@ public class Sphere implements Serializable{
      * @param center The center
      * @param radius The radius
      */
-    public Sphere(Vector3 center, float radius){
-        this.center = new Vector3(center);
+    public Sphere(Vec3 center, float radius){
+        this.center = new Vec3(center);
         this.radius = radius;
     }
 

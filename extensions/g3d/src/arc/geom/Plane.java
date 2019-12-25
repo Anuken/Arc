@@ -9,7 +9,7 @@ import java.io.*;
  * @author badlogicgames@gmail.com
  */
 public class Plane{
-    public final Vector3 normal = new Vector3();
+    public final Vec3 normal = new Vec3();
     public float d = 0;
     /**
      * Constructs a new plane with all values set to 0
@@ -23,7 +23,7 @@ public class Plane{
      * @param normal The plane normal
      * @param d The distance to the origin
      */
-    public Plane(Vector3 normal, float d){
+    public Plane(Vec3 normal, float d){
         this.normal.set(normal).nor();
         this.d = d;
     }
@@ -33,7 +33,7 @@ public class Plane{
      * @param normal The normal
      * @param point The point on the plane
      */
-    public Plane(Vector3 normal, Vector3 point){
+    public Plane(Vec3 normal, Vec3 point){
         this.normal.set(normal).nor();
         this.d = -this.normal.dot(point);
     }
@@ -45,7 +45,7 @@ public class Plane{
      * @param point2 The second point
      * @param point3 The third point
      */
-    public Plane(Vector3 point1, Vector3 point2, Vector3 point3){
+    public Plane(Vec3 point1, Vec3 point2, Vec3 point3){
         set(point1, point2, point3);
     }
 
@@ -53,7 +53,7 @@ public class Plane{
      * Sets the plane normal and distance to the origin based on the three given points which are considered to be on the plane.
      * The normal is calculated via a cross product between (point1-point2)x(point2-point3)
      */
-    public void set(Vector3 point1, Vector3 point2, Vector3 point3){
+    public void set(Vec3 point1, Vec3 point2, Vec3 point3){
         normal.set(point1).sub(point2).crs(point2.x - point3.x, point2.y - point3.y, point2.z - point3.z).nor();
         d = -point1.dot(normal);
     }
@@ -75,7 +75,7 @@ public class Plane{
      * @param point The point
      * @return the shortest signed distance between the plane and the point
      */
-    public float distance(Vector3 point){
+    public float distance(Vec3 point){
         return normal.dot(point) + d;
     }
 
@@ -85,7 +85,7 @@ public class Plane{
      * @param point The point
      * @return The side the point lies relative to the plane
      */
-    public PlaneSide testPoint(Vector3 point){
+    public PlaneSide testPoint(Vec3 point){
         float dist = normal.dot(point) + d;
 
         if(dist == 0)
@@ -118,13 +118,13 @@ public class Plane{
      * @param direction the direction
      * @return whether the plane is front facing
      */
-    public boolean isFrontFacing(Vector3 direction){
+    public boolean isFrontFacing(Vec3 direction){
         float dot = normal.dot(direction);
         return dot <= 0;
     }
 
     /** @return The normal */
-    public Vector3 getNormal(){
+    public Vec3 getNormal(){
         return normal;
     }
 
@@ -138,7 +138,7 @@ public class Plane{
      * @param point the point on the plane
      * @param normal the normal of the plane
      */
-    public void set(Vector3 point, Vector3 normal){
+    public void set(Vec3 point, Vec3 normal){
         this.normal.set(normal);
         d = -point.dot(normal);
     }
