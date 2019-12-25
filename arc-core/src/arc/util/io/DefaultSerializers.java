@@ -13,6 +13,7 @@ import java.io.IOException;
 @SuppressWarnings("unchecked")
 public class DefaultSerializers{
     public static StringMap typeMappings = new StringMap();
+    public static String[] typeReplacements = {"io.anuke."};
 
     public static void register(Settings settings){
         settings.setSerializer(IntArray.class, new TypeSerializer<IntArray>(){
@@ -229,6 +230,9 @@ public class DefaultSerializers{
     }
     
     private static Class<?> lookup(String name) throws ClassNotFoundException{
+        for(String replacement : typeReplacements){
+            name = name.replace(replacement, "");
+        }
         return Class.forName(typeMappings.get(name, name));
     }
 }
