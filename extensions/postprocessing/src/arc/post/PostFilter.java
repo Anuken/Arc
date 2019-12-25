@@ -1,6 +1,6 @@
-package io.anuke.arc.postprocessing;
+package arc.post;
 
-import io.anuke.arc.Core;
+import arc.*;
 import arc.graphics.Texture;
 import arc.graphics.gl.FrameBuffer;
 import arc.graphics.gl.Shader;

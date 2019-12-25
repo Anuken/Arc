@@ -1,5 +1,6 @@
 package arc.backend.teavm.emu;
 
+import arc.*;
 import arc.backend.teavm.plugin.Annotations.*;
 import arc.graphics.*;
 import arc.graphics.VertexAttributes.*;

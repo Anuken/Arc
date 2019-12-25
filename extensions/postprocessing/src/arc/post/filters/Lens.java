@@ -1,8 +1,8 @@
-package io.anuke.arc.postprocessing.filters;
+package arc.post.filters;
 
 import arc.graphics.Texture;
 import arc.math.geom.Vector2;
-import io.anuke.arc.postprocessing.PostFilter;
+import arc.post.PostFilter;
 
 public final class Lens extends PostFilter{
     public Vector2 viewportInverse;

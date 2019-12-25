@@ -1,7 +1,7 @@
-package io.anuke.arc.postprocessing.filters;
+package arc.post.filters;
 
 import arc.graphics.Texture;
-import io.anuke.arc.postprocessing.PostFilter;
+import arc.post.PostFilter;
 
 public class Vignetting extends PostFilter{
     public float x = 0.8f, y = 0.25f;

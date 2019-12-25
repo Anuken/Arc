@@ -1,6 +1,6 @@
-package io.anuke.arc.postprocessing.filters;
+package arc.post.filters;
 
-import io.anuke.arc.postprocessing.PostFilter;
+import arc.post.PostFilter;
 
 public final class RadialBlur extends PostFilter{
     public int blurLen;

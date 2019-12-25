@@ -1,12 +1,12 @@
-package io.anuke.arc.postprocessing.filters;
+package arc.post.filters;
 
-import io.anuke.arc.Core;
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.gl.FrameBuffer;
-import io.anuke.arc.postprocessing.PostEffect;
-import io.anuke.arc.postprocessing.PostProcessor;
-import io.anuke.arc.postprocessing.filters.Blur.BlurType;
-import io.anuke.arc.postprocessing.PingPongBuffer;
+import arc.post.PostEffect;
+import arc.post.PostProcessor;
+import arc.post.filters.Blur.BlurType;
+import arc.post.PingPongBuffer;
 
 public class BloomEffect extends PostEffect{
     private PingPongBuffer pingPongBuffer;

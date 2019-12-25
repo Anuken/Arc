@@ -1,7 +1,7 @@
-package io.anuke.arc.postprocessing.filters;
+package arc.post.filters;
 
 import arc.struct.IntMap;
-import io.anuke.arc.postprocessing.PingPongBuffer;
+import arc.post.PingPongBuffer;
 import arc.util.Disposable;
 
 public class Blur extends MultipassFilter implements Disposable{

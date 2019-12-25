@@ -1,6 +1,6 @@
-package io.anuke.arc.postprocessing;
+package arc.post;
 
-import io.anuke.arc.Core;
+import arc.*;
 import arc.struct.Array;
 import arc.graphics.Color;
 import arc.graphics.GL20;
@@ -11,9 +11,6 @@ import arc.util.Disposable;
 /**
  * Provides a way to capture the rendered scene to an off-screen buffer and to apply a chain of effects on it before rendering to
  * screen.
- * <p>
- * Effects can be added or removed via {@link #addEffect(PostEffect)} and {@link #removeEffect(PostEffect)}.
- * @author bmanuel
  */
 public final class PostProcessor implements Disposable{
     private static final Format format = Format.RGBA8888;
@@ -54,8 +51,7 @@ public final class PostProcessor implements Disposable{
     }
 
     /**
-     * Starts capturing the scene, clears the buffer with the clear color specified by {@link #setClearColor(Color)} or
-     * {@link #setClearColor(float r, float g, float b, float a)}.
+     * Starts capturing the scene, clears the buffer with the clear color.
      * @return true or false, whether or not capturing has been initiated. Capturing will fail in case there are no enabled effects
      * in the chain or this instance is not enabled or capturing is already started.
      */

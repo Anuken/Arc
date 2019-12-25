@@ -1,7 +1,7 @@
-package io.anuke.arc.postprocessing.filters;
+package arc.post.filters;
 
 import arc.graphics.Texture;
-import io.anuke.arc.postprocessing.PostFilter;
+import arc.post.PostFilter;
 
 public final class Combine extends PostFilter{
     public float baseIntensity = 1f, baseSaturation = 1f, effectIntensity = 1f, effectSaturation = 1f;

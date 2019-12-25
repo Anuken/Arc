@@ -1,6 +1,6 @@
-package io.anuke.arc.postprocessing.filters;
+package arc.post.filters;
 
-import io.anuke.arc.postprocessing.PingPongBuffer;
+import arc.post.PingPongBuffer;
 
 /**
  * The base class for any multi-pass filter. Usually a multi-pass filter will make use of one or more single-pass filters,

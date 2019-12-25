@@ -1,7 +1,7 @@
-package io.anuke.arc.postprocessing.filters;
+package arc.post.filters;
 
 import arc.math.geom.Vector2;
-import io.anuke.arc.postprocessing.PostFilter;
+import arc.post.PostFilter;
 
 /**
  * Fast approximate anti-aliasing filter.

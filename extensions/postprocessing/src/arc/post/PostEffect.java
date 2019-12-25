@@ -1,4 +1,4 @@
-package io.anuke.arc.postprocessing;
+package arc.post;
 
 import arc.graphics.gl.FrameBuffer;
 import arc.util.Disposable;

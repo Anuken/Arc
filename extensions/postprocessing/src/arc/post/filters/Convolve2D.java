@@ -1,6 +1,6 @@
-package io.anuke.arc.postprocessing.filters;
+package arc.post.filters;
 
-import io.anuke.arc.postprocessing.PingPongBuffer;
+import arc.post.PingPongBuffer;
 import arc.util.Disposable;
 
 /**

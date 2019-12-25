@@ -1,8 +1,8 @@
-package io.anuke.arc.postprocessing.filters;
+package arc.post.filters;
 
 import arc.graphics.Color;
 import arc.math.Mathf;
-import io.anuke.arc.postprocessing.PostFilter;
+import arc.post.PostFilter;
 
 public final class CrtScreen extends PostFilter{
     public float elapsedSecs, offset, zoom;

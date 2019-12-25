@@ -1,4 +1,4 @@
-package io.anuke.arc.postprocessing;
+package arc.post;
 
 import arc.graphics.Pixmap.Format;
 import arc.graphics.Texture;

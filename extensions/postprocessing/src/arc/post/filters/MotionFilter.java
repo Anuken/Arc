@@ -1,9 +1,9 @@
-package io.anuke.arc.postprocessing.filters;
+package arc.post.filters;
 
 import arc.graphics.Pixmap.Format;
 import arc.graphics.Texture;
 import arc.graphics.gl.FrameBuffer;
-import io.anuke.arc.postprocessing.PostFilter;
+import arc.post.PostFilter;
 
 public class MotionFilter extends PostFilter{
     public float blurOpacity = 0.5f;
