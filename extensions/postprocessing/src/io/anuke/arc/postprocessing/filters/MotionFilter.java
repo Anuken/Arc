@@ -1,8 +1,8 @@
 package io.anuke.arc.postprocessing.filters;
 
-import io.anuke.arc.graphics.Pixmap.Format;
-import io.anuke.arc.graphics.Texture;
-import io.anuke.arc.graphics.glutils.FrameBuffer;
+import arc.graphics.Pixmap.Format;
+import arc.graphics.Texture;
+import arc.graphics.gl.FrameBuffer;
 import io.anuke.arc.postprocessing.PostFilter;
 
 public class MotionFilter extends PostFilter{

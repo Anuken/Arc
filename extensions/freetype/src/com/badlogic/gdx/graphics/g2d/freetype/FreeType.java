@@ -1,15 +1,15 @@
 package com.badlogic.gdx.graphics.g2d.freetype;
 
-import io.anuke.arc.collection.LongMap;
-import io.anuke.arc.files.Fi;
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.graphics.Pixmap;
-import io.anuke.arc.graphics.Pixmap.Blending;
-import io.anuke.arc.graphics.Pixmap.Format;
-import io.anuke.arc.util.ArcRuntimeException;
-import io.anuke.arc.util.BufferUtils;
-import io.anuke.arc.util.Disposable;
-import io.anuke.arc.util.SharedLibraryLoader;
+import arc.struct.LongMap;
+import arc.files.Fi;
+import arc.graphics.Color;
+import arc.graphics.Pixmap;
+import arc.graphics.Pixmap.Blending;
+import arc.graphics.Pixmap.Format;
+import arc.util.ArcRuntimeException;
+import arc.util.BufferUtils;
+import arc.util.Disposable;
+import arc.util.SharedLibraryLoader;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;

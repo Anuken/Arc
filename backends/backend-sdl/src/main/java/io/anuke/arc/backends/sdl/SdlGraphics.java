@@ -1,12 +1,12 @@
 package io.anuke.arc.backends.sdl;
 
-import io.anuke.arc.*;
-import io.anuke.arc.Graphics.Cursor.*;
+import arc.*;
+import arc.Graphics.Cursor.*;
 import io.anuke.arc.backends.sdl.jni.SDL;
-import io.anuke.arc.collection.*;
-import io.anuke.arc.graphics.*;
-import io.anuke.arc.graphics.glutils.*;
-import io.anuke.arc.util.*;
+import arc.struct.*;
+import arc.graphics.*;
+import arc.graphics.gl.*;
+import arc.util.*;
 
 import static io.anuke.arc.backends.sdl.jni.SDL.*;
 

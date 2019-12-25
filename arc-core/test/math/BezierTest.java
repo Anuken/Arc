@@ -1,8 +1,8 @@
 package math;
 
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.math.geom.Bezier;
-import io.anuke.arc.math.geom.Vector2;
+import arc.struct.Array;
+import arc.math.geom.Bezier;
+import arc.math.geom.Vector2;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

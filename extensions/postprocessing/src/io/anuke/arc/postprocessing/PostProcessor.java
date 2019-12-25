@@ -1,12 +1,12 @@
 package io.anuke.arc.postprocessing;
 
 import io.anuke.arc.Core;
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.graphics.GL20;
-import io.anuke.arc.graphics.Pixmap.Format;
-import io.anuke.arc.graphics.glutils.FrameBuffer;
-import io.anuke.arc.util.Disposable;
+import arc.struct.Array;
+import arc.graphics.Color;
+import arc.graphics.GL20;
+import arc.graphics.Pixmap.Format;
+import arc.graphics.gl.FrameBuffer;
+import arc.util.Disposable;
 
 /**
  * Provides a way to capture the rendered scene to an off-screen buffer and to apply a chain of effects on it before rendering to

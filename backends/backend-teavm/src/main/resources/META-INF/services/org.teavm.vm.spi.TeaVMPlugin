@@ -1,1 +1,1 @@
-io.anuke.arc.backends.teavm.plugin.ArcTeaVMPlugin
+arc.backend.teavm.plugin.ArcTeaVMPlugin

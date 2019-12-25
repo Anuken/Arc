@@ -1,6 +1,6 @@
-import io.anuke.arc.collection.*;
-import io.anuke.arc.files.*;
-import io.anuke.arc.util.*;
+import arc.struct.*;
+import arc.files.*;
+import arc.util.*;
 
 public class Classgen{
 

@@ -1,7 +1,7 @@
 package io.anuke.arc.postprocessing;
 
-import io.anuke.arc.graphics.glutils.FrameBuffer;
-import io.anuke.arc.util.Disposable;
+import arc.graphics.gl.FrameBuffer;
+import arc.util.Disposable;
 
 /**
  * This interface defines the base class for the concrete implementation of post-processor effects. An effect is considered

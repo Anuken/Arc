@@ -1,8 +1,8 @@
 package io.anuke.arc.postprocessing;
 
-import io.anuke.arc.graphics.Pixmap.Format;
-import io.anuke.arc.graphics.Texture;
-import io.anuke.arc.graphics.glutils.FrameBuffer;
+import arc.graphics.Pixmap.Format;
+import arc.graphics.Texture;
+import arc.graphics.gl.FrameBuffer;
 
 /**
  * Encapsulates a framebuffer with the ability to ping-pong between two buffers.

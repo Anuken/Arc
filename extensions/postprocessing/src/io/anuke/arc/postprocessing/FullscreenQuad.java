@@ -1,11 +1,11 @@
 package io.anuke.arc.postprocessing;
 
-import io.anuke.arc.graphics.GL20;
-import io.anuke.arc.graphics.Mesh;
-import io.anuke.arc.graphics.Mesh.VertexDataType;
-import io.anuke.arc.graphics.VertexAttribute;
-import io.anuke.arc.graphics.VertexAttributes.Usage;
-import io.anuke.arc.graphics.glutils.Shader;
+import arc.graphics.GL20;
+import arc.graphics.Mesh;
+import arc.graphics.Mesh.VertexDataType;
+import arc.graphics.VertexAttribute;
+import arc.graphics.VertexAttributes.Usage;
+import arc.graphics.gl.Shader;
 
 /**
  * Encapsulates a fullscreen quad, geometry is aligned to the screen corners.

@@ -1,6 +1,6 @@
 package utils;
 
-import io.anuke.arc.collection.PooledLinkedList;
+import arc.struct.PooledLinkedList;
 import org.junit.Before;
 import org.junit.Test;
 

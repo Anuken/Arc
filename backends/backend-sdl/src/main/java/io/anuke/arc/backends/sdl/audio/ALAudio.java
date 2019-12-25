@@ -1,12 +1,12 @@
 package io.anuke.arc.backends.sdl.audio;
 
-import io.anuke.arc.*;
-import io.anuke.arc.audio.*;
-import io.anuke.arc.audio.mock.*;
-import io.anuke.arc.collection.*;
-import io.anuke.arc.files.*;
-import io.anuke.arc.math.*;
-import io.anuke.arc.util.*;
+import arc.*;
+import arc.audio.*;
+import arc.audio.mock.*;
+import arc.struct.*;
+import arc.files.*;
+import arc.math.*;
+import arc.util.*;
 
 import java.nio.*;
 

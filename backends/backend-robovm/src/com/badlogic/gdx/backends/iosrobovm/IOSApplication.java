@@ -2,12 +2,12 @@ package com.badlogic.gdx.backends.iosrobovm;
 
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
-import io.anuke.arc.Application;
-import io.anuke.arc.ApplicationListener;
-import io.anuke.arc.Core;
-import io.anuke.arc.Settings;
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.util.Log;
+import arc.Application;
+import arc.ApplicationListener;
+import arc.Core;
+import arc.Settings;
+import arc.struct.Array;
+import arc.util.Log;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.NSThread;
 import org.robovm.apple.foundation.NSURL;

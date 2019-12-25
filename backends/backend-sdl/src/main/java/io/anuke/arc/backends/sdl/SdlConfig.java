@@ -1,8 +1,8 @@
 package io.anuke.arc.backends.sdl;
 
-import io.anuke.arc.Files.*;
-import io.anuke.arc.graphics.*;
-import io.anuke.arc.graphics.glutils.*;
+import arc.Files.*;
+import arc.graphics.*;
+import arc.graphics.gl.*;
 
 public class SdlConfig{
     public boolean disableAudio = false;

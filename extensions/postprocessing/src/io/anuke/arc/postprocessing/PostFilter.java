@@ -1,10 +1,10 @@
 package io.anuke.arc.postprocessing;
 
 import io.anuke.arc.Core;
-import io.anuke.arc.graphics.Texture;
-import io.anuke.arc.graphics.glutils.FrameBuffer;
-import io.anuke.arc.graphics.glutils.Shader;
-import io.anuke.arc.util.Disposable;
+import arc.graphics.Texture;
+import arc.graphics.gl.FrameBuffer;
+import arc.graphics.gl.Shader;
+import arc.util.Disposable;
 
 /** The base class for any single-pass filter. */
 public abstract class PostFilter extends PostEffect implements Disposable{

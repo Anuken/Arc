@@ -1,6 +1,6 @@
 package utils;
 
-import io.anuke.arc.collection.Queue;
+import arc.struct.Queue;
 import org.junit.Assert;
 import org.junit.Test;
 

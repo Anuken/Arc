@@ -1,8 +1,8 @@
 package io.anuke.arc.postprocessing.filters;
 
 import io.anuke.arc.Core;
-import io.anuke.arc.graphics.*;
-import io.anuke.arc.graphics.glutils.FrameBuffer;
+import arc.graphics.*;
+import arc.graphics.gl.FrameBuffer;
 import io.anuke.arc.postprocessing.PostEffect;
 import io.anuke.arc.postprocessing.PostProcessor;
 import io.anuke.arc.postprocessing.filters.Blur.BlurType;
