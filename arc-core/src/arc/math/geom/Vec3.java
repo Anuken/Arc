@@ -3,18 +3,15 @@ package arc.math.geom;
 import arc.math.*;
 import arc.util.*;
 
-import java.io.*;
-
 /**
  * Encapsulates a 3D vector. Allows chaining operations by returning a reference to itself in all modification methods.
  * @author badlogicgames@gmail.com
  */
-public class Vector3 implements Serializable, Vector<Vector3>{
-    public final static Vector3 X = new Vector3(1, 0, 0);
-    public final static Vector3 Y = new Vector3(0, 1, 0);
-    public final static Vector3 Z = new Vector3(0, 0, 1);
-    public final static Vector3 Zero = new Vector3(0, 0, 0);
-    private static final long serialVersionUID = 3840054589595372522L;
+public class Vec3 implements Vector<Vec3>{
+    public final static Vec3 X = new Vec3(1, 0, 0);
+    public final static Vec3 Y = new Vec3(0, 1, 0);
+    public final static Vec3 Z = new Vec3(0, 0, 1);
+    public final static Vec3 Zero = new Vec3(0, 0, 0);
     private final static Matrix3 tmpMat = new Matrix3();
     /** the x-component of this vector **/
     public float x;
@@ -24,7 +21,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
     public float z;
 
     /** Constructs a vector at (0,0,0) */
-    public Vector3(){
+    public Vec3(){
     }
 
     /**
@@ -33,7 +30,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param y The y-component
      * @param z The z-component
      */
-    public Vector3(float x, float y, float z){
+    public Vec3(float x, float y, float z){
         this.set(x, y, z);
     }
 
@@ -41,7 +38,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * Creates a vector from the given vector
      * @param vector The vector
      */
-    public Vector3(final Vector3 vector){
+    public Vec3(final Vec3 vector){
         this.set(vector);
     }
 
@@ -49,7 +46,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * Creates a vector from the given array. The array must have at least 3 elements.
      * @param values The array
      */
-    public Vector3(final float[] values){
+    public Vec3(final float[] values){
         this.set(values[0], values[1], values[2]);
     }
 
@@ -58,7 +55,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param vector The vector
      * @param z The z-component
      */
-    public Vector3(final Vector2 vector, float z){
+    public Vec3(final Vec2 vector, float z){
         this.set(vector.x, vector.y, z);
     }
 
@@ -100,7 +97,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param z The z-component
      * @return this vector for chaining
      */
-    public Vector3 set(float x, float y, float z){
+    public Vec3 set(float x, float y, float z){
         this.x = x;
         this.y = y;
         this.z = z;
@@ -108,7 +105,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
     }
 
     @Override
-    public Vector3 set(final Vector3 vector){
+    public Vec3 set(final Vec3 vector){
         return this.set(vector.x, vector.y, vector.z);
     }
 
@@ -117,7 +114,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param values The array
      * @return this vector for chaining
      */
-    public Vector3 set(final float[] values){
+    public Vec3 set(final float[] values){
         return this.set(values[0], values[1], values[2]);
     }
 
@@ -127,7 +124,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param z The z-component
      * @return This vector for chaining
      */
-    public Vector3 set(final Vector2 vector, float z){
+    public Vec3 set(final Vec2 vector, float z){
         return this.set(vector.x, vector.y, z);
     }
 
@@ -137,7 +134,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param polarAngle The angle between z-axis in radians [0, pi]
      * @return This vector for chaining
      */
-    public Vector3 setFromSpherical(float azimuthalAngle, float polarAngle){
+    public Vec3 setFromSpherical(float azimuthalAngle, float polarAngle){
         float cosPolar = Mathf.cos(polarAngle);
         float sinPolar = Mathf.sin(polarAngle);
 
@@ -148,7 +145,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
     }
 
     @Override
-    public Vector3 setToRandomDirection(){
+    public Vec3 setToRandomDirection(){
         float u = Mathf.random();
         float v = Mathf.random();
 
@@ -159,12 +156,12 @@ public class Vector3 implements Serializable, Vector<Vector3>{
     }
 
     @Override
-    public Vector3 cpy(){
-        return new Vector3(this);
+    public Vec3 cpy(){
+        return new Vec3(this);
     }
 
     @Override
-    public Vector3 add(final Vector3 vector){
+    public Vec3 add(final Vec3 vector){
         return this.add(vector.x, vector.y, vector.z);
     }
 
@@ -175,7 +172,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param z The z-component of the other vector
      * @return This vector for chaining.
      */
-    public Vector3 add(float x, float y, float z){
+    public Vec3 add(float x, float y, float z){
         return this.set(this.x + x, this.y + y, this.z + z);
     }
 
@@ -184,12 +181,12 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param values The value
      * @return This vector for chaining
      */
-    public Vector3 add(float values){
+    public Vec3 add(float values){
         return this.set(this.x + values, this.y + values, this.z + values);
     }
 
     @Override
-    public Vector3 sub(final Vector3 a_vec){
+    public Vec3 sub(final Vec3 a_vec){
         return this.sub(a_vec.x, a_vec.y, a_vec.z);
     }
 
@@ -200,7 +197,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param z The z-component of the other vector
      * @return This vector for chaining
      */
-    public Vector3 sub(float x, float y, float z){
+    public Vec3 sub(float x, float y, float z){
         return this.set(this.x - x, this.y - y, this.z - z);
     }
 
@@ -209,17 +206,17 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param value The value
      * @return This vector for chaining
      */
-    public Vector3 sub(float value){
+    public Vec3 sub(float value){
         return this.set(this.x - value, this.y - value, this.z - value);
     }
 
     @Override
-    public Vector3 scl(float scalar){
+    public Vec3 scl(float scalar){
         return this.set(this.x * scalar, this.y * scalar, this.z * scalar);
     }
 
     @Override
-    public Vector3 scl(final Vector3 other){
+    public Vec3 scl(final Vec3 other){
         return this.set(x * other.x, y * other.y, z * other.z);
     }
 
@@ -230,12 +227,12 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param vz Z value
      * @return This vector for chaining
      */
-    public Vector3 scl(float vx, float vy, float vz){
+    public Vec3 scl(float vx, float vy, float vz){
         return this.set(this.x * vx, this.y * vy, this.z * vz);
     }
 
     @Override
-    public Vector3 mulAdd(Vector3 vec, float scalar){
+    public Vec3 mulAdd(Vec3 vec, float scalar){
         this.x += vec.x * scalar;
         this.y += vec.y * scalar;
         this.z += vec.z * scalar;
@@ -243,7 +240,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
     }
 
     @Override
-    public Vector3 mulAdd(Vector3 vec, Vector3 mulVec){
+    public Vec3 mulAdd(Vec3 vec, Vec3 mulVec){
         this.x += vec.x * mulVec.x;
         this.y += vec.y * mulVec.y;
         this.z += vec.z * mulVec.z;
@@ -264,12 +261,12 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param vector The other vector
      * @return Whether this and the other vector are equal
      */
-    public boolean idt(final Vector3 vector){
+    public boolean idt(final Vec3 vector){
         return x == vector.x && y == vector.y && z == vector.z;
     }
 
     @Override
-    public float dst(final Vector3 vector){
+    public float dst(final Vec3 vector){
         final float a = vector.x - x;
         final float b = vector.y - y;
         final float c = vector.z - z;
@@ -285,7 +282,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
     }
 
     @Override
-    public float dst2(Vector3 point){
+    public float dst2(Vec3 point){
         final float a = point.x - x;
         final float b = point.y - y;
         final float c = point.z - z;
@@ -307,14 +304,14 @@ public class Vector3 implements Serializable, Vector<Vector3>{
     }
 
     @Override
-    public Vector3 nor(){
+    public Vec3 nor(){
         final float len2 = this.len2();
         if(len2 == 0f || len2 == 1f) return this;
         return this.scl(1f / (float)Math.sqrt(len2));
     }
 
     @Override
-    public float dot(final Vector3 vector){
+    public float dot(final Vec3 vector){
         return x * vector.x + y * vector.y + z * vector.z;
     }
 
@@ -334,7 +331,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param vector The other vector
      * @return This vector for chaining
      */
-    public Vector3 crs(final Vector3 vector){
+    public Vec3 crs(final Vec3 vector){
         return this.set(y * vector.z - z * vector.y, z * vector.x - x * vector.z, x * vector.y - y * vector.x);
     }
 
@@ -345,7 +342,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param z The z-component of the other vector
      * @return This vector for chaining
      */
-    public Vector3 crs(float x, float y, float z){
+    public Vec3 crs(float x, float y, float z){
         return this.set(this.y * z - this.z * y, this.z * x - this.x * z, this.x * y - this.y * x);
     }
 
@@ -355,7 +352,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param matrix The matrix
      * @return This vector for chaining
      */
-    public Vector3 mul4x3(float[] matrix){
+    public Vec3 mul4x3(float[] matrix){
         return set(x * matrix[0] + y * matrix[3] + z * matrix[6] + matrix[9], x * matrix[1] + y * matrix[4] + z * matrix[7]
         + matrix[10], x * matrix[2] + y * matrix[5] + z * matrix[8] + matrix[11]);
     }
@@ -365,7 +362,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param matrix The matrix
      * @return This vector for chaining
      */
-    public Vector3 mul(Matrix3 matrix){
+    public Vec3 mul(Matrix3 matrix){
         final float[] l_mat = matrix.val;
         return set(x * l_mat[Matrix3.M00] + y * l_mat[Matrix3.M01] + z * l_mat[Matrix3.M02], x * l_mat[Matrix3.M10] + y
         * l_mat[Matrix3.M11] + z * l_mat[Matrix3.M12], x * l_mat[Matrix3.M20] + y * l_mat[Matrix3.M21] + z * l_mat[Matrix3.M22]);
@@ -376,7 +373,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param matrix The matrix
      * @return This vector for chaining
      */
-    public Vector3 traMul(Matrix3 matrix){
+    public Vec3 traMul(Matrix3 matrix){
         final float[] l_mat = matrix.val;
         return set(x * l_mat[Matrix3.M00] + y * l_mat[Matrix3.M10] + z * l_mat[Matrix3.M20], x * l_mat[Matrix3.M01] + y
         * l_mat[Matrix3.M11] + z * l_mat[Matrix3.M21], x * l_mat[Matrix3.M02] + y * l_mat[Matrix3.M12] + z * l_mat[Matrix3.M22]);
@@ -388,7 +385,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param degrees the angle in degrees
      * @return This vector for chaining
      */
-    public Vector3 rotate(final Vector3 axis, float degrees){
+    public Vec3 rotate(final Vec3 axis, float degrees){
         tmpMat.setToRotation(axis, degrees);
         return this.mul(tmpMat);
     }
@@ -414,57 +411,57 @@ public class Vector3 implements Serializable, Vector<Vector3>{
     }
 
     @Override
-    public boolean isOnLine(Vector3 other, float epsilon){
+    public boolean isOnLine(Vec3 other, float epsilon){
         return len2(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x) <= epsilon;
     }
 
     @Override
-    public boolean isOnLine(Vector3 other){
+    public boolean isOnLine(Vec3 other){
         return len2(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x) <= Mathf.FLOAT_ROUNDING_ERROR;
     }
 
     @Override
-    public boolean isCollinear(Vector3 other, float epsilon){
+    public boolean isCollinear(Vec3 other, float epsilon){
         return isOnLine(other, epsilon) && hasSameDirection(other);
     }
 
     @Override
-    public boolean isCollinear(Vector3 other){
+    public boolean isCollinear(Vec3 other){
         return isOnLine(other) && hasSameDirection(other);
     }
 
     @Override
-    public boolean isCollinearOpposite(Vector3 other, float epsilon){
+    public boolean isCollinearOpposite(Vec3 other, float epsilon){
         return isOnLine(other, epsilon) && hasOppositeDirection(other);
     }
 
     @Override
-    public boolean isCollinearOpposite(Vector3 other){
+    public boolean isCollinearOpposite(Vec3 other){
         return isOnLine(other) && hasOppositeDirection(other);
     }
 
     @Override
-    public boolean isPerpendicular(Vector3 vector){
+    public boolean isPerpendicular(Vec3 vector){
         return Mathf.zero(dot(vector));
     }
 
     @Override
-    public boolean isPerpendicular(Vector3 vector, float epsilon){
+    public boolean isPerpendicular(Vec3 vector, float epsilon){
         return Mathf.zero(dot(vector), epsilon);
     }
 
     @Override
-    public boolean hasSameDirection(Vector3 vector){
+    public boolean hasSameDirection(Vec3 vector){
         return dot(vector) > 0;
     }
 
     @Override
-    public boolean hasOppositeDirection(Vector3 vector){
+    public boolean hasOppositeDirection(Vec3 vector){
         return dot(vector) < 0;
     }
 
     @Override
-    public Vector3 lerp(final Vector3 target, float alpha){
+    public Vec3 lerp(final Vec3 target, float alpha){
         x += alpha * (target.x - x);
         y += alpha * (target.y - y);
         z += alpha * (target.z - z);
@@ -472,7 +469,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
     }
 
     @Override
-    public Vector3 interpolate(Vector3 target, float alpha, Interpolation interpolator){
+    public Vec3 interpolate(Vec3 target, float alpha, Interpolation interpolator){
         return lerp(target, interpolator.apply(0f, 1f, alpha));
     }
 
@@ -483,7 +480,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param alpha The interpolation coefficient
      * @return This vector for chaining.
      */
-    public Vector3 slerp(final Vector3 target, float alpha){
+    public Vec3 slerp(final Vec3 target, float alpha){
         final float dot = dot(target);
         // If the inputs are too close for comfort, simply linearly interpolate.
         if(dot > 0.9995 || dot < -0.9995) return lerp(target, alpha);
@@ -504,7 +501,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
     }
 
     /**
-     * Converts this {@code Vector3} to a string in the format {@code (x,y,z)}.
+     * Converts this {@code Vec3} to a string in the format {@code (x,y,z)}.
      * @return a string representation of this object.
      */
     @Override
@@ -513,11 +510,11 @@ public class Vector3 implements Serializable, Vector<Vector3>{
     }
 
     /**
-     * Sets this {@code Vector3} to the value represented by the specified string according to the format of {@link #toString()}.
+     * Sets this {@code Vec3} to the value represented by the specified string according to the format of {@link #toString()}.
      * @param v the string.
      * @return this vector for chaining
      */
-    public Vector3 fromString(String v){
+    public Vec3 fromString(String v){
         int s0 = v.indexOf(',', 1);
         int s1 = v.indexOf(',', s0 + 1);
         if(s0 != -1 && s1 != -1 && v.charAt(0) == '(' && v.charAt(v.length() - 1) == ')'){
@@ -530,16 +527,16 @@ public class Vector3 implements Serializable, Vector<Vector3>{
                 // Throw a ArcRuntimeException
             }
         }
-        throw new ArcRuntimeException("Malformed Vector3: " + v);
+        throw new ArcRuntimeException("Malformed Vec3: " + v);
     }
 
     @Override
-    public Vector3 limit(float limit){
+    public Vec3 limit(float limit){
         return limit2(limit * limit);
     }
 
     @Override
-    public Vector3 limit2(float limit2){
+    public Vec3 limit2(float limit2){
         float len2 = len2();
         if(len2 > limit2){
             scl((float)Math.sqrt(limit2 / len2));
@@ -548,18 +545,18 @@ public class Vector3 implements Serializable, Vector<Vector3>{
     }
 
     @Override
-    public Vector3 setLength(float len){
+    public Vec3 setLength(float len){
         return setLength2(len * len);
     }
 
     @Override
-    public Vector3 setLength2(float len2){
+    public Vec3 setLength2(float len2){
         float oldLen2 = len2();
         return (oldLen2 == 0 || oldLen2 == len2) ? this : scl((float)Math.sqrt(len2 / oldLen2));
     }
 
     @Override
-    public Vector3 clamp(float min, float max){
+    public Vec3 clamp(float min, float max){
         final float len2 = len2();
         if(len2 == 0f) return this;
         float max2 = max * max;
@@ -584,14 +581,14 @@ public class Vector3 implements Serializable, Vector<Vector3>{
         if(this == obj) return true;
         if(obj == null) return false;
         if(getClass() != obj.getClass()) return false;
-        Vector3 other = (Vector3)obj;
+        Vec3 other = (Vec3)obj;
         if(Float.floatToIntBits(x) != Float.floatToIntBits(other.x)) return false;
         if(Float.floatToIntBits(y) != Float.floatToIntBits(other.y)) return false;
         return Float.floatToIntBits(z) == Float.floatToIntBits(other.z);
     }
 
     @Override
-    public boolean epsilonEquals(final Vector3 other, float epsilon){
+    public boolean epsilonEquals(final Vec3 other, float epsilon){
         if(other == null) return false;
         if(Math.abs(other.x - x) > epsilon) return false;
         if(Math.abs(other.y - y) > epsilon) return false;
@@ -613,7 +610,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
      * @param other other vector to compare
      * @return true if vector are equal, otherwise false
      */
-    public boolean epsilonEquals(final Vector3 other){
+    public boolean epsilonEquals(final Vec3 other){
         return epsilonEquals(other, Mathf.FLOAT_ROUNDING_ERROR);
     }
 
@@ -629,7 +626,7 @@ public class Vector3 implements Serializable, Vector<Vector3>{
     }
 
     @Override
-    public Vector3 setZero(){
+    public Vec3 setZero(){
         this.x = 0;
         this.y = 0;
         this.z = 0;
