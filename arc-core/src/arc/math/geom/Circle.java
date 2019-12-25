@@ -30,11 +30,11 @@ public class Circle implements Serializable, Shape2D{
     }
 
     /**
-     * Constructs a new circle using a given {@link Vector2} that contains the desired X and Y coordinates, and a given radius.
-     * @param position The position {@link Vector2}.
+     * Constructs a new circle using a given {@link Vec2} that contains the desired X and Y coordinates, and a given radius.
+     * @param position The position {@link Vec2}.
      * @param radius The radius
      */
-    public Circle(Vector2 position, float radius){
+    public Circle(Vec2 position, float radius){
         this.x = position.x;
         this.y = position.y;
         this.radius = radius;
@@ -55,7 +55,7 @@ public class Circle implements Serializable, Shape2D{
      * @param center The center of the new circle
      * @param edge Any point on the edge of the given circle
      */
-    public Circle(Vector2 center, Vector2 edge){
+    public Circle(Vec2 center, Vec2 edge){
         this.x = center.x;
         this.y = center.y;
         this.radius = Mathf.len(center.x - edge.x, center.y - edge.y);
@@ -76,10 +76,10 @@ public class Circle implements Serializable, Shape2D{
 
     /**
      * Sets a new location and radius for this circle.
-     * @param position Position {@link Vector2} for this circle.
+     * @param position Position {@link Vec2} for this circle.
      * @param radius Circle radius
      */
-    public Circle set(Vector2 position, float radius){
+    public Circle set(Vec2 position, float radius){
         this.x = position.x;
         this.y = position.y;
         this.radius = radius;
@@ -102,7 +102,7 @@ public class Circle implements Serializable, Shape2D{
      * @param center The new center of the circle
      * @param edge Any point on the edge of the given circle
      */
-    public Circle set(Vector2 center, Vector2 edge){
+    public Circle set(Vec2 center, Vec2 edge){
         this.x = center.x;
         this.y = center.y;
         this.radius = Mathf.len(center.x - edge.x, center.y - edge.y);
@@ -113,7 +113,7 @@ public class Circle implements Serializable, Shape2D{
      * Sets the x and y-coordinates of circle center from vector
      * @param position The position vector
      */
-    public Circle setPosition(Vector2 position){
+    public Circle setPosition(Vec2 position){
         this.x = position.x;
         this.y = position.y;
         return this;
@@ -168,10 +168,10 @@ public class Circle implements Serializable, Shape2D{
 
     /**
      * Checks whether or not this circle contains a given point.
-     * @param point The {@link Vector2} that contains the point coordinates.
+     * @param point The {@link Vec2} that contains the point coordinates.
      * @return true if this circle contains this point; false otherwise.
      */
-    public boolean contains(Vector2 point){
+    public boolean contains(Vec2 point){
         float dx = x - point.x;
         float dy = y - point.y;
         return dx * dx + dy * dy <= radius * radius;

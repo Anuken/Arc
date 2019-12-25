@@ -50,14 +50,14 @@ public class Ellipse implements Serializable, Shape2D{
      * @param width the width of the ellipse
      * @param height the height of the ellipse
      */
-    public Ellipse(Vector2 position, float width, float height){
+    public Ellipse(Vec2 position, float width, float height){
         this.x = position.x;
         this.y = position.y;
         this.width = width;
         this.height = height;
     }
 
-    public Ellipse(Vector2 position, Vector2 size){
+    public Ellipse(Vec2 position, Vec2 size){
         this.x = position.x;
         this.y = position.y;
         this.width = size.x;
@@ -94,7 +94,7 @@ public class Ellipse implements Serializable, Shape2D{
      * @param point Position vector
      * @return true if this ellipse contains the given point; false otherwise.
      */
-    public boolean contains(Vector2 point){
+    public boolean contains(Vec2 point){
         return contains(point.x, point.y);
     }
 
@@ -130,7 +130,7 @@ public class Ellipse implements Serializable, Shape2D{
         this.height = circle.radius * 2f;
     }
 
-    public void set(Vector2 position, Vector2 size){
+    public void set(Vec2 position, Vec2 size){
         this.x = position.x;
         this.y = position.y;
         this.width = size.x;
@@ -138,11 +138,11 @@ public class Ellipse implements Serializable, Shape2D{
     }
 
     /**
-     * Sets the x and y-coordinates of ellipse center from a {@link Vector2}.
+     * Sets the x and y-coordinates of ellipse center from a {@link Vec2}.
      * @param position The position vector
      * @return this ellipse for chaining
      */
-    public Ellipse setPosition(Vector2 position){
+    public Ellipse setPosition(Vec2 position){
         this.x = position.x;
         this.y = position.y;
 

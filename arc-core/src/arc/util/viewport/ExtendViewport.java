@@ -1,7 +1,7 @@
 package arc.util.viewport;
 
 import arc.graphics.Camera;
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 import arc.util.Scaling;
 
 /**
@@ -50,7 +50,7 @@ public class ExtendViewport extends Viewport{
         // Fit min size to the screen.
         float worldWidth = minWorldWidth;
         float worldHeight = minWorldHeight;
-        Vector2 scaled = Scaling.fit.apply(worldWidth, worldHeight, screenWidth, screenHeight);
+        Vec2 scaled = Scaling.fit.apply(worldWidth, worldHeight, screenWidth, screenHeight);
 
         // Extend in the short direction.
         int viewportWidth = Math.round(scaled.x);

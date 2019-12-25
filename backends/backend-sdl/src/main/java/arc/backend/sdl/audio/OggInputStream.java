@@ -20,7 +20,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.anuke.arc.backends.sdl.audio;
+package arc.backend.sdl.audio;
 
 import com.jcraft.jogg.*;
 import com.jcraft.jorbis.*;

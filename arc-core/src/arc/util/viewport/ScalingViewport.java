@@ -1,7 +1,7 @@
 package arc.util.viewport;
 
 import arc.graphics.Camera;
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 import arc.util.Scaling;
 
 /**
@@ -36,7 +36,7 @@ public class ScalingViewport extends Viewport{
 
     @Override
     public void update(int screenWidth, int screenHeight, boolean centerCamera){
-        Vector2 scaled = scaling.apply(getWorldWidth(), getWorldHeight(), screenWidth, screenHeight);
+        Vec2 scaled = scaling.apply(getWorldWidth(), getWorldHeight(), screenWidth, screenHeight);
         int viewportWidth = Math.round(scaled.x);
         int viewportHeight = Math.round(scaled.y);
 

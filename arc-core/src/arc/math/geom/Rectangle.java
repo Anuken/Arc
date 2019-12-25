@@ -131,10 +131,10 @@ public class Rectangle implements Serializable, Shape2D{
     }
 
     /**
-     * return the Vector2 with coordinates of this rectangle
-     * @param position The Vector2
+     * return the Vec2 with coordinates of this rectangle
+     * @param position The Vec2
      */
-    public Vector2 getPosition(Vector2 position){
+    public Vec2 getPosition(Vec2 position){
         return position.set(x, y);
     }
 
@@ -143,7 +143,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param position The position vector
      * @return this rectangle for chaining
      */
-    public Rectangle setPosition(Vector2 position){
+    public Rectangle setPosition(Vec2 position){
         this.x = position.x;
         this.y = position.y;
 
@@ -189,10 +189,10 @@ public class Rectangle implements Serializable, Shape2D{
     }
 
     /**
-     * @param size The Vector2
-     * @return the Vector2 with size of this rectangle
+     * @param size The Vec2
+     * @return the Vec2 with size of this rectangle
      */
-    public Vector2 getSize(Vector2 size){
+    public Vec2 getSize(Vec2 size){
         return size.set(width, height);
     }
 
@@ -209,7 +209,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param point The coordinates vector
      * @return whether the point is contained in the rectangle
      */
-    public boolean contains(Vector2 point){
+    public boolean contains(Vec2 point){
         return contains(point.x, point.y);
     }
 
@@ -322,7 +322,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param vec the vector describing the point
      * @return this rectangle for chaining
      */
-    public Rectangle merge(Vector2 vec){
+    public Rectangle merge(Vec2 vec){
         return merge(vec.x, vec.y);
     }
 
@@ -331,13 +331,13 @@ public class Rectangle implements Serializable, Shape2D{
      * @param vecs the vectors describing the points
      * @return this rectangle for chaining
      */
-    public Rectangle merge(Vector2[] vecs){
+    public Rectangle merge(Vec2[] vecs){
         float minX = x;
         float maxX = x + width;
         float minY = y;
         float maxY = y + height;
         for(int i = 0; i < vecs.length; ++i){
-            Vector2 v = vecs[i];
+            Vec2 v = vecs[i];
             minX = Math.min(minX, v.x);
             maxX = Math.max(maxX, v.x);
             minY = Math.min(minY, v.y);
@@ -359,11 +359,11 @@ public class Rectangle implements Serializable, Shape2D{
     }
 
     /**
-     * Calculates the center of the rectangle. Results are located in the given Vector2
-     * @param vector the Vector2 to use
+     * Calculates the center of the rectangle. Results are located in the given Vec2
+     * @param vector the Vec2 to use
      * @return the given vector with results stored inside
      */
-    public Vector2 getCenter(Vector2 vector){
+    public Vec2 getCenter(Vec2 vector){
         vector.x = x + width / 2;
         vector.y = y + height / 2;
         return vector;
@@ -385,7 +385,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param position the position
      * @return this for chaining
      */
-    public Rectangle setCenter(Vector2 position){
+    public Rectangle setCenter(Vec2 position){
         setPosition(position.x - width / 2, position.y - height / 2);
         return this;
     }

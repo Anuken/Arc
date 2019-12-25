@@ -4,9 +4,9 @@ import arc.math.Mathf;
 
 /** @author xSke */
 public class Spring2D{
-    public Vector2 value = new Vector2();
-    public Vector2 target = new Vector2();
-    public Vector2 velocity = new Vector2();
+    public Vec2 value = new Vec2();
+    public Vec2 target = new Vec2();
+    public Vec2 velocity = new Vec2();
 
     public float damping;
     public float frequency;

@@ -1,6 +1,6 @@
 package arc.math;
 
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 import arc.util.ArcRuntimeException;
 
 import java.io.Serializable;
@@ -99,7 +99,7 @@ public final class Affine2 implements Serializable{
      * @param trn The translation vector.
      * @return This matrix for the purpose of chaining operations.
      */
-    public Affine2 setToTranslation(Vector2 trn){
+    public Affine2 setToTranslation(Vec2 trn){
         return setToTranslation(trn.x, trn.y);
     }
 
@@ -124,7 +124,7 @@ public final class Affine2 implements Serializable{
      * @param scale The scale vector.
      * @return This matrix for the purpose of chaining operations.
      */
-    public Affine2 setToScaling(Vector2 scale){
+    public Affine2 setToScaling(Vec2 scale){
         return setToScaling(scale.x, scale.y);
     }
 
@@ -201,7 +201,7 @@ public final class Affine2 implements Serializable{
      * @param shear The shear vector.
      * @return This matrix for the purpose of chaining operations.
      */
-    public Affine2 setToShearing(Vector2 shear){
+    public Affine2 setToShearing(Vec2 shear){
         return setToShearing(shear.x, shear.y);
     }
 
@@ -244,7 +244,7 @@ public final class Affine2 implements Serializable{
      * @param scale The scale vector.
      * @return This matrix for the purpose of chaining operations.
      */
-    public Affine2 setToTrnRotScl(Vector2 trn, float degrees, Vector2 scale){
+    public Affine2 setToTrnRotScl(Vec2 trn, float degrees, Vec2 scale){
         return setToTrnRotScl(trn.x, trn.y, degrees, scale.x, scale.y);
     }
 
@@ -287,7 +287,7 @@ public final class Affine2 implements Serializable{
      * @param scale The scale vector.
      * @return This matrix for the purpose of chaining operations.
      */
-    public Affine2 setToTrnRotRadScl(Vector2 trn, float radians, Vector2 scale){
+    public Affine2 setToTrnRotRadScl(Vec2 trn, float radians, Vec2 scale){
         return setToTrnRotRadScl(trn.x, trn.y, radians, scale.x, scale.y);
     }
 
@@ -317,7 +317,7 @@ public final class Affine2 implements Serializable{
      * @param scale The scale vector.
      * @return This matrix for the purpose of chaining operations.
      */
-    public Affine2 setToTrnScl(Vector2 trn, Vector2 scale){
+    public Affine2 setToTrnScl(Vec2 trn, Vec2 scale){
         return setToTrnScl(trn.x, trn.y, scale.x, scale.y);
     }
 
@@ -433,7 +433,7 @@ public final class Affine2 implements Serializable{
      * @param trn The translation vector.
      * @return This matrix for the purpose of chaining.
      */
-    public Affine2 translate(Vector2 trn){
+    public Affine2 translate(Vec2 trn){
         return translate(trn.x, trn.y);
     }
 
@@ -454,7 +454,7 @@ public final class Affine2 implements Serializable{
      * @param trn The translation vector.
      * @return This matrix for the purpose of chaining.
      */
-    public Affine2 preTranslate(Vector2 trn){
+    public Affine2 preTranslate(Vec2 trn){
         return preTranslate(trn.x, trn.y);
     }
 
@@ -477,7 +477,7 @@ public final class Affine2 implements Serializable{
      * @param scale The scale vector.
      * @return This matrix for the purpose of chaining.
      */
-    public Affine2 scale(Vector2 scale){
+    public Affine2 scale(Vec2 scale){
         return scale(scale.x, scale.y);
     }
 
@@ -502,7 +502,7 @@ public final class Affine2 implements Serializable{
      * @param scale The scale vector.
      * @return This matrix for the purpose of chaining.
      */
-    public Affine2 preScale(Vector2 scale){
+    public Affine2 preScale(Vec2 scale){
         return preScale(scale.x, scale.y);
     }
 
@@ -630,7 +630,7 @@ public final class Affine2 implements Serializable{
      * @param shear The shear vector.
      * @return This matrix for the purpose of chaining.
      */
-    public Affine2 shear(Vector2 shear){
+    public Affine2 shear(Vec2 shear){
         return shear(shear.x, shear.y);
     }
 
@@ -662,7 +662,7 @@ public final class Affine2 implements Serializable{
      * @param shear The shear vector.
      * @return This matrix for the purpose of chaining.
      */
-    public Affine2 preShear(Vector2 shear){
+    public Affine2 preShear(Vec2 shear){
         return preShear(shear.x, shear.y);
     }
 
@@ -679,7 +679,7 @@ public final class Affine2 implements Serializable{
      * @param position Output vector.
      * @return Filled position.
      */
-    public Vector2 getTranslation(Vector2 position){
+    public Vec2 getTranslation(Vec2 position){
         position.x = m02;
         position.y = m12;
         return position;
@@ -702,7 +702,7 @@ public final class Affine2 implements Serializable{
     }
 
     /** Applies the affine transformation on a vector. */
-    public void applyTo(Vector2 point){
+    public void applyTo(Vec2 point){
         float x = point.x;
         float y = point.y;
         point.x = m00 * x + m01 * y + m02;

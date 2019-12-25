@@ -4,7 +4,7 @@ import arc.math.Interpolation;
 
 /**
  * Encapsulates a general vector. Allows chaining operations by returning a reference to itself in all modification methods. See
- * {@link Vector2} and {@link Vector3} for specific implementations.
+ * {@link Vec2} and {@link Vec3} for specific implementations.
  * @author Xoppa
  */
 public interface Vector<T extends Vector<T>>{

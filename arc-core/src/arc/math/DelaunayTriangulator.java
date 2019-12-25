@@ -6,7 +6,7 @@ import arc.struct.IntArray;
 import arc.struct.ShortArray;
 import arc.math.geom.Geometry;
 import arc.math.geom.Intersector;
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 
 /**
  * Delaunay triangulation. Adapted from Paul Bourke's triangulate: http://paulbourke.net/papers/triangulate/
@@ -24,7 +24,7 @@ public class DelaunayTriangulator{
     private final IntArray edges = new IntArray();
     private final BooleanArray complete = new BooleanArray(false, 16);
     private final float[] superTriangle = new float[6];
-    private final Vector2 centroid = new Vector2();
+    private final Vec2 centroid = new Vec2();
     private float[] sortedPoints;
 
     /** @see #computeTriangles(float[], int, int, boolean) */

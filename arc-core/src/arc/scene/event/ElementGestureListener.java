@@ -3,7 +3,7 @@ package arc.scene.event;
 import arc.input.GestureDetector;
 import arc.input.GestureDetector.GestureListener;
 import arc.input.KeyCode;
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 import arc.scene.Element;
 
 /**
@@ -13,7 +13,7 @@ import arc.scene.Element;
  * @see GestureDetector
  */
 public class ElementGestureListener implements EventListener{
-    static final Vector2 tmpCoords = new Vector2(), tmpCoords2 = new Vector2();
+    static final Vec2 tmpCoords = new Vec2(), tmpCoords2 = new Vec2();
 
     private final GestureDetector detector;
     InputEvent event;
@@ -27,8 +27,8 @@ public class ElementGestureListener implements EventListener{
     /** @see GestureDetector#GestureDetector(float, float, float, float, arc.input.GestureDetector.GestureListener) */
     public ElementGestureListener(float halfTapSquareSize, float tapCountInterval, float longPressDuration, float maxFlingDelay){
         detector = new GestureDetector(halfTapSquareSize, tapCountInterval, longPressDuration, maxFlingDelay, new GestureListener(){
-            private final Vector2 initialPointer1 = new Vector2(), initialPointer2 = new Vector2();
-            private final Vector2 pointer1 = new Vector2(), pointer2 = new Vector2();
+            private final Vec2 initialPointer1 = new Vec2(), initialPointer2 = new Vec2();
+            private final Vec2 pointer1 = new Vec2(), pointer2 = new Vec2();
 
             @Override
             public boolean tap(float stageX, float stageY, int count, KeyCode button){
@@ -67,8 +67,8 @@ public class ElementGestureListener implements EventListener{
             }
 
             @Override
-            public boolean pinch(Vector2 stageInitialPointer1, Vector2 stageInitialPointer2, Vector2 stagePointer1,
-                                 Vector2 stagePointer2){
+            public boolean pinch(Vec2 stageInitialPointer1, Vec2 stageInitialPointer2, Vec2 stagePointer1,
+                                 Vec2 stagePointer2){
                 actor.stageToLocalCoordinates(initialPointer1.set(stageInitialPointer1));
                 actor.stageToLocalCoordinates(initialPointer2.set(stageInitialPointer2));
                 actor.stageToLocalCoordinates(pointer1.set(stagePointer1));
@@ -77,7 +77,7 @@ public class ElementGestureListener implements EventListener{
                 return true;
             }
 
-            private void stageToLocalAmount(Vector2 amount){
+            private void stageToLocalAmount(Vec2 amount){
                 actor.stageToLocalCoordinates(amount);
                 amount.sub(actor.stageToLocalCoordinates(tmpCoords2.set(0, 0)));
             }
@@ -140,7 +140,7 @@ public class ElementGestureListener implements EventListener{
     public void zoom(InputEvent event, float initialDistance, float distance){
     }
 
-    public void pinch(InputEvent event, Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2){
+    public void pinch(InputEvent event, Vec2 initialPointer1, Vec2 initialPointer2, Vec2 pointer1, Vec2 pointer2){
     }
 
     public GestureDetector getGestureDetector(){

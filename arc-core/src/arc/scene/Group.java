@@ -1,5 +1,6 @@
 package arc.scene;
 
+import arc.math.geom.*;
 import arc.struct.Array;
 import arc.struct.SnapshotArray;
 import arc.func.Cons;
@@ -7,8 +8,7 @@ import arc.func.Boolf;
 import arc.graphics.g2d.Draw;
 import arc.math.Affine2;
 import arc.math.Matrix3;
-import arc.math.geom.Rectangle;
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 import arc.scene.event.Touchable;
 import arc.scene.style.*;
 import arc.scene.ui.layout.Table;
@@ -24,7 +24,7 @@ import arc.scene.utils.Cullable;
  * @author Nathan Sweet
  */
 public abstract class Group extends Element implements Cullable{
-    static private final Vector2 tmp = new Vector2();
+    static private final Vec2 tmp = new Vec2();
 
     final SnapshotArray<Element> children = new SnapshotArray<>(true, 4, Element.class);
     private final Affine2 worldTransform = new Affine2();
@@ -191,7 +191,7 @@ public abstract class Group extends Element implements Cullable{
     @Override
     public Element hit(float x, float y, boolean touchable){
         if(touchable && getTouchable() == Touchable.disabled) return null;
-        Vector2 point = tmp;
+        Vec2 point = tmp;
         Element[] childrenArray = children.items;
         for(int i = children.size - 1; i >= 0; i--){
             Element child = childrenArray[i];
@@ -456,7 +456,7 @@ public abstract class Group extends Element implements Cullable{
     }
 
     /** Converts coordinates for this group to those of a descendant actor. The descendant does not need to be a direct child. */
-    public Vector2 localToDescendantCoordinates(Element descendant, Vector2 localCoords){
+    public Vec2 localToDescendantCoordinates(Element descendant, Vec2 localCoords){
         Group parent = descendant.parent;
         if(parent == null) throw new IllegalArgumentException("Child is not a descendant: " + descendant);
         // First convert to the actor's parent coordinates.

@@ -5,7 +5,7 @@ import arc.graphics.Pixmap.*;
 import arc.graphics.Texture.TextureWrap;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 
 import java.nio.ByteBuffer;
 
@@ -132,7 +132,7 @@ public class Pixmaps{
     }
 
     public static Pixmap rotate(Pixmap input, float angle){
-        Vector2 vector = new Vector2();
+        Vec2 vector = new Vec2();
         Pixmap pixmap = new Pixmap(input.getHeight(), input.getWidth(), Format.RGBA8888);
 
         for(int x = 0; x < input.getWidth(); x++){

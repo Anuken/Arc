@@ -13,11 +13,11 @@ import arc.util.Timer.*;
 public class GestureDetector implements InputProcessor{
     final GestureListener listener;
     private final VelocityTracker tracker = new VelocityTracker();
-    private final Vector2 pointer2 = new Vector2();
-    private final Vector2 initialPointer1 = new Vector2();
-    private final Vector2 initialPointer2 = new Vector2();
+    private final Vec2 pointer2 = new Vec2();
+    private final Vec2 initialPointer1 = new Vec2();
+    private final Vec2 initialPointer2 = new Vec2();
     boolean longPressFired;
-    Vector2 pointer1 = new Vector2();
+    Vec2 pointer1 = new Vec2();
     private final Task longPressTask = new Task(){
         @Override
         public void run(){
@@ -347,7 +347,7 @@ public class GestureDetector implements InputProcessor{
          * Called when a user performs a pinch zoom gesture. Reports the initial positions of the two involved fingers and their
          * current positions.
          */
-        default boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2){
+        default boolean pinch(Vec2 initialPointer1, Vec2 initialPointer2, Vec2 pointer1, Vec2 pointer2){
             return false;
         }
 

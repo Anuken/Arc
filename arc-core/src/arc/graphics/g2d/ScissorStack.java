@@ -1,13 +1,13 @@
 package arc.graphics.g2d;
 
 import arc.Core;
+import arc.math.geom.*;
 import arc.struct.Array;
 import arc.graphics.Camera;
 import arc.graphics.GL20;
 import arc.graphics.gl.HdpiUtils;
 import arc.math.Matrix3;
-import arc.math.geom.Rectangle;
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 
 /**
  * A stack of {@link Rectangle} objects to be used for clipping via {@link GL20#glScissor(int, int, int, int)}. When a new
@@ -17,7 +17,7 @@ import arc.math.geom.Vector2;
  */
 public class ScissorStack{
     static final Rectangle viewport = new Rectangle();
-    static Vector2 tmp = new Vector2();
+    static Vec2 tmp = new Vec2();
     private static Array<Rectangle> scissors = new Array<>();
 
     /**

@@ -7,7 +7,7 @@ import arc.graphics.g2d.BitmapFont;
 import arc.graphics.g2d.BitmapFontCache;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.GlyphLayout;
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 import arc.scene.Element;
 import arc.scene.style.Drawable;
 import arc.scene.style.Style;
@@ -26,7 +26,7 @@ public class Label extends Element{
     static private final Color tempColor = new Color();
     static private final GlyphLayout prefSizeLayout = new GlyphLayout();
     private final GlyphLayout layout = new GlyphLayout();
-    private final Vector2 prefSize = new Vector2();
+    private final Vec2 prefSize = new Vec2();
     private final StringBuilder text = new StringBuilder();
     private LabelStyle style;
     private BitmapFontCache cache;

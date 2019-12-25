@@ -32,7 +32,7 @@ public final class Geometry{
         new Point2(-1, -1),
         new Point2(1, -1)
     };
-    static private final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2();
+    static private final Vec2 tmp1 = new Vec2(), tmp2 = new Vec2(), tmp3 = new Vec2();
 
     public static Point2 d4(int i){
         return d4[Mathf.mod(i, 4)];
@@ -67,7 +67,7 @@ public final class Geometry{
         }
     }
 
-    public static FloatArray vectorsToFloats(Array<Vector2> result){
+    public static FloatArray vectorsToFloats(Array<Vec2> result){
         FloatArray out = new FloatArray(result.size * 2);
         result.each(v -> out.add(v.x, v.y));
         return out;
@@ -112,11 +112,11 @@ public final class Geometry{
         return closest;
     }
 
-    public static Vector2[] pixelCircle(float tindex){
+    public static Vec2[] pixelCircle(float tindex){
         return pixelCircle(tindex, (index, x, y) -> Mathf.dst(x, y, index, index) < index - 0.5f);
     }
 
-    public static Vector2[] pixelCircle(float index, SolidChecker checker){
+    public static Vec2[] pixelCircle(float index, SolidChecker checker){
         int size = (int)(index * 2);
         IntArray ints = new IntArray();
 
@@ -130,13 +130,13 @@ public final class Geometry{
             }
         }
 
-        Array<Vector2> path = new Array<>();
+        Array<Vec2> path = new Array<>();
 
         int cindex = 0;
         while(ints.size > 0){
             int x = ints.get(cindex) % (size + 1);
             int y = ints.get(cindex) / (size + 1);
-            path.add(new Vector2(x - size / 2, y - size / 2));
+            path.add(new Vec2(x - size / 2, y - size / 2));
             ints.removeIndex(cindex);
 
             //find nearby edge
@@ -152,13 +152,13 @@ public final class Geometry{
             }
         }
 
-        return path.toArray(Vector2.class);
+        return path.toArray(Vec2.class);
     }
 
     /** returns a regular polygon with {amount} sides */
     public static float[] regPoly(int amount, float size){
         float[] v = new float[amount * 2];
-        Vector2 vec = new Vector2(1, 1);
+        Vec2 vec = new Vec2(1, 1);
         vec.setLength(size);
         for(int i = 0; i < amount; i++){
             vec.setAngle((360f / amount) * i + 90);
@@ -252,15 +252,15 @@ public final class Geometry{
         }
     }
 
-    public static Vector2 raycastRect(float startx, float starty, float endx, float endy, Rectangle rectangle){
+    public static Vec2 raycastRect(float startx, float starty, float endx, float endy, Rectangle rectangle){
         return raycastRect(startx, starty, endx, endy, rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2,
         rectangle.width / 2f, rectangle.height / 2f);
     }
 
-    public static Vector2 raycastRect(float startx, float starty, float endx, float endy, float x, float y, float halfx, float halfy){
+    public static Vec2 raycastRect(float startx, float starty, float endx, float endy, float x, float y, float halfx, float halfy){
         float deltax = endx - startx, deltay = endy - starty;
 
-        Vector2 hit = tmp1;
+        Vec2 hit = tmp1;
 
         float paddingX = 0f;
         float paddingY = 0f;
@@ -295,7 +295,7 @@ public final class Geometry{
      * Checks for collisions between two rectangles, and returns the correct delta vector of A.
      * Note: The same vector instance is returned each time!
      */
-    public static Vector2 overlap(Rectangle a, Rectangle b, boolean x){
+    public static Vec2 overlap(Rectangle a, Rectangle b, boolean x){
         float penetration = 0f;
 
         float ax = a.x + a.width / 2, bx = b.x + b.width / 2;
@@ -366,10 +366,10 @@ public final class Geometry{
      * </pre>
      * @return barycentricOut
      */
-    public static Vector2 toBarycoord(Vector2 p, Vector2 a, Vector2 b, Vector2 c, Vector2 barycentricOut){
-        Vector2 v0 = tmp1.set(b).sub(a);
-        Vector2 v1 = tmp2.set(c).sub(a);
-        Vector2 v2 = tmp3.set(p).sub(a);
+    public static Vec2 toBarycoord(Vec2 p, Vec2 a, Vec2 b, Vec2 c, Vec2 barycentricOut){
+        Vec2 v0 = tmp1.set(b).sub(a);
+        Vec2 v1 = tmp2.set(c).sub(a);
+        Vec2 v2 = tmp3.set(p).sub(a);
         float d00 = v0.dot(v0);
         float d01 = v0.dot(v1);
         float d11 = v1.dot(v1);
@@ -382,7 +382,7 @@ public final class Geometry{
     }
 
     /** Returns true if the barycentric coordinates are inside the triangle. */
-    public static boolean barycoordInsideTriangle(Vector2 barycentric){
+    public static boolean barycoordInsideTriangle(Vec2 barycentric){
         return barycentric.x >= 0 && barycentric.y >= 0 && barycentric.x + barycentric.y <= 1;
     }
 
@@ -390,7 +390,7 @@ public final class Geometry{
      * Returns interpolated values given the barycentric coordinates of a point in a triangle and the values at each vertex.
      * @return interpolatedOut
      */
-    public static Vector2 fromBarycoord(Vector2 barycentric, Vector2 a, Vector2 b, Vector2 c, Vector2 interpolatedOut){
+    public static Vec2 fromBarycoord(Vec2 barycentric, Vec2 a, Vec2 b, Vec2 c, Vec2 interpolatedOut){
         float u = 1 - barycentric.x - barycentric.y;
         interpolatedOut.x = u * a.x + barycentric.x * b.x + barycentric.y * c.x;
         interpolatedOut.y = u * a.y + barycentric.x * b.y + barycentric.y * c.y;
@@ -401,7 +401,7 @@ public final class Geometry{
      * Returns an interpolated value given the barycentric coordinates of a point in a triangle and the values at each vertex.
      * @return interpolatedOut
      */
-    public static float fromBarycoord(Vector2 barycentric, float a, float b, float c){
+    public static float fromBarycoord(Vec2 barycentric, float a, float b, float c){
         float u = 1 - barycentric.x - barycentric.y;
         return u * a + barycentric.x * b + barycentric.y * c;
     }
@@ -441,14 +441,14 @@ public final class Geometry{
         return Math.abs(det) < Mathf.FLOAT_ROUNDING_ERROR;
     }
 
-    public static Vector2 triangleCentroid(float x1, float y1, float x2, float y2, float x3, float y3, Vector2 centroid){
+    public static Vec2 triangleCentroid(float x1, float y1, float x2, float y2, float x3, float y3, Vec2 centroid){
         centroid.x = (x1 + x2 + x3) / 3;
         centroid.y = (y1 + y2 + y3) / 3;
         return centroid;
     }
 
     /** Returns the circumcenter of the triangle. The input points must not be colinear. */
-    public static Vector2 triangleCircumcenter(float x1, float y1, float x2, float y2, float x3, float y3, Vector2 circumcenter){
+    public static Vec2 triangleCircumcenter(float x1, float y1, float x2, float y2, float x3, float y3, Vec2 circumcenter){
         float dx21 = x2 - x1, dy21 = y2 - y1;
         float dx32 = x3 - x2, dy32 = y3 - y2;
         float dx13 = x1 - x3, dy13 = y1 - y3;
@@ -506,8 +506,8 @@ public final class Geometry{
         return Math.abs((x1 - x3) * (y2 - y1) - (x1 - x2) * (y3 - y1)) * 0.5f;
     }
 
-    public static Vector2 quadrilateralCentroid(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,
-                                                Vector2 centroid){
+    public static Vec2 quadrilateralCentroid(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,
+                                             Vec2 centroid){
         float avgX1 = (x1 + x2 + x3) / 3;
         float avgY1 = (y1 + y2 + y3) / 3;
         float avgX2 = (x1 + x4 + x3) / 3;
@@ -518,7 +518,7 @@ public final class Geometry{
     }
 
     /** Returns the centroid for the specified non-self-intersecting polygon. */
-    public static Vector2 polygonCentroid(float[] polygon, int offset, int count, Vector2 centroid){
+    public static Vec2 polygonCentroid(float[] polygon, int offset, int count, Vec2 centroid){
         if(count < 6) throw new IllegalArgumentException("A polygon must have 3 or more coordinate pairs.");
         float x = 0, y = 0;
 

@@ -80,7 +80,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     private float roll = 0;
     private boolean justTouched = false;
     private long currentEventTimeStamp = System.nanoTime();
-    private Vector3 accel = new Vector3(), gyro = new Vector3(), orient = new Vector3();
+    private Vec3 accel = new Vec3(), gyro = new Vec3(), orient = new Vec3();
     private SensorEventListener accelerometerListener;
     private SensorEventListener gyroscopeListener;
     private SensorEventListener compassListener;
@@ -126,18 +126,18 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     }
 
     @Override
-    public Vector3 getAccelerometer(){
+    public Vec3 getAccelerometer(){
         return accel.set(accelerometerValues);
     }
 
     @Override
-    public Vector3 getGyroscope(){
+    public Vec3 getGyroscope(){
         return gyro.set(gyroscopeValues);
     }
 
     @Override
-    public Vector3 getOrientation(){
-        if(!compassAvailable && !rotationVectorAvailable) return Vector3.Zero;
+    public Vec3 getOrientation(){
+        if(!compassAvailable && !rotationVectorAvailable) return Vec3.Zero;
 
         updateOrientation();
 

@@ -35,8 +35,8 @@ public class Dialog extends Table{
         }
     };
 
-    static private final Vector2 tmpPosition = new Vector2();
-    static private final Vector2 tmpSize = new Vector2();
+    static private final Vec2 tmpPosition = new Vec2();
+    static private final Vec2 tmpSize = new Vec2();
     static private final int MOVE = 1 << 5;
     protected int edge;
     protected boolean dragging;

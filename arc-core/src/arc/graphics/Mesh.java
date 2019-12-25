@@ -198,7 +198,7 @@ public class Mesh implements Disposable{
             throw new IndexOutOfBoundsException("start = " + start + ", count = " + count + ", vertexSize = " + vertexSize
             + ", length = " + vertices.length);
 
-        final Vector2 tmp = new Vector2();
+        final Vec2 tmp = new Vec2();
 
         int idx = offset + (start * vertexSize);
         for(int i = 0; i < count; i++){

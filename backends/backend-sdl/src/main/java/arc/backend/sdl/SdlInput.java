@@ -1,4 +1,4 @@
-package io.anuke.arc.backends.sdl;
+package arc.backend.sdl;
 
 import arc.*;
 import io.anuke.arc.backends.sdl.jni.*;

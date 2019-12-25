@@ -1,7 +1,7 @@
 package arc.scene.event;
 
 import arc.input.KeyCode;
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 import arc.scene.Element;
 import arc.scene.Scene;
 
@@ -27,7 +27,7 @@ public class InputEvent extends SceneEvent{
      * Sets actorCoords to this event's coordinates relative to the specified actor.
      * @param actorCoords Output for resulting coordinates.
      */
-    public Vector2 toCoordinates(Element actor, Vector2 actorCoords){
+    public Vec2 toCoordinates(Element actor, Vec2 actorCoords){
         actorCoords.set(stageX, stageY);
         actor.stageToLocalCoordinates(actorCoords);
         return actorCoords;

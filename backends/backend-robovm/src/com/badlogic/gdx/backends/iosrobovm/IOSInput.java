@@ -8,7 +8,7 @@ import arc.Input;
 import arc.struct.Array;
 import arc.input.InputDevice;
 import arc.input.KeyCode;
-import arc.math.geom.Vector3;
+import arc.math.geom.Vec3;
 import arc.util.ArcRuntimeException;
 import arc.util.Log;
 import arc.util.pooling.Pool;
@@ -53,7 +53,7 @@ public class IOSInput extends Input{
     Array<TouchEvent> touchEvents = new Array<>();
     TouchEvent currentEvent = null;
     float[] rotation = new float[3];
-    Vector3 accel = new Vector3();
+    Vec3 accel = new Vec3();
 
     boolean hasVibrator;
     boolean compassSupported;
@@ -140,7 +140,7 @@ public class IOSInput extends Input{
     }
 
     @Override
-    public Vector3 getAccelerometer(){
+    public Vec3 getAccelerometer(){
         return accel;
     }
 

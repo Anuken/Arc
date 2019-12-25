@@ -3,7 +3,7 @@ package arc.scene.utils;
 import arc.struct.Array;
 import arc.struct.ObjectMap;
 import arc.struct.ObjectMap.Entry;
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 import arc.scene.Element;
 import arc.scene.Scene;
 import arc.scene.event.DragListener;
@@ -18,7 +18,7 @@ import static arc.Core.scene;
  * @author Nathan Sweet
  */
 public class DragAndDrop{
-    static final Vector2 tmpVector = new Vector2();
+    static final Vec2 tmpVector = new Vec2();
 
     Payload payload;
     Element dragActor;

@@ -1,7 +1,7 @@
 package arc.struct;
 
 import arc.math.Mathf;
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 
 import java.util.Arrays;
 
@@ -73,10 +73,10 @@ public class FloatArray{
     }
 
     /** Converts this float array to a vector2 array, with pairs used for coordinates.*/
-    public Array<Vector2> toVector2Array(){
-        Array<Vector2> out = new Array<>(size/2);
+    public Array<Vec2> toVector2Array(){
+        Array<Vec2> out = new Array<>(size/2);
         for(int i = 0; i < size; i+= 2){
-            out.add(new Vector2(items[i], items[i+1]));
+            out.add(new Vec2(items[i], items[i+1]));
         }
         return out;
     }

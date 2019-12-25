@@ -1,8 +1,8 @@
-package io.anuke.arc.backends.sdl;
+package arc.backend.sdl;
 
 import arc.*;
 import arc.audio.mock.*;
-import io.anuke.arc.backends.sdl.audio.*;
+import arc.backend.sdl.audio.*;
 import arc.struct.*;
 import arc.func.*;
 import arc.graphics.*;

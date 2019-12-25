@@ -6,8 +6,8 @@ import arc.graphics.Camera;
 import arc.graphics.g2d.ScissorStack;
 import arc.graphics.gl.HdpiUtils;
 import arc.math.Matrix3;
-import arc.math.geom.Rectangle;
-import arc.math.geom.Vector2;
+import arc.math.geom.*;
+import arc.math.geom.Vec2;
 
 /**
  * Manages a {@link Camera} and determines how world coordinates are mapped to and from the screen.
@@ -15,7 +15,7 @@ import arc.math.geom.Vector2;
  * @author Nathan Sweet
  */
 public abstract class Viewport{
-    private final Vector2 tmp = new Vector2();
+    private final Vec2 tmp = new Vec2();
     private Camera camera;
     private float worldWidth, worldHeight;
     private int screenX, screenY, screenWidth, screenHeight;
@@ -55,9 +55,9 @@ public abstract class Viewport{
     /**
      * Transforms the specified screen coordinate to world coordinates.
      * @return The vector that was passed in, transformed to world coordinates.
-     * @see Camera#unproject(Vector2)
+     * @see Camera#unproject(Vec2)
      */
-    public Vector2 unproject(Vector2 screenCoords){
+    public Vec2 unproject(Vec2 screenCoords){
         tmp.set(screenCoords.x, screenCoords.y);
         camera.unproject(tmp, screenX, screenY, screenWidth, screenHeight);
         screenCoords.set(tmp.x, tmp.y);
@@ -67,9 +67,9 @@ public abstract class Viewport{
     /**
      * Transforms the specified world coordinate to screen coordinates.
      * @return The vector that was passed in, transformed to screen coordinates.
-     * @see Camera#project(Vector2)
+     * @see Camera#project(Vec2)
      */
-    public Vector2 project(Vector2 worldCoords){
+    public Vec2 project(Vec2 worldCoords){
         tmp.set(worldCoords.x, worldCoords.y);
         camera.project(tmp, screenX, screenY, screenWidth, screenHeight);
         worldCoords.set(tmp.x, tmp.y);
@@ -85,7 +85,7 @@ public abstract class Viewport{
      * Transforms a point to real screen coordinates (as opposed to OpenGL ES window coordinates), where the origin is in the top
      * left and the the y-axis is pointing downwards.
      */
-    public Vector2 toScreenCoordinates(Vector2 worldCoords, Matrix3 transformMatrix){
+    public Vec2 toScreenCoordinates(Vec2 worldCoords, Matrix3 transformMatrix){
         tmp.set(worldCoords.x, worldCoords.y);
         tmp.mul(transformMatrix);
         camera.project(tmp);

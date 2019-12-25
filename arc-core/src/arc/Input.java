@@ -2,12 +2,12 @@ package arc;
 
 import arc.KeyBinds.Axis;
 import arc.KeyBinds.KeyBind;
+import arc.math.geom.*;
 import arc.struct.Array;
 import arc.struct.IntSet;
 import arc.func.Cons;
 import arc.input.*;
-import arc.math.geom.Vector2;
-import arc.math.geom.Vector3;
+import arc.math.geom.Vec2;
 import arc.util.*;
 
 import static arc.Core.keybinds;
@@ -36,26 +36,26 @@ public abstract class Input implements Disposable{
     protected InputMultiplexer inputMultiplexer = new InputMultiplexer(keyboard);
     /** List of caught keys for Android. */
     protected IntSet caughtKeys = new IntSet();
-    /**Return Vector2 value for various functions.*/
-    protected Vector2 mouseReturn = new Vector2();
+    /**Return Vec2 value for various functions.*/
+    protected Vec2 mouseReturn = new Vec2();
 
     /**Returns the unprojected mouse position (screen -> world).*/
-    public Vector2 mouseWorld(float x, float y){
+    public Vec2 mouseWorld(float x, float y){
         return Core.camera.unproject(mouseReturn.set(x, y));
     }
 
     /**Returns the projected mouse position (world -> screen).*/
-    public Vector2 mouseScreen(float x, float y){
+    public Vec2 mouseScreen(float x, float y){
         return Core.camera.project(mouseReturn.set(x, y));
     }
 
     /**Returns the unprojected mouse position in the world.*/
-    public Vector2 mouseWorld(){
+    public Vec2 mouseWorld(){
         return Core.camera.unproject(mouse());
     }
 
     /**Returns the mouse position as a vector2.*/
-    public Vector2 mouse(){
+    public Vec2 mouse(){
         return mouseReturn.set(mouseX(), mouseY());
     }
 
@@ -245,18 +245,18 @@ public abstract class Input implements Disposable{
     }
 
     /** @return The acceleration force in m/s^2 applied to the device, including the force of gravity */
-    public Vector3 getAccelerometer(){
-        return Vector3.Zero;
+    public Vec3 getAccelerometer(){
+        return Vec3.Zero;
     }
 
     /** @return The rate of rotation in rad/s. */
-    public Vector3 getGyroscope(){
-        return Vector3.Zero;
+    public Vec3 getGyroscope(){
+        return Vec3.Zero;
     }
 
     /** @return the device's orientation in degrees in the format (pitch, roll, azimuth) corresponding to x,y,z. */
-    public Vector3 getOrientation(){
-        return Vector3.Zero;
+    public Vec3 getOrientation(){
+        return Vec3.Zero;
     }
 
     /**

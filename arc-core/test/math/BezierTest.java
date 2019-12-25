@@ -2,7 +2,7 @@ package math;
 
 import arc.struct.Array;
 import arc.math.geom.Bezier;
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class BezierTest{
     /** use constructor or setter */
     @Parameter(1)
     public boolean useSetter;
-    private Bezier<Vector2> bezier;
+    private Bezier<Vec2> bezier;
 
     @Parameters(name = "use setter {0} imported type {1}")
     public static Collection<Object[]> parameters(){
@@ -41,7 +41,7 @@ public class BezierTest{
         bezier = null;
     }
 
-    protected Vector2[] create(Vector2[] points){
+    protected Vec2[] create(Vec2[] points){
         if(useSetter){
             bezier = new Bezier<>();
             if(type == ImportType.LibGDXArrays){
@@ -66,23 +66,23 @@ public class BezierTest{
 
     @Test
     public void testLinear2D(){
-        Vector2[] points = create(new Vector2[]{new Vector2(0, 0), new Vector2(1, 1)});
+        Vec2[] points = create(new Vec2[]{new Vec2(0, 0), new Vec2(1, 1)});
 
         float len = bezier.approxLength(2);
         Assert.assertEquals(Math.sqrt(2), len, epsilonApprimations);
 
-        Vector2 d = bezier.derivativeAt(new Vector2(), 0.5f);
+        Vec2 d = bezier.derivativeAt(new Vec2(), 0.5f);
         Assert.assertEquals(1, d.x, epsilon);
         Assert.assertEquals(1, d.y, epsilon);
 
-        Vector2 v = bezier.valueAt(new Vector2(), 0.5f);
+        Vec2 v = bezier.valueAt(new Vec2(), 0.5f);
         Assert.assertEquals(0.5f, v.x, epsilon);
         Assert.assertEquals(0.5f, v.y, epsilon);
 
-        float t = bezier.approximate(new Vector2(.5f, .5f));
+        float t = bezier.approximate(new Vec2(.5f, .5f));
         Assert.assertEquals(.5f, t, epsilonApprimations);
 
-        float l = bezier.locate(new Vector2(.5f, .5f));
+        float l = bezier.locate(new Vec2(.5f, .5f));
         Assert.assertEquals(.5f, t, epsilon);
     }
 

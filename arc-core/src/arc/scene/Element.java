@@ -1,6 +1,7 @@
 package arc.scene;
 
 import arc.Core;
+import arc.math.geom.*;
 import arc.struct.Array;
 import arc.struct.DelayedRemovalArray;
 import arc.func.Boolp;
@@ -10,8 +11,7 @@ import arc.func.Prov;
 import arc.graphics.Color;
 import arc.input.KeyCode;
 import arc.math.Mathf;
-import arc.math.geom.Rectangle;
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 import arc.scene.actions.Actions;
 import arc.scene.event.*;
 import arc.scene.event.InputEvent.Type;
@@ -36,7 +36,7 @@ public class Element implements Layout{
     protected float width, height;
     /** Alpha value of the parent. Should be multiplied with the actor's alpha, allowing a parent's alpha to affect all children. */
     protected float parentAlpha = 1f;
-    protected Vector2 translation = new Vector2(0, 0);
+    protected Vec2 translation = new Vec2(0, 0);
     Group parent;
     float originX, originY;
     float scaleX = 1, scaleY = 1;
@@ -782,14 +782,14 @@ public class Element implements Layout{
     }
 
     /** Transforms the specified point in screen coordinates to the actor's local coordinate system. */
-    public Vector2 screenToLocalCoordinates(Vector2 screenCoords){
+    public Vec2 screenToLocalCoordinates(Vec2 screenCoords){
         Scene stage = this.stage;
         if(stage == null) return screenCoords;
         return stageToLocalCoordinates(stage.screenToStageCoordinates(screenCoords));
     }
 
     /** Transforms the specified point in the stage's coordinates to the actor's local coordinate system. */
-    public Vector2 stageToLocalCoordinates(Vector2 stageCoords){
+    public Vec2 stageToLocalCoordinates(Vec2 stageCoords){
         if(parent != null) parent.stageToLocalCoordinates(stageCoords);
         parentToLocalCoordinates(stageCoords);
         return stageCoords;
@@ -798,12 +798,12 @@ public class Element implements Layout{
     /**
      * Transforms the specified point in the actor's coordinates to be in the stage's coordinates.
      */
-    public Vector2 localToStageCoordinates(Vector2 localCoords){
+    public Vec2 localToStageCoordinates(Vec2 localCoords){
         return localToAscendantCoordinates(null, localCoords);
     }
 
     /** Transforms the specified point in the actor's coordinates to be in the parent's coordinates. */
-    public Vector2 localToParentCoordinates(Vector2 localCoords){
+    public Vec2 localToParentCoordinates(Vec2 localCoords){
         final float rotation = -this.rotation;
         final float scaleX = this.scaleX;
         final float scaleY = this.scaleY;
@@ -833,7 +833,7 @@ public class Element implements Layout{
     }
 
     /** Converts coordinates for this actor to those of a parent actor. The ascendant does not need to be a direct parent. */
-    public Vector2 localToAscendantCoordinates(Element ascendant, Vector2 localCoords){
+    public Vec2 localToAscendantCoordinates(Element ascendant, Vec2 localCoords){
         Element actor = this;
         while(actor != null){
             actor.localToParentCoordinates(localCoords);
@@ -844,7 +844,7 @@ public class Element implements Layout{
     }
 
     /** Converts the coordinates given in the parent's coordinate system to this actor's coordinate system. */
-    public Vector2 parentToLocalCoordinates(Vector2 parentCoords){
+    public Vec2 parentToLocalCoordinates(Vec2 parentCoords){
         final float rotation = this.rotation;
         final float scaleX = this.scaleX;
         final float scaleY = this.scaleY;
@@ -958,7 +958,7 @@ public class Element implements Layout{
         translation.y = y;
     }
 
-    public Vector2 getTranslation(){
+    public Vec2 getTranslation(){
         return translation;
     }
 

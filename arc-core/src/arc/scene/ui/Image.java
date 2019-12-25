@@ -83,7 +83,7 @@ public class Image extends Element{
         float width = getWidth();
         float height = getHeight();
 
-        Vector2 size = scaling.apply(regionWidth, regionHeight, width, height);
+        Vec2 size = scaling.apply(regionWidth, regionHeight, width, height);
         imageWidth = size.x;
         imageHeight = size.y;
 

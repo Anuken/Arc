@@ -4,15 +4,14 @@ import arc.Core;
 import arc.Graphics;
 import arc.Input;
 import arc.math.Matrix3;
-import arc.math.geom.Rectangle;
-import arc.math.geom.Vector2;
-import arc.math.geom.Vector3;
+import arc.math.geom.*;
+import arc.math.geom.Vec2;
 
 public class Camera{
     /** temporary vector which is returned. */
-    private static final Vector2 tmpVector = new Vector2();
+    private static final Vec2 tmpVector = new Vec2();
     /** the position of the camera **/
-    public final Vector2 position = new Vector2();
+    public final Vec2 position = new Vec2();
     /** the combined projection and view matrix **/
     private final Matrix3 combined = new Matrix3();
     /** the inverse combined projection and view matrix **/
@@ -51,9 +50,9 @@ public class Camera{
      * @param viewportY the coordinate of the bottom left corner of the viewport in glViewport coordinates.
      * @param viewportWidth the width of the viewport in pixels
      * @param viewportHeight the height of the viewport in pixels
-     * @return the mutated and unprojected screenCoords {@link Vector3}
+     * @return the mutated and unprojected screenCoords {@link Vec3}
      */
-    public Vector2 unproject(Vector2 screenCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight){
+    public Vec2 unproject(Vec2 screenCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight){
         float x = screenCoords.x, y = screenCoords.y;
         x = x - viewportX;
         y = y - viewportY;
@@ -70,38 +69,38 @@ public class Camera{
      * corner, y pointing down, x pointing to the right) as reported by the touch methods in {@link Input}. A z-coordinate of 0
      * will return a point on the near plane, a z-coordinate of 1 will return a point on the far plane.
      * @param screenCoords the point in screen coordinates
-     * @return the mutated and unprojected screenCoords {@link Vector3}
+     * @return the mutated and unprojected screenCoords {@link Vec3}
      */
-    public Vector2 unproject(Vector2 screenCoords){
+    public Vec2 unproject(Vec2 screenCoords){
         unproject(screenCoords, 0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
         return screenCoords;
     }
 
-    /** See {@link #unproject(Vector2)}. Returns the same Vector2 each time. */
-    public Vector2 unproject(float screenX, float screenY){
+    /** See {@link #unproject(Vec2)}. Returns the same Vec2 each time. */
+    public Vec2 unproject(float screenX, float screenY){
         unproject(tmpVector.set(screenX, screenY), 0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
         return tmpVector;
     }
 
     /**
-     * Projects the {@link Vector3} given in world space to screen coordinates. It's the same as GLU gluProject with one small
+     * Projects the {@link Vec3} given in world space to screen coordinates. It's the same as GLU gluProject with one small
      * deviation: The viewport is assumed to span the whole screen. The screen coordinate system has its origin in the
      * <b>bottom</b> left, with the y-axis pointing <b>upwards</b> and the x-axis pointing to the right.
-     * @return the mutated and projected worldCoords {@link Vector3}
+     * @return the mutated and projected worldCoords {@link Vec3}
      */
-    public Vector2 project(Vector2 worldCoords){
+    public Vec2 project(Vec2 worldCoords){
         project(worldCoords, 0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
         return worldCoords;
     }
 
-    /** See {@link #project(Vector2)}. Returns the same Vector2 each time. */
-    public Vector2 project(float screenX, float screenY){
+    /** See {@link #project(Vec2)}. Returns the same Vec2 each time. */
+    public Vec2 project(float screenX, float screenY){
         project(tmpVector.set(screenX, screenY), 0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
         return tmpVector;
     }
 
     /**
-     * Projects the {@link Vector3} given in world space to screen coordinates. It's the same as GLU gluProject with one small
+     * Projects the {@link Vec3} given in world space to screen coordinates. It's the same as GLU gluProject with one small
      * deviation: The viewport is assumed to span the whole screen. The screen coordinate system has its origin in the
      * <b>bottom</b> left, with the y-axis pointing <b>upwards</b> and the x-axis pointing to the right.
      * This method allows you to specify the viewport position and
@@ -111,9 +110,9 @@ public class Camera{
      * @param viewportY the coordinate of the bottom left corner of the viewport in glViewport coordinates.
      * @param viewportWidth the width of the viewport in pixels
      * @param viewportHeight the height of the viewport in pixels
-     * @return the mutated and projected worldCoords {@link Vector3}
+     * @return the mutated and projected worldCoords {@link Vec3}
      */
-    public Vector2 project(Vector2 worldCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight){
+    public Vec2 project(Vec2 worldCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight){
         worldCoords.mul(combined);
         worldCoords.x = viewportWidth * (worldCoords.x + 1) / 2 + viewportX;
         worldCoords.y = viewportHeight * (worldCoords.y + 1) / 2 + viewportY;

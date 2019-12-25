@@ -1,7 +1,7 @@
 package arc.scene.event;
 
 import arc.input.KeyCode;
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 import arc.scene.Element;
 
 /**
@@ -9,7 +9,7 @@ import arc.scene.Element;
  * here do nothing with the event. Users are expected to override the methods they are interested in, like this:
  */
 public class InputListener implements EventListener{
-    static private final Vector2 tmpCoords = new Vector2();
+    static private final Vec2 tmpCoords = new Vec2();
 
     public boolean handle(SceneEvent e){
         if(!(e instanceof InputEvent)) return false;

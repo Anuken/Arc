@@ -12,7 +12,7 @@ import arc.graphics.Texture.TextureFilter;
 import arc.graphics.Texture.TextureWrap;
 import arc.graphics.gl.FacedCubemapData;
 import arc.graphics.gl.PixmapTextureData;
-import arc.math.geom.Vector3;
+import arc.math.geom.Vec3;
 import arc.util.ArcRuntimeException;
 
 import java.util.HashMap;
@@ -249,15 +249,15 @@ public class Cubemap extends GLTexture{
         /** The OpenGL target (used for glTexImage2D) of the side. */
         public final int glEnum;
         /** The up vector to target the side. */
-        public final Vector3 up;
+        public final Vec3 up;
         /** The direction vector to target the side. */
-        public final Vector3 direction;
+        public final Vec3 direction;
 
         CubemapSide(int index, int glEnum, float upX, float upY, float upZ, float directionX, float directionY, float directionZ){
             this.index = index;
             this.glEnum = glEnum;
-            this.up = new Vector3(upX, upY, upZ);
-            this.direction = new Vector3(directionX, directionY, directionZ);
+            this.up = new Vec3(upX, upY, upZ);
+            this.direction = new Vec3(directionX, directionY, directionZ);
         }
 
         /** @return The OpenGL target (used for glTexImage2D) of the side. */
@@ -266,12 +266,12 @@ public class Cubemap extends GLTexture{
         }
 
         /** @return The up vector of the side. */
-        public Vector3 getUp(Vector3 out){
+        public Vec3 getUp(Vec3 out){
             return out.set(up);
         }
 
         /** @return The direction vector of the side. */
-        public Vector3 getDirection(Vector3 out){
+        public Vec3 getDirection(Vec3 out){
             return out.set(direction);
         }
     }

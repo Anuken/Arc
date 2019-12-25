@@ -192,7 +192,7 @@ public class Polyline implements Shape2D{
     }
 
     @Override
-    public boolean contains(Vector2 point){
+    public boolean contains(Vec2 point){
         return false;
     }
 

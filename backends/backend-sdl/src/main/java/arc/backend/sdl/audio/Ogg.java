@@ -1,4 +1,4 @@
-package io.anuke.arc.backends.sdl.audio;
+package arc.backend.sdl.audio;
 
 import arc.files.*;
 import arc.util.io.*;

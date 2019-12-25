@@ -8,7 +8,7 @@ import arc.math.geom.*;
 
 public class Lines{
     private static float stroke = 1f;
-    private static Vector2 vector = new Vector2();
+    private static Vec2 vector = new Vec2();
     private static FloatArray floats = new FloatArray(20);
     private static FloatArray floatBuilder = new FloatArray(20);
     private static boolean building, precise;
@@ -338,10 +338,10 @@ public class Lines{
         polyline(floats, true);
     }
 
-    public static void poly(Vector2[] vertices, float offsetx, float offsety, float scl){
+    public static void poly(Vec2[] vertices, float offsetx, float offsety, float scl){
         for(int i = 0; i < vertices.length; i++){
-            Vector2 current = vertices[i];
-            Vector2 next = i == vertices.length - 1 ? vertices[0] : vertices[i + 1];
+            Vec2 current = vertices[i];
+            Vec2 next = i == vertices.length - 1 ? vertices[0] : vertices[i + 1];
             line(current.x * scl + offsetx, current.y * scl + offsety, next.x * scl + offsetx, next.y * scl + offsety);
         }
     }

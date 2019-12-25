@@ -2,11 +2,11 @@ package arc.math;
 
 import arc.Core;
 import arc.func.*;
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 
 public class Angles{
     private static final RandomXS128 random = new RandomXS128();
-    private static final Vector2 rv = new Vector2();
+    private static final Vec2 rv = new Vec2();
 
     public static float forwardDistance(float angle1, float angle2){
         return angle1 > angle2 ? angle1 - angle2 : angle2 - angle1;
@@ -62,7 +62,7 @@ public class Angles{
     }
 
     public static float mouseAngle(float cx, float cy){
-        Vector2 avector = Core.camera.project(cx, cy);
+        Vec2 avector = Core.camera.project(cx, cy);
         return angle(avector.x, avector.y, Core.input.mouseX(), Core.input.mouseY());
     }
 

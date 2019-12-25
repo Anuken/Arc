@@ -5,7 +5,7 @@ import arc.struct.Array;
 import arc.func.Cons;
 import arc.input.KeyCode;
 import arc.math.Interpolation;
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.layout.Table;
@@ -20,7 +20,7 @@ import static arc.scene.actions.Actions.*;
  * @author Nathan Sweet
  */
 public class Tooltip extends InputListener{
-    static Vector2 tmp = new Vector2();
+    static Vec2 tmp = new Vec2();
 
     final Tooltips manager;
     final Table container;
@@ -92,7 +92,7 @@ public class Tooltip extends InputListener{
 
         container.pack();
         float offsetX = manager.offsetX, offsetY = manager.offsetY, dist = manager.edgeDistance;
-        Vector2 point = element.localToStageCoordinates(tmp.set(x + offsetX, y - offsetY - container.getHeight()));
+        Vec2 point = element.localToStageCoordinates(tmp.set(x + offsetX, y - offsetY - container.getHeight()));
         if(point.y < dist) point = element.localToStageCoordinates(tmp.set(x + offsetX, y + offsetY));
         if(point.x < dist) point.x = dist;
         if(point.x + container.getWidth() > stage.getWidth() - dist)

@@ -13,7 +13,7 @@ import arc.graphics.g2d.GlyphLayout;
 import arc.graphics.g2d.GlyphLayout.GlyphRun;
 import arc.input.KeyCode;
 import arc.math.Mathf;
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 import arc.scene.Element;
 import arc.scene.Group;
 import arc.scene.Scene;
@@ -60,9 +60,9 @@ public class TextField extends Element implements Disableable{
     static private final char DELETE = 127;
     static private final char BULLET = 149;
 
-    static private final Vector2 tmp1 = new Vector2();
-    static private final Vector2 tmp2 = new Vector2();
-    static private final Vector2 tmp3 = new Vector2();
+    static private final Vec2 tmp1 = new Vec2();
+    static private final Vec2 tmp2 = new Vec2();
+    static private final Vec2 tmp3 = new Vec2();
 
     public static float keyRepeatInitialTime = 0.4f;
     public static float keyRepeatTime = 0.1f;
@@ -531,7 +531,7 @@ public class TextField extends Element implements Disableable{
         }
     }
 
-    private TextField findNextTextField(Array<Element> elements, TextField best, Vector2 bestCoords, Vector2 currentCoords,
+    private TextField findNextTextField(Array<Element> elements, TextField best, Vec2 bestCoords, Vec2 currentCoords,
                                         boolean up){
         for(int i = 0, n = elements.size; i < n; i++){
             Element element = elements.get(i);
@@ -539,7 +539,7 @@ public class TextField extends Element implements Disableable{
             if(element instanceof TextField){
                 TextField textField = (TextField)element;
                 if(textField.isDisabled() || !textField.focusTraversal) continue;
-                Vector2 elementCoords = element.getParent().localToStageCoordinates(tmp3.set(element.getX(), element.getY()));
+                Vec2 elementCoords = element.getParent().localToStageCoordinates(tmp3.set(element.getX(), element.getY()));
                 if((elementCoords.y < currentCoords.y || (elementCoords.y == currentCoords.y && elementCoords.x > currentCoords.x)) ^ up){
                     if(best == null
                     || (elementCoords.y > bestCoords.y || (elementCoords.y == bestCoords.y && elementCoords.x < bestCoords.x)) ^ up){

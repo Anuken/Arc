@@ -28,7 +28,7 @@ public class ScrollPane extends WidgetGroup{
     final Rectangle vScrollBounds = new Rectangle();
     final Rectangle hKnobBounds = new Rectangle();
     final Rectangle vKnobBounds = new Rectangle();
-    final Vector2 lastPoint = new Vector2();
+    final Vec2 lastPoint = new Vec2();
     private final Rectangle widgetAreaBounds = new Rectangle();
     private final Rectangle widgetCullingArea = new Rectangle();
     private final Rectangle scissorBounds = new Rectangle();

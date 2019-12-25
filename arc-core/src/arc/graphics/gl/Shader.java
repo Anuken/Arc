@@ -10,8 +10,8 @@ import arc.graphics.Color;
 import arc.graphics.GL20;
 import arc.graphics.Mesh;
 import arc.math.Matrix3;
-import arc.math.geom.Vector2;
-import arc.math.geom.Vector3;
+import arc.math.geom.Vec2;
+import arc.math.geom.Vec3;
 import arc.util.BufferUtils;
 import arc.util.Disposable;
 
@@ -597,11 +597,11 @@ public class Shader implements Disposable{
      * @param name the name of the uniform
      * @param values x and y as the first and second values respectively
      */
-    public void setUniformf(String name, Vector2 values){
+    public void setUniformf(String name, Vec2 values){
         setUniformf(name, values.x, values.y);
     }
 
-    public void setUniformf(int location, Vector2 values){
+    public void setUniformf(int location, Vec2 values){
         setUniformf(location, values.x, values.y);
     }
 
@@ -610,11 +610,11 @@ public class Shader implements Disposable{
      * @param name the name of the uniform
      * @param values x, y and z as the first, second and third values respectively
      */
-    public void setUniformf(String name, Vector3 values){
+    public void setUniformf(String name, Vec3 values){
         setUniformf(name, values.x, values.y, values.z);
     }
 
-    public void setUniformf(int location, Vector3 values){
+    public void setUniformf(int location, Vec3 values){
         setUniformf(location, values.x, values.y, values.z);
     }
 

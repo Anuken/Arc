@@ -1,6 +1,6 @@
 package arc.util;
 
-import arc.math.geom.Vector2;
+import arc.math.geom.Vec2;
 
 /**
  * Various scaling types for fitting one rectangle into another.
@@ -42,13 +42,13 @@ public enum Scaling{
     /** The source is not scaled. */
     none;
 
-    static private final Vector2 temp = new Vector2();
+    static private final Vec2 temp = new Vec2();
 
     /**
-     * Returns the size of the source scaled to the target. Note the same Vector2 instance is always returned and should never be
+     * Returns the size of the source scaled to the target. Note the same Vec2 instance is always returned and should never be
      * cached.
      */
-    public Vector2 apply(float sourceWidth, float sourceHeight, float targetWidth, float targetHeight){
+    public Vec2 apply(float sourceWidth, float sourceHeight, float targetWidth, float targetHeight){
         switch(this){
             case fit:{
                 float targetRatio = targetHeight / targetWidth;

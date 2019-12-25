@@ -1,7 +1,7 @@
 package arc.math;
 
-import arc.math.geom.Vector2;
-import arc.math.geom.Vector3;
+import arc.math.geom.*;
+import arc.math.geom.Vec2;
 import arc.util.ArcRuntimeException;
 
 import java.io.Serializable;
@@ -222,11 +222,11 @@ public class Matrix3 implements Serializable{
         return this;
     }
 
-    public Matrix3 setToRotation(Vector3 axis, float degrees){
+    public Matrix3 setToRotation(Vec3 axis, float degrees){
         return setToRotation(axis, Mathf.cosDeg(degrees), Mathf.sinDeg(degrees));
     }
 
-    public Matrix3 setToRotation(Vector3 axis, float cos, float sin){
+    public Matrix3 setToRotation(Vec3 axis, float cos, float sin){
         float[] val = this.val;
         float oc = 1.0f - cos;
         val[M00] = oc * axis.x * axis.x + cos;
@@ -270,7 +270,7 @@ public class Matrix3 implements Serializable{
      * @param translation The translation vector.
      * @return This matrix for the purpose of chaining operations.
      */
-    public Matrix3 setToTranslation(Vector2 translation){
+    public Matrix3 setToTranslation(Vec2 translation){
         float[] val = this.val;
 
         val[M00] = 1;
@@ -313,7 +313,7 @@ public class Matrix3 implements Serializable{
      * @param scale The scale vector.
      * @return This matrix for the purpose of chaining operations.
      */
-    public Matrix3 setToScaling(Vector2 scale){
+    public Matrix3 setToScaling(Vec2 scale){
         float[] val = this.val;
         val[M00] = scale.x;
         val[M10] = 0;
@@ -424,7 +424,7 @@ public class Matrix3 implements Serializable{
      * @param vector The translation vector.
      * @return This matrix for the purpose of chaining.
      */
-    public Matrix3 trn(Vector2 vector){
+    public Matrix3 trn(Vec2 vector){
         val[M02] += vector.x;
         val[M12] += vector.y;
         return this;
@@ -447,7 +447,7 @@ public class Matrix3 implements Serializable{
      * @param vector The translation vector. (The z-component of the vector is ignored because this is a 3x3 matrix)
      * @return This matrix for the purpose of chaining.
      */
-    public Matrix3 trn(Vector3 vector){
+    public Matrix3 trn(Vec3 vector){
         val[M02] += vector.x;
         val[M12] += vector.y;
         return this;
@@ -483,7 +483,7 @@ public class Matrix3 implements Serializable{
      * @param translation The translation vector.
      * @return This matrix for the purpose of chaining.
      */
-    public Matrix3 translate(Vector2 translation){
+    public Matrix3 translate(Vec2 translation){
         float[] val = this.val;
         tmp[M00] = 1;
         tmp[M10] = 0;
@@ -565,7 +565,7 @@ public class Matrix3 implements Serializable{
      * @param scale The vector to scale the matrix by.
      * @return This matrix for the purpose of chaining.
      */
-    public Matrix3 scale(Vector2 scale){
+    public Matrix3 scale(Vec2 scale){
         float[] tmp = this.tmp;
         tmp[M00] = scale.x;
         tmp[M10] = 0;
@@ -588,13 +588,13 @@ public class Matrix3 implements Serializable{
         return val;
     }
 
-    public Vector2 getTranslation(Vector2 position){
+    public Vec2 getTranslation(Vec2 position){
         position.x = val[M02];
         position.y = val[M12];
         return position;
     }
 
-    public Vector2 getScale(Vector2 scale){
+    public Vec2 getScale(Vec2 scale){
         float[] val = this.val;
         scale.x = (float)Math.sqrt(val[M00] * val[M00] + val[M01] * val[M01]);
         scale.y = (float)Math.sqrt(val[M10] * val[M10] + val[M11] * val[M11]);
@@ -622,10 +622,10 @@ public class Matrix3 implements Serializable{
 
     /**
      * Scale this matrix using the x and y components of the vector but leave the rest of the matrix alone.
-     * @param scale The {@link Vector3} to use to scale this matrix.
+     * @param scale The {@link Vec3} to use to scale this matrix.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix3 scl(Vector2 scale){
+    public Matrix3 scl(Vec2 scale){
         val[M00] *= scale.x;
         val[M11] *= scale.y;
         return this;
@@ -633,10 +633,10 @@ public class Matrix3 implements Serializable{
 
     /**
      * Scale this matrix using the x and y components of the vector but leave the rest of the matrix alone.
-     * @param scale The {@link Vector3} to use to scale this matrix. The z component will be ignored.
+     * @param scale The {@link Vec3} to use to scale this matrix. The z component will be ignored.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix3 scl(Vector3 scale){
+    public Matrix3 scl(Vec3 scale){
         val[M00] *= scale.x;
         val[M11] *= scale.y;
         return this;

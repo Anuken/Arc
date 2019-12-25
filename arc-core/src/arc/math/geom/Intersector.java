@@ -9,26 +9,26 @@ import arc.struct.*;
  * @author Nathan Sweet
  */
 public final class Intersector{
-    private final static Vector3 v0 = new Vector3();
-    private final static Vector3 v1 = new Vector3();
-    private final static Vector3 v2 = new Vector3();
+    private final static Vec3 v0 = new Vec3();
+    private final static Vec3 v1 = new Vec3();
+    private final static Vec3 v2 = new Vec3();
     private final static FloatArray floatArray = new FloatArray();
     private final static FloatArray floatArray2 = new FloatArray();
-    private final static Vector2 ip = new Vector2();
-    private final static Vector2 ep1 = new Vector2();
-    private final static Vector2 ep2 = new Vector2();
-    private final static Vector2 s = new Vector2();
-    private final static Vector2 e = new Vector2();
-    private static final Vector3 i = new Vector3();
-    private static final Vector3 dir = new Vector3();
-    private static final Vector3 start = new Vector3();
-    static Vector3 best = new Vector3();
-    static Vector3 tmp = new Vector3();
-    static Vector3 tmp1 = new Vector3();
-    static Vector3 tmp2 = new Vector3();
-    static Vector3 tmp3 = new Vector3();
-    static Vector2 v2tmp = new Vector2();
-    static Vector3 intersection = new Vector3();
+    private final static Vec2 ip = new Vec2();
+    private final static Vec2 ep1 = new Vec2();
+    private final static Vec2 ep2 = new Vec2();
+    private final static Vec2 s = new Vec2();
+    private final static Vec2 e = new Vec2();
+    private static final Vec3 i = new Vec3();
+    private static final Vec3 dir = new Vec3();
+    private static final Vec3 start = new Vec3();
+    static Vec3 best = new Vec3();
+    static Vec3 tmp = new Vec3();
+    static Vec3 tmp1 = new Vec3();
+    static Vec3 tmp2 = new Vec3();
+    static Vec3 tmp3 = new Vec3();
+    static Vec2 v2tmp = new Vec2();
+    static Vec3 intersection = new Vec3();
 
     public static boolean intersectPolygons(float[] p1, float[] p2){
         // reusable points to trace edges around polygon
@@ -88,7 +88,7 @@ public final class Intersector{
      * @param t3 the third vertex of the triangle
      * @return whether the point is in the triangle
      */
-    public static boolean isPointInTriangle(Vector3 point, Vector3 t1, Vector3 t2, Vector3 t3){
+    public static boolean isPointInTriangle(Vec3 point, Vec3 t1, Vec3 t2, Vec3 t3){
         v0.set(t1).sub(point);
         v1.set(t2).sub(point);
         v2.set(t3).sub(point);
@@ -104,7 +104,7 @@ public final class Intersector{
     }
 
     /** Returns true if the given point is inside the triangle. */
-    public static boolean isPointInTriangle(Vector2 p, Vector2 a, Vector2 b, Vector2 c){
+    public static boolean isPointInTriangle(Vec2 p, Vec2 a, Vec2 b, Vec2 c){
         float px1 = p.x - a.x;
         float py1 = p.y - a.y;
         boolean side12 = (b.x - a.x) * py1 - (b.y - a.y) * px1 > 0;
@@ -126,7 +126,7 @@ public final class Intersector{
      * point is on the line and 1 if the point is on the right side of the line. Left and right are relative to the lines direction
      * which is linePoint1 to linePoint2.
      */
-    public static int pointLineSide(Vector2 linePoint1, Vector2 linePoint2, Vector2 point){
+    public static int pointLineSide(Vec2 linePoint1, Vec2 linePoint2, Vec2 point){
         return (int)Math.signum(
         (linePoint2.x - linePoint1.x) * (point.y - linePoint1.y) - (linePoint2.y - linePoint1.y) * (point.x - linePoint1.x));
     }
@@ -143,11 +143,11 @@ public final class Intersector{
      * @param point The point
      * @return true if the point is in the polygon
      */
-    public static boolean isPointInPolygon(Array<Vector2> polygon, Vector2 point){
-        Vector2 lastVertice = polygon.peek();
+    public static boolean isPointInPolygon(Array<Vec2> polygon, Vec2 point){
+        Vec2 lastVertice = polygon.peek();
         boolean oddNodes = false;
         for(int i = 0; i < polygon.size; i++){
-            Vector2 vertice = polygon.get(i);
+            Vec2 vertice = polygon.get(i);
             if((vertice.y < point.y && lastVertice.y >= point.y) || (lastVertice.y < point.y && vertice.y >= point.y)){
                 if(vertice.x + (point.y - vertice.y) / (lastVertice.y - vertice.y) * (lastVertice.x - vertice.x) < point.x){
                     oddNodes = !oddNodes;
@@ -256,12 +256,12 @@ public final class Intersector{
     }
 
     /** Returns the distance between the given segment and point. */
-    public static float distanceSegmentPoint(Vector2 start, Vector2 end, Vector2 point){
+    public static float distanceSegmentPoint(Vec2 start, Vec2 end, Vec2 point){
         return nearestSegmentPoint(start, end, point, v2tmp).dst(point);
     }
 
     /** Returns a point on the segment nearest to the specified point. */
-    public static Vector2 nearestSegmentPoint(Vector2 start, Vector2 end, Vector2 point, Vector2 nearest){
+    public static Vec2 nearestSegmentPoint(Vec2 start, Vec2 end, Vec2 point, Vec2 nearest){
         float length2 = start.dst2(end);
         if(length2 == 0) return nearest.set(start);
         float t = ((point.x - start.x) * (end.x - start.x) + (point.y - start.y) * (end.y - start.y)) / length2;
@@ -271,8 +271,8 @@ public final class Intersector{
     }
 
     /** Returns a point on the segment nearest to the specified point. */
-    public static Vector2 nearestSegmentPoint(float startX, float startY, float endX, float endY, float pointX, float pointY,
-                                              Vector2 nearest){
+    public static Vec2 nearestSegmentPoint(float startX, float startY, float endX, float endY, float pointX, float pointY,
+                                           Vec2 nearest){
         final float xDiff = endX - startX;
         final float yDiff = endY - startY;
         float length2 = xDiff * xDiff + yDiff * yDiff;
@@ -291,7 +291,7 @@ public final class Intersector{
      * @param squareRadius The squared radius of the circle
      * @return Whether the line segment and the circle intersect
      */
-    public static boolean intersectSegmentCircle(Vector2 start, Vector2 end, Vector2 center, float squareRadius){
+    public static boolean intersectSegmentCircle(Vec2 start, Vec2 end, Vec2 center, float squareRadius){
         tmp.set(end.x - start.x, end.y - start.y, 0);
         tmp1.set(center.x - start.x, center.y - start.y, 0);
         float l = tmp.len();
@@ -321,8 +321,8 @@ public final class Intersector{
      * @param displacement The displacement vector set by the method having unit length
      * @return The displacement or Float.POSITIVE_INFINITY if no intersection is present
      */
-    public static float intersectSegmentCircleDisplace(Vector2 start, Vector2 end, Vector2 point, float radius,
-                                                       Vector2 displacement){
+    public static float intersectSegmentCircleDisplace(Vec2 start, Vec2 end, Vec2 point, float radius,
+                                                       Vec2 displacement){
         float u = (point.x - start.x) * (end.x - start.x) + (point.y - start.y) * (end.y - start.y);
         float d = start.dst(end);
         u /= d * d;
@@ -339,7 +339,7 @@ public final class Intersector{
 
     /**
      * Intersect two 2D Rays and return the scalar parameter of the first ray at the intersection point. You can get the
-     * intersection point by: Vector2 point(direction1).scl(scalar).add(start1); For more information, check:
+     * intersection point by: Vec2 point(direction1).scl(scalar).add(start1); For more information, check:
      * http://stackoverflow.com/a/565282/1091440
      * @param start1 Where the first ray start
      * @param direction1 The direction the first ray is pointing
@@ -348,7 +348,7 @@ public final class Intersector{
      * @return scalar parameter on the first ray describing the point where the intersection happens. May be negative. In case the
      * rays are collinear, Float.POSITIVE_INFINITY will be returned.
      */
-    public static float intersectRayRay(Vector2 start1, Vector2 direction1, Vector2 start2, Vector2 direction2){
+    public static float intersectRayRay(Vec2 start1, Vec2 direction1, Vec2 start2, Vec2 direction2){
         float difx = start2.x - start1.x;
         float dify = start2.y - start1.y;
         float d1xd2 = direction1.x * direction2.y - direction1.y * direction2.x;
@@ -369,7 +369,7 @@ public final class Intersector{
      * @param intersection The intersection point. May be null.
      * @return Whether the two lines intersect
      */
-    public static boolean intersectLines(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, Vector2 intersection){
+    public static boolean intersectLines(Vec2 p1, Vec2 p2, Vec2 p3, Vec2 p4, Vec2 intersection){
         float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y, x3 = p3.x, y3 = p3.y, x4 = p4.x, y4 = p4.y;
 
         float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
@@ -388,7 +388,7 @@ public final class Intersector{
      * @return Whether the two lines intersect
      */
     public static boolean intersectLines(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,
-                                         Vector2 intersection){
+                                         Vec2 intersection){
         float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
         if(d == 0) return false;
 
@@ -406,7 +406,7 @@ public final class Intersector{
      * @param polygon The polygon
      * @return Whether polygon and line intersects
      */
-    public static boolean intersectLinePolygon(Vector2 p1, Vector2 p2, Polygon polygon){
+    public static boolean intersectLinePolygon(Vec2 p1, Vec2 p2, Polygon polygon){
         float[] vertices = polygon.getTransformedVertices();
         float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
         int n = vertices.length;
@@ -475,7 +475,7 @@ public final class Intersector{
     /**
      * {@link #intersectSegmentRectangle(float, float, float, float, Rectangle)}
      */
-    public static boolean intersectSegmentRectangle(Vector2 start, Vector2 end, Rectangle rectangle){
+    public static boolean intersectSegmentRectangle(Vec2 start, Vec2 end, Rectangle rectangle){
         return intersectSegmentRectangle(start.x, start.y, end.x, end.y, rectangle);
     }
 
@@ -485,7 +485,7 @@ public final class Intersector{
      * @param p2 The second point of the segment
      * @return Whether polygon and segment intersect
      */
-    public static boolean intersectSegmentPolygon(Vector2 p1, Vector2 p2, Polygon polygon){
+    public static boolean intersectSegmentPolygon(Vec2 p1, Vec2 p2, Polygon polygon){
         float[] vertices = polygon.getTransformedVertices();
         float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
         int n = vertices.length;
@@ -519,7 +519,7 @@ public final class Intersector{
      * @param intersection The intersection point. May be null.
      * @return Whether the two line segments intersect
      */
-    public static boolean intersectSegments(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, Vector2 intersection){
+    public static boolean intersectSegments(Vec2 p1, Vec2 p2, Vec2 p3, Vec2 p4, Vec2 intersection){
         float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y, x3 = p3.x, y3 = p3.y, x4 = p4.x, y4 = p4.y;
 
         float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
@@ -539,7 +539,7 @@ public final class Intersector{
 
     /** @param intersection May be null. */
     public static boolean intersectSegments(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,
-                                            Vector2 intersection){
+                                            Vec2 intersection){
         float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
         if(d == 0) return false;
 
@@ -785,7 +785,7 @@ public final class Intersector{
     /** Minimum translation required to separate two polygons. */
     public static class MinimumTranslationVector{
         /** Unit length vector that indicates the direction for the separation */
-        public Vector2 normal = new Vector2();
+        public Vec2 normal = new Vec2();
         /** Distance of the translation required for the separation */
         public float depth = 0;
     }

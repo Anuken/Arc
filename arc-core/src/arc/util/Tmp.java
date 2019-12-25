@@ -10,14 +10,14 @@ import arc.math.geom.*;
  * DO NOT USE IN ANY MULTITHREADED code
  */
 public class Tmp{
-    public static final Vector2 v1 = new Vector2();
-    public static final Vector2 v2 = new Vector2();
-    public static final Vector2 v3 = new Vector2();
-    public static final Vector2 v4 = new Vector2();
+    public static final Vec2 v1 = new Vec2();
+    public static final Vec2 v2 = new Vec2();
+    public static final Vec2 v3 = new Vec2();
+    public static final Vec2 v4 = new Vec2();
 
-    public static final Vector3 v31 = new Vector3();
-    public static final Vector3 v32 = new Vector3();
-    public static final Vector3 v33 = new Vector3();
+    public static final Vec3 v31 = new Vec3();
+    public static final Vec3 v32 = new Vec3();
+    public static final Vec3 v33 = new Vec3();
 
     public static final Rectangle r1 = new Rectangle();
     public static final Rectangle r2 = new Rectangle();
@@ -27,7 +27,7 @@ public class Tmp{
     public static final Circle cr2 = new Circle();
     public static final Circle cr3 = new Circle();
 
-    public static final Vector2 t1 = new Vector2();
+    public static final Vec2 t1 = new Vec2();
 
     public static final Color c1 = new Color();
     public static final Color c2 = new Color();

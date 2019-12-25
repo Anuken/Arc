@@ -151,7 +151,7 @@ public class Button extends Table implements Disableable{
 
     public boolean childrenPressed(){
         boolean[] b = {false};
-        Vector2 v = new Vector2();
+        Vec2 v = new Vec2();
 
         forEach(element -> {
             element.stageToLocalCoordinates(v.set(input.mouseX(), input.mouseY()));

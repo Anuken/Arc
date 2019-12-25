@@ -1,9 +1,6 @@
 package math;
 
 import arc.math.Mathf;
-import arc.math.geom.Intersector;
-import arc.math.geom.Vector3;
-import org.junit.Test;
 
 import static org.junit.Assert.*;
 

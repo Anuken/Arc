@@ -27,7 +27,7 @@ public class Scene implements InputProcessor, Disposable{
     //public final Skin skin;
     public final Group root;
     private final ObjectMap<Class, Object> styleDefaults = new ObjectMap<>();
-    private final Vector2 tempCoords = new Vector2();
+    private final Vec2 tempCoords = new Vec2();
     private final Element[] pointerOverActors = new Element[20];
     private final boolean[] pointerTouched = new boolean[20];
     private final int[] pointerScreenX = new int[20];
@@ -704,7 +704,7 @@ public class Scene implements InputProcessor, Disposable{
     /**
      * Returns the {@link Element} at the specified location in stage coordinates. Hit testing is performed in the order the actors
      * were inserted into the stage, last inserted actors being tested first. To get stage coordinates from screen coordinates, use
-     * {@link #screenToStageCoordinates(Vector2)}.
+     * {@link #screenToStageCoordinates(Vec2)}.
      * @param touchable If true, the hit detection will respect the {@link Element#touchable(Touchable) touchability}.
      * @return May be null if no actor was hit.
      */
@@ -717,7 +717,7 @@ public class Scene implements InputProcessor, Disposable{
      * Transforms the screen coordinates to stage coordinates.
      * @param screenCoords Input screen coordinates and output for resulting stage coordinates.
      */
-    public Vector2 screenToStageCoordinates(Vector2 screenCoords){
+    public Vec2 screenToStageCoordinates(Vec2 screenCoords){
         viewport.unproject(screenCoords);
         return screenCoords;
     }
@@ -726,7 +726,7 @@ public class Scene implements InputProcessor, Disposable{
      * Transforms the stage coordinates to screen coordinates.
      * @param stageCoords Input stage coordinates and output for resulting screen coordinates.
      */
-    public Vector2 stageToScreenCoordinates(Vector2 stageCoords){
+    public Vec2 stageToScreenCoordinates(Vec2 stageCoords){
         viewport.project(stageCoords);
         stageCoords.y = viewport.getScreenHeight() - stageCoords.y;
         return stageCoords;
@@ -735,9 +735,9 @@ public class Scene implements InputProcessor, Disposable{
     /**
      * Transforms the coordinates to screen coordinates. The coordinates can be anywhere in the stage since the transform matrix
      * describes how to convert them.
-     * @see Element#localToStageCoordinates(Vector2)
+     * @see Element#localToStageCoordinates(Vec2)
      */
-    public Vector2 toScreenCoordinates(Vector2 coords, Matrix3 transformMatrix){
+    public Vec2 toScreenCoordinates(Vec2 coords, Matrix3 transformMatrix){
         return viewport.toScreenCoordinates(coords, transformMatrix);
     }
 
