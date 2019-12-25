@@ -1,12 +1,9 @@
 package io.anuke.arc.math.geom;
 
-import io.anuke.arc.math.Interpolation;
-import io.anuke.arc.math.Mathf;
-import io.anuke.arc.math.Matrix3;
-import io.anuke.arc.math.Quaternion;
-import io.anuke.arc.util.ArcRuntimeException;
+import io.anuke.arc.math.*;
+import io.anuke.arc.util.*;
 
-import java.io.Serializable;
+import java.io.*;
 
 /**
  * Encapsulates a 3D vector. Allows chaining operations by returning a reference to itself in all modification methods.
@@ -383,14 +380,6 @@ public class Vector3 implements Serializable, Vector<Vector3>{
         final float[] l_mat = matrix.val;
         return set(x * l_mat[Matrix3.M00] + y * l_mat[Matrix3.M10] + z * l_mat[Matrix3.M20], x * l_mat[Matrix3.M01] + y
         * l_mat[Matrix3.M11] + z * l_mat[Matrix3.M21], x * l_mat[Matrix3.M02] + y * l_mat[Matrix3.M12] + z * l_mat[Matrix3.M22]);
-    }
-
-    /**
-     * Multiplies the vector by the given {@link Quaternion}.
-     * @return This vector for chaining
-     */
-    public Vector3 mul(final Quaternion quat){
-        return quat.transform(this);
     }
 
     /**

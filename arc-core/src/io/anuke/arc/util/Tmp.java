@@ -1,9 +1,8 @@
 package io.anuke.arc.util;
 
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.graphics.g2d.TextureRegion;
-import io.anuke.arc.math.Matrix3;
-import io.anuke.arc.math.Quaternion;
+import io.anuke.arc.graphics.*;
+import io.anuke.arc.graphics.g2d.*;
+import io.anuke.arc.math.*;
 import io.anuke.arc.math.geom.*;
 
 /**
@@ -19,10 +18,6 @@ public class Tmp{
     public static final Vector3 v31 = new Vector3();
     public static final Vector3 v32 = new Vector3();
     public static final Vector3 v33 = new Vector3();
-
-    public static final Quaternion q1 = new Quaternion();
-    public static final Quaternion q2 = new Quaternion();
-    public static final Quaternion q3 = new Quaternion();
 
     public static final Rectangle r1 = new Rectangle();
     public static final Rectangle r2 = new Rectangle();

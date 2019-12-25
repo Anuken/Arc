@@ -1,6 +1,6 @@
-package io.anuke.arc.math;
+package io.anuke.arc.math.geom;
 
-import io.anuke.arc.math.geom.Vector3;
+import io.anuke.arc.math.*;
 
 import java.io.Serializable;
 
@@ -371,6 +371,35 @@ public class Quaternion implements Serializable{
         return this;
     }
 
+    public void toMatrix (final float[] matrix) {
+        final float xx = x * x;
+        final float xy = x * y;
+        final float xz = x * z;
+        final float xw = x * w;
+        final float yy = y * y;
+        final float yz = y * z;
+        final float yw = y * w;
+        final float zz = z * z;
+        final float zw = z * w;
+        // Set matrix from quaternion
+        matrix[Matrix4.M00] = 1 - 2 * (yy + zz);
+        matrix[Matrix4.M01] = 2 * (xy - zw);
+        matrix[Matrix4.M02] = 2 * (xz + yw);
+        matrix[Matrix4.M03] = 0;
+        matrix[Matrix4.M10] = 2 * (xy + zw);
+        matrix[Matrix4.M11] = 1 - 2 * (xx + zz);
+        matrix[Matrix4.M12] = 2 * (yz - xw);
+        matrix[Matrix4.M13] = 0;
+        matrix[Matrix4.M20] = 2 * (xz - yw);
+        matrix[Matrix4.M21] = 2 * (yz + xw);
+        matrix[Matrix4.M22] = 1 - 2 * (xx + yy);
+        matrix[Matrix4.M23] = 0;
+        matrix[Matrix4.M30] = 0;
+        matrix[Matrix4.M31] = 0;
+        matrix[Matrix4.M32] = 0;
+        matrix[Matrix4.M33] = 1;
+    }
+
     /**
      * Sets the quaternion to an identity Quaternion
      * @return this quaternion for chaining
@@ -443,14 +472,26 @@ public class Quaternion implements Serializable{
     }
 
     /** Sets the Quaternion from the given matrix, optionally removing any scaling. */
-    public Quaternion setFromMatrix(boolean normalizeAxes, Matrix3 matrix){
+    public Quaternion setFromMatrix (boolean normalizeAxes, Matrix4 matrix) {
+        return setFromAxes(normalizeAxes, matrix.val[Matrix4.M00], matrix.val[Matrix4.M01], matrix.val[Matrix4.M02],
+        matrix.val[Matrix4.M10], matrix.val[Matrix4.M11], matrix.val[Matrix4.M12], matrix.val[Matrix4.M20],
+        matrix.val[Matrix4.M21], matrix.val[Matrix4.M22]);
+    }
+
+    /** Sets the Quaternion from the given rotation matrix, which must not contain scaling. */
+    public Quaternion setFromMatrix (Matrix4 matrix) {
+        return setFromMatrix(false, matrix);
+    }
+
+    /** Sets the Quaternion from the given matrix, optionally removing any scaling. */
+    public Quaternion setFromMatrix (boolean normalizeAxes, Matrix3 matrix) {
         return setFromAxes(normalizeAxes, matrix.val[Matrix3.M00], matrix.val[Matrix3.M01], matrix.val[Matrix3.M02],
         matrix.val[Matrix3.M10], matrix.val[Matrix3.M11], matrix.val[Matrix3.M12], matrix.val[Matrix3.M20],
         matrix.val[Matrix3.M21], matrix.val[Matrix3.M22]);
     }
 
     /** Sets the Quaternion from the given rotation matrix, which must not contain scaling. */
-    public Quaternion setFromMatrix(Matrix3 matrix){
+    public Quaternion setFromMatrix (Matrix3 matrix) {
         return setFromMatrix(false, matrix);
     }
 

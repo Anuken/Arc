@@ -9,7 +9,6 @@ import io.anuke.arc.util.ArcRuntimeException;
  * @author Xoppa
  */
 public class Bezier<T extends Vector<T>> implements Path<T>{
-
     public Array<T> points = new Array<>();
     private T tmp;
     private T tmp2;
