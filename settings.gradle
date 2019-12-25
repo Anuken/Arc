@@ -7,6 +7,7 @@ include ":extensions:postprocessing"
 include ":extensions:arcnet"
 include ":extensions:typelabel"
 include ":extensions:packer"
+include ":extensions:g3d"
 
 include ":backends"
 include ":backends:backend-android"
