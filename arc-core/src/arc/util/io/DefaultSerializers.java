@@ -230,7 +230,7 @@ public class DefaultSerializers{
     }
     
     private static Class<?> lookup(String name) throws ClassNotFoundException{
-        for(int i = 0; i < typeReplacements.length; i++){
+        for(int i = 0; i < typeReplacements.length; i += 2){
             name = name.replace(typeReplacements[i], typeReplacements[i + 1]);
         }
         return Class.forName(typeMappings.get(name, name));
