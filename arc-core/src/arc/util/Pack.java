@@ -2,6 +2,21 @@ package arc.util;
 
 public class Pack{
 
+    /** byte -> unsigned byte */
+    public static int u(byte b){
+        return b & 0xff;
+    }
+
+    /** short -> unsigned short */
+    public static int u(short b){
+        return b & 0xffff;
+    }
+
+    /** int -> unsigned int */
+    public static long u(int b){
+        return b & 0x00000000ffffffffL;
+    }
+
     public static byte byteValue(boolean b){
         return b ? (byte)1 : 0;
     }

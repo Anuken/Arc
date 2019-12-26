@@ -153,9 +153,9 @@ public class GifRecorder{
 			giftime += delta;
 			frametime += delta*61f*speedMultiplier;
 			if(frametime >= (60 / recordfps)){
-				byte[] pix = ScreenUtils.getFrameBufferPixels((int) (gifx + offsetx) + 1 + Core.graphics.getWidth() / 2, 
-						(int) (gify + offsety) + 1 + Core.graphics.getHeight() / 2, 
-						(int) (gifwidth) - 2, (int) (gifheight) - 2, false);
+				byte[] pix = ScreenUtils.getFrameBufferPixels((int)(gifx + offsetx) + 1 + Core.graphics.getWidth() / 2,
+						(int)(gify + offsety) + 1 + Core.graphics.getHeight() / 2,
+						(int)(gifwidth) - 2, (int)(gifheight) - 2, false);
 				frames.add(pix);
 				frametime = 0;
 			}
@@ -252,7 +252,7 @@ public class GifRecorder{
 		if(saving) return;
 		saving = true;
 
-		int width = (int) (gifwidth) - 2, height = (int) (gifheight) - 2;
+		int width = (int)(gifwidth) - 2, height = (int)(gifheight) - 2;
 		saveprogress = 0f;
 
 		new Thread(() -> {
@@ -267,12 +267,12 @@ public class GifRecorder{
 		}
 
 		try{
-			String time = "" + (int) (System.currentTimeMillis() / 1000);
+			String time = "" + (int)(System.currentTimeMillis() / 1000);
 			new File(directory.absolutePath()).mkdir();
 			BufferedImage firstImage = toImage(pixmaps.first(), width, height);
 			File file = new File(directory.absolutePath() + "/recording" + time + ".gif");
 			ImageOutputStream output = new FileImageOutputStream(file);
-			GifSequenceWriter writer = new GifSequenceWriter(output, firstImage.getType(), (int) (1f / recordfps * 1000f), true);
+			GifSequenceWriter writer = new GifSequenceWriter(output, firstImage.getType(), (int)(1f / recordfps * 1000f), true);
 
 			writer.writeToSequence(firstImage);
 
