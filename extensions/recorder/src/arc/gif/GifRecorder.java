@@ -1,19 +1,17 @@
 package arc.gif;
 
-import arc.Core;
-import arc.struct.Array;
-import arc.files.Fi;
-import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
-import arc.input.KeyCode;
-import arc.math.Matrix3;
-import arc.math.geom.Rectangle;
+import arc.*;
+import arc.files.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.input.*;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 
-import javax.imageio.stream.FileImageOutputStream;
-import javax.imageio.stream.ImageOutputStream;
-import java.awt.image.BufferedImage;
+import javax.imageio.stream.*;
+import java.awt.image.*;
 import java.io.*;
 
 /** Records and saves GIFs. */

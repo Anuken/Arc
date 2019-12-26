@@ -235,7 +235,7 @@ public class Strings{
     }
 
     public static String autoFixed(float value, int max){
-        int precision = Math.abs((int) value - value) <= 0.001f ? 0 : Math.abs((int) (value * 10) - value * 10) <= 0.001f ? 1 : 2;
+        int precision = Math.abs((int)value - value) <= 0.001f ? 0 : Math.abs((int)(value * 10) - value * 10) <= 0.001f ? 1 : 2;
         return fixed(value, Math.min(precision, max));
     }
 

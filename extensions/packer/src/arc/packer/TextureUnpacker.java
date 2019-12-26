@@ -1,17 +1,13 @@
 package arc.packer;
 
-import arc.files.Fi;
-import arc.graphics.g2d.TextureAtlas.TextureAtlasData;
-import arc.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
-import arc.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
+import arc.files.*;
+import arc.graphics.g2d.TextureAtlas.*;
+import arc.graphics.g2d.TextureAtlas.TextureAtlasData.*;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import javax.imageio.*;
+import java.awt.geom.*;
+import java.awt.image.*;
+import java.io.*;
 
 /** Unpacks a texture atlas into individual image files.
  * @author Geert Konijnendijk

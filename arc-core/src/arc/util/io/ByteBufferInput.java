@@ -59,7 +59,7 @@ public class ByteBufferInput implements DataInput{
 
     @Override
     public int readUnsignedShort(){
-        return buffer.getShort() + -((int) Short.MIN_VALUE);
+        return buffer.getShort() + -((int)Short.MIN_VALUE);
     }
 
     @Override
