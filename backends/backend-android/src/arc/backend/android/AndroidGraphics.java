@@ -4,15 +4,14 @@ import android.opengl.*;
 import android.opengl.GLSurfaceView.*;
 import android.util.*;
 import android.view.*;
-import android.view.WindowManager.*;
 import arc.*;
 import arc.Graphics.Cursor.*;
 import arc.backend.android.surfaceview.*;
-import arc.struct.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.gl.*;
 import arc.math.*;
+import arc.struct.*;
 import arc.util.Log;
 import arc.util.*;
 
@@ -613,13 +612,10 @@ public class AndroidGraphics extends Graphics implements Renderer{
 
     @Override
     public void setTitle(String title){
-
     }
 
     @Override
     public void setUndecorated(boolean undecorated){
-        final int mask = (undecorated) ? 1 : 0;
-        app.getApplicationWindow().setFlags(LayoutParams.FLAG_FULLSCREEN, mask);
     }
 
     @Override
