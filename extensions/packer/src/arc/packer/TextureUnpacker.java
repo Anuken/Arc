@@ -82,7 +82,7 @@ public class TextureUnpacker {
 						splitImage = extractImage(img, region, outputDirFile, 0);
 						if (region.width != region.originalWidth || region.height != region.originalHeight) {
 						    BufferedImage originalImg = new BufferedImage(region.originalWidth, region.originalHeight, img.getType());
-						    Graphics2D g2 = originalImg.createGraphics();
+						    java.awt.Graphics2D g2 = originalImg.createGraphics();
 						    g2.drawImage(splitImage, (int)region.offsetX, (int)(region.originalHeight - region.height - region.offsetY), null);
 						    g2.dispose();
 						    splitImage = originalImg;
@@ -140,7 +140,7 @@ public class TextureUnpacker {
 		if (padding > 0) {
 			BufferedImage paddedImage = new BufferedImage(splitImage.getWidth() + padding * 2, splitImage.getHeight() + padding * 2,
 				page.getType());
-			Graphics2D g2 = paddedImage.createGraphics();
+			java.awt.Graphics2D g2 = paddedImage.createGraphics();
 			g2.drawImage(splitImage, padding, padding, null);
 			g2.dispose();
 			return paddedImage;
@@ -155,8 +155,8 @@ public class TextureUnpacker {
 	 * @param region The region to extract */
 	private BufferedImage extractNinePatch (BufferedImage page, Region region, File outputDirFile) {
 		BufferedImage splitImage = extractImage(page, region, outputDirFile, NINEPATCH_PADDING);
-		Graphics2D g2 = splitImage.createGraphics();
-		g2.setColor(Color.black);
+		java.awt.Graphics2D g2 = splitImage.createGraphics();
+		g2.setColor(java.awt.Color.black);
 
 		// Draw the four lines to save the ninepatch's padding and splits
 		int startX = region.splits[0] + NINEPATCH_PADDING;
