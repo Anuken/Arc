@@ -242,7 +242,7 @@ public class GifRecorder{
 		this.gifheight = height;
 	}
 
-	public void setBounds(Rectangle rect){
+	public void setBounds(Rect rect){
 		setBounds(rect.x, rect.y, rect.width, rect.height);
 	}
 

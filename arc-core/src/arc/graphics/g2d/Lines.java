@@ -371,7 +371,7 @@ public class Lines{
         rect(x, y, width, height, 0);
     }
 
-    public static void rect(Rectangle rect){
+    public static void rect(Rect rect){
         rect(rect.x, rect.y, rect.width, rect.height, 0);
     }
 

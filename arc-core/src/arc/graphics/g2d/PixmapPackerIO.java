@@ -3,7 +3,7 @@ package arc.graphics.g2d;
 import arc.files.Fi;
 import arc.graphics.PixmapIO;
 import arc.graphics.Texture.TextureFilter;
-import arc.graphics.g2d.PixmapPacker.Page;
+import arc.graphics.g2d.PixmapPacker.*;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -57,7 +57,7 @@ public class PixmapPackerIO{
                 writer.write("repeat: none" + "\n");
                 for(String name : page.rects.keys()){
                     writer.write(name + "\n");
-                    PixmapPacker.PixmapPackerRectangle rect = page.rects.get(name);
+                    PixmapPackerRect rect = page.rects.get(name);
                     writer.write("  rotate: false" + "\n");
                     writer.write("  xy: " + (int)rect.x + "," + (int)rect.y + "\n");
                     writer.write("  size: " + (int)rect.width + "," + (int)rect.height + "\n");

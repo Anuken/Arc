@@ -137,7 +137,7 @@ public class PixmapPacker implements Disposable{
      * Inserts the pixmap without a name. It cannot be looked up by name.
      * @see #pack(String, Pixmap)
      */
-    public synchronized Rectangle pack(Pixmap image){
+    public synchronized Rect pack(Pixmap image){
         return pack(null, image);
     }
 
@@ -149,7 +149,7 @@ public class PixmapPacker implements Disposable{
      * @throws ArcRuntimeException in case the image did not fit due to the page size being too small or providing a duplicate
      * name.
      */
-    public synchronized Rectangle pack(String name, Pixmap image){
+    public synchronized Rect pack(String name, Pixmap image){
         return pack(name, new PixmapRegion(image));
     }
 
@@ -161,7 +161,7 @@ public class PixmapPacker implements Disposable{
      * @throws ArcRuntimeException in case the image did not fit due to the page size being too small or providing a duplicate
      * name.
      */
-    public synchronized Rectangle pack(String name, PixmapRegion image){
+    public synchronized Rect pack(String name, PixmapRegion image){
         if(disposed) return null;
         //TODO should duplicates be allowed?
         //if(name != null && getRect(name) != null)
@@ -169,10 +169,10 @@ public class PixmapPacker implements Disposable{
 
         boolean isPatch = name != null && name.endsWith(".9");
 
-        PixmapPackerRectangle rect;
+        PixmapPackerRect rect;
         Pixmap pixmapToDispose = null;
         if(isPatch){
-            rect = new PixmapPackerRectangle(0, 0, image.width - 2, image.height - 2);
+            rect = new PixmapPackerRect(0, 0, image.width - 2, image.height - 2);
             pixmapToDispose = new Pixmap(image.width - 2, image.height - 2, image.pixmap.getFormat());
             rect.splits = getSplits(image);
             rect.pads = getPads(image, rect.splits);
@@ -180,7 +180,7 @@ public class PixmapPacker implements Disposable{
             image = new PixmapRegion(pixmapToDispose);
             name = name.split("\\.")[0];
         }else{
-            rect = new PixmapPackerRectangle(0, 0, image.width, image.height);
+            rect = new PixmapPackerRect(0, 0, image.width, image.height);
         }
 
         if(rect.width > pageWidth || rect.height > pageHeight){
@@ -241,9 +241,9 @@ public class PixmapPacker implements Disposable{
      * @param name the name of the image
      * @return the rectangle for the image in the page it's stored in or null
      */
-    public synchronized Rectangle getRect(String name){
+    public synchronized Rect getRect(String name){
         for(Page page : pages){
-            Rectangle rect = page.rects.get(name);
+            Rect rect = page.rects.get(name);
             if(rect != null) return rect;
         }
         return null;
@@ -255,7 +255,7 @@ public class PixmapPacker implements Disposable{
      */
     public synchronized Page getPage(String name){
         for(Page page : pages){
-            Rectangle rect = page.rects.get(name);
+            Rect rect = page.rects.get(name);
             if(rect != null) return page;
         }
         return null;
@@ -268,7 +268,7 @@ public class PixmapPacker implements Disposable{
      */
     public synchronized int getPageIndex(String name){
         for(int i = 0; i < pages.size; i++){
-            Rectangle rect = pages.get(i).rects.get(name);
+            Rect rect = pages.get(i).rects.get(name);
             if(rect != null) return i;
         }
         return -1;
@@ -314,7 +314,7 @@ public class PixmapPacker implements Disposable{
         for(Page page : pages){
             if(page.addedRects.size > 0){
                 for(String name : page.addedRects){
-                    PixmapPackerRectangle rect = page.rects.get(name);
+                    PixmapPackerRect rect = page.rects.get(name);
                     TextureAtlas.AtlasRegion region = new TextureAtlas.AtlasRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
 
                     if(rect.splits != null){
@@ -551,7 +551,7 @@ public class PixmapPacker implements Disposable{
         void sort(Array<Pixmap> images);
 
         /** Returns the page the rectangle should be placed in and modifies the specified rectangle position. */
-        Page pack(PixmapPacker packer, String name, Rectangle rect);
+        Page pack(PixmapPacker packer, String name, Rect rect);
     }
 
     /**
@@ -561,7 +561,7 @@ public class PixmapPacker implements Disposable{
      */
     public static class Page{
         final Array<String> addedRects = new Array<>();
-        OrderedMap<String, PixmapPackerRectangle> rects = new OrderedMap<>();
+        OrderedMap<String, PixmapPackerRect> rects = new OrderedMap<>();
         Pixmap image;
         Texture texture;
         boolean dirty;
@@ -582,7 +582,7 @@ public class PixmapPacker implements Disposable{
             return image;
         }
 
-        public OrderedMap<String, PixmapPackerRectangle> getRects(){
+        public OrderedMap<String, PixmapPackerRect> getRects(){
             return rects;
         }
 
@@ -637,7 +637,7 @@ public class PixmapPacker implements Disposable{
             pixmaps.sort(comparator);
         }
 
-        public Page pack(PixmapPacker packer, String name, Rectangle rect){
+        public Page pack(PixmapPacker packer, String name, Rect rect){
             GuillotinePage page;
             if(packer.pages.size == 0){
                 // Add a page if empty.
@@ -663,7 +663,7 @@ public class PixmapPacker implements Disposable{
             return page;
         }
 
-        private Node insert(Node node, Rectangle rect){
+        private Node insert(Node node, Rect rect){
             if(!node.full && node.leftChild != null && node.rightChild != null){
                 Node newNode = insert(node.leftChild, rect);
                 if(newNode == null) newNode = insert(node.rightChild, rect);
@@ -705,7 +705,7 @@ public class PixmapPacker implements Disposable{
         }
 
         static final class Node{
-            public final Rectangle rect = new Rectangle();
+            public final Rect rect = new Rect();
             public Node leftChild;
             public Node rightChild;
             public boolean full;
@@ -748,7 +748,7 @@ public class PixmapPacker implements Disposable{
             images.sort(comparator);
         }
 
-        public Page pack(PixmapPacker packer, String name, Rectangle rect){
+        public Page pack(PixmapPacker packer, String name, Rect rect){
             int padding = packer.padding;
             int pageWidth = packer.pageWidth - padding * 2, pageHeight = packer.pageHeight - padding * 2;
             int rectWidth = (int)rect.width + padding, rectHeight = (int)rect.height + padding;
@@ -812,13 +812,13 @@ public class PixmapPacker implements Disposable{
         }
     }
 
-    public static class PixmapPackerRectangle extends Rectangle{
+    public static class PixmapPackerRect extends Rect{
         public int[] splits;
         public int[] pads;
         int offsetX, offsetY;
         int originalWidth, originalHeight;
 
-        public PixmapPackerRectangle(int x, int y, int width, int height){
+        public PixmapPackerRect(int x, int y, int width, int height){
             super(x, y, width, height);
             this.offsetX = 0;
             this.offsetY = 0;
@@ -826,7 +826,7 @@ public class PixmapPacker implements Disposable{
             this.originalHeight = height;
         }
 
-        public PixmapPackerRectangle(int x, int y, int width, int height, int left, int top, int originalWidth, int originalHeight){
+        public PixmapPackerRect(int x, int y, int width, int height, int left, int top, int originalWidth, int originalHeight){
             super(x, y, width, height);
             this.offsetX = left;
             this.offsetY = top;

@@ -76,8 +76,8 @@ public abstract class Viewport{
         return worldCoords;
     }
 
-    /** @see ScissorStack#calculateScissors(Camera, float, float, float, float, Matrix3, Rectangle, Rectangle) */
-    public void calculateScissors(Matrix3 batchTransform, Rectangle area, Rectangle scissor){
+    /** @see ScissorStack#calculateScissors(Camera, float, float, float, float, Matrix3, Rect, Rect) */
+    public void calculateScissors(Matrix3 batchTransform, Rect area, Rect scissor){
         ScissorStack.calculateScissors(camera, screenX, screenY, screenWidth, screenHeight, batchTransform, area, scissor);
     }
 

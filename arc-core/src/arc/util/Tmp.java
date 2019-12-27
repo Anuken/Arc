@@ -19,9 +19,9 @@ public class Tmp{
     public static final Vec3 v32 = new Vec3();
     public static final Vec3 v33 = new Vec3();
 
-    public static final Rectangle r1 = new Rectangle();
-    public static final Rectangle r2 = new Rectangle();
-    public static final Rectangle r3 = new Rectangle();
+    public static final Rect r1 = new Rect();
+    public static final Rect r2 = new Rect();
+    public static final Rect r3 = new Rect();
 
     public static final Circle cr1 = new Circle();
     public static final Circle cr2 = new Circle();

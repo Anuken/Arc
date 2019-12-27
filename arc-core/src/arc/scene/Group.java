@@ -31,7 +31,7 @@ public abstract class Group extends Element implements Cullable{
     private final Matrix3 computedTransform = new Matrix3();
     private final Matrix3 oldTransform = new Matrix3();
     boolean transform = false;
-    private Rectangle cullingArea;
+    private Rect cullingArea;
 
     @Override
     public void act(float delta){
@@ -57,7 +57,7 @@ public abstract class Group extends Element implements Cullable{
         parentAlpha *= this.color.a;
         SnapshotArray<Element> children = this.children;
         Element[] actors = children.begin();
-        Rectangle cullingArea = this.cullingArea;
+        Rect cullingArea = this.cullingArea;
         if(cullingArea != null){
             // Draw children only if inside culling area.
             float cullLeft = cullingArea.x;
@@ -172,9 +172,9 @@ public abstract class Group extends Element implements Cullable{
 
     /**
      * @return May be null.
-     * @see #setCullingArea(Rectangle)
+     * @see #setCullingArea(Rect)
      */
-    public Rectangle getCullingArea(){
+    public Rect getCullingArea(){
         return cullingArea;
     }
 
@@ -184,7 +184,7 @@ public abstract class Group extends Element implements Cullable{
      * @param cullingArea May be null.
      */
     @Override
-    public void setCullingArea(Rectangle cullingArea){
+    public void setCullingArea(Rect cullingArea){
         this.cullingArea = cullingArea;
     }
 

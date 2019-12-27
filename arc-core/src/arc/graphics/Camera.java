@@ -120,7 +120,7 @@ public class Camera{
     }
 
     /**Sets the specified rectangle to this camera's bounds.*/
-    public Rectangle bounds(Rectangle out){
+    public Rect bounds(Rect out){
         return out.setSize(width, height).setCenter(position);
     }
 }

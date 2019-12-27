@@ -252,9 +252,9 @@ public final class Geometry{
         }
     }
 
-    public static Vec2 raycastRect(float startx, float starty, float endx, float endy, Rectangle rectangle){
-        return raycastRect(startx, starty, endx, endy, rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2,
-        rectangle.width / 2f, rectangle.height / 2f);
+    public static Vec2 raycastRect(float startx, float starty, float endx, float endy, Rect rect){
+        return raycastRect(startx, starty, endx, endy, rect.x + rect.width / 2, rect.y + rect.height / 2,
+        rect.width / 2f, rect.height / 2f);
     }
 
     public static Vec2 raycastRect(float startx, float starty, float endx, float endy, float x, float y, float halfx, float halfy){
@@ -295,7 +295,7 @@ public final class Geometry{
      * Checks for collisions between two rectangles, and returns the correct delta vector of A.
      * Note: The same vector instance is returned each time!
      */
-    public static Vec2 overlap(Rectangle a, Rectangle b, boolean x){
+    public static Vec2 overlap(Rect a, Rect b, boolean x){
         float penetration = 0f;
 
         float ax = a.x + a.width / 2, bx = b.x + b.width / 2;

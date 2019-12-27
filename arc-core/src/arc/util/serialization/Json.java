@@ -551,7 +551,7 @@ public class Json{
                 writer.name("values");
                 writeArrayStart();
                 for(IntSetIterator iter = ((IntSet)value).iterator(); iter.hasNext; )
-                    writeValue(Integer.valueOf(iter.next()), Integer.class, null);
+                    writeValue(iter.next(), Integer.class, null);
                 writeArrayEnd();
                 writeObjectEnd();
                 return;

@@ -17,15 +17,15 @@ import java.util.Iterator;
  */
 @SuppressWarnings("unchecked")
 public class QuadTree<T extends QuadTreeObject>{
-    private static final Rectangle tmp = new Rectangle();
+    private static final Rect tmp = new Rect();
     private static final int maxObjectsPerNode = 5;
     private static final int botLeft = 0, botRight = 1, topRight = 2, topLeft = 3;
 
-    private Rectangle bounds;
+    private Rect bounds;
     private Array<T> objects = new Array<>();
     private QuadTree<T>[] children;
 
-    public QuadTree(Rectangle bounds){
+    public QuadTree(Rect bounds){
         this.bounds = bounds;
     }
 
@@ -36,10 +36,10 @@ public class QuadTree<T extends QuadTreeObject>{
         float subH = bounds.height / 2;
 
         children = new QuadTree[4];
-        children[botLeft] = new QuadTree<>(new Rectangle(bounds.x, bounds.y, subW, subH));
-        children[botRight] = new QuadTree<>(new Rectangle(bounds.x + subW, bounds.y, subW, subH));
-        children[topLeft] = new QuadTree<>(new Rectangle(bounds.x, bounds.y + subH, subW, subH));
-        children[topRight] = new QuadTree<>(new Rectangle(bounds.x + subW, bounds.y + subH, subW, subH));
+        children[botLeft] = new QuadTree<>(new Rect(bounds.x, bounds.y, subW, subH));
+        children[botRight] = new QuadTree<>(new Rect(bounds.x + subW, bounds.y, subW, subH));
+        children[topLeft] = new QuadTree<>(new Rect(bounds.x, bounds.y + subH, subW, subH));
+        children[topRight] = new QuadTree<>(new Rect(bounds.x + subW, bounds.y + subH, subW, subH));
 
         // Transfer objects to children if they fit entirely in one
         for(Iterator<T> iterator = objects.iterator(); iterator.hasNext(); ){
@@ -123,7 +123,7 @@ public class QuadTree<T extends QuadTreeObject>{
         }
     }
 
-    private QuadTree<T> getFittingChild(Rectangle boundingBox){
+    private QuadTree<T> getFittingChild(Rect boundingBox){
         float verticalMidpoint = bounds.x + (bounds.width / 2);
         float horizontalMidpoint = bounds.y + (bounds.height / 2);
 
@@ -180,7 +180,7 @@ public class QuadTree<T extends QuadTreeObject>{
      * <p>
      * This will never result in false positives.
      */
-    public void getIntersect(Cons<T> out, Rectangle rect){
+    public void getIntersect(Cons<T> out, Rect rect){
         getIntersect(out, rect.x, rect.y, rect.width, rect.height);
     }
 
@@ -189,7 +189,7 @@ public class QuadTree<T extends QuadTreeObject>{
      * <p>
      * This will result in false positives, but never a false negative.
      */
-    public void getIntersect(Array<T> out, Rectangle toCheck){
+    public void getIntersect(Array<T> out, Rect toCheck){
         if(children != null){
             for(int i = 0; i < 4; i++){
                 if(children[i].bounds.overlaps(toCheck)){
@@ -239,7 +239,7 @@ public class QuadTree<T extends QuadTreeObject>{
     /**
      * Returns the entire bounds of this node.
      */
-    public Rectangle getBounds(){
+    public Rect getBounds(){
         return bounds;
     }
 
@@ -281,6 +281,6 @@ public class QuadTree<T extends QuadTreeObject>{
     /**Represents an object in a QuadTree.*/
     public interface QuadTreeObject{
         /**Fills the out parameter with this element's rough bounding box. This should never be smaller than the actual object, but may be larger.*/
-        void hitbox(Rectangle out);
+        void hitbox(Rect out);
     }
 }

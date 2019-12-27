@@ -18,7 +18,7 @@ import arc.graphics.g2d.PixmapPacker.PackStrategy;
 import arc.graphics.g2d.PixmapPacker.SkylineStrategy;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.math.geom.Rectangle;
+import arc.math.geom.Rect;
 import arc.util.ArcRuntimeException;
 import arc.util.BufferUtils;
 import arc.util.Disposable;
@@ -642,7 +642,7 @@ public class FreeTypeFontGenerator implements Disposable{
             }
         }
 
-        Rectangle rect = packer.pack(mainPixmap);
+        Rect rect = packer.pack(mainPixmap);
         glyph.page = packer.getPages().size - 1; // Glyph is always packed into the last page for now.
         glyph.srcX = (int)rect.x;
         glyph.srcY = (int)rect.y;

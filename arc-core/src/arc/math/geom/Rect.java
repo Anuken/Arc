@@ -9,19 +9,19 @@ import java.io.Serializable;
  * Encapsulates a 2D rectangle defined by its corner point in the bottom left and its extents in x (width) and y (height).
  * @author badlogicgames@gmail.com
  */
-public class Rectangle implements Serializable, Shape2D{
+public class Rect implements Serializable, Shape2D{
     /** Static temporary rectangle. Use with care! Use only when sure other code will not also use this. */
-    public static final Rectangle tmp = new Rectangle();
+    public static final Rect tmp = new Rect();
 
     /** Static temporary rectangle. Use with care! Use only when sure other code will not also use this. */
-    public static final Rectangle tmp2 = new Rectangle();
+    public static final Rect tmp2 = new Rect();
 
     private static final long serialVersionUID = 5733252015138115702L;
     public float x, y;
     public float width, height;
 
     /** Constructs a new rectangle with all values set to zero */
-    public Rectangle(){
+    public Rect(){
 
     }
 
@@ -32,7 +32,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param width The width
      * @param height The height
      */
-    public Rectangle(float x, float y, float width, float height){
+    public Rect(float x, float y, float width, float height){
         this.x = x;
         this.y = y;
         this.width = width;
@@ -43,7 +43,7 @@ public class Rectangle implements Serializable, Shape2D{
      * Constructs a rectangle based on the given rectangle
      * @param rect The rectangle
      */
-    public Rectangle(Rectangle rect){
+    public Rect(Rect rect){
         x = rect.x;
         y = rect.y;
         width = rect.width;
@@ -57,7 +57,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param height height
      * @return this rectangle for chaining
      */
-    public Rectangle set(float x, float y, float width, float height){
+    public Rect set(float x, float y, float width, float height){
         this.x = x;
         this.y = y;
         this.width = width;
@@ -76,7 +76,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param x The x-coordinate
      * @return this rectangle for chaining
      */
-    public Rectangle setX(float x){
+    public Rect setX(float x){
         this.x = x;
 
         return this;
@@ -92,7 +92,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param y The y-coordinate
      * @return this rectangle for chaining
      */
-    public Rectangle setY(float y){
+    public Rect setY(float y){
         this.y = y;
 
         return this;
@@ -108,7 +108,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param width The width
      * @return this rectangle for chaining
      */
-    public Rectangle setWidth(float width){
+    public Rect setWidth(float width){
         this.width = width;
 
         return this;
@@ -124,7 +124,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param height The height
      * @return this rectangle for chaining
      */
-    public Rectangle setHeight(float height){
+    public Rect setHeight(float height){
         this.height = height;
 
         return this;
@@ -143,7 +143,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param position The position vector
      * @return this rectangle for chaining
      */
-    public Rectangle setPosition(Vec2 position){
+    public Rect setPosition(Vec2 position){
         this.x = position.x;
         this.y = position.y;
 
@@ -156,7 +156,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param y The y-coordinate
      * @return this rectangle for chaining
      */
-    public Rectangle setPosition(float x, float y){
+    public Rect setPosition(float x, float y){
         this.x = x;
         this.y = y;
 
@@ -169,7 +169,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param height The height
      * @return this rectangle for chaining
      */
-    public Rectangle setSize(float width, float height){
+    public Rect setSize(float width, float height){
         this.width = width;
         this.height = height;
 
@@ -181,7 +181,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param sizeXY The size
      * @return this rectangle for chaining
      */
-    public Rectangle setSize(float sizeXY){
+    public Rect setSize(float sizeXY){
         this.width = sizeXY;
         this.height = sizeXY;
 
@@ -223,25 +223,25 @@ public class Rectangle implements Serializable, Shape2D{
     }
 
     /**
-     * @param rectangle the other {@link Rectangle}.
+     * @param rect the other {@link Rect}.
      * @return whether the other rectangle is contained in this rectangle.
      */
-    public boolean contains(Rectangle rectangle){
-        float xmin = rectangle.x;
-        float xmax = xmin + rectangle.width;
+    public boolean contains(Rect rect){
+        float xmin = rect.x;
+        float xmax = xmin + rect.width;
 
-        float ymin = rectangle.y;
-        float ymax = ymin + rectangle.height;
+        float ymin = rect.y;
+        float ymax = ymin + rect.height;
 
         return ((xmin > x && xmin < x + width) && (xmax > x && xmax < x + width))
         && ((ymin > y && ymin < y + height) && (ymax > y && ymax < y + height));
     }
 
     /**
-     * @param r the other {@link Rectangle}
+     * @param r the other {@link Rect}
      * @return whether this rectangle overlaps the other rectangle.
      */
-    public boolean overlaps(Rectangle r){
+    public boolean overlaps(Rect r){
         return x < r.x + r.width && x + width > r.x && y < r.y + r.height && y + height > r.y;
     }
 
@@ -257,7 +257,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param rect the other rectangle
      * @return this rectangle for chaining
      */
-    public Rectangle set(Rectangle rect){
+    public Rect set(Rect rect){
         this.x = rect.x;
         this.y = rect.y;
         this.width = rect.width;
@@ -266,11 +266,11 @@ public class Rectangle implements Serializable, Shape2D{
         return this;
     }
 
-    public Rectangle grow(float amount){
+    public Rect grow(float amount){
         return grow(amount, amount);
     }
 
-    public Rectangle grow(float amountX, float amountY){
+    public Rect grow(float amountX, float amountY){
         x -= amountX/2f;
         y -= amountY/2f;
         width += amountX;
@@ -283,7 +283,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param rect the other rectangle
      * @return this rectangle for chaining
      */
-    public Rectangle merge(Rectangle rect){
+    public Rect merge(Rect rect){
         float minX = Math.min(x, rect.x);
         float maxX = Math.max(x + width, rect.x + rect.width);
         x = minX;
@@ -303,7 +303,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param y the y coordinate of the point
      * @return this rectangle for chaining
      */
-    public Rectangle merge(float x, float y){
+    public Rect merge(float x, float y){
         float minX = Math.min(this.x, x);
         float maxX = Math.max(this.x + width, x);
         this.x = minX;
@@ -322,7 +322,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param vec the vector describing the point
      * @return this rectangle for chaining
      */
-    public Rectangle merge(Vec2 vec){
+    public Rect merge(Vec2 vec){
         return merge(vec.x, vec.y);
     }
 
@@ -331,7 +331,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param vecs the vectors describing the points
      * @return this rectangle for chaining
      */
-    public Rectangle merge(Vec2[] vecs){
+    public Rect merge(Vec2[] vecs){
         float minX = x;
         float maxX = x + width;
         float minY = y;
@@ -375,7 +375,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param y the position's y
      * @return this for chaining
      */
-    public Rectangle setCenter(float x, float y){
+    public Rect setCenter(float x, float y){
         setPosition(x - width / 2, y - height / 2);
         return this;
     }
@@ -385,7 +385,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param position the position
      * @return this for chaining
      */
-    public Rectangle setCenter(Vec2 position){
+    public Rect setCenter(Vec2 position){
         setPosition(position.x - width / 2, position.y - height / 2);
         return this;
     }
@@ -397,7 +397,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @return this rectangle for chaining
      * @see Scaling
      */
-    public Rectangle fitOutside(Rectangle rect){
+    public Rect fitOutside(Rect rect){
         float ratio = getAspectRatio();
 
         if(ratio > rect.getAspectRatio()){
@@ -419,7 +419,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @return this rectangle for chaining
      * @see Scaling
      */
-    public Rectangle fitInside(Rectangle rect){
+    public Rect fitInside(Rect rect){
         float ratio = getAspectRatio();
 
         if(ratio < rect.getAspectRatio()){
@@ -448,7 +448,7 @@ public class Rectangle implements Serializable, Shape2D{
      * @param v the string.
      * @return this rectangle for chaining
      */
-    public Rectangle fromString(String v){
+    public Rect fromString(String v){
         int s0 = v.indexOf(',', 1);
         int s1 = v.indexOf(',', s0 + 1);
         int s2 = v.indexOf(',', s1 + 1);
@@ -488,7 +488,7 @@ public class Rectangle implements Serializable, Shape2D{
         if(this == obj) return true;
         if(obj == null) return false;
         if(getClass() != obj.getClass()) return false;
-        Rectangle other = (Rectangle)obj;
+        Rect other = (Rect)obj;
         if(Float.floatToRawIntBits(height) != Float.floatToRawIntBits(other.height)) return false;
         if(Float.floatToRawIntBits(width) != Float.floatToRawIntBits(other.width)) return false;
         if(Float.floatToRawIntBits(x) != Float.floatToRawIntBits(other.x)) return false;

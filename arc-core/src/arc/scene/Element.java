@@ -763,13 +763,13 @@ public class Element implements Layout{
      */
     public boolean clipBegin(float x, float y, float width, float height){
         if(width <= 0 || height <= 0) return false;
-        Rectangle tableBounds = Rectangle.tmp;
+        Rect tableBounds = Rect.tmp;
         tableBounds.x = x;
         tableBounds.y = y;
         tableBounds.width = width;
         tableBounds.height = height;
         Scene stage = this.stage;
-        Rectangle scissorBounds = Pools.obtain(Rectangle.class, Rectangle::new);
+        Rect scissorBounds = Pools.obtain(Rect.class, Rect::new);
         stage.calculateScissors(tableBounds, scissorBounds);
         if(ScissorStack.pushScissors(scissorBounds)) return true;
         Pools.free(scissorBounds);

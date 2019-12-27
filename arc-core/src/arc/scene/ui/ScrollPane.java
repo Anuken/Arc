@@ -24,14 +24,14 @@ import static arc.Core.*;
  * @author Nathan Sweet
  */
 public class ScrollPane extends WidgetGroup{
-    final Rectangle hScrollBounds = new Rectangle();
-    final Rectangle vScrollBounds = new Rectangle();
-    final Rectangle hKnobBounds = new Rectangle();
-    final Rectangle vKnobBounds = new Rectangle();
+    final Rect hScrollBounds = new Rect();
+    final Rect vScrollBounds = new Rect();
+    final Rect hKnobBounds = new Rect();
+    final Rect vKnobBounds = new Rect();
     final Vec2 lastPoint = new Vec2();
-    private final Rectangle widgetAreaBounds = new Rectangle();
-    private final Rectangle widgetCullingArea = new Rectangle();
-    private final Rectangle scissorBounds = new Rectangle();
+    private final Rect widgetAreaBounds = new Rect();
+    private final Rect widgetCullingArea = new Rect();
+    private final Rect scissorBounds = new Rect();
     protected boolean disableX, disableY;
     boolean scrollX, scrollY;
     boolean vScrollOnRight = true;

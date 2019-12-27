@@ -11,7 +11,7 @@ public class Polygon implements Shape2D{
     private float rotation;
     private float scaleX = 1, scaleY = 1;
     private boolean dirty = true;
-    private Rectangle bounds;
+    private Rect bounds;
 
     /** Constructs a new polygon with no vertices. */
     public Polygon(){
@@ -150,9 +150,9 @@ public class Polygon implements Shape2D{
      * Returns an axis-aligned bounding box of this polygon.
      * <p>
      * Note the returned Rectangle is cached in this polygon, and will be reused if this Polygon is changed.
-     * @return this polygon's bounding box {@link Rectangle}
+     * @return this polygon's bounding box {@link Rect}
      */
-    public Rectangle getBoundingRectangle(){
+    public Rect getBoundingRectangle(){
         float[] vertices = getTransformedVertices();
 
         float minX = vertices[0];
@@ -168,7 +168,7 @@ public class Polygon implements Shape2D{
             maxY = maxY < vertices[i + 1] ? vertices[i + 1] : maxY;
         }
 
-        if(bounds == null) bounds = new Rectangle();
+        if(bounds == null) bounds = new Rect();
         bounds.x = minX;
         bounds.y = minY;
         bounds.width = maxX - minX;

@@ -433,12 +433,12 @@ public final class Intersector{
      * area of overlap.
      * @return Whether the rectangles intersect
      */
-    public static boolean intersectRectangles(Rectangle rectangle1, Rectangle rectangle2, Rectangle intersection){
-        if(rectangle1.overlaps(rectangle2)){
-            intersection.x = Math.max(rectangle1.x, rectangle2.x);
-            intersection.width = Math.min(rectangle1.x + rectangle1.width, rectangle2.x + rectangle2.width) - intersection.x;
-            intersection.y = Math.max(rectangle1.y, rectangle2.y);
-            intersection.height = Math.min(rectangle1.y + rectangle1.height, rectangle2.y + rectangle2.height) - intersection.y;
+    public static boolean intersectRectangles(Rect rect1, Rect rect2, Rect intersection){
+        if(rect1.overlaps(rect2)){
+            intersection.x = Math.max(rect1.x, rect2.x);
+            intersection.width = Math.min(rect1.x + rect1.width, rect2.x + rect2.width) - intersection.x;
+            intersection.y = Math.max(rect1.y, rect2.y);
+            intersection.height = Math.min(rect1.y + rect1.height, rect2.y + rect2.height) - intersection.y;
             return true;
         }
         return false;
@@ -450,33 +450,33 @@ public final class Intersector{
      * @param startY y-coordinate start of line segment
      * @param endX y-coordinate end of line segment
      * @param endY y-coordinate end of line segment
-     * @param rectangle rectangle that is being tested for collision
+     * @param rect rectangle that is being tested for collision
      * @return whether the rectangle intersects with the line segment
      */
-    public static boolean intersectSegmentRectangle(float startX, float startY, float endX, float endY, Rectangle rectangle){
-        float rectangleEndX = rectangle.x + rectangle.width;
-        float rectangleEndY = rectangle.y + rectangle.height;
+    public static boolean intersectSegmentRectangle(float startX, float startY, float endX, float endY, Rect rect){
+        float rectangleEndX = rect.x + rect.width;
+        float rectangleEndY = rect.y + rect.height;
 
-        if(intersectSegments(startX, startY, endX, endY, rectangle.x, rectangle.y, rectangle.x, rectangleEndY, null))
+        if(intersectSegments(startX, startY, endX, endY, rect.x, rect.y, rect.x, rectangleEndY, null))
             return true;
 
-        if(intersectSegments(startX, startY, endX, endY, rectangle.x, rectangle.y, rectangleEndX, rectangle.y, null))
+        if(intersectSegments(startX, startY, endX, endY, rect.x, rect.y, rectangleEndX, rect.y, null))
             return true;
 
-        if(intersectSegments(startX, startY, endX, endY, rectangleEndX, rectangle.y, rectangleEndX, rectangleEndY, null))
+        if(intersectSegments(startX, startY, endX, endY, rectangleEndX, rect.y, rectangleEndX, rectangleEndY, null))
             return true;
 
-        if(intersectSegments(startX, startY, endX, endY, rectangle.x, rectangleEndY, rectangleEndX, rectangleEndY, null))
+        if(intersectSegments(startX, startY, endX, endY, rect.x, rectangleEndY, rectangleEndX, rectangleEndY, null))
             return true;
 
-        return rectangle.contains(startX, startY);
+        return rect.contains(startX, startY);
     }
 
     /**
-     * {@link #intersectSegmentRectangle(float, float, float, float, Rectangle)}
+     * {@link #intersectSegmentRectangle(float, float, float, float, Rect)}
      */
-    public static boolean intersectSegmentRectangle(Vec2 start, Vec2 end, Rectangle rectangle){
-        return intersectSegmentRectangle(start.x, start.y, end.x, end.y, rectangle);
+    public static boolean intersectSegmentRectangle(Vec2 start, Vec2 end, Rect rect){
+        return intersectSegmentRectangle(start.x, start.y, end.x, end.y, rect);
     }
 
     /**
@@ -567,11 +567,11 @@ public final class Intersector{
         return c1.overlaps(c2);
     }
 
-    public static boolean overlaps(Rectangle r1, Rectangle r2){
+    public static boolean overlaps(Rect r1, Rect r2){
         return r1.overlaps(r2);
     }
 
-    public static boolean overlaps(Circle c, Rectangle r){
+    public static boolean overlaps(Circle c, Rect r){
         float closestX = c.x;
         float closestY = c.y;
 

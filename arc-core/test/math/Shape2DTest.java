@@ -1,7 +1,7 @@
 package math;
 
 import arc.math.geom.Circle;
-import arc.math.geom.Rectangle;
+import arc.math.geom.Rect;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -30,8 +30,8 @@ public class Shape2DTest{
 
     @Test
     public void testRectangle(){
-        Rectangle r1 = new Rectangle(0, 0, 1, 1);
-        Rectangle r2 = new Rectangle(1, 0, 2, 1);
+        Rect r1 = new Rect(0, 0, 1, 1);
+        Rect r2 = new Rect(1, 0, 2, 1);
         assertTrue(r1.overlaps(r1));
         assertFalse(r1.overlaps(r2));
         assertTrue(r1.contains(0, 0));
