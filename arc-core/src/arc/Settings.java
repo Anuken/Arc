@@ -257,6 +257,10 @@ public class Settings{
         return values.containsKey(name);
     }
 
+    public Object get(String name, Object def){
+        return values.get(name, def);
+    }
+
     public void putObject(String name, Object value){
         putObject(name, value, value.getClass());
     }
