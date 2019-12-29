@@ -150,6 +150,16 @@ public class Scene implements InputProcessor, Disposable{
 
         if(scrollFocus != null && (!scrollFocus.isVisible() || scrollFocus.getScene() == null)) scrollFocus = null;
         if(keyboardFocus != null && (!keyboardFocus.isVisible() || keyboardFocus.getScene() == null)) keyboardFocus = null;
+        if(scrollFocus != null){
+            Element curr = scrollFocus;
+            while(curr.getParent() != null){
+                if(!curr.isVisible()){
+                    scrollFocus = null;
+                    break;
+                }
+                curr = curr.getParent();
+            }
+        }
 
         root.act(delta);
     }
