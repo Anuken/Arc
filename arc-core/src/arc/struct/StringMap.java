@@ -24,7 +24,7 @@ public class StringMap extends ObjectMap<String, String>{
     }
 
     public boolean getBool(String name){
-        return get(name, "").equalsIgnoreCase("true");
+        return get(name, "").equals("true");
     }
 
     public int getInt(String name){

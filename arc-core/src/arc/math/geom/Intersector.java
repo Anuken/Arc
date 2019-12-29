@@ -1,5 +1,6 @@
 package arc.math.geom;
 
+import arc.math.*;
 import arc.struct.*;
 
 /**
@@ -88,7 +89,7 @@ public final class Intersector{
      * @param t3 the third vertex of the triangle
      * @return whether the point is in the triangle
      */
-    public static boolean isPointInTriangle(Vec3 point, Vec3 t1, Vec3 t2, Vec3 t3){
+    public static boolean isInTriangle(Vec3 point, Vec3 t1, Vec3 t2, Vec3 t3){
         v0.set(t1).sub(point);
         v1.set(t2).sub(point);
         v2.set(t3).sub(point);
@@ -103,8 +104,16 @@ public final class Intersector{
         return !(ab * bc - ac * bb < 0);
     }
 
+    /** @return whether x,y is inside the hexagon with radius d centered at cx, cy. */
+    public static boolean isInsideHexagon(float cx, float cy, float d, float x, float y){
+        float dx = Math.abs(x - cx) / d;
+        float dy = Math.abs(y - cy) / d;
+        float a = 0.25f * Mathf.sqrt3;
+        return (dy <= a) && (a * dx + 0.25 * dy <= 0.5 * a);
+    }
+
     /** Returns true if the given point is inside the triangle. */
-    public static boolean isPointInTriangle(Vec2 p, Vec2 a, Vec2 b, Vec2 c){
+    public static boolean isInTriangle(Vec2 p, Vec2 a, Vec2 b, Vec2 c){
         float px1 = p.x - a.x;
         float py1 = p.y - a.y;
         boolean side12 = (b.x - a.x) * py1 - (b.y - a.y) * px1 > 0;
@@ -113,7 +122,7 @@ public final class Intersector{
     }
 
     /** Returns true if the given point is inside the triangle. */
-    public static boolean isPointInTriangle(float px, float py, float ax, float ay, float bx, float by, float cx, float cy){
+    public static boolean isInTriangle(float px, float py, float ax, float ay, float bx, float by, float cx, float cy){
         float px1 = px - ax;
         float py1 = py - ay;
         boolean side12 = (bx - ax) * py1 - (by - ay) * px1 > 0;
@@ -143,7 +152,7 @@ public final class Intersector{
      * @param point The point
      * @return true if the point is in the polygon
      */
-    public static boolean isPointInPolygon(Array<Vec2> polygon, Vec2 point){
+    public static boolean isInPolygon(Array<Vec2> polygon, Vec2 point){
         Vec2 lastVertice = polygon.peek();
         boolean oddNodes = false;
         for(int i = 0; i < polygon.size; i++){
@@ -163,7 +172,7 @@ public final class Intersector{
      * @param offset Starting polygon index.
      * @param count Number of array indices to use after offset.
      */
-    public static boolean isPointInPolygon(float[] polygon, int offset, int count, float x, float y){
+    public static boolean isInPolygon(float[] polygon, int offset, int count, float x, float y){
         boolean oddNodes = false;
         int j = offset + count - 2;
         for(int i = offset, n = j; i <= n; i += 2){
