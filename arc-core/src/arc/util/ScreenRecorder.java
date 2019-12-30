@@ -10,7 +10,7 @@ public class ScreenRecorder{
 
     static{
         try{
-            Class<?> recorderClass = Class.forName("io.anuke.arc.recorder.GifRecorder");
+            Class<?> recorderClass = Class.forName("arc.gif.GifRecorder");
             Object recorder = recorderClass.getConstructor().newInstance();
             Method method = recorderClass.getMethod("setExportDirectory", Fi.class);
             method.invoke(recorder, Core.files.local("../../desktop/gifexport"));
