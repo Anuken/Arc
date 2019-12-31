@@ -142,7 +142,7 @@ public class KeybindDialog extends Dialog{
                         rebindAxis = true;
                         rebindMin = true;
                         openDialog(section, keybind);
-                    }).width(110f);
+                    }).width(130f);
                 }else{
                     table.add(bundle.get("keybind." + keybind.name() + ".name", Strings.capitalize(keybind.name())),
                     style.keyNameColor).left().padRight(40).padLeft(8);
@@ -153,13 +153,13 @@ public class KeybindDialog extends Dialog{
                         rebindAxis = false;
                         rebindMin = false;
                         openDialog(section, keybind);
-                    }).width(110f);
+                    }).width(130f);
                 }
                 table.addButton(bundle.get("settings.resetKey", "Reset"), () -> {
                     keybinds.resetToDefault(section, keybind);
                     settings.save();
                     setup();
-                }).width(100f);
+                }).width(130f);
                 table.row();
             }
 
