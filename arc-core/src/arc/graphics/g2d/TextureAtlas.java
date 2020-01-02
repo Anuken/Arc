@@ -2,13 +2,13 @@ package arc.graphics.g2d;
 
 import arc.*;
 import arc.Files.*;
-import arc.struct.*;
 import arc.files.*;
-import arc.graphics.Pixmap.*;
 import arc.graphics.*;
+import arc.graphics.Pixmap.*;
 import arc.graphics.Texture.*;
 import arc.graphics.g2d.TextureAtlas.TextureAtlasData.*;
 import arc.scene.style.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 
@@ -251,12 +251,17 @@ public class TextureAtlas implements Disposable{
         return regionmap.containsKey(s);
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends Drawable> T getDrawable(String name){
+        return (T)drawable(name);
+    }
+
     /** Always creates a new drawable by name.
      * If nothing is found, returns an 'error' texture region drawable. */
     @SuppressWarnings("unchecked")
-    public <T extends Drawable> T drawable(String name){
+    public Drawable drawable(String name){
         if(drawables.containsKey(name)){
-            return (T)drawables.get(name);
+            return drawables.get(name);
         }
 
         Drawable out = null;
@@ -279,7 +284,7 @@ public class TextureAtlas implements Disposable{
         if(out == null) out = new TextureRegionDrawable(error);
         drawables.put(name, out);
 
-        return (T)out;
+        return out;
     }
 
     /**

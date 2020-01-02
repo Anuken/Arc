@@ -21,7 +21,7 @@ public class SkinGenerator{
             StringBuilder loading = new StringBuilder();
             for(Fi fi : ui.findAll(f -> f.extEquals("png"))){
                 String name = fi.nameWithoutExtension().replace(".9", "");
-                loading.append("        ").append(Strings.kebabToCamel(name)).append(" = ").append("Core.atlas.drawable(\"").append(name).append("\");\n");
+                loading.append("        ").append(Strings.kebabToCamel(name)).append(" = ").append("Core.atlas.getDrawable(\"").append(name).append("\");\n");
             }
 
             String template = new Fi("textemplate", FileType.internal).readString();
@@ -41,7 +41,7 @@ public class SkinGenerator{
             StringBuilder loading = new StringBuilder();
             for(Fi fi : icons.findAll(f -> f.extEquals("png"))){
                 String name = fi.nameWithoutExtension();
-                loading.append("        ").append(Strings.kebabToCamel(name.replace("icon-", ""))).append(" = ").append("Core.atlas.drawable(\"").append(name).append("\");\n");
+                loading.append("        ").append(Strings.kebabToCamel(name.replace("icon-", ""))).append(" = ").append("Core.atlas.getDrawable(\"").append(name).append("\");\n");
             }
 
             String template = new Fi("icontemplate", FileType.internal).readString();
