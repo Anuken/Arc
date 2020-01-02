@@ -5,6 +5,18 @@ import java.lang.reflect.*;
 @SuppressWarnings("unchecked")
 public class Reflect{
 
+    public static <T> T get(Field field){
+        return get(null, field);
+    }
+
+    public static <T> T get(Object object, Field field){
+        try{
+            return (T)field.get(object);
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
     public static <T> T get(Class<?> type, Object object, String name){
         try{
             Field field = type.getDeclaredField(name);

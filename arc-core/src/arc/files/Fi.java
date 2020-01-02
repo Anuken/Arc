@@ -116,8 +116,7 @@ public class Fi{
     static private void copyDirectory(Fi sourceDir, Fi destDir){
         destDir.mkdirs();
         Fi[] files = sourceDir.list();
-        for(int i = 0, n = files.length; i < n; i++){
-            Fi srcFile = files[i];
+        for(Fi srcFile : files){
             Fi destFile = destDir.child(srcFile.name());
             if(srcFile.isDirectory())
                 copyDirectory(srcFile, destFile);
@@ -142,6 +141,11 @@ public class Fi{
     /** @return the name of the file, without any parent paths. */
     public String name(){
         return file.getName().isEmpty() ? file.getPath() : file.getName();
+    }
+
+    /** @return whether this file's extension is equal to the specified string. */
+    public boolean extEquals(String ext){
+        return extension().equalsIgnoreCase(ext);
     }
 
     /** Returns the file extension (without the dot) or an empty string if the file name doesn't contain a dot. */

@@ -253,9 +253,10 @@ public class TextureAtlas implements Disposable{
 
     /** Always creates a new drawable by name.
      * If nothing is found, returns an 'error' texture region drawable. */
-    public Drawable drawable(String name){
+    @SuppressWarnings("unchecked")
+    public <T extends Drawable> T drawable(String name){
         if(drawables.containsKey(name)){
-            return drawables.get(name);
+            return (T)drawables.get(name);
         }
 
         Drawable out = null;
@@ -278,7 +279,7 @@ public class TextureAtlas implements Disposable{
         if(out == null) out = new TextureRegionDrawable(error);
         drawables.put(name, out);
 
-        return out;
+        return (T)out;
     }
 
     /**

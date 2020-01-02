@@ -139,6 +139,23 @@ public class Strings{
         return new String(new char[Math.abs((int)(time / scale) % length)]).replace("\0", replacement);
     }
 
+    public static String kebabToCamel(String s){
+        StringBuilder result = new StringBuilder(s.length());
+
+        for(int i = 0; i < s.length(); i++){
+            char c = s.charAt(i);
+            if(c != '_' && c != '-'){
+                if(i != 0 && (s.charAt(i - 1) == '_' || s.charAt(i - 1) == '-')){
+                    result.append(Character.toUpperCase(c));
+                }else{
+                    result.append(c);
+                }
+            }
+        }
+
+        return result.toString();
+    }
+
     /**Converts a snake_case or kebab-case string to Upper Case.
      * For example: "test_string" -> "Test String"*/
     public static String capitalize(String s){
