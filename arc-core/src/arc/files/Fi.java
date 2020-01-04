@@ -550,6 +550,13 @@ public class Fi{
         return out;
     }
 
+    /** Recursively iterates through all files in this directory and adds them to a newly allocated array.*/
+    public Array<Fi> findAll(){
+        Array<Fi> out = new Array<>();
+        walk(out::add);
+        return out;
+    }
+
     /**
      * Returns the paths to the children of this directory. Returns an empty list if this file handle represents a file and not a
      * directory. On the desktop, an {@link FileType#internal} handle to a directory on the classpath will return a zero length
