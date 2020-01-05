@@ -75,6 +75,10 @@ public class Strings{
         return build.toString();
     }
 
+    public static String stripColors(String text){
+        return text.replaceAll("/*\\[[^]]*]", "");
+    }
+
     public static String encode(String str){
         try{
             return URLEncoder.encode(str, "UTF-8");
