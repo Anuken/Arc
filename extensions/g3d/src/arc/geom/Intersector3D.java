@@ -91,7 +91,7 @@ public class Intersector3D{
         float det = edge1.dot(pvec);
         if(Mathf.zero(det)){
             p.set(t1, t2, t3);
-            if(p.testPoint(ray.origin) == PlaneSide.OnPlane && Intersector.isPointInTriangle(ray.origin, t1, t2, t3)){
+            if(p.testPoint(ray.origin) == PlaneSide.OnPlane && Intersector.isInTriangle(ray.origin, t1, t2, t3)){
                 if(intersection != null) intersection.set(ray.origin);
                 return true;
             }
