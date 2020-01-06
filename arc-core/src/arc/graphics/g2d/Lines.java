@@ -12,7 +12,7 @@ public class Lines{
     private static FloatArray floats = new FloatArray(20);
     private static FloatArray floatBuilder = new FloatArray(20);
     private static boolean building, precise;
-    private static float circlePrecision = 0.38f;
+    private static float circlePrecision = 0.4f;
 
     /** Set the vertices used for drawing a line circle. */
     public static void setCirclePrecision(float amount){
