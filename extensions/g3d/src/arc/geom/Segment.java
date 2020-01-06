@@ -1,6 +1,8 @@
-package arc.math.geom;
+package arc.geom;
 
-import java.io.Serializable;
+import arc.math.geom.*;
+
+import java.io.*;
 
 /**
  * A Segment is a line in 3-space having a staring and an ending position.

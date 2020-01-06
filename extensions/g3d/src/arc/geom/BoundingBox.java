@@ -1,8 +1,9 @@
-package arc.math.geom;
+package arc.geom;
 
-import java.io.Serializable;
-import java.util.List;
 import arc.math.geom.*;
+
+import java.io.*;
+import java.util.*;
 
 /**
  * Encapsulates an axis aligned bounding box represented by a minimum and a maximum Vector. Additionally you can query for the

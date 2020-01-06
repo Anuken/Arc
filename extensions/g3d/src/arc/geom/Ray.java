@@ -1,13 +1,12 @@
-package arc.math.geom;
+package arc.geom;
 
-import java.io.Serializable;
+import arc.math.geom.*;
 
 /**
  * Encapsulates a ray having a starting position and a unit length direction.
  * @author badlogicgames@gmail.com
  */
-public class Ray implements Serializable{
-    private static final long serialVersionUID = -620692054835390878L;
+public class Ray{
     static Vec3 tmp = new Vec3();
     public final Vec3 origin = new Vec3();
     public final Vec3 direction = new Vec3();

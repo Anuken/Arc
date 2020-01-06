@@ -1,8 +1,9 @@
-package arc.math.geom;
+package arc.geom;
 
-import arc.math.Mathf;
+import arc.math.*;
+import arc.math.geom.*;
 
-import java.io.Serializable;
+import java.io.*;
 
 /**
  * Encapsulates a 3D sphere with a center and a radius

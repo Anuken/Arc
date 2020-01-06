@@ -1,8 +1,9 @@
-package arc.math.geom;
+package arc.geom;
 
 import arc.math.*;
+import arc.math.geom.*;
 
-import java.io.Serializable;
+import java.io.*;
 
 /**
  * A simple quaternion class.

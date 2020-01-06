@@ -1,4 +1,4 @@
-package arc.graphics.g3d;
+package arc.g3d;
 
 import arc.math.geom.*;
 import arc.util.*;
