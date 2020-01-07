@@ -45,8 +45,8 @@ public final class VertexAttribute{
      * @param unit Optional unit/index specifier, used for texture coordinates and bone weights
      */
     public VertexAttribute(int usage, int numComponents, String alias, int unit){
-        this(usage, numComponents, usage == Usage.ColorPacked ? GL20.GL_UNSIGNED_BYTE : GL20.GL_FLOAT,
-        usage == Usage.ColorPacked, alias, unit);
+        this(usage, numComponents, usage == Usage.colorPacked ? GL20.GL_UNSIGNED_BYTE : GL20.GL_FLOAT,
+        usage == Usage.colorPacked, alias, unit);
     }
 
     /**
@@ -85,35 +85,35 @@ public final class VertexAttribute{
     }
 
     public static VertexAttribute Position(){
-        return new VertexAttribute(Usage.Position, 3, Shader.POSITION_ATTRIBUTE);
+        return new VertexAttribute(Usage.position, 3, Shader.positionAttribute);
     }
 
     public static VertexAttribute TexCoords(int unit){
-        return new VertexAttribute(Usage.TextureCoordinates, 2, Shader.TEXCOORD_ATTRIBUTE + unit, unit);
+        return new VertexAttribute(Usage.textureCoordinates, 2, Shader.texcoordAttribute + unit, unit);
     }
 
     public static VertexAttribute Normal(){
-        return new VertexAttribute(Usage.Normal, 3, Shader.NORMAL_ATTRIBUTE);
+        return new VertexAttribute(Usage.normal, 3, Shader.normalAttribute);
     }
 
     public static VertexAttribute ColorPacked(){
-        return new VertexAttribute(Usage.ColorPacked, 4, GL20.GL_UNSIGNED_BYTE, true, Shader.COLOR_ATTRIBUTE);
+        return new VertexAttribute(Usage.colorPacked, 4, GL20.GL_UNSIGNED_BYTE, true, Shader.colorAttribute);
     }
 
     public static VertexAttribute ColorUnpacked(){
-        return new VertexAttribute(Usage.ColorUnpacked, 4, GL20.GL_FLOAT, false, Shader.COLOR_ATTRIBUTE);
+        return new VertexAttribute(Usage.colorUnpacked, 4, GL20.GL_FLOAT, false, Shader.colorAttribute);
     }
 
     public static VertexAttribute Tangent(){
-        return new VertexAttribute(Usage.Tangent, 3, Shader.TANGENT_ATTRIBUTE);
+        return new VertexAttribute(Usage.tangent, 3, Shader.tangentAttribute);
     }
 
     public static VertexAttribute Binormal(){
-        return new VertexAttribute(Usage.BiNormal, 3, Shader.BINORMAL_ATTRIBUTE);
+        return new VertexAttribute(Usage.biNormal, 3, Shader.binormalAttribute);
     }
 
     public static VertexAttribute BoneWeight(int unit){
-        return new VertexAttribute(Usage.BoneWeight, 2, Shader.BONEWEIGHT_ATTRIBUTE + unit, unit);
+        return new VertexAttribute(Usage.boneWeight, 2, Shader.boneweightAttribute + unit, unit);
     }
 
     /**

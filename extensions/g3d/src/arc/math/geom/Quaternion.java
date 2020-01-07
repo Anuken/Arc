@@ -1,7 +1,6 @@
-package arc.geom;
+package arc.math.geom;
 
 import arc.math.*;
-import arc.math.geom.*;
 
 /**
  * A simple quaternion class.

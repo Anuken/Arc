@@ -1,7 +1,6 @@
-package arc.geom;
+package arc.math.geom;
 
 import arc.math.*;
-import arc.math.geom.*;
 
 /**
  * Encapsulates a 3D sphere with a center and a radius

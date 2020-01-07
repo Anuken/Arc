@@ -12,22 +12,22 @@ public class BatchShader{
     
     private static final String vertexShader =
     Strings.join("\n",
-        "attribute vec4 " + Shader.POSITION_ATTRIBUTE + ";",
-        "attribute vec4 " + Shader.COLOR_ATTRIBUTE + ";",
-        "attribute vec2 " + Shader.TEXCOORD_ATTRIBUTE + "0;",
-        "attribute vec4 " + Shader.MIX_COLOR_ATTRIBUTE + ";",
+        "attribute vec4 " + Shader.positionAttribute + ";",
+        "attribute vec4 " + Shader.colorAttribute + ";",
+        "attribute vec2 " + Shader.texcoordAttribute + "0;",
+        "attribute vec4 " + Shader.mixColorAttribute + ";",
         "uniform mat4 u_projTrans;",
         "varying vec4 v_color;",
         "varying vec4 v_mix_color;",
         "varying vec2 v_texCoords;",
         "",
         "void main(){",
-        "   v_color = " + Shader.COLOR_ATTRIBUTE + ";",
+        "   v_color = " + Shader.colorAttribute + ";",
         "   v_color.a = v_color.a * (255.0/254.0);",
-        "   v_mix_color = " + Shader.MIX_COLOR_ATTRIBUTE + ";",
+        "   v_mix_color = " + Shader.mixColorAttribute + ";",
         "   v_mix_color.a *= (255.0/254.0);",
-        "   v_texCoords = " + Shader.TEXCOORD_ATTRIBUTE + "0;",
-        "   gl_Position = u_projTrans * " + Shader.POSITION_ATTRIBUTE + ";",
+        "   v_texCoords = " + Shader.texcoordAttribute + "0;",
+        "   gl_Position = u_projTrans * " + Shader.positionAttribute + ";",
         "}"
     );
     private static final String fragmentShader =

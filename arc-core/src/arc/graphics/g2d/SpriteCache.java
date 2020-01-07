@@ -100,9 +100,9 @@ public class SpriteCache implements Disposable{
         if(useIndices && size > 8191)
             throw new IllegalArgumentException("Can't have more than 8191 sprites per batch: " + size);
 
-        mesh = new Mesh(true, size * (useIndices ? 4 : 6), useIndices ? size * 6 : 0, new VertexAttribute(Usage.Position, 2,
-        Shader.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, Shader.COLOR_ATTRIBUTE),
-        new VertexAttribute(Usage.TextureCoordinates, 2, Shader.TEXCOORD_ATTRIBUTE + "0"));
+        mesh = new Mesh(true, size * (useIndices ? 4 : 6), useIndices ? size * 6 : 0, new VertexAttribute(Usage.position, 2,
+        Shader.positionAttribute), new VertexAttribute(Usage.colorPacked, 4, Shader.colorAttribute),
+        new VertexAttribute(Usage.textureCoordinates, 2, Shader.texcoordAttribute + "0"));
         mesh.setAutoBind(false);
         caches = new Array<>(cacheSize);
 
@@ -125,19 +125,19 @@ public class SpriteCache implements Disposable{
     }
 
     static Shader createDefaultShader(){
-        String vertexShader = "attribute vec4 " + Shader.POSITION_ATTRIBUTE + ";\n" //
-        + "attribute vec4 " + Shader.COLOR_ATTRIBUTE + ";\n" //
-        + "attribute vec2 " + Shader.TEXCOORD_ATTRIBUTE + "0;\n" //
+        String vertexShader = "attribute vec4 " + Shader.positionAttribute + ";\n" //
+        + "attribute vec4 " + Shader.colorAttribute + ";\n" //
+        + "attribute vec2 " + Shader.texcoordAttribute + "0;\n" //
         + "uniform mat4 u_projectionViewMatrix;\n" //
         + "varying vec4 v_color;\n" //
         + "varying vec2 v_texCoords;\n" //
         + "\n" //
         + "void main()\n" //
         + "{\n" //
-        + "   v_color = " + Shader.COLOR_ATTRIBUTE + ";\n" //
+        + "   v_color = " + Shader.colorAttribute + ";\n" //
         + "   v_color.a = v_color.a * (255.0/254.0);\n" //
-        + "   v_texCoords = " + Shader.TEXCOORD_ATTRIBUTE + "0;\n" //
-        + "   gl_Position =  u_projectionViewMatrix * " + Shader.POSITION_ATTRIBUTE + ";\n" //
+        + "   v_texCoords = " + Shader.texcoordAttribute + "0;\n" //
+        + "   gl_Position =  u_projectionViewMatrix * " + Shader.positionAttribute + ";\n" //
         + "}\n";
         String fragmentShader = "#ifdef GL_ES\n" //
         + "precision mediump float;\n" //

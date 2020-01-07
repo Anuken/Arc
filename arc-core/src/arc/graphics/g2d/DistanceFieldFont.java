@@ -75,18 +75,18 @@ public class DistanceFieldFont extends BitmapFont{
      * u_smoothing uniform > 0.0. Otherwise the same code as the default SpriteBatch shader is used.
      */
     public static Shader createDistanceFieldShader(){
-        String vertexShader = "attribute vec4 " + Shader.POSITION_ATTRIBUTE + ";\n" //
-        + "attribute vec4 " + Shader.COLOR_ATTRIBUTE + ";\n" //
-        + "attribute vec2 " + Shader.TEXCOORD_ATTRIBUTE + "0;\n" //
+        String vertexShader = "attribute vec4 " + Shader.positionAttribute + ";\n" //
+        + "attribute vec4 " + Shader.colorAttribute + ";\n" //
+        + "attribute vec2 " + Shader.texcoordAttribute + "0;\n" //
         + "uniform mat4 u_projTrans;\n" //
         + "varying vec4 v_color;\n" //
         + "varying vec2 v_texCoords;\n" //
         + "\n" //
         + "void main() {\n" //
-        + "	v_color = " + Shader.COLOR_ATTRIBUTE + ";\n" //
+        + "	v_color = " + Shader.colorAttribute + ";\n" //
         + "	v_color.a = v_color.a * (255.0/254.0);\n" //
-        + "	v_texCoords = " + Shader.TEXCOORD_ATTRIBUTE + "0;\n" //
-        + "	gl_Position =  u_projTrans * " + Shader.POSITION_ATTRIBUTE + ";\n" //
+        + "	v_texCoords = " + Shader.texcoordAttribute + "0;\n" //
+        + "	gl_Position =  u_projTrans * " + Shader.positionAttribute + ";\n" //
         + "}\n";
 
         String fragmentShader = "#ifdef GL_ES\n" //

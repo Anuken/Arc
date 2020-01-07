@@ -1,18 +1,12 @@
-package arc.graphics.gl;
+package arc.graphics.g3d;
 
-import arc.struct.Array;
-import arc.graphics.Color;
-import arc.graphics.Mesh;
-import arc.graphics.VertexAttribute;
-import arc.graphics.VertexAttributes.Usage;
-import arc.math.Matrix3;
+import arc.graphics.*;
+import arc.graphics.VertexAttributes.*;
+import arc.graphics.gl.*;
+import arc.math.geom.*;
+import arc.struct.*;
 
-/**
- * Immediate mode rendering class for GLES 2.0. The renderer will allow you to specify vertices on the fly and provides a default
- * shader for (unlit) rendering.</p> *
- * @author mzechner
- */
-public class ImmediateModeRenderer20 implements ImmediateModeRenderer{
+public class ImmediateRenderer3D{
     private final int maxVertices;
     private final Mesh mesh;
     private final int numTexCoords;
@@ -20,9 +14,10 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer{
     private final int normalOffset;
     private final int colorOffset;
     private final int texCoordOffset;
-    private final Matrix3 projModelView = new Matrix3();
+    private final Matrix4 projModelView = new Matrix4();
     private final float[] vertices;
     private final String[] shaderUniformNames;
+
     private int primitiveType;
     private int vertexIdx;
     private int numSetTexCoords;
@@ -30,17 +25,17 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer{
     private Shader shader;
     private boolean ownsShader;
 
-    public ImmediateModeRenderer20(boolean hasNormals, boolean hasColors, int numTexCoords){
+    public ImmediateRenderer3D(boolean hasNormals, boolean hasColors, int numTexCoords){
         this(5000, hasNormals, hasColors, numTexCoords, createDefaultShader(hasNormals, hasColors, numTexCoords));
         ownsShader = true;
     }
 
-    public ImmediateModeRenderer20(int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords){
+    public ImmediateRenderer3D(int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords){
         this(maxVertices, hasNormals, hasColors, numTexCoords, createDefaultShader(hasNormals, hasColors, numTexCoords));
         ownsShader = true;
     }
 
-    public ImmediateModeRenderer20(int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords, Shader shader){
+    public ImmediateRenderer3D(int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords, Shader shader){
         this.maxVertices = maxVertices;
         this.numTexCoords = numTexCoords;
         this.shader = shader;
@@ -50,11 +45,9 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer{
 
         vertices = new float[maxVertices * (mesh.getVertexAttributes().vertexSize / 4)];
         vertexSize = mesh.getVertexAttributes().vertexSize / 4;
-        normalOffset = mesh.getVertexAttribute(Usage.Normal) != null ? mesh.getVertexAttribute(Usage.Normal).offset / 4 : 0;
-        colorOffset = mesh.getVertexAttribute(Usage.ColorPacked) != null ? mesh.getVertexAttribute(Usage.ColorPacked).offset / 4
-        : 0;
-        texCoordOffset = mesh.getVertexAttribute(Usage.TextureCoordinates) != null ? mesh
-        .getVertexAttribute(Usage.TextureCoordinates).offset / 4 : 0;
+        normalOffset = mesh.getVertexAttribute(Usage.normal) != null ? mesh.getVertexAttribute(Usage.normal).offset / 4 : 0;
+        colorOffset = mesh.getVertexAttribute(Usage.colorPacked) != null ? mesh.getVertexAttribute(Usage.colorPacked).offset / 4 : 0;
+        texCoordOffset = mesh.getVertexAttribute(Usage.textureCoordinates) != null ? mesh.getVertexAttribute(Usage.textureCoordinates).offset / 4 : 0;
 
         shaderUniformNames = new String[numTexCoords];
         for(int i = 0; i < numTexCoords; i++){
@@ -63,12 +56,12 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer{
     }
 
     static private String createVertexShader(boolean hasNormals, boolean hasColors, int numTexCoords){
-        StringBuilder shader = new StringBuilder("attribute vec4 " + Shader.POSITION_ATTRIBUTE + ";\n"
-        + (hasNormals ? "attribute vec3 " + Shader.NORMAL_ATTRIBUTE + ";\n" : "")
-        + (hasColors ? "attribute vec4 " + Shader.COLOR_ATTRIBUTE + ";\n" : ""));
+        StringBuilder shader = new StringBuilder("attribute vec4 " + Shader.positionAttribute + ";\n"
+        + (hasNormals ? "attribute vec3 " + Shader.normalAttribute + ";\n" : "")
+        + (hasColors ? "attribute vec4 " + Shader.colorAttribute + ";\n" : ""));
 
         for(int i = 0; i < numTexCoords; i++){
-            shader.append("attribute vec2 " + Shader.TEXCOORD_ATTRIBUTE).append(i).append(";\n");
+            shader.append("attribute vec2 " + Shader.texcoordAttribute).append(i).append(";\n");
         }
 
         shader.append("uniform mat4 u_projModelView;\n");
@@ -78,10 +71,10 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer{
             shader.append("varying vec2 v_tex").append(i).append(";\n");
         }
 
-        shader.append("void main() {\n" + "   gl_Position = u_projModelView * " + Shader.POSITION_ATTRIBUTE + ";\n").append(hasColors ? "   v_col = " + Shader.COLOR_ATTRIBUTE + ";\n" : "");
+        shader.append("void main() {\n" + "   gl_Position = u_projModelView * " + Shader.positionAttribute + ";\n").append(hasColors ? "   v_col = " + Shader.colorAttribute + ";\n" : "");
 
         for(int i = 0; i < numTexCoords; i++){
-            shader.append("   v_tex").append(i).append(" = ").append(Shader.TEXCOORD_ATTRIBUTE).append(i).append(";\n");
+            shader.append("   v_tex").append(i).append(" = ").append(Shader.texcoordAttribute).append(i).append(";\n");
         }
         shader.append("   gl_PointSize = 1.0;\n");
         shader.append("}\n");
@@ -122,11 +115,11 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer{
 
     private VertexAttribute[] buildVertexAttributes(boolean hasNormals, boolean hasColor, int numTexCoords){
         Array<VertexAttribute> attribs = new Array<>();
-        attribs.add(new VertexAttribute(Usage.Position, 3, Shader.POSITION_ATTRIBUTE));
-        if(hasNormals) attribs.add(new VertexAttribute(Usage.Normal, 3, Shader.NORMAL_ATTRIBUTE));
-        if(hasColor) attribs.add(new VertexAttribute(Usage.ColorPacked, 4, Shader.COLOR_ATTRIBUTE));
+        attribs.add(new VertexAttribute(Usage.position, 3, Shader.positionAttribute));
+        if(hasNormals) attribs.add(new VertexAttribute(Usage.normal, 3, Shader.normalAttribute));
+        if(hasColor) attribs.add(new VertexAttribute(Usage.colorPacked, 4, Shader.colorAttribute));
         for(int i = 0; i < numTexCoords; i++){
-            attribs.add(new VertexAttribute(Usage.TextureCoordinates, 2, Shader.TEXCOORD_ATTRIBUTE + i));
+            attribs.add(new VertexAttribute(Usage.textureCoordinates, 2, Shader.texcoordAttribute + i));
         }
         VertexAttribute[] array = new VertexAttribute[attribs.size];
         for(int i = 0; i < attribs.size; i++)
@@ -140,7 +133,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer{
         ownsShader = false;
     }
 
-    public void begin(Matrix3 projModelView, int primitiveType){
+    public void begin(Matrix4 projModelView, int primitiveType){
         this.projModelView.set(projModelView);
         this.primitiveType = primitiveType;
     }
@@ -185,7 +178,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer{
     public void flush(){
         if(numVertices == 0) return;
         shader.begin();
-        shader.setUniformMatrix("u_projModelView", projModelView);
+        shader.setUniformMatrix4("u_projModelView", projModelView.val);
         for(int i = 0; i < numTexCoords; i++)
             shader.setUniformi(shaderUniformNames[i], i);
         mesh.setVertices(vertices, 0, vertexIdx);
@@ -205,7 +198,6 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer{
         return numVertices;
     }
 
-    @Override
     public int getMaxVertices(){
         return maxVertices;
     }

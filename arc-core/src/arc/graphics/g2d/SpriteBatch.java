@@ -87,10 +87,10 @@ public class SpriteBatch implements Disposable{
             VertexDataType vertexDataType = (Core.gl30 != null) ? VertexDataType.VertexBufferObjectWithVAO : VertexDataType.VertexArray;
 
             mesh = new Mesh(vertexDataType, false, size * 4, size * 6,
-            new VertexAttribute(Usage.Position, 2, Shader.POSITION_ATTRIBUTE),
-            new VertexAttribute(Usage.ColorPacked, 4, Shader.COLOR_ATTRIBUTE),
-            new VertexAttribute(Usage.TextureCoordinates, 2, Shader.TEXCOORD_ATTRIBUTE + "0"),
-            new VertexAttribute(Usage.ColorPacked, 4, Shader.MIX_COLOR_ATTRIBUTE));
+            new VertexAttribute(Usage.position, 2, Shader.positionAttribute),
+            new VertexAttribute(Usage.colorPacked, 4, Shader.colorAttribute),
+            new VertexAttribute(Usage.textureCoordinates, 2, Shader.texcoordAttribute + "0"),
+            new VertexAttribute(Usage.colorPacked, 4, Shader.mixColorAttribute));
 
             vertices = new float[size * SPRITE_SIZE];
 

@@ -48,21 +48,21 @@ import java.nio.*;
  */
 public class Shader implements Disposable{
     /** default name for position attributes **/
-    public static final String POSITION_ATTRIBUTE = "a_position";
+    public static final String positionAttribute = "a_position";
     /** default name for normal attributes **/
-    public static final String NORMAL_ATTRIBUTE = "a_normal";
+    public static final String normalAttribute = "a_normal";
     /** default name for color attributes **/
-    public static final String COLOR_ATTRIBUTE = "a_color";
+    public static final String colorAttribute = "a_color";
     /** default name for mix color attributes **/
-    public static final String MIX_COLOR_ATTRIBUTE = "a_mix_color";
+    public static final String mixColorAttribute = "a_mix_color";
     /** default name for texcoords attributes, append texture unit number **/
-    public static final String TEXCOORD_ATTRIBUTE = "a_texCoord";
+    public static final String texcoordAttribute = "a_texCoord";
     /** default name for tangent attribute **/
-    public static final String TANGENT_ATTRIBUTE = "a_tangent";
+    public static final String tangentAttribute = "a_tangent";
     /** default name for binormal attribute **/
-    public static final String BINORMAL_ATTRIBUTE = "a_binormal";
+    public static final String binormalAttribute = "a_binormal";
     /** default name for boneweight attribute **/
-    public static final String BONEWEIGHT_ATTRIBUTE = "a_boneWeight";
+    public static final String boneweightAttribute = "a_boneWeight";
     /** the list of currently available shaders **/
     private final static ObjectMap<Application, Array<Shader>> shaders = new ObjectMap<>();
     /** flag indicating whether attributes & uniforms must be present at all times **/

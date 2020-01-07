@@ -623,7 +623,7 @@ public class Mesh implements Disposable{
      * @param scaleZ scale on z
      */
     public void scale(float scaleX, float scaleY, float scaleZ){
-        final VertexAttribute posAttr = getVertexAttribute(Usage.Position);
+        final VertexAttribute posAttr = getVertexAttribute(Usage.position);
         final int offset = posAttr.offset / 4;
         final int numComponents = posAttr.numComponents;
         final int numVertices = getNumVertices();
@@ -671,7 +671,7 @@ public class Mesh implements Disposable{
 
     // TODO: Protected for now, because transforming a portion works but still copies all vertices
     protected void transformUV(final Matrix3 matrix, final int start, final int count){
-        final VertexAttribute posAttr = getVertexAttribute(Usage.TextureCoordinates);
+        final VertexAttribute posAttr = getVertexAttribute(Usage.textureCoordinates);
         final int offset = posAttr.offset / 4;
         final int vertexSize = getVertexSize() / 4;
         final int numVertices = getNumVertices();

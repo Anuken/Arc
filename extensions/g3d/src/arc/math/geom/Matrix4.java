@@ -1,7 +1,6 @@
-package arc.geom;
+package arc.math.geom;
 
 import arc.math.*;
-import arc.math.geom.*;
 
 /** Encapsulates a <a href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> 4 by 4 matrix. Like
  * the {@link Vec3} class it allows the chaining of methods by returning a reference to itself. For example:

@@ -1,6 +1,4 @@
-package arc.geom;
-
-import arc.math.geom.*;
+package arc.math.geom;
 
 import java.util.*;
 

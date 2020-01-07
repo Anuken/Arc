@@ -1,4 +1,4 @@
-package arc.g3d;
+package arc.graphics.g3d;
 
 public class ModelBatch{
 }
