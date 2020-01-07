@@ -1,15 +1,12 @@
 package arc.math.geom;
 
-import arc.util.ArcRuntimeException;
-import arc.util.Scaling;
-
-import java.io.Serializable;
+import arc.util.*;
 
 /**
  * Encapsulates a 2D rectangle defined by its corner point in the bottom left and its extents in x (width) and y (height).
  * @author badlogicgames@gmail.com
  */
-public class Rect implements Serializable, Shape2D{
+public class Rect implements Shape2D{
     /** Static temporary rectangle. Use with care! Use only when sure other code will not also use this. */
     public static final Rect tmp = new Rect();
 

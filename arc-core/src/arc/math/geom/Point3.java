@@ -1,12 +1,10 @@
 package arc.math.geom;
 
-import java.io.Serializable;
-
 /**
  * A point in a 3D grid, with integer x and y coordinates
  * @author badlogic
  */
-public class Point3 implements Serializable{
+public class Point3{
     private static final long serialVersionUID = 5922187982746752830L;
 
     public int x;

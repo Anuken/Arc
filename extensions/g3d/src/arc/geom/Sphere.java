@@ -3,14 +3,11 @@ package arc.geom;
 import arc.math.*;
 import arc.math.geom.*;
 
-import java.io.*;
-
 /**
  * Encapsulates a 3D sphere with a center and a radius
  * @author badlogicgames@gmail.com
  */
-public class Sphere implements Serializable{
-    private static final long serialVersionUID = -6487336868908521596L;
+public class Sphere{
     private static final float PI_4_3 = Mathf.PI * 4f / 3f;
     /** the center of the sphere **/
     public final Vec3 center;

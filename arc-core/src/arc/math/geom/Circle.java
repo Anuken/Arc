@@ -1,14 +1,12 @@
 package arc.math.geom;
 
-import arc.math.Mathf;
-
-import java.io.Serializable;
+import arc.math.*;
 
 /**
  * A convenient 2D circle class.
  * @author mzechner
  */
-public class Circle implements Serializable, Shape2D{
+public class Circle implements Shape2D{
     public float x, y;
     public float radius;
 

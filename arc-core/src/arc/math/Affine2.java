@@ -1,9 +1,7 @@
 package arc.math;
 
-import arc.math.geom.Vec2;
-import arc.util.ArcRuntimeException;
-
-import java.io.Serializable;
+import arc.math.geom.*;
+import arc.util.*;
 
 /**
  * A specialized 3x3 matrix that can represent sequences of 2D translations, scales, flips, rotations, and shears. <a
@@ -12,9 +10,7 @@ import java.io.Serializable;
  * always be assumed (0, 0, 1).
  * @author vmilea
  */
-public final class Affine2 implements Serializable{
-    private static final long serialVersionUID = 1524569123485049187L;
-
+public final class Affine2{
     public float m00 = 1, m01 = 0, m02 = 0;
     public float m10 = 0, m11 = 1, m12 = 0;
 

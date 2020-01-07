@@ -3,8 +3,6 @@ package arc.geom;
 import arc.math.*;
 import arc.math.geom.*;
 
-import java.io.*;
-
 /**
  * A simple quaternion class.
  * @author badlogicgames@gmail.com
@@ -12,8 +10,7 @@ import java.io.*;
  * @author xoppa
  * @see <a href="http://en.wikipedia.org/wiki/Quaternion">http://en.wikipedia.org/wiki/Quaternion</a>
  */
-public class Quaternion implements Serializable{
-    private static final long serialVersionUID = -7661875440774897168L;
+public class Quaternion{
     private static Quaternion tmp1 = new Quaternion(0, 0, 0, 0);
     private static Quaternion tmp2 = new Quaternion(0, 0, 0, 0);
 

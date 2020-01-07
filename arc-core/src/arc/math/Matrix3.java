@@ -1,17 +1,14 @@
 package arc.math;
 
 import arc.math.geom.*;
-import arc.math.geom.Vec2;
-import arc.util.ArcRuntimeException;
-
-import java.io.Serializable;
+import arc.util.*;
 
 /**
  * A 3x3 <a href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> matrix; useful for 2D
  * transforms.
  * @author mzechner
  */
-public class Matrix3 implements Serializable{
+public class Matrix3{
     public static final int M00 = 0;
     public static final int M01 = 3;
     public static final int M02 = 6;
@@ -21,7 +18,6 @@ public class Matrix3 implements Serializable{
     public static final int M20 = 2;
     public static final int M21 = 5;
     public static final int M22 = 8;
-    private static final long serialVersionUID = 7907569533774959788L;
     public float[] val = new float[9];
     private float[] tmp = new float[9];
 

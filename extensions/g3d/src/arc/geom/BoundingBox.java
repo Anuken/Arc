@@ -2,7 +2,6 @@ package arc.geom;
 
 import arc.math.geom.*;
 
-import java.io.*;
 import java.util.*;
 
 /**
@@ -10,11 +9,7 @@ import java.util.*;
  * bounding box's center, dimensions and corner points.
  * @author badlogicgames@gmail.com, Xoppa
  */
-public class BoundingBox implements Serializable{
-    private static final long serialVersionUID = -1286036817192127343L;
-
-    private final static Vec3 tmpVector = new Vec3();
-
+public class BoundingBox{
     public final Vec3 min = new Vec3();
     public final Vec3 max = new Vec3();
 

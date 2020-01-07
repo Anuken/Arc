@@ -1,14 +1,10 @@
 package arc.math.geom;
 
-import java.io.Serializable;
-
 /**
  * A point in a 2D grid, with integer x and y coordinates
  * @author badlogic
  */
-public class Point2 implements Serializable{
-    private static final long serialVersionUID = -4019969926331717380L;
-
+public class Point2{
     public int x;
     public int y;
 

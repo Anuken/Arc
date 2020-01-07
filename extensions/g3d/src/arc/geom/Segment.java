@@ -2,15 +2,11 @@ package arc.geom;
 
 import arc.math.geom.*;
 
-import java.io.*;
-
 /**
  * A Segment is a line in 3-space having a staring and an ending position.
  * @author mzechner
  */
-public class Segment implements Serializable{
-    private static final long serialVersionUID = 2739667069736519602L;
-
+public class Segment{
     /** the starting position **/
     public final Vec3 a = new Vec3();
 

@@ -1,16 +1,12 @@
 package arc.math.geom;
 
-import arc.math.Mathf;
-
-import java.io.Serializable;
+import arc.math.*;
 
 /**
  * A convenient 2D ellipse class, based on the circle class
  * @author tonyp7
  */
-public class Ellipse implements Serializable, Shape2D{
-
-    private static final long serialVersionUID = 7381533206532032099L;
+public class Ellipse implements Shape2D{
     public float x, y;
     public float width, height;
 
