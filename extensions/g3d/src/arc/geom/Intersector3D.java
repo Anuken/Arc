@@ -3,8 +3,6 @@ package arc.geom;
 import arc.geom.Plane.*;
 import arc.math.*;
 import arc.math.geom.*;
-import arc.math.geom.BoundingBox;
-import arc.math.geom.Ray;
 
 import java.util.*;
 
@@ -12,21 +10,13 @@ public class Intersector3D{
     private final static Vec3 v0 = new Vec3();
     private final static Vec3 v1 = new Vec3();
     private final static Vec3 v2 = new Vec3();
-    private final static Vec2 ip = new Vec2();
-    private final static Vec2 ep1 = new Vec2();
-    private final static Vec2 ep2 = new Vec2();
-    private final static Vec2 s = new Vec2();
-    private final static Vec2 e = new Vec2();
     private static final Plane p = new Plane(new Vec3(), 0);
     private static final Vec3 i = new Vec3();
-    private static final Vec3 dir = new Vec3();
-    private static final Vec3 start = new Vec3();
     static Vec3 best = new Vec3();
     static Vec3 tmp = new Vec3();
     static Vec3 tmp1 = new Vec3();
     static Vec3 tmp2 = new Vec3();
     static Vec3 tmp3 = new Vec3();
-    static Vec2 v2tmp = new Vec2();
     static Vec3 intersection = new Vec3();
 
     /**

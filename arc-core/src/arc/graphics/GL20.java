@@ -463,10 +463,8 @@ public interface GL20{
 
     int glGenRenderbuffer();
 
-    // deviates
     String glGetActiveAttrib(int program, int index, IntBuffer size, IntBuffer type);
 
-    // deviates
     String glGetActiveUniform(int program, int index, IntBuffer size, IntBuffer type);
 
     int glGetAttribLocation(int program, String name);
@@ -481,14 +479,12 @@ public interface GL20{
 
     void glGetProgramiv(int program, int pname, IntBuffer params);
 
-    // deviates
     String glGetProgramInfoLog(int program);
 
     void glGetRenderbufferParameteriv(int target, int pname, IntBuffer params);
 
     void glGetShaderiv(int shader, int pname, IntBuffer params);
 
-    // deviates
     String glGetShaderInfoLog(int shader);
 
     void glGetShaderPrecisionFormat(int shadertype, int precisiontype, IntBuffer range, IntBuffer precision);
@@ -529,7 +525,6 @@ public interface GL20{
 
     void glSampleCoverage(float value, boolean invert);
 
-    // Deviates
     void glShaderSource(int shader, String string);
 
     void glStencilFuncSeparate(int face, int func, int ref, int mask);
