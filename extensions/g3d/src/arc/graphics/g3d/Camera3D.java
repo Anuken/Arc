@@ -2,7 +2,6 @@ package arc.graphics.g3d;
 
 import arc.*;
 import arc.math.geom.*;
-import arc.util.*;
 
 public class Camera3D{
     /** field of view. */
@@ -35,9 +34,8 @@ public class Camera3D{
     public void update(){
         float aspect = width / height;
         projection.setToProjection(Math.abs(near), Math.abs(far), fov, aspect);
-        view.setToLookAt(position, Tmp.v31.set(position).add(direction), up);
-        combined.set(projection);
-        Matrix4.mul(combined.val, view.val);
+        view.setToLookAt(position, tmpVec.set(position).add(direction), up);
+        combined.set(projection).mul(view);
     }
 
     public void resize(int width, int height){
