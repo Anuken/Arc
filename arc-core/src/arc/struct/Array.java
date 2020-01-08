@@ -140,6 +140,10 @@ public class Array<T> implements Iterable<T>{
         return out;
     }
 
+    public ObjectSet<T> asSet(){
+        return ObjectSet.with(this);
+    }
+
     public Array<T> copy(){
         return new Array<>(this);
     }

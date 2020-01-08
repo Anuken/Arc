@@ -102,6 +102,10 @@ public class ObjectSet<T> implements Iterable<T>, Eachable<T>{
         return arr;
     }
 
+    public Array<T> asArray(){
+        return iterator().toArray();
+    }
+
     @Override
     public void each(Cons<T> cons){
         for(T t : this){
