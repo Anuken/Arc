@@ -157,11 +157,19 @@ public class ImmediateRenderer3D{
         numSetTexCoords += 2;
     }
 
+    public void normal(Vec3 v){
+        normal(v.x, v.y, v.z);
+    }
+
     public void normal(float x, float y, float z){
         final int idx = vertexIdx + normalOffset;
         vertices[idx] = x;
         vertices[idx + 1] = y;
         vertices[idx + 2] = z;
+    }
+
+    public void vertex(Vec3 v){
+        vertex(v.x, v.y, v.z);
     }
 
     public void vertex(float x, float y, float z){
