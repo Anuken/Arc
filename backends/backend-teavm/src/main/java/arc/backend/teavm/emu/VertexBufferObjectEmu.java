@@ -142,7 +142,7 @@ public class VertexBufferObjectEmu implements VertexData{
                 }
                 shader.enableVertexAttribute(location);
 
-                if(attribute.usage == Usage.ColorPacked)
+                if(attribute.usage == Usage.colorPacked)
                     shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true,
                     attributes.vertexSize, attribute.offset);
                 else
@@ -158,7 +158,7 @@ public class VertexBufferObjectEmu implements VertexData{
                 }
                 shader.enableVertexAttribute(location);
 
-                if(attribute.usage == Usage.ColorPacked)
+                if(attribute.usage == Usage.colorPacked)
                     shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true,
                     attributes.vertexSize, attribute.offset);
                 else
