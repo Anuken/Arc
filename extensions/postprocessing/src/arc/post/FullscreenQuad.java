@@ -54,8 +54,8 @@ public class FullscreenQuad{
         verts[U4] = 0f;
         verts[V4] = 1f;
 
-        Mesh tmpMesh = new Mesh(VertexDataType.VertexArray, true, 4, 0, new VertexAttribute(Usage.Position, 2, "a_position"),
-        new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoord0"));
+        Mesh tmpMesh = new Mesh(VertexDataType.VertexArray, true, 4, 0, new VertexAttribute(Usage.position, 2, "a_position"),
+        new VertexAttribute(Usage.textureCoordinates, 2, "a_texCoord0"));
 
         tmpMesh.setVertices(verts);
         return tmpMesh;
