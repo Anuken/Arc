@@ -135,7 +135,7 @@ public class VertexArrayEmu implements VertexData{
                 }
                 shader.enableVertexAttribute(location);
 
-                if(attribute.usage == Usage.ColorPacked)
+                if(attribute.usage == Usage.colorPacked)
                     shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, attributes.vertexSize, attribute.offset);
                 else
                     shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, attributes.vertexSize, attribute.offset);
@@ -149,7 +149,7 @@ public class VertexArrayEmu implements VertexData{
                 }
                 shader.enableVertexAttribute(location);
 
-                if(attribute.usage == Usage.ColorPacked)
+                if(attribute.usage == Usage.colorPacked)
                     shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true,
                     attributes.vertexSize, attribute.offset);
                 else
