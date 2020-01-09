@@ -401,8 +401,12 @@ public final class Mathf{
         return (int)(value + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
     }
 
-    public static float round(float value, float amount){
-        return (int)(value / amount) * amount;
+    public static float round(float value, float step){
+        return (int)(value / step) * step;
+    }
+
+    public static int round(float value, int step){
+        return (int)(value / step) * step;
     }
 
     /** Returns the closest integer to the specified float. This method will only properly round floats that are positive. */
