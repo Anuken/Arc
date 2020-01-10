@@ -101,11 +101,11 @@ public class Mat3D{
     }
 
     /**
-     * Constructs a rotation matrix from the given {@link Quaternion}.
-     * @param quaternion The quaternion to be copied. (The quaternion is not modified)
+     * Constructs a rotation matrix from the given {@link Quat}.
+     * @param quat The quaternion to be copied. (The quaternion is not modified)
      */
-    public Mat3D(Quaternion quaternion){
-        this.set(quaternion);
+    public Mat3D(Quat quat){
+        this.set(quat);
     }
 
     /**
@@ -114,7 +114,7 @@ public class Mat3D{
      * @param rotation The rotation, must be normalized
      * @param scale The scale
      */
-    public Mat3D(Vec3 position, Quaternion rotation, Vec3 scale){
+    public Mat3D(Vec3 position, Quat rotation, Vec3 scale){
         set(position, rotation, scale);
     }
 
@@ -141,11 +141,11 @@ public class Mat3D{
 
     /**
      * Sets the matrix to a rotation matrix representing the quaternion.
-     * @param quaternion The quaternion that is to be used to set this matrix.
+     * @param quat The quaternion that is to be used to set this matrix.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Mat3D set(Quaternion quaternion){
-        return set(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
+    public Mat3D set(Quat quat){
+        return set(quat.x, quat.y, quat.z, quat.w);
     }
 
     /**
@@ -166,7 +166,7 @@ public class Mat3D{
      * @param orientation The rotation, must be normalized
      * @return This matrix for chaining
      */
-    public Mat3D set(Vec3 position, Quaternion orientation){
+    public Mat3D set(Vec3 position, Quat orientation){
         return set(position.x, position.y, position.z, orientation.x, orientation.y, orientation.z, orientation.w);
     }
 
@@ -217,7 +217,7 @@ public class Mat3D{
      * @param scale The scale
      * @return This matrix for chaining
      */
-    public Mat3D set(Vec3 position, Quaternion orientation, Vec3 scale){
+    public Mat3D set(Vec3 position, Quat orientation, Vec3 scale){
         return set(position.x, position.y, position.z, orientation.x, orientation.y, orientation.z, orientation.w, scale.x,
         scale.y, scale.z);
     }
@@ -732,8 +732,8 @@ public class Mat3D{
         return this;
     }
 
-    static Quaternion quat = new Quaternion();
-    static Quaternion quat2 = new Quaternion();
+    static Quat quat = new Quat();
+    static Quat quat2 = new Quat();
 
     /**
      * Sets the matrix to a rotation matrix around the given axis.
@@ -1159,20 +1159,20 @@ public class Mat3D{
 
     /**
      * Gets the rotation of this matrix.
-     * @param rotation The {@link Quaternion} to receive the rotation
+     * @param rotation The {@link Quat} to receive the rotation
      * @param normalizeAxes True to normalize the axes, necessary when the matrix might also include scaling.
-     * @return The provided {@link Quaternion} for chaining.
+     * @return The provided {@link Quat} for chaining.
      */
-    public Quaternion getRotation(Quaternion rotation, boolean normalizeAxes){
+    public Quat getRotation(Quat rotation, boolean normalizeAxes){
         return rotation.setFromMatrix(normalizeAxes, this);
     }
 
     /**
      * Gets the rotation of this matrix.
-     * @param rotation The {@link Quaternion} to receive the rotation
-     * @return The provided {@link Quaternion} for chaining.
+     * @param rotation The {@link Quat} to receive the rotation
+     * @return The provided {@link Quat} for chaining.
      */
-    public Quaternion getRotation(Quaternion rotation){
+    public Quat getRotation(Quat rotation){
         return rotation.setFromMatrix(this);
     }
 
@@ -1482,7 +1482,7 @@ public class Mat3D{
      * glTranslate/glRotate/glScale.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Mat3D rotate(Quaternion rotation){
+    public Mat3D rotate(Quat rotation){
         rotation.toMatrix(tmp);
         mul(val, tmp);
         return this;
