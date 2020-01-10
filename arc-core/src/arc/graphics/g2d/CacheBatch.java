@@ -3,7 +3,7 @@ package arc.graphics.g2d;
 import arc.graphics.Color;
 import arc.graphics.Texture;
 import arc.graphics.gl.Shader;
-import arc.math.Matrix3;
+import arc.math.Mat;
 
 public class CacheBatch extends SpriteBatch{
     SpriteCache cache;
@@ -49,7 +49,7 @@ public class CacheBatch extends SpriteBatch{
     }
 
     @Override
-    public void setProjection(Matrix3 projection){
+    public void setProjection(Mat projection){
         cache.setProjectionMatrix(projection);
     }
 

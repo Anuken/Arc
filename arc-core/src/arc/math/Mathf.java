@@ -31,9 +31,9 @@ public final class Mathf{
     static private final double CEIL = 0.9999999;
     static private final double BIG_ENOUGH_CEIL = 16384.999999999996;
     static private final double BIG_ENOUGH_ROUND = BIG_ENOUGH_INT + 0.5f;
-    static private final RandomXS128 seedr = new RandomXS128();
+    static private final Rand seedr = new Rand();
 
-    public static Random random = new RandomXS128();
+    public static Random random = new Rand();
 
     /** Returns the sine in radians from a lookup table. */
     public static float sin(float radians){

@@ -5,7 +5,7 @@ import arc.Core;
 import arc.graphics.Camera;
 import arc.graphics.g2d.ScissorStack;
 import arc.graphics.gl.HdpiUtils;
-import arc.math.Matrix3;
+import arc.math.Mat;
 import arc.math.geom.*;
 import arc.math.geom.Vec2;
 
@@ -76,8 +76,8 @@ public abstract class Viewport{
         return worldCoords;
     }
 
-    /** @see ScissorStack#calculateScissors(Camera, float, float, float, float, Matrix3, Rect, Rect) */
-    public void calculateScissors(Matrix3 batchTransform, Rect area, Rect scissor){
+    /** @see ScissorStack#calculateScissors(Camera, float, float, float, float, Mat, Rect, Rect) */
+    public void calculateScissors(Mat batchTransform, Rect area, Rect scissor){
         ScissorStack.calculateScissors(camera, screenX, screenY, screenWidth, screenHeight, batchTransform, area, scissor);
     }
 
@@ -85,7 +85,7 @@ public abstract class Viewport{
      * Transforms a point to real screen coordinates (as opposed to OpenGL ES window coordinates), where the origin is in the top
      * left and the the y-axis is pointing downwards.
      */
-    public Vec2 toScreenCoordinates(Vec2 worldCoords, Matrix3 transformMatrix){
+    public Vec2 toScreenCoordinates(Vec2 worldCoords, Mat transformMatrix){
         tmp.set(worldCoords.x, worldCoords.y);
         tmp.mul(transformMatrix);
         camera.project(tmp);

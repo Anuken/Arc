@@ -42,7 +42,7 @@ public class Scene implements InputProcessor, Disposable{
     public Scene(){
         this.viewport = new ScreenViewport(){
             @Override
-            public void calculateScissors(Matrix3 batchTransform, Rect area, Rect scissor){
+            public void calculateScissors(Mat batchTransform, Rect area, Rect scissor){
                 ScissorStack.calculateScissors(
                 getCamera(), getScreenX(), getScreenY(), getScreenWidth(), getScreenHeight(), batchTransform, area, scissor);
             }
@@ -751,13 +751,13 @@ public class Scene implements InputProcessor, Disposable{
      * describes how to convert them.
      * @see Element#localToStageCoordinates(Vec2)
      */
-    public Vec2 toScreenCoordinates(Vec2 coords, Matrix3 transformMatrix){
+    public Vec2 toScreenCoordinates(Vec2 coords, Mat transformMatrix){
         return viewport.toScreenCoordinates(coords, transformMatrix);
     }
 
     /** Calculates window scissor coordinates from local coordinates using the batch's current transformation matrix. */
     public void calculateScissors(Rect localRect, Rect scissorRect){
-        Matrix3 transformMatrix = Draw.trans();
+        Mat transformMatrix = Draw.trans();
         viewport.calculateScissors(transformMatrix, localRect, scissorRect);
     }
 

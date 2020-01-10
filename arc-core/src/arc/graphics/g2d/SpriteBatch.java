@@ -6,7 +6,7 @@ import arc.graphics.Mesh.VertexDataType;
 import arc.graphics.VertexAttributes.Usage;
 import arc.graphics.gl.Shader;
 import arc.math.Mathf;
-import arc.math.Matrix3;
+import arc.math.Mat;
 import arc.util.Disposable;
 
 /**
@@ -28,9 +28,9 @@ public class SpriteBatch implements Disposable{
 
     protected boolean apply;
 
-    protected final Matrix3 transformMatrix = new Matrix3();
-    protected final Matrix3 projectionMatrix = new Matrix3();
-    protected final Matrix3 combinedMatrix = new Matrix3();
+    protected final Mat transformMatrix = new Mat();
+    protected final Mat projectionMatrix = new Mat();
+    protected final Mat combinedMatrix = new Mat();
 
     protected Blending blending = Blending.normal;
 
@@ -388,20 +388,20 @@ public class SpriteBatch implements Disposable{
         if(ownsShader && shader != null) shader.dispose();
     }
 
-    Matrix3 getProjection(){
+    Mat getProjection(){
         return projectionMatrix;
     }
 
-    Matrix3 getTransform(){
+    Mat getTransform(){
         return transformMatrix;
     }
 
-    void setProjection(Matrix3 projection){
+    void setProjection(Mat projection){
         flush();
         projectionMatrix.set(projection);
     }
 
-    void setTransform(Matrix3 transform){
+    void setTransform(Mat transform){
         flush();
         transformMatrix.set(transform);
     }

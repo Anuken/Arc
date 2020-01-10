@@ -6,7 +6,7 @@ import arc.graphics.Color;
 import arc.graphics.Texture;
 import arc.graphics.gl.Shader;
 import arc.math.Mathf;
-import arc.math.Matrix3;
+import arc.math.Mat;
 import arc.util.Tmp;
 
 import static arc.Core.camera;
@@ -190,19 +190,19 @@ public class Draw{
         Core.batch.flush();
     }
 
-    public static void proj(Matrix3 proj){
+    public static void proj(Mat proj){
         Core.batch.setProjection(proj);
     }
 
-    public static Matrix3 proj(){
+    public static Mat proj(){
         return Core.batch.getProjection();
     }
 
-    public static void trans(Matrix3 trans){
+    public static void trans(Mat trans){
         Core.batch.setTransform(trans);
     }
 
-    public static Matrix3 trans(){
+    public static Mat trans(){
         return Core.batch.getTransform();
     }
 

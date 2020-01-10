@@ -1,7 +1,7 @@
 package arc.graphics.g2d;
 
 import arc.graphics.gl.Shader;
-import arc.math.Matrix3;
+import arc.math.Mat;
 import arc.util.*;
 
 public class BatchShader{
@@ -56,15 +56,15 @@ public class BatchShader{
     }
 
     //mistakes were made
-    public static float[] copyTransform(Matrix3 matrix){
-        val[M01] = matrix.val[Matrix3.M01];
-        val[M10] = matrix.val[Matrix3.M10];
+    public static float[] copyTransform(Mat matrix){
+        val[M01] = matrix.val[Mat.M01];
+        val[M10] = matrix.val[Mat.M10];
 
-        val[M00] = matrix.val[Matrix3.M00];
-        val[M11] = matrix.val[Matrix3.M11];
-        val[M22] = matrix.val[Matrix3.M22];
-        val[M03] = matrix.val[Matrix3.M02];
-        val[M13] = matrix.val[Matrix3.M12];
+        val[M00] = matrix.val[Mat.M00];
+        val[M11] = matrix.val[Mat.M11];
+        val[M22] = matrix.val[Mat.M22];
+        val[M03] = matrix.val[Mat.M02];
+        val[M13] = matrix.val[Mat.M12];
         val[M33] = 1;
         return val;
     }

@@ -9,7 +9,7 @@ import arc.files.Fi;
 import arc.graphics.Color;
 import arc.graphics.GL20;
 import arc.graphics.Mesh;
-import arc.math.Matrix3;
+import arc.math.Mat;
 import arc.math.geom.Vec2;
 import arc.math.geom.Vec3;
 import arc.util.BufferUtils;
@@ -524,7 +524,7 @@ public class Shader implements Disposable{
      * @param name the name of the uniform
      * @param matrix the matrix
      */
-    public void setUniformMatrix(String name, Matrix3 matrix){
+    public void setUniformMatrix(String name, Mat matrix){
         setUniformMatrix(name, matrix, false);
     }
 
@@ -534,15 +534,15 @@ public class Shader implements Disposable{
      * @param matrix the matrix
      * @param transpose whether the uniform matrix should be transposed
      */
-    public void setUniformMatrix(String name, Matrix3 matrix, boolean transpose){
+    public void setUniformMatrix(String name, Mat matrix, boolean transpose){
         setUniformMatrix(fetchUniformLocation(name), matrix, transpose);
     }
 
-    public void setUniformMatrix(int location, Matrix3 matrix){
+    public void setUniformMatrix(int location, Mat matrix){
         setUniformMatrix(location, matrix, false);
     }
 
-    public void setUniformMatrix(int location, Matrix3 matrix, boolean transpose){
+    public void setUniformMatrix(int location, Mat matrix, boolean transpose){
         GL20 gl = Core.gl20;
         checkManaged();
         gl.glUniformMatrix3fv(location, 1, transpose, matrix.val, 0);

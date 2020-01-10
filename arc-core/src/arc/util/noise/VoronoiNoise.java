@@ -25,7 +25,7 @@ package arc.util.noise;
  *
  */
 
-import arc.math.RandomXS128;
+import arc.math.Rand;
 
 import java.util.Random;
 
@@ -76,7 +76,7 @@ public class VoronoiNoise{
 
     private long seed;
     private short distanceMethod;
-    private RandomXS128 rnd = new RandomXS128();
+    private Rand rnd = new Rand();
 
     public VoronoiNoise(long seed, short distanceMethod){
         this.seed = seed;

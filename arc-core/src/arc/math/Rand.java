@@ -12,7 +12,7 @@ import java.util.Random;
  * @author Inferno
  * @author davebaol
  */
-public class RandomXS128 extends Random{
+public class Rand extends Random{
     /** Normalization constant for double. */
     private static final double NORM_DOUBLE = 1.0 / (1L << 53);
     /** Normalization constant for float. */
@@ -28,7 +28,7 @@ public class RandomXS128 extends Random{
      * <p>
      * This implementation creates a {@link Random} instance to generate the initial seed.
      */
-    public RandomXS128(){
+    public Rand(){
         setSeed(new Random().nextLong());
     }
 
@@ -36,7 +36,7 @@ public class RandomXS128 extends Random{
      * Creates a new random number generator using a single {@code long} seed.
      * @param seed the initial seed
      */
-    public RandomXS128(long seed){
+    public Rand(long seed){
         setSeed(seed);
     }
 
@@ -45,7 +45,7 @@ public class RandomXS128 extends Random{
      * @param seed0 the first part of the initial seed
      * @param seed1 the second part of the initial seed
      */
-    public RandomXS128(long seed0, long seed1){
+    public Rand(long seed0, long seed1){
         setState(seed0, seed1);
     }
 

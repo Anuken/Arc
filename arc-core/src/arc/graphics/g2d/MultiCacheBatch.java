@@ -56,7 +56,7 @@ public class MultiCacheBatch extends SpriteBatch{
     }
 
     @Override
-    public void setProjection(Matrix3 projection){
+    public void setProjection(Mat projection){
         currentid = 0;
         currentCache().setProjectionMatrix(projection);
     }

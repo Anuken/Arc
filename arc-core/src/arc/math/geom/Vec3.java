@@ -12,7 +12,7 @@ public class Vec3 implements Vector<Vec3>{
     public final static Vec3 Y = new Vec3(0, 1, 0);
     public final static Vec3 Z = new Vec3(0, 0, 1);
     public final static Vec3 Zero = new Vec3(0, 0, 0);
-    private final static Matrix3 tmpMat = new Matrix3();
+    private final static Mat tmpMat = new Mat();
     /** the x-component of this vector **/
     public float x;
     /** the y-component of this vector **/
@@ -362,10 +362,10 @@ public class Vec3 implements Vector<Vec3>{
      * @param matrix The matrix
      * @return This vector for chaining
      */
-    public Vec3 mul(Matrix3 matrix){
+    public Vec3 mul(Mat matrix){
         final float[] l_mat = matrix.val;
-        return set(x * l_mat[Matrix3.M00] + y * l_mat[Matrix3.M01] + z * l_mat[Matrix3.M02], x * l_mat[Matrix3.M10] + y
-        * l_mat[Matrix3.M11] + z * l_mat[Matrix3.M12], x * l_mat[Matrix3.M20] + y * l_mat[Matrix3.M21] + z * l_mat[Matrix3.M22]);
+        return set(x * l_mat[Mat.M00] + y * l_mat[Mat.M01] + z * l_mat[Mat.M02], x * l_mat[Mat.M10] + y
+        * l_mat[Mat.M11] + z * l_mat[Mat.M12], x * l_mat[Mat.M20] + y * l_mat[Mat.M21] + z * l_mat[Mat.M22]);
     }
 
     /**
@@ -373,10 +373,10 @@ public class Vec3 implements Vector<Vec3>{
      * @param matrix The matrix
      * @return This vector for chaining
      */
-    public Vec3 traMul(Matrix3 matrix){
+    public Vec3 traMul(Mat matrix){
         final float[] l_mat = matrix.val;
-        return set(x * l_mat[Matrix3.M00] + y * l_mat[Matrix3.M10] + z * l_mat[Matrix3.M20], x * l_mat[Matrix3.M01] + y
-        * l_mat[Matrix3.M11] + z * l_mat[Matrix3.M21], x * l_mat[Matrix3.M02] + y * l_mat[Matrix3.M12] + z * l_mat[Matrix3.M22]);
+        return set(x * l_mat[Mat.M00] + y * l_mat[Mat.M10] + z * l_mat[Mat.M20], x * l_mat[Mat.M01] + y
+        * l_mat[Mat.M11] + z * l_mat[Mat.M21], x * l_mat[Mat.M02] + y * l_mat[Mat.M12] + z * l_mat[Mat.M22]);
     }
 
     /**

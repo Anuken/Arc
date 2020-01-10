@@ -62,15 +62,15 @@ public final class Affine2{
      * @param matrix The matrix to copy, assumed to be an affine transformation.
      * @return This matrix for the purposes of chaining.
      */
-    public Affine2 set(Matrix3 matrix){
+    public Affine2 set(Mat matrix){
         float[] other = matrix.val;
 
-        m00 = other[Matrix3.M00];
-        m01 = other[Matrix3.M01];
-        m02 = other[Matrix3.M02];
-        m10 = other[Matrix3.M10];
-        m11 = other[Matrix3.M11];
-        m12 = other[Matrix3.M12];
+        m00 = other[Mat.M00];
+        m01 = other[Mat.M01];
+        m02 = other[Mat.M02];
+        m10 = other[Mat.M10];
+        m11 = other[Mat.M11];
+        m12 = other[Mat.M12];
         return this;
     }
 

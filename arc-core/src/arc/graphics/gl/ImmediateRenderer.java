@@ -5,7 +5,7 @@ import arc.graphics.Color;
 import arc.graphics.Mesh;
 import arc.graphics.VertexAttribute;
 import arc.graphics.VertexAttributes.Usage;
-import arc.math.Matrix3;
+import arc.math.Mat;
 
 /**
  * Immediate mode rendering class for GLES 2.0. The renderer will allow you to specify vertices on the fly and provides a default
@@ -20,7 +20,7 @@ public class ImmediateRenderer{
     private final int normalOffset;
     private final int colorOffset;
     private final int texCoordOffset;
-    private final Matrix3 projModelView = new Matrix3();
+    private final Mat projModelView = new Mat();
     private final float[] vertices;
     private final String[] shaderUniformNames;
     private int primitiveType;
@@ -140,7 +140,7 @@ public class ImmediateRenderer{
         ownsShader = false;
     }
 
-    public void begin(Matrix3 projModelView, int primitiveType){
+    public void begin(Mat projModelView, int primitiveType){
         this.projModelView.set(projModelView);
         this.primitiveType = primitiveType;
     }

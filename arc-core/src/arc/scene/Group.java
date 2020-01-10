@@ -7,7 +7,7 @@ import arc.func.Cons;
 import arc.func.Boolf;
 import arc.graphics.g2d.Draw;
 import arc.math.Affine2;
-import arc.math.Matrix3;
+import arc.math.Mat;
 import arc.math.geom.Vec2;
 import arc.scene.event.Touchable;
 import arc.scene.style.*;
@@ -28,8 +28,8 @@ public abstract class Group extends Element implements Cullable{
 
     final SnapshotArray<Element> children = new SnapshotArray<>(true, 4, Element.class);
     private final Affine2 worldTransform = new Affine2();
-    private final Matrix3 computedTransform = new Matrix3();
-    private final Matrix3 oldTransform = new Matrix3();
+    private final Mat computedTransform = new Mat();
+    private final Mat oldTransform = new Mat();
     boolean transform = false;
     private Rect cullingArea;
 
@@ -135,7 +135,7 @@ public abstract class Group extends Element implements Cullable{
     }
 
     /** Returns the transform for this group's coordinate system. */
-    protected Matrix3 computeTransform(){
+    protected Mat computeTransform(){
         Affine2 worldTransform = this.worldTransform;
         float originX = this.originX, originY = this.originY;
         worldTransform.setToTrnRotScl(x + originX, y + originY, rotation, scaleX, scaleY);
@@ -157,13 +157,13 @@ public abstract class Group extends Element implements Cullable{
      * Set the batch's transformation matrix, often with the result of {@link #computeTransform()}. Note this causes the batch to
      * be flushed. {@link #resetTransform()} will restore the transform to what it was before this call.
      */
-    protected void applyTransform(Matrix3 transform){
+    protected void applyTransform(Mat transform){
         oldTransform.set(Draw.trans());
         Draw.trans(transform);
     }
 
     /**
-     * Restores the batch transform to what it was before {@link #applyTransform(Matrix3)}. Note this causes the batch to
+     * Restores the batch transform to what it was before {@link #applyTransform(Mat)}. Note this causes the batch to
      * be flushed.
      */
     protected void resetTransform(){

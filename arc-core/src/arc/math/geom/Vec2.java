@@ -300,7 +300,7 @@ public class Vec2 implements Vector<Vec2>, Position{
      * @param mat the matrix
      * @return this vector
      */
-    public Vec2 mul(Matrix3 mat){
+    public Vec2 mul(Mat mat){
         float x = this.x * mat.val[0] + this.y * mat.val[3] + mat.val[6];
         float y = this.x * mat.val[1] + this.y * mat.val[4] + mat.val[7];
         this.x = x;

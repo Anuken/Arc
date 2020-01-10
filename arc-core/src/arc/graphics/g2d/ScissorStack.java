@@ -6,7 +6,7 @@ import arc.struct.Array;
 import arc.graphics.Camera;
 import arc.graphics.GL20;
 import arc.graphics.gl.HdpiUtils;
-import arc.math.Matrix3;
+import arc.math.Mat;
 import arc.math.geom.Vec2;
 
 /**
@@ -99,25 +99,25 @@ public class ScissorStack{
 
     /**
      * Calculates a scissor rectangle using 0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight() as the viewport.
-     * @see #calculateScissors(Camera, float, float, float, float, Matrix3, Rect, Rect)
+     * @see #calculateScissors(Camera, float, float, float, float, Mat, Rect, Rect)
      */
-    public static void calculateScissors(Camera camera, Matrix3 batchTransform, Rect area, Rect scissor){
+    public static void calculateScissors(Camera camera, Mat batchTransform, Rect area, Rect scissor){
         calculateScissors(camera, 0, 0, Core.graphics.getWidth(), Core.graphics.getHeight(), batchTransform, area, scissor);
     }
 
     /**
-     * Calculates a scissor rectangle in OpenGL ES window coordinates from a {@link Camera}, a transformation {@link Matrix3} and
+     * Calculates a scissor rectangle in OpenGL ES window coordinates from a {@link Camera}, a transformation {@link Mat} and
      * an axis aligned {@link Rect}. The rectangle will get transformed by the camera and transform matrices and is then
      * projected to screen coordinates. Note that only axis aligned rectangles will work with this method. If either the Camera or
      * the Matrix4 have rotational components, the output of this method will not be suitable for
      * {@link GL20#glScissor(int, int, int, int)}.
      * @param camera the {@link Camera}
-     * @param batchTransform the transformation {@link Matrix3}
+     * @param batchTransform the transformation {@link Mat}
      * @param area the {@link Rect} to transform to window coordinates
      * @param scissor the Rectangle to store the result in
      */
     public static void calculateScissors(Camera camera, float viewportX, float viewportY, float viewportWidth,
-                                         float viewportHeight, Matrix3 batchTransform, Rect area, Rect scissor){
+                                         float viewportHeight, Mat batchTransform, Rect area, Rect scissor){
         tmp.set(area.x, area.y);
         tmp.mul(batchTransform);
         camera.project(tmp, viewportX, viewportY, viewportWidth, viewportHeight);

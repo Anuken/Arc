@@ -193,7 +193,7 @@ public class Mesh implements Disposable{
      * @param start the vertex to start with
      * @param count the amount of vertices to transform
      */
-    public static void transformUV(final Matrix3 matrix, final float[] vertices, int vertexSize, int offset, int start, int count){
+    public static void transformUV(final Mat matrix, final float[] vertices, int vertexSize, int offset, int start, int count){
         if(start < 0 || count < 1 || ((start + count) * vertexSize) > vertices.length)
             throw new IndexOutOfBoundsException("start = " + start + ", count = " + count + ", vertexSize = " + vertexSize
             + ", length = " + vertices.length);
@@ -665,12 +665,12 @@ public class Mesh implements Disposable{
      * create a temporary float[] which will be garbage collected.
      * @param matrix the transformation matrix
      */
-    public void transformUV(final Matrix3 matrix){
+    public void transformUV(final Mat matrix){
         transformUV(matrix, 0, getNumVertices());
     }
 
     // TODO: Protected for now, because transforming a portion works but still copies all vertices
-    protected void transformUV(final Matrix3 matrix, final int start, final int count){
+    protected void transformUV(final Mat matrix, final int start, final int count){
         final VertexAttribute posAttr = getVertexAttribute(Usage.textureCoordinates);
         final int offset = posAttr.offset / 4;
         final int vertexSize = getVertexSize() / 4;

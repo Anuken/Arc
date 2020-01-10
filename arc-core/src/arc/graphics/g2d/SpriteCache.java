@@ -9,7 +9,7 @@ import arc.graphics.*;
 import arc.graphics.VertexAttributes.Usage;
 import arc.graphics.gl.Shader;
 import arc.math.Mathf;
-import arc.math.Matrix3;
+import arc.math.Mat;
 import arc.util.*;
 
 import java.nio.FloatBuffer;
@@ -51,9 +51,9 @@ public class SpriteCache implements Disposable{
     static private final float[] tempVertices = new float[VERTEX_SIZE * 6];
 
     private final Mesh mesh;
-    private final Matrix3 transformMatrix = new Matrix3();
-    private final Matrix3 projectionMatrix = new Matrix3();
-    private final Matrix3 combinedMatrix = new Matrix3();
+    private final Mat transformMatrix = new Mat();
+    private final Mat projectionMatrix = new Mat();
+    private final Mat combinedMatrix = new Mat();
     private final Shader shader;
     private final Array<Texture> textures = new Array<>(8);
     private final IntArray counts = new IntArray(8);
@@ -581,20 +581,20 @@ public class SpriteCache implements Disposable{
         if(shader != null) shader.dispose();
     }
 
-    public Matrix3 getProjectionMatrix(){
+    public Mat getProjectionMatrix(){
         return projectionMatrix;
     }
 
-    public void setProjectionMatrix(Matrix3 projection){
+    public void setProjectionMatrix(Mat projection){
         if(drawing) throw new IllegalStateException("Can't set the matrix within begin/end.");
         projectionMatrix.set(projection);
     }
 
-    public Matrix3 getTransformMatrix(){
+    public Mat getTransformMatrix(){
         return transformMatrix;
     }
 
-    public void setTransformMatrix(Matrix3 transform){
+    public void setTransformMatrix(Mat transform){
         if(drawing) throw new IllegalStateException("Can't set the matrix within begin/end.");
         transformMatrix.set(transform);
     }

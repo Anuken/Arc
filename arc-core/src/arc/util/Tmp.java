@@ -41,8 +41,8 @@ public class Tmp{
     public static final TextureRegion tr1 = new TextureRegion();
     public static final TextureRegion tr2 = new TextureRegion();
 
-    public static final Matrix3 m1 = new Matrix3();
-    public static final Matrix3 m2 = new Matrix3();
-    public static final Matrix3 m3 = new Matrix3();
+    public static final Mat m1 = new Mat();
+    public static final Mat m2 = new Mat();
+    public static final Mat m3 = new Mat();
 
 }

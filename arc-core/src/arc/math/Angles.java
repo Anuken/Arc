@@ -5,7 +5,7 @@ import arc.func.*;
 import arc.math.geom.Vec2;
 
 public class Angles{
-    private static final RandomXS128 random = new RandomXS128();
+    private static final Rand random = new Rand();
     private static final Vec2 rv = new Vec2();
 
     public static float forwardDistance(float angle1, float angle2){

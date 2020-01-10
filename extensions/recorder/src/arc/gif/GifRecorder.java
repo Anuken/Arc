@@ -25,7 +25,7 @@ public class GifRecorder{
 			recordKey = KeyCode.T,
 			shiftKey = KeyCode.SHIFT_LEFT;
 	
-	private Matrix3 matrix = new Matrix3();
+	private Mat matrix = new Mat();
 
 	private int recordfps = 30;
 	private float gifx, gify, gifwidth, gifheight, giftime;

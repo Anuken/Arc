@@ -8,7 +8,7 @@ import arc.util.*;
  * transforms.
  * @author mzechner
  */
-public class Matrix3{
+public class Mat{
     public static final int M00 = 0;
     public static final int M01 = 3;
     public static final int M02 = 6;
@@ -21,11 +21,11 @@ public class Matrix3{
     public float[] val = new float[9];
     private float[] tmp = new float[9];
 
-    public Matrix3(){
+    public Mat(){
         idt();
     }
 
-    public Matrix3(Matrix3 matrix){
+    public Mat(Mat matrix){
         set(matrix);
     }
 
@@ -35,7 +35,7 @@ public class Matrix3{
      * href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order. (The float array is
      * not modified.)
      */
-    public Matrix3(float[] values){
+    public Mat(float[] values){
         this.set(values);
     }
 
@@ -73,7 +73,7 @@ public class Matrix3{
     }
 
     /** Sets this matrix to an orthographic projection. */
-    public Matrix3 setOrtho(float x, float y, float width, float height){
+    public Mat setOrtho(float x, float y, float width, float height){
         final float right = x + width, top = y + height;
 
         float x_orth = 2 / (right - x);
@@ -96,7 +96,7 @@ public class Matrix3{
      * Sets this matrix to the identity matrix
      * @return This matrix for the purpose of chaining operations.
      */
-    public Matrix3 idt(){
+    public Mat idt(){
         float[] val = this.val;
         val[M00] = 1;
         val[M10] = 0;
@@ -119,7 +119,7 @@ public class Matrix3{
      * @param m Matrix to multiply by.
      * @return This matrix for the purpose of chaining operations together.
      */
-    public Matrix3 mul(Matrix3 m){
+    public Mat mul(Mat m){
         float[] val = this.val;
 
         float v00 = val[M00] * m.val[M00] + val[M01] * m.val[M10] + val[M02] * m.val[M20];
@@ -156,7 +156,7 @@ public class Matrix3{
      * @param m The other Matrix to multiply by
      * @return This matrix for the purpose of chaining operations.
      */
-    public Matrix3 mulLeft(Matrix3 m){
+    public Mat mulLeft(Mat m){
         float[] val = this.val;
 
         float v00 = m.val[M00] * val[M00] + m.val[M01] * val[M10] + m.val[M02] * val[M20];
@@ -189,7 +189,7 @@ public class Matrix3{
      * @param degrees the angle in degrees.
      * @return This matrix for the purpose of chaining operations.
      */
-    public Matrix3 setToRotation(float degrees){
+    public Mat setToRotation(float degrees){
         return setToRotationRad(Mathf.degreesToRadians * degrees);
     }
 
@@ -198,7 +198,7 @@ public class Matrix3{
      * @param radians the angle in radians.
      * @return This matrix for the purpose of chaining operations.
      */
-    public Matrix3 setToRotationRad(float radians){
+    public Mat setToRotationRad(float radians){
         float cos = (float)Math.cos(radians);
         float sin = (float)Math.sin(radians);
         float[] val = this.val;
@@ -218,11 +218,11 @@ public class Matrix3{
         return this;
     }
 
-    public Matrix3 setToRotation(Vec3 axis, float degrees){
+    public Mat setToRotation(Vec3 axis, float degrees){
         return setToRotation(axis, Mathf.cosDeg(degrees), Mathf.sinDeg(degrees));
     }
 
-    public Matrix3 setToRotation(Vec3 axis, float cos, float sin){
+    public Mat setToRotation(Vec3 axis, float cos, float sin){
         float[] val = this.val;
         float oc = 1.0f - cos;
         val[M00] = oc * axis.x * axis.x + cos;
@@ -243,7 +243,7 @@ public class Matrix3{
      * @param y the translation in y
      * @return This matrix for the purpose of chaining operations.
      */
-    public Matrix3 setToTranslation(float x, float y){
+    public Mat setToTranslation(float x, float y){
         float[] val = this.val;
 
         val[M00] = 1;
@@ -266,7 +266,7 @@ public class Matrix3{
      * @param translation The translation vector.
      * @return This matrix for the purpose of chaining operations.
      */
-    public Matrix3 setToTranslation(Vec2 translation){
+    public Mat setToTranslation(Vec2 translation){
         float[] val = this.val;
 
         val[M00] = 1;
@@ -290,7 +290,7 @@ public class Matrix3{
      * @param scaleY the scale in y
      * @return This matrix for the purpose of chaining operations.
      */
-    public Matrix3 setToScaling(float scaleX, float scaleY){
+    public Mat setToScaling(float scaleX, float scaleY){
         float[] val = this.val;
         val[M00] = scaleX;
         val[M10] = 0;
@@ -309,7 +309,7 @@ public class Matrix3{
      * @param scale The scale vector.
      * @return This matrix for the purpose of chaining operations.
      */
-    public Matrix3 setToScaling(Vec2 scale){
+    public Mat setToScaling(Vec2 scale){
         float[] val = this.val;
         val[M00] = scale.x;
         val[M10] = 0;
@@ -342,7 +342,7 @@ public class Matrix3{
      * @return This matrix for the purpose of chaining operations.
      * @throws ArcRuntimeException if the matrix is singular (not invertible)
      */
-    public Matrix3 inv(){
+    public Mat inv(){
         float det = det();
         if(det == 0) throw new ArcRuntimeException("Can't invert a singular matrix");
 
@@ -377,7 +377,7 @@ public class Matrix3{
      * @param mat The matrix to copy.
      * @return This matrix for the purposes of chaining.
      */
-    public Matrix3 set(Matrix3 mat){
+    public Mat set(Mat mat){
         System.arraycopy(mat.val, 0, val, 0, val.length);
         return this;
     }
@@ -387,7 +387,7 @@ public class Matrix3{
      * @param affine The affine matrix to copy.
      * @return This matrix for the purposes of chaining.
      */
-    public Matrix3 set(Affine2 affine){
+    public Mat set(Affine2 affine){
         float[] val = this.val;
 
         val[M00] = affine.m00;
@@ -410,7 +410,7 @@ public class Matrix3{
      * href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix3 set(float[] values){
+    public Mat set(float[] values){
         System.arraycopy(values, 0, val, 0, val.length);
         return this;
     }
@@ -420,7 +420,7 @@ public class Matrix3{
      * @param vector The translation vector.
      * @return This matrix for the purpose of chaining.
      */
-    public Matrix3 trn(Vec2 vector){
+    public Mat trn(Vec2 vector){
         val[M02] += vector.x;
         val[M12] += vector.y;
         return this;
@@ -432,7 +432,7 @@ public class Matrix3{
      * @param y The y-component of the translation vector.
      * @return This matrix for the purpose of chaining.
      */
-    public Matrix3 trn(float x, float y){
+    public Mat trn(float x, float y){
         val[M02] += x;
         val[M12] += y;
         return this;
@@ -443,7 +443,7 @@ public class Matrix3{
      * @param vector The translation vector. (The z-component of the vector is ignored because this is a 3x3 matrix)
      * @return This matrix for the purpose of chaining.
      */
-    public Matrix3 trn(Vec3 vector){
+    public Mat trn(Vec3 vector){
         val[M02] += vector.x;
         val[M12] += vector.y;
         return this;
@@ -456,7 +456,7 @@ public class Matrix3{
      * @param y The y-component of the translation vector.
      * @return This matrix for the purpose of chaining.
      */
-    public Matrix3 translate(float x, float y){
+    public Mat translate(float x, float y){
         float[] val = this.val;
         tmp[M00] = 1;
         tmp[M10] = 0;
@@ -479,7 +479,7 @@ public class Matrix3{
      * @param translation The translation vector.
      * @return This matrix for the purpose of chaining.
      */
-    public Matrix3 translate(Vec2 translation){
+    public Mat translate(Vec2 translation){
         float[] val = this.val;
         tmp[M00] = 1;
         tmp[M10] = 0;
@@ -502,7 +502,7 @@ public class Matrix3{
      * @param degrees The angle in degrees
      * @return This matrix for the purpose of chaining.
      */
-    public Matrix3 rotate(float degrees){
+    public Mat rotate(float degrees){
         return rotateRad(Mathf.degreesToRadians * degrees);
     }
 
@@ -512,7 +512,7 @@ public class Matrix3{
      * @param radians The angle in radians
      * @return This matrix for the purpose of chaining.
      */
-    public Matrix3 rotateRad(float radians){
+    public Mat rotateRad(float radians){
         if(radians == 0) return this;
         float cos = (float)Math.cos(radians);
         float sin = (float)Math.sin(radians);
@@ -540,7 +540,7 @@ public class Matrix3{
      * @param scaleY The scale in the y-axis.
      * @return This matrix for the purpose of chaining.
      */
-    public Matrix3 scale(float scaleX, float scaleY){
+    public Mat scale(float scaleX, float scaleY){
         float[] tmp = this.tmp;
         tmp[M00] = scaleX;
         tmp[M10] = 0;
@@ -561,7 +561,7 @@ public class Matrix3{
      * @param scale The vector to scale the matrix by.
      * @return This matrix for the purpose of chaining.
      */
-    public Matrix3 scale(Vec2 scale){
+    public Mat scale(Vec2 scale){
         float[] tmp = this.tmp;
         tmp[M00] = scale.x;
         tmp[M10] = 0;
@@ -610,7 +610,7 @@ public class Matrix3{
      * @param scale The single value that will be used to scale both the x and y components.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix3 scl(float scale){
+    public Mat scl(float scale){
         val[M00] *= scale;
         val[M11] *= scale;
         return this;
@@ -621,7 +621,7 @@ public class Matrix3{
      * @param scale The {@link Vec3} to use to scale this matrix.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix3 scl(Vec2 scale){
+    public Mat scl(Vec2 scale){
         val[M00] *= scale.x;
         val[M11] *= scale.y;
         return this;
@@ -632,7 +632,7 @@ public class Matrix3{
      * @param scale The {@link Vec3} to use to scale this matrix. The z component will be ignored.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix3 scl(Vec3 scale){
+    public Mat scl(Vec3 scale){
         val[M00] *= scale.x;
         val[M11] *= scale.y;
         return this;
@@ -642,7 +642,7 @@ public class Matrix3{
      * Transposes the current matrix.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix3 transpose(){
+    public Mat transpose(){
         // Where MXY you do not have to change MXX
         float[] val = this.val;
         float v01 = val[M10];

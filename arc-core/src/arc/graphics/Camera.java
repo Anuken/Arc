@@ -3,7 +3,7 @@ package arc.graphics;
 import arc.Core;
 import arc.Graphics;
 import arc.Input;
-import arc.math.Matrix3;
+import arc.math.Mat;
 import arc.math.geom.*;
 import arc.math.geom.Vec2;
 
@@ -13,9 +13,9 @@ public class Camera{
     /** the position of the camera **/
     public final Vec2 position = new Vec2();
     /** the combined projection and view matrix **/
-    private final Matrix3 combined = new Matrix3();
+    private final Mat combined = new Mat();
     /** the inverse combined projection and view matrix **/
-    private final Matrix3 invProjectionView = new Matrix3();
+    private final Mat invProjectionView = new Mat();
     /** the viewport width and height **/
     public float width, height;
 
@@ -34,7 +34,7 @@ public class Camera{
         update();
     }
 
-    public Matrix3 projection(){
+    public Mat projection(){
         return combined;
     }
 
