@@ -14,7 +14,7 @@ public class ImmediateRenderer3D{
     private final int normalOffset;
     private final int colorOffset;
     private final int texCoordOffset;
-    private final Matrix4 projModelView = new Matrix4();
+    private final Mat3D projModelView = new Mat3D();
     private final float[] vertices;
     private final String[] shaderUniformNames;
 
@@ -133,7 +133,7 @@ public class ImmediateRenderer3D{
         ownsShader = false;
     }
 
-    public void begin(Matrix4 projModelView, int primitiveType){
+    public void begin(Mat3D projModelView, int primitiveType){
         this.projModelView.set(projModelView);
         this.primitiveType = primitiveType;
     }

@@ -5,7 +5,6 @@ package arc.math.geom;
  * @author badlogicgames@gmail.com
  */
 public class Ray{
-    static Vec3 tmp = new Vec3();
     public final Vec3 origin = new Vec3();
     public final Vec3 direction = new Vec3();
 

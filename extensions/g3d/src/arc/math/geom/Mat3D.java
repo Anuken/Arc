@@ -7,11 +7,11 @@ import arc.math.*;
  * the {@link Vec3} class it allows the chaining of methods by returning a reference to itself. For example:
  *
  * <pre>
- * Matrix4 mat = new Matrix4().trn(position).mul(camera.combined);
+ * Mat3 mat = new Mat3().trn(position).mul(camera.combined);
  * </pre>
  * @author badlogicgames@gmail.com
  */
-public class Matrix4{
+public class Mat3D{
     /**
      * XX: Typically the unrotated X component for scaling, also the cosine of the angle when rotated on the Y and/or Z axis. On
      * Vec3 multiplication this value is multiplied with the source X component and added to the target X component.
@@ -76,7 +76,7 @@ public class Matrix4{
     public final float val[] = new float[16];
 
     /** Constructs an identity matrix */
-    public Matrix4(){
+    public Mat3D(){
         val[M00] = 1f;
         val[M11] = 1f;
         val[M22] = 1f;
@@ -87,7 +87,7 @@ public class Matrix4{
      * Constructs a matrix from the given matrix.
      * @param matrix The matrix to copy. (This matrix is not modified)
      */
-    public Matrix4(Matrix4 matrix){
+    public Mat3D(Mat3D matrix){
         this.set(matrix);
     }
 
@@ -96,7 +96,7 @@ public class Matrix4{
      * @param values The float array to copy. Remember that this matrix is in <a
      * href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> order. (The float array is not modified)
      */
-    public Matrix4(float[] values){
+    public Mat3D(float[] values){
         this.set(values);
     }
 
@@ -104,7 +104,7 @@ public class Matrix4{
      * Constructs a rotation matrix from the given {@link Quaternion}.
      * @param quaternion The quaternion to be copied. (The quaternion is not modified)
      */
-    public Matrix4(Quaternion quaternion){
+    public Mat3D(Quaternion quaternion){
         this.set(quaternion);
     }
 
@@ -114,7 +114,7 @@ public class Matrix4{
      * @param rotation The rotation, must be normalized
      * @param scale The scale
      */
-    public Matrix4(Vec3 position, Quaternion rotation, Vec3 scale){
+    public Mat3D(Vec3 position, Quaternion rotation, Vec3 scale){
         set(position, rotation, scale);
     }
 
@@ -123,7 +123,7 @@ public class Matrix4{
      * @param matrix The matrix that is to be copied. (The given matrix is not modified)
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 set(Matrix4 matrix){
+    public Mat3D set(Mat3D matrix){
         return this.set(matrix.val);
     }
 
@@ -134,7 +134,7 @@ public class Matrix4{
      * href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> order.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 set(float[] values){
+    public Mat3D set(float[] values){
         System.arraycopy(values, 0, val, 0, val.length);
         return this;
     }
@@ -144,7 +144,7 @@ public class Matrix4{
      * @param quaternion The quaternion that is to be used to set this matrix.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 set(Quaternion quaternion){
+    public Mat3D set(Quaternion quaternion){
         return set(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
     }
 
@@ -156,7 +156,7 @@ public class Matrix4{
      * @param quaternionW The W component of the quaternion that is to be used to set this matrix.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 set(float quaternionX, float quaternionY, float quaternionZ, float quaternionW){
+    public Mat3D set(float quaternionX, float quaternionY, float quaternionZ, float quaternionW){
         return set(0f, 0f, 0f, quaternionX, quaternionY, quaternionZ, quaternionW);
     }
 
@@ -166,7 +166,7 @@ public class Matrix4{
      * @param orientation The rotation, must be normalized
      * @return This matrix for chaining
      */
-    public Matrix4 set(Vec3 position, Quaternion orientation){
+    public Mat3D set(Vec3 position, Quaternion orientation){
         return set(position.x, position.y, position.z, orientation.x, orientation.y, orientation.z, orientation.w);
     }
 
@@ -181,8 +181,8 @@ public class Matrix4{
      * @param quaternionW The W component of the quaternion that is to be used to set this matrix.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 set(float translationX, float translationY, float translationZ, float quaternionX, float quaternionY,
-                       float quaternionZ, float quaternionW){
+    public Mat3D set(float translationX, float translationY, float translationZ, float quaternionX, float quaternionY,
+                     float quaternionZ, float quaternionW){
         final float xs = quaternionX * 2f, ys = quaternionY * 2f, zs = quaternionZ * 2f;
         final float wx = quaternionW * xs, wy = quaternionW * ys, wz = quaternionW * zs;
         final float xx = quaternionX * xs, xy = quaternionX * ys, xz = quaternionX * zs;
@@ -217,7 +217,7 @@ public class Matrix4{
      * @param scale The scale
      * @return This matrix for chaining
      */
-    public Matrix4 set(Vec3 position, Quaternion orientation, Vec3 scale){
+    public Mat3D set(Vec3 position, Quaternion orientation, Vec3 scale){
         return set(position.x, position.y, position.z, orientation.x, orientation.y, orientation.z, orientation.w, scale.x,
         scale.y, scale.z);
     }
@@ -236,8 +236,8 @@ public class Matrix4{
      * @param scaleZ The Z component of the scaling that is to be used to set this matrix.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 set(float translationX, float translationY, float translationZ, float quaternionX, float quaternionY,
-                       float quaternionZ, float quaternionW, float scaleX, float scaleY, float scaleZ){
+    public Mat3D set(float translationX, float translationY, float translationZ, float quaternionX, float quaternionY,
+                     float quaternionZ, float quaternionW, float scaleX, float scaleY, float scaleZ){
         final float xs = quaternionX * 2f, ys = quaternionY * 2f, zs = quaternionZ * 2f;
         final float wx = quaternionW * xs, wy = quaternionW * ys, wz = quaternionW * zs;
         final float xx = quaternionX * xs, xy = quaternionX * ys, xz = quaternionX * zs;
@@ -273,7 +273,7 @@ public class Matrix4{
      * @param zAxis The z-axis.
      * @param pos The translation vector.
      */
-    public Matrix4 set(Vec3 xAxis, Vec3 yAxis, Vec3 zAxis, Vec3 pos){
+    public Mat3D set(Vec3 xAxis, Vec3 yAxis, Vec3 zAxis, Vec3 pos){
         val[M00] = xAxis.x;
         val[M01] = xAxis.y;
         val[M02] = xAxis.z;
@@ -294,8 +294,8 @@ public class Matrix4{
     }
 
     /** @return a copy of this matrix */
-    public Matrix4 cpy(){
-        return new Matrix4(this);
+    public Mat3D cpy(){
+        return new Mat3D(this);
     }
 
     /**
@@ -303,7 +303,7 @@ public class Matrix4{
      * @param vector The translation vector to add to the current matrix. (This vector is not modified)
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 trn(Vec3 vector){
+    public Mat3D trn(Vec3 vector){
         val[M03] += vector.x;
         val[M13] += vector.y;
         val[M23] += vector.z;
@@ -317,7 +317,7 @@ public class Matrix4{
      * @param z The z-component of the translation vector.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 trn(float x, float y, float z){
+    public Mat3D trn(float x, float y, float z){
         val[M03] += x;
         val[M13] += y;
         val[M23] += z;
@@ -338,7 +338,7 @@ public class Matrix4{
      * @param matrix The other matrix to multiply by.
      * @return This matrix for the purpose of chaining operations together.
      */
-    public Matrix4 mul(Matrix4 matrix){
+    public Mat3D mul(Mat3D matrix){
         mul(val, matrix.val);
         return this;
     }
@@ -352,7 +352,7 @@ public class Matrix4{
      * @param matrix The other matrix to multiply by.
      * @return This matrix for the purpose of chaining operations together.
      */
-    public Matrix4 mulLeft(Matrix4 matrix){
+    public Mat3D mulLeft(Mat3D matrix){
         tmpMat.set(matrix);
         mul(tmpMat.val, this.val);
         return set(tmpMat);
@@ -362,7 +362,7 @@ public class Matrix4{
      * Transposes the matrix.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 tra(){
+    public Mat3D tra(){
         tmp[M00] = val[M00];
         tmp[M01] = val[M10];
         tmp[M02] = val[M20];
@@ -386,7 +386,7 @@ public class Matrix4{
      * Sets the matrix to an identity matrix.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 idt(){
+    public Mat3D idt(){
         val[M00] = 1;
         val[M01] = 0;
         val[M02] = 0;
@@ -411,7 +411,7 @@ public class Matrix4{
      * @return This matrix for the purpose of chaining methods together.
      * @throws RuntimeException if the matrix is singular (not invertible)
      */
-    public Matrix4 inv(){
+    public Mat3D inv(){
         float l_det = val[M30] * val[M21] * val[M12] * val[M03] - val[M20] * val[M31] * val[M12] * val[M03] - val[M30] * val[M11]
         * val[M22] * val[M03] + val[M10] * val[M31] * val[M22] * val[M03] + val[M20] * val[M11] * val[M32] * val[M03] - val[M10]
         * val[M21] * val[M32] * val[M03] - val[M30] * val[M21] * val[M02] * val[M13] + val[M20] * val[M31] * val[M02] * val[M13]
@@ -503,7 +503,7 @@ public class Matrix4{
      * @param aspectRatio The "width over height" aspect ratio
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 setToProjection(float near, float far, float fovy, float aspectRatio){
+    public Mat3D setToProjection(float near, float far, float fovy, float aspectRatio){
         idt();
         float l_fd = (float)(1.0 / Math.tan((fovy * (Math.PI / 180)) / 2.0));
         float l_a1 = (far + near) / (near - far);
@@ -536,7 +536,7 @@ public class Matrix4{
      * @param far The far plane
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 setToProjection(float left, float right, float bottom, float top, float near, float far){
+    public Mat3D setToProjection(float left, float right, float bottom, float top, float near, float far){
         float x = 2.0f * near / (right - left);
         float y = 2.0f * near / (top - bottom);
         float a = (right + left) / (right - left);
@@ -572,7 +572,7 @@ public class Matrix4{
      * @param height The height
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 setToOrtho2D(float x, float y, float width, float height){
+    public Mat3D setToOrtho2D(float x, float y, float width, float height){
         setToOrtho(x, x + width, y, y + height, 0, 1);
         return this;
     }
@@ -588,7 +588,7 @@ public class Matrix4{
      * @param far The far plane
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 setToOrtho2D(float x, float y, float width, float height, float near, float far){
+    public Mat3D setToOrtho2D(float x, float y, float width, float height, float near, float far){
         setToOrtho(x, x + width, y, y + height, near, far);
         return this;
     }
@@ -604,7 +604,7 @@ public class Matrix4{
      * @param far The far clipping plane
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 setToOrtho(float left, float right, float bottom, float top, float near, float far){
+    public Mat3D setToOrtho(float left, float right, float bottom, float top, float near, float far){
 
         this.idt();
         float x_orth = 2 / (right - left);
@@ -640,7 +640,7 @@ public class Matrix4{
      * @param vector The translation vector
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 setTranslation(Vec3 vector){
+    public Mat3D setTranslation(Vec3 vector){
         val[M03] = vector.x;
         val[M13] = vector.y;
         val[M23] = vector.z;
@@ -654,7 +654,7 @@ public class Matrix4{
      * @param z The Z coordinate of the translation vector
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 setTranslation(float x, float y, float z){
+    public Mat3D setTranslation(float x, float y, float z){
         val[M03] = x;
         val[M13] = y;
         val[M23] = z;
@@ -667,7 +667,7 @@ public class Matrix4{
      * @param vector The translation vector
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 setToTranslation(Vec3 vector){
+    public Mat3D setToTranslation(Vec3 vector){
         idt();
         val[M03] = vector.x;
         val[M13] = vector.y;
@@ -683,7 +683,7 @@ public class Matrix4{
      * @param z The z-component of the translation vector.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 setToTranslation(float x, float y, float z){
+    public Mat3D setToTranslation(float x, float y, float z){
         idt();
         val[M03] = x;
         val[M13] = y;
@@ -698,7 +698,7 @@ public class Matrix4{
      * @param scaling The scaling vector
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 setToTranslationAndScaling(Vec3 translation, Vec3 scaling){
+    public Mat3D setToTranslationAndScaling(Vec3 translation, Vec3 scaling){
         idt();
         val[M03] = translation.x;
         val[M13] = translation.y;
@@ -720,8 +720,8 @@ public class Matrix4{
      * @param scalingZ The x-component of the scaling vector
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 setToTranslationAndScaling(float translationX, float translationY, float translationZ, float scalingX,
-                                              float scalingY, float scalingZ){
+    public Mat3D setToTranslationAndScaling(float translationX, float translationY, float translationZ, float scalingX,
+                                            float scalingY, float scalingZ){
         idt();
         val[M03] = translationX;
         val[M13] = translationY;
@@ -741,7 +741,7 @@ public class Matrix4{
      * @param degrees The angle in degrees
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 setToRotation(Vec3 axis, float degrees){
+    public Mat3D setToRotation(Vec3 axis, float degrees){
         if(degrees == 0){
             idt();
             return this;
@@ -755,7 +755,7 @@ public class Matrix4{
      * @param radians The angle in radians
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 setToRotationRad(Vec3 axis, float radians){
+    public Mat3D setToRotationRad(Vec3 axis, float radians){
         if(radians == 0){
             idt();
             return this;
@@ -771,7 +771,7 @@ public class Matrix4{
      * @param degrees The angle in degrees
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 setToRotation(float axisX, float axisY, float axisZ, float degrees){
+    public Mat3D setToRotation(float axisX, float axisY, float axisZ, float degrees){
         if(degrees == 0){
             idt();
             return this;
@@ -787,7 +787,7 @@ public class Matrix4{
      * @param radians The angle in radians
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 setToRotationRad(float axisX, float axisY, float axisZ, float radians){
+    public Mat3D setToRotationRad(float axisX, float axisY, float axisZ, float radians){
         if(radians == 0){
             idt();
             return this;
@@ -801,7 +801,7 @@ public class Matrix4{
      * @param v2 The target vector
      * @return This matrix for the purpose of chaining methods together
      */
-    public Matrix4 setToRotation(final Vec3 v1, final Vec3 v2){
+    public Mat3D setToRotation(final Vec3 v1, final Vec3 v2){
         return set(quat.setFromCross(v1, v2));
     }
 
@@ -815,7 +815,7 @@ public class Matrix4{
      * @param z2 The target vector z value
      * @return This matrix for the purpose of chaining methods together
      */
-    public Matrix4 setToRotation(final float x1, final float y1, final float z1, final float x2, final float y2, final float z2){
+    public Mat3D setToRotation(final float x1, final float y1, final float z1, final float x2, final float y2, final float z2){
         return set(quat.setFromCross(x1, y1, z1, x2, y2, z2));
     }
 
@@ -826,7 +826,7 @@ public class Matrix4{
      * @param roll the roll in degrees
      * @return This matrix
      */
-    public Matrix4 setFromEulerAngles(float yaw, float pitch, float roll){
+    public Mat3D setFromEulerAngles(float yaw, float pitch, float roll){
         quat.setEulerAngles(yaw, pitch, roll);
         return set(quat);
     }
@@ -838,7 +838,7 @@ public class Matrix4{
      * @param roll the roll in radians
      * @return This matrix
      */
-    public Matrix4 setFromEulerAnglesRad(float yaw, float pitch, float roll){
+    public Mat3D setFromEulerAnglesRad(float yaw, float pitch, float roll){
         quat.setEulerAnglesRad(yaw, pitch, roll);
         return set(quat);
     }
@@ -848,7 +848,7 @@ public class Matrix4{
      * @param vector The scaling vector
      * @return This matrix for chaining.
      */
-    public Matrix4 setToScaling(Vec3 vector){
+    public Mat3D setToScaling(Vec3 vector){
         idt();
         val[M00] = vector.x;
         val[M11] = vector.y;
@@ -863,7 +863,7 @@ public class Matrix4{
      * @param z The z-component of the scaling vector
      * @return This matrix for chaining.
      */
-    public Matrix4 setToScaling(float x, float y, float z){
+    public Mat3D setToScaling(float x, float y, float z){
         idt();
         val[M00] = x;
         val[M11] = y;
@@ -882,7 +882,7 @@ public class Matrix4{
      * @param up The up vector
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 setToLookAt(Vec3 direction, Vec3 up){
+    public Mat3D setToLookAt(Vec3 direction, Vec3 up){
         l_vez.set(direction).nor();
         l_vex.set(direction).nor();
         l_vex.crs(up).nor();
@@ -902,7 +902,7 @@ public class Matrix4{
     }
 
     static final Vec3 tmpVec = new Vec3();
-    static final Matrix4 tmpMat = new Matrix4();
+    static final Mat3D tmpMat = new Mat3D();
 
     /**
      * Sets this matrix to a look at matrix with the given position, target and up vector.
@@ -911,7 +911,7 @@ public class Matrix4{
      * @param up the up vector
      * @return This matrix
      */
-    public Matrix4 setToLookAt(Vec3 position, Vec3 target, Vec3 up){
+    public Mat3D setToLookAt(Vec3 position, Vec3 target, Vec3 up){
         tmpVec.set(target).sub(position);
         setToLookAt(tmpVec, up);
         this.mul(tmpMat.setToTranslation(-position.x, -position.y, -position.z));
@@ -923,7 +923,7 @@ public class Matrix4{
     static final Vec3 tmpForward = new Vec3();
     static final Vec3 tmpUp = new Vec3();
 
-    public Matrix4 setToWorld(Vec3 position, Vec3 forward, Vec3 up){
+    public Mat3D setToWorld(Vec3 position, Vec3 forward, Vec3 up){
         tmpForward.set(forward).nor();
         right.set(tmpForward).crs(up).nor();
         tmpUp.set(right).crs(tmpForward).nor();
@@ -944,7 +944,7 @@ public class Matrix4{
      * @param alpha the alpha value in the range [0,1]
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 lerp(Matrix4 matrix, float alpha){
+    public Mat3D lerp(Mat3D matrix, float alpha){
         for(int i = 0; i < 16; i++)
             this.val[i] = this.val[i] * (1 - alpha) + matrix.val[i] * alpha;
         return this;
@@ -957,7 +957,7 @@ public class Matrix4{
      * @param w Weight of this transform; weight of the other transform is (1 - w)
      * @return This matrix for chaining
      */
-    public Matrix4 avg(Matrix4 other, float w){
+    public Mat3D avg(Mat3D other, float w){
         getScale(tmpVec);
         other.getScale(tmpForward);
 
@@ -980,7 +980,7 @@ public class Matrix4{
      * @param t List of transforms
      * @return This matrix for chaining
      */
-    public Matrix4 avg(Matrix4[] t){
+    public Mat3D avg(Mat3D[] t){
         final float w = 1.0f / t.length;
 
         tmpVec.set(t[0].getScale(tmpUp).scl(w));
@@ -1009,7 +1009,7 @@ public class Matrix4{
      * @param w List of weights
      * @return This matrix for chaining
      */
-    public Matrix4 avg(Matrix4[] t, float[] w){
+    public Mat3D avg(Mat3D[] t, float[] w){
         tmpVec.set(t[0].getScale(tmpUp).scl(w[0]));
         quat.set(t[0].getRotation(quat2).exp(w[0]));
         tmpForward.set(t[0].getTranslation(tmpUp).scl(w[0]));
@@ -1032,7 +1032,7 @@ public class Matrix4{
      * Sets this matrix to the given 3x3 matrix. The third column of this matrix is set to (0,0,1,0).
      * @param mat the matrix
      */
-    public Matrix4 set(Matrix3 mat){
+    public Mat3D set(Mat mat){
         val[0] = mat.val[0];
         val[1] = mat.val[1];
         val[2] = mat.val[2];
@@ -1064,7 +1064,7 @@ public class Matrix4{
      * @param affine the affine matrix
      * @return This matrix for chaining
      */
-    public Matrix4 set(Affine2 affine){
+    public Mat3D set(Affine2 affine){
         val[M00] = affine.m00;
         val[M10] = affine.m10;
         val[M20] = 0;
@@ -1097,7 +1097,7 @@ public class Matrix4{
      * @param affine the source matrix
      * @return This matrix for chaining
      */
-    public Matrix4 setAsAffine(Affine2 affine){
+    public Mat3D setAsAffine(Affine2 affine){
         val[M00] = affine.m00;
         val[M10] = affine.m10;
         val[M01] = affine.m01;
@@ -1119,7 +1119,7 @@ public class Matrix4{
      * @param mat the source matrix
      * @return This matrix for chaining
      */
-    public Matrix4 setAsAffine(Matrix4 mat){
+    public Mat3D setAsAffine(Mat3D mat){
         val[M00] = mat.val[M00];
         val[M10] = mat.val[M10];
         val[M01] = mat.val[M01];
@@ -1129,21 +1129,21 @@ public class Matrix4{
         return this;
     }
 
-    public Matrix4 scl(Vec3 scale){
+    public Mat3D scl(Vec3 scale){
         val[M00] *= scale.x;
         val[M11] *= scale.y;
         val[M22] *= scale.z;
         return this;
     }
 
-    public Matrix4 scl(float x, float y, float z){
+    public Mat3D scl(float x, float y, float z){
         val[M00] *= x;
         val[M11] *= y;
         val[M22] *= z;
         return this;
     }
 
-    public Matrix4 scl(float scale){
+    public Mat3D scl(float scale){
         val[M00] *= scale;
         val[M11] *= scale;
         val[M22] *= scale;
@@ -1178,34 +1178,34 @@ public class Matrix4{
 
     /** @return the squared scale factor on the X axis */
     public float getScaleXSquared(){
-        return val[Matrix4.M00] * val[Matrix4.M00] + val[Matrix4.M01] * val[Matrix4.M01] + val[Matrix4.M02] * val[Matrix4.M02];
+        return val[Mat3D.M00] * val[Mat3D.M00] + val[Mat3D.M01] * val[Mat3D.M01] + val[Mat3D.M02] * val[Mat3D.M02];
     }
 
     /** @return the squared scale factor on the Y axis */
     public float getScaleYSquared(){
-        return val[Matrix4.M10] * val[Matrix4.M10] + val[Matrix4.M11] * val[Matrix4.M11] + val[Matrix4.M12] * val[Matrix4.M12];
+        return val[Mat3D.M10] * val[Mat3D.M10] + val[Mat3D.M11] * val[Mat3D.M11] + val[Mat3D.M12] * val[Mat3D.M12];
     }
 
     /** @return the squared scale factor on the Z axis */
     public float getScaleZSquared(){
-        return val[Matrix4.M20] * val[Matrix4.M20] + val[Matrix4.M21] * val[Matrix4.M21] + val[Matrix4.M22] * val[Matrix4.M22];
+        return val[Mat3D.M20] * val[Mat3D.M20] + val[Mat3D.M21] * val[Mat3D.M21] + val[Mat3D.M22] * val[Mat3D.M22];
     }
 
     /** @return the scale factor on the X axis (non-negative) */
     public float getScaleX(){
-        return (Mathf.zero(val[Matrix4.M01]) && Mathf.zero(val[Matrix4.M02])) ? Math.abs(val[Matrix4.M00])
+        return (Mathf.zero(val[Mat3D.M01]) && Mathf.zero(val[Mat3D.M02])) ? Math.abs(val[Mat3D.M00])
         : (float)Math.sqrt(getScaleXSquared());
     }
 
     /** @return the scale factor on the Y axis (non-negative) */
     public float getScaleY(){
-        return (Mathf.zero(val[Matrix4.M10]) && Mathf.zero(val[Matrix4.M12])) ? Math.abs(val[Matrix4.M11])
+        return (Mathf.zero(val[Mat3D.M10]) && Mathf.zero(val[Mat3D.M12])) ? Math.abs(val[Mat3D.M11])
         : (float)Math.sqrt(getScaleYSquared());
     }
 
     /** @return the scale factor on the X axis (non-negative) */
     public float getScaleZ(){
-        return (Mathf.zero(val[Matrix4.M20]) && Mathf.zero(val[Matrix4.M21])) ? Math.abs(val[Matrix4.M22])
+        return (Mathf.zero(val[Mat3D.M20]) && Mathf.zero(val[Mat3D.M21])) ? Math.abs(val[Mat3D.M22])
         : (float)Math.sqrt(getScaleZSquared());
     }
 
@@ -1218,7 +1218,7 @@ public class Matrix4{
     }
 
     /** removes the translational part and transposes the matrix. */
-    public Matrix4 toNormalMatrix(){
+    public Mat3D toNormalMatrix(){
         val[M03] = 0;
         val[M13] = 0;
         val[M23] = 0;
@@ -1227,7 +1227,7 @@ public class Matrix4{
 
     /**
      * Multiplies the matrix mata with matrix matb, storing the result in mata. The arrays are assumed to hold 4x4 column major
-     * matrices as you can get from {@link Matrix4#val}. This is the same as {@link Matrix4#mul(Matrix4)}.
+     * matrices as you can get from {@link Mat3D#val}. This is the same as {@link Mat3D#mul(Mat3D)}.
      * @param mata the first matrix.
      * @param matb the second matrix.
      */
@@ -1253,9 +1253,9 @@ public class Matrix4{
 
     /**
      * Multiplies the vector with the given matrix. The matrix array is assumed to hold a 4x4 column major matrix as you can get
-     * from {@link Matrix4#val}. The vector array is assumed to hold a 3-component vector, with x being the first element, y being
+     * from {@link Mat3D#val}. The vector array is assumed to hold a 3-component vector, with x being the first element, y being
      * the second and z being the last component. The result is stored in the vector array. This is the same as
-     * Vec3#mul(Matrix4).
+     * Vec3#mul(Mat3).
      * @param mat the matrix
      * @param vec the vector.
      */
@@ -1270,9 +1270,9 @@ public class Matrix4{
 
     /**
      * Multiplies the vector with the given matrix, performing a division by w. The matrix array is assumed to hold a 4x4 column
-     * major matrix as you can get from {@link Matrix4#val}. The vector array is assumed to hold a 3-component vector, with x being
+     * major matrix as you can get from {@link Mat3D#val}. The vector array is assumed to hold a 3-component vector, with x being
      * the first element, y being the second and z being the last component. The result is stored in the vector array. This is the
-     * same as Vec3#prj(Matrix4).
+     * same as Vec3#prj(Mat3).
      * @param mat the matrix
      * @param vec the vector.
      */
@@ -1288,9 +1288,9 @@ public class Matrix4{
 
     /**
      * Multiplies the vector with the top most 3x3 sub-matrix of the given matrix. The matrix array is assumed to hold a 4x4 column
-     * major matrix as you can get from {@link Matrix4#val}. The vector array is assumed to hold a 3-component vector, with x being
+     * major matrix as you can get from {@link Mat3D#val}. The vector array is assumed to hold a 3-component vector, with x being
      * the first element, y being the second and z being the last component. The result is stored in the vector array. This is the
-     * same as Vec3#rot(Matrix4).
+     * same as Vec3#rot(Mat3).
      * @param mat the matrix
      * @param vec the vector.
      */
@@ -1305,7 +1305,7 @@ public class Matrix4{
 
     /**
      * Computes the inverse of the given matrix. The matrix array is assumed to hold a 4x4 column major matrix as you can get from
-     * {@link Matrix4#val}.
+     * {@link Mat3D#val}.
      * @param val the matrix values.
      * @return false in case the inverse could not be calculated, true otherwise.
      */
@@ -1366,7 +1366,7 @@ public class Matrix4{
 
     /**
      * Computes the determinante of the given matrix. The matrix array is assumed to hold a 4x4 column major matrix as you can get
-     * from {@link Matrix4#val}.
+     * from {@link Mat3D#val}.
      * @param val the matrix values.
      * @return the determinante.
      */
@@ -1387,7 +1387,7 @@ public class Matrix4{
      * glTranslate/glRotate/glScale
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 translate(Vec3 translation){
+    public Mat3D translate(Vec3 translation){
         return translate(translation.x, translation.y, translation.z);
     }
 
@@ -1399,7 +1399,7 @@ public class Matrix4{
      * @param z Translation in the z-axis.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 translate(float x, float y, float z){
+    public Mat3D translate(float x, float y, float z){
         tmp[M00] = 1;
         tmp[M01] = 0;
         tmp[M02] = 0;
@@ -1428,7 +1428,7 @@ public class Matrix4{
      * @param degrees The angle in degrees.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 rotate(Vec3 axis, float degrees){
+    public Mat3D rotate(Vec3 axis, float degrees){
         if(degrees == 0) return this;
         quat.set(axis, degrees);
         return rotate(quat);
@@ -1441,7 +1441,7 @@ public class Matrix4{
      * @param radians The angle in radians.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 rotateRad(Vec3 axis, float radians){
+    public Mat3D rotateRad(Vec3 axis, float radians){
         if(radians == 0) return this;
         quat.setFromAxisRad(axis, radians);
         return rotate(quat);
@@ -1456,7 +1456,7 @@ public class Matrix4{
      * @param degrees The angle in degrees
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 rotate(float axisX, float axisY, float axisZ, float degrees){
+    public Mat3D rotate(float axisX, float axisY, float axisZ, float degrees){
         if(degrees == 0) return this;
         quat.setFromAxis(axisX, axisY, axisZ, degrees);
         return rotate(quat);
@@ -1471,7 +1471,7 @@ public class Matrix4{
      * @param radians The angle in radians
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 rotateRad(float axisX, float axisY, float axisZ, float radians){
+    public Mat3D rotateRad(float axisX, float axisY, float axisZ, float radians){
         if(radians == 0) return this;
         quat.setFromAxisRad(axisX, axisY, axisZ, radians);
         return rotate(quat);
@@ -1482,7 +1482,7 @@ public class Matrix4{
      * glTranslate/glRotate/glScale.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 rotate(Quaternion rotation){
+    public Mat3D rotate(Quaternion rotation){
         rotation.toMatrix(tmp);
         mul(val, tmp);
         return this;
@@ -1494,7 +1494,7 @@ public class Matrix4{
      * @param v2 The target vector
      * @return This matrix for the purpose of chaining methods together
      */
-    public Matrix4 rotate(final Vec3 v1, final Vec3 v2){
+    public Mat3D rotate(final Vec3 v1, final Vec3 v2){
         return rotate(quat.setFromCross(v1, v2));
     }
 
@@ -1506,7 +1506,7 @@ public class Matrix4{
      * @param scaleZ The scale in the z-axis.
      * @return This matrix for the purpose of chaining methods together.
      */
-    public Matrix4 scale(float scaleX, float scaleY, float scaleZ){
+    public Mat3D scale(float scaleX, float scaleY, float scaleZ){
         tmp[M00] = scaleX;
         tmp[M01] = 0;
         tmp[M02] = 0;
@@ -1560,12 +1560,12 @@ public class Matrix4{
      * @param matrix The matrix.
      * @return This vector for chaining
      */
-    public static Vec3 prj(Vec3 v, Matrix4 matrix){
+    public static Vec3 prj(Vec3 v, Mat3D matrix){
         final float[] lmat = matrix.val;
-        final float lw = 1f / (v.x * lmat[Matrix4.M30] + v.y * lmat[Matrix4.M31] + v.z * lmat[Matrix4.M32] + lmat[Matrix4.M33]);
-        return v.set((v.x * lmat[Matrix4.M00] + v.y * lmat[Matrix4.M01] + v.z * lmat[Matrix4.M02] + lmat[Matrix4.M03]) * lw, (v.x
-        * lmat[Matrix4.M10] + v.y * lmat[Matrix4.M11] + v.z * lmat[Matrix4.M12] + lmat[Matrix4.M13])
-        * lw, (v.x * lmat[Matrix4.M20] + v.y * lmat[Matrix4.M21] + v.z * lmat[Matrix4.M22] + lmat[Matrix4.M23]) * lw);
+        final float lw = 1f / (v.x * lmat[Mat3D.M30] + v.y * lmat[Mat3D.M31] + v.z * lmat[Mat3D.M32] + lmat[Mat3D.M33]);
+        return v.set((v.x * lmat[Mat3D.M00] + v.y * lmat[Mat3D.M01] + v.z * lmat[Mat3D.M02] + lmat[Mat3D.M03]) * lw, (v.x
+        * lmat[Mat3D.M10] + v.y * lmat[Mat3D.M11] + v.z * lmat[Mat3D.M12] + lmat[Mat3D.M13])
+        * lw, (v.x * lmat[Mat3D.M20] + v.y * lmat[Mat3D.M21] + v.z * lmat[Mat3D.M22] + lmat[Mat3D.M23]) * lw);
     }
 
     /**
@@ -1573,37 +1573,37 @@ public class Matrix4{
      * @param matrix The matrix
      * @return This vector for chaining
      */
-    public static Vec3 rot(Vec3 v, Matrix4 matrix){
+    public static Vec3 rot(Vec3 v, Mat3D matrix){
         final float[] lmat = matrix.val;
-        return v.set(v.x * lmat[Matrix4.M00] + v.y * lmat[Matrix4.M01] + v.z * lmat[Matrix4.M02], v.x * lmat[Matrix4.M10] + v.y
-        * lmat[Matrix4.M11] + v.z * lmat[Matrix4.M12], v.x * lmat[Matrix4.M20] + v.y * lmat[Matrix4.M21] + v.z * lmat[Matrix4.M22]);
+        return v.set(v.x * lmat[Mat3D.M00] + v.y * lmat[Mat3D.M01] + v.z * lmat[Mat3D.M02], v.x * lmat[Mat3D.M10] + v.y
+        * lmat[Mat3D.M11] + v.z * lmat[Mat3D.M12], v.x * lmat[Mat3D.M20] + v.y * lmat[Mat3D.M21] + v.z * lmat[Mat3D.M22]);
     }
 
     /**
      * Multiplies this vector by the transpose of the first three columns of the matrix. Note: only works for translation and
-     * rotation, does not work for scaling. For those, use {@link #rot(Vec3, Matrix4)} with {@link Matrix4#inv()}.
+     * rotation, does not work for scaling. For those, use {@link #rot(Vec3, Mat3D)} with {@link Mat3D#inv()}.
      * @param matrix The transformation matrix
      * @return The vector for chaining
      */
-    public static Vec3 unrotate(Vec3 v, Matrix4 matrix){
+    public static Vec3 unrotate(Vec3 v, Mat3D matrix){
         final float[] lmat = matrix.val;
-        return v.set(v.x * lmat[Matrix4.M00] + v.y * lmat[Matrix4.M10] + v.z * lmat[Matrix4.M20], v.x * lmat[Matrix4.M01] + v.y
-        * lmat[Matrix4.M11] + v.z * lmat[Matrix4.M21], v.x * lmat[Matrix4.M02] + v.y * lmat[Matrix4.M12] + v.z * lmat[Matrix4.M22]);
+        return v.set(v.x * lmat[Mat3D.M00] + v.y * lmat[Mat3D.M10] + v.z * lmat[Mat3D.M20], v.x * lmat[Mat3D.M01] + v.y
+        * lmat[Mat3D.M11] + v.z * lmat[Mat3D.M21], v.x * lmat[Mat3D.M02] + v.y * lmat[Mat3D.M12] + v.z * lmat[Mat3D.M22]);
     }
 
     /**
      * Translates this vector in the direction opposite to the translation of the matrix and the multiplies this vector by the
      * transpose of the first three columns of the matrix. Note: only works for translation and rotation, does not work for
-     * scaling. For those, use {@link #mul(Matrix4)} with {@link Matrix4#inv()}.
+     * scaling. For those, use {@link #mul(Mat3D)} with {@link Mat3D#inv()}.
      * @param matrix The transformation matrix
      * @return The vector for chaining
      */
-    public static Vec3 untransform(Vec3 v, Matrix4 matrix){
+    public static Vec3 untransform(Vec3 v, Mat3D matrix){
         final float[] lmat = matrix.val;
-        v.x -= lmat[Matrix4.M03];
-        v.y -= lmat[Matrix4.M03];
-        v.z -= lmat[Matrix4.M03];
-        return v.set(v.x * lmat[Matrix4.M00] + v.y * lmat[Matrix4.M10] + v.z * lmat[Matrix4.M20], v.x * lmat[Matrix4.M01] + v.y
-        * lmat[Matrix4.M11] + v.z * lmat[Matrix4.M21], v.x * lmat[Matrix4.M02] + v.y * lmat[Matrix4.M12] + v.z * lmat[Matrix4.M22]);
+        v.x -= lmat[Mat3D.M03];
+        v.y -= lmat[Mat3D.M03];
+        v.z -= lmat[Mat3D.M03];
+        return v.set(v.x * lmat[Mat3D.M00] + v.y * lmat[Mat3D.M10] + v.z * lmat[Mat3D.M20], v.x * lmat[Mat3D.M01] + v.y
+        * lmat[Mat3D.M11] + v.z * lmat[Mat3D.M21], v.x * lmat[Mat3D.M02] + v.y * lmat[Mat3D.M12] + v.z * lmat[Mat3D.M22]);
     }
 }

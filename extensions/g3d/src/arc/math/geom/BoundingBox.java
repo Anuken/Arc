@@ -1,6 +1,6 @@
 package arc.math.geom;
 
-import java.util.*;
+import arc.struct.*;
 
 /**
  * Encapsulates an axis aligned bounding box represented by a minimum and a maximum Vector. Additionally you can query for the
@@ -174,7 +174,7 @@ public class BoundingBox{
      * @param points The points.
      * @return This bounding box for chaining.
      */
-    public BoundingBox set(List<Vec3> points){
+    public BoundingBox set(Array<Vec3> points){
         this.inf();
         for(Vec3 l_point : points)
             this.ext(l_point);

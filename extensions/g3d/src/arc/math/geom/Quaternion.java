@@ -379,22 +379,22 @@ public class Quaternion{
         final float zz = z * z;
         final float zw = z * w;
         // Set matrix from quaternion
-        matrix[Matrix4.M00] = 1 - 2 * (yy + zz);
-        matrix[Matrix4.M01] = 2 * (xy - zw);
-        matrix[Matrix4.M02] = 2 * (xz + yw);
-        matrix[Matrix4.M03] = 0;
-        matrix[Matrix4.M10] = 2 * (xy + zw);
-        matrix[Matrix4.M11] = 1 - 2 * (xx + zz);
-        matrix[Matrix4.M12] = 2 * (yz - xw);
-        matrix[Matrix4.M13] = 0;
-        matrix[Matrix4.M20] = 2 * (xz - yw);
-        matrix[Matrix4.M21] = 2 * (yz + xw);
-        matrix[Matrix4.M22] = 1 - 2 * (xx + yy);
-        matrix[Matrix4.M23] = 0;
-        matrix[Matrix4.M30] = 0;
-        matrix[Matrix4.M31] = 0;
-        matrix[Matrix4.M32] = 0;
-        matrix[Matrix4.M33] = 1;
+        matrix[Mat3D.M00] = 1 - 2 * (yy + zz);
+        matrix[Mat3D.M01] = 2 * (xy - zw);
+        matrix[Mat3D.M02] = 2 * (xz + yw);
+        matrix[Mat3D.M03] = 0;
+        matrix[Mat3D.M10] = 2 * (xy + zw);
+        matrix[Mat3D.M11] = 1 - 2 * (xx + zz);
+        matrix[Mat3D.M12] = 2 * (yz - xw);
+        matrix[Mat3D.M13] = 0;
+        matrix[Mat3D.M20] = 2 * (xz - yw);
+        matrix[Mat3D.M21] = 2 * (yz + xw);
+        matrix[Mat3D.M22] = 1 - 2 * (xx + yy);
+        matrix[Mat3D.M23] = 0;
+        matrix[Mat3D.M30] = 0;
+        matrix[Mat3D.M31] = 0;
+        matrix[Mat3D.M32] = 0;
+        matrix[Mat3D.M33] = 1;
     }
 
     /**
@@ -469,26 +469,26 @@ public class Quaternion{
     }
 
     /** Sets the Quaternion from the given matrix, optionally removing any scaling. */
-    public Quaternion setFromMatrix (boolean normalizeAxes, Matrix4 matrix) {
-        return setFromAxes(normalizeAxes, matrix.val[Matrix4.M00], matrix.val[Matrix4.M01], matrix.val[Matrix4.M02],
-        matrix.val[Matrix4.M10], matrix.val[Matrix4.M11], matrix.val[Matrix4.M12], matrix.val[Matrix4.M20],
-        matrix.val[Matrix4.M21], matrix.val[Matrix4.M22]);
+    public Quaternion setFromMatrix (boolean normalizeAxes, Mat3D matrix) {
+        return setFromAxes(normalizeAxes, matrix.val[Mat3D.M00], matrix.val[Mat3D.M01], matrix.val[Mat3D.M02],
+        matrix.val[Mat3D.M10], matrix.val[Mat3D.M11], matrix.val[Mat3D.M12], matrix.val[Mat3D.M20],
+        matrix.val[Mat3D.M21], matrix.val[Mat3D.M22]);
     }
 
     /** Sets the Quaternion from the given rotation matrix, which must not contain scaling. */
-    public Quaternion setFromMatrix (Matrix4 matrix) {
+    public Quaternion setFromMatrix (Mat3D matrix) {
         return setFromMatrix(false, matrix);
     }
 
     /** Sets the Quaternion from the given matrix, optionally removing any scaling. */
-    public Quaternion setFromMatrix (boolean normalizeAxes, Matrix3 matrix) {
-        return setFromAxes(normalizeAxes, matrix.val[Matrix3.M00], matrix.val[Matrix3.M01], matrix.val[Matrix3.M02],
-        matrix.val[Matrix3.M10], matrix.val[Matrix3.M11], matrix.val[Matrix3.M12], matrix.val[Matrix3.M20],
-        matrix.val[Matrix3.M21], matrix.val[Matrix3.M22]);
+    public Quaternion setFromMatrix (boolean normalizeAxes, Mat matrix) {
+        return setFromAxes(normalizeAxes, matrix.val[Mat.M00], matrix.val[Mat.M01], matrix.val[Mat.M02],
+        matrix.val[Mat.M10], matrix.val[Mat.M11], matrix.val[Mat.M12], matrix.val[Mat.M20],
+        matrix.val[Mat.M21], matrix.val[Mat.M22]);
     }
 
     /** Sets the Quaternion from the given rotation matrix, which must not contain scaling. */
-    public Quaternion setFromMatrix (Matrix3 matrix) {
+    public Quaternion setFromMatrix (Mat matrix) {
         return setFromMatrix(false, matrix);
     }
 

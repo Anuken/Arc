@@ -20,13 +20,13 @@ public class Camera3D{
     public final Vec3 up = new Vec3(0, 1, 0);
 
     /** the combined projection and view matrix **/
-    private final Matrix4 combined = new Matrix4();
+    private final Mat3D combined = new Mat3D();
     /** the projection matrix **/
-    private final Matrix4 projection = new Matrix4();
+    private final Mat3D projection = new Mat3D();
     /** the view matrix **/
-    private final Matrix4 view = new Matrix4();
+    private final Mat3D view = new Mat3D();
     /** the inverse combined projection and view matrix **/
-    private final Matrix4 invProjectionView = new Matrix4();
+    private final Mat3D invProjectionView = new Mat3D();
 
     private final Vec3 tmpVec = new Vec3();
     private final Ray ray = new Ray(new Vec3(), new Vec3());
@@ -43,7 +43,7 @@ public class Camera3D{
         this.height = height;
     }
 
-    public Matrix4 combined(){
+    public Mat3D combined(){
         return combined;
     }
 
@@ -101,7 +101,7 @@ public class Camera3D{
         screenCoords.x = (2 * x) / viewportWidth - 1;
         screenCoords.y = (2 * y) / viewportHeight - 1;
         screenCoords.z = 2 * screenCoords.z - 1;
-        Matrix4.prj(screenCoords, invProjectionView);
+        Mat3D.prj(screenCoords, invProjectionView);
         return screenCoords;
     }
 
@@ -145,7 +145,7 @@ public class Camera3D{
      * @return the mutated and projected worldCoords {@link Vec3}
      */
     public Vec3 project(Vec3 worldCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight){
-        Matrix4.prj(worldCoords, combined);
+        Mat3D.prj(worldCoords, combined);
         worldCoords.x = viewportWidth * (worldCoords.x + 1) / 2 + viewportX;
         worldCoords.y = viewportHeight * (worldCoords.y + 1) / 2 + viewportY;
         worldCoords.z = (worldCoords.z + 1) / 2;
