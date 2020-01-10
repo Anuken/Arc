@@ -7,7 +7,7 @@ import arc.math.*;
  * the {@link Vec3} class it allows the chaining of methods by returning a reference to itself. For example:
  *
  * <pre>
- * Mat3 mat = new Mat3().trn(position).mul(camera.combined);
+ * Mat3D mat = new Mat3D().trn(position).mul(camera.combined);
  * </pre>
  * @author badlogicgames@gmail.com
  */
