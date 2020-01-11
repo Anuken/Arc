@@ -34,6 +34,10 @@ public class Vec3 implements Vector<Vec3>{
         this.set(x, y, z);
     }
 
+    public Vec3(double x, double y, double z){
+        this((float)x, (float)y, (float)z);
+    }
+
     /**
      * Creates a vector from the given vector
      * @param vector The vector

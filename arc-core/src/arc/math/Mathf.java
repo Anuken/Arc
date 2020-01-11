@@ -131,7 +131,11 @@ public final class Mathf{
     }
 
     public static float pow(float a, float b){
-        return (float) Math.pow(a, b);
+        return (float)Math.pow(a, b);
+    }
+
+    public static int pow(int a, int b){
+        return Mathf.ceil((float)Math.pow(a, b));
     }
 
     public static float range(float range){
