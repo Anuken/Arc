@@ -8,7 +8,7 @@ public final class Mathf{
     public static final int[] signs = {-1, 1};
     public static final boolean[] booleans = {true, false};
     public static final float FLOAT_ROUNDING_ERROR = 0.000001f; // 32 bits
-    public static final float PI = 3.1415927f;
+    public static final float PI = 3.1415927f, pi = PI;
     public static final float PI2 = PI * 2;
     public static final float E = 2.7182818f;
     public static final float sqrt2 = Mathf.sqrt(2f);

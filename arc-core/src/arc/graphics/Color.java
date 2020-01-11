@@ -1,6 +1,7 @@
 package arc.graphics;
 
 import arc.math.Mathf;
+import arc.math.geom.*;
 
 /**
  * A color class, holding the r, g, b and alpha component as floats in the range [0,1]. All methods perform clamping on the
@@ -347,6 +348,10 @@ public class Color{
         this.b = color.b;
         this.a = color.a;
         return this;
+    }
+
+    public Color set(Vec3 vec){
+        return set(vec.x, vec.y, vec.z);
     }
 
     /**
