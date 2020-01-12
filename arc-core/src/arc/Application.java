@@ -45,6 +45,12 @@ public interface Application extends Disposable{
 
     void setClipboardText(String text);
 
+    /** Open a folder in the system's file browser.
+     * @return whether this operation was successful. */
+    default boolean openFolder(String file){
+        return false;
+    }
+
     /**
      * Posts a runnable on the main loop thread.
      * <p>

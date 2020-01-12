@@ -56,12 +56,6 @@ public class Net{
         return false;
     }
 
-    /** Open a folder in the system's file browser.
-     * @return whether this operation was successful. */
-    public boolean openFolder(String file){
-        return false;
-    }
-
     /** HTTP response interface with methods to get the response data as a byte[], a {@link String} or an {@link InputStream}. */
     public interface HttpResponse{
         /**

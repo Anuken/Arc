@@ -3,8 +3,6 @@ package arc.backend.sdl;
 import arc.*;
 import arc.util.*;
 
-import java.io.*;
-
 public class SdlNet extends Net{
 
     @Override
@@ -14,11 +12,9 @@ public class SdlNet extends Net{
                 Class.forName("com.apple.eio.FileManager").getMethod("openURL", String.class).invoke(null, url);
                 return true;
             }else if(OS.isLinux){
-                exec("xdg-open " + url);
-                return true;
+                return OS.execSafe("xdg-open " + url);
             }else if(OS.isWindows){
-                exec("rundll32 url.dll,FileProtocolHandler " + url);
-                return true;
+                return OS.execSafe("rundll32 url.dll,FileProtocolHandler " + url);
             }
             return false;
         }catch(Throwable e){
@@ -26,32 +22,4 @@ public class SdlNet extends Net{
             return false;
         }
     }
-
-    @Override
-    public boolean openFolder(String file){
-        try{
-            if(OS.isWindows){
-                exec("explorer.exe /select," + file.replace("/", "\\"));
-                return true;
-            }else if(OS.isLinux){
-                exec("xdg-open " + file);
-                return true;
-            }else if(OS.isMac){
-                exec("open " + file);
-            }
-            return false;
-        }catch(Throwable e){
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    private void exec(String command) throws IOException{
-        BufferedReader in = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(command).getInputStream()));
-        String line;
-        while ((line = in.readLine()) != null) {
-            System.out.println(line);
-        }
-    }
-
 }

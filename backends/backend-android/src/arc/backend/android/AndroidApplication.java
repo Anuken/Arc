@@ -4,14 +4,15 @@ import android.annotation.*;
 import android.app.*;
 import android.content.*;
 import android.content.res.*;
+import android.net.*;
 import android.os.*;
 import android.view.*;
 import android.widget.*;
-import arc.*;
 import arc.Application;
+import arc.*;
 import arc.backend.android.surfaceview.*;
-import arc.struct.*;
 import arc.func.*;
+import arc.struct.*;
 import arc.util.*;
 
 import java.util.concurrent.*;
@@ -284,6 +285,25 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
     @Override
     protected void onDestroy(){
         super.onDestroy();
+    }
+
+    @Override
+    public boolean openFolder(String file){
+        Log.info(file);
+        Uri selectedUri = Uri.parse(file);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(selectedUri, "resource/folder");
+
+        if(intent.resolveActivityInfo(getPackageManager(), 0) != null){
+            startActivity(intent);
+            return true;
+        }else{
+            runOnUiThread(() -> {
+                Toast toast = Toast.makeText(getContext(), "Unable to open folder (missing valid file manager?)\n" + file, Toast.LENGTH_LONG);
+                toast.show();
+            });
+            return false;
+        }
     }
 
     @Override
