@@ -36,11 +36,6 @@ public class Ray{
         return out.set(direction).scl(distance).add(origin);
     }
 
-    /** {@inheritDoc} */
-    public String toString(){
-        return "ray [" + origin + ":" + direction + "]";
-    }
-
     /**
      * Sets the starting position and the direction of this ray.
      * @param origin The starting position
@@ -78,6 +73,12 @@ public class Ray{
         this.origin.set(ray.origin);
         this.direction.set(ray.direction);
         return this;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString(){
+        return "ray [" + origin + ":" + direction + "]";
     }
 
     @Override

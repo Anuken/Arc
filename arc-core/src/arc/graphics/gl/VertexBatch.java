@@ -12,7 +12,7 @@ import arc.math.Mat;
  * shader for (unlit) rendering.</p> *
  * @author mzechner
  */
-public class ImmediateRenderer{
+public class VertexBatch{
     private final int maxVertices;
     private final Mesh mesh;
     private final int numTexCoords;
@@ -30,17 +30,17 @@ public class ImmediateRenderer{
     private Shader shader;
     private boolean ownsShader;
 
-    public ImmediateRenderer(boolean hasNormals, boolean hasColors, int numTexCoords){
+    public VertexBatch(boolean hasNormals, boolean hasColors, int numTexCoords){
         this(5000, hasNormals, hasColors, numTexCoords, createDefaultShader(hasNormals, hasColors, numTexCoords));
         ownsShader = true;
     }
 
-    public ImmediateRenderer(int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords){
+    public VertexBatch(int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords){
         this(maxVertices, hasNormals, hasColors, numTexCoords, createDefaultShader(hasNormals, hasColors, numTexCoords));
         ownsShader = true;
     }
 
-    public ImmediateRenderer(int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords, Shader shader){
+    public VertexBatch(int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords, Shader shader){
         this.maxVertices = maxVertices;
         this.numTexCoords = numTexCoords;
         this.shader = shader;

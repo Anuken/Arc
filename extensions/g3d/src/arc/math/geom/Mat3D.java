@@ -1178,34 +1178,34 @@ public class Mat3D{
 
     /** @return the squared scale factor on the X axis */
     public float getScaleXSquared(){
-        return val[Mat3D.M00] * val[Mat3D.M00] + val[Mat3D.M01] * val[Mat3D.M01] + val[Mat3D.M02] * val[Mat3D.M02];
+        return val[M00] * val[M00] + val[M01] * val[M01] + val[M02] * val[M02];
     }
 
     /** @return the squared scale factor on the Y axis */
     public float getScaleYSquared(){
-        return val[Mat3D.M10] * val[Mat3D.M10] + val[Mat3D.M11] * val[Mat3D.M11] + val[Mat3D.M12] * val[Mat3D.M12];
+        return val[M10] * val[M10] + val[M11] * val[M11] + val[M12] * val[M12];
     }
 
     /** @return the squared scale factor on the Z axis */
     public float getScaleZSquared(){
-        return val[Mat3D.M20] * val[Mat3D.M20] + val[Mat3D.M21] * val[Mat3D.M21] + val[Mat3D.M22] * val[Mat3D.M22];
+        return val[M20] * val[M20] + val[M21] * val[M21] + val[M22] * val[M22];
     }
 
     /** @return the scale factor on the X axis (non-negative) */
     public float getScaleX(){
-        return (Mathf.zero(val[Mat3D.M01]) && Mathf.zero(val[Mat3D.M02])) ? Math.abs(val[Mat3D.M00])
+        return (Mathf.zero(val[M01]) && Mathf.zero(val[M02])) ? Math.abs(val[M00])
         : (float)Math.sqrt(getScaleXSquared());
     }
 
     /** @return the scale factor on the Y axis (non-negative) */
     public float getScaleY(){
-        return (Mathf.zero(val[Mat3D.M10]) && Mathf.zero(val[Mat3D.M12])) ? Math.abs(val[Mat3D.M11])
+        return (Mathf.zero(val[M10]) && Mathf.zero(val[M12])) ? Math.abs(val[M11])
         : (float)Math.sqrt(getScaleYSquared());
     }
 
     /** @return the scale factor on the X axis (non-negative) */
     public float getScaleZ(){
-        return (Mathf.zero(val[Mat3D.M20]) && Mathf.zero(val[Mat3D.M21])) ? Math.abs(val[Mat3D.M22])
+        return (Mathf.zero(val[M20]) && Mathf.zero(val[M21])) ? Math.abs(val[M22])
         : (float)Math.sqrt(getScaleZSquared());
     }
 
@@ -1562,10 +1562,10 @@ public class Mat3D{
      */
     public static Vec3 prj(Vec3 v, Mat3D matrix){
         final float[] lmat = matrix.val;
-        final float lw = 1f / (v.x * lmat[Mat3D.M30] + v.y * lmat[Mat3D.M31] + v.z * lmat[Mat3D.M32] + lmat[Mat3D.M33]);
-        return v.set((v.x * lmat[Mat3D.M00] + v.y * lmat[Mat3D.M01] + v.z * lmat[Mat3D.M02] + lmat[Mat3D.M03]) * lw, (v.x
-        * lmat[Mat3D.M10] + v.y * lmat[Mat3D.M11] + v.z * lmat[Mat3D.M12] + lmat[Mat3D.M13])
-        * lw, (v.x * lmat[Mat3D.M20] + v.y * lmat[Mat3D.M21] + v.z * lmat[Mat3D.M22] + lmat[Mat3D.M23]) * lw);
+        final float lw = 1f / (v.x * lmat[M30] + v.y * lmat[M31] + v.z * lmat[M32] + lmat[M33]);
+        return v.set((v.x * lmat[M00] + v.y * lmat[M01] + v.z * lmat[M02] + lmat[M03]) * lw, (v.x
+        * lmat[M10] + v.y * lmat[M11] + v.z * lmat[M12] + lmat[M13])
+        * lw, (v.x * lmat[M20] + v.y * lmat[M21] + v.z * lmat[M22] + lmat[M23]) * lw);
     }
 
     /**
@@ -1575,8 +1575,8 @@ public class Mat3D{
      */
     public static Vec3 rot(Vec3 v, Mat3D matrix){
         final float[] lmat = matrix.val;
-        return v.set(v.x * lmat[Mat3D.M00] + v.y * lmat[Mat3D.M01] + v.z * lmat[Mat3D.M02], v.x * lmat[Mat3D.M10] + v.y
-        * lmat[Mat3D.M11] + v.z * lmat[Mat3D.M12], v.x * lmat[Mat3D.M20] + v.y * lmat[Mat3D.M21] + v.z * lmat[Mat3D.M22]);
+        return v.set(v.x * lmat[M00] + v.y * lmat[M01] + v.z * lmat[M02], v.x * lmat[M10] + v.y
+        * lmat[M11] + v.z * lmat[M12], v.x * lmat[M20] + v.y * lmat[M21] + v.z * lmat[M22]);
     }
 
     /**
@@ -1587,8 +1587,8 @@ public class Mat3D{
      */
     public static Vec3 unrotate(Vec3 v, Mat3D matrix){
         final float[] lmat = matrix.val;
-        return v.set(v.x * lmat[Mat3D.M00] + v.y * lmat[Mat3D.M10] + v.z * lmat[Mat3D.M20], v.x * lmat[Mat3D.M01] + v.y
-        * lmat[Mat3D.M11] + v.z * lmat[Mat3D.M21], v.x * lmat[Mat3D.M02] + v.y * lmat[Mat3D.M12] + v.z * lmat[Mat3D.M22]);
+        return v.set(v.x * lmat[M00] + v.y * lmat[M10] + v.z * lmat[M20], v.x * lmat[M01] + v.y
+        * lmat[M11] + v.z * lmat[M21], v.x * lmat[M02] + v.y * lmat[M12] + v.z * lmat[M22]);
     }
 
     /**
@@ -1600,10 +1600,10 @@ public class Mat3D{
      */
     public static Vec3 untransform(Vec3 v, Mat3D matrix){
         final float[] lmat = matrix.val;
-        v.x -= lmat[Mat3D.M03];
-        v.y -= lmat[Mat3D.M03];
-        v.z -= lmat[Mat3D.M03];
-        return v.set(v.x * lmat[Mat3D.M00] + v.y * lmat[Mat3D.M10] + v.z * lmat[Mat3D.M20], v.x * lmat[Mat3D.M01] + v.y
-        * lmat[Mat3D.M11] + v.z * lmat[Mat3D.M21], v.x * lmat[Mat3D.M02] + v.y * lmat[Mat3D.M12] + v.z * lmat[Mat3D.M22]);
+        v.x -= lmat[M03];
+        v.y -= lmat[M03];
+        v.z -= lmat[M03];
+        return v.set(v.x * lmat[M00] + v.y * lmat[M10] + v.z * lmat[M20], v.x * lmat[M01] + v.y
+        * lmat[M11] + v.z * lmat[M21], v.x * lmat[M02] + v.y * lmat[M12] + v.z * lmat[M22]);
     }
 }

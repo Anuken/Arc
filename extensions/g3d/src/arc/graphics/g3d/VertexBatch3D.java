@@ -5,9 +5,8 @@ import arc.graphics.VertexAttributes.*;
 import arc.graphics.gl.*;
 import arc.math.geom.*;
 import arc.struct.*;
-import arc.util.*;
 
-public class ImmediateRenderer3D{
+public class VertexBatch3D{
     private final int maxVertices;
     private final Mesh mesh;
     private final int numTexCoords;
@@ -19,24 +18,23 @@ public class ImmediateRenderer3D{
     private final float[] vertices;
     private final String[] shaderUniformNames;
 
-    private int primitiveType;
     private int vertexIdx;
     private int numSetTexCoords;
     private int numVertices;
     private Shader shader;
     private boolean ownsShader;
 
-    public ImmediateRenderer3D(boolean hasNormals, boolean hasColors, int numTexCoords){
+    public VertexBatch3D(boolean hasNormals, boolean hasColors, int numTexCoords){
         this(5000, hasNormals, hasColors, numTexCoords, createDefaultShader(hasNormals, hasColors, numTexCoords));
         ownsShader = true;
     }
 
-    public ImmediateRenderer3D(int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords){
+    public VertexBatch3D(int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords){
         this(maxVertices, hasNormals, hasColors, numTexCoords, createDefaultShader(hasNormals, hasColors, numTexCoords));
         ownsShader = true;
     }
 
-    public ImmediateRenderer3D(int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords, Shader shader){
+    public VertexBatch3D(int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords, Shader shader){
         this.maxVertices = maxVertices;
         this.numTexCoords = numTexCoords;
         this.shader = shader;
@@ -104,7 +102,6 @@ public class ImmediateRenderer3D{
         }
 
         shader.append(";\n}");
-        Log.info(shader);
         return shader.toString();
     }
 
@@ -133,11 +130,6 @@ public class ImmediateRenderer3D{
         if(ownsShader) this.shader.dispose();
         this.shader = shader;
         ownsShader = false;
-    }
-
-    public void begin(Mat3D projModelView, int primitiveType){
-        this.projModelView.set(projModelView);
-        this.primitiveType = primitiveType;
     }
 
     public void color(Color color){
@@ -185,7 +177,9 @@ public class ImmediateRenderer3D{
         numVertices++;
     }
 
-    public void flush(){
+    public void flush(Mat3D projModelView, int primitiveType){
+        this.projModelView.set(projModelView);
+
         if(numVertices == 0) return;
         shader.begin();
         shader.setUniformMatrix4("u_projModelView", projModelView.val);
@@ -198,10 +192,6 @@ public class ImmediateRenderer3D{
         numSetTexCoords = 0;
         vertexIdx = 0;
         numVertices = 0;
-    }
-
-    public void end(){
-        flush();
     }
 
     public int getNumVertices(){

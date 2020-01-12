@@ -36,6 +36,9 @@ public class Camera3D{
         projection.setToProjection(Math.abs(near), Math.abs(far), fov, aspect);
         view.setToLookAt(position, tmpVec.set(position).add(direction), up);
         combined.set(projection).mul(view);
+
+        invProjectionView.set(combined);
+        Mat3D.inv(invProjectionView.val);
     }
 
     public void resize(int width, int height){
