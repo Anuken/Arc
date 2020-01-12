@@ -429,10 +429,6 @@ public class Gl{
         Core.gl.glHint(target, mode);
     }
 
-    public static void lineWidth(float width){
-        Core.gl.glLineWidth(width);
-    }
-
     public static void pixelStorei(int pname, int param){
         Core.gl.glPixelStorei(pname, param);
     }
