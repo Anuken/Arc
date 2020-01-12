@@ -79,10 +79,10 @@ public class Log{
     }
 
     public static String format(String text, Object... args){
-        return format(text, useColors, args);
+        return formatColors(text, useColors, args);
     }
 
-    public static String format(String text, boolean useColors, Object... args){
+    public static String formatColors(String text, boolean useColors, Object... args){
         text = Strings.format(text, args);
 
         if(useColors){
