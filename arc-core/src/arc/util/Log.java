@@ -13,13 +13,17 @@ public class Log{
         logger = log;
     }
 
+    public static LogHandler getLogger(){
+        return logger;
+    }
+
     public static void setUseColors(boolean colors){
         useColors = colors;
     }
 
     public static void log(LogLevel level, String text, Object... args){
         if(Log.level.ordinal() > level.ordinal()) return;
-        logger.log(level, text, args);
+        logger.log(level, format(text, args));
     }
 
     public static void debug(String text, Object... args){
@@ -41,7 +45,7 @@ public class Log{
     }
 
     public static void info(String text, Object... args){
-        logger.log(LogLevel.info, text, args);
+        log(LogLevel.info, text, args);
     }
 
     public static void info(Object object){
@@ -93,6 +97,13 @@ public class Log{
         return text;
     }
 
+    public static String removeCodes(String text){
+        for(String color : ColorCodes.getColorCodes()){
+            text = text.replace("&" + color, "");
+        }
+        return text;
+    }
+
     public static void setLogLevel(LogLevel level){
         Log.level = level;
     }
@@ -106,23 +117,23 @@ public class Log{
     }
 
     public interface LogHandler{
-        void log(LogLevel level, String text, Object... args);
+        void log(LogLevel level, String text);
     }
 
     public static class DefaultLogHandler implements LogHandler{
         @Override
-        public void log(LogLevel level, String text, Object... args){
+        public void log(LogLevel level, String text){
             System.out.println(format((
                 level == LogLevel.debug ? "&lc&fb" :
                 level == LogLevel.info ? "&lg&fb" :
                 level == LogLevel.warn ? "&ly&fb" :
                 level == LogLevel.err ? "&lr&fb" :
-                "") + text + "&fr", args));
+                "") + text + "&fr"));
         }
     }
 
     public static class NoopLogHandler implements LogHandler{
-        @Override public void log(LogLevel level, String text, Object... args){}
+        @Override public void log(LogLevel level, String text){}
     }
 
 }
