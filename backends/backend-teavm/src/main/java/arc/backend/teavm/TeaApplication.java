@@ -133,8 +133,8 @@ public class TeaApplication implements Application{
     public static class TeaLogger implements LogHandler{
 
         @Override
-        public void log(LogLevel level, String text, Object... args){
-            consoleLog("[" + level.name() + "]: " + Strings.format(text, args));
+        public void log(LogLevel level, String text){
+            consoleLog("[" + level.name() + "]: " + text);
         }
 
         @JSBody(params = "message", script = "console.log(\"Arc: \" + message);")
