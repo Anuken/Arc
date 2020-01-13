@@ -1,4 +1,4 @@
-![](https://github.com/Anuken/Arc/workflows/gradle/badge.svg)
+![](https://github.com/Anuken/Arc/workflows/Java%20CI/badge.svg)
 
 ### plans
 - [X] fix all backends
