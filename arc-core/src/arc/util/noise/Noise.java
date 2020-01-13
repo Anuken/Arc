@@ -1,18 +1,17 @@
 package arc.util.noise;
 
+//TODO why dos this class still exist
 public final class Noise{
+    private static int seed = 100;
 
     private static final int P = 8;
     private static final int B = 1 << P;
     private static final int M = B - 1;
     private static final int NP = 8;
     private static final int N = 1 << NP;
-    public static int seed = 100;
-    //private static final int NM = N-1;
     private static int[] p = new int[B + B + 2];
     private static double[][] g2 = new double[B + B + 2][2];
     private static double[] g1 = new double[B + B + 2];
-    //private static int start = 1;
     private static double[][] points = new double[32][3];
 
     static{
@@ -70,8 +69,6 @@ public final class Noise{
     }
 
     public static double noise(double x, double y){
-
-
         int bx0, bx1, by0, by1, b00, b10, b01, b11;
         double rx0;
         double rx1;
@@ -126,7 +123,6 @@ public final class Noise{
     }
 
     static double noise(double x, double y, double z){
-
         int bx, by, bz, b0, b1, b00, b10, b01, b11;
         double rx0;
         double rx1;
@@ -163,10 +159,6 @@ public final class Noise{
             bz += B;
         }
         rz = z - Math.floor(z);
-
-        if(bx < 0 || bx >= B + B + 2){
-            System.out.println(bx);
-        }
 
         b0 = p[bx];
 

@@ -1,12 +1,14 @@
 package arc.util.noise;
 
 //horribly butchered from libnoiseforjava, please ignore
+//TODO this is a mess - uses doubles instead of floats, but only sometimes
 public class RidgedPerlin{
     static final int X_NOISE_GEN = 1619;
     static final int Y_NOISE_GEN = 31337;
     static final int Z_NOISE_GEN = 6971;
     static final int SEED_NOISE_GEN = 1013;
     static final int SHIFT_NOISE_GEN = 8;
+
     float lacunarity = 2f;
     double[] spectralWeights = new double[20];
     private int octaves;
@@ -149,11 +151,11 @@ public class RidgedPerlin{
         this.seed = seed;
     }
 
-    public float getValue(int x, int y, float frequency){
+    public float getValue(double x, double y, float frequency){
         return getValue(x, y, 0, frequency);
     }
 
-    public float getValue(int x, int y, int z, float frequency){
+    public float getValue(double x, double y, double z, float frequency){
 
         double x1 = x;
         double y1 = y;

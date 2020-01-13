@@ -1,41 +1,9 @@
 package arc.util.noise;
 
-/*
- * Copyright (C) 2003, 2004 Jason Bevins (original libnoise code)
- * Copyright © 2010 Thomas J. Hodge (java port of libnoise)
- *
- * This file was part of libnoiseforjava.
- *
- * libnoiseforjava is a Java port of the C++ library libnoise, which may be found at
- * http://libnoise.sourceforge.net/.  libnoise was developed by Jason Bevins, who may be
- * contacted at jlbezigvins@gmzigail.com (for great email, take off every 'zig').
- * Porting to Java was done by Thomas Hodge, who may be contacted at
- * libnoisezagforjava@gzagmail.com (remove every 'zag').
- *
- * libnoiseforjava is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later version.
- *
- * libnoiseforjava is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * libnoiseforjava.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
-
 import arc.math.Rand;
 
 import java.util.Random;
 
-/**
- * This is a Voronoi noise generator, originally from https://github.com/TJHJava/libnoiseforjava
- * It was modified to work in a similar way to the bukkit noise generators, and to support
- * octaves and 2d noise, by mncat77 and jtjj222.
- * <p>
- * (taken from bukkit source)
- */
 public class VoronoiNoise{
 
     /// Noise module that outputs Voronoi cells.
@@ -75,12 +43,12 @@ public class VoronoiNoise{
     private boolean useDistance = false;
 
     private long seed;
-    private short distanceMethod;
+    private boolean useManhattan;
     private Rand rnd = new Rand();
 
-    public VoronoiNoise(long seed, short distanceMethod){
+    public VoronoiNoise(long seed, boolean useManhattan){
         this.seed = seed;
-        this.distanceMethod = distanceMethod;
+        this.useManhattan = useManhattan;
     }
 
     /**
@@ -101,25 +69,11 @@ public class VoronoiNoise{
     }
 
     private double getDistance(double xDist, double zDist){
-        switch(distanceMethod){
-            case 0:
-                return Math.sqrt(xDist * xDist + zDist * zDist) / SQRT_2;
-            case 1:
-                return xDist + zDist;
-            default:
-                return Double.NaN;
-        }
+        return useManhattan ? xDist + zDist : Math.sqrt(xDist * xDist + zDist * zDist) / SQRT_2;
     }
 
     private double getDistance(double xDist, double yDist, double zDist){
-        switch(distanceMethod){
-            case 0:
-                return Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist) / SQRT_3; //Approximation (for speed) of elucidean (regular) distance
-            case 1:
-                return xDist + yDist + zDist;
-            default:
-                return Double.NaN;
-        }
+        return useManhattan ? xDist + yDist + zDist : Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist) / SQRT_3;
     }
 
     public boolean isUseDistance(){
@@ -128,14 +82,6 @@ public class VoronoiNoise{
 
     public void setUseDistance(boolean useDistance){
         this.useDistance = useDistance;
-    }
-
-    public short getDistanceMethod(){
-        return distanceMethod;
-    }
-
-    public void setDistanceMethod(short distanceMethod){
-        this.distanceMethod = distanceMethod;
     }
 
     public long getSeed(){
@@ -181,9 +127,7 @@ public class VoronoiNoise{
             double xDist = xCandidate - x;
             double zDist = zCandidate - z;
             return getDistance(xDist, zDist);
-        }else return (VoronoiNoise.valueNoise2D(
-        (int)(Math.floor(xCandidate)),
-        (int)(Math.floor(zCandidate)), seed));
+        }else return (VoronoiNoise.valueNoise2D((int)(Math.floor(xCandidate)), (int)(Math.floor(zCandidate)), seed));
     }
 
     public double noise(double x, double y, double z, double frequency){
@@ -238,10 +182,9 @@ public class VoronoiNoise{
             double zDist = zCandidate - z;
 
             return getDistance(xDist, yDist, zDist);
-        }else return VoronoiNoise.valueNoise3D(
+        }else return valueNoise3D(
         (int)(Math.floor(xCandidate)),
         (int)(Math.floor(yCandidate)),
         (int)(Math.floor(zCandidate)), seed);
-
     }
 }
