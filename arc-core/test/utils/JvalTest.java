@@ -79,7 +79,7 @@ public class JvalTest{
         };
 
         //warmup
-        int iterations = 10000;
+        int iterations = 10;
         for(int i = 0; i < iterations; i++){
             hjson.run();
             json.run();
