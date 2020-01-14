@@ -1,5 +1,6 @@
 package arc.struct;
 
+import arc.func.*;
 import arc.util.*;
 
 import java.util.*;
@@ -196,6 +197,22 @@ public class Queue<T> implements Iterable<T>{
                 for(int i = 0; i < tail; i++)
                     if(value.equals(values[i])) return i + values.length - head;
             }
+        }
+        return -1;
+    }
+
+    public int indexOf(Boolf<T> value){
+        if(size == 0) return -1;
+        T[] values = this.values;
+        final int head = this.head, tail = this.tail;
+        if(head < tail){
+            for(int i = head; i < tail; i++)
+                if(value.get(values[i])) return i - head;
+        }else{
+            for(int i = head, n = values.length; i < n; i++)
+                if(value.get(values[i])) return i - head;
+            for(int i = 0; i < tail; i++)
+                if(value.get(values[i])) return i + values.length - head;
         }
         return -1;
     }
