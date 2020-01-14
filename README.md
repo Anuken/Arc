@@ -1,3 +1,5 @@
+![](https://github.com/Anuken/Arc/workflows/Java%20CI/badge.svg)
+
 ### plans
 - [X] fix all backends
 - [X] convert to gradle, none of that stinky maven business
