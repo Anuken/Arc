@@ -22,6 +22,11 @@ import java.io.InputStream;
 public class Net{
     private NetJavaImpl impl = new NetJavaImpl();
 
+    /** Whether to block on HTTP requests. Default is false. */
+    public void setBlock(boolean block){
+        impl.setBlock(block);
+    }
+
     /**
      * Process the specified {@link HttpRequest} and reports the {@link HttpResponse} to the specified listener.
      * .

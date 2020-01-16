@@ -6,9 +6,9 @@ import arc.util.*;
 public class SkinGenerator{
 
     public static void main(String[] args){
-        if(OS.getEnv("destination.dir") == null) return;
+        if(OS.env("destination.dir") == null) return;
 
-        Fi path = Fi.get(OS.getEnv("destination.dir"));
+        Fi path = Fi.get(OS.env("destination.dir"));
         Fi dest = path.child("core").child("src").list()[0].child("ui");
         Fi ui = path.child("core").child("assets-raw").child("sprites").child("ui");
         Fi icons = path.child("core").child("assets-raw").child("sprites").child("icons");

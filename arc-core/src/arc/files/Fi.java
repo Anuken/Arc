@@ -365,6 +365,10 @@ public class Fi{
         }
     }
 
+    public OutputStream write(){
+        return write(false);
+    }
+
     /**
      * Returns a stream for writing to this file. Parent directories will be created if necessary.
      * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.

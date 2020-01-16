@@ -21,6 +21,7 @@ import java.util.Map;
  */
 public class NetJavaImpl{
     private final AsyncExecutor asyncExecutor = new AsyncExecutor(6);
+    private boolean block;
 
     public void http(HttpRequest request, Cons<HttpResponse> success, Cons<Throwable> failure){
         if(request.url == null){
@@ -56,7 +57,7 @@ public class NetJavaImpl{
             connection.setConnectTimeout(request.timeout);
             connection.setReadTimeout(request.timeout);
 
-            asyncExecutor.submit(() -> {
+            run(() -> {
                 try{
                     // Set the content for POST and PUT (GET has the information embedded in the URL)
                     if(doingOutPut){
@@ -95,11 +96,21 @@ public class NetJavaImpl{
                     connection.disconnect();
                     failure.get(e);
                 }
-
-                return null;
             });
         }catch(Throwable e){
             failure.get(e);
+        }
+    }
+
+    public void setBlock(boolean block){
+        this.block = block;
+    }
+
+    private void run(Runnable run){
+        if(block){
+            run.run();
+        }else{
+            asyncExecutor.submit(run);
         }
     }
 
