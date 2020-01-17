@@ -11,8 +11,8 @@ import arc.util.Tmp;
  * @author Nathan Sweet
  */
 public class TextureRegionDrawable extends BaseDrawable implements TransformDrawable{
-    private TextureRegion region;
-    private Color tint = new Color(1f, 1f, 1f);
+    protected TextureRegion region;
+    protected Color tint = new Color(1f, 1f, 1f);
 
     /** Creates an uninitialized TextureRegionDrawable. The texture region must be set before use. */
     public TextureRegionDrawable(){

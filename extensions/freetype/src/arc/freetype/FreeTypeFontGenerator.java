@@ -371,7 +371,7 @@ public class FreeTypeFontGenerator implements Disposable{
         for(char xChar : data.xChars){
             if(!loadChar(xChar, flags)) continue;
             data.xHeight = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
-            break;
+            if(data.xHeight > 0) break;
         }
         if(data.xHeight == 0) throw new ArcRuntimeException("No x-height character found in font");
 

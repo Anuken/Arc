@@ -284,6 +284,7 @@ public class Cell<T extends Element> implements Poolable{
 
     /** Sets the button or label style.*/
     public Cell<T> style(Style style){
+        if(style == null) return this;
         if(element instanceof Label){
             ((Label)element).setStyle((LabelStyle)style);
         }else if(element instanceof Button){
