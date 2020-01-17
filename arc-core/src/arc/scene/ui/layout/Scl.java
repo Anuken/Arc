@@ -8,6 +8,7 @@ public class Scl{
     private static float scl = -1;
     private static float addition = 0f;
     private static float product = 1f;
+    private static final float debugScale = 1f;
 
     public static void setProduct(float product){
         Scl.product = product;
@@ -35,6 +36,6 @@ public class Scl{
                 scl = Math.max(Math.round((Core.graphics.getDensity() / 1.5f + addition) / 0.5) * 0.5f, 1f) * product;
             }
         }
-        return amount * scl;
+        return amount * scl * debugScale;
     }
 }

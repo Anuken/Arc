@@ -28,6 +28,11 @@ public class TextureRegionDrawable extends BaseDrawable implements TransformDraw
     }
 
     @Override
+    public float imageSize(){
+        return region.getWidth();
+    }
+
+    @Override
     public void draw(float x, float y, float width, float height){
         Draw.color(Tmp.c1.set(tint).mul(Draw.getColor()).toFloatBits());
         Draw.rect(region, x + width/2f, y + height/2f, width, height);
