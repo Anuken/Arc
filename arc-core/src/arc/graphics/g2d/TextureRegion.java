@@ -294,4 +294,13 @@ public class TextureRegion{
 
         return tiles;
     }
+
+    @Override
+    public String toString(){
+        return "TextureRegion{" +
+        "texture=" + texture +
+        ", width=" + width +
+        ", height=" + height +
+        '}';
+    }
 }

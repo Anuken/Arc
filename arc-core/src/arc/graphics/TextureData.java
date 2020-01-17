@@ -41,6 +41,13 @@ public interface TextureData{
      */
     Pixmap consumePixmap();
 
+    default Pixmap getPixmap(){
+        if(!isPrepared()){
+            prepare();
+        }
+        return consumePixmap();
+    }
+
     /** @return whether the caller of {@link #consumePixmap()} should dispose the Pixmap returned by {@link #consumePixmap()} */
     boolean disposePixmap();
 

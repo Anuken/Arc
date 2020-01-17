@@ -26,6 +26,7 @@ public class TiledDrawable extends TextureRegionDrawable{
         super(drawable);
     }
 
+    @Override
     public void setRegion(TextureRegion region){
         super.setRegion(region);
         this.tileWidth = region.getWidth();
@@ -103,6 +104,7 @@ public class TiledDrawable extends TextureRegionDrawable{
         return color;
     }
 
+    @Override
     public TiledDrawable tint(Color tint){
         TiledDrawable drawable = new TiledDrawable(this);
         drawable.color.set(tint);

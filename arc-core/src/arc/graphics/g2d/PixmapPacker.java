@@ -1,13 +1,13 @@
 package arc.graphics.g2d;
 
 import arc.*;
-import arc.struct.*;
 import arc.graphics.*;
 import arc.graphics.Pixmap.*;
 import arc.graphics.Texture.*;
 import arc.graphics.g2d.PixmapPacker.SkylineStrategy.SkylinePage.*;
 import arc.graphics.gl.*;
 import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 
 import java.util.*;
@@ -172,11 +172,11 @@ public class PixmapPacker implements Disposable{
         PixmapPackerRect rect;
         Pixmap pixmapToDispose = null;
         if(isPatch){
-            rect = new PixmapPackerRect(0, 0, image.width - 2, image.height - 2);
-            pixmapToDispose = new Pixmap(image.width - 2, image.height - 2, image.pixmap.getFormat());
+            rect = new PixmapPackerRect(0, 0, image.width, image.height);
+            pixmapToDispose = new Pixmap(image.width, image.height, image.pixmap.getFormat());
             rect.splits = getSplits(image);
             rect.pads = getPads(image, rect.splits);
-            pixmapToDispose.draw(image, 0, 0, 1, 1, image.width - 1, image.height - 1);
+            pixmapToDispose.draw(image, 0, 0, 0, 0, image.width, image.height);
             image = new PixmapRegion(pixmapToDispose);
             name = name.split("\\.")[0];
         }else{
@@ -197,10 +197,10 @@ public class PixmapPacker implements Disposable{
         int rectX = (int)rect.x, rectY = (int)rect.y, rectWidth = (int)rect.width, rectHeight = (int)rect.height;
 
         if(packToTexture && !duplicateBorder && page.texture != null && !page.dirty){
-            //TODO this may not work correctly since the pixmap is only a region
+            //TODO this will not work correctly since the pixmap is only a region!
             page.texture.bind();
             Core.gl.glTexSubImage2D(page.texture.glTarget, 0, rectX, rectY, rectWidth, rectHeight, image.pixmap.getGLFormat(),
-            image.pixmap.getGLType(), image.pixmap.getPixels());
+                image.pixmap.getGLType(), image.pixmap.getPixels());
         }else
             page.dirty = true;
 
@@ -576,6 +576,10 @@ public class PixmapPacker implements Disposable{
 
         public Page(Pixmap pixmap){
             this.image = pixmap;
+        }
+
+        public void setDirty(boolean dirty){
+            this.dirty = dirty;
         }
 
         public Pixmap getPixmap(){

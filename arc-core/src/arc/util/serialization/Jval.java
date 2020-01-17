@@ -85,7 +85,7 @@ public class Jval{
     public long asLong(){ return asNumber().longValue(); }
     public float asFloat(){ return asNumber().floatValue(); }
     public double asDouble(){ return asNumber().doubleValue(); }
-    public String asString(){ if(!(value instanceof String)) throw new UnsupportedOperationException("Not a string: " + toString()); return (String)value; }
+    public String asString(){ if(!(value instanceof String) && !(value instanceof Number)) throw new UnsupportedOperationException("Not a string: " + toString()); return String.valueOf(value); }
     public boolean asBool(){ if(!(value instanceof Boolean)) throw new UnsupportedOperationException("Not a bool: " + toString()); return (Boolean)value; }
     public Number asNumber(){ if(!(value instanceof Number)) throw new UnsupportedOperationException("Not a number: " + toString()); return ((Number)value); }
 
@@ -136,6 +136,10 @@ public class Jval{
     public boolean getBool(String name, boolean defaultValue){
         Jval value = get(name);
         return value != null ? value.asBool() : defaultValue;
+    }
+
+    public @Nullable String getString(String name){
+        return getString(name, "");
     }
 
     public String getString(String name, String defaultValue){
