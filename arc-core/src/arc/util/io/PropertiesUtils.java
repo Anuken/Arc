@@ -32,9 +32,7 @@ import java.util.Date;
  * {@code ObjectMap<String,String>} with the same line-oriented syntax supported by {@code java.util.Properties}.
  */
 public final class PropertiesUtils{
-
     private static final int NONE = 0, SLASH = 1, UNICODE = 2, CONTINUE = 3, KEY_DONE = 4, IGNORE = 5;
-
     private static final String LINE_SEPARATOR = "\n";
 
     private PropertiesUtils(){
@@ -238,8 +236,7 @@ public final class PropertiesUtils{
         storeImpl(properties, writer, comment, false);
     }
 
-    private static void storeImpl(ObjectMap<String, String> properties, Writer writer, String comment, boolean escapeUnicode)
-    throws IOException{
+    private static void storeImpl(ObjectMap<String, String> properties, Writer writer, String comment, boolean escapeUnicode) throws IOException{
         if(comment != null){
             writeComment(writer, comment);
         }
