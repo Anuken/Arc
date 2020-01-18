@@ -288,8 +288,7 @@ public class Gdx2DPixmap implements Disposable{
         drawPixmap(src.basePtr, basePtr, srcX, srcY, width, height, dstX, dstY, width, height);
     }
 
-    public void drawPixmap(Gdx2DPixmap src, int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth,
-                           int dstHeight){
+    public void drawPixmap(Gdx2DPixmap src, int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight){
         drawPixmap(src.basePtr, basePtr, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
     }
 
@@ -331,20 +330,13 @@ public class Gdx2DPixmap implements Disposable{
 
     public String getFormatString(){
         switch(format){
-            case GDX2D_FORMAT_ALPHA:
-                return "alpha";
-            case GDX2D_FORMAT_LUMINANCE_ALPHA:
-                return "luminance alpha";
-            case GDX2D_FORMAT_RGB888:
-                return "rgb888";
-            case GDX2D_FORMAT_RGBA8888:
-                return "rgba8888";
-            case GDX2D_FORMAT_RGB565:
-                return "rgb565";
-            case GDX2D_FORMAT_RGBA4444:
-                return "rgba4444";
-            default:
-                return "unknown";
+            case GDX2D_FORMAT_ALPHA: return "alpha";
+            case GDX2D_FORMAT_LUMINANCE_ALPHA: return "luminance alpha";
+            case GDX2D_FORMAT_RGB888: return "rgb888";
+            case GDX2D_FORMAT_RGBA8888: return "rgba8888";
+            case GDX2D_FORMAT_RGB565: return "rgb565";
+            case GDX2D_FORMAT_RGBA4444: return "rgba4444";
+            default: return "unknown";
         }
     }
 }

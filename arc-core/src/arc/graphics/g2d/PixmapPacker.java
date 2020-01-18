@@ -634,13 +634,15 @@ public class PixmapPacker implements Disposable{
     public static class GuillotineStrategy implements PackStrategy{
         Comparator<Pixmap> comparator;
 
+        @Override
         public void sort(Array<Pixmap> pixmaps){
             if(comparator == null){
-                comparator = (o1, o2) -> Math.max(o1.getWidth(), o1.getHeight()) - Math.max(o2.getWidth(), o2.getHeight());
+                comparator = Structs.comparingInt(o -> Math.max(o.getWidth(), o.getHeight()));
             }
             pixmaps.sort(comparator);
         }
 
+        @Override
         public Page pack(PixmapPacker packer, String name, Rect rect){
             GuillotinePage page;
             if(packer.pages.size == 0){
