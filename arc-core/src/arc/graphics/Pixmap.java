@@ -1,5 +1,6 @@
 package arc.graphics;
 
+import arc.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import arc.files.*;
 import arc.func.*;
@@ -71,6 +72,10 @@ public class Pixmap implements Disposable{
         }catch(IOException e){
             throw new ArcRuntimeException("Couldn't load pixmap from image data", e);
         }
+    }
+
+    public Pixmap(String file){
+        this(Core.files.internal(file));
     }
 
     /**

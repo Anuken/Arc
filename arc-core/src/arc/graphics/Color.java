@@ -294,12 +294,12 @@ public class Color{
     }
 
     /** Creates a grayscale color. */
-    public static Color fromGray(float value){
+    public static Color gray(float value){
         return new Color(value, value, value);
     }
 
     /** Creates a color from 0-255 scaled RGB values. */
-    public static Color fromRGB(int r, int g, int b){
+    public static Color rgb(int r, int g, int b){
         return new Color(r / 255f, g / 255f, b / 255f);
     }
 
