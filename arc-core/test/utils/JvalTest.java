@@ -6,8 +6,28 @@ import arc.util.*;
 import arc.util.serialization.*;
 import arc.util.serialization.Jval.*;
 import org.junit.*;
+import static org.junit.Assert.*;
 
 public class JvalTest{
+
+    @Test
+    public void parseUnquotedStringArray(){
+        Jval val = Jval.read("{\nkey: [result, result2]\n}");
+        assertEquals("result", val.get("key").asArray().get(0).asString());
+        assertEquals("result2", val.get("key").asArray().get(1).asString());
+    }
+
+    @Test
+    public void parseUnquotedString(){
+        Jval val = Jval.read("name: Molten Silver\n" +
+        "description: Imagine silver, but not solid at all.\n" +
+        "temperature: 0.9\n" +
+        "viscosity: 0.8\n" +
+        "effect: melting\n" +
+        "color: a4a2bd");
+
+        assertEquals("Imagine silver, but not solid at all.", val.getString("description"));
+    }
 
     @Test
     public void parseJson(){
@@ -67,6 +87,7 @@ public class JvalTest{
 
     @Test
     public void benchmarkJson(){
+        //not an actual benchmark, ignore
         Fi file = new Fi("generated.json", FileType.classpath);
         String text = file.readString();
 

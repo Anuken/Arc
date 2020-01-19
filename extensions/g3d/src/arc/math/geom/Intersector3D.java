@@ -34,7 +34,7 @@ public class Intersector3D{
 
             if(intersection != null) intersection.set(ray.origin).add(v0.set(ray.direction).scl(t));
             return true;
-        }else if(plane.testPoint(ray.origin) == Plane.PlaneSide.OnPlane){
+        }else if(plane.testPoint(ray.origin) == Plane.PlaneSide.onPlane){
             if(intersection != null) intersection.set(ray.origin);
             return true;
         }else
@@ -55,7 +55,7 @@ public class Intersector3D{
             float t = -(origin.dot(plane.getNormal()) + plane.getD()) / denom;
             if(intersection != null) intersection.set(origin).add(direction.scl(t));
             return t;
-        }else if(plane.testPoint(origin) == Plane.PlaneSide.OnPlane){
+        }else if(plane.testPoint(origin) == Plane.PlaneSide.onPlane){
             if(intersection != null) intersection.set(origin);
             return 0;
         }
@@ -80,7 +80,7 @@ public class Intersector3D{
         float det = edge1.dot(pvec);
         if(Mathf.zero(det)){
             p.set(t1, t2, t3);
-            if(p.testPoint(ray.origin) == PlaneSide.OnPlane && Intersector.isInTriangle(ray.origin, t1, t2, t3)){
+            if(p.testPoint(ray.origin) == PlaneSide.onPlane && Intersector.isInTriangle(ray.origin, t1, t2, t3)){
                 if(intersection != null) intersection.set(ray.origin);
                 return true;
             }
@@ -442,10 +442,10 @@ public class Intersector3D{
      */
     public static void splitTriangle(float[] triangle, Plane plane, SplitTriangle split){
         int stride = triangle.length / 3;
-        boolean r1 = plane.testPoint(triangle[0], triangle[1], triangle[2]) == PlaneSide.Back;
-        boolean r2 = plane.testPoint(triangle[stride], triangle[1 + stride], triangle[2 + stride]) == PlaneSide.Back;
+        boolean r1 = plane.testPoint(triangle[0], triangle[1], triangle[2]) == PlaneSide.back;
+        boolean r2 = plane.testPoint(triangle[stride], triangle[1 + stride], triangle[2 + stride]) == PlaneSide.back;
         boolean r3 = plane.testPoint(triangle[stride * 2], triangle[1 + stride * 2],
-        triangle[2 + stride * 2]) == PlaneSide.Back;
+        triangle[2 + stride * 2]) == PlaneSide.back;
 
         split.reset();
 

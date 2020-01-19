@@ -85,11 +85,11 @@ public class Plane{
         float dist = normal.dot(point) + d;
 
         if(dist == 0)
-            return PlaneSide.OnPlane;
+            return PlaneSide.onPlane;
         else if(dist < 0)
-            return PlaneSide.Back;
+            return PlaneSide.back;
         else
-            return PlaneSide.Front;
+            return PlaneSide.front;
     }
 
     /**
@@ -101,11 +101,11 @@ public class Plane{
         float dist = normal.dot(x, y, z) + d;
 
         if(dist == 0)
-            return PlaneSide.OnPlane;
+            return PlaneSide.onPlane;
         else if(dist < 0)
-            return PlaneSide.Back;
+            return PlaneSide.back;
         else
-            return PlaneSide.Front;
+            return PlaneSide.front;
     }
 
     /**
@@ -158,11 +158,11 @@ public class Plane{
     }
 
     /**
-     * Enum specifying on which side a point lies respective to the plane and it's normal. {@link PlaneSide#Front} is the side to
+     * Enum specifying on which side a point lies respective to the plane and it's normal. {@link PlaneSide#front} is the side to
      * which the normal points.
      * @author mzechner
      */
     public enum PlaneSide{
-        OnPlane, Back, Front
+        onPlane, back, front
     }
 }
