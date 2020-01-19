@@ -321,6 +321,7 @@ public class Jval{
         private int current;
         private StringBuilder captureBuffer, peek;
         private boolean capture;
+        private boolean isArray;
 
         Hparser(String string){
             buffer = string;
@@ -411,7 +412,7 @@ public class Jval{
             value.append((char)current);
             while(true){
                 read();
-                boolean isEol = current < 0 || current == '\r' || current == '\n' /*|| current == ',' || current == ']' */;
+                boolean isEol = current < 0 || current == '\r' || current == '\n' || (current == ',' && isArray) || current == ']';
                 if(isEol || current == ',' ||
                 current == '}' || current == ']' ||
                 current == '#' ||
@@ -442,6 +443,7 @@ public class Jval{
         }
 
         private Jval readArray() throws IOException{
+            isArray = true;
             read();
             JsonArray array = new JsonArray();
             skipWhiteSpace();
@@ -456,6 +458,7 @@ public class Jval{
                 if(readIf(']')) break;
                 else if(isEndOfText()) throw error("End of input while parsing an array (did you forget a closing ']'?)");
             }
+            isArray = false;
             return new Jval(array);
         }
 
