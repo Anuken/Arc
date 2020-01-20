@@ -169,6 +169,18 @@ public class Vec3 implements Vector<Vec3>{
         return this.add(vector.x, vector.y, vector.z);
     }
 
+    public Vec3 cpy(Vec3 dest){
+        return dest.set(this);
+    }
+
+    public Vec3 add(Vec3 vector, float scale){
+        return this.add(vector.x * scale, vector.y * scale, vector.z * scale);
+    }
+
+    public Vec3 sun(Vec3 vector, float scale){
+        return this.sub(vector.x * scale, vector.y * scale, vector.z * scale);
+    }
+
     /**
      * Adds the given vector to this component
      * @param x The x-component of the other vector

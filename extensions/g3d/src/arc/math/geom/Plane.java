@@ -66,6 +66,14 @@ public class Plane{
         this.d = d;
     }
 
+    /** Projects the supplied vector onto this plane.
+     * @param v the vector to project onto this plane. */
+    public Vec3 project(Vec3 v){
+        float npd = normal.dot(v) + d;
+        return v.sub(npd * normal.x, npd * normal.y, npd * normal.z);
+
+    }
+
     /**
      * Calculates the shortest signed distance between the plane and the given point.
      * @param point The point
