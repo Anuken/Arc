@@ -333,6 +333,11 @@ public class Color{
         return this;
     }
 
+    /** Returns the different of all the HSV components combined. */
+    public float diff(Color other){
+        return Math.abs(hue() - other.hue()) / 360f + Math.abs(value() - other.value()) + Math.abs(saturation() - other.saturation());
+    }
+
     /** Shorthand for {@link #rgba8888(Color)}.*/
     public int rgba(){
         return Color.rgba8888(this);
@@ -614,6 +619,21 @@ public class Color{
         g *= a;
         b *= a;
         return this;
+    }
+
+    public float hue(){
+        toHsv(tmpHSV);
+        return tmpHSV[0];
+    }
+
+    public float saturation(){
+        toHsv(tmpHSV);
+        return tmpHSV[1];
+    }
+
+    public float value(){
+        toHsv(tmpHSV);
+        return tmpHSV[2];
     }
 
     public Color shiftHue(float amount){
