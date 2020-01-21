@@ -1,8 +1,8 @@
 package arc.math;
 
-import arc.util.Time;
+import arc.util.*;
 
-import java.util.Random;
+import java.util.*;
 
 public final class Mathf{
     public static final int[] signs = {-1, 1};
@@ -520,6 +520,11 @@ public final class Mathf{
         final float x_d = x2 - x1;
         final float y_d = y2 - y1;
         return x_d * x_d + y_d * y_d;
+    }
+
+    /** Manhattan distance. */
+    public static float dstm(float x1, float y1, float x2, float y2){
+        return Math.abs(x1 - x2) + Math.abs(y1 - y2);
     }
 
     public static boolean within(float x1, float y1, float x2, float y2, float dst){
