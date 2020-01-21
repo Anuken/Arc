@@ -294,7 +294,7 @@ public class Color{
     }
 
     /** Creates a grayscale color. */
-    public static Color gray(float value){
+    public static Color grays(float value){
         return new Color(value, value, value);
     }
 
