@@ -24,6 +24,11 @@ public class Collapser extends WidgetGroup{
         addChild(table);
     }
 
+    public Collapser setDuration(float seconds){
+        this.seconds = seconds;
+        return this;
+    }
+
     public void toggle(){
         setCollapsed(!isCollapsed());
     }
