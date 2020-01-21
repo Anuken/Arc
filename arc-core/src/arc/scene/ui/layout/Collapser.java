@@ -12,7 +12,7 @@ public class Collapser extends WidgetGroup{
     private boolean collapsed;
     private boolean actionRunning;
     private float currentHeight;
-    private float seconds = 0.5f;
+    private float seconds = 0.4f;
 
     public Collapser(Cons<Table> cons, boolean collapsed){
         this.table = new Table();
