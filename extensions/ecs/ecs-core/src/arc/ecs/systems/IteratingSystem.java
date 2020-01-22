@@ -28,9 +28,9 @@ public abstract class IteratingSystem extends BaseEntitySystem{
 
     /**
      * Process a entity this system is interested in.
-     * @param entityId the entity to process
+     * @param entity the entity to process
      */
-    protected abstract void process(int entityId);
+    protected abstract void process(int entity);
 
     /** @inheritDoc */
     @Override

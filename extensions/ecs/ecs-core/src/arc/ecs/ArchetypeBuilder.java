@@ -17,6 +17,16 @@ import arc.ecs.utils.*;
 public class ArchetypeBuilder{
     private final Bag<Class<? extends Component>> classes;
 
+    @SafeVarargs
+    public static Archetype with(Base base, String name, Class<? extends Component>... types){
+        return new ArchetypeBuilder().add(types).build(base, name);
+    }
+
+    @SafeVarargs
+    public static Archetype with(Base base, String name, Archetype parent, Class<? extends Component>... types){
+        return new ArchetypeBuilder(parent).add(types).build(base, name);
+    }
+
     /**
      * Constructs an archetype builder containing the composition of the specified parent.
      * @param parent archetype composition to copy.

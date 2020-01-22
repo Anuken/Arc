@@ -157,18 +157,13 @@ public final class EntityTransmuter{
 
         public final short compositionId;
 
-        public TransmuteOperation(int compositionId,
-                                  Mapper[] additions,
-                                  Mapper[] removals){
-
+        public TransmuteOperation(int compositionId, Mapper[] additions, Mapper[] removals){
             this.compositionId = (short)compositionId;
             this.additions = additions;
             this.removals = removals;
         }
 
-        public TransmuteOperation(int compositionId,
-                                  Bag<Mapper> additions,
-                                  Bag<Mapper> removals){
+        public TransmuteOperation(int compositionId, Bag<Mapper> additions, Bag<Mapper> removals){
 
             this.compositionId = (short)compositionId;
             this.additions = new Mapper[additions.size()];
