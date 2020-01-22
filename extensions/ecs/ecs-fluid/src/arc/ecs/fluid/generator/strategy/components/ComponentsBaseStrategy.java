@@ -13,6 +13,6 @@ public class ComponentsBaseStrategy implements BuilderModelStrategy{
     @Override
     public void apply(ArtemisModel artemisModel, TypeModel model){
         model.name = "C";
-        model.packageName = "com.artemis";
+        model.packageName = "arc.ecs";
     }
 }

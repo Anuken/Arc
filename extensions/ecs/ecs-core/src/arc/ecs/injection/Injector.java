@@ -6,8 +6,7 @@ import java.util.*;
 
 /**
  * <p>API used by {@link Base} to inject objects annotated with {@link arc.ecs.annotations.Wire} with
- * dependencies. An injector injects {@link Mapper}, {@link BaseSystem} and {@link com.artemis
- * .Manager} types into systems and managers.
+ * dependencies. An injector injects {@link Mapper}, {@link BaseSystem}
  * </p>
  * <p>To inject arbitrary types, use registered through {@link BaseConfig#register}.</p>
  * <p>To customize the injection-strategy for arbitrary types further, registered a custom {@link arc.ecs.injection.FieldHandler}

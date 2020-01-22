@@ -11,7 +11,7 @@ import java.util.*;
 public class TypeModel{
 
     public String name = "unnamed";
-    public String packageName = "com.artemis";
+    public String packageName = "arc.ecs";
 
     public List<MethodDescriptor> methods = new ArrayList<MethodDescriptor>();
     public List<FieldDescriptor> fields = new ArrayList<FieldDescriptor>();

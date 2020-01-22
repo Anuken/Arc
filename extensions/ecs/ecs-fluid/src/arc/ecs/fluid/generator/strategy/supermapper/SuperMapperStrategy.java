@@ -17,7 +17,7 @@ public class SuperMapperStrategy implements BuilderModelStrategy{
     @Override
     public void apply(ArtemisModel artemisModel, TypeModel model){
         model.name = "SuperMapper";
-        model.packageName = "com.artemis";
+        model.packageName = "arc.ecs";
         model.superclass = BaseSystem.class;
         model.add(createInitializationMethod());
         model.add(createProcessingMethod());

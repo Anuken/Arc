@@ -19,7 +19,7 @@ public class EBaseStrategy implements BuilderModelStrategy{
     @Override
     public void apply(ArtemisModel artemisModel, TypeModel model){
         model.name = "E";
-        model.packageName = "com.artemis";
+        model.packageName = "arc.ecs";
         model.add(createMapperField());
         model.add(createStaticMapperField());
         model.add(createEntityIdField());
