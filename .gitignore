@@ -30,6 +30,9 @@ robovm-build/
 ipch/
 /dist
 
+#maven sucks
+pom.xml
+
 *.a
 *.a.tvos
 *.dll.mdb

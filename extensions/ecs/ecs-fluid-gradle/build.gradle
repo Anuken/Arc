@@ -1,0 +1,12 @@
+dependencies{
+    def gradleVersion = "2.1"
+
+    //how can one tool have this many dependencies?
+    compile "org.gradle:gradle-tooling-api:$gradleVersion"
+    compile "org.gradle:gradle-core:$gradleVersion"
+    compile "org.codehaus.groovy:groovy-all:2.3.6"
+    compile "org.slf4j:slf4j-api:1.7.5"
+
+    compile aproj(":extensions:ecs:ecs-core")
+    compile aproj(":extensions:ecs:ecs-fluid")
+}

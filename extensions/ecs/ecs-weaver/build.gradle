@@ -1,0 +1,11 @@
+dependencies{
+    def asmVersion = "7.0"
+
+    compile "org.ow2.asm:asm:$asmVersion"
+    compile "org.ow2.asm:asm-tree:$asmVersion"
+    compile "org.ow2.asm:asm-util:$asmVersion"
+    compile "org.ow2.asm:asm-analysis:$asmVersion"
+    compile "org.ow2.asm:asm-commons:$asmVersion"
+
+    compile aproj(":extensions:ecs:ecs-core")
+}

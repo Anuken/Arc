@@ -40,7 +40,7 @@ libraries.teavm = [
 allprojects{
     group = 'com.github.Anuken'
     version = '1.0'
-    
+
     buildscript{
         repositories{
             mavenCentral()
@@ -56,6 +56,14 @@ allprojects{
         maven{ url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven{ url "https://dl.bintray.com/konsoletyper/teavm" }
         google()
+    }
+
+    ext.aproj = { String module ->
+        if(findProject(module) != null){
+            return project(module)
+        }else{
+            return project(":Arc" + module)
+        }
     }
 }
 

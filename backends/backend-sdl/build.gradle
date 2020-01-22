@@ -11,11 +11,7 @@ dependencies {
     testImplementation "com.badlogicgames.gdx:gdx-jnigen:1.9.10"
     compile libraries.sdl
 
-    if(findProject(":arc-core") != null){
-        testImplementation project(":arc-core")
-    }else{
-        testImplementation project(":Arc:arc-core")
-    }
+    testImplementation aproj(":arc-core")
 }
 
 task deleteJniFolder(type: Delete) {
