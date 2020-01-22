@@ -75,6 +75,7 @@ public class Image extends Element{
         setSize(getPrefWidth(), getPrefHeight());
     }
 
+    @Override
     public void layout(){
         if(drawable == null) return;
 
@@ -102,6 +103,7 @@ public class Image extends Element{
             imageY = (int)(height / 2 - imageHeight / 2);
     }
 
+    @Override
     public void draw(){
         validate();
 
