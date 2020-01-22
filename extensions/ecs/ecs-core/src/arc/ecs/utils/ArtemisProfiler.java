@@ -10,5 +10,5 @@ import arc.ecs.annotations.*;
 public interface ArtemisProfiler{
     void start();
     void stop();
-    void initialize(BaseSystem owner, World world);
+    void initialize(BaseSystem owner, Base base);
 }

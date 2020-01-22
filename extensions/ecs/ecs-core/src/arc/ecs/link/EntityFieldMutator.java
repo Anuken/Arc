@@ -5,7 +5,7 @@ import arc.ecs.*;
 import java.lang.reflect.*;
 
 class EntityFieldMutator implements UniFieldMutator{
-    private World world;
+    private Base base;
 
     @Override
     public int read(Component c, Field f){
@@ -20,7 +20,7 @@ class EntityFieldMutator implements UniFieldMutator{
     @Override
     public void write(int value, Component c, Field f){
         try{
-            Entity e = (value != -1) ? world.getEntity(value) : null;
+            Entity e = (value != -1) ? base.getEntity(value) : null;
             f.set(c, e);
         }catch(Exception exc){
             throw new RuntimeException(exc);
@@ -28,7 +28,7 @@ class EntityFieldMutator implements UniFieldMutator{
     }
 
     @Override
-    public void setWorld(World world){
-        this.world = world;
+    public void setBase(Base base){
+        this.base = base;
     }
 }

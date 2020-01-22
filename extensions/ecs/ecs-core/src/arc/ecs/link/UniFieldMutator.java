@@ -13,5 +13,5 @@ public interface UniFieldMutator{
 
     void write(int value, Component c, Field f);
 
-    void setWorld(World world);
+    void setBase(Base base);
 }

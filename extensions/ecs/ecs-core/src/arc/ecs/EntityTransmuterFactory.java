@@ -10,12 +10,12 @@ public final class EntityTransmuterFactory{
     private final ComponentTypeFactory types;
     private final BitVector additions;
     private final BitVector removals;
-    private final World world;
+    private final Base base;
 
     /** Prepare new builder. */
-    public EntityTransmuterFactory(World world){
-        this.world = world;
-        types = world.getComponentManager().typeFactory;
+    public EntityTransmuterFactory(Base base){
+        this.base = base;
+        types = base.getComponentManager().typeFactory;
         additions = new BitVector();
         removals = new BitVector();
     }
@@ -38,6 +38,6 @@ public final class EntityTransmuterFactory{
 
     /** Build instance */
     public EntityTransmuter build(){
-        return new EntityTransmuter(world, additions, removals);
+        return new EntityTransmuter(base, additions, removals);
     }
 }

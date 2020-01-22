@@ -3,7 +3,7 @@ package arc.ecs;
 import arc.ecs.utils.*;
 
 final class BatchChangeProcessor{
-    private final World world;
+    private final Base base;
     private final AspectSubscriptionManager asm;
 
     final BitVector changed = new BitVector();
@@ -20,11 +20,11 @@ final class BatchChangeProcessor{
     private final Bag<EntityEdit> pool = new Bag<>();
     private final WildBag<EntityEdit> edited = new WildBag<>(EntityEdit.class);
 
-    BatchChangeProcessor(World world){
-        this.world = world;
-        asm = world.getAspectSubscriptionManager();
+    BatchChangeProcessor(Base base){
+        this.base = base;
+        asm = base.getAspectSubscriptionManager();
 
-        EntityManager em = world.getEntityManager();
+        EntityManager em = base.getEntityManager();
         em.registerEntityStore(changed);
         em.registerEntityStore(deleted);
         em.registerEntityStore(pendingPurge);
@@ -62,7 +62,7 @@ final class BatchChangeProcessor{
 
     private EntityEdit entityEdit(){
         if(pool.isEmpty()){
-            return new EntityEdit(world);
+            return new EntityEdit(base);
         }else{
             return pool.removeLast();
         }

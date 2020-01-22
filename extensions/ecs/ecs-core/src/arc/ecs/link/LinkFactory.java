@@ -15,13 +15,13 @@ class LinkFactory{
     private static final int MULTI_REFERENCE = 2;
 
     private final Bag<LinkSite> links = new Bag<>();
-    private final World world;
+    private final Base base;
 
     private final ReflexiveMutators reflexiveMutators;
 
-    public LinkFactory(World world){
-        this.world = world;
-        reflexiveMutators = new ReflexiveMutators(world);
+    public LinkFactory(Base base){
+        this.base = base;
+        reflexiveMutators = new ReflexiveMutators(base);
     }
 
     static int getReferenceTypeId(Field f){
@@ -49,13 +49,13 @@ class LinkFactory{
             int referenceTypeId = getReferenceTypeId(f);
             if(referenceTypeId != NULL_REFERENCE && (SKIP != getPolicy(f))){
                 if(SINGLE_REFERENCE == referenceTypeId){
-                    UniLinkSite ls = new UniLinkSite(world, ct, f);
+                    UniLinkSite ls = new UniLinkSite(base, ct, f);
                     if(!configureMutator(ls))
                         reflexiveMutators.withMutator(ls);
 
                     links.add(ls);
                 }else if(MULTI_REFERENCE == referenceTypeId){
-                    MultiLinkSite ls = new MultiLinkSite(world, ct, f);
+                    MultiLinkSite ls = new MultiLinkSite(base, ct, f);
                     if(!configureMutator(ls))
                         reflexiveMutators.withMutator(ls);
 
@@ -75,7 +75,7 @@ class LinkFactory{
     private boolean configureMutator(UniLinkSite linkSite){
         UniFieldMutator mutator = MutatorUtil.getGeneratedMutator(linkSite);
         if(mutator != null){
-            mutator.setWorld(world);
+            mutator.setBase(base);
             linkSite.fieldMutator = mutator;
             return true;
         }else{
@@ -86,7 +86,7 @@ class LinkFactory{
     private boolean configureMutator(MultiLinkSite linkSite){
         MultiFieldMutator mutator = MutatorUtil.getGeneratedMutator(linkSite);
         if(mutator != null){
-            mutator.setWorld(world);
+            mutator.setWorld(base);
             linkSite.fieldMutator = mutator;
             return true;
         }else{
@@ -100,18 +100,18 @@ class LinkFactory{
         final IntBagFieldMutator intBagField;
         final EntityBagFieldMutator entityBagField;
 
-        public ReflexiveMutators(World world){
+        public ReflexiveMutators(Base base){
             entityField = new EntityFieldMutator();
-            entityField.setWorld(world);
+            entityField.setBase(base);
 
             intField = new IntFieldMutator();
-            intField.setWorld(world);
+            intField.setBase(base);
 
             intBagField = new IntBagFieldMutator();
-            intBagField.setWorld(world);
+            intBagField.setWorld(base);
 
             entityBagField = new EntityBagFieldMutator();
-            entityBagField.setWorld(world);
+            entityBagField.setWorld(base);
         }
 
         UniLinkSite withMutator(UniLinkSite linkSite){

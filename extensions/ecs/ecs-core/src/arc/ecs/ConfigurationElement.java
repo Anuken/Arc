@@ -3,7 +3,7 @@ package arc.ecs;
 /**
  * Artemis pieces with priority pending registration.
  * @author Daan van Yperen
- * @see WorldConfigBuilder
+ * @see BaseConfigBuilder
  */
 class ConfigurationElement<T> implements Comparable<ConfigurationElement<T>>{
     public final int priority;
@@ -36,7 +36,7 @@ class ConfigurationElement<T> implements Comparable<ConfigurationElement<T>>{
 
     /** create instance of Registerable. */
     public static <T> ConfigurationElement<T> of(T item){
-        return of(item, WorldConfigBuilder.Priority.NORMAL);
+        return of(item, BaseConfigBuilder.Priority.NORMAL);
     }
 
     /** create instance of Registerable. */

@@ -15,9 +15,9 @@ import static arc.ecs.ComponentManager.NO_COMPONENTS;
  * - Adding Managers.
  * - Registering Pojo to inject.
  * - Registering custom dependency injector.
- * @see WorldConfigBuilder allows convenient creation.
+ * @see BaseConfigBuilder allows convenient creation.
  */
-public final class WorldConfig{
+public final class BaseConfig{
     public static final int COMPONENT_MANAGER_IDX = 0;
     public static final int ENTITY_MANAGER_IDX = 1;
     public static final int ASPECT_SUBSCRIPTION_MANAGER_IDX = 2;
@@ -33,7 +33,7 @@ public final class WorldConfig{
     private boolean alwaysDelayComponentRemoval = false;
     private Set<Class<? extends BaseSystem>> registered = new HashSet<>();
 
-    public WorldConfig(){
+    public BaseConfig(){
         // reserving space for core managers
         systems.add(null); // ComponentManager
         systems.add(null); // EntityManager
@@ -49,7 +49,7 @@ public final class WorldConfig{
      * @param expectedEntityCount count of expected entities.
      * @return This instance for chaining.
      */
-    public WorldConfig expectedEntityCount(int expectedEntityCount){
+    public BaseConfig expectedEntityCount(int expectedEntityCount){
         this.expectedEntityCount = expectedEntityCount;
         return this;
     }
@@ -59,7 +59,7 @@ public final class WorldConfig{
      * @param injector Injector to handle dependency injections.
      * @return This instance for chaining.
      */
-    public WorldConfig setInjector(Injector injector){
+    public BaseConfig setInjector(Injector injector){
         if(injector == null)
             throw new NullPointerException("Injector must not be null");
 
@@ -68,11 +68,11 @@ public final class WorldConfig{
     }
 
     /**
-     * Set strategy for invoking systems on {@link World#process()}.
+     * Set strategy for invoking systems on {@link Base#process()}.
      * @param invocationStrategy Strategy that will invoke systems.
      * @return This instance for chaining.
      */
-    public WorldConfig setInvocationStrategy(SystemInvoker invocationStrategy){
+    public BaseConfig setInvocationStrategy(SystemInvoker invocationStrategy){
         if(invocationStrategy == null) throw new NullPointerException();
         this.invocationStrategy = invocationStrategy;
         return this;
@@ -91,7 +91,7 @@ public final class WorldConfig{
      * @param o object to inject.
      * @return This instance for chaining.
      */
-    public WorldConfig register(Object o){
+    public BaseConfig register(Object o){
         return register(o.getClass().getName(), o);
     }
 
@@ -106,18 +106,18 @@ public final class WorldConfig{
      * @param o object to inject.
      * @return This instance for chaining.
      */
-    public WorldConfig register(String name, Object o){
+    public BaseConfig register(String name, Object o){
         injectables.put(name, o);
         return this;
     }
 
     /**
      * Adds a system to this world that will be processed by
-     * {@link World#process()}.
+     * {@link Base#process()}.
      * @param system the system to add
      * @return the added system
      */
-    public WorldConfig setSystem(Class<? extends BaseSystem> system){
+    public BaseConfig setSystem(Class<? extends BaseSystem> system){
         try{
             return setSystem(system.newInstance());
         }catch(Exception e){
@@ -131,7 +131,7 @@ public final class WorldConfig{
      * @param system the system to add
      * @return the added system
      */
-    public <T extends BaseSystem> WorldConfig setSystem(T system){
+    public <T extends BaseSystem> BaseConfig setSystem(T system){
         systems.add(system);
 
         if(!registered.add(system.getClass())){
@@ -142,24 +142,24 @@ public final class WorldConfig{
         return this;
     }
 
-    void initialize(World world, Injector injector, AspectSubscriptionManager asm){
+    void initialize(Base base, Injector injector, AspectSubscriptionManager asm){
         if(invocationStrategy == null)
             invocationStrategy = new DefaultInvoker();
 
-        invocationStrategy.setWorld(world);
+        invocationStrategy.setBase(base);
 
-        world.invocationStrategy = invocationStrategy;
+        base.invocationStrategy = invocationStrategy;
 
-        systems.set(COMPONENT_MANAGER_IDX, world.getComponentManager());
-        systems.set(ENTITY_MANAGER_IDX, world.getEntityManager());
+        systems.set(COMPONENT_MANAGER_IDX, base.getComponentManager());
+        systems.set(ENTITY_MANAGER_IDX, base.getEntityManager());
         systems.set(ASPECT_SUBSCRIPTION_MANAGER_IDX, asm);
 
         for(BaseSystem system : systems){
-            world.partition.systems.put(system.getClass(), system);
-            system.setWorld(world);
+            base.partition.systems.put(system.getClass(), system);
+            system.setBase(base);
         }
 
-        injector.initialize(world, injectables);
+        injector.initialize(base, injectables);
 
         initializeSystems(injector);
 

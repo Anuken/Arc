@@ -7,21 +7,21 @@ import java.util.*;
 
 /**
  * Can inject arbitrary fields annotated with {@link arc.ecs.annotations.Wire},
- * typically registered via registered via {@link WorldConfig#register}
+ * typically registered via registered via {@link BaseConfig#register}
  * @author Snorre E. Brekke
  */
 public class WiredFieldResolver implements UseInjectionCache, PojoFieldResolver{
     private InjectionCache cache;
 
     private Map<String, Object> pojos = new HashMap<>();
-    private World world;
+    private Base base;
 
     public WiredFieldResolver(){
     }
 
     @Override
-    public void initialize(World world){
-        this.world = world;
+    public void initialize(Base base){
+        this.base = base;
     }
 
     @Override

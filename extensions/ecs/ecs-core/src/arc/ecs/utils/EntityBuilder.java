@@ -6,7 +6,7 @@ import arc.ecs.*;
  * Non-reusable entity creation helper for rapid prototyping.
  * <p>
  * Discouraged for use other than rapid prototyping and simple games.
- * Use {@link ComponentMapper} instead, or check out the Fluid Entity
+ * Use {@link Mapper} instead, or check out the Fluid Entity
  * interface.
  * <p>
  * Example: new Builder(world)
@@ -21,19 +21,19 @@ import arc.ecs.*;
  */
 public class EntityBuilder{
 
-    protected final World world;
+    protected final Base base;
     protected final EntityEdit edit;
 
     /** Begin building new entity. */
-    public EntityBuilder(World world){
-        this.world = world;
-        edit = world.createEntity().edit();
+    public EntityBuilder(Base base){
+        this.base = base;
+        edit = base.createEntity().edit();
     }
 
     /** Begin building new entity based on archetype. */
-    public EntityBuilder(World world, Archetype archetype){
-        this.world = world;
-        edit = world.createEntity(archetype).edit();
+    public EntityBuilder(Base base, Archetype archetype){
+        this.base = base;
+        edit = base.createEntity(archetype).edit();
     }
 
     /** Add component to entity. */
@@ -139,7 +139,7 @@ public class EntityBuilder{
 
     /** Fetch manager or throw RuntimeException if not registered. */
     protected <T extends BaseSystem> T resolveManager(Class<T> type){
-        final T teamManager = world.getSystem(type);
+        final T teamManager = base.getSystem(type);
         if(teamManager == null){
             throw new RuntimeException("Register " + type.getSimpleName() + " with your artemis world.");
         }

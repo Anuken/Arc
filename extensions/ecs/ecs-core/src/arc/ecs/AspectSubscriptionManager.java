@@ -10,7 +10,7 @@ import static arc.ecs.Aspect.all;
 /**
  * <p>Manages all instances of {@link EntitySubscription}.</p>
  *
- * <p>Entity subscriptions are automatically updated during {@link World#process()}.
+ * <p>Entity subscriptions are automatically updated during {@link Base#process()}.
  * Any {@link EntitySubscription.SubscriptionListener listeners}
  * are informed when entities are added or removed.</p>
  * @see EntitySubscription
@@ -33,8 +33,8 @@ public class AspectSubscriptionManager extends BaseSystem{
     }
 
     @Override
-    protected void setWorld(World world){
-        super.setWorld(world);
+    protected void setBase(Base base){
+        super.setBase(base);
 
         // making sure the first subscription matches all entities
         get(all());
@@ -60,11 +60,11 @@ public class AspectSubscriptionManager extends BaseSystem{
     }
 
     private EntitySubscription createSubscription(Aspect.Builder builder){
-        EntitySubscription entitySubscription = new EntitySubscription(world, builder);
+        EntitySubscription entitySubscription = new EntitySubscription(base, builder);
         subscriptionMap.put(builder, entitySubscription);
         subscriptions.add(entitySubscription);
 
-        world.getComponentManager().synchronize(entitySubscription);
+        base.getComponentManager().synchronize(entitySubscription);
         return entitySubscription;
     }
 
@@ -92,7 +92,7 @@ public class AspectSubscriptionManager extends BaseSystem{
     }
 
     private void toEntityIntBags(BitVector changed, BitVector deleted){
-        changed.toIntBagIdCid(world.getComponentManager(), this.changed);
+        changed.toIntBagIdCid(base.getComponentManager(), this.changed);
         deleted.toIntBag(this.deleted);
 
         changed.clear();

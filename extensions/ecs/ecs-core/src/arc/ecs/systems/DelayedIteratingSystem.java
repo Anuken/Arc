@@ -101,7 +101,7 @@ public abstract class DelayedIteratingSystem extends BaseEntitySystem{
      * Overridable method to provide custom time delta.
      */
     protected float getTimeDelta(){
-        return world.getDelta();
+        return base.getDelta();
     }
 
     /**

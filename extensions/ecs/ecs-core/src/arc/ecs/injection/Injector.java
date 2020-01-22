@@ -5,11 +5,11 @@ import arc.ecs.*;
 import java.util.*;
 
 /**
- * <p>API used by {@link World} to inject objects annotated with {@link arc.ecs.annotations.Wire} with
- * dependencies. An injector injects {@link ComponentMapper}, {@link BaseSystem} and {@link com.artemis
+ * <p>API used by {@link Base} to inject objects annotated with {@link arc.ecs.annotations.Wire} with
+ * dependencies. An injector injects {@link Mapper}, {@link BaseSystem} and {@link com.artemis
  * .Manager} types into systems and managers.
  * </p>
- * <p>To inject arbitrary types, use registered through {@link WorldConfig#register}.</p>
+ * <p>To inject arbitrary types, use registered through {@link BaseConfig#register}.</p>
  * <p>To customize the injection-strategy for arbitrary types further, registered a custom {@link arc.ecs.injection.FieldHandler}
  * with custom one or more {@link arc.ecs.injection.FieldResolver}.</p>
  * @author Snorre E. Brekke
@@ -22,7 +22,7 @@ public interface Injector{
      * full injection isn't necessary.
      * @param id Name or class name.
      * @return the requested object, or null if not found
-     * @see WorldConfig#register(String, Object)
+     * @see BaseConfig#register(String, Object)
      */
     <T> T getRegistered(String id);
 
@@ -33,15 +33,15 @@ public interface Injector{
      * as parameter.
      * @param id Uniquely registered instance, identified by class..
      * @return the requested object, or null if not found
-     * @see WorldConfig#register(Object)
+     * @see BaseConfig#register(Object)
      */
     <T> T getRegistered(Class<T> id);
 
     /**
-     * @param world this Injector will be used for
-     * @param injectables registered via {@link WorldConfig#register}
+     * @param base this Injector will be used for
+     * @param injectables registered via {@link BaseConfig#register}
      */
-    void initialize(World world, Map<String, Object> injectables);
+    void initialize(Base base, Map<String, Object> injectables);
 
     /**
      * Inject dependencies on object. The injector delegates to {@link arc.ecs.injection.FieldHandler} to resolve

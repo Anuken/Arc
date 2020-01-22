@@ -21,7 +21,7 @@ public class UniEntityIdLink extends Component{
         }
 
         @Override
-        public void setWorld(World world){
+        public void setBase(Base base){
         }
     }
 }

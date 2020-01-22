@@ -45,7 +45,7 @@ public class EntityLinkManager extends BaseEntitySystem{
     @Override
     protected void initialize(){
         LinkCreateListener listener = new LinkCreateListener(this);
-        world.getComponentManager().getTypeFactory().register(listener);
+        base.getComponentManager().getTypeFactory().register(listener);
     }
 
 
@@ -87,13 +87,13 @@ public class EntityLinkManager extends BaseEntitySystem{
      * @param listener link listener
      */
     public void register(Class<? extends Component> component, String field, LinkListener listener){
-        world.inject(listener);
+        base.inject(listener);
         try{
             Field f = (field != null)
             ? component.getDeclaredField(field)
             : null;
 
-            ComponentType ct = world.getComponentManager().getTypeFactory().getTypeFor(component);
+            ComponentType ct = base.getComponentManager().getTypeFactory().getTypeFor(component);
             for(LinkSite site : linkSites){
                 if(ct.equals(site.type) && (f == null || site.field.equals(f))){
                     site.listener = listener;
@@ -115,7 +115,7 @@ public class EntityLinkManager extends BaseEntitySystem{
 
         public LinkCreateListener(EntityLinkManager elm){
             this.elm = elm;
-            this.linkFactory = new LinkFactory(elm.getWorld());
+            this.linkFactory = new LinkFactory(elm.getBase());
         }
 
         @Override

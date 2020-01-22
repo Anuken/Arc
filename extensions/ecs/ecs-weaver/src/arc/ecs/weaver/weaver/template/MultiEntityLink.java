@@ -15,8 +15,8 @@ public class MultiEntityLink extends Component{
         private EntitySubscription all;
 
         @Override
-        public void setWorld(World world){
-            all = world.getAspectSubscriptionManager().get(all());
+        public void setWorld(Base base){
+            all = base.getAspectSubscriptionManager().get(all());
         }
 
         @Override

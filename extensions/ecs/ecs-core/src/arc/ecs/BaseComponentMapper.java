@@ -14,11 +14,11 @@ public abstract class BaseComponentMapper<A extends Component>{
      * Returns a component mapper for this type of components.
      * @param <T> the class type of components
      * @param type the class of components this mapper uses
-     * @param world the world that this component mapper should use
+     * @param base the world that this component mapper should use
      * @return a new mapper
      */
-    public static <T extends Component> BaseComponentMapper<T> getFor(Class<T> type, World world){
-        return world.getMapper(type);
+    public static <T extends Component> BaseComponentMapper<T> getFor(Class<T> type, Base base){
+        return base.getMapper(type);
     }
 
     /**
@@ -150,7 +150,7 @@ public abstract class BaseComponentMapper<A extends Component>{
 
     /**
      * Returns the ComponentType of this ComponentMapper.
-     * see {@link ComponentMapper#type}
+     * see {@link Mapper#type}
      */
     public ComponentType getType(){
         return type;

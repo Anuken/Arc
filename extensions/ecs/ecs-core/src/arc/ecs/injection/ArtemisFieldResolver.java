@@ -6,13 +6,13 @@ import java.lang.reflect.*;
 import java.util.*;
 
 /**
- * Can resolve {@link World}, {@link ComponentMapper}, {@link BaseSystem} and
- * {@link arc.ecs.Manager} types registered in the {@link World}
+ * Can resolve {@link Base}, {@link Mapper}, {@link BaseSystem} and
+ * {@link arc.ecs.Manager} types registered in the {@link Base}
  * @author Snorre E. Brekke
  */
 public class ArtemisFieldResolver implements FieldResolver, UseInjectionCache{
 
-    private World world;
+    private Base base;
     private InjectionCache cache;
 
     private Map<Class<?>, Class<?>> systems;
@@ -22,10 +22,10 @@ public class ArtemisFieldResolver implements FieldResolver, UseInjectionCache{
     }
 
     @Override
-    public void initialize(World world){
-        this.world = world;
+    public void initialize(Base base){
+        this.base = base;
 
-        for(BaseSystem es : world.getSystems()){
+        for(BaseSystem es : base.getSystems()){
             Class<?> origin = es.getClass();
             Class<?> clazz = origin;
             do{
@@ -42,9 +42,9 @@ public class ArtemisFieldResolver implements FieldResolver, UseInjectionCache{
             case MAPPER:
                 return getComponentMapper(field);
             case SYSTEM:
-                return world.getSystem((Class<BaseSystem>)systems.get(fieldType));
+                return base.getSystem((Class<BaseSystem>)systems.get(fieldType));
             case WORLD:
-                return world;
+                return base;
             default:
                 return null;
 
@@ -52,9 +52,9 @@ public class ArtemisFieldResolver implements FieldResolver, UseInjectionCache{
     }
 
     @SuppressWarnings("unchecked")
-    private ComponentMapper<?> getComponentMapper(Field field){
+    private Mapper<?> getComponentMapper(Field field){
         Class<?> mapperType = cache.getGenericType(field);
-        return world.getMapper((Class<? extends Component>)mapperType);
+        return base.getMapper((Class<? extends Component>)mapperType);
 
     }
 

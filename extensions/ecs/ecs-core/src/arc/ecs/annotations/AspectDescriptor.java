@@ -12,7 +12,7 @@ import java.lang.annotation.*;
  * <p>This annotation will take precedence over {@link All}, {@link One} and {@link Exclude}.</p>
  *
  * <p>This annotation works similar to {@link Wire}; fields are configured
- * during , or explicitly via {@link World#inject(Object)}.</p>
+ * during , or explicitly via {@link Base#inject(Object)}.</p>
  *
  * <h4>Note on EntityTransmuters/Archetypes</h4>
  * <p><code>all</code> and <code>exclude</code> correspond to create/remove. Archetypes

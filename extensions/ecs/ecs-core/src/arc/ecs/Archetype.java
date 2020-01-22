@@ -4,7 +4,7 @@ package arc.ecs;
  * Provides a blueprint for new entities, offering greatly
  * improved insertion performance for systems.
  * </p>
- * Instance entities using {@link World#create(Archetype)}
+ * Instance entities using {@link Base#create(Archetype)}
  * @see EntityEdit for a list of alternate ways to alter composition and access components.
  */
 public final class Archetype{

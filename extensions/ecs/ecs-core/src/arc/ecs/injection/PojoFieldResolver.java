@@ -7,7 +7,7 @@ import java.util.*;
 /**
  * Field resolver for manually registered objects, for injection by type or name.
  * @author Daan van Yperen
- * @see WorldConfig#register
+ * @see BaseConfig#register
  */
 public interface PojoFieldResolver extends FieldResolver{
 

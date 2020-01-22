@@ -103,11 +103,11 @@ public class InjectionCache{
     public ClassType getFieldClassType(Class<?> fieldType){
         ClassType injectionType = fieldClassTypeCache.get(fieldType);
         if(injectionType == null){
-            if(ComponentMapper.class.isAssignableFrom(fieldType)){
+            if(Mapper.class.isAssignableFrom(fieldType)){
                 injectionType = ClassType.MAPPER;
             }else if(BaseSystem.class.isAssignableFrom(fieldType)){
                 injectionType = ClassType.SYSTEM;
-            }else if(World.class.isAssignableFrom(fieldType)){
+            }else if(Base.class.isAssignableFrom(fieldType)){
                 injectionType = ClassType.WORLD;
             }else{
                 injectionType = ClassType.CUSTOM;

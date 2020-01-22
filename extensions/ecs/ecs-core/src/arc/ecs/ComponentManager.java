@@ -7,7 +7,7 @@ import arc.ecs.utils.*;
 /**
  * Handles the association between entities and their components.
  * <p>
- * Only one component manager exists per {@link World} instance,
+ * Only one component manager exists per {@link Base} instance,
  * managed by the world.
  * </p>
  * @author Arni Arent
@@ -18,7 +18,7 @@ public class ComponentManager extends BaseSystem{
     static final int NO_COMPONENTS = 0;
 
     /** Collects all Entites marked for deletion from this ComponentManager. */
-    private Bag<ComponentMapper> mappers = new Bag(ComponentMapper.class);
+    private Bag<Mapper> mappers = new Bag(Mapper.class);
 
     private final ComponentIdentityResolver identityResolver = new ComponentIdentityResolver();
     final ShortBag entityToIdentity;
@@ -46,14 +46,14 @@ public class ComponentManager extends BaseSystem{
         return getMapper(componentClass).create(owner);
     }
 
-    protected <T extends Component> ComponentMapper<T> getMapper(Class<T> mapper){
+    protected <T extends Component> Mapper<T> getMapper(Class<T> mapper){
         ComponentType type = typeFactory.getTypeFor(mapper);
         return mappers.get(type.getIndex());
     }
 
     void registerComponentType(ComponentType ct, int capacity){
         int index = ct.getIndex();
-        ComponentMapper mapper = new ComponentMapper(ct.getType(), world);
+        Mapper mapper = new Mapper(ct.getType(), base);
         mapper.components.ensureCapacity(capacity);
         mappers.set(index, mapper);
     }
@@ -79,7 +79,7 @@ public class ComponentManager extends BaseSystem{
     }
 
     private void removeComponents(int entityId){
-        Bag<ComponentMapper> mappers = componentMappers(entityId);
+        Bag<Mapper> mappers = componentMappers(entityId);
         for(int i = 0, s = mappers.size(); s > i; i++){
             mappers.get(i).internalRemove(entityId);
         }
@@ -110,7 +110,7 @@ public class ComponentManager extends BaseSystem{
      * @return the component of given type
      */
     protected Component getComponent(int entityId, ComponentType type){
-        ComponentMapper mapper = mappers.get(type.getIndex());
+        Mapper mapper = mappers.get(type.getIndex());
         return mapper.get(entityId);
     }
 
@@ -121,7 +121,7 @@ public class ComponentManager extends BaseSystem{
      * @return the {@code fillBag}, filled with the entities components
      */
     public Bag<Component> getComponentsFor(int entityId, Bag<Component> fillBag){
-        Bag<ComponentMapper> mappers = componentMappers(entityId);
+        Bag<Mapper> mappers = componentMappers(entityId);
 
         for(int i = 0, s = mappers.size(); s > i; i++){
             fillBag.add(mappers.get(i).get(entityId));
@@ -137,7 +137,7 @@ public class ComponentManager extends BaseSystem{
     }
 
     /** Get component composition of entity. */
-    private Bag<ComponentMapper> componentMappers(int entityId){
+    private Bag<Mapper> componentMappers(int entityId){
         int identityIndex = entityToIdentity.get(entityId);
         return identityResolver.compositionMappers.get(identityIndex);
     }
@@ -151,7 +151,7 @@ public class ComponentManager extends BaseSystem{
         int identity = identityResolver.getIdentity(componentBits);
         if(identity == -1){
             identity = identityResolver.allocateIdentity(componentBits, this);
-            world.getAspectSubscriptionManager()
+            base.getAspectSubscriptionManager()
             .processComponentIdentity(identity, componentBits);
         }
 
@@ -170,7 +170,7 @@ public class ComponentManager extends BaseSystem{
     }
 
     /**
-     * Synchronizes new subscriptions with {@link World} state.
+     * Synchronizes new subscriptions with {@link Base} state.
      * @param es entity subscription to update.
      */
     void synchronize(EntitySubscription es){
@@ -180,7 +180,7 @@ public class ComponentManager extends BaseSystem{
             es.processComponentIdentity(i, componentBits);
         }
 
-        for(Entity e : world.getEntityManager().entities){
+        for(Entity e : base.getEntityManager().entities){
             if(e != null) es.check(e.id, getIdentity(e.id));
         }
 
@@ -207,7 +207,7 @@ public class ComponentManager extends BaseSystem{
     public void ensureCapacity(int newSize){
         typeFactory.initialMapperCapacity = newSize;
         entityToIdentity.ensureCapacity(newSize);
-        for(ComponentMapper mapper : mappers){
+        for(Mapper mapper : mappers){
             mapper.components.ensureCapacity(newSize);
         }
     }
@@ -215,13 +215,13 @@ public class ComponentManager extends BaseSystem{
     /** Tracks all unique component compositions. */
     static final class ComponentIdentityResolver{
         final Bag<BitVector> compositionBits;
-        final Bag<Bag<ComponentMapper>> compositionMappers;
+        final Bag<Bag<Mapper>> compositionMappers;
 
         ComponentIdentityResolver(){
             compositionBits = new Bag(BitVector.class);
             compositionBits.add(new BitVector());
             compositionMappers = new Bag<>();
-            compositionMappers.add(new Bag(ComponentMapper.class));
+            compositionMappers.add(new Bag(Mapper.class));
         }
 
         /** Fetch unique identity for passed composition. */
@@ -237,8 +237,8 @@ public class ComponentManager extends BaseSystem{
         }
 
         int allocateIdentity(BitVector componentBits, ComponentManager cm){
-            Bag<ComponentMapper> mappers =
-            new Bag<>(ComponentMapper.class, componentBits.cardinality());
+            Bag<Mapper> mappers =
+            new Bag<>(Mapper.class, componentBits.cardinality());
 
             ComponentTypeFactory tf = cm.getTypeFactory();
             for(int i = componentBits.nextSetBit(0); i >= 0; i = componentBits.nextSetBit(i + 1)){

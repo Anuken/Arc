@@ -12,13 +12,13 @@ import static arc.ecs.annotations.LinkPolicy.Policy.CHECK_SOURCE_AND_TARGETS;
 abstract class LinkSite implements EntitySubscription.SubscriptionListener{
     protected final ComponentType type;
     protected final Field field;
-    protected final ComponentMapper<? extends Component> mapper;
+    protected final Mapper<? extends Component> mapper;
     protected final EntitySubscription subscription;
     protected final LinkPolicy.Policy policy;
     protected final BitVector activeEntityIds;
     protected LinkListener listener;
 
-    protected LinkSite(World world,
+    protected LinkSite(Base base,
                        ComponentType type,
                        Field field,
                        LinkPolicy.Policy defaultPolicy){
@@ -28,11 +28,11 @@ abstract class LinkSite implements EntitySubscription.SubscriptionListener{
         LinkPolicy.Policy policyOverride = LinkFactory.getPolicy(field);
         this.policy = (policyOverride != null) ? policyOverride : defaultPolicy;
 
-        mapper = world.getMapper(type.getType());
+        mapper = base.getMapper(type.getType());
 
-        activeEntityIds = world.getAspectSubscriptionManager().get(all()).getActiveEntityIds();
+        activeEntityIds = base.getAspectSubscriptionManager().get(all()).getActiveEntityIds();
 
-        AspectSubscriptionManager subscriptions = world.getAspectSubscriptionManager();
+        AspectSubscriptionManager subscriptions = base.getAspectSubscriptionManager();
         subscription = subscriptions.get(all(type.getType()));
         subscription.addSubscriptionListener(this);
     }

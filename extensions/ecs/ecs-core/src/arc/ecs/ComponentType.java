@@ -27,7 +27,7 @@ public class ComponentType{
     /**
      * Get the component type's index.
      * <p>
-     * Index is distinct for each {@link World} instance,
+     * Index is distinct for each {@link Base} instance,
      * allowing for fast lookups.
      * @return the component types index
      */

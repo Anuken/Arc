@@ -11,9 +11,9 @@ import java.lang.reflect.*;
  * <p>
  * Allows convenient var-arg addition of systems, managers. Supports plugins.
  * @author Daan van Yperen
- * @see WorldConfig
+ * @see BaseConfig
  */
-public class WorldConfigBuilder{
+public class BaseConfigBuilder{
     private Bag<ConfigurationElement<? extends BaseSystem>> systems;
     private Bag<ConfigurationElement<? extends FieldResolver>> fieldResolvers;
     private Bag<ConfigurationElement<? extends ArtemisPlugin>> plugins;
@@ -23,7 +23,7 @@ public class WorldConfigBuilder{
     private final InjectionCache cache;
     private SystemInvoker invocationStrategy;
 
-    public WorldConfigBuilder(){
+    public BaseConfigBuilder(){
         reset();
         cache = InjectionCache.sharedCache.get();
     }
@@ -33,9 +33,9 @@ public class WorldConfigBuilder{
      * <p/>
      * Deprecated: World Configuration
      */
-    public WorldConfig build(){
+    public BaseConfig build(){
         appendPlugins();
-        final WorldConfig config = new WorldConfig();
+        final BaseConfig config = new BaseConfig();
         registerSystems(config);
         registerFieldResolvers(config);
         registerInvocationStrategies(config);
@@ -44,7 +44,7 @@ public class WorldConfigBuilder{
         return config;
     }
 
-    private void registerInvocationStrategies(WorldConfig config){
+    private void registerInvocationStrategies(BaseConfig config){
         if(invocationStrategy != null){
             config.setInvocationStrategy(invocationStrategy);
         }
@@ -68,7 +68,7 @@ public class WorldConfigBuilder{
     /**
      * add custom field handler with resolvers.
      */
-    protected void registerFieldResolvers(WorldConfig config){
+    protected void registerFieldResolvers(BaseConfig config){
 
         if(fieldResolvers.size() > 0){
             fieldResolvers.sort();
@@ -86,7 +86,7 @@ public class WorldConfigBuilder{
     /**
      * add systems to config.
      */
-    private void registerSystems(WorldConfig config){
+    private void registerSystems(BaseConfig config){
         systems.sort();
         for(ConfigurationElement<? extends BaseSystem> configurationElement : systems){
             config.setSystem(configurationElement.item);
@@ -116,7 +116,7 @@ public class WorldConfigBuilder{
      * have been notified. When {@code false}, only components with {@code @DelayedComponentRemoval}
      * will be delayed. Components without the annotation will not be retrievable in listeners.
      */
-    public WorldConfigBuilder alwaysDelayComponentRemoval(boolean value){
+    public BaseConfigBuilder alwaysDelayComponentRemoval(boolean value){
         this.alwaysDelayComponentRemoval = value;
         return this;
     }
@@ -125,7 +125,7 @@ public class WorldConfigBuilder{
      * Add field resolver.
      * @return this
      */
-    public WorldConfigBuilder register(FieldResolver... fieldResolvers){
+    public BaseConfigBuilder register(FieldResolver... fieldResolvers){
         for(FieldResolver fieldResolver : fieldResolvers){
             this.fieldResolvers.add(ConfigurationElement.of(fieldResolver));
         }
@@ -137,7 +137,7 @@ public class WorldConfigBuilder{
      * @param strategy strategy to invoke.
      * @return this
      */
-    public WorldConfigBuilder register(SystemInvoker strategy){
+    public BaseConfigBuilder register(SystemInvoker strategy){
         this.invocationStrategy = strategy;
         return this;
     }
@@ -152,7 +152,7 @@ public class WorldConfigBuilder{
      * @param types required systems.
      * @return this
      */
-    public final WorldConfigBuilder dependsOn(Class... types){
+    public final BaseConfigBuilder dependsOn(Class... types){
         return dependsOn(Priority.NORMAL, types);
     }
 
@@ -162,10 +162,10 @@ public class WorldConfigBuilder{
      * @param types required systems.
      * @param priority Higher priority are registered first. Not supported for plugins.
      * @return this
-     * @throws WorldConfigurationException if unsupported classes are passed or plugins are given a priority.
+     * @throws WorldConfigException if unsupported classes are passed or plugins are given a priority.
      */
     @SuppressWarnings("unchecked")
-    public final WorldConfigBuilder dependsOn(int priority, Class... types){
+    public final BaseConfigBuilder dependsOn(int priority, Class... types){
         for(Class type : types){
             try{
                 if(cache.getFieldClassType(type) == ClassType.SYSTEM){
@@ -173,15 +173,15 @@ public class WorldConfigBuilder{
                 }else{
                     if(ArtemisPlugin.class.isAssignableFrom(type)){
                         if(priority != Priority.NORMAL){
-                            throw new WorldConfigurationException("Priority not supported on plugins.");
+                            throw new WorldConfigException("Priority not supported on plugins.");
                         }
                         dependsOnPlugin(type);
                     }else{
-                        throw new WorldConfigurationException("Unsupported type. Only supports systems.");
+                        throw new WorldConfigException("Unsupported type. Only supports systems.");
                     }
                 }
             }catch(Exception e){
-                throw new WorldConfigurationException("Unable to instance " + type + " via reflection.", e);
+                throw new WorldConfigException("Unable to instance " + type + " via reflection.", e);
             }
         }
         return this;
@@ -197,7 +197,7 @@ public class WorldConfigBuilder{
 
         if(Modifier.isAbstract(type.getModifiers())){
             if(!anyAssignableTo(plugins, type)){
-                throw new WorldConfigurationException("Implementation of " + type + " expected but not found. Did you forget to include a plugin? (for example: logging-libgdx for logging-api)");
+                throw new WorldConfigException("Implementation of " + type + " expected but not found. Did you forget to include a plugin? (for example: logging-libgdx for logging-api)");
             }
         }else{
             if(!containsType(plugins, type)){
@@ -213,9 +213,9 @@ public class WorldConfigBuilder{
      * @param systems systems to add, order is preserved.
      * @param priority priority of added systems, higher priority are added before lower priority.
      * @return this
-     * @throws WorldConfigurationException if registering the same class twice.
+     * @throws WorldConfigException if registering the same class twice.
      */
-    public WorldConfigBuilder with(int priority, BaseSystem... systems){
+    public BaseConfigBuilder with(int priority, BaseSystem... systems){
         addSystems(priority, systems);
         return this;
     }
@@ -226,9 +226,9 @@ public class WorldConfigBuilder{
      * Use {@link #dependsOn} from within plugins whenever possible.
      * @param systems systems to add, order is preserved.
      * @return this
-     * @throws WorldConfigurationException if registering the same class twice.
+     * @throws WorldConfigException if registering the same class twice.
      */
-    public WorldConfigBuilder with(BaseSystem... systems){
+    public BaseConfigBuilder with(BaseSystem... systems){
         addSystems(Priority.NORMAL, systems);
         return this;
     }
@@ -243,9 +243,9 @@ public class WorldConfigBuilder{
      * Use {@link #dependsOn} from within plugins whenever possible.
      * @param plugins Plugins to add.
      * @return this
-     * @throws WorldConfigurationException if type is added more than once.
+     * @throws WorldConfigException if type is added more than once.
      */
-    public WorldConfigBuilder with(ArtemisPlugin... plugins){
+    public BaseConfigBuilder with(ArtemisPlugin... plugins){
         addPlugins(plugins);
         return this;
     }
@@ -257,7 +257,7 @@ public class WorldConfigBuilder{
         for(BaseSystem system : systems){
 
             if(containsType(this.systems, system.getClass())){
-                throw new WorldConfigurationException("System of type " + system.getClass() + " registered twice. Only once allowed.");
+                throw new WorldConfigException("System of type " + system.getClass() + " registered twice. Only once allowed.");
             }
 
             this.systems.add(new ConfigurationElement<>(system, priority));
@@ -303,7 +303,7 @@ public class WorldConfigBuilder{
         for(ArtemisPlugin plugin : plugins){
 
             if(containsType(this.plugins, plugin.getClass())){
-                throw new WorldConfigurationException("Plugin of type " + plugin.getClass() + " registered twice. Only once allowed.");
+                throw new WorldConfigException("Plugin of type " + plugin.getClass() + " registered twice. Only once allowed.");
             }
 
             this.plugins.add(ConfigurationElement.of(plugin));
@@ -321,5 +321,19 @@ public class WorldConfigBuilder{
         public static final int NORMAL = 0;
         public static final int HIGH = 10000;
         public static final int HIGHEST = Integer.MAX_VALUE;
+    }
+
+    /**
+     * World configuration failed.
+     * @author Daan van Yperen
+     */
+    public static class WorldConfigException extends RuntimeException{
+        public WorldConfigException(String msg){
+            super(msg);
+        }
+
+        public WorldConfigException(String msg, Throwable e){
+            super(msg, e);
+        }
     }
 }

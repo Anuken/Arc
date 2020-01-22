@@ -8,11 +8,11 @@ import java.lang.reflect.*;
 class MultiLinkSite extends LinkSite{
     MultiFieldMutator fieldMutator;
 
-    protected MultiLinkSite(World world,
+    protected MultiLinkSite(Base base,
                             ComponentType type,
                             Field field){
 
-        super(world, type, field, LinkPolicy.Policy.CHECK_SOURCE);
+        super(base, type, field, LinkPolicy.Policy.CHECK_SOURCE);
     }
 
     @Override

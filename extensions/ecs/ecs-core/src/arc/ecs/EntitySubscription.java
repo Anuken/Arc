@@ -5,7 +5,7 @@ import arc.ecs.utils.*;
 
 /**
  * Maintains the list of entities matched by an aspect. Entity subscriptions
- * are automatically updated during {@link World#process()}.
+ * are automatically updated during {@link Base#process()}.
  * <p>
  * Any {@link EntitySubscription.SubscriptionListener listeners}
  * are informed when entities are added or removed.
@@ -26,8 +26,8 @@ public class EntitySubscription{
 
     final BitVector aspectCache = new BitVector();
 
-    EntitySubscription(World world, Aspect.Builder builder){
-        extra = new SubscriptionExtra(builder.build(world), builder);
+    EntitySubscription(Base base, Aspect.Builder builder){
+        extra = new SubscriptionExtra(builder.build(base), builder);
 
         activeEntityIds = new BitVector();
         entities = new IntBag();
@@ -35,7 +35,7 @@ public class EntitySubscription{
         insertedIds = new BitVector();
         removedIds = new BitVector();
 
-        EntityManager em = world.getEntityManager();
+        EntityManager em = base.getEntityManager();
         em.registerEntityStore(activeEntityIds);
         em.registerEntityStore(insertedIds);
         em.registerEntityStore(removedIds);
@@ -228,12 +228,12 @@ public class EntitySubscription{
          *
          * <p>
          * Important note on accessing components:
-         * Using {@link ComponentMapper#get(int)} to retrieve a component is unsafe, unless:
+         * Using {@link Mapper#get(int)} to retrieve a component is unsafe, unless:
          * - You annotate the component with {@link DelayedComponentRemoval}.
-         * - {@link World#isAlwaysDelayComponentRemoval} is enabled to make accessing all components safe,
+         * - {@link Base#isAlwaysDelayComponentRemoval} is enabled to make accessing all components safe,
          * for a small performance hit.
          * <p>
-         * {@link ComponentMapper#has(int)} always returns {@code false}, even for DelayedComponentRemoval components.
+         * {@link Mapper#has(int)} always returns {@code false}, even for DelayedComponentRemoval components.
          */
         void removed(IntBag entities);
     }

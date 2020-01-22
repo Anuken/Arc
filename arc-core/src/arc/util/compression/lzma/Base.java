@@ -2,7 +2,7 @@
 
 package arc.util.compression.lzma;
 
-public class Base{
+class Base{
     public static final int kNumRepDistances = 4;
     public static final int kNumStates = 12;
     public static final int kNumPosSlotBits = 6;

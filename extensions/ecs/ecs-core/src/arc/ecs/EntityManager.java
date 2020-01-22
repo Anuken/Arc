@@ -94,11 +94,11 @@ public class EntityManager extends BaseSystem{
      * entity receiving id <code>0</code>. There mustn't be any active entities in
      * the world for this method to work. This method does nothing if it fails.</p>
      *
-     * <p>For the reset to take effect, a new {@link World#process()} must initiate.</p>
+     * <p>For the reset to take effect, a new {@link Base#process()} must initiate.</p>
      * @return true if entity id was successfully reset.
      */
     public boolean reset(){
-        int count = world.getAspectSubscriptionManager()
+        int count = base.getAspectSubscriptionManager()
         .get(all())
         .getActiveEntityIds()
         .cardinality();
@@ -120,7 +120,7 @@ public class EntityManager extends BaseSystem{
      * @param id The ID to be set on the Entity
      */
     private Entity createEntity(int id){
-        Entity e = new Entity(world, id);
+        Entity e = new Entity(base, id);
         if(e.id >= entities.getCapacity()){
             growEntityStores();
         }
@@ -136,7 +136,7 @@ public class EntityManager extends BaseSystem{
     private void growEntityStores(){
         int newSize = 2 * entities.getCapacity();
         entities.ensureCapacity(newSize);
-        ComponentManager cm = world.getComponentManager();
+        ComponentManager cm = base.getComponentManager();
         cm.ensureCapacity(newSize);
 
         for(int i = 0, s = entityBitVectors.size(); s > i; i++){

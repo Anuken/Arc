@@ -44,11 +44,11 @@ implements EntitySubscription.SubscriptionListener{
 
     /**
      * Set the world this system works on.
-     * @param world the world to set
+     * @param base the world to set
      */
     @Override
-    protected void setWorld(World world){
-        super.setWorld(world);
+    protected void setBase(Base base){
+        super.setBase(base);
         if(implementsObserver(this, "inserted"))
             methodFlags |= FLAG_INSERTED;
         if(implementsObserver(this, "removed"))
@@ -65,7 +65,7 @@ implements EntitySubscription.SubscriptionListener{
 
     @Override
     protected final void inserted(int entityId){
-        inserted(world.getEntity(entityId));
+        inserted(base.getEntity(entityId));
     }
 
     @Override
@@ -78,7 +78,7 @@ implements EntitySubscription.SubscriptionListener{
 
     @Override
     protected final void removed(int entityId){
-        removed(world.getEntity(entityId));
+        removed(base.getEntity(entityId));
     }
 
     /**
@@ -117,7 +117,7 @@ implements EntitySubscription.SubscriptionListener{
             IntBag entityIds = subscription.getEntities();
             int[] ids = entityIds.getData();
             for(int i = 0; i < entityIds.size(); i++){
-                entities.add(world.getEntity(ids[i]));
+                entities.add(base.getEntity(ids[i]));
             }
 
             if(oldSize > entities.size()){

@@ -5,7 +5,7 @@ import arc.ecs.utils.*;
 
 import java.util.*;
 
-import static arc.ecs.WorldConfig.*;
+import static arc.ecs.BaseConfig.*;
 
 /**
  * The primary instance for the framework.
@@ -17,7 +17,7 @@ import static arc.ecs.WorldConfig.*;
  * @author Arni Arent
  * @author junkdog
  */
-public class World{
+public class Base{
 
     /** Manages all entities for the world. */
     private final EntityManager em;
@@ -49,10 +49,10 @@ public class World{
      * {@link EntityManager}, {@link ComponentManager} and {@link AspectSubscriptionManager} are
      * available by default.
      * </p>
-     * Why are you using this? Use {@link #World(WorldConfig)} to create a world with your own systems.
+     * Why are you using this? Use {@link #Base(BaseConfig)} to create a world with your own systems.
      */
-    public World(){
-        this(new WorldConfig());
+    public Base(){
+        this(new BaseConfig());
     }
 
     /**
@@ -61,10 +61,10 @@ public class World{
      * {@link EntityManager}, {@link ComponentManager} and {@link AspectSubscriptionManager} are
      * available by default, on top of your own systems.
      * </p>
-     * @see WorldConfigBuilder
-     * @see WorldConfig
+     * @see BaseConfigBuilder
+     * @see BaseConfig
      */
-    public World(WorldConfig configuration){
+    public Base(BaseConfig configuration){
         partition = new WorldSegment(configuration);
         systemsBag = configuration.systems;
 
@@ -90,7 +90,7 @@ public class World{
      * Immediately perform dependency injection on the target, even if the target isn't of an Artemis class.
      * <p/>
      * If you want to specify nonstandard dependencies to inject, use
-     * {@link WorldConfig#register(String, Object)} instead, or
+     * {@link BaseConfig#register(String, Object)} instead, or
      * configure an {@link arc.ecs.injection.Injector}
      * <p/>
      * If you want a non-throwing alternative, use {@link #inject(Object, boolean)}
@@ -109,7 +109,7 @@ public class World{
      * Will not if it is annotated with {@link arc.ecs.annotations.Wire}.
      * <p/>
      * If you want to specify nonstandard dependencies to inject, use
-     * {@link WorldConfig#register(String, Object)} instead, or
+     * {@link BaseConfig#register(String, Object)} instead, or
      * configure an {@link arc.ecs.injection.Injector}.
      * @param target Object to inject into.
      * @param failIfNotInjectable if true, this method will
@@ -139,7 +139,7 @@ public class World{
     /**
      * Disposes all systems. Only necessary if either need to free
      * managed resources upon bringing the world to an end.
-     * @throws ArtemisMultiException if any system throws an exception.
+     * @throws RuntimeException if any system throws an exception.
      */
     public void dispose(){
         List<Throwable> exceptions = new ArrayList<>();
@@ -147,13 +147,19 @@ public class World{
         for(BaseSystem system : systemsBag){
             try{
                 system.dispose();
-            }catch(Exception e){
+            }catch(Throwable e){
                 exceptions.add(e);
             }
         }
 
-        if(exceptions.size() > 0)
-            throw new ArtemisMultiException(exceptions);
+        if(exceptions.size() > 0) {
+            RuntimeException exc = new RuntimeException();
+            for(Throwable t : exceptions){
+                exc.addSuppressed(t);
+            }
+
+            throw exc;
+        }
     }
 
     /**
@@ -349,7 +355,7 @@ public class World{
     /** Set strategy for invoking systems on {@link #process()}. */
     protected void setInvocationStrategy(SystemInvoker invocationStrategy){
         this.invocationStrategy = invocationStrategy;
-        invocationStrategy.setWorld(this);
+        invocationStrategy.setBase(this);
         invocationStrategy.setSystems(systemsBag);
         invocationStrategy.initialize();
     }
@@ -380,7 +386,7 @@ public class World{
      * @param type type of component to get mapper for
      * @return mapper for specified component type
      */
-    public <T extends Component> ComponentMapper<T> getMapper(Class<T> type){
+    public <T extends Component> Mapper<T> getMapper(Class<T> type){
         return cm.getMapper(type);
     }
 
@@ -392,7 +398,7 @@ public class World{
     }
 
     /**
-     * @return Strategy used for invoking systems during {@link World#process()}.
+     * @return Strategy used for invoking systems during {@link Base#process()}.
      */
     public <T extends SystemInvoker> T getInvocationStrategy(){
         return (T)invocationStrategy;
@@ -405,7 +411,7 @@ public class World{
         /** Responsible for dependency injection. */
         final Injector injector;
 
-        WorldSegment(WorldConfig configuration){
+        WorldSegment(BaseConfig configuration){
             systems = new IdentityHashMap<>();
             injector = (configuration.injector != null)
             ? configuration.injector
@@ -415,8 +421,8 @@ public class World{
 
     /**
      * When true, component removal is delayed for all components until all subscriptions have been notified.
-     * @see WorldConfig#setAlwaysDelayComponentRemoval(boolean)
-     * @see WorldConfigBuilder#alwaysDelayComponentRemoval(boolean)
+     * @see BaseConfig#setAlwaysDelayComponentRemoval(boolean)
+     * @see BaseConfigBuilder#alwaysDelayComponentRemoval(boolean)
      */
     public boolean isAlwaysDelayComponentRemoval(){
         return alwaysDelayComponentRemoval;

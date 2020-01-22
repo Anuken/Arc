@@ -23,13 +23,13 @@ public class AspectFieldResolver implements FieldResolver{
 
     private static final Class<? extends Component>[] EMPTY_COMPONENT_CLASS_ARRAY = new Class[0];
 
-    private World world;
+    private Base base;
 
     private IdentityHashMap<Field, Builder> fields = new IdentityHashMap<>();
 
     @Override
-    public void initialize(World world){
-        this.world = world;
+    public void initialize(Base base){
+        this.base = base;
     }
 
     @Override
@@ -39,17 +39,17 @@ public class AspectFieldResolver implements FieldResolver{
             return null;
 
         if(Aspect.class == fieldType){
-            return world.getAspectSubscriptionManager().get(aspect).getAspect();
+            return base.getAspectSubscriptionManager().get(aspect).getAspect();
         }else if(Aspect.Builder.class == fieldType){
             return aspect;
         }else if(EntityTransmuter.class == fieldType){
-            return new EntityTransmuter(world, aspect);
+            return new EntityTransmuter(base, aspect);
         }else if(EntitySubscription.class == fieldType){
-            return world.getAspectSubscriptionManager().get(aspect);
+            return base.getAspectSubscriptionManager().get(aspect);
         }else if(Archetype.class == fieldType){
             return new ArchetypeBuilder()
             .add(allComponents(field))
-            .build(world);
+            .build(base);
         }
 
         return null;

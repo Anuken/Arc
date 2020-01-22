@@ -11,11 +11,11 @@ class UniLinkSite extends LinkSite{
 
     private final IntBag sourceToTarget = new IntBag();
 
-    protected UniLinkSite(World world,
+    protected UniLinkSite(Base base,
                           ComponentType type,
                           Field field){
 
-        super(world, type, field, LinkPolicy.Policy.CHECK_SOURCE_AND_TARGETS);
+        super(base, type, field, LinkPolicy.Policy.CHECK_SOURCE_AND_TARGETS);
     }
 
     @Override

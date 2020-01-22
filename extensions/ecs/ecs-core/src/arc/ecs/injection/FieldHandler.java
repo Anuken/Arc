@@ -14,12 +14,12 @@ import java.util.*;
  * {@link FieldResolver#resolve(Object, Class, Field)}, or null if no resolver returned a valid value.
  * </p>
  * <p>
- * During {@link World} construction, after systems and managers have been created, {@link #initialize(World, Map)}
+ * During {@link Base} construction, after systems and managers have been created, {@link #initialize(Base, Map)}
  * will be called for each registered {@link FieldResolver}
  * </p>
  * <p>
  * If {@link FieldResolver} implements {@link UseInjectionCache}, {@link UseInjectionCache#setCache(InjectionCache)}
- * will be called prior to  {@link FieldResolver#initialize(World)} being called, availing the {@link InjectionCache}
+ * will be called prior to  {@link FieldResolver#initialize(Base)} being called, availing the {@link InjectionCache}
  * used by this handler.
  * </p>
  * @author Snorre E. Brekke
@@ -47,8 +47,8 @@ public class FieldHandler{
 
     /**
      * Constructs a ned FieldHandler with an {@link ArtemisFieldResolver} and {@link WiredFieldResolver}
-     * already registered, which can resolve {@link ComponentMapper}, {@link BaseSystem}
-     * and {@link arc.ecs.Manager} types registered in the {@link World}
+     * already registered, which can resolve {@link Mapper}, {@link BaseSystem}
+     * and {@link arc.ecs.Manager} types registered in the {@link Base}
      * {@link arc.ecs.annotations.Wire}.
      * @param cache used for better reflection-speed.
      * @see ArtemisFieldResolver
@@ -63,17 +63,17 @@ public class FieldHandler{
     }
 
     /**
-     * During {@link World} construction, after systems and managers have been created, {@link #initialize(World, Map)}
+     * During {@link Base} construction, after systems and managers have been created, {@link #initialize(Base, Map)}
      * will be called for each registered {@link FieldResolver}
      * </p>
      * <p/>
      * If {@link FieldResolver} implements {@link UseInjectionCache}, {@link UseInjectionCache#setCache(InjectionCache)}
-     * will be called prior to  {@link FieldResolver#initialize(World)} being called, availing the {@link InjectionCache}
+     * will be called prior to  {@link FieldResolver#initialize(Base)} being called, availing the {@link InjectionCache}
      * used by this handler.
-     * @param world the world this FieldHandler is being used for
-     * @throws WorldConfigurationException when injector has no way to deal with injectables.
+     * @param base the world this FieldHandler is being used for
+     * @throws BaseConfigBuilder.WorldConfigException when injector has no way to deal with injectables.
      */
-    public void initialize(World world, Map<String, Object> injectables){
+    public void initialize(Base base, Map<String, Object> injectables){
 
         boolean fieldResolverFound = false;
 
@@ -88,7 +88,7 @@ public class FieldHandler{
                 fieldResolverFound = true;
             }
 
-            fieldResolver.initialize(world);
+            fieldResolver.initialize(base);
         }
 
         if(injectables != null && !injectables.isEmpty() && !fieldResolverFound){

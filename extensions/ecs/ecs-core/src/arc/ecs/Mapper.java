@@ -11,13 +11,12 @@ import arc.ecs.utils.*;
  * @param <A> Component type to map.
  * @see EntityEdit for a list of alternate ways to alter composition and access components.
  */
-public class ComponentMapper<A extends Component> extends BaseComponentMapper<A>{
+public class Mapper<A extends Component> extends BaseComponentMapper<A>{
 
     /**
      * Holds all components of given type in the world.
      */
     final Bag<A> components;
-
     private final EntityTransmuter createTransmuter;
     private final EntityTransmuter removeTransmuter;
     private final ComponentPool pool;
@@ -25,21 +24,21 @@ public class ComponentMapper<A extends Component> extends BaseComponentMapper<A>
 
 
     @SuppressWarnings("unchecked")
-    public ComponentMapper(Class<A> type, World world){
-        super(world.getComponentManager().typeFactory.getTypeFor(type));
+    public Mapper(Class<A> type, Base base){
+        super(base.getComponentManager().typeFactory.getTypeFor(type));
         components = new Bag<>(type);
 
         pool = (this.type.isPooled)
         ? new ComponentPool(type)
         : null;
 
-        if(world.isAlwaysDelayComponentRemoval() || type.isAnnotationPresent(DelayedComponentRemoval.class))
-            purgatory = new DelayedComponentRemover<>(components, pool, world.batchProcessor);
+        if(base.isAlwaysDelayComponentRemoval() || type.isAnnotationPresent(DelayedComponentRemoval.class))
+            purgatory = new DelayedComponentRemover<>(components, pool, base.batchProcessor);
         else
             purgatory = new ImmediateComponentRemover<>(components, pool);
 
-        createTransmuter = new EntityTransmuterFactory(world).add(type).build();
-        removeTransmuter = new EntityTransmuterFactory(world).remove(type).build();
+        createTransmuter = new EntityTransmuterFactory(base).add(type).build();
+        removeTransmuter = new EntityTransmuterFactory(base).remove(type).build();
     }
 
     /**
@@ -79,7 +78,7 @@ public class ComponentMapper<A extends Component> extends BaseComponentMapper<A>
     /**
      * Schedule component for removal.
      * <p>
-     * Components annotated with {@link DelayedComponentRemoval} (or all components if {@link World#isAlwaysDelayComponentRemoval}
+     * Components annotated with {@link DelayedComponentRemoval} (or all components if {@link Base#isAlwaysDelayComponentRemoval}
      * mode is active) are removed after the system finishes processing and all subscribers have been called. However,
      * {@link #has} will immediately return {@code false} as if it was removed!
      * <p>

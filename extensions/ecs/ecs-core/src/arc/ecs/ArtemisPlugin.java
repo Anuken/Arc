@@ -14,8 +14,8 @@ public interface ArtemisPlugin{
      * - field resolvers
      * - other plugins
      * <p>
-     * Always prefer to use {@link WorldConfigBuilder#dependsOn} as it can handle repeated dependencies,
-     * as opposed to {@link WorldConfigBuilder#with}, which will throw an exception upon attempting to
+     * Always prefer to use {@link BaseConfigBuilder#dependsOn} as it can handle repeated dependencies,
+     * as opposed to {@link BaseConfigBuilder#with}, which will throw an exception upon attempting to
      * add a pre-existing class.
      * <p>
      * Artemis will consider abstract plugin dependencies fulfilled when a concrete subclass has been registered
@@ -25,5 +25,5 @@ public interface ArtemisPlugin{
      * plugin that is abstract, and one subclass for each implementation.
      * @param b builder to register your dependencies with.
      */
-    void setup(WorldConfigBuilder b);
+    void setup(BaseConfigBuilder b);
 }

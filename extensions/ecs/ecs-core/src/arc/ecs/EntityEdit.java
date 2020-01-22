@@ -13,7 +13,7 @@ package arc.ecs;
  * <p/>
  * Alternatives to edit entities.
  * <p/>
- * - {@link ComponentMapper} is great for concrete changes {@link ComponentMapper#create(Entity)}.
+ * - {@link Mapper} is great for concrete changes {@link Mapper#create(Entity)}.
  * Best choice for parameterizing pooled components.
  * - {@link arc.ecs.utils.EntityBuilder} Convenient entity creation. Not useful when pooling.
  * - {@link EntityTransmuterFactory} Fastest but rigid way of changing entity component compositions.
@@ -23,8 +23,8 @@ public final class EntityEdit{
     int entityId;
     private ComponentManager cm;
 
-    EntityEdit(World world){
-        cm = world.getComponentManager();
+    EntityEdit(Base base){
+        cm = base.getComponentManager();
     }
 
     /**
@@ -65,7 +65,7 @@ public final class EntityEdit{
             "Use EntityEdit#create(Class<Component>) for adding non-basic component types");
         }
 
-        ComponentMapper mapper = cm.getMapper(type.getType());
+        Mapper mapper = cm.getMapper(type.getType());
 
         mapper.create(entityId);
         mapper.components.getData()[entityId] = component;
@@ -78,7 +78,7 @@ public final class EntityEdit{
      * @return Entity this EntityEdit operates on.
      */
     public Entity getEntity(){
-        return cm.world.getEntity(entityId);
+        return cm.base.getEntity(entityId);
     }
 
     /**

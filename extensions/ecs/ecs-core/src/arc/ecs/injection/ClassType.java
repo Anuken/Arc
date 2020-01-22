@@ -8,7 +8,7 @@ import arc.ecs.*;
  */
 public enum ClassType{
     /**
-     * Used for (sub)classes of {@link ComponentMapper}
+     * Used for (sub)classes of {@link Mapper}
      */
     MAPPER,
     /**
@@ -16,7 +16,7 @@ public enum ClassType{
      */
     SYSTEM,
     /**
-     * Used for (sub)classes of {@link World}
+     * Used for (sub)classes of {@link Base}
      */
     WORLD,
     /**

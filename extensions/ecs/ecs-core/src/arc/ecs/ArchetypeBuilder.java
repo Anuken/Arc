@@ -7,11 +7,11 @@ import arc.ecs.utils.*;
  * Builder for basic Archetype instances. To reap the maximum benefit of Archetypes,
  * it's recommended to stash them away inside a manager or similar. Archetypes'
  * main advantage come from the improved insertion into systems performance.
- * Calling {@link Entity#edit() edit()} on the Entity returned by {@link World#createEntity(Archetype)}
+ * Calling {@link Entity#edit() edit()} on the Entity returned by {@link Base#createEntity(Archetype)}
  * nullifies this optimization.
  * <p>
  * Generated archetypes provide a blueprint for quick entity creation.
- * Instance generated entities using {@link World#createEntity(Archetype)}
+ * Instance generated entities using {@link Base#createEntity(Archetype)}
  * @since 0.7
  */
 public class ArchetypeBuilder{
@@ -83,24 +83,24 @@ public class ArchetypeBuilder{
 
     /**
      * Create a new world specific instance of Archetype based on the current state.
-     * @param world applicable domain of the Archetype.
+     * @param base applicable domain of the Archetype.
      * @return new Archetype based on current state
      */
-    public Archetype build(World world){
-        return build(world, null);
+    public Archetype build(Base base){
+        return build(base, null);
     }
 
     /**
      * Create a new world specific instance of Archetype based on the current state.
-     * @param world applicable domain of the Archetype.
+     * @param base applicable domain of the Archetype.
      * @param name uniquely identifies Archetype by name. If null or empty == compisitionId
      * @return new Archetype based on current state
      */
-    public Archetype build(World world, String name){
-        ComponentType[] types = resolveTypes(world);
+    public Archetype build(Base base, String name){
+        ComponentType[] types = resolveTypes(base);
 
-        ComponentManager cm = world.getComponentManager();
-        ComponentMapper[] mappers = new ComponentMapper[types.length];
+        ComponentManager cm = base.getComponentManager();
+        Mapper[] mappers = new Mapper[types.length];
         for(int i = 0, s = mappers.length; s > i; i++){
             mappers[i] = cm.getMapper(types[i].getType());
         }
@@ -109,7 +109,7 @@ public class ArchetypeBuilder{
         if(name == null || name.isEmpty()){
             name = String.valueOf(compositionId);
         }
-        TransmuteOperation operation = new TransmuteOperation(compositionId, mappers, new ComponentMapper[0]);
+        TransmuteOperation operation = new TransmuteOperation(compositionId, mappers, new Mapper[0]);
 
         return new Archetype(operation, compositionId, name);
     }
@@ -123,8 +123,8 @@ public class ArchetypeBuilder{
     }
 
     /** Converts java classes to component types. */
-    private ComponentType[] resolveTypes(World world){
-        ComponentTypeFactory tf = world.getComponentManager().typeFactory;
+    private ComponentType[] resolveTypes(Base base){
+        ComponentTypeFactory tf = base.getComponentManager().typeFactory;
         ComponentType[] types = new ComponentType[classes.size()];
         for(int i = 0, s = classes.size(); s > i; i++)
             types[i] = tf.getTypeFor(classes.get(i));

@@ -16,7 +16,7 @@ import java.lang.annotation.*;
  * but will be ignored if {@link AspectDescriptor} is present.</p>
  *
  * <p>This annotation works similar to {@link Wire}; fields are configured
- * during , or explicitly via {@link World#inject(Object)}.</p>
+ * during , or explicitly via {@link Base#inject(Object)}.</p>
  *
  * <h4>Note on EntityTransmuters</h4>
  * <p>{@link #value()} corresponds to remove.</p>

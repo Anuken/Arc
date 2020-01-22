@@ -43,7 +43,7 @@ public abstract class IntervalSystem extends BaseEntitySystem{
     }
 
     protected float getTimeDelta(){
-        return world.getDelta();
+        return base.getDelta();
     }
 
 }

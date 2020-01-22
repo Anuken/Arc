@@ -10,9 +10,7 @@ import static arc.ecs.utils.ArReflect.implementsAnyObserver;
  * @author Arni Arent
  * @author Adrian Papari
  */
-public abstract class BaseEntitySystem extends BaseSystem
-implements EntitySubscription.SubscriptionListener{
-
+public abstract class BaseEntitySystem extends BaseSystem implements EntitySubscription.SubscriptionListener{
     private final Aspect.Builder aspectConfiguration;
     protected EntitySubscription subscription;
 
@@ -38,8 +36,8 @@ implements EntitySubscription.SubscriptionListener{
         aspectConfiguration = aspect;
     }
 
-    protected void setWorld(World world){
-        super.setWorld(world);
+    protected void setBase(Base base){
+        super.setBase(base);
 
         subscription = getSubscription();
         if(implementsAnyObserver(this))
@@ -72,7 +70,7 @@ implements EntitySubscription.SubscriptionListener{
      * @return entity subscription backing this system.
      */
     public EntitySubscription getSubscription(){
-        final AspectSubscriptionManager sm = world.getAspectSubscriptionManager();
+        final AspectSubscriptionManager sm = base.getAspectSubscriptionManager();
         return sm.get(aspectConfiguration);
     }
 
@@ -129,12 +127,12 @@ implements EntitySubscription.SubscriptionListener{
      * or had one of it's components removed.</p>
      * <p>
      * Important note on accessing components:
-     * Using {@link ComponentMapper#get(int)} to retrieve a component is unsafe, unless:
+     * Using {@link Mapper#get(int)} to retrieve a component is unsafe, unless:
      * - You annotate the component with {@link DelayedComponentRemoval}.
-     * - {@link World#isAlwaysDelayComponentRemoval} is enabled to make accessing all components safe,
+     * - {@link Base#isAlwaysDelayComponentRemoval} is enabled to make accessing all components safe,
      * for a small performance hit.
      * <p>
-     * {@link ComponentMapper#has(int)} always returns {@code false}, even for DelayedComponentRemoval components.
+     * {@link Mapper#has(int)} always returns {@code false}, even for DelayedComponentRemoval components.
      * <p>
      * Can trigger for entities that have been destroyed immediately after being created (within a system).
      * @param entityId the entity that was removed from this system

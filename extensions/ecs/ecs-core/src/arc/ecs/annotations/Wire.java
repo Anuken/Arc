@@ -6,12 +6,12 @@ import java.lang.annotation.*;
 
 
 /**
- * Customizes reflective injection of {@link ComponentMapper}, {@link EntitySystem},
- * and registered types via {@link WorldConfig#register}.
+ * Customizes reflective injection of {@link Mapper}, {@link EntitySystem},
+ * and registered types via {@link BaseConfig#register}.
  * <p/>
  * Odb automatically injects above types into entity systems, during initialization.
  * <p/>
- * Inject into any object using <code>@Wire</code> and {@link World#inject(Object)}
+ * Inject into any object using <code>@Wire</code> and {@link Base#inject(Object)}
  * <p/>
  * Nonstandard dependency fields must be explicitly annotated with
  * <code>@Wire(name="myName")</code> to inject by name, or <code>@Wire</code>
@@ -25,8 +25,8 @@ import java.lang.annotation.*;
  * Override this behavior via <code>@Wire(failOnNull=false)</code>.
  * <p/>
  * To specify which nonstandard dependencies to inject, use
- * {@link WorldConfig#register(String, Object)} and
- * {@link WorldConfig#register(Object)}.
+ * {@link BaseConfig#register(String, Object)} and
+ * {@link BaseConfig#register(Object)}.
  * @see AspectDescriptor
  */
 @Retention(RetentionPolicy.RUNTIME)

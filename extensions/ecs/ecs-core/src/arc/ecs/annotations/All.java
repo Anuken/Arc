@@ -8,7 +8,7 @@ import java.lang.annotation.*;
  * <p>Auto-configures fields or systems pertaining to aspects.
  *
  * <p>On fields, this annotation works similar to {@link Wire}; fields are configured
- * during , or explicitly via {@link World#inject(Object)}.</p>
+ * during , or explicitly via {@link Base#inject(Object)}.</p>
  *
  * <p>On BaseEntitySystem subclasses, this annotation configures the aspects for the system,
  * replacing the need to use constructor parameters.</>/p>

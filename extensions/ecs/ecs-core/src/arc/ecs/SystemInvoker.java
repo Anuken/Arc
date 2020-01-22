@@ -9,20 +9,20 @@ import arc.ecs.utils.*;
  * or completely rewrite processing in favor of events. Extending this class allows you to write your own
  * logic for processing system invocation.
  * <p>
- * Register it with {@link WorldConfigBuilder#register(SystemInvoker)}
+ * Register it with {@link BaseConfigBuilder#register(SystemInvoker)}
  * <p>
  * Be sure to call {@link #updateEntityStates()} after the world dies.
  * @see DefaultInvoker for the default strategy.
  */
 public abstract class SystemInvoker{
     /** World to operate on. */
-    protected World world;
+    protected Base base;
     protected final BitVector disabled = new BitVector();
     protected Bag<BaseSystem> systems;
 
     /** World to operate on. */
-    protected final void setWorld(World world){
-        this.world = world;
+    protected final void setBase(Base base){
+        this.base = base;
     }
 
     /**
@@ -38,14 +38,14 @@ public abstract class SystemInvoker{
 
     /** Call to inform all systems and subscription of world state changes. */
     protected final void updateEntityStates(){
-        world.batchProcessor.update();
+        base.batchProcessor.update();
     }
 
     protected abstract void process();
 
     public boolean isEnabled(BaseSystem system){
         Class<? extends BaseSystem> target = system.getClass();
-        ImmutableBag<BaseSystem> systems = world.getSystems();
+        ImmutableBag<BaseSystem> systems = base.getSystems();
         for(int i = 0; i < systems.size(); i++){
             if(target == systems.get(i).getClass())
                 return !disabled.get(i);
@@ -56,7 +56,7 @@ public abstract class SystemInvoker{
 
     public void setEnabled(BaseSystem system, boolean value){
         Class<? extends BaseSystem> target = system.getClass();
-        ImmutableBag<BaseSystem> systems = world.getSystems();
+        ImmutableBag<BaseSystem> systems = base.getSystems();
         for(int i = 0; i < systems.size(); i++){
             if(target == systems.get(i).getClass())
                 disabled.set(i, !value);

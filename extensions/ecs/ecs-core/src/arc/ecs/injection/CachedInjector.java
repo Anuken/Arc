@@ -6,8 +6,8 @@ import java.lang.reflect.*;
 import java.util.*;
 
 /**
- * By default, injects {@link ComponentMapper}, {@link BaseSystem} and {@link Manager} types into systems and
- * managers. Can also inject arbitrary types if registered through {@link WorldConfig#register}.
+ * By default, injects {@link Mapper}, {@link BaseSystem} and {@link Manager} types into systems and
+ * managers. Can also inject arbitrary types if registered through {@link BaseConfig#register}.
  * <p>
  * Caches all type-information.
  *
@@ -41,13 +41,13 @@ public final class CachedInjector implements Injector{
     }
 
     @Override
-    public void initialize(World world, Map<String, Object> injectables){
+    public void initialize(Base base, Map<String, Object> injectables){
         this.injectables = injectables;
         if(fieldHandler == null){
             fieldHandler = new FieldHandler(cache);
         }
 
-        fieldHandler.initialize(world, injectables);
+        fieldHandler.initialize(base, injectables);
     }
 
     @Override

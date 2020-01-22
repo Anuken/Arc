@@ -23,21 +23,21 @@ public final class EntityTransmuter{
 
     private final ShortBag entityToIdentity;
 
-    public EntityTransmuter(World world, Aspect.Builder aspect){
-        this(world, world.getAspectSubscriptionManager().get(aspect).getAspect());
+    public EntityTransmuter(Base base, Aspect.Builder aspect){
+        this(base, base.getAspectSubscriptionManager().get(aspect).getAspect());
     }
 
-    EntityTransmuter(World world, Aspect aspect){
-        this(world, new BitVector(aspect.allSet), new BitVector(aspect.exclusionSet));
+    EntityTransmuter(Base base, Aspect aspect){
+        this(base, new BitVector(aspect.allSet), new BitVector(aspect.exclusionSet));
     }
 
-    EntityTransmuter(World world, BitVector additions, BitVector removals){
-        em = world.getEntityManager();
-        entityToIdentity = world.getComponentManager().entityToIdentity;
-        batchProcessor = world.batchProcessor;
+    EntityTransmuter(Base base, BitVector additions, BitVector removals){
+        em = base.getEntityManager();
+        entityToIdentity = base.getComponentManager().entityToIdentity;
+        batchProcessor = base.batchProcessor;
         operations = new Bag<>(TransmuteOperation.class);
 
-        factory = new Factory(world, additions, removals);
+        factory = new Factory(base, additions, removals);
     }
 
 
@@ -109,8 +109,8 @@ public final class EntityTransmuter{
         private final BitVector removals;
         private final BitVector bs;
 
-        Factory(World world, BitVector additions, BitVector removals){
-            this.cm = world.getComponentManager();
+        Factory(Base base, BitVector additions, BitVector removals){
+            this.cm = base.getComponentManager();
             this.additions = additions;
             this.removals = removals;
             this.bs = new BitVector();
@@ -128,9 +128,9 @@ public final class EntityTransmuter{
             getAdditions(componentBits), getRemovals(componentBits));
         }
 
-        private Bag<ComponentMapper> getAdditions(BitVector origin){
+        private Bag<Mapper> getAdditions(BitVector origin){
             ComponentTypeFactory tf = cm.typeFactory;
-            Bag<ComponentMapper> types = new Bag(ComponentMapper.class);
+            Bag<Mapper> types = new Bag(Mapper.class);
             for(int i = additions.nextSetBit(0); i >= 0; i = additions.nextSetBit(i + 1)){
                 if(!origin.get(i))
                     types.add(cm.getMapper(tf.getTypeFor(i).getType()));
@@ -139,9 +139,9 @@ public final class EntityTransmuter{
             return types;
         }
 
-        private Bag<ComponentMapper> getRemovals(BitVector origin){
+        private Bag<Mapper> getRemovals(BitVector origin){
             ComponentTypeFactory tf = cm.typeFactory;
-            Bag<ComponentMapper> types = new Bag(ComponentMapper.class);
+            Bag<Mapper> types = new Bag(Mapper.class);
             for(int i = removals.nextSetBit(0); i >= 0; i = removals.nextSetBit(i + 1)){
                 if(origin.get(i))
                     types.add(cm.getMapper(tf.getTypeFor(i).getType()));
@@ -152,14 +152,14 @@ public final class EntityTransmuter{
     }
 
     static class TransmuteOperation{
-        private final ComponentMapper[] additions;
-        private final ComponentMapper[] removals;
+        private final Mapper[] additions;
+        private final Mapper[] removals;
 
         public final short compositionId;
 
         public TransmuteOperation(int compositionId,
-                                  ComponentMapper[] additions,
-                                  ComponentMapper[] removals){
+                                  Mapper[] additions,
+                                  Mapper[] removals){
 
             this.compositionId = (short)compositionId;
             this.additions = additions;
@@ -167,12 +167,12 @@ public final class EntityTransmuter{
         }
 
         public TransmuteOperation(int compositionId,
-                                  Bag<ComponentMapper> additions,
-                                  Bag<ComponentMapper> removals){
+                                  Bag<Mapper> additions,
+                                  Bag<Mapper> removals){
 
             this.compositionId = (short)compositionId;
-            this.additions = new ComponentMapper[additions.size()];
-            this.removals = new ComponentMapper[removals.size()];
+            this.additions = new Mapper[additions.size()];
+            this.removals = new Mapper[removals.size()];
 
             for(int i = 0, s = additions.size(); s > i; i++){
                 this.additions[i] = additions.get(i);
@@ -184,17 +184,17 @@ public final class EntityTransmuter{
         }
 
         public void perform(int entityId){
-            for(ComponentMapper addition : additions){
+            for(Mapper addition : additions){
                 addition.internalCreate(entityId);
             }
 
-            for(ComponentMapper removal : removals){
+            for(Mapper removal : removals){
                 removal.internalRemove(entityId);
             }
         }
 
         Bag<Class<? extends Component>> getAdditions(Bag<Class<? extends Component>> out){
-            for(ComponentMapper addition : additions){
+            for(Mapper addition : additions){
                 out.add(addition.getType().getType());
             }
 
@@ -209,7 +209,7 @@ public final class EntityTransmuter{
             if(additions.length > 0){
                 sb.append("add={");
                 String delim = "";
-                for(ComponentMapper mapper : additions){
+                for(Mapper mapper : additions){
                     sb.append(delim).append(mapper.getType().getType().getSimpleName());
                     delim = ", ";
                 }
@@ -222,7 +222,7 @@ public final class EntityTransmuter{
 
                 sb.append("remove={");
                 String delim = "";
-                for(ComponentMapper mapper : removals){
+                for(Mapper mapper : removals){
                     sb.append(delim).append(mapper.getType().getType().getSimpleName());
                     delim = ", ";
                 }

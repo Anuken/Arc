@@ -24,6 +24,6 @@ class IntFieldMutator implements UniFieldMutator{
     }
 
     @Override
-    public void setWorld(World world){
+    public void setBase(Base base){
     }
 }

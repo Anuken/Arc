@@ -17,7 +17,7 @@ import arc.ecs.annotations.*;
 public abstract class BaseSystem{
     /** The world this system belongs to. */
     @SkipWire
-    protected World world;
+    protected Base base;
 
     public BaseSystem(){
     }
@@ -90,7 +90,7 @@ public abstract class BaseSystem{
      * @return {@code true} if enabled, otherwise false
      */
     public boolean isEnabled(){
-        return world.invocationStrategy.isEnabled(this);
+        return base.invocationStrategy.isEnabled(this);
     }
 
     /**
@@ -104,27 +104,27 @@ public abstract class BaseSystem{
      * @see #checkProcessing() both must be true before the system will process.
      */
     public void setEnabled(boolean enabled){
-        world.invocationStrategy.setEnabled(this, enabled);
+        base.invocationStrategy.setEnabled(this, enabled);
     }
 
     /**
      * Set the world this system works on.
-     * @param world the world to set
+     * @param base the world to set
      */
-    protected void setWorld(World world){
-        this.world = world;
+    protected void setBase(Base base){
+        this.base = base;
     }
 
     /**
      * Get the world associated with the manager.
      * @return the associated world
      */
-    protected World getWorld(){
-        return world;
+    protected Base getBase(){
+        return base;
     }
 
     /**
-     * see {@link World#dispose()}
+     * see {@link Base#dispose()}
      */
     protected void dispose(){
     }

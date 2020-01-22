@@ -4,7 +4,7 @@ import arc.ecs.*;
 
 /**
  * {@link FieldResolver} implementing this interface will have the {@link #setCache(InjectionCache)}
- * method called during , prior to {@link FieldResolver#initialize(World)}
+ * method called during , prior to {@link FieldResolver#initialize(Base)}
  * being called.
  * @author Snorre E. Brekke
  */

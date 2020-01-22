@@ -9,7 +9,7 @@ public class UniEntityLink extends Component{
     public Entity field;
 
     public static class Mutator implements UniFieldMutator{
-        private World world;
+        private Base base;
 
         @Override
         public int read(Component c, Field f){
@@ -19,13 +19,13 @@ public class UniEntityLink extends Component{
 
         @Override
         public void write(int value, Component c, Field f){
-            Entity e = (value != -1) ? world.getEntity(value) : null;
+            Entity e = (value != -1) ? base.getEntity(value) : null;
             ((UniEntityLink)c).field = e;
         }
 
         @Override
-        public void setWorld(World world){
-            this.world = world;
+        public void setBase(Base base){
+            this.base = base;
         }
     }
 }

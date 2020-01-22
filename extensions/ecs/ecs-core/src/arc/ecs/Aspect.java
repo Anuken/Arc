@@ -288,8 +288,8 @@ public class Aspect{
          * Bake an aspect.
          * @return Instance of Aspect.
          */
-        public Aspect build(World world){
-            ComponentTypeFactory tf = world.getComponentManager().typeFactory;
+        public Aspect build(Base base){
+            ComponentTypeFactory tf = base.getComponentManager().typeFactory;
             Aspect aspect = new Aspect();
             associate(tf, allTypes, aspect.allSet);
             associate(tf, exclusionTypes, aspect.exclusionSet);

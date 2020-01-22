@@ -13,7 +13,7 @@ public interface FieldResolver{
     /**
      * Called after Wo
      */
-    void initialize(World world);
+    void initialize(Base base);
 
     /**
      * @param target object which should have dependencies injected.

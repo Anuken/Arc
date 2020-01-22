@@ -374,7 +374,7 @@ public class BitVector{
 
     /**
      * Decodes the set bits as pairs of <code>entity id</code> and
-     * {@link World#compositionId(int) compositionId}. The
+     * {@link Base#compositionId(int) compositionId}. The
      * destination{@link IntBag} is reset before the bits are
      * transposed.
      * @param out decoded ints end up here
