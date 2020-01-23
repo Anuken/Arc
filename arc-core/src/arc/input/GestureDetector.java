@@ -80,6 +80,10 @@ public class GestureDetector implements InputProcessor{
         this.listener = listener;
     }
 
+    public GestureListener getListener(){
+        return listener;
+    }
+
     @Override
     public boolean touchDown(int x, int y, int pointer, KeyCode button){
         return touchDown((float)x, (float)y, pointer, button);
