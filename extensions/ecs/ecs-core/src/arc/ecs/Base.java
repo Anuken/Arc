@@ -68,12 +68,9 @@ public class Base{
         partition = new WorldSegment(configuration);
         systemsBag = configuration.systems;
 
-        final ComponentManager lcm =
-        (ComponentManager)systemsBag.get(COMPONENT_MANAGER_IDX);
-        final EntityManager lem =
-        (EntityManager)systemsBag.get(ENTITY_MANAGER_IDX);
-        final AspectSubscriptionManager lasm =
-        (AspectSubscriptionManager)systemsBag.get(ASPECT_SUBSCRIPTION_MANAGER_IDX);
+        final ComponentManager lcm = (ComponentManager)systemsBag.get(COMPONENT_MANAGER_IDX);
+        final EntityManager lem = (EntityManager)systemsBag.get(ENTITY_MANAGER_IDX);
+        final AspectSubscriptionManager lasm = (AspectSubscriptionManager)systemsBag.get(ASPECT_SUBSCRIPTION_MANAGER_IDX);
 
         cm = lcm == null ? new ComponentManager(configuration.expectedEntityCount()) : lcm;
         em = lem == null ? new EntityManager(configuration.expectedEntityCount()) : lem;
