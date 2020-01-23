@@ -56,14 +56,10 @@ public class OptimizationTransmuter extends CallableTransmuter<Void> implements 
     }
 
     private static Class<?> sourceType(ClassMetadata meta){
-        switch(EntitySystemType.resolve(meta)){
-            case ENTITY_PROCESSING:
-                return EntityProcessingSystem.class;
-            case ITERATING:
-                return IteratingSystem.class;
-            default:
-                throw new RuntimeException("missing case: " + EntitySystemType.resolve(meta));
+        if(EntitySystemType.resolve(meta) == EntitySystemType.ITERATING){
+            return IteratingSystem.class;
         }
+        throw new RuntimeException("missing case: " + EntitySystemType.resolve(meta));
     }
 
     public ClassWriter getClassWriter(){

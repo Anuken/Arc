@@ -32,19 +32,7 @@ public final class ArReflect{
         return null;
     }
 
-    public static boolean implementsObserver(BaseSystem owner, String methodName){
-        try{
-            Method method = owner.getClass().getMethod(methodName, PARAM_ENTITY);
-            Class declarer = method.getDeclaringClass();
-            return EntitySystem.class.equals(declarer);
-        }catch(Exception e){
-            throw new RuntimeException(e);
-        }
-    }
-
     public static boolean implementsAnyObserver(BaseEntitySystem owner){
-        if(owner instanceof EntitySystem)
-            return true; // case handled by implementsObserver(owner, methodName)
 
         // check parent chain for user-supplied implementations of
         // inserted() and removed()

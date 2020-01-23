@@ -3,9 +3,6 @@ package arc.ecs.weaver.impl.optimizer;
 import arc.ecs.weaver.meta.*;
 
 public enum EntitySystemType{
-    ENTITY_PROCESSING(
-    "arc/ecs/systems/EntityProcessingSystem",
-    "arc/ecs/EntitySystem"),
     ITERATING(
     "arc/ecs/systems/IteratingSystem",
     "arc/ecs/BaseEntitySystem");
