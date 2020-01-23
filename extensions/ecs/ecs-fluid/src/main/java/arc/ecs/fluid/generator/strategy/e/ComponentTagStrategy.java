@@ -17,7 +17,7 @@ public class ComponentTagStrategy implements BuilderModelStrategy{
         new MethodBuilder(FluidTypes.E_TYPE, "tag")
         .parameter(String.class, "tag")
         .debugNotes("default tag setter")
-        .statement("mappers.getWorld().getSystem(arc.ecs.managers.TagManager.class).register(tag, entityId)")
+        .statement("mappers.getBase().getSystem(arc.ecs.managers.TagManager.class).register(tag, entityId)")
         .returnFluid()
         .build();
     }
@@ -26,7 +26,7 @@ public class ComponentTagStrategy implements BuilderModelStrategy{
         return
         new MethodBuilder(String.class, "tag")
         .debugNotes("default tag getter")
-        .statement("return mappers.getWorld().getSystem(arc.ecs.managers.TagManager.class).getTag(entityId)")
+        .statement("return mappers.getBase().getSystem(arc.ecs.managers.TagManager.class).getTag(entityId)")
         .build();
     }
 
@@ -40,7 +40,7 @@ public class ComponentTagStrategy implements BuilderModelStrategy{
         .parameter(String.class, "tag")
         .javaDoc("Get entity by tag.\n@return {@code E}, or {@code null} if no such tag.")
         .statement("if(_processingMapper==null) throw new RuntimeException(\"SuperMapper system must be registered before any systems using E().\");")
-        .statement("int id=_processingMapper.getWorld().getSystem(arc.ecs.managers.TagManager.class).getEntityId(tag)")
+        .statement("int id=_processingMapper.getBase().getSystem(arc.ecs.managers.TagManager.class).getEntityId(tag)")
         .statement("return id != -1 ? E(id) : null")
         .build();
     }

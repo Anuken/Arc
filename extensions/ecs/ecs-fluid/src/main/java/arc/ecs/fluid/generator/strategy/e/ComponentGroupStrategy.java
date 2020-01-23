@@ -18,7 +18,7 @@ public class ComponentGroupStrategy implements BuilderModelStrategy{
         new MethodBuilder(FluidTypes.E_TYPE, "group")
         .parameter(String.class, "group")
         .debugNotes("default group setter")
-        .statement("World w = mappers.getWorld()")
+        .statement("Base w = mappers.getBase()")
         .statement("w.getSystem(arc.ecs.managers.GroupManager.class).add(w.getEntity(entityId), group)")
         .returnFluid()
         .build();
@@ -41,7 +41,7 @@ public class ComponentGroupStrategy implements BuilderModelStrategy{
         new MethodBuilder(FluidTypes.E_TYPE, "removeGroup")
         .parameter(String.class, "group")
         .debugNotes("default group remover")
-        .statement("World w = mappers.getWorld()")
+        .statement("Base w = mappers.getBase()")
         .statement("w.getSystem(arc.ecs.managers.GroupManager.class).remove(w.getEntity(entityId), group)")
         .returnFluid()
         .build();
@@ -63,7 +63,7 @@ public class ComponentGroupStrategy implements BuilderModelStrategy{
         return
         new MethodBuilder(FluidTypes.E_TYPE, "removeGroups")
         .debugNotes("default groups remover")
-        .statement("World w = mappers.getWorld()")
+        .statement("Base w = mappers.getBase()")
         .statement("w.getSystem(arc.ecs.managers.GroupManager.class).removeFromAllGroups(w.getEntity(entityId))")
         .returnFluid()
         .build();
@@ -73,7 +73,7 @@ public class ComponentGroupStrategy implements BuilderModelStrategy{
         return
         new MethodBuilder(new ParameterizedTypeImpl(ImmutableBag.class, String.class), "groups")
         .debugNotes("default groups getter")
-        .statement("World w = mappers.getWorld()")
+        .statement("Base w = mappers.getBase()")
         .statement("return w.getSystem(arc.ecs.managers.GroupManager.class).getGroups(w.getEntity(entityId))")
         .build();
     }
@@ -84,7 +84,7 @@ public class ComponentGroupStrategy implements BuilderModelStrategy{
         new MethodBuilder(boolean.class, "isInGroup")
         .parameter(String.class, "group")
         .debugNotes("default group setter")
-        .statement("World w = mappers.getWorld()")
+        .statement("Base w = mappers.getBase()")
         .statement("return w.getSystem(arc.ecs.managers.GroupManager.class).isInGroup(w.getEntity(entityId), group)")
         .build();
     }
@@ -100,7 +100,7 @@ public class ComponentGroupStrategy implements BuilderModelStrategy{
         .parameter(String.class, "groupName")
         .javaDoc("Get entities in group..\n@return {@code EBag} of entities in group. Returns empty bag if group contains no entities.")
         .statement("if(_processingMapper==null) throw new RuntimeException(\"SuperMapper system must be registered before any systems using E().\");")
-        .statement("return new EBag((arc.ecs.utils.IntBag)_processingMapper.getWorld().getSystem(arc.ecs.managers.GroupManager.class).getEntityIds(groupName))")
+        .statement("return new EBag((arc.ecs.utils.IntBag)_processingMapper.getBase().getSystem(arc.ecs.managers.GroupManager.class).getEntityIds(groupName))")
         .build();
     }
 

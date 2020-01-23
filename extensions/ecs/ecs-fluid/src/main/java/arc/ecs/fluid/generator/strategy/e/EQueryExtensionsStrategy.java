@@ -29,7 +29,7 @@ public class EQueryExtensionsStrategy implements BuilderModelStrategy{
         .parameter(Aspect.Builder.class, "aspect")
         .javaDoc("Get all entities matching aspect.\nFor performance reasons do not create the aspect every call.\n@return {@code EBag} of entities matching aspect. Returns empty bag if no entities match aspect.")
         .statement("if(_processingMapper==null) throw new RuntimeException(\"SuperMapper system must be registered before any systems using E().\");")
-        .statement("return new EBag(_processingMapper.getWorld().getAspectSubscriptionManager().get(aspect).getEntities())")
+        .statement("return new EBag(_processingMapper.getBase().getAspectSubscriptionManager().get(aspect).getEntities())")
         .build();
     }
 
@@ -43,7 +43,7 @@ public class EQueryExtensionsStrategy implements BuilderModelStrategy{
         .parameter(new ParameterizedTypeImpl(Class.class, FluidTypes.EXTENDS_COMPONENT_TYPE), "component")
         .javaDoc("Get all entities with component.\nThis is a relatively costly operation. For performance use withAspect instead.\n@return {@code EBag} of entities matching aspect. Returns empty bag if no entities match aspect.")
         .statement("if(_processingMapper==null) throw new RuntimeException(\"SuperMapper system must be registered before any systems using E().\");")
-        .statement("return new EBag(_processingMapper.getWorld().getAspectSubscriptionManager().get(Aspect.all(component)).getEntities())")
+        .statement("return new EBag(_processingMapper.getBase().getAspectSubscriptionManager().get(Aspect.all(component)).getEntities())")
         .build();
     }
 }

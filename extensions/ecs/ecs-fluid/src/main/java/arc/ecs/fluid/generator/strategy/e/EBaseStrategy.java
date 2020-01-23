@@ -93,7 +93,7 @@ public class EBaseStrategy implements BuilderModelStrategy{
         return
         new MethodBuilder(FluidTypes.E_TYPE, "E")
         .setStatic(true)
-        .statement("return E(_processingMapper.getWorld().create())")
+        .statement("return E(_processingMapper.getBase().create())")
         .build();
     }
 
@@ -103,7 +103,7 @@ public class EBaseStrategy implements BuilderModelStrategy{
     private MethodDescriptor createEntityGetter(){
         return
         new MethodBuilder(Entity.class, "entity")
-        .statement("return mappers.getWorld().getEntity(entityId)")
+        .statement("return mappers.getBase().getEntity(entityId)")
         .build();
     }
 
