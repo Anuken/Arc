@@ -2,8 +2,8 @@ package arc.ecs.weaver.meta;
 
 import arc.ecs.weaver.*;
 import arc.ecs.weaver.meta.ClassMetadata.*;
-import arc.ecs.weaver.weaver.optimizer.*;
-import arc.ecs.weaver.weaver.template.*;
+import arc.ecs.weaver.impl.optimizer.*;
+import arc.ecs.weaver.impl.template.*;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 
@@ -83,13 +83,13 @@ public class MetaScanner extends ClassVisitor implements Opcodes{
 
         FieldVisitor fv = super.visitField(access, name, desc, signature, value);
 
-        if("Lcom/artemis/Entity;".equals(desc)){
+        if("Larc/ecs/Entity;".equals(desc)){
             field.entityLinkMutator = UniEntityLink.Mutator.class;
         }else if("I".equals(desc)){
             fv = new EntityIdScanVisitor(fv, field, UniEntityIdLink.Mutator.class);
-        }else if("Lcom/artemis/utils/IntBag;".equals(desc)){
+        }else if("Larc/ecs/utils/IntBag;".equals(desc)){
             fv = new EntityIdScanVisitor(fv, field, MultiEntityIdLink.Mutator.class);
-        }else if("Lcom/artemis/utils/Bag<Lcom/artemis/Entity;>;".equals(signature)){
+        }else if("Larc/ecs/utils/Bag<Larc/ecs/Entity;>;".equals(signature)){
             field.entityLinkMutator = MultiEntityLink.Mutator.class;
         }
 
@@ -162,7 +162,7 @@ public class MetaScanner extends ClassVisitor implements Opcodes{
 
         @Override
         public AnnotationVisitor visitAnnotation(String desc, boolean visible){
-            if("Lcom/artemis/annotations/EntityId;".equals(desc)){
+            if("Larc/ecs/annotations/EntityId;".equals(desc)){
                 field.entityLinkMutator = mutatorClass;
             }
 

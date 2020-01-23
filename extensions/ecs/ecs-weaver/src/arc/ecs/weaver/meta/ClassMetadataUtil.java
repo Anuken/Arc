@@ -60,7 +60,7 @@ public final class ClassMetadataUtil{
     public static String superName(ClassMetadata meta){
         switch(meta.annotation){
             case POOLED:
-                return "com/artemis/PooledComponent";
+                return "arc/ecs/PooledComponent";
             case NONE:
             default:
                 throw new RuntimeException("Missing case : " + meta.annotation);

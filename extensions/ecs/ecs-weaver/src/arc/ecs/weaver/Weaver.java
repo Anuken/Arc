@@ -3,7 +3,7 @@ package arc.ecs.weaver;
 
 import arc.ecs.weaver.meta.*;
 import arc.ecs.weaver.meta.ClassMetadata.*;
-import arc.ecs.weaver.weaver.*;
+import arc.ecs.weaver.impl.*;
 import org.objectweb.asm.*;
 
 import java.io.*;
@@ -11,10 +11,10 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class Weaver{
-    public static final String PROFILER_ANNOTATION = "Lcom/artemis/annotations/Profile;";
-    public static final String POOLED_ANNOTATION = "Lcom/artemis/annotations/PooledWeaver;";
-    public static final String WOVEN_ANNOTATION = "Lcom/artemis/annotations/internal/Transmuted";
-    public static final String PRESERVE_VISIBILITY_ANNOTATION = "Lcom/artemis/annotations/PreserveProcessVisiblity;";
+    public static final String PROFILER_ANNOTATION = "Larc/ecs/annotations/Profile;";
+    public static final String POOLED_ANNOTATION = "Larc/ecs/annotations/PooledWeaver;";
+    public static final String WOVEN_ANNOTATION = "Larc/ecs/annotations/internal/Transmuted";
+    public static final String PRESERVE_VISIBILITY_ANNOTATION = "Larc/ecs/annotations/PreserveProcessVisiblity;";
 
     private Set<File> classesDirs;
 
@@ -146,8 +146,8 @@ public class Weaver{
         ClassReader cr = classReaderFor(file);
         ClassMetadata meta = scan(classReaderFor(file));
 
-        boolean likelyComponent = meta.superClass.equals("com/artemis/Component")
-        || meta.superClass.equals("com/artemis/PooledComponent");
+        boolean likelyComponent = meta.superClass.equals("arc/ecs/Component")
+        || meta.superClass.equals("arc/ecs/PooledComponent");
 
         if(likelyComponent && meta.foundEntityLinks()){
             threadPool.submit(new EntityLinkGenerator(file, cr, meta));

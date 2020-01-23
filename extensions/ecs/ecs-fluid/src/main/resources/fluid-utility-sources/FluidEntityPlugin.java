@@ -9,8 +9,8 @@ import java.lang.reflect.*;
  * Plugin to enable fluid entity functionality in your world.
  *
  * - Enables fluid entity functionality.
- * - Adds support for {@code com.artemis.ESubscription} field dependency injection.
- *   (when annotated with {@code @com.artemis.annotations.All}, {@code @com.artemis.annotations.One} and/or {@code @com.artemis.annotations.Exclude})
+ * - Adds support for {@code arc.ecs.ESubscription} field dependency injection.
+ *   (when annotated with {@code @arc.ecs.annotations.All}, {@code @arc.ecs.annotations.One} and/or {@code @arc.ecs.annotations.Exclude})
  * <p>
  * This file is generated.
  * <p>
