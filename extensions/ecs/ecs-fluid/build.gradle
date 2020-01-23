@@ -1,12 +1,12 @@
 dependencies{
     //how can one tool have this many dependencies?
-    compile "com.google.guava:guava:20.0"
-    compile "org.apache.commons:commons-lang3:3.4"
-    compile "com.squareup:javapoet:1.7.0"
-    compile "com.github.javaparser:javaparser-core:3.5.2"
-    compile "org.reflections:reflections:0.9.11"
-    compile "io.github.lukehutch:fast-classpath-scanner:2.0.3"
-    compile "commons-io:commons-io:2.4"
+    compile "com.google.guava:guava:28.2-jre"
+    compile "org.apache.commons:commons-lang3:3.9"
+    compile "com.squareup:javapoet:1.12.1"
+    compile "com.github.javaparser:javaparser-core:3.15.9"
+    compile "org.reflections:reflections:0.9.12"
+    compile "io.github.lukehutch:fast-classpath-scanner:3.1.15"
+    compile "commons-io:commons-io:2.6"
     compile "junit:junit:4.11"
 
     compile aproj(":extensions:ecs:ecs-core")
