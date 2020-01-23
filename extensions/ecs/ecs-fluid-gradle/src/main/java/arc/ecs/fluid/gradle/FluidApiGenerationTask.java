@@ -75,6 +75,7 @@ public class FluidApiGenerationTask extends DefaultTask{
             Set<URL> urls = new HashSet<>();
             for(File element : classpath){
                 URL url = element.toURI().toURL();
+                System.out.println(url);
                 if(!preferences.matchesIgnoredClasspath(url.toString())){
                     urls.add(url);
                     getLogger().info("Including: " + url);
