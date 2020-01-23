@@ -181,12 +181,6 @@ public class FluidGenerator{
         generator.addStrategy(new EQueryExtensionsStrategy());
         generator.addStrategy(new ComponentExistStrategy());
         generator.addStrategy(new ComponentCreateStrategy());
-        if(preferences.isGenerateTagMethods()){
-            generator.addStrategy(new ComponentTagStrategy());
-        }
-        if(preferences.isGenerateGroupMethods()){
-            generator.addStrategy(new ComponentGroupStrategy());
-        }
         generator.addStrategy(new ComponentRemoveStrategy());
         generator.addStrategy(new ComponentAccessorStrategy());
         generator.addStrategy(new ComponentFieldAccessorStrategy());
