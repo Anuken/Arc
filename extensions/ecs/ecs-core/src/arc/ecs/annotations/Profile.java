@@ -16,5 +16,5 @@ import java.lang.annotation.*;
 public @interface Profile{
     Class<? extends ArtemisProfiler> using();
 
-    boolean enabled() default true;
+    boolean enabled() default false;
 }
