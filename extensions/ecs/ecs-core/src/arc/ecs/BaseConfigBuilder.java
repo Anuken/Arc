@@ -162,7 +162,7 @@ public class BaseConfigBuilder{
      * @param types required systems.
      * @param priority Higher priority are registered first. Not supported for plugins.
      * @return this
-     * @throws WorldConfigException if unsupported classes are passed or plugins are given a priority.
+     * @throws BaseConfigException if unsupported classes are passed or plugins are given a priority.
      */
     @SuppressWarnings("unchecked")
     public final BaseConfigBuilder dependsOn(int priority, Class... types){
@@ -173,15 +173,15 @@ public class BaseConfigBuilder{
                 }else{
                     if(ArtemisPlugin.class.isAssignableFrom(type)){
                         if(priority != Priority.NORMAL){
-                            throw new WorldConfigException("Priority not supported on plugins.");
+                            throw new BaseConfigException("Priority not supported on plugins.");
                         }
                         dependsOnPlugin(type);
                     }else{
-                        throw new WorldConfigException("Unsupported type. Only supports systems.");
+                        throw new BaseConfigException("Unsupported type. Only supports systems.");
                     }
                 }
             }catch(Exception e){
-                throw new WorldConfigException("Unable to instance " + type + " via reflection.", e);
+                throw new BaseConfigException("Unable to instance " + type + " via reflection.", e);
             }
         }
         return this;
@@ -197,7 +197,7 @@ public class BaseConfigBuilder{
 
         if(Modifier.isAbstract(type.getModifiers())){
             if(!anyAssignableTo(plugins, type)){
-                throw new WorldConfigException("Implementation of " + type + " expected but not found. Did you forget to include a plugin? (for example: logging-libgdx for logging-api)");
+                throw new BaseConfigException("Implementation of " + type + " expected but not found. Did you forget to include a plugin? (for example: logging-libgdx for logging-api)");
             }
         }else{
             if(!containsType(plugins, type)){
@@ -213,7 +213,7 @@ public class BaseConfigBuilder{
      * @param systems systems to add, order is preserved.
      * @param priority priority of added systems, higher priority are added before lower priority.
      * @return this
-     * @throws WorldConfigException if registering the same class twice.
+     * @throws BaseConfigException if registering the same class twice.
      */
     public BaseConfigBuilder with(int priority, BaseSystem... systems){
         addSystems(priority, systems);
@@ -226,7 +226,7 @@ public class BaseConfigBuilder{
      * Use {@link #dependsOn} from within plugins whenever possible.
      * @param systems systems to add, order is preserved.
      * @return this
-     * @throws WorldConfigException if registering the same class twice.
+     * @throws BaseConfigException if registering the same class twice.
      */
     public BaseConfigBuilder with(BaseSystem... systems){
         addSystems(Priority.NORMAL, systems);
@@ -243,7 +243,7 @@ public class BaseConfigBuilder{
      * Use {@link #dependsOn} from within plugins whenever possible.
      * @param plugins Plugins to add.
      * @return this
-     * @throws WorldConfigException if type is added more than once.
+     * @throws BaseConfigException if type is added more than once.
      */
     public BaseConfigBuilder with(ArtemisPlugin... plugins){
         addPlugins(plugins);
@@ -257,7 +257,7 @@ public class BaseConfigBuilder{
         for(BaseSystem system : systems){
 
             if(containsType(this.systems, system.getClass())){
-                throw new WorldConfigException("System of type " + system.getClass() + " registered twice. Only once allowed.");
+                throw new BaseConfigException("System of type " + system.getClass() + " registered twice. Only once allowed.");
             }
 
             this.systems.add(new ConfigurationElement<>(system, priority));
@@ -303,7 +303,7 @@ public class BaseConfigBuilder{
         for(ArtemisPlugin plugin : plugins){
 
             if(containsType(this.plugins, plugin.getClass())){
-                throw new WorldConfigException("Plugin of type " + plugin.getClass() + " registered twice. Only once allowed.");
+                throw new BaseConfigException("Plugin of type " + plugin.getClass() + " registered twice. Only once allowed.");
             }
 
             this.plugins.add(ConfigurationElement.of(plugin));
@@ -327,12 +327,12 @@ public class BaseConfigBuilder{
      * World configuration failed.
      * @author Daan van Yperen
      */
-    public static class WorldConfigException extends RuntimeException{
-        public WorldConfigException(String msg){
+    public static class BaseConfigException extends RuntimeException{
+        public BaseConfigException(String msg){
             super(msg);
         }
 
-        public WorldConfigException(String msg, Throwable e){
+        public BaseConfigException(String msg, Throwable e){
             super(msg, e);
         }
     }

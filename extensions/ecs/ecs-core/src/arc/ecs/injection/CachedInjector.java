@@ -154,7 +154,7 @@ public final class CachedInjector implements Injector{
     private WireException onFailedInjection(String typeName, Field failedInjection){
         String error = "Failed to inject " + failedInjection.getType().getName() +
         " into " + failedInjection.getDeclaringClass().getName() + ": " +
-        typeName + " not registered with world.";
+        typeName + " not registered with base.";
 
         return new WireException(error);
     }

@@ -28,7 +28,7 @@ class ProfileInitializeWeaver extends AdviceAdapter implements Opcodes{
         mv.visitFieldInsn(GETFIELD, systemName, "$profiler", profileDescriptor);
         mv.visitVarInsn(ALOAD, 0);
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, systemName, "world", "Larc/ecs/World;");
-        mv.visitMethodInsn(INVOKEVIRTUAL, profiler, "initialize", "(Larc/ecs/BaseSystem;Larc/ecs/World;)V", false);
+        mv.visitFieldInsn(GETFIELD, systemName, "base", "Larc/ecs/Base;");
+        mv.visitMethodInsn(INVOKEVIRTUAL, profiler, "initialize", "(Larc/ecs/BaseSystem;Larc/ecs/Base;)V", false);
     }
 }

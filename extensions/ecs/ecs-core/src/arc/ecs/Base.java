@@ -36,7 +36,7 @@ public class Base{
     /** Contains strategy for invoking systems upon process. */
     SystemInvoker invocationStrategy;
 
-    final WorldSegment partition;
+    final BaseSegment partition;
 
     /** The time passed since the last update. */
     public float delta;
@@ -65,7 +65,7 @@ public class Base{
      * @see BaseConfig
      */
     public Base(BaseConfig configuration){
-        partition = new WorldSegment(configuration);
+        partition = new BaseSegment(configuration);
         systemsBag = configuration.systems;
 
         final ComponentManager lcm = (ComponentManager)systemsBag.get(COMPONENT_MANAGER_IDX);
@@ -401,14 +401,14 @@ public class Base{
         return (T)invocationStrategy;
     }
 
-    static class WorldSegment{
+    static class BaseSegment{
         /** Contains all systems and systems classes mapped. */
         final Map<Class<?>, BaseSystem> systems;
 
         /** Responsible for dependency injection. */
         final Injector injector;
 
-        WorldSegment(BaseConfig configuration){
+        BaseSegment(BaseConfig configuration){
             systems = new IdentityHashMap<>();
             injector = (configuration.injector != null)
             ? configuration.injector

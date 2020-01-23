@@ -13,5 +13,5 @@ public interface MultiFieldMutator<T, C extends Component>{
 
     T read(C c, Field f);
 
-    void setWorld(Base base);
+    void setBase(Base base);
 }

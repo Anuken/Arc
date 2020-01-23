@@ -14,8 +14,7 @@ public class ResetMethodVisitor extends MethodVisitor implements Opcodes{
     private static final Pattern intBags = Pattern.compile("Larc/ecs/utils/.*Bag;");
     private static final Pattern mapSetsListsInterfaces = Pattern.compile("Ljava/util/(List|Map|Set);");
     private static final Pattern mapSetsLists = Pattern.compile("Ljava/util/.+(List|Map|Set);");
-    private static final Pattern libgdxCollections = Pattern.compile("Larc/struct/.*(Array|Map|Set);");
-
+    private static final Pattern arcCollections = Pattern.compile("Larc/struct/.*(Array|Map|Set|Queue);");
 
     public ResetMethodVisitor(MethodVisitor mv, ClassMetadata meta){
         super(ASM4, mv);
@@ -39,15 +38,14 @@ public class ResetMethodVisitor extends MethodVisitor implements Opcodes{
     private boolean isClearable(FieldDescriptor f){
         return mapSetsLists.matcher(f.desc).find()
         || intBags.matcher(f.desc).find()
-        || libgdxCollections.matcher(f.desc).find();
+        || arcCollections.matcher(f.desc).find();
     }
 
     private void clearCollection(FieldDescriptor field, int invoke){
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn(GETFIELD, meta.type.getInternalName(), field.name, field.desc);
         mv.visitMethodInsn(invoke,
-        Type.getType(field.desc).getInternalName(),
-        "clear", "()V", (invoke == INVOKEINTERFACE));
+        Type.getType(field.desc).getInternalName(), "clear", "()V", (invoke == INVOKEINTERFACE));
     }
 
     private void resetField(FieldDescriptor field){

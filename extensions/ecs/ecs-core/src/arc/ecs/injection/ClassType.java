@@ -18,7 +18,7 @@ public enum ClassType{
     /**
      * Used for (sub)classes of {@link Base}
      */
-    WORLD,
+    BASE,
     /**
      * Used for everything else.
      */

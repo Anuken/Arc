@@ -108,7 +108,7 @@ public class InjectionCache{
             }else if(BaseSystem.class.isAssignableFrom(fieldType)){
                 injectionType = ClassType.SYSTEM;
             }else if(Base.class.isAssignableFrom(fieldType)){
-                injectionType = ClassType.WORLD;
+                injectionType = ClassType.BASE;
             }else{
                 injectionType = ClassType.CUSTOM;
             }

@@ -141,7 +141,7 @@ public class EntityBuilder{
     protected <T extends BaseSystem> T resolveManager(Class<T> type){
         final T teamManager = base.getSystem(type);
         if(teamManager == null){
-            throw new RuntimeException("Register " + type.getSimpleName() + " with your artemis world.");
+            throw new RuntimeException("Register " + type.getSimpleName() + " with your base.");
         }
         return teamManager;
     }

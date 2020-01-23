@@ -86,7 +86,7 @@ class LinkFactory{
     private boolean configureMutator(MultiLinkSite linkSite){
         MultiFieldMutator mutator = MutatorUtil.getGeneratedMutator(linkSite);
         if(mutator != null){
-            mutator.setWorld(base);
+            mutator.setBase(base);
             linkSite.fieldMutator = mutator;
             return true;
         }else{
@@ -108,10 +108,10 @@ class LinkFactory{
             intField.setBase(base);
 
             intBagField = new IntBagFieldMutator();
-            intBagField.setWorld(base);
+            intBagField.setBase(base);
 
             entityBagField = new EntityBagFieldMutator();
-            entityBagField.setWorld(base);
+            entityBagField.setBase(base);
         }
 
         UniLinkSite withMutator(UniLinkSite linkSite){

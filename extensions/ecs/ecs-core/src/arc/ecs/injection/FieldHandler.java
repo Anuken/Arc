@@ -1,6 +1,7 @@
 package arc.ecs.injection;
 
 import arc.ecs.*;
+import arc.ecs.BaseConfigBuilder.*;
 import arc.ecs.utils.*;
 
 import java.lang.reflect.*;
@@ -71,7 +72,7 @@ public class FieldHandler{
      * will be called prior to  {@link FieldResolver#initialize(Base)} being called, availing the {@link InjectionCache}
      * used by this handler.
      * @param base the world this FieldHandler is being used for
-     * @throws BaseConfigBuilder.WorldConfigException when injector has no way to deal with injectables.
+     * @throws BaseConfigException when injector has no way to deal with injectables.
      */
     public void initialize(Base base, Map<String, Object> injectables){
 

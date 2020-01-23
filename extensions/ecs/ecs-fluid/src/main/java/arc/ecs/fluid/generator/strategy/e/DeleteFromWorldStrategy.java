@@ -13,7 +13,7 @@ public class DeleteFromWorldStrategy implements BuilderModelStrategy{
 
     private MethodDescriptor deleteFromWorldMethod(){
         return
-        new MethodBuilder(void.class, "deleteFromWorld")
+        new MethodBuilder(void.class, "delete")
         .debugNotes("default delete from world")
         .statement("mappers.getBase().delete(entityId)")
         .build();

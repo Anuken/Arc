@@ -34,7 +34,7 @@ class EntityBagFieldMutator implements MultiFieldMutator<Bag<Entity>, Component>
     }
 
     @Override
-    public void setWorld(Base base){
+    public void setBase(Base base){
         all = base.getAspectSubscriptionManager().get(all());
     }
 }

@@ -11,7 +11,6 @@ import arc.ecs.utils.*;
  * and you want maximum performance.
  * @author Arni Arent
  * @author Adrian Papari
- * @see EntityProcessingSystem Entity iteration by entity reference.
  */
 public abstract class IteratingSystem extends BaseEntitySystem{
 

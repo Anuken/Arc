@@ -43,7 +43,7 @@ public class ArtemisFieldResolver implements FieldResolver, UseInjectionCache{
                 return getComponentMapper(field);
             case SYSTEM:
                 return base.getSystem((Class<BaseSystem>)systems.get(fieldType));
-            case WORLD:
+            case BASE:
                 return base;
             default:
                 return null;

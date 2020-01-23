@@ -132,7 +132,7 @@ public final class Entity{
      * in a final state once invoked; adding or removing components from an
      * entity scheduled for deletion will likely throw exceptions.
      */
-    public void deleteFromWorld(){
+    public void delete(){
         base.delete(id);
     }
 

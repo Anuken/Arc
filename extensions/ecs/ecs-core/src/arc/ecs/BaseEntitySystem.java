@@ -36,6 +36,7 @@ public abstract class BaseEntitySystem extends BaseSystem implements EntitySubsc
         aspectConfiguration = aspect;
     }
 
+    @Override
     protected void setBase(Base base){
         super.setBase(base);
 
@@ -66,12 +67,9 @@ public abstract class BaseEntitySystem extends BaseSystem implements EntitySubsc
         return (all != null || exclude != null || one != null) ? aspect : null;
     }
 
-    /**
-     * @return entity subscription backing this system.
-     */
+    /** @return entity subscription backing this system.*/
     public EntitySubscription getSubscription(){
-        final AspectSubscriptionManager sm = base.getAspectSubscriptionManager();
-        return sm.get(aspectConfiguration);
+        return base.getAspectSubscriptionManager().get(aspectConfiguration);
     }
 
     @Override

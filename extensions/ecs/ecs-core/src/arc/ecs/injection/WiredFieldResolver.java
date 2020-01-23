@@ -29,7 +29,7 @@ public class WiredFieldResolver implements UseInjectionCache, PojoFieldResolver{
         ClassType injectionType = cache.getFieldClassType(fieldType);
         CachedField cachedField = cache.getCachedField(field);
 
-        if(injectionType == ClassType.CUSTOM || injectionType == ClassType.WORLD){
+        if(injectionType == ClassType.CUSTOM || injectionType == ClassType.BASE){
             if(cachedField.wireType == WireType.WIRE){
                 String key = cachedField.name;
                 if("".equals(key)){

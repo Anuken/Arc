@@ -41,7 +41,7 @@ class IntBagFieldMutator implements MultiFieldMutator<IntBag, Component>{
     }
 
     @Override
-    public void setWorld(Base base){
+    public void setBase(Base base){
         all = base.getAspectSubscriptionManager().get(all());
     }
 }
