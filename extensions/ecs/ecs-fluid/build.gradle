@@ -1,3 +1,6 @@
+sourceSets.main.java.srcDirs = ["src/main/java"]
+sourceSets.test.resources.srcDirs = ["src/main/resources"]
+
 dependencies{
     //how can one tool have this many dependencies?
     compile "com.google.guava:guava:28.2-jre"
