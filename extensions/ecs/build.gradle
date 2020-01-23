@@ -9,4 +9,8 @@ subprojects{
     dependencies{
         compileOnly aproj(":arc-core")
     }
+
+    repositories{
+        maven{ url "https://repo.gradle.org/gradle/libs-releases-local/" }
+    }
 }

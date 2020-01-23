@@ -2,11 +2,8 @@ sourceSets.main.java.srcDirs = ["src/main/java"]
 sourceSets.main.resources.srcDirs = ["src/main/resources"]
 
 dependencies{
-    def gradleVersion = "2.1"
-
-    compile "org.gradle:gradle-tooling-api:$gradleVersion"
-    compile "org.gradle:gradle-core:$gradleVersion"
-    compile "org.codehaus.groovy:groovy-all:2.3.6"
+    compile gradleApi()
+    compile localGroovy()
     compile "org.slf4j:slf4j-api:1.7.5"
 
     compile aproj(":extensions:ecs:ecs-weaver")
