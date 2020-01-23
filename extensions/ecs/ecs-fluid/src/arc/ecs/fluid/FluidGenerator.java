@@ -26,14 +26,11 @@ import java.util.*;
 public class FluidGenerator{
 
     private static final String FLUID_UTILITY_SOURCES_DIR = "/fluid-utility-sources";
-    private static final String COM_ARTEMIS_MODULE_DIR = "com/artemis/";
-    private static final Comparator<FieldProxyStrategy> SORT_BY_PRIORITY_DESC_FALLBACK_ON_NAME = new Comparator<FieldProxyStrategy>(){
-        @Override
-        public int compare(FieldProxyStrategy o1, FieldProxyStrategy o2){
-            final int p1 = o1.priority();
-            final int p2 = o2.priority();
-            return (p1 < p2) ? 1 : ((p1 > p2) ? -1 : o1.getClass().getName().compareTo(o2.getClass().getName()));
-        }
+    private static final String COM_ARTEMIS_MODULE_DIR = "arc/ecs/";
+    private static final Comparator<FieldProxyStrategy> SORT_BY_PRIORITY_DESC_FALLBACK_ON_NAME = (o1, o2) -> {
+        final int p1 = o1.priority();
+        final int p2 = o2.priority();
+        return (p1 < p2) ? 1 : ((p1 > p2) ? -1 : o1.getClass().getName().compareTo(o2.getClass().getName()));
     };
 
     /**

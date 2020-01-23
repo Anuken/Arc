@@ -53,7 +53,7 @@ public class ReflectionsClassCollectStrategy extends AbstractClassCollectStrateg
     @Override
     public Set<Class<? extends FieldProxyStrategy>> allFieldProxyStrategies(){
         // reflect over components.
-        return reflections.getSubTypesOf(FieldProxyStrategy.class);
+        return Collections.singleton(DefaultFieldProxyStrategy.class);//reflections.getSubTypesOf(FieldProxyStrategy.class);
     }
 
     /**
