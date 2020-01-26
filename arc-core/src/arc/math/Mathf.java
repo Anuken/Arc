@@ -325,6 +325,17 @@ public final class Mathf{
         return value;
     }
 
+    /** Approaches a value at linear speed. */
+    public static float approach(float from, float to, float speed){
+        return from + Mathf.clamp(to - from, -speed, speed);
+    }
+
+    /** Approaches a value at linear speed. Multiplied by the delta. */
+    public static float approachDelta(float from, float to, float speed){
+        return approach(from, to, Time.delta() * speed);
+    }
+
+
     /** Linearly interpolates between fromValue to toValue on progress position. */
     public static float lerp(float fromValue, float toValue, float progress){
         return fromValue + (toValue - fromValue) * progress;
