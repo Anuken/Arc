@@ -78,6 +78,8 @@ public class SdlScanmap{
             case 27: return KeyCode.X;
             case 28: return KeyCode.Y;
             case 29: return KeyCode.Z;
+            case 231:
+            case 227: return KeyCode.SYM;
             case 224: return KeyCode.CONTROL_LEFT;
             case 228: return KeyCode.CONTROL_RIGHT;
             case 225: return KeyCode.SHIFT_LEFT;
