@@ -15,16 +15,14 @@ public class OS{
     static public boolean is64Bit = propNoNull("os.arch").contains("64") || propNoNull("os.arch").startsWith("armv8");
 
     static{
-        boolean isMOEiOS = "iOS".equals(System.getProperty("moe.platform.name"));
-        String vm = System.getProperty("java.runtime.name");
-        if(vm != null && vm.contains("Android Runtime")){
+        if(propNoNull("java.runtime.name").contains("Android Runtime") || propNoNull("java.vm.vendor").contains("The Android Project") || propNoNull("java.vendor").contains("The Android Project")){
             isAndroid = true;
             isWindows = false;
             isLinux = false;
             isMac = false;
             is64Bit = false;
         }
-        if(isMOEiOS || (!isAndroid && !isWindows && !isLinux && !isMac)){
+        if(propNoNull("moe.platform.name").equals("iOS") || (!isAndroid && !isWindows && !isLinux && !isMac)){
             isIos = true;
             isAndroid = false;
             isWindows = false;
