@@ -18,7 +18,7 @@ public class ComponentManager extends BaseSystem{
     static final int NO_COMPONENTS = 0;
 
     /** Collects all Entites marked for deletion from this ComponentManager. */
-    private Bag<Mapper> mappers = new Bag(Mapper.class);
+    private Bag<Mapper> mappers = new Bag<>(Mapper.class);
 
     private final ComponentIdentityResolver identityResolver = new ComponentIdentityResolver();
     final ShortBag entityToIdentity;

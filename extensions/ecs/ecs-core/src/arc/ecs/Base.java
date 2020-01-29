@@ -223,6 +223,18 @@ public class Base{
         this.delta = delta;
     }
 
+    /** Deletes all entities. */
+    public void deleteAll(){
+        IntBag entities = getAspectSubscriptionManager()
+        .get(Aspect.all())
+        .getEntities();
+
+        int[] ids = entities.getData();
+        for(int i = 0, s = entities.size(); s > i; i++){
+            delete(ids[i]);
+        }
+    }
+
     /**
      * Delete the entity from the world.
      * @param e the entity to delete

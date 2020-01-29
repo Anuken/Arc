@@ -90,7 +90,7 @@ public class EntityManager extends BaseSystem{
     }
 
     /**
-     * <p>If all entties have been deleted, resets the entity cache - with next entity
+     * <p>If all entities have been deleted, resets the entity cache - with next entity
      * entity receiving id <code>0</code>. There mustn't be any active entities in
      * the world for this method to work. This method does nothing if it fails.</p>
      *
