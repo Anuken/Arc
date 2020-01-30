@@ -675,7 +675,7 @@ public class Array<T> implements Iterable<T>{
         return this;
     }
 
-    public <R extends T> Array<R> as(Class<R> type){
+    public <R> Array<R> as(Class<R> type){
         return (Array<R>)this;
     }
 
