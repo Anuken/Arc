@@ -3,6 +3,7 @@ package arc.ecs;
 import arc.ecs.annotations.*;
 import arc.ecs.injection.*;
 import arc.ecs.utils.*;
+import arc.struct.Array;
 
 import java.lang.reflect.*;
 
@@ -230,6 +231,11 @@ public class BaseConfigBuilder{
      */
     public BaseConfigBuilder with(BaseSystem... systems){
         addSystems(Priority.NORMAL, systems);
+        return this;
+    }
+
+    public BaseConfigBuilder with(Array<BaseSystem> systems){
+        addSystems(Priority.NORMAL, systems.toArray(BaseSystem.class));
         return this;
     }
 
