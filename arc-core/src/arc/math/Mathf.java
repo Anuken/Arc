@@ -2,8 +2,6 @@ package arc.math;
 
 import arc.util.*;
 
-import java.util.*;
-
 public final class Mathf{
     public static final int[] signs = {-1, 1};
     public static final boolean[] booleans = {true, false};
@@ -33,7 +31,7 @@ public final class Mathf{
     static private final double BIG_ENOUGH_ROUND = BIG_ENOUGH_INT + 0.5f;
     static private final Rand seedr = new Rand();
 
-    public static Random random = new Rand();
+    public static Rand random = new Rand();
 
     /** Returns the sine in radians from a lookup table. */
     public static float sin(float radians){
