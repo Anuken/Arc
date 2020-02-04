@@ -94,6 +94,10 @@ public class Vec2 implements Vector<Vec2>, Position{
         return this;
     }
 
+    public Vec2 sub(Position v){
+        return sub(v.getX(), v.getY());
+    }
+
     @Override
     public Vec2 sub(Vec2 v){
         x -= v.x;
