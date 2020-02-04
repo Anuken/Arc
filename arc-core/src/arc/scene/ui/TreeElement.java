@@ -159,7 +159,7 @@ public class TreeElement extends WidgetGroup{
             node.parent.remove(node);
             return;
         }
-        rootNodes.removeValue(node, true);
+        rootNodes.remove(node, true);
         node.removeFromTree(this);
         invalidateHierarchy();
     }
@@ -478,7 +478,7 @@ public class TreeElement extends WidgetGroup{
         }
 
         public void remove(Node node){
-            children.removeValue(node, true);
+            children.remove(node, true);
             if(!expanded) return;
             TreeElement tree = getTree();
             if(tree == null) return;

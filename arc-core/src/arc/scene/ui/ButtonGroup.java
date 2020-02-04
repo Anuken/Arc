@@ -45,8 +45,8 @@ public class ButtonGroup<T extends Button>{
     public void remove(T button){
         if(button == null) throw new IllegalArgumentException("button cannot be null.");
         button.buttonGroup = null;
-        buttons.removeValue(button, true);
-        checkedButtons.removeValue(button, true);
+        buttons.remove(button, true);
+        checkedButtons.remove(button, true);
     }
 
     public void remove(T... buttons){
@@ -71,7 +71,7 @@ public class ButtonGroup<T extends Button>{
         if(!newState){
             // Keep button checked to enforce minCheckCount.
             if(checkedButtons.size <= minCheckCount) return false;
-            checkedButtons.removeValue(button, true);
+            checkedButtons.remove(button, true);
         }else{
             // Keep button unchecked to enforce maxCheckCount.
             if(maxCheckCount != -1 && checkedButtons.size >= maxCheckCount){

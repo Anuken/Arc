@@ -96,7 +96,7 @@ public class QuadTree<T extends QuadTreeObject>{
     public void remove(T obj){
         if(children == null){
             // Leaf, no children, remove from root
-            objects.removeValue(obj, true);
+            objects.remove(obj, true);
         }else{
             // Remove from relevant child
             obj.hitbox(tmp);
@@ -106,7 +106,7 @@ public class QuadTree<T extends QuadTreeObject>{
                 child.remove(obj);
             }else{
                 // Or root if object doesn't fit in a child
-                objects.removeValue(obj, true);
+                objects.remove(obj, true);
             }
 
             if(getTotalObjectCount() <= maxObjectsPerNode) unsplit();

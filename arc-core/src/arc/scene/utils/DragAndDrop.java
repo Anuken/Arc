@@ -147,7 +147,7 @@ public class DragAndDrop{
     }
 
     public void removeTarget(Target target){
-        targets.removeValue(target, true);
+        targets.remove(target, true);
     }
 
     /** Removes all targets and sources. */

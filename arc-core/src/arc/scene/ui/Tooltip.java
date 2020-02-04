@@ -217,7 +217,7 @@ public class Tooltip extends InputListener{
             showTooltip = null;
             showTask.cancel();
             if(tooltip.container.hasParent()){
-                shown.removeValue(tooltip, true);
+                shown.remove(tooltip, true);
                 hideAction(tooltip);
                 resetTask.cancel();
                 Timer.schedule(resetTask, resetTime);

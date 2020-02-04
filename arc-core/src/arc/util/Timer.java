@@ -155,7 +155,7 @@ public class Timer{
     /** Stops the timer, tasks will not be executed and time that passes will not be applied to the task delays. */
     public void stop(){
         synchronized(threadLock){
-            thread().instances.removeValue(this, true);
+            thread().instances.remove(this, true);
         }
     }
 
@@ -253,7 +253,7 @@ public class Timer{
                     synchronized(this){
                         executeTimeMillis = 0;
                         this.timer = null;
-                        timer.tasks.removeValue(this, true);
+                        timer.tasks.remove(this, true);
                     }
                 }
             }else{

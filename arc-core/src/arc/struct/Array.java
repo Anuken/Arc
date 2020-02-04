@@ -456,7 +456,7 @@ public class Array<T> implements Iterable<T>{
 
     /** Removes a value, without using identity. */
     public boolean remove(T value){
-        return removeValue(value, false);
+        return remove(value, false);
     }
 
     /** Removes a single value by predicate. */
@@ -476,7 +476,7 @@ public class Array<T> implements Iterable<T>{
      * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
      * @return true if value was found and removed, false otherwise
      */
-    public boolean removeValue(T value, boolean identity){
+    public boolean remove(T value, boolean identity){
         T[] items = this.items;
         if(identity || value == null){
             for(int i = 0, n = size; i < n; i++){

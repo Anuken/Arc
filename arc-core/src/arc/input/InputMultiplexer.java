@@ -33,7 +33,7 @@ public class InputMultiplexer implements InputProcessor{
     }
 
     public void removeProcessor(InputProcessor processor){
-        processors.removeValue(processor, true);
+        processors.remove(processor, true);
     }
 
     /** @return the number of processors in this multiplexer */

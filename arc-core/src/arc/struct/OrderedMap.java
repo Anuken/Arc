@@ -50,7 +50,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
     }
 
     public V remove(K key){
-        keys.removeValue(key, false);
+        keys.remove(key, false);
         return super.remove(key);
     }
 

@@ -37,7 +37,7 @@ public abstract class FlushablePool<T> extends Pool<T>{
 
     @Override
     public void free(T object){
-        obtained.removeValue(object, true);
+        obtained.remove(object, true);
         super.free(object);
     }
 

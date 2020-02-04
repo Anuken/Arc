@@ -324,7 +324,7 @@ public abstract class Group extends Element implements Cullable{
      * @return true if the actor was removed from this group.
      */
     public boolean removeChild(Element actor, boolean unfocus){
-        if(!children.removeValue(actor, true)) return false;
+        if(!children.remove(actor, true)) return false;
         if(unfocus){
             Scene stage = getScene();
             if(stage != null) stage.unfocus(actor);

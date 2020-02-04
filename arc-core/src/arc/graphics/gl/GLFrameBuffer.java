@@ -330,7 +330,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
 
         gl.glDeleteFramebuffer(framebufferHandle);
 
-        if(buffers.get(Core.app) != null) buffers.get(Core.app).removeValue(this, true);
+        if(buffers.get(Core.app) != null) buffers.get(Core.app).remove(this, true);
     }
 
     /** Makes the frame buffer current so everything gets drawn to it. */

@@ -249,7 +249,7 @@ public class Element implements Layout{
 
     public boolean removeListener(EventListener listener){
         if(listener == null) throw new IllegalArgumentException("listener cannot be null.");
-        return listeners.removeValue(listener, true);
+        return listeners.remove(listener, true);
     }
 
     public Array<EventListener> getListeners(){
@@ -268,7 +268,7 @@ public class Element implements Layout{
 
     public boolean removeCaptureListener(EventListener listener){
         if(listener == null) throw new IllegalArgumentException("listener cannot be null.");
-        return captureListeners.removeValue(listener, true);
+        return captureListeners.remove(listener, true);
     }
 
     public Array<EventListener> getCaptureListeners(){
@@ -287,7 +287,7 @@ public class Element implements Layout{
     }
 
     public void removeAction(Action action){
-        if(actions.removeValue(action, true)) action.setActor(null);
+        if(actions.remove(action, true)) action.setActor(null);
     }
 
     public Array<Action> getActions(){
@@ -745,7 +745,7 @@ public class Element implements Layout{
         if(children.size == 1) return;
         index = Math.min(index, children.size - 1);
         if(children.get(index) == this) return;
-        if(!children.removeValue(this, true)) return;
+        if(!children.remove(this, true)) return;
         children.insert(index, this);
     }
 

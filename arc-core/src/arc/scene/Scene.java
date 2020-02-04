@@ -333,7 +333,7 @@ public class Scene implements InputProcessor, Disposable{
         for(int i = 0, n = touchFocuses.size; i < n; i++){
             TouchFocus focus = focuses[i];
             if(focus.pointer != pointer || focus.button != button) continue;
-            if(!touchFocuses.removeValue(focus, true)) continue; // Touch focus already gone.
+            if(!touchFocuses.remove(focus, true)) continue; // Touch focus already gone.
             event.targetActor = focus.target;
             event.listenerActor = focus.listenerActor;
             if(focus.listener.handle(event)) event.handle();
@@ -487,7 +487,7 @@ public class Scene implements InputProcessor, Disposable{
         for(int i = 0, n = touchFocuses.size; i < n; i++){
             TouchFocus focus = items[i];
             if(focus.listenerActor != actor) continue;
-            if(!touchFocuses.removeValue(focus, true)) continue; // Touch focus already gone.
+            if(!touchFocuses.remove(focus, true)) continue; // Touch focus already gone.
             event.targetActor = focus.target;
             event.listenerActor = focus.listenerActor;
             event.pointer = (focus.pointer);
@@ -527,7 +527,7 @@ public class Scene implements InputProcessor, Disposable{
         for(int i = 0, n = touchFocuses.size; i < n; i++){
             TouchFocus focus = items[i];
             if(focus.listener == exceptListener && focus.listenerActor == exceptActor) continue;
-            if(!touchFocuses.removeValue(focus, true)) continue; // Touch focus already gone.
+            if(!touchFocuses.remove(focus, true)) continue; // Touch focus already gone.
             event.targetActor = focus.target;
             event.listenerActor = focus.listenerActor;
             event.pointer = (focus.pointer);

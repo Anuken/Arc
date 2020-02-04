@@ -705,7 +705,7 @@ public class Shader implements Disposable{
         gl.glDeleteShader(vertexShaderHandle);
         gl.glDeleteShader(fragmentShaderHandle);
         gl.glDeleteProgram(program);
-        if(shaders.get(Core.app) != null) shaders.get(Core.app).removeValue(this, true);
+        if(shaders.get(Core.app) != null) shaders.get(Core.app).remove(this, true);
     }
 
     /**

@@ -87,7 +87,7 @@ public abstract class ALMusic implements Music{
     public void stop(){
         if(audio.noDevice) return;
         if(sourceID == -1) return;
-        audio.music.removeValue(this, true);
+        audio.music.remove(this, true);
         reset();
         audio.freeSource(sourceID);
         sourceID = -1;

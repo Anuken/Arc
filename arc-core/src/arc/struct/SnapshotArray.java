@@ -110,9 +110,9 @@ public class SnapshotArray<T> extends Array<T>{
         super.swap(first, second);
     }
 
-    public boolean removeValue(T value, boolean identity){
+    public boolean remove(T value, boolean identity){
         modified();
-        return super.removeValue(value, identity);
+        return super.remove(value, identity);
     }
 
     public T remove(int index){

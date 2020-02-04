@@ -49,7 +49,7 @@ public class OrderedSet<T> extends ObjectSet<T>{
 
     public boolean add(T key, int index){
         if(!super.add(key)){
-            items.removeValue(key, true);
+            items.remove(key, true);
             items.insert(index, key);
             return false;
         }
@@ -59,7 +59,7 @@ public class OrderedSet<T> extends ObjectSet<T>{
 
     public boolean remove(T key){
         if(!super.remove(key)) return false;
-        items.removeValue(key, false);
+        items.remove(key, false);
         return true;
     }
 

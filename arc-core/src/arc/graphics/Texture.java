@@ -255,7 +255,7 @@ public class Texture extends GLTexture{
         if(glHandle == 0) return;
         delete();
         if(data.isManaged())
-            if(managedTextures.get(Core.app) != null) managedTextures.get(Core.app).removeValue(this, true);
+            if(managedTextures.get(Core.app) != null) managedTextures.get(Core.app).remove(this, true);
     }
 
     @Override

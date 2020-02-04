@@ -49,7 +49,7 @@ public class TileSets implements Iterable<TileSet>{
 
     /** @param tileset set to be removed */
     public void removeTileSet(TileSet tileset){
-        tilesets.removeValue(tileset, true);
+        tilesets.remove(tileset, true);
     }
 
     /**

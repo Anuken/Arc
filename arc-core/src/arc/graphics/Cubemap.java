@@ -226,7 +226,7 @@ public class Cubemap extends GLTexture{
         if(glHandle == 0) return;
         delete();
         if(data.isManaged())
-            if(managedCubemaps.get(Core.app) != null) managedCubemaps.get(Core.app).removeValue(this, true);
+            if(managedCubemaps.get(Core.app) != null) managedCubemaps.get(Core.app).remove(this, true);
     }
 
     /** Enum to identify each side of a Cubemap */

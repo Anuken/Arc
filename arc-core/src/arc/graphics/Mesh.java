@@ -581,7 +581,7 @@ public class Mesh implements Disposable{
 
     /** Frees all resources associated with this Mesh */
     public void dispose(){
-        if(meshes.get(Core.app) != null) meshes.get(Core.app).removeValue(this, true);
+        if(meshes.get(Core.app) != null) meshes.get(Core.app).remove(this, true);
         vertices.dispose();
         indices.dispose();
     }
