@@ -79,6 +79,10 @@ public class Lines{
         Lines.precise = precise;
     }
 
+    public static void linePoint(Position p){
+        linePoint(p.getX(), p.getY());
+    }
+
     public static void linePoint(float x, float y){
         if(!building) throw new IllegalStateException("Not building");
         floatBuilder.add(x, y);
