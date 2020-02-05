@@ -232,17 +232,23 @@ public final class PropertiesUtils{
      * @throws IOException if writing this property list to the specified output stream throws an <tt>IOException</tt>.
      * @throws NullPointerException if <code>writer</code> is null.
      */
-    public static void store(ObjectMap<String, String> properties, Writer writer, String comment) throws IOException{
-        storeImpl(properties, writer, comment, false);
+    public static void store(ObjectMap<String, String> properties, Writer writer, String comment, boolean date) throws IOException{
+        storeImpl(properties, writer, comment, false, date);
     }
 
-    private static void storeImpl(ObjectMap<String, String> properties, Writer writer, String comment, boolean escapeUnicode) throws IOException{
+    public static void store(ObjectMap<String, String> properties, Writer writer, String comment) throws IOException{
+        store(properties, writer, comment, false);
+    }
+
+    private static void storeImpl(ObjectMap<String, String> properties, Writer writer, String comment, boolean date, boolean escapeUnicode) throws IOException{
         if(comment != null){
             writeComment(writer, comment);
         }
-        writer.write("#");
-        writer.write(new Date().toString());
-        writer.write(LINE_SEPARATOR);
+        if(date){
+            writer.write("#");
+            writer.write(new Date().toString());
+            writer.write(LINE_SEPARATOR);
+        }
 
         StringBuilder sb = new StringBuilder(200);
         for(Entry<String, String> entry : properties.entries()){
