@@ -301,6 +301,16 @@ public class Array<T> implements Iterable<T>{
         return null;
     }
 
+    public Array<T> with(Cons<Array<T>> cons){
+        cons.get(this);
+        return this;
+    }
+
+    public Array<T> and(T value){
+        add(value);
+        return this;
+    }
+
     public void add(T value){
         T[] items = this.items;
         if(size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
@@ -680,6 +690,10 @@ public class Array<T> implements Iterable<T>{
 
     public void sort(Floatf<? super T> comparator){
         Sort.instance().sort(items, Structs.comparingFloat(comparator), 0, size);
+    }
+
+    public <U extends Comparable<? super U>> void sortComparing(Func<? super T, ? extends U> keyExtractor){
+        sort(Structs.comparing(keyExtractor));
     }
 
     public Array<T> selectFrom(Array<T> base, Boolf<T> predicate){
