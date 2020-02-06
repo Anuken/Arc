@@ -1,6 +1,6 @@
 package arc.scene.ui.layout;
 
-import arc.func.Cons;
+import arc.func.*;
 import arc.graphics.g2d.*;
 import arc.scene.*;
 import arc.scene.event.*;
@@ -15,10 +15,14 @@ public class Collapser extends WidgetGroup{
     private float seconds = 0.4f;
 
     public Collapser(Cons<Table> cons, boolean collapsed){
-        this.table = new Table();
+        this(new Table(), collapsed);
+        cons.get(table);
+    }
+
+    public Collapser(Table table, boolean collapsed){
+        this.table = table;
         this.collapsed = collapsed;
         setTransform(true);
-        cons.get(table);
 
         updateTouchable();
         addChild(table);
@@ -31,6 +35,10 @@ public class Collapser extends WidgetGroup{
 
     public void toggle(){
         setCollapsed(!isCollapsed());
+    }
+
+    public void toggle(boolean animated){
+        setCollapsed(!isCollapsed(), animated);
     }
 
     public void setCollapsed(boolean collapse, boolean withAnimation){
