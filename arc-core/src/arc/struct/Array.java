@@ -679,10 +679,11 @@ public class Array<T> implements Iterable<T>{
         return this;
     }
 
-    /** Note that this allocates a new set.*/
+    /** Note that this allocates a new set. Mutates. */
     public Array<T> distinct(){
-        ObjectSet<T> set = ObjectSet.with(this);
-        removeAll(t -> !set.contains(t));
+        ObjectSet<T> set = asSet();
+        clear();
+        addAll(set);
         return this;
     }
 
