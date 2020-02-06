@@ -204,6 +204,15 @@ public class Array<T> implements Iterable<T>{
     }
 
     /**Returns a new array with the mapped values.*/
+    public <R> Array<R> flatMap(Func<T, Iterable<R>> mapper){
+        Array<R> arr = new Array<>(size);
+        for(int i = 0; i < size; i++){
+            arr.addAll(mapper.get(items[i]));
+        }
+        return arr;
+    }
+
+    /**Returns a new array with the mapped values.*/
     public <R> Array<R> map(Func<T, R> mapper){
         Array<R> arr = new Array<>(size);
         for(int i = 0; i < size; i++){
@@ -348,8 +357,12 @@ public class Array<T> implements Iterable<T>{
     }
 
     public void addAll(Iterable<? extends T> items){
-        for(T t : items){
-            add(t);
+        if(items instanceof Array){
+            addAll((Array)items);
+        }else{
+            for(T t : items){
+                add(t);
+            }
         }
     }
 
