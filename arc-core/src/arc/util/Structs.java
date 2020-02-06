@@ -28,10 +28,12 @@ public class Structs{
     }
 
     public static <T> T random(T[] array){
+        if(array.length == 0) return null;
         return array[Mathf.random(array.length - 1)];
     }
 
     public static <T> T select(T... array){
+        if(array.length == 0) return null;
         return array[Mathf.random(array.length - 1)];
     }
 
