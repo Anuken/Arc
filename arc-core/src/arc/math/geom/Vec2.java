@@ -473,11 +473,11 @@ public class Vec2 implements Vector<Vec2>, Position{
         return this;
     }
 
-    public Vec2 lerpDelta(Vec2 target, float alpha){
+    public Vec2 lerpDelta(Position target, float alpha){
         alpha = Mathf.clamp(alpha * Time.delta());
         final float invAlpha = 1.0f - alpha;
-        this.x = (x * invAlpha) + (target.x * alpha);
-        this.y = (y * invAlpha) + (target.y * alpha);
+        this.x = (x * invAlpha) + (target.getX() * alpha);
+        this.y = (y * invAlpha) + (target.getY() * alpha);
         return this;
     }
 
