@@ -4,6 +4,7 @@ import arc.util.*;
 
 public final class Mathf{
     public static final int[] signs = {-1, 1};
+    public static final int[] one = {1}; //trust me, this is useful
     public static final boolean[] booleans = {true, false};
     public static final float FLOAT_ROUNDING_ERROR = 0.000001f; // 32 bits
     public static final float PI = 3.1415927f, pi = PI;

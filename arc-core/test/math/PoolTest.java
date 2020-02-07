@@ -6,6 +6,8 @@ import arc.util.*;
 import arc.util.pooling.*;
 import org.junit.*;
 
+import static org.junit.Assert.assertEquals;
+
 public class PoolTest{
 
     @Test
@@ -40,9 +42,12 @@ public class PoolTest{
 
         Prov a = Object::new;
         Prov b = Object::new;
+
         Log.info("a == b: {0}; codes: {1} {2}; equality: {3}", a == b, a.hashCode(), b.hashCode(), a.equals(b));
         Log.info("Memory delta: {0} b", (post - pre));
         Log.info("Total memory allocated: {0} mb", Strings.fixed((post - start)/1024f/1024f, 1));
+
+        assertEquals("Memory usage of pools must be 0.", pre - post, 0);
     }
 
     long memory(){

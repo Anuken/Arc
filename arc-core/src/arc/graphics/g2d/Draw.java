@@ -7,6 +7,7 @@ import arc.graphics.Texture;
 import arc.graphics.gl.Shader;
 import arc.math.Mathf;
 import arc.math.Mat;
+import arc.math.geom.*;
 import arc.util.Tmp;
 
 import static arc.Core.camera;
@@ -168,6 +169,18 @@ public class Draw{
 
     public static void rect(String region, float x, float y, float w, float h, float rotation){
         rect(Core.atlas.find(region), x, y, w, h, w/2f, h/2f, rotation);
+    }
+
+    public static void rect(TextureRegion region, Position pos, float w, float h){
+        rect(region, pos.getX(), pos.getY(), w, h);
+    }
+
+    public static void rect(TextureRegion region, Position pos, float w, float h, float rotation){
+        rect(region, pos.getX(), pos.getY(), w, h, rotation);
+    }
+
+    public static void rect(TextureRegion region, Position pos, float rotation){
+        rect(region, pos.getX(), pos.getY(), rotation);
     }
 
     public static void rect(TextureRegion region, float x, float y, float rotation){
