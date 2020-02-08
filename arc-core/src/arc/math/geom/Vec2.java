@@ -390,6 +390,10 @@ public class Vec2 implements Vector<Vec2>, Position{
         return this;
     }
 
+    public Vec2 rotateTo(float angle, float speed){
+        return setAngle(Angles.moveToward(angle(), angle, speed));
+    }
+
     /**
      * Rotates the Vec2 by the given angle, counter-clockwise assuming the y-axis points up.
      * @param degrees the angle in degrees
