@@ -5,13 +5,15 @@ import arc.graphics.Pixmap.*;
 import arc.graphics.Texture.TextureWrap;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.math.geom.Vec2;
+import arc.math.geom.*;
+import arc.struct.*;
 
 import java.nio.ByteBuffer;
 
 /** Various pixmap utilities. */
 public class Pixmaps{
     private static Pixmap drawPixmap;
+    private static IntArray tmpArray = new IntArray();
 
     public static void flip(Pixmap pixmap){
         ByteBuffer pixels = pixmap.getPixels();
@@ -24,6 +26,21 @@ public class Pixmaps{
         }
         pixels.clear();
         pixels.put(lines);
+    }
+
+    public static Pixmap median(Pixmap input, int radius, double percentile){
+        return median(input, radius, percentile, tmpArray);
+    }
+
+    public static Pixmap median(Pixmap input, int radius, double percentile, IntArray tmp){
+        Pixmap pixmap = new Pixmap(input.getWidth(), input.getHeight());
+        input.each((x, y) -> {
+            tmp.clear();
+            Geometry.circle(x, y, pixmap.getWidth(), pixmap.getHeight(), radius, (cx, cy) -> tmp.add(input.getPixel(cx, cy)));
+            tmp.sort();
+            pixmap.draw(x, y, tmp.get(Mathf.clamp((int)(tmp.size * percentile), 0, tmp.size - 1)));
+        });
+        return pixmap;
     }
 
     public static Pixmap copy(Pixmap input){
