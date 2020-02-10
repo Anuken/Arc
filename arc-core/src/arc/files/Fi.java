@@ -496,6 +496,10 @@ public class Fi{
         }
     }
 
+    public void writeBytes(byte[] bytes){
+        writeBytes(bytes, false);
+    }
+
     /**
      * Writes the specified bytes to the file. Parent directories will be created if necessary.
      * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
