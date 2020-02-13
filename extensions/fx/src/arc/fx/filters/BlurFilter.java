@@ -9,8 +9,7 @@ public class BlurFilter extends FxFilter{
     private final CopyFilter copy;
     private final GaussianBlurFilter blur;
 
-    private boolean blending = false;
-    private int sfactor, dfactor;
+    public Blending blending = Blending.normal;
 
     // To keep track of the first render call.
     private boolean firstRender = true;
@@ -73,13 +72,9 @@ public class BlurFilter extends FxFilter{
         blur.render(mesh, pingPongBuffer);
         pingPongBuffer.end();
 
-        if(blending){
+        if(blending != Blending.disabled){
             Gl.enable(Gl.blend);
-        }
-
-        if(blending){
-            // TODO support for Gl.BlendFuncSeparate(sfactor, dfactor, GL20.GL_ONE, GL20.GL_ONE );
-            Gl.blendFunc(sfactor, dfactor);
+            Gl.blendFunc(blending.src, blending.dst);
         }
 
         copy.setInput(pingPongBuffer.getDstTexture())
@@ -87,23 +82,4 @@ public class BlurFilter extends FxFilter{
         .render(mesh);
     }
 
-    public BlurFilter enableBlending(int sfactor, int dfactor){
-        this.blending = true;
-        this.sfactor = sfactor;
-        this.dfactor = dfactor;
-        return this;
-    }
-
-    public void disableBlending(){
-        this.blending = false;
-    }
-
-    public BlurFilter setBlurPasses(int blurPasses){
-        blur.setPasses(blurPasses);
-        return this;
-    }
-
-    public int getBlurPasses(){
-        return blur.getPasses();
-    }
 }

@@ -57,7 +57,7 @@ public final class VignettingFilter extends FxFilter{
         shader.setUniformi("u_lutIndex2", lutIndex2);
         shader.setUniformf("u_lutIndexOffset", lutIndexOffset);
 
-        shader.setUniformf("u_texture1", u_texture1);
+        shader.setUniformi("u_texture1", u_texture1);
         shader.setUniformf("u_lutIntensity", lutIntensity);
         shader.setUniformf("u_lutStep", lutStep);
         shader.setUniformf("u_lutStepOffset", lutStepOffset);

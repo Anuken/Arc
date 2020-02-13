@@ -77,11 +77,11 @@ vec3 cc(vec3 color, float factor,float factor2) {
 }
 
 void main(void) {
+    vec4 sampled = texture2D(u_texture0, v_texCoords);
 	vec2 uv = v_texCoords - 0.5;
 	uv.x *= u_viewport.x / u_viewport.y;
 	vec2 lpos = u_lightPosition;
 	lpos.x *= u_viewport.x / u_viewport.y;
 	vec3 color = u_color * lensflare(uv, lpos);
-	color = cc(color, 0.5, 0.1) + texture2D(u_texture0, v_texCoords).rgb;
-	gl_FragColor = vec4(color, 1.0);
+	gl_FragColor = vec4(sampled.rgb + cc(color, 0.5, 0.1), sampled.a);
 }

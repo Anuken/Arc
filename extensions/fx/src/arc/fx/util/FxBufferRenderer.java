@@ -1,6 +1,7 @@
 package arc.fx.util;
 
 import arc.*;
+import arc.graphics.*;
 import arc.graphics.gl.*;
 import arc.util.*;
 
@@ -64,7 +65,7 @@ public class FxBufferRenderer implements Disposable{
 
     public void renderToScreen(FxBuffer input, int x, int y, int width, int height){
         input.getFbo().getTexture().bind(0);
-        Core.graphics.getGL20().glViewport(x, y, width, height);
+        Gl.viewport(x, y, width, height);
 
         shader.begin();
         mesh.render(shader);

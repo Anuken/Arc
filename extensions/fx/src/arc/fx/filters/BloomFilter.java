@@ -2,45 +2,50 @@ package arc.fx.filters;
 
 import arc.fx.*;
 import arc.fx.util.*;
+import arc.graphics.Blending;
 import arc.graphics.*;
 import arc.graphics.Pixmap.*;
 
-public final class BloomFilter extends FxFilter{
-    public final PingPongBuffer pingPongBuffer;
+public class BloomFilter extends FxFilter{
+    public final PingPongBuffer buffer;
 
     public final GaussianBlurFilter blur;
     public final ThresholdFilter threshold;
     public final CombineFilter combine;
 
-    public boolean blending = false;
-    public int sfactor, dfactor;
+    public Blending blending = Blending.normal;
+    public int scaling = 4;
 
     public BloomFilter(){
-        pingPongBuffer = new PingPongBuffer(Format.RGBA8888);
+        buffer = new PingPongBuffer(Format.RGBA8888);
 
         blur = new GaussianBlurFilter();
         threshold = new ThresholdFilter();
         combine = new CombineFilter();
 
-        blur.setPasses(10);
-        threshold.gamma = 0.85f;
+        blur.setPasses(2);
+        blur.setAmount(10f);
+        threshold.gamma = 0f;
         combine.src1int = 1f;
-        combine.src1sat = 0.85f;
-        combine.src2int = 1.f;
-        combine.src2sat = 0.85f;
+        combine.src1sat = 1f;
+        combine.src2int = 2f;
+        combine.src2sat = 2f;
+        rebind();
     }
 
     @Override
     public void rebind(){
         threshold.rebind();
         combine.rebind();
-        pingPongBuffer.rebind();
+        buffer.rebind();
     }
 
     @Override
     public void resize(int width, int height){
-        pingPongBuffer.resize(width, height);
+        width /= scaling;
+        height /= scaling;
 
+        buffer.resize(width, height);
         blur.resize(width, height);
         threshold.resize(width, height);
         combine.resize(width, height);
@@ -51,7 +56,7 @@ public final class BloomFilter extends FxFilter{
         combine.dispose();
         threshold.dispose();
         blur.dispose();
-        pingPongBuffer.dispose();
+        buffer.dispose();
     }
 
     @Override
@@ -60,28 +65,25 @@ public final class BloomFilter extends FxFilter{
 
         Gl.disable(Gl.blend);
 
-        pingPongBuffer.begin();
+        buffer.begin();
 
         // Threshold / high-pass filter
         // Only areas with pixels >= threshold are blit to smaller FBO
-        threshold.setInput(texSrc).setOutput(pingPongBuffer.getDstBuffer()).render(mesh);
-        pingPongBuffer.swap();
+        threshold.setInput(texSrc).setOutput(buffer.getDstBuffer()).render(mesh);
+        buffer.swap();
 
         // Blur pass
-        blur.render(mesh, pingPongBuffer);
+        blur.render(mesh, buffer);
 
-        pingPongBuffer.end();
+        buffer.end();
 
-        if(blending){
+        if(blending != Blending.disabled){
             Gl.enable(Gl.blend);
-        }
-
-        if(blending){
-            Gl.blendFunc(sfactor, dfactor);
+            Gl.blendFunc(blending.src, blending.dst);
         }
 
         // Mix original scene and blurred threshold, modulate via set(Base|BloomEffect)(Saturation|Intensity)
-        combine.setInput(texSrc, pingPongBuffer.getDstTexture())
+        combine.setInput(texSrc, buffer.getDstTexture())
         .setOutput(dst)
         .render(mesh);
     }

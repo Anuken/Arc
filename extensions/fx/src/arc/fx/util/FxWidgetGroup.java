@@ -65,7 +65,7 @@ public class FxWidgetGroup extends WidgetGroup{
 
         performPendingResize();
 
-        fxProcessor.cleanUpBuffers();
+        fxProcessor.clear();
 
         fxProcessor.getPingPongBuffer().addRenderer(rendererAdapter);
         fxProcessor.beginCapture();

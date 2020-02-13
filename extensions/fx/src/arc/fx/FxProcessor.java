@@ -182,14 +182,14 @@ public final class FxProcessor implements Disposable{
     /**
      * Cleans up managed {@link PingPongBuffer}s' with {@link Color#clear}.
      */
-    public void cleanUpBuffers(){
-        cleanUpBuffers(Color.clear);
+    public void clear(){
+        clear(Color.clear);
     }
 
     /**
      * Cleans up managed {@link PingPongBuffer}s' with specified color.
      */
-    public void cleanUpBuffers(Color color){
+    public void clear(Color color){
         if(capturing) throw new IllegalStateException("Cannot clean up buffers when capturing.");
         if(applyingEffects) throw new IllegalStateException("Cannot clean up buffers when applying effects.");
 
@@ -247,6 +247,9 @@ public final class FxProcessor implements Disposable{
             // Enable blending to preserve buffer's alpha values.
             if(blendingEnabled){
                 Gl.enable(Gl.blend);
+            }else{
+                //disable otherwise
+                Gl.disable(Gl.blend);
             }
 
             Gl.disable(Gl.cullFace);

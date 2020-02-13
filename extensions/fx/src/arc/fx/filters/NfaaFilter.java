@@ -26,7 +26,7 @@ public final class NfaaFilter extends FxFilter{
 
     @Override
     public void setParams(){
-        shader.setUniformf("u_texture0", u_texture0);
+        shader.setUniformi("u_texture0", u_texture0);
         shader.setUniformf("u_viewportInverse", viewportInverse);
     }
 }

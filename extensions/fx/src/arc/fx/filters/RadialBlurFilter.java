@@ -64,7 +64,7 @@ public final class RadialBlurFilter extends FxFilter{
 
     @Override
     public void setParams(){
-        shader.setUniformf("u_texture0", u_texture0);
+        shader.setUniformi("u_texture0", u_texture0);
         shader.setUniformf("u_blurDiv", this.strength / (float)passes);
         shader.setUniformf("u_offsetX", originX);
         shader.setUniformf("u_offsetY", originY);

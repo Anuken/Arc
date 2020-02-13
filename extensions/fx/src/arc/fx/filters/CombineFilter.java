@@ -1,6 +1,5 @@
 package arc.fx.filters;
 
-import arc.*;
 import arc.fx.*;
 import arc.fx.util.*;
 import arc.graphics.*;
@@ -10,9 +9,7 @@ public final class CombineFilter extends FxFilter{
     public Texture inputTexture2 = null;
 
     public CombineFilter(){
-        super(compileShader(
-        Core.files.classpath("shaders/screenspace.vert"),
-        Core.files.classpath("shaders/combine.frag")));
+        super("screenspace", "combine");
         rebind();
     }
 
@@ -33,7 +30,7 @@ public final class CombineFilter extends FxFilter{
         shader.setUniformi("u_texture0", u_texture0);
         shader.setUniformi("u_texture1", u_texture1);
         shader.setUniformf("u_src1Intensity", src1int);
-        shader.setUniformf("u_src1Saturation", src2int);
+        shader.setUniformf("u_src2Intensity", src2int);
         shader.setUniformf("u_src1Saturation", src1sat);
         shader.setUniformf("u_src2Saturation", src2sat);
     }

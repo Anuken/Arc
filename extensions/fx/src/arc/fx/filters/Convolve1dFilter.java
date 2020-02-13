@@ -41,7 +41,7 @@ public final class Convolve1dFilter extends FxFilter{
 
     @Override
     public void setParams(){
-        shader.setUniformf("u_texture0", u_texture0);
+        shader.setUniformi("u_texture0", u_texture0);
         shader.setUniform1fv("SampleWeights", weights, 0, length);
         shader.setUniform2fv("SampleOffsets", offsets, 0, length * 2);
     }

@@ -26,7 +26,7 @@ public final class HdrFilter extends FxFilter{
     @Override
     public void setParams(){
         // reimplement super to batch every parameter
-        shader.setUniformf("u_texture0", u_texture0);
+        shader.setUniformi("u_texture0", u_texture0);
         shader.setUniformf("u_exposure", exposure);
         shader.setUniformf("u_gamma", gamma);
     }

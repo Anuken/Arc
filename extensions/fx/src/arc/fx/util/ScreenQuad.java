@@ -12,7 +12,7 @@ import arc.util.*;
  * @author metaphore
  */
 public class ScreenQuad implements Disposable{
-    private static final float[] verts = {-1, -1, 1, -1, 1, 1, -1, 1, 0, 0, 1, 0, 1, 1, 0, 1};
+    private static final float[] verts = {-1f, -1f, 0f, 0f, 1f, -1f, 1f, 0f, 1f, 1f, 1f, 1f, -1f, 1f, 0f, 1f};
     public final Mesh mesh;
 
     public ScreenQuad(){

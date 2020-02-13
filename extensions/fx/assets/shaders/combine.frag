@@ -41,15 +41,13 @@ const vec3 GRAYSCALE = vec3(0.3, 0.59, 0.11);
 //const float BaseSat = 1;
 //const float BloomSat = 1;
 
-vec3 adjustSaturation(vec3 color, float saturation)
-{
+vec3 adjustSaturation(vec3 color, float saturation){
 	vec3 grey = vec3(dot(color, GRAYSCALE));
 	//vec3 grey = vec3((color.r+color.g+color.b)*0.333);
 	return mix(grey, color, saturation);
 }
 
-void main()
-{
+void main(){
 	// lookup inputs
 	vec4 src1 = texture2D(u_texture0, v_texCoords) * u_src1Intensity;
 	vec4 src2 = texture2D(u_texture1, v_texCoords) * u_src2Intensity;

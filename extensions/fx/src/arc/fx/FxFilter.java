@@ -1,5 +1,6 @@
 package arc.fx;
 
+import arc.*;
 import arc.files.*;
 import arc.fx.util.*;
 import arc.graphics.*;
@@ -27,6 +28,10 @@ public abstract class FxFilter implements Disposable{
         this(null);
     }
 
+    public FxFilter(String vert, String frag){
+        this(compileShader(Core.files.classpath("shaders/"+vert+".vert"), Core.files.classpath("shaders/"+frag+".frag")));
+    }
+
     public FxFilter(Shader shader){
         this.shader = shader;
     }
@@ -41,7 +46,7 @@ public abstract class FxFilter implements Disposable{
 
     public FxFilter setInput(Texture input){
         this.inputTexture = input;
-        return this; // Assumes T extends VfxFilter
+        return this;
     }
 
     public FxFilter setInput(FxBuffer input){
@@ -50,7 +55,7 @@ public abstract class FxFilter implements Disposable{
 
     public FxFilter setOutput(FxBuffer output){
         this.outputBuffer = output;
-        return this; // Assumes T extends VfxFilter
+        return this;
     }
 
     @Override
@@ -79,6 +84,9 @@ public abstract class FxFilter implements Disposable{
      * context is lost. Eg., framebuffer textures should be updated and shader parameters should be reuploaded/rebound.
      */
     protected void setParams(){
+        if(shader != null){
+            shader.setUniformi("u_texture0", u_texture0);
+        }
     }
 
     /*

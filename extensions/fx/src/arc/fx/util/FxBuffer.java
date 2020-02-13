@@ -184,16 +184,14 @@ public class FxBuffer implements Disposable{
 
     protected Rect getViewport(){
         IntBuffer intBuf = tmpIntBuf;
-        Gl.getIntegerv(GL20.GL_VIEWPORT, intBuf);
+        Gl.getIntegerv(Gl.viewport, intBuf);
         return tmpViewport.set(intBuf.get(0), intBuf.get(1), intBuf.get(2), intBuf.get(3));
     }
 
     private static class RendererManager implements Renderer{
         private final Array<Renderer> renderers = new Array<>();
 
-        // Closed CTOR
-        RendererManager(){
-        }
+        RendererManager(){}
 
         public void addRenderer(Renderer renderer){
             renderers.add(renderer);

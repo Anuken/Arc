@@ -14,7 +14,7 @@ public class MotionBlurFilter extends FxFilter{
     private final CopyFilter copyFilter;
     private final FxBufferQueue localBuffer;
 
-    public float blurOpacity = 0.5f;
+    public float blurOpacity = 0.9f;
     public Texture lastFrameTex;
 
     public MotionBlurFilter(BlurFunction blurFunction){
@@ -54,9 +54,9 @@ public class MotionBlurFilter extends FxFilter{
 
     @Override
     public void setParams(){
-        shader.setUniformf("u_texture0", u_texture0);
+        shader.setUniformi("u_texture0", u_texture0);
         if(lastFrameTex != null){
-            shader.setUniformf("u_texture1", u_texture1);
+            shader.setUniformi("u_texture1", u_texture1);
         }
         shader.setUniformf("u_blurOpacity", this.blurOpacity);
     }

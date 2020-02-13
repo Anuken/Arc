@@ -1,6 +1,5 @@
 package arc.fx.filters;
 
-import arc.*;
 import arc.fx.*;
 import arc.util.*;
 
@@ -10,9 +9,7 @@ public final class ZoomFilter extends FxFilter{
     public float zoom = 1f;
 
     public ZoomFilter(){
-        super(compileShader(
-        Core.files.classpath("shaders/zoom.vert"),
-        Core.files.classpath("shaders/zoom.frag")));
+        super("zoom", "zoom");
         rebind();
     }
 
@@ -43,7 +40,7 @@ public final class ZoomFilter extends FxFilter{
 
     @Override
     public void setParams(){
-        shader.setUniformf("u_texture0", u_texture0);
+        shader.setUniformi("u_texture0", u_texture0);
         shader.setUniformf("u_offsetX", originX);
         shader.setUniformf("u_offsetY", originY);
         shader.setUniformf("u_zoom", zoom);

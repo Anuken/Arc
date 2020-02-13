@@ -31,7 +31,7 @@ public final class LensFlareFilter extends FxFilter{
 
     @Override
     public void setParams(){
-        shader.setUniformf("u_texture0", u_texture0);
+        shader.setUniformi("u_texture0", u_texture0);
         shader.setUniformf("u_lightPosition", lightPosition);
         shader.setUniformf("u_intensity", intensity);
         shader.setUniformf("u_color", color.r, color.g, color.b);

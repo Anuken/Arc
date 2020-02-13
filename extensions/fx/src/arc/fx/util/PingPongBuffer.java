@@ -41,8 +41,8 @@ public final class PingPongBuffer{
 
     private TextureWrap wrapU = TextureWrap.ClampToEdge;
     private TextureWrap wrapV = TextureWrap.ClampToEdge;
-    private TextureFilter filterMin = TextureFilter.Nearest;
-    private TextureFilter filterMag = TextureFilter.Nearest;
+    private TextureFilter filterMin = TextureFilter.Linear;
+    private TextureFilter filterMag = TextureFilter.Linear;
 
     /**
      * Initializes ping-pong buffer with the size of the LibGDX client's area (usually window size).

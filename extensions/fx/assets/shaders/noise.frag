@@ -34,6 +34,6 @@ float random(vec2 n, float offset){
 
 void main() {
     vec4 color = texture2D(u_texture0, v_texCoords);
-    color += vec4(vec3(u_amount * random(v_texCoords, 0.00001 * u_speed * u_time)), 1.0);
+    color += vec4(u_amount * random(v_texCoords, 0.00001 * u_speed * u_time));
     gl_FragColor = color;
 }
