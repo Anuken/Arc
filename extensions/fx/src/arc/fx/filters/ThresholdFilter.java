@@ -2,7 +2,7 @@ package arc.fx.filters;
 
 import arc.fx.*;
 
-public final class ThresholdFilter extends FxFilter{
+public class ThresholdFilter extends FxFilter{
     public float gamma = 0;
 
     public ThresholdFilter(){
