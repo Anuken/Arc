@@ -66,7 +66,7 @@ public final class FxProcessor implements Disposable{
         }
     }
 
-    public void setParams(){
+    public void rebind(){
         bufferRenderer.rebind();
 
         for(int i = 0; i < effectsAll.size(); i++){

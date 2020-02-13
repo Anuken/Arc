@@ -186,7 +186,7 @@ public class FxWidgetGroup extends WidgetGroup{
         }
 
         @Override
-        public void assignLocalMatrices(Mat projection, Mat transform){
+        public void push(Mat projection, Mat transform){
             preservedProjection.set(Draw.proj());
 
             if(!matchWidgetSize){
@@ -197,7 +197,7 @@ public class FxWidgetGroup extends WidgetGroup{
         }
 
         @Override
-        public void restoreOwnMatrices(){
+        public void pop(){
             Draw.proj(preservedProjection);
         }
 

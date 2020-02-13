@@ -38,12 +38,18 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     protected final static Map<Application, Array<GLFrameBuffer>> buffers = new HashMap<>();
 
     protected final static int GL_DEPTH24_STENCIL8_OES = 0x88F0;
+    /** the currently bound framebuffer; null for the default one. */
+    protected static GLFrameBuffer currentBoundFramebuffer;
     /** the default framebuffer handle, a.k.a screen. */
     protected static int defaultFramebufferHandle;
+    /** # of nested buffers right now */
+    protected static int bufferNesting;
     /** true if we have polled for the default handle already. */
     protected static boolean defaultFramebufferHandleInitialized = false;
     /** the color buffer texture **/
     protected Array<T> textureAttachments = new Array<>();
+    /** the framebuffer that was bound before this one began (null to indicate that nothing was bound) **/
+    protected GLFrameBuffer lastBoundFramebuffer = null;
     /** the framebuffer handle **/
     protected int framebufferHandle;
     /** the depthbuffer render object handle **/
@@ -67,6 +73,10 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     protected GLFrameBuffer(GLFrameBufferBuilder<? extends GLFrameBuffer<T>> bufferBuilder){
         this.bufferBuilder = bufferBuilder;
         build();
+    }
+
+    public static int getBufferNesting(){
+        return bufferNesting;
     }
 
     /** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
@@ -353,6 +363,10 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
 
     /** Binds the frame buffer and sets the viewport accordingly, so everything gets drawn to it. */
     public void begin(){
+        //save last buffer
+        lastBoundFramebuffer = currentBoundFramebuffer;
+        currentBoundFramebuffer = this;
+        bufferNesting ++;
         bind();
         setFrameBufferViewport();
     }
@@ -364,19 +378,23 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
 
     /** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
     public void end(){
-        end(0, 0, Core.graphics.getBackBufferWidth(), Core.graphics.getBackBufferHeight());
-    }
+        //there was a buffer before this one
+        if(lastBoundFramebuffer != null){
+            //rebind the last framebuffer and set its viewport
+            lastBoundFramebuffer.bind();
+            lastBoundFramebuffer.setFrameBufferViewport();
+        }else{
+            //bind to default buffer and viewport
+            unbind();
+            Core.gl20.glViewport(0, 0, Core.graphics.getBackBufferWidth(), Core.graphics.getBackBufferHeight());
+        }
 
-    /**
-     * Unbinds the framebuffer and sets viewport sizes, all drawing will be performed to the normal framebuffer from here on.
-     * @param x the x-axis position of the viewport in pixels
-     * @param y the y-asis position of the viewport in pixels
-     * @param width the width of the viewport in pixels
-     * @param height the height of the viewport in pixels
-     */
-    public void end(int x, int y, int width, int height){
-        unbind();
-        Core.gl20.glViewport(x, y, width, height);
+        bufferNesting --;
+
+        //set last bound framebuffer as current
+        currentBoundFramebuffer = lastBoundFramebuffer;
+        //no longer bound, so nothing came last
+        lastBoundFramebuffer = null;
     }
 
     /** @return The OpenGL handle of the framebuffer (see {@link GL20#glGenFramebuffer()}) */
