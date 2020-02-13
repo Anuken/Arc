@@ -5,12 +5,9 @@ import arc.graphics.Texture.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.pooling.*;
-
-import java.nio.*;
 
 /**
  * Wraps {@link FrameBuffer} and manages currently bound OpenGL FBO.
@@ -48,21 +45,11 @@ import java.nio.*;
  * @author metaphore
  */
 public class FxBuffer implements Disposable{
-    /** Current depth of buffer nesting rendering (keeps track of how many buffers currently activated). */
-    public static int bufferNesting = 0;
-
-    private static final IntBuffer tmpIntBuf = ByteBuffer.allocateDirect(16 * Integer.SIZE / 8).order(ByteOrder.nativeOrder()).asIntBuffer();
-    private static final Rect tmpViewport = new Rect();
-    private static final Mat zeroTransform = new Mat();
-
-    private final Mat localProjection = new Mat();
-    private final Mat localTransform = new Mat();
+    public final Mat localProjection = new Mat();
+    public final Mat localTransform = new Mat();
 
     private final RendererManager renderers = new RendererManager();
-
-    private final Rect preservedViewport = new Rect();
     private final Pixmap.Format pixelFormat;
-    private int previousFboHandle;
 
     private FrameBuffer fbo;
     private boolean initialized;
@@ -81,13 +68,12 @@ public class FxBuffer implements Disposable{
 
         initialized = true;
 
-        int boundFboHandle = getBoundFboHandle();
         fbo = new FrameBuffer(pixelFormat, width, height, false);
+        //TODO change?
         fbo.getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-        Gl.bindFramebuffer(GL20.GL_FRAMEBUFFER, boundFboHandle);
 
         localProjection.setOrtho(0, 0, width, height);
-        localTransform.set(zeroTransform);
+        localTransform.idt();
     }
 
     @Override
@@ -125,67 +111,26 @@ public class FxBuffer implements Disposable{
         renderers.clearRenderers();
     }
 
-    public void setProjectionMatrix(Mat matrix){
-        localProjection.set(matrix);
-    }
-
-    public void setTransformMatrix(Mat matrix){
-        localTransform.set(matrix);
-    }
-
-    public Mat getProjectionMatrix(){
-        return localProjection;
-    }
-
-    public Mat getTransformMatrix(){
-        return localTransform;
-    }
-
     public void begin(){
-        bufferNesting++;
-
         if(!initialized) throw new IllegalStateException("BatchedFboWrapper must be initialized first");
         if(drawing) throw new IllegalStateException("Already drawing");
 
         drawing = true;
 
         renderers.flush();
-        previousFboHandle = getBoundFboHandle();
-        preservedViewport.set(getViewport());
-        Gl.bindFramebuffer(GL20.GL_FRAMEBUFFER, fbo.getFramebufferHandle());
-        Gl.viewport(0, 0, getFbo().getWidth(), getFbo().getHeight());
-        renderers.assignLocalMatrices(localProjection, localTransform);
+        fbo.begin();
+        renderers.push(localProjection, localTransform);
     }
 
     public void end(){
-        bufferNesting--;
-
         if(!initialized) throw new IllegalStateException("BatchedFboWrapper must be initialized first");
         if(!drawing) throw new IllegalStateException("Is not drawing");
-
-        if(getBoundFboHandle() != fbo.getFramebufferHandle()){
-            throw new IllegalStateException("Current bound OpenGL FBO's handle doesn't match to wrapped one. It seems like begin/end order was violated.");
-        }
 
         drawing = false;
 
         renderers.flush();
-        Gl.bindFramebuffer(GL20.GL_FRAMEBUFFER, previousFboHandle);
-        Gl.viewport((int)preservedViewport.x, (int)preservedViewport.y, (int)preservedViewport.width, (int)preservedViewport.height);
-        renderers.restoreOwnMatrices();
-    }
-
-    protected int getBoundFboHandle(){
-        //TODO remove
-        IntBuffer intBuf = tmpIntBuf;
-        Gl.getIntegerv(Gl.framebufferBinding, intBuf);
-        return intBuf.get(0);
-    }
-
-    protected Rect getViewport(){
-        IntBuffer intBuf = tmpIntBuf;
-        Gl.getIntegerv(Gl.viewport, intBuf);
-        return tmpViewport.set(intBuf.get(0), intBuf.get(1), intBuf.get(2), intBuf.get(3));
+        fbo.end();
+        renderers.pop();
     }
 
     private static class RendererManager implements Renderer{
@@ -213,26 +158,24 @@ public class FxBuffer implements Disposable{
         }
 
         @Override
-        public void assignLocalMatrices(Mat projection, Mat transform){
+        public void push(Mat projection, Mat transform){
             for(int i = 0; i < renderers.size; i++){
-                renderers.get(i).assignLocalMatrices(projection, transform);
+                renderers.get(i).push(projection, transform);
             }
         }
 
         @Override
-        public void restoreOwnMatrices(){
+        public void pop(){
             for(int i = 0; i < renderers.size; i++){
-                renderers.get(i).restoreOwnMatrices();
+                renderers.get(i).pop();
             }
         }
     }
 
     public interface Renderer{
         void flush();
-
-        void assignLocalMatrices(Mat projection, Mat transform);
-
-        void restoreOwnMatrices();
+        void push(Mat projection, Mat transform);
+        void pop();
     }
 
     public static abstract class RendererAdapter implements Renderer{
@@ -240,14 +183,14 @@ public class FxBuffer implements Disposable{
         private final Mat preservedTransform = new Mat();
 
         @Override
-        public void assignLocalMatrices(Mat projection, Mat transform){
+        public void push(Mat projection, Mat transform){
             preservedProjection.set(getProjection());
             preservedTransform.set(getTransform());
             setProjection(projection);
         }
 
         @Override
-        public void restoreOwnMatrices(){
+        public void pop(){
             setProjection(preservedProjection);
         }
 
