@@ -1,0 +1,31 @@
+package arc.fx.filters;
+
+import arc.*;
+import arc.fx.*;
+
+/**
+ * Controls levels of brightness and contrast
+ * @author tsagrista
+ */
+public final class LevelsFilter extends FxFilter{
+    public float brightness = 0.0f;
+    public float contrast = 1.0f;
+    public float saturation = 1.0f;
+    public float hue = 1.0f;
+    public float gamma = 1.0f;
+
+    public LevelsFilter(){
+        super(compileShader(Core.files.classpath("shaders/screenspace.vert"), Core.files.classpath("shaders/levels.frag")));
+        rebind();
+    }
+
+    @Override
+    public void setParams(){
+        shader.setUniformf("u_texture0", u_texture0);
+        shader.setUniformf("u_brightness", brightness);
+        shader.setUniformf("u_contrast", contrast);
+        shader.setUniformf("u_saturation", saturation);
+        shader.setUniformf("u_hue", hue);
+        shader.setUniformf("u_gamma", gamma);
+    }
+}
