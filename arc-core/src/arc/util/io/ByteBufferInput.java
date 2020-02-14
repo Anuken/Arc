@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
 /** DataInput wrapper of ByteBuffer. */
 public class ByteBufferInput implements DataInput{
-    private ByteBuffer buffer;
+    public ByteBuffer buffer;
 
     /** Wraps the specified ByteBuffer. */
     public ByteBufferInput(ByteBuffer buffer){

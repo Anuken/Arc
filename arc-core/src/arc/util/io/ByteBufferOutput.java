@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
 /** DataOutput wrapper of ByteBuffer. */
 public class ByteBufferOutput implements DataOutput{
-    private ByteBuffer buffer;
+    public ByteBuffer buffer;
 
     /** Wraps the specified ByteBuffer. */
     public ByteBufferOutput(ByteBuffer buffer){
