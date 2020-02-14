@@ -6,10 +6,17 @@ import java.io.*;
 
 /** A wrapper for DataOutput with more concise method names and no IOExceptions. */
 public class Writes{
+    private static Writes instance = new Writes(null);
+
     public @NonNull DataOutput output;
 
     public Writes(DataOutput output){
         this.output = output;
+    }
+
+    public static Writes get(DataOutput output){
+        instance.output = output;
+        return instance;
     }
 
     /** write long */
@@ -54,7 +61,7 @@ public class Writes{
     }
 
     /** write boolean (writes a byte internally) */
-    public void b(boolean b){
+    public void bool(boolean b){
         b(b ? 1 : 0);
     }
 

@@ -6,10 +6,17 @@ import java.io.*;
 
 /** A wrapper for DataInput with more concise method names and no IOExceptions. */
 public class Reads{
+    private static Reads instance = new Reads(null);
+
     public @NonNull DataInput input;
 
     public Reads(DataInput input){
         this.input = input;
+    }
+
+    public static Reads get(DataInput input){
+        instance.input = input;
+        return instance;
     }
 
     /** read long */
