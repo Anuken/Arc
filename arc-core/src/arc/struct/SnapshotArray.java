@@ -140,14 +140,14 @@ public class SnapshotArray<T> extends Array<T>{
         super.clear();
     }
 
-    public void sort(){
+    public Array<T> sort(){
         modified();
-        super.sort();
+        return super.sort();
     }
 
-    public void sort(Comparator<? super T> comparator){
+    public Array<T> sort(Comparator<? super T> comparator){
         modified();
-        super.sort(comparator);
+        return super.sort(comparator);
     }
 
     public void reverse(){

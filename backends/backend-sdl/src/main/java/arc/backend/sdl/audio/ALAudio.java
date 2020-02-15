@@ -2,10 +2,10 @@ package arc.backend.sdl.audio;
 
 import arc.*;
 import arc.audio.*;
-import arc.audio.mock.*;
-import arc.struct.*;
 import arc.files.*;
 import arc.math.*;
+import arc.mock.*;
+import arc.struct.*;
 import arc.util.*;
 
 import java.nio.*;

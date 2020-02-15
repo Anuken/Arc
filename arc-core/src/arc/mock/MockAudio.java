@@ -1,4 +1,4 @@
-package arc.audio.mock;
+package arc.mock;
 
 import arc.*;
 import arc.audio.*;

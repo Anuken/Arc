@@ -5,7 +5,7 @@ import arc.util.ArcAnnotate.*;
 import java.io.*;
 
 /** A wrapper for DataInput with more concise method names and no IOExceptions. */
-public class Reads{
+public class Reads implements Closeable{
     private static Reads instance = new Reads(null);
 
     public @NonNull DataInput input;
@@ -121,6 +121,17 @@ public class Reads{
             return input.readUTF();
         }catch(IOException e){
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void close(){
+        if(input instanceof Closeable){
+            try{
+                ((Closeable)input).close();
+            }catch(IOException e){
+                throw new RuntimeException(e);
+            }
         }
     }
 }

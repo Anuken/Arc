@@ -288,6 +288,14 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>>{
         return defaultValue;
     }
 
+    public int increment(K key){
+        return getAndIncrement(key, 0, 1);
+    }
+
+    public int increment(K key, int amount){
+        return getAndIncrement(key, 0, amount);
+    }
+
     /**
      * Returns the key's current value and increments the stored value. If the key is not in the map, defaultValue + increment is
      * put into the map.
@@ -686,6 +694,17 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>>{
 
         public Entries(ObjectIntMap<K> map){
             super(map);
+        }
+
+        public Array<Entry<K>> toArray(){
+            Array<Entry<K>> out = new Array<>();
+            for(Entry<K> entry : this){
+                Entry<K> e = new Entry<>();
+                e.key = entry.key;
+                e.value = entry.value;
+                out.add(e);
+            }
+            return out;
         }
 
         /** Note the same entry instance is returned each time this method is called. */

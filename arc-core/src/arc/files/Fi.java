@@ -12,6 +12,7 @@ import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.nio.channels.FileChannel.*;
+import java.util.zip.*;
 
 /**
  * Represents a file or directory on the filesystem, classpath, Android SD card, or Android assets directory. FileHandles are
@@ -363,6 +364,22 @@ public class Fi{
         }finally{
             Streams.closeQuietly(raf);
         }
+    }
+
+    public Writes writes(){
+        return new Writes(new DataOutputStream(write(false, Streams.DEFAULT_BUFFER_SIZE)));
+    }
+
+    public Reads reads(){
+        return new Reads(new DataInputStream(read(Streams.DEFAULT_BUFFER_SIZE)));
+    }
+
+    public Writes writesDeflate(){
+        return new Writes(new DataOutputStream(new DeflaterOutputStream(write(false, Streams.DEFAULT_BUFFER_SIZE))));
+    }
+
+    public Reads readsDeflate(){
+        return new Reads(new DataInputStream(new InflaterInputStream(read(Streams.DEFAULT_BUFFER_SIZE))));
     }
 
     public OutputStream write(){

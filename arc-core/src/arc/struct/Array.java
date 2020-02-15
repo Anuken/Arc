@@ -679,21 +679,25 @@ public class Array<T> implements Iterable<T>{
      * Sorts this array. The array elements must implement {@link Comparable}. This method is not thread safe (uses
      * {@link Sort#instance()}).
      */
-    public void sort(){
+    public Array<T> sort(){
         Sort.instance().sort(items, 0, size);
+        return this;
     }
 
     /** Sorts the array. This method is not thread safe (uses {@link Sort#instance()}). */
-    public void sort(Comparator<? super T> comparator){
+    public Array<T> sort(Comparator<? super T> comparator){
         Sort.instance().sort(items, comparator, 0, size);
+        return this;
     }
 
-    public void sort(Floatf<? super T> comparator){
+    public Array<T> sort(Floatf<? super T> comparator){
         Sort.instance().sort(items, Structs.comparingFloat(comparator), 0, size);
+        return this;
     }
 
-    public <U extends Comparable<? super U>> void sortComparing(Func<? super T, ? extends U> keyExtractor){
+    public <U extends Comparable<? super U>> Array<T> sortComparing(Func<? super T, ? extends U> keyExtractor){
         sort(Structs.comparing(keyExtractor));
+        return this;
     }
 
     public Array<T> selectFrom(Array<T> base, Boolf<T> predicate){

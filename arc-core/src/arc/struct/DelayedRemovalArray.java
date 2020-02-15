@@ -145,14 +145,14 @@ public class DelayedRemovalArray<T> extends Array<T>{
         return super.pop();
     }
 
-    public void sort(){
+    public Array<T> sort(){
         if(iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
-        super.sort();
+        return super.sort();
     }
 
-    public void sort(Comparator<? super T> comparator){
+    public Array<T> sort(Comparator<? super T> comparator){
         if(iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
-        super.sort(comparator);
+        return super.sort(comparator);
     }
 
     public void reverse(){

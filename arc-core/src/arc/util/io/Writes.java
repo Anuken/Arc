@@ -5,7 +5,7 @@ import arc.util.ArcAnnotate.*;
 import java.io.*;
 
 /** A wrapper for DataOutput with more concise method names and no IOExceptions. */
-public class Writes{
+public class Writes implements Closeable{
     private static Writes instance = new Writes(null);
 
     public @NonNull DataOutput output;
@@ -98,6 +98,17 @@ public class Writes{
             output.writeUTF(str);
         }catch(IOException e){
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void close(){
+        if(output instanceof Closeable){
+            try{
+                ((Closeable)output).close();
+            }catch(IOException e){
+                throw new RuntimeException(e);
+            }
         }
     }
 }

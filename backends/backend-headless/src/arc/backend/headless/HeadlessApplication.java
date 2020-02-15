@@ -1,10 +1,10 @@
 package arc.backend.headless;
 
 import arc.*;
-import arc.audio.mock.*;
 import arc.backend.headless.mock.*;
-import arc.struct.*;
 import arc.func.*;
+import arc.mock.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.async.*;
 
