@@ -23,12 +23,12 @@ public class ByteBufferInput implements DataInput{
 
     @Override
     public void readFully(byte[] bytes){
-        throw new RuntimeException("Stub!");
+        buffer.get(bytes);
     }
 
     @Override
-    public void readFully(byte[] bytes, int i, int i1){
-        throw new RuntimeException("Stub!");
+    public void readFully(byte[] bytes, int f, int to){
+        buffer.get(bytes, f, to);
     }
 
     @Override
