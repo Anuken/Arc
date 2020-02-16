@@ -16,6 +16,10 @@ public class Angles{
         return 360 - forwardDistance(angle1, angle2);
     }
 
+    public static boolean within(float a, float b, float margin){
+        return angleDist(a, b) <= margin;
+    }
+
     public static float angleDist(float a, float b){
         a = a % 360f;
         b = b % 360f;
