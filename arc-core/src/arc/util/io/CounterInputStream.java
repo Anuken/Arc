@@ -18,6 +18,12 @@ public class CounterInputStream extends FilterInputStream{
     }
 
     @Override
+    public long skip(long l) throws IOException{
+        count += l;
+        return super.skip(l);
+    }
+
+    @Override
     public int read() throws IOException{
         count ++;
         return in.read();
