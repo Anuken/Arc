@@ -357,10 +357,10 @@ public class SpriteBatch implements Disposable{
         int count = spritesInBatch * 6;
 
         if(blending != Blending.disabled){
-            Core.gl.glEnable(GL20.GL_BLEND);
-            Core.gl.glBlendFuncSeparate(blending.src, blending.dst, blending.src, blending.dst);
+            Gl.enable(Gl.blend);
+            Gl.blendFuncSeparate(blending.src, blending.dst, blending.src, blending.dst);
         }else{
-            Core.gl.glDisable(GL20.GL_BLEND);
+            Gl.disable(Gl.blend);
         }
 
         lastTexture.bind();
@@ -368,7 +368,7 @@ public class SpriteBatch implements Disposable{
         mesh.setVertices(vertices, 0, idx);
         mesh.getIndicesBuffer().position(0);
         mesh.getIndicesBuffer().limit(count);
-        mesh.render(getShader(), GL20.GL_TRIANGLES, 0, count);
+        mesh.render(getShader(), Gl.triangles, 0, count);
 
         idx = 0;
 
