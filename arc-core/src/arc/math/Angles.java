@@ -1,8 +1,8 @@
 package arc.math;
 
-import arc.Core;
+import arc.*;
 import arc.func.*;
-import arc.math.geom.Vec2;
+import arc.math.geom.*;
 
 public class Angles{
     private static final Rand random = new Rand();
@@ -21,9 +21,7 @@ public class Angles{
     }
 
     public static float angleDist(float a, float b){
-        a = a % 360f;
-        b = b % 360f;
-        return Math.min(forwardDistance(a, b), backwardDistance(a, b));
+        return Math.min((a - b) < 0 ? a - b + 360 : a - b, (b - a) < 0 ? b - a + 360 : b - a);
     }
 
     public static boolean near(float a, float b, float range){
@@ -34,7 +32,7 @@ public class Angles{
         if(Math.abs(angleDist(angle, to)) < speed) return to;
 
         if((angle > to && backwardDistance(angle, to) > forwardDistance(angle, to)) ||
-                (angle < to && backwardDistance(angle, to) < forwardDistance(angle, to))){
+            (angle < to && backwardDistance(angle, to) < forwardDistance(angle, to))){
             angle -= speed;
         }else{
             angle += speed;
