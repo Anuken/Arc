@@ -331,6 +331,18 @@ public class Vec3 implements Vector<Vec3>{
         return x * vector.x + y * vector.y + z * vector.z;
     }
 
+    /** @return the angle to the other vector, in radians. */
+    public float angleRad(final Vec3 vector){
+        float l = len();
+        float l2 = vector.len();
+        return (float)Math.acos(dot(x / l, y / l, z / l, vector.x / l2, vector.y / l2, vector.z / l2));
+    }
+
+    /** @return the angle to the other vector, in degrees. */
+    public float angle(final Vec3 vector){
+        return angleRad(vector) * Mathf.radDeg;
+    }
+
     /**
      * Returns the dot product between this and the given vector.
      * @param x The x-component of the other vector
