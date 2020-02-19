@@ -1,6 +1,7 @@
 package arc.util.noise;
 
 //TODO why dos this class still exist
+/** Perlin noise implementation. */
 public final class Noise{
     private static int seed = 100;
 
@@ -26,7 +27,7 @@ public final class Noise{
         return t * t * (3 - t - t);
     }
 
-    public static double noise(double x){
+    public static double rawNoise(double x){
 
         int bx0, bx1;
         double rx0, rx1, sx, t, u, v;
@@ -44,31 +45,31 @@ public final class Noise{
     }
 
 
-    public static double snoise(int x, int y, float scale, float mag, float exp){
-        return (Math.pow((noise((x) / scale, y / scale) * mag), (exp)));
+    public static double snoise(float x, float y, float scale, float mag, float exp){
+        return (Math.pow((rawNoise((x) / scale, y / scale) * mag), (exp)));
     }
 
-    public static float snoise(int x, int y, float scale, float mag){
-        return (float)((noise((x) / scale, y / scale) * mag));
+    public static float snoise(float x, float y, float scale, float mag){
+        return (float)((rawNoise((x) / scale, y / scale) * mag));
     }
 
     public static float snoise3(int x, int y, int z, float scale, float mag){
-        return (float)((noise((x) / scale, y / scale, z / scale) * mag));
+        return (float)((rawNoise((x) / scale, y / scale, z / scale) * mag));
     }
 
-    public static float nnoise(int x, int y, float scale, float mag){
+    public static float noise(float x, float y, float scale, float mag){
         return (float)(snoise(x, y, scale, mag) / 2.0);
     }
 
-    public static float nnoise(int x, int y, float scale, float mag, float xp){
+    public static float noise(float x, float y, float scale, float mag, float xp){
         return (float)(snoise(x, y, scale, mag, xp) / 2.0);
     }
 
     public static float fnoise(float x, float y, float scale, float mag){
-        return (float)(((noise((x) / scale, y / scale) * mag)));
+        return (float)(((rawNoise((x) / scale, y / scale) * mag)));
     }
 
-    public static double noise(double x, double y){
+    public static double rawNoise(double x, double y){
         int bx0, bx1, by0, by1, b00, b10, b01, b11;
         double rx0;
         double rx1;
@@ -122,7 +123,7 @@ public final class Noise{
         return lerp(sy, a, b);
     }
 
-    static double noise(double x, double y, double z){
+    static double rawNoise(double x, double y, double z){
         int bx, by, bz, b0, b1, b00, b10, b01, b11;
         double rx0;
         double rx1;
