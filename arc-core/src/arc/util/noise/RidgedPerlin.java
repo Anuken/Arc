@@ -1,5 +1,7 @@
 package arc.util.noise;
 
+import java.util.*;
+
 //horribly butchered from libnoiseforjava, please ignore
 //TODO this is a mess - uses doubles instead of floats, but only sometimes
 public class RidgedPerlin{
@@ -13,6 +15,14 @@ public class RidgedPerlin{
     double[] spectralWeights = new double[20];
     private int octaves;
     private int seed;
+
+    public RidgedPerlin(){
+        this(new Random().nextInt());
+    }
+
+    public RidgedPerlin(int seed){
+        this(seed, 1);
+    }
 
     public RidgedPerlin(int seed, int octaves){
         this.octaves = octaves;

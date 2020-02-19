@@ -6,7 +6,6 @@ package arc.struct;
  * @author jshapcott
  */
 public class Bits{
-
     long[] bits = {0};
 
     public Bits(){
@@ -19,6 +18,12 @@ public class Bits{
      */
     public Bits(int nbits){
         checkCapacity(nbits >>> 6);
+    }
+
+    /** Sets this bits to have the same bits as another. Both sets should have the same length. */
+    public void set(Bits other){
+        int length = Math.min(bits.length, other.bits.length);
+        System.arraycopy(other.bits, 0, bits, 0, length);
     }
 
     /**

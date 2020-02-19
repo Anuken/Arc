@@ -10,6 +10,10 @@ public class GridBits{
         bits = new Bits(width * height);
     }
 
+    public void set(GridBits other){
+        bits.set(other.bits);
+    }
+
     public boolean get(int x, int y){
         return bits.get(x + y*width);
     }
