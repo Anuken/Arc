@@ -28,7 +28,6 @@ public final class Noise{
     }
 
     public static double rawNoise(double x){
-
         int bx0, bx1;
         double rx0, rx1, sx, t, u, v;
         t = x + N;
