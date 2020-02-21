@@ -113,7 +113,7 @@ public class Rand extends Random{
      */
     public long nextLong(final long n){
         if(n <= 0) throw new IllegalArgumentException("n must be positive");
-        for(; ; ){
+        for(;;){
             final long bits = nextLong() >>> 1;
             final long value = bits % n;
             if(bits - value + (n - 1) >= 0) return value;
