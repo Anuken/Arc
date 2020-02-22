@@ -30,6 +30,8 @@ public class Angles{
 
     public static float moveToward(float angle, float to, float speed){
         if(Math.abs(angleDist(angle, to)) < speed) return to;
+        angle = Mathf.mod(angle, 360f);
+        to = Mathf.mod(to, 360f);
 
         if((angle > to && backwardDistance(angle, to) > forwardDistance(angle, to)) ||
             (angle < to && backwardDistance(angle, to) < forwardDistance(angle, to))){
