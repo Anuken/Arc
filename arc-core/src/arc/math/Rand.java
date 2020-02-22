@@ -190,6 +190,10 @@ public class Rand extends Random{
         return nextFloat() * amount * 2 - amount;
     }
 
+    public float random(float max){
+        return nextFloat() * max;
+    }
+
     public float random(float min, float max){
         return min + (max - min) * nextFloat();
     }
