@@ -42,7 +42,6 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     final float[] R = new float[9];
     final float[] orientation = new float[3];
     private final AndroidApplicationConfiguration config;
-    private final AndroidOnscreenKeyboard onscreenKeyboard;
     public boolean accelerometerAvailable = false;
     public boolean gyroscopeAvailable = false;
     ArrayList<OnKeyListener> keyListeners = new ArrayList<>();
@@ -58,11 +57,13 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     float[] pressure = new float[NUM_TOUCHES];
     boolean keyboardAvailable;
     Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(16, 1000){
+        @Override
         protected KeyEvent newObject(){
             return new KeyEvent();
         }
     };
     Pool<TouchEvent> usedTouchEvents = new Pool<TouchEvent>(16, 1000){
+        @Override
         protected TouchEvent newObject(){
             return new TouchEvent();
         }
@@ -88,20 +89,14 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     private final AndroidMouseHandler mouseHandler;
     ArrayList<OnGenericMotionListener> genericMotionListeners = new ArrayList<>();
 
-    public AndroidInput(AndroidApplication activity, Context context, Object view, AndroidApplicationConfiguration config){
-        // we hook into View, for LWPs we call onTouch below directly from
-        // within the AndroidLivewallpaperEngine#onTouchEvent() method.
-        if(view instanceof View){
-            View v = (View)view;
-            v.setOnKeyListener(this);
-            v.setOnTouchListener(this);
-            v.setFocusable(true);
-            v.setFocusableInTouchMode(true);
-            v.setOnGenericMotionListener(this);
-            v.requestFocus();
-        }
+    public AndroidInput(AndroidApplication activity, Context context, View view, AndroidApplicationConfiguration config){
+        view.setOnKeyListener(this);
+        view.setOnTouchListener(this);
+        view.setFocusable(true);
+        view.setFocusableInTouchMode(true);
+        view.setOnGenericMotionListener(this);
+        view.requestFocus();
         this.config = config;
-        this.onscreenKeyboard = new AndroidOnscreenKeyboard(context, new Handler(), this);
 
         for(int i = 0; i < realId.length; i++)
             realId[i] = -1;
@@ -200,6 +195,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
         }
     }
 
+    @Override
     public boolean isTouched(int pointer){
         synchronized(this){
             return touched[pointer];
@@ -646,7 +642,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
 
     @Override
     public int getRotation(){
-        int orientation = 0;
+        int orientation;
 
         if(context instanceof Activity){
             orientation = ((Activity)context).getWindowManager().getDefaultDisplay().getRotation();
@@ -820,7 +816,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
         genericMotionListeners.add(listener);
     }
 
-    public static interface AndroidTouchHandler{
+    public interface AndroidTouchHandler{
         void onTouch(MotionEvent event, AndroidInput input);
 
         boolean supportsMultitouch(Context app);

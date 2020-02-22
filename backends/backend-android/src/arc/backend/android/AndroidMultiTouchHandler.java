@@ -13,6 +13,8 @@ import arc.util.Log;
  * @author badlogicgames@gmail.com
  */
 public class AndroidMultiTouchHandler implements AndroidInput.AndroidTouchHandler{
+
+    @Override
     public void onTouch(MotionEvent event, AndroidInput input){
         final int action = event.getAction() & MotionEvent.ACTION_MASK;
         int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
