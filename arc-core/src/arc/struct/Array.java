@@ -148,6 +148,12 @@ public class Array<T> implements Iterable<T>{
         return new Array<>(this);
     }
 
+    public ArrayList<T> list(){
+        ArrayList<T> list = new ArrayList<>(size);
+        each(list::add);
+        return list;
+    }
+
     public float sumf(Floatf<T> summer){
         float sum = 0;
         for(int i = 0; i < size; i++){
@@ -805,10 +811,14 @@ public class Array<T> implements Iterable<T>{
         size = newSize;
     }
 
+    public T random(Rand rand){
+        if(size == 0) return null;
+        return items[rand.random(0, size - 1)];
+    }
+
     /** Returns a random item from the array, or null if the array is empty. */
     public T random(){
-        if(size == 0) return null;
-        return items[Mathf.random(0, size - 1)];
+        return random(Mathf.random);
     }
 
     /** Returns a random item from the array, excluding the specified element. If the array is empty, returns null.
