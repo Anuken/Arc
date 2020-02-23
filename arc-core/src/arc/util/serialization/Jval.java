@@ -573,7 +573,7 @@ public class Jval{
             int exitCh = current;
             read();
             startCapture();
-            while(current != exitCh){
+            while(current >= 0 && current != exitCh){
                 if(current == '\\') readEscape();
                 //else if(current < 0x20) throw expected("valid string character");
                 else read();
