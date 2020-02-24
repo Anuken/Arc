@@ -2,6 +2,7 @@ package arc.graphics.g3d;
 
 import arc.*;
 import arc.math.geom.*;
+import arc.math3d.*;
 
 public class Camera3D{
     /** field of view. */

@@ -1,4 +1,6 @@
-package arc.math.geom;
+package arc.math3d;
+
+import arc.math.geom.*;
 
 /**
  * A plane defined via a unit length normal and the distance from the origin, as you learned in your math class.

@@ -4,6 +4,7 @@ import arc.graphics.*;
 import arc.graphics.VertexAttributes.*;
 import arc.graphics.gl.*;
 import arc.math.geom.*;
+import arc.math3d.*;
 import arc.struct.*;
 
 public class VertexBatch3D{
@@ -160,6 +161,24 @@ public class VertexBatch3D{
         vertices[idx] = x;
         vertices[idx + 1] = y;
         vertices[idx + 2] = z;
+    }
+
+    public void tri(Vec3 v1, Vec3 v2, Vec3 v3, Color color){
+        tri(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, v3.x, v3.y, v3.z, color);
+    }
+
+    public void tri(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, Color color){
+        color(color);
+        vertex(x1, y1, z1);
+        color(color);
+        vertex(x2, y2, z2);
+        color(color);
+        vertex(x3, y3, z3);
+    }
+
+    public void vertex(Vec3 v, Color color){
+        color(color);
+        vertex(v.x, v.y, v.z);
     }
 
     public void vertex(Vec3 v){

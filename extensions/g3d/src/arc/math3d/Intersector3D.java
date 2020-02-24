@@ -1,6 +1,7 @@
-package arc.math.geom;
+package arc.math3d;
 
-import arc.math.geom.Plane.*;
+import arc.math.geom.*;
+import arc.math3d.Plane.*;
 import arc.math.*;
 
 import java.util.*;

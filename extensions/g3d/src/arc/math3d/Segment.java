@@ -1,4 +1,6 @@
-package arc.math.geom;
+package arc.math3d;
+
+import arc.math.geom.*;
 
 /**
  * A Segment is a line in 3-space having a staring and an ending position.
