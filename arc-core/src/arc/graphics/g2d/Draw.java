@@ -16,6 +16,18 @@ public class Draw{
     private static Color[] carr = new Color[3];
     public static float scl = 1f;
 
+    public static void batch(SpriteBatch nextBatch, Runnable run){
+        SpriteBatch prev = Core.batch;
+        prev.flush();
+
+        Core.batch = nextBatch;
+
+        run.run();
+
+        nextBatch.flush();
+        Core.batch = prev;
+    }
+
     public static Shader getShader(){
         return Core.batch.getShader();
     }

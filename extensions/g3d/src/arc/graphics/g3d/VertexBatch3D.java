@@ -121,10 +121,7 @@ public class VertexBatch3D{
         for(int i = 0; i < numTexCoords; i++){
             attribs.add(new VertexAttribute(Usage.textureCoordinates, 2, Shader.texcoordAttribute + i));
         }
-        VertexAttribute[] array = new VertexAttribute[attribs.size];
-        for(int i = 0; i < attribs.size; i++)
-            array[i] = attribs.get(i);
-        return array;
+        return attribs.toArray(VertexAttribute.class);
     }
 
     public void setShader(Shader shader){
@@ -196,9 +193,17 @@ public class VertexBatch3D{
         numVertices++;
     }
 
-    public void flush(Mat3D projModelView, int primitiveType){
-        this.projModelView.set(projModelView);
+    public void vertex(float[] floats){
+        System.arraycopy(floats, 0, vertices, vertexIdx, vertexSize);
+        vertexIdx += vertexSize;
+        numVertices ++;
+    }
 
+    public void proj(Mat3D projModelView){
+        this.projModelView.set(projModelView);
+    }
+
+    public void flush(int primitiveType){
         if(numVertices == 0) return;
         shader.begin();
         shader.setUniformMatrix4("u_projModelView", projModelView.val);

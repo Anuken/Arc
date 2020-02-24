@@ -16,8 +16,8 @@ import arc.util.Disposable;
  */
 public class SpriteBatch implements Disposable{
     //xy + color + uv + mix_color
-    static final int VERTEX_SIZE = 2 + 1 + 2 + 1;
-    static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
+    protected static final int VERTEX_SIZE = 2 + 1 + 2 + 1;
+    protected static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
 
     protected Mesh mesh;
 
@@ -430,9 +430,6 @@ public class SpriteBatch implements Disposable{
     }
 
     Shader getShader(){
-        if(customShader == null){
-            return shader;
-        }
-        return customShader;
+        return customShader == null ? shader : customShader;
     }
 }
