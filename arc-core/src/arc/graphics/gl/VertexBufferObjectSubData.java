@@ -1,14 +1,10 @@
 package arc.graphics.gl;
 
-import arc.Core;
-import arc.graphics.GL20;
-import arc.graphics.VertexAttribute;
-import arc.graphics.VertexAttributes;
-import arc.util.BufferUtils;
-import arc.util.ArcRuntimeException;
+import arc.*;
+import arc.graphics.*;
+import arc.util.*;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
+import java.nio.*;
 
 /**
  * <p>
@@ -63,10 +59,10 @@ public class VertexBufferObjectSubData implements VertexData{
     }
 
     private int createBufferObject(){
-        int result = Core.gl20.glGenBuffer();
-        Core.gl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, result);
-        Core.gl20.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.capacity(), null, usage);
-        Core.gl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
+        int result = Gl.genBuffer();
+        Gl.bindBuffer(GL20.GL_ARRAY_BUFFER, result);
+        Gl.bufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.capacity(), null, usage);
+        Gl.bindBuffer(GL20.GL_ARRAY_BUFFER, 0);
         return result;
     }
 
@@ -93,7 +89,7 @@ public class VertexBufferObjectSubData implements VertexData{
 
     private void bufferChanged(){
         if(isBound){
-            Core.gl20.glBufferSubData(GL20.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
+            Gl.bufferSubData(GL20.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
             isDirty = false;
         }
     }

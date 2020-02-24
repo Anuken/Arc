@@ -68,7 +68,7 @@ public class Texture extends GLTexture{
     }
 
     public Texture(TextureData data){
-        this(GL20.GL_TEXTURE_2D, Core.gl.glGenTexture(), data);
+        this(GL20.GL_TEXTURE_2D, Gl.genTexture(), data);
     }
 
     /** For use in mocking only! */
@@ -146,7 +146,7 @@ public class Texture extends GLTexture{
 
                     // unload the texture, create a new gl handle then reload it.
                     assetManager.unload(fileName);
-                    texture.glHandle = Core.gl.glGenTexture();
+                    texture.glHandle = Gl.genTexture();
                     assetManager.load(fileName, Texture.class, params);
                 }
             }
@@ -193,7 +193,7 @@ public class Texture extends GLTexture{
 
         unsafeSetFilter(minFilter, magFilter, true);
         unsafeSetWrap(uWrap, vWrap, true);
-        Core.gl.glBindTexture(glTarget, 0);
+        Gl.bindTexture(glTarget, 0);
     }
 
     /**
@@ -203,7 +203,7 @@ public class Texture extends GLTexture{
     @Override
     protected void reload(){
         if(!isManaged()) throw new ArcRuntimeException("Tried to reload unmanaged Texture");
-        glHandle = Core.gl.glGenTexture();
+        glHandle = Gl.genTexture();
         load(data);
     }
 
@@ -218,7 +218,7 @@ public class Texture extends GLTexture{
         if(data.isManaged()) throw new ArcRuntimeException("can't draw to a managed texture");
 
         bind();
-        Core.gl.glTexSubImage2D(glTarget, 0, x, y, pixmap.getWidth(), pixmap.getHeight(), pixmap.getGLFormat(), pixmap.getGLType(),
+        Gl.texSubImage2D(glTarget, 0, x, y, pixmap.getWidth(), pixmap.getHeight(), pixmap.getGLFormat(), pixmap.getGLType(),
         pixmap.getPixels());
     }
 
@@ -302,7 +302,7 @@ public class Texture extends GLTexture{
          */
         MipMapLinearLinear(GL20.GL_LINEAR_MIPMAP_LINEAR);
 
-        final int glEnum;
+        public final int glEnum;
 
         TextureFilter(int glEnum){
             this.glEnum = glEnum;
@@ -310,10 +310,6 @@ public class Texture extends GLTexture{
 
         public boolean isMipMap(){
             return glEnum != GL20.GL_NEAREST && glEnum != GL20.GL_LINEAR;
-        }
-
-        public int getGLEnum(){
-            return glEnum;
         }
     }
 

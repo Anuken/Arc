@@ -1,16 +1,11 @@
 package arc.graphics.gl;
 
-import arc.Core;
-import arc.struct.IntArray;
-import arc.graphics.GL20;
-import arc.graphics.GL30;
-import arc.graphics.VertexAttribute;
-import arc.graphics.VertexAttributes;
-import arc.util.BufferUtils;
+import arc.*;
+import arc.graphics.*;
+import arc.struct.*;
+import arc.util.*;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.nio.*;
 
 /**
  * <p>
@@ -71,7 +66,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
         buffer = byteBuffer.asFloatBuffer();
         buffer.flip();
         byteBuffer.flip();
-        bufferHandle = Core.gl20.glGenBuffer();
+        bufferHandle = Gl.genBuffer();
         usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
         createVAO();
     }
@@ -99,7 +94,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
 
     private void bufferChanged(){
         if(isBound){
-            Core.gl20.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+            Gl.bufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
             isDirty = false;
         }
     }
@@ -167,7 +162,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
         }
 
         if(!stillValid){
-            Core.gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
+            Gl.bindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
             unbindAttributes(shader);
             this.cachedLocations.clear();
 

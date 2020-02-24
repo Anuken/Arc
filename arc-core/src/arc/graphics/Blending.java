@@ -2,9 +2,9 @@ package arc.graphics;
 
 /** Specific blending modes. */
 public enum Blending{
-    normal(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA),
-    additive(GL20.GL_SRC_ALPHA, GL20.GL_ONE),
-    disabled(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+    normal(Gl.srcAlpha, Gl.oneMinusSrcAlpha),
+    additive(Gl.srcAlpha, Gl.one),
+    disabled(Gl.srcAlpha, Gl.oneMinusSrcAlpha);
 
     public final int src, dst;
 

@@ -641,7 +641,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
 
     @Override
     public boolean supportsExtension(String extension){
-        if(extensions == null) extensions = Core.gl.glGetString(GL10.GL_EXTENSIONS);
+        if(extensions == null) extensions = Gl.getString(GL10.GL_EXTENSIONS);
         return extensions.contains(extension);
     }
 

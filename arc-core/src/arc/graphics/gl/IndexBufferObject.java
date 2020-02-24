@@ -1,12 +1,9 @@
 package arc.graphics.gl;
 
-import arc.Core;
-import arc.graphics.GL20;
-import arc.util.BufferUtils;
-import arc.util.ArcRuntimeException;
+import arc.graphics.*;
+import arc.util.*;
 
-import java.nio.ByteBuffer;
-import java.nio.ShortBuffer;
+import java.nio.*;
 
 /**
  * <p>
@@ -66,7 +63,7 @@ public class IndexBufferObject implements IndexData{
         buffer = byteBuffer.asShortBuffer();
         buffer.flip();
         byteBuffer.flip();
-        bufferHandle = Core.gl20.glGenBuffer();
+        bufferHandle = Gl.genBuffer();
         usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
     }
 
@@ -102,7 +99,7 @@ public class IndexBufferObject implements IndexData{
         byteBuffer.limit(count << 1);
 
         if(isBound){
-            Core.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+            Gl.bufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
             isDirty = false;
         }
     }
@@ -118,7 +115,7 @@ public class IndexBufferObject implements IndexData{
         byteBuffer.limit(buffer.limit() << 1);
 
         if(isBound){
-            Core.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+            Gl.bufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
             isDirty = false;
         }
     }
@@ -133,7 +130,7 @@ public class IndexBufferObject implements IndexData{
         buffer.position(0);
 
         if(isBound){
-            Core.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+            Gl.bufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
             isDirty = false;
         }
     }
@@ -154,10 +151,10 @@ public class IndexBufferObject implements IndexData{
     public void bind(){
         if(bufferHandle == 0) throw new ArcRuntimeException("No buffer allocated!");
 
-        Core.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
+        Gl.bindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
         if(isDirty){
             byteBuffer.limit(buffer.limit() * 2);
-            Core.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+            Gl.bufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
             isDirty = false;
         }
         isBound = true;
@@ -165,20 +162,20 @@ public class IndexBufferObject implements IndexData{
 
     /** Unbinds this IndexBufferObject. */
     public void unbind(){
-        Core.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
+        Gl.bindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
         isBound = false;
     }
 
     /** Invalidates the IndexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss. */
     public void invalidate(){
-        bufferHandle = Core.gl20.glGenBuffer();
+        bufferHandle = Gl.genBuffer();
         isDirty = true;
     }
 
     /** Disposes this IndexBufferObject and all its associated OpenGL resources. */
     public void dispose(){
-        Core.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
-        Core.gl20.glDeleteBuffer(bufferHandle);
+        Gl.bindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
+        Gl.deleteBuffer(bufferHandle);
         bufferHandle = 0;
 
         BufferUtils.disposeUnsafeByteBuffer(byteBuffer);

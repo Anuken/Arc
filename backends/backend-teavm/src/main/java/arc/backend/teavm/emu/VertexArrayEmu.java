@@ -54,7 +54,7 @@ public class VertexArrayEmu implements VertexData{
 
         buffer = BufferUtils.newFloatBuffer(this.attributes.vertexSize / 4 * numVertices);
         buffer.flip();
-        bufferHandle = Core.gl20.glGenBuffer();
+        bufferHandle = Gl.genBuffer();
         usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
     }
 
@@ -81,7 +81,7 @@ public class VertexArrayEmu implements VertexData{
 
     private void bufferChanged(){
         if(isBound){
-            Core.gl20.glBufferData(GL20.GL_ARRAY_BUFFER, buffer.limit(), buffer, usage);
+            Gl.bufferData(GL20.GL_ARRAY_BUFFER, buffer.limit(), buffer, usage);
             isDirty = false;
         }
     }
@@ -195,7 +195,7 @@ public class VertexArrayEmu implements VertexData{
      */
     @Override
     public void invalidate(){
-        bufferHandle = Core.gl20.glGenBuffer();
+        bufferHandle = Gl.genBuffer();
         isDirty = true;
     }
 

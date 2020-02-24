@@ -49,8 +49,8 @@ public abstract class Graphics implements Disposable{
 
     /** Clears the color buffer using the specified color. */
     public void clear(float r, float g, float b, float a){
-        Core.gl.glClearColor(r, g, b, a);
-        Core.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gl.clearColor(r, g, b, a);
+        Gl.clear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
     /** Clears the color buffer using the specified color. */

@@ -1,11 +1,8 @@
 package arc.graphics.gl;
 
-import arc.Core;
-import arc.graphics.GL20;
-import arc.graphics.Pixmap;
-import arc.graphics.Pixmap.Format;
-import arc.graphics.TextureData;
-import arc.util.ArcRuntimeException;
+import arc.graphics.*;
+import arc.graphics.Pixmap.*;
+import arc.util.*;
 
 /**
  * A {@link TextureData} implementation which should be used to create gl only textures. This TextureData fits perfectly for
@@ -63,7 +60,7 @@ public class GLOnlyTextureData implements TextureData{
 
     @Override
     public void consumeCustomData(int target){
-        Core.gl.glTexImage2D(target, mipLevel, internalFormat, width, height, 0, format, type, null);
+        Gl.texImage2D(target, mipLevel, internalFormat, width, height, 0, format, type, null);
     }
 
     @Override

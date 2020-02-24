@@ -1,19 +1,12 @@
 package arc.graphics.gl;
 
-import arc.Application;
-import arc.Core;
-import arc.struct.Array;
-import arc.struct.ObjectIntMap;
-import arc.struct.ObjectMap;
-import arc.files.Fi;
-import arc.graphics.Color;
-import arc.graphics.GL20;
-import arc.graphics.Mesh;
-import arc.math.Mat;
-import arc.math.geom.Vec2;
-import arc.math.geom.Vec3;
-import arc.util.BufferUtils;
-import arc.util.Disposable;
+import arc.*;
+import arc.files.*;
+import arc.graphics.*;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.struct.*;
+import arc.util.*;
 
 import java.nio.*;
 
@@ -251,7 +244,7 @@ public class Shader implements Disposable{
 // Gdx.gl20.glGetProgramiv(program, GL20.GL_INFO_LOG_LENGTH, intbuf);
 // int infoLogLength = intbuf.get(0);
 // if (infoLogLength > 1) {
-            log = Core.gl20.glGetProgramInfoLog(program);
+            log = Gl.getProgramInfoLog(program);
 // }
             return -1;
         }
@@ -268,7 +261,7 @@ public class Shader implements Disposable{
 // Gdx.gl20.glGetProgramiv(program, GL20.GL_INFO_LOG_LENGTH, intbuf);
 // int infoLogLength = intbuf.get(0);
 // if (infoLogLength > 1) {
-            log = Core.gl20.glGetProgramInfoLog(program);
+            log = Gl.getProgramInfoLog(program);
 // }
             return log;
         }else{
@@ -774,7 +767,7 @@ public class Shader implements Disposable{
 
     private void fetchUniforms(){
         params.clear();
-        Core.gl20.glGetProgramiv(program, GL20.GL_ACTIVE_UNIFORMS, params);
+        Gl.getProgramiv(program, GL20.GL_ACTIVE_UNIFORMS, params);
         int numUniforms = params.get(0);
 
         uniformNames = new String[numUniforms];
@@ -783,8 +776,8 @@ public class Shader implements Disposable{
             params.clear();
             params.put(0, 1);
             type.clear();
-            String name = Core.gl20.glGetActiveUniform(program, i, params, type);
-            int location = Core.gl20.glGetUniformLocation(program, name);
+            String name = Gl.getActiveUniform(program, i, params, type);
+            int location = Gl.getUniformLocation(program, name);
             uniforms.put(name, location);
             uniformTypes.put(name, type.get(0));
             uniformSizes.put(name, params.get(0));
@@ -794,7 +787,7 @@ public class Shader implements Disposable{
 
     private void fetchAttributes(){
         params.clear();
-        Core.gl20.glGetProgramiv(program, GL20.GL_ACTIVE_ATTRIBUTES, params);
+        Gl.getProgramiv(program, GL20.GL_ACTIVE_ATTRIBUTES, params);
         int numAttributes = params.get(0);
 
         attributeNames = new String[numAttributes];
@@ -803,8 +796,8 @@ public class Shader implements Disposable{
             params.clear();
             params.put(0, 1);
             type.clear();
-            String name = Core.gl20.glGetActiveAttrib(program, i, params, type);
-            int location = Core.gl20.glGetAttribLocation(program, name);
+            String name = Gl.getActiveAttrib(program, i, params, type);
+            int location = Gl.getAttribLocation(program, name);
             attributes.put(name, location);
             attributeTypes.put(name, type.get(0));
             attributeSizes.put(name, params.get(0));

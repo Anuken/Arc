@@ -1,7 +1,7 @@
 package arc.graphics.gl;
 
-import arc.Core;
-import arc.graphics.GL20;
+import arc.*;
+import arc.graphics.*;
 
 /**
  * To deal with HDPI monitors properly, use the glViewport and glScissor functions of this class instead of directly calling
@@ -39,9 +39,9 @@ public class HdpiUtils{
     public static void glScissor(int x, int y, int width, int height){
         if(mode == HdpiMode.Logical && (Core.graphics.getWidth() != Core.graphics.getBackBufferWidth()
         || Core.graphics.getHeight() != Core.graphics.getBackBufferHeight())){
-            Core.gl.glScissor(toBackBufferX(x), toBackBufferY(y), toBackBufferX(width), toBackBufferY(height));
+            Gl.scissor(toBackBufferX(x), toBackBufferY(y), toBackBufferX(width), toBackBufferY(height));
         }else{
-            Core.gl.glScissor(x, y, width, height);
+            Gl.scissor(x, y, width, height);
         }
     }
 
@@ -52,9 +52,9 @@ public class HdpiUtils{
     public static void glViewport(int x, int y, int width, int height){
         if(mode == HdpiMode.Logical && (Core.graphics.getWidth() != Core.graphics.getBackBufferWidth()
         || Core.graphics.getHeight() != Core.graphics.getBackBufferHeight())){
-            Core.gl.glViewport(toBackBufferX(x), toBackBufferY(y), toBackBufferX(width), toBackBufferY(height));
+            Gl.viewport(toBackBufferX(x), toBackBufferY(y), toBackBufferX(width), toBackBufferY(height));
         }else{
-            Core.gl.glViewport(x, y, width, height);
+            Gl.viewport(x, y, width, height);
         }
     }
 

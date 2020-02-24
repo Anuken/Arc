@@ -1,12 +1,10 @@
 package arc.graphics.gl;
 
-import arc.Core;
-import arc.graphics.GL20;
-import arc.util.ArcRuntimeException;
-import arc.util.BufferUtils;
+import arc.*;
+import arc.graphics.*;
+import arc.util.*;
 
-import java.nio.ByteBuffer;
-import java.nio.ShortBuffer;
+import java.nio.*;
 
 /**
  * <p>
@@ -65,10 +63,10 @@ public class IndexBufferObjectSubData implements IndexData{
     }
 
     private int createBufferObject(){
-        int result = Core.gl20.glGenBuffer();
-        Core.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, result);
-        Core.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.capacity(), null, usage);
-        Core.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
+        int result = Gl.genBuffer();
+        Gl.bindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, result);
+        Gl.bufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.capacity(), null, usage);
+        Gl.bindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
         return result;
     }
 
@@ -104,7 +102,7 @@ public class IndexBufferObjectSubData implements IndexData{
         byteBuffer.limit(count << 1);
 
         if(isBound){
-            Core.gl20.glBufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
+            Gl.bufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
             isDirty = false;
         }
     }
@@ -120,7 +118,7 @@ public class IndexBufferObjectSubData implements IndexData{
         byteBuffer.limit(buffer.limit() << 1);
 
         if(isBound){
-            Core.gl20.glBufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
+            Gl.bufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
             isDirty = false;
         }
     }
@@ -135,7 +133,7 @@ public class IndexBufferObjectSubData implements IndexData{
         buffer.position(0);
 
         if(isBound){
-            Core.gl20.glBufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
+            Gl.bufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
             isDirty = false;
         }
     }
@@ -158,10 +156,10 @@ public class IndexBufferObjectSubData implements IndexData{
         if(bufferHandle == 0)
             throw new ArcRuntimeException("IndexBufferObject cannot be used after it has been disposed.");
 
-        Core.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
+        Gl.bindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
         if(isDirty){
             byteBuffer.limit(buffer.limit() * 2);
-            Core.gl20.glBufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
+            Gl.bufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
             isDirty = false;
         }
         isBound = true;
@@ -169,7 +167,7 @@ public class IndexBufferObjectSubData implements IndexData{
 
     /** Unbinds this IndexBufferObject. */
     public void unbind(){
-        Core.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
+        Gl.bindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
         isBound = false;
     }
 

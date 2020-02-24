@@ -1,32 +1,21 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
-import com.badlogic.gdx.backends.iosrobovm.custom.HWMachine;
-import arc.Application;
-import arc.ApplicationListener;
-import arc.Core;
-import arc.Graphics;
-import arc.Graphics.Cursor.SystemCursor;
-import arc.struct.Array;
+import arc.*;
+import arc.Graphics.Cursor.*;
 import arc.func.*;
-import arc.graphics.GL20;
-import arc.graphics.GL30;
-import arc.graphics.Pixmap;
-import arc.graphics.gl.GLVersion;
-import arc.util.Log;
-import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.foundation.NSObject;
+import arc.graphics.*;
+import arc.graphics.gl.*;
+import arc.struct.Array;
+import arc.util.*;
+import com.badlogic.gdx.backends.iosrobovm.custom.*;
+import org.robovm.apple.coregraphics.*;
+import org.robovm.apple.foundation.*;
 import org.robovm.apple.glkit.*;
-import org.robovm.apple.opengles.EAGLContext;
-import org.robovm.apple.opengles.EAGLRenderingAPI;
-import org.robovm.apple.uikit.UIEvent;
-import org.robovm.apple.uikit.UIInterfaceOrientation;
-import org.robovm.apple.uikit.UIInterfaceOrientationMask;
-import org.robovm.apple.uikit.UIRectEdge;
-import org.robovm.objc.Selector;
-import org.robovm.objc.annotation.BindSelector;
-import org.robovm.objc.annotation.Method;
-import org.robovm.rt.bro.annotation.Callback;
-import org.robovm.rt.bro.annotation.Pointer;
+import org.robovm.apple.opengles.*;
+import org.robovm.apple.uikit.*;
+import org.robovm.objc.*;
+import org.robovm.objc.annotation.*;
+import org.robovm.rt.bro.annotation.*;
 
 public class IOSGraphics extends Graphics{
     private static final String tag = "IOSGraphics";
@@ -445,7 +434,7 @@ public class IOSGraphics extends Graphics{
 
     @Override
     public boolean supportsExtension(String extension){
-        if(extensions == null) extensions = Core.gl.glGetString(GL20.GL_EXTENSIONS);
+        if(extensions == null) extensions = Gl.getString(GL20.GL_EXTENSIONS);
         return extensions.contains(extension);
     }
 

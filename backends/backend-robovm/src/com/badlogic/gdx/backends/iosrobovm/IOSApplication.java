@@ -1,18 +1,16 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
-import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession;
-import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
-import arc.Application;
-import arc.ApplicationListener;
-import arc.Core;
-import arc.Settings;
-import arc.struct.Array;
-import arc.util.Log;
-import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.foundation.NSThread;
-import org.robovm.apple.foundation.NSURL;
+import arc.*;
+import arc.graphics.*;
+import arc.struct.*;
+import arc.util.*;
+import com.badlogic.gdx.backends.iosrobovm.objectal.*;
+import org.robovm.apple.coregraphics.*;
+import org.robovm.apple.foundation.*;
 import org.robovm.apple.uikit.*;
-import org.robovm.rt.bro.Bro;
+import org.robovm.rt.bro.*;
+
+import java.lang.Runtime;
 
 import static org.robovm.apple.foundation.NSPathUtilities.getDocumentsDirectory;
 
@@ -211,7 +209,7 @@ public class IOSApplication implements Application{
         Log.info("[IOSApplication] paused");
         graphics.makeCurrent();
         graphics.pause();
-        Core.gl.glFinish();
+        Gl.finish();
     }
 
     final void willTerminate(UIApplication uiApp){
@@ -223,7 +221,7 @@ public class IOSApplication implements Application{
                 listener.pause();
             }
         }
-        Core.gl.glFinish();
+        Gl.finish();
     }
 
     @Override

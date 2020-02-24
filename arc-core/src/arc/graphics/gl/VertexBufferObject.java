@@ -45,7 +45,7 @@ public class VertexBufferObject implements VertexData{
      * @param attributes the {@link VertexAttributes}.
      */
     public VertexBufferObject(boolean isStatic, int numVertices, VertexAttributes attributes){
-        bufferHandle = Core.gl20.glGenBuffer();
+        bufferHandle = Gl.genBuffer();
 
         ByteBuffer data = BufferUtils.newUnsafeByteBuffer(attributes.vertexSize * numVertices);
         data.limit(0);
@@ -54,7 +54,7 @@ public class VertexBufferObject implements VertexData{
     }
 
     protected VertexBufferObject(int usage, ByteBuffer data, boolean ownsBuffer, VertexAttributes attributes){
-        bufferHandle = Core.gl20.glGenBuffer();
+        bufferHandle = Gl.genBuffer();
 
         setBuffer(data, ownsBuffer, attributes);
         setUsage(usage);
@@ -104,7 +104,7 @@ public class VertexBufferObject implements VertexData{
 
     private void bufferChanged(){
         if(isBound){
-            Core.gl20.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+            Gl.bufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
             isDirty = false;
         }
     }
@@ -222,7 +222,7 @@ public class VertexBufferObject implements VertexData{
     /** Invalidates the VertexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss. */
     @Override
     public void invalidate(){
-        bufferHandle = Core.gl20.glGenBuffer();
+        bufferHandle = Gl.genBuffer();
         isDirty = true;
     }
 

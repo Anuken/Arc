@@ -1,15 +1,11 @@
 package arc.graphics.gl;
 
-import arc.Core;
-import arc.files.Fi;
-import arc.graphics.Cubemap.CubemapSide;
-import arc.graphics.CubemapData;
-import arc.graphics.GL20;
-import arc.graphics.Pixmap;
+import arc.files.*;
+import arc.graphics.*;
+import arc.graphics.Cubemap.*;
 import arc.graphics.Pixmap.Blending;
-import arc.graphics.Pixmap.Format;
-import arc.graphics.TextureData;
-import arc.util.ArcRuntimeException;
+import arc.graphics.Pixmap.*;
+import arc.util.*;
 
 /**
  * A FacedCubemapData holds a cubemap data definition based on a {@link TextureData} per face.
@@ -177,8 +173,8 @@ public class FacedCubemapData implements CubemapData{
                     pixmap = tmp;
                     disposePixmap = true;
                 }
-                Core.gl.glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, 1);
-                Core.gl.glTexImage2D(GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(),
+                Gl.pixelStorei(GL20.GL_UNPACK_ALIGNMENT, 1);
+                Gl.texImage2D(GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(),
                 pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
                 if(disposePixmap) pixmap.dispose();
             }

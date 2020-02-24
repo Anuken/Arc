@@ -1,6 +1,5 @@
 package arc.graphics.g2d;
 
-import arc.*;
 import arc.graphics.*;
 import arc.graphics.Pixmap.*;
 import arc.graphics.Texture.*;
@@ -199,7 +198,7 @@ public class PixmapPacker implements Disposable{
         if(packToTexture && !duplicateBorder && page.texture != null && !page.dirty){
             //TODO this will not work correctly since the pixmap is only a region!
             page.texture.bind();
-            Core.gl.glTexSubImage2D(page.texture.glTarget, 0, rectX, rectY, rectWidth, rectHeight, image.pixmap.getGLFormat(),
+            Gl.texSubImage2D(page.texture.glTarget, 0, rectX, rectY, rectWidth, rectHeight, image.pixmap.getGLFormat(),
                 image.pixmap.getGLType(), image.pixmap.getPixels());
         }else
             page.dirty = true;

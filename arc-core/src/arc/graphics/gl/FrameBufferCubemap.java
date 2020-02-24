@@ -1,12 +1,9 @@
 package arc.graphics.gl;
 
-import arc.Core;
-import arc.graphics.Cubemap;
-import arc.graphics.GL20;
-import arc.graphics.Pixmap;
-import arc.graphics.Texture.TextureFilter;
-import arc.graphics.Texture.TextureWrap;
-import arc.util.ArcRuntimeException;
+import arc.*;
+import arc.graphics.*;
+import arc.graphics.Texture.*;
+import arc.util.*;
 
 /**
  * <p>
@@ -109,7 +106,7 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap>{
         int glHandle = texture.getTextureObjectHandle();
         Cubemap.CubemapSide[] sides = Cubemap.CubemapSide.values();
         for(Cubemap.CubemapSide side : sides){
-            gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, side.glEnum,
+            gl.glFramebufferTexture2D(Gl.framebuffer, GL20.GL_COLOR_ATTACHMENT0, side.glEnum,
             glHandle, 0);
         }
     }
@@ -145,7 +142,7 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap>{
      * @param side The side to bind
      */
     protected void bindSide(final Cubemap.CubemapSide side){
-        Core.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, side.glEnum, getTexture().getTextureObjectHandle(), 0);
+        Gl.framebufferTexture2D(Gl.framebuffer, GL20.GL_COLOR_ATTACHMENT0, side.glEnum, getTexture().getTextureObjectHandle(), 0);
     }
 
     /** Get the currently bound side. */

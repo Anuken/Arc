@@ -557,11 +557,11 @@ public class Mesh implements Disposable{
                 int oldLimit = buffer.limit();
                 buffer.position(offset);
                 buffer.limit(offset + count);
-                Core.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, buffer);
+                Gl.drawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, buffer);
                 buffer.position(oldPosition);
                 buffer.limit(oldLimit);
             }else{
-                Core.gl20.glDrawArrays(primitiveType, offset, count);
+                Gl.drawArrays(primitiveType, offset, count);
             }
         }else{
             if(indices.getNumIndices() > 0){
@@ -570,9 +570,9 @@ public class Mesh implements Disposable{
                     + count + ", offset: " + offset + ", max: " + indices.getNumMaxIndices() + ")");
                 }
 
-                Core.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2);
+                Gl.drawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2);
             }else{
-                Core.gl20.glDrawArrays(primitiveType, offset, count);
+                Gl.drawArrays(primitiveType, offset, count);
             }
         }
 

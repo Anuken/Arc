@@ -1,12 +1,10 @@
 package arc.graphics.gl;
 
-import arc.Application.ApplicationType;
-import arc.Core;
-import arc.graphics.GL20;
-import arc.graphics.Pixmap;
+import arc.Application.*;
+import arc.*;
+import arc.graphics.*;
 import arc.graphics.Pixmap.Blending;
-import arc.graphics.Texture;
-import arc.util.ArcRuntimeException;
+import arc.util.*;
 
 public class MipMapGenerator{
 
@@ -48,24 +46,24 @@ public class MipMapGenerator{
     }
 
     private static void generateMipMapGLES20(int target, Pixmap pixmap){
-        Core.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+        Gl.texImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
         pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
-        Core.gl20.glGenerateMipmap(target);
+        Gl.generateMipmap(target);
     }
 
     private static void generateMipMapDesktop(int target, Pixmap pixmap, int textureWidth, int textureHeight){
         if(Core.graphics.supportsExtension("GL_ARB_framebuffer_object")
         || Core.graphics.supportsExtension("GL_EXT_framebuffer_object") || Core.gl30 != null){
-            Core.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+            Gl.texImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
             pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
-            Core.gl20.glGenerateMipmap(target);
+            Gl.generateMipmap(target);
         }else{
             generateMipMapCPU(target, pixmap, textureWidth, textureHeight);
         }
     }
 
     private static void generateMipMapCPU(int target, Pixmap pixmap, int textureWidth, int textureHeight){
-        Core.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+        Gl.texImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
         pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
         if((Core.gl20 == null) && textureWidth != textureHeight)
             throw new ArcRuntimeException("texture width and height must be square when using mipmapping.");
@@ -79,7 +77,7 @@ public class MipMapGenerator{
             if(level > 1) pixmap.dispose();
             pixmap = tmp;
 
-            Core.gl.glTexImage2D(target, level, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+            Gl.texImage2D(target, level, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
             pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
 
             width = pixmap.getWidth() / 2;

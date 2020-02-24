@@ -1,13 +1,11 @@
 package arc.graphics.g2d;
 
-import arc.Core;
+import arc.*;
+import arc.graphics.*;
+import arc.graphics.gl.*;
+import arc.math.*;
 import arc.math.geom.*;
-import arc.struct.Array;
-import arc.graphics.Camera;
-import arc.graphics.GL20;
-import arc.graphics.gl.HdpiUtils;
-import arc.math.Mat;
-import arc.math.geom.Vec2;
+import arc.struct.*;
 
 /**
  * A stack of {@link Rect} objects to be used for clipping via {@link GL20#glScissor(int, int, int, int)}. When a new
@@ -36,7 +34,7 @@ public class ScissorStack{
         if(scissors.size == 0){
             if(scissor.width < 1 || scissor.height < 1) return false;
             Draw.flush();
-            Core.gl.glEnable(GL20.GL_SCISSOR_TEST);
+            Gl.enable(GL20.GL_SCISSOR_TEST);
         }else{
             // merge scissors
             Rect parent = scissors.get(scissors.size - 1);
@@ -70,7 +68,7 @@ public class ScissorStack{
         Draw.flush();
         Rect old = scissors.pop();
         if(scissors.size == 0)
-            Core.gl.glDisable(GL20.GL_SCISSOR_TEST);
+            Gl.disable(GL20.GL_SCISSOR_TEST);
         else{
             Rect scissor = scissors.peek();
             HdpiUtils.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);

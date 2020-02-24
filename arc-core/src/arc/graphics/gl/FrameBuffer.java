@@ -1,13 +1,9 @@
 package arc.graphics.gl;
 
-import arc.Core;
-import arc.graphics.GL20;
-import arc.graphics.Pixmap;
-import arc.graphics.Pixmap.Format;
-import arc.graphics.Texture;
-import arc.graphics.Texture.TextureFilter;
-import arc.graphics.Texture.TextureWrap;
-import arc.util.ArcRuntimeException;
+import arc.graphics.*;
+import arc.graphics.Pixmap.*;
+import arc.graphics.Texture.*;
+import arc.util.*;
 
 /**
  * <p>
@@ -111,6 +107,6 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
 
     @Override
     protected void attachFrameBufferColorTexture(Texture texture){
-        Core.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D, texture.getTextureObjectHandle(), 0);
+        Gl.framebufferTexture2D(Gl.framebuffer, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D, texture.getTextureObjectHandle(), 0);
     }
 }

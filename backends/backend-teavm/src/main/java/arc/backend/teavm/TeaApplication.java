@@ -4,6 +4,7 @@ import arc.*;
 import arc.struct.*;
 import arc.func.*;
 import arc.util.*;
+import arc.graphics.*;
 import arc.util.Log.*;
 import org.teavm.jso.*;
 import org.teavm.jso.browser.*;
@@ -77,7 +78,7 @@ public class TeaApplication implements Application{
         if(lastWidth != canvas.getWidth() || lastHeight != canvas.getHeight()){
             lastWidth = canvas.getWidth();
             lastHeight = canvas.getHeight();
-            Core.gl.glViewport(0, 0, lastWidth, lastHeight);
+            Gl.viewport(0, 0, lastWidth, lastHeight);
             listen(l -> l.resize(canvas.getWidth(), canvas.getHeight()));
         }
 

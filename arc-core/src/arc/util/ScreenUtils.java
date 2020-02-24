@@ -65,11 +65,11 @@ public final class ScreenUtils{
     }
 
     public static Pixmap getFrameBufferPixmap(int x, int y, int w, int h){
-        Core.gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
+        Gl.pixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
 
         final Pixmap pixmap = new Pixmap(w, h, Format.RGBA8888);
         ByteBuffer pixels = pixmap.getPixels();
-        Core.gl.glReadPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
+        Gl.readPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
 
         return pixmap;
     }
@@ -104,9 +104,9 @@ public final class ScreenUtils{
      * @param flipY whether to flip pixels along Y axis
      */
     public static byte[] getFrameBufferPixels(int x, int y, int w, int h, boolean flipY){
-        Core.gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
+        Gl.pixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
         final ByteBuffer pixels = BufferUtils.newByteBuffer(w * h * 4);
-        Core.gl.glReadPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
+        Gl.readPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
         final int numBytes = w * h * 4;
         byte[] lines = new byte[numBytes];
         if(flipY){

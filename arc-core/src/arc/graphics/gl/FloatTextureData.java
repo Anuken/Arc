@@ -1,16 +1,12 @@
 package arc.graphics.gl;
 
-import arc.Application.ApplicationType;
-import arc.Core;
-import arc.graphics.GL20;
-import arc.graphics.GL30;
-import arc.graphics.Pixmap;
-import arc.graphics.Pixmap.Format;
-import arc.graphics.TextureData;
-import arc.util.ArcRuntimeException;
-import arc.util.BufferUtils;
+import arc.Application.*;
+import arc.*;
+import arc.graphics.*;
+import arc.graphics.Pixmap.*;
+import arc.util.*;
 
-import java.nio.FloatBuffer;
+import java.nio.*;
 
 /** A {@link TextureData} implementation which should be used to create float textures. */
 public class FloatTextureData implements TextureData{
@@ -72,7 +68,7 @@ public class FloatTextureData implements TextureData{
 
             // GLES and WebGL defines texture format by 3rd and 8th argument,
             // so to get a float texture one needs to supply GL_RGBA and GL_FLOAT there.
-            Core.gl.glTexImage2D(target, 0, GL20.GL_RGBA, width, height, 0, GL20.GL_RGBA, GL20.GL_FLOAT, buffer);
+            Gl.texImage2D(target, 0, GL20.GL_RGBA, width, height, 0, GL20.GL_RGBA, GL20.GL_FLOAT, buffer);
 
         }else{
             if(!Core.graphics.isGL30Available()){
@@ -81,7 +77,7 @@ public class FloatTextureData implements TextureData{
             }
             // in desktop OpenGL the texture format is defined only by the third argument,
             // hence we need to use GL_RGBA32F there (this constant is unavailable in GLES/WebGL)
-            Core.gl.glTexImage2D(target, 0, internalFormat, width, height, 0, format, GL20.GL_FLOAT, buffer);
+            Gl.texImage2D(target, 0, internalFormat, width, height, 0, format, GL20.GL_FLOAT, buffer);
         }
     }
 

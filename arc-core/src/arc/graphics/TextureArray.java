@@ -35,7 +35,7 @@ public class TextureArray extends GLTexture{
     }
 
     public TextureArray(TextureArrayData data){
-        super(GL30.GL_TEXTURE_2D_ARRAY, Core.gl.glGenTexture());
+        super(GL30.GL_TEXTURE_2D_ARRAY, Gl.genTexture());
 
         if(Core.gl30 == null){
             throw new ArcRuntimeException("TextureArray requires a device running with GLES 3.0 compatibilty");
@@ -107,7 +107,7 @@ public class TextureArray extends GLTexture{
 
         setFilter(minFilter, magFilter);
         setWrap(uWrap, vWrap);
-        Core.gl.glBindTexture(glTarget, 0);
+        Gl.bindTexture(glTarget, 0);
     }
 
     @Override
@@ -133,7 +133,7 @@ public class TextureArray extends GLTexture{
     @Override
     protected void reload(){
         if(!isManaged()) throw new ArcRuntimeException("Tried to reload an unmanaged TextureArray");
-        glHandle = Core.gl.glGenTexture();
+        glHandle = Gl.genTexture();
         load(data);
     }
 

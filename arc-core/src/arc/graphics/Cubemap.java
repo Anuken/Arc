@@ -140,7 +140,7 @@ public class Cubemap extends GLTexture{
 
                     // unload the c, create a new gl handle then reload it.
                     assetManager.unload(fileName);
-                    cubemap.glHandle = Core.gl.glGenTexture();
+                    cubemap.glHandle = Gl.genTexture();
                     assetManager.load(fileName, Cubemap.class, params);
                 }
             }
@@ -182,7 +182,7 @@ public class Cubemap extends GLTexture{
         unsafeSetFilter(minFilter, magFilter, true);
         unsafeSetWrap(uWrap, vWrap, true);
         data.consumeCubemapData();
-        Core.gl.glBindTexture(glTarget, 0);
+        Gl.bindTexture(glTarget, 0);
     }
 
     public CubemapData getCubemapData(){
@@ -197,7 +197,7 @@ public class Cubemap extends GLTexture{
     @Override
     protected void reload(){
         if(!isManaged()) throw new ArcRuntimeException("Tried to reload an unmanaged Cubemap");
-        glHandle = Core.gl.glGenTexture();
+        glHandle = Gl.genTexture();
         load(data);
     }
 

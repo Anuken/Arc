@@ -26,7 +26,7 @@ public class IndexArrayEmu implements IndexData{
         isDirect = true;
         buffer = BufferUtils.newShortBuffer(maxIndices);
         buffer.flip();
-        bufferHandle = Core.gl20.glGenBuffer();
+        bufferHandle = Gl.genBuffer();
         usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
     }
 
@@ -38,7 +38,7 @@ public class IndexArrayEmu implements IndexData{
         this.isDirect = true;
         buffer = BufferUtils.newShortBuffer(maxIndices);
         buffer.flip();
-        bufferHandle = Core.gl20.glGenBuffer();
+        bufferHandle = Gl.genBuffer();
         usage = GL20.GL_STATIC_DRAW;
     }
 
@@ -77,7 +77,7 @@ public class IndexArrayEmu implements IndexData{
         buffer.flip();
 
         if(isBound){
-            Core.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, buffer.limit(), buffer, usage);
+            Gl.bufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, buffer.limit(), buffer, usage);
             isDirty = false;
         }
     }
@@ -90,7 +90,7 @@ public class IndexArrayEmu implements IndexData{
         buffer.flip();
 
         if(isBound){
-            Core.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, buffer.limit(), buffer, usage);
+            Gl.bufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, buffer.limit(), buffer, usage);
             isDirty = false;
         }
     }
@@ -123,9 +123,9 @@ public class IndexArrayEmu implements IndexData{
         if(bufferHandle == 0)
             throw new ArcRuntimeException("No buffer allocated!");
 
-        Core.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
+        Gl.bindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
         if(isDirty){
-            Core.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, buffer.limit(), buffer, usage);
+            Gl.bufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, buffer.limit(), buffer, usage);
             isDirty = false;
         }
         isBound = true;
@@ -134,7 +134,7 @@ public class IndexArrayEmu implements IndexData{
     /** Unbinds this IndexBufferObject. */
     @Override
     public void unbind(){
-        Core.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
+        Gl.bindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
         isBound = false;
     }
 
@@ -144,7 +144,7 @@ public class IndexArrayEmu implements IndexData{
      */
     @Override
     public void invalidate(){
-        bufferHandle = Core.gl20.glGenBuffer();
+        bufferHandle = Gl.genBuffer();
         isDirty = true;
     }
 
