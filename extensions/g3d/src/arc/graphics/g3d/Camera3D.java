@@ -42,7 +42,7 @@ public class Camera3D{
         Mat3D.inv(invProjectionView.val);
     }
 
-    public void resize(int width, int height){
+    public void resize(float width, float height){
         this.width = width;
         this.height = height;
     }

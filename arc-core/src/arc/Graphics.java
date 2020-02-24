@@ -69,6 +69,11 @@ public abstract class Graphics implements Disposable{
     /** @return the height of the client area in logical pixels */
     public abstract int getHeight();
 
+    /** @return the aspect ratio, e.g. width/height */
+    public float getAspect(){
+        return (float)getWidth() / getHeight();
+    }
+
     /** @return whether the window is 'hidden', e.g. whether width or height of the window is less than 2.
      * This is due to Windows reporting window size as 0 or 1 when minimized. This causes framebuffers to crash if resized.
      */
