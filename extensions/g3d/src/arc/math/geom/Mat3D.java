@@ -1,7 +1,6 @@
-package arc.math3d;
+package arc.math.geom;
 
 import arc.math.*;
-import arc.math.geom.*;
 
 /**
  * Encapsulates a <a href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> 4 by 4 matrix. Like

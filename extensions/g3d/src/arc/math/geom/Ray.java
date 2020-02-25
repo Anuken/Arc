@@ -1,6 +1,4 @@
-package arc.math3d;
-
-import arc.math.geom.*;
+package arc.math.geom;
 
 /**
  * Encapsulates a ray having a starting position and a unit length direction.

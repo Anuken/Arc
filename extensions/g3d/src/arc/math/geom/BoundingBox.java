@@ -1,6 +1,5 @@
-package arc.math3d;
+package arc.math.geom;
 
-import arc.math.geom.*;
 import arc.struct.*;
 
 /**

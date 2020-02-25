@@ -4,7 +4,6 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
-import arc.math3d.*;
 
 /** A SpriteBatch that projects sprites onto a plane in 3D space. */
 public class PlaneBatch3D extends SpriteBatch{
