@@ -5,6 +5,7 @@ import arc.graphics.VertexAttributes.*;
 import arc.graphics.gl.*;
 import arc.math.geom.*;
 import arc.struct.*;
+import arc.util.*;
 
 public class VertexBatch3D{
     private final int maxVertices;
@@ -102,6 +103,7 @@ public class VertexBatch3D{
         }
 
         shader.append(";\n}");
+        Log.info(shader);
         return shader.toString();
     }
 
@@ -159,6 +161,11 @@ public class VertexBatch3D{
         vertices[idx + 2] = z;
     }
 
+    public void tri2(Vec3 v1, Vec3 v2, Vec3 v3, Color color){
+        tri(v1, v2, v3, color);
+        tri(v1, v3, v2, color);
+    }
+
     public void tri(Vec3 v1, Vec3 v2, Vec3 v3, Color color){
         tri(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, v3.x, v3.y, v3.z, color);
     }
@@ -203,8 +210,13 @@ public class VertexBatch3D{
     }
 
     public void flush(int primitiveType){
+        flush(primitiveType, this.shader);
+    }
+
+    public void flush(int primitiveType, Shader shader){
         if(numVertices == 0) return;
         shader.begin();
+        shader.apply();
         shader.setUniformMatrix4("u_projModelView", projModelView.val);
         for(int i = 0; i < numTexCoords; i++)
             shader.setUniformi(shaderUniformNames[i], i);
