@@ -112,12 +112,12 @@ public class PlaneBatch3D extends SpriteBatch{
         final float v2 = region.getV();
         final float color = this.colorPacked;
 
-        vertex(x1, y1, color, u, v);
         vertex(x2, y2, color, u, v2);
+        vertex(x1, y1, color, u, v);
         vertex(x3, y3, color, u2, v2);
 
-        vertex(x3, y3, color, u2, v2);
         vertex(x4, y4, color, u2, v);
+        vertex(x3, y3, color, u2, v2);
         vertex(x1, y1, color, u, v);
 
         idx ++;
@@ -133,12 +133,12 @@ public class PlaneBatch3D extends SpriteBatch{
             checkFlush();
 
             vertex(v[i], v[i + 1], v[i + 2], v[i + 3], v[i + 4]);
-            vertex(v[i + 6], v[i + 7], v[i + 8], v[i + 9], v[i + 10]);
             vertex(v[i + 12], v[i + 13], v[i + 14], v[i + 15], v[i + 16]);
+            vertex(v[i + 6], v[i + 7], v[i + 8], v[i + 9], v[i + 10]);
 
             vertex(v[i + 12], v[i + 13], v[i + 14], v[i + 15], v[i + 16]);
-            vertex(v[i + 18], v[i + 19], v[i + 20], v[i + 21], v[i + 22]);
             vertex(v[i], v[i + 1], v[i + 2], v[i + 3], v[i + 4]);
+            vertex(v[i + 18], v[i + 19], v[i + 20], v[i + 21], v[i + 22]);
 
             idx ++;
         }
