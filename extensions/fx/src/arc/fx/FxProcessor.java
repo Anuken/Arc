@@ -5,6 +5,7 @@ import arc.fx.util.*;
 import arc.graphics.*;
 import arc.graphics.Pixmap.*;
 import arc.graphics.Texture.*;
+import arc.graphics.g2d.*;
 import arc.struct.*;
 import arc.util.*;
 
@@ -39,6 +40,10 @@ public final class FxProcessor implements Disposable{
 
     public FxProcessor(){
         this(Format.RGBA8888, Core.graphics.getBackBufferWidth(), Core.graphics.getBackBufferHeight());
+    }
+
+    public FxProcessor(int w, int h){
+        this(Format.RGBA8888, w, h);
     }
 
     public FxProcessor(Format fboFormat, int bufferWidth, int bufferHeight){
@@ -202,13 +207,15 @@ public final class FxProcessor implements Disposable{
      * @return true or false, whether or not capturing has been initiated.
      * Capturing will fail if the manager is disabled or capturing is already started.
      */
-    public boolean beginCapture(){
+    public boolean begin(){
         if(applyingEffects){
             throw new IllegalStateException("You cannot capture when you're applying the effects.");
         }
 
         if(disabled) return false;
         if(capturing) return false;
+
+        Draw.flush();
 
         capturing = true;
         pingPongBuffer.begin();
@@ -219,8 +226,10 @@ public final class FxProcessor implements Disposable{
      * Stops capturing the scene.
      * @return false if there was no capturing before that call.
      */
-    public boolean endCapture(){
+    public boolean end(){
         if(!capturing) return false;
+
+        Draw.flush();
 
         hasCaptured = true;
         capturing = false;
@@ -279,7 +288,7 @@ public final class FxProcessor implements Disposable{
         applyingEffects = false;
     }
 
-    public void renderToScreen(){
+    public void render(){
         if(capturing){
             throw new IllegalStateException("You should call VfxManager.endCapture() before rendering the result.");
         }
@@ -296,7 +305,7 @@ public final class FxProcessor implements Disposable{
         }
     }
 
-    public void renderToScreen(int x, int y, int width, int height){
+    public void render(int x, int y, int width, int height){
         if(capturing){
             throw new IllegalStateException("You should call VfxManager.endCapture() before rendering the result.");
         }

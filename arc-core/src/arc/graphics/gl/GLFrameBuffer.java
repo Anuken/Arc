@@ -362,6 +362,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
 
     /** Binds the frame buffer and sets the viewport accordingly, so everything gets drawn to it. */
     public void begin(){
+        if(currentBoundFramebuffer == this) throw new IllegalArgumentException("Do not begin() twice.");
         //save last buffer
         lastBoundFramebuffer = currentBoundFramebuffer;
         currentBoundFramebuffer = this;

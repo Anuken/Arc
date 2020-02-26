@@ -22,7 +22,6 @@ import arc.graphics.Texture.*;
  * @author metaphore
  */
 public final class PingPongBuffer{
-
     private final FxBuffer buffer1;
     private final FxBuffer buffer2;
 

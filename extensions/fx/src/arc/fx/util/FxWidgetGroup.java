@@ -68,14 +68,14 @@ public class FxWidgetGroup extends WidgetGroup{
         fxProcessor.clear();
 
         fxProcessor.getPingPongBuffer().addRenderer(rendererAdapter);
-        fxProcessor.beginCapture();
+        fxProcessor.begin();
 
         validate();
         drawChildren();
 
         Draw.flush();
 
-        fxProcessor.endCapture();
+        fxProcessor.end();
         fxProcessor.getPingPongBuffer().removeRenderer(rendererAdapter);
 
         fxProcessor.applyEffects();
