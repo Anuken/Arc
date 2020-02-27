@@ -1,10 +1,10 @@
 package arc.struct;
 
-import arc.math.Mathf;
-import arc.util.ArcRuntimeException;
+import arc.func.*;
+import arc.math.*;
+import arc.util.*;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * An unordered map that uses int keys. This implementation is a cuckoo hash map using 3 hashes, random walking, and a small
@@ -300,6 +300,15 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>>{
         valueTable[index] = value;
         stashSize++;
         size++;
+    }
+
+    public V getOr(int key, Prov<V> defaultValue){
+        V out = get(key);
+        if(out == null){
+            out = defaultValue.get();
+            put(key, out);
+        }
+        return out;
     }
 
     public V get(int key){

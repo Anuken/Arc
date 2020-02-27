@@ -5,7 +5,6 @@ import arc.graphics.VertexAttributes.*;
 import arc.graphics.gl.*;
 import arc.math.geom.*;
 import arc.struct.*;
-import arc.util.*;
 
 public class VertexBatch3D{
     private final int maxVertices;
@@ -103,7 +102,6 @@ public class VertexBatch3D{
         }
 
         shader.append(";\n}");
-        Log.info(shader);
         return shader.toString();
     }
 
