@@ -705,9 +705,9 @@ public class Mesh implements Disposable{
         if(usage != null){
             int size = 0;
             int as = 0;
-            for(int i = 0; i < usage.length; i++)
-                if(getVertexAttribute(usage[i]) != null){
-                    size += getVertexAttribute(usage[i]).numComponents;
+            for(int value : usage)
+                if(getVertexAttribute(value) != null){
+                    size += getVertexAttribute(value).numComponents;
                     as++;
                 }
             if(size > 0){
@@ -715,8 +715,8 @@ public class Mesh implements Disposable{
                 checks = new short[size];
                 int idx = -1;
                 int ai = -1;
-                for(int i = 0; i < usage.length; i++){
-                    VertexAttribute a = getVertexAttribute(usage[i]);
+                for(int value : usage){
+                    VertexAttribute a = getVertexAttribute(value);
                     if(a == null) continue;
                     for(int j = 0; j < a.numComponents; j++)
                         checks[++idx] = (short)(a.offset + j);

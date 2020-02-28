@@ -122,6 +122,10 @@ public class Vec3 implements Vector<Vec3>{
         return this.set(values[0], values[1], values[2]);
     }
 
+    public Vec3 set(final float[] values, int offset){
+        return this.set(values[offset], values[offset + 1], values[offset + 2]);
+    }
+
     /**
      * Sets the components of the given vector and z-component
      * @param vector The vector
