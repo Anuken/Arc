@@ -36,6 +36,8 @@ public class Gl{
     blendEquationAlpha = 0x883D,
     funcSubtract = 0x800A,
     funcReverseSubtract = 0x800B,
+    min = 0x8007,
+    max = 0x8008,
     blendDstRgb = 0x80C8,
     blendSrcRgb = 0x80C9,
     blendDstAlpha = 0x80CA,
