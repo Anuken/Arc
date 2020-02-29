@@ -252,7 +252,6 @@ public class Bloom{
     }
 
     private void gaussianBlur(){
-
         // cut bright areas of the picture and blit to smaller fbo
 
         original.bind(0);
