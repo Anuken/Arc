@@ -14,7 +14,7 @@ public class VertexBatch3D{
     private final int normalOffset;
     private final int colorOffset;
     private final int texCoordOffset;
-    private final Mat3D projModelView = new Mat3D();
+    private final Mat3D proj = new Mat3D();
     private final float[] vertices;
     private final String[] shaderUniformNames;
 
@@ -63,14 +63,14 @@ public class VertexBatch3D{
             shader.append("attribute vec2 " + Shader.texcoordAttribute).append(i).append(";\n");
         }
 
-        shader.append("uniform mat4 u_projModelView;\n");
+        shader.append("uniform mat4 u_proj;\n");
         shader.append(hasColors ? "varying vec4 v_col;\n" : "");
 
         for(int i = 0; i < numTexCoords; i++){
             shader.append("varying vec2 v_tex").append(i).append(";\n");
         }
 
-        shader.append("void main() {\n" + "   gl_Position = u_projModelView * " + Shader.positionAttribute + ";\n").append(hasColors ? "   v_col = " + Shader.colorAttribute + ";\n" : "");
+        shader.append("void main() {\n" + "   gl_Position = u_proj * " + Shader.positionAttribute + ";\n").append(hasColors ? "   v_col = " + Shader.colorAttribute + ";\n" : "");
 
         for(int i = 0; i < numTexCoords; i++){
             shader.append("   v_tex").append(i).append(" = ").append(Shader.texcoordAttribute).append(i).append(";\n");
@@ -203,8 +203,12 @@ public class VertexBatch3D{
         numVertices ++;
     }
 
+    public Mat3D proj(){
+        return proj;
+    }
+
     public void proj(Mat3D projModelView){
-        this.projModelView.set(projModelView);
+        this.proj.set(projModelView);
     }
 
     public void flush(int primitiveType){
@@ -215,7 +219,7 @@ public class VertexBatch3D{
         if(numVertices == 0) return;
         shader.begin();
         shader.apply();
-        shader.setUniformMatrix4("u_projModelView", projModelView.val);
+        shader.setUniformMatrix4("u_proj", proj.val);
         for(int i = 0; i < numTexCoords; i++)
             shader.setUniformi(shaderUniformNames[i], i);
         mesh.setVertices(vertices, 0, vertexIdx);

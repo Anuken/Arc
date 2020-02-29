@@ -155,6 +155,10 @@ public class Camera3D{
         return worldCoords;
     }
 
+    public Ray getMouseRay(){
+        return getPickRay(Core.input.mouseX(), Core.input.mouseY());
+    }
+
     /**
      * Creates a picking {@link Ray} from the coordinates given in screen coordinates. It is assumed that the viewport spans the
      * whole screen. The screen coordinates origin is assumed to be in the top left corner, its y-axis pointing down, the x-axis

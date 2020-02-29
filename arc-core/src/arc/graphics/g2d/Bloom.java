@@ -200,8 +200,7 @@ public class Bloom{
             capturing = true;
             frameBuffer.begin();
             Gl.clearColor(r, g, b, a);
-            Gl.clear(Gl.colorBufferBit);
-
+            Gl.clear(Gl.colorBufferBit | Gl.depthBufferBit);
         }
     }
 

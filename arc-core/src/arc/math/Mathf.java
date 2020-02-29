@@ -114,6 +114,15 @@ public final class Mathf{
         return (float) Math.sqrt(x);
     }
 
+    public static float map(float value, float froma, float toa, float fromb, float tob){
+        return fromb + (value - froma) * (tob - fromb) / (toa - froma);
+    }
+
+    /** Map value from [0, 1].*/
+    public static float map(float value, float from, float to){
+        return map(value, 0, 1, from, to);
+    }
+
     /**Returns -1 if f<0, 1 otherwise.*/
     public static int sign(float f){
         return (f < 0 ? -1 : 1);

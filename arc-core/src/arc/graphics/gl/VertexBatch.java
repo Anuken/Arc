@@ -71,14 +71,14 @@ public class VertexBatch{
             shader.append("attribute vec2 " + Shader.texcoordAttribute).append(i).append(";\n");
         }
 
-        shader.append("uniform mat4 u_projModelView;\n");
+        shader.append("uniform mat4 u_proj;\n");
         shader.append(hasColors ? "varying vec4 v_col;\n" : "");
 
         for(int i = 0; i < numTexCoords; i++){
             shader.append("varying vec2 v_tex").append(i).append(";\n");
         }
 
-        shader.append("void main() {\n" + "   gl_Position = u_projModelView * " + Shader.positionAttribute + ";\n").append(hasColors ? "   v_col = " + Shader.colorAttribute + ";\n" : "");
+        shader.append("void main() {\n" + "   gl_Position = u_proj * " + Shader.positionAttribute + ";\n").append(hasColors ? "   v_col = " + Shader.colorAttribute + ";\n" : "");
 
         for(int i = 0; i < numTexCoords; i++){
             shader.append("   v_tex").append(i).append(" = ").append(Shader.texcoordAttribute).append(i).append(";\n");
@@ -185,7 +185,7 @@ public class VertexBatch{
     public void flush(){
         if(numVertices == 0) return;
         shader.begin();
-        shader.setUniformMatrix("u_projModelView", projModelView);
+        shader.setUniformMatrix("u_proj", projModelView);
         for(int i = 0; i < numTexCoords; i++)
             shader.setUniformi(shaderUniformNames[i], i);
         mesh.setVertices(vertices, 0, vertexIdx);

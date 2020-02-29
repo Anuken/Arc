@@ -372,7 +372,7 @@ public class Settings{
 
     /** Stores an object in the preference map. */
     public void put(String name, Object object){
-        if(object instanceof Float || object instanceof Integer || object instanceof Boolean
+        if(object instanceof Float || object instanceof Integer || object instanceof Boolean || object instanceof Long
         || object instanceof String || object instanceof byte[]){
             values.put(name, object);
         }else{
