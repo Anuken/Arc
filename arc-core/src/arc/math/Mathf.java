@@ -221,6 +221,11 @@ public final class Mathf{
         return seedr.nextFloat();
     }
 
+    public static float randomSeed(long seed, float max){
+        seedr.setSeed(seed * 99999);
+        return seedr.nextFloat() * max;
+    }
+
     public static float randomSeedRange(long seed, float range){
         seedr.setSeed(seed * 99999);
         return range * (seedr.nextFloat() - 0.5f) * 2f;

@@ -305,6 +305,14 @@ public class Settings{
         return (float)values.get(name, def);
     }
 
+    public long getLong(String name, long def){
+        return (long)values.get(name, def);
+    }
+
+    public Long getLong(String name){
+        return getLong(name, 0);
+    }
+
     public int getInt(String name, int def){
         return (int)values.get(name, def);
     }
