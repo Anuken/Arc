@@ -158,6 +158,12 @@ public final class Buffers{
         return buffer.asFloatBuffer();
     }
 
+    public static ShortBuffer newShortBuffer(int numShorts){
+        ByteBuffer buffer = ByteBuffer.allocateDirect(numShorts * 2);
+        buffer.order(ByteOrder.nativeOrder());
+        return buffer.asShortBuffer();
+    }
+
     public static ByteBuffer newByteBuffer(int numBytes){
         ByteBuffer buffer = ByteBuffer.allocateDirect(numBytes);
         buffer.order(ByteOrder.nativeOrder());
