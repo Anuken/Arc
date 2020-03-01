@@ -37,7 +37,7 @@ public class IndexBufferObjectSubData implements IndexData{
      * @param maxIndices the maximum number of indices this buffer can hold
      */
     public IndexBufferObjectSubData(boolean isStatic, int maxIndices){
-        byteBuffer = BufferUtils.newByteBuffer(maxIndices * 2);
+        byteBuffer = Buffers.newByteBuffer(maxIndices * 2);
         isDirect = true;
 
         usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
@@ -52,7 +52,7 @@ public class IndexBufferObjectSubData implements IndexData{
      * @param maxIndices the maximum number of indices this buffer can hold
      */
     public IndexBufferObjectSubData(int maxIndices){
-        byteBuffer = BufferUtils.newByteBuffer(maxIndices * 2);
+        byteBuffer = Buffers.newByteBuffer(maxIndices * 2);
         this.isDirect = true;
 
         usage = GL20.GL_STATIC_DRAW;
@@ -128,7 +128,7 @@ public class IndexBufferObjectSubData implements IndexData{
         isDirty = true;
         final int pos = byteBuffer.position();
         byteBuffer.position(targetOffset * 2);
-        BufferUtils.copy(indices, offset, byteBuffer, count);
+        Buffers.copy(indices, offset, byteBuffer, count);
         byteBuffer.position(pos);
         buffer.position(0);
 

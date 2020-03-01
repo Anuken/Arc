@@ -48,7 +48,7 @@ public class VertexBufferObjectSubData implements VertexData{
     public VertexBufferObjectSubData(boolean isStatic, int numVertices, VertexAttributes attributes){
         this.isStatic = isStatic;
         this.attributes = attributes;
-        byteBuffer = BufferUtils.newByteBuffer(this.attributes.vertexSize * numVertices);
+        byteBuffer = Buffers.newByteBuffer(this.attributes.vertexSize * numVertices);
         isDirect = true;
 
         usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
@@ -98,7 +98,7 @@ public class VertexBufferObjectSubData implements VertexData{
     public void setVertices(float[] vertices, int offset, int count){
         isDirty = true;
         if(isDirect){
-            BufferUtils.copy(vertices, byteBuffer, count, offset);
+            Buffers.copy(vertices, byteBuffer, count, offset);
             buffer.position(0);
             buffer.limit(count);
         }else{
@@ -118,7 +118,7 @@ public class VertexBufferObjectSubData implements VertexData{
         if(isDirect){
             final int pos = byteBuffer.position();
             byteBuffer.position(targetOffset * 4);
-            BufferUtils.copy(vertices, sourceOffset, count, byteBuffer);
+            Buffers.copy(vertices, sourceOffset, count, byteBuffer);
             byteBuffer.position(pos);
         }else
             throw new ArcRuntimeException("Buffer must be allocated direct."); // Should never happen

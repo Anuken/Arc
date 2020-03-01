@@ -53,7 +53,7 @@ public class FloatTextureData implements TextureData{
                 if(internalFormat == GL30.GL_RG16F || internalFormat == GL30.GL_RG32F) amountOfFloats = 2;
                 if(internalFormat == GL30.GL_R16F || internalFormat == GL30.GL_R32F) amountOfFloats = 1;
             }
-            this.buffer = BufferUtils.newFloatBuffer(width * height * amountOfFloats);
+            this.buffer = Buffers.newFloatBuffer(width * height * amountOfFloats);
         }
         isPrepared = true;
     }

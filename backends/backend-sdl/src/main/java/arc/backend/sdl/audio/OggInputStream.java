@@ -95,7 +95,7 @@ public class OggInputStream extends InputStream{
     OggInputStream(InputStream input, OggInputStream previousStream){
         if(previousStream == null){
             convbuffer = new byte[convsize];
-            pcmBuffer = BufferUtils.newByteBuffer(4096 * 500);
+            pcmBuffer = Buffers.newByteBuffer(4096 * 500);
         }else{
             convbuffer = previousStream.convbuffer;
             pcmBuffer = previousStream.pcmBuffer;

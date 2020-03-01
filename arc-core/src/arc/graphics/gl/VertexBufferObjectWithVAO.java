@@ -28,7 +28,7 @@ import java.nio.*;
  * @author mzechner, Dave Clayton <contact@redskyforge.com>, Nate Austin <nate.austin gmail>
  */
 public class VertexBufferObjectWithVAO implements VertexData{
-    final static IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
+    final static IntBuffer tmpHandle = Buffers.newIntBuffer(1);
 
     final VertexAttributes attributes;
     final FloatBuffer buffer;
@@ -62,7 +62,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
         this.isStatic = isStatic;
         this.attributes = attributes;
 
-        byteBuffer = BufferUtils.newUnsafeByteBuffer(this.attributes.vertexSize * numVertices);
+        byteBuffer = Buffers.newUnsafeByteBuffer(this.attributes.vertexSize * numVertices);
         buffer = byteBuffer.asFloatBuffer();
         buffer.flip();
         byteBuffer.flip();
@@ -102,7 +102,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
     @Override
     public void setVertices(float[] vertices, int offset, int count){
         isDirty = true;
-        BufferUtils.copy(vertices, byteBuffer, count, offset);
+        Buffers.copy(vertices, byteBuffer, count, offset);
         buffer.position(0);
         buffer.limit(count);
         bufferChanged();
@@ -113,7 +113,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
         isDirty = true;
         final int pos = byteBuffer.position();
         byteBuffer.position(targetOffset * 4);
-        BufferUtils.copy(vertices, sourceOffset, count, byteBuffer);
+        Buffers.copy(vertices, sourceOffset, count, byteBuffer);
         byteBuffer.position(pos);
         buffer.position(0);
         bufferChanged();
@@ -244,7 +244,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
         gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
         gl.glDeleteBuffer(bufferHandle);
         bufferHandle = 0;
-        BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
+        Buffers.disposeUnsafeByteBuffer(byteBuffer);
         deleteVAO();
     }
 

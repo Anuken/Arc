@@ -16,7 +16,7 @@ public abstract class ALMusic implements Music{
     static private final int bufferCount = 3;
     static private final int bytesPerSample = 2;
     static private final byte[] tempBytes = new byte[bufferSize];
-    static private final ByteBuffer tempBuffer = BufferUtils.newByteBuffer(bufferSize);
+    static private final ByteBuffer tempBuffer = Buffers.newByteBuffer(bufferSize);
     protected final Fi file;
     private final ALAudio audio;
     protected int bufferOverhead = 0;
@@ -53,7 +53,7 @@ public abstract class ALMusic implements Music{
             audio.music.add(this);
 
             if(buffers == null){
-                buffers = BufferUtils.newIntBuffer(bufferCount);
+                buffers = Buffers.newIntBuffer(bufferCount);
                 alGenBuffers(buffers.remaining(), buffers);
                 int errorCode = alGetError();
                 if(errorCode != AL_NO_ERROR)

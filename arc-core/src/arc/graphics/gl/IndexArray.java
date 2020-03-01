@@ -1,6 +1,6 @@
 package arc.graphics.gl;
 
-import arc.util.BufferUtils;
+import arc.util.Buffers;
 
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
@@ -23,7 +23,7 @@ public class IndexArray implements IndexData{
             maxIndices = 1; // avoid allocating a zero-sized buffer because of bug in Android's ART < Android 5.0
         }
 
-        byteBuffer = BufferUtils.newUnsafeByteBuffer(maxIndices * 2);
+        byteBuffer = Buffers.newUnsafeByteBuffer(maxIndices * 2);
         buffer = byteBuffer.asShortBuffer();
         buffer.flip();
         byteBuffer.flip();
@@ -75,7 +75,7 @@ public class IndexArray implements IndexData{
     public void updateIndices(int targetOffset, short[] indices, int offset, int count){
         final int pos = byteBuffer.position();
         byteBuffer.position(targetOffset * 2);
-        BufferUtils.copy(indices, offset, byteBuffer, count);
+        Buffers.copy(indices, offset, byteBuffer, count);
         byteBuffer.position(pos);
     }
 
@@ -104,6 +104,6 @@ public class IndexArray implements IndexData{
 
     /** Disposes this IndexArray and all its associated OpenGL resources. */
     public void dispose(){
-        BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
+        Buffers.disposeUnsafeByteBuffer(byteBuffer);
     }
 }

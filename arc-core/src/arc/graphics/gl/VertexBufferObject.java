@@ -47,7 +47,7 @@ public class VertexBufferObject implements VertexData{
     public VertexBufferObject(boolean isStatic, int numVertices, VertexAttributes attributes){
         bufferHandle = Gl.genBuffer();
 
-        ByteBuffer data = BufferUtils.newUnsafeByteBuffer(attributes.vertexSize * numVertices);
+        ByteBuffer data = Buffers.newUnsafeByteBuffer(attributes.vertexSize * numVertices);
         data.limit(0);
         setBuffer(data, true, attributes);
         setUsage(isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW);
@@ -87,7 +87,7 @@ public class VertexBufferObject implements VertexData{
     protected void setBuffer(Buffer data, boolean ownsBuffer, VertexAttributes value){
         if(isBound) throw new ArcRuntimeException("Cannot change attributes while VBO is bound");
         if(this.ownsBuffer && byteBuffer != null)
-            BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
+            Buffers.disposeUnsafeByteBuffer(byteBuffer);
         attributes = value;
         if(data instanceof ByteBuffer)
             byteBuffer = (ByteBuffer)data;
@@ -112,7 +112,7 @@ public class VertexBufferObject implements VertexData{
     @Override
     public void setVertices(float[] vertices, int offset, int count){
         isDirty = true;
-        BufferUtils.copy(vertices, byteBuffer, count, offset);
+        Buffers.copy(vertices, byteBuffer, count, offset);
         buffer.position(0);
         buffer.limit(count);
         bufferChanged();
@@ -123,7 +123,7 @@ public class VertexBufferObject implements VertexData{
         isDirty = true;
         final int pos = byteBuffer.position();
         byteBuffer.position(targetOffset * 4);
-        BufferUtils.copy(vertices, sourceOffset, count, byteBuffer);
+        Buffers.copy(vertices, sourceOffset, count, byteBuffer);
         byteBuffer.position(pos);
         buffer.position(0);
         bufferChanged();
@@ -233,6 +233,6 @@ public class VertexBufferObject implements VertexData{
         gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
         gl.glDeleteBuffer(bufferHandle);
         bufferHandle = 0;
-        if(ownsBuffer) BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
+        if(ownsBuffer) Buffers.disposeUnsafeByteBuffer(byteBuffer);
     }
 }

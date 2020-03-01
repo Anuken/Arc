@@ -77,7 +77,7 @@ public final class ScreenUtils{
     public static Pixmap getFrameBufferPixmap(int x, int y, int w, int h, boolean flip){
         byte[] lines = getFrameBufferPixels(x, y, w, h, flip);
         Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-        BufferUtils.copy(lines, 0, pixmap.getPixels(), lines.length);
+        Buffers.copy(lines, 0, pixmap.getPixels(), lines.length);
         return pixmap;
     }
 
@@ -105,7 +105,7 @@ public final class ScreenUtils{
      */
     public static byte[] getFrameBufferPixels(int x, int y, int w, int h, boolean flipY){
         Gl.pixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
-        final ByteBuffer pixels = BufferUtils.newByteBuffer(w * h * 4);
+        final ByteBuffer pixels = Buffers.newByteBuffer(w * h * 4);
         Gl.readPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
         final int numBytes = w * h * 4;
         byte[] lines = new byte[numBytes];

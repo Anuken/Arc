@@ -86,8 +86,8 @@ public class Shader implements Disposable{
     private final String vertexShaderSource;
     /** fragment shader source **/
     private final String fragmentShaderSource;
-    IntBuffer params = BufferUtils.newIntBuffer(1);
-    IntBuffer type = BufferUtils.newIntBuffer(1);
+    IntBuffer params = Buffers.newIntBuffer(1);
+    IntBuffer type = Buffers.newIntBuffer(1);
     /** the log **/
     private String log = "";
     /** whether this program compiled successfully **/
@@ -196,7 +196,7 @@ public class Shader implements Disposable{
 
     private int loadShader(int type, String source){
         GL20 gl = Core.gl20;
-        IntBuffer intbuf = BufferUtils.newIntBuffer(1);
+        IntBuffer intbuf = Buffers.newIntBuffer(1);
 
         int shader = gl.glCreateShader(type);
         if(shader == 0) return -1;

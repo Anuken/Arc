@@ -57,7 +57,7 @@ public class IndexBufferObject implements IndexData{
             maxIndices = 1; // avoid allocating a zero-sized buffer because of bug in Android's ART < Android 5.0
         }
 
-        byteBuffer = BufferUtils.newUnsafeByteBuffer(maxIndices * 2);
+        byteBuffer = Buffers.newUnsafeByteBuffer(maxIndices * 2);
         isDirect = true;
 
         buffer = byteBuffer.asShortBuffer();
@@ -125,7 +125,7 @@ public class IndexBufferObject implements IndexData{
         isDirty = true;
         final int pos = byteBuffer.position();
         byteBuffer.position(targetOffset * 2);
-        BufferUtils.copy(indices, offset, byteBuffer, count);
+        Buffers.copy(indices, offset, byteBuffer, count);
         byteBuffer.position(pos);
         buffer.position(0);
 
@@ -178,6 +178,6 @@ public class IndexBufferObject implements IndexData{
         Gl.deleteBuffer(bufferHandle);
         bufferHandle = 0;
 
-        BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
+        Buffers.disposeUnsafeByteBuffer(byteBuffer);
     }
 }

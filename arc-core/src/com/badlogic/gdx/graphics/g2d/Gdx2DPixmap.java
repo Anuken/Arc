@@ -29,6 +29,7 @@ public class Gdx2DPixmap implements Disposable{
     int format;
     ByteBuffer pixelPtr;
     long[] nativeData = new long[4];
+
     public Gdx2DPixmap(byte[] encodedData, int offset, int len, int requestedFormat) throws IOException{
         pixelPtr = load(nativeData, encodedData, offset, len);
         if(pixelPtr == null) throw new IOException("Error loading pixmap: " + getFailureReason());

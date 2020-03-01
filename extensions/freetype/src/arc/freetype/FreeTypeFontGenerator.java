@@ -20,7 +20,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Rect;
 import arc.util.ArcRuntimeException;
-import arc.util.BufferUtils;
+import arc.util.Buffers;
 import arc.util.Disposable;
 import arc.util.Log;
 import arc.util.io.Streams;
@@ -96,11 +96,11 @@ public class FreeTypeFontGenerator implements Disposable{
                 if(fileSize == 0){
                     // Copy to a byte[] to get the file size, then copy to the buffer.
                     byte[] data = Streams.copyStreamToByteArray(input, 1024 * 16);
-                    buffer = BufferUtils.newUnsafeByteBuffer(data.length);
-                    BufferUtils.copy(data, 0, buffer, data.length);
+                    buffer = Buffers.newUnsafeByteBuffer(data.length);
+                    Buffers.copy(data, 0, buffer, data.length);
                 }else{
                     // Trust the specified file size.
-                    buffer = BufferUtils.newUnsafeByteBuffer(fileSize);
+                    buffer = Buffers.newUnsafeByteBuffer(fileSize);
                     Streams.copyStream(input, buffer);
                 }
             }catch(IOException ex){

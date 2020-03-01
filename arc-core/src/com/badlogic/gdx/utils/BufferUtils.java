@@ -45,10 +45,6 @@ public final class BufferUtils{
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	*/
 
-    public native static void copyJni(char[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes); /*
-		memcpy(dst + dstOffset, src + srcOffset, numBytes);
-	*/
-
     public native static void copyJni(short[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes); /*
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	 */
@@ -57,15 +53,7 @@ public final class BufferUtils{
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	*/
 
-    public native static void copyJni(long[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes); /*
-		memcpy(dst + dstOffset, src + srcOffset, numBytes);
-	*/
-
     public native static void copyJni(float[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes); /*
-		memcpy(dst + dstOffset, src + srcOffset, numBytes);
-	*/
-
-    public native static void copyJni(double[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes); /*
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	*/
 

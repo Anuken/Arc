@@ -3,7 +3,7 @@ package arc.graphics.gl;
 import arc.graphics.GL20;
 import arc.graphics.VertexAttribute;
 import arc.graphics.VertexAttributes;
-import arc.util.BufferUtils;
+import arc.util.Buffers;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -41,7 +41,7 @@ public class VertexArray implements VertexData{
      */
     public VertexArray(int numVertices, VertexAttributes attributes){
         this.attributes = attributes;
-        byteBuffer = BufferUtils.newUnsafeByteBuffer(this.attributes.vertexSize * numVertices);
+        byteBuffer = Buffers.newUnsafeByteBuffer(this.attributes.vertexSize * numVertices);
         buffer = byteBuffer.asFloatBuffer();
         buffer.flip();
         byteBuffer.flip();
@@ -49,7 +49,7 @@ public class VertexArray implements VertexData{
 
     @Override
     public void dispose(){
-        BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
+        Buffers.disposeUnsafeByteBuffer(byteBuffer);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class VertexArray implements VertexData{
 
     @Override
     public void setVertices(float[] vertices, int offset, int count){
-        BufferUtils.copy(vertices, byteBuffer, count, offset);
+        Buffers.copy(vertices, byteBuffer, count, offset);
         buffer.position(0);
         buffer.limit(count);
     }
@@ -77,7 +77,7 @@ public class VertexArray implements VertexData{
     public void updateVertices(int targetOffset, float[] vertices, int sourceOffset, int count){
         final int pos = byteBuffer.position();
         byteBuffer.position(targetOffset * 4);
-        BufferUtils.copy(vertices, sourceOffset, count, byteBuffer);
+        Buffers.copy(vertices, sourceOffset, count, byteBuffer);
         byteBuffer.position(pos);
     }
 

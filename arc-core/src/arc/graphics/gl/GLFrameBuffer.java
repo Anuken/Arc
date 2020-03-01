@@ -7,7 +7,7 @@ import arc.struct.Array;
 import arc.graphics.*;
 import arc.graphics.g2d.Draw;
 import arc.util.ArcRuntimeException;
-import arc.util.BufferUtils;
+import arc.util.Buffers;
 import arc.util.Disposable;
 
 import java.nio.ByteBuffer;
@@ -208,7 +208,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
         }
 
         if(isMRT){
-            IntBuffer buffer = BufferUtils.newIntBuffer(colorTextureCounter);
+            IntBuffer buffer = Buffers.newIntBuffer(colorTextureCounter);
             for(int i = 0; i < colorTextureCounter; i++){
                 buffer.put(GL30.GL_COLOR_ATTACHMENT0 + i);
             }

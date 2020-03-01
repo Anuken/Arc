@@ -63,11 +63,11 @@ public class ALAudio extends Audio{
         soundIdToSource = new IntIntMap();
         sourceToSoundId = new IntIntMap();
 
-        FloatBuffer orientation = (FloatBuffer)BufferUtils.newFloatBuffer(6).put(new float[]{0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f}).flip();
+        FloatBuffer orientation = (FloatBuffer)Buffers.newFloatBuffer(6).put(new float[]{0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f}).flip();
         alListenerfv(AL_ORIENTATION, orientation);
-        FloatBuffer velocity = (FloatBuffer)BufferUtils.newFloatBuffer(3).put(new float[]{0.0f, 0.0f, 0.0f}).flip();
+        FloatBuffer velocity = (FloatBuffer)Buffers.newFloatBuffer(3).put(new float[]{0.0f, 0.0f, 0.0f}).flip();
         alListenerfv(AL_VELOCITY, velocity);
-        FloatBuffer position = (FloatBuffer)BufferUtils.newFloatBuffer(3).put(new float[]{0.0f, 0.0f, 0.0f}).flip();
+        FloatBuffer position = (FloatBuffer)Buffers.newFloatBuffer(3).put(new float[]{0.0f, 0.0f, 0.0f}).flip();
         alListenerfv(AL_POSITION, position);
 
         recentSounds = new ALSound[simultaneousSources];

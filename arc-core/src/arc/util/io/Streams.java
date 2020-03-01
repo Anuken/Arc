@@ -1,6 +1,6 @@
 package arc.util.io;
 
-import arc.util.BufferUtils;
+import arc.util.Buffers;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -63,7 +63,7 @@ public final class Streams{
     public static int copyStream(InputStream input, ByteBuffer output, byte[] buffer) throws IOException{
         int startPosition = output.position(), total = 0, bytesRead;
         while((bytesRead = input.read(buffer)) != -1){
-            BufferUtils.copy(buffer, 0, output, bytesRead);
+            Buffers.copy(buffer, 0, output, bytesRead);
             total += bytesRead;
             output.position(startPosition + total);
         }

@@ -4,4 +4,5 @@ sourceSets.test.resources.srcDirs = ["test/resources"]
 
 dependencies{
     testImplementation libraries.junit
+    testCompile "com.badlogicgames.gdx:gdx-platform:1.9.10:natives-desktop"
 }

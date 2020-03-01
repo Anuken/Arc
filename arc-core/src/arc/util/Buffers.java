@@ -10,7 +10,7 @@ import static com.badlogic.gdx.utils.BufferUtils.*;
  * Class with static helper methods to increase the speed of array/direct buffer and direct buffer/direct buffer transfers
  * @author mzechner, xoppa
  */
-public final class BufferUtils{
+public final class Buffers{
     static final Array<ByteBuffer> unsafeBuffers = new Array<>();
     static int allocatedUnsafe = 0;
 
@@ -73,75 +73,8 @@ public final class BufferUtils{
      * @param numElements the number of elements to copy.
      * @param dst the destination Buffer, its position is used as an offset.
      */
-    public static void copy(char[] src, int srcOffset, int numElements, Buffer dst){
-        copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 1);
-    }
-
-    /**
-     * Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
-     * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay
-     * the same. <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
-     * @param src the source array.
-     * @param srcOffset the offset into the source array.
-     * @param numElements the number of elements to copy.
-     * @param dst the destination Buffer, its position is used as an offset.
-     */
-    public static void copy(int[] src, int srcOffset, int numElements, Buffer dst){
-        copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 2);
-    }
-
-    /**
-     * Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
-     * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay
-     * the same. <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
-     * @param src the source array.
-     * @param srcOffset the offset into the source array.
-     * @param numElements the number of elements to copy.
-     * @param dst the destination Buffer, its position is used as an offset.
-     */
-    public static void copy(long[] src, int srcOffset, int numElements, Buffer dst){
-        copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 3);
-    }
-
-    /**
-     * Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
-     * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay
-     * the same. <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
-     * @param src the source array.
-     * @param srcOffset the offset into the source array.
-     * @param numElements the number of elements to copy.
-     * @param dst the destination Buffer, its position is used as an offset.
-     */
     public static void copy(float[] src, int srcOffset, int numElements, Buffer dst){
         copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 2);
-    }
-
-    /**
-     * Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
-     * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay
-     * the same. <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
-     * @param src the source array.
-     * @param srcOffset the offset into the source array.
-     * @param numElements the number of elements to copy.
-     * @param dst the destination Buffer, its position is used as an offset.
-     */
-    public static void copy(double[] src, int srcOffset, int numElements, Buffer dst){
-        copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 3);
-    }
-
-    /**
-     * Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
-     * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position will stay the same,
-     * the limit will be set to position + numElements. <b>The Buffer must be a direct Buffer with native byte order. No error
-     * checking is performed</b>.
-     * @param src the source array.
-     * @param srcOffset the offset into the source array.
-     * @param dst the destination Buffer, its position is used as an offset.
-     * @param numElements the number of elements to copy.
-     */
-    public static void copy(char[] src, int srcOffset, Buffer dst, int numElements){
-        dst.limit(dst.position() + bytesToElements(dst, numElements << 1));
-        copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 1);
     }
 
     /**
@@ -169,39 +102,9 @@ public final class BufferUtils{
      * @param dst the destination Buffer, its position is used as an offset.
      * @param numElements the number of elements to copy.
      */
-    public static void copy(long[] src, int srcOffset, Buffer dst, int numElements){
-        dst.limit(dst.position() + bytesToElements(dst, numElements << 3));
-        copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 3);
-    }
-
-    /**
-     * Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
-     * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position will stay the same,
-     * the limit will be set to position + numElements. <b>The Buffer must be a direct Buffer with native byte order. No error
-     * checking is performed</b>.
-     * @param src the source array.
-     * @param srcOffset the offset into the source array.
-     * @param dst the destination Buffer, its position is used as an offset.
-     * @param numElements the number of elements to copy.
-     */
     public static void copy(float[] src, int srcOffset, Buffer dst, int numElements){
         dst.limit(dst.position() + bytesToElements(dst, numElements << 2));
         copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 2);
-    }
-
-    /**
-     * Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer}
-     * instance's {@link Buffer#position()} is used to define the offset into the Buffer itself. The position will stay the same,
-     * the limit will be set to position + numElements. <b>The Buffer must be a direct Buffer with native byte order. No error
-     * checking is performed</b>.
-     * @param src the source array.
-     * @param srcOffset the offset into the source array.
-     * @param dst the destination Buffer, its position is used as an offset.
-     * @param numElements the number of elements to copy.
-     */
-    public static void copy(double[] src, int srcOffset, Buffer dst, int numElements){
-        dst.limit(dst.position() + bytesToElements(dst, numElements << 3));
-        copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 3);
     }
 
     /**
@@ -221,58 +124,30 @@ public final class BufferUtils{
     }
 
     private static int positionInBytes(Buffer dst){
-        if(dst instanceof ByteBuffer)
-            return dst.position();
-        else if(dst instanceof ShortBuffer)
-            return dst.position() << 1;
-        else if(dst instanceof CharBuffer)
-            return dst.position() << 1;
-        else if(dst instanceof IntBuffer)
-            return dst.position() << 2;
-        else if(dst instanceof LongBuffer)
-            return dst.position() << 3;
-        else if(dst instanceof FloatBuffer)
-            return dst.position() << 2;
-        else if(dst instanceof DoubleBuffer)
-            return dst.position() << 3;
-        else
-            throw new ArcRuntimeException("Can't copy to a " + dst.getClass().getName() + " instance");
+        return dst.position() << elementShift(dst);
     }
 
     private static int bytesToElements(Buffer dst, int bytes){
-        if(dst instanceof ByteBuffer)
-            return bytes;
-        else if(dst instanceof ShortBuffer)
-            return bytes >>> 1;
-        else if(dst instanceof CharBuffer)
-            return bytes >>> 1;
-        else if(dst instanceof IntBuffer)
-            return bytes >>> 2;
-        else if(dst instanceof LongBuffer)
-            return bytes >>> 3;
-        else if(dst instanceof FloatBuffer)
-            return bytes >>> 2;
-        else if(dst instanceof DoubleBuffer)
-            return bytes >>> 3;
-        else
-            throw new ArcRuntimeException("Can't copy to a " + dst.getClass().getName() + " instance");
+        return bytes >>> elementShift(dst);
     }
 
     private static int elementsToBytes(Buffer dst, int elements){
+        return elements << elementShift(dst);
+    }
+
+    private static int elementShift(Buffer dst){
         if(dst instanceof ByteBuffer)
-            return elements;
-        else if(dst instanceof ShortBuffer)
-            return elements << 1;
-        else if(dst instanceof CharBuffer)
-            return elements << 1;
+            return 0;
+        else if(dst instanceof ShortBuffer || dst instanceof CharBuffer)
+            return 1;
         else if(dst instanceof IntBuffer)
-            return elements << 2;
+            return 2;
         else if(dst instanceof LongBuffer)
-            return elements << 3;
+            return 3;
         else if(dst instanceof FloatBuffer)
-            return elements << 2;
+            return 2;
         else if(dst instanceof DoubleBuffer)
-            return elements << 3;
+            return 3;
         else
             throw new ArcRuntimeException("Can't copy to a " + dst.getClass().getName() + " instance");
     }
@@ -283,40 +158,16 @@ public final class BufferUtils{
         return buffer.asFloatBuffer();
     }
 
-    public static DoubleBuffer newDoubleBuffer(int numDoubles){
-        ByteBuffer buffer = ByteBuffer.allocateDirect(numDoubles * 8);
-        buffer.order(ByteOrder.nativeOrder());
-        return buffer.asDoubleBuffer();
-    }
-
     public static ByteBuffer newByteBuffer(int numBytes){
         ByteBuffer buffer = ByteBuffer.allocateDirect(numBytes);
         buffer.order(ByteOrder.nativeOrder());
         return buffer;
     }
 
-    public static ShortBuffer newShortBuffer(int numShorts){
-        ByteBuffer buffer = ByteBuffer.allocateDirect(numShorts * 2);
-        buffer.order(ByteOrder.nativeOrder());
-        return buffer.asShortBuffer();
-    }
-
-    public static CharBuffer newCharBuffer(int numChars){
-        ByteBuffer buffer = ByteBuffer.allocateDirect(numChars * 2);
-        buffer.order(ByteOrder.nativeOrder());
-        return buffer.asCharBuffer();
-    }
-
     public static IntBuffer newIntBuffer(int numInts){
         ByteBuffer buffer = ByteBuffer.allocateDirect(numInts * 4);
         buffer.order(ByteOrder.nativeOrder());
         return buffer.asIntBuffer();
-    }
-
-    public static LongBuffer newLongBuffer(int numLongs){
-        ByteBuffer buffer = ByteBuffer.allocateDirect(numLongs * 8);
-        buffer.order(ByteOrder.nativeOrder());
-        return buffer.asLongBuffer();
     }
 
     public static void disposeUnsafeByteBuffer(ByteBuffer buffer){

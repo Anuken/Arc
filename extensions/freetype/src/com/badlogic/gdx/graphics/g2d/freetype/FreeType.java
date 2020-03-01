@@ -7,7 +7,7 @@ import arc.graphics.Pixmap;
 import arc.graphics.Pixmap.Blending;
 import arc.graphics.Pixmap.Format;
 import arc.util.ArcRuntimeException;
-import arc.util.BufferUtils;
+import arc.util.Buffers;
 import arc.util.Disposable;
 import arc.util.SharedLibraryLoader;
 
@@ -51,8 +51,8 @@ public class FreeType {
 		public void dispose () {
 			doneFreeType(address);
 			for(ByteBuffer buffer: fontData.values()) {
-				if (BufferUtils.isUnsafeByteBuffer(buffer)) 
-					BufferUtils.disposeUnsafeByteBuffer(buffer);
+				if (Buffers.isUnsafeByteBuffer(buffer))
+					Buffers.disposeUnsafeByteBuffer(buffer);
 			}
 		}
 
@@ -66,16 +66,16 @@ public class FreeType {
 		}
 
 		public Face newMemoryFace(byte[] data, int dataSize, int faceIndex) {
-			ByteBuffer buffer = BufferUtils.newUnsafeByteBuffer(data.length);
-			BufferUtils.copy(data, 0, buffer, data.length);
+			ByteBuffer buffer = Buffers.newUnsafeByteBuffer(data.length);
+			Buffers.copy(data, 0, buffer, data.length);
 			return newMemoryFace(buffer, faceIndex);
 		}
 
 		public Face newMemoryFace(ByteBuffer buffer, int faceIndex) {
 			long face = newMemoryFace(address, buffer, buffer.remaining(), faceIndex);
 			if(face == 0) {
-				if (BufferUtils.isUnsafeByteBuffer(buffer)) 
-					BufferUtils.disposeUnsafeByteBuffer(buffer);
+				if (Buffers.isUnsafeByteBuffer(buffer))
+					Buffers.disposeUnsafeByteBuffer(buffer);
 				throw new ArcRuntimeException("Couldn't load font, FreeType error code: " + getLastErrorCode());
 			}
 			else {
@@ -125,8 +125,8 @@ public class FreeType {
 			ByteBuffer buffer = library.fontData.get(address);
 			if(buffer != null) {
 				library.fontData.remove(address);
-				if (BufferUtils.isUnsafeByteBuffer(buffer)) 
-					BufferUtils.disposeUnsafeByteBuffer(buffer);
+				if (Buffers.isUnsafeByteBuffer(buffer))
+					Buffers.disposeUnsafeByteBuffer(buffer);
 			}
 		}
 
@@ -603,7 +603,7 @@ public class FreeType {
 				//              FreeType sets FT_Bitmap::buffer to NULL when the bitmap is empty (e.g. for ' ')
 				//              JNICheck is on by default on emulators and might have a point anyway...
 				//              So let's avoid this and just return a dummy non-null non-zero buffer
-				return BufferUtils.newByteBuffer(1);
+				return Buffers.newByteBuffer(1);
 			return getBuffer(address);
 		}
 
@@ -621,7 +621,7 @@ public class FreeType {
 			int rowBytes = Math.abs(getPitch()); // We currently ignore negative pitch.
 			if (color == Color.white && pixelMode == FT_PIXEL_MODE_GRAY && rowBytes == width && gamma == 1) {
 				pixmap = new Pixmap(width, rows, Format.Alpha);
-				BufferUtils.copy(src, pixmap.getPixels(), pixmap.getPixels().capacity());
+				Buffers.copy(src, pixmap.getPixels(), pixmap.getPixels().capacity());
 			} else {
 				pixmap = new Pixmap(width, rows, Format.RGBA8888);
 				int rgba = Color.rgba8888(color);
