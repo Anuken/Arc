@@ -625,7 +625,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
         return toString(", ", true);
     }
 
-    private String toString(String separator, boolean braces){
+    public String toString(String separator, boolean braces){
         if(size == 0) return braces ? "{}" : "";
         StringBuilder buffer = new StringBuilder(32);
         if(braces) buffer.append('{');
