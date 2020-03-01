@@ -52,7 +52,7 @@ public class VertexBufferObjectEmu implements VertexData{
         this.isStatic = isStatic;
         this.attributes = attributes;
 
-        buffer = BufferUtils.newFloatBuffer(this.attributes.vertexSize / 4 * numVertices);
+        buffer = Buffers.newFloatBuffer(this.attributes.vertexSize / 4 * numVertices);
         buffer.flip();
         bufferHandle = Gl.genBuffer();
         usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
@@ -89,7 +89,7 @@ public class VertexBufferObjectEmu implements VertexData{
     @Override
     public void setVertices(float[] vertices, int offset, int count){
         isDirty = true;
-        BufferUtils.copy(vertices, buffer, count, offset);
+        Buffers.copy(vertices, buffer, count, offset);
         buffer.position(0);
         buffer.limit(count);
         bufferChanged();
@@ -100,7 +100,7 @@ public class VertexBufferObjectEmu implements VertexData{
         isDirty = true;
         final int pos = buffer.position();
         buffer.position(targetOffset);
-        BufferUtils.copy(vertices, sourceOffset, count, buffer);
+        Buffers.copy(vertices, sourceOffset, count, buffer);
         buffer.position(pos);
         bufferChanged();
     }

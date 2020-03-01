@@ -24,7 +24,7 @@ public class IndexArrayEmu implements IndexData{
      */
     public IndexArrayEmu(boolean isStatic, int maxIndices){
         isDirect = true;
-        buffer = BufferUtils.newShortBuffer(maxIndices);
+        buffer = Buffers.newShortBuffer(maxIndices);
         buffer.flip();
         bufferHandle = Gl.genBuffer();
         usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
@@ -36,7 +36,7 @@ public class IndexArrayEmu implements IndexData{
      */
     public IndexArrayEmu(int maxIndices){
         this.isDirect = true;
-        buffer = BufferUtils.newShortBuffer(maxIndices);
+        buffer = Buffers.newShortBuffer(maxIndices);
         buffer.flip();
         bufferHandle = Gl.genBuffer();
         usage = GL20.GL_STATIC_DRAW;
@@ -99,7 +99,7 @@ public class IndexArrayEmu implements IndexData{
     public void updateIndices(int targetOffset, short[] indices, int offset, int count){
         final int pos = buffer.position();
         buffer.position(targetOffset * 2);
-        BufferUtils.copy(indices, offset, buffer, count);
+        Buffers.copy(indices, offset, buffer, count);
         buffer.position(pos);
     }
 
