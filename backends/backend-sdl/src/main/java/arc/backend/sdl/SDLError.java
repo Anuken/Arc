@@ -1,6 +1,6 @@
 package arc.backend.sdl;
 
-import io.anuke.arc.backends.sdl.jni.*;
+import arc.backend.sdl.jni.SDL;
 
 public class SDLError extends RuntimeException{
     public SDLError() {

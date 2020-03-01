@@ -10,7 +10,7 @@ import arc.util.*;
 
 import java.nio.*;
 
-import static io.anuke.arc.backends.sdl.jni.AL.*;
+import static arc.backend.sdl.jni.AL.*;
 
 public class ALAudio extends Audio{
     Array<ALMusic> music = new Array<>(false, 1, ALMusic.class);

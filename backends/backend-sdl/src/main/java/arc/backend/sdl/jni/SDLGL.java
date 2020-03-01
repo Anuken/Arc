@@ -1,4 +1,7 @@
-package io.anuke.arc.backends.sdl.jni;
+package arc.backend.sdl.jni;
+
+import arc.util.*;
+import arc.util.ArcAnnotate.*;
 
 import java.nio.*;
 
@@ -101,15 +104,26 @@ public class SDLGL{
     */
 
     static{
-        init();
+        String errorMessage = init();
+        if(errorMessage != null){
+            throw new ArcRuntimeException("GLEW failed to initialize: " + errorMessage);
+        }
     }
 
-    private static native void init(); /*
+    @Nullable
+    private static native String init(); /*
         nativeClassInit( env );
 
         GLenum glewError = glewInit();
         if(glewError != GLEW_OK){
-            printf("Error initializing GLEW! %s\n", glewGetErrorString(glewError));
+            return env->NewStringUTF((const char*)glewGetErrorString(glewError));
+        }
+
+        if(glewIsSupported("GL_VERSION_3_0") || glewIsSupported("GL_EXT_framebuffer_object") || glewIsSupported("GL_ARB_framebuffer_object")){
+            //no error message
+            return NULL;
+        }else{
+            return env->NewStringUTF("Missing framebuffer_object extension.");
         }
     */
 

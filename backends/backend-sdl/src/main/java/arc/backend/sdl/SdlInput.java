@@ -1,7 +1,7 @@
 package arc.backend.sdl;
 
 import arc.*;
-import io.anuke.arc.backends.sdl.jni.*;
+import arc.backend.sdl.jni.SDL;
 import arc.input.*;
 
 import java.nio.charset.*;
@@ -17,7 +17,7 @@ public class SdlInput extends Input{
     //handle encoded input data
     void handleInput(int[] input){
         int type = input[0];
-        if(type == SDL.SDL_EVENT_KEYBOARD){
+        if(type == arc.backend.sdl.jni.SDL.SDL_EVENT_KEYBOARD){
             boolean down = input[1] == 1;
             int keycode = input[4];
 
@@ -45,11 +45,11 @@ public class SdlInput extends Input{
             if(key == KeyCode.FORWARD_DEL && down){
                 queue.keyTyped((char)127);
             }
-        }else if(type == SDL.SDL_EVENT_MOUSE_BUTTON){
+        }else if(type == arc.backend.sdl.jni.SDL.SDL_EVENT_MOUSE_BUTTON){
             boolean down = input[1] == 1;
             int keycode = input[4];
             int x = input[2], y = Core.graphics.getHeight() - input[3];
-            KeyCode key = keycode == SDL.SDL_BUTTON_LEFT ? KeyCode.MOUSE_LEFT : keycode == SDL.SDL_BUTTON_RIGHT ? KeyCode.MOUSE_RIGHT : keycode == SDL.SDL_BUTTON_MIDDLE ? KeyCode.MOUSE_MIDDLE : keycode == SDL.SDL_BUTTON_X1 ? KeyCode.MOUSE_BACK : keycode == SDL.SDL_BUTTON_X2 ? KeyCode.MOUSE_FORWARD : null;
+            KeyCode key = keycode == arc.backend.sdl.jni.SDL.SDL_BUTTON_LEFT ? KeyCode.MOUSE_LEFT : keycode == arc.backend.sdl.jni.SDL.SDL_BUTTON_RIGHT ? KeyCode.MOUSE_RIGHT : keycode == arc.backend.sdl.jni.SDL.SDL_BUTTON_MIDDLE ? KeyCode.MOUSE_MIDDLE : keycode == arc.backend.sdl.jni.SDL.SDL_BUTTON_X1 ? KeyCode.MOUSE_BACK : keycode == arc.backend.sdl.jni.SDL.SDL_BUTTON_X2 ? KeyCode.MOUSE_FORWARD : null;
             if(key != null){
                 if(down){
                     mousePressed ++;
@@ -61,7 +61,7 @@ public class SdlInput extends Input{
                     queue.touchUp(x, y, 0, key);
                 }
             }
-        }else if(type == SDL.SDL_EVENT_MOUSE_MOTION){
+        }else if(type == arc.backend.sdl.jni.SDL.SDL_EVENT_MOUSE_MOTION){
             int x = input[1];
             int y = Core.graphics.getHeight() - input[2];
 
@@ -75,7 +75,7 @@ public class SdlInput extends Input{
             }else{
                 queue.mouseMoved(mouseX, mouseY);
             }
-        }else if(type == SDL.SDL_EVENT_MOUSE_WHEEL){
+        }else if(type == arc.backend.sdl.jni.SDL.SDL_EVENT_MOUSE_WHEEL){
             int sx = input[1];
             int sy = input[2];
             queue.scrolled(-sx, -sy);

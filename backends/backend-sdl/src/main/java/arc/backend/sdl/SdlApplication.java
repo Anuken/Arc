@@ -8,7 +8,7 @@ import arc.mock.*;
 import arc.struct.*;
 import arc.util.*;
 
-import static io.anuke.arc.backends.sdl.jni.SDL.*;
+import static arc.backend.sdl.jni.SDL.*;
 
 public class SdlApplication implements Application{
     private final Array<ApplicationListener> listeners = new Array<>();
@@ -77,9 +77,9 @@ public class SdlApplication implements Application{
     private void init(){
         ArcNativesLoader.load();
 
-        check(() -> SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_AUDIO));
+        check(() -> SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
 
-        //set up openGL 2.1; is this really the lowest version needed?
+        //set up openGL 2.0 profile
         check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2));
         check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0));
 
