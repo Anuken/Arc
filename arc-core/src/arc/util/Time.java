@@ -51,7 +51,7 @@ public class Time{
         globalTime += Core.graphics.getDeltaTime()*60f;
     }
 
-    /** Use normal delta time (e. g. gdx delta * 60) */
+    /** Use normal delta time (e. g. delta * 60) */
     public static void update(){
         float delta = delta();
 
