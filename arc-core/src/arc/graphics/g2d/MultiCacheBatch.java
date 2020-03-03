@@ -12,6 +12,8 @@ public class MultiCacheBatch extends SpriteBatch{
     int currentid = -1;
     int maxCacheSize;
     int offset;
+    /** If true, offset of new sprites isn't taken into account, as they have already been drawn and reserved. */
+    boolean recaching = false;
 
     public MultiCacheBatch(int maxCacheSize){
         this.maxCacheSize = maxCacheSize;
@@ -52,13 +54,26 @@ public class MultiCacheBatch extends SpriteBatch{
 
     @Override
     public float getPackedColor(){
-        return currentCache().getColor().toFloatBits();
+        return currentCache().getPackedColor();
     }
 
     @Override
     public void setProjection(Mat projection){
         currentid = 0;
         currentCache().setProjectionMatrix(projection);
+    }
+
+    public void reserve(int amount){
+        int res = currentCache().reserve(amount);
+        if(res > 0) Log.info("Reserved {0} for current cache = {1}", res, currentid);
+        offset += res;
+    }
+
+    public void beginCache(int id){
+        int cacheID = Pack.leftShort(id), batch = Pack.rightShort(id);
+        caches.get(batch).beginCache(cacheID);
+        currentid = batch;
+        recaching = true;
     }
 
     public void beginCache(){
@@ -69,11 +84,14 @@ public class MultiCacheBatch extends SpriteBatch{
             currentid = offset / maxSpritesPerCache;
         }
         currentCache().beginCache();
+        recaching = false;
     }
 
+    /** @return the cache ID as two shorts, with the left being the actual cache and the right being the batch that contains it. */
     public int endCache(){
         int id = Pack.shortInt((short)currentCache().endCache(), (short)currentid);
         currentid = -1;
+        recaching = false;
         return id;
     }
 
@@ -85,12 +103,9 @@ public class MultiCacheBatch extends SpriteBatch{
     @Override
     protected void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
         currentCache().add(region, x, y, originX, originY, width, height, 1f, 1f, rotation);
-        offset += 1;
-    }
-
-    @Override
-    void setShader(Shader shader){
-        setShader(shader, true);
+        if(!recaching){
+            offset += 1;
+        }
     }
 
     @Override

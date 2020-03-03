@@ -1,18 +1,16 @@
 package arc.graphics.g2d;
 
 import arc.Application.*;
-import arc.ApplicationListener;
-import arc.Core;
-import arc.struct.Array;
-import arc.struct.IntArray;
+import arc.*;
 import arc.graphics.*;
-import arc.graphics.VertexAttributes.Usage;
-import arc.graphics.gl.Shader;
-import arc.math.Mathf;
-import arc.math.Mat;
+import arc.graphics.VertexAttributes.*;
+import arc.graphics.gl.*;
+import arc.math.*;
+import arc.struct.*;
 import arc.util.*;
 
-import java.nio.FloatBuffer;
+import java.nio.*;
+import java.util.*;
 
 /**
  * Draws 2D images, optimized for geometry that does not change. Sprites and/or textures are cached and given an ID, which can
@@ -75,7 +73,7 @@ public class SpriteCache implements Disposable{
     }
 
     /**
-     * Creates a cache with the specified size, using a default shader if OpenGL ES 2.0 is being used.
+     * Creates a cache with the specified size, using a default shader.
      * @param size The maximum number of images this cache can hold. The memory required to hold the images is allocated up front.
      * Max of 8191 if indices are used.
      * @param useIndices If true, indexed geometry will be used.
@@ -188,26 +186,21 @@ public class SpriteCache implements Disposable{
     public void beginCache(){
         if(drawing) throw new IllegalStateException("end must be called before beginCache");
         if(currentCache != null) throw new IllegalStateException("endCache must be called before begin.");
+        mesh.getVerticesBuffer().position(caches.isEmpty() ? 0 : caches.peek().offset + caches.peek().maxCount);
         currentCache = new Cache(caches.size, mesh.getVerticesBuffer().position());
         caches.add(currentCache);
         mesh.getVerticesBuffer().limit(mesh.getVerticesBuffer().capacity());
     }
 
     /**
-     * Starts the redefinition of an existing cache, allowing the add and {@link #endCache()} methods to be called. If this is not
-     * the last cache created, it cannot have more entries added to it than when it was first created. To do that, use
-     * {@link #clear()} and then {@link #begin()}.
+     * Starts the redefinition of an existing cache, allowing the add and {@link #endCache()} methods to be called. It cannot have more entries added to it than when it was first created.
+     * To do that, use {@link #clear()} and then {@link #begin()}.
      */
     public void beginCache(int cacheID){
         if(drawing) throw new IllegalStateException("end must be called before beginCache");
         if(currentCache != null) throw new IllegalStateException("endCache must be called before begin.");
-        if(cacheID == caches.size - 1){
-            Cache oldCache = caches.remove(cacheID);
-            mesh.getVerticesBuffer().limit(oldCache.offset);
-            beginCache();
-            return;
-        }
         currentCache = caches.get(cacheID);
+        Arrays.fill(currentCache.counts, 0);
         mesh.getVerticesBuffer().position(currentCache.offset);
     }
 
@@ -252,6 +245,7 @@ public class SpriteCache implements Disposable{
         textures.clear();
         counts.clear();
 
+        //fixes teaVM bug, since it draws based on offset apparently
         if(Core.app.getType() == ApplicationType.WebGL){
             mesh.getVerticesBuffer().position(0);
         }
@@ -263,6 +257,27 @@ public class SpriteCache implements Disposable{
     public void clear(){
         caches.clear();
         mesh.getVerticesBuffer().clear().flip();
+    }
+
+    /** Ensures that this cache can hold this amount of sprites. Only call at the end of cache.
+     * @return number of new sprites actually reserved. */
+    public int reserve(int sprites){
+        if(currentCache == null) throw new IllegalStateException("beginCache must be called before ensureSize.");
+
+        //size of each sprite
+        int spriteSize = VERTEX_SIZE * (mesh.getNumIndices() > 0 ? 4 : 6);
+        //currently used vertices
+        int currentUsed = currentCache.maxCount;
+        //vertices that need to be guaranteed
+        int required = sprites * spriteSize;
+        //number of extra vertices to reserve
+        int toAdd = required - currentUsed;
+        if(toAdd > 0){
+            currentCache.maxCount += toAdd;
+            mesh.getVerticesBuffer().position(currentCache.offset + currentCache.maxCount);
+            return toAdd / spriteSize;
+        }
+        return 0;
     }
 
     /**
@@ -524,16 +539,15 @@ public class SpriteCache implements Disposable{
         Texture[] textures = cache.textures;
         int[] counts = cache.counts;
         int textureCount = cache.textureCount;
+        Shader shader = customShader != null ? customShader : this.shader;
         for(int i = 0; i < textureCount; i++){
             int count = counts[i];
             if(lastBoundTexture != textures[i]){
                 textures[i].bind();
                 lastBoundTexture = textures[i];
             }
-            if(customShader != null)
-                mesh.render(customShader, GL20.GL_TRIANGLES, offset, count);
-            else
-                mesh.render(shader, GL20.GL_TRIANGLES, offset, count);
+
+            mesh.render(shader, Gl.triangles, offset, count);
             offset += count;
         }
         renderCalls += textureCount;
@@ -566,9 +580,9 @@ public class SpriteCache implements Disposable{
             }else
                 length -= count;
             if(customShader != null)
-                mesh.render(customShader, GL20.GL_TRIANGLES, offset, count);
+                mesh.render(customShader, Gl.triangles, offset, count);
             else
-                mesh.render(shader, GL20.GL_TRIANGLES, offset, count);
+                mesh.render(shader, Gl.triangles, offset, count);
             offset += count;
         }
         renderCalls += cache.textureCount;
@@ -576,6 +590,7 @@ public class SpriteCache implements Disposable{
     }
 
     /** Releases all resources held by this SpriteCache. */
+    @Override
     public void dispose(){
         mesh.dispose();
         if(shader != null) shader.dispose();
