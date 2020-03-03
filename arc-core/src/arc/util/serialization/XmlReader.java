@@ -115,7 +115,7 @@ public class XmlReader{
         }catch(IOException ex){
             throw new SerializationException(ex);
         }finally{
-            Streams.closeQuietly(reader);
+            Streams.close(reader);
         }
     }
 
@@ -123,7 +123,7 @@ public class XmlReader{
         try{
             return parse(new InputStreamReader(input, Strings.utf8));
         }finally{
-            Streams.closeQuietly(input);
+            Streams.close(input);
         }
     }
 

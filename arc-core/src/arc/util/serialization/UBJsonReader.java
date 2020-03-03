@@ -32,7 +32,7 @@ public class UBJsonReader implements BaseJsonReader{
         }catch(IOException ex){
             throw new SerializationException(ex);
         }finally{
-            Streams.closeQuietly(din);
+            Streams.close(din);
         }
     }
 
@@ -49,7 +49,7 @@ public class UBJsonReader implements BaseJsonReader{
         try{
             return parse(din, din.readByte());
         }finally{
-            Streams.closeQuietly(din);
+            Streams.close(din);
         }
     }
 

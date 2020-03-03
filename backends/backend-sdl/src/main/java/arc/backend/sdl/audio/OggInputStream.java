@@ -464,6 +464,6 @@ public class OggInputStream extends InputStream{
     }
 
     public void close(){
-        Streams.closeQuietly(input);
+        Streams.close(input);
     }
 }

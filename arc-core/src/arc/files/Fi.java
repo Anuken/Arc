@@ -234,7 +234,7 @@ public class Fi{
         try{
             return new InputStreamReader(stream, charset);
         }catch(UnsupportedEncodingException ex){
-            Streams.closeQuietly(stream);
+            Streams.close(stream);
             throw new ArcRuntimeException("Error reading file: " + this, ex);
         }
     }
@@ -289,7 +289,7 @@ public class Fi{
         }catch(IOException ex){
             throw new ArcRuntimeException("Error reading layout file: " + this, ex);
         }finally{
-            Streams.closeQuietly(reader);
+            Streams.close(reader);
         }
         return output.toString();
     }
@@ -301,11 +301,11 @@ public class Fi{
     public byte[] readBytes(){
         InputStream input = read();
         try{
-            return Streams.copyStreamToByteArray(input, estimateLength());
+            return Streams.copyBytes(input, estimateLength());
         }catch(IOException ex){
             throw new ArcRuntimeException("Error reading file: " + this, ex);
         }finally{
-            Streams.closeQuietly(input);
+            Streams.close(input);
         }
     }
 
@@ -333,7 +333,7 @@ public class Fi{
         }catch(IOException ex){
             throw new ArcRuntimeException("Error reading file: " + this, ex);
         }finally{
-            Streams.closeQuietly(input);
+            Streams.close(input);
         }
         return position - offset;
     }
@@ -362,7 +362,7 @@ public class Fi{
         }catch(Exception ex){
             throw new ArcRuntimeException("Error memory mapping file: " + this + " (" + type + ")", ex);
         }finally{
-            Streams.closeQuietly(raf);
+            Streams.close(raf);
         }
     }
 
@@ -427,12 +427,12 @@ public class Fi{
         OutputStream output = null;
         try{
             output = write(append);
-            Streams.copyStream(input, output);
+            Streams.copy(input, output);
         }catch(Exception ex){
             throw new ArcRuntimeException("Error stream writing to file: " + file + " (" + type + ")", ex);
         }finally{
-            Streams.closeQuietly(input);
-            Streams.closeQuietly(output);
+            Streams.close(input);
+            Streams.close(output);
         }
 
     }
@@ -509,7 +509,7 @@ public class Fi{
         }catch(Exception ex){
             throw new ArcRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
         }finally{
-            Streams.closeQuietly(writer);
+            Streams.close(writer);
         }
     }
 
@@ -530,7 +530,7 @@ public class Fi{
         }catch(IOException ex){
             throw new ArcRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
         }finally{
-            Streams.closeQuietly(output);
+            Streams.close(output);
         }
     }
 
@@ -547,7 +547,7 @@ public class Fi{
         }catch(IOException ex){
             throw new ArcRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
         }finally{
-            Streams.closeQuietly(output);
+            Streams.close(output);
         }
     }
 
@@ -871,7 +871,7 @@ public class Fi{
                 return input.available();
             }catch(Exception ignored){
             }finally{
-                Streams.closeQuietly(input);
+                Streams.close(input);
             }
             return 0;
         }

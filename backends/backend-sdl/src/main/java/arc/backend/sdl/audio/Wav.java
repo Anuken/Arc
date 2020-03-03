@@ -30,7 +30,7 @@ public class Wav{
         }
 
         public void reset(){
-            Streams.closeQuietly(input);
+            Streams.close(input);
             input = null;
         }
     }
@@ -43,11 +43,11 @@ public class Wav{
             WavInputStream input = null;
             try{
                 input = new WavInputStream(file);
-                setup(Streams.copyStreamToByteArray(input, input.dataRemaining), input.channels, input.sampleRate);
+                setup(Streams.copyBytes(input, input.dataRemaining), input.channels, input.sampleRate);
             }catch(IOException ex){
                 throw new ArcRuntimeException("Error reading WAV file: " + file, ex);
             }finally{
-                Streams.closeQuietly(input);
+                Streams.close(input);
             }
         }
     }
@@ -88,7 +88,7 @@ public class Wav{
 
                 dataRemaining = seekToChunk('d', 'a', 't', 'a');
             }catch(Throwable ex){
-                Streams.closeQuietly(this);
+                Streams.close(this);
                 throw new ArcRuntimeException("Error reading WAV file: " + file, ex);
             }
         }

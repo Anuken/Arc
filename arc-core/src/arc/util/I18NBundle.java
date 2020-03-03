@@ -303,7 +303,7 @@ public class I18NBundle{
                 bundle.load(reader);
             }
         }finally{
-            Streams.closeQuietly(reader);
+            Streams.close(reader);
         }
         if(bundle != null){
             bundle.setLocale(targetLocale);

@@ -79,7 +79,7 @@ public class AndroidFi extends Fi{
             }catch(Exception ex){
                 throw new ArcRuntimeException("Error memory mapping file: " + this + " (" + type + ")", ex);
             }finally{
-                Streams.closeQuietly(input);
+                Streams.close(input);
             }
         }
         return super.map(mode);

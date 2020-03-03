@@ -68,16 +68,16 @@ public class NetJavaImpl{
                             try{
                                 writer.write(contentAsString);
                             }finally{
-                                Streams.closeQuietly(writer);
+                                Streams.close(writer);
                             }
                         }else{
                             InputStream contentAsStream = request.contentStream;
                             if(contentAsStream != null){
                                 OutputStream os = connection.getOutputStream();
                                 try{
-                                    Streams.copyStream(contentAsStream, os);
+                                    Streams.copy(contentAsStream, os);
                                 }finally{
-                                    Streams.closeQuietly(os);
+                                    Streams.close(os);
                                 }
                             }
                         }
@@ -133,11 +133,11 @@ public class NetJavaImpl{
             }
 
             try{
-                return Streams.copyStreamToByteArray(input, connection.getContentLength());
+                return Streams.copyBytes(input, connection.getContentLength());
             }catch(IOException e){
                 return Streams.EMPTY_BYTES;
             }finally{
-                Streams.closeQuietly(input);
+                Streams.close(input);
             }
         }
 
@@ -151,11 +151,11 @@ public class NetJavaImpl{
             }
 
             try{
-                return Streams.copyStreamToString(input, connection.getContentLength());
+                return Streams.copySring(input, connection.getContentLength());
             }catch(IOException e){
                 return "";
             }finally{
-                Streams.closeQuietly(input);
+                Streams.close(input);
             }
         }
 

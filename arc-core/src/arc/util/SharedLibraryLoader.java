@@ -50,7 +50,7 @@ public class SharedLibraryLoader{
             }
         }catch(Exception ex){
         }finally{
-            Streams.closeQuietly(input);
+            Streams.close(input);
         }
         return Long.toString(crc.getValue(), 16);
     }
@@ -237,8 +237,8 @@ public class SharedLibraryLoader{
             }catch(IOException ex){
                 throw new ArcRuntimeException("Error extracting file: " + sourcePath + "\nTo: " + extractedFile.getAbsolutePath(), ex);
             }finally{
-                Streams.closeQuietly(input);
-                Streams.closeQuietly(output);
+                Streams.close(input);
+                Streams.close(output);
             }
         }
 

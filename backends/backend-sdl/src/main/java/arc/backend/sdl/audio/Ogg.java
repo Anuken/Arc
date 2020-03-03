@@ -30,14 +30,14 @@ public class Ogg{
 
         @Override
         public void reset(){
-            Streams.closeQuietly(input);
+            Streams.close(input);
             previousInput = null;
             input = null;
         }
 
         @Override
         protected void loop(){
-            Streams.closeQuietly(input);
+            Streams.close(input);
             previousInput = input;
             input = null;
         }
@@ -59,7 +59,7 @@ public class Ogg{
                 }
                 setup(output.toByteArray(), input.getChannels(), input.getSampleRate());
             }finally{
-                Streams.closeQuietly(input);
+                Streams.close(input);
             }
         }
     }

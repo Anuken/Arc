@@ -440,7 +440,7 @@ public class TextureAtlas implements Disposable{
             }catch(Exception ex){
                 throw new ArcRuntimeException("Error reading pack file: " + packFile, ex);
             }finally{
-                Streams.closeQuietly(reader);
+                Streams.close(reader);
             }
 
             regions.sort(indexComparator);

@@ -95,18 +95,18 @@ public class FreeTypeFontGenerator implements Disposable{
             try{
                 if(fileSize == 0){
                     // Copy to a byte[] to get the file size, then copy to the buffer.
-                    byte[] data = Streams.copyStreamToByteArray(input, 1024 * 16);
+                    byte[] data = Streams.copyBytes(input, 1024 * 16);
                     buffer = Buffers.newUnsafeByteBuffer(data.length);
                     Buffers.copy(data, 0, buffer, data.length);
                 }else{
                     // Trust the specified file size.
                     buffer = Buffers.newUnsafeByteBuffer(fileSize);
-                    Streams.copyStream(input, buffer);
+                    Streams.copy(input, buffer);
                 }
             }catch(IOException ex){
                 throw new ArcRuntimeException(ex);
             }finally{
-                Streams.closeQuietly(input);
+                Streams.close(input);
             }
         }
 

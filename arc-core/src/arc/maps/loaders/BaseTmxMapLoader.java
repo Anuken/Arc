@@ -87,7 +87,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
                 }catch(IOException e){
                     throw new ArcRuntimeException("Error Reading TMX Layer Data - IOException: " + e.getMessage());
                 }finally{
-                    Streams.closeQuietly(is);
+                    Streams.close(is);
                 }
             }else{
                 // any other value of 'encoding' is one we're not aware of, probably a feature of a future version of Tiled

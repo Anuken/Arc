@@ -92,7 +92,7 @@ public class PixmapIO{
             }catch(Exception e){
                 throw new ArcRuntimeException("Couldn't write Pixmap to file '" + file + "'", e);
             }finally{
-                Streams.closeQuietly(out);
+                Streams.close(out);
             }
         }
 
@@ -123,7 +123,7 @@ public class PixmapIO{
             }catch(Exception e){
                 throw new ArcRuntimeException("Couldn't read Pixmap from file '" + file + "'", e);
             }finally{
-                Streams.closeQuietly(in);
+                Streams.close(in);
             }
         }
     }
@@ -195,7 +195,7 @@ public class PixmapIO{
             try{
                 write(output, pixmap);
             }finally{
-                Streams.closeQuietly(output);
+                Streams.close(output);
             }
         }
 

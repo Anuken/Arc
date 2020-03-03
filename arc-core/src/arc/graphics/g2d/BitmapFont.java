@@ -735,7 +735,7 @@ public class BitmapFont implements Disposable{
             }catch(Exception ex){
                 throw new ArcRuntimeException("Error loading font file: " + fontFile, ex);
             }finally{
-                Streams.closeQuietly(reader);
+                Streams.close(reader);
             }
         }
 

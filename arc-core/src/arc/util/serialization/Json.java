@@ -242,7 +242,7 @@ public class Json{
         }catch(Exception ex){
             throw new SerializationException("Error writing file: " + file, ex);
         }finally{
-            Streams.closeQuietly(writer);
+            Streams.close(writer);
         }
     }
 
@@ -264,7 +264,7 @@ public class Json{
         try{
             writeValue(object, knownType, elementType);
         }finally{
-            Streams.closeQuietly(this.writer);
+            Streams.close(this.writer);
             this.writer = null;
         }
     }
