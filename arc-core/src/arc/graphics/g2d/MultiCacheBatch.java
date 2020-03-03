@@ -64,9 +64,7 @@ public class MultiCacheBatch extends SpriteBatch{
     }
 
     public void reserve(int amount){
-        int res = currentCache().reserve(amount);
-        if(res > 0) Log.info("Reserved {0} for current cache = {1}", res, currentid);
-        offset += res;
+        offset += currentCache().reserve(amount);
     }
 
     public void beginCache(int id){
