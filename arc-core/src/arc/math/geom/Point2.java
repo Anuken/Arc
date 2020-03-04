@@ -31,6 +31,31 @@ public class Point2{
         this.y = point.y;
     }
 
+    /** @return a point unpacked from an integer. */
+    public static Point2 unpack(int pos){
+        return new Point2((short)(pos >>> 16), (short)(pos & 0xFFFF));
+    }
+
+    /** @return this point packed into a single int by casting its components to shorts. */
+    public static int pack(int x, int y){
+        return (((short)x) << 16) | (((short)y) & 0xFFFF);
+    }
+
+    /** @return the x component of a packed position. */
+    public static short x(int pos){
+        return (short)(pos >>> 16);
+    }
+
+    /** @return the y component of a packed position. */
+    public static short y(int pos){
+        return (short)(pos & 0xFFFF);
+    }
+
+    /** @return this point packed into a single int by casting its components to shorts. */
+    public int pack(){
+        return pack(x, y);
+    }
+
     /**
      * Sets the coordinates of this 2D grid point to that of another.
      * @param point The 2D grid point to copy the coordinates of.
