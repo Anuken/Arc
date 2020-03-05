@@ -12,7 +12,7 @@ import java.util.*;
  * @author Nathan Sweet
  */
 @SuppressWarnings("unchecked")
-public class Array<T> implements Iterable<T>{
+public class Array<T> implements Iterable<T>, Eachable<T>{
     /** Debugging variable to count total number of iterators allocated.*/
     public static int iteratorsAllocated = 0;
     /**

@@ -107,7 +107,7 @@ public class ObjectSet<T> implements Iterable<T>, Eachable<T>{
     }
 
     @Override
-    public void each(Cons<T> cons){
+    public void each(Cons<? super T> cons){
         for(T t : this){
             cons.get(t);
         }
