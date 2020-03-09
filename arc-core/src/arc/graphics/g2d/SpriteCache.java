@@ -521,8 +521,7 @@ public class SpriteCache implements Disposable{
         drawing = false;
 
         shader.end();
-        GL20 gl = Core.gl20;
-        gl.glDepthMask(true);
+        Gl.depthMask(true);
         if(customShader != null)
             mesh.unbind(customShader);
         else

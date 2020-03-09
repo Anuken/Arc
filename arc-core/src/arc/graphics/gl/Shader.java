@@ -158,7 +158,6 @@ public class Shader implements Disposable{
 
     public static String getManagedStatus(){
         StringBuilder builder = new StringBuilder();
-        int i = 0;
         builder.append("Managed shaders/app: { ");
         for(Application app : shaders.keys()){
             builder.append(shaders.get(app).size);
@@ -195,25 +194,20 @@ public class Shader implements Disposable{
     }
 
     private int loadShader(int type, String source){
-        GL20 gl = Core.gl20;
         IntBuffer intbuf = Buffers.newIntBuffer(1);
 
-        int shader = gl.glCreateShader(type);
+        int shader = Gl.createShader(type);
         if(shader == 0) return -1;
 
-        gl.glShaderSource(shader, source);
-        gl.glCompileShader(shader);
-        gl.glGetShaderiv(shader, GL20.GL_COMPILE_STATUS, intbuf);
+        Gl.shaderSource(shader, source);
+        Gl.compileShader(shader);
+        Gl.getShaderiv(shader, GL20.GL_COMPILE_STATUS, intbuf);
 
         int compiled = intbuf.get(0);
         if(compiled == 0){
-// gl.glGetShaderiv(shader, GL20.GL_INFO_LOG_LENGTH, intbuf);
-// int infoLogLength = intbuf.get(0);
-// if (infoLogLength > 1) {
-            String infoLog = gl.glGetShaderInfoLog(shader);
+            String infoLog = Gl.getShaderInfoLog(shader);
             log += type == GL20.GL_VERTEX_SHADER ? "Vertex shader\n" : "Fragment shader:\n";
             log += infoLog;
-// }
             return -1;
         }
 
@@ -221,31 +215,25 @@ public class Shader implements Disposable{
     }
 
     protected int createProgram(){
-        GL20 gl = Core.gl20;
-        int program = gl.glCreateProgram();
+        int program = Gl.createProgram();
         return program != 0 ? program : -1;
     }
 
     private int linkProgram(int program){
-        GL20 gl = Core.gl20;
         if(program == -1) return -1;
 
-        gl.glAttachShader(program, vertexShaderHandle);
-        gl.glAttachShader(program, fragmentShaderHandle);
-        gl.glLinkProgram(program);
+        Gl.attachShader(program, vertexShaderHandle);
+        Gl.attachShader(program, fragmentShaderHandle);
+        Gl.linkProgram(program);
 
         ByteBuffer tmp = ByteBuffer.allocateDirect(4);
         tmp.order(ByteOrder.nativeOrder());
         IntBuffer intbuf = tmp.asIntBuffer();
 
-        gl.glGetProgramiv(program, GL20.GL_LINK_STATUS, intbuf);
+        Gl.getProgramiv(program, GL20.GL_LINK_STATUS, intbuf);
         int linked = intbuf.get(0);
         if(linked == 0){
-// Gdx.gl20.glGetProgramiv(program, GL20.GL_INFO_LOG_LENGTH, intbuf);
-// int infoLogLength = intbuf.get(0);
-// if (infoLogLength > 1) {
             log = Gl.getProgramInfoLog(program);
-// }
             return -1;
         }
 
@@ -258,11 +246,7 @@ public class Shader implements Disposable{
      */
     public String getLog(){
         if(isCompiled){
-// Gdx.gl20.glGetProgramiv(program, GL20.GL_INFO_LOG_LENGTH, intbuf);
-// int infoLogLength = intbuf.get(0);
-// if (infoLogLength > 1) {
             log = Gl.getProgramInfoLog(program);
-// }
             return log;
         }else{
             return log;
@@ -275,12 +259,11 @@ public class Shader implements Disposable{
     }
 
     private int fetchAttributeLocation(String name){
-        GL20 gl = Core.gl20;
         // -2 == not yet cached
         // -1 == cached but not found
         int location;
         if((location = attributes.get(name, -2)) == -2){
-            location = gl.glGetAttribLocation(program, name);
+            location = Gl.getAttribLocation(program, name);
             attributes.put(name, location);
         }
         return location;
@@ -291,12 +274,11 @@ public class Shader implements Disposable{
     }
 
     public int fetchUniformLocation(String name, boolean pedantic){
-        GL20 gl = Core.gl20;
         // -2 == not yet cached
         // -1 == cached but not found
         int location;
         if((location = uniforms.get(name, -2)) == -2){
-            location = gl.glGetUniformLocation(program, name);
+            location = Gl.getUniformLocation(program, name);
             if(location == -1 && pedantic)
                 throw new IllegalArgumentException("no uniform with name '" + name + "' in shader");
             uniforms.put(name, location);
@@ -310,16 +292,14 @@ public class Shader implements Disposable{
      * @param value the value
      */
     public void setUniformi(String name, int value){
-        GL20 gl = Core.gl20;
         checkManaged();
         int location = fetchUniformLocation(name);
-        gl.glUniform1i(location, value);
+        Gl.uniform1i(location, value);
     }
 
     public void setUniformi(int location, int value){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glUniform1i(location, value);
+        Gl.uniform1i(location, value);
     }
 
     /**
@@ -329,16 +309,14 @@ public class Shader implements Disposable{
      * @param value2 the second value
      */
     public void setUniformi(String name, int value1, int value2){
-        GL20 gl = Core.gl20;
         checkManaged();
         int location = fetchUniformLocation(name);
-        gl.glUniform2i(location, value1, value2);
+        Gl.uniform2i(location, value1, value2);
     }
 
     public void setUniformi(int location, int value1, int value2){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glUniform2i(location, value1, value2);
+        Gl.uniform2i(location, value1, value2);
     }
 
     /**
@@ -349,16 +327,14 @@ public class Shader implements Disposable{
      * @param value3 the third value
      */
     public void setUniformi(String name, int value1, int value2, int value3){
-        GL20 gl = Core.gl20;
         checkManaged();
         int location = fetchUniformLocation(name);
-        gl.glUniform3i(location, value1, value2, value3);
+        Gl.uniform3i(location, value1, value2, value3);
     }
 
     public void setUniformi(int location, int value1, int value2, int value3){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glUniform3i(location, value1, value2, value3);
+        Gl.uniform3i(location, value1, value2, value3);
     }
 
     /**
@@ -370,16 +346,14 @@ public class Shader implements Disposable{
      * @param value4 the fourth value
      */
     public void setUniformi(String name, int value1, int value2, int value3, int value4){
-        GL20 gl = Core.gl20;
         checkManaged();
         int location = fetchUniformLocation(name);
-        gl.glUniform4i(location, value1, value2, value3, value4);
+        Gl.uniform4i(location, value1, value2, value3, value4);
     }
 
     public void setUniformi(int location, int value1, int value2, int value3, int value4){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glUniform4i(location, value1, value2, value3, value4);
+        Gl.uniform4i(location, value1, value2, value3, value4);
     }
 
     /**
@@ -388,16 +362,14 @@ public class Shader implements Disposable{
      * @param value the value
      */
     public void setUniformf(String name, float value){
-        GL20 gl = Core.gl20;
         checkManaged();
         int location = fetchUniformLocation(name);
-        gl.glUniform1f(location, value);
+        Gl.uniform1f(location, value);
     }
 
     public void setUniformf(int location, float value){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glUniform1f(location, value);
+        Gl.uniform1f(location, value);
     }
 
     /**
@@ -407,16 +379,14 @@ public class Shader implements Disposable{
      * @param value2 the second value
      */
     public void setUniformf(String name, float value1, float value2){
-        GL20 gl = Core.gl20;
         checkManaged();
         int location = fetchUniformLocation(name);
-        gl.glUniform2f(location, value1, value2);
+        Gl.uniform2f(location, value1, value2);
     }
 
     public void setUniformf(int location, float value1, float value2){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glUniform2f(location, value1, value2);
+        Gl.uniform2f(location, value1, value2);
     }
 
     /**
@@ -427,16 +397,14 @@ public class Shader implements Disposable{
      * @param value3 the third value
      */
     public void setUniformf(String name, float value1, float value2, float value3){
-        GL20 gl = Core.gl20;
         checkManaged();
         int location = fetchUniformLocation(name);
-        gl.glUniform3f(location, value1, value2, value3);
+        Gl.uniform3f(location, value1, value2, value3);
     }
 
     public void setUniformf(int location, float value1, float value2, float value3){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glUniform3f(location, value1, value2, value3);
+        Gl.uniform3f(location, value1, value2, value3);
     }
 
     /**
@@ -448,68 +416,58 @@ public class Shader implements Disposable{
      * @param value4 the fourth value
      */
     public void setUniformf(String name, float value1, float value2, float value3, float value4){
-        GL20 gl = Core.gl20;
         checkManaged();
         int location = fetchUniformLocation(name);
-        gl.glUniform4f(location, value1, value2, value3, value4);
+        Gl.uniform4f(location, value1, value2, value3, value4);
     }
 
     public void setUniformf(int location, float value1, float value2, float value3, float value4){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glUniform4f(location, value1, value2, value3, value4);
+        Gl.uniform4f(location, value1, value2, value3, value4);
     }
 
     public void setUniform1fv(String name, float[] values, int offset, int length){
-        GL20 gl = Core.gl20;
         checkManaged();
         int location = fetchUniformLocation(name);
-        gl.glUniform1fv(location, length, values, offset);
+        Gl.uniform1fv(location, length, values, offset);
     }
 
     public void setUniform1fv(int location, float[] values, int offset, int length){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glUniform1fv(location, length, values, offset);
+        Gl.uniform1fv(location, length, values, offset);
     }
 
     public void setUniform2fv(String name, float[] values, int offset, int length){
-        GL20 gl = Core.gl20;
         checkManaged();
         int location = fetchUniformLocation(name);
-        gl.glUniform2fv(location, length / 2, values, offset);
+        Gl.uniform2fv(location, length / 2, values, offset);
     }
 
     public void setUniform2fv(int location, float[] values, int offset, int length){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glUniform2fv(location, length / 2, values, offset);
+        Gl.uniform2fv(location, length / 2, values, offset);
     }
 
     public void setUniform3fv(String name, float[] values, int offset, int length){
-        GL20 gl = Core.gl20;
         checkManaged();
         int location = fetchUniformLocation(name);
-        gl.glUniform3fv(location, length / 3, values, offset);
+        Gl.uniform3fv(location, length / 3, values, offset);
     }
 
     public void setUniform3fv(int location, float[] values, int offset, int length){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glUniform3fv(location, length / 3, values, offset);
+        Gl.uniform3fv(location, length / 3, values, offset);
     }
 
     public void setUniform4fv(String name, float[] values, int offset, int length){
-        GL20 gl = Core.gl20;
         checkManaged();
         int location = fetchUniformLocation(name);
-        gl.glUniform4fv(location, length / 4, values, offset);
+        Gl.uniform4fv(location, length / 4, values, offset);
     }
 
     public void setUniform4fv(int location, float[] values, int offset, int length){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glUniform4fv(location, length / 4, values, offset);
+        Gl.uniform4fv(location, length / 4, values, offset);
     }
 
     /**
@@ -536,15 +494,13 @@ public class Shader implements Disposable{
     }
 
     public void setUniformMatrix(int location, Mat matrix, boolean transpose){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glUniformMatrix3fv(location, 1, transpose, matrix.val, 0);
+        Gl.uniformMatrix3fv(location, 1, transpose, matrix.val, 0);
     }
 
     public void setUniformMatrix4(String name, float[] val){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glUniformMatrix4fv(fetchUniformLocation(name), 1, false, val, 0);
+        Gl.uniformMatrix4fv(fetchUniformLocation(name), 1, false, val, 0);
     }
 
     /**
@@ -554,11 +510,10 @@ public class Shader implements Disposable{
      * @param transpose whether the uniform matrix should be transposed
      */
     public void setUniformMatrix3fv(String name, FloatBuffer buffer, int count, boolean transpose){
-        GL20 gl = Core.gl20;
         checkManaged();
         buffer.position(0);
         int location = fetchUniformLocation(name);
-        gl.glUniformMatrix3fv(location, count, transpose, buffer);
+        Gl.uniformMatrix3fv(location, count, transpose, buffer);
     }
 
     /**
@@ -568,17 +523,15 @@ public class Shader implements Disposable{
      * @param transpose whether the uniform matrix should be transposed
      */
     public void setUniformMatrix4fv(String name, FloatBuffer buffer, int count, boolean transpose){
-        GL20 gl = Core.gl20;
         checkManaged();
         buffer.position(0);
         int location = fetchUniformLocation(name);
-        gl.glUniformMatrix4fv(location, count, transpose, buffer);
+        Gl.uniformMatrix4fv(location, count, transpose, buffer);
     }
 
     public void setUniformMatrix4fv(int location, float[] values, int offset, int length){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glUniformMatrix4fv(location, length / 16, false, values, offset);
+        Gl.uniformMatrix4fv(location, length / 16, false, values, offset);
     }
 
     public void setUniformMatrix4fv(String name, float[] values, int offset, int length){
@@ -635,17 +588,15 @@ public class Shader implements Disposable{
      * @param buffer the buffer containing the vertex attributes.
      */
     public void setVertexAttribute(String name, int size, int type, boolean normalize, int stride, Buffer buffer){
-        GL20 gl = Core.gl20;
         checkManaged();
         int location = fetchAttributeLocation(name);
         if(location == -1) return;
-        gl.glVertexAttribPointer(location, size, type, normalize, stride, buffer);
+        Gl.vertexAttribPointer(location, size, type, normalize, stride, buffer);
     }
 
     public void setVertexAttribute(int location, int size, int type, boolean normalize, int stride, Buffer buffer){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glVertexAttribPointer(location, size, type, normalize, stride, buffer);
+        Gl.vertexAttribPointer(location, size, type, normalize, stride, buffer);
     }
 
     /**
@@ -659,17 +610,15 @@ public class Shader implements Disposable{
      * @param offset byte offset into the vertex buffer object bound to GL20.GL_ARRAY_BUFFER.
      */
     public void setVertexAttribute(String name, int size, int type, boolean normalize, int stride, int offset){
-        GL20 gl = Core.gl20;
         checkManaged();
         int location = fetchAttributeLocation(name);
         if(location == -1) return;
-        gl.glVertexAttribPointer(location, size, type, normalize, stride, offset);
+        Gl.vertexAttribPointer(location, size, type, normalize, stride, offset);
     }
 
     public void setVertexAttribute(int location, int size, int type, boolean normalize, int stride, int offset){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glVertexAttribPointer(location, size, type, normalize, stride, offset);
+        Gl.vertexAttribPointer(location, size, type, normalize, stride, offset);
     }
 
     /**
@@ -677,9 +626,8 @@ public class Shader implements Disposable{
      * {@link Shader#end()}.
      */
     public void begin(){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glUseProgram(program);
+        Gl.useProgram(program);
     }
 
     /**
@@ -687,17 +635,16 @@ public class Shader implements Disposable{
      * shader resources.
      */
     public void end(){
-        GL20 gl = Core.gl20;
-        gl.glUseProgram(0);
+        //TODO this is most likely unnecessary
+        //Gl.useProgram(0);
     }
 
     /** Disposes all resources associated with this shader. Must be called when the shader is no longer used. */
     public void dispose(){
-        GL20 gl = Core.gl20;
-        gl.glUseProgram(0);
-        gl.glDeleteShader(vertexShaderHandle);
-        gl.glDeleteShader(fragmentShaderHandle);
-        gl.glDeleteProgram(program);
+        Gl.useProgram(0);
+        Gl.deleteShader(vertexShaderHandle);
+        Gl.deleteShader(fragmentShaderHandle);
+        Gl.deleteProgram(program);
         if(shaders.get(Core.app) != null) shaders.get(Core.app).remove(this, true);
     }
 
@@ -706,17 +653,15 @@ public class Shader implements Disposable{
      * @param name the vertex attribute name
      */
     public void disableVertexAttribute(String name){
-        GL20 gl = Core.gl20;
         checkManaged();
         int location = fetchAttributeLocation(name);
         if(location == -1) return;
-        gl.glDisableVertexAttribArray(location);
+        Gl.disableVertexAttribArray(location);
     }
 
     public void disableVertexAttribute(int location){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glDisableVertexAttribArray(location);
+        Gl.disableVertexAttribArray(location);
     }
 
     /**
@@ -724,17 +669,15 @@ public class Shader implements Disposable{
      * @param name the vertex attribute name
      */
     public void enableVertexAttribute(String name){
-        GL20 gl = Core.gl20;
         checkManaged();
         int location = fetchAttributeLocation(name);
         if(location == -1) return;
-        gl.glEnableVertexAttribArray(location);
+        Gl.enableVertexAttribArray(location);
     }
 
     public void enableVertexAttribute(int location){
-        GL20 gl = Core.gl20;
         checkManaged();
-        gl.glEnableVertexAttribArray(location);
+        Gl.enableVertexAttribArray(location);
     }
 
     private void checkManaged(){
@@ -760,9 +703,8 @@ public class Shader implements Disposable{
      * @param value4 the fourth value
      */
     public void setAttributef(String name, float value1, float value2, float value3, float value4){
-        GL20 gl = Core.gl20;
         int location = fetchAttributeLocation(name);
-        gl.glVertexAttrib4f(location, value1, value2, value3, value4);
+        Gl.vertexAttrib4f(location, value1, value2, value3, value4);
     }
 
     private void fetchUniforms(){

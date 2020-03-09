@@ -324,20 +324,18 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     /** Releases all resources associated with the FrameBuffer. */
     @Override
     public void dispose(){
-        GL20 gl = Core.gl20;
-
         for(T texture : textureAttachments){
             disposeColorTexture(texture);
         }
 
         if(hasDepthStencilPackedBuffer){
-            gl.glDeleteRenderbuffer(depthStencilPackedBufferHandle);
+            Gl.deleteRenderbuffer(depthStencilPackedBufferHandle);
         }else{
-            if(bufferBuilder.hasDepthRenderBuffer) gl.glDeleteRenderbuffer(depthbufferHandle);
-            if(bufferBuilder.hasStencilRenderBuffer) gl.glDeleteRenderbuffer(stencilbufferHandle);
+            if(bufferBuilder.hasDepthRenderBuffer) Gl.deleteRenderbuffer(depthbufferHandle);
+            if(bufferBuilder.hasStencilRenderBuffer) Gl.deleteRenderbuffer(stencilbufferHandle);
         }
 
-        gl.glDeleteFramebuffer(framebufferHandle);
+        Gl.deleteFramebuffer(framebufferHandle);
 
         if(buffers.get(Core.app) != null) buffers.get(Core.app).remove(this, true);
     }

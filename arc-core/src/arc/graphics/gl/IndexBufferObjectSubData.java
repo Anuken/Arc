@@ -1,6 +1,5 @@
 package arc.graphics.gl;
 
-import arc.*;
 import arc.graphics.*;
 import arc.util.*;
 
@@ -179,9 +178,8 @@ public class IndexBufferObjectSubData implements IndexData{
 
     /** Disposes this IndexBufferObject and all its associated OpenGL resources. */
     public void dispose(){
-        GL20 gl = Core.gl20;
-        gl.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
-        gl.glDeleteBuffer(bufferHandle);
+        Gl.bindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
+        Gl.deleteBuffer(bufferHandle);
         bufferHandle = 0;
     }
 }

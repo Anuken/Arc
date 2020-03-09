@@ -1,7 +1,7 @@
 package arc.graphics.gl;
 
-import arc.*;
 import arc.graphics.*;
+import arc.graphics.Cubemap.*;
 import arc.graphics.Texture.*;
 import arc.util.*;
 
@@ -102,12 +102,10 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap>{
 
     @Override
     protected void attachFrameBufferColorTexture(Cubemap texture){
-        GL20 gl = Core.gl20;
         int glHandle = texture.getTextureObjectHandle();
-        Cubemap.CubemapSide[] sides = Cubemap.CubemapSide.values();
-        for(Cubemap.CubemapSide side : sides){
-            gl.glFramebufferTexture2D(Gl.framebuffer, GL20.GL_COLOR_ATTACHMENT0, side.glEnum,
-            glHandle, 0);
+        CubemapSide[] sides = CubemapSide.values();
+        for(CubemapSide side : sides){
+            Gl.framebufferTexture2D(Gl.framebuffer, GL20.GL_COLOR_ATTACHMENT0, side.glEnum, glHandle, 0);
         }
     }
 

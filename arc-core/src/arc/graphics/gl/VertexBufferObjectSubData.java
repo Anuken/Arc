@@ -1,6 +1,5 @@
 package arc.graphics.gl;
 
-import arc.*;
 import arc.graphics.*;
 import arc.util.*;
 
@@ -137,12 +136,10 @@ public class VertexBufferObjectSubData implements VertexData{
 
     @Override
     public void bind(final Shader shader, final int[] locations){
-        final GL20 gl = Core.gl20;
-
-        gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
+        Gl.bindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
         if(isDirty){
             byteBuffer.limit(buffer.limit() * 4);
-            gl.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+            Gl.bufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
             isDirty = false;
         }
 
@@ -182,7 +179,6 @@ public class VertexBufferObjectSubData implements VertexData{
 
     @Override
     public void unbind(final Shader shader, final int[] locations){
-        final GL20 gl = Core.gl20;
         final int numAttributes = attributes.size();
         if(locations == null){
             for(int i = 0; i < numAttributes; i++){
@@ -194,7 +190,7 @@ public class VertexBufferObjectSubData implements VertexData{
                 if(location >= 0) shader.disableVertexAttribute(location);
             }
         }
-        gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
+        Gl.bindBuffer(GL20.GL_ARRAY_BUFFER, 0);
         isBound = false;
     }
 
@@ -207,9 +203,8 @@ public class VertexBufferObjectSubData implements VertexData{
     /** Disposes of all resources this VertexBufferObject uses. */
     @Override
     public void dispose(){
-        GL20 gl = Core.gl20;
-        gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
-        gl.glDeleteBuffer(bufferHandle);
+        Gl.bindBuffer(GL20.GL_ARRAY_BUFFER, 0);
+        Gl.deleteBuffer(bufferHandle);
         bufferHandle = 0;
     }
 
