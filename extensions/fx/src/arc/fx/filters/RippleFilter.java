@@ -3,14 +3,13 @@ package arc.fx.filters;
 import arc.*;
 import arc.fx.*;
 
-public class NoiseFilter extends FxFilter{
-    public float amount;
-    public float speed;
+public class RippleFilter extends FxFilter{
+    public float amount, speed;
 
-    public NoiseFilter(float amount, float speed){
+    public RippleFilter(float amount, float speed){
         super(compileShader(
-        Core.files.classpath("shaders/screenspace.vert"),
-        Core.files.classpath("shaders/noise.frag")));
+            Core.files.classpath("shaders/screenspace.vert"),
+            Core.files.classpath("shaders/ripple.frag")));
         this.amount = amount;
         this.speed = speed;
         rebind();

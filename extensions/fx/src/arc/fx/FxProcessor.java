@@ -280,6 +280,7 @@ public final class FxProcessor implements Disposable{
             pingPongBuffer.begin();
             for(int i = 0; i < count; i++){
                 FxFilter effect = effectChain.get(i);
+                effect.time += Time.delta();
                 effect.render(screenQuad,
                 pingPongBuffer.getSrcBuffer(),
                 pingPongBuffer.getDstBuffer());
@@ -333,7 +334,7 @@ public final class FxProcessor implements Disposable{
         }
     }
 
-    public void renderToFbo(FrameBuffer output){
+    public void render(FrameBuffer output){
         if(capturing){
             throw new IllegalStateException("You should call VfxManager.endCapture() before rendering the result.");
         }
