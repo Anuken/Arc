@@ -6,6 +6,7 @@ import arc.graphics.*;
 import arc.graphics.Pixmap.*;
 import arc.graphics.Texture.*;
 import arc.graphics.g2d.*;
+import arc.graphics.gl.*;
 import arc.struct.*;
 import arc.util.*;
 
@@ -18,7 +19,9 @@ import arc.util.*;
  * @author metaphore
  */
 public final class FxProcessor implements Disposable{
-    private final PrioritizedArray<FxFilter> effectsAll = new PrioritizedArray<>();
+    private final ObjectIntMap<FxFilter> priorities = new ObjectIntMap<>();
+    /** All effects ever added. */
+    private final Array<FxFilter> effectsAll = new Array<>();
     /** Maintains a per-frame updated list of enabled effects */
     private final Array<FxFilter> effectsEnabled = new Array<>();
 
@@ -65,17 +68,17 @@ public final class FxProcessor implements Disposable{
 
         pingPongBuffer.resize(width, height);
 
-        for(int i = 0; i < effectsAll.size(); i++){
-            effectsAll.get(i).resize(width, height);
-            effectsAll.get(i).rebind();
+        for(FxFilter filter : effectsAll){
+            filter.resize(width, height);
+            filter.rebind();
         }
     }
 
     public void rebind(){
         bufferRenderer.rebind();
 
-        for(int i = 0; i < effectsAll.size(); i++){
-            effectsAll.get(i).rebind();
+        for(FxFilter filter : effectsAll){
+            filter.rebind();
         }
     }
 
@@ -135,7 +138,7 @@ public final class FxProcessor implements Disposable{
     /**
      * @return the last active destination buffer.
      */
-    public FxBuffer getResultBuffer(){
+    public FrameBuffer getResultBuffer(){
         return pingPongBuffer.getDstBuffer();
     }
 
@@ -144,6 +147,10 @@ public final class FxProcessor implements Disposable{
      */
     public PingPongBuffer getPingPongBuffer(){
         return pingPongBuffer;
+    }
+
+    public boolean hasEnabledEffects(){
+        return effectsAll.contains(fx -> !fx.isDisabled());
     }
 
     /**
@@ -159,8 +166,11 @@ public final class FxProcessor implements Disposable{
     }
 
     public void addEffect(FxFilter effect, int priority){
-        effectsAll.add(effect, priority);
+        effectsAll.add(effect);
+        priorities.put(effect, priority);
+        effectsAll.sort(e -> priorities.get(effect, 0));
         effect.resize(width, height);
+        effect.rebind();
     }
 
     /**
@@ -181,7 +191,8 @@ public final class FxProcessor implements Disposable{
      * Changes the order of the effect in the effect chain.
      */
     public void setEffectPriority(FxFilter effect, int priority){
-        effectsAll.setPriority(effect, priority);
+        priorities.put(effect, priority);
+        effectsAll.sort(e -> priorities.get(effect, 0));
     }
 
     /**
@@ -248,7 +259,7 @@ public final class FxProcessor implements Disposable{
         if(disabled) return;
         if(!hasCaptured) return;
 
-        Array<FxFilter> effectChain = updateEnabledEffectList();
+        Array<FxFilter> effectChain = effectsEnabled.selectFrom(effectsAll, e -> !e.isDisabled());
 
         applyingEffects = true;
         int count = effectChain.size;
@@ -322,7 +333,7 @@ public final class FxProcessor implements Disposable{
         }
     }
 
-    public void renderToFbo(FxBuffer output){
+    public void renderToFbo(FrameBuffer output){
         if(capturing){
             throw new IllegalStateException("You should call VfxManager.endCapture() before rendering the result.");
         }
@@ -337,17 +348,5 @@ public final class FxProcessor implements Disposable{
         if(blendingEnabled){
             Gl.disable(Gl.blend);
         }
-    }
-
-    private Array<FxFilter> updateEnabledEffectList(){
-        // Build up active effects
-        effectsEnabled.clear();
-        for(int i = 0; i < effectsAll.size(); i++){
-            FxFilter effect = effectsAll.get(i);
-            if(!effect.isDisabled()){
-                effectsEnabled.add(effect);
-            }
-        }
-        return effectsEnabled;
     }
 }

@@ -5,6 +5,7 @@ import arc.fx.*;
 import arc.fx.util.*;
 import arc.graphics.Pixmap.*;
 import arc.graphics.*;
+import arc.graphics.gl.*;
 
 /**
  * Motion blur filter that draws the last frame (motion filter included) with a lower opacity.
@@ -70,10 +71,10 @@ public class MotionBlurFilter extends FxFilter{
     }
 
     @Override
-    public void render(ScreenQuad mesh, FxBuffer src, FxBuffer dst){
-        FxBuffer prevFrame = this.localBuffer.changeToNext();
+    public void render(ScreenQuad mesh, FrameBuffer src, FrameBuffer dst){
+        FrameBuffer prevFrame = this.localBuffer.changeToNext();
         setInput(src).setOutput(prevFrame).render(mesh);
-        lastFrameTex = prevFrame.getFbo().getTexture();
+        lastFrameTex = prevFrame.getTexture();
         copyFilter.setInput(prevFrame).setOutput(dst).render(mesh);
     }
 

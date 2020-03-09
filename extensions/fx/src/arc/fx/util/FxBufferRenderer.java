@@ -59,12 +59,12 @@ public class FxBufferRenderer implements Disposable{
         shader.end();
     }
 
-    public void renderToScreen(FxBuffer input){
+    public void renderToScreen(FrameBuffer input){
         renderToScreen(input, 0, 0, Core.graphics.getBackBufferWidth(), Core.graphics.getBackBufferHeight());
     }
 
-    public void renderToScreen(FxBuffer input, int x, int y, int width, int height){
-        input.getFbo().getTexture().bind(0);
+    public void renderToScreen(FrameBuffer input, int x, int y, int width, int height){
+        input.getTexture().bind(0);
         Gl.viewport(x, y, width, height);
 
         shader.begin();
@@ -72,10 +72,8 @@ public class FxBufferRenderer implements Disposable{
         shader.end();
     }
 
-    public void renderToFbo(FxBuffer input, FxBuffer output){
-        input.getFbo().getTexture().bind(0);
-
-        // Viewport will be set from VfxFrameBuffer#begin() method.
+    public void renderToFbo(FrameBuffer input, FrameBuffer output){
+        input.getTexture().bind(0);
 
         output.begin();
         shader.begin();

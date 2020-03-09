@@ -19,7 +19,7 @@ public abstract class FxFilter implements Disposable{
     protected final Shader shader;
 
     protected Texture inputTexture = null;
-    protected FxBuffer outputBuffer = null;
+    protected FrameBuffer outputBuffer = null;
     protected boolean disabled = false;
 
     public float time = 0f;
@@ -49,11 +49,11 @@ public abstract class FxFilter implements Disposable{
         return this;
     }
 
-    public FxFilter setInput(FxBuffer input){
-        return setInput(input.getFbo().getTexture());
+    public FxFilter setInput(FrameBuffer input){
+        return setInput(input.getTexture());
     }
 
-    public FxFilter setOutput(FxBuffer output){
+    public FxFilter setOutput(FrameBuffer output){
         this.outputBuffer = output;
         return this;
     }
@@ -94,7 +94,7 @@ public abstract class FxFilter implements Disposable{
      * and unbound once per call: for a batch-ready version of this function see and use setParams instead.
      */
     public void render(ScreenQuad mesh){
-        boolean manualBufferBind = outputBuffer != null && !outputBuffer.isDrawing();
+        boolean manualBufferBind = outputBuffer != null && !outputBuffer.isBound();
         if(manualBufferBind){
             outputBuffer.begin();
         }
@@ -117,7 +117,7 @@ public abstract class FxFilter implements Disposable{
     }
 
     /** Concrete objects shall implements its own rendering, given the source and destination buffers. */
-    public void render(ScreenQuad mesh, final FxBuffer src, final FxBuffer dst){
+    public void render(ScreenQuad mesh, final FrameBuffer src, final FrameBuffer dst){
         setInput(src).setOutput(dst).render(mesh);
     }
 

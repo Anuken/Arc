@@ -40,6 +40,11 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
         this(Format.RGBA8888, width, height, false, false);
     }
 
+    /** Creates a new FrameBuffer having the given dimensions and no depth buffer. */
+    public FrameBuffer(Pixmap.Format format, int width, int height){
+        this(format, width, height, false, false);
+    }
+
     /** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached. */
     public FrameBuffer(Pixmap.Format format, int width, int height, boolean hasDepth){
         this(format, width, height, hasDepth, false);

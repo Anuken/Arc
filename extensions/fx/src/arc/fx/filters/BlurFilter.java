@@ -3,13 +3,14 @@ package arc.fx.filters;
 import arc.fx.*;
 import arc.fx.util.*;
 import arc.graphics.*;
+import arc.graphics.gl.*;
 
 public class BlurFilter extends FxFilter{
+    public final GaussianBlurFilter blur;
     private final PingPongBuffer pingPongBuffer;
     private final CopyFilter copy;
-    private final GaussianBlurFilter blur;
 
-    public Blending blending = Blending.normal;
+    public Blending blending = Blending.disabled;
 
     // To keep track of the first render call.
     private boolean firstRender = true;
@@ -50,7 +51,7 @@ public class BlurFilter extends FxFilter{
     }
 
     @Override
-    public void render(ScreenQuad mesh, FxBuffer src, FxBuffer dst){
+    public void render(ScreenQuad mesh, FrameBuffer src, FrameBuffer dst){
         if(blur.getPasses() < 1){
             // Do not apply blur filter.
             copy.setInput(src).setOutput(dst).render(mesh);

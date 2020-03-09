@@ -4,6 +4,7 @@ import arc.*;
 import arc.fx.*;
 import arc.fx.util.*;
 import arc.graphics.*;
+import arc.graphics.gl.*;
 
 public final class MixFilter extends FxFilter{
     private Texture inputTexture2 = null;
@@ -17,9 +18,9 @@ public final class MixFilter extends FxFilter{
         rebind();
     }
 
-    public MixFilter setInput(FxBuffer buffer1, FxBuffer buffer2){
-        this.inputTexture = buffer1.getFbo().getTexture();
-        this.inputTexture2 = buffer2.getFbo().getTexture();
+    public MixFilter setInput(FrameBuffer buffer1, FrameBuffer buffer2){
+        this.inputTexture = buffer1.getTexture();
+        this.inputTexture2 = buffer2.getTexture();
         return this;
     }
 
@@ -31,7 +32,7 @@ public final class MixFilter extends FxFilter{
 
     /** @deprecated use {@link #setInput(FxBuffer, FxBuffer)} instead. */
     @Override
-    public MixFilter setInput(FxBuffer input){
+    public MixFilter setInput(FrameBuffer input){
         throw new UnsupportedOperationException("Use #setInput(FboWrapper, FboWrapper)} instead.");
     }
 

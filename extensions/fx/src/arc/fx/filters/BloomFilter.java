@@ -5,6 +5,7 @@ import arc.fx.util.*;
 import arc.graphics.Blending;
 import arc.graphics.*;
 import arc.graphics.Pixmap.*;
+import arc.graphics.gl.*;
 
 public class BloomFilter extends FxFilter{
     public final PingPongBuffer buffer;
@@ -60,8 +61,8 @@ public class BloomFilter extends FxFilter{
     }
 
     @Override
-    public void render(ScreenQuad mesh, final FxBuffer src, final FxBuffer dst){
-        Texture texSrc = src.getFbo().getTexture();
+    public void render(ScreenQuad mesh, final FrameBuffer src, final FrameBuffer dst){
+        Texture texSrc = src.getTexture();
 
         Gl.disable(Gl.blend);
 

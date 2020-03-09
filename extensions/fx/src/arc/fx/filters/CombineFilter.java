@@ -1,8 +1,8 @@
 package arc.fx.filters;
 
 import arc.fx.*;
-import arc.fx.util.*;
 import arc.graphics.*;
+import arc.graphics.gl.*;
 
 public final class CombineFilter extends FxFilter{
     public float src1int = 1f, src1sat = 1f, src2int = 1f, src2sat = 1f;
@@ -13,9 +13,9 @@ public final class CombineFilter extends FxFilter{
         rebind();
     }
 
-    public CombineFilter setInput(FxBuffer buffer1, FxBuffer buffer2){
-        this.inputTexture = buffer1.getFbo().getTexture();
-        this.inputTexture2 = buffer2.getFbo().getTexture();
+    public CombineFilter setInput(FrameBuffer buffer1, FrameBuffer buffer2){
+        this.inputTexture = buffer1.getTexture();
+        this.inputTexture2 = buffer2.getTexture();
         return this;
     }
 

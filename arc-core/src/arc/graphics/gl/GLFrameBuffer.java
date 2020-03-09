@@ -345,6 +345,10 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
         Gl.bindFramebuffer(Gl.framebuffer, framebufferHandle);
     }
 
+    public boolean isBound(){
+        return currentBoundFramebuffer == this;
+    }
+
     /** Flushes the batch, begins this buffer and clears the screen.*/
     public void beginDraw(Color clearColor){
         Draw.flush();
@@ -361,6 +365,8 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     /** Binds the frame buffer and sets the viewport accordingly, so everything gets drawn to it. */
     public void begin(){
         if(currentBoundFramebuffer == this) throw new IllegalArgumentException("Do not begin() twice.");
+        //TODO perhaps flush automatically
+        //Draw.flush();
         //save last buffer
         lastBoundFramebuffer = currentBoundFramebuffer;
         currentBoundFramebuffer = this;
@@ -376,6 +382,8 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
 
     /** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
     public void end(){
+        //TODO perhaps flush automatically
+        //Draw.flush();
         //there was a buffer before this one
         if(lastBoundFramebuffer != null){
             //rebind the last framebuffer and set its viewport

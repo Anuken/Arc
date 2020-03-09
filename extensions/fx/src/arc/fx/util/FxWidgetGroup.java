@@ -10,16 +10,13 @@ import arc.scene.ui.layout.*;
 import arc.util.viewport.*;
 
 public class FxWidgetGroup extends WidgetGroup{
-
     private final FxProcessor fxProcessor;
-    private final CustomRendererAdapter rendererAdapter;
     private boolean initialized = false;
     private boolean resizePending = false;
     private boolean matchWidgetSize = false;
 
     public FxWidgetGroup(){
         fxProcessor = new FxProcessor();
-        rendererAdapter = new CustomRendererAdapter();
         super.setTransform(false);
     }
 
@@ -66,8 +63,6 @@ public class FxWidgetGroup extends WidgetGroup{
         performPendingResize();
 
         fxProcessor.clear();
-
-        fxProcessor.getPingPongBuffer().addRenderer(rendererAdapter);
         fxProcessor.begin();
 
         validate();
@@ -76,15 +71,13 @@ public class FxWidgetGroup extends WidgetGroup{
         Draw.flush();
 
         fxProcessor.end();
-        fxProcessor.getPingPongBuffer().removeRenderer(rendererAdapter);
-
         fxProcessor.applyEffects();
 
         // If something was captured, render result to the screen.
         if(fxProcessor.hasResult()){
             Color color = getColor();
             Draw.color(color.r, color.g, color.b, color.a * parentAlpha);
-            Draw.rect(Draw.wrap(fxProcessor.getResultBuffer().getFbo().getTexture()), x + width / 2f, y + height / 2f, width, height);
+            Draw.rect(Draw.wrap(fxProcessor.getResultBuffer().getTexture()), x + width / 2f, y + height / 2f, width, height);
         }
     }
 
@@ -167,42 +160,10 @@ public class FxWidgetGroup extends WidgetGroup{
             float ppu = viewport.getScreenWidth() / viewport.getWorldWidth();
             width = Mathf.floor(getWidth() * ppu);
             height = Mathf.floor(getHeight() * ppu);
-
-            rendererAdapter.updateOwnProjection();
         }
 
         fxProcessor.resize(width, height);
 
         resizePending = false;
-    }
-
-    private class CustomRendererAdapter implements FxBuffer.Renderer{
-        private final Mat preservedProjection = new Mat();
-        private final Mat ownProjection = new Mat();
-
-        @Override
-        public void flush(){
-            Draw.flush();
-        }
-
-        @Override
-        public void push(Mat projection, Mat transform){
-            preservedProjection.set(Draw.proj());
-
-            if(!matchWidgetSize){
-                projection = ownProjection;
-            }
-
-            Draw.proj(projection);
-        }
-
-        @Override
-        public void pop(){
-            Draw.proj(preservedProjection);
-        }
-
-        public void updateOwnProjection(){
-            ownProjection.setOrtho(0f, 0f, getWidth(), getHeight());
-        }
     }
 }

@@ -2,6 +2,7 @@ package arc.fx.util;
 
 import arc.graphics.*;
 import arc.graphics.Texture.*;
+import arc.graphics.gl.*;
 import arc.struct.*;
 import arc.util.*;
 
@@ -9,7 +10,7 @@ import arc.util.*;
  * Provides looped access to an array of {@link FxBuffer}.
  */
 public class FxBufferQueue implements Disposable{
-    private final Array<FxBuffer> buffers;
+    private final Array<FrameBuffer> buffers;
     private int currentIdx = 0;
 
     private TextureWrap wrapU = TextureWrap.ClampToEdge;
@@ -23,7 +24,7 @@ public class FxBufferQueue implements Disposable{
         }
         buffers = new Array<>(true, fboAmount);
         for(int i = 0; i < fboAmount; i++){
-            buffers.add(new FxBuffer(pixelFormat));
+            buffers.add(new FrameBuffer(pixelFormat, 4, 4));
         }
     }
 
@@ -36,7 +37,7 @@ public class FxBufferQueue implements Disposable{
 
     public void resize(int width, int height){
         for(int i = 0; i < buffers.size; i++){
-            buffers.get(i).initialize(width, height);
+            buffers.get(i).resize(width, height);
         }
     }
 
@@ -45,21 +46,21 @@ public class FxBufferQueue implements Disposable{
      */
     public void rebind(){
         for(int i = 0; i < buffers.size; i++){
-            FxBuffer wrapper = buffers.get(i);
+            FrameBuffer wrapper = buffers.get(i);
             // FBOs might be null if the instance wasn't initialized with #resize(int, int) yet.
-            if(wrapper.getFbo() == null) continue;
+            if(wrapper == null) continue;
 
-            Texture texture = wrapper.getFbo().getTexture();
+            Texture texture = wrapper.getTexture();
             texture.setWrap(wrapU, wrapV);
             texture.setFilter(filterMin, filterMag);
         }
     }
 
-    public FxBuffer getCurrent(){
+    public FrameBuffer getCurrent(){
         return buffers.get(currentIdx);
     }
 
-    public FxBuffer changeToNext(){
+    public FrameBuffer changeToNext(){
         currentIdx = (currentIdx + 1) % buffers.size;
         return getCurrent();
     }

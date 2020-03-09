@@ -4,6 +4,7 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.Pixmap.*;
 import arc.graphics.Texture.*;
+import arc.graphics.gl.*;
 
 /**
  * Encapsulates a framebuffer with the ability to ping-pong between two buffers.
@@ -22,11 +23,11 @@ import arc.graphics.Texture.*;
  * @author metaphore
  */
 public final class PingPongBuffer{
-    private final FxBuffer buffer1;
-    private final FxBuffer buffer2;
+    private final FrameBuffer buffer1;
+    private final FrameBuffer buffer2;
 
-    private FxBuffer bufDst;
-    private FxBuffer bufSrc;
+    private FrameBuffer bufDst;
+    private FrameBuffer bufSrc;
 
     /**
      * Keeps track of the current active buffer.
@@ -47,7 +48,7 @@ public final class PingPongBuffer{
      * Initializes ping-pong buffer with the size of the LibGDX client's area (usually window size).
      * If you use different OpenGL viewport, better use {@link #PingPongBuffer(Format, int, int)}
      * and specify the size manually.
-     * @param fbFormat Pixel format of encapsulated {@link FxBuffer}s.
+     * @param fbFormat Pixel format of buffer.
      */
     public PingPongBuffer(Format fbFormat){
         this(fbFormat, Core.graphics.getWidth(), Core.graphics.getHeight());
@@ -55,12 +56,12 @@ public final class PingPongBuffer{
 
     /**
      * Initializes ping-pong buffer with the given size.
-     * @param fbFormat Pixel format of encapsulated {@link FxBuffer}s.
+     * @param fbFormat Pixel format of buffer.
      */
     public PingPongBuffer(Format fbFormat, int width, int height){
-        this.buffer1 = new FxBuffer(fbFormat);
-        this.buffer2 = new FxBuffer(fbFormat);
-        resize(width, height);
+        this.buffer1 = new FrameBuffer(fbFormat, width, height);
+        this.buffer2 = new FrameBuffer(fbFormat, width, height);
+        rebind();
 
         // Setup src/dst buffers.
         writeState = false;
@@ -74,8 +75,8 @@ public final class PingPongBuffer{
     }
 
     public void resize(int width, int height){
-        this.buffer1.initialize(width, height);
-        this.buffer2.initialize(width, height);
+        this.buffer1.resize(width, height);
+        this.buffer2.resize(width, height);
         rebind();
     }
 
@@ -84,13 +85,13 @@ public final class PingPongBuffer{
      */
     public void rebind(){
         // FBOs might be null if the instance wasn't initialized with #resize(int, int) yet.
-        if(buffer1.getFbo() != null){
-            Texture texture = buffer1.getFbo().getTexture();
+        if(buffer1 != null){
+            Texture texture = buffer1.getTexture();
             texture.setWrap(wrapU, wrapV);
             texture.setFilter(filterMin, filterMag);
         }
-        if(buffer2.getFbo() != null){
-            Texture texture = buffer2.getFbo().getTexture();
+        if(buffer2 != null){
+            Texture texture = buffer2.getTexture();
             texture.setWrap(wrapU, wrapV);
             texture.setFilter(filterMin, filterMag);
         }
@@ -148,21 +149,21 @@ public final class PingPongBuffer{
 
     /** @return the source texture of the current ping-pong chain. */
     public Texture getSrcTexture(){
-        return bufSrc.getFbo().getTexture();
+        return bufSrc.getTexture();
     }
 
     /** @return the source buffer of the current ping-pong chain. */
-    public FxBuffer getSrcBuffer(){
+    public FrameBuffer getSrcBuffer(){
         return bufSrc;
     }
 
     /** @return the result's texture of the latest {@link #swap()}. */
     public Texture getDstTexture(){
-        return bufDst.getFbo().getTexture();
+        return bufDst.getTexture();
     }
 
     /** @return Returns the result's buffer of the latest {@link #swap()}. */
-    public FxBuffer getDstBuffer(){
+    public FrameBuffer getDstBuffer(){
         return bufDst;
     }
 
@@ -174,34 +175,12 @@ public final class PingPongBuffer{
         rebind();
     }
 
-    /** @see FxBuffer#addRenderer(FxBuffer.Renderer) ) */
-    public void addRenderer(FxBuffer.Renderer renderer){
-        buffer1.addRenderer(renderer);
-        buffer2.addRenderer(renderer);
-    }
-
-    /** @see FxBuffer#removeRenderer(FxBuffer.Renderer) () */
-    public void removeRenderer(FxBuffer.Renderer renderer){
-        buffer1.removeRenderer(renderer);
-        buffer2.removeRenderer(renderer);
-    }
-
-    /** @see FxBuffer#clearRenderers() */
-    public void clearRenderers(){
-        buffer1.clearRenderers();
-        buffer2.clearRenderers();
-    }
-
-    /**
-     * Cleans up managed {@link FxBuffer}s' with specified color.
-     */
+    /** Cleans up managed buffers with specified color. */
     public void clear(Color clearColor){
         clear(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
     }
 
-    /**
-     * Cleans up managed {@link FxBuffer}s' with specified color.
-     */
+    /** Cleans up managed buffers with specified color. */
     public void clear(float r, float g, float b, float a){
         final boolean wasCapturing = this.capturing;
 
