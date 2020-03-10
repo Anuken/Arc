@@ -145,7 +145,6 @@ public class Bloom{
         }
 
         pingPongBuffer1 = new FrameBuffer(format, FBO_W, FBO_H, false);
-
         pingPongBuffer2 = new FrameBuffer(format, FBO_W, FBO_H, false);
 
         original = frameBuffer.getTexture();

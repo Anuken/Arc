@@ -319,16 +319,20 @@ public class Gl{
     //STATE - optimizes GL calls
 
     //last active texture unit
-    private static int lastActiveTexture = 0;
+    private static int lastActiveTexture = -1;
     //last bound texture2ds, mapping from texture unit to texture handle
     private static int[] lastBoundTextures = new int[32];
     //last useProgram call
     private static int lastUsedProgram = 0;
 
+    static{
+        reset();
+    }
+
     /** Reset optimization cache. */
     public static void reset(){
-        lastActiveTexture = 0;
-        Arrays.fill(lastBoundTextures, 0);
+        lastActiveTexture = -1;
+        Arrays.fill(lastBoundTextures, -1);
         lastUsedProgram = 0;
     }
 
@@ -401,6 +405,11 @@ public class Gl{
     }
 
     public static void deleteTexture(int texture){
+        for(int i = 0; i < lastBoundTextures.length; i++){
+            if(lastBoundTextures[i] == texture){
+                lastBoundTextures[i] = -1;
+            }
+        }
         Core.gl.glDeleteTexture(texture);
     }
 
