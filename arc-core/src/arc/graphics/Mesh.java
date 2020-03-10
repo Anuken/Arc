@@ -480,7 +480,7 @@ public class Mesh implements Disposable{
      * </p>
      *
      * <p>
-     * This method must only be called after the {@link Shader#begin()} method has been called!
+     * This method must only be called after the {@link Shader#bind()} method has been called!
      * </p>
      *
      * <p>
@@ -505,7 +505,7 @@ public class Mesh implements Disposable{
      * </p>
      *
      * <p>
-     * This method must only be called after the {@link Shader#begin()} method has been called!
+     * This method must only be called after the {@link Shader#bind()} method has been called!
      * </p>
      *
      * <p>
@@ -533,7 +533,7 @@ public class Mesh implements Disposable{
      * </p>
      *
      * <p>
-     * This method must only be called after the {@link Shader#begin()} method has been called!
+     * This method must only be called after the {@link Shader#bind()} method has been called!
      * </p>
      *
      * <p>

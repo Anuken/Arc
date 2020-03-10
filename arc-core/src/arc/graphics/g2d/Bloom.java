@@ -52,10 +52,9 @@ public class Bloom{
 
     /** Rebind the context. Necessary on Android/IOS. */
     public void resume(){
-        bloomShader.begin();
+        bloomShader.bind();
         bloomShader.setUniformi("u_texture0", 0);
         bloomShader.setUniformi("u_texture1", 1);
-        bloomShader.end();
 
         setSize(w, h);
         setThreshold(threshold);
@@ -171,10 +170,9 @@ public class Bloom{
         setOriginalIntesity(1f);
         setThreshold(0.5f);
 
-        bloomShader.begin();
+        bloomShader.bind();
         bloomShader.setUniformi("u_texture0", 0);
         bloomShader.setUniformi("u_texture1", 1);
-        bloomShader.end();
     }
 
     /**
@@ -245,9 +243,8 @@ public class Bloom{
         pingPongTex1.bind(1);
         original.bind(0);
 
-        bloomShader.begin();
+        bloomShader.bind();
         fullScreenQuad.render(bloomShader, Gl.triangleFan);
-        bloomShader.end();
 
     }
 
@@ -256,9 +253,8 @@ public class Bloom{
 
         original.bind(0);
         pingPongBuffer1.begin();
-        thresholdShader.begin();
+        thresholdShader.bind();
         fullScreenQuad.render(thresholdShader, Gl.triangleFan, 0, 4);
-        thresholdShader.end();
         pingPongBuffer1.end();
 
         for(int i = 0; i < blurPasses; i++){
@@ -266,19 +262,17 @@ public class Bloom{
 
             // horizontal
             pingPongBuffer2.begin();
-            blurShader.begin();
+            blurShader.bind();
             blurShader.setUniformf("dir", 1f, 0f);
             fullScreenQuad.render(blurShader, Gl.triangleFan, 0, 4);
-            blurShader.end();
             pingPongBuffer2.end();
 
             pingPongTex2.bind(0);
             // vertical
             pingPongBuffer1.begin();
-            blurShader.begin();
+            blurShader.bind();
             blurShader.setUniformf("dir", 0f, 1f);
             fullScreenQuad.render(blurShader, Gl.triangleFan, 0, 4);
-            blurShader.end();
             pingPongBuffer1.end();
         }
     }
@@ -292,9 +286,8 @@ public class Bloom{
      */
     public void setBloomIntesity(float intensity){
         bloomIntensity = intensity;
-        bloomShader.begin();
+        bloomShader.bind();
         bloomShader.setUniformf("BloomIntensity", intensity);
-        bloomShader.end();
     }
 
     /**
@@ -306,9 +299,8 @@ public class Bloom{
      */
     public void setOriginalIntesity(float intensity){
         originalIntensity = intensity;
-        bloomShader.begin();
+        bloomShader.bind();
         bloomShader.setUniformf("OriginalIntensity", intensity);
-        bloomShader.end();
     }
 
     /**
@@ -318,17 +310,15 @@ public class Bloom{
      */
     public void setThreshold(float threshold){
         this.threshold = threshold;
-        thresholdShader.begin();
+        thresholdShader.bind();
         thresholdShader.setUniformf("threshold", threshold, 1f / (1 - threshold));
-        thresholdShader.end();
     }
 
     private void setSize(int FBO_W, int FBO_H){
         w = FBO_W;
         h = FBO_H;
-        blurShader.begin();
+        blurShader.bind();
         blurShader.setUniformf("size", FBO_W, FBO_H);
-        blurShader.end();
     }
 
     /** Disposes all resources. */

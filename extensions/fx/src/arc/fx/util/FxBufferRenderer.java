@@ -54,9 +54,8 @@ public class FxBufferRenderer implements Disposable{
     }
 
     public void rebind(){
-        shader.begin();
+        shader.bind();
         shader.setUniformi("u_texture0", 0);
-        shader.end();
     }
 
     public void renderToScreen(FrameBuffer input){
@@ -67,18 +66,16 @@ public class FxBufferRenderer implements Disposable{
         input.getTexture().bind(0);
         Gl.viewport(x, y, width, height);
 
-        shader.begin();
+        shader.bind();
         mesh.render(shader);
-        shader.end();
     }
 
     public void renderToFbo(FrameBuffer input, FrameBuffer output){
         input.getTexture().bind(0);
 
         output.begin();
-        shader.begin();
+        shader.bind();
         mesh.render(shader);
-        shader.end();
         output.end();
     }
 

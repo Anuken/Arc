@@ -343,7 +343,7 @@ public class SpriteBatch implements Disposable{
 
         renderCalls = 0;
 
-        getShader().begin();
+        getShader().bind();
         setupMatrices();
 
         if(customShader != null && apply){
@@ -371,8 +371,6 @@ public class SpriteBatch implements Disposable{
         mesh.render(getShader(), Gl.triangles, 0, count);
 
         idx = 0;
-
-        getShader().end();
     }
 
     void setBlending(Blending blending){

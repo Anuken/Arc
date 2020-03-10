@@ -217,14 +217,13 @@ public class VertexBatch3D{
 
     public void flush(int primitiveType, Shader shader){
         if(numVertices == 0) return;
-        shader.begin();
+        shader.bind();
         shader.apply();
         shader.setUniformMatrix4("u_proj", proj.val);
         for(int i = 0; i < numTexCoords; i++)
             shader.setUniformi(shaderUniformNames[i], i);
         mesh.setVertices(vertices, 0, vertexIdx);
         mesh.render(shader, primitiveType);
-        shader.end();
 
         numSetTexCoords = 0;
         vertexIdx = 0;

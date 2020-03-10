@@ -74,9 +74,8 @@ public abstract class FxFilter implements Disposable{
     public void rebind(){
         if(shader == null) return;
 
-        shader.begin();
+        shader.bind();
         setParams();
-        shader.end();
     }
 
     /**
@@ -102,9 +101,8 @@ public abstract class FxFilter implements Disposable{
         // Gives a chance to filters to perform needed operations just before the rendering operation takes place.
         onBeforeRender();
 
-        shader.begin();
+        shader.bind();
         mesh.render(shader);
-        shader.end();
 
         if(manualBufferBind){
             outputBuffer.end();

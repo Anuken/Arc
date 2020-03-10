@@ -17,16 +17,13 @@ import java.nio.*;
  *
  * <p>
  * After construction a Shader can be used to draw {@link Mesh}. To make the GPU use a specific Shader the programs
- * {@link Shader#begin()} method must be used which effectively binds the program.
+ * {@link Shader#bind()} method must be used which effectively binds the program.
  * </p>
  *
  * <p>
  * When a Shader is bound one can set uniforms, vertex attributes and attributes as needed via the respective methods.
  * </p>
  *
- * <p>
- * A Shader can be unbound with a call to {@link Shader#end()}
- * </p>
  *
  * <p>
  * A Shader must be disposed via a call to {@link Shader#dispose()} when it is no longer needed
@@ -622,24 +619,15 @@ public class Shader implements Disposable{
     }
 
     /**
-     * Makes OpenGL ES 2.0 use this vertex and fragment shader pair. When you are done with this shader you have to call
-     * {@link Shader#end()}.
+     * Makes OpenGL ES 2.0 use this vertex and fragment shader pair.
      */
-    public void begin(){
+    public void bind(){
         checkManaged();
         Gl.useProgram(program);
     }
 
-    /**
-     * Disables this shader. Must be called when one is done with the shader. Don't mix it with dispose, that will release the
-     * shader resources.
-     */
-    public void end(){
-        //TODO this is most likely unnecessary
-        //Gl.useProgram(0);
-    }
-
     /** Disposes all resources associated with this shader. Must be called when the shader is no longer used. */
+    @Override
     public void dispose(){
         Gl.useProgram(0);
         Gl.deleteShader(vertexShaderHandle);

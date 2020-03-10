@@ -502,12 +502,12 @@ public class SpriteCache implements Disposable{
         combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 
         if(customShader != null){
-            customShader.begin();
+            customShader.bind();
             customShader.setUniformMatrix4("u_projectionViewMatrix", BatchShader.copyTransform(combinedMatrix));
             customShader.setUniformi("u_texture", 0);
             mesh.bind(customShader);
         }else{
-            shader.begin();
+            shader.bind();
             shader.setUniformMatrix4("u_projectionViewMatrix", BatchShader.copyTransform(combinedMatrix));
             shader.setUniformi("u_texture", 0);
             mesh.bind(shader);
@@ -520,7 +520,6 @@ public class SpriteCache implements Disposable{
         if(!drawing) throw new IllegalStateException("begin must be called before end.");
         drawing = false;
 
-        shader.end();
         Gl.depthMask(true);
         if(customShader != null)
             mesh.unbind(customShader);
