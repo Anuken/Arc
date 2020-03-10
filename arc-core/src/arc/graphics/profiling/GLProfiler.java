@@ -14,7 +14,6 @@ import arc.math.FloatCounter;
  * @see GL30Interceptor
  */
 public class GLProfiler{
-
     private Graphics graphics;
     private GLInterceptor glInterceptor;
     private GLErrorListener listener;
@@ -79,35 +78,39 @@ public class GLProfiler{
      * @return the total gl calls made since the last reset
      */
     public int getCalls(){
-        return glInterceptor.getCalls();
+        return glInterceptor.calls;
     }
 
     /**
      * @return the total amount of texture bindings made since the last reset
      */
     public int getTextureBindings(){
-        return glInterceptor.getTextureBindings();
+        return glInterceptor.textureBindings;
+    }
+
+    public int getStateChanges(){
+        return glInterceptor.toggles;
     }
 
     /**
      * @return the total amount of draw calls made since the last reset
      */
     public int getDrawCalls(){
-        return glInterceptor.getDrawCalls();
+        return glInterceptor.drawCalls;
     }
 
     /**
      * @return the total amount of shader switches made since the last reset
      */
     public int getShaderSwitches(){
-        return glInterceptor.getShaderSwitches();
+        return glInterceptor.shaderSwitches;
     }
 
     /**
      * @return {@link FloatCounter} containing information about rendered vertices since the last reset
      */
     public FloatCounter getVertexCount(){
-        return glInterceptor.getVertexCount();
+        return glInterceptor.vertexCount;
     }
 
     /**

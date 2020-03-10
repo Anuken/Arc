@@ -1,6 +1,7 @@
 package arc.graphics;
 
 import arc.*;
+import arc.struct.Bits;
 
 import java.nio.*;
 import java.util.*;
@@ -324,6 +325,8 @@ public class Gl{
     private static int[] lastBoundTextures = new int[32];
     //last useProgram call
     private static int lastUsedProgram = 0;
+    /** enabled bits, from glEnable/disable */
+    private static Bits enabled = new Bits();
 
     static{
         reset();
@@ -334,6 +337,7 @@ public class Gl{
         lastActiveTexture = -1;
         Arrays.fill(lastBoundTextures, -1);
         lastUsedProgram = 0;
+        enabled.clear();
     }
 
     public static void activeTexture(int texture){
@@ -405,6 +409,7 @@ public class Gl{
     }
 
     public static void deleteTexture(int texture){
+        //clear deleted texture, as it may be reused later
         for(int i = 0; i < lastBoundTextures.length; i++){
             if(lastBoundTextures[i] == texture){
                 lastBoundTextures[i] = -1;
@@ -426,7 +431,11 @@ public class Gl{
     }
 
     public static void disable(int cap){
+        if(!enabled.get(cap)){
+            return;
+        }
         Core.gl.glDisable(cap);
+        enabled.clear(cap);
     }
 
     public static void drawArrays(int mode, int first, int count){
@@ -438,7 +447,11 @@ public class Gl{
     }
 
     public static void enable(int cap){
+        if(enabled.get(cap)){
+            return;
+        }
         Core.gl.glEnable(cap);
+        enabled.set(cap);
     }
 
     public static void finish(){

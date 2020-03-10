@@ -150,6 +150,7 @@ public class GL20Interceptor extends GLInterceptor implements GL20{
     public void glDisable(int cap){
         calls++;
         gl20.glDisable(cap);
+        toggles++;
         check();
     }
 
@@ -174,6 +175,7 @@ public class GL20Interceptor extends GLInterceptor implements GL20{
     @Override
     public void glEnable(int cap){
         calls++;
+        toggles++;
         gl20.glEnable(cap);
         check();
     }

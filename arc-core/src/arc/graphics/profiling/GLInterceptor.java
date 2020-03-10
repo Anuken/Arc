@@ -4,12 +4,12 @@ import arc.graphics.GL20;
 import arc.math.FloatCounter;
 
 public abstract class GLInterceptor implements GL20{
-
-    protected final FloatCounter vertexCount = new FloatCounter(0);
-    protected int calls;
-    protected int textureBindings;
-    protected int drawCalls;
-    protected int shaderSwitches;
+    public final FloatCounter vertexCount = new FloatCounter(0);
+    public int calls;
+    public int textureBindings;
+    public int drawCalls;
+    public int shaderSwitches;
+    public int toggles;
     protected GLProfiler glProfiler;
 
     protected GLInterceptor(GLProfiler profiler){
@@ -33,31 +33,12 @@ public abstract class GLInterceptor implements GL20{
         }
     }
 
-    public int getCalls(){
-        return calls;
-    }
-
-    public int getTextureBindings(){
-        return textureBindings;
-    }
-
-    public int getDrawCalls(){
-        return drawCalls;
-    }
-
-    public int getShaderSwitches(){
-        return shaderSwitches;
-    }
-
-    public FloatCounter getVertexCount(){
-        return vertexCount;
-    }
-
     public void reset(){
         calls = 0;
         textureBindings = 0;
         drawCalls = 0;
         shaderSwitches = 0;
+        toggles = 0;
         vertexCount.reset();
     }
 }
