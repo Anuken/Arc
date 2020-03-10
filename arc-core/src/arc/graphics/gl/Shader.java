@@ -100,7 +100,7 @@ public class Shader implements Disposable{
     /** fragment shader handle **/
     private int fragmentShaderHandle;
     /** whether this shader was invalidated **/
-    private boolean invalidated;
+    private boolean invalidated, disposed;
 
     /**
      * Constructs a new Shader and immediately compiles it.
@@ -629,11 +629,19 @@ public class Shader implements Disposable{
     /** Disposes all resources associated with this shader. Must be called when the shader is no longer used. */
     @Override
     public void dispose(){
+        if(disposed) return;
+
         Gl.useProgram(0);
         Gl.deleteShader(vertexShaderHandle);
         Gl.deleteShader(fragmentShaderHandle);
         Gl.deleteProgram(program);
         if(shaders.get(Core.app) != null) shaders.get(Core.app).remove(this, true);
+        disposed = true;
+    }
+
+    @Override
+    public boolean isDisposed(){
+        return disposed;
     }
 
     /**

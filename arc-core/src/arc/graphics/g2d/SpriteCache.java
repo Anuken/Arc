@@ -65,7 +65,6 @@ public class SpriteCache implements Disposable{
     private Cache currentCache;
     private float colorPacked = Color.whiteFloatBits;
     private Shader customShader = null;
-    private Texture lastBoundTexture;
 
     /** Creates a cache that uses indexed geometry and can contain up to 1000 images. */
     public SpriteCache(){
@@ -122,7 +121,7 @@ public class SpriteCache implements Disposable{
         projectionMatrix.setOrtho(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
     }
 
-    static Shader createDefaultShader(){
+    public static Shader createDefaultShader(){
         String vertexShader = "attribute vec4 " + Shader.positionAttribute + ";\n" //
         + "attribute vec4 " + Shader.colorAttribute + ";\n" //
         + "attribute vec2 " + Shader.texcoordAttribute + "0;\n" //
@@ -498,20 +497,12 @@ public class SpriteCache implements Disposable{
         if(drawing) throw new IllegalStateException("end must be called before begin.");
         if(currentCache != null) throw new IllegalStateException("endCache must be called before begin");
         renderCalls = 0;
-        lastBoundTexture = null;
         combinedMatrix.set(projectionMatrix).mul(transformMatrix);
-
-        if(customShader != null){
-            customShader.bind();
-            customShader.setUniformMatrix4("u_projectionViewMatrix", BatchShader.copyTransform(combinedMatrix));
-            customShader.setUniformi("u_texture", 0);
-            mesh.bind(customShader);
-        }else{
-            shader.bind();
-            shader.setUniformMatrix4("u_projectionViewMatrix", BatchShader.copyTransform(combinedMatrix));
-            shader.setUniformi("u_texture", 0);
-            mesh.bind(shader);
-        }
+        Shader shader = customShader != null ? customShader : this.shader;
+        shader.bind();
+        shader.setUniformMatrix4("u_projectionViewMatrix", BatchShader.copyTransform(combinedMatrix));
+        shader.setUniformi("u_texture", 0);
+        mesh.bind(shader);
         drawing = true;
     }
 
@@ -540,10 +531,7 @@ public class SpriteCache implements Disposable{
         Shader shader = customShader != null ? customShader : this.shader;
         for(int i = 0; i < textureCount; i++){
             int count = counts[i];
-            if(lastBoundTexture != textures[i]){
-                textures[i].bind();
-                lastBoundTexture = textures[i];
-            }
+            textures[i].bind();
 
             mesh.render(shader, Gl.triangles, offset, count);
             offset += count;
@@ -567,10 +555,7 @@ public class SpriteCache implements Disposable{
         int[] counts = cache.counts;
         int textureCount = cache.textureCount;
         for(int i = 0; i < textureCount; i++){
-            if(lastBoundTexture != textures[i]){
-                textures[i].bind();
-                lastBoundTexture = textures[i];
-            }
+            textures[i].bind();
             int count = counts[i];
             if(count > length){
                 i = textureCount;

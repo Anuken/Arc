@@ -3,6 +3,7 @@ package arc.graphics;
 import arc.*;
 
 import java.nio.*;
+import java.util.*;
 
 public class Gl{
     public static final int
@@ -315,11 +316,43 @@ public class Gl{
     invalidFramebufferOperation = 0x0506,
     vertexProgramPointSize = 0x8642;
 
+    //STATE - optimizes GL calls
+
+    //last active texture unit
+    private static int lastActiveTexture = 0;
+    //last bound texture2ds, mapping from texture unit to texture handle
+    private static int[] lastBoundTextures = new int[32];
+    //last useProgram call
+    private static int lastUsedProgram = 0;
+
+    /** Reset optimization cache. */
+    public static void reset(){
+        lastActiveTexture = 0;
+        Arrays.fill(lastBoundTextures, 0);
+        lastUsedProgram = 0;
+    }
+
     public static void activeTexture(int texture){
+        if(lastActiveTexture == texture) return;
+
         Core.gl.glActiveTexture(texture);
+        lastActiveTexture = texture;
     }
 
     public static void bindTexture(int target, int texture){
+        if(target == texture2d){
+            //current bound texture unit
+            int index = lastActiveTexture - texture0;
+            //make sure it's valid
+            if(index >= 0 && index < lastBoundTextures.length){
+                if(lastBoundTextures[index] == texture){
+                    //skip double bindings
+                    return;
+                }
+                lastBoundTextures[index] = texture;
+            }
+        }
+
         Core.gl.glBindTexture(target, texture);
     }
 
@@ -868,7 +901,11 @@ public class Gl{
     }
 
     public static void useProgram(int program){
+        if(lastUsedProgram == program){
+            return;
+        }
         Core.gl.glUseProgram(program);
+        lastUsedProgram = program;
     }
 
     public static void validateProgram(int program){

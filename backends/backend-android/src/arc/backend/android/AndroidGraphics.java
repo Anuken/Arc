@@ -89,6 +89,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
     protected GLSurfaceView20 createGLSurfaceView(AndroidApplicationBase application, final ResolutionStrategy resolutionStrategy){
         if(!checkGL20()) throw new ArcRuntimeException("Arc requires OpenGL ES 2.0");
 
+        Gl.reset();
         EGLConfigChooser configChooser = getEglConfigChooser();
         GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy, config.useGL30 ? 3 : 2);
         if(configChooser != null)
@@ -402,6 +403,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
         }
 
         if(lresume){
+            Gl.reset();
             Array<ApplicationListener> listeners = app.getListeners();
             synchronized(listeners){
                 for(int i = 0, n = listeners.size; i < n; ++i){

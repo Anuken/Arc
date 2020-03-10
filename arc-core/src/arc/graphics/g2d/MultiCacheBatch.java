@@ -9,6 +9,7 @@ import arc.util.*;
 public class MultiCacheBatch extends SpriteBatch{
     private static final int maxSpritesPerCache = 100000;
     Array<SpriteCache> caches = new Array<>();
+    Shader shader = SpriteCache.createDefaultShader();
     int currentid = -1;
     int maxCacheSize;
     int offset;
@@ -22,7 +23,7 @@ public class MultiCacheBatch extends SpriteBatch{
     SpriteCache currentCache(){
         int needed = currentid == -1 ? offset / maxSpritesPerCache : currentid;
         if(needed >= caches.size){
-            caches.add(new SpriteCache(maxSpritesPerCache, false));
+            caches.add(new SpriteCache(maxSpritesPerCache, 16, shader, false));
         }
         return caches.get(needed);
     }
@@ -122,6 +123,8 @@ public class MultiCacheBatch extends SpriteBatch{
         for(SpriteCache cache : caches){
             cache.dispose();
         }
+
+        shader.dispose();
     }
 
     public void beginDraw(){
