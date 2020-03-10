@@ -89,7 +89,7 @@ public class GLProfiler{
     }
 
     public int getStateChanges(){
-        return glInterceptor.toggles;
+        return glInterceptor.stateChanges;
     }
 
     /**

@@ -280,7 +280,7 @@ public final class FxProcessor implements Disposable{
             pingPongBuffer.begin();
             for(int i = 0; i < count; i++){
                 FxFilter effect = effectChain.get(i);
-                effect.time += Time.delta();
+                effect.update();
                 effect.render(screenQuad,
                 pingPongBuffer.getSrcBuffer(),
                 pingPongBuffer.getDstBuffer());

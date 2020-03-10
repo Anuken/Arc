@@ -9,7 +9,7 @@ public abstract class GLInterceptor implements GL20{
     public int textureBindings;
     public int drawCalls;
     public int shaderSwitches;
-    public int toggles;
+    public int stateChanges;
     protected GLProfiler glProfiler;
 
     protected GLInterceptor(GLProfiler profiler){
@@ -38,7 +38,7 @@ public abstract class GLInterceptor implements GL20{
         textureBindings = 0;
         drawCalls = 0;
         shaderSwitches = 0;
-        toggles = 0;
+        stateChanges = 0;
         vertexCount.reset();
     }
 }

@@ -2,6 +2,7 @@ package arc.fx.filters;
 
 import arc.*;
 import arc.fx.*;
+import arc.util.*;
 
 public class FilmGrainFilter extends FxFilter{
     public float seed = 0f;
@@ -25,8 +26,8 @@ public class FilmGrainFilter extends FxFilter{
     }
 
     @Override
-    public void update(float delta){
-        this.time = (this.time + delta) % 1f;
+    public void update(){
+        this.time = (this.time + Time.delta()/60f) % 1f;
         seed = time;
     }
 }

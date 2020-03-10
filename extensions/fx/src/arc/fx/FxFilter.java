@@ -20,7 +20,7 @@ public abstract class FxFilter implements Disposable{
 
     protected Texture inputTexture = null;
     protected FrameBuffer outputBuffer = null;
-    protected boolean disabled = false;
+    protected boolean disabled = false, autobind = false;
 
     public float time = 0f;
 
@@ -102,6 +102,9 @@ public abstract class FxFilter implements Disposable{
         onBeforeRender();
 
         shader.bind();
+        if(autobind){
+            setParams();
+        }
         mesh.render(shader);
 
         if(manualBufferBind){
@@ -129,7 +132,7 @@ public abstract class FxFilter implements Disposable{
         this.disabled = enabled;
     }
 
-    public void update(float delta){
-        time += delta;
+    public void update(){
+        time = Time.time();
     }
 }

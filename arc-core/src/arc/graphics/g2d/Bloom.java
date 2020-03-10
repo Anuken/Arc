@@ -351,8 +351,8 @@ public class Bloom{
     }
 
     private static Shader createShader(String vertexName, String fragmentName){
-        String vertexShader = Core.files.internal("bloomshaders/" + vertexName + ".vertex.glsl").readString();
-        String fragmentShader = Core.files.internal("bloomshaders/" + fragmentName + ".fragment.glsl").readString();
+        String vertexShader = Core.files.internal("bloomshaders/" + vertexName + ".vert").readString();
+        String fragmentShader = Core.files.internal("bloomshaders/" + fragmentName + ".frag").readString();
         return new Shader(vertexShader, fragmentShader);
     }
 
