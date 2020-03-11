@@ -27,10 +27,7 @@ class NativesBuild{
             mac64.linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.9";
             mac64.libraries = macLibPath + " -lm -liconv -Wl,-framework,OpenAL -Wl,-framework,CoreAudio -Wl,-framework,OpenGL,-framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal" + libsMac;
 
-            new NativeCodeGenerator().generate("src/main/java", "build/classes/java/main", "jni");
-            new AntScriptGenerator().generate(new BuildConfig("sdl-arc"), mac64);
-
-            BuildExecutor.executeAnt("jni/build-macosx64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
+            buildScripts(mac64);
         }else{
             BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
             BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
@@ -41,28 +38,34 @@ class NativesBuild{
             checkSDLVersion(win64crossCompilePath + "sdl2-config", minSDLversion);
 
             lin64.cIncludes = new String[]{};
-            lin64.cFlags = lin64.cFlags + " " + execCmd("sdl2-config --cflags");
-            lin64.cppFlags = lin64.cFlags;
+            lin64.cppFlags =  lin64.cFlags = lin64.cFlags + " " + execCmd("sdl2-config --cflags");
             lin64.linkerFlags = "-shared -m64";
             lin64.libraries = execCmd("sdl2-config --static-libs").replace("-lSDL2", "-l:libSDL2.a") + libsLinux;
 
-            win32.cFlags = win32.cFlags + " " + execCmd(win32crossCompilePath + "sdl2-config --cflags");
-            win32.cppFlags = win32.cFlags;
+            win32.cppFlags = win32.cFlags = win32.cFlags + " " + execCmd(win32crossCompilePath + "sdl2-config --cflags");
             win32.libraries = execCmd(win32crossCompilePath + "sdl2-config --static-libs") + libsWin;
 
-            win64.cFlags = win64.cFlags + " " + execCmd(win64crossCompilePath + "sdl2-config --cflags");
-            win64.cppFlags = win64.cFlags;
+            win64.cppFlags = win64.cFlags = win64.cFlags + " " + execCmd(win64crossCompilePath + "sdl2-config --cflags");
             win64.libraries = execCmd(win64crossCompilePath + "sdl2-config --static-libs") + libsWin;
 
-            new NativeCodeGenerator().generate("src/main/java", "build/classes/java/main", "jni");
-            new AntScriptGenerator().generate(new BuildConfig("sdl-arc"), win32, win64, lin64);
+            buildScripts(win32, win64, lin64);
+        }
+    }
 
-            BuildExecutor.executeAnt("jni/build-windows32.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
-            BuildExecutor.executeAnt("jni/build-windows64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
-            BuildExecutor.executeAnt("jni/build-linux64.xml", "-Dhas-compiler=true -Drelease=true clean postcompile");
-            exec("strip", "libs/windows32/sdl-arc.dll");
-            exec("strip", "libs/windows64/sdl-arc64.dll");
-            exec("strip", "libs/linux64/sdl-arc.so");
+    private static void buildScripts(BuildTarget... targets) throws Exception{
+        new NativeCodeGenerator().generate("src/main/java", "build/classes/java/main", "jni");
+
+        new AntScriptGenerator().generate(new BuildConfig("sdl-arc"),targets);
+
+        for(BuildTarget target : targets){
+            BuildExecutor.executeAnt("jni/" + target.buildFileName, "-Dhas-compiler=true -Drelease=true clean postcompile");
+        }
+
+        for(BuildTarget target : targets){
+            if(target.os != TargetOs.MacOsX){
+                exec("strip", "libs/" + target.os.name().toLowerCase() + (target.is64Bit ? "64" : "32") + "/" +
+                    (target.os == TargetOs.Linux ? "lib" : "")+ "sdl-arc" + (target.is64Bit ? "64" : "") + (target.os == TargetOs.Linux ? ".so" : ".dll"));
+            }
         }
     }
 
