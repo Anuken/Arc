@@ -8,9 +8,9 @@ sourceSets.main.resources.srcDirs = ["libs/linux32", "libs/linux64",
                                       "libs/macosx32", "libs/macosx64","libs/windows32", "libs/windows64", "libs/openal"]
 
 dependencies {
-    testImplementation "com.badlogicgames.gdx:gdx-jnigen:1.9.10"
     compile libraries.sdl
 
+    testImplementation "com.badlogicgames.gdx:gdx-jnigen:1.9.10"
     testImplementation aproj(":arc-core")
 }
 
@@ -24,5 +24,7 @@ clean.dependsOn(deleteJniFolder)
 task sdlnatives(dependsOn: classes, type: JavaExec){
     main = 'NativesBuild'
     classpath = sourceSets.test.runtimeClasspath
-    standardInput = System.in
+    if(project.hasProperty("linux")) systemProperties.put("linux", "true")
+    if(project.hasProperty("windows")) systemProperties.put("windows", "true")
+    if(project.hasProperty("mac")) systemProperties.put("mac", "true")
 }

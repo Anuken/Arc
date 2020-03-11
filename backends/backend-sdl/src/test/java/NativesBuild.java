@@ -1,6 +1,7 @@
+import arc.struct.*;
+import arc.util.*;
 import com.badlogic.gdx.jnigen.*;
 import com.badlogic.gdx.jnigen.BuildTarget.*;
-import arc.util.*;
 
 import java.io.*;
 import java.util.*;
@@ -16,9 +17,11 @@ class NativesBuild{
     static final String libsMac = " /usr/local/lib/libGLEW.a";
     static final String libsWin = " -lglew32s -lglu32 -lopengl32 -lOpenAL32";
     static final String macLibPath = "/usr/local/lib/libSDL2.a";
-    static final boolean compileMac = OS.isMac;
+    static final boolean compileMac = OS.isMac || defined("mac"), compileLinux = OS.isLinux || defined("linux"), compileWindows = OS.isWindows || defined("windows");
 
     public static void main(String[] args) throws Exception{
+        Array<BuildTarget> targets = new Array<>();
+
         if(compileMac){
             BuildTarget mac64 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);
 
@@ -27,20 +30,28 @@ class NativesBuild{
             mac64.linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.9";
             mac64.libraries = macLibPath + " -lm -liconv -Wl,-framework,OpenAL -Wl,-framework,CoreAudio -Wl,-framework,OpenGL,-framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal" + libsMac;
 
-            buildScripts(mac64);
-        }else{
-            BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
-            BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
-            BuildTarget win64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
+            targets.add(mac64);
+        }
 
+        if(compileLinux){
             checkSDLVersion("sdl2-config", minSDLversion);
-            checkSDLVersion(win32crossCompilePath + "sdl2-config", minSDLversion);
-            checkSDLVersion(win64crossCompilePath + "sdl2-config", minSDLversion);
+
+            BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
 
             lin64.cIncludes = new String[]{};
             lin64.cppFlags =  lin64.cFlags = lin64.cFlags + " " + execCmd("sdl2-config --cflags");
             lin64.linkerFlags = "-shared -m64";
             lin64.libraries = execCmd("sdl2-config --static-libs").replace("-lSDL2", "-l:libSDL2.a") + libsLinux;
+
+            targets.add(lin64);
+        }
+
+        if(compileWindows){
+            checkSDLVersion(win32crossCompilePath + "sdl2-config", minSDLversion);
+            checkSDLVersion(win64crossCompilePath + "sdl2-config", minSDLversion);
+
+            BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
+            BuildTarget win64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
 
             win32.cppFlags = win32.cFlags = win32.cFlags + " " + execCmd(win32crossCompilePath + "sdl2-config --cflags");
             win32.libraries = execCmd(win32crossCompilePath + "sdl2-config --static-libs") + libsWin;
@@ -48,23 +59,25 @@ class NativesBuild{
             win64.cppFlags = win64.cFlags = win64.cFlags + " " + execCmd(win64crossCompilePath + "sdl2-config --cflags");
             win64.libraries = execCmd(win64crossCompilePath + "sdl2-config --static-libs") + libsWin;
 
-            buildScripts(win32, win64, lin64);
+            targets.add(win32, win64);
         }
+
+        buildScripts(targets.toArray(BuildTarget.class));
     }
 
     private static void buildScripts(BuildTarget... targets) throws Exception{
         new NativeCodeGenerator().generate("src/main/java", "build/classes/java/main", "jni");
 
-        new AntScriptGenerator().generate(new BuildConfig("sdl-arc"),targets);
+        new AntScriptGenerator().generate(new BuildConfig("sdl-arc"), targets);
 
         for(BuildTarget target : targets){
-            BuildExecutor.executeAnt("jni/" + target.buildFileName, "-Dhas-compiler=true -Drelease=true clean postcompile");
+            String buildFileName = "build-" + target.os.toString().toLowerCase() + (target.is64Bit ? "64" : "32") + ".xml";
+            BuildExecutor.executeAnt("jni/" + buildFileName, "-Dhas-compiler=true -Drelease=true clean postcompile");
         }
 
         for(BuildTarget target : targets){
             if(target.os != TargetOs.MacOsX){
-                exec("strip", "libs/" + target.os.name().toLowerCase() + (target.is64Bit ? "64" : "32") + "/" +
-                    (target.os == TargetOs.Linux ? "lib" : "")+ "sdl-arc" + (target.is64Bit ? "64" : "") + (target.os == TargetOs.Linux ? ".so" : ".dll"));
+                exec("strip", "libs/" + target.os.name().toLowerCase() + (target.is64Bit ? "64" : "32") + "/" + target.libName);
             }
         }
     }
@@ -81,6 +94,10 @@ class NativesBuild{
         if(compareVersions(sdl, version) < 0){
             throw new FileNotFoundException("\n!!! SDL version must be >= " + version + ". Current version: " + sdl);
         }
+    }
+
+    private static boolean defined(String prop){
+        return System.getProperty(prop) != null;
     }
 
     public static String exec(String... cmd) throws IOException{

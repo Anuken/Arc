@@ -755,10 +755,10 @@ public class Fi{
     }
 
     /** @throws ArcRuntimeException if this file handle is a {@link FileType#classpath} or {@link FileType#internal} file. */
-    public void mkdirs(){
+    public boolean mkdirs(){
         if(type == FileType.classpath) throw new ArcRuntimeException("Cannot mkdirs with a classpath file: " + file);
         if(type == FileType.internal) throw new ArcRuntimeException("Cannot mkdirs with an internal file: " + file);
-        file().mkdirs();
+        return file().mkdirs();
     }
 
     /**

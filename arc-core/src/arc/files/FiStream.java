@@ -53,7 +53,7 @@ public abstract class FiStream extends Fi{
         throw new UnsupportedOperationException();
     }
 
-    public void mkdirs(){
+    public boolean mkdirs(){
         throw new UnsupportedOperationException();
     }
 
