@@ -25,6 +25,7 @@ task sdlnatives(dependsOn: classes, type: JavaExec){
     main = 'NativesBuild'
     classpath = sourceSets.test.runtimeClasspath
     if(project.hasProperty("linux")) systemProperties.put("linux", "true")
+    if(project.hasProperty("dynamic")) systemProperties.put("dynamic", "true")
     if(project.hasProperty("windows")) systemProperties.put("windows", "true")
     if(project.hasProperty("mac")) systemProperties.put("mac", "true")
 }
