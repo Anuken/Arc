@@ -87,16 +87,16 @@ public final class Streams{
     }
 
     /**
-     * Calls {@link #copySring(InputStream, int, String)} using the input's {@link InputStream#available() available} size
+     * Calls {@link #copyString(InputStream, int, String)} using the input's {@link InputStream#available() available} size
      * and the platform's default charset.
      */
-    public static String copySring(InputStream input) throws IOException{
-        return copySring(input, input.available(), null);
+    public static String copyString(InputStream input) throws IOException{
+        return copyString(input, input.available(), null);
     }
 
-    /** Calls {@link #copySring(InputStream, int, String)} using the platform's default charset. */
-    public static String copySring(InputStream input, int estimatedSize) throws IOException{
-        return copySring(input, estimatedSize, null);
+    /** Calls {@link #copyString(InputStream, int, String)} using the platform's default charset. */
+    public static String copyString(InputStream input, int estimatedSize) throws IOException{
+        return copyString(input, estimatedSize, null);
     }
 
     /**
@@ -104,7 +104,7 @@ public final class Streams{
      * @param estimatedSize Used to allocate the output buffer to possibly avoid an array copy.
      * @param charset May be null to use the platform's default charset.
      */
-    public static String copySring(InputStream input, int estimatedSize, String charset) throws IOException{
+    public static String copyString(InputStream input, int estimatedSize, String charset) throws IOException{
         InputStreamReader reader = charset == null ? new InputStreamReader(input) : new InputStreamReader(input, charset);
         StringWriter writer = new StringWriter(Math.max(0, estimatedSize));
         char[] buffer = new char[DEFAULT_BUFFER_SIZE];

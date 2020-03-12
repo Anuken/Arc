@@ -151,7 +151,7 @@ public class NetJavaImpl{
             }
 
             try{
-                return Streams.copySring(input, connection.getContentLength());
+                return Streams.copyString(input, connection.getContentLength());
             }catch(IOException e){
                 return "";
             }finally{
