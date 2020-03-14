@@ -8,6 +8,7 @@ import arc.graphics.Pixmap.*;
 import arc.graphics.Texture.*;
 import arc.graphics.g2d.TextureAtlas.TextureAtlasData.*;
 import arc.scene.style.*;
+import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
@@ -37,6 +38,7 @@ public class TextureAtlas implements Disposable{
     private final ObjectMap<String, Drawable> drawables = new ObjectMap<>();
     private final ObjectMap<String, AtlasRegion> regionmap = new ObjectMap<>();
     private final ObjectMap<Texture, Pixmap> pixmaps = new ObjectMap<>();
+    protected float drawableScale = 1f;
     protected AtlasRegion error, white;
 
     /** Returns a new texture atlas with only a blank texture region.*/
@@ -83,6 +85,10 @@ public class TextureAtlas implements Disposable{
     /** @param data May be null. */
     public TextureAtlas(TextureAtlasData data){
         if(data != null) load(data);
+    }
+
+    public void setDrawableScale(float scale){
+        this.drawableScale = scale;
     }
 
     static String readValue(BufferedReader reader) throws IOException{
@@ -262,7 +268,6 @@ public class TextureAtlas implements Disposable{
 
     /** Always creates a new drawable by name.
      * If nothing is found, returns an 'error' texture region drawable. */
-    @SuppressWarnings("unchecked")
     public Drawable drawable(String name){
         if(drawables.containsKey(name)){
             return drawables.get(name);
@@ -278,9 +283,9 @@ public class TextureAtlas implements Disposable{
                 NinePatch patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
                 int[] pads = region.pads;
                 if(pads != null) patch.setPadding(pads[0], pads[1], pads[2], pads[3]);
-                out = new ScaledNinePatchDrawable(patch);
+                out = new ScaledNinePatchDrawable(patch, Scl.scl(drawableScale));
             }else{
-                out = new TextureRegionDrawable(region);
+                out = new TextureRegionDrawable(region, drawableScale);
             }
         }
 

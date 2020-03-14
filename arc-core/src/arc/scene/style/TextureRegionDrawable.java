@@ -13,12 +13,18 @@ import arc.util.Tmp;
 public class TextureRegionDrawable extends BaseDrawable implements TransformDrawable{
     protected TextureRegion region;
     protected Color tint = new Color(1f, 1f, 1f);
+    protected float scale = 1f;
 
     /** Creates an uninitialized TextureRegionDrawable. The texture region must be set before use. */
     public TextureRegionDrawable(){
     }
 
     public TextureRegionDrawable(TextureRegion region){
+        setRegion(region);
+    }
+
+    public TextureRegionDrawable(TextureRegion region, float scale){
+        this.scale = scale;
         setRegion(region);
     }
 
@@ -50,8 +56,8 @@ public class TextureRegionDrawable extends BaseDrawable implements TransformDraw
 
     public void setRegion(TextureRegion region){
         this.region = region;
-        setMinWidth(Scl.scl(region.getWidth()));
-        setMinHeight(Scl.scl(region.getHeight()));
+        setMinWidth(Scl.scl(scale * region.getWidth()));
+        setMinHeight(Scl.scl(scale * region.getHeight()));
     }
 
     /** Creates a new drawable that renders the same as this drawable tinted the specified color. */

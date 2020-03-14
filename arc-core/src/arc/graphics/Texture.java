@@ -207,6 +207,10 @@ public class Texture extends GLTexture{
         load(data);
     }
 
+    public void draw(Pixmap pixmap){
+        draw(pixmap, 0, 0);
+    }
+
     /**
      * Draws the given {@link Pixmap} to the texture at position x, y. No clipping is performed so you have to make sure that you
      * draw only inside the texture region. Note that this will only draw to mipmap level 0!

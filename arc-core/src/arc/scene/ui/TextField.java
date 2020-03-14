@@ -562,6 +562,14 @@ public class TextField extends Element implements Disableable{
         this.listener = listener;
     }
 
+    public void typed(char ch, Runnable run){
+        setTextFieldListener((textField, c) -> {
+            if(c == ch){
+                run.run();
+            }
+        });
+    }
+
     public void typed(Cons<Character> cons){
         setTextFieldListener((textField, c) -> cons.get(c));
     }
