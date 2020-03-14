@@ -39,9 +39,16 @@ class NativesBuild{
             BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
 
             lin64.cIncludes = new String[]{};
-            lin64.cppFlags =  lin64.cFlags = lin64.cFlags + " " + execCmd("sdl2-config --cflags");
-            lin64.linkerFlags = "-shared -m64";
-            lin64.libraries = execCmd("sdl2-config --static-libs").replace("-lSDL2", "-l:libSDL2.a") + libsLinux;
+
+            if(defined("dynamic")){
+              lin64.cFlags = lin64.cFlags + " " + execCmd("pkg-config --cflags glew glu gl sdl2 openal");
+              lin64.cppFlags = lin64.cFlags;
+              lin64.linkerFlags = "-shared -m64" + " " + execCmd("pkg-config --libs glew glu gl sdl2 openal");
+            }else{
+              lin64.cppFlags =  lin64.cFlags = lin64.cFlags + " " + execCmd("sdl2-config --cflags");
+              lin64.linkerFlags = "-shared -m64";
+              lin64.libraries = execCmd("sdl2-config --static-libs").replace("-lSDL2", "-l:libSDL2.a") + libsLinux;
+            }
 
             targets.add(lin64);
         }
