@@ -143,19 +143,7 @@ public final class Mathf{
     }
 
     public static int pow(int a, int b){
-        int out = 1;
-        for(int i = 0; i < b; i++){
-            out *= a;
-        }
-        return out;
-    }
-
-    public static long powl(long a, long b){
-        long out = 1;
-        for(long i = 0; i < b; i++){
-            out *= a;
-        }
-        return out;
+        return (int)Math.ceil(Math.pow(a, b));
     }
 
     public static float range(float range){
