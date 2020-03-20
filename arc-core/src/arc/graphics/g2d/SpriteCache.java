@@ -177,7 +177,7 @@ public class SpriteCache implements Disposable{
      * @see Color#toFloatBits()
      */
     public void setPackedColor(float packedColor){
-        Color.abgr8888ToColor(color, packedColor);
+        color.abgr8888(packedColor);
         colorPacked = packedColor;
     }
 

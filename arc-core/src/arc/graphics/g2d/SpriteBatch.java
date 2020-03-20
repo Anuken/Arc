@@ -140,7 +140,7 @@ public class SpriteBatch implements Disposable{
     }
 
     void setPackedColor(float packedColor){
-        Color.abgr8888ToColor(color, packedColor);
+        this.color.abgr8888(packedColor);
         this.colorPacked = packedColor;
     }
 
@@ -163,7 +163,7 @@ public class SpriteBatch implements Disposable{
     }
 
     void setPackedMixColor(float packedColor){
-        Color.abgr8888ToColor(mixColor, packedColor);
+        this.mixColor.abgr8888(packedColor);
         this.mixColorPacked = packedColor;
     }
 

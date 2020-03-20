@@ -624,7 +624,7 @@ public class FreeType {
 				Buffers.copy(src, pixmap.getPixels(), pixmap.getPixels().capacity());
 			} else {
 				pixmap = new Pixmap(width, rows, Format.RGBA8888);
-				int rgba = Color.rgba8888(color);
+				int rgba = color.rgba8888();
 				byte[] srcRow = new byte[rowBytes];
 				int[] dstRow = new int[width];
 				IntBuffer dst = pixmap.getPixels().asIntBuffer();

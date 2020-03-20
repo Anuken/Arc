@@ -421,7 +421,7 @@ public class GlyphLayout implements Poolable{
                         }
                         Color color = colorPool.obtain();
                         colorStack.add(color);
-                        Color.rgba8888ToColor(color, colorInt);
+                        color.rgba8888(colorInt);
                         return i - start;
                     }
                     if(ch >= '0' && ch <= '9')

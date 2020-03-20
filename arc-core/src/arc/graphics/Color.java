@@ -63,9 +63,9 @@ public class Color{
     public Color(){
     }
 
-    /** @see #rgba8888ToColor(Color, int) */
+    /** @see #rgba8888(int) */
     public Color(int rgba8888){
-        rgba8888ToColor(this, rgba8888);
+        rgba8888(rgba8888);
     }
 
     /**
@@ -198,99 +198,99 @@ public class Color{
         return ((int)(a * 255) << 24) | ((int)(r * 255) << 16) | ((int)(g * 255) << 8) | (int)(b * 255);
     }
 
-    public static int rgb565(Color color){
-        return ((int)(color.r * 31) << 11) | ((int)(color.g * 63) << 5) | (int)(color.b * 31);
+    public int rgb565(){
+        return ((int)(r * 31) << 11) | ((int)(g * 63) << 5) | (int)(b * 31);
     }
 
-    public static int rgba4444(Color color){
-        return ((int)(color.r * 15) << 12) | ((int)(color.g * 15) << 8) | ((int)(color.b * 15) << 4) | (int)(color.a * 15);
+    public int rgba4444(){
+        return ((int)(r * 15) << 12) | ((int)(g * 15) << 8) | ((int)(b * 15) << 4) | (int)(a * 15);
     }
 
-    public static int rgb888(Color color){
-        return ((int)(color.r * 255) << 16) | ((int)(color.g * 255) << 8) | (int)(color.b * 255);
+    public int rgb888(){
+        return ((int)(r * 255) << 16) | ((int)(g * 255) << 8) | (int)(b * 255);
     }
 
-    public static int rgba8888(Color color){
-        return ((int)(color.r * 255) << 24) | ((int)(color.g * 255) << 16) | ((int)(color.b * 255) << 8) | (int)(color.a * 255);
+    public int rgba8888(){
+        return ((int)(r * 255) << 24) | ((int)(g * 255) << 16) | ((int)(b * 255) << 8) | (int)(a * 255);
     }
 
-    public static int argb8888(Color color){
-        return ((int)(color.a * 255) << 24) | ((int)(color.r * 255) << 16) | ((int)(color.g * 255) << 8) | (int)(color.b * 255);
+    public int argb8888(){
+        return ((int)(a * 255) << 24) | ((int)(r * 255) << 16) | ((int)(g * 255) << 8) | (int)(b * 255);
     }
 
     /**
      * Sets the Color components using the specified integer value in the format RGB565. This is inverse to the rgb565(r, g, b)
      * method.
-     * @param color The Color to be modified.
      * @param value An integer color value in RGB565 format.
      */
-    public static void rgb565ToColor(Color color, int value){
-        color.r = ((value & 0x0000F800) >>> 11) / 31f;
-        color.g = ((value & 0x000007E0) >>> 5) / 63f;
-        color.b = ((value & 0x0000001F)) / 31f;
+    public Color rgb565(int value){
+        r = ((value & 0x0000F800) >>> 11) / 31f;
+        g = ((value & 0x000007E0) >>> 5) / 63f;
+        b = ((value & 0x0000001F)) / 31f;
+        return this;
     }
 
     /**
      * Sets the Color components using the specified integer value in the format RGBA4444. This is inverse to the rgba4444(r, g,
      * b, a) method.
-     * @param color The Color to be modified.
      * @param value An integer color value in RGBA4444 format.
      */
-    public static void rgba4444ToColor(Color color, int value){
-        color.r = ((value & 0x0000f000) >>> 12) / 15f;
-        color.g = ((value & 0x00000f00) >>> 8) / 15f;
-        color.b = ((value & 0x000000f0) >>> 4) / 15f;
-        color.a = ((value & 0x0000000f)) / 15f;
+    public Color rgba4444(int value){
+        r = ((value & 0x0000f000) >>> 12) / 15f;
+        g = ((value & 0x00000f00) >>> 8) / 15f;
+        b = ((value & 0x000000f0) >>> 4) / 15f;
+        a = ((value & 0x0000000f)) / 15f;
+        return this;
     }
 
     /**
      * Sets the Color components using the specified integer value in the format RGB888. This is inverse to the rgb888(r, g, b)
      * method.
-     * @param color The Color to be modified.
      * @param value An integer color value in RGB888 format.
      */
-    public static void rgb888ToColor(Color color, int value){
-        color.r = ((value & 0x00ff0000) >>> 16) / 255f;
-        color.g = ((value & 0x0000ff00) >>> 8) / 255f;
-        color.b = ((value & 0x000000ff)) / 255f;
+    public Color rgb888(int value){
+        r = ((value & 0x00ff0000) >>> 16) / 255f;
+        g = ((value & 0x0000ff00) >>> 8) / 255f;
+        b = ((value & 0x000000ff)) / 255f;
+        return this;
     }
 
     /**
      * Sets the Color components using the specified integer value in the format RGBA8888. This is inverse to the rgba8888(r, g,
      * b, a) method.
-     * @param color The Color to be modified.
      * @param value An integer color value in RGBA8888 format.
      */
-    public static void rgba8888ToColor(Color color, int value){
-        color.r = ((value & 0xff000000) >>> 24) / 255f;
-        color.g = ((value & 0x00ff0000) >>> 16) / 255f;
-        color.b = ((value & 0x0000ff00) >>> 8) / 255f;
-        color.a = ((value & 0x000000ff)) / 255f;
+    public Color rgba8888(int value){
+        r = ((value & 0xff000000) >>> 24) / 255f;
+        g = ((value & 0x00ff0000) >>> 16) / 255f;
+        b = ((value & 0x0000ff00) >>> 8) / 255f;
+        a = ((value & 0x000000ff)) / 255f;
+        return this;
     }
 
     /**
      * Sets the Color components using the specified integer value in the format ARGB8888. This is the inverse to the argb8888(a,
      * r, g, b) method
-     * @param color The Color to be modified.
      * @param value An integer color value in ARGB8888 format.
      */
-    public static void argb8888ToColor(Color color, int value){
-        color.a = ((value & 0xff000000) >>> 24) / 255f;
-        color.r = ((value & 0x00ff0000) >>> 16) / 255f;
-        color.g = ((value & 0x0000ff00) >>> 8) / 255f;
-        color.b = ((value & 0x000000ff)) / 255f;
+    public Color argb8888(int value){
+        a = ((value & 0xff000000) >>> 24) / 255f;
+        r = ((value & 0x00ff0000) >>> 16) / 255f;
+        g = ((value & 0x0000ff00) >>> 8) / 255f;
+        b = ((value & 0x000000ff)) / 255f;
+        return this;
     }
 
     /**
      * Sets the Color components using the specified float value in the format ABGB8888.
-     * @param color The Color to be modified.
      */
-    public static void abgr8888ToColor(Color color, float value){
+    public Color abgr8888(float value){
         int c = floatToIntColor(value);
-        color.a = ((c & 0xff000000) >>> 24) / 255f;
-        color.b = ((c & 0x00ff0000) >>> 16) / 255f;
-        color.g = ((c & 0x0000ff00) >>> 8) / 255f;
-        color.r = ((c & 0x000000ff)) / 255f;
+        a = ((c & 0xff000000) >>> 24) / 255f;
+        b = ((c & 0x00ff0000) >>> 16) / 255f;
+        g = ((c & 0x0000ff00) >>> 8) / 255f;
+        r = ((c & 0x000000ff)) / 255f;
+        return this;
     }
 
     /** Creates a grayscale color. */
@@ -338,9 +338,9 @@ public class Color{
         return Math.abs(hue() - other.hue()) / 360f + Math.abs(value() - other.value()) + Math.abs(saturation() - other.saturation());
     }
 
-    /** Shorthand for {@link #rgba8888(Color)}.*/
+    /** Shorthand for {@link #rgba8888()}.*/
     public int rgba(){
-        return Color.rgba8888(this);
+        return rgba8888();
     }
 
     /**
@@ -464,11 +464,9 @@ public class Color{
     /**
      * Sets this color's component values through an integer representation.
      * @return this Color for chaining
-     * @see #rgba8888ToColor(Color, int)
      */
     public Color set(int rgba){
-        rgba8888ToColor(this, rgba);
-        return this;
+        return rgba8888(rgba);
     }
 
     /** Returns the sum of the RGB values of this color.*/
