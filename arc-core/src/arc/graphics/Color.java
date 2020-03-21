@@ -833,7 +833,7 @@ public class Color{
      */
     public static Color HSVtoRGB(float h, float s, float v, Color targetColor) {
         if(h == 360) h = 359;
-        int r, g, b;
+        float r, g, b;
         int i;
         float f, p, q, t;
         h = (float) Math.max(0.0, Math.min(360.0, h));
@@ -849,37 +849,37 @@ public class Color{
         t = v * (1 - s * (1 - f));
         switch(i) {
             case 0:
-                r = Mathf.round(255 * v);
-                g = Mathf.round(255 * t);
-                b = Mathf.round(255 * p);
+                r = v;
+                g = t;
+                b = p;
                 break;
             case 1:
-                r = Mathf.round(255 * q);
-                g = Mathf.round(255 * v);
-                b = Mathf.round(255 * p);
+                r = q;
+                g = v;
+                b = p;
                 break;
             case 2:
-                r = Mathf.round(255 * p);
-                g = Mathf.round(255 * v);
-                b = Mathf.round(255 * t);
+                r = p;
+                g = v;
+                b = t;
                 break;
             case 3:
-                r = Mathf.round(255 * p);
-                g = Mathf.round(255 * q);
-                b = Mathf.round(255 * v);
+                r = p;
+                g = q;
+                b = v;
                 break;
             case 4:
-                r = Mathf.round(255 * t);
-                g = Mathf.round(255 * p);
-                b = Mathf.round(255 * v);
+                r = t;
+                g = p;
+                b = v;
                 break;
             default:
-                r = Mathf.round(255 * v);
-                g = Mathf.round(255 * p);
-                b = Mathf.round(255 * q);
+                r = v;
+                g = p;
+                b = q;
         }
 
-        targetColor.set(r / 255.0f, g / 255.0f, b / 255.0f, targetColor.a);
+        targetColor.set(r, g, b, targetColor.a);
         return targetColor;
     }
 
