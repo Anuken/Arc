@@ -1,3 +1,32 @@
+buildscript{
+    dependencies{
+        classpath "com.android.tools.build:gradle:${versions.androidPlugin}"
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android{
+    compileSdkVersion versions.androidSdk
+    buildToolsVersion versions.androidBuildTools
+
+    defaultConfig{
+        minSdkVersion 14
+    }
+
+    sourceSets{
+        main{
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ["src"]
+        }
+    }
+
+    compileOptions{
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+}
+
 dependencies{
-   compileOnly fileTree(dir: 'libs', include: ['*.jar'])
+    compileOnly aproj(":arc-core")
 }

@@ -146,11 +146,11 @@ public class GLSurfaceView20 extends GLSurfaceView{
     }
 
     static class ContextFactory implements GLSurfaceView.EGLContextFactory{
-        private static int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
 
         public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig){
             Log.w(TAG, "creating OpenGL ES " + GLSurfaceView20.targetGLESVersion + ".0 context");
             checkEglError("Before eglCreateContext " + targetGLESVersion, egl);
+            int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
             int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, GLSurfaceView20.targetGLESVersion, EGL10.EGL_NONE};
             EGLContext context = egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attrib_list);
             boolean success = checkEglError("After eglCreateContext " + targetGLESVersion, egl);

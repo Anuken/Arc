@@ -46,7 +46,7 @@ public class AndroidZipFi extends AndroidFi{
 
     @Override
     public InputStream read(){
-        InputStream input = null;
+        InputStream input;
 
         try{
             input = expansionFile.getInputStream(getPath());

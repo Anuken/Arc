@@ -215,10 +215,6 @@ public class AndroidFi extends Fi{
         return super.length();
     }
 
-    public long lastModified(){
-        return super.lastModified();
-    }
-
     public File file(){
         if(type == FileType.local) return new File(Core.files.getLocalStoragePath(), file.getPath());
         return super.file();

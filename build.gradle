@@ -7,7 +7,7 @@ versions.robovm = "2.3.7"
 versions.jlayer = "1.0.1-gdx"
 versions.jorbis = "0.0.17"
 versions.junit = "4.11"
-versions.androidPlugin = "3.4.0"
+versions.androidPlugin = "3.4.1"
 versions.androidSdk = 28
 versions.androidBuildTools = "28.0.3"
 versions.teavm = '0.6.1'
@@ -67,7 +67,7 @@ allprojects{
     }
 }
 
-subprojects{
+configure(subprojects - aproj(":backends:backend-android")){
     apply plugin: "java"
 
     compileJava{

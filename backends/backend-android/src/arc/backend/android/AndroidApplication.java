@@ -283,11 +283,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
     }
 
     @Override
-    protected void onDestroy(){
-        super.onDestroy();
-    }
-
-    @Override
     public boolean openFolder(String file){
         Log.info(file);
         Uri selectedUri = Uri.parse(file);

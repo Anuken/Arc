@@ -1,4 +1,4 @@
-subprojects{
+configure(subprojects - aproj(":backends:backend-android")) {
     apply plugin: "java"
     
     sourceCompatibility = 1.8
