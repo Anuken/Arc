@@ -283,6 +283,11 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
     }
 
     @Override
+    protected void onDestroy(){
+        super.onDestroy();
+    }
+
+    @Override
     public boolean openFolder(String file){
         Log.info(file);
         Uri selectedUri = Uri.parse(file);
@@ -425,7 +430,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
      * system.
      * @author noblemaster
      */
-    public static interface AndroidEventListener{
+    public interface AndroidEventListener{
 
         /** Will be called if the application's onActivityResult(...) method is called. */
         void onActivityResult(int resultCode, Intent data);

@@ -18,9 +18,9 @@ public class AndroidMouseHandler{
 
         final int action = event.getAction() & MotionEvent.ACTION_MASK;
 
-        int x, y;
-        int scrollAmountX;
-        int scrollAmountY;
+        int x = 0, y = 0;
+        int scrollAmountX = 0;
+        int scrollAmountY = 0;
 
         long timeStamp = System.nanoTime();
         synchronized(input){

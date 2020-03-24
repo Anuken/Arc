@@ -91,7 +91,8 @@ public class ZipResourceFile{
         return ((i & 0x00FF) << 8 | (i & 0xFF00) >>> 8);
     }
 
-    static private int read4LE(RandomAccessFile f) throws IOException{
+    static private int read4LE(RandomAccessFile f) throws
+    IOException{
         return swapEndian(f.readInt());
     }
 
@@ -114,7 +115,7 @@ public class ZipResourceFile{
 
     public ZipEntryRO[] getAllEntries(){
         Collection<ZipEntryRO> values = mHashMap.values();
-        return values.toArray(new ZipEntryRO[0]);
+        return values.toArray(new ZipEntryRO[values.size()]);
     }
 
     /**

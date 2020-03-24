@@ -22,7 +22,7 @@ public class AndroidMultiTouchHandler implements AndroidInput.AndroidTouchHandle
 
         int x, y;
         int realPointerIndex;
-        KeyCode button;
+        KeyCode button = KeyCode.MOUSE_LEFT;
 
         long timeStamp = System.nanoTime();
         synchronized(input){
@@ -108,7 +108,7 @@ public class AndroidMultiTouchHandler implements AndroidInput.AndroidTouchHandle
     }
 
     private void logAction(int action, int pointer){
-        String actionStr;
+        String actionStr = "";
         if(action == MotionEvent.ACTION_DOWN)
             actionStr = "DOWN";
         else if(action == MotionEvent.ACTION_POINTER_DOWN)
