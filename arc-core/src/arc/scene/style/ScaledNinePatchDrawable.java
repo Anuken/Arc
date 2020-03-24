@@ -10,9 +10,10 @@ public class ScaledNinePatchDrawable extends NinePatchDrawable{
         this(patch, 1f);
     }
 
-    public ScaledNinePatchDrawable(NinePatch patch, float scale){
-        super(patch);
-        this.scale = Scl.scl(scale);
+    public ScaledNinePatchDrawable(NinePatch patch, float multiplier){
+        this.scale = Scl.scl(multiplier);
+
+        setPatch(patch);
     }
 
     public ScaledNinePatchDrawable(NinePatchDrawable drawable){
