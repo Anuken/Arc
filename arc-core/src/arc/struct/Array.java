@@ -631,6 +631,10 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
         return size == 0;
     }
 
+    public boolean any(){
+        return size > 0;
+    }
+
     public void clear(){
         T[] items = this.items;
         for(int i = 0, n = size; i < n; i++)

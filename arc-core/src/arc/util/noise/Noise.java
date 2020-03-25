@@ -56,6 +56,10 @@ public final class Noise{
         return (float)((rawNoise((x) / scale, y / scale, z / scale) * mag));
     }
 
+    public static float nnoise(float x, float y, float scale, float mag){
+        return (float)((snoise(x, y, scale, mag) + mag) / 2.0);
+    }
+
     public static float noise(float x, float y, float scale, float mag){
         return (float)(snoise(x, y, scale, mag) / 2.0);
     }

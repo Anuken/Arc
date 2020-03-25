@@ -344,16 +344,9 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     }
 
     /** Flushes the batch, begins this buffer and clears the screen.*/
-    public void beginDraw(Color clearColor){
-        Draw.flush();
+    public void begin(Color clearColor){
         begin();
         Core.graphics.clear(clearColor);
-    }
-
-    /** Flushes the batch and ends this buffer. */
-    public void endDraw(){
-        Draw.flush();
-        end();
     }
 
     /** Binds the frame buffer and sets the viewport accordingly, so everything gets drawn to it. */
