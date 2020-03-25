@@ -362,8 +362,7 @@ public class TextField extends Element implements Disableable{
 
     /** Draws selection rectangle **/
     protected void drawSelection(Drawable selection, BitmapFont font, float x, float y){
-        selection.draw(x + textOffset + selectionX + fontOffset, y - textHeight - font.getDescent(), selectionWidth,
-        textHeight);
+        selection.draw(x + textOffset + selectionX + fontOffset, y - textHeight - font.getDescent(), selectionWidth, textHeight);
     }
 
     protected void drawText(BitmapFont font, float x, float y){

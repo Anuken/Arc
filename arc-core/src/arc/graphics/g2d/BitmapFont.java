@@ -241,8 +241,7 @@ public class BitmapFont implements Disposable{
      * Draws text at the specified position.
      * @see BitmapFontCache#addText(CharSequence, float, float, int, int, float, int, boolean, String)
      */
-    public GlyphLayout draw(CharSequence str, float x, float y, int start, int end, float targetWidth, int halign,
-                            boolean wrap){
+    public GlyphLayout draw(CharSequence str, float x, float y, int start, int end, float targetWidth, int halign, boolean wrap){
         cache.clear();
         GlyphLayout layout = cache.addText(str, x, y, start, end, targetWidth, halign, wrap);
         cache.draw();
