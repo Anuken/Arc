@@ -351,6 +351,12 @@ public class Table extends WidgetGroup{
         return add(stack);
     }
 
+    public Cell<Image> addImage(Prov<TextureRegion> reg){
+        return add(new Image(reg.get())).update(i -> {
+            ((TextureRegionDrawable)i.getDrawable()).setRegion(reg.get());
+        });
+    }
+
     public Cell<Image> addImage(){
         return add(new Image());
     }

@@ -8,29 +8,29 @@ package arc.math;
  */
 public final class WindowedMean{
     float[] values;
-    int added_values = 0;
-    int last_value;
+    int addedValues = 0;
+    int lastValue;
     float mean = 0;
     boolean dirty = true;
 
     /**
-     * constructor, window_size specifies the number of samples we will continuously get the mean and variance from. the class
-     * will only return meaning full values if at least window_size values have been added.
-     * @param window_size size of the sample window
+     * constructor, windowSize specifies the number of samples we will continuously get the mean and variance from. the class
+     * will only return meaning full values if at least windowSize values have been added.
+     * @param windowSize size of the sample window
      */
-    public WindowedMean(int window_size){
-        values = new float[window_size];
+    public WindowedMean(int windowSize){
+        values = new float[windowSize];
     }
 
     /** @return whether the value returned will be meaningful */
     public boolean hasEnoughData(){
-        return added_values >= values.length;
+        return addedValues >= values.length;
     }
 
     /** clears this WindowedMean. The class will only return meaningful values after enough data has been added again. */
     public void clear(){
-        added_values = 0;
-        last_value = 0;
+        addedValues = 0;
+        lastValue = 0;
         for(int i = 0; i < values.length; i++)
             values[i] = 0;
         dirty = true;
@@ -41,9 +41,9 @@ public final class WindowedMean{
      * @param value The value to add
      */
     public void addValue(float value){
-        if(added_values < values.length) added_values++;
-        values[last_value++] = value;
-        if(last_value > values.length - 1) last_value = 0;
+        if(addedValues < values.length) addedValues++;
+        values[lastValue++] = value;
+        if(lastValue > values.length - 1) lastValue = 0;
         dirty = true;
     }
 
@@ -68,12 +68,12 @@ public final class WindowedMean{
 
     /** @return the oldest value in the window */
     public float getOldest(){
-        return added_values < values.length ? values[0] : values[last_value];
+        return addedValues < values.length ? values[0] : values[lastValue];
     }
 
     /** @return the value last added */
     public float getLatest(){
-        return values[last_value - 1 == -1 ? values.length - 1 : last_value - 1];
+        return values[lastValue - 1 == -1 ? values.length - 1 : lastValue - 1];
     }
 
     /** @return The standard deviation */
@@ -104,7 +104,7 @@ public final class WindowedMean{
     }
 
     public int getValueCount(){
-        return added_values;
+        return addedValues;
     }
 
     public int getWindowSize(){
@@ -116,13 +116,13 @@ public final class WindowedMean{
      * latest. The length of the array is smaller than the window size if not enough data has been added.
      */
     public float[] getWindowValues(){
-        float[] windowValues = new float[added_values];
+        float[] windowValues = new float[addedValues];
         if(hasEnoughData()){
             for(int i = 0; i < windowValues.length; i++){
-                windowValues[i] = values[(i + last_value) % values.length];
+                windowValues[i] = values[(i + lastValue) % values.length];
             }
         }else{
-            System.arraycopy(values, 0, windowValues, 0, added_values);
+            System.arraycopy(values, 0, windowValues, 0, addedValues);
         }
         return windowValues;
     }
