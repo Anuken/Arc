@@ -5,7 +5,7 @@ import arc.util.*;
 import java.io.*;
 import java.nio.*;
 
-final public class SDL {
+final public class SDL{
     /*JNI
 
     #ifdef __APPLE__
@@ -20,7 +20,7 @@ final public class SDL {
 
     */
 
-    static {
+    static{
         if(OS.isWindows){
             new SharedLibraryLoader(){
                 @Override
