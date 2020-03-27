@@ -112,14 +112,16 @@ public class SDLGL{
 
     @Nullable
     private static native String init(); /*
-        nativeClassInit( env );
+        nativeClassInit(env);
+
+        glewExperimental = GL_TRUE;
 
         GLenum glewError = glewInit();
         if(glewError != GLEW_OK){
             return env->NewStringUTF((const char*)glewGetErrorString(glewError));
         }
 
-        if(glewIsSupported("GL_VERSION_3_0") || glewIsSupported("GL_EXT_framebuffer_object") || glewIsSupported("GL_ARB_framebuffer_object")){
+        if((glewIsSupported("GL_VERSION_3_0") || glewIsSupported("GL_EXT_framebuffer_object") || glewIsSupported("GL_ARB_framebuffer_object")) && glGenFramebuffers != 0){
             //no error message
             return NULL;
         }else{
