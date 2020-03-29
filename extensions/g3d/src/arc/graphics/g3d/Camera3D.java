@@ -20,13 +20,13 @@ public class Camera3D{
     public final Vec3 up = new Vec3(0, 1, 0);
 
     /** the combined projection and view matrix **/
-    private final Mat3D combined = new Mat3D();
+    public final Mat3D combined = new Mat3D();
     /** the projection matrix **/
-    private final Mat3D projection = new Mat3D();
+    public final Mat3D projection = new Mat3D();
     /** the view matrix **/
-    private final Mat3D view = new Mat3D();
+    public final Mat3D view = new Mat3D();
     /** the inverse combined projection and view matrix **/
-    private final Mat3D invProjectionView = new Mat3D();
+    public final Mat3D invProjectionView = new Mat3D();
 
     private final Vec3 tmpVec = new Vec3();
     private final Ray ray = new Ray(new Vec3(), new Vec3());

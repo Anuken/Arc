@@ -82,6 +82,10 @@ public class OS{
         return Core.files.absolute(getAppDataDirectoryString(appname));
     }
 
+    public static boolean hasProp(String name){
+        return System.getProperty(name) != null;
+    }
+
     public static String prop(String name){
         return System.getProperty(name);
     }
