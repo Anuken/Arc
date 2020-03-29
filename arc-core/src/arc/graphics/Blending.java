@@ -12,4 +12,8 @@ public enum Blending{
         this.src = src;
         this.dst = dst;
     }
+
+    public void apply(){
+        Gl.blendFunc(src, dst);
+    }
 }

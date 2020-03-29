@@ -34,15 +34,24 @@ public class Cubemap extends GLTexture{
         load(data);
     }
 
+    public Cubemap(String base){
+        this(Core.files.internal(base + "right.png"),
+            Core.files.internal(base + "left.png"),
+            Core.files.internal(base + "top.png"),
+            Core.files.internal(base + "bottom.png"),
+            Core.files.internal(base + "front.png"),
+            Core.files.internal(base + "back.png")
+
+        );
+    }
+
     /** Construct a Cubemap with the specified texture files for the sides, does not generate mipmaps. */
-    public Cubemap(Fi positiveX, Fi negativeX, Fi positiveY, Fi negativeY, Fi positiveZ,
-                   Fi negativeZ){
+    public Cubemap(Fi positiveX, Fi negativeX, Fi positiveY, Fi negativeY, Fi positiveZ, Fi negativeZ){
         this(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ, false);
     }
 
     /** Construct a Cubemap with the specified texture files for the sides, optionally generating mipmaps. */
-    public Cubemap(Fi positiveX, Fi negativeX, Fi positiveY, Fi negativeY, Fi positiveZ,
-                   Fi negativeZ, boolean useMipMaps){
+    public Cubemap(Fi positiveX, Fi negativeX, Fi positiveY, Fi negativeY, Fi positiveZ, Fi negativeZ, boolean useMipMaps){
         this(TextureData.Factory.loadFromFile(positiveX, useMipMaps), TextureData.Factory.loadFromFile(negativeX, useMipMaps),
         TextureData.Factory.loadFromFile(positiveY, useMipMaps), TextureData.Factory.loadFromFile(negativeY, useMipMaps),
         TextureData.Factory.loadFromFile(positiveZ, useMipMaps), TextureData.Factory.loadFromFile(negativeZ, useMipMaps));
@@ -54,8 +63,7 @@ public class Cubemap extends GLTexture{
     }
 
     /** Construct a Cubemap with the specified {@link Pixmap}s for the sides, optionally generating mipmaps. */
-    public Cubemap(Pixmap positiveX, Pixmap negativeX, Pixmap positiveY, Pixmap negativeY, Pixmap positiveZ, Pixmap negativeZ,
-                   boolean useMipMaps){
+    public Cubemap(Pixmap positiveX, Pixmap negativeX, Pixmap positiveY, Pixmap negativeY, Pixmap positiveZ, Pixmap negativeZ, boolean useMipMaps){
         this(positiveX == null ? null : new PixmapTextureData(positiveX, null, useMipMaps, false), negativeX == null ? null
         : new PixmapTextureData(negativeX, null, useMipMaps, false), positiveY == null ? null : new PixmapTextureData(positiveY,
         null, useMipMaps, false), negativeY == null ? null : new PixmapTextureData(negativeY, null, useMipMaps, false),
