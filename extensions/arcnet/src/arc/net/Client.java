@@ -51,14 +51,6 @@ public class Client extends Connection implements EndPoint{
     private AsyncExecutor discoverExecutor = new AsyncExecutor(6);
     private Prov<DatagramPacket> discoveryPacket = () -> new DatagramPacket(new byte[256], 256);
 
-    static{
-        try{
-            // Needed for NIO selectors on Android 2.2.
-            System.setProperty("java.net.preferIPv6Addresses", "false");
-        }catch(Throwable ignored){
-        }
-    }
-
     /**
      * @param writeBufferSize One buffer of this size is allocated. Objects are serialized
      * to the write buffer where the bytes are queued until they can
@@ -99,15 +91,14 @@ public class Client extends Connection implements EndPoint{
     }
 
     public void setDiscoveryPacket(Prov<DatagramPacket> discoveryPacket){
-        discoveryPacket = discoveryPacket;
+        this.discoveryPacket = discoveryPacket;
     }
 
     /**
      * Opens a TCP only client.
      * @see #connect(int, InetAddress, int, int)
      */
-    public void connect(int timeout, String host, int tcpPort)
-    throws IOException{
+    public void connect(int timeout, String host, int tcpPort) throws IOException{
         connect(timeout, InetAddress.getByName(host), tcpPort, -1);
     }
 
