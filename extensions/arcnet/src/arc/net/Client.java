@@ -106,8 +106,7 @@ public class Client extends Connection implements EndPoint{
      * Opens a TCP and UDP client.
      * @see #connect(int, InetAddress, int, int)
      */
-    public void connect(int timeout, String host, int tcpPort, int udpPort)
-    throws IOException{
+    public void connect(int timeout, String host, int tcpPort, int udpPort) throws IOException{
         connect(timeout, InetAddress.getByName(host), tcpPort, udpPort);
     }
 
@@ -115,8 +114,7 @@ public class Client extends Connection implements EndPoint{
      * Opens a TCP only client.
      * @see #connect(int, InetAddress, int, int)
      */
-    public void connect(int timeout, InetAddress host, int tcpPort)
-    throws IOException{
+    public void connect(int timeout, InetAddress host, int tcpPort) throws IOException{
         connect(timeout, host, tcpPort, -1);
     }
 
@@ -130,8 +128,7 @@ public class Client extends Connection implements EndPoint{
      * @throws IllegalStateException if called from the connection's update thread.
      * @throws IOException if the client could not be opened or connecting times out.
      */
-    public void connect(int timeout, InetAddress host, int tcpPort, int udpPort)
-    throws IOException{
+    public void connect(int timeout, InetAddress host, int tcpPort, int udpPort) throws IOException{
         if(host == null)
             throw new IllegalArgumentException("host cannot be null.");
         if(Thread.currentThread() == getUpdateThread())
@@ -256,7 +253,7 @@ public class Client extends Connection implements EndPoint{
                 try{
                     if(elapsedTime < 25)
                         Thread.sleep(25 - elapsedTime);
-                }catch(InterruptedException ex){
+                }catch(InterruptedException ignored){
                 }
             }
         }else{
@@ -334,15 +331,13 @@ public class Client extends Connection implements EndPoint{
     }
 
     void keepAlive(){
-        if(!isConnected)
-            return;
+        if(!isConnected) return;
         long time = System.currentTimeMillis();
-        if(tcp.needsKeepAlive(time))
-            sendTCP(FrameworkMessage.keepAlive);
-        if(udp != null && udpRegistered && udp.needsKeepAlive(time))
-            sendUDP(FrameworkMessage.keepAlive);
+        if(tcp.needsKeepAlive(time)) sendTCP(FrameworkMessage.keepAlive);
+        if(udp != null && udpRegistered && udp.needsKeepAlive(time)) sendUDP(FrameworkMessage.keepAlive);
     }
 
+    @Override
     public void run(){
         shutdown = false;
         while(!shutdown){
@@ -358,6 +353,7 @@ public class Client extends Connection implements EndPoint{
         }
     }
 
+    @Override
     public void start(){
         // Try to let any previous update thread stop.
         if(updateThread != null){
@@ -372,6 +368,7 @@ public class Client extends Connection implements EndPoint{
         updateThread.start();
     }
 
+    @Override
     public void stop(){
         if(shutdown)
             return;
@@ -380,6 +377,7 @@ public class Client extends Connection implements EndPoint{
         selector.wakeup();
     }
 
+    @Override
     public void close(){
         super.close(DcReason.closed);
         synchronized(updateLock){ // Blocks to avoid a select while the
@@ -410,6 +408,7 @@ public class Client extends Connection implements EndPoint{
         udp.keepAliveMillis = keepAliveMillis;
     }
 
+    @Override
     public Thread getUpdateThread(){
         return updateThread;
     }
