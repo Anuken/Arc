@@ -556,7 +556,7 @@ public final class Mathf{
     }
 
     public static boolean within(float x1, float y1, float dst){
-        return dst2(x1, y1) < dst*dst;
+        return (x1 * x1 + y1*y1) < dst*dst;
     }
 
     static private class Sin{
