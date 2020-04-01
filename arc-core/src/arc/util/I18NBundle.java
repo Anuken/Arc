@@ -435,6 +435,10 @@ public class I18NBundle{
         return properties;
     }
 
+    public void setProperties(ObjectMap<String, String> properties){
+        this.properties = properties;
+    }
+
     /** Checks whether a specified key is present in this bundle. */
     public boolean has(String key){
         if(properties.containsKey(key)){

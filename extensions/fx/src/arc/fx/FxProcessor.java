@@ -259,6 +259,8 @@ public final class FxProcessor implements Disposable{
         if(disabled) return;
         if(!hasCaptured) return;
 
+        effectsAll.each(FxFilter::update);
+
         Array<FxFilter> effectChain = effectsEnabled.selectFrom(effectsAll, e -> !e.isDisabled());
 
         applyingEffects = true;
@@ -280,7 +282,6 @@ public final class FxProcessor implements Disposable{
             pingPongBuffer.begin();
             for(int i = 0; i < count; i++){
                 FxFilter effect = effectChain.get(i);
-                effect.update();
                 effect.render(screenQuad,
                 pingPongBuffer.getSrcBuffer(),
                 pingPongBuffer.getDstBuffer());
@@ -310,6 +311,8 @@ public final class FxProcessor implements Disposable{
         // Enable blending to preserve buffer's alpha values.
         if(blendingEnabled){
             Gl.enable(Gl.blend);
+        }else{
+            Gl.disable(Gl.blend);
         }
         bufferRenderer.renderToScreen(pingPongBuffer.getDstBuffer());
         if(blendingEnabled){

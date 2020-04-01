@@ -43,6 +43,10 @@ public class Angles{
         return angle;
     }
 
+    public static float angle(float x, float y){
+        return angle(0, 0, x, y);
+    }
+
     public static float angle(float x, float y, float x2, float y2){
         float ang = Mathf.atan2(x2 - x, y2 - y) * Mathf.radDeg;
         if(ang < 0) ang += 360f;
