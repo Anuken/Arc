@@ -164,7 +164,7 @@ public class GifRecorder{
 		Draw.proj(matrix);
 	}
 	
-	/**Sets the speed multiplier. Higher numbers make the gif go slower, lower numbers make it go faster*/
+	/**Sets the speed multiplier. Higher numbers make the gif go slower, lower numbers make it go faster */
 	public void setSpeedMultiplier(float m){
 		this.speedMultiplier = m;
 	}
