@@ -242,6 +242,7 @@ public class ALAudio extends Audio{
         alSourcef(sourceId, AL_GAIN, volume);
     }
 
+    @Override
     public void dispose(){
         if(noDevice) return;
         for(int i = 0, n = allSources.size; i < n; i++){
@@ -258,10 +259,12 @@ public class ALAudio extends Audio{
         alcCloseDevice(device);
     }
 
+    @Override
     public AudioDevice newAudioDevice(int sampleRate, final boolean isMono){
         return new MockAudioDevice();
     }
 
+    @Override
     public AudioRecorder newAudioRecorder(int samplingRate, boolean isMono){
         return new MockAudioRecorder();
     }
