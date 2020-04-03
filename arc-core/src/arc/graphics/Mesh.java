@@ -1,11 +1,9 @@
 package arc.graphics;
 
 import arc.*;
-import arc.struct.*;
 import arc.graphics.VertexAttributes.*;
 import arc.graphics.gl.*;
-import arc.math.*;
-import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 
 import java.nio.*;
@@ -174,7 +172,6 @@ public class Mesh implements Disposable{
 
     public static String getManagedStatus(){
         StringBuilder builder = new StringBuilder();
-        int i = 0;
         builder.append("Managed meshes/app: { ");
         for(Application app : meshes.keySet()){
             builder.append(meshes.get(app).size);
@@ -182,31 +179,6 @@ public class Mesh implements Disposable{
         }
         builder.append("}");
         return builder.toString();
-    }
-
-    /**
-     * Method to transform the texture coordinates (UV) in the float array. This is a potentially slow operation, use with care.
-     * @param matrix the transformation matrix
-     * @param vertices the float array
-     * @param vertexSize the number of floats in each vertex
-     * @param offset the offset within a vertex to the texture location
-     * @param start the vertex to start with
-     * @param count the amount of vertices to transform
-     */
-    public static void transformUV(final Mat matrix, final float[] vertices, int vertexSize, int offset, int start, int count){
-        if(start < 0 || count < 1 || ((start + count) * vertexSize) > vertices.length)
-            throw new IndexOutOfBoundsException("start = " + start + ", count = " + count + ", vertexSize = " + vertexSize
-            + ", length = " + vertices.length);
-
-        final Vec2 tmp = new Vec2();
-
-        int idx = offset + (start * vertexSize);
-        for(int i = 0; i < count; i++){
-            tmp.set(vertices[idx], vertices[idx + 1]).mul(matrix);
-            vertices[idx] = tmp.x;
-            vertices[idx + 1] = tmp.y;
-            idx += vertexSize;
-        }
     }
 
     private VertexData makeVertexBuffer(boolean isStatic, int maxVertices, VertexAttributes vertexAttributes){
@@ -658,30 +630,6 @@ public class Mesh implements Disposable{
         }
 
         setVertices(vertices);
-    }
-
-    /**
-     * Method to transform the texture coordinates in the mesh. This is a potentially slow operation, use with care. It will also
-     * create a temporary float[] which will be garbage collected.
-     * @param matrix the transformation matrix
-     */
-    public void transformUV(final Mat matrix){
-        transformUV(matrix, 0, getNumVertices());
-    }
-
-    // TODO: Protected for now, because transforming a portion works but still copies all vertices
-    protected void transformUV(final Mat matrix, final int start, final int count){
-        final VertexAttribute posAttr = getVertexAttribute(Usage.textureCoordinates);
-        final int offset = posAttr.offset / 4;
-        final int vertexSize = getVertexSize() / 4;
-        final int numVertices = getNumVertices();
-
-        final float[] vertices = new float[numVertices * vertexSize];
-        // TODO: getVertices(vertices, start * vertexSize, count * vertexSize);
-        getVertices(0, vertices.length, vertices);
-        transformUV(matrix, vertices, vertexSize, offset, start, count);
-        setVertices(vertices, 0, vertices.length);
-        // TODO: setVertices(start * vertexSize, vertices, 0, vertices.length);
     }
 
     /**

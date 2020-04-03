@@ -7,6 +7,7 @@ package arc.math.geom;
 public class Plane{
     public final Vec3 normal = new Vec3();
     public float d = 0;
+
     /**
      * Constructs a new plane with all values set to 0
      */
@@ -160,6 +161,7 @@ public class Plane{
         this.d = plane.d;
     }
 
+    @Override
     public String toString(){
         return normal.toString() + ", " + d;
     }
