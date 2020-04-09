@@ -1,7 +1,7 @@
 package arc.scene.ui;
 
 import arc.*;
-import arc.func.Prov;
+import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.input.*;
@@ -260,19 +260,26 @@ public class Dialog extends Table{
     }
 
     @Override
+    public void act(float delta){
+        super.act(delta);
+
+        if(getScene() != null){
+            keepWithinStage();
+            if(center && !isMovable && this.getActions().size == 0){
+                centerWindow();
+            }
+        }
+    }
+
+    @Override
     public void draw(){
         Scene stage = getScene();
         if(stage.getKeyboardFocus() == null) stage.setKeyboardFocus(this);
 
-        keepWithinStage();
-        if(center && !isMovable && this.getActions().size == 0)
-            centerWindow();
-
         if(style.stageBackground != null){
             stageToLocalCoordinates(tmpPosition.set(0, 0));
             stageToLocalCoordinates(tmpSize.set(stage.getWidth(), stage.getHeight()));
-            drawStageBackground(getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x,
-            getY() + tmpSize.y);
+            drawStageBackground(getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x, getY() + tmpSize.y);
         }
 
         super.draw();
@@ -288,22 +295,12 @@ public class Dialog extends Table{
     public Element hit(float x, float y, boolean touchable){
         Element hit = super.hit(x, y, touchable);
         if(hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled)) return this;
-        float height = getHeight();
-        if(hit == null || hit == this) return hit;
-        if(y <= height && y >= height - getMarginTop() && x >= 0 && x <= getWidth()){
-            // Hit the title bar, don't use the hit child if it is in the Window's table.
-            Element current = hit;
-            while(current.getParent() != this)
-                current = current.getParent();
-            if(getCell(current) != null) return this;
-        }
         return hit;
     }
 
     /** Centers the dialog in the scene. */
     public void centerWindow(){
-        Scene stage = getScene();
-        setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
+        setPosition(Math.round((scene.getWidth() - getWidth()) / 2), Math.round((scene.getHeight() - getHeight()) / 2));
     }
 
     public boolean isMovable(){
