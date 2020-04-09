@@ -63,8 +63,6 @@ public class PlaneBatch3D extends SpriteBatch{
 
         checkFlush();
 
-        //if(!Mathf.zero(rotation)){
-            //bottom left and top right corner points relative to origin
         final float worldOriginX = x + originX;
         final float worldOriginY = y + originY;
         float fx = -originX;
