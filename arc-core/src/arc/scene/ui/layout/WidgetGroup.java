@@ -32,22 +32,27 @@ public class WidgetGroup extends Group implements Layout{
             addChild(actor);
     }
 
+    @Override
     public float getMinWidth(){
         return getPrefWidth();
     }
 
+    @Override
     public float getMinHeight(){
         return getPrefHeight();
     }
 
+    @Override
     public float getPrefWidth(){
         return 0;
     }
 
+    @Override
     public float getPrefHeight(){
         return 0;
     }
 
+    @Override
     public void setLayoutEnabled(boolean enabled){
         if(layoutEnabled == enabled) return;
         layoutEnabled = enabled;
@@ -65,6 +70,7 @@ public class WidgetGroup extends Group implements Layout{
         }
     }
 
+    @Override
     public void validate(){
         if(!layoutEnabled) return;
 
@@ -92,28 +98,34 @@ public class WidgetGroup extends Group implements Layout{
     }
 
     /** Returns true if the widget's layout has been {@link #invalidate() invalidated}. */
+    @Override
     public boolean needsLayout(){
         return needsLayout;
     }
 
+    @Override
     public void invalidate(){
         needsLayout = true;
     }
 
+    @Override
     public void invalidateHierarchy(){
         invalidate();
         Group parent = getParent();
         if(parent != null) parent.invalidateHierarchy();
     }
 
+    @Override
     protected void childrenChanged(){
         invalidateHierarchy();
     }
 
+    @Override
     protected void sizeChanged(){
         invalidate();
     }
 
+    @Override
     public void pack(){
         setSize(getPrefWidth(), getPrefHeight());
         validate();
@@ -125,10 +137,12 @@ public class WidgetGroup extends Group implements Layout{
         }
     }
 
+    @Override
     public void setFillParent(boolean fillParent){
         this.fillParent = fillParent;
     }
 
+    @Override
     public void layout(){
     }
 
@@ -136,6 +150,7 @@ public class WidgetGroup extends Group implements Layout{
      * If this method is overridden, the super method or {@link #validate()} should be called to ensure the widget group is laid
      * out.
      */
+    @Override
     public void draw(){
         validate();
         super.draw();
