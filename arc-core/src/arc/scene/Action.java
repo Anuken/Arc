@@ -95,6 +95,7 @@ abstract public class Action implements Poolable{
      * @param pool May be null.
      * @see #setActor(Element)
      */
+    @SuppressWarnings("unchecked")
     public void setPool(Pool pool){
         this.pool = pool;
     }
