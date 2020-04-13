@@ -87,6 +87,7 @@ public class SdlApplication implements Application{
         check(() -> SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, config.g));
         check(() -> SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, config.b));
         check(() -> SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, config.depth));
+        check(() -> SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, config.stencil));
         check(() -> SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1));
 
         int flags = SDL_WINDOW_OPENGL;

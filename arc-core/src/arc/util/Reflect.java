@@ -1,9 +1,26 @@
 package arc.util;
 
+import arc.func.*;
+
 import java.lang.reflect.*;
 
 @SuppressWarnings("unchecked")
 public class Reflect{
+
+    public static <T> Prov<T> cons(Class<T> type){
+        try{
+            Constructor<T> c = type.getDeclaredConstructor();
+            return () -> {
+                try{
+                    return c.newInstance();
+                }catch(Exception e){
+                    throw new RuntimeException(e);
+                }
+            };
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 
     public static <T> T get(Field field){
         return get(null, field);
