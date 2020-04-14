@@ -12,10 +12,10 @@ public class Camera{
     private static final Vec2 tmpVector = new Vec2();
     /** the position of the camera **/
     public final Vec2 position = new Vec2();
-    /** the combined projection and view matrix **/
-    private final Mat combined = new Mat();
-    /** the inverse combined projection and view matrix **/
-    private final Mat invProjectionView = new Mat();
+    /** the view matrix**/
+    public final Mat mat = new Mat();
+    /** the inverse view matrix **/
+    public final Mat inv = new Mat();
     /** the viewport width and height **/
     public float width, height;
 
@@ -24,18 +24,14 @@ public class Camera{
      * any of the attributes of the camera.
      */
     public void update(){
-        combined.setOrtho(position.x - width / 2f, position.y - height / 2f, width, height);
-        invProjectionView.set(combined).inv();
+        mat.setOrtho(position.x - width / 2f, position.y - height / 2f, width, height);
+        inv.set(mat).inv();
     }
 
     public void resize(float viewportWidth, float viewportHeight){
         this.width = viewportWidth;
         this.height = viewportHeight;
         update();
-    }
-
-    public Mat projection(){
-        return combined;
     }
 
     /**
@@ -58,7 +54,7 @@ public class Camera{
         y = y - viewportY;
         screenCoords.x = (2 * x) / viewportWidth - 1;
         screenCoords.y = (2 * y) / viewportHeight - 1;
-        screenCoords.mul(invProjectionView);
+        screenCoords.mul(inv);
         return screenCoords;
     }
 
@@ -113,7 +109,7 @@ public class Camera{
      * @return the mutated and projected worldCoords {@link Vec3}
      */
     public Vec2 project(Vec2 worldCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight){
-        worldCoords.mul(combined);
+        worldCoords.mul(mat);
         worldCoords.x = viewportWidth * (worldCoords.x + 1) / 2 + viewportX;
         worldCoords.y = viewportHeight * (worldCoords.y + 1) / 2 + viewportY;
         return worldCoords;

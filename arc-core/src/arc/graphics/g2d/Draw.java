@@ -1,9 +1,7 @@
 package arc.graphics.g2d;
 
 import arc.Core;
-import arc.graphics.Blending;
-import arc.graphics.Color;
-import arc.graphics.Texture;
+import arc.graphics.*;
 import arc.graphics.gl.Shader;
 import arc.math.Mathf;
 import arc.math.Mat;
@@ -42,6 +40,15 @@ public class Draw{
 
     public static void shader(){
         Core.batch.setShader(null);
+    }
+
+    public static float z(){
+        return Core.batch.z;
+    }
+
+    /** Note that this does nothing on most Batch implementations. */
+    public static void z(float z){
+        Core.batch.z(z);
     }
 
     public static Color getColor(){
@@ -213,6 +220,10 @@ public class Draw{
 
     public static void flush(){
         Core.batch.flush();
+    }
+
+    public static void proj(Camera proj){
+        proj(proj.mat);
     }
 
     public static void proj(Mat proj){

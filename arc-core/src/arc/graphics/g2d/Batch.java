@@ -13,6 +13,7 @@ import arc.util.*;
 public abstract class Batch implements Disposable{
     protected Mesh mesh;
 
+    protected float z;
     protected int idx = 0;
     protected Texture lastTexture = null;
     protected float invTexWidth = 0, invTexHeight = 0;
@@ -33,6 +34,10 @@ public abstract class Batch implements Disposable{
 
     protected final Color mixColor = Color.clear;
     protected float mixColorPacked = Color.clearFloatBits;
+
+    protected void z(float z){
+        this.z = z;
+    }
 
     protected void setColor(Color tint){
         color.set(tint);

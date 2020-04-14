@@ -10,6 +10,8 @@ public class Camera3D{
     public float near = 1;
     /** the far clipping plane distance, has to be positive **/
     public float far = 100;
+    /** if set to true, an perspective projection is used. */
+    public boolean perspective = true;
     /** the viewport width and height **/
     public float width, height;
     /** the position of the camera **/
@@ -32,13 +34,15 @@ public class Camera3D{
     private final Ray ray = new Ray(new Vec3(), new Vec3());
 
     public void update(){
-        float aspect = width / height;
-        projection.setToProjection(Math.abs(near), Math.abs(far), fov, aspect);
+        if(perspective){
+            projection.setToProjection(Math.abs(near), Math.abs(far), fov, width / height);
+        }else{
+            projection.setToOrtho(-width / 2, width / 2, -height / 2, height / 2, near, far);
+        }
+
         view.setToLookAt(position, tmpVec.set(position).add(direction), up);
         combined.set(projection).mul(view);
-
-        invProjectionView.set(combined);
-        Mat3D.inv(invProjectionView.val);
+        invProjectionView.set(combined).inv();
     }
 
     public void resize(float width, float height){

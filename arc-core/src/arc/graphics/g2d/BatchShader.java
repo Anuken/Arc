@@ -68,4 +68,23 @@ public class BatchShader{
         val[M33] = 1;
         return val;
     }
+
+    public static float[] copyTransform(Mat matrix, float near, float far){
+        val[M01] = matrix.val[Mat.M01];
+        val[M10] = matrix.val[Mat.M10];
+
+        val[M00] = matrix.val[Mat.M00];
+        val[M11] = matrix.val[Mat.M11];
+        val[M22] = matrix.val[Mat.M22];
+        val[M03] = matrix.val[Mat.M02];
+        val[M13] = matrix.val[Mat.M12];
+        val[M33] = 1;
+
+        float z_orth = -2 / (far - near);
+        float tz = -(far + near) / (far - near);
+
+        val[M22] = z_orth;
+        val[M23] = tz;
+        return val;
+    }
 }

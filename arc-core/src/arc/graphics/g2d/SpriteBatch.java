@@ -7,8 +7,7 @@ import arc.graphics.VertexAttributes.*;
 import arc.graphics.gl.*;
 import arc.math.*;
 
-//TODO make unfinal
-public final class SpriteBatch extends Batch{
+public class SpriteBatch extends Batch{
     //xy + color + uv + mix_color
     public static final int VERTEX_SIZE = 2 + 1 + 2 + 1;
     public static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
@@ -105,7 +104,7 @@ public final class SpriteBatch extends Batch{
 
         renderCalls++;
         totalRenderCalls++;
-        int spritesInBatch = idx / 24;
+        int spritesInBatch = idx / SPRITE_SIZE;
         if(spritesInBatch > maxSpritesInBatch) maxSpritesInBatch = spritesInBatch;
         int count = spritesInBatch * 6;
 
@@ -215,7 +214,6 @@ public final class SpriteBatch extends Batch{
 
             final float color = this.colorPacked;
             final float mixColor = this.mixColorPacked;
-            int idx = this.idx;
             vertices[idx] = x1;
             vertices[idx + 1] = y1;
             vertices[idx + 2] = color;
@@ -243,8 +241,8 @@ public final class SpriteBatch extends Batch{
             vertices[idx + 21] = u2;
             vertices[idx + 22] = v;
             vertices[idx + 23] = mixColor;
-            this.idx = idx + 24;
 
+            idx += SPRITE_SIZE;
         }else{
             final float fx2 = x + width;
             final float fy2 = y + height;
@@ -255,7 +253,6 @@ public final class SpriteBatch extends Batch{
 
             final float color = this.colorPacked;
             final float mixColor = this.mixColorPacked;
-            int idx = this.idx;
             vertices[idx] = x;
             vertices[idx + 1] = y;
             vertices[idx + 2] = color;
@@ -283,7 +280,8 @@ public final class SpriteBatch extends Batch{
             vertices[idx + 21] = u2;
             vertices[idx + 22] = v;
             vertices[idx + 23] = mixColor;
-            this.idx = idx + 24;
+
+            idx += SPRITE_SIZE;
         }
     }
 }

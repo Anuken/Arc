@@ -107,7 +107,7 @@ public class Scene implements InputProcessor, Disposable{
 
         if(!root.isVisible()) return;
 
-        Draw.proj(camera.projection());
+        Draw.proj(camera);
 
         root.draw();
         Draw.flush();
