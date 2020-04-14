@@ -1,11 +1,11 @@
 package arc.scene;
 
+import arc.graphics.g2d.*;
 import arc.math.geom.*;
 import arc.struct.Array;
 import arc.struct.SnapshotArray;
 import arc.func.Cons;
 import arc.func.Boolf;
-import arc.graphics.g2d.Draw;
 import arc.math.Affine2;
 import arc.math.Mat;
 import arc.math.geom.Vec2;
@@ -446,7 +446,7 @@ public abstract class Group extends Element implements Cullable{
 
     /**
      * When true (the default), the Batch is transformed so children are drawn in their parent's coordinate system. This has a
-     * performance impact because {@link arc.graphics.g2d.SpriteBatch#flush()} must be done before and after the transform. If the actors in a group are
+     * performance impact because {@link Batch#flush()} must be done before and after the transform. If the actors in a group are
      * not rotated or scaled, then the transform for the group can be set to false. In this case, each child's position will be
      * offset by the group's position for drawing, causing the children to appear in the correct location even though the Batch has
      * not been transformed.

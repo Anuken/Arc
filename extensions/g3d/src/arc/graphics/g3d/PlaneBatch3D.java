@@ -6,7 +6,7 @@ import arc.math.*;
 import arc.math.geom.*;
 
 /** A SpriteBatch that projects sprites onto a plane in 3D space. */
-public class PlaneBatch3D extends SpriteBatch{
+public class PlaneBatch3D extends Batch{
     protected final Vec3 up = new Vec3(), right = new Vec3(), origin = new Vec3(), vec = new Vec3();
     protected final VertexBatch3D batch;
     protected final float[] vertex = new float[6]; //format: xyzcuv
@@ -17,7 +17,6 @@ public class PlaneBatch3D extends SpriteBatch{
     }
 
     public PlaneBatch3D(int vertices){
-        super(0);
         batch = new VertexBatch3D(vertices, false, true, 1);
     }
 
@@ -127,7 +126,7 @@ public class PlaneBatch3D extends SpriteBatch{
             switchTexture(texture);
         }
 
-        for(int i = offset; i < count; i += SPRITE_SIZE){
+        for(int i = offset; i < count; i += SpriteBatch.SPRITE_SIZE){
             checkFlush();
 
             vertex(v[i], v[i + 1], v[i + 2], v[i + 3], v[i + 4]);

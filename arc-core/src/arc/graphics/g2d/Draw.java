@@ -16,8 +16,8 @@ public class Draw{
     private static Color[] carr = new Color[3];
     public static float scl = 1f;
 
-    public static void batch(SpriteBatch nextBatch, Runnable run){
-        SpriteBatch prev = Core.batch;
+    public static void batch(Batch nextBatch, Runnable run){
+        Batch prev = Core.batch;
         prev.flush();
 
         Core.batch = nextBatch;

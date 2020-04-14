@@ -4,7 +4,7 @@ import arc.assets.AssetManager;
 import arc.graphics.Camera;
 import arc.graphics.GL20;
 import arc.graphics.GL30;
-import arc.graphics.g2d.SpriteBatch;
+import arc.graphics.g2d.Batch;
 import arc.graphics.g2d.TextureAtlas;
 import arc.scene.Scene;
 import arc.util.I18NBundle;
@@ -24,7 +24,7 @@ public class Core{
 
     public static I18NBundle bundle = I18NBundle.createEmptyBundle();
     public static Camera camera;
-    public static SpriteBatch batch;
+    public static Batch batch;
     public static Scene scene;
     public static AssetManager assets;
     public static TextureAtlas atlas;

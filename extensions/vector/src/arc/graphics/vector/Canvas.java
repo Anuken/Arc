@@ -3,7 +3,6 @@ package arc.graphics.vector;
 import arc.*;
 import arc.files.*;
 import arc.graphics.*;
-import arc.graphics.gl.*;
 import arc.graphics.vector.CanvasFlags.*;
 import arc.graphics.vector.Font.*;
 import arc.math.*;
@@ -13,8 +12,6 @@ import arc.struct.IntMap.*;
 import arc.util.*;
 import arc.util.pooling.Pool.*;
 import arc.util.pooling.*;
-
-import java.nio.*;
 
 public class Canvas implements Disposable, Poolable{
     public static final float distanceTolerance = 0.1f;
@@ -943,6 +940,10 @@ public class Canvas implements Disposable, Poolable{
         setFillToColor(r, g, b, 255);
         drawRectangle(0, 0, width, height);
         restoreState();
+    }
+
+    public void fillBackground(Color color){
+        fillBackground(color.r, color.g, color.b, color.a);
     }
 
     public void fillBackground(float r, float g, float b){

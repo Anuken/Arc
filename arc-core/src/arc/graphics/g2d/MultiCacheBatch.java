@@ -6,7 +6,7 @@ import arc.graphics.gl.*;
 import arc.math.*;
 import arc.util.*;
 
-public class MultiCacheBatch extends SpriteBatch{
+public class MultiCacheBatch extends Batch{
     private static final int maxSpritesPerCache = 100000;
     Array<SpriteCache> caches = new Array<>();
     Shader shader = SpriteCache.createDefaultShader();
@@ -39,7 +39,7 @@ public class MultiCacheBatch extends SpriteBatch{
     }
 
     @Override
-    void setColor(float r, float g, float b, float a){
+    public void setColor(float r, float g, float b, float a){
         currentCache().setColor(r, g, b, a);
     }
 
@@ -108,7 +108,7 @@ public class MultiCacheBatch extends SpriteBatch{
     }
 
     @Override
-    void setShader(Shader shader, boolean apply){
+    public void setShader(Shader shader, boolean apply){
         boolean drawing = currentCache().isDrawing();
 
         if(drawing) currentCache().end();

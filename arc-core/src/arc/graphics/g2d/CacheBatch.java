@@ -5,7 +5,7 @@ import arc.graphics.Texture;
 import arc.graphics.gl.Shader;
 import arc.math.Mat;
 
-public class CacheBatch extends SpriteBatch{
+public class CacheBatch extends Batch{
     SpriteCache cache;
     float[] tmpVertices = new float[20];
 
@@ -14,7 +14,6 @@ public class CacheBatch extends SpriteBatch{
     }
 
     public CacheBatch(SpriteCache cache){
-        super(0);
         this.cache = cache;
     }
 
@@ -29,7 +28,7 @@ public class CacheBatch extends SpriteBatch{
     }
 
     @Override
-    void setColor(float r, float g, float b, float a){
+    public void setColor(float r, float g, float b, float a){
         cache.setColor(r, g, b, a);
     }
 
@@ -85,12 +84,12 @@ public class CacheBatch extends SpriteBatch{
     }
 
     @Override
-    void setShader(Shader shader){
+    public void setShader(Shader shader){
         setShader(shader, true);
     }
 
     @Override
-    void setShader(Shader shader, boolean apply){
+    public void setShader(Shader shader, boolean apply){
         boolean drawing = cache.isDrawing();
 
         if(drawing) cache.end();

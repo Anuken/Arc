@@ -8,7 +8,7 @@ import java.io.*;
 @Emulate(Streams.class)
 public class StreamsEmu{
 
-    public static void closeQuietly(Closeable c){
+    public static void close(Closeable c){
 
     }
 }

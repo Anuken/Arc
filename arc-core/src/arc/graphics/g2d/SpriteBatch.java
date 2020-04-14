@@ -1,48 +1,19 @@
 package arc.graphics.g2d;
 
-import arc.Core;
+import arc.*;
 import arc.graphics.*;
-import arc.graphics.Mesh.VertexDataType;
-import arc.graphics.VertexAttributes.Usage;
-import arc.graphics.gl.Shader;
-import arc.math.Mathf;
-import arc.math.Mat;
-import arc.util.Disposable;
+import arc.graphics.Mesh.*;
+import arc.graphics.VertexAttributes.*;
+import arc.graphics.gl.*;
+import arc.math.*;
 
-/**
- * Draws batched quads using indices.
- * @author mzechner
- * @author Nathan Sweet
- */
-public class SpriteBatch implements Disposable{
+//TODO make unfinal
+public final class SpriteBatch extends Batch{
     //xy + color + uv + mix_color
-    protected static final int VERTEX_SIZE = 2 + 1 + 2 + 1;
-    protected static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
-
-    protected Mesh mesh;
+    public static final int VERTEX_SIZE = 2 + 1 + 2 + 1;
+    public static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
 
     protected final float[] vertices;
-    protected int idx = 0;
-    protected Texture lastTexture = null;
-    protected float invTexWidth = 0, invTexHeight = 0;
-
-    protected boolean apply;
-
-    protected final Mat transformMatrix = new Mat();
-    protected final Mat projectionMatrix = new Mat();
-    protected final Mat combinedMatrix = new Mat();
-
-    protected Blending blending = Blending.normal;
-
-    protected final Shader shader;
-    protected Shader customShader = null;
-    private boolean ownsShader;
-
-    protected final Color color = new Color(1, 1, 1, 1);
-    protected float colorPacked = Color.whiteFloatBits;
-
-    protected final Color mixColor = Color.clear;
-    protected float mixColorPacked = Color.clearFloatBits;
 
     /** Number of render calls. **/
     int renderCalls = 0;
@@ -53,7 +24,7 @@ public class SpriteBatch implements Disposable{
 
     /**
      * Constructs a new SpriteBatch with a size of 4096, one buffer, and the default shader.
-     * @see SpriteBatch#SpriteBatch(int, Shader)
+     * @see #SpriteBatch(int, Shader)
      */
     public SpriteBatch(){
         this(4096, null);
@@ -61,7 +32,7 @@ public class SpriteBatch implements Disposable{
 
     /**
      * Constructs a SpriteBatch with one buffer and the default shader.
-     * @see SpriteBatch#SpriteBatch(int, Shader)
+     * @see #SpriteBatch(int, Shader)
      */
     public SpriteBatch(int size){
         this(size, null);
@@ -119,58 +90,43 @@ public class SpriteBatch implements Disposable{
         }
     }
 
-    protected SpriteBatch(Object empty){
-        vertices = null;
-        mesh = null;
-        shader = null;
+    @Override
+    protected void flush(){
+        if(idx == 0) return;
+
+        renderCalls = 0;
+
+        getShader().bind();
+        setupMatrices();
+
+        if(customShader != null && apply){
+            customShader.apply();
+        }
+
+        renderCalls++;
+        totalRenderCalls++;
+        int spritesInBatch = idx / 24;
+        if(spritesInBatch > maxSpritesInBatch) maxSpritesInBatch = spritesInBatch;
+        int count = spritesInBatch * 6;
+
+        if(blending != Blending.disabled){
+            Gl.enable(Gl.blend);
+            Gl.blendFuncSeparate(blending.src, blending.dst, blending.src, blending.dst);
+        }else{
+            Gl.disable(Gl.blend);
+        }
+
+        lastTexture.bind();
+        Mesh mesh = this.mesh;
+        mesh.setVertices(vertices, 0, idx);
+        mesh.getIndicesBuffer().position(0);
+        mesh.getIndicesBuffer().limit(count);
+        mesh.render(getShader(), Gl.triangles, 0, count);
+
+        idx = 0;
     }
 
-    void setColor(Color tint){
-        color.set(tint);
-        colorPacked = tint.toFloatBits();
-    }
-
-    void setColor(float r, float g, float b, float a){
-        color.set(r, g, b, a);
-        colorPacked = color.toFloatBits();
-    }
-
-    protected Color getColor(){
-        return color;
-    }
-
-    void setPackedColor(float packedColor){
-        this.color.abgr8888(packedColor);
-        this.colorPacked = packedColor;
-    }
-
-    protected float getPackedColor(){
-        return colorPacked;
-    }
-
-    void setMixColor(Color tint){
-        mixColor.set(tint);
-        mixColorPacked = tint.toFloatBits();
-    }
-
-    void setMixColor(float r, float g, float b, float a){
-        mixColor.set(r, g, b, a);
-        mixColorPacked = mixColor.toFloatBits();
-    }
-
-    protected Color getMixColor(){
-        return mixColor;
-    }
-
-    void setPackedMixColor(float packedColor){
-        this.mixColor.abgr8888(packedColor);
-        this.mixColorPacked = packedColor;
-    }
-
-    protected float getPackedMixColor(){
-        return mixColorPacked;
-    }
-
+    @Override
     protected void draw(Texture texture, float[] spriteVertices, int offset, int count){
 
         int verticesLength = vertices.length;
@@ -199,14 +155,7 @@ public class SpriteBatch implements Disposable{
         }
     }
 
-    protected void draw(TextureRegion region, float x, float y){
-        draw(region, x, y, region.getWidth(), region.getHeight());
-    }
-
-    protected void draw(TextureRegion region, float x, float y, float width, float height){
-        draw(region, x, y, 0, 0, width, height, 0);
-    }
-
+    @Override
     protected void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
 
         Texture texture = region.texture;
@@ -336,98 +285,5 @@ public class SpriteBatch implements Disposable{
             vertices[idx + 23] = mixColor;
             this.idx = idx + 24;
         }
-    }
-
-    protected void flush(){
-        if(idx == 0) return;
-
-        renderCalls = 0;
-
-        getShader().bind();
-        setupMatrices();
-
-        if(customShader != null && apply){
-            customShader.apply();
-        }
-
-        renderCalls++;
-        totalRenderCalls++;
-        int spritesInBatch = idx / 24;
-        if(spritesInBatch > maxSpritesInBatch) maxSpritesInBatch = spritesInBatch;
-        int count = spritesInBatch * 6;
-
-        if(blending != Blending.disabled){
-            Gl.enable(Gl.blend);
-            Gl.blendFuncSeparate(blending.src, blending.dst, blending.src, blending.dst);
-        }else{
-            Gl.disable(Gl.blend);
-        }
-
-        lastTexture.bind();
-        Mesh mesh = this.mesh;
-        mesh.setVertices(vertices, 0, idx);
-        mesh.getIndicesBuffer().position(0);
-        mesh.getIndicesBuffer().limit(count);
-        mesh.render(getShader(), Gl.triangles, 0, count);
-
-        idx = 0;
-    }
-
-    void setBlending(Blending blending){
-        flush();
-        this.blending = blending;
-    }
-
-    @Override
-    public void dispose(){
-        if(mesh != null){
-            mesh.dispose();
-        }
-        if(ownsShader && shader != null) shader.dispose();
-    }
-
-    Mat getProjection(){
-        return projectionMatrix;
-    }
-
-    Mat getTransform(){
-        return transformMatrix;
-    }
-
-    void setProjection(Mat projection){
-        flush();
-        projectionMatrix.set(projection);
-    }
-
-    void setTransform(Mat transform){
-        flush();
-        transformMatrix.set(transform);
-    }
-
-    private void setupMatrices(){
-        combinedMatrix.set(projectionMatrix).mul(transformMatrix);
-        getShader().setUniformMatrix4("u_projTrans", BatchShader.copyTransform(combinedMatrix));
-        getShader().setUniformi("u_texture", 0);
-    }
-
-    protected void switchTexture(Texture texture){
-        flush();
-        lastTexture = texture;
-        invTexWidth = 1.0f / texture.getWidth();
-        invTexHeight = 1.0f / texture.getHeight();
-    }
-
-    void setShader(Shader shader){
-        setShader(shader, true);
-    }
-
-    void setShader(Shader shader, boolean apply){
-        flush();
-        customShader = shader;
-        this.apply = apply;
-    }
-
-    Shader getShader(){
-        return customShader == null ? shader : customShader;
     }
 }
