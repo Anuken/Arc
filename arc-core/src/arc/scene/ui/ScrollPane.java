@@ -586,9 +586,9 @@ public class ScrollPane extends WidgetGroup{
         scene.calculateScissors(widgetAreaBounds, scissorBounds);
 
         // Enable scissors for widget area and draw the widget.
-        if(ScissorStack.pushScissors(scissorBounds)){
+        if(ScissorStack.push(scissorBounds)){
             drawChildren();
-            ScissorStack.popScissors();
+            ScissorStack.pop();
         }
 
         // Render scrollbars and knobs on top.

@@ -6,6 +6,7 @@ import arc.graphics.gl.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
+import arc.util.*;
 
 /**
  * A stack of {@link Rect} objects to be used for clipping via {@link GL20#glScissor(int, int, int, int)}. When a new
@@ -28,7 +29,7 @@ public class ScissorStack{
      * @return true if the scissors were pushed. false if the scissor area was zero, in this case the scissors were not pushed and
      * no drawing should occur.
      */
-    public static boolean pushScissors(Rect scissor){
+    public static boolean push(Rect scissor){
         fix(scissor);
 
         if(scissors.size == 0){
@@ -64,7 +65,7 @@ public class ScissorStack{
      * <p>
      * Any drawing should be flushed before popping scissors.
      */
-    public static Rect popScissors(){
+    public static Rect pop(){
         Draw.flush();
         Rect old = scissors.pop();
         if(scissors.size == 0)
@@ -76,7 +77,12 @@ public class ScissorStack{
         return old;
     }
 
-    public static Rect peekScissors(){
+    public static boolean pushWorld(Rect scissorWorld){
+        calculateScissors(Core.camera, Tmp.m1.idt(), Tmp.r1.set(scissorWorld), scissorWorld);
+        return push(scissorWorld);
+    }
+
+    public static Rect peek(){
         return scissors.peek();
     }
 

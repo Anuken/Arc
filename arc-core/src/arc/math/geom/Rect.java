@@ -164,6 +164,12 @@ public class Rect implements Shape2D{
         return this;
     }
 
+    public Rect move(float cx, float cy){
+        x += cx;
+        y += cy;
+        return this;
+    }
+
     /**
      * Sets the width and height of this rectangle
      * @param width The width

@@ -771,14 +771,14 @@ public class Element implements Layout{
         Scene stage = this.stage;
         Rect scissorBounds = Pools.obtain(Rect.class, Rect::new);
         stage.calculateScissors(tableBounds, scissorBounds);
-        if(ScissorStack.pushScissors(scissorBounds)) return true;
+        if(ScissorStack.push(scissorBounds)) return true;
         Pools.free(scissorBounds);
         return false;
     }
 
     /** Ends clipping begun by {@link #clipBegin(float, float, float, float)}. */
     public void clipEnd(){
-        Pools.free(ScissorStack.popScissors());
+        Pools.free(ScissorStack.pop());
     }
 
     /** Transforms the specified point in screen coordinates to the actor's local coordinate system. */
