@@ -16,6 +16,8 @@ public final class Geometry{
         new Point2(-1, 0),
         new Point2(0, -1)
     };
+    public final static int[] d4x = {1, 0, -1, 0};
+    public final static int[] d4y = {0, 1, 0, -1};
     public final static Point2[] d8 = {
         new Point2(1, 0),
         new Point2(1, 1),
