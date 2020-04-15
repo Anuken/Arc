@@ -59,6 +59,7 @@ public class ZSpriteBatch extends Batch{
         "",
         "void main(){",
         "  vec4 c = texture2D(u_texture, v_texCoords);",
+        //"  if(c.a < 0.01) discard;",
         "  gl_FragColor = v_color * mix(c, vec4(v_mix_color.rgb, c.a), v_mix_color.a);",
         "}"
         ));
