@@ -22,7 +22,7 @@ public class AndroidMultiTouchHandler implements AndroidInput.AndroidTouchHandle
 
         int x, y;
         int realPointerIndex;
-        KeyCode button = KeyCode.MOUSE_LEFT;
+        KeyCode button = KeyCode.mouseLeft;
 
         long timeStamp = System.nanoTime();
         synchronized(input){
@@ -35,13 +35,13 @@ public class AndroidMultiTouchHandler implements AndroidInput.AndroidTouchHandle
                     x = (int)event.getX(pointerIndex);
                     y = (int)event.getY(pointerIndex);
                     button = toGdxButton(event.getButtonState());
-                    if(button != KeyCode.UNKNOWN)
+                    if(button != KeyCode.unknown)
                         postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, realPointerIndex, button, timeStamp);
                     input.touchX[realPointerIndex] = x;
                     input.touchY[realPointerIndex] = Core.graphics.getHeight() - 1 - y;
                     input.deltaX[realPointerIndex] = 0;
                     input.deltaY[realPointerIndex] = 0;
-                    input.touched[realPointerIndex] = (button != KeyCode.UNKNOWN);
+                    input.touched[realPointerIndex] = (button != KeyCode.unknown);
                     input.button[realPointerIndex] = button.ordinal();
                     input.pressure[realPointerIndex] = event.getPressure(pointerIndex);
                     break;
@@ -56,7 +56,7 @@ public class AndroidMultiTouchHandler implements AndroidInput.AndroidTouchHandle
                     x = (int)event.getX(pointerIndex);
                     y = (int)event.getY(pointerIndex);
                     button = KeyCode.byOrdinal(input.button[realPointerIndex]);
-                    if(button != KeyCode.UNKNOWN)
+                    if(button != KeyCode.unknown)
                         postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, realPointerIndex, button, timeStamp);
                     input.touchX[realPointerIndex] = x;
                     input.touchY[realPointerIndex] = Core.graphics.getHeight() - 1 - y;
@@ -91,10 +91,10 @@ public class AndroidMultiTouchHandler implements AndroidInput.AndroidTouchHandle
                         if(realPointerIndex == -1) continue;
                         if(realPointerIndex >= AndroidInput.NUM_TOUCHES) break;
                         button = KeyCode.byOrdinal(input.button[realPointerIndex]);
-                        if(button != KeyCode.UNKNOWN)
+                        if(button != KeyCode.unknown)
                             postTouchEvent(input, TouchEvent.TOUCH_DRAGGED, x, y, realPointerIndex, button, timeStamp);
                         else
-                            postTouchEvent(input, TouchEvent.TOUCH_MOVED, x, y, realPointerIndex, KeyCode.MOUSE_LEFT, timeStamp);
+                            postTouchEvent(input, TouchEvent.TOUCH_MOVED, x, y, realPointerIndex, KeyCode.mouseLeft, timeStamp);
                         input.deltaX[realPointerIndex] = x - input.touchX[realPointerIndex];
                         input.deltaY[realPointerIndex] = -(y - input.touchY[realPointerIndex]);
                         input.touchX[realPointerIndex] = x;
@@ -129,12 +129,12 @@ public class AndroidMultiTouchHandler implements AndroidInput.AndroidTouchHandle
     }
 
     private KeyCode toGdxButton(int button){
-        if(button == 0 || button == 1) return KeyCode.MOUSE_LEFT;
-        if(button == 2) return KeyCode.MOUSE_RIGHT;
-        if(button == 4) return KeyCode.MOUSE_MIDDLE;
-        if(button == 8) return KeyCode.MOUSE_BACK;
-        if(button == 16) return KeyCode.MOUSE_FORWARD;
-        return KeyCode.UNKNOWN;
+        if(button == 0 || button == 1) return KeyCode.mouseLeft;
+        if(button == 2) return KeyCode.mouseRight;
+        if(button == 4) return KeyCode.mouseMiddle;
+        if(button == 8) return KeyCode.mouseBack;
+        if(button == 16) return KeyCode.mouseForward;
+        return KeyCode.unknown;
     }
 
     private void postTouchEvent(AndroidInput input, int type, int x, int y, int pointer, KeyCode button, long timeStamp){

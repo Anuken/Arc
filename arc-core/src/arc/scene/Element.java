@@ -991,7 +991,7 @@ public class Element implements Layout{
 
     /** Adds a click listener. */
     public ClickListener clicked(Runnable r){
-        return clicked(KeyCode.MOUSE_LEFT, r);
+        return clicked(KeyCode.mouseLeft, r);
     }
 
     /** Adds a click listener. */

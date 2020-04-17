@@ -351,47 +351,47 @@ public class Table extends WidgetGroup{
         return add(stack);
     }
 
-    public Cell<Image> addImage(Prov<TextureRegion> reg){
+    public Cell<Image> image(Prov<TextureRegion> reg){
         return add(new Image(reg.get())).update(i -> ((TextureRegionDrawable)i.getDrawable()).setRegion(reg.get()));
     }
 
-    public Cell<Image> addImage(){
+    public Cell<Image> image(){
         return add(new Image());
     }
 
-    public Cell<Image> addImage(Drawable name){
+    public Cell<Image> image(Drawable name){
         return add(new Image(name));
     }
 
-    public Cell<Image> addImage(Drawable name, Color color){
+    public Cell<Image> image(Drawable name, Color color){
         Image image = new Image(name);
         image.setColor(color);
         return add(image);
     }
 
-    public Cell<Image> addImage(TextureRegion region){
+    public Cell<Image> image(TextureRegion region){
         return add(new Image(region));
     }
 
-    public Cell<CheckBox> addCheck(String text, Boolc listener){
+    public Cell<CheckBox> check(String text, Boolc listener){
         CheckBox button = Elements.newCheck(text, listener);
         return add(button);
     }
 
-    public Cell<CheckBox> addCheck(String text, boolean checked, Boolc listener){
+    public Cell<CheckBox> check(String text, boolean checked, Boolc listener){
         CheckBox button = Elements.newCheck(text, listener);
         button.setChecked(checked);
         return add(button);
     }
 
-    public Cell<CheckBox> addCheck(String text, float imagesize, boolean checked, Boolc listener){
+    public Cell<CheckBox> check(String text, float imagesize, boolean checked, Boolc listener){
         CheckBox button = Elements.newCheck(text, listener);
         button.getImageCell().size(imagesize);
         button.setChecked(checked);
         return add(button);
     }
 
-    public Cell<Button> addButton(Cons<Button> cons, Runnable listener){
+    public Cell<Button> button(Cons<Button> cons, Runnable listener){
         Button button = new Button();
         button.clearChildren();
         button.clicked(listener);
@@ -399,7 +399,7 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
-    public Cell<Button> addButton(Cons<Button> cons, ButtonStyle style, Runnable listener){
+    public Cell<Button> button(Cons<Button> cons, ButtonStyle style, Runnable listener){
         Button button = new Button(style);
         button.clearChildren();
         button.clicked(listener);
@@ -407,65 +407,65 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
-    public Cell<TextButton> addButton(String text, Runnable listener){
+    public Cell<TextButton> button(String text, Runnable listener){
         TextButton button = Elements.newButton(text, listener);
         return add(button);
     }
 
-    public Cell<TextButton> addButton(String text, TextButtonStyle style, Runnable listener){
+    public Cell<TextButton> button(String text, TextButtonStyle style, Runnable listener){
         TextButton button = Elements.newButton(text, style, listener);
         return add(button);
     }
 
-    public Cell<ImageButton> addImageButton(Drawable icon, Runnable listener){
+    public Cell<ImageButton> button(Drawable icon, Runnable listener){
         ImageButton button = Elements.newImageButton(icon, listener);
         return add(button);
     }
 
-    public Cell<ImageButton> addImageButton(Drawable icon, float isize, Runnable listener){
+    public Cell<ImageButton> button(Drawable icon, float isize, Runnable listener){
         ImageButton button = Elements.newImageButton(icon, listener);
         button.resizeImage(isize);
         return add(button);
     }
 
-    public Cell<ImageButton> addImageButton(Drawable icon, ImageButtonStyle style, float isize, Runnable listener){
+    public Cell<ImageButton> button(Drawable icon, ImageButtonStyle style, float isize, Runnable listener){
         ImageButton button = new ImageButton(icon, style);
         button.clicked(listener);
         button.resizeImage(isize);
         return add(button);
     }
 
-    public Cell<ImageButton> addImageButton(Drawable icon, ImageButtonStyle style, Runnable listener){
+    public Cell<ImageButton> button(Drawable icon, ImageButtonStyle style, Runnable listener){
         ImageButton button = new ImageButton(icon, style);
         button.clicked(listener);
         button.resizeImage(icon.imageSize());
         return add(button);
     }
 
-    public Cell<TextField> addField(String text, Cons<String> listener){
+    public Cell<TextField> field(String text, Cons<String> listener){
         TextField field = Elements.newField(text, listener);
         return add(field);
     }
 
-    public Cell<TextArea> addArea(String text, Cons<String> listener){
+    public Cell<TextArea> area(String text, Cons<String> listener){
         TextArea area = new TextArea(text);
         area.changed(() -> listener.get(area.getText()));
         return add(area);
     }
 
-    public Cell<TextArea> addArea(String text, TextFieldStyle style, Cons<String> listener){
+    public Cell<TextArea> area(String text, TextFieldStyle style, Cons<String> listener){
         TextArea area = new TextArea(text, style);
         area.changed(() -> listener.get(area.getText()));
         return add(area);
     }
 
-    public Cell<TextField> addField(String text, TextFieldFilter filter, Cons<String> listener){
+    public Cell<TextField> field(String text, TextFieldFilter filter, Cons<String> listener){
         TextField field = Elements.newField(text, listener);
         field.setFilter(filter);
         return add(field);
     }
 
-    public Cell addRect(DrawRect draw){
+    public Cell rect(DrawRect draw){
         return add(new Element(){
             public void draw(){
                 draw.draw(getX(), getY(), getWidth(), getHeight());
@@ -473,7 +473,7 @@ public class Table extends WidgetGroup{
         });
     }
 
-    public Cell<TextButton> addRowImageTextButton(String text, Drawable image, Runnable clicked){
+    public Cell<TextButton> buttonRow(String text, Drawable image, Runnable clicked){
         TextButton button = new TextButton(text);
         button.clearChildren();
         button.add(new Image(image)).update(i -> i.setColor(button.isDisabled() ? Color.gray : Color.white));
@@ -483,11 +483,11 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
-    public Cell<TextButton> addImageTextButton(String text, Drawable image, Runnable clicked){
-        return addImageTextButton(text, image, image.imageSize(), clicked);
+    public Cell<TextButton> button(String text, Drawable image, Runnable clicked){
+        return button(text, image, image.imageSize(), clicked);
     }
 
-    public Cell<TextButton> addImageTextButton(String text, Drawable image, float imagesize, Runnable clicked){
+    public Cell<TextButton> button(String text, Drawable image, float imagesize, Runnable clicked){
         TextButton button = new TextButton(text);
         button.add(new Image(image)).size(imagesize);
         button.getCells().reverse();
@@ -495,7 +495,7 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
-    public Cell<TextButton> addImageTextButton(String text, Drawable image, TextButtonStyle style, float imagesize, Runnable clicked){
+    public Cell<TextButton> button(String text, Drawable image, TextButtonStyle style, float imagesize, Runnable clicked){
         TextButton button = new TextButton(text, style);
         button.add(new Image(image)).size(imagesize);
         button.getCells().reverse();
@@ -503,7 +503,7 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
-    public Cell<TextButton> addImageTextButton(String text, Drawable image, TextButtonStyle style, Runnable clicked){
+    public Cell<TextButton> button(String text, Drawable image, TextButtonStyle style, Runnable clicked){
         TextButton button = new TextButton(text, style);
         button.add(new Image(image)).size(image.imageSize());
         button.getCells().reverse();
@@ -511,7 +511,7 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
-    public Cell<TextButton> addCenteredImageTextButton(String text, Drawable image, float imagesize, Runnable clicked){
+    public Cell<TextButton> buttonCenter(String text, Drawable image, float imagesize, Runnable clicked){
         TextButton button = new TextButton(text);
         button.add(new Image(image)).size(imagesize);
         button.getCells().reverse();
@@ -520,7 +520,7 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
-    public Cell<TextButton> addCenteredImageTextButton(String text, Drawable image, Runnable clicked){
+    public Cell<TextButton> buttonCenter(String text, Drawable image, Runnable clicked){
         TextButton button = new TextButton(text);
         button.add(new Image(image));
         button.getCells().reverse();
@@ -529,7 +529,7 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
-    public Cell<TextButton> addCenteredImageTextButton(String text, Drawable image, TextButtonStyle style, float imagesize, Runnable clicked){
+    public Cell<TextButton> buttonCenter(String text, Drawable image, TextButtonStyle style, float imagesize, Runnable clicked){
         TextButton button = new TextButton(text, style);
         button.add(new Image(image)).size(imagesize);
         button.getCells().reverse();
@@ -538,11 +538,11 @@ public class Table extends WidgetGroup{
         return add(button);
     }
 
-    public Cell<Slider> addSlider(float min, float max, float step, Floatc listener){
-        return addSlider(min, max, step, 0f, listener);
+    public Cell<Slider> slider(float min, float max, float step, Floatc listener){
+        return slider(min, max, step, 0f, listener);
     }
 
-    public Cell<Slider> addSlider(float min, float max, float step, float defvalue, Floatc listener){
+    public Cell<Slider> slider(float min, float max, float step, float defvalue, Floatc listener){
         Slider slider = new Slider(min, max, step, false);
         slider.setValue(defvalue);
         if(listener != null)
@@ -550,7 +550,7 @@ public class Table extends WidgetGroup{
         return add(slider);
     }
 
-    public Cell<Slider> addSlider(float min, float max, float step, float defvalue, boolean onUp, Floatc listener){
+    public Cell<Slider> slider(float min, float max, float step, float defvalue, boolean onUp, Floatc listener){
         Slider slider = new Slider(min, max, step, false);
         slider.setValue(defvalue);
         if(listener != null){

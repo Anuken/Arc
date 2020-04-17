@@ -108,7 +108,7 @@ public class SettingsDialog extends Dialog{
                 setting.add(this);
             }
 
-            addButton(bundle.get("settings.reset", "Reset to Defaults"), () -> {
+            button(bundle.get("settings.reset", "Reset to Defaults"), () -> {
                 for(SettingsTable.Setting setting : list){
                     if(setting.name == null || setting.title == null) continue;
                     settings.put(setting.name, settings.getDefault(setting.name));

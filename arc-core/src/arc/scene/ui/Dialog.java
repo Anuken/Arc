@@ -103,7 +103,7 @@ public class Dialog extends Table{
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-                if(button == KeyCode.MOUSE_LEFT){
+                if(button == KeyCode.mouseLeft){
                     updateEdge(x, y);
                     dragging = edge != 0;
                     startX = x;

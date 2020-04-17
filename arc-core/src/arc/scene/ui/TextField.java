@@ -41,7 +41,7 @@ import static arc.Core.scene;
  * The preferred width of a text field is 150, a relatively arbitrary size.
  * <p>
  * The text field will copy the currently selected text when ctrl+c is pressed, and paste any text in the clipboard when ctrl+v is
- * pressed. Clipboard functionality is provided via the {@link Clipboard} interface. Currently there are two standard
+ * pressed. Clipboard functionality is provided via the Clipboard interface. Currently there are two standard
  * implementations, one for the desktop and one for Android. The Android clipboard is a stub, as copy & pasting on Android is not
  * supported yet.
  * <p>
@@ -433,7 +433,7 @@ public class TextField extends Element implements Disableable{
         }
     }
 
-    /** Copies the contents of this TextField to the {@link Clipboard} implementation set on this TextField. */
+    /** Copies the contents of this TextField to the lipboard implementation set on this TextField. */
     public void copy(){
         if(hasSelection && !passwordMode){
             Core.app.setClipboardText(text.substring(Math.min(cursor, selectionStart), Math.max(cursor, selectionStart)));
@@ -441,7 +441,7 @@ public class TextField extends Element implements Disableable{
     }
 
     /**
-     * Copies the selected contents of this TextField to the {@link Clipboard} implementation set on this TextField, then removes
+     * Copies the selected contents of this TextField to the Clipboard implementation set on this TextField, then removes
      * it.
      */
     public void cut(){
@@ -902,7 +902,7 @@ public class TextField extends Element implements Disableable{
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
             if(!super.touchDown(event, x, y, pointer, button)) return false;
-            if(pointer == 0 && button != KeyCode.MOUSE_LEFT) return false;
+            if(pointer == 0 && button != KeyCode.mouseLeft) return false;
             if(disabled) return true;
             setCursorPosition(x, y);
             selectionStart = cursor;
@@ -954,23 +954,23 @@ public class TextField extends Element implements Disableable{
             boolean jump = ctrl && !passwordMode;
 
             if(ctrl){
-                if(keycode == KeyCode.V){
+                if(keycode == KeyCode.v){
                     paste(Core.app.getClipboardText(), true);
                     repeat = true;
                 }
-                if(keycode == KeyCode.C || keycode == KeyCode.INSERT){
+                if(keycode == KeyCode.c || keycode == KeyCode.insert){
                     copy();
                     return true;
                 }
-                if(keycode == KeyCode.X){
+                if(keycode == KeyCode.x){
                     cut(true);
                     return true;
                 }
-                if(keycode == KeyCode.A){
+                if(keycode == KeyCode.a){
                     selectAll();
                     return true;
                 }
-                if(keycode == KeyCode.Z){
+                if(keycode == KeyCode.z){
                     String oldText = text;
                     setText(undoText);
                     undoText = oldText;
@@ -980,28 +980,28 @@ public class TextField extends Element implements Disableable{
             }
 
             if(Core.input.shift()){
-                if(keycode == KeyCode.INSERT) paste(Core.app.getClipboardText(), true);
-                if(keycode == KeyCode.FORWARD_DEL) cut(true);
+                if(keycode == KeyCode.insert) paste(Core.app.getClipboardText(), true);
+                if(keycode == KeyCode.forwardDel) cut(true);
                 selection:
                 {
                     int temp = cursor;
                     keys:
                     {
-                        if(keycode == KeyCode.LEFT){
+                        if(keycode == KeyCode.left){
                             moveCursor(false, jump);
                             repeat = true;
                             break keys;
                         }
-                        if(keycode == KeyCode.RIGHT){
+                        if(keycode == KeyCode.right){
                             moveCursor(true, jump);
                             repeat = true;
                             break keys;
                         }
-                        if(keycode == KeyCode.HOME){
+                        if(keycode == KeyCode.home){
                             goHome(jump);
                             break keys;
                         }
-                        if(keycode == KeyCode.END){
+                        if(keycode == KeyCode.end){
                             goEnd(jump);
                             break keys;
                         }
@@ -1014,21 +1014,21 @@ public class TextField extends Element implements Disableable{
                 }
             }else{
                 // Cursor movement or other keys (kills selection).
-                if(keycode == KeyCode.LEFT){
+                if(keycode == KeyCode.left){
                     moveCursor(false, jump);
                     clearSelection();
                     repeat = true;
                 }
-                if(keycode == KeyCode.RIGHT){
+                if(keycode == KeyCode.right){
                     moveCursor(true, jump);
                     clearSelection();
                     repeat = true;
                 }
-                if(keycode == KeyCode.HOME){
+                if(keycode == KeyCode.home){
                     goHome(jump);
                     clearSelection();
                 }
-                if(keycode == KeyCode.END){
+                if(keycode == KeyCode.end){
                     goEnd(jump);
                     clearSelection();
                 }
@@ -1073,7 +1073,7 @@ public class TextField extends Element implements Disableable{
             Scene stage = getScene();
             if(stage == null || stage.getKeyboardFocus() != TextField.this) return false;
 
-            if(OS.isMac && Core.input.keyDown(KeyCode.SYM)) return true;
+            if(OS.isMac && Core.input.keyDown(KeyCode.sym)) return true;
 
             if((character == TAB) && focusTraversal){
                 next(Core.input.shift());

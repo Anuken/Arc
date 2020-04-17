@@ -17,7 +17,7 @@ public class KeyboardDevice extends InputDevice implements InputProcessor{
 
     @Override
     public boolean isPressed(KeyCode key){
-        if(key == KeyCode.ANY_KEY){
+        if(key == KeyCode.anyKey){
             return pressed.size > 0;
         }
         return pressed.contains(key.ordinal());
@@ -39,14 +39,14 @@ public class KeyboardDevice extends InputDevice implements InputProcessor{
     }
 
     @Override
-    public boolean keyDown(KeyCode keycode){
-        pressed.add(keycode.ordinal());
+    public boolean keyDown(KeyCode key){
+        pressed.add(key.ordinal());
         return false;
     }
 
     @Override
-    public boolean keyUp(KeyCode keycode){
-        pressed.remove(keycode.ordinal());
+    public boolean keyUp(KeyCode key){
+        pressed.remove(key.ordinal());
         return false;
     }
 
@@ -64,7 +64,7 @@ public class KeyboardDevice extends InputDevice implements InputProcessor{
 
     @Override
     public boolean scrolled(float amountX, float amountY){
-        axes.put(KeyCode.SCROLL.ordinal(), -amountY);
+        axes.put(KeyCode.scroll.ordinal(), -amountY);
         return false;
     }
 

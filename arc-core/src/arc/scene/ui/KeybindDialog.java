@@ -79,7 +79,7 @@ public class KeybindDialog extends Dialog{
 
             Table stable = new Table();
 
-            stable.addButton("<", () -> {
+            stable.button("<", () -> {
                 int i = sectionControls.get(section, 0);
                 if(i - 1 >= 0){
                     sectionControls.put(section, i - 1);
@@ -93,7 +93,7 @@ public class KeybindDialog extends Dialog{
 
             device.setText(input.getDevices().get(sectionControls.get(section, 0)).name());
 
-            stable.addButton(">", () -> {
+            stable.button(">", () -> {
                 int i = sectionControls.get(section, 0);
 
                 if(i + 1 < devices.size){
@@ -120,7 +120,7 @@ public class KeybindDialog extends Dialog{
             for(KeyBind keybind : keybinds.getKeybinds()){
                 if(lastCategory != keybind.category() && keybind.category() != null){
                     table.add(bundle.get("category." + keybind.category() + ".name", Strings.capitalize(keybind.category()))).color(Color.gray).colspan(4).pad(10).padBottom(4).row();
-                    table.addImage().color(Color.gray).fillX().height(3).pad(6).colspan(4).padTop(0).padBottom(10).row();
+                    table.image().color(Color.gray).fillX().height(3).pad(6).colspan(4).padTop(0).padBottom(10).row();
                     lastCategory = keybind.category();
                 }
 
@@ -138,7 +138,7 @@ public class KeybindDialog extends Dialog{
                         table.add(axt).left().minWidth(90).padRight(20);
                     }
 
-                    table.addButton(bundle.get("settings.rebind", "Rebind"), () -> {
+                    table.button(bundle.get("settings.rebind", "Rebind"), () -> {
                         rebindAxis = true;
                         rebindMin = true;
                         openDialog(section, keybind);
@@ -149,13 +149,13 @@ public class KeybindDialog extends Dialog{
                     table.add(keybinds.get(section, keybind).key.toString(),
                     style.keyColor).left().minWidth(90).padRight(20);
 
-                    table.addButton(bundle.get("settings.rebind", "Rebind"), () -> {
+                    table.button(bundle.get("settings.rebind", "Rebind"), () -> {
                         rebindAxis = false;
                         rebindMin = false;
                         openDialog(section, keybind);
                     }).width(130f);
                 }
-                table.addButton(bundle.get("settings.resetKey", "Reset"), () -> {
+                table.button(bundle.get("settings.resetKey", "Reset"), () -> {
                     keybinds.resetToDefault(section, keybind);
                     settings.save();
                     setup();
@@ -165,7 +165,7 @@ public class KeybindDialog extends Dialog{
 
             table.visible(() -> this.section.equals(section));
 
-            table.addButton(bundle.get("settings.reset", "Reset to Defaults"), () -> {
+            table.button(bundle.get("settings.reset", "Reset to Defaults"), () -> {
                 keybinds.resetToDefaults();
                 setup();
                 settings.save();
@@ -226,7 +226,7 @@ public class KeybindDialog extends Dialog{
                 @Override
                 public boolean keyDown(InputEvent event, KeyCode keycode){
                     rebindDialog.hide();
-                    if(keycode == KeyCode.ESCAPE) return false;
+                    if(keycode == KeyCode.escape) return false;
                     rebind(section, name, keycode);
                     return false;
                 }
@@ -235,7 +235,7 @@ public class KeybindDialog extends Dialog{
                 public boolean scrolled(InputEvent event, float x, float y, float amountX, float amountY){
                     if(!rebindAxis) return false;
                     rebindDialog.hide();
-                    rebind(section, name, KeyCode.SCROLL);
+                    rebind(section, name, KeyCode.scroll);
                     return false;
                 }
             });

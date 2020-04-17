@@ -96,7 +96,7 @@ public class IOSInput extends Input{
         @Override
         public boolean shouldReturn(UITextField textField){
             if(keyboardCloseOnReturn) setOnscreenKeyboardVisible(false);
-            app.input.inputMultiplexer.keyDown(KeyCode.ENTER);
+            app.input.inputMultiplexer.keyDown(KeyCode.enter);
             app.input.inputMultiplexer.keyTyped((char)13);
             Core.graphics.requestRendering();
             return false;
@@ -367,12 +367,12 @@ public class IOSInput extends Input{
                 currentEvent = event;
                 switch(event.phase){
                     case Began:
-                        inputMultiplexer.touchDown(event.x, event.y, event.pointer, KeyCode.MOUSE_LEFT);
+                        inputMultiplexer.touchDown(event.x, event.y, event.pointer, KeyCode.mouseLeft);
                         if(numTouched >= 1) justTouched = true;
                         break;
                     case Cancelled:
                     case Ended:
-                        inputMultiplexer.touchUp(event.x, event.y, event.pointer, KeyCode.MOUSE_LEFT);
+                        inputMultiplexer.touchUp(event.x, event.y, event.pointer, KeyCode.mouseLeft);
                         break;
                     case Moved:
                     case Stationary:

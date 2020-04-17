@@ -138,17 +138,17 @@ public abstract class Input implements Disposable{
 
     /** Returns whether one of the two shift keys is currently pressed.*/
     public boolean shift(){
-        return keyDown(KeyCode.SHIFT_LEFT) || keyDown(KeyCode.SHIFT_RIGHT);
+        return keyDown(KeyCode.shiftLeft) || keyDown(KeyCode.shiftRight);
     }
 
     /** Returns whether one of the two control keys is currently pressed - or, on Macs, the cmd key.*/
     public boolean ctrl(){
-        return OS.isMac ? keyDown(KeyCode.SYM) : keyDown(KeyCode.CONTROL_LEFT) || keyDown(KeyCode.CONTROL_RIGHT);
+        return OS.isMac ? keyDown(KeyCode.sym) : keyDown(KeyCode.controlLeft) || keyDown(KeyCode.controlRight);
     }
 
     /** Returns whether one of the two alt keys is pressed.*/
     public boolean alt(){
-        return keyDown(KeyCode.ALT_LEFT) || keyDown(KeyCode.ALT_RIGHT);
+        return keyDown(KeyCode.altLeft) || keyDown(KeyCode.altRight);
     }
 
     /** Returns whether the key is pressed. */

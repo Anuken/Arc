@@ -364,8 +364,8 @@ public class TextArea extends TextField{
             Scene stage = getScene();
             if(stage != null && stage.getKeyboardFocus() == TextArea.this){
                 boolean repeat = false;
-                boolean shift = Core.input.keyDown(KeyCode.SHIFT_LEFT) || Core.input.keyDown(KeyCode.SHIFT_RIGHT);
-                if(keycode == KeyCode.DOWN){
+                boolean shift = Core.input.keyDown(KeyCode.shiftLeft) || Core.input.keyDown(KeyCode.shiftRight);
+                if(keycode == KeyCode.down){
                     if(shift){
                         if(!hasSelection){
                             selectionStart = cursor;
@@ -377,7 +377,7 @@ public class TextArea extends TextField{
                     moveCursorLine(cursorLine + 1);
                     repeat = true;
 
-                }else if(keycode == KeyCode.UP){
+                }else if(keycode == KeyCode.up){
                     if(shift){
                         if(!hasSelection){
                             selectionStart = cursor;

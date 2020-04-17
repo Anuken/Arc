@@ -19,10 +19,10 @@ import static arc.Core.*;
  * <p>
  * Section (default)
  * Device (keyboard)
- * jump = KeyCode.SPACE
- * move = Axis(KeyCode.LEFT, KeyCode.RIGHT)
+ * jump = KeyCode.space
+ * move = Axis(KeyCode.left, KeyCode.right)
  * Device (controller)
- * jump = KeyCode.CONTROLLER_A
+ * jump = KeyCode.controllera
  * move = Axis(CONTROLLER_L_STICK_HORIZONTAL_AXIS)
  * <p>
  * Section (player2)
@@ -142,12 +142,12 @@ public class KeyBinds{
 
     private Axis load(String name){
         if(settings.getBool(name + "-single", true)){
-            KeyCode key = KeyCode.byOrdinal(settings.getInt(name + "-key", KeyCode.UNSET.ordinal()));
-            return key == KeyCode.UNSET ? null : new Axis(key);
+            KeyCode key = KeyCode.byOrdinal(settings.getInt(name + "-key", KeyCode.unset.ordinal()));
+            return key == KeyCode.unset ? null : new Axis(key);
         }else{
-            KeyCode min = KeyCode.byOrdinal(settings.getInt(name + "-min", KeyCode.UNSET.ordinal()));
-            KeyCode max = KeyCode.byOrdinal(settings.getInt(name + "-max", KeyCode.UNSET.ordinal()));
-            return min == KeyCode.UNSET || max == KeyCode.UNSET ? null : new Axis(min, max);
+            KeyCode min = KeyCode.byOrdinal(settings.getInt(name + "-min", KeyCode.unset.ordinal()));
+            KeyCode max = KeyCode.byOrdinal(settings.getInt(name + "-max", KeyCode.unset.ordinal()));
+            return min == KeyCode.unset || max == KeyCode.unset ? null : new Axis(min, max);
         }
     }
 
@@ -175,7 +175,7 @@ public class KeyBinds{
         return defaultCache.get(def).get(type);
     }
 
-    /** Represents an axis or a keycode. */
+    /** Represents an axis or a KeyCode. */
     public interface KeybindValue{
 
     }
@@ -185,7 +185,7 @@ public class KeyBinds{
      * This interface is supposed to be implemented by an enum.
      */
     public interface KeyBind{
-        /** The unique name of this keycode. Usually implemented automatically by the enum type. */
+        /** The unique name of this KeyCode. Usually implemented automatically by the enum type. */
         String name();
 
         /** The default implementation returns can return the same default value for each device type. */

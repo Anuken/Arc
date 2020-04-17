@@ -240,7 +240,7 @@ public class TeaInput extends Input implements EventListener{
         if(e.getType().equals("keydown") && hasFocus){
             KeyboardEvent keyEvent = (KeyboardEvent)e;
             KeyCode code = TeaKeymap.getCode(keyEvent.getKeyCode());
-            if(code == KeyCode.BACKSPACE){
+            if(code == KeyCode.backspace){
                 inputMultiplexer.keyDown(code);
                 inputMultiplexer.keyTyped('\b');
             }else{

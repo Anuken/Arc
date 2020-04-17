@@ -360,7 +360,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
                 for(int i = 0; i < chars.length(); i++){
                     event = usedKeyEvents.obtain();
                     event.timeStamp = System.nanoTime();
-                    event.keyCode = KeyCode.UNKNOWN;
+                    event.keyCode = KeyCode.unknown;
                     event.keyChar = chars.charAt(i);
                     event.type = KeyEvent.KEY_TYPED;
                     keyEvents.add(event);
@@ -388,7 +388,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
                     // Xperia hack for circle key. gah...
                     if(keyCode == android.view.KeyEvent.KEYCODE_BACK && e.isAltPressed()){
                         keyCode = 255;
-                        event.keyCode = KeyCode.BUTTON_CIRCLE;
+                        event.keyCode = KeyCode.buttonCircle;
                     }
 
                     keyEvents.add(event);
@@ -409,14 +409,14 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
                     // Xperia hack for circle key. gah...
                     if(keyCode == android.view.KeyEvent.KEYCODE_BACK && e.isAltPressed()){
                         keyCode = 255;
-                        event.keyCode = KeyCode.BUTTON_CIRCLE;
+                        event.keyCode = KeyCode.buttonCircle;
                     }
                     keyEvents.add(event);
 
                     event = usedKeyEvents.obtain();
                     event.timeStamp = timeStamp;
                     event.keyChar = character;
-                    event.keyCode = KeyCode.UNKNOWN;
+                    event.keyCode = KeyCode.unknown;
                     event.type = KeyEvent.KEY_TYPED;
                     keyEvents.add(event);
 

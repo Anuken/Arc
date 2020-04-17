@@ -20,10 +20,10 @@ public class GifRecorder{
 	private static BufferedImage outImage;
 
 	private KeyCode
-			resizeKey = KeyCode.CONTROL_LEFT,
-			openKey = KeyCode.E,
-			recordKey = KeyCode.T,
-			shiftKey = KeyCode.SHIFT_LEFT;
+			resizeKey = KeyCode.controlLeft,
+			openKey = KeyCode.e,
+			recordKey = KeyCode.t,
+			shiftKey = KeyCode.shiftLeft;
 	
 	private Mat matrix = new Mat();
 

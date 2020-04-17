@@ -83,7 +83,7 @@ public class ScrollPane extends WidgetGroup{
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
                 if(draggingPointer != -1) return false;
-                if(pointer == 0 && button != KeyCode.MOUSE_LEFT) return false;
+                if(pointer == 0 && button != KeyCode.mouseLeft) return false;
                 requestScroll();
 
                 if(!flickScroll) resetFade();

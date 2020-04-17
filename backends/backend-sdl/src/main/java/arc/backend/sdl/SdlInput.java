@@ -1,10 +1,12 @@
 package arc.backend.sdl;
 
 import arc.*;
-import arc.backend.sdl.jni.SDL;
+import arc.backend.sdl.jni.*;
 import arc.input.*;
 
 import java.nio.charset.*;
+
+import static arc.backend.sdl.jni.SDL.*;
 
 public class SdlInput extends Input{
     private final InputEventQueue queue = new InputEventQueue();
@@ -17,7 +19,7 @@ public class SdlInput extends Input{
     //handle encoded input data
     void handleInput(int[] input){
         int type = input[0];
-        if(type == arc.backend.sdl.jni.SDL.SDL_EVENT_KEYBOARD){
+        if(type == SDL_EVENT_KEYBOARD){
             boolean down = input[1] == 1;
             int keycode = input[4];
 
@@ -32,24 +34,29 @@ public class SdlInput extends Input{
             }
 
             //backspace is special
-            if(key == KeyCode.BACKSPACE && down){
+            if(key == KeyCode.backspace && down){
                 queue.keyTyped((char)8);
             }
 
             //so is enter
-            if(key == KeyCode.ENTER && down){
+            if(key == KeyCode.enter && down){
                 queue.keyTyped((char)13);
             }
 
             //so is enter
-            if(key == KeyCode.FORWARD_DEL && down){
+            if(key == KeyCode.forwardDel && down){
                 queue.keyTyped((char)127);
             }
-        }else if(type == arc.backend.sdl.jni.SDL.SDL_EVENT_MOUSE_BUTTON){
+        }else if(type == SDL_EVENT_MOUSE_BUTTON){
             boolean down = input[1] == 1;
             int keycode = input[4];
             int x = input[2], y = Core.graphics.getHeight() - input[3];
-            KeyCode key = keycode == arc.backend.sdl.jni.SDL.SDL_BUTTON_LEFT ? KeyCode.MOUSE_LEFT : keycode == arc.backend.sdl.jni.SDL.SDL_BUTTON_RIGHT ? KeyCode.MOUSE_RIGHT : keycode == arc.backend.sdl.jni.SDL.SDL_BUTTON_MIDDLE ? KeyCode.MOUSE_MIDDLE : keycode == arc.backend.sdl.jni.SDL.SDL_BUTTON_X1 ? KeyCode.MOUSE_BACK : keycode == arc.backend.sdl.jni.SDL.SDL_BUTTON_X2 ? KeyCode.MOUSE_FORWARD : null;
+            KeyCode key =
+                keycode == SDL_BUTTON_LEFT ? KeyCode.mouseLeft :
+                keycode == SDL_BUTTON_RIGHT ? KeyCode.mouseRight :
+                keycode == SDL_BUTTON_MIDDLE ? KeyCode.mouseMiddle :
+                keycode == SDL_BUTTON_X1 ? KeyCode.mouseBack :
+                keycode == SDL_BUTTON_X2 ? KeyCode.mouseForward : null;
             if(key != null){
                 if(down){
                     mousePressed ++;
@@ -61,7 +68,7 @@ public class SdlInput extends Input{
                     queue.touchUp(x, y, 0, key);
                 }
             }
-        }else if(type == arc.backend.sdl.jni.SDL.SDL_EVENT_MOUSE_MOTION){
+        }else if(type == SDL_EVENT_MOUSE_MOTION){
             int x = input[1];
             int y = Core.graphics.getHeight() - input[2];
 
@@ -75,7 +82,7 @@ public class SdlInput extends Input{
             }else{
                 queue.mouseMoved(mouseX, mouseY);
             }
-        }else if(type == arc.backend.sdl.jni.SDL.SDL_EVENT_MOUSE_WHEEL){
+        }else if(type == SDL_EVENT_MOUSE_WHEEL){
             int sx = input[1];
             int sy = input[2];
             queue.scrolled(-sx, -sy);
@@ -153,12 +160,12 @@ public class SdlInput extends Input{
 
     @Override
     public boolean isTouched(){
-        return keyDown(KeyCode.MOUSE_LEFT) || keyDown(KeyCode.MOUSE_RIGHT);
+        return keyDown(KeyCode.mouseLeft) || keyDown(KeyCode.mouseRight);
     }
 
     @Override
     public boolean justTouched(){
-        return keyTap(KeyCode.MOUSE_LEFT) || keyTap(KeyCode.MOUSE_RIGHT);
+        return keyTap(KeyCode.mouseLeft) || keyTap(KeyCode.mouseRight);
     }
 
     @Override

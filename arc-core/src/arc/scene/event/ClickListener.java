@@ -21,7 +21,7 @@ public class ClickListener extends InputListener{
     protected float tapSquareSize = 14, touchDownX = -1, touchDownY = -1;
     protected int pressedPointer = -1;
     protected KeyCode pressedButton;
-    protected KeyCode button = KeyCode.MOUSE_LEFT;
+    protected KeyCode button = KeyCode.mouseLeft;
     protected boolean pressed, over, overAny, cancelled;
     protected long visualPressedTime;
     protected long tapCountInterval = (long)(0.4f * 1000000000L);
