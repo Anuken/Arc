@@ -153,17 +153,17 @@ public abstract class Input implements Disposable{
 
     /** Returns whether the key is pressed. */
     public boolean keyDown(KeyCode key){
-        return keyboard.isKeyPressed(key);
+        return keyboard.isPressed(key);
     }
 
     /** Returns whether the key has just been pressed. */
     public boolean keyTap(KeyCode key){
-        return keyboard.isKeyTapped(key);
+        return keyboard.isTapped(key);
     }
 
     /** Returns whether the key has just been released. */
     public boolean keyRelease(KeyCode key){
-        return keyboard.isKeyReleased(key);
+        return keyboard.isReleased(key);
     }
 
     /** Returns the [-1, 1] axis value of a key. */
@@ -173,17 +173,17 @@ public abstract class Input implements Disposable{
 
     /** Returns whether the keybind is pressed. */
     public boolean keyDown(KeyBind key){
-        return keybinds.get(key).key != null && keyboard.isKeyPressed(keybinds.get(key).key);
+        return keybinds.get(key).key != null && keyboard.isPressed(keybinds.get(key).key);
     }
 
     /** Returns whether the key has just been pressed. */
     public boolean keyTap(KeyBind key){
-        return keybinds.get(key).key != null && keyboard.isKeyTapped(keybinds.get(key).key);
+        return keybinds.get(key).key != null && keyboard.isTapped(keybinds.get(key).key);
     }
 
     /** Returns whether the key has just been released. */
     public boolean keyRelease(KeyBind key){
-        return keybinds.get(key).key != null && keyboard.isKeyReleased(keybinds.get(key).key);
+        return keybinds.get(key).key != null && keyboard.isReleased(keybinds.get(key).key);
     }
 
     /** Returns the [-1, 1] axis value of a key. */
@@ -192,8 +192,8 @@ public abstract class Input implements Disposable{
         if(axis.key != null){
             return keyboard.getAxis(axis.key);
         }else{
-            return keyboard.isKeyPressed(axis.min) && keyboard.isKeyPressed(axis.max) ? 0 :
-                    keyboard.isKeyPressed(axis.min) ? -1 : keyboard.isKeyPressed(axis.max) ? 1 : 0;
+            return keyboard.isPressed(axis.min) && keyboard.isPressed(axis.max) ? 0 :
+                    keyboard.isPressed(axis.min) ? -1 : keyboard.isPressed(axis.max) ? 1 : 0;
         }
     }
 
@@ -204,7 +204,7 @@ public abstract class Input implements Disposable{
         if(axis.key != null){
             return keyboard.getAxis(axis.key);
         }else{
-            return keyboard.isKeyTapped(axis.min) ? -1 : keyboard.isKeyTapped(axis.max) ? 1 : 0;
+            return keyboard.isTapped(axis.min) ? -1 : keyboard.isTapped(axis.max) ? 1 : 0;
         }
     }
 

@@ -16,7 +16,7 @@ public class KeyboardDevice extends InputDevice implements InputProcessor{
     }
 
     @Override
-    public boolean isKeyPressed(KeyCode key){
+    public boolean isPressed(KeyCode key){
         if(key == KeyCode.ANY_KEY){
             return pressed.size > 0;
         }
@@ -24,13 +24,13 @@ public class KeyboardDevice extends InputDevice implements InputProcessor{
     }
 
     @Override
-    public boolean isKeyTapped(KeyCode key){
-        return isKeyPressed(key) && !lastFramePressed.contains(key.ordinal());
+    public boolean isTapped(KeyCode key){
+        return isPressed(key) && !lastFramePressed.contains(key.ordinal());
     }
 
     @Override
-    public boolean isKeyReleased(KeyCode key){
-        return !isKeyPressed(key) && lastFramePressed.contains(key.ordinal());
+    public boolean isReleased(KeyCode key){
+        return !isPressed(key) && lastFramePressed.contains(key.ordinal());
     }
 
     @Override

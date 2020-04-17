@@ -10,7 +10,7 @@ versions.junit = "4.11"
 versions.androidPlugin = "3.4.0"
 versions.androidSdk = 28
 versions.androidBuildTools = "28.0.3"
-versions.teavm = '0.6.1'
+versions.teavm = '0.7.0-dev-1087'
 versions.reflections = '0.9.11'
 
 libraries.robovm = [

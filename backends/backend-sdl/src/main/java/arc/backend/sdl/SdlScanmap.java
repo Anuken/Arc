@@ -98,7 +98,7 @@ public class SdlScanmap{
             case 68: return KeyCode.F11;
             case 69: return KeyCode.F12;
             case 70: return KeyCode.PRINT_SCREEN;
-            case 71: return KeyCode.SCROLL_LOCK;
+            case 71: return KeyCode.scrollLock;
             case 72: return KeyCode.PAUSE;
             case 73: return KeyCode.INSERT;
             case 76: return KeyCode.DEL;

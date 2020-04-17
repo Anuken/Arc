@@ -8,11 +8,11 @@ public abstract class InputDevice{
 
     public abstract DeviceType type();
 
-    public abstract boolean isKeyPressed(KeyCode key);
+    public abstract boolean isPressed(KeyCode key);
 
-    public abstract boolean isKeyTapped(KeyCode key);
+    public abstract boolean isTapped(KeyCode key);
 
-    public abstract boolean isKeyReleased(KeyCode key);
+    public abstract boolean isReleased(KeyCode key);
 
     public abstract float getAxis(KeyCode keyCode);
 

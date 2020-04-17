@@ -198,7 +198,7 @@ public enum KeyCode implements KeybindValue{
     CAPS_LOCK(KeyType.key, "Caps Lock"),
     PAUSE(KeyType.key, "Pause"),
     PRINT_SCREEN(KeyType.key, "Print Screen"),
-    SCROLL_LOCK(KeyType.key, "Scroll Lock");
+    scrollLock(KeyType.key, "Scroll Lock");
 
     public static final KeyCode[] all = values();
     public final KeyType type;
