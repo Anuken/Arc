@@ -1,10 +1,12 @@
 package arc.backend.teavm;
 
 import arc.*;
-import arc.Input.*;
 import arc.input.*;
+import arc.util.*;
+import org.teavm.jso.browser.*;
 import org.teavm.jso.dom.events.*;
 import org.teavm.jso.dom.html.*;
+import org.teavm.jso.gamepad.*;
 
 public class TeaInput extends Input implements EventListener{
     static final int MAX_TOUCHES = 20;
@@ -23,9 +25,32 @@ public class TeaInput extends Input implements EventListener{
         hookEvents();
     }
 
-    void prepareNext(){
+    void preUpdate(){
+        //poll for gamepads
+        Gamepad[] pads = Navigator.getGamepads();
+        for(int i = 0; i < 4; i++){
+            int index = i;
+            TeaController device = (TeaController)devices.find(d -> d instanceof TeaController && ((TeaController)d).index() == index);
+            if(device != null && pads[i] == null){ //disconnected
+                devices.remove(device);
+                inputMultiplexer.disconnected(device);
+            }else if(device == null && pads[i] != null){ //connected
+                device = new TeaController(pads[i]);
+                devices.add(device);
+                inputMultiplexer.connected(device);
+            }else if(device != null && pads[i] != null){ //update device state
+                device.gamepad = pads[i];
+            }
+        }
+
         for(InputDevice device : devices){
-            device.update();
+            device.preUpdate();
+        }
+    }
+
+    void postUpdate(){
+        for(InputDevice device : devices){
+            device.postUpdate();
         }
     }
 
@@ -149,7 +174,6 @@ public class TeaInput extends Input implements EventListener{
         canvas.addEventListener("touchcancel", this);
         canvas.addEventListener("touchend", this);
     }
-
 
     private float getMovementXJSNI(Event event){
         return ((MouseEvent)event).getScreenX();

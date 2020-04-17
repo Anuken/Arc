@@ -11,7 +11,7 @@ public abstract class Controller extends InputDevice{
     public abstract int index();
 
     @Override
-    public void update(){
+    public void postUpdate(){
 
     }
 

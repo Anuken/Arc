@@ -308,6 +308,10 @@ public abstract class Input implements Disposable{
         return inputMultiplexer.getProcessors();
     }
 
+    public InputMultiplexer getInputMultiplexer(){
+        return inputMultiplexer;
+    }
+
     /**
      * Returns a list of input devices, such as keyboards or controllers.
      * This list always contains a keyboard device, regardless of whether one is connected or not (on Android).

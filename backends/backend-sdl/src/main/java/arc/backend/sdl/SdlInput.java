@@ -109,12 +109,16 @@ public class SdlInput extends Input{
     void update(){
         queue.setProcessor(inputMultiplexer);
         queue.drain();
+
+        for(InputDevice device : devices){
+            device.preUpdate();
+        }
     }
 
     //called after main loop
-    void prepareNext(){
+    void postUpdate(){
         for(InputDevice device : devices){
-            device.update();
+            device.postUpdate();
         }
     }
 

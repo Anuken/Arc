@@ -488,7 +488,8 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
         return remove(value, false);
     }
 
-    /** Removes a single value by predicate. */
+    /** Removes a single value by predicate.
+     * @return whether the item was found and removed. */
     public boolean remove(Boolf<T> value){
         for(int i = 0; i < size; i++){
             if(value.get(items[i])){

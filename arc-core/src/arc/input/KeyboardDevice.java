@@ -9,7 +9,7 @@ public class KeyboardDevice extends InputDevice implements InputProcessor{
     private final IntFloatMap axes = new IntFloatMap();
 
     @Override
-    public void update(){
+    public void postUpdate(){
         lastFramePressed.clear();
         lastFramePressed.addAll(pressed);
         axes.clear();
@@ -17,9 +17,8 @@ public class KeyboardDevice extends InputDevice implements InputProcessor{
 
     @Override
     public boolean isPressed(KeyCode key){
-        if(key == KeyCode.anyKey){
-            return pressed.size > 0;
-        }
+        if(key == KeyCode.anyKey) return pressed.size > 0;
+
         return pressed.contains(key.ordinal());
     }
 

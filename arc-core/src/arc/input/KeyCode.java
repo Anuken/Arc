@@ -24,10 +24,10 @@ public enum KeyCode implements KeybindValue{
     //controller axes
     controllerLTrigger(KeyType.controller, "L Trigger", true),
     controllerRTrigger(KeyType.controller, "R Trigger", true),
-    controllerLstickVerticalAxis(KeyType.controller, "L Stick Y Axis", true),
-    controllerLstickHorizontalAxis(KeyType.controller, "L Stick X Axis", true),
-    controllerRstickVerticalAxis(KeyType.controller, "R Stick Y Axis", true),
-    controllerRstickHorizontalAxis(KeyType.controller, "R Stick X Axis", true),
+    controllerLStickYAxis(KeyType.controller, "L Stick Y Axis", true),
+    controllerLStickXAxis(KeyType.controller, "L Stick X Axis", true),
+    controllerRStickYAxis(KeyType.controller, "R Stick Y Axis", true),
+    controllerRStickXAxis(KeyType.controller, "R Stick X Axis", true),
     //mouse
     mouseLeft(KeyType.mouse, "Mouse Left"),
     mouseRight(KeyType.mouse, "Mouse Right"),

@@ -5,12 +5,19 @@ import arc.Input;
 
 /**
  * An InputProcessor is used to receive input events from the keyboard and the touch screen (mouse on the desktop). For this it
- * has to be registered with the {@link Input#setInputProcessor(InputProcessor)} method. It will be called each frame before the
+ * has to be registered with the {@link Input#addProcessor(InputProcessor)} method. It will be called each frame before the
  * call to {@link ApplicationListener#update()}. Each method returns a boolean in case you want to use this with the
  * {@link InputMultiplexer} to chain input processors.
  * @author mzechner
  */
 public interface InputProcessor{
+
+    /** Called when an input device is connected. */
+    default void connected(InputDevice device){}
+
+    /** Called when an input device is disconnected. */
+    default void disconnected(InputDevice device){}
+
     /**
      * Called when a key was pressed
      * @return whether the input was processed

@@ -149,7 +149,7 @@ public class SdlApplication implements Application{
             runnables.run();
 
             SDL_GL_SwapWindow(window);
-            input.prepareNext();
+            input.postUpdate();
         }
     }
 

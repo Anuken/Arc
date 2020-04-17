@@ -66,6 +66,8 @@ public class TeaApplication implements Application{
         graphics.update();
         graphics.frameId++;
 
+        input.preUpdate();
+
         queue.run();
 
         Window window = Window.current();
@@ -83,7 +85,7 @@ public class TeaApplication implements Application{
         }
 
         listen(ApplicationListener::update);
-        input.prepareNext();
+        input.postUpdate();
         delayedStep();
     }
 

@@ -209,7 +209,7 @@ public class TeaFi extends Fi{
     @Override
     public Fi parent(){
         int index = file.lastIndexOf('/', file.endsWith("/") ? file.length() - 1 : file.length());
-        return index > 1 ? new TeaFi(file.substring(0, index), type) : this;
+        return index > 1 ? new TeaFi(file.substring(0, index), type) : new TeaFi("", type);
     }
 
     @Override
