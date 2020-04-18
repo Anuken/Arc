@@ -42,7 +42,7 @@ public class SortedSpriteBatch extends SpriteBatch{
             req.height = height;
             req.color = colorPacked;
             req.rotation = rotation;
-            req.region = region;
+            req.region.set(region);
             req.blendColor = mixColorPacked;
             requests.add(req);
         }else{
@@ -60,6 +60,7 @@ public class SortedSpriteBatch extends SpriteBatch{
         if(!flushing && !requests.isEmpty()){
             flushing = true;
             requests.sort();
+            float preColor = colorPacked, preMixColor = mixColorPacked;
 
             for(DrawRequest req : requests){
                 colorPacked = req.color;
@@ -70,6 +71,11 @@ public class SortedSpriteBatch extends SpriteBatch{
                     super.draw(req.region, req.x, req.y, req.originX, req.originY, req.width, req.height, req.rotation);
                 }
             }
+
+            colorPacked = preColor;
+            mixColorPacked = preMixColor;
+            color.abgr8888(colorPacked);
+            mixColor.abgr8888(mixColorPacked);
 
             Pools.freeAll(requests);
             requests.clear();

@@ -47,6 +47,10 @@ public class Rect implements Shape2D{
         height = rect.height;
     }
 
+    public Rect setCentered(float x, float y, float size){
+        return set(x - size/2f, y - size/2f, size, size);
+    }
+
     public Rect setCentered(float x, float y, float width, float height){
         return set(x - width/2f, y - height/2f, width, height);
     }
