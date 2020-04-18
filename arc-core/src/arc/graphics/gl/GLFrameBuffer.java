@@ -347,6 +347,9 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     public void begin(Color clearColor){
         begin();
         Core.graphics.clear(clearColor);
+        if(depthbufferHandle != 0){
+            Gl.clear(Gl.depthBufferBit);
+        }
     }
 
     /** Binds the frame buffer and sets the viewport accordingly, so everything gets drawn to it. */

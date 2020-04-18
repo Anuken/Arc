@@ -88,6 +88,10 @@ public class Draw{
         Core.batch.setColor(color.r, color.g, color.b, alpha);
     }
 
+    public static void color(int color){
+        Core.batch.setColor(Tmp.c1.rgba8888(color));
+    }
+
     public static void color(float color){
         Core.batch.setPackedColor(color);
     }

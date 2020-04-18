@@ -50,6 +50,11 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
         this(format, width, height, hasDepth, false);
     }
 
+    /** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached. */
+    public FrameBuffer(int width, int height, boolean hasDepth){
+        this(Format.RGBA8888, width, height, hasDepth, false);
+    }
+
     /**
      * Creates a new FrameBuffer having the given dimensions and potentially a depth and a stencil buffer attached.
      * @param format the format of the color buffer; according to the OpenGL ES 2.0 spec, only RGB565, RGBA4444 and RGB5_A1 are
@@ -76,10 +81,13 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
         width = Math.max(width, 2);
         height = Math.max(height, 2);
         TextureFilter min = getTexture().getMinFilter(), mag = getTexture().getMagFilter();
+        boolean hasDepth = depthbufferHandle != 0, hasStencil = stencilbufferHandle != 0;
         dispose();
 
         FrameBufferBuilder frameBufferBuilder = new FrameBufferBuilder(width, height);
         frameBufferBuilder.addBasicColorTextureAttachment(format);
+        if(hasDepth) frameBufferBuilder.addBasicDepthRenderBuffer();
+        if(hasStencil) frameBufferBuilder.addBasicStencilRenderBuffer();
         this.bufferBuilder = frameBufferBuilder;
         this.textureAttachments.clear();
         this.framebufferHandle = 0;

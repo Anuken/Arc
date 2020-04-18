@@ -17,6 +17,7 @@ public class ZSpriteBatch extends Batch{
 
     //near and far planes
     public float minZ = 0, maxZ = 100;
+    public boolean flipZ = false;
 
     public ZSpriteBatch(){
         this(1000);
@@ -116,6 +117,7 @@ public class ZSpriteBatch extends Batch{
             Gl.disable(Gl.blend);
         }
 
+        Gl.depthFunc(Gl.lequal);
         Gl.enable(Gl.depthTest);
 
         lastTexture.bind();
@@ -133,7 +135,7 @@ public class ZSpriteBatch extends Batch{
     @Override
     protected void setupMatrices(){
         combinedMatrix.set(projectionMatrix).mul(transformMatrix);
-        getShader().setUniformMatrix4("u_projTrans", BatchShader.copyTransform(combinedMatrix, minZ, maxZ));
+        getShader().setUniformMatrix4("u_projTrans", BatchShader.copyTransform(combinedMatrix, 0, 1));
         getShader().setUniformi("u_texture", 0);
     }
 
@@ -144,7 +146,7 @@ public class ZSpriteBatch extends Batch{
         }
 
         int max = vertices.length;
-        final float z = this.z - maxZ;
+        final float z = realZ();
 
         for(int i = offset; i < offset + count; i += SpriteBatch.SPRITE_SIZE){
             if(idx + SPRITE_SIZE >= max){
@@ -177,7 +179,7 @@ public class ZSpriteBatch extends Batch{
         //bottom left and top right corner points relative to origin
         final float worldOriginX = x + originX;
         final float worldOriginY = y + originY;
-        final float z = this.z - maxZ;
+        final float z = realZ();
         float fx = -originX;
         float fy = -originY;
         float fx2 = width - originX;
@@ -257,5 +259,14 @@ public class ZSpriteBatch extends Batch{
         vertices[idx + 26] = v;
         vertices[idx + 27] = mixColor;
         this.idx = idx + SPRITE_SIZE;
+    }
+
+    /** @return the Z value normalized from [0, -1] */
+    protected float realZ(){
+        float out = (z - minZ) / (maxZ - minZ);
+        if(!flipZ){
+            out = 1f - out;
+        }
+        return -out;
     }
 }
