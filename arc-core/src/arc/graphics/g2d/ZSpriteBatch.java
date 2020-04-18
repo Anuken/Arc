@@ -23,6 +23,10 @@ public class ZSpriteBatch extends Batch{
     }
 
     public ZSpriteBatch(int size){
+        this(size, true);
+    }
+
+    public ZSpriteBatch(int size, boolean useDiscard){
         if(size > 8191) throw new IllegalArgumentException("Can't have more than 8191 sprites per batch: " + size);
 
         Shader defaultShader = new Shader(Strings.join("\n",
@@ -59,7 +63,7 @@ public class ZSpriteBatch extends Batch{
         "",
         "void main(){",
         "  vec4 c = texture2D(u_texture, v_texCoords);",
-        //"  if(c.a < 0.01) discard;",
+        useDiscard ? "  if(c.a < 0.01) discard;" : "",
         "  gl_FragColor = v_color * mix(c, vec4(v_mix_color.rgb, c.a), v_mix_color.a);",
         "}"
         ));

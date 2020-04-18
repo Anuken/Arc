@@ -2,7 +2,7 @@ package arc.graphics.g2d;
 
 import arc.Core;
 import arc.graphics.*;
-import arc.graphics.gl.Shader;
+import arc.graphics.gl.*;
 import arc.math.Mathf;
 import arc.math.Mat;
 import arc.math.geom.*;
@@ -156,6 +156,10 @@ public class Draw{
         Tmp.tr1.set(u, v2, u2, v);
 
         Draw.rect(Tmp.tr1, camera.position.x, camera.position.y, camera.width, camera.height);
+    }
+
+    public static void rect(FrameBuffer buffer){
+        rect(Draw.wrap(buffer.getTexture()), camera.position.x, camera.position.y, camera.width, -camera.height);
     }
 
     public static void rect(String region, float x, float y, float w, float h){
