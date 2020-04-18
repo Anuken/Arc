@@ -3,7 +3,6 @@ package arc.backend.teavm;
 import arc.*;
 import arc.input.*;
 import arc.struct.*;
-import arc.util.*;
 import org.teavm.jso.gamepad.*;
 
 public class TeaController extends Controller{
@@ -90,7 +89,7 @@ public class TeaController extends Controller{
     @Override
     public float getAxis(KeyCode key){
         int index = -1;
-        int sign = 1;
+        int sign = 1; //Y axis is flipped
 
         if(key == KeyCode.controllerLStickXAxis) index = 0;
         if(key == KeyCode.controllerLStickYAxis){

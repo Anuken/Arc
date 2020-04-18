@@ -54,7 +54,7 @@ public class Scene implements InputProcessor, Disposable{
         viewport.update(graphics.getWidth(), graphics.getHeight(), true);
     }
 
-    public Scene( Viewport viewport){
+    public Scene(Viewport viewport){
         this();
         this.viewport = viewport;
     }
