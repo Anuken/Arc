@@ -491,6 +491,20 @@ public class Vec2 implements Vector<Vec2>, Position{
         return this;
     }
 
+    public Vec2 lerp(Position target, float alpha){
+        final float invAlpha = 1.0f - alpha;
+        this.x = (x * invAlpha) + (target.getX() * alpha);
+        this.y = (y * invAlpha) + (target.getY() * alpha);
+        return this;
+    }
+
+    public Vec2 lerp(float tx, float ty, float alpha){
+        final float invAlpha = 1.0f - alpha;
+        this.x = (x * invAlpha) + (tx * alpha);
+        this.y = (y * invAlpha) + (ty * alpha);
+        return this;
+    }
+
     @Override
     public Vec2 lerp(Vec2 target, float alpha){
         final float invAlpha = 1.0f - alpha;
