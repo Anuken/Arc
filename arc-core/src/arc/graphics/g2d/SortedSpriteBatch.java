@@ -52,6 +52,11 @@ public class SortedSpriteBatch extends SpriteBatch{
 
     @Override
     protected void flush(){
+        flushRequests();
+        super.flush();
+    }
+
+    protected void flushRequests(){
         if(!flushing && !requests.isEmpty()){
             flushing = true;
             requests.sort();
@@ -70,6 +75,5 @@ public class SortedSpriteBatch extends SpriteBatch{
             requests.clear();
             flushing = false;
         }
-        super.flush();
     }
 }

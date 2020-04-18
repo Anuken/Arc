@@ -225,6 +225,12 @@ public final class Mathf{
         return seedr.nextInt(max - min + 1) + min;
     }
 
+    /** Inclusive. */
+    public static float randomSeed(long seed, float min, float max){
+        seedr.setSeed(seed);
+        return (min + seedr.nextFloat() * (max - min));
+    }
+
     public static float randomSeed(long seed){
         seedr.setSeed(seed * 99999);
         return seedr.nextFloat();
