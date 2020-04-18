@@ -123,6 +123,10 @@ public final class FxProcessor implements Disposable{
         pingPongBuffer.setTextureParams(u, v, min, mag);
     }
 
+    public void setTextureFilter(TextureFilter filter){
+        setBufferTextureParams(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, filter, filter);
+    }
+
     public boolean isCapturing(){
         return capturing;
     }

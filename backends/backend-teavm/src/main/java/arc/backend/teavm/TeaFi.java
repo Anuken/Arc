@@ -23,7 +23,7 @@ public class TeaFi extends Fi{
     }
 
     public TeaFi(String fileName, FileType type){
-        if(type != FileType.internal && type != FileType.classpath){
+        if(type != FileType.internal){
             throw new ArcRuntimeException("FileType '" + type + "' Not supported in GWT backend");
         }
         this.file = fixSlashes(fileName);

@@ -1,7 +1,6 @@
 package arc.backend.teavm;
 
 import arc.*;
-import arc.Files.*;
 import arc.files.*;
 import arc.util.*;
 import org.teavm.jso.browser.*;
@@ -11,6 +10,8 @@ public class TeaFiles implements Files{
 
     @Override
     public Fi get(String path, FileType type){
+        //classpath files are treated as internal
+        if(type == FileType.classpath) type = FileType.internal;
         if(type != FileType.internal){
             throw new ArcRuntimeException("FileType '" + type + "' not supported in TeaVM backend");
         }
