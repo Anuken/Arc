@@ -49,6 +49,16 @@ public abstract class Input implements Disposable{
         return Core.camera.project(mouseReturn.set(x, y));
     }
 
+    /** @return the unprojected mouse position in the world.*/
+    public float mouseWorldX(){
+        return Core.camera.unproject(mouse()).x;
+    }
+
+    /** @return the unprojected mouse position in the world.*/
+    public float mouseWorldY(){
+        return Core.camera.unproject(mouse()).y;
+    }
+
     /**Returns the unprojected mouse position in the world.*/
     public Vec2 mouseWorld(){
         return Core.camera.unproject(mouse());
