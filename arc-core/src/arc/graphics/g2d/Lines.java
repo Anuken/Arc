@@ -42,7 +42,7 @@ public class Lines{
     }
 
     public static void lineAngleCenter(float x, float y, float angle, float length){
-        vector.set(1, 1).setLength(length).setAngle(angle);
+        vector.trns(angle, length);
 
         line(x - vector.x / 2, y - vector.y / 2, x + vector.x / 2, y + vector.y / 2);
     }
