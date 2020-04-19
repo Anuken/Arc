@@ -228,7 +228,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
 
     void processDevices(){
         for(InputDevice device : devices){
-            device.update();
+            device.postUpdate();
         }
     }
 
