@@ -387,7 +387,7 @@ public class IOSInput extends Input{
 
     void processDevices(){
         for(InputDevice device : devices){
-            device.update();
+            device.postUpdate();
         }
     }
 
