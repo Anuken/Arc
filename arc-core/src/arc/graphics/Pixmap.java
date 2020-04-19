@@ -306,7 +306,7 @@ public class Pixmap implements Disposable{
     }
 
     public void draw(int x, int y, Color color){
-        pixmap.setPixel(x, y, color.rgba());
+        draw(x, y, color.rgba());
     }
 
     /**

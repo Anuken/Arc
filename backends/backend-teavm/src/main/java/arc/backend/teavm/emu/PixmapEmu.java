@@ -213,13 +213,13 @@ public class PixmapEmu implements Disposable{
     @GeneratedBy(PixmapNativeGenerator.class)
     private native byte[] bufferAsArray(ArrayBuffer array);
 
-    public void drawPixel(int x, int y){
+    public void draw(int x, int y){
         rectangle(x, y, 1, 1, DrawType.FILL);
     }
 
-    public void drawPixel(int x, int y, int color){
+    public void draw(int x, int y, int color){
         setColor(color);
-        drawPixel(x, y);
+        draw(x, y);
     }
 
     private void circle(int x, int y, int radius, DrawType drawType){
