@@ -165,9 +165,10 @@ public class TeaInput extends Input implements EventListener{
         canvas.addEventListener("mousemove", this, true);
         document.addEventListener("mousemove", this, true);
         canvas.addEventListener("wheel", this, true);
-        document.addEventListener("keydown", this, false);
-        document.addEventListener("keyup", this, false);
-        document.addEventListener("keypress", this, false);
+
+        document.addEventListener("keydown", this, true);
+        document.addEventListener("keyup", this, true);
+        document.addEventListener("keypress", this, true);
 
         canvas.addEventListener("touchstart", this);
         canvas.addEventListener("touchmove", this);
@@ -261,7 +262,7 @@ public class TeaInput extends Input implements EventListener{
             e.stopPropagation();
         }
 
-        if(e.getType().equals("keydown") && hasFocus){
+        if(e.getType().equals("keydown")){
             KeyboardEvent keyEvent = (KeyboardEvent)e;
             KeyCode code = TeaKeymap.getCode(keyEvent.getKeyCode());
             if(code == KeyCode.backspace){
@@ -274,7 +275,7 @@ public class TeaInput extends Input implements EventListener{
             e.stopPropagation();
         }
 
-        if(e.getType().equals("keypress") && hasFocus){
+        if(e.getType().equals("keypress")){
             KeyboardEvent keyEvent = (KeyboardEvent)e;
             char c = (char)keyEvent.getCharCode();
             inputMultiplexer.keyTyped(c);
@@ -282,7 +283,7 @@ public class TeaInput extends Input implements EventListener{
             e.stopPropagation();
         }
 
-        if(e.getType().equals("keyup") && hasFocus){
+        if(e.getType().equals("keyup")){
             KeyboardEvent keyEvent = (KeyboardEvent)e;
             KeyCode code = TeaKeymap.getCode(keyEvent.getKeyCode());
             inputMultiplexer.keyUp(code);
