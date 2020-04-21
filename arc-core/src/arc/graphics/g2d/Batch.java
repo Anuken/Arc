@@ -5,11 +5,7 @@ import arc.graphics.gl.*;
 import arc.math.*;
 import arc.util.*;
 
-/**
- * Draws batched quads using indices.
- * @author mzechner
- * @author Nathan Sweet
- */
+/** Base batch class. Provides a mesh, texture, shader, and other state. */
 public abstract class Batch implements Disposable{
     protected Mesh mesh;
 
@@ -37,6 +33,11 @@ public abstract class Batch implements Disposable{
 
     protected void z(float z){
         this.z = z;
+    }
+
+    /** Enables or disables Z-sorting. Flushes the batch. Only does something on supported batches. */
+    protected void setSort(boolean sort){
+
     }
 
     protected void setColor(Color tint){

@@ -9,7 +9,8 @@ public class SortedSpriteBatch extends SpriteBatch{
     private boolean sort;
     private boolean flushing;
 
-    public void sort(boolean sort){
+    @Override
+    protected void setSort(boolean sort){
         if(this.sort != sort){
             flush();
         }

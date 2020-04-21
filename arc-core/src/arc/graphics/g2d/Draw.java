@@ -48,6 +48,11 @@ public class Draw{
         Core.batch.setShader(null);
     }
 
+    /** Note that sorting is disabled by default, even if it is supported. */
+    public static void sort(boolean sort){
+        batch.setSort(sort);
+    }
+
     public static float z(){
         return Core.batch.z;
     }
