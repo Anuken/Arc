@@ -2,6 +2,7 @@ package arc.backend.teavm;
 
 import arc.*;
 import arc.input.*;
+import arc.util.*;
 import org.teavm.jso.dom.events.*;
 import org.teavm.jso.dom.html.*;
 
@@ -15,7 +16,6 @@ public class TeaInput extends Input implements EventListener{
     private int[] deltaY = new int[MAX_TOUCHES];
     private long currentEventTimeStamp;
     private final HTMLCanvasElement canvas;
-    private boolean hasFocus = true;
 
     public TeaInput(HTMLCanvasElement canvas){
         this.canvas = canvas;
@@ -189,14 +189,8 @@ public class TeaInput extends Input implements EventListener{
         if(e.getType().equals("mousedown")){
             MouseEvent mouseEvent = (MouseEvent)e;
             if(e.getTarget() != canvas || touched[0]){
-                float mouseX = getRelativeX(mouseEvent, canvas);
-                float mouseY = getRelativeY(mouseEvent, canvas);
-                if(mouseX < 0 || mouseX > Core.graphics.getWidth() || mouseY < 0 || mouseY > Core.graphics.getHeight()){
-                    hasFocus = false;
-                }
                 return;
             }
-            hasFocus = true;
             this.justTouched = true;
             this.touched[0] = true;
             this.deltaX[0] = 0;
@@ -290,6 +284,8 @@ public class TeaInput extends Input implements EventListener{
             e.preventDefault();
             e.stopPropagation();
         }
+
+        currentEventTimeStamp = Time.millis();
     }
 
 }
