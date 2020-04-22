@@ -90,7 +90,7 @@ public class SortedSpriteBatch extends SpriteBatch{
             blending = preBlending;
 
             Pools.freeAll(requests);
-            requests.clear();
+            requests.size = 0;
             flushing = false;
         }
     }
