@@ -101,7 +101,9 @@ public abstract class Batch implements Disposable{
     protected abstract void flush();
 
     protected void setBlending(Blending blending){
-        flush();
+        if(this.blending != blending){
+            flush();
+        }
         this.blending = blending;
     }
 

@@ -5,9 +5,9 @@ import arc.struct.*;
 import arc.util.pooling.*;
 
 public class SortedSpriteBatch extends SpriteBatch{
-    private Array<DrawRequest> requests = new Array<>();
-    private boolean sort;
-    private boolean flushing;
+    protected Array<DrawRequest> requests = new Array<>();
+    protected boolean sort;
+    protected boolean flushing;
 
     @Override
     protected void setSort(boolean sort){
@@ -15,6 +15,11 @@ public class SortedSpriteBatch extends SpriteBatch{
             flush();
         }
         this.sort = sort;
+    }
+
+    @Override
+    protected void setBlending(Blending blending){
+        this.blending = blending;
     }
 
     @Override
@@ -44,7 +49,8 @@ public class SortedSpriteBatch extends SpriteBatch{
             req.color = colorPacked;
             req.rotation = rotation;
             req.region.set(region);
-            req.blendColor = mixColorPacked;
+            req.mixColor = mixColorPacked;
+            req.blending = blending;
             requests.add(req);
         }else{
             super.draw(region, x, y, originX, originY, width, height, rotation);
@@ -60,12 +66,16 @@ public class SortedSpriteBatch extends SpriteBatch{
     protected void flushRequests(){
         if(!flushing && !requests.isEmpty()){
             flushing = true;
-            requests.sort();
+            sortRequests();
             float preColor = colorPacked, preMixColor = mixColorPacked;
+            Blending preBlending = blending;
 
             for(DrawRequest req : requests){
                 colorPacked = req.color;
-                mixColorPacked = req.blendColor;
+                mixColorPacked = req.mixColor;
+
+                super.setBlending(req.blending);
+
                 if(req.texture != null){
                     super.draw(req.texture, req.vertices, 0, req.vertices.length);
                 }else{
@@ -77,10 +87,15 @@ public class SortedSpriteBatch extends SpriteBatch{
             mixColorPacked = preMixColor;
             color.abgr8888(colorPacked);
             mixColor.abgr8888(mixColorPacked);
+            blending = preBlending;
 
             Pools.freeAll(requests);
             requests.clear();
             flushing = false;
         }
+    }
+
+    protected void sortRequests(){
+        requests.sort();
     }
 }
