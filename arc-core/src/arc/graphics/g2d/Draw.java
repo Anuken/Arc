@@ -192,7 +192,7 @@ public class Draw{
     }
 
     public static void rect(TextureRegion region, float x, float y, float w, float h){
-        Core.batch.draw(region, x - w /2f, y - h /2f, w, h, 0, 0, 0);
+        Core.batch.draw(region, x - w /2f, y - h /2f, 0, 0, w, h, 0);
     }
 
     public static void rect(TextureRegion region, float x, float y){
