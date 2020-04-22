@@ -88,15 +88,11 @@ public abstract class Batch implements Disposable{
 
     protected abstract void draw(Texture texture, float[] spriteVertices, int offset, int count);
 
-    protected void draw(TextureRegion region, float x, float y){
-        draw(region, x, y, region.getWidth(), region.getHeight());
-    }
-
-    protected void draw(TextureRegion region, float x, float y, float width, float height){
-        draw(region, x, y, 0, 0, width, height, 0);
-    }
-
     protected abstract void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation);
+
+    protected void draw(Runnable request){
+        request.run();
+    }
 
     protected abstract void flush();
 

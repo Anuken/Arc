@@ -9,6 +9,7 @@ class DrawRequest implements Comparable<DrawRequest>, Poolable{
     float[] vertices = new float[24];
     Texture texture;
     Blending blending;
+    Runnable run;
 
     @Override
     public int compareTo(DrawRequest o){
@@ -21,5 +22,6 @@ class DrawRequest implements Comparable<DrawRequest>, Poolable{
         region.texture = null;
         texture = null;
         blending = null;
+        run = null;
     }
 }

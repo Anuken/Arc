@@ -1,12 +1,10 @@
 package arc.graphics.gl;
 
-import arc.Application.ApplicationType;
-import arc.Core;
-import arc.graphics.GL30;
-import arc.graphics.Texture;
-import arc.graphics.Texture.TextureFilter;
-import arc.graphics.Texture.TextureWrap;
-import arc.util.ArcRuntimeException;
+import arc.Application.*;
+import arc.*;
+import arc.graphics.*;
+import arc.graphics.Texture.*;
+import arc.util.*;
 
 /** This is a {@link FrameBuffer} variant backed by a float texture. */
 public class FloatFrameBuffer extends FrameBuffer{
@@ -35,6 +33,16 @@ public class FloatFrameBuffer extends FrameBuffer{
         this.bufferBuilder = bufferBuilder;
 
         build();
+    }
+
+    @Override
+    protected void create(Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil){
+        //does nothing
+    }
+
+    @Override
+    public void resize(int width, int height){
+        throw new IllegalArgumentException("resize() is currently unsupported here.");
     }
 
     @Override

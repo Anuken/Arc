@@ -177,6 +177,12 @@ public class Draw{
         Draw.rect(Tmp.tr1, camera.position.x, camera.position.y, camera.width, camera.height);
     }
 
+    /** On a sorting or queued batch implementation, this treats everything inside the runnable as one unit.
+     * Thus, it can be used to set shaders and do other special state. */
+    public static void draw(Runnable run){
+        batch.draw(run);
+    }
+
     public static void rect(FrameBuffer buffer){
         rect(wrap(buffer.getTexture()), camera.position.x, camera.position.y, camera.width, -camera.height);
     }
@@ -186,7 +192,7 @@ public class Draw{
     }
 
     public static void rect(TextureRegion region, float x, float y, float w, float h){
-        Core.batch.draw(region, x - w /2f, y - h /2f, w, h);
+        Core.batch.draw(region, x - w /2f, y - h /2f, w, h, 0, 0, 0);
     }
 
     public static void rect(TextureRegion region, float x, float y){

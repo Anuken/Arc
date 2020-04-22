@@ -25,14 +25,16 @@ import arc.util.*;
 public class FrameBuffer extends GLFrameBuffer<Texture>{
     private Format format;
 
-    FrameBuffer(){
-    }
-
     /**
      * Creates a GLFrameBuffer from the specifications provided by bufferBuilder
      **/
     protected FrameBuffer(GLFrameBufferBuilder<? extends GLFrameBuffer<Texture>> bufferBuilder){
         super(bufferBuilder);
+    }
+
+    /** Creates a new 2x2 buffer. Resize before use. */
+    public FrameBuffer(){
+        this(2, 2);
     }
 
     /** Creates a new FrameBuffer having the given dimensions in the format RGBA8888 and no depth buffer.*/
@@ -65,6 +67,10 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
      * @throws ArcRuntimeException in case the FrameBuffer could not be created
      */
     public FrameBuffer(Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil){
+        create(format, width, height, hasDepth, hasStencil);
+    }
+
+    protected void create(Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil){
         width = Math.max(width, 2);
         height = Math.max(height, 2);
         this.format = format;
@@ -76,10 +82,15 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
         build();
     }
 
+    /** Note that this does nothing if the width and height are correct. */
     public void resize(int width, int height){
         //prevent incomplete attachment issues.
         width = Math.max(width, 2);
         height = Math.max(height, 2);
+
+        //ignore pointless resizing
+        if(width == getWidth() && height == getHeight()) return;
+
         TextureFilter min = getTexture().getMinFilter(), mag = getTexture().getMagFilter();
         boolean hasDepth = depthbufferHandle != 0, hasStencil = stencilbufferHandle != 0;
         dispose();
