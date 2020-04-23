@@ -6,7 +6,7 @@ import arc.struct.*;
 import arc.util.pooling.*;
 
 public class SortedSpriteBatch extends SpriteBatch{
-    protected Pool<DrawRequest> requestPool = Pools.get(DrawRequest.class, DrawRequest::new, 1000);
+    protected Pool<DrawRequest> requestPool = Pools.get(DrawRequest.class, DrawRequest::new, 20000);
     protected Array<DrawRequest> requests = new Array<>();
     protected boolean sort;
     protected boolean flushing;
@@ -39,6 +39,7 @@ public class SortedSpriteBatch extends SpriteBatch{
             req.z = z;
             System.arraycopy(spriteVertices, 0, req.vertices, 0, req.vertices.length);
             req.texture = texture;
+            req.blending = blending;
             requests.add(req);
         }else{
             super.draw(texture, spriteVertices, offset, count);
@@ -69,9 +70,14 @@ public class SortedSpriteBatch extends SpriteBatch{
 
     @Override
     protected void draw(Runnable request){
-        DrawRequest req = requestPool.obtain();
-        req.run = request;
-        requests.add(req);
+        if(sort && !flushing){
+            DrawRequest req = requestPool.obtain();
+            req.run = request;
+            req.blending = blending;
+            requests.add(req);
+        }else{
+            super.draw(request);
+        }
     }
 
     @Override
