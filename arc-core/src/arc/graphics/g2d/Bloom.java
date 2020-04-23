@@ -1,11 +1,10 @@
 package arc.graphics.g2d;
 
-import arc.Core;
+import arc.*;
 import arc.graphics.*;
-import arc.graphics.Pixmap.Format;
-import arc.graphics.VertexAttributes.Usage;
-import arc.graphics.gl.FrameBuffer;
-import arc.graphics.gl.Shader;
+import arc.graphics.Pixmap.*;
+import arc.graphics.VertexAttributes.*;
+import arc.graphics.gl.*;
 
 /** @author kalle_h
  * Requires bloom shaders in 'bloomshaders' folder. */

@@ -74,6 +74,7 @@ public class SortedSpriteBatch extends SpriteBatch{
             DrawRequest req = requestPool.obtain();
             req.run = request;
             req.blending = blending;
+            req.z = z;
             requests.add(req);
         }else{
             super.draw(request);
