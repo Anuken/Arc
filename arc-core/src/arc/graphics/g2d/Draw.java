@@ -179,8 +179,16 @@ public class Draw{
 
     /** On a sorting or queued batch implementation, this treats everything inside the runnable as one unit.
      * Thus, it can be used to set shaders and do other special state. */
-    public static void draw(Runnable run){
+    public static void draw(float z, Runnable run){
+        z(z);
         batch.draw(run);
+    }
+
+    /** Applies runnables for the begin and end of a specific Z value.
+     * Useful for framebuffers or batched shader begin/ends. */
+    public static void drawRange(float z, Runnable begin, Runnable end){
+        draw(z - 0.001f, begin);
+        draw(z + 0.001f, end);
     }
 
     public static void rect(FrameBuffer buffer){
