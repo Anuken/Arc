@@ -13,7 +13,7 @@ class DrawRequest implements Comparable<DrawRequest>, Poolable{
 
     @Override
     public int compareTo(DrawRequest o){
-        return Float.compare(o.z, z);
+        return Float.compare(z, o.z);
     }
 
     @Override

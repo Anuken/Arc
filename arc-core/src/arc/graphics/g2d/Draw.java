@@ -57,8 +57,13 @@ public class Draw{
         batch.setSort(sort);
     }
 
+    /** Sets sorting order to either be ascending or descending in terms of Z. Default: true. */
+    public static void sortAscending(boolean ascend){
+        batch.setSortAscending(ascend);
+    }
+
     public static float z(){
-        return Core.batch.z;
+        return batch.sortAscending ? batch.z : -batch.z;
     }
 
     /** Note that this does nothing on most Batch implementations. */
