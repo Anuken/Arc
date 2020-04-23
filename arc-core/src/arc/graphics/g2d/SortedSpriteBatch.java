@@ -3,11 +3,10 @@ package arc.graphics.g2d;
 import arc.graphics.*;
 import arc.graphics.gl.*;
 import arc.struct.*;
-import arc.util.pooling.*;
 
 public class SortedSpriteBatch extends SpriteBatch{
-    protected Pool<DrawRequest> requestPool = Pools.get(DrawRequest.class, DrawRequest::new, 20000);
-    protected Array<DrawRequest> requests = new Array<>();
+    protected Array<DrawRequest> requestPool = new Array<>(10000);
+    protected Array<DrawRequest> requests = new Array<>(DrawRequest.class);
     protected boolean sort;
     protected boolean flushing;
 
@@ -35,11 +34,12 @@ public class SortedSpriteBatch extends SpriteBatch{
     @Override
     protected void draw(Texture texture, float[] spriteVertices, int offset, int count){
         if(sort && !flushing){
-            DrawRequest req = requestPool.obtain();
+            DrawRequest req = obtain();
             req.z = z;
             System.arraycopy(spriteVertices, 0, req.vertices, 0, req.vertices.length);
             req.texture = texture;
             req.blending = blending;
+            req.run = null;
             requests.add(req);
         }else{
             super.draw(texture, spriteVertices, offset, count);
@@ -49,7 +49,7 @@ public class SortedSpriteBatch extends SpriteBatch{
     @Override
     protected void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
         if(sort && !flushing){
-            DrawRequest req = requestPool.obtain();
+            DrawRequest req = obtain();
             req.x = x;
             req.y = y;
             req.z = z;
@@ -62,6 +62,8 @@ public class SortedSpriteBatch extends SpriteBatch{
             req.region.set(region);
             req.mixColor = mixColorPacked;
             req.blending = blending;
+            req.texture = null;
+            req.run = null;
             requests.add(req);
         }else{
             super.draw(region, x, y, originX, originY, width, height, rotation);
@@ -71,14 +73,19 @@ public class SortedSpriteBatch extends SpriteBatch{
     @Override
     protected void draw(Runnable request){
         if(sort && !flushing){
-            DrawRequest req = requestPool.obtain();
+            DrawRequest req = obtain();
             req.run = request;
             req.blending = blending;
             req.z = z;
+            req.texture = null;
             requests.add(req);
         }else{
             super.draw(request);
         }
+    }
+
+    protected DrawRequest obtain(){
+        return requestPool.size > 0 ? requestPool.pop() : new DrawRequest();
     }
 
     @Override
@@ -94,7 +101,9 @@ public class SortedSpriteBatch extends SpriteBatch{
             float preColor = colorPacked, preMixColor = mixColorPacked;
             Blending preBlending = blending;
 
-            for(DrawRequest req : requests){
+            for(int j = 0; j < requests.size; j++){
+                DrawRequest req = requests.items[j];
+
                 colorPacked = req.color;
                 mixColorPacked = req.mixColor;
 
@@ -115,8 +124,9 @@ public class SortedSpriteBatch extends SpriteBatch{
             mixColor.abgr8888(mixColorPacked);
             blending = preBlending;
 
-            Pools.freeAll(requests);
+            requestPool.addAll(requests);
             requests.size = 0;
+
             flushing = false;
         }
     }

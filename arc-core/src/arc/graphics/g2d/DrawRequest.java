@@ -1,9 +1,8 @@
 package arc.graphics.g2d;
 
 import arc.graphics.*;
-import arc.util.pooling.Pool.*;
 
-class DrawRequest implements Comparable<DrawRequest>, Poolable{
+class DrawRequest implements Comparable<DrawRequest>{
     TextureRegion region = new TextureRegion();
     float x, y, z, originX, originY, width, height, rotation, color, mixColor;
     float[] vertices = new float[24];
@@ -14,14 +13,5 @@ class DrawRequest implements Comparable<DrawRequest>, Poolable{
     @Override
     public int compareTo(DrawRequest o){
         return Float.compare(z, o.z);
-    }
-
-    @Override
-    public void reset(){
-        x = y = z = originX = originY = width = height = rotation = color = mixColor = 0f;
-        region.texture = null;
-        texture = null;
-        blending = null;
-        run = null;
     }
 }

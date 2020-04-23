@@ -1,20 +1,18 @@
 package arc.backend.android;
 
-import android.content.Context;
-import android.view.MotionEvent;
-import arc.Core;
-import arc.backend.android.AndroidInput.TouchEvent;
-import arc.input.KeyCode;
-import arc.util.Log;
+import android.content.*;
+import android.view.*;
+import arc.*;
+import arc.backend.android.AndroidInput.*;
+import arc.input.*;
 
 /**
  * Multitouch handler for devices running Android >= 2.0. If device is capable of (fake) multitouch this will report additional
  * pointers.
  * @author badlogicgames@gmail.com
  */
-public class AndroidMultiTouchHandler implements AndroidInput.AndroidTouchHandler{
+public class AndroidTouchHandler{
 
-    @Override
     public void onTouch(MotionEvent event, AndroidInput input){
         final int action = event.getAction() & MotionEvent.ACTION_MASK;
         int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
@@ -22,7 +20,7 @@ public class AndroidMultiTouchHandler implements AndroidInput.AndroidTouchHandle
 
         int x, y;
         int realPointerIndex;
-        KeyCode button = KeyCode.mouseLeft;
+        KeyCode button;
 
         long timeStamp = System.nanoTime();
         synchronized(input){
@@ -105,27 +103,6 @@ public class AndroidMultiTouchHandler implements AndroidInput.AndroidTouchHandle
             }
         }
         Core.graphics.requestRendering();
-    }
-
-    private void logAction(int action, int pointer){
-        String actionStr = "";
-        if(action == MotionEvent.ACTION_DOWN)
-            actionStr = "DOWN";
-        else if(action == MotionEvent.ACTION_POINTER_DOWN)
-            actionStr = "POINTER DOWN";
-        else if(action == MotionEvent.ACTION_UP)
-            actionStr = "UP";
-        else if(action == MotionEvent.ACTION_POINTER_UP)
-            actionStr = "POINTER UP";
-        else if(action == MotionEvent.ACTION_OUTSIDE)
-            actionStr = "OUTSIDE";
-        else if(action == MotionEvent.ACTION_CANCEL)
-            actionStr = "CANCEL";
-        else if(action == MotionEvent.ACTION_MOVE)
-            actionStr = "MOVE";
-        else
-            actionStr = "UNKNOWN (" + action + ")";
-        Log.infoTag("AndroidMultiTouchHandler", "action " + actionStr + ", Android pointer id: " + pointer);
     }
 
     private KeyCode toGdxButton(int button){

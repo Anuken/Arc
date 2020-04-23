@@ -104,7 +104,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
         this.app = activity;
         this.context = context;
         this.sleepTime = config.touchSleepTime;
-        touchHandler = new AndroidMultiTouchHandler();
+        touchHandler = new AndroidTouchHandler();
         mouseHandler = new AndroidMouseHandler();
         hasMultitouch = touchHandler.supportsMultitouch(context);
 
@@ -814,11 +814,5 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
 
     public void addGenericMotionListener(OnGenericMotionListener listener){
         genericMotionListeners.add(listener);
-    }
-
-    public interface AndroidTouchHandler{
-        void onTouch(MotionEvent event, AndroidInput input);
-
-        boolean supportsMultitouch(Context app);
     }
 }
