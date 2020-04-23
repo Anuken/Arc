@@ -76,6 +76,8 @@ public class SortedSpriteBatch extends SpriteBatch{
             DrawRequest req = obtain();
             req.run = request;
             req.blending = blending;
+            req.mixColor = mixColorPacked;
+            req.color = colorPacked;
             req.z = z;
             req.texture = null;
             requests.add(req);
