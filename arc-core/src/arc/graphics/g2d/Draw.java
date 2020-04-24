@@ -192,8 +192,14 @@ public class Draw{
     /** Applies runnables for the begin and end of a specific Z value.
      * Useful for framebuffers or batched shader begin/ends. */
     public static void drawRange(float z, Runnable begin, Runnable end){
-        draw(z - 0.001f, begin);
-        draw(z + 0.001f, end);
+        drawRange(z, 0.001f, begin, end);
+    }
+
+    /** Applies runnables for the begin and end of a specific Z value.
+     * Useful for framebuffers or batched shader begin/ends. */
+    public static void drawRange(float z, float range, Runnable begin, Runnable end){
+        draw(z - range, begin);
+        draw(z + range, end);
     }
 
     public static void rect(FrameBuffer buffer){
