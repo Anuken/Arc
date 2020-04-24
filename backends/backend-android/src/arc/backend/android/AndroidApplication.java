@@ -169,8 +169,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
     }
 
     protected FrameLayout.LayoutParams createLayoutParams(){
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-        android.view.ViewGroup.LayoutParams.MATCH_PARENT);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         layoutParams.gravity = Gravity.CENTER;
         return layoutParams;
     }
@@ -181,7 +180,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     protected void hideStatusBar(boolean hide){
         if(!hide) return;
 

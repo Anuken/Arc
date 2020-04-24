@@ -16,7 +16,7 @@ import arc.struct.Array;
  * @author davebaol
  */
 public interface AndroidApplicationBase extends Application{
-    int MINIMUM_SDK = 12;
+    int MINIMUM_SDK = 14;
 
     /**
      * The application or activity context
