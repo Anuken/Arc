@@ -90,6 +90,10 @@ public class OS{
         return System.getProperty(name);
     }
 
+    public static boolean hasEnv(String name){
+        return System.getenv(name) != null;
+    }
+
     public static String env(String name){
         return System.getenv(name);
     }
