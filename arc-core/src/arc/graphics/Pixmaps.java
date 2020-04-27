@@ -165,7 +165,7 @@ public class Pixmaps{
         return pixmap;
     }
 
-    private static boolean empty(int i){
+    public static boolean empty(int i){
         return (i & 0x000000ff) == 0;
     }
 

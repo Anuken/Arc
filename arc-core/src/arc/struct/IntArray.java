@@ -1,8 +1,8 @@
 package arc.struct;
 
-import arc.math.Mathf;
+import arc.math.*;
 
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * A resizable, ordered or unordered int array. Avoids the boxing that occurs with ArrayList<Integer>. If unordered, this class
@@ -69,6 +69,35 @@ public class IntArray{
     /** @see #IntArray(int[]) */
     public static IntArray with(int... array){
         return new IntArray(array);
+    }
+
+    /** @return the most frequently occuring element. */
+    public int mode(){
+        int count = 1, tempCount;
+        int popular = size == 0 ? 0 : items[0];
+        int temp;
+        for(int i = 0; i < size - 1; i++){
+            temp = items[i];
+            tempCount = 0;
+            for(int j = 1; j < size; j++){
+                if(temp == items[j]) tempCount++;
+            }
+            if(tempCount > count){
+                popular = temp;
+                count = tempCount;
+            }
+        }
+        return popular;
+    }
+
+    public int count(int value){
+        int out = 0;
+        for(int i = 0; i < size; i++){
+            if(items[i] == value){
+                out ++;
+            }
+        }
+        return out;
     }
 
     public int sum(){
