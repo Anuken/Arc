@@ -643,14 +643,14 @@ public class Color{
 
     public Color shiftSaturation(float amount){
         toHsv(tmpHSV);
-        tmpHSV[0] += amount;
+        tmpHSV[1] += amount;
         fromHsv(tmpHSV);
         return this;
     }
 
     public Color shiftValue(float amount){
         toHsv(tmpHSV);
-        tmpHSV[0] += amount;
+        tmpHSV[2] += amount;
         fromHsv(tmpHSV);
         return this;
     }
