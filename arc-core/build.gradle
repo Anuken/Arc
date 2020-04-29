@@ -38,7 +38,7 @@ task natives(dependsOn: [classes, deleteJniFolder]){
         }
 
         //download latest version of stb_image directly into jni folder
-        "curl -o $jnidir/stb_image.h https://raw.githubusercontent.com/nothings/stb/master/stb_image.h".execute()
+        "curl -o $jnidir/stb_image.h https://raw.githubusercontent.com/nothings/stb/master/stb_image.h".execute().waitFor()
 
         BuildTarget[] targets = [
             BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Windows, false),
@@ -54,8 +54,6 @@ task natives(dependsOn: [classes, deleteJniFolder]){
         def matches = { String path, List<String> pattern ->
             return pattern.find{ path.contains(it) } != null
         }
-
-        println(targets[0].cppExcludes)
 
         targets.find{ it.os == BuildTarget.TargetOs.IOS }.with{
             if(it != null){
@@ -85,7 +83,7 @@ task natives(dependsOn: [classes, deleteJniFolder]){
 
         new File(libdir).eachFileRecurse{ file ->
             if(!file.path.contains("ios") && !file.path.contains("mac")){
-                "strip ${file.absolutePath}".execute()
+                "strip ${file.absolutePath}".execute().waitFor()
             }
         }
 

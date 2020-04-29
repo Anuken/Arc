@@ -17,7 +17,7 @@ classes/
 war/
 gen/
 gen-external-apklibs/
-ios32/
+jni/
 Debug/
 Release/
 robovm-build/

@@ -1,7 +1,6 @@
 package arc.freetype;
 
-import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeType.*;
+import arc.freetype.FreeType.*;
 import arc.struct.Array;
 import arc.files.Fi;
 import arc.graphics.Color;

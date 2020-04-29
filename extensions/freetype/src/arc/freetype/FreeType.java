@@ -1,4 +1,4 @@
-package com.badlogic.gdx.graphics.g2d.freetype;
+package arc.freetype;
 
 import arc.struct.LongMap;
 import arc.files.Fi;
