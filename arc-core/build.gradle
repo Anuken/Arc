@@ -92,18 +92,20 @@ task natives(dependsOn: [classes, deleteJniFolder]){
         new File(libdir).eachFileRecurse{ target ->
             if(!target.isDirectory() && matches(target.path, ["windows", "mac", "linux"])){
                 file("../natives/natives-desktop/libs/$target.name").bytes = target.bytes
+            }else if(!target.isDirectory() && target.path.contains("ios")){
+                file("../natives/natives-ios/libs/$target.name").bytes = target.bytes
             }
         }
 
         copy{
-            include{ file -> matches(file.path, ["arm", "x86"]) }
+            include{ file -> matches(file.path, ["arm", "x86"]) && !file.path.contains("ios") }
             from "libs/"
             into "../natives/natives-android/libs/"
         }
 
         //cleanup
         delete{
-        //    delete "libs"
+            delete "libs"
         }
 
         //delete extra garbage, not sure why it even exists
