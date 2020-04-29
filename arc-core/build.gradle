@@ -15,7 +15,6 @@ buildscript{
     }
 }
 
-
 task deleteJniFolder(type: Delete) {
     delete "jni"
     delete "docs"

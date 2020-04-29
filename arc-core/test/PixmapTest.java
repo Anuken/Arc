@@ -12,10 +12,10 @@ public class PixmapTest{
 
         Pixmap pix = new Pixmap(100, 100);
         pix.setColor(Color.red);
-        pix.drawCircle(50, 50, 30);
+        pix.fillCircle(50, 50, 30);
 
-        assertEquals(pix.getPixel(50, 50), Color.red.rgba());
-        assertEquals(pix.getPixel(54, 54), Color.red.rgba());
-        assertEquals(pix.getPixel(0, 0), 0);
+        assertEquals(Color.red.rgba(), pix.getPixel(50, 50));
+        assertEquals(Color.red.rgba(), pix.getPixel(54, 54));
+        assertEquals(0, pix.getPixel(0, 0));
     }
 }

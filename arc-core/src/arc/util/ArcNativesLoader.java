@@ -12,6 +12,6 @@ public class ArcNativesLoader{
 
         if(disableNativesLoading) return;
 
-        new SharedLibraryLoader().load("gdx");
+        new SharedLibraryLoader().load("arc");
     }
 }
