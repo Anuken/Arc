@@ -93,6 +93,7 @@ task natives(dependsOn: [classes, deleteJniFolder]){
             if(!target.isDirectory() && matches(target.path, ["windows", "mac", "linux"])){
                 file("../natives/natives-desktop/libs/$target.name").bytes = target.bytes
             }else if(!target.isDirectory() && target.path.contains("ios")){
+                file("../natives/natives-ios/libs").mkdirs()
                 file("../natives/natives-ios/libs/$target.name").bytes = target.bytes
             }
         }
