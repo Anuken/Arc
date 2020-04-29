@@ -26,5 +26,6 @@ include ":backends:backend-teavm"
 include ":natives"
 include ":natives:natives-desktop"
 include ":natives:natives-android"
+include ":natives:natives-ios"
 
 rootProject.name = "arc"
