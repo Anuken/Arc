@@ -184,7 +184,7 @@ public abstract class Graphics implements Disposable{
      * may be necessary for the window to be recreated in order for the changes to take effect.
      * Consult the documentation for the backend in use for more information.
      * <p>
-     * Supported on all GDX desktop backends and on Android (to disable the menu bar).
+     * Supported on all desktop backends and on Android (to disable the menu bar).
      * @param undecorated true if the window border or status bar should be hidden. false otherwise.
      */
     public abstract void setUndecorated(boolean undecorated);
@@ -196,7 +196,7 @@ public abstract class Graphics implements Disposable{
      * may be necessary for the window to be recreated in order for the changes to take effect.
      * Consult the documentation for the backend in use for more information.
      * <p>
-     * Supported on all GDX desktop backends.
+     * Supported on all desktop backends.
      */
     public abstract void setResizable(boolean resizable);
 

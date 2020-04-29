@@ -21,7 +21,7 @@ public interface ArtemisPlugin{
      * Artemis will consider abstract plugin dependencies fulfilled when a concrete subclass has been registered
      * beforehand.
      * <p>
-     * To create a common API with different implementations (like logging-api and logging-libgdx) create a superclass
+     * To create a common API with different implementations create a superclass
      * plugin that is abstract, and one subclass for each implementation.
      * @param b builder to register your dependencies with.
      */

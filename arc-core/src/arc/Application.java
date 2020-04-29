@@ -51,15 +51,7 @@ public interface Application extends Disposable{
         return false;
     }
 
-    /**
-     * Posts a runnable on the main loop thread.
-     * <p>
-     * In a multi-window application, the {@linkplain Core#graphics} and {@linkplain Core#input} values may be
-     * unpredictable at the time the Runnable is executed. If graphics or input are needed, they can be copied
-     * to a variable to be used in the Runnable. For example:
-     * <p><code>
-     * final Graphics graphics = Gdx.graphics;
-     */
+    /** Posts a runnable on the main loop thread.*/
     void post(Runnable runnable);
 
     /**

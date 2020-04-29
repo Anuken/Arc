@@ -30,11 +30,9 @@ import arc.util.*;
  * frameBuffer.getSide().getDirection(camera.direction);<br />
  * camera.update(); <br />
  * <p>
- * Gdx.gl.glClearColor(0, 0, 0, 1); <br />
- * Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); <br />
- * modelBatch.begin(camera); <br />
- * modelBatch.render(renderableProviders); <br />
- * modelBatch.end(); <br />
+ * Gl.clearColor(0, 0, 0, 1); <br />
+ * Gl.clear(Gl.colorBufferBit | Gl.depthBufferBit); <br />
+ * //render something <br />
  * } <br />
  * frameBuffer.end(); <br />
  * Cubemap cubemap = frameBuffer.getColorBufferCubemap();

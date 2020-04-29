@@ -1,16 +1,4 @@
-/*
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
- * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-#include "gdx2d.h"
+#include "pix.h"
 #include <stdlib.h>
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_FAILURE_USERMSG
@@ -54,25 +42,25 @@ static inline uint32_t to_format(uint32_t format, uint32_t color) {
 	uint32_t r, g, b, a, l;
 
 	switch(format) {
-		case GDX2D_FORMAT_ALPHA:
+		case PIX_FORMAT_ALPHA:
 			return color & 0xff;
-		case GDX2D_FORMAT_LUMINANCE_ALPHA:
+		case PIX_FORMAT_LUMINANCE_ALPHA:
 			r = (color & 0xff000000) >> 24;
 			g = (color & 0xff0000) >> 16;
 			b = (color & 0xff00) >> 8;
 			a = (color & 0xff);
 			l = ((uint32_t)(0.2126f * r + 0.7152 * g + 0.0722 * b) & 0xff) << 8;
 			return (l & 0xffffff00) | a;
-		case GDX2D_FORMAT_RGB888:
+		case PIX_FORMAT_RGB888:
 			return color >> 8;
-		case GDX2D_FORMAT_RGBA8888:
+		case PIX_FORMAT_RGBA8888:
 			return color;
-		case GDX2D_FORMAT_RGB565:
+		case PIX_FORMAT_RGB565:
 			r = (((color & 0xff000000) >> 27) << 11) & 0xf800;
 			g = (((color & 0xff0000) >> 18) << 5) & 0x7e0;
 			b = ((color & 0xff00) >> 11) & 0x1f;
 			return r | g | b;
-		case GDX2D_FORMAT_RGBA4444:
+		case PIX_FORMAT_RGBA4444:
 			r = (((color & 0xff000000) >> 28) << 12) & 0xf000;
 			g = (((color & 0xff0000) >> 20) << 8) & 0xf00;
 			b = (((color & 0xff00) >> 12) << 4) & 0xf0;
@@ -101,20 +89,20 @@ static inline uint32_t to_RGBA8888(uint32_t format, uint32_t color) {
 	if(!lu5) generate_look_ups();
 
 	switch(format) {
-		case GDX2D_FORMAT_ALPHA:
+		case PIX_FORMAT_ALPHA:
 			return (color & 0xff) | 0xffffff00;
-		case GDX2D_FORMAT_LUMINANCE_ALPHA:
+		case PIX_FORMAT_LUMINANCE_ALPHA:
 			return ((color & 0xff00) << 16) | ((color & 0xff00) << 8) | (color & 0xffff);
-		case GDX2D_FORMAT_RGB888:
+		case PIX_FORMAT_RGB888:
 			return (color << 8) | 0x000000ff;
-		case GDX2D_FORMAT_RGBA8888:
+		case PIX_FORMAT_RGBA8888:
 			return color;
-		case GDX2D_FORMAT_RGB565:
+		case PIX_FORMAT_RGB565:
 			r = lu5[(color & 0xf800) >> 11] << 24;
 			g = lu6[(color & 0x7e0) >> 5] << 16;
 			b = lu5[(color & 0x1f)] << 8;
 			return r | g | b | 0xff;
-		case GDX2D_FORMAT_RGBA4444:
+		case PIX_FORMAT_RGBA4444:
 			r = lu4[(color & 0xf000) >> 12] << 24;
 			g = lu4[(color & 0xf00) >> 8] << 16;
 			b = lu4[(color & 0xf0) >> 4] << 8;
@@ -157,12 +145,12 @@ static inline void set_pixel_RGBA4444(unsigned char *pixel_addr, uint32_t color)
 
 static inline set_pixel_func set_pixel_func_ptr(uint32_t format) {
 	switch(format) {
-		case GDX2D_FORMAT_ALPHA:			return &set_pixel_alpha;
-		case GDX2D_FORMAT_LUMINANCE_ALPHA:	return &set_pixel_luminance_alpha;
-		case GDX2D_FORMAT_RGB888:			return &set_pixel_RGB888;
-		case GDX2D_FORMAT_RGBA8888:			return &set_pixel_RGBA8888;
-		case GDX2D_FORMAT_RGB565:			return &set_pixel_RGB565;
-		case GDX2D_FORMAT_RGBA4444:			return &set_pixel_RGBA4444;
+		case PIX_FORMAT_ALPHA:			return &set_pixel_alpha;
+		case PIX_FORMAT_LUMINANCE_ALPHA:	return &set_pixel_luminance_alpha;
+		case PIX_FORMAT_RGB888:			return &set_pixel_RGB888;
+		case PIX_FORMAT_RGBA8888:			return &set_pixel_RGBA8888;
+		case PIX_FORMAT_RGB565:			return &set_pixel_RGB565;
+		case PIX_FORMAT_RGBA4444:			return &set_pixel_RGBA4444;
 		default: return &set_pixel_alpha; // better idea for a default?
 	}
 }
@@ -213,89 +201,89 @@ static inline uint32_t get_pixel_RGBA4444(unsigned char *pixel_addr) {
 
 static inline get_pixel_func get_pixel_func_ptr(uint32_t format) {
 	switch(format) {
-		case GDX2D_FORMAT_ALPHA:			return &get_pixel_alpha;
-		case GDX2D_FORMAT_LUMINANCE_ALPHA:	return &get_pixel_luminance_alpha;
-		case GDX2D_FORMAT_RGB888:			return &get_pixel_RGB888;
-		case GDX2D_FORMAT_RGBA8888:			return &get_pixel_RGBA8888;
-		case GDX2D_FORMAT_RGB565:			return &get_pixel_RGB565;
-		case GDX2D_FORMAT_RGBA4444:			return &get_pixel_RGBA4444;
+		case PIX_FORMAT_ALPHA:			return &get_pixel_alpha;
+		case PIX_FORMAT_LUMINANCE_ALPHA:	return &get_pixel_luminance_alpha;
+		case PIX_FORMAT_RGB888:			return &get_pixel_RGB888;
+		case PIX_FORMAT_RGBA8888:			return &get_pixel_RGBA8888;
+		case PIX_FORMAT_RGB565:			return &get_pixel_RGB565;
+		case PIX_FORMAT_RGBA4444:			return &get_pixel_RGBA4444;
 		default: return &get_pixel_alpha; // better idea for a default?
 	}
 }
 
-gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len) {
+pix_handle* pix_load(const unsigned char *buffer, uint32_t len) {
 	int32_t width, height, format;
 
 	const unsigned char* pixels = stbi_load_from_memory(buffer, len, &width, &height, &format, 0);
 	if (pixels == NULL)
 		return NULL;
 
-	gdx2d_pixmap* pixmap = (gdx2d_pixmap*)malloc(sizeof(gdx2d_pixmap));
+	pix_handle* pixmap = (pix_handle*)malloc(sizeof(pix_handle));
 	if (!pixmap) return 0;
 	pixmap->width = (uint32_t)width;
 	pixmap->height = (uint32_t)height;
 	pixmap->format = (uint32_t)format;
-	pixmap->blend = GDX2D_BLEND_SRC_OVER;
-	pixmap->scale = GDX2D_SCALE_BILINEAR;
+	pixmap->blend = PIX_BLEND_SRC_OVER;
+	pixmap->scale = PIX_SCALE_BILINEAR;
 	pixmap->pixels = pixels;
 	return pixmap;
 }
 
-uint32_t gdx2d_bytes_per_pixel(uint32_t format) {
+uint32_t pix_bytes_per_pixel(uint32_t format) {
 	switch(format) {
-		case GDX2D_FORMAT_ALPHA:
+		case PIX_FORMAT_ALPHA:
 			return 1;
-		case GDX2D_FORMAT_LUMINANCE_ALPHA:
-		case GDX2D_FORMAT_RGB565:
-		case GDX2D_FORMAT_RGBA4444:
+		case PIX_FORMAT_LUMINANCE_ALPHA:
+		case PIX_FORMAT_RGB565:
+		case PIX_FORMAT_RGBA4444:
 			return 2;
-		case GDX2D_FORMAT_RGB888:
+		case PIX_FORMAT_RGB888:
 			return 3;
-		case GDX2D_FORMAT_RGBA8888:
+		case PIX_FORMAT_RGBA8888:
 			return 4;
 		default:
 			return 4;
 	}
 }
 
-gdx2d_pixmap* gdx2d_new(uint32_t width, uint32_t height, uint32_t format) {
-	gdx2d_pixmap* pixmap = (gdx2d_pixmap*)malloc(sizeof(gdx2d_pixmap));
+pix_handle* pix_new(uint32_t width, uint32_t height, uint32_t format) {
+	pix_handle* pixmap = (pix_handle*)malloc(sizeof(pix_handle));
 	if (!pixmap) return 0;
 	pixmap->width = width;
 	pixmap->height = height;
 	pixmap->format = format;
-	pixmap->blend = GDX2D_BLEND_SRC_OVER;
-	pixmap->scale = GDX2D_SCALE_BILINEAR;
-	pixmap->pixels = (unsigned char*)malloc(width * height * gdx2d_bytes_per_pixel(format));
+	pixmap->blend = PIX_BLEND_SRC_OVER;
+	pixmap->scale = PIX_SCALE_BILINEAR;
+	pixmap->pixels = (unsigned char*)malloc(width * height * pix_bytes_per_pixel(format));
 	if (!pixmap->pixels) {
 		free((void*)pixmap);
 		return 0;
 	}
 	return pixmap;
 }
-void gdx2d_free(const gdx2d_pixmap* pixmap) {
+void pix_free(const pix_handle* pixmap) {
 	free((void*)pixmap->pixels);
 	free((void*)pixmap);
 }
 
-void gdx2d_set_blend (gdx2d_pixmap* pixmap, uint32_t blend) {
+void pix_set_blend (pix_handle* pixmap, uint32_t blend) {
     pixmap->blend = blend;
 }
 
-void gdx2d_set_scale (gdx2d_pixmap* pixmap, uint32_t scale) {
+void pix_set_scale (pix_handle* pixmap, uint32_t scale) {
 	pixmap->scale = scale;
 }
 
-const char *gdx2d_get_failure_reason(void) {
+const char *pix_get_failure_reason(void) {
 	return stbi_failure_reason();
 }
 
-static inline void clear_alpha(const gdx2d_pixmap* pixmap, uint32_t col) {
+static inline void clear_alpha(const pix_handle* pixmap, uint32_t col) {
 	int pixels = pixmap->width * pixmap->height;
 	memset((void*)pixmap->pixels, col, pixels);
 }
 
-static inline void clear_luminance_alpha(const gdx2d_pixmap* pixmap, uint32_t col) {
+static inline void clear_luminance_alpha(const pix_handle* pixmap, uint32_t col) {
 	int pixels = pixmap->width * pixmap->height;
 	unsigned short* ptr = (unsigned short*)pixmap->pixels;
 	unsigned short l = (col & 0xff) << 8 | (col >> 8);
@@ -306,7 +294,7 @@ static inline void clear_luminance_alpha(const gdx2d_pixmap* pixmap, uint32_t co
 	}
 }
 
-static inline void clear_RGB888(const gdx2d_pixmap* pixmap, uint32_t col) {
+static inline void clear_RGB888(const pix_handle* pixmap, uint32_t col) {
 	int pixels = pixmap->width * pixmap->height;
 	unsigned char* ptr = (unsigned char*)pixmap->pixels;
 	unsigned char r = (col & 0xff0000) >> 16;
@@ -323,7 +311,7 @@ static inline void clear_RGB888(const gdx2d_pixmap* pixmap, uint32_t col) {
 	}
 }
 
-static inline void clear_RGBA8888(const gdx2d_pixmap* pixmap, uint32_t col) {
+static inline void clear_RGBA8888(const pix_handle* pixmap, uint32_t col) {
 	int pixels = pixmap->width * pixmap->height;
 	uint32_t* ptr = (uint32_t*)pixmap->pixels;
 	unsigned char r = (col & 0xff000000) >> 24;
@@ -338,7 +326,7 @@ static inline void clear_RGBA8888(const gdx2d_pixmap* pixmap, uint32_t col) {
 	}
 }
 
-static inline void clear_RGB565(const gdx2d_pixmap* pixmap, uint32_t col) {
+static inline void clear_RGB565(const pix_handle* pixmap, uint32_t col) {
 	int pixels = pixmap->width * pixmap->height;
 	unsigned short* ptr = (unsigned short*)pixmap->pixels;
 	unsigned short l = col & 0xffff;
@@ -349,7 +337,7 @@ static inline void clear_RGB565(const gdx2d_pixmap* pixmap, uint32_t col) {
 	}
 }
 
-static inline void clear_RGBA4444(const gdx2d_pixmap* pixmap, uint32_t col) {
+static inline void clear_RGBA4444(const pix_handle* pixmap, uint32_t col) {
 	int pixels = pixmap->width * pixmap->height;
 	unsigned short* ptr = (unsigned short*)pixmap->pixels;
 	unsigned short l = col & 0xffff;
@@ -360,26 +348,26 @@ static inline void clear_RGBA4444(const gdx2d_pixmap* pixmap, uint32_t col) {
 	}
 }
 
-void gdx2d_clear(const gdx2d_pixmap* pixmap, uint32_t col) {
+void pix_clear(const pix_handle* pixmap, uint32_t col) {
 	col = to_format(pixmap->format, col);
 
 	switch(pixmap->format) {
-		case GDX2D_FORMAT_ALPHA:
+		case PIX_FORMAT_ALPHA:
 			clear_alpha(pixmap, col);
 			break;
-		case GDX2D_FORMAT_LUMINANCE_ALPHA:
+		case PIX_FORMAT_LUMINANCE_ALPHA:
 			clear_luminance_alpha(pixmap, col);
 			break;
-		case GDX2D_FORMAT_RGB888:
+		case PIX_FORMAT_RGB888:
 			clear_RGB888(pixmap, col);
 			break;
-		case GDX2D_FORMAT_RGBA8888:
+		case PIX_FORMAT_RGBA8888:
 			clear_RGBA8888(pixmap, col);
 			break;
-		case GDX2D_FORMAT_RGB565:
+		case PIX_FORMAT_RGB565:
 			clear_RGB565(pixmap, col);
 			break;
-		case GDX2D_FORMAT_RGBA4444:
+		case PIX_FORMAT_RGBA4444:
 			clear_RGBA4444(pixmap, col);
 			break;
 		default:
@@ -387,7 +375,7 @@ void gdx2d_clear(const gdx2d_pixmap* pixmap, uint32_t col) {
 	}
 }
 
-static inline int32_t in_pixmap(const gdx2d_pixmap* pixmap, int32_t x, int32_t y) {
+static inline int32_t in_pixmap(const pix_handle* pixmap, int32_t x, int32_t y) {
 	if(x < 0 || y < 0)
 		return 0;
 	if(x >= pixmap->width || y >= pixmap->height)
@@ -402,32 +390,32 @@ static inline void set_pixel(unsigned char* pixels, uint32_t width, uint32_t hei
 	pixel_func(pixels, col);
 }
 
-uint32_t gdx2d_get_pixel(const gdx2d_pixmap* pixmap, int32_t x, int32_t y) {
+uint32_t pix_get_pixel(const pix_handle* pixmap, int32_t x, int32_t y) {
 	if(!in_pixmap(pixmap, x, y))
 		return 0;
-	unsigned char* ptr = (unsigned char*)pixmap->pixels + (x + pixmap->width * y) * gdx2d_bytes_per_pixel(pixmap->format);
+	unsigned char* ptr = (unsigned char*)pixmap->pixels + (x + pixmap->width * y) * pix_bytes_per_pixel(pixmap->format);
 	return to_RGBA8888(pixmap->format, get_pixel_func_ptr(pixmap->format)(ptr));
 }
 
-void gdx2d_set_pixel(const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_t col) {
+void pix_set_pixel(const pix_handle* pixmap, int32_t x, int32_t y, uint32_t col) {
 	if(pixmap->blend) {
-		uint32_t dst = gdx2d_get_pixel(pixmap, x, y);
+		uint32_t dst = pix_get_pixel(pixmap, x, y);
 		col = blend(col, dst);
 		col = to_format(pixmap->format, col);
-		set_pixel((unsigned char*)pixmap->pixels, pixmap->width, pixmap->height, gdx2d_bytes_per_pixel(pixmap->format), set_pixel_func_ptr(pixmap->format), x, y, col);
+		set_pixel((unsigned char*)pixmap->pixels, pixmap->width, pixmap->height, pix_bytes_per_pixel(pixmap->format), set_pixel_func_ptr(pixmap->format), x, y, col);
 	} else {
 		col = to_format(pixmap->format, col);
-		set_pixel((unsigned char*)pixmap->pixels, pixmap->width, pixmap->height, gdx2d_bytes_per_pixel(pixmap->format), set_pixel_func_ptr(pixmap->format), x, y, col);
+		set_pixel((unsigned char*)pixmap->pixels, pixmap->width, pixmap->height, pix_bytes_per_pixel(pixmap->format), set_pixel_func_ptr(pixmap->format), x, y, col);
 	}
 }
 
-void gdx2d_draw_line(const gdx2d_pixmap* pixmap, int32_t x0, int32_t y0, int32_t x1, int32_t y1, uint32_t col) {
+void pix_draw_line(const pix_handle* pixmap, int32_t x0, int32_t y0, int32_t x1, int32_t y1, uint32_t col) {
     int32_t dy = y1 - y0;
     int32_t dx = x1 - x0;
 	int32_t fraction = 0;
     int32_t stepx, stepy;
 	unsigned char* ptr = (unsigned char*)pixmap->pixels;
-	uint32_t bpp = gdx2d_bytes_per_pixel(pixmap->format);
+	uint32_t bpp = pix_bytes_per_pixel(pixmap->format);
 	set_pixel_func pset = set_pixel_func_ptr(pixmap->format);
 	get_pixel_func pget = get_pixel_func_ptr(pixmap->format);
 	uint32_t col_format = to_format(pixmap->format, col);
@@ -481,12 +469,12 @@ void gdx2d_draw_line(const gdx2d_pixmap* pixmap, int32_t x0, int32_t y0, int32_t
 	}
 }
 
-static inline void hline(const gdx2d_pixmap* pixmap, int32_t x1, int32_t x2, int32_t y, uint32_t col) {
+static inline void hline(const pix_handle* pixmap, int32_t x1, int32_t x2, int32_t y, uint32_t col) {
 	int32_t tmp = 0;
 	set_pixel_func pset = set_pixel_func_ptr(pixmap->format);
 	get_pixel_func pget = get_pixel_func_ptr(pixmap->format);
 	unsigned char* ptr = (unsigned char*)pixmap->pixels;
-	uint32_t bpp = gdx2d_bytes_per_pixel(pixmap->format);
+	uint32_t bpp = pix_bytes_per_pixel(pixmap->format);
 	uint32_t col_format = to_format(pixmap->format, col);
 
 	if(y < 0 || y >= (int32_t)pixmap->height) return;
@@ -516,12 +504,12 @@ static inline void hline(const gdx2d_pixmap* pixmap, int32_t x1, int32_t x2, int
 	}
 }
 
-static inline void vline(const gdx2d_pixmap* pixmap, int32_t y1, int32_t y2, int32_t x, uint32_t col) {
+static inline void vline(const pix_handle* pixmap, int32_t y1, int32_t y2, int32_t x, uint32_t col) {
 	int32_t tmp = 0;
 	set_pixel_func pset = set_pixel_func_ptr(pixmap->format);
 	get_pixel_func pget = get_pixel_func_ptr(pixmap->format);
 	unsigned char* ptr = (unsigned char*)pixmap->pixels;
-	uint32_t bpp = gdx2d_bytes_per_pixel(pixmap->format);
+	uint32_t bpp = pix_bytes_per_pixel(pixmap->format);
 	uint32_t stride = bpp * pixmap->width;
 	uint32_t col_format = to_format(pixmap->format, col);
 
@@ -552,7 +540,7 @@ static inline void vline(const gdx2d_pixmap* pixmap, int32_t y1, int32_t y2, int
 	}
 }
 
-void gdx2d_draw_rect(const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_t width, uint32_t height, uint32_t col) {
+void pix_draw_rect(const pix_handle* pixmap, int32_t x, int32_t y, uint32_t width, uint32_t height, uint32_t col) {
 	hline(pixmap, x, x + width - 1, y, col);
 	hline(pixmap, x, x + width - 1, y + height - 1, col);
 	vline(pixmap, y, y + height - 1, x, col);
@@ -584,14 +572,14 @@ static inline void circle_points(unsigned char* pixels, uint32_t width, uint32_t
     }
 }
 
-void gdx2d_draw_circle(const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_t radius, uint32_t col) {
+void pix_draw_circle(const pix_handle* pixmap, int32_t x, int32_t y, uint32_t radius, uint32_t col) {
     int32_t px = 0;
     int32_t py = radius;
     int32_t p = (5 - (int32_t)radius*4)/4;
 	unsigned char* pixels = (unsigned char*)pixmap->pixels;
 	uint32_t width = pixmap->width;
 	uint32_t height = pixmap->height;
-	uint32_t bpp = gdx2d_bytes_per_pixel(pixmap->format);
+	uint32_t bpp = pix_bytes_per_pixel(pixmap->format);
 	set_pixel_func pixel_func = set_pixel_func_ptr(pixmap->format);
 	col = to_format(pixmap->format, col);
 
@@ -608,7 +596,7 @@ void gdx2d_draw_circle(const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_
     }
 }
 
-void gdx2d_fill_rect(const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_t width, uint32_t height, uint32_t col) {
+void pix_fill_rect(const pix_handle* pixmap, int32_t x, int32_t y, uint32_t width, uint32_t height, uint32_t col) {
 	int32_t x2 = x + width - 1;
 	int32_t y2 = y + height - 1;
 
@@ -629,7 +617,7 @@ void gdx2d_fill_rect(const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_t 
 	}
 }
 
-void gdx2d_fill_circle(const gdx2d_pixmap* pixmap, int32_t x0, int32_t y0, uint32_t radius, uint32_t col) {
+void pix_fill_circle(const pix_handle* pixmap, int32_t x0, int32_t y0, uint32_t radius, uint32_t col) {
 	int32_t f = 1 - (int32_t)radius;
 	int32_t ddF_x = 1;
 	int32_t ddF_y = -2 * (int32_t)radius;
@@ -665,7 +653,7 @@ void gdx2d_fill_circle(const gdx2d_pixmap* pixmap, int32_t x0, int32_t y0, uint3
   { if (_y2 > _y1) { edge.y1 = _y1; edge.y2 = _y2; edge.x1 = _x1; edge.x2 = _x2; } \
     else { edge.y2 = _y1; edge.y1 = _y2; edge.x2 = _x1; edge.x1 = _x2; } }
 
-void gdx2d_fill_triangle(const gdx2d_pixmap* pixmap, int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, uint32_t col) {
+void pix_fill_triangle(const pix_handle* pixmap, int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, uint32_t col) {
 
 	// this structure is used to sort edges according to y-component.
 	struct edge {
@@ -766,15 +754,15 @@ void gdx2d_fill_triangle(const gdx2d_pixmap* pixmap, int32_t x1, int32_t y1, int
 	return;
 }
 
-static inline void blit_same_size(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap,
+static inline void blit_same_size(const pix_handle* src_pixmap, const pix_handle* dst_pixmap,
 						 			 int32_t src_x, int32_t src_y,
 									 int32_t dst_x, int32_t dst_y,
 									 uint32_t width, uint32_t height) {
 	set_pixel_func pset = set_pixel_func_ptr(dst_pixmap->format);
 	get_pixel_func pget = get_pixel_func_ptr(src_pixmap->format);
 	get_pixel_func dpget = get_pixel_func_ptr(dst_pixmap->format);
-	uint32_t sbpp = gdx2d_bytes_per_pixel(src_pixmap->format);
-	uint32_t dbpp = gdx2d_bytes_per_pixel(dst_pixmap->format);
+	uint32_t sbpp = pix_bytes_per_pixel(src_pixmap->format);
+	uint32_t dbpp = pix_bytes_per_pixel(dst_pixmap->format);
 	uint32_t spitch = sbpp * src_pixmap->width;
 	uint32_t dpitch = dbpp * dst_pixmap->width;
 
@@ -807,14 +795,14 @@ static inline void blit_same_size(const gdx2d_pixmap* src_pixmap, const gdx2d_pi
 	}
 }
 
-static inline void blit_bilinear(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap,
+static inline void blit_bilinear(const pix_handle* src_pixmap, const pix_handle* dst_pixmap,
 		   int32_t src_x, int32_t src_y, uint32_t src_width, uint32_t src_height,
 		   int32_t dst_x, int32_t dst_y, uint32_t dst_width, uint32_t dst_height) {
 	set_pixel_func pset = set_pixel_func_ptr(dst_pixmap->format);
 	get_pixel_func pget = get_pixel_func_ptr(src_pixmap->format);
 	get_pixel_func dpget = get_pixel_func_ptr(dst_pixmap->format);
-	uint32_t sbpp = gdx2d_bytes_per_pixel(src_pixmap->format);
-	uint32_t dbpp = gdx2d_bytes_per_pixel(dst_pixmap->format);
+	uint32_t sbpp = pix_bytes_per_pixel(src_pixmap->format);
+	uint32_t dbpp = pix_bytes_per_pixel(dst_pixmap->format);
 	uint32_t spitch = sbpp * src_pixmap->width;
 	uint32_t dpitch = dbpp * dst_pixmap->width;
 
@@ -888,14 +876,14 @@ static inline void blit_bilinear(const gdx2d_pixmap* src_pixmap, const gdx2d_pix
 	}
 }
 
-static inline void blit_linear(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap,
+static inline void blit_linear(const pix_handle* src_pixmap, const pix_handle* dst_pixmap,
 		   int32_t src_x, int32_t src_y, uint32_t src_width, uint32_t src_height,
 		   int32_t dst_x, int32_t dst_y, uint32_t dst_width, uint32_t dst_height) {
 	set_pixel_func pset = set_pixel_func_ptr(dst_pixmap->format);
 	get_pixel_func pget = get_pixel_func_ptr(src_pixmap->format);
 	get_pixel_func dpget = get_pixel_func_ptr(dst_pixmap->format);
-	uint32_t sbpp = gdx2d_bytes_per_pixel(src_pixmap->format);
-	uint32_t dbpp = gdx2d_bytes_per_pixel(dst_pixmap->format);
+	uint32_t sbpp = pix_bytes_per_pixel(src_pixmap->format);
+	uint32_t dbpp = pix_bytes_per_pixel(dst_pixmap->format);
 	uint32_t spitch = sbpp * src_pixmap->width;
 	uint32_t dpitch = dbpp * dst_pixmap->width;
 
@@ -937,16 +925,16 @@ static inline void blit_linear(const gdx2d_pixmap* src_pixmap, const gdx2d_pixma
 	}
 }
 
-static inline void blit(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap,
+static inline void blit(const pix_handle* src_pixmap, const pix_handle* dst_pixmap,
 					   int32_t src_x, int32_t src_y, uint32_t src_width, uint32_t src_height,
 					   int32_t dst_x, int32_t dst_y, uint32_t dst_width, uint32_t dst_height) {
-	if(dst_pixmap->scale == GDX2D_SCALE_NEAREST)
+	if(dst_pixmap->scale == PIX_SCALE_NEAREST)
 		blit_linear(src_pixmap, dst_pixmap, src_x, src_y, src_width, src_height, dst_x, dst_y, dst_width, dst_height);
-	if(dst_pixmap->scale == GDX2D_SCALE_BILINEAR)
+	if(dst_pixmap->scale == PIX_SCALE_BILINEAR)
 		blit_bilinear(src_pixmap, dst_pixmap, src_x, src_y, src_width, src_height, dst_x, dst_y, dst_width, dst_height);
 }
 
-void gdx2d_draw_pixmap(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap,
+void pix_draw_pixmap(const pix_handle* src_pixmap, const pix_handle* dst_pixmap,
 					   int32_t src_x, int32_t src_y, uint32_t src_width, uint32_t src_height,
 					   int32_t dst_x, int32_t dst_y, uint32_t dst_width, uint32_t dst_height) {
 	if(src_width == dst_width && src_height == dst_height) {

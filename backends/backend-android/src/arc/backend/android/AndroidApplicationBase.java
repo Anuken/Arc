@@ -10,7 +10,7 @@ import arc.Application;
 import arc.struct.Array;
 
 /**
- * Interface that abstracts the Android application class usages, so that libGDX can be used with a fragment (or with any other
+ * Interface that abstracts the Android application class usages, so that Arc can be used with a fragment (or with any other
  * client code)
  * @author Bartol Karuza (me@bartolkaruza.com)
  * @author davebaol

@@ -113,7 +113,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
     }
 
     protected EGLConfigChooser getEglConfigChooser(){
-        return new GdxEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples);
+        return new ArcEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples);
     }
 
     protected void updatePpi(){
@@ -295,8 +295,8 @@ public class AndroidGraphics extends Graphics implements Renderer{
         int d = getAttrib(egl, display, config, EGL10.EGL_DEPTH_SIZE, 0);
         int s = getAttrib(egl, display, config, EGL10.EGL_STENCIL_SIZE, 0);
         int samples = Math.max(getAttrib(egl, display, config, EGL10.EGL_SAMPLES, 0),
-        getAttrib(egl, display, config, GdxEglConfigChooser.EGL_COVERAGE_SAMPLES_NV, 0));
-        boolean coverageSample = getAttrib(egl, display, config, GdxEglConfigChooser.EGL_COVERAGE_SAMPLES_NV, 0) != 0;
+        getAttrib(egl, display, config, ArcEglConfigChooser.EGL_COVERAGE_SAMPLES_NV, 0));
+        boolean coverageSample = getAttrib(egl, display, config, ArcEglConfigChooser.EGL_COVERAGE_SAMPLES_NV, 0) != 0;
 
         Log.infoTag(LOG_TAG, "framebuffer: (" + r + ", " + g + ", " + b + ", " + a + ")");
         Log.infoTag(LOG_TAG, "depthbuffer: (" + d + ")");

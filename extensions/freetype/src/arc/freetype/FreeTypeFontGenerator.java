@@ -35,7 +35,7 @@ import java.nio.ByteBuffer;
  * Usage example:
  *
  * <pre>
- * FreeTypeFontGenerator gen = new FreeTypeFontGenerator(Gdx.files.internal(&quot;myfont.ttf&quot;));
+ * FreeTypeFontGenerator gen = new FreeTypeFontGenerator(Core.files.internal(&quot;myfont.ttf&quot;));
  * BitmapFont font = gen.generateFont(16);
  * gen.dispose(); // Don't dispose if doing incremental glyph generation.
  * </pre>

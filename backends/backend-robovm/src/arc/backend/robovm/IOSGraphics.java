@@ -140,7 +140,7 @@ public class IOSGraphics extends Graphics{
 
         String machineString = HWMachine.getMachineString();
         IOSDevice device = IOSDevice.getDevice(machineString);
-        if(device == null) Log.err(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
+        if(device == null) Log.err(tag, "Machine ID: " + machineString + " not found, please report!");
         int ppi = device != null ? device.ppi : 163;
         density = device != null ? device.ppi / 160f : scale;
         ppiX = ppi;

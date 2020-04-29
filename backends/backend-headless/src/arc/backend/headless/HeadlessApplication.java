@@ -9,7 +9,7 @@ import arc.util.*;
 import arc.util.async.*;
 
 /**
- * a headless implementation of a GDX Application primarily intended to be used in servers
+ * a headless implementation of an application primarily intended to be used in servers
  * @author Jon Renner
  */
 public class HeadlessApplication implements Application{
@@ -55,7 +55,7 @@ public class HeadlessApplication implements Application{
         initialize();
     }
 
-    private void initialize(){
+    protected void initialize(){
         mainLoopThread = new Thread("HeadlessApplication"){
             @Override
             public void run(){

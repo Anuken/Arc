@@ -29,8 +29,8 @@ import java.nio.*;
  * @author badlogicgames@gmail.com
  */
 public class Pixmap implements Disposable{
-    static final int GDX2D_FORMAT_ALPHA = 1, GDX2D_FORMAT_LUMINANCE_ALPHA = 2, GDX2D_FORMAT_RGB888 = 3, GDX2D_FORMAT_RGBA8888 = 4, GDX2D_FORMAT_RGB565 = 5, GDX2D_FORMAT_RGBA4444 = 6;
-    static final int GDX2D_SCALE_NEAREST = 0, GDX2D_SCALE_LINEAR = 1;
+    static final int pixmapFormatAlpha = 1, pixmapFormatLuminanceAlpha = 2, pixmapFormatRGB888 = 3, pixmapFormatRGBA8888 = 4, pixmapFormatRGB565 = 5, pixmapFormatRGBA4444 = 6;
+    static final int pixmapScaleNearest = 0, pixmapScaleLinear = 1;
     
     final NativePixmap pixmap;
     int color = 0;
@@ -50,7 +50,7 @@ public class Pixmap implements Disposable{
      * @param format the {@link Format}
      */
     public Pixmap(int width, int height, Format format){
-        pixmap = new NativePixmap(width, height, format.toGdx2DPixmapFormat());
+        pixmap = new NativePixmap(width, height, format.toPixmapFormat());
         setColor(0, 0, 0, 0);
         fill();
     }
@@ -371,7 +371,7 @@ public class Pixmap implements Disposable{
 
     /** @return the {@link Format} of this Pixmap. */
     public Format getFormat(){
-        return Format.fromGdx2DPixmapFormat(pixmap.format);
+        return Format.fromPixmapFormat(pixmap.format);
     }
 
     /** @return the currently set {@link Blending} */
@@ -401,7 +401,7 @@ public class Pixmap implements Disposable{
      */
     public void setFilter(Filter filter){
         this.filter = filter;
-        int scale = filter == Filter.NearestNeighbour ? GDX2D_SCALE_NEAREST : GDX2D_SCALE_LINEAR;
+        int scale = filter == Filter.NearestNeighbour ? pixmapScaleNearest : pixmapScaleLinear;
         setScale(pixmap.basePtr, scale);
     }
 
@@ -412,60 +412,60 @@ public class Pixmap implements Disposable{
     public enum Format{
         Alpha, Intensity, LuminanceAlpha, RGB565, RGBA4444, RGB888, RGBA8888;
 
-        public int toGdx2DPixmapFormat(){
+        public int toPixmapFormat(){
             switch(this){
                 case Alpha:
-                case Intensity: return GDX2D_FORMAT_ALPHA;
-                case LuminanceAlpha: return GDX2D_FORMAT_LUMINANCE_ALPHA;
-                case RGB565: return GDX2D_FORMAT_RGB565;
-                case RGBA4444: return GDX2D_FORMAT_RGBA4444;
-                case RGB888: return GDX2D_FORMAT_RGB888;
-                case RGBA8888: return GDX2D_FORMAT_RGBA8888;
+                case Intensity: return pixmapFormatAlpha;
+                case LuminanceAlpha: return pixmapFormatLuminanceAlpha;
+                case RGB565: return pixmapFormatRGB565;
+                case RGBA4444: return pixmapFormatRGBA4444;
+                case RGB888: return pixmapFormatRGB888;
+                case RGBA8888: return pixmapFormatRGBA8888;
                 default: throw new ArcRuntimeException("Unknown Format: " + this);
             }
         }
 
-        public static Format fromGdx2DPixmapFormat(int format){
+        public static Format fromPixmapFormat(int format){
             switch(format){
-                case GDX2D_FORMAT_ALPHA: return Alpha;
-                case GDX2D_FORMAT_LUMINANCE_ALPHA: return LuminanceAlpha;
-                case GDX2D_FORMAT_RGB565: return RGB565;
-                case GDX2D_FORMAT_RGBA4444: return RGBA4444;
-                case GDX2D_FORMAT_RGB888: return RGB888;
-                case GDX2D_FORMAT_RGBA8888: return RGBA8888;
-                default: throw new ArcRuntimeException("Unknown Gdx2DPixmap Format: " + format);
+                case pixmapFormatAlpha: return Alpha;
+                case pixmapFormatLuminanceAlpha: return LuminanceAlpha;
+                case pixmapFormatRGB565: return RGB565;
+                case pixmapFormatRGBA4444: return RGBA4444;
+                case pixmapFormatRGB888: return RGB888;
+                case pixmapFormatRGBA8888: return RGBA8888;
+                default: throw new ArcRuntimeException("Unknown Pixmap Format: " + format);
             }
         }
 
         public int toGlFormat(){
-            return Pixmap.toGlFormat(toGdx2DPixmapFormat());
+            return Pixmap.toGlFormat(toPixmapFormat());
         }
 
         public int toGlType(){
-            return Pixmap.toGlType(toGdx2DPixmapFormat());
+            return Pixmap.toGlType(toPixmapFormat());
         }
     }
 
     private static int toGlFormat(int format){
         switch(format){
-            case GDX2D_FORMAT_ALPHA: return GL20.GL_ALPHA;
-            case GDX2D_FORMAT_LUMINANCE_ALPHA: return GL20.GL_LUMINANCE_ALPHA;
-            case GDX2D_FORMAT_RGB888:
-            case GDX2D_FORMAT_RGB565: return GL20.GL_RGB;
-            case GDX2D_FORMAT_RGBA8888:
-            case GDX2D_FORMAT_RGBA4444: return GL20.GL_RGBA;
+            case pixmapFormatAlpha: return GL20.GL_ALPHA;
+            case pixmapFormatLuminanceAlpha: return GL20.GL_LUMINANCE_ALPHA;
+            case pixmapFormatRGB888:
+            case pixmapFormatRGB565: return GL20.GL_RGB;
+            case pixmapFormatRGBA8888:
+            case pixmapFormatRGBA4444: return GL20.GL_RGBA;
             default: throw new ArcRuntimeException("unknown format: " + format);
         }
     }
 
     private static int toGlType(int format){
         switch(format){
-            case GDX2D_FORMAT_ALPHA:
-            case GDX2D_FORMAT_LUMINANCE_ALPHA:
-            case GDX2D_FORMAT_RGB888:
-            case GDX2D_FORMAT_RGBA8888: return GL20.GL_UNSIGNED_BYTE;
-            case GDX2D_FORMAT_RGB565: return GL20.GL_UNSIGNED_SHORT_5_6_5;
-            case GDX2D_FORMAT_RGBA4444: return GL20.GL_UNSIGNED_SHORT_4_4_4_4;
+            case pixmapFormatAlpha:
+            case pixmapFormatLuminanceAlpha:
+            case pixmapFormatRGB888:
+            case pixmapFormatRGBA8888: return GL20.GL_UNSIGNED_BYTE;
+            case pixmapFormatRGB565: return GL20.GL_UNSIGNED_SHORT_5_6_5;
+            case pixmapFormatRGBA4444: return GL20.GL_UNSIGNED_SHORT_4_4_4_4;
             default: throw new ArcRuntimeException("unknown format: " + format);
         }
     }
@@ -487,19 +487,19 @@ public class Pixmap implements Disposable{
     }
 
     /*JNI
-    #include <gdx2d.h>
+    #include <pix.h>
     #include <stdlib.h>
      */
 
     private static native ByteBuffer load(long[] nativeData, byte[] buffer, int offset, int len); /*MANUAL
         const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);
-        gdx2d_pixmap* pixmap = gdx2d_load(p_buffer + offset, len);
+        pix_handle* pixmap = pix_load(p_buffer + offset, len);
         env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
 
         if(pixmap==0)
             return 0;
 
-        jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format));
+        jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * pix_bytes_per_pixel(pixmap->format));
         jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
         p_native_data[0] = (jlong)pixmap;
         p_native_data[1] = pixmap->width;
@@ -511,11 +511,11 @@ public class Pixmap implements Disposable{
      */
 
     private static native ByteBuffer newPixmap(long[] nativeData, int width, int height, int format); /*MANUAL
-        gdx2d_pixmap* pixmap = gdx2d_new(width, height, format);
+        pix_handle* pixmap = pix_new(width, height, format);
         if(pixmap==0)
             return 0;
 
-        jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format));
+        jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * pix_bytes_per_pixel(pixmap->format));
         jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
         p_native_data[0] = (jlong)pixmap;
         p_native_data[1] = pixmap->width;
@@ -527,60 +527,60 @@ public class Pixmap implements Disposable{
      */
 
     private static native void free(long pixmap); /*
-        gdx2d_free((gdx2d_pixmap*)pixmap);
+        pix_free((pix_handle*)pixmap);
      */
 
     private static native void clear(long pixmap, int color); /*
-        gdx2d_clear((gdx2d_pixmap*)pixmap, color);
+        pix_clear((pix_handle*)pixmap, color);
      */
 
     private static native void setPixel(long pixmap, int x, int y, int color); /*
-        gdx2d_set_pixel((gdx2d_pixmap*)pixmap, x, y, color);
+        pix_set_pixel((pix_handle*)pixmap, x, y, color);
      */
 
     private static native int getPixel(long pixmap, int x, int y); /*
-        return gdx2d_get_pixel((gdx2d_pixmap*)pixmap, x, y);
+        return pix_get_pixel((pix_handle*)pixmap, x, y);
      */
 
     private static native void drawLine(long pixmap, int x, int y, int x2, int y2, int color); /*
-        gdx2d_draw_line((gdx2d_pixmap*)pixmap, x, y, x2, y2, color);
+        pix_draw_line((pix_handle*)pixmap, x, y, x2, y2, color);
      */
 
     private static native void drawRect(long pixmap, int x, int y, int width, int height, int color); /*
-        gdx2d_draw_rect((gdx2d_pixmap*)pixmap, x, y, width, height, color);
+        pix_draw_rect((pix_handle*)pixmap, x, y, width, height, color);
      */
 
     private static native void drawCircle(long pixmap, int x, int y, int radius, int color); /*
-        gdx2d_draw_circle((gdx2d_pixmap*)pixmap, x, y, radius, color);
+        pix_draw_circle((pix_handle*)pixmap, x, y, radius, color);
      */
 
     private static native void fillRect(long pixmap, int x, int y, int width, int height, int color); /*
-        gdx2d_fill_rect((gdx2d_pixmap*)pixmap, x, y, width, height, color);
+        pix_fill_rect((pix_handle*)pixmap, x, y, width, height, color);
      */
 
     private static native void fillCircle(long pixmap, int x, int y, int radius, int color); /*
-        gdx2d_fill_circle((gdx2d_pixmap*)pixmap, x, y, radius, color);
+        pix_fill_circle((pix_handle*)pixmap, x, y, radius, color);
      */
 
     private static native void fillTriangle(long pixmap, int x1, int y1, int x2, int y2, int x3, int y3, int color); /*
-        gdx2d_fill_triangle((gdx2d_pixmap*)pixmap, x1, y1, x2, y2, x3, y3, color);
+        pix_fill_triangle((pix_handle*)pixmap, x1, y1, x2, y2, x3, y3, color);
      */
 
     private static native void drawPixmap(long src, long dst, int srcX, int srcY, int srcWidth, int srcHeight, int dstX,
                                           int dstY, int dstWidth, int dstHeight); /*
-        gdx2d_draw_pixmap((gdx2d_pixmap*)src, (gdx2d_pixmap*)dst, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
+        pix_draw_pixmap((pix_handle*)src, (pix_handle*)dst, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
      */
 
     private static native void setBlend(long src, int blend); /*
-        gdx2d_set_blend((gdx2d_pixmap*)src, blend);
+        pix_set_blend((pix_handle*)src, blend);
      */
 
     private static native void setScale(long src, int scale); /*
-        gdx2d_set_scale((gdx2d_pixmap*)src, scale);
+        pix_set_scale((pix_handle*)src, scale);
      */
 
     public static native String getFailureReason(); /*
-        return env->NewStringUTF(gdx2d_get_failure_reason());
+        return env->NewStringUTF(pix_get_failure_reason());
      */
 
     private static class NativePixmap{

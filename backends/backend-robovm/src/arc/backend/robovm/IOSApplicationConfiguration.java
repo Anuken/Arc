@@ -33,7 +33,7 @@ public class IOSApplicationConfiguration{
      * Scale factor to use on large screens with retina display, i.e. iPad 3+ (has no effect on non-retina screens).
      * <ul>
      * <li>1.0 = no scaling (everything is in pixels)
-     * <li>0.5 = LibGDX will behave as you would only have half the pixels. I.e. instead of 2048x1536 you will work in 1024x768.
+     * <li>0.5 = Arc will behave as you would only have half the pixels. I.e. instead of 2048x1536 you will work in 1024x768.
      * This looks pixel perfect and will save you the trouble to create bigger graphics for the retina display.
      * <li>any other value: scales the screens according to your scale factor. A scale factor oof 0.75, 0.8, 1.2, 1.5 etc. works
      * very well without any artifacts!
@@ -44,7 +44,7 @@ public class IOSApplicationConfiguration{
      * Scale factor to use on small screens with retina display, i.e. iPhone 4+, iPod 4+ (has no effect on non-retina screens).
      * <ul>
      * <li>1.0 = no scaling (everything is in pixels)
-     * <li>0.5 = LibGDX will behave as you would only have half the pixels. I.e. instead of 960x640 you will work in 480x320. This
+     * <li>0.5 = Arc will behave as you would only have half the pixels. I.e. instead of 960x640 you will work in 480x320. This
      * looks pixel perfect and will save you the trouble to create bigger graphics for the retina display.
      * <li>any other value: scales the screens according to your scale factor. A scale factor of 0.75, 0.8, 1.2, 1.5 etc. works
      * very well without any artifacts!
@@ -101,12 +101,12 @@ public class IOSApplicationConfiguration{
     /** whether the home indicator should be hidden or not **/
     public boolean hideHomeIndicator = true;
 
-    /** Whether to override the ringer/mute switch, see https://github.com/libgdx/libgdx/issues/4430 */
+    /** Whether to override the ringer/mute switch, see #4430 */
     public boolean overrideRingerSwitch = false;
 
     /**
      * Edges where app gestures must be fired over system gestures.
-     * Prior to iOS 11, UIRectEdge.All was default behaviour if status bar hidden, see https://github.com/libgdx/libgdx/issues/5110
+     * Prior to iOS 11, UIRectEdge.All was default behaviour if status bar hidden, see #5110
      **/
     public UIRectEdge screenEdgesDeferringSystemGestures = UIRectEdge.None;
 }

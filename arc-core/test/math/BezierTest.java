@@ -44,7 +44,7 @@ public class BezierTest{
     protected Vec2[] create(Vec2[] points){
         if(useSetter){
             bezier = new Bezier<>();
-            if(type == ImportType.LibGDXArrays){
+            if(type == ImportType.ArcArrays){
                 bezier.set(new Array<>(points), 0, points.length);
             }else if(type == ImportType.JavaArrays){
                 bezier.set(points, 0, points.length);
@@ -52,7 +52,7 @@ public class BezierTest{
                 bezier.set(points);
             }
         }else{
-            if(type == ImportType.LibGDXArrays){
+            if(type == ImportType.ArcArrays){
                 bezier = new Bezier<>(new Array<>(points), 0, points.length);
             }else if(type == ImportType.JavaArrays){
                 bezier = new Bezier<>(points, 0, points.length);
@@ -87,6 +87,6 @@ public class BezierTest{
     }
 
     private enum ImportType{
-        LibGDXArrays, JavaArrays, JavaVarArgs
+        ArcArrays, JavaArrays, JavaVarArgs
     }
 }

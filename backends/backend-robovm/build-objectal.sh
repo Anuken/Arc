@@ -26,11 +26,11 @@ lipo $BUILD_DIR/armv7/libObjectAL.a \
      -create \
      -output $BUILD_DIR/libObjectAL.a
 
-cp $BUILD_DIR/libObjectAL.a $BASE/../../gdx/libs/ios32/
+cp $BUILD_DIR/libObjectAL.a $BASE/../../natives/natives-ios/libs/ios32/
 
 lipo $BUILD_DIR/tvos-arm64/libObjectAL.a \
      $BUILD_DIR/tvos-x86_64/libObjectAL.a \
      -create \
      -output $BUILD_DIR/libObjectAL.a.tvos
 
-cp $BUILD_DIR/libObjectAL.a.tvos $BASE/../../gdx/libs/ios32/
+cp $BUILD_DIR/libObjectAL.a.tvos $BASE/../../natives/natives-ios/libs/ios32/

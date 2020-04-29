@@ -45,7 +45,7 @@ public final class PingPongBuffer{
     private TextureFilter filterMag = TextureFilter.Linear;
 
     /**
-     * Initializes ping-pong buffer with the size of the LibGDX client's area (usually window size).
+     * Initializes ping-pong buffer with the size of the client's area (usually window size).
      * If you use different OpenGL viewport, better use {@link #PingPongBuffer(Format, int, int)}
      * and specify the size manually.
      * @param fbFormat Pixel format of buffer.

@@ -800,7 +800,6 @@ public class Color{
      * @param s     saturation 0-100
      * @param v     value 0-100
      * @param alpha 0-1
-     * @return RGB values in LibGDX {@link Color} class
      */
     public static Color HSVtoRGB(float h, float s, float v, float alpha) {
         Color c = HSVtoRGB(h, s, v);
@@ -814,7 +813,6 @@ public class Color{
      * @param h hue 0-360
      * @param s saturation 0-100
      * @param v value 0-100
-     * @return RGB values in LibGDX {@link Color} class
      */
     public static Color HSVtoRGB(float h, float s, float v) {
         Color c = new Color(1, 1, 1, 1);

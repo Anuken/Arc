@@ -102,7 +102,7 @@ public class ScissorStack{
     }
 
     /**
-     * Calculates a scissor rectangle using 0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight() as the viewport.
+     * Calculates a scissor rectangle using 0,0,Core.graphics.getWidth(),Core.graphics.getHeight() as the viewport.
      * @see #calculateScissors(Camera, float, float, float, float, Mat, Rect, Rect)
      */
     public static void calculateScissors(Camera camera, Mat batchTransform, Rect area, Rect scissor){

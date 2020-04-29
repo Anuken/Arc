@@ -72,7 +72,6 @@ public class IOSApplication implements Application{
             }
         }
 
-        // setup libgdx
         this.input = createInput();
         this.graphics = createGraphics(scale);
         Core.gl = Core.gl20 = graphics.gl20;
@@ -128,7 +127,7 @@ public class IOSApplication implements Application{
 
     /**
      * GL View spans whole screen, that is, even under the status bar. iOS can also rotate the screen, which is not handled
-     * consistently over iOS versions. This method returns, in pixels, rectangle in which libGDX draws.
+     * consistently over iOS versions. This method returns, in pixels, rectangle in which Arc draws.
      * @return dimensions of space we draw to, adjusted for device orientation
      */
     protected CGRect getBounds(){
@@ -284,7 +283,7 @@ public class IOSApplication implements Application{
     }
 
     /**
-     * Add a listener to handle events from the libgdx root view controller
+     * Add a listener to handle events from the root view controller
      * @param listener The {#link IOSViewControllerListener} to add
      */
     public void addViewControllerListener(IOSViewControllerListener listener){

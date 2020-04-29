@@ -19,8 +19,8 @@ import java.security.*;
 import java.util.*;
 
 /**
- * Reads/writes Java objects to/from JSON, automatically. See the wiki for usage:
- * https://github.com/libgdx/libgdx/wiki/Reading-%26-writing-JSON
+ * Reads/writes Java objects to/from JSON, automatically.
+ * TODO remove and replace with own implementation
  * @author Nathan Sweet
  */
 @SuppressWarnings("unchecked")

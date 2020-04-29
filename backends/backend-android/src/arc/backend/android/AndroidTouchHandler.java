@@ -32,7 +32,7 @@ public class AndroidTouchHandler{
                     input.realId[realPointerIndex] = pointerId;
                     x = (int)event.getX(pointerIndex);
                     y = (int)event.getY(pointerIndex);
-                    button = toGdxButton(event.getButtonState());
+                    button = toButton(event.getButtonState());
                     if(button != KeyCode.unknown)
                         postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, realPointerIndex, button, timeStamp);
                     input.touchX[realPointerIndex] = x;
@@ -105,7 +105,7 @@ public class AndroidTouchHandler{
         Core.graphics.requestRendering();
     }
 
-    private KeyCode toGdxButton(int button){
+    private KeyCode toButton(int button){
         if(button == 0 || button == 1) return KeyCode.mouseLeft;
         if(button == 2) return KeyCode.mouseRight;
         if(button == 4) return KeyCode.mouseMiddle;

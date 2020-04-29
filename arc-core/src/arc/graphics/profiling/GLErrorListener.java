@@ -11,7 +11,7 @@ import static arc.graphics.profiling.GLInterceptor.resolveErrorNumber;
  */
 public interface GLErrorListener{
 
-    /** Listener that will log using Gdx.app.error GL error name and GL function. */
+    /** Listener that will log using Log.error GL error name and GL function. */
     GLErrorListener LOGGING_LISTENER = error -> {
         String place = null;
         try{

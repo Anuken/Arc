@@ -26,11 +26,11 @@ import javax.microedition.khronos.egl.EGLDisplay;
  * config selection if requested. Taken from GLSurfaceView20, heavily modified to accommodate MSAA/CSAA.
  * @author mzechner
  */
-public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser{
+public class ArcEglConfigChooser implements GLSurfaceView.EGLConfigChooser{
     public static final int EGL_COVERAGE_BUFFERS_NV = 0x30E0;
     public static final int EGL_COVERAGE_SAMPLES_NV = 0x30E1;
     private static final int EGL_OPENGL_ES2_BIT = 4;
-    private static final String TAG = "GdxEglConfigChooser";
+    private static final String TAG = "ArcEglConfigChooser";
     protected final int[] mConfigAttribs;
     protected int mRedSize;
     protected int mGreenSize;
@@ -41,7 +41,7 @@ public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser{
     protected int mNumSamples;
     private int[] mValue = new int[1];
 
-    public GdxEglConfigChooser(int r, int g, int b, int a, int depth, int stencil, int numSamples){
+    public ArcEglConfigChooser(int r, int g, int b, int a, int depth, int stencil, int numSamples){
         mRedSize = r;
         mGreenSize = g;
         mBlueSize = b;
