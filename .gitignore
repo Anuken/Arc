@@ -17,15 +17,9 @@ classes/
 war/
 gen/
 gen-external-apklibs/
-armeabi/
-armeabi-v7a/
-arm64-v8a/
 ios32/
 Debug/
 Release/
-x64/
-x86/
-x86_64/
 robovm-build/
 ipch/
 /dist
