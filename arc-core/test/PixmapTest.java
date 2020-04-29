@@ -8,6 +8,7 @@ public class PixmapTest{
 
     @Test
     public void pixmapCreate(){
+        if(!OS.is64Bit || !OS.isLinux) return;
         ArcNativesLoader.load();
 
         Pixmap pix = new Pixmap(100, 100);
