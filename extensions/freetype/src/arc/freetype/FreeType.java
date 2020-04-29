@@ -876,7 +876,7 @@ public class FreeType {
 	public static int FT_STROKER_LINEJOIN_MITER_FIXED    = 3;
 
    public static Library initFreeType() {   	
-   	new SharedLibraryLoader().load("gdx-freetype");
+   	new SharedLibraryLoader().load("arc-freetype");
    	long address = initFreeTypeJni();
    	if(address == 0) throw new ArcRuntimeException("Couldn't initialize FreeType library, FreeType error code: " + getLastErrorCode());
    	else return new Library(address);
