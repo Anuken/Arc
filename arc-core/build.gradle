@@ -64,6 +64,13 @@ task natives(dependsOn: [classes, deleteJniFolder]){
             }
         }
 
+        targets.find{ it.os == BuildTarget.TargetOs.MacOsX }.with{
+            if(it != null){
+                cppFlags = "-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.7 -stdlib=libc++"
+                linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.7 -stdlib=libc++"
+            }
+        }
+
         new AntScriptGenerator().generate(new BuildConfig("arc", "$root/build", "libs/", jnidir), targets)
 
         //overwrite incorrect application mkfile
