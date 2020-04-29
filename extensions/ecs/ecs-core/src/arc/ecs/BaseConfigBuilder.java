@@ -198,7 +198,7 @@ public class BaseConfigBuilder{
 
         if(Modifier.isAbstract(type.getModifiers())){
             if(!anyAssignableTo(plugins, type)){
-                throw new BaseConfigException("Implementation of " + type + " expected but not found. Did you forget to include a plugin? (for example: logging-libgdx for logging-api)");
+                throw new BaseConfigException("Implementation of " + type + " expected but not found. Did you forget to include a plugin?");
             }
         }else{
             if(!containsType(plugins, type)){

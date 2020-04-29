@@ -9,8 +9,6 @@ import java.util.*;
  * prefixed with <code>unsafe</code>; these methods perform no validation,
  * and are primarily leveraged internally to optimize access on entityId bitsets.</p>
  *
- * <p>Originally adapted from <code>com.badlogic.gdx.utils.Bits</code>, it has been
- * renamed to avoid namespace confusion.</p>
  * @author mzechner
  * @author jshapcott
  * @author junkdog (fork/changes)

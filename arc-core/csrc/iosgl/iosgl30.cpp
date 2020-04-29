@@ -103,101 +103,101 @@ static void releaseString( JNIEnv *env, jstring string, const char* cString )
 	env->ReleaseStringUTFChars(string, cString);
 }
 
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_init
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_init
   (JNIEnv *env, jclass)
 {
 	nativeClassInit( env );
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glReadBuffer
  * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glReadBuffer
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glReadBuffer
   (JNIEnv *env, jobject, jint mode) {
       glReadBuffer(mode);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glDrawRangeElements
  * Signature: (IIIIILjava/nio/Buffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDrawRangeElements__IIIIILjava_nio_Buffer_2
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glDrawRangeElements__IIIIILjava_nio_Buffer_2
   (JNIEnv *env, jobject, jint mode, jint start, jint end, jint count, jint type, jobject indices) {
   void* dataPtr = getDirectBufferPointer( env, indices );
   glDrawRangeElements(mode, start, end, count, type, dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glDrawRangeElements
  * Signature: (IIIIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDrawRangeElements__IIIIII
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glDrawRangeElements__IIIIII
   (JNIEnv *env, jobject, jint mode, jint start, jint end, jint count, jint type, jint offset) {
     glDrawRangeElements(mode, start, end, count, type, (void*)offset);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glTexImage3D
  * Signature: (IIIIIIIIILjava/nio/Buffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glTexImage3D__IIIIIIIIILjava_nio_Buffer_2
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glTexImage3D__IIIIIIIIILjava_nio_Buffer_2
   (JNIEnv *env, jobject, jint target, jint level, jint internalformat, jint width, jint height, jint depth, jint border, jint format, jint type, jobject pixels) {
     void* dataPtr = getDirectBufferPointer( env, pixels );
     glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glTexImage3D
  * Signature: (IIIIIIIIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glTexImage3D__IIIIIIIIII
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glTexImage3D__IIIIIIIIII
   (JNIEnv *env, jobject, jint target, jint level, jint internalformat, jint width, jint height, jint depth, jint border, jint format, jint type, jint offset) {
     glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, (void*)offset);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glTexSubImage3D
  * Signature: (IIIIIIIIIILjava/nio/Buffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glTexSubImage3D__IIIIIIIIIILjava_nio_Buffer_2
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glTexSubImage3D__IIIIIIIIIILjava_nio_Buffer_2
   (JNIEnv *env, jobject, jint target, jint level, jint xoffset, jint yoffset, jint zoffset, jint width, jint height, jint depth, jint format, jint type, jobject pixels) {
     void* dataPtr = getDirectBufferPointer( env, pixels );
     glTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glTexSubImage3D
  * Signature: (IIIIIIIIIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glTexSubImage3D__IIIIIIIIIII
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glTexSubImage3D__IIIIIIIIIII
   (JNIEnv *env, jobject, jint target, jint level, jint xoffset, jint yoffset, jint zoffset, jint width, jint height, jint depth, jint format, jint type, jint offset) {
     glTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, (void*)offset);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glCopyTexSubImage3D
  * Signature: (IIIIIIIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glCopyTexSubImage3D
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glCopyTexSubImage3D
   (JNIEnv *env, jobject, jint target, jint level, jint xoffset, jint yoffset, jint zoffset, jint x, jint y, jint width, jint height) {
     glCopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGenQueries
  * Signature: (I[II)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGenQueries__I_3II
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGenQueries__I_3II
   (JNIEnv *env, jobject, jint n, jintArray ids, jint offset) {
     int* v = (int*)env->GetPrimitiveArrayCritical(ids, 0);
     glGenQueries(n, (GLuint*)&v[offset]);
@@ -205,244 +205,244 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGenQ
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGenQueries
  * Signature: (ILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGenQueries__ILjava_nio_IntBuffer_2
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGenQueries__ILjava_nio_IntBuffer_2
   (JNIEnv *env, jobject, jint n, jobject ids) {
     void* dataPtr = getDirectBufferPointer( env, ids );
     glGenQueries(n, (GLuint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glDeleteQueries
  * Signature: (I[II)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDeleteQueries__I_3II
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glDeleteQueries__I_3II
   (JNIEnv *env, jobject, jint n, jintArray ids, jint offset) {
     void* dataPtr = getDirectBufferPointer( env, ids );
     glDeleteQueries(n, (GLuint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glDeleteQueries
  * Signature: (ILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDeleteQueries__ILjava_nio_IntBuffer_2
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glDeleteQueries__ILjava_nio_IntBuffer_2
   (JNIEnv *env, jobject, jint n, jobject ids) {
     void* dataPtr = getDirectBufferPointer( env, ids );
     glDeleteQueries(n, (GLuint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glIsQuery
  * Signature: (I)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glIsQuery
+JNIEXPORT jboolean JNICALL Java_arc_backend_robovm_IOSGLES30_glIsQuery
   (JNIEnv *env, jobject, jint id) {
   return glIsQuery(id);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glBeginQuery
  * Signature: (II)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glBeginQuery
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glBeginQuery
   (JNIEnv *env, jobject, jint target, jint id) {
     glBeginQuery(target, id);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glEndQuery
  * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glEndQuery
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glEndQuery
   (JNIEnv *env, jobject, jint target) {
     glEndQuery(target);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGetQueryiv
  * Signature: (IILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetQueryiv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGetQueryiv
   (JNIEnv *env, jobject, jint target, jint pname, jobject params) {
     void* dataPtr = getDirectBufferPointer( env, params );
     glGetQueryiv(target, pname, (GLint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGetQueryObjectuiv
  * Signature: (IILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetQueryObjectuiv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGetQueryObjectuiv
   (JNIEnv *env, jobject, jint target, jint pname, jobject params) {
     void* dataPtr = getDirectBufferPointer( env, params );
     glGetQueryObjectuiv(target, pname, (GLuint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glUnmapBuffer
  * Signature: (I)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glUnmapBuffer
+JNIEXPORT jboolean JNICALL Java_arc_backend_robovm_IOSGLES30_glUnmapBuffer
   (JNIEnv *env, jobject, jint target) {
     return glUnmapBuffer(target);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGetBufferPointerv
  * Signature: (II)Ljava/nio/Buffer;
  */
-JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetBufferPointerv
+JNIEXPORT jobject JNICALL Java_arc_backend_robovm_IOSGLES30_glGetBufferPointerv
   (JNIEnv *env, jobject, jint target, jint pname) {
 //FIXME glGetBufferPointerv (GLenum target, GLenum pname, void **params);
     env->ThrowNew(IAEClass, "Unsupported method");
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glDrawBuffers
  * Signature: (ILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDrawBuffers
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glDrawBuffers
   (JNIEnv *env, jobject, jint n, jobject bufs) {
     void* dataPtr = getDirectBufferPointer( env, bufs );
     glDrawBuffers(n, (GLenum*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glUniformMatrix2x3fv
  * Signature: (IIZLjava/nio/FloatBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glUniformMatrix2x3fv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glUniformMatrix2x3fv
   (JNIEnv *env, jobject, jint location, jint count, jboolean transpose, jobject value) {
     void* dataPtr = getDirectBufferPointer( env, value );
     glUniformMatrix2x3fv(location, count, transpose, (GLfloat*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glUniformMatrix3x2fv
  * Signature: (IIZLjava/nio/FloatBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glUniformMatrix3x2fv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glUniformMatrix3x2fv
   (JNIEnv *env, jobject, jint location, jint count, jboolean transpose, jobject value) {
     void* dataPtr = getDirectBufferPointer( env, value );
     glUniformMatrix3x2fv(location, count, transpose, (GLfloat*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glUniformMatrix2x4fv
  * Signature: (IIZLjava/nio/FloatBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glUniformMatrix2x4fv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glUniformMatrix2x4fv
   (JNIEnv *env, jobject, jint location, jint count, jboolean transpose, jobject value) {
     void* dataPtr = getDirectBufferPointer( env, value );
     glUniformMatrix2x4fv(location, count, transpose, (GLfloat*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glUniformMatrix4x2fv
  * Signature: (IIZLjava/nio/FloatBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glUniformMatrix4x2fv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glUniformMatrix4x2fv
   (JNIEnv *env, jobject, jint location, jint count, jboolean transpose, jobject value) {
     void* dataPtr = getDirectBufferPointer( env, value );
     glUniformMatrix4x2fv(location, count, transpose, (GLfloat*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glUniformMatrix3x4fv
  * Signature: (IIZLjava/nio/FloatBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glUniformMatrix3x4fv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glUniformMatrix3x4fv
   (JNIEnv *env, jobject, jint location, jint count, jboolean transpose, jobject value) {
     void* dataPtr = getDirectBufferPointer( env, value );
     glUniformMatrix3x4fv(location, count, transpose, (GLfloat*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glUniformMatrix4x3fv
  * Signature: (IIZLjava/nio/FloatBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glUniformMatrix4x3fv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glUniformMatrix4x3fv
   (JNIEnv *env, jobject, jint location, jint count, jboolean transpose, jobject value) {
     void* dataPtr = getDirectBufferPointer( env, value );
     glUniformMatrix4x3fv(location, count, transpose, (GLfloat*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glBlitFramebuffer
  * Signature: (IIIIIIIIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glBlitFramebuffer
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glBlitFramebuffer
   (JNIEnv *env, jobject, jint srcX0, jint srcY0, jint srcX1, jint srcY1, jint dstX0, jint dstY0, jint dstX1, jint dstY1, jint mask, jint filter) {
     glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glRenderbufferStorageMultisample
  * Signature: (IIIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glRenderbufferStorageMultisample
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glRenderbufferStorageMultisample
   (JNIEnv *env, jobject, jint target, jint samples, jint internalformat, jint width, jint height) {
     glRenderbufferStorageMultisample(target, samples, internalformat, width, height);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glFramebufferTextureLayer
  * Signature: (IIIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glFramebufferTextureLayer
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glFramebufferTextureLayer
   (JNIEnv *env, jobject, jint target, jint attachment, jint texture, jint level, jint layer) {
     glFramebufferTextureLayer(target, attachment, texture, level, layer);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glFlushMappedBufferRange
  * Signature: (III)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glFlushMappedBufferRange
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glFlushMappedBufferRange
   (JNIEnv *env, jobject, jint target, jint offset, jint length) {
     glFlushMappedBufferRange(target, offset, length);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glBindVertexArray
  * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glBindVertexArray
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glBindVertexArray
   (JNIEnv *env, jobject, jint array) {
     glBindVertexArray(array);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glDeleteVertexArrays
  * Signature: (I[II)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDeleteVertexArrays__I_3II
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glDeleteVertexArrays__I_3II
   (JNIEnv *env, jobject, jint n, jintArray arrays, jint offset) {
     int* v = (int*)env->GetPrimitiveArrayCritical(arrays, 0);
     glDeleteVertexArrays(n, (GLuint*)&v[offset]);
@@ -450,22 +450,22 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDele
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glDeleteVertexArrays
  * Signature: (ILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDeleteVertexArrays__ILjava_nio_IntBuffer_2
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glDeleteVertexArrays__ILjava_nio_IntBuffer_2
   (JNIEnv *env, jobject, jint n, jobject arrays) {
     void* dataPtr = getDirectBufferPointer( env, arrays );
     glDeleteVertexArrays(n, (GLuint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGenVertexArrays
  * Signature: (I[II)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGenVertexArrays__I_3II
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGenVertexArrays__I_3II
   (JNIEnv *env, jobject, jint n, jintArray arrays, jint offset) {
     int* v = (int*)env->GetPrimitiveArrayCritical(arrays, 0);
     glGenVertexArrays(n, (GLuint*)&v[offset]);
@@ -473,146 +473,146 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGenV
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGenVertexArrays
  * Signature: (ILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGenVertexArrays__ILjava_nio_IntBuffer_2
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGenVertexArrays__ILjava_nio_IntBuffer_2
   (JNIEnv *env, jobject, jint n, jobject arrays) {
     void* dataPtr = getDirectBufferPointer( env, arrays );
     glGenVertexArrays(n, (GLuint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glIsVertexArray
  * Signature: (I)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glIsVertexArray
+JNIEXPORT jboolean JNICALL Java_arc_backend_robovm_IOSGLES30_glIsVertexArray
   (JNIEnv *env, jobject, jint array) {
     return glIsVertexArray(array);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glBeginTransformFeedback
  * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glBeginTransformFeedback
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glBeginTransformFeedback
   (JNIEnv *env, jobject, jint primitiveMode) {
     glBeginTransformFeedback(primitiveMode);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glEndTransformFeedback
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glEndTransformFeedback
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glEndTransformFeedback
   (JNIEnv *env, jobject) {
     glEndTransformFeedback();
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glBindBufferRange
  * Signature: (IIIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glBindBufferRange
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glBindBufferRange
   (JNIEnv *env, jobject, jint target, jint index, jint buffer, jint offset, jint size) {
     glBindBufferRange(target, index, buffer, offset, size);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glBindBufferBase
  * Signature: (III)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glBindBufferBase
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glBindBufferBase
   (JNIEnv *env, jobject, jint target, jint index, jint buffer) {
     glBindBufferBase(target, index, buffer);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glTransformFeedbackVaryings
  * Signature: (I[Ljava/lang/String;I)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glTransformFeedbackVaryings
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glTransformFeedbackVaryings
   (JNIEnv *env, jobject, jint program, jobjectArray varyings, jint buffermode) {
 //FIXME: convert String[] to char**
     env->ThrowNew(IAEClass, "Unsupported method");
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glVertexAttribIPointer
  * Signature: (IIIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glVertexAttribIPointer
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glVertexAttribIPointer
   (JNIEnv *env, jobject, jint index, jint size, jint type, jint stride, jint offset) {
     glVertexAttribIPointer(index, size, type, stride, (void*)offset);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGetVertexAttribIiv
  * Signature: (IILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetVertexAttribIiv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGetVertexAttribIiv
   (JNIEnv *env, jobject, jint index, jint pname, jobject params) {
     void* dataPtr = getDirectBufferPointer( env, params );
     glGetVertexAttribIiv(index, pname, (GLint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGetVertexAttribIuiv
  * Signature: (IILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetVertexAttribIuiv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGetVertexAttribIuiv
   (JNIEnv *env, jobject, jint index, jint pname, jobject params) {
     void* dataPtr = getDirectBufferPointer( env, params );
     glGetVertexAttribIuiv(index, pname, (GLuint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glVertexAttribI4i
  * Signature: (IIIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glVertexAttribI4i
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glVertexAttribI4i
   (JNIEnv *env, jobject, jint index, jint x, jint y, jint z, jint w) {
     glVertexAttribI4i(index, x, y, z, w);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glVertexAttribI4ui
  * Signature: (IIIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glVertexAttribI4ui
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glVertexAttribI4ui
   (JNIEnv *env, jobject, jint index, jint x, jint y, jint z, jint w) {
     glVertexAttribI4ui(index, x, y, z, w);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGetUniformuiv
  * Signature: (IILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetUniformuiv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGetUniformuiv
   (JNIEnv *env, jobject, jint program, jint location, jobject params) {
     void* dataPtr = getDirectBufferPointer( env, params );
     glGetUniformuiv(program, location, (GLuint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGetFragDataLocation
  * Signature: (ILjava/lang/String;)I
  */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetFragDataLocation
+JNIEXPORT jint JNICALL Java_arc_backend_robovm_IOSGLES30_glGetFragDataLocation
   (JNIEnv *env, jobject, jint program, jstring name) {
     const char* cname = getString( env, name );
     int loc = glGetFragDataLocation(program, cname);
@@ -620,118 +620,118 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetF
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glUniform1uiv
  * Signature: (IILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glUniform1uiv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glUniform1uiv
   (JNIEnv *env, jobject, jint location, jint count, jobject value) {
     void* dataPtr = getDirectBufferPointer( env, value );
     glUniform1uiv(location, count, (GLuint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glUniform3uiv
  * Signature: (IILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glUniform3uiv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glUniform3uiv
   (JNIEnv *env, jobject, jint location, jint count, jobject value) {
     void* dataPtr = getDirectBufferPointer( env, value );
     glUniform3uiv(location, count, (GLuint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glUniform4uiv
  * Signature: (IILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glUniform4uiv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glUniform4uiv
   (JNIEnv *env, jobject, jint location, jint count, jobject value) {
     void* dataPtr = getDirectBufferPointer( env, value );
     glUniform4uiv(location, count, (GLuint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glClearBufferiv
  * Signature: (IILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glClearBufferiv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glClearBufferiv
   (JNIEnv *env, jobject, jint buffer, jint drawbuffer, jobject value) {
     void* dataPtr = getDirectBufferPointer( env, value );
     glClearBufferiv(buffer, drawbuffer, (GLint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glClearBufferuiv
  * Signature: (IILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glClearBufferuiv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glClearBufferuiv
   (JNIEnv *env, jobject, jint buffer, jint drawbuffer, jobject value) {
     void* dataPtr = getDirectBufferPointer( env, value );
     glClearBufferuiv(buffer, drawbuffer, (GLuint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glClearBufferfv
  * Signature: (IILjava/nio/FloatBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glClearBufferfv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glClearBufferfv
   (JNIEnv *env, jobject, jint buffer, jint drawbuffer, jobject value) {
     void* dataPtr = getDirectBufferPointer( env, value );
     glClearBufferfv(buffer, drawbuffer, (GLfloat*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glClearBufferfi
  * Signature: (IIFI)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glClearBufferfi
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glClearBufferfi
   (JNIEnv *env, jobject, jint buffer, jint drawbuffer, jfloat depth, jint stencil) {
     glClearBufferfi(buffer, drawbuffer, depth, stencil);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGetStringi
  * Signature: (II)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetStringi
+JNIEXPORT jstring JNICALL Java_arc_backend_robovm_IOSGLES30_glGetStringi
   (JNIEnv *env, jobject, jint name, jint index) {
     return env->NewStringUTF((const char *)glGetStringi(name, index));
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glCopyBufferSubData
  * Signature: (IIIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glCopyBufferSubData
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glCopyBufferSubData
   (JNIEnv *env, jobject, jint readTarget, jint writeTarget, jint readOffset, jint writeOffset, jint size) {
     glCopyBufferSubData(readTarget, writeTarget, readOffset, writeOffset, size);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGetUniformIndices
  * Signature: (I[Ljava/lang/String;Ljava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetUniformIndices
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGetUniformIndices
   (JNIEnv *env, jobject, jint, jobjectArray, jobject) {
 //FIXME: glGetUniformIndices (GLuint program, GLsizei uniformCount, const GLchar *const*uniformNames, GLuint *uniformIndices);
     env->ThrowNew(IAEClass, "Unsupported method");
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGetActiveUniformsiv
  * Signature: (IILjava/nio/IntBuffer;ILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetActiveUniformsiv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGetActiveUniformsiv
   (JNIEnv *env, jobject, jint program, jint uniformCount, jobject indices, jint pname, jobject params) {
     void* indicesPtr = getDirectBufferPointer( env, indices );
     void* paramsPtr = getDirectBufferPointer( env, params );
@@ -739,11 +739,11 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetA
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGetUniformBlockIndex
  * Signature: (ILjava/lang/String;)I
  */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetUniformBlockIndex
+JNIEXPORT jint JNICALL Java_arc_backend_robovm_IOSGLES30_glGetUniformBlockIndex
   (JNIEnv *env, jobject, jint program, jstring uniformBlockName) {
     const char* cname = getString( env, uniformBlockName );
     int loc = glGetUniformBlockIndex(program, cname);
@@ -752,96 +752,96 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetU
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGetActiveUniformBlockiv
  * Signature: (IIILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetActiveUniformBlockiv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGetActiveUniformBlockiv
   (JNIEnv *env, jobject, jint program, jint uniformBlockIndex, jint pname, jobject params) {
     void* dataPtr = getDirectBufferPointer( env, params );
     glGetActiveUniformBlockiv(program, uniformBlockIndex, pname, (GLint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGetActiveUniformBlockName
  * Signature: (IILjava/nio/Buffer;Ljava/nio/Buffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetActiveUniformBlockName__IILjava_nio_Buffer_2Ljava_nio_Buffer_2
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGetActiveUniformBlockName__IILjava_nio_Buffer_2Ljava_nio_Buffer_2
   (JNIEnv *env, jobject, jint, jint, jobject, jobject) {
 //FIXME: glGetActiveUniformBlockName (GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformBlockName);
     env->ThrowNew(IAEClass, "Unsupported method");
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGetActiveUniformBlockName
  * Signature: (II)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetActiveUniformBlockName__II
+JNIEXPORT jstring JNICALL Java_arc_backend_robovm_IOSGLES30_glGetActiveUniformBlockName__II
   (JNIEnv *env, jobject, jint, jint) {
 //FIXME: glGetActiveUniformBlockName (GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformBlockName);
     env->ThrowNew(IAEClass, "Unsupported method");
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glUniformBlockBinding
  * Signature: (III)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glUniformBlockBinding
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glUniformBlockBinding
   (JNIEnv *env, jobject, jint program, jint uniformBlockIndex, jint uniformBlockBinding) {
     glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glDrawArraysInstanced
  * Signature: (IIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDrawArraysInstanced
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glDrawArraysInstanced
   (JNIEnv *env, jobject, jint mode, jint first, jint count, jint instancecount) {
     glDrawArraysInstanced(mode, first, count, instancecount);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glDrawElementsInstanced
  * Signature: (IIIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDrawElementsInstanced
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glDrawElementsInstanced
   (JNIEnv *env, jobject, jint mode, jint count, jint type, jint indicesOffset, jint instancecount) {
     glDrawElementsInstanced(mode, count, type, (GLvoid*)indicesOffset, instancecount);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGetInteger64v
  * Signature: (ILjava/nio/LongBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetInteger64v
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGetInteger64v
   (JNIEnv *env, jobject, jint pname, jobject data) {
     void* dataPtr = getDirectBufferPointer( env, data );
     glGetInteger64v(pname, (GLint64*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGetBufferParameteri64v
  * Signature: (IILjava/nio/LongBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetBufferParameteri64v
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGetBufferParameteri64v
   (JNIEnv *env, jobject, jint target, jint pname, jobject params) {
     void* dataPtr = getDirectBufferPointer( env, params );
     glGetBufferParameteri64v(target, pname, (GLint64*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGenSamplers
  * Signature: (I[II)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGenSamplers__I_3II
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGenSamplers__I_3II
   (JNIEnv *env, jobject, jint count, jintArray samplers, jint offset) {
     int* v = (int*)env->GetPrimitiveArrayCritical(samplers, 0);
     glGenSamplers(count, (GLuint*)&v[offset]);
@@ -849,22 +849,22 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGenS
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGenSamplers
  * Signature: (ILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGenSamplers__ILjava_nio_IntBuffer_2
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGenSamplers__ILjava_nio_IntBuffer_2
   (JNIEnv *env, jobject, jint count, jobject samplers) {
     void* dataPtr = getDirectBufferPointer( env, samplers );
     glGenSamplers(count, (GLuint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glDeleteSamplers
  * Signature: (I[II)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDeleteSamplers__I_3II
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glDeleteSamplers__I_3II
   (JNIEnv *env, jobject, jint count, jintArray samplers, jint offset) {
     int* v = (int*)env->GetPrimitiveArrayCritical(samplers, 0);
     glDeleteSamplers(count, (GLuint*)&v[offset]);
@@ -872,126 +872,126 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDele
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glDeleteSamplers
  * Signature: (ILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDeleteSamplers__ILjava_nio_IntBuffer_2
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glDeleteSamplers__ILjava_nio_IntBuffer_2
   (JNIEnv *env, jobject, jint count, jobject samplers) {
     void* dataPtr = getDirectBufferPointer( env, samplers );
     glDeleteSamplers(count, (GLuint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glIsSampler
  * Signature: (I)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glIsSampler
+JNIEXPORT jboolean JNICALL Java_arc_backend_robovm_IOSGLES30_glIsSampler
   (JNIEnv *env, jobject, jint sampler) {
     return glIsSampler(sampler);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glBindSampler
  * Signature: (II)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glBindSampler
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glBindSampler
   (JNIEnv *env, jobject, jint unit, jint sampler) {
     glBindSampler(unit, sampler);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glSamplerParameteri
  * Signature: (III)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glSamplerParameteri
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glSamplerParameteri
   (JNIEnv *env, jobject, jint sampler, jint pname, jint param) {
     glSamplerParameteri(sampler, pname, param);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glSamplerParameteriv
  * Signature: (IILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glSamplerParameteriv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glSamplerParameteriv
   (JNIEnv *env, jobject, jint sampler, jint pname, jobject params) {
     void* dataPtr = getDirectBufferPointer( env, params );
     glSamplerParameteriv(sampler, pname, (GLint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glSamplerParameterf
  * Signature: (IIF)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glSamplerParameterf
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glSamplerParameterf
   (JNIEnv *env, jobject, jint sampler, jint pname, jfloat param) {
     glSamplerParameterf(sampler, pname, param);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glSamplerParameterfv
  * Signature: (IILjava/nio/FloatBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glSamplerParameterfv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glSamplerParameterfv
   (JNIEnv *env, jobject, jint sampler, jint pname, jobject params) {
     void* dataPtr = getDirectBufferPointer( env, params );
     glSamplerParameterfv(sampler, pname, (GLfloat*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGetSamplerParameteriv
  * Signature: (IILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetSamplerParameteriv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGetSamplerParameteriv
   (JNIEnv *env, jobject, jint sampler, jint pname, jobject params) {
     void* dataPtr = getDirectBufferPointer( env, params );
     glGetSamplerParameteriv(sampler, pname, (GLint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGetSamplerParameterfv
  * Signature: (IILjava/nio/FloatBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGetSamplerParameterfv
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGetSamplerParameterfv
   (JNIEnv *env, jobject, jint sampler, jint pname, jobject params) {
     void* dataPtr = getDirectBufferPointer( env, params );
     glGetSamplerParameterfv(sampler, pname, (GLfloat*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glVertexAttribDivisor
  * Signature: (II)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glVertexAttribDivisor
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glVertexAttribDivisor
   (JNIEnv *env, jobject, jint index, jint divisor) {
     glVertexAttribDivisor(index, divisor);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glBindTransformFeedback
  * Signature: (II)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glBindTransformFeedback
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glBindTransformFeedback
   (JNIEnv *env, jobject, jint target, jint id) {
     glBindTransformFeedback(target, id);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glDeleteTransformFeedbacks
  * Signature: (I[II)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDeleteTransformFeedbacks__I_3II
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glDeleteTransformFeedbacks__I_3II
   (JNIEnv *env, jobject, jint n, jintArray ids, jint offset) {
     int* v = (int*)env->GetPrimitiveArrayCritical(ids, 0);
     glDeleteTransformFeedbacks(n, (GLuint*)&v[offset]);
@@ -999,22 +999,22 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDele
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glDeleteTransformFeedbacks
  * Signature: (ILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDeleteTransformFeedbacks__ILjava_nio_IntBuffer_2
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glDeleteTransformFeedbacks__ILjava_nio_IntBuffer_2
   (JNIEnv *env, jobject, jint n, jobject ids) {
     void* dataPtr = getDirectBufferPointer( env, ids );
     glDeleteTransformFeedbacks(n, (GLuint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGenTransformFeedbacks
  * Signature: (I[II)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGenTransformFeedbacks__I_3II
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGenTransformFeedbacks__I_3II
   (JNIEnv *env, jobject, jint n, jintArray ids, jint offset) {
     int* v = (int*)env->GetPrimitiveArrayCritical(ids, 0);
     glGenTransformFeedbacks(n, (GLuint*)&v[offset]);
@@ -1022,72 +1022,72 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGenT
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glGenTransformFeedbacks
  * Signature: (ILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glGenTransformFeedbacks__ILjava_nio_IntBuffer_2
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glGenTransformFeedbacks__ILjava_nio_IntBuffer_2
   (JNIEnv *env, jobject, jint n, jobject ids) {
     void* dataPtr = getDirectBufferPointer( env, ids );
     glGenTransformFeedbacks(n, (GLuint*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glIsTransformFeedback
  * Signature: (I)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glIsTransformFeedback
+JNIEXPORT jboolean JNICALL Java_arc_backend_robovm_IOSGLES30_glIsTransformFeedback
   (JNIEnv *env, jobject, jint id) {
     return glIsTransformFeedback(id);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glPauseTransformFeedback
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glPauseTransformFeedback
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glPauseTransformFeedback
   (JNIEnv *env, jobject) {
     glPauseTransformFeedback();
 }
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glResumeTransformFeedback
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glResumeTransformFeedback
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glResumeTransformFeedback
   (JNIEnv *env, jobject) {
     glResumeTransformFeedback();
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glProgramParameteri
  * Signature: (III)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glProgramParameteri
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glProgramParameteri
   (JNIEnv *env, jobject, jint program, jint pname, jint value) {
     glProgramParameteri(program, pname, value);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glInvalidateFramebuffer
  * Signature: (IILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glInvalidateFramebuffer
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glInvalidateFramebuffer
   (JNIEnv *env, jobject, jint target, jint numAttachments, jobject attachments) {
     void* dataPtr = getDirectBufferPointer( env, attachments );
     glInvalidateFramebuffer(target, numAttachments, (GLenum*)dataPtr);
 }
 
 /*
- * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Class:     arc_backend_robovm_IOSGLES30
  * Method:    glInvalidateSubFramebuffer
  * Signature: (IILjava/nio/IntBuffer;IIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glInvalidateSubFramebuffer
+JNIEXPORT void JNICALL Java_arc_backend_robovm_IOSGLES30_glInvalidateSubFramebuffer
   (JNIEnv *env, jobject, jint target, jint numAttachments, jobject attachments, jint x, jint y, jint width, jint height) {
     void* dataPtr = getDirectBufferPointer( env, attachments );
     glInvalidateSubFramebuffer(target, numAttachments, (GLenum*)dataPtr, x, y, width, height);
