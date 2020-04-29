@@ -30,6 +30,9 @@ robovm-build/
 ipch/
 /dist
 
+#for now
+extensions/physic/
+
 #maven sucks
 pom.xml
 
@@ -52,6 +55,8 @@ arc-*.zip.MD5
 /backends/arc-backend-robovm/libs/
 /extensions/arc-freetype/libs/
 /backends/backend-sdl/jni
+/arc-core/jni/
+/arc-core/obj/
 
 #directories created by fetch.xml
 /tmp/

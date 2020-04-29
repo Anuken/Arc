@@ -476,8 +476,8 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
         }
 
         public GLFrameBufferBuilder<U> addBasicColorTextureAttachment(Pixmap.Format format){
-            int glFormat = Pixmap.Format.toGlFormat(format);
-            int glType = Pixmap.Format.toGlType(format);
+            int glFormat = format.toGlFormat();
+            int glType = format.toGlType();
             return addColorTextureAttachment(glFormat, glFormat, glType);
         }
 

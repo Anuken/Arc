@@ -236,7 +236,7 @@ public class Timer{
 
         public Task(){
             app = Core.app; // Store which app to post
-            if(app == null) throw new IllegalStateException("Gdx.app not available.");
+            if(app == null) throw new IllegalStateException("Core.app not available.");
         }
 
         /**

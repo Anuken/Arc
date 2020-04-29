@@ -36,6 +36,11 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
         this(true, capacity);
     }
 
+    /** Creates an ordered array with the specified capacity. */
+    public Array(boolean ordered){
+        this(true, 16);
+    }
+
     /**
      * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
      * memory copy.

@@ -1,15 +1,14 @@
 package arc.backend.teavm.emu;
 
-import com.badlogic.gdx.utils.BufferUtils;
 import arc.backend.teavm.plugin.Annotations.*;
 import arc.util.*;
 
 import java.nio.*;
 
 
-@Emulate(BufferUtils.class)
+@Emulate(Buffers.class)
 @SuppressWarnings("unused")
-public class BufferUtilsEmu{
+public class BuffersEmu{
 
     private static void freeMemory(ByteBuffer buffer){
     }

@@ -68,7 +68,7 @@ public class PixmapIO{
                 out = new DataOutputStream(deflaterOutputStream);
                 out.writeInt(pixmap.getWidth());
                 out.writeInt(pixmap.getHeight());
-                out.writeInt(Format.toGdx2DPixmapFormat(pixmap.getFormat()));
+                out.writeInt(pixmap.getFormat().toGdx2DPixmapFormat());
 
                 ByteBuffer pixelBuf = pixmap.getPixels();
                 pixelBuf.position(0);

@@ -1,7 +1,6 @@
 package arc.graphics;
 
 import arc.*;
-import com.badlogic.gdx.graphics.g2d.*;
 import arc.files.*;
 import arc.func.*;
 import arc.graphics.g2d.*;
@@ -30,7 +29,10 @@ import java.nio.*;
  * @author badlogicgames@gmail.com
  */
 public class Pixmap implements Disposable{
-    final Gdx2DPixmap pixmap;
+    static final int GDX2D_FORMAT_ALPHA = 1, GDX2D_FORMAT_LUMINANCE_ALPHA = 2, GDX2D_FORMAT_RGB888 = 3, GDX2D_FORMAT_RGBA8888 = 4, GDX2D_FORMAT_RGB565 = 5, GDX2D_FORMAT_RGBA4444 = 6;
+    static final int GDX2D_SCALE_NEAREST = 0, GDX2D_SCALE_LINEAR = 1;
+    
+    final NativePixmap pixmap;
     int color = 0;
     private Blending blending = Blending.SourceOver;
     private Filter filter = Filter.BiLinear;
@@ -48,7 +50,7 @@ public class Pixmap implements Disposable{
      * @param format the {@link Format}
      */
     public Pixmap(int width, int height, Format format){
-        pixmap = new Gdx2DPixmap(width, height, Format.toGdx2DPixmapFormat(format));
+        pixmap = new NativePixmap(width, height, format.toGdx2DPixmapFormat());
         setColor(0, 0, 0, 0);
         fill();
     }
@@ -68,7 +70,7 @@ public class Pixmap implements Disposable{
      */
     public Pixmap(byte[] encodedData, int offset, int len){
         try{
-            pixmap = new Gdx2DPixmap(encodedData, offset, len, 0);
+            pixmap = new NativePixmap(encodedData, offset, len, 0);
         }catch(IOException e){
             throw new ArcRuntimeException("Couldn't load pixmap from image data", e);
         }
@@ -86,16 +88,16 @@ public class Pixmap implements Disposable{
     public Pixmap(Fi file){
         try{
             byte[] bytes = file.readBytes();
-            pixmap = new Gdx2DPixmap(bytes, 0, bytes.length, 0);
+            pixmap = new NativePixmap(bytes, 0, bytes.length, 0);
         }catch(Exception e){
             throw new ArcRuntimeException("Couldn't load file: " + file, e);
         }
     }
 
     /**
-     * Constructs a new Pixmap from a {@link Gdx2DPixmap}.
+     * Constructs a new Pixmap from a {@link NativePixmap}.
      */
-    public Pixmap(Gdx2DPixmap pixmap){
+    public Pixmap(NativePixmap pixmap){
         this.pixmap = pixmap;
     }
 
@@ -136,7 +138,7 @@ public class Pixmap implements Disposable{
 
     /** Fills the complete bitmap with the currently set color. */
     public void fill(){
-        pixmap.clear(color);
+        clear(pixmap.basePtr, color);
     }
 
     /**
@@ -147,7 +149,7 @@ public class Pixmap implements Disposable{
      * @param y2 The y-coordinate of the first point
      */
     public void drawLine(int x, int y, int x2, int y2){
-        pixmap.drawLine(x, y, x2, y2, color);
+        drawLine(pixmap.basePtr, x, y, x2, y2, color);
     }
 
     /**
@@ -159,7 +161,7 @@ public class Pixmap implements Disposable{
      * @param height The height in pixels
      */
     public void drawRectangle(int x, int y, int width, int height){
-        pixmap.drawRect(x, y, width, height, color);
+        drawRect(pixmap.basePtr, x, y, width, height, color);
     }
 
     public void draw(PixmapRegion region){
@@ -207,7 +209,7 @@ public class Pixmap implements Disposable{
      * @param srcHeight The height of the area from the other Pixmap in pixels
      */
     public void drawPixmap(Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight){
-        this.pixmap.drawPixmap(pixmap.pixmap, srcx, srcy, x, y, srcWidth, srcHeight);
+        drawPixmap(pixmap.pixmap.basePtr, this.pixmap.basePtr, srcx, srcy, srcWidth, srcHeight, x, y, srcWidth, srcHeight);
     }
 
     /**
@@ -225,7 +227,7 @@ public class Pixmap implements Disposable{
      * @param dstHeight the target height
      */
     public void drawPixmap(Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight){
-        this.pixmap.drawPixmap(pixmap.pixmap, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight);
+        drawPixmap(pixmap.pixmap.basePtr, this.pixmap.basePtr, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight);
     }
 
     /**
@@ -237,7 +239,7 @@ public class Pixmap implements Disposable{
      * @param height The height in pixels
      */
     public void fillRectangle(int x, int y, int width, int height){
-        pixmap.fillRect(x, y, width, height, color);
+        fillRect(pixmap.basePtr, x, y, width, height, color);
     }
 
     /**
@@ -247,7 +249,7 @@ public class Pixmap implements Disposable{
      * @param radius The radius in pixels
      */
     public void drawCircle(int x, int y, int radius){
-        pixmap.drawCircle(x, y, radius, color);
+        drawCircle(pixmap.basePtr, x, y, radius, color);
     }
 
     /**
@@ -257,7 +259,7 @@ public class Pixmap implements Disposable{
      * @param radius The radius in pixels
      */
     public void fillCircle(int x, int y, int radius){
-        pixmap.fillCircle(x, y, radius, color);
+        fillCircle(pixmap.basePtr, x, y, radius, color);
     }
 
     /**
@@ -270,7 +272,7 @@ public class Pixmap implements Disposable{
      * @param y3 The y-coordinate of vertex 3
      */
     public void fillTriangle(int x1, int y1, int x2, int y2, int x3, int y3){
-        pixmap.fillTriangle(x1, y1, x2, y2, x3, y3, color);
+        fillTriangle(pixmap.basePtr, x1, y1, x2, y2, x3, y3, color);
     }
 
     /**
@@ -280,23 +282,23 @@ public class Pixmap implements Disposable{
      * @return The pixel color in RGBA8888 format.
      */
     public int getPixel(int x, int y){
-        return pixmap.getPixel(x, y);
+        return getPixel(pixmap.basePtr, x, y);
     }
 
     /** @return The width of the Pixmap in pixels. */
     public int getWidth(){
-        return pixmap.getWidth();
+        return pixmap.width;
     }
 
     /** @return The height of the Pixmap in pixels. */
     public int getHeight(){
-        return pixmap.getHeight();
+        return pixmap.height;
     }
 
     /** Releases all resources associated with this Pixmap. */
     public void dispose(){
         if(disposed) throw new ArcRuntimeException("Pixmap already disposed!");
-        pixmap.dispose();
+        free(pixmap.basePtr);
         disposed = true;
     }
 
@@ -315,7 +317,7 @@ public class Pixmap implements Disposable{
      * @param y the y-coordinate
      */
     public void draw(int x, int y){
-        pixmap.setPixel(x, y, color);
+        setPixel(pixmap.basePtr, x, y, color);
     }
 
     /**
@@ -325,7 +327,7 @@ public class Pixmap implements Disposable{
      * @param color the color in RGBA8888 format.
      */
     public void draw(int x, int y, int color){
-        pixmap.setPixel(x, y, color);
+        setPixel(pixmap.basePtr, x, y, color);
     }
 
     /**
@@ -334,7 +336,7 @@ public class Pixmap implements Disposable{
      * @return one of GL_ALPHA, GL_RGB, GL_RGBA, GL_LUMINANCE, or GL_LUMINANCE_ALPHA.
      */
     public int getGLFormat(){
-        return pixmap.getGLFormat();
+        return toGlFormat(pixmap.format);
     }
 
     /**
@@ -343,7 +345,7 @@ public class Pixmap implements Disposable{
      * @return one of GL_ALPHA, GL_RGB, GL_RGBA, GL_LUMINANCE, or GL_LUMINANCE_ALPHA.
      */
     public int getGLInternalFormat(){
-        return pixmap.getGLInternalFormat();
+        return toGlFormat(pixmap.format);
     }
 
     /**
@@ -352,7 +354,7 @@ public class Pixmap implements Disposable{
      * @return one of GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT_5_6_5, GL_UNSIGNED_SHORT_4_4_4_4
      */
     public int getGLType(){
-        return pixmap.getGLType();
+        return toGlType(pixmap.format);
     }
 
     /**
@@ -364,12 +366,12 @@ public class Pixmap implements Disposable{
      */
     public ByteBuffer getPixels(){
         if(disposed) throw new ArcRuntimeException("Pixmap already disposed");
-        return pixmap.getPixels();
+        return pixmap.pixelPtr;
     }
 
     /** @return the {@link Format} of this Pixmap. */
     public Format getFormat(){
-        return Format.fromGdx2DPixmapFormat(pixmap.getFormat());
+        return Format.fromGdx2DPixmapFormat(pixmap.format);
     }
 
     /** @return the currently set {@link Blending} */
@@ -383,7 +385,8 @@ public class Pixmap implements Disposable{
      */
     public void setBlending(Blending blending){
         this.blending = blending;
-        pixmap.setBlend(blending == Blending.None ? 0 : 1);
+        int blend = blending == Blending.None ? 0 : 1;
+        setBlend(pixmap.basePtr, blend);
     }
 
     /** @return the currently set {@link Filter} */
@@ -398,7 +401,8 @@ public class Pixmap implements Disposable{
      */
     public void setFilter(Filter filter){
         this.filter = filter;
-        pixmap.setScale(filter == Filter.NearestNeighbour ? Gdx2DPixmap.GDX2D_SCALE_NEAREST : Gdx2DPixmap.GDX2D_SCALE_LINEAR);
+        int scale = filter == Filter.NearestNeighbour ? GDX2D_SCALE_NEAREST : GDX2D_SCALE_LINEAR;
+        setScale(pixmap.basePtr, scale);
     }
 
     /**
@@ -408,33 +412,61 @@ public class Pixmap implements Disposable{
     public enum Format{
         Alpha, Intensity, LuminanceAlpha, RGB565, RGBA4444, RGB888, RGBA8888;
 
-        public static int toGdx2DPixmapFormat(Format format){
-            if(format == Alpha) return Gdx2DPixmap.GDX2D_FORMAT_ALPHA;
-            if(format == Intensity) return Gdx2DPixmap.GDX2D_FORMAT_ALPHA;
-            if(format == LuminanceAlpha) return Gdx2DPixmap.GDX2D_FORMAT_LUMINANCE_ALPHA;
-            if(format == RGB565) return Gdx2DPixmap.GDX2D_FORMAT_RGB565;
-            if(format == RGBA4444) return Gdx2DPixmap.GDX2D_FORMAT_RGBA4444;
-            if(format == RGB888) return Gdx2DPixmap.GDX2D_FORMAT_RGB888;
-            if(format == RGBA8888) return Gdx2DPixmap.GDX2D_FORMAT_RGBA8888;
-            throw new ArcRuntimeException("Unknown Format: " + format);
+        public int toGdx2DPixmapFormat(){
+            switch(this){
+                case Alpha:
+                case Intensity: return GDX2D_FORMAT_ALPHA;
+                case LuminanceAlpha: return GDX2D_FORMAT_LUMINANCE_ALPHA;
+                case RGB565: return GDX2D_FORMAT_RGB565;
+                case RGBA4444: return GDX2D_FORMAT_RGBA4444;
+                case RGB888: return GDX2D_FORMAT_RGB888;
+                case RGBA8888: return GDX2D_FORMAT_RGBA8888;
+                default: throw new ArcRuntimeException("Unknown Format: " + this);
+            }
         }
 
         public static Format fromGdx2DPixmapFormat(int format){
-            if(format == Gdx2DPixmap.GDX2D_FORMAT_ALPHA) return Alpha;
-            if(format == Gdx2DPixmap.GDX2D_FORMAT_LUMINANCE_ALPHA) return LuminanceAlpha;
-            if(format == Gdx2DPixmap.GDX2D_FORMAT_RGB565) return RGB565;
-            if(format == Gdx2DPixmap.GDX2D_FORMAT_RGBA4444) return RGBA4444;
-            if(format == Gdx2DPixmap.GDX2D_FORMAT_RGB888) return RGB888;
-            if(format == Gdx2DPixmap.GDX2D_FORMAT_RGBA8888) return RGBA8888;
-            throw new ArcRuntimeException("Unknown Gdx2DPixmap Format: " + format);
+            switch(format){
+                case GDX2D_FORMAT_ALPHA: return Alpha;
+                case GDX2D_FORMAT_LUMINANCE_ALPHA: return LuminanceAlpha;
+                case GDX2D_FORMAT_RGB565: return RGB565;
+                case GDX2D_FORMAT_RGBA4444: return RGBA4444;
+                case GDX2D_FORMAT_RGB888: return RGB888;
+                case GDX2D_FORMAT_RGBA8888: return RGBA8888;
+                default: throw new ArcRuntimeException("Unknown Gdx2DPixmap Format: " + format);
+            }
         }
 
-        public static int toGlFormat(Format format){
-            return Gdx2DPixmap.toGlFormat(toGdx2DPixmapFormat(format));
+        public int toGlFormat(){
+            return Pixmap.toGlFormat(toGdx2DPixmapFormat());
         }
 
-        public static int toGlType(Format format){
-            return Gdx2DPixmap.toGlType(toGdx2DPixmapFormat(format));
+        public int toGlType(){
+            return Pixmap.toGlType(toGdx2DPixmapFormat());
+        }
+    }
+
+    private static int toGlFormat(int format){
+        switch(format){
+            case GDX2D_FORMAT_ALPHA: return GL20.GL_ALPHA;
+            case GDX2D_FORMAT_LUMINANCE_ALPHA: return GL20.GL_LUMINANCE_ALPHA;
+            case GDX2D_FORMAT_RGB888:
+            case GDX2D_FORMAT_RGB565: return GL20.GL_RGB;
+            case GDX2D_FORMAT_RGBA8888:
+            case GDX2D_FORMAT_RGBA4444: return GL20.GL_RGBA;
+            default: throw new ArcRuntimeException("unknown format: " + format);
+        }
+    }
+
+    private static int toGlType(int format){
+        switch(format){
+            case GDX2D_FORMAT_ALPHA:
+            case GDX2D_FORMAT_LUMINANCE_ALPHA:
+            case GDX2D_FORMAT_RGB888:
+            case GDX2D_FORMAT_RGBA8888: return GL20.GL_UNSIGNED_BYTE;
+            case GDX2D_FORMAT_RGB565: return GL20.GL_UNSIGNED_SHORT_5_6_5;
+            case GDX2D_FORMAT_RGBA4444: return GL20.GL_UNSIGNED_SHORT_4_4_4_4;
+            default: throw new ArcRuntimeException("unknown format: " + format);
         }
     }
 
@@ -452,5 +484,149 @@ public class Pixmap implements Disposable{
      */
     public enum Filter{
         NearestNeighbour, BiLinear
+    }
+
+    /*JNI
+    #include <gdx2d.h>
+    #include <stdlib.h>
+     */
+
+    private static native ByteBuffer load(long[] nativeData, byte[] buffer, int offset, int len); /*MANUAL
+        const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);
+        gdx2d_pixmap* pixmap = gdx2d_load(p_buffer + offset, len);
+        env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
+
+        if(pixmap==0)
+            return 0;
+
+        jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format));
+        jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
+        p_native_data[0] = (jlong)pixmap;
+        p_native_data[1] = pixmap->width;
+        p_native_data[2] = pixmap->height;
+        p_native_data[3] = pixmap->format;
+        env->ReleasePrimitiveArrayCritical(nativeData, p_native_data, 0);
+
+        return pixel_buffer;
+     */
+
+    private static native ByteBuffer newPixmap(long[] nativeData, int width, int height, int format); /*MANUAL
+        gdx2d_pixmap* pixmap = gdx2d_new(width, height, format);
+        if(pixmap==0)
+            return 0;
+
+        jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format));
+        jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
+        p_native_data[0] = (jlong)pixmap;
+        p_native_data[1] = pixmap->width;
+        p_native_data[2] = pixmap->height;
+        p_native_data[3] = pixmap->format;
+        env->ReleasePrimitiveArrayCritical(nativeData, p_native_data, 0);
+
+        return pixel_buffer;
+     */
+
+    private static native void free(long pixmap); /*
+        gdx2d_free((gdx2d_pixmap*)pixmap);
+     */
+
+    private static native void clear(long pixmap, int color); /*
+        gdx2d_clear((gdx2d_pixmap*)pixmap, color);
+     */
+
+    private static native void setPixel(long pixmap, int x, int y, int color); /*
+        gdx2d_set_pixel((gdx2d_pixmap*)pixmap, x, y, color);
+     */
+
+    private static native int getPixel(long pixmap, int x, int y); /*
+        return gdx2d_get_pixel((gdx2d_pixmap*)pixmap, x, y);
+     */
+
+    private static native void drawLine(long pixmap, int x, int y, int x2, int y2, int color); /*
+        gdx2d_draw_line((gdx2d_pixmap*)pixmap, x, y, x2, y2, color);
+     */
+
+    private static native void drawRect(long pixmap, int x, int y, int width, int height, int color); /*
+        gdx2d_draw_rect((gdx2d_pixmap*)pixmap, x, y, width, height, color);
+     */
+
+    private static native void drawCircle(long pixmap, int x, int y, int radius, int color); /*
+        gdx2d_draw_circle((gdx2d_pixmap*)pixmap, x, y, radius, color);
+     */
+
+    private static native void fillRect(long pixmap, int x, int y, int width, int height, int color); /*
+        gdx2d_fill_rect((gdx2d_pixmap*)pixmap, x, y, width, height, color);
+     */
+
+    private static native void fillCircle(long pixmap, int x, int y, int radius, int color); /*
+        gdx2d_fill_circle((gdx2d_pixmap*)pixmap, x, y, radius, color);
+     */
+
+    private static native void fillTriangle(long pixmap, int x1, int y1, int x2, int y2, int x3, int y3, int color); /*
+        gdx2d_fill_triangle((gdx2d_pixmap*)pixmap, x1, y1, x2, y2, x3, y3, color);
+     */
+
+    private static native void drawPixmap(long src, long dst, int srcX, int srcY, int srcWidth, int srcHeight, int dstX,
+                                          int dstY, int dstWidth, int dstHeight); /*
+        gdx2d_draw_pixmap((gdx2d_pixmap*)src, (gdx2d_pixmap*)dst, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
+     */
+
+    private static native void setBlend(long src, int blend); /*
+        gdx2d_set_blend((gdx2d_pixmap*)src, blend);
+     */
+
+    private static native void setScale(long src, int scale); /*
+        gdx2d_set_scale((gdx2d_pixmap*)src, scale);
+     */
+
+    public static native String getFailureReason(); /*
+        return env->NewStringUTF(gdx2d_get_failure_reason());
+     */
+
+    private static class NativePixmap{
+        long basePtr;
+        int width;
+        int height;
+        int format;
+        ByteBuffer pixelPtr;
+        long[] nativeData = new long[4];
+
+        public NativePixmap(byte[] encodedData, int offset, int len, int requestedFormat) throws IOException{
+            pixelPtr = load(nativeData, encodedData, offset, len);
+            if(pixelPtr == null) throw new IOException("Error loading pixmap: " + getFailureReason());
+
+            basePtr = nativeData[0];
+            width = (int)nativeData[1];
+            height = (int)nativeData[2];
+            format = (int)nativeData[3];
+
+            if(requestedFormat != 0 && requestedFormat != format){
+                convert(requestedFormat);
+            }
+        }
+
+        /** @throws ArcRuntimeException if allocation failed. */
+        public NativePixmap(int width, int height, int format) throws ArcRuntimeException{
+            pixelPtr = newPixmap(nativeData, width, height, format);
+            if(pixelPtr == null) throw new ArcRuntimeException("Error loading pixmap.");
+
+            this.basePtr = nativeData[0];
+            this.width = (int)nativeData[1];
+            this.height = (int)nativeData[2];
+            this.format = (int)nativeData[3];
+        }
+
+        private void convert(int requestedFormat){
+            NativePixmap pixmap = new NativePixmap(width, height, requestedFormat);
+            drawPixmap(basePtr, pixmap.basePtr, 0, 0, width, height, 0, 0, width, height);
+            free(basePtr);
+            this.basePtr = pixmap.basePtr;
+            this.format = pixmap.format;
+            this.height = pixmap.height;
+            this.nativeData = pixmap.nativeData;
+            this.pixelPtr = pixmap.pixelPtr;
+            this.width = pixmap.width;
+        }
+
     }
 }

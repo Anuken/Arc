@@ -23,4 +23,8 @@ include ":backends:backend-sdl"
 include ":backends:backend-robovm"
 include ":backends:backend-teavm"
 
+include ":natives"
+include ":natives:natives-desktop"
+include ":natives:natives-android"
+
 rootProject.name = "arc"
