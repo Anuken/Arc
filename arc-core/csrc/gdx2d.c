@@ -15,6 +15,9 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_FAILURE_USERMSG
 #define STBI_NO_STDIO
+#ifdef __APPLE__
+#define STBI_NO_THREAD_LOCALS
+#endif
 #include "stb_image.h"
 
 
