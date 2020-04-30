@@ -123,11 +123,11 @@ task freetypeNatives(dependsOn: [classes, deleteJniFolder]){
             into "../../natives/natives-freetype-android/libs/"
         }
 
-        //TODO
         //cleanup
-        delete{
-            delete "libs"
-        }
+        delete{ delete "libs" }
+        delete{ delete "obj" }
+        delete{ delete "out" }
+        delete{ delete "jni" }
 
         //delete extra garbage, not sure why it even exists
         delete{

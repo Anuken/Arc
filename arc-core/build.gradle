@@ -103,9 +103,10 @@ task natives(dependsOn: [classes, deleteJniFolder]){
         }
 
         //cleanup
-        delete{
-            delete "libs"
-        }
+        delete{ delete "libs" }
+        delete{ delete "obj" }
+        delete{ delete "out" }
+        delete{ delete "jni" }
 
         //delete extra garbage, not sure why it even exists
         delete{
