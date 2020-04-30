@@ -1,0 +1,106 @@
+import com.badlogic.gdx.jnigen.*
+
+buildscript{
+    dependencies{
+        classpath "com.badlogicgames.gdx:gdx-jnigen:1.9.10"
+    }
+}
+
+task deleteJniFolder(type: Delete) {
+    delete "jni"
+    delete "docs"
+}
+
+clean.dependsOn(deleteJniFolder)
+
+task box2dNatives(dependsOn: [classes, deleteJniFolder]){
+    doLast{
+        def root = "$project.rootDir/extensions/box2d"
+        def jnidir = "$root/jni"
+        def libdir = "$root/libs"
+
+        //copy files manually because javah and/or jnigen is braindead
+        copy{
+            from "$rootDir/arc-core/build/classes/java/main"
+            into "$root/build/classes/java/main"
+            include "**"
+        }
+
+        new NativeCodeGenerator().generate("$root/src", "$root/build/classes/java/main", jnidir, null, null)
+
+        //download box2d
+        "curl https://raw.githubusercontent.com/Anuken/anuken.github.io/master/files/Box2D.zip -L -o $jnidir/Box2D.zip".execute().waitFor()
+        //unzip box2d
+        "unzip $jnidir/Box2D.zip -d $jnidir".execute()
+
+        BuildTarget[] targets = [
+            BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Windows, false),
+            BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Windows, true),
+            BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Linux, true),
+            BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Android, false),
+            BuildTarget.newDefaultTarget(BuildTarget.TargetOs.MacOsX, true),
+            BuildTarget.newDefaultTarget(BuildTarget.TargetOs.IOS, false)
+        ] as BuildTarget[]
+
+        targets.each{
+            if(it.os == BuildTarget.TargetOs.MacOsX){
+                it.cppFlags = "-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.7 -stdlib=libc++"
+                it.linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.7 -stdlib=libc++ -framework CoreServices -framework Carbon"
+            }
+        }
+
+        def matches = { String path, List<String> pattern ->
+            return pattern.find{ path.contains(it) } != null
+        }
+
+        new AntScriptGenerator().generate(new BuildConfig("arc-box2d", "$root/build", "libs/", jnidir), targets)
+
+        //copy custom makefile
+        file("$jnidir/Android.mk").bytes = file("$jnidir/../Android.mk").bytes
+
+        //overwrite incorrect application mkfile
+        new File("$jnidir/Application.mk").text = "APP_ABI := all\nAPP_PLATFORM := android-16"
+
+        for(BuildTarget target : targets){
+            if((target.os == BuildTarget.TargetOs.IOS || target.os == BuildTarget.TargetOs.MacOsX) != System.getProperty("os.name").toLowerCase().contains("mac")) continue
+
+            String buildFileName = "build-" + target.os.toString().toLowerCase() + (target.is64Bit ? "64" : "32") + ".xml"
+            BuildExecutor.executeAnt("$jnidir/" + buildFileName, "-Dhas-compiler=true -Drelease=true clean postcompile")
+        }
+
+        new File(libdir).eachFileRecurse{ file ->
+            if(!file.path.contains("ios") && !file.path.contains("mac")){
+                "strip ${file.absolutePath}".execute().waitFor()
+            }
+        }
+
+        new File(libdir).eachFileRecurse{ target ->
+            if(!target.isDirectory() && matches(target.path, ["windows", "mac", "linux"])){
+                file("../../natives/natives-box2d-desktop/libs").mkdirs()
+                file("../../natives/natives-box2d-desktop/libs/$target.name").bytes = target.bytes
+            }else if(!target.isDirectory() && target.path.contains("ios")){
+                file("../../natives/natives-box2d-ios/libs").mkdirs()
+                file("../../natives/natives-box2d-ios/libs/$target.name").bytes = target.bytes
+            }
+        }
+
+        copy{
+            include{ file -> matches(file.path, ["arm", "x86"]) && !file.path.contains("ios") }
+            from "libs/"
+            into "../../natives/natives-box2d-android/libs/"
+        }
+
+        //cleanup
+        delete{ delete "libs" }
+        delete{ delete "obj" }
+        delete{ delete "out" }
+        delete{ delete "jni" }
+
+        //delete extra garbage, not sure why it even exists
+        delete{
+            delete "../../libs"
+        }
+    }
+}
+
+
