@@ -185,21 +185,14 @@ public class SdlApplication implements Application{
 
     @Override
     public boolean openFolder(String file){
-        try{
-            if(OS.isWindows){
-                OS.execSafe("explorer.exe /select," + file.replace("/", "\\"));
-                return true;
-            }else if(OS.isLinux){
-                OS.execSafe("xdg-open " + file);
-                return true;
-            }else if(OS.isMac){
-                OS.execSafe("open " + file);
-            }
-            return false;
-        }catch(Throwable e){
-            e.printStackTrace();
-            return false;
+        if(OS.isWindows){
+            return OS.execSafe("explorer.exe /select," + file.replace("/", "\\"));
+        }else if(OS.isLinux){
+            return OS.execSafe("xdg-open " + file);
+        }else if(OS.isMac){
+            return OS.execSafe("open " + file);
         }
+        return false;
     }
 
     @Override
