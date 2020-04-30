@@ -277,7 +277,7 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public boolean isContinuousRendering(){
-        return false;
+        return true;
     }
 
     @Override
