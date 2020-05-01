@@ -611,6 +611,13 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
         return size != startSize;
     }
 
+    /** If this array is empty, returns an object specified by the constructor.
+     * Otherwise, acts like pop(). */
+    public T popOr(Prov<T> constructor){
+        if(size == 0) return constructor.get();
+        return pop();
+    }
+
     /** Removes and returns the last item. */
     public T pop(){
         if(size == 0) throw new IllegalStateException("Array is empty.");

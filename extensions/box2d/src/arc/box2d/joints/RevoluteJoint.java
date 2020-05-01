@@ -3,194 +3,197 @@ package arc.box2d.joints;
 import arc.box2d.*;
 import arc.math.geom.*;
 
-/** A revolute joint constrains two bodies to share a common point while they are free to rotate about the point. The relative
+/**
+ * A revolute joint constrains two bodies to share a common point while they are free to rotate about the point. The relative
  * rotation about the shared point is the joint angle. You can limit the relative rotation with a joint limit that specifies a
  * lower and upper angle. You can use a motor to drive the relative rotation about the shared point. A maximum motor torque is
- * provided so that infinite forces are not generated. */
-public class RevoluteJoint extends Joint {
-	// @off
+ * provided so that infinite forces are not generated.
+ */
+public class RevoluteJoint extends Joint{
+    // @off
 	/*JNI
 #include <Box2D/Box2D.h> 
 	 */
-	/** Get the first ground anchor. */
-	private final float[] tmp = new float[2];
-	private final Vec2 localAnchorA = new Vec2();
-	private final Vec2 localAnchorB = new Vec2();
-	
-	public RevoluteJoint (Physics world, long addr) {
-		super(world, addr);
-	}
+    /** Get the first ground anchor. */
+    private final float[] tmp = new float[2];
+    private final Vec2 localAnchorA = new Vec2();
+    private final Vec2 localAnchorB = new Vec2();
 
-	/** Get the current joint angle in radians. */
-	public float getJointAngle () {
-		return jniGetJointAngle(addr);
-	}
+    public RevoluteJoint(Physics world, long addr){
+        super(world, addr);
+    }
 
-	private native float jniGetJointAngle (long addr); /*
+    /** Get the current joint angle in radians. */
+    public float getJointAngle(){
+        return jniGetJointAngle(addr);
+    }
+
+    private native float jniGetJointAngle(long addr); /*
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetJointAngle();
 	*/
 
-	/** Get the current joint angle speed in radians per second. */
-	public float getJointSpeed () {
-		return jniGetJointSpeed(addr);
-	}
+    /** Get the current joint angle speed in radians per second. */
+    public float getJointSpeed(){
+        return jniGetJointSpeed(addr);
+    }
 
-	private native float jniGetJointSpeed (long addr); /*
+    private native float jniGetJointSpeed(long addr); /*
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetJointSpeed();
 	*/
 
-	/** Is the joint limit enabled? */
-	public boolean isLimitEnabled () {
-		return jniIsLimitEnabled(addr);
-	}
+    /** Is the joint limit enabled? */
+    public boolean isLimitEnabled(){
+        return jniIsLimitEnabled(addr);
+    }
 
-	private native boolean jniIsLimitEnabled (long addr); /*
+    private native boolean jniIsLimitEnabled(long addr); /*
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->IsLimitEnabled();
 	*/
 
-	/** Enable/disable the joint limit. */
-	public void enableLimit (boolean flag) {
-		jniEnableLimit(addr, flag);
-	}
+    /** Enable/disable the joint limit. */
+    public void enableLimit(boolean flag){
+        jniEnableLimit(addr, flag);
+    }
 
-	private native void jniEnableLimit (long addr, boolean flag); /*
+    private native void jniEnableLimit(long addr, boolean flag); /*
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		joint->EnableLimit(flag);
 	*/
 
-	/** Get the lower joint limit in radians. */
-	public float getLowerLimit () {
-		return jniGetLowerLimit(addr);
-	}
+    /** Get the lower joint limit in radians. */
+    public float getLowerLimit(){
+        return jniGetLowerLimit(addr);
+    }
 
-	private native float jniGetLowerLimit (long addr); /*
+    private native float jniGetLowerLimit(long addr); /*
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetLowerLimit();
 	*/
 
-	/** Get the upper joint limit in radians. */
-	public float getUpperLimit () {
-		return jniGetUpperLimit(addr);
-	}
+    /** Get the upper joint limit in radians. */
+    public float getUpperLimit(){
+        return jniGetUpperLimit(addr);
+    }
 
-	private native float jniGetUpperLimit (long addr); /*
+    private native float jniGetUpperLimit(long addr); /*
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetUpperLimit();
 	*/
 
-	/** Set the joint limits in radians.
-	 * @param upper */
-	public void setLimits (float lower, float upper) {
-		jniSetLimits(addr, lower, upper);
-	}
+    /**
+     * Set the joint limits in radians.
+     */
+    public void setLimits(float lower, float upper){
+        jniSetLimits(addr, lower, upper);
+    }
 
-	private native void jniSetLimits (long addr, float lower, float upper); /*
+    private native void jniSetLimits(long addr, float lower, float upper); /*
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		joint->SetLimits(lower, upper );
 	*/
 
-	/** Is the joint motor enabled? */
-	public boolean isMotorEnabled () {
-		return jniIsMotorEnabled(addr);
-	}
+    /** Is the joint motor enabled? */
+    public boolean isMotorEnabled(){
+        return jniIsMotorEnabled(addr);
+    }
 
-	private native boolean jniIsMotorEnabled (long addr); /*
+    private native boolean jniIsMotorEnabled(long addr); /*
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->IsMotorEnabled();
 	*/
 
-	/** Enable/disable the joint motor. */
-	public void enableMotor (boolean flag) {
-		jniEnableMotor(addr, flag);
-	}
+    /** Enable/disable the joint motor. */
+    public void enableMotor(boolean flag){
+        jniEnableMotor(addr, flag);
+    }
 
-	private native void jniEnableMotor (long addr, boolean flag); /*
+    private native void jniEnableMotor(long addr, boolean flag); /*
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		joint->EnableMotor(flag);
 	*/
 
-	/** Set the motor speed in radians per second. */
-	public void setMotorSpeed (float speed) {
-		jniSetMotorSpeed(addr, speed);
-	}
+    /** Set the motor speed in radians per second. */
+    public void setMotorSpeed(float speed){
+        jniSetMotorSpeed(addr, speed);
+    }
 
-	private native void jniSetMotorSpeed (long addr, float speed); /*
+    private native void jniSetMotorSpeed(long addr, float speed); /*
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		joint->SetMotorSpeed(speed);
 	*/
 
-	/** Get the motor speed in radians per second. */
-	public float getMotorSpeed () {
-		return jniGetMotorSpeed(addr);
-	}
+    /** Get the motor speed in radians per second. */
+    public float getMotorSpeed(){
+        return jniGetMotorSpeed(addr);
+    }
 
-	private native float jniGetMotorSpeed (long addr); /*
+    private native float jniGetMotorSpeed(long addr); /*
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetMotorSpeed();
 	*/
 
-	/** Set the maximum motor torque, usually in N-m. */
-	public void setMaxMotorTorque (float torque) {
-		jniSetMaxMotorTorque(addr, torque);
-	}
+    /** Set the maximum motor torque, usually in N-m. */
+    public void setMaxMotorTorque(float torque){
+        jniSetMaxMotorTorque(addr, torque);
+    }
 
-	private native void jniSetMaxMotorTorque (long addr, float torque); /*
+    private native void jniSetMaxMotorTorque(long addr, float torque); /*
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		joint->SetMaxMotorTorque(torque);
 	*/
 
-	/** Get the current motor torque, usually in N-m. */
-	public float getMotorTorque (float invDt) {
-		return jniGetMotorTorque(addr, invDt);
-	}
+    /** Get the current motor torque, usually in N-m. */
+    public float getMotorTorque(float invDt){
+        return jniGetMotorTorque(addr, invDt);
+    }
 
-	private native float jniGetMotorTorque (long addr, float invDt); /*
+    private native float jniGetMotorTorque(long addr, float invDt); /*
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetMotorTorque(invDt);
 	*/
-	
-	public Vec2 getLocalAnchorA () {
-		jniGetLocalAnchorA(addr, tmp);
-		localAnchorA.set(tmp[0], tmp[1]);
-		return localAnchorA;
-	}
 
-	private native void jniGetLocalAnchorA (long addr, float[] anchor); /*
+    public Vec2 getLocalAnchorA(){
+        jniGetLocalAnchorA(addr, tmp);
+        localAnchorA.set(tmp[0], tmp[1]);
+        return localAnchorA;
+    }
+
+    private native void jniGetLocalAnchorA(long addr, float[] anchor); /*
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorA().x;
 		anchor[1] = joint->GetLocalAnchorA().y;
 	*/
-	
-	public Vec2 getLocalAnchorB () {
-		jniGetLocalAnchorB(addr, tmp);
-		localAnchorB.set(tmp[0], tmp[1]);
-		return localAnchorB;
-	}
 
-	private native void jniGetLocalAnchorB (long addr, float[] anchor); /*
+    public Vec2 getLocalAnchorB(){
+        jniGetLocalAnchorB(addr, tmp);
+        localAnchorB.set(tmp[0], tmp[1]);
+        return localAnchorB;
+    }
+
+    private native void jniGetLocalAnchorB(long addr, float[] anchor); /*
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorB().x;
 		anchor[1] = joint->GetLocalAnchorB().y;
 	*/
-	
-	/** Get the current motor torque, usually in N-m. */
-	public float getReferenceAngle () {
-		return jniGetReferenceAngle(addr);
-	}
 
-	private native float jniGetReferenceAngle (long addr); /*
+    /** Get the current motor torque, usually in N-m. */
+    public float getReferenceAngle(){
+        return jniGetReferenceAngle(addr);
+    }
+
+    private native float jniGetReferenceAngle(long addr); /*
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetReferenceAngle();
 	*/
-	
-	public float getMaxMotorTorque () {
-		return jniGetMaxMotorTorque(addr);
-	}
 
-	private native float jniGetMaxMotorTorque (long addr); /*
+    public float getMaxMotorTorque(){
+        return jniGetMaxMotorTorque(addr);
+    }
+
+    private native float jniGetMaxMotorTorque(long addr); /*
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetMaxMotorTorque();
 	*/

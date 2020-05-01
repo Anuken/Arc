@@ -1,5 +1,5 @@
 package arc.box2d;
 
-public interface DestructionListener {
+public interface DestructionListener{
 
 }

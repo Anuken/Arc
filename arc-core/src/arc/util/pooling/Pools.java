@@ -35,10 +35,10 @@ public class Pools{
 
     /**
      * Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. The max size of the pool used
-     * is 100.
+     * is 5000.
      */
     public static <T> Pool<T> get(Class<T> type, Prov<T> supplier){
-        return get(type, supplier, 100);
+        return get(type, supplier, 5000);
     }
 
     /** Sets an existing pool for the specified type, stored in a Class to {@link Pool} map. */
