@@ -50,6 +50,11 @@ public class TextureRegionDrawable extends BaseDrawable implements TransformDraw
         Draw.rect(region, x + width/2f, y + height/2f, width * scaleX, height * scaleY, originX, originY, rotation);
     }
 
+    public TextureRegionDrawable set(TextureRegion region){
+        setRegion(region);
+        return this;
+    }
+
     public TextureRegion getRegion(){
         return region;
     }
