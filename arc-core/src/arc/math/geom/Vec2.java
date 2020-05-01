@@ -287,15 +287,15 @@ public class Vec2 implements Vector<Vec2>, Position{
     }
 
     public Vec2 tryFromString(String v){
-        int s = v.indexOf(',', 1);
-        if(s != -1 && v.charAt(0) == '(' && v.charAt(v.length() - 1) == ')'){
-            try{
+        try{
+            int s = v.indexOf(',', 1);
+            if(s != -1 && v.charAt(0) == '(' && v.charAt(v.length() - 1) == ')'){
                 float x = Float.parseFloat(v.substring(1, s));
                 float y = Float.parseFloat(v.substring(s + 1, v.length() - 1));
                 return this.set(x, y);
-            }catch(Exception ex){
-                // Throw a ArcRuntimeException
             }
+        }catch(Throwable t){
+
         }
         return setZero();
     }

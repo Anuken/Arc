@@ -16,12 +16,12 @@ public class Contact {
 	protected long addr;
 
 	/** the world **/
-	protected World world;
+	protected Physics world;
 
 	/** the world manifold **/
 	protected final WorldManifold worldManifold = new WorldManifold();
 
-	protected Contact (World world, long addr) {
+	protected Contact (Physics world, long addr) {
 		this.addr = addr;
 		this.world = world;
 	}

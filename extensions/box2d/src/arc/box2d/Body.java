@@ -19,7 +19,7 @@ public class Body {
 	private final float[] tmp = new float[4];
 
 	/** World **/
-	private final World world;
+	private final Physics world;
 
 	/** Fixtures of this body **/
 	private Array<Fixture> fixtures = new Array<>(2);
@@ -33,12 +33,12 @@ public class Body {
 	/** Constructs a new body with the given address
 	 * @param world the world
 	 * @param addr the address */
-	protected Body (World world, long addr) {
+	protected Body (Physics world, long addr) {
 		this.world = world;
 		this.addr = addr;
 	}
 
-	/** Resets this body after fetching it from the {@link World#freeBodies} Pool. */
+	/** Resets this body after fetching it from the {@link Physics#freeBodies} Pool. */
 	protected void reset (long addr) {
 		this.addr = addr;
 		this.userData = null;
@@ -132,9 +132,18 @@ public class Body {
 		jniSetTransform(addr, x, y, angle);
 	}
 
+    public void setPosition (float x, float y) {
+        jniSetPosition(addr, x, y);
+    }
+
 	private native void jniSetTransform (long addr, float positionX, float positionY, float angle); /*
 		b2Body* body = (b2Body*)addr;
 		body->SetTransform(b2Vec2(positionX, positionY), angle);
+	*/
+
+    private native void jniSetPosition(long addr, float positionX, float positionY); /*
+		b2Body* body = (b2Body*)addr;
+		body->SetTransform(b2Vec2(positionX, positionY), body->GetAngle());
 	*/
 
 	private final Transform transform = new Transform();
@@ -787,13 +796,14 @@ inline b2BodyType getBodyType( int type )
 	*/
 
 	/** Get the parent world of this body. */
-	public World getWorld () {
+	public Physics getWorld () {
 		return world;
 	}
 
 	/** Get the user data */
-	public Object getUserData () {
-		return userData;
+	@SuppressWarnings("unchecked")
+	public <T> T getUserData () {
+		return (T)userData;
 	}
 
 	/** Set the user data */

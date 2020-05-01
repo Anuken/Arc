@@ -9,13 +9,13 @@ public class ContactImpulse {
 #include <Box2D/Box2D.h>
 	 */
 	
-	final World world;
+	final Physics world;
 	long addr;
 	float[] tmp = new float[2];
 	final float[] normalImpulses = new float[2];
 	final float[] tangentImpulses = new float[2];
 
-	protected ContactImpulse (World world, long addr) {
+	protected ContactImpulse (Physics world, long addr) {
 		this.world = world;
 		this.addr = addr;
 	}

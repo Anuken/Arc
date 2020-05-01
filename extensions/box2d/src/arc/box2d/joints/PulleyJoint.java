@@ -12,7 +12,7 @@ public class PulleyJoint extends Joint {
 #include <Box2D/Box2D.h> 
 	 */
 	
-	public PulleyJoint (World world, long addr) {
+	public PulleyJoint (Physics world, long addr) {
 		super(world, addr);
 	}
 

@@ -12,7 +12,7 @@ public abstract class Joint {
 	protected long addr;
 
 	/** world **/
-	private final World world;
+	private final Physics world;
 
 	/** temporary float array **/
 	private final float[] tmp = new float[2];
@@ -28,7 +28,7 @@ public abstract class Joint {
 
 	/** Constructs a new joint
 	 * @param addr the address of the joint */
-	protected Joint (World world, long addr) {
+	protected Joint (Physics world, long addr) {
 		this.world = world;
 		this.addr = addr;
 	}

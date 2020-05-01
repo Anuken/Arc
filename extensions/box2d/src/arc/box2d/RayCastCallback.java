@@ -4,7 +4,7 @@ package arc.box2d;
 import arc.math.geom.*;
 
 /** Callback class for ray casts.
- * @see World#rayCast(RayCastCallback, Vec2, Vec2)
+ * @see Physics#rayCast(RayCastCallback, Vec2, Vec2)
  * @author mzechner */
 
 public interface RayCastCallback {

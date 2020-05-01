@@ -21,7 +21,7 @@ LOCAL_SRC_FILES := arc.box2d.Shape.cpp\
 	arc.box2d.joints.RevoluteJoint.cpp\
 	arc.box2d.PolygonShape.cpp\
 	arc.box2d.joints.PulleyJoint.cpp\
-	arc.box2d.World.cpp\
+	arc.box2d.Physics.cpp\
 	arc.box2d.joints.WheelJoint.cpp\
 	arc.box2d.ContactImpulse.cpp\
 	arc.box2d.joints.DistanceJoint.cpp\

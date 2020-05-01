@@ -1,7 +1,7 @@
 package arc.box2d.joints;
 
 import arc.box2d.Joint;
-import arc.box2d.World;
+import arc.box2d.Physics;
 
 /** A gear joint is used to connect two joints together. Either joint can be a revolute or prismatic joint. You specify a gear
  * ratio to bind the motions together: coordinate1 + ratio * coordinate2 = constant The ratio can be negative or positive. If one
@@ -17,7 +17,7 @@ public class GearJoint extends Joint {
 	private Joint joint1;
 	private Joint joint2;
 
-	public GearJoint (World world, long addr, Joint joint1, Joint joint2) {
+	public GearJoint (Physics world, long addr, Joint joint1, Joint joint2) {
 		super(world, addr);
 		this.joint1 = joint1;
 		this.joint2 = joint2;

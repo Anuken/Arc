@@ -17,7 +17,7 @@ public class PrismaticJoint extends Joint {
 	private final Vec2 localAnchorB = new Vec2();
 	private final Vec2 localAxisA = new Vec2();
 
-	public PrismaticJoint (World world, long addr) {
+	public PrismaticJoint (Physics world, long addr) {
 		super(world, addr);
 	}
 

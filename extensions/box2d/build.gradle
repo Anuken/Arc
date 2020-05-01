@@ -90,6 +90,7 @@ task box2dNatives(dependsOn: [classes, deleteJniFolder]){
             into "../../natives/natives-box2d-android/libs/"
         }
 
+        /*
         //cleanup
         delete{ delete "libs" }
         delete{ delete "obj" }
@@ -99,7 +100,7 @@ task box2dNatives(dependsOn: [classes, deleteJniFolder]){
         //delete extra garbage, not sure why it even exists
         delete{
             delete "../../libs"
-        }
+        }*/
     }
 }
 

@@ -12,7 +12,7 @@ public class MouseJoint extends Joint {
 #include <Box2D/Box2D.h>
 	 */
 	
-	public MouseJoint (World world, long addr) {
+	public MouseJoint (Physics world, long addr) {
 		super(world, addr);
 	}
 

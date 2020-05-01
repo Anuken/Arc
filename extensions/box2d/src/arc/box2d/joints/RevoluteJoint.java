@@ -17,7 +17,7 @@ public class RevoluteJoint extends Joint {
 	private final Vec2 localAnchorA = new Vec2();
 	private final Vec2 localAnchorB = new Vec2();
 	
-	public RevoluteJoint (World world, long addr) {
+	public RevoluteJoint (Physics world, long addr) {
 		super(world, addr);
 	}
 

@@ -14,7 +14,7 @@ public class MotorJoint extends Joint {
 	private final float[] tmp = new float[2];
 	private final Vec2 linearOffset = new Vec2();
 
-	public MotorJoint (World world, long addr) {
+	public MotorJoint (Physics world, long addr) {
 		super(world, addr);
 	}
 

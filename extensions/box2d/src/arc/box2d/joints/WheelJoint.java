@@ -18,7 +18,7 @@ public class WheelJoint extends Joint {
 	private final Vec2 localAnchorB = new Vec2();
 	private final Vec2 localAxisA = new Vec2();
 
-	public WheelJoint (World world, long addr) {
+	public WheelJoint (Physics world, long addr) {
 		super(world, addr);
 	}
 

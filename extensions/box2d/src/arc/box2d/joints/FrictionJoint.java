@@ -14,7 +14,7 @@ public class FrictionJoint extends Joint {
 	private final Vec2 localAnchorA = new Vec2();
 	private final Vec2 localAnchorB = new Vec2();
 
-	public FrictionJoint (World world, long addr) {
+	public FrictionJoint (Physics world, long addr) {
 		super(world, addr);
 	}
 

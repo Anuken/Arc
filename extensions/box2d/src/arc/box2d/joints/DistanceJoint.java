@@ -15,7 +15,7 @@ public class DistanceJoint extends Joint {
 	private final Vec2 localAnchorA = new Vec2();
 	private final Vec2 localAnchorB = new Vec2();
 
-	public DistanceJoint (World world, long addr) {
+	public DistanceJoint (Physics world, long addr) {
 		super(world, addr);
 	}
 

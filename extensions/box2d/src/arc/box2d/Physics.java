@@ -12,8 +12,8 @@ import java.util.*;
 /** The world class manages all physics entities, dynamic simulation, and asynchronous queries. The world also contains efficient
  * memory management facilities.
  * @author mzechner */
-public final class World implements Disposable {
-	// @off
+public final class Physics implements Disposable {
+
 	/*JNI
 #include <Box2D/Box2D.h>
 
@@ -152,7 +152,7 @@ b2ContactFilter defaultFilter;
 	protected final Pool<Body> freeBodies = new Pool<Body>(100, 200) {
 		@Override
 		protected Body newObject () {
-			return new Body(World.this, 0);
+			return new Body(Physics.this, 0);
 		}
 	};
 
@@ -168,13 +168,13 @@ b2ContactFilter defaultFilter;
 	protected final long addr;
 
 	/** all known bodies **/
-	protected final LongMap<Body> bodies = new LongMap<Body>(100);
+	protected final LongMap<Body> bodies = new LongMap<>(100);
 
 	/** all known fixtures **/
-	protected final LongMap<Fixture> fixtures = new LongMap<Fixture>(100);
+	protected final LongMap<Fixture> fixtures = new LongMap<>(100);
 
 	/** all known joints **/
-	protected final LongMap<Joint> joints = new LongMap<Joint>(100);
+	protected final LongMap<Joint> joints = new LongMap<>(100);
 
 	/** Contact filter **/
 	protected ContactFilter contactFilter = null;
@@ -185,7 +185,7 @@ b2ContactFilter defaultFilter;
 	/** Construct a world object.
 	 * @param gravity the world gravity vector.
 	 * @param doSleep improve performance by not simulating inactive bodies. */
-	public World (Vec2 gravity, boolean doSleep) {
+	public Physics(Vec2 gravity, boolean doSleep) {
 		addr = newWorld(gravity.x, gravity.y, doSleep);
 
 		contacts.ensureCapacity(contactAddrs.length);
@@ -237,7 +237,7 @@ b2ContactFilter defaultFilter;
 
 	/** Create a rigid body given a definition. No reference to the definition is retained.
 	 * Bodies created by this method are pooled internally by the World object.
-	 * They will be freed upon calling {@link World#destroyBody(Body)}
+	 * They will be freed upon calling {@link Physics#destroyBody(Body)}
 	 * @see Pool
 	 * @warning This function is locked during callbacks. */
 	public Body createBody (BodyDef def) {
