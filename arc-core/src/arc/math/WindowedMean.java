@@ -22,6 +22,12 @@ public final class WindowedMean{
         values = new float[windowSize];
     }
 
+    public void reset(){
+        addedValues = 0;
+        lastValue = 0;
+        mean = 0;
+    }
+
     /** @return whether the value returned will be meaningful */
     public boolean hasEnoughData(){
         return addedValues >= values.length;
