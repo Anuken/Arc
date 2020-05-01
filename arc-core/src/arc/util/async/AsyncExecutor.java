@@ -21,9 +21,7 @@ public class AsyncExecutor implements Disposable{
         executor = Executors.newFixedThreadPool(maxConcurrent, r -> {
             Thread thread = new Thread(r, "AsynchExecutor-Thread");
             thread.setDaemon(true);
-            thread.setUncaughtExceptionHandler((t, e) -> {
-                e.printStackTrace();
-            });
+            thread.setUncaughtExceptionHandler((t, e) -> e.printStackTrace());
             return thread;
         });
     }
