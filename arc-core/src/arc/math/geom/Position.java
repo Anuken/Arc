@@ -38,15 +38,7 @@ public interface Position{
     }
 
     default boolean within(Position other, float dst){
-        return withinDst(other.getX(), other.getY(), dst);
-    }
-
-    default boolean withinDst(Position other, float dst){
-        return withinDst(other.getX(), other.getY(), dst);
-    }
-
-    default boolean withinDst(float x, float y, float dst){
-        return Mathf.dst2(getX(), getY(), x, y) < dst*dst;
+        return within(other.getX(), other.getY(), dst);
     }
 
     default boolean within(float x, float y, float dst){

@@ -16,7 +16,7 @@ import java.util.Iterator;
  * @author Anuke
  */
 public class QuadTree<T extends QuadTreeObject>{
-    private static final Rect tmp = new Rect();
+    private final Rect tmp = new Rect();
     private static final int maxObjectsPerNode = 5;
 
     public Rect bounds;
@@ -159,12 +159,12 @@ public class QuadTree<T extends QuadTreeObject>{
      * <p>
      * This will never result in false positives.
      */
-    public void getIntersect(Cons<T> out, float x, float y, float width, float height){
+    public void intersect(float height, float x, float y, float width, Cons<T> out){
         if(!leaf){
-            if(topLeft.bounds.overlaps(x, y, width, height)) topLeft.getIntersect(out, x, y, width, height);
-            if(topRight.bounds.overlaps(x, y, width, height)) topRight.getIntersect(out, x, y, width, height);
-            if(botLeft.bounds.overlaps(x, y, width, height)) botLeft.getIntersect(out, x, y, width, height);
-            if(botRight.bounds.overlaps(x, y, width, height)) botRight.getIntersect(out, x, y, width, height);
+            if(topLeft.bounds.overlaps(x, y, width, height)) topLeft.intersect(height, x, y, width, out);
+            if(topRight.bounds.overlaps(x, y, width, height)) topRight.intersect(height, x, y, width, out);
+            if(botLeft.bounds.overlaps(x, y, width, height)) botLeft.intersect(height, x, y, width, out);
+            if(botRight.bounds.overlaps(x, y, width, height)) botRight.intersect(height, x, y, width, out);
         }
 
         for(int i = 0; i < objects.size; i++){
@@ -180,8 +180,8 @@ public class QuadTree<T extends QuadTreeObject>{
      * <p>
      * This will never result in false positives.
      */
-    public void getIntersect(Cons<T> out, Rect rect){
-        getIntersect(out, rect.x, rect.y, rect.width, rect.height);
+    public void intersect(Rect rect, Cons<T> out){
+        intersect(rect.height, rect.x, rect.y, rect.width, out);
     }
 
     /**
@@ -189,12 +189,12 @@ public class QuadTree<T extends QuadTreeObject>{
      * <p>
      * This will result in false positives, but never a false negative.
      */
-    public void getIntersect(Array<T> out, Rect toCheck){
+    public void intersect(Rect toCheck, Array<T> out){
         if(!leaf){
-            if(topLeft.bounds.overlaps(toCheck)) topLeft.getIntersect(out, toCheck);
-            if(topRight.bounds.overlaps(toCheck)) topRight.getIntersect(out, toCheck);
-            if(botLeft.bounds.overlaps(toCheck)) botLeft.getIntersect(out, toCheck);
-            if(botRight.bounds.overlaps(toCheck)) botRight.getIntersect(out, toCheck);
+            if(topLeft.bounds.overlaps(toCheck)) topLeft.intersect(toCheck, out);
+            if(topRight.bounds.overlaps(toCheck)) topRight.intersect(toCheck, out);
+            if(botLeft.bounds.overlaps(toCheck)) botLeft.intersect(toCheck, out);
+            if(botRight.bounds.overlaps(toCheck)) botRight.intersect(toCheck, out);
         }
 
         for(int i = 0; i < objects.size; i++){
