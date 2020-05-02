@@ -94,6 +94,12 @@ public class Vec2 implements Vector<Vec2>, Position{
         return this;
     }
 
+    public Vec2 set(Vec3 other){
+        this.x = other.x;
+        this.y = other.y;
+        return this;
+    }
+
     public Vec2 sub(Position v){
         return sub(v.getX(), v.getY());
     }
@@ -115,6 +121,10 @@ public class Vec2 implements Vector<Vec2>, Position{
         this.x -= x;
         this.y -= y;
         return this;
+    }
+
+    public Vec2 sub(Vec3 v){
+        return sub(v.x, v.y);
     }
 
     @Override
