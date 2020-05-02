@@ -7,7 +7,6 @@ package arc.math.geom;
 public class Segment{
     /** the starting position **/
     public final Vec3 a = new Vec3();
-
     /** the ending position **/
     public final Vec3 b = new Vec3();
 
