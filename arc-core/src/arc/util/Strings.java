@@ -79,6 +79,22 @@ public class Strings{
         return text.replaceAll("/*\\[[^]]*]", "");
     }
 
+    public static int count(String str, String substring){
+        int lastIndex = 0;
+        int count = 0;
+
+        while(lastIndex != -1){
+
+            lastIndex = str.indexOf(substring, lastIndex);
+
+            if(lastIndex != -1){
+                count ++;
+                lastIndex += substring.length();
+            }
+        }
+        return count;
+    }
+
     public static String encode(String str){
         try{
             return URLEncoder.encode(str, "UTF-8");
