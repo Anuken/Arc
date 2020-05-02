@@ -90,6 +90,21 @@ public final class Mathf{
         return result;
     }
 
+    /** Wraps the given angle to the range [-PI, PI]
+     * @param a the angle in radians
+     * @return the given angle wrapped to the range [-PI, PI] */
+    public static float wrapAngleAroundZero (float a) {
+        if (a >= 0) {
+            float rotation = a % Mathf.PI2;
+            if (rotation > Mathf.PI) rotation -= Mathf.PI2;
+            return rotation;
+        } else {
+            float rotation = -a % Mathf.PI2;
+            if (rotation > Mathf.PI) rotation -= Mathf.PI2;
+            return -rotation;
+        }
+    }
+
     /**
      * Returns atan2 in radians, faster but less accurate than Math.atan2. Average error of 0.00231 radians (0.1323 degrees),
      * largest error of 0.00488 radians (0.2796 degrees).
