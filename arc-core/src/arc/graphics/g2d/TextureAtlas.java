@@ -236,6 +236,10 @@ public class TextureAtlas implements Disposable{
         return r;
     }
 
+    public TextureRegion find(String name, String def){
+        return find(name, find(def));
+    }
+
     public TextureRegion find(String name, TextureRegion def){
         TextureRegion region = regionmap.get(name);
         return region == null || region == error ? def : region;
