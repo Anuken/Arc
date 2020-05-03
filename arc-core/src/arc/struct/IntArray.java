@@ -14,6 +14,14 @@ public class IntArray{
     public int size;
     public boolean ordered;
 
+    public static IntArray range(int min, int max){
+        IntArray out = new IntArray();
+        for(int i = min; i < max; i++){
+            out.add(i);
+        }
+        return out;
+    }
+
     /** Creates an ordered array with a capacity of 16. */
     public IntArray(){
         this(true, 16);
