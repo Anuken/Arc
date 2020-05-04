@@ -108,9 +108,9 @@ public class Strings{
         if(args.length > 0){
             StringBuilder out = new StringBuilder(text.length() + args.length*2);
             int argi = 0;
-            for(int i = 0; i < text.length() && argi < args.length; i++){
+            for(int i = 0; i < text.length(); i++){
                 char c = text.charAt(i);
-                if(c == '@'){
+                if(c == '@' &&  argi < args.length){
                     out.append(args[argi++]);
                 }else{
                     out.append(c);
