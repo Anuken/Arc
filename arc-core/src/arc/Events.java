@@ -17,6 +17,10 @@ public class Events{
         events.getOr(type, Array::new).add(e -> listener.run());
     }
 
+    public static <T> void remove(Class<T> type, Cons<T> listener){
+        events.getOr(type, Array::new).remove(listener);
+    }
+
     public static <T> void fire(T type){
         fire(type.getClass(), type);
     }
