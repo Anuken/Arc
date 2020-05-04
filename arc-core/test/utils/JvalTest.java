@@ -110,12 +110,12 @@ public class JvalTest{
         for(int i = 0; i < iterations; i++){
             json.run();
         }
-        Log.info("Time taken to parse json: {0}ms", Time.elapsed());
+        Log.info("Time taken to parse json: @ms", Time.elapsed());
 
         Time.mark();
         for(int i = 0; i < iterations; i++){
             hjson.run();
         }
-        Log.info("Time taken to parse H-json: {0}ms", Time.elapsed());
+        Log.info("Time taken to parse H-json: @ms", Time.elapsed());
     }
 }

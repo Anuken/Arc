@@ -105,9 +105,19 @@ public class Strings{
     }
 
     public static String format(String text, Object... args){
+        if(args.length > 0){
+            StringBuilder out = new StringBuilder(text.length() + args.length*2);
+            int argi = 0;
+            for(int i = 0; i < text.length() && argi < args.length; i++){
+                char c = text.charAt(i);
+                if(c == '@'){
+                    out.append(args[argi++]);
+                }else{
+                    out.append(c);
+                }
+            }
 
-        for(int i = 0; i < args.length; i++){
-            text = text.replace("{" + i + "}", String.valueOf(args[i]));
+            return out.toString();
         }
 
         return text;

@@ -87,7 +87,7 @@ public class TeaFileLoader{
             entry.directory = fileDesc.isDirectory();
             parent.childEntries.put(name, entry);
             final String entryPath = fullPath + "/" + name;
-            Log.err("Loading: {0}", entryPath);
+            Log.err("Loading: @", entryPath);
             if(entry.directory){
                 initEntry(entry, fileDesc.getChildFiles(), entryPath, tasks);
             }else{

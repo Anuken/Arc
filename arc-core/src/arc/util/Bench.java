@@ -23,9 +23,9 @@ public class Bench{
         long total = Time.timeSinceMillis(totalStart);
 
         times.each((name, time) -> {
-            Log.info("[PERF] {0}: {1}ms ({2}%)", name, time, (int)((float)time / total * 100));
+            Log.info("[PERF] @: @ms (@%)", name, time, (int)((float)time / total * 100));
         });
-        Log.info("[PERF] TOTAL: {0}ms", total);
+        Log.info("[PERF] TOTAL: @ms", total);
     }
 
     private static void endi(){

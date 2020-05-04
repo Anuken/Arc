@@ -29,11 +29,11 @@ public interface GLErrorListener{
         }
 
         if(place != null){
-            Log.err("[GLProfiler] Error {0} from {1}", resolveErrorNumber(error), place);
-            throw new RuntimeException(Strings.format("[GLProfiler] Error {0} from {1}", resolveErrorNumber(error), place));
+            Log.err("[GLProfiler] Error @ from @", resolveErrorNumber(error), place);
+            throw new RuntimeException(Strings.format("[GLProfiler] Error @ from @", resolveErrorNumber(error), place));
         }else{
-            Log.err("[GLProfiler] Error {0} at: {1}", resolveErrorNumber(error), new Exception());
-            throw new RuntimeException(Strings.format("[GLProfiler] Error {0}", resolveErrorNumber(error)));
+            Log.err("[GLProfiler] Error @ at: @", resolveErrorNumber(error), new Exception());
+            throw new RuntimeException(Strings.format("[GLProfiler] Error @", resolveErrorNumber(error)));
             // This will capture current stack trace for logging, if possible
         }
 

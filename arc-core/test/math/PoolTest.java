@@ -43,9 +43,9 @@ public class PoolTest{
         Prov a = Object::new;
         Prov b = Object::new;
 
-        Log.info("a == b: {0}; codes: {1} {2}; equality: {3}", a == b, a.hashCode(), b.hashCode(), a.equals(b));
-        Log.info("Memory delta: {0} b", (post - pre));
-        Log.info("Total memory allocated: {0} mb", Strings.fixed((post - start)/1024f/1024f, 1));
+        Log.info("a == b: @; codes: @ @; equality: @", a == b, a.hashCode(), b.hashCode(), a.equals(b));
+        Log.info("Memory delta: @ b", (post - pre));
+        Log.info("Total memory allocated: @ mb", Strings.fixed((post - start)/1024f/1024f, 1));
 
         assertEquals("Memory usage of pools must be 0.", pre - post, 0);
     }

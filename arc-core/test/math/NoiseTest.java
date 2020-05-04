@@ -23,7 +23,7 @@ public class NoiseTest{
             Noise.rawNoise(Math.random(), Math.random());
         }
 
-        Log.info("Perlin: {0}", Time.elapsed());
+        Log.info("Perlin: @", Time.elapsed());
 
         Time.mark();
 
@@ -31,6 +31,6 @@ public class NoiseTest{
             sim.raw_noise_2d(Math.random(), Math.random());
         }
 
-        Log.info("Simplex: {0}", Time.elapsed());
+        Log.info("Simplex: @", Time.elapsed());
     }
 }
