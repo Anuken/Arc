@@ -19,7 +19,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
         OrderedMap<K, V> map = new OrderedMap<>();
 
         for(int i = 0; i < values.length / 2; i++){
-            map.put((K) values[i * 2], (V) values[i * 2 + 1]);
+            map.put((K)values[i * 2], (V)values[i * 2 + 1]);
         }
 
         return map;

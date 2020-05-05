@@ -7,7 +7,7 @@ import arc.func.Cons;
 
 @SuppressWarnings("unchecked")
 public class Events{
-    private static ObjectMap<Object, Array<Cons<?>>> events = new ObjectMap<>();
+    private static final ObjectMap<Object, Array<Cons<?>>> events = new ObjectMap<>();
 
     public static <T> void on(Class<T> type, Cons<T> listener){
         events.getOr(type, Array::new).add(listener);

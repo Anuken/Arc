@@ -692,7 +692,8 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
     /** Creates a new backing array with the specified size containing the current items. */
     protected T[] resize(int newSize){
         T[] items = this.items;
-        T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), newSize);
+        //avoid reflection when possible
+        T[] newItems = (T[])(items.getClass() == Object[].class ? new Object[newSize] : java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), newSize));
         System.arraycopy(items, 0, newItems, 0, Math.min(size, newItems.length));
         this.items = newItems;
         return newItems;
