@@ -39,6 +39,14 @@ public class GlyphLayout implements Poolable{
         setText(font, str, start, end, color, targetWidth, halign, wrap, truncate);
     }
 
+    public static GlyphLayout obtain(){
+        return Pools.obtain(GlyphLayout.class, GlyphLayout::new);
+    }
+
+    public void free(){
+        Pools.free(this);
+    }
+
     public void setText(BitmapFont font, CharSequence str){
         setText(font, str, 0, str.length(), font.getColor(), 0, Align.left, false, null);
     }

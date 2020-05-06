@@ -1,11 +1,12 @@
 package arc;
 
-import arc.Graphics.Cursor.SystemCursor;
+import arc.Graphics.Cursor.*;
 import arc.graphics.*;
+import arc.graphics.Pixmap.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
-import arc.math.Mathf;
-import arc.util.Disposable;
+import arc.math.*;
+import arc.util.*;
 
 /**
  * This interface encapsulates communication with the graphics processor. Depending on the available hardware and the current
@@ -298,6 +299,18 @@ public abstract class Graphics implements Disposable{
         pixmap.dispose();
 
         return newCursor(out2, out2.getWidth() / 2, out2.getHeight() / 2);
+    }
+
+    /**
+     * Creates a new cursor by file name.
+     * @param filename the name of the cursor .png file, found in the internal file "cursors/{name}.png"
+     */
+    public Cursor newCursor(String filename, int scale){
+        if(scale == 1 || OS.isAndroid || OS.isIos) return newCursor(filename);
+        Pixmap base = new Pixmap(Core.files.internal("cursors/" + filename + ".png"));
+        Pixmap result = Pixmaps.scale(base, base.getWidth() * scale, base.getHeight() * scale, Filter.NearestNeighbour);
+        base.dispose();
+        return newCursor(result, result.getWidth()/2, result.getHeight()/2);
     }
 
     /**

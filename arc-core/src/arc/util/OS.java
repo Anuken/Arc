@@ -6,13 +6,16 @@ import arc.files.*;
 import java.io.*;
 
 public class OS{
-    static public boolean isWindows = propNoNull("os.name").contains("Windows");
-    static public boolean isLinux = propNoNull("os.name").contains("Linux");
-    static public boolean isMac = propNoNull("os.name").contains("Mac");
-    static public boolean isIos = false;
-    static public boolean isAndroid = false;
-    static public boolean isARM = propNoNull("os.arch").startsWith("arm") || propNoNull("os.arch").startsWith("aarch64");
-    static public boolean is64Bit = propNoNull("os.arch").contains("64") || propNoNull("os.arch").startsWith("armv8");
+    public static final int cores = Runtime.getRuntime().availableProcessors();
+    public static final String username = prop("user.name");
+
+    public static boolean isWindows = propNoNull("os.name").contains("Windows");
+    public static boolean isLinux = propNoNull("os.name").contains("Linux");
+    public static boolean isMac = propNoNull("os.name").contains("Mac");
+    public static boolean isIos = false;
+    public static boolean isAndroid = false;
+    public static boolean isARM = propNoNull("os.arch").startsWith("arm") || propNoNull("os.arch").startsWith("aarch64");
+    public static boolean is64Bit = propNoNull("os.arch").contains("64") || propNoNull("os.arch").startsWith("armv8");
 
     static{
         if(propNoNull("java.runtime.name").contains("Android Runtime") || propNoNull("java.vm.vendor").contains("The Android Project") || propNoNull("java.vendor").contains("The Android Project")){
@@ -31,6 +34,7 @@ public class OS{
             is64Bit = false;
         }
     }
+    
 
     public static String getAppDataDirectoryString(String appname){
         if(OS.isWindows){

@@ -50,10 +50,6 @@ public class Camera3D{
         this.height = height;
     }
 
-    public Mat3D combined(){
-        return combined;
-    }
-
     public void lookAt(float x, float y, float z){
         tmpVec.set(x, y, z).sub(position).nor();
         if(!tmpVec.isZero()){

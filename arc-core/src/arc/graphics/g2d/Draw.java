@@ -36,6 +36,31 @@ public class Draw{
         Core.batch = prev;
     }
 
+    public static void beginStencil(){
+        flush();
+
+        Gl.stencilMask(0xFF);
+        Gl.colorMask(false, false, false, false);
+        Gl.enable(Gl.stencilTest);
+        Gl.stencilFunc(Gl.always, 1, 0xFF);
+        Gl.stencilMask(0xFF);
+        Gl.stencilOp(Gl.replace, Gl.replace, Gl.replace);
+    }
+
+    public static void beginStenciled(){
+        flush();
+
+        Gl.stencilOp(Gl.keep, Gl.keep, Gl.keep);
+        Gl.colorMask(true, true, true, true);
+        Gl.stencilFunc(Gl.equal, 1, 0xFF);
+    }
+
+    public static void endStencil(){
+        flush();
+
+        Gl.disable(Gl.stencilTest);
+    }
+
     public static Shader getShader(){
         return Core.batch.getShader();
     }

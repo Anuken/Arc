@@ -205,9 +205,19 @@ public class Lines{
         spikes(x, y, rad, length, spikes, 0);
     }
 
+    public static void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4){
+        floatBuilder.clear();
+
+        floatBuilder.add(x1, y1, x2, y2);
+        floatBuilder.add(x3, y3, x4, y4);
+
+        polyline(floatBuilder, true);
+    }
+
     public static void poly(float x, float y, int sides, float radius, float angle){
         float space = 360f / sides;
-        float r1 = radius - stroke/2f, r2 = radius + stroke/2f;
+        float hstep = stroke / 2f / Mathf.cosDeg(space/2f);
+        float r1 = radius - hstep, r2 = radius + hstep;
 
         for(int i = 0; i < sides; i++){
             float a = space * i + angle, cos = Mathf.cosDeg(a), sin = Mathf.sinDeg(a), cos2 = Mathf.cosDeg(a + space), sin2 = Mathf.sinDeg(a + space);
