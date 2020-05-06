@@ -1,14 +1,14 @@
 package arc.graphics.g2d;
 
 import arc.*;
-import arc.struct.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.struct.*;
 
 public class Lines{
     private static float stroke = 1f;
-    private static Vec2 vector = new Vec2();
+    private static Vec2 vector = new Vec2(), u = new Vec2(), v = new Vec2(), inner = new Vec2(), outer = new Vec2();
     private static FloatArray floats = new FloatArray(20);
     private static FloatArray floatBuilder = new FloatArray(20);
     private static boolean building, precise;
@@ -95,8 +95,12 @@ public class Lines{
     }
 
     public static void endLine(){
+        endLine(false);
+    }
+
+    public static void endLine(boolean wrap){
         if(!building) throw new IllegalStateException("Not building");
-        polyline(floatBuilder, false);
+        polyline(floatBuilder, wrap);
         building = false;
     }
 
@@ -105,65 +109,42 @@ public class Lines{
     }
 
     public static void polyline(float[] points, int length, boolean wrap){
-
         if(length < 4) return;
 
-        float lasta;
-
-        {
-            float x1 = points[length - 2];
-            float y1 = points[length - 1];
-            float x2 = points[0];
-            float y2 = points[1];
-            float x3 = points[2];
-            float y3 = points[3];
-
-            if(wrap){
-                lasta = Mathf.slerp(Angles.angle(x1, y1, x2, y2), Angles.angle(x2, y2, x3, y3), 0.5f);
-            }else{
-                lasta = Angles.angle(x1, y1, x2, y2) + 180f;
-            }
-        }
+        floats.clear();
 
         for(int i = 0; i < (wrap ? length : length - 2); i += 2){
+            float x0 = points[Mathf.mod(i - 2, length)];
+            float y0 = points[Mathf.mod(i - 1, length)];
             float x1 = points[i];
             float y1 = points[i + 1];
             float x2 = points[(i + 2) % length];
             float y2 = points[(i + 3) % length];
 
-            float avg;
-            float ang1 = Angles.angle(x1, y1, x2, y2);
+            float ang0 = Angles.angle(x0, y0, x1, y1), ang1 = Angles.angle(x1, y1, x2, y2);
+            float beta = Mathf.sinDeg(ang1 - ang0);
 
-            if(wrap){
-                float x3 = points[(i + 4) % length];
-                float y3 = points[(i + 5) % length];
-                float ang2 = Angles.angle(x2, y2, x3, y3);
+            u.set(x0, y0).sub(x1, y1).scl(1f / Mathf.dst(x0, y0, x1, y1)).scl(stroke / (2f*beta));
+            v.set(x2, y2).sub(x1, y1).scl(1f / Mathf.dst(x2, y2, x1, y1)).scl(stroke / (2f*beta));
 
-                avg = Mathf.slerp(ang1, ang2, 0.5f);
-            }else{
-                avg = ang1;
-            }
+            inner.set(x1, y1).add(u).add(v);
+            outer.set(x1, y1).sub(u).sub(v);
 
-            float s = stroke / 2f;
+            floats.add(inner.x, inner.y, outer.x, outer.y);
+        }
 
-            float cos1 = Mathf.cosDeg(lasta - 90) * s;
-            float sin1 = Mathf.sinDeg(lasta - 90) * s;
-            float cos2 = Mathf.cosDeg(avg - 90) * s;
-            float sin2 = Mathf.sinDeg(avg - 90) * s;
+        for(int i = 0; i < floats.size; i += 4){
+            float x1 = floats.items[i];
+            float y1 = floats.items[i + 1];
+            float x2 = floats.items[(i + 2) % floats.size];
+            float y2 = floats.items[(i + 3) % floats.size];
 
-            float qx1 = x1 + cos1;
-            float qy1 = y1 + sin1;
-            float qx4 = x1 - cos1;
-            float qy4 = y1 - sin1;
+            float x3 = floats.items[(i + 4) % floats.size];
+            float y3 = floats.items[(i + 5) % floats.size];
+            float x4 = floats.items[(i + 6) % floats.size];
+            float y4 = floats.items[(i + 7) % floats.size];
 
-            float qx2 = x2 + cos2;
-            float qy2 = y2 + sin2;
-            float qx3 = x2 - cos2;
-            float qy3 = y2 - sin2;
-
-            Fill.quad(qx1, qy1, qx2, qy2, qx3, qy3, qx4, qy4);
-
-            lasta = avg;
+            Fill.quad(x1, y1, x3, y3, x4, y4, x2, y2);
         }
 
     }
@@ -225,30 +206,30 @@ public class Lines{
     }
 
     public static void poly(float x, float y, int sides, float radius, float angle){
-        vector.set(0, 0);
+        float space = 360f / sides;
+        float r1 = radius - stroke/2f, r2 = radius + stroke/2f;
 
         for(int i = 0; i < sides; i++){
-            vector.set(radius, 0).setAngle(360f / sides * i + angle + 90);
-            float x1 = vector.x;
-            float y1 = vector.y;
-
-            vector.set(radius, 0).setAngle(360f / sides * (i + 1) + angle + 90);
-
-
-            line(x1 + x, y1 + y, vector.x + x, vector.y + y);
+            float a = space * i + angle, cos = Mathf.cosDeg(a), sin = Mathf.sinDeg(a), cos2 = Mathf.cosDeg(a + space), sin2 = Mathf.sinDeg(a + space);
+            Fill.quad(
+            x + r1*cos, y + r1*sin,
+            x + r1*cos2, y + r1*sin2,
+            x + r2*cos2, y + r2*sin2,
+            x + r2*cos, y + r2*sin
+            );
         }
     }
 
-    public static void poly2(float x, float y, int sides, float radius, float angle){
-        vector.set(0, 0);
+    public static void poly(float x, float y, int sides, float radius){
+        poly(x, y, sides, radius, 0);
+    }
 
-        beginLine();
-        for(int i = 0; i < sides; i++){
-            vector.set(radius, 0).setAngle(360f / sides * i + angle + 90);
-
-            linePoint(vector.x + x, vector.y + y);
+    public static void poly(Vec2[] vertices, float offsetx, float offsety, float scl){
+        for(int i = 0; i < vertices.length; i++){
+            Vec2 current = vertices[i];
+            Vec2 next = i == vertices.length - 1 ? vertices[0] : vertices[i + 1];
+            line(current.x * scl + offsetx, current.y * scl + offsety, next.x * scl + offsetx, next.y * scl + offsety);
         }
-        endLine();
     }
 
     public static void polySeg(int sides, int from, int to, float x, float y, float radius, float angle){
@@ -330,24 +311,6 @@ public class Lines{
         }
 
         polyline(floats, false);
-    }
-
-    public static void poly(float x, float y, int sides, float radius){
-        floats.clear();
-        for(int i = 0; i < sides; i++){
-            float rad = (float)i / sides * Mathf.PI2;
-            floats.add(Mathf.cos(rad) * radius + x, Mathf.sin(rad) * radius + y);
-        }
-
-        polyline(floats, true);
-    }
-
-    public static void poly(Vec2[] vertices, float offsetx, float offsety, float scl){
-        for(int i = 0; i < vertices.length; i++){
-            Vec2 current = vertices[i];
-            Vec2 next = i == vertices.length - 1 ? vertices[0] : vertices[i + 1];
-            line(current.x * scl + offsetx, current.y * scl + offsety, next.x * scl + offsetx, next.y * scl + offsety);
-        }
     }
 
     public static void square(float x, float y, float rad){

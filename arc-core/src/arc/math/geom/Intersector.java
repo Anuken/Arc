@@ -401,8 +401,7 @@ public final class Intersector{
      * @param intersection The intersection point, or null.
      * @return Whether the two lines intersect
      */
-    public static boolean intersectLines(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,
-                                         Vec2 intersection){
+    public static boolean intersectLines(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, Vec2 intersection){
         float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
         if(d == 0) return false;
 

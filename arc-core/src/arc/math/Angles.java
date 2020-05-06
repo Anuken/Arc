@@ -54,11 +54,11 @@ public class Angles{
     }
 
     public static float trnsx(float angle, float len){
-        return len * Mathf.cos(Mathf.degreesToRadians * angle);
+        return len * Mathf.cosDeg(angle);
     }
 
     public static float trnsy(float angle, float len){
-        return len * Mathf.sin(Mathf.degreesToRadians * angle);
+        return len * Mathf.sinDeg(angle);
     }
 
     public static float trnsx(float angle, float x, float y){

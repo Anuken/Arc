@@ -1,13 +1,17 @@
 package arc.graphics.g2d;
 
-import arc.Core;
-import arc.math.Angles;
+import arc.*;
+import arc.graphics.*;
+import arc.math.*;
+import arc.struct.*;
 
 import static arc.Core.atlas;
 
 public class Fill{
     private static float[] vertices = new float[24];
     private static TextureRegion circleRegion;
+    private static FloatArray floats = new FloatArray();
+    private static FloatArray polyFloats = new FloatArray();
 
     public static void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4){
         float color = Core.batch.getPackedColor();
@@ -52,6 +56,54 @@ public class Fill{
 
     public static void tri(float x1, float y1, float x2, float y2, float x3, float y3){
         quad(x1, y1, x2, y2, x3, y3, x3, y3);
+    }
+
+    public static void light(float x, float y, int sides, float radius, Color center, Color edge){
+        float centerf = center.toFloatBits(), edgef = edge.toFloatBits();
+
+        sides = Mathf.ceil(sides / 2f) * 2;
+
+        float space = 360f / sides;
+
+        for(int i = 0; i < sides; i += 2){
+            float px = Angles.trnsx(space * i, radius);
+            float py = Angles.trnsy(space * i, radius);
+            float px2 = Angles.trnsx(space * (i + 1), radius);
+            float py2 = Angles.trnsy(space * (i + 1), radius);
+            float px3 = Angles.trnsx(space * (i + 2), radius);
+            float py3 = Angles.trnsy(space * (i + 2), radius);
+            quad(x, y, centerf, x + px, y + py, edgef, x + px2, y + py2, edgef, x + px3, y + py3, edgef);
+        }
+    }
+
+    public static void polyBegin(){
+        polyFloats.clear();
+    }
+
+    public static void polyPoint(float x, float y){
+        polyFloats.add(x, y);
+    }
+
+    public static void polyEnd(){
+        poly(polyFloats.items, polyFloats.size);
+    }
+
+    public static void poly(float[] vertices, int length){
+        if(length < 2*3) return;
+
+        //TODO untested
+        for(int i = 2; i < length - 4; i+= 6){
+            quad(
+            vertices[0], vertices[1],
+            vertices[i], vertices[i + 1],
+            vertices[i + 2], vertices[i + 3],
+            vertices[i + 4], vertices[i + 5]
+            );
+        }
+    }
+
+    public static void poly(FloatArray vertices){
+        poly(vertices.items, vertices.size);
     }
 
     public static void poly(float x, float y, int sides, float radius){
@@ -104,6 +156,10 @@ public class Fill{
 
     public static void crect(float x, float y, float w, float h){
         Draw.rect(atlas.white(), x + w/2f, y + h/2f, w, h);
+    }
+
+    public static void rects(float x, float y, float w, float h, float skew){
+        quad(x, y, x + w, y, x + w + skew, y + h, x + skew, y + h);
     }
 
     public static void square(float x, float y, float radius){
