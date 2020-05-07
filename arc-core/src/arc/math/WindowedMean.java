@@ -28,6 +28,10 @@ public final class WindowedMean{
         mean = 0;
     }
 
+    public float getValue(int index){
+        return values[Mathf.mod(index + lastValue, values.length)];
+    }
+
     /** @return whether the value returned will be meaningful */
     public boolean hasEnoughData(){
         return addedValues >= values.length;

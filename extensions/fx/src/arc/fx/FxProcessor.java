@@ -50,8 +50,12 @@ public final class FxProcessor implements Disposable{
     }
 
     public FxProcessor(Format fboFormat, int bufferWidth, int bufferHeight){
+        this(fboFormat, bufferWidth, bufferHeight, false, false);
+    }
+
+    public FxProcessor(Format fboFormat, int bufferWidth, int bufferHeight, boolean depth, boolean stencil){
         this.fboFormat = fboFormat;
-        this.pingPongBuffer = new PingPongBuffer(fboFormat, bufferWidth, bufferHeight);
+        this.pingPongBuffer = new PingPongBuffer(fboFormat, bufferWidth, bufferHeight, depth, stencil);
         this.width = bufferWidth;
         this.height = bufferHeight;
     }

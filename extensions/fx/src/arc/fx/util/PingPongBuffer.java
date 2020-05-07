@@ -54,13 +54,17 @@ public final class PingPongBuffer{
         this(fbFormat, Core.graphics.getWidth(), Core.graphics.getHeight());
     }
 
+    public PingPongBuffer(Format fbFormat, int width, int height){
+        this(fbFormat, width, height, false, false);
+    }
+
     /**
      * Initializes ping-pong buffer with the given size.
      * @param fbFormat Pixel format of buffer.
      */
-    public PingPongBuffer(Format fbFormat, int width, int height){
-        this.buffer1 = new FrameBuffer(fbFormat, width, height);
-        this.buffer2 = new FrameBuffer(fbFormat, width, height);
+    public PingPongBuffer(Format fbFormat, int width, int height, boolean depth, boolean stencil){
+        this.buffer1 = new FrameBuffer(fbFormat, width, height, depth, stencil);
+        this.buffer2 = new FrameBuffer(fbFormat, width, height, depth, stencil);
         rebind();
 
         // Setup src/dst buffers.

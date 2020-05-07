@@ -295,6 +295,11 @@ public class Draw{
         Core.batch.flush();
     }
 
+    public static void proj(float x, float y, float w, float h){
+        lastProj = null;
+        batch.getProjection().setOrtho(x, y, w, h);
+    }
+
     public static Rect lastViewport(){
         return lastViewport;
     }
