@@ -1,10 +1,12 @@
 import arc.graphics.*;
 import arc.util.*;
+import org.junit.*;
 
 import static org.junit.Assert.assertEquals;
 
 public class PixmapTest{
 
+    @Test
     public void pixmapCreate(){
         ArcNativesLoader.load();
 
