@@ -208,11 +208,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
         return height;
     }
 
-    /**
-     * This instantiates the GL10, GL11 and GL20 instances. Includes the check for certain devices that pretend to support GL11 but
-     * fuck up vertex buffer objects. This includes the pixelflinger which segfaults when buffers are deleted as well as the
-     * Motorola CLIQ and the Samsung Behold II.
-     */
+    /** This instantiates the GL20 and GL30 instances. */
     protected void setupGL(javax.microedition.khronos.opengles.GL10 gl){
         String versionString = gl.glGetString(GL10.GL_VERSION);
         String vendorString = gl.glGetString(GL10.GL_VENDOR);
