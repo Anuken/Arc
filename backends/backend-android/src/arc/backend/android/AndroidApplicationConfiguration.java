@@ -88,14 +88,11 @@ public class AndroidApplicationConfiguration{
     public boolean useImmersiveMode = true;
 
     /** handles any errors in the main loop.*/
-    public @Nullable
-    Cons<Throwable> errorHandler;
+    public @Nullable Cons<Throwable> errorHandler;
 
     /**
      * Experimental, whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0.
      * When GL ES 3* is enabled, {@link Core#gl30} can be used to access its functionality. Requires at least Android 4.3 (API level 18).
-     * @deprecated this option is currently experimental and not yet fully supported, expect issues.
      */
-    @Deprecated
     public boolean useGL30 = false;
 }
