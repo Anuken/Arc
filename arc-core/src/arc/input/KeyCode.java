@@ -37,6 +37,7 @@ public enum KeyCode implements KeybindValue{
     //scroll
     scroll(KeyType.scroll, "Scrollwheel", true),
     //keyboard
+    nullKey(KeyType.key, "Empty"),
     anyKey(KeyType.key, "Any Key"),
     num0(KeyType.key, "0"),
     num1(KeyType.key, "1"),

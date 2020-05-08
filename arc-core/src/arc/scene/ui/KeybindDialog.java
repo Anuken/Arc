@@ -160,6 +160,11 @@ public class KeybindDialog extends Dialog{
                     settings.save();
                     setup();
                 }).width(130f);
+                table.button(bundle.get("settings.clearKey", "Clear"), () -> {
+                    rebindAxis = false;
+                    rebindMin = false;
+                    rebind(section, rebindKey = keybind, KeyCode.nullKey);
+                }).width(130f);
                 table.row();
             }
 
@@ -182,7 +187,7 @@ public class KeybindDialog extends Dialog{
 
     private void rebind(Section section, KeyBind bind, KeyCode newKey){
         if(rebindKey == null) return;
-        rebindDialog.hide();
+        if(rebindDialog != null) rebindDialog.hide();
         boolean isAxis = bind.defaultValue(section.device.type()) instanceof Axis;
 
         if(isAxis){

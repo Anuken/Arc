@@ -14,6 +14,7 @@ public class TeaKeymap{
 
     public static KeyCode getCode(int keyCode){
         switch(keyCode){
+            case 0: return KeyCode.nullKey;
             case 18: return KeyCode.altLeft;
             case 8: return KeyCode.backspace;
             case 17: return KeyCode.controlLeft;
