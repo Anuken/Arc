@@ -506,8 +506,8 @@ public final class Mathf{
     }
 
     /** Mod function that works properly for negative numbers. */
-    public static float mod(float x, float n){
-        return ((x % n) + n) % n;
+    public static float mod(float f, float n){
+        return ((f % n) + n) % n;
     }
 
     /** Mod function that works properly for negative numbers. */
@@ -515,7 +515,7 @@ public final class Mathf{
         return ((x % n) + n) % n;
     }
 
-    /**Converts a 0-1 value to 0-1 when it is in [0, offset].*/
+    /**Converts a 0-1 value to 0-1 when it is in [offset, 1].*/
     public static float curve(float f, float offset){
         if(f < offset){
             return 0f;
