@@ -7,6 +7,9 @@ import arc.util.pooling.Pool.*;
 import arc.util.pooling.*;
 
 public class Time{
+    /** Conversion factors for ticks to other unit values. */
+    public static final float toSeconds = 60f, toMinutes = 60f * 60f, toHours = 60f * 60f * 60f;
+
     private static final long nanosPerMilli = 1000000;
     private static double time;
     private static double globalTime;
