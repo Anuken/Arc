@@ -1,19 +1,38 @@
 package arc.graphics;
 
-import arc.func.Intc2;
+import arc.func.*;
 import arc.graphics.Pixmap.*;
-import arc.graphics.Texture.TextureWrap;
-import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
+import arc.graphics.Texture.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
+import arc.util.*;
 
-import java.nio.ByteBuffer;
+import java.nio.*;
 
 /** Various pixmap utilities. */
 public class Pixmaps{
     private static Pixmap drawPixmap;
     private static IntArray tmpArray = new IntArray();
+
+    public static Pixmap noise(int w, int h){
+        Pixmap out = new Pixmap(w, h);
+        for(int x = 0; x < w; x++){
+            for(int y = 0; y < h; y++){
+                out.draw(x, y, Tmp.c1.rand());
+            }
+        }
+        return out;
+    }
+
+    public static Texture noiseTex(int w, int h){
+        Pixmap p = noise(w, h);
+        Texture tex = new Texture(p);
+        tex.setWrap(TextureWrap.Repeat);
+        p.dispose();
+        return tex;
+    }
 
     public static void flip(Pixmap pixmap){
         ByteBuffer pixels = pixmap.getPixels();

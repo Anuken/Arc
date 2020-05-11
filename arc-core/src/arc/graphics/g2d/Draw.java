@@ -227,6 +227,10 @@ public class Draw{
         draw(z + range, end);
     }
 
+    public static void rect(){
+        Fill.rect(camera.position.x, camera.position.y, camera.width, camera.height);
+    }
+
     public static void rect(FrameBuffer buffer){
         rect(wrap(buffer.getTexture()), camera.position.x, camera.position.y, camera.width, -camera.height);
     }
