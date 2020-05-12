@@ -10,6 +10,6 @@ sourceSets{
 }
 
 dependencies{
-    compile libraries.teavm
+    api libraries.teavm
 }
 
