@@ -2,5 +2,5 @@ sourceSets.main.java.srcDirs += ['src/']
 sourceSets.main.resources.srcDirs += ['assets/']
 
 dependencies{
-    runtime files('assets')
+    runtimeOnly files('assets')
 }
