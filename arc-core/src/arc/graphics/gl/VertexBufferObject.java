@@ -169,10 +169,9 @@ public class VertexBufferObject implements VertexData{
                 final VertexAttribute attribute = attributes.get(i);
                 final int location = shader.getAttributeLocation(attribute.alias);
                 if(location < 0) continue;
-                shader.enableVertexAttribute(location);
 
-                shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized,
-                attributes.vertexSize, attribute.offset);
+                shader.enableVertexAttribute(location);
+                shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize, attribute.offset);
             }
 
         }else{
@@ -180,10 +179,9 @@ public class VertexBufferObject implements VertexData{
                 final VertexAttribute attribute = attributes.get(i);
                 final int location = locations[i];
                 if(location < 0) continue;
-                shader.enableVertexAttribute(location);
 
-                shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized,
-                attributes.vertexSize, attribute.offset);
+                shader.enableVertexAttribute(location);
+                shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize, attribute.offset);
             }
         }
         isBound = true;
