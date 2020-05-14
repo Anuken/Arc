@@ -111,41 +111,53 @@ public class Lines{
     public static void polyline(float[] points, int length, boolean wrap){
         if(length < 4) return;
 
-        floats.clear();
+        if(!wrap){
+            for(int i = 0; i < length-2; i+= 2){
+                float cx = points[i];
+                float cy = points[i + 1];
+                float cx2 = points[i + 2];
+                float cy2 = points[i + 3];
+                line(cx, cy, cx2, cy2);
+            }
+        }else{
+            floats.clear();
 
-        for(int i = 0; i < (wrap ? length : length - 2); i += 2){
-            float x0 = points[Mathf.mod(i - 2, length)];
-            float y0 = points[Mathf.mod(i - 1, length)];
-            float x1 = points[i];
-            float y1 = points[i + 1];
-            float x2 = points[(i + 2) % length];
-            float y2 = points[(i + 3) % length];
+            for(int i = 0; i < (wrap ? length : length - 2); i += 2){
+                float x0 = points[Mathf.mod(i - 2, length)];
+                float y0 = points[Mathf.mod(i - 1, length)];
+                float x1 = points[i];
+                float y1 = points[i + 1];
+                float x2 = points[(i + 2) % length];
+                float y2 = points[(i + 3) % length];
 
-            float ang0 = Angles.angle(x0, y0, x1, y1), ang1 = Angles.angle(x1, y1, x2, y2);
-            float beta = Mathf.sinDeg(ang1 - ang0);
+                float ang0 = Angles.angle(x0, y0, x1, y1), ang1 = Angles.angle(x1, y1, x2, y2);
+                float beta = Mathf.sinDeg(ang1 - ang0);
 
-            u.set(x0, y0).sub(x1, y1).scl(1f / Mathf.dst(x0, y0, x1, y1)).scl(stroke / (2f*beta));
-            v.set(x2, y2).sub(x1, y1).scl(1f / Mathf.dst(x2, y2, x1, y1)).scl(stroke / (2f*beta));
+                u.set(x0, y0).sub(x1, y1).scl(1f / Mathf.dst(x0, y0, x1, y1)).scl(stroke / (2f*beta));
+                v.set(x2, y2).sub(x1, y1).scl(1f / Mathf.dst(x2, y2, x1, y1)).scl(stroke / (2f*beta));
 
-            inner.set(x1, y1).add(u).add(v);
-            outer.set(x1, y1).sub(u).sub(v);
+                inner.set(x1, y1).add(u).add(v);
+                outer.set(x1, y1).sub(u).sub(v);
 
-            floats.add(inner.x, inner.y, outer.x, outer.y);
+                floats.add(inner.x, inner.y, outer.x, outer.y);
+            }
+
+            for(int i = 0; i < floats.size; i += 4){
+                float x1 = floats.items[i];
+                float y1 = floats.items[i + 1];
+                float x2 = floats.items[(i + 2) % floats.size];
+                float y2 = floats.items[(i + 3) % floats.size];
+
+                float x3 = floats.items[(i + 4) % floats.size];
+                float y3 = floats.items[(i + 5) % floats.size];
+                float x4 = floats.items[(i + 6) % floats.size];
+                float y4 = floats.items[(i + 7) % floats.size];
+
+                Fill.quad(x1, y1, x3, y3, x4, y4, x2, y2);
+            }
         }
 
-        for(int i = 0; i < floats.size; i += 4){
-            float x1 = floats.items[i];
-            float y1 = floats.items[i + 1];
-            float x2 = floats.items[(i + 2) % floats.size];
-            float y2 = floats.items[(i + 3) % floats.size];
 
-            float x3 = floats.items[(i + 4) % floats.size];
-            float y3 = floats.items[(i + 5) % floats.size];
-            float x4 = floats.items[(i + 6) % floats.size];
-            float y4 = floats.items[(i + 7) % floats.size];
-
-            Fill.quad(x1, y1, x3, y3, x4, y4, x2, y2);
-        }
 
     }
 

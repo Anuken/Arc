@@ -131,6 +131,16 @@ public class Angles{
         }
     }
 
+    public static void randLenVectors(long seed, int amount, float minLength, float length, Floatc2 cons){
+        random.setSeed(seed);
+        for(int i = 0; i < amount; i++){
+            float scl = minLength + length * random.nextFloat();
+            float vang = random.nextFloat() * 360f;
+            rv.set(scl, 0).rotate(vang);
+            cons.get(rv.x, rv.y);
+        }
+    }
+
     public static void randLenVectors(long seed, int amount, float length, float angle, float range, Floatc2 cons){
         random.setSeed(seed);
         for(int i = 0; i < amount; i++){
