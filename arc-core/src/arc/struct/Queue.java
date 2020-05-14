@@ -63,6 +63,11 @@ public class Queue<T> implements Iterable<T>{
         size++;
     }
 
+    /** Adds an object to the tail. */
+    public void add(T object){
+        addLast(object);
+    }
+
     /**
      * Prepend given object to the head. (enqueue to head) Unless backing array needs resizing, operates in O(1) time.
      * @param object can be null
