@@ -1,5 +1,6 @@
 package arc.graphics.g2d;
 
+import arc.*;
 import arc.graphics.Texture;
 import arc.graphics.g2d.TextureAtlas.AtlasRegion;
 
@@ -79,6 +80,10 @@ public class TextureRegion{
 
     public AtlasRegion asAtlas(){
         return (AtlasRegion)this;
+    }
+
+    public boolean found(){
+        return Core.atlas != null && Core.atlas.error != this;
     }
 
     /** Sets the texture and sets the coordinates to the size of the specified texture. */

@@ -524,14 +524,14 @@ public final class Mathf{
         }
     }
 
-    /**Converts a 0-1 value to 0-1 when it is in [0, to].*/
-    public static float curve(float f, float offset, float to){
-        if(f < offset){
+    /**Converts a 0-1 value to 0-1 when it is in [offset, to].*/
+    public static float curve(float f, float from, float to){
+        if(f < from){
             return 0f;
-        }else if(f - offset > to){
+        }else if(f > to){
             return 1f;
         }else{
-            return (f - offset) / to;
+            return (f - from) / (to - from);
         }
     }
 
