@@ -1,5 +1,7 @@
 package arc.math;
 
+import java.util.*;
+
 /**
  * A simple class keeping track of the mean of a stream of values within a certain window. the WindowedMean will only return a
  * value in case enough data has been sampled. After enough data has been sampled the oldest sample will be replaced by the newest
@@ -46,6 +48,11 @@ public final class WindowedMean{
         dirty = true;
     }
 
+    public void fill(float value){
+        dirty = true;
+        Arrays.fill(values, value);
+    }
+
     /**
      * adds a new sample to this mean. In case the window is full the oldest value will be replaced by this new value.
      * @param value The value to add
@@ -74,6 +81,19 @@ public final class WindowedMean{
             }
             return this.mean;
         }else return 0;
+    }
+
+    /** @return raw mean; can be used before this window has enough data. */
+    public float rawMean(){
+        if(dirty){
+            float mean = 0;
+            for(int i = 0; i < values.length; i++)
+                mean += values[i];
+
+            this.mean = mean / values.length;
+            dirty = false;
+        }
+        return this.mean;
     }
 
     /** @return the oldest value in the window */

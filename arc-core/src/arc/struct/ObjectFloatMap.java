@@ -1,10 +1,10 @@
 package arc.struct;
 
-import arc.math.Mathf;
-import arc.util.ArcRuntimeException;
+import arc.func.*;
+import arc.math.*;
+import arc.util.*;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * An unordered map where the values are floats. This implementation is a cuckoo hash map using 3 hashes, random walking, and a
@@ -81,6 +81,12 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>>{
         System.arraycopy(map.keyTable, 0, keyTable, 0, map.keyTable.length);
         System.arraycopy(map.valueTable, 0, valueTable, 0, map.valueTable.length);
         size = map.size;
+    }
+
+    public void each(Cons<Entry<K>> cons){
+        for(Entry<K> e : this){
+            cons.get(e);
+        }
     }
 
     public void put(K key, float value){

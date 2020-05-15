@@ -65,6 +65,14 @@ public class Bits{
         return bits[word] == oldBits;
     }
 
+    public void set(int index, boolean value){
+        if(value){
+            set(index);
+        }else{
+            clear(index);
+        }
+    }
+
     /**
      * @param index the index of the bit to set
      * @throws ArrayIndexOutOfBoundsException if index < 0

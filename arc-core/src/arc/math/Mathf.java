@@ -177,6 +177,10 @@ public final class Mathf{
         }
     }
 
+    public static boolean chanceDelta(double d){
+        return random.nextFloat() < d * Time.delta();
+    }
+
     public static boolean chance(double d){
         return random.nextFloat() < d;
     }
