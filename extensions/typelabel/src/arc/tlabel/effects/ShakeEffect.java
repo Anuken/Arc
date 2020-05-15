@@ -35,8 +35,8 @@ public class ShakeEffect extends Effect{
 
         // Apply intensity
         float normalIntensity = Mathf.clamp(intensity * DEFAULT_INTENSITY, 0, 1);
-        x = Interpolation.linear.apply(lastX, x, normalIntensity);
-        y = Interpolation.linear.apply(lastY, y, normalIntensity);
+        x = Interp.linear.apply(lastX, x, normalIntensity);
+        y = Interp.linear.apply(lastY, y, normalIntensity);
 
         // Apply fadeout
         float fadeout = calculateFadeout();

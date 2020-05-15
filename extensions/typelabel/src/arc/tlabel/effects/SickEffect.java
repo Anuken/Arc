@@ -1,7 +1,7 @@
 package arc.tlabel.effects;
 
-import arc.struct.IntArray;
-import arc.math.Interpolation;
+import arc.math.*;
+import arc.struct.*;
 import arc.tlabel.*;
 
 /** Drips the text in a random pattern. */
@@ -42,9 +42,9 @@ public class SickEffect extends Effect{
         float interpolation = 0;
         float split = 0.5f;
         if(progress < split){
-            interpolation = Interpolation.pow2Out.apply(0, 1, progress / split);
+            interpolation = Interp.pow2Out.apply(0, 1, progress / split);
         }else{
-            interpolation = Interpolation.pow2In.apply(1, 0, (progress - split) / (1f - split));
+            interpolation = Interp.pow2In.apply(1, 0, (progress - split) / (1f - split));
         }
         float y = getLineHeight() * distance * interpolation * DEFAULT_DISTANCE;
 

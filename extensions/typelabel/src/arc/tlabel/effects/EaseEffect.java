@@ -1,7 +1,7 @@
 package arc.tlabel.effects;
 
-import arc.struct.IntFloatMap;
-import arc.math.Interpolation;
+import arc.math.*;
+import arc.struct.*;
 import arc.tlabel.*;
 
 /** Moves the text vertically easing it into the final position. Doesn't repeat itself. */
@@ -32,7 +32,7 @@ public class EaseEffect extends Effect{
         }
 
         // Calculate offset
-        Interpolation interpolation = elastic ? Interpolation.swingOut : Interpolation.sine;
+        Interp interpolation = elastic ? Interp.swingOut : Interp.sine;
         float interpolatedValue = interpolation.apply(1, 0, progress);
         float y = getLineHeight() * distance * interpolatedValue * DEFAULT_DISTANCE;
 

@@ -1,7 +1,6 @@
 package arc.tlabel;
 
-import arc.math.Interpolation;
-import arc.math.Mathf;
+import arc.math.*;
 
 /** Abstract text effect. */
 public abstract class Effect{
@@ -46,7 +45,7 @@ public abstract class Effect{
         if(progress < FADEOUT_SPLIT) return 1;
 
         // Otherwise calculate from the split point
-        return Interpolation.smooth.apply(1, 0, (progress - FADEOUT_SPLIT) / (1f - FADEOUT_SPLIT));
+        return Interp.smooth.apply(1, 0, (progress - FADEOUT_SPLIT) / (1f - FADEOUT_SPLIT));
     }
 
     /**

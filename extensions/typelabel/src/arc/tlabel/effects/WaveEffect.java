@@ -1,6 +1,6 @@
 package arc.tlabel.effects;
 
-import arc.math.Interpolation;
+import arc.math.*;
 import arc.tlabel.*;
 
 /** Moves the text vertically in a sine wave pattern. */
@@ -26,7 +26,7 @@ public class WaveEffect extends Effect{
         float progress = calculateProgress(progressModifier, progressOffset);
 
         // Calculate offset
-        float y = getLineHeight() * distance * Interpolation.sine.apply(-1, 1, progress) * DEFAULT_DISTANCE;
+        float y = getLineHeight() * distance * Interp.sine.apply(-1, 1, progress) * DEFAULT_DISTANCE;
 
         // Calculate fadeout
         float fadeout = calculateFadeout();

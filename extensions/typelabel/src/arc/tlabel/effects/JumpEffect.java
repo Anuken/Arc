@@ -1,6 +1,6 @@
 package arc.tlabel.effects;
 
-import arc.math.Interpolation;
+import arc.math.*;
 import arc.tlabel.*;
 
 /** Makes the text jumps and falls as if there was gravity. */
@@ -29,9 +29,9 @@ public class JumpEffect extends Effect{
         float interpolation = 0;
         float split = 0.2f;
         if(progress < split){
-            interpolation = Interpolation.pow2Out.apply(0, 1, progress / split);
+            interpolation = Interp.pow2Out.apply(0, 1, progress / split);
         }else{
-            interpolation = Interpolation.bounceOut.apply(1, 0, (progress - split) / (1f - split));
+            interpolation = Interp.bounceOut.apply(1, 0, (progress - split) / (1f - split));
         }
         float y = getLineHeight() * distance * interpolation * DEFAULT_DISTANCE;
 
