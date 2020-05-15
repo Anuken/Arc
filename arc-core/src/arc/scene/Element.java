@@ -1,25 +1,19 @@
 package arc.scene;
 
-import arc.Core;
+import arc.*;
+import arc.func.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.input.*;
+import arc.math.*;
 import arc.math.geom.*;
-import arc.struct.Array;
-import arc.struct.DelayedRemovalArray;
-import arc.func.Boolp;
-import arc.func.Cons;
-import arc.func.Floatc2;
-import arc.func.Prov;
-import arc.graphics.Color;
-import arc.input.KeyCode;
-import arc.math.Mathf;
-import arc.math.geom.Vec2;
-import arc.scene.actions.Actions;
+import arc.scene.actions.*;
 import arc.scene.event.*;
-import arc.scene.event.InputEvent.Type;
-import arc.scene.utils.Disableable;
-import arc.scene.utils.Layout;
-import arc.graphics.g2d.ScissorStack;
-import arc.util.Align;
-import arc.util.pooling.Pools;
+import arc.scene.event.InputEvent.*;
+import arc.scene.utils.*;
+import arc.struct.*;
+import arc.util.*;
+import arc.util.pooling.*;
 
 import static arc.util.Align.*;
 
@@ -228,6 +222,16 @@ public class Element implements Layout{
             public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
                 lastX = x;
                 lastY = y;
+                return true;
+            }
+        });
+    }
+
+    public void scrolled(Floatc cons){
+        addListener(new InputListener(){
+            @Override
+            public boolean scrolled(InputEvent event, float x, float y, float amountX, float amountY){
+                cons.get(amountY);
                 return true;
             }
         });
