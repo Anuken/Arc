@@ -28,7 +28,7 @@ public final class WindowedMean{
         mean = 0;
     }
 
-    public float getValue(int index){
+    public float get(int index){
         return values[Mathf.mod(index + lastValue, values.length)];
     }
 
@@ -50,7 +50,7 @@ public final class WindowedMean{
      * adds a new sample to this mean. In case the window is full the oldest value will be replaced by this new value.
      * @param value The value to add
      */
-    public void addValue(float value){
+    public void add(float value){
         if(addedValues < values.length) addedValues++;
         values[lastValue++] = value;
         if(lastValue > values.length - 1) lastValue = 0;
@@ -62,7 +62,7 @@ public final class WindowedMean{
      * as specified in the constructor have been added.
      * @return the mean
      */
-    public float getMean(){
+    public float mean(){
         if(hasEnoughData()){
             if(dirty){
                 float mean = 0;
@@ -77,12 +77,12 @@ public final class WindowedMean{
     }
 
     /** @return the oldest value in the window */
-    public float getOldest(){
+    public float oldest(){
         return addedValues < values.length ? values[0] : values[lastValue];
     }
 
     /** @return the value last added */
-    public float getLatest(){
+    public float latest(){
         return values[lastValue - 1 == -1 ? values.length - 1 : lastValue - 1];
     }
 
@@ -90,7 +90,7 @@ public final class WindowedMean{
     public float standardDeviation(){
         if(!hasEnoughData()) return 0;
 
-        float mean = getMean();
+        float mean = mean();
         float sum = 0;
         for(int i = 0; i < values.length; i++){
             sum += (values[i] - mean) * (values[i] - mean);
@@ -99,21 +99,21 @@ public final class WindowedMean{
         return (float)Math.sqrt(sum / values.length);
     }
 
-    public float getLowest(){
+    public float lowest(){
         float lowest = Float.MAX_VALUE;
         for(int i = 0; i < values.length; i++)
             lowest = Math.min(lowest, values[i]);
         return lowest;
     }
 
-    public float getHighest(){
+    public float highest(){
         float lowest = Float.MIN_NORMAL;
         for(int i = 0; i < values.length; i++)
             lowest = Math.max(lowest, values[i]);
         return lowest;
     }
 
-    public int getValueCount(){
+    public int getCount(){
         return addedValues;
     }
 

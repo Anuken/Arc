@@ -538,7 +538,7 @@ public class Vec2 implements Vector<Vec2>, Position{
     }
 
     @Override
-    public Vec2 interpolate(Vec2 target, float alpha, Interpolation interpolation){
+    public Vec2 interpolate(Vec2 target, float alpha, Interp interpolation){
         return lerp(target, interpolation.apply(alpha));
     }
 

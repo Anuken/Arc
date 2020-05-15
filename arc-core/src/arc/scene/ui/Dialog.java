@@ -26,8 +26,8 @@ import static arc.Core.scene;
  */
 public class Dialog extends Table{
     private static Prov<Action>
-    defaultShowAction = () -> Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.4f, Interpolation.fade)),
-    defaultHideAction = () -> Actions.fadeOut(0.4f, Interpolation.fade);
+    defaultShowAction = () -> Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.4f, Interp.fade)),
+    defaultHideAction = () -> Actions.fadeOut(0.4f, Interp.fade);
     protected InputListener ignoreTouchDown = new InputListener(){
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
             event.cancel();

@@ -4,21 +4,21 @@ package arc.math;
  * Takes a Linear value in the range of 0-1 and outputs a (usually) non-Linear, interpolated value.
  * @author Nathan Sweet
  */
-public abstract class Interpolation{
-    public static final Interpolation linear = new Interpolation(){
+public abstract class Interp{
+    public static final Interp linear = new Interp(){
         public float apply(float a){
             return a;
         }
     };
     /** Aka "smoothstep". */
-    public static final Interpolation smooth = new Interpolation(){
+    public static final Interp smooth = new Interp(){
         public float apply(float a){
             return a * a * (3 - 2 * a);
         }
     };
 
     //
-    public static final Interpolation smooth2 = new Interpolation(){
+    public static final Interp smooth2 = new Interp(){
         public float apply(float a){
             a = a * a * (3 - 2 * a);
             return a * a * (3 - 2 * a);
@@ -27,12 +27,12 @@ public abstract class Interpolation{
 
     //
     /** By Ken Perlin. */
-    public static final Interpolation smoother = new Interpolation(){
+    public static final Interp smoother = new Interp(){
         public float apply(float a){
             return a * a * a * (a * (a * 6 - 15) + 10);
         }
     };
-    public static final Interpolation fade = smoother;
+    public static final Interp fade = smoother;
     public static final Pow pow2 = new Pow(2);
     /** Slow, then fast. */
     public static final PowIn pow2In = new PowIn(2);
@@ -42,12 +42,12 @@ public abstract class Interpolation{
     /** Fast, then slow. */
     public static final PowOut pow2Out = new PowOut(2);
     public static final PowOut fastSlow = pow2Out;
-    public static final Interpolation pow2InInverse = new Interpolation(){
+    public static final Interp pow2InInverse = new Interp(){
         public float apply(float a){
             return (float)Math.sqrt(a);
         }
     };
-    public static final Interpolation pow2OutInverse = new Interpolation(){
+    public static final Interp pow2OutInverse = new Interp(){
         public float apply(float a){
             return 1 - (float)Math.sqrt(-(a - 1));
         }
@@ -55,12 +55,12 @@ public abstract class Interpolation{
     public static final Pow pow3 = new Pow(3);
     public static final PowIn pow3In = new PowIn(3);
     public static final PowOut pow3Out = new PowOut(3);
-    public static final Interpolation pow3InInverse = new Interpolation(){
+    public static final Interp pow3InInverse = new Interp(){
         public float apply(float a){
             return (float)Math.cbrt(a);
         }
     };
-    public static final Interpolation pow3OutInverse = new Interpolation(){
+    public static final Interp pow3OutInverse = new Interp(){
         public float apply(float a){
             return 1 - (float)Math.cbrt(-(a - 1));
         }
@@ -72,17 +72,17 @@ public abstract class Interpolation{
     public static final PowIn pow5In = new PowIn(5);
     public static final PowIn pow10In = new PowIn(10);
     public static final PowOut pow5Out = new PowOut(5);
-    public static final Interpolation sine = new Interpolation(){
+    public static final Interp sine = new Interp(){
         public float apply(float a){
             return (1 - Mathf.cos(a * Mathf.PI)) / 2;
         }
     };
-    public static final Interpolation sineIn = new Interpolation(){
+    public static final Interp sineIn = new Interp(){
         public float apply(float a){
             return 1 - Mathf.cos(a * Mathf.PI / 2);
         }
     };
-    public static final Interpolation sineOut = new Interpolation(){
+    public static final Interp sineOut = new Interp(){
         public float apply(float a){
             return Mathf.sin(a * Mathf.PI / 2);
         }
@@ -93,7 +93,7 @@ public abstract class Interpolation{
     public static final Exp exp5 = new Exp(2, 5);
     public static final ExpIn exp5In = new ExpIn(2, 5);
     public static final ExpOut exp5Out = new ExpOut(2, 5);
-    public static final Interpolation circle = new Interpolation(){
+    public static final Interp circle = new Interp(){
         public float apply(float a){
             if(a <= 0.5f){
                 a *= 2;
@@ -104,12 +104,12 @@ public abstract class Interpolation{
             return ((float)Math.sqrt(1 - a * a) + 1) / 2;
         }
     };
-    public static final Interpolation circleIn = new Interpolation(){
+    public static final Interp circleIn = new Interp(){
         public float apply(float a){
             return 1 - (float)Math.sqrt(1 - a * a);
         }
     };
-    public static final Interpolation circleOut = new Interpolation(){
+    public static final Interp circleOut = new Interp(){
         public float apply(float a){
             a--;
             return (float)Math.sqrt(1 - a * a);
@@ -135,7 +135,7 @@ public abstract class Interpolation{
 
     //
 
-    public static class Pow extends Interpolation{
+    public static class Pow extends Interp{
         final int power;
 
         public Pow(int power){
@@ -170,7 +170,7 @@ public abstract class Interpolation{
 
     //
 
-    public static class Exp extends Interpolation{
+    public static class Exp extends Interp{
         final float value, power, min, scale;
 
         public Exp(float value, float power){
@@ -208,7 +208,7 @@ public abstract class Interpolation{
 
     //
 
-    public static class Elastic extends Interpolation{
+    public static class Elastic extends Interp{
         final float value, power, scale, bounces;
 
         public Elastic(float value, float power, int bounces, float scale){
@@ -275,7 +275,7 @@ public abstract class Interpolation{
         }
     }
 
-    public static class BounceOut extends Interpolation{
+    public static class BounceOut extends Interp{
         final float[] widths, heights;
 
         public BounceOut(float[] widths, float[] heights){
@@ -362,7 +362,7 @@ public abstract class Interpolation{
 
     //
 
-    public static class Swing extends Interpolation{
+    public static class Swing extends Interp{
         private final float scale;
 
         public Swing(float scale){
@@ -380,7 +380,7 @@ public abstract class Interpolation{
         }
     }
 
-    public static class SwingOut extends Interpolation{
+    public static class SwingOut extends Interp{
         private final float scale;
 
         public SwingOut(float scale){
@@ -393,7 +393,7 @@ public abstract class Interpolation{
         }
     }
 
-    public static class SwingIn extends Interpolation{
+    public static class SwingIn extends Interp{
         private final float scale;
 
         public SwingIn(float scale){

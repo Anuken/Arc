@@ -261,10 +261,12 @@ public class Settings{
         return values.get(name, def);
     }
 
+    @Deprecated
     public void putObject(String name, Object value){
         putObject(name, value, value.getClass());
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     public void putObject(String name, Object value, Class<?> type){
         getSerializer(type);
@@ -282,6 +284,7 @@ public class Settings{
         }
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     public <T> T getObject(String name, Class<T> type, Prov<T> def){
         getSerializer(type);

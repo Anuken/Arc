@@ -43,8 +43,8 @@ public class FloatCounter{
         average = total / count;
 
         if(mean != null){
-            mean.addValue(value);
-            this.value = mean.getMean();
+            mean.add(value);
+            this.value = mean.mean();
         }else
             this.value = latest;
 

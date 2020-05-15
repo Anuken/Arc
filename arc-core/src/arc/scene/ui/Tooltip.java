@@ -4,7 +4,7 @@ import arc.*;
 import arc.struct.Array;
 import arc.func.Cons;
 import arc.input.KeyCode;
-import arc.math.Interpolation;
+import arc.math.Interp;
 import arc.math.geom.Vec2;
 import arc.scene.*;
 import arc.scene.event.*;
@@ -12,7 +12,7 @@ import arc.scene.ui.layout.Table;
 import arc.util.*;
 import arc.util.Timer.Task;
 
-import static arc.math.Interpolation.fade;
+import static arc.math.Interp.fade;
 import static arc.scene.actions.Actions.*;
 
 /**
@@ -230,7 +230,7 @@ public class Tooltip extends InputListener{
             tooltip.container.setTransform(true);
             tooltip.container.getColor().a = 0.2f;
             tooltip.container.setScale(0.05f);
-            tooltip.container.addAction(parallel(fadeIn(actionTime, fade), scaleTo(1, 1, actionTime, Interpolation.fade)));
+            tooltip.container.addAction(parallel(fadeIn(actionTime, fade), scaleTo(1, 1, actionTime, Interp.fade)));
         }
 
         /**
@@ -239,7 +239,7 @@ public class Tooltip extends InputListener{
          */
         protected void hideAction(Tooltip tooltip){
             tooltip.container
-            .addAction(sequence(parallel(alpha(0.2f, 0.2f, fade), scaleTo(0.05f, 0.05f, 0.2f, Interpolation.fade)), remove()));
+            .addAction(sequence(parallel(alpha(0.2f, 0.2f, fade), scaleTo(0.05f, 0.05f, 0.2f, Interp.fade)), remove()));
         }
 
         public void hideAll(){

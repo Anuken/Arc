@@ -367,7 +367,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
 
         // After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
         if(!resume){
-            mean.addValue(deltaTime);
+            mean.add(deltaTime);
         }else{
             deltaTime = 0;
         }
@@ -495,7 +495,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
     /** {@inheritDoc} */
     @Override
     public float getDeltaTime(){
-        return mean.getMean() == 0 ? deltaTime : mean.getMean();
+        return mean.mean() == 0 ? deltaTime : mean.mean();
     }
 
     @Override

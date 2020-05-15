@@ -31,8 +31,8 @@ public class ProgressBar extends Element implements Disableable{
     private float min, max, stepSize;
     private float value, animateFromValue;
     private float animateDuration, animateTime;
-    private Interpolation animateInterpolation = Interpolation.linear;
-    private Interpolation visualInterpolation = Interpolation.linear;
+    private Interp animateInterpolation = Interp.linear;
+    private Interp visualInterpolation = Interp.linear;
     private boolean round = true;
 
     /**
@@ -320,13 +320,13 @@ public class ProgressBar extends Element implements Disableable{
     }
 
     /** Sets the interpolation to use for {@link #setAnimateDuration(float)}. */
-    public void setAnimateInterpolation(Interpolation animateInterpolation){
+    public void setAnimateInterpolation(Interp animateInterpolation){
         if(animateInterpolation == null) throw new IllegalArgumentException("animateInterpolation cannot be null.");
         this.animateInterpolation = animateInterpolation;
     }
 
     /** Sets the interpolation to use for display. */
-    public void setVisualInterpolation(Interpolation interpolation){
+    public void setVisualInterpolation(Interp interpolation){
         this.visualInterpolation = interpolation;
     }
 

@@ -501,7 +501,7 @@ public class Vec3 implements Vector<Vec3>{
     }
 
     @Override
-    public Vec3 interpolate(Vec3 target, float alpha, Interpolation interpolator){
+    public Vec3 interpolate(Vec3 target, float alpha, Interp interpolator){
         return lerp(target, interpolator.apply(0f, 1f, alpha));
     }
 

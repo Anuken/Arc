@@ -1,6 +1,6 @@
 package arc.math.geom;
 
-import arc.math.Interpolation;
+import arc.math.Interp;
 
 /**
  * Encapsulates a general vector. Allows chaining operations by returning a reference to itself in all modification methods. See
@@ -140,7 +140,7 @@ public interface Vector<T extends Vector<T>>{
      * @param interpolator An Interpolation object describing the used interpolation method
      * @return This vector for chaining.
      */
-    T interpolate(T target, float alpha, Interpolation interpolator);
+    T interpolate(T target, float alpha, Interp interpolator);
 
     /**
      * Sets this vector to the unit vector with a random direction

@@ -1,6 +1,6 @@
 package arc.scene.actions;
 
-import arc.math.Interpolation;
+import arc.math.Interp;
 import arc.scene.Action;
 import arc.util.pooling.Pool;
 
@@ -10,7 +10,7 @@ import arc.util.pooling.Pool;
  */
 abstract public class TemporalAction extends Action{
     private float duration, time;
-    private Interpolation interpolation;
+    private Interp interpolation;
     private boolean reverse, began, complete;
 
     public TemporalAction(){
@@ -20,7 +20,7 @@ abstract public class TemporalAction extends Action{
         this.duration = duration;
     }
 
-    public TemporalAction(float duration, Interpolation interpolation){
+    public TemporalAction(float duration, Interp interpolation){
         this.duration = duration;
         this.interpolation = interpolation;
     }
@@ -105,11 +105,11 @@ abstract public class TemporalAction extends Action{
         this.duration = duration;
     }
 
-    public Interpolation getInterpolation(){
+    public Interp getInterpolation(){
         return interpolation;
     }
 
-    public void setInterpolation(Interpolation interpolation){
+    public void setInterpolation(Interp interpolation){
         this.interpolation = interpolation;
     }
 

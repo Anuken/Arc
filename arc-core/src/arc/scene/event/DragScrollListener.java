@@ -1,6 +1,6 @@
 package arc.scene.event;
 
-import arc.math.Interpolation;
+import arc.math.Interp;
 import arc.scene.ui.ScrollPane;
 import arc.util.Timer;
 import arc.util.Timer.Task;
@@ -10,7 +10,7 @@ import arc.util.Timer.Task;
  * @author Nathan Sweet
  */
 public class DragScrollListener extends DragListener{
-    Interpolation interpolation = Interpolation.exp5In;
+    Interp interpolation = Interp.exp5In;
     float minSpeed = 15, maxSpeed = 75, tickSecs = 0.05f;
     long startTime, rampTime = 1750;
     private ScrollPane scroll;

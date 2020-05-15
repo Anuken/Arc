@@ -2,7 +2,7 @@ package arc.scene.actions;
 
 import arc.func.Prov;
 import arc.graphics.Color;
-import arc.math.Interpolation;
+import arc.math.Interp;
 import arc.scene.Action;
 import arc.scene.Element;
 import arc.scene.event.EventListener;
@@ -61,7 +61,7 @@ public class Actions{
         return moveTo(x, y, duration, null);
     }
 
-    public static MoveToAction moveTo(float x, float y, float duration, Interpolation interpolation){
+    public static MoveToAction moveTo(float x, float y, float duration, Interp interpolation){
         MoveToAction action = action(MoveToAction.class, MoveToAction::new);
         action.setPosition(x, y);
         action.setDuration(duration);
@@ -77,7 +77,7 @@ public class Actions{
         return moveToAligned(x, y, alignment, duration, null);
     }
 
-    public static MoveToAction moveToAligned(float x, float y, int alignment, float duration, Interpolation interpolation){
+    public static MoveToAction moveToAligned(float x, float y, int alignment, float duration, Interp interpolation){
         MoveToAction action = action(MoveToAction.class, MoveToAction::new);
         action.setPosition(x, y, alignment);
         action.setDuration(duration);
@@ -102,7 +102,7 @@ public class Actions{
         return action;
     }
 
-    public static TranslateByAction translateBy(float amountX, float amountY, float duration, Interpolation interpolation){
+    public static TranslateByAction translateBy(float amountX, float amountY, float duration, Interp interpolation){
         TranslateByAction action = action(TranslateByAction.class, TranslateByAction::new);
         action.setAmount(amountX, amountY);
         action.setDuration(duration);
@@ -118,7 +118,7 @@ public class Actions{
         return translateBy(amountX, amountY, duration, null);
     }
 
-    public static MoveByAction moveBy(float amountX, float amountY, float duration, Interpolation interpolation){
+    public static MoveByAction moveBy(float amountX, float amountY, float duration, Interp interpolation){
         MoveByAction action = action(MoveByAction.class, MoveByAction::new);
         action.setAmount(amountX, amountY);
         action.setDuration(duration);
@@ -135,7 +135,7 @@ public class Actions{
         return sizeTo(x, y, duration, null);
     }
 
-    public static SizeToAction sizeTo(float x, float y, float duration, Interpolation interpolation){
+    public static SizeToAction sizeTo(float x, float y, float duration, Interp interpolation){
         SizeToAction action = action(SizeToAction.class, SizeToAction::new);
         action.setSize(x, y);
         action.setDuration(duration);
@@ -152,7 +152,7 @@ public class Actions{
         return sizeBy(amountX, amountY, duration, null);
     }
 
-    public static SizeByAction sizeBy(float amountX, float amountY, float duration, Interpolation interpolation){
+    public static SizeByAction sizeBy(float amountX, float amountY, float duration, Interp interpolation){
         SizeByAction action = action(SizeByAction.class, SizeByAction::new);
         action.setAmount(amountX, amountY);
         action.setDuration(duration);
@@ -169,7 +169,7 @@ public class Actions{
         return scaleTo(x, y, duration, null);
     }
 
-    public static ScaleToAction scaleTo(float x, float y, float duration, Interpolation interpolation){
+    public static ScaleToAction scaleTo(float x, float y, float duration, Interp interpolation){
         ScaleToAction action = action(ScaleToAction.class, ScaleToAction::new);
         action.setScale(x, y);
         action.setDuration(duration);
@@ -186,7 +186,7 @@ public class Actions{
         return scaleBy(amountX, amountY, duration, null);
     }
 
-    public static ScaleByAction scaleBy(float amountX, float amountY, float duration, Interpolation interpolation){
+    public static ScaleByAction scaleBy(float amountX, float amountY, float duration, Interp interpolation){
         ScaleByAction action = action(ScaleByAction.class, ScaleByAction::new);
         action.setAmount(amountX, amountY);
         action.setDuration(duration);
@@ -203,7 +203,7 @@ public class Actions{
         return rotateTo(rotation, duration, null);
     }
 
-    public static RotateToAction rotateTo(float rotation, float duration, Interpolation interpolation){
+    public static RotateToAction rotateTo(float rotation, float duration, Interp interpolation){
         RotateToAction action = action(RotateToAction.class, RotateToAction::new);
         action.setRotation(rotation);
         action.setDuration(duration);
@@ -220,7 +220,7 @@ public class Actions{
         return rotateBy(rotationAmount, duration, null);
     }
 
-    public static RotateByAction rotateBy(float rotationAmount, float duration, Interpolation interpolation){
+    public static RotateByAction rotateBy(float rotationAmount, float duration, Interp interpolation){
         RotateByAction action = action(RotateByAction.class, RotateByAction::new);
         action.setAmount(rotationAmount);
         action.setDuration(duration);
@@ -239,7 +239,7 @@ public class Actions{
     }
 
     /** Transitions from the color at the time this action starts to the specified color. */
-    public static ColorAction color(Color color, float duration, Interpolation interpolation){
+    public static ColorAction color(Color color, float duration, Interp interpolation){
         ColorAction action = action(ColorAction.class, ColorAction::new);
         action.setEndColor(color);
         action.setDuration(duration);
@@ -258,7 +258,7 @@ public class Actions{
     }
 
     /** Transitions from the alpha at the time this action starts to the specified alpha. */
-    public static AlphaAction alpha(float a, float duration, Interpolation interpolation){
+    public static AlphaAction alpha(float a, float duration, Interp interpolation){
         AlphaAction action = action(AlphaAction.class, AlphaAction::new);
         action.setAlpha(a);
         action.setDuration(duration);
@@ -272,7 +272,7 @@ public class Actions{
     }
 
     /** Transitions from the alpha at the time this action starts to an alpha of 0. */
-    public static AlphaAction fadeOut(float duration, Interpolation interpolation){
+    public static AlphaAction fadeOut(float duration, Interp interpolation){
         AlphaAction action = action(AlphaAction.class, AlphaAction::new);
         action.setAlpha(0);
         action.setDuration(duration);
@@ -286,7 +286,7 @@ public class Actions{
     }
 
     /** Transitions from the alpha at the time this action starts to an alpha of 1. */
-    public static AlphaAction fadeIn(float duration, Interpolation interpolation){
+    public static AlphaAction fadeIn(float duration, Interp interpolation){
         AlphaAction action = action(AlphaAction.class, AlphaAction::new);
         action.setAlpha(1);
         action.setDuration(duration);

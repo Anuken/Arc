@@ -5,7 +5,7 @@ import arc.func.Floatc;
 import arc.graphics.g2d.NinePatch;
 import arc.graphics.g2d.TextureRegion;
 import arc.input.KeyCode;
-import arc.math.Interpolation;
+import arc.math.Interp;
 import arc.scene.Element;
 import arc.scene.event.ChangeListener.ChangeEvent;
 import arc.scene.event.HandCursorListener;
@@ -30,7 +30,7 @@ import static arc.Core.scene;
 public class Slider extends ProgressBar{
     int draggingPointer = -1;
     boolean mouseOver;
-    private Interpolation visualInterpolationInverse = Interpolation.linear;
+    private Interp visualInterpolationInverse = Interp.linear;
     private float[] snapValues;
     private float threshold;
 
@@ -176,9 +176,9 @@ public class Slider extends ProgressBar{
 
     /**
      * Sets the inverse interpolation to use for display. This should perform the inverse of the
-     * {@link #setVisualInterpolation(Interpolation) visual interpolation}.
+     * {@link #setVisualInterpolation(Interp) visual interpolation}.
      */
-    public void setVisualInterpolationInverse(Interpolation interpolation){
+    public void setVisualInterpolationInverse(Interp interpolation){
         this.visualInterpolationInverse = interpolation;
     }
 
