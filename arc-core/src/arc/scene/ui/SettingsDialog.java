@@ -112,7 +112,6 @@ public class SettingsDialog extends Dialog{
                 for(SettingsTable.Setting setting : list){
                     if(setting.name == null || setting.title == null) continue;
                     settings.put(setting.name, settings.getDefault(setting.name));
-                    settings.save();
                 }
                 rebuild();
             }).margin(14).width(240f).pad(6);
@@ -146,7 +145,6 @@ public class SettingsDialog extends Dialog{
 
                 box.changed(() -> {
                     settings.put(name, box.isChecked);
-                    settings.save();
                     if(changed != null){
                         changed.get(box.isChecked);
                     }
@@ -188,7 +186,6 @@ public class SettingsDialog extends Dialog{
                 Label label = new Label(title);
                 slider.changed(() -> {
                     settings.put(name, (int)slider.getValue());
-                    settings.save();
                     label.setText(title + ": " + sp.get((int)slider.getValue()));
                 });
 

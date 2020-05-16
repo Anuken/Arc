@@ -84,7 +84,6 @@ public class KeybindDialog extends Dialog{
                 if(i - 1 >= 0){
                     sectionControls.put(section, i - 1);
                     section.device = devices.get(i - 1);
-                    settings.save();
                     setup();
                 }
             }).disabled(sectionControls.get(section, 0) - 1 < 0).size(40);
@@ -99,7 +98,6 @@ public class KeybindDialog extends Dialog{
                 if(i + 1 < devices.size){
                     sectionControls.put(section, i + 1);
                     section.device = devices.get(i + 1);
-                    settings.save();
                     setup();
                 }
             }).disabled(sectionControls.get(section, 0) + 1 >= devices.size).size(40);
@@ -157,7 +155,6 @@ public class KeybindDialog extends Dialog{
                 }
                 table.button(bundle.get("settings.resetKey", "Reset"), () -> {
                     keybinds.resetToDefault(section, keybind);
-                    settings.save();
                     setup();
                 }).width(130f);
                 table.row();
@@ -168,7 +165,6 @@ public class KeybindDialog extends Dialog{
             table.button(bundle.get("settings.reset", "Reset to Defaults"), () -> {
                 keybinds.resetToDefaults();
                 setup();
-                settings.save();
             }).colspan(4).padTop(4).fill();
 
             stack.add(table);
@@ -198,7 +194,6 @@ public class KeybindDialog extends Dialog{
             minKey = newKey;
             openDialog(section, rebindKey);
         }else{
-            settings.save();
             rebindKey = null;
             rebindAxis = false;
             setup();

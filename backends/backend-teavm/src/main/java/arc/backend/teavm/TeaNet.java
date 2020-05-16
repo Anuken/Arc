@@ -59,10 +59,4 @@ public class TeaNet extends Net{
         });
         req.send();
     }
-
-    @Override
-    public boolean openURI(String URI){
-        Window.current().open(URI, "_blank");
-        return true;
-    }
 }

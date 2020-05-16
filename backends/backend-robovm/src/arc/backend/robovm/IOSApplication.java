@@ -1,11 +1,12 @@
 package arc.backend.robovm;
 
 import arc.*;
+import arc.backend.robovm.objectal.*;
 import arc.graphics.*;
 import arc.struct.*;
 import arc.util.*;
-import arc.backend.robovm.objectal.*;
 import org.robovm.apple.coregraphics.*;
+import org.robovm.apple.dispatch.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.uikit.*;
 import org.robovm.rt.bro.*;
@@ -23,7 +24,6 @@ public class IOSApplication implements Application{
     IOSAudio audio;
     IOSFiles files;
     IOSInput input;
-    IOSNet net;
 
     /** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
     float displayScaleFactor;
@@ -78,14 +78,13 @@ public class IOSApplication implements Application{
         Core.gl30 = graphics.gl30;
         this.files = new IOSFiles();
         this.audio = new IOSAudio(config);
-        this.net = new IOSNet(this);
 
         Core.settings = new Settings();
+        Core.net = new Net();
         Core.files = this.files;
         Core.graphics = this.graphics;
         Core.audio = this.audio;
         Core.input = this.input;
-        Core.net = this.net;
 
         this.input.setupPeripherals();
 
@@ -241,6 +240,23 @@ public class IOSApplication implements Application{
     @Override
     public long getNativeHeap(){
         return getJavaHeap();
+    }
+
+    @Override
+    public boolean openURI(String URI){
+        NSURL url = new NSURL(URI);
+        if(uiApp.canOpenURL(url)){
+            try{
+                DispatchQueue.getMainQueue().async(() -> {
+                    uiApp.openURL(url, new UIApplicationOpenURLOptions(), null);
+                });
+                return true;
+            }catch(Throwable t){
+                t.printStackTrace();
+                return false;
+            }
+        }
+        return false;
     }
 
     @Override

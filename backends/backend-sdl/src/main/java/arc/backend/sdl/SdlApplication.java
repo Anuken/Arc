@@ -31,7 +31,7 @@ public class SdlApplication implements Application{
 
         Core.app = this;
         Core.files = new SdlFiles();
-        Core.net = new SdlNet();
+        Core.net = new Net();
         Core.graphics = this.graphics = new SdlGraphics(this);
         Core.input = this.input = new SdlInput();
         Core.settings = new Settings();
@@ -150,6 +150,7 @@ public class SdlApplication implements Application{
 
             SDL_GL_SwapWindow(window);
             input.postUpdate();
+            Core.settings.autosave();
         }
     }
 
@@ -193,6 +194,24 @@ public class SdlApplication implements Application{
             return OS.execSafe("open " + file);
         }
         return false;
+    }
+
+    @Override
+    public boolean openURI(String url){
+        try{
+            if(OS.isMac){
+                Class.forName("com.apple.eio.FileManager").getMethod("openURL", String.class).invoke(null, url);
+                return true;
+            }else if(OS.isLinux){
+                return OS.execSafe("xdg-open " + url);
+            }else if(OS.isWindows){
+                return OS.execSafe("rundll32 url.dll,FileProtocolHandler " + url);
+            }
+            return false;
+        }catch(Throwable e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override

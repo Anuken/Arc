@@ -55,7 +55,7 @@ public class KeyBinds{
         }
     }
 
-    /** Saves the internal keybind data to settings' map. Does not call settings.save(). */
+    /** Saves the internal keybind data to settings' map. */
     void save(){
         if(definitions == null) return;
 
@@ -93,7 +93,6 @@ public class KeyBinds{
 
     /**
      * Resets all keybinds to their default values.
-     * Call Core.settings.save() to flush the changes afterwards.
      */
     public void resetToDefaults(){
         //remove pref values so it saves correctly

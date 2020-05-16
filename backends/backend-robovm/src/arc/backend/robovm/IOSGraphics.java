@@ -223,6 +223,7 @@ public class IOSGraphics extends Graphics{
             }
         });
         input.processDevices();
+        Core.settings.autosave();
     }
 
     void makeCurrent(){

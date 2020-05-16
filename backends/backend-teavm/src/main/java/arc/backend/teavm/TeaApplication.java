@@ -86,6 +86,7 @@ public class TeaApplication implements Application{
 
         listen(ApplicationListener::update);
         input.postUpdate();
+        Core.settings.autosave();
         delayedStep();
     }
 
@@ -93,6 +94,12 @@ public class TeaApplication implements Application{
         for(ApplicationListener l : listeners){
             cons.get(l);
         }
+    }
+
+    @Override
+    public boolean openURI(String URI){
+        Window.current().open(URI, "_blank");
+        return true;
     }
 
     @Override

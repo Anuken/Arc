@@ -22,6 +22,7 @@ public class Settings{
     protected String appName;
     protected ObjectMap<String, Object> defaults = new ObjectMap<>();
     protected ObjectMap<String, Object> values = new ObjectMap<>();
+    protected boolean modified;
     protected Cons<Throwable> errorHandler;
     protected boolean hasErrored;
 
@@ -79,7 +80,7 @@ public class Settings{
     }
 
     /**Sets the error handler function.
-     * This function gets called when {@link #save} or {@link #load} fails. This can occur most often on browsers,
+     * This function gets called when {@link #forceSave} or {@link #load} fails. This can occur most often on browsers,
      * where extensions can block writing to local storage.*/
     public void setErrorHandler(Cons<Throwable> handler){
         errorHandler = handler;
@@ -101,7 +102,7 @@ public class Settings{
     }
 
     /** Saves all values and keybinds. */
-    public void save(){
+    public void forceSave(){
         try{
             keybinds.save();
             saveValues();
@@ -112,6 +113,14 @@ public class Settings{
                 throw error;
             }
             hasErrored = true;
+        }
+    }
+
+    /** Saves if any modifications were done. */
+    public void autosave(){
+        if(modified){
+            forceSave();
+            modified = false;
         }
     }
 
@@ -261,6 +270,10 @@ public class Settings{
         return values.get(name, def);
     }
 
+    public boolean isModified(){
+        return modified;
+    }
+
     @Deprecated
     public void putObject(String name, Object value){
         putObject(name, value, value.getClass());
@@ -282,6 +295,8 @@ public class Settings{
         }catch(Exception e){
             throw new RuntimeException(e);
         }
+
+        modified = true;
     }
 
     @Deprecated
@@ -349,7 +364,6 @@ public class Settings{
         if(!getBool(name, false)){
             run.run();
             put(name, true);
-            save();
         }
     }
 
@@ -367,17 +381,12 @@ public class Settings{
         }
     }
 
-    /** Stores an object in the preference map and saves. */
-    public void putSave(String name, Object object){
-        put(name, object);
-        save();
-    }
-
     /** Stores an object in the preference map. */
     public void put(String name, Object object){
         if(object instanceof Float || object instanceof Integer || object instanceof Boolean || object instanceof Long
         || object instanceof String || object instanceof byte[]){
             values.put(name, object);
+            modified = true;
         }else{
             throw new IllegalArgumentException("Invalid object stored: " + (object == null ? null : object.getClass()) + ". Use putObject() for serialization.");
         }

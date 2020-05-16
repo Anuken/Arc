@@ -10,7 +10,7 @@ public class MockSettings extends Settings{
     }
 
     @Override
-    public void save(){
+    public void forceSave(){
 
     }
 

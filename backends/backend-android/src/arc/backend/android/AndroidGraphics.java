@@ -435,6 +435,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
             });
 
             ((AndroidInput)Core.input).processDevices();
+            Core.settings.autosave();
         }
 
         if(lpause){

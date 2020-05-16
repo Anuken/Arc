@@ -3,6 +3,7 @@ package arc.backend.android;
 import android.annotation.*;
 import android.app.*;
 import android.content.*;
+import android.content.pm.*;
 import android.content.res.*;
 import android.net.*;
 import android.os.*;
@@ -35,7 +36,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
     protected AndroidInput input;
     protected AndroidAudio audio;
     protected AndroidFiles files;
-    protected AndroidNet net;
+    protected Net net;
     protected Settings settings;
     protected ClipboardManager honeycombClipboard;
     protected boolean firstResume = true;
@@ -109,7 +110,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
         audio = new AndroidAudio(this, config);
         this.getFilesDir(); // workaround for Android bug #10515463
         files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
-        net = new AndroidNet(this);
+        net = new Net();
         settings = new Settings();
         addListener(listener);
         this.handler = new Handler();
@@ -302,6 +303,25 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
             });
             return false;
         }
+    }
+
+    @Override
+    public boolean openURI(String URI){
+        boolean result = false;
+        final Uri uri = Uri.parse(URI);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        PackageManager pm = getContext().getPackageManager();
+        if(pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null){
+            runOnUiThread(() -> {
+                Intent intent1 = new Intent(Intent.ACTION_VIEW, uri);
+                // LiveWallpaper and Daydream applications need this flag
+                if(!(getContext() instanceof Activity))
+                    intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent1);
+            });
+            result = true;
+        }
+        return result;
     }
 
     @Override
