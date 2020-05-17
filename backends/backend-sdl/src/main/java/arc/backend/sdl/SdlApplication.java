@@ -90,6 +90,12 @@ public class SdlApplication implements Application{
         check(() -> SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, config.stencil));
         check(() -> SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1));
 
+        //this doesn't actually do anything
+        if(config.samples > 0){
+            check(() -> SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1));
+            check(() -> SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, config.samples));
+        }
+
         int flags = SDL_WINDOW_OPENGL;
         if(config.initialVisible) flags |= SDL_WINDOW_SHOWN;
         if(!config.decorated) flags |= SDL_WINDOW_BORDERLESS;

@@ -14,6 +14,10 @@ public final class FxaaFilter extends FxFilter{
     public float fxaaReduceMul;
     public float fxaaSpanMax;
 
+    public FxaaFilter(){
+        this(1f/128f, 1f/8f, 8f, true);
+    }
+
     public FxaaFilter(float fxaaReduceMin, float fxaaReduceMul, float fxaaSpanMax, boolean supportAlpha){
         super(compileShader(
         Core.files.classpath("shaders/screenspace.vert"),
