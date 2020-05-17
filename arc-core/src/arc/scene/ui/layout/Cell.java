@@ -336,12 +336,12 @@ public class Cell<T extends Element> implements Poolable{
     }
 
     public Cell<T> maxWidth(float maxWidth){
-        this.maxWidth = maxWidth;
+        this.maxWidth = scl(maxWidth);
         return this;
     }
 
     public Cell<T> maxHeight(float maxHeight){
-        this.maxHeight = maxHeight;
+        this.maxHeight = scl(maxHeight);
         return this;
     }
 
