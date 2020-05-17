@@ -446,7 +446,7 @@ public class Pixmap implements Disposable{
         }
     }
 
-    private static int toGlFormat(int format){
+    public static int toGlFormat(int format){
         switch(format){
             case pixmapFormatAlpha: return GL20.GL_ALPHA;
             case pixmapFormatLuminanceAlpha: return GL20.GL_LUMINANCE_ALPHA;
@@ -458,7 +458,7 @@ public class Pixmap implements Disposable{
         }
     }
 
-    private static int toGlType(int format){
+    public static int toGlType(int format){
         switch(format){
             case pixmapFormatAlpha:
             case pixmapFormatLuminanceAlpha:
