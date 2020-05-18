@@ -18,6 +18,7 @@ public class Tmp{
     public static final Vec3 v31 = new Vec3();
     public static final Vec3 v32 = new Vec3();
     public static final Vec3 v33 = new Vec3();
+    public static final Vec3 v34 = new Vec3();
 
     public static final Rect r1 = new Rect();
     public static final Rect r2 = new Rect();
@@ -45,4 +46,6 @@ public class Tmp{
     public static final Mat m2 = new Mat();
     public static final Mat m3 = new Mat();
 
+    public static final Bezier<Vec2> bz2 = new Bezier<>();
+    public static final Bezier<Vec3> bz3 = new Bezier<>();
 }

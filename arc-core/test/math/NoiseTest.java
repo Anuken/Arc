@@ -13,7 +13,7 @@ public class NoiseTest{
         int iterations = 1000000;
 
         for(int i = 0; i < iterations; i++){
-            sim.raw_noise_2d(Math.random(), Math.random());
+            sim.rawNoise2D(Math.random(), Math.random());
             Noise.rawNoise(Math.random(), Math.random());
         }
 
@@ -28,7 +28,7 @@ public class NoiseTest{
         Time.mark();
 
         for(int i = 0; i < iterations; i++){
-            sim.raw_noise_2d(Math.random(), Math.random());
+            sim.rawNoise2D(Math.random(), Math.random());
         }
 
         Log.info("Simplex: @", Time.elapsed());

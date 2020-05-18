@@ -4,7 +4,6 @@ import java.util.Random;
 
 //TODO this class a disaster:
 //- nobody knows what range functions return
-//- no consistent formatting, e.g. underscores vs camel case
 //- generally bizzare outputs
 //- bad parameter inputs, have to use 1/scale
 //- may need a replacement with a completely different class
@@ -94,7 +93,7 @@ public class Simplex{
         double maxAmplitude = 0;
 
         for(int i = 0; i < octaves; i++){
-            total += (raw_noise_2d(x * frequency, y * frequency) + 1f) / 2f * amplitude;
+            total += (rawNoise2D(x * frequency, y * frequency) + 1f) / 2f * amplitude;
 
             frequency *= 2;
             maxAmplitude += amplitude;
@@ -119,7 +118,7 @@ public class Simplex{
         double maxAmplitude = 0;
 
         for(int i = 0; i < octaves; i++){
-            total += (raw_noise_3d(x * frequency, y * frequency, z * frequency) + 1f) / 2f * amplitude;
+            total += (rawNoise3D(x * frequency, y * frequency, z * frequency) + 1f) / 2f * amplitude;
 
             frequency *= 2;
             maxAmplitude += amplitude;
@@ -144,7 +143,7 @@ public class Simplex{
         double maxAmplitude = 0;
 
         for(int i = 0; i < octaves; i++){
-            total += raw_noise_4d(x * frequency, y * frequency, z * frequency, w * frequency) * amplitude;
+            total += rawNoise4D(x * frequency, y * frequency, z * frequency, w * frequency) * amplitude;
 
             frequency *= 2;
             maxAmplitude += amplitude;
@@ -166,14 +165,14 @@ public class Simplex{
     // 3D Scaled Multi-octave Simplex noise.
     //
     // Returned value will be between loBound and hiBound.
-    public double scaled_octave_noise_3d(double octaves, double persistence, double scale, double loBound, double hiBound, double x, double y, double z){
+    public double scaledOctaveNoise3D(double octaves, double persistence, double scale, double loBound, double hiBound, double x, double y, double z){
         return octaveNoise3D(octaves, persistence, scale, x, y, z) * (hiBound - loBound) / 2 + (hiBound + loBound) / 2;
     }
 
     // 4D Scaled Multi-octave Simplex noise.
     //
     // Returned value will be between loBound and hiBound.
-    public double scaled_octave_noise_4d(double octaves, double persistence, double scale, double loBound, double hiBound, double x, double y, double z, double w){
+    public double scaledOctaveNoise4D(double octaves, double persistence, double scale, double loBound, double hiBound, double x, double y, double z, double w){
         return octaveNoise4D(octaves, persistence, scale, x, y, z, w) * (hiBound - loBound) / 2 + (hiBound + loBound) / 2;
     }
 
@@ -181,28 +180,28 @@ public class Simplex{
     // 2D Scaled Simplex raw noise.
     //
     // Returned value will be between loBound and hiBound.
-    public double scaled_raw_noise_2d(double loBound, double hiBound, double x, double y){
-        return raw_noise_2d(x, y) * (hiBound - loBound) / 2 + (hiBound + loBound) / 2;
+    public double scaledRawNoise2D(double loBound, double hiBound, double x, double y){
+        return rawNoise2D(x, y) * (hiBound - loBound) / 2 + (hiBound + loBound) / 2;
     }
 
 
     // 3D Scaled Simplex raw noise.
     //
     // Returned value will be between loBound and hiBound.
-    public double scaled_raw_noise_3d(double loBound, double hiBound, double x, double y, double z){
-        return raw_noise_3d(x, y, z) * (hiBound - loBound) / 2 + (hiBound + loBound) / 2;
+    public double scaledRawNoise3D(double loBound, double hiBound, double x, double y, double z){
+        return rawNoise3D(x, y, z) * (hiBound - loBound) / 2 + (hiBound + loBound) / 2;
     }
 
     // 4D Scaled Simplex raw noise.
     //
     // Returned value will be between loBound and hiBound.
-    public double scaled_raw_noise_4d(double loBound, double hiBound, double x, double y, double z, double w){
-        return raw_noise_4d(x, y, z, w) * (hiBound - loBound) / 2 + (hiBound + loBound) / 2;
+    public double scaledRawNoise4D(double loBound, double hiBound, double x, double y, double z, double w){
+        return rawNoise4D(x, y, z, w) * (hiBound - loBound) / 2 + (hiBound + loBound) / 2;
     }
 
 
     // 2D raw Simplex noise
-    public double raw_noise_2d(double x, double y){
+    public double rawNoise2D(double x, double y){
         // Noise contributions from the three corners
         double n0, n1, n2;
 
@@ -278,7 +277,7 @@ public class Simplex{
 
 
     // 3D raw Simplex noise
-    public double raw_noise_3d(double x, double y, double z){
+    public double rawNoise3D(double x, double y, double z){
         double n0, n1, n2, n3; // Noise contributions from the four corners
 
         // Skew the input space to determine which simplex cell we're in
@@ -413,7 +412,7 @@ public class Simplex{
 
 
     // 4D raw Simplex noise
-    public double raw_noise_4d(double x, double y, double z, double w){
+    public double rawNoise4D(double x, double y, double z, double w){
         // The skewing and unskewing factors are hairy again for the 4D case
         double F4 = (Math.sqrt(5.0) - 1.0) / 4.0;
         double G4 = (5.0 - Math.sqrt(5.0)) / 20.0;
