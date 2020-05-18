@@ -14,8 +14,7 @@ public final class NfaaFilter extends FxFilter{
     public NfaaFilter(boolean supportAlpha){
         super(compileShader(
         Core.files.classpath("shaders/screenspace.vert"),
-        Core.files.classpath("shaders/nfaa.frag"),
-        supportAlpha ? "#define SUPPORT_ALPHA" : ""));
+        Core.files.classpath("shaders/nfaa.frag"), supportAlpha ? "#define SUPPORT_ALPHA" : ""));
     }
 
     @Override

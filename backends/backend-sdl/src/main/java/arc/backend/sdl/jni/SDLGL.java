@@ -121,7 +121,7 @@ public class SDLGL{
             return env->NewStringUTF((const char*)glewGetErrorString(glewError));
         }
 
-        if((glewIsSupported("GL_VERSION_3_0") || glewIsSupported("GL_EXT_framebuffer_object") || glewIsSupported("GL_ARB_framebuffer_object")) && glGenFramebuffers != 0){
+        if((glewIsSupported("GL_VERSION_3_0") || glewIsSupported("GL_EXT_framebuffer_object")) && (glGenFramebuffers != 0 || glGenFramebuffersEXT != 0)){
             //no error message
             return NULL;
         }else{
@@ -310,11 +310,21 @@ public class SDLGL{
     */
 
     public static native void glBindFramebuffer(int target, int framebuffer); /*
-        glBindFramebuffer(target, framebuffer);
+        if(glBindFramebuffer){
+            glBindFramebuffer(target, framebuffer);
+            return;
+        }
+
+        glBindFramebufferEXT(target, framebuffer);
     */
 
     public static native void glBindRenderbuffer(int target, int renderbuffer); /*
-        glBindRenderbuffer(target, renderbuffer);
+        if(glBindRenderbuffer){
+            glBindRenderbuffer(target, renderbuffer);
+            return;
+        }
+
+        glBindRenderbufferEXT(target, renderbuffer);
     */
 
     public static native void glBlendColor(float red, float green, float blue, float alpha); /*
@@ -342,7 +352,11 @@ public class SDLGL{
     */
 
     public static native int glCheckFramebufferStatus(int target); /*
-        return glCheckFramebufferStatus(target);
+        if(glCheckFramebufferStatus){
+            return glCheckFramebufferStatus(target);
+        }
+
+        return glCheckFramebufferStatusEXT(target);
     */
 
     public static native void glCompileShader(int shader); /*
@@ -363,8 +377,14 @@ public class SDLGL{
     */
 
     public static native void glDeleteFramebuffer(int framebuffer); /*
+        if(glDeleteFramebuffers){
+            GLuint b = framebuffer;
+            glDeleteFramebuffers(1, &b);
+            return;
+        }
+
         GLuint b = framebuffer;
-        glDeleteFramebuffers(1, &b);
+        glDeleteFramebuffersEXT(1, &b);
     */
 
     public static native void glDeleteProgram(int program); /*
@@ -373,7 +393,13 @@ public class SDLGL{
 
     public static native void glDeleteRenderbuffer(int renderbuffer); /*
         GLuint b = renderbuffer;
-        glDeleteRenderbuffers(1, &b);
+
+        if(glDeleteRenderbuffers){
+            glDeleteRenderbuffers(1, &b);
+            return;
+        }
+
+        glDeleteRenderbuffersEXT(1, &b);
     */
 
     public static native void glDeleteShader(int shader); /*
@@ -397,11 +423,21 @@ public class SDLGL{
     */
 
     public static native void glFramebufferRenderbuffer(int target, int attachment, int renderbuffertarget, int renderbuffer); /*
-        glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
+        if(glFramebufferRenderbuffer){
+            glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
+            return;
+        }
+
+        glFramebufferRenderbufferEXT(target, attachment, renderbuffertarget, renderbuffer);
     */
 
     public static native void glFramebufferTexture2D(int target, int attachment, int textarget, int texture, int level); /*
-        glFramebufferTexture2D(target, attachment, textarget, texture, level);
+        if(glFramebufferTexture2D){
+            glFramebufferTexture2D(target, attachment, textarget, texture, level);
+            return;
+        }
+
+        glFramebufferTexture2DEXT(target, attachment, textarget, texture, level);
     */
 
     public static native int glGenBuffer(); /*
@@ -411,18 +447,35 @@ public class SDLGL{
     */
 
     public static native void glGenerateMipmap(int target); /*
-        glGenerateMipmap(target);
+        if(glGenerateMipmap){
+            glGenerateMipmap(target);
+            return;
+        }
+
+        glGenerateMipmapEXT(target);
     */
 
     public static native int glGenFramebuffer(); /*
+        if(glGenFramebuffers){
+            GLuint result;
+            glGenFramebuffers(1, &result);
+            return result;
+        }
+
         GLuint result;
-        glGenFramebuffers(1, &result);
+        glGenFramebuffersEXT(1, &result);
         return result;
     */
 
     public static native int glGenRenderbuffer(); /*
+        if(glGenRenderbuffers){
+            GLuint result;
+            glGenRenderbuffers(1, &result);
+            return result;
+        }
+
         GLuint result;
-        glGenRenderbuffers(1, &result);
+        glGenRenderbuffersEXT(1, &result);
         return result;
     */
 
@@ -460,7 +513,12 @@ public class SDLGL{
     */
 
     public static native void glGetFramebufferAttachmentParameteriv(int target, int attachment, int pname, IntBuffer params); /*
-        glGetFramebufferAttachmentParameteriv(target, attachment, pname, params);
+        if(glGetFramebufferAttachmentParameteriv){
+            glGetFramebufferAttachmentParameteriv(target, attachment, pname, params);
+            return;
+        }
+
+        glGetFramebufferAttachmentParameterivEXT(target, attachment, pname, params);
     */
 
     public static native void glGetProgramiv(int program, int pname, IntBuffer params); /*
@@ -475,7 +533,12 @@ public class SDLGL{
     */
 
     public static native void glGetRenderbufferParameteriv(int target, int pname, IntBuffer params); /*
-        glGetRenderbufferParameteriv(target, pname, params);
+        if(glGetRenderbufferParameteriv){
+            glGetRenderbufferParameteriv(target, pname, params);
+            return;
+        }
+
+        glGetRenderbufferParameterivEXT(target, pname, params);
     */
 
     public static native void glGetShaderiv(int shader, int pname, IntBuffer params); /*
@@ -530,7 +593,11 @@ public class SDLGL{
     */
 
     public static native boolean glIsFramebuffer(int framebuffer); /*
-        return glIsFramebuffer(framebuffer);
+        if(glIsFramebuffer){
+            return glIsFramebuffer(framebuffer);
+        }
+
+        return glIsFramebufferEXT(framebuffer);
     */
 
     public static native boolean glIsProgram(int program); /*
@@ -538,7 +605,11 @@ public class SDLGL{
     */
 
     public static native boolean glIsRenderbuffer(int renderbuffer); /*
-        return glIsRenderbuffer(renderbuffer);
+        if(glIsRenderbuffer){
+            return glIsRenderbuffer(renderbuffer);
+        }
+
+        return glIsRenderbufferEXT(renderbuffer);
     */
 
     public static native boolean glIsShader(int shader); /*
@@ -558,7 +629,12 @@ public class SDLGL{
     */
 
     public static native void glRenderbufferStorage(int target, int internalformat, int width, int height); /*
-        glRenderbufferStorage(target, internalformat, width, height);
+        if(glRenderbufferStorage){
+            glRenderbufferStorage(target, internalformat, width, height);
+            return;
+        }
+
+        glRenderbufferStorageEXT(target, internalformat, width, height);
     */
 
     public static native void glSampleCoverage(float value, boolean invert); /*

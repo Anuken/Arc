@@ -19,6 +19,9 @@ import java.nio.*;
 
 @Replace(Pixmap.class)
 public class PixmapEmu implements Disposable{
+    static final int pixmapFormatAlpha = 1, pixmapFormatLuminanceAlpha = 2, pixmapFormatRGB888 = 3, pixmapFormatRGBA8888 = 4, pixmapFormatRGB565 = 5, pixmapFormatRGBA4444 = 6;
+    static final int pixmapScaleNearest = 0, pixmapScaleLinear = 1;
+
     private static final Window window = Window.current();
     private static final HTMLDocument document = window.getDocument();
     private static int nextId = 0;
@@ -208,6 +211,30 @@ public class PixmapEmu implements Disposable{
             pixels = context.getImageData(0, 0, width, height).getData();
         }
         return ByteBuffer.wrap(bufferAsArray(pixels.getBuffer()));
+    }
+
+    public static int toGlFormat(int format){
+        switch(format){
+            case pixmapFormatAlpha: return GL20.GL_ALPHA;
+            case pixmapFormatLuminanceAlpha: return GL20.GL_LUMINANCE_ALPHA;
+            case pixmapFormatRGB888:
+            case pixmapFormatRGB565: return GL20.GL_RGB;
+            case pixmapFormatRGBA8888:
+            case pixmapFormatRGBA4444: return GL20.GL_RGBA;
+            default: throw new ArcRuntimeException("unknown format: " + format);
+        }
+    }
+
+    public static int toGlType(int format){
+        switch(format){
+            case pixmapFormatAlpha:
+            case pixmapFormatLuminanceAlpha:
+            case pixmapFormatRGB888:
+            case pixmapFormatRGBA8888: return GL20.GL_UNSIGNED_BYTE;
+            case pixmapFormatRGB565: return GL20.GL_UNSIGNED_SHORT_5_6_5;
+            case pixmapFormatRGBA4444: return GL20.GL_UNSIGNED_SHORT_4_4_4_4;
+            default: throw new ArcRuntimeException("unknown format: " + format);
+        }
     }
 
     @GeneratedBy(PixmapNativeGenerator.class)
