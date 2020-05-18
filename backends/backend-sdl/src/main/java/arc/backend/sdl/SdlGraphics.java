@@ -50,7 +50,7 @@ public class SdlGraphics extends Graphics{
     }
 
     boolean supportsFBO(){
-        return glVersion.isVersionEqualToOrHigher(3, 0) || SDL_GL_ExtensionSupported("GL_EXT_framebuffer_object") || SDL_GL_ExtensionSupported("GL_ARB_framebuffer_object");
+        return glVersion.isVersionEqualToOrHigher(3, 0) || SDL_GL_ExtensionSupported("GL_EXT_framebuffer_object");
     }
 
     void update(){
