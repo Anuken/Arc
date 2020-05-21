@@ -34,13 +34,15 @@ public class SortedSpriteBatch extends SpriteBatch{
     @Override
     protected void draw(Texture texture, float[] spriteVertices, int offset, int count){
         if(sort && !flushing){
-            DrawRequest req = obtain();
-            req.z = z;
-            System.arraycopy(spriteVertices, 0, req.vertices, 0, req.vertices.length);
-            req.texture = texture;
-            req.blending = blending;
-            req.run = null;
-            requests.add(req);
+            for(int i = offset; i < count; i += SPRITE_SIZE){
+                DrawRequest req = obtain();
+                req.z = z;
+                System.arraycopy(spriteVertices, i, req.vertices, 0, req.vertices.length);
+                req.texture = texture;
+                req.blending = blending;
+                req.run = null;
+                requests.add(req);
+            }
         }else{
             super.draw(texture, spriteVertices, offset, count);
         }
