@@ -746,10 +746,6 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
         return (Array<R>)this;
     }
 
-    public <R> Array<R> as(Class<R> type){
-        return (Array<R>)this;
-    }
-
     /** Allocates a new array with all elements that match the predicate.*/
     public Array<T> select(Boolf<T> predicate){
         Array<T> arr = new Array<>();
