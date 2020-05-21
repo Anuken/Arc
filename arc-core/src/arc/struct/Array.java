@@ -742,6 +742,10 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
         return this;
     }
 
+    public <R> Array<R> as(){
+        return (Array<R>)this;
+    }
+
     public <R> Array<R> as(Class<R> type){
         return (Array<R>)this;
     }
@@ -755,6 +759,11 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
             }
         }
         return arr;
+    }
+
+    /** Removes everything that does not match this predicate. */
+    public Array<T> filter(Boolf<T> predicate){
+        return removeAll(e -> !predicate.get(e));
     }
 
     public int count(Boolf<T> predicate){

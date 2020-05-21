@@ -739,7 +739,7 @@ public class Fi{
 
                     @Override
                     public Fi[] list(FileFilter filter){
-                        return Array.with(list()).select(f -> filter.accept(f.file)).toArray(Fi.class);
+                        return Array.select(list(), f -> filter.accept(f.file)).toArray(Fi.class);
                     }
                 };
             }else{
