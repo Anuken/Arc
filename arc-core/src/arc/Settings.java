@@ -12,7 +12,6 @@ import java.io.*;
 
 import static arc.Core.keybinds;
 
-@SuppressWarnings("unchecked")
 public class Settings{
     protected final static byte TYPE_BOOL = 0, TYPE_INT = 1, TYPE_LONG = 2, TYPE_FLOAT = 3, TYPE_STRING = 4, TYPE_BINARY = 5;
 
