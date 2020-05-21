@@ -1,12 +1,11 @@
 package arc;
 
-import arc.struct.*;
-import arc.struct.ObjectMap.*;
 import arc.files.*;
 import arc.func.*;
+import arc.struct.*;
+import arc.struct.ObjectMap.*;
 import arc.util.*;
 import arc.util.io.*;
-import arc.util.io.Streams.*;
 import arc.util.serialization.*;
 
 import java.io.*;
@@ -27,48 +26,13 @@ public class Settings{
     protected boolean hasErrored;
 
     //IO utility objects
-    protected ByteArrayOutputStream byteStream = new OptimizedByteArrayOutputStream(16);
+    protected ByteArrayOutputStream byteStream = new ByteArrayOutputStream(32);
     protected ReusableByteInStream byteInputStream = new ReusableByteInStream();
-    protected DataOutputStream dataOutput = new DataOutputStream(byteStream);
-    protected DataInputStream dataInput = new DataInputStream(byteInputStream);
-    protected ObjectMap<Class<?>, TypeSerializer<?>> serializers = new ObjectMap<>();
     protected UBJsonReader ureader = new UBJsonReader();
     protected Json json = new Json();
 
-    public Settings(){
-        DefaultSerializers.register(this);
-    }
-
-    public TypeSerializer getSerializer(Class type){
-        if(type.isAnonymousClass()) type = type.getSuperclass();
-        Class ftype = type;
-
-        if(!serializers.containsKey(type)){
-            return new TypeSerializer(){
-                @Override
-                public void write(DataOutput stream, Object object) throws IOException{
-                    json.toUBJson(object, ftype, (OutputStream)stream);
-                }
-
-                @Override
-                public Object read(DataInput stream) throws IOException{
-                    JsonValue value = ureader.parse((InputStream)stream);
-                    return json.readValue(ftype, value);
-                }
-            };
-        }
-        return serializers.get(type);
-    }
-
-    public <T> void setSerializer(Class<T> type, TypeWriter<T> writer, TypeReader<T> reader){
-        serializers.put(type, new TypeSerializer<T>(){
-            @Override public void write(DataOutput stream, T object) throws IOException{ writer.write(stream, object); }
-            @Override public T read(DataInput stream) throws IOException{ return reader.read(stream); }
-        });
-    }
-
-    public <T> void setSerializer(Class<?> type, TypeSerializer<T> ser){
-        serializers.put(type, ser);
+    public void setJson(Json json){
+        this.json = json;
     }
 
     public String getAppName(){
@@ -274,47 +238,26 @@ public class Settings{
         return modified;
     }
 
-    @Deprecated
-    public void putObject(String name, Object value){
-        putObject(name, value, value.getClass());
+    public void putJson(String name, Object value){
+        putJson(name, null, value);
     }
 
-    @Deprecated
-    @SuppressWarnings("unchecked")
-    public void putObject(String name, Object value, Class<?> type){
-        getSerializer(type);
-        if(!serializers.containsKey(type)){
-            throw new IllegalArgumentException(type + " does not have a serializer registered!");
-        }
+    public void putJson(String name, Class<?> elementType, Object value){
         byteStream.reset();
 
-        TypeSerializer serializer = serializers.get(type);
-        try{
-            serializer.write(dataOutput, value);
-            put(name, byteStream.toByteArray());
-        }catch(Exception e){
-            throw new RuntimeException(e);
-        }
+        json.setWriter(new UBJsonWriter(byteStream));
+        json.writeValue(value, value == null ? null : value.getClass(), elementType);
+
+        put(name, byteStream.toByteArray());
 
         modified = true;
     }
 
-    @Deprecated
-    @SuppressWarnings("unchecked")
-    public <T> T getObject(String name, Class<T> type, Prov<T> def){
-        getSerializer(type);
-        if(!serializers.containsKey(type)){
-            throw new IllegalArgumentException("Type " + type + " does not have a serializer registered!");
-        }
-
-        TypeSerializer serializer = serializers.get(type);
-
+    public <T> T getJson(String name, Class<T> type, Prov<T> def){
         try{
             byteInputStream.setBytes(getBytes(name));
-            Object obj = serializer.read(dataInput);
-            if(obj == null) return def.get();
-            return (T)obj;
-        }catch(Exception e){
+            return json.readValue(type, ureader.parse(byteInputStream));
+        }catch(Throwable e){
             return def.get();
         }
     }
@@ -394,6 +337,7 @@ public class Settings{
 
     public void remove(String name){
         values.remove(name);
+        modified = true;
     }
 
     public Iterable<String> keys(){
@@ -402,18 +346,5 @@ public class Settings{
 
     public int keySize(){
         return values.size;
-    }
-
-    public interface TypeSerializer<T>{
-        void write(DataOutput stream, T object) throws IOException;
-        T read(DataInput stream) throws IOException;
-    }
-
-    public interface TypeWriter<T>{
-        void write(DataOutput stream, T object) throws IOException;
-    }
-
-    public interface TypeReader<T>{
-        T read(DataInput stream) throws IOException;
     }
 }

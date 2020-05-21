@@ -36,8 +36,20 @@ public class Jval{
      * @return the Hjson value that has been read
      * @throws IOException if an I/O error occurs in the reader
      */
-    public static Jval read(Reader reader) throws IOException{
-        return new Hparser(reader).parse();
+    public static Jval read(Reader reader){
+        try{
+            return new Hparser(reader).parse();
+        }catch(IOException e){
+            throw new ArcRuntimeException(e);
+        }
+    }
+
+    public static Jval read(byte[] bytes){
+        try{
+            return new Hparser(new InputStreamReader(new ByteArrayInputStream(bytes))).parse();
+        }catch(IOException e){
+            throw new ArcRuntimeException(e);
+        }
     }
 
     /**

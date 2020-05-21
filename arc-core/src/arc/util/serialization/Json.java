@@ -205,7 +205,6 @@ public class Json{
         return toJson(object, knownType, (Class)null);
     }
 
-
     public void toUBJson(Object object, Class knownType, OutputStream stream){
         this.writer = new UBJsonWriter(stream);
         toJson(object, knownType, (Class)null);
@@ -260,7 +259,7 @@ public class Json{
      * @param elementType May be null if the type is unknown.
      */
     public void toJson(Object object, Class knownType, Class elementType, Writer writer){
-        setWriter(writer);
+        setWriter(new JsonWriter(writer));
         try{
             writeValue(object, knownType, elementType);
         }finally{
@@ -274,9 +273,9 @@ public class Json{
     }
 
     /** Sets the writer where JSON output will be written. This is only necessary when not using the toJson methods. */
-    public void setWriter(Writer writer){
-        if(!(writer instanceof JsonWriter)) writer = new JsonWriter(writer);
-        this.writer = (JsonWriter)writer;
+    public void setWriter(BaseJsonWriter writer){
+        //if(!(writer instanceof BaseJsonWriter)) writer = new JsonWriter(writer);
+        this.writer = writer;
         this.writer.setOutputType(outputType);
         this.writer.setQuoteLongValues(quoteLongValues);
     }
