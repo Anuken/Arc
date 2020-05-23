@@ -493,6 +493,26 @@ public class Vec2 implements Vector<Vec2>, Position{
         return this;
     }
 
+    public Vec2 approachDelta(Vec2 target, float alpha){
+        return approach(target, Time.delta() * alpha);
+    }
+
+    public Vec2 approach(Vec2 target, float alpha){
+        float dx = x - target.x, dy = y - target.y;
+        float alpha2 = alpha*alpha;
+        float len2 = Mathf.len2(dx, dy);
+
+        if(len2 > alpha2){
+            float scl = Mathf.sqrt(alpha2 / len2);
+            dx *= scl;
+            dy *= scl;
+
+            return sub(dx, dy);
+        }else{
+            return set(target);
+        }
+    }
+
     public Vec2 lerpPast(Vec2 target, float alpha){
         x = (x) + ((target.x - x) * alpha);
         y = (y) + ((target.y - y) * alpha);
