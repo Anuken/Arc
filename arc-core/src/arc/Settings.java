@@ -99,7 +99,7 @@ public class Settings{
 
             //back up the save file, as the values have now been loaded successfully
             getSettingsFile().copyTo(getBackupSettingsFile());
-        }catch(Exception e){
+        }catch(Throwable e){
             Log.err("Failed to load base settings file, attempting to load backup.", e);
             try{
                 //attempt to load backup
@@ -107,7 +107,7 @@ public class Settings{
                 //copy to normal settings file for future use
                 getBackupSettingsFile().copyTo(getSettingsFile());
                 Log.info("Loaded backup settings file.");
-            }catch(Exception e2){
+            }catch(Throwable e2){
                 Log.err("Failed to load backup settings file.", e2);
             }
         }

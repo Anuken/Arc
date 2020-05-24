@@ -145,6 +145,19 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
         return out;
     }
 
+    public <K, V> ObjectMap<K, V> asMap(Func<T, K> keygen, Func<T, V> valgen){
+        ObjectMap<K, V> map = new ObjectMap<>();
+        for(int i = 0; i < size; i++){
+            map.put(keygen.get(items[i]), valgen.get(items[i]));
+        }
+
+        return map;
+    }
+
+    public <K> ObjectMap<K, T> asMap(Func<T, K> keygen){
+        return asMap(keygen, t -> t);
+    }
+
     public ObjectSet<T> asSet(){
         return ObjectSet.with(this);
     }
