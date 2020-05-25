@@ -186,6 +186,22 @@ public class Strings{
         return result.toString();
     }
 
+    public static String camelToKebab(String s){
+        StringBuilder result = new StringBuilder(s.length() + 1);
+
+        for(int i = 0; i < s.length(); i++){
+            char c = s.charAt(i);
+            if(i > 0 && Character.isUpperCase(s.charAt(i))){
+                result.append('-');
+            }
+
+            result.append(Character.toLowerCase(c));
+
+        }
+
+        return result.toString();
+    }
+
     /**Converts a snake_case or kebab-case string to Upper Case.
      * For example: "test_string" -> "Test String"*/
     public static String capitalize(String s){
@@ -205,7 +221,7 @@ public class Strings{
         return result.toString();
     }
 
-    /**Converts a Space Separated ostring to camelCase.
+    /**Converts a Space Separated string to camelCase.
      * For example: "Camel Case" -> "camelCase"*/
     public static String camelize(String s){
         StringBuilder result = new StringBuilder(s.length());

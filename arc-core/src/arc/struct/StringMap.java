@@ -9,7 +9,7 @@ public class StringMap extends ObjectMap<String, String>{
         StringMap map = new StringMap();
 
         for(int i = 0; i < values.length / 2; i++){
-            map.put((String) values[i * 2], String.valueOf(values[i * 2 + 1]));
+            map.put((String)values[i * 2], String.valueOf(values[i * 2 + 1]));
         }
 
         return map;
