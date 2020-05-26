@@ -380,7 +380,7 @@ public class Vec2 implements Vector<Vec2>, Position{
     }
 
     /**Sets this vector to a random direction with the specified length.*/
-    public Vector<Vec2> rnd(float length){
+    public Vec2 rnd(float length){
         setToRandomDirection().scl(length);
         return this;
     }
