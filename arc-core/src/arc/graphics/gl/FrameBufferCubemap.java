@@ -40,7 +40,6 @@ import arc.util.*;
  * @author realitix
  */
 public class FrameBufferCubemap extends GLFrameBuffer<Cubemap>{
-
     /** cubemap sides cache */
     private static final Cubemap.CubemapSide[] cubemapSides = Cubemap.CubemapSide.values();
     /** the zero-based index of the active side **/

@@ -118,7 +118,7 @@ public class ObjectSet<T> implements Iterable<T>, Eachable<T>{
      * and returns false.
      */
     public boolean add(T key){
-        if(key == null) throw new IllegalArgumentException("key cannot be null.");
+        if(key == null) return false;
         T[] keyTable = this.keyTable;
 
         // Check for existing keys.
