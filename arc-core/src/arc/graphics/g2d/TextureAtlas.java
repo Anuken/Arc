@@ -158,7 +158,7 @@ public class TextureAtlas implements Disposable{
 
     public PixmapRegion getPixmap(AtlasRegion region){
         if(region.pixmapRegion == null){
-            Pixmap pix = pixmaps.getOr(region.texture, () -> region.texture.getTextureData().getPixmap());
+            Pixmap pix = pixmaps.get(region.texture, () -> region.texture.getTextureData().getPixmap());
             region.pixmapRegion = new PixmapRegion(pix, region.getX(), region.getY(), region.getWidth(), region.getHeight());
         }
 

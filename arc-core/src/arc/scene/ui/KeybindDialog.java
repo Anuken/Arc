@@ -183,10 +183,10 @@ public class KeybindDialog extends Dialog{
 
         if(isAxis){
             if(newKey.axis || !rebindMin){
-                section.binds.getOr(section.device.type(), OrderedMap::new).put(rebindKey, newKey.axis ? new Axis(newKey) : new Axis(minKey, newKey));
+                section.binds.get(section.device.type(), OrderedMap::new).put(rebindKey, newKey.axis ? new Axis(newKey) : new Axis(minKey, newKey));
             }
         }else{
-            section.binds.getOr(section.device.type(), OrderedMap::new).put(rebindKey, new Axis(newKey));
+            section.binds.get(section.device.type(), OrderedMap::new).put(rebindKey, new Axis(newKey));
         }
 
         if(rebindAxis && isAxis && rebindMin && !newKey.axis){

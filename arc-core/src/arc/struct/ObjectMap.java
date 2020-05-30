@@ -310,7 +310,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
     }
 
     /** Tries to get the value. If it does not exist, it creates a new instance using the supplier and places it, returning the value.*/
-    public V getOr(K key, Prov<V> supplier){
+    public V get(K key, Prov<V> supplier){
         V val = get(key);
         if(val == null){
             val = supplier.get();

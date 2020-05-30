@@ -302,7 +302,7 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>>{
         size++;
     }
 
-    public V getOr(int key, Prov<V> defaultValue){
+    public V get(int key, Prov<V> defaultValue){
         V out = get(key);
         if(out == null){
             out = defaultValue.get();

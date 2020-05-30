@@ -82,7 +82,7 @@ public class KeyBinds{
                     Axis loaded = load(rname);
 
                     if(loaded != null){
-                        sec.binds.getOr(type, OrderedMap::new).put(def, loaded);
+                        sec.binds.get(type, OrderedMap::new).put(def, loaded);
                     }
                 }
             }

@@ -10,15 +10,15 @@ public class Events{
     private static final ObjectMap<Object, Array<Cons<?>>> events = new ObjectMap<>();
 
     public static <T> void on(Class<T> type, Cons<T> listener){
-        events.getOr(type, Array::new).add(listener);
+        events.get(type, Array::new).add(listener);
     }
 
     public static void on(Object type, Runnable listener){
-        events.getOr(type, Array::new).add(e -> listener.run());
+        events.get(type, Array::new).add(e -> listener.run());
     }
 
     public static <T> void remove(Class<T> type, Cons<T> listener){
-        events.getOr(type, Array::new).remove(listener);
+        events.get(type, Array::new).remove(listener);
     }
 
     public static <T> void fire(T type){
