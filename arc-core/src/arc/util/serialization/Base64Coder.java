@@ -28,6 +28,8 @@
 
 package arc.util.serialization;
 
+import arc.util.*;
+
 public class Base64Coder{
     public static final CharMap regularMap = new CharMap('+', '/'), urlsafeMap = new CharMap('-', '_');
     // The line separator string of the operating system.
@@ -48,11 +50,11 @@ public class Base64Coder{
     }
 
     public static String encodeString(String s, boolean useUrlsafeEncoding){
-        return new String(encode(s.getBytes(), useUrlsafeEncoding ? urlsafeMap.encodingMap : regularMap.encodingMap));
+        return new String(encode(s.getBytes(Strings.utf8), useUrlsafeEncoding ? urlsafeMap.encodingMap : regularMap.encodingMap));
     }
 
     /**
-     * Encodes a byte array into Base 64 format and breaks the output into lines of 76 characters. This method is compatible with
+     * Encodes a byte array into Base64 format and breaks the output into lines of 76 characters. This method is compatible with
      * <code>sun.misc.BASE64Encoder.encodeBuffer(byte[])</code>.
      *
      * @param in An array containing the data bytes to be encoded.
@@ -67,7 +69,7 @@ public class Base64Coder{
     }
 
     /**
-     * Encodes a byte array into Base 64 format and breaks the output into lines.
+     * Encodes a byte array into Base64 format and breaks the output into lines.
      *
      * @param in An array containing the data bytes to be encoded.
      * @param iOff Offset of the first byte in <code>in</code> to be processed.

@@ -43,10 +43,7 @@ public class Bloom{
     private int h;
     private boolean blending = false;
     private boolean capturing = false;
-    private float r = 0f;
-    private float g = 0f;
-    private float b = 0f;
-    private float a = 1f;
+    private float r, g, b, a;
     private boolean disposeFBO = true;
 
     /** Rebind the context. Necessary on Android/IOS. */
@@ -59,10 +56,6 @@ public class Bloom{
         setThreshold(threshold);
         setBloomIntesity(bloomIntensity);
         setOriginalIntesity(originalIntensity);
-
-        original = frameBuffer.getTexture();
-        pingPongTex1 = pingPongBuffer1.getTexture();
-        pingPongTex2 = pingPongBuffer2.getTexture();
     }
 
     /**
@@ -71,11 +64,11 @@ public class Bloom{
      * blending = false 32bits = true
      */
     public Bloom(){
-        initialize(Core.graphics.getWidth() / 4, Core.graphics.getHeight() / 4, null, false, false, true);
+        initialize(Core.graphics.getWidth() / 4, Core.graphics.getHeight() / 4, null, false, false);
     }
 
     public Bloom(boolean useBlending){
-        initialize(Core.graphics.getWidth() / 4, Core.graphics.getHeight() / 4, null, false, useBlending, true);
+        initialize(Core.graphics.getWidth() / 4, Core.graphics.getHeight() / 4, null, false, useBlending);
     }
 
     /**
@@ -91,8 +84,8 @@ public class Bloom{
      * and only do blooming on certain objects param use32bitFBO does
      * fbo use higher precision than 16bits.
      */
-    public Bloom(int FBO_W, int FBO_H, boolean hasDepth, boolean useBlending, boolean use32bitFBO){
-        initialize(FBO_W, FBO_H, null, hasDepth, useBlending, use32bitFBO);
+    public Bloom(int FBO_W, int FBO_H, boolean hasDepth, boolean useBlending){
+        initialize(FBO_W, FBO_H, null, hasDepth, useBlending);
 
     }
 
@@ -114,29 +107,21 @@ public class Bloom{
      * and only do blooming on certain objects param use32bitFBO does
      * fbo use higher precision than 16bits.
      */
-    public Bloom(int FBO_W, int FBO_H, FrameBuffer sceneIsCapturedHere, boolean useBlending, boolean use32bitFBO){
-        initialize(FBO_W, FBO_H, sceneIsCapturedHere, false, useBlending, use32bitFBO);
+    public Bloom(int FBO_W, int FBO_H, FrameBuffer sceneIsCapturedHere, boolean useBlending){
+        initialize(FBO_W, FBO_H, sceneIsCapturedHere, false, useBlending);
         disposeFBO = false;
     }
 
-    private void initialize(int FBO_W, int FBO_H, FrameBuffer fbo, boolean hasDepth, boolean useBlending, boolean use32bitFBO){
+    public void resize(int width, int height){
+        pingPongBuffer1.resize(width, height);
+        pingPongBuffer2.resize(width, height);
+        setSize(width, height);
+    }
+
+    private void initialize(int FBO_W, int FBO_H, FrameBuffer fbo, boolean hasDepth, boolean useBlending){
         blending = useBlending;
-        Format format;
+        Format format = useBlending ? Format.RGBA8888 : Format.RGB888;
 
-        if(use32bitFBO){
-            if(useBlending){
-                format = Format.RGBA8888;
-            }else{
-                format = Format.RGB888;
-            }
-
-        }else{
-            if(useBlending){
-                format = Format.RGBA4444;
-            }else{
-                format = Format.RGB565;
-            }
-        }
         if(fbo == null){
             frameBuffer = new FrameBuffer(format, Core.graphics.getWidth(), Core.graphics.getHeight(), hasDepth);
         }else{
@@ -145,10 +130,6 @@ public class Bloom{
 
         pingPongBuffer1 = new FrameBuffer(format, FBO_W, FBO_H, false);
         pingPongBuffer2 = new FrameBuffer(format, FBO_W, FBO_H, false);
-
-        original = frameBuffer.getTexture();
-        pingPongTex1 = pingPongBuffer1.getTexture();
-        pingPongTex2 = pingPongBuffer2.getTexture();
 
         fullScreenQuad = createFullScreenQuad();
         final String alpha = useBlending ? "alpha_" : "";
@@ -312,11 +293,15 @@ public class Bloom{
         thresholdShader.setUniformf("threshold", threshold, 1f / (1 - threshold));
     }
 
-    private void setSize(int FBO_W, int FBO_H){
-        w = FBO_W;
-        h = FBO_H;
+    private void setSize(int width, int height){
+        w = width;
+        h = height;
         blurShader.bind();
-        blurShader.setUniformf("size", FBO_W, FBO_H);
+        blurShader.setUniformf("size", width, height);
+
+        original = frameBuffer.getTexture();
+        pingPongTex1 = pingPongBuffer1.getTexture();
+        pingPongTex2 = pingPongBuffer2.getTexture();
     }
 
     /** Disposes all resources. */
