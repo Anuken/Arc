@@ -310,11 +310,11 @@ public class Settings{
     }
 
     public byte[] getBytes(String name){
-        return getBytes(name, (byte[])defaults.get(name, null));
+        return getBytes(name, (byte[])defaults.get(name));
     }
 
     public String getString(String name){
-        return getString(name, (String)defaults.get(name, null));
+        return getString(name, (String)defaults.get(name));
     }
 
     public void putAll(ObjectMap<String, Object> map){

@@ -102,6 +102,7 @@ public class SpriteBatch extends Batch{
             customShader.apply();
         }
 
+        Gl.depthMask(false);
         renderCalls++;
         totalRenderCalls++;
         int spritesInBatch = idx / SPRITE_SIZE;

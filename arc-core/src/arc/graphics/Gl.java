@@ -327,6 +327,7 @@ public class Gl{
     private static int lastUsedProgram = 0;
     /** enabled bits, from glEnable/disable */
     private static Bits enabled = new Bits();
+    private static boolean wasDepthMask = true;
 
     static{
         reset();
@@ -338,6 +339,7 @@ public class Gl{
         Arrays.fill(lastBoundTextures, -1);
         lastUsedProgram = 0;
         enabled.clear();
+        wasDepthMask = true;
     }
 
     public static void activeTexture(int texture){
@@ -423,7 +425,10 @@ public class Gl{
     }
 
     public static void depthMask(boolean flag){
+        if(wasDepthMask != flag) return;
+
         Core.gl.glDepthMask(flag);
+        wasDepthMask = flag;
     }
 
     public static void depthRangef(float zNear, float zFar){

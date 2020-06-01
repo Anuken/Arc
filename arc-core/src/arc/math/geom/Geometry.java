@@ -40,6 +40,14 @@ public final class Geometry{
         return d4[Mathf.mod(i, 4)];
     }
 
+    public static int d4x(int i){
+        return d4x[Mathf.mod(i, 4)];
+    }
+
+    public static int d4y(int i){
+        return d4y[Mathf.mod(i, 4)];
+    }
+
     public static Point2 d8(int i){
         return d8[Mathf.mod(i, 8)];
     }

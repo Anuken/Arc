@@ -18,6 +18,7 @@ public class Draw{
     private static Rect lastViewport = new Rect();
 
     public static float scl = 1f;
+    public static float xscl = 1f, yscl = 1f;
 
     public static void batch(Batch nextBatch){
         flush();
@@ -59,6 +60,19 @@ public class Draw{
         flush();
 
         Gl.disable(Gl.stencilTest);
+    }
+
+    public static void scl(float nscl){
+        scl(nscl, nscl);
+    }
+
+    public static void scl(float nxscl, float nyscl){
+        xscl = nxscl;
+        yscl = nyscl;
+    }
+
+    public static void scl(){
+        xscl = yscl = 1f;
     }
 
     public static Shader getShader(){
@@ -186,6 +200,7 @@ public class Draw{
     public static void reset(){
         color();
         mixcol();
+        xscl = yscl = 1f;
         Lines.stroke(1f);
     }
 
@@ -244,7 +259,7 @@ public class Draw{
     }
 
     public static void rect(TextureRegion region, float x, float y){
-        rect(region, x, y, region.getWidth() * scl, region.getHeight() * scl);
+        rect(region, x, y, region.getWidth() * scl * xscl, region.getHeight() * scl * yscl);
     }
 
     public static void rect(String region, float x, float y){
@@ -280,7 +295,7 @@ public class Draw{
     }
 
     public static void rect(TextureRegion region, float x, float y, float rotation){
-        rect(region, x, y, region.getWidth() * scl, region.getHeight() * scl, rotation);
+        rect(region, x, y, region.getWidth() * scl * xscl, region.getHeight() * scl * yscl, rotation);
     }
 
     public static void rect(String region, float x, float y, float rotation){
