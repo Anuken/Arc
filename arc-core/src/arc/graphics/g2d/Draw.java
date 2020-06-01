@@ -208,6 +208,7 @@ public class Draw{
         Core.batch.setColor(Core.batch.getColor().r, Core.batch.getColor().g, Core.batch.getColor().b, alpha);
     }
 
+    /** Draws a portion of a world-sized texture. */
     public static void fbo(Texture texture, int worldWidth, int worldHeight, int tilesize){
         float ww = worldWidth * tilesize, wh = worldHeight * tilesize;
         float x = camera.position.x + tilesize / 2f, y = camera.position.y + tilesize / 2f;
@@ -242,10 +243,12 @@ public class Draw{
         draw(z + range, end);
     }
 
+    /** Fill a white quad to the camera. */
     public static void rect(){
         Fill.rect(camera.position.x, camera.position.y, camera.width, camera.height);
     }
 
+    /** Blits a framebuffer texture to the camera. */
     public static void rect(FrameBuffer buffer){
         rect(wrap(buffer.getTexture()), camera.position.x, camera.position.y, camera.width, -camera.height);
     }
