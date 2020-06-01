@@ -70,7 +70,7 @@ public class Bloom{
         if(changed){
             pingPong1.resize(width, height);
             pingPong2.resize(width, height);
-            buffer.resize(width, height);
+            buffer.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
             setSize(width, height);
         }
     }

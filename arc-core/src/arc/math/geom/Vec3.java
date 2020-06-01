@@ -323,6 +323,10 @@ public class Vec3 implements Vector<Vec3>{
         return a * a + b * b + c * c;
     }
 
+    public boolean within(Vec3 v, float dst){
+        return dst2(v) < dst * dst;
+    }
+
     @Override
     public Vec3 nor(){
         final float len2 = this.len2();
