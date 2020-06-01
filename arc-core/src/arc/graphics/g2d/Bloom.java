@@ -6,8 +6,11 @@ import arc.graphics.Pixmap.*;
 import arc.graphics.VertexAttributes.*;
 import arc.graphics.gl.*;
 
-/** @author kalle_h
- * Requires bloom shaders in 'bloomshaders' folder. */
+/**
+ * @author kalle_h
+ * @author Anuke
+ * Requires bloom shaders in 'bloomshaders' folder.
+ * */
 public class Bloom{
     /**
      * To use implement bloom more like a glow. Texture alpha channel can be
@@ -18,120 +21,69 @@ public class Bloom{
      */
     public static boolean useAlphaChannelAsMask = false;
 
-    /** how many blur pass */
     public int blurPasses = 1;
 
-    private Shader thresholdShader;
-    private Shader bloomShader;
+    private Shader thresholdShader, bloomShader, blurShader;
+    private Mesh quad;
+    private FrameBuffer buffer, pingPong1, pingPong2;
 
-    private Mesh fullScreenQuad;
-
-    private Texture pingPongTex1;
-    private Texture pingPongTex2;
-    private Texture original;
-
-    private FrameBuffer frameBuffer;
-    private FrameBuffer pingPongBuffer1;
-    private FrameBuffer pingPongBuffer2;
-
-    private Shader blurShader;
-
-    private float bloomIntensity;
-    private float originalIntensity;
-    private float threshold;
-    private int w;
-    private int h;
-    private boolean blending = false;
-    private boolean capturing = false;
+    private float bloomIntensity, originalIntensity, threshold;
+    private boolean blending = false, capturing = false;
     private float r, g, b, a;
-    private boolean disposeFBO = true;
 
-    /** Rebind the context. Necessary on Android/IOS. */
+    /** Rebinds the context. Necessary on Android/IOS. */
     public void resume(){
         bloomShader.bind();
         bloomShader.setUniformi("u_texture0", 0);
         bloomShader.setUniformi("u_texture1", 1);
 
-        setSize(w, h);
+        setSize(buffer.getWidth(), buffer.getHeight());
         setThreshold(threshold);
         setBloomIntesity(bloomIntensity);
         setOriginalIntesity(originalIntensity);
     }
 
-    /**
-     * Initialize bloom class that capsulate original scene capturate,
-     * thresholding, gaussian blurring and blending. Default values: depth = true
-     * blending = false 32bits = true
-     */
+    /** Creates a bloom instance with no blending, no depth and 1/4 the screen size. */
     public Bloom(){
-        initialize(Core.graphics.getWidth() / 4, Core.graphics.getHeight() / 4, null, false, false);
+        init(Core.graphics.getWidth() / 4, Core.graphics.getHeight() / 4, false, false);
     }
 
     public Bloom(boolean useBlending){
-        initialize(Core.graphics.getWidth() / 4, Core.graphics.getHeight() / 4, null, false, useBlending);
+        init(Core.graphics.getWidth() / 4, Core.graphics.getHeight() / 4, false, useBlending);
     }
 
     /**
      * Initialize bloom class that capsulate original scene capturate,
      * thresholding, gaussian blurring and blending.
      *
-     * @param FBO_W
-     * @param FBO_H how big fbo is used for bloom texture, smaller = more blur and
-     * lot faster but aliasing can be problem
      * @param hasDepth do rendering need depth buffer
-     * @param useBlending does fbo need alpha channel and is blending enabled when final
-     * image is rendered. This allow to combine background graphics
-     * and only do blooming on certain objects param use32bitFBO does
-     * fbo use higher precision than 16bits.
+     * @param useBlending does fbo need alpha channel and is blending enabled when final image is rendered.
+     * This allows combining background graphics and only doing blooming on certain objects.
      */
-    public Bloom(int FBO_W, int FBO_H, boolean hasDepth, boolean useBlending){
-        initialize(FBO_W, FBO_H, null, hasDepth, useBlending);
-
-    }
-
-    /**
-     * EXPERT FUNCTIONALITY. no error checking. Use this only if you know what
-     * you are doing. Remember that bloom.capture() clear the screen so use
-     * continue instead if that is a problem.
-     * <p>
-     * Initialize bloom class that capsulate original scene capturate,
-     * thresholding, gaussian blurring and blending.
-     * <p>
-     * * @param sceneIsCapturedHere diposing is user responsibility.
-     *
-     * @param FBO_W
-     * @param FBO_H how big fbo is used for bloom texture, smaller = more blur and
-     * lot faster but aliasing can be problem
-     * @param useBlending does fbo need alpha channel and is blending enabled when final
-     * image is rendered. This allow to combine background graphics
-     * and only do blooming on certain objects param use32bitFBO does
-     * fbo use higher precision than 16bits.
-     */
-    public Bloom(int FBO_W, int FBO_H, FrameBuffer sceneIsCapturedHere, boolean useBlending){
-        initialize(FBO_W, FBO_H, sceneIsCapturedHere, false, useBlending);
-        disposeFBO = false;
+    public Bloom(int width, int height, boolean hasDepth, boolean useBlending){
+        init(width, height, hasDepth, useBlending);
     }
 
     public void resize(int width, int height){
-        pingPongBuffer1.resize(width, height);
-        pingPongBuffer2.resize(width, height);
-        setSize(width, height);
+        boolean changed = (pingPong1.getWidth() != width || pingPong1.getHeight() != height);
+
+        if(changed){
+            pingPong1.resize(width, height);
+            pingPong2.resize(width, height);
+            buffer.resize(width, height);
+            setSize(width, height);
+        }
     }
 
-    private void initialize(int FBO_W, int FBO_H, FrameBuffer fbo, boolean hasDepth, boolean useBlending){
+    private void init(int width, int height, boolean hasDepth, boolean useBlending){
         blending = useBlending;
         Format format = useBlending ? Format.RGBA8888 : Format.RGB888;
 
-        if(fbo == null){
-            frameBuffer = new FrameBuffer(format, Core.graphics.getWidth(), Core.graphics.getHeight(), hasDepth);
-        }else{
-            frameBuffer = fbo;
-        }
+        buffer = new FrameBuffer(format, Core.graphics.getWidth(), Core.graphics.getHeight(), hasDepth);
+        pingPong1 = new FrameBuffer(format, width, height, false);
+        pingPong2 = new FrameBuffer(format, width, height, false);
 
-        pingPongBuffer1 = new FrameBuffer(format, FBO_W, FBO_H, false);
-        pingPongBuffer2 = new FrameBuffer(format, FBO_W, FBO_H, false);
-
-        fullScreenQuad = createFullScreenQuad();
+        quad = createFullScreenQuad();
         final String alpha = useBlending ? "alpha_" : "";
 
         bloomShader = createShader("screenspace", alpha + "bloom");
@@ -144,7 +96,7 @@ public class Bloom{
 
         blurShader = createShader("blurspace", alpha + "gaussian");
 
-        setSize(FBO_W, FBO_H);
+        setSize(width, height);
         setBloomIntesity(2.5f);
         setOriginalIntesity(1f);
         setThreshold(0.5f);
@@ -154,14 +106,7 @@ public class Bloom{
         bloomShader.setUniformi("u_texture1", 1);
     }
 
-    /**
-     * Set clearing color for capturing buffer
-     *
-     * @param r
-     * @param g
-     * @param b
-     * @param a
-     */
+    /** Set clearing color for capturing buffer */
     public void setClearColor(float r, float g, float b, float a){
         this.r = r;
         this.g = g;
@@ -169,25 +114,21 @@ public class Bloom{
         this.a = a;
     }
 
-    /**
-     * Call this before rendering scene.
-     */
+    /** Call this before rendering scene. */
     public void capture(){
         if(!capturing){
             capturing = true;
-            frameBuffer.begin();
+            buffer.begin();
             Gl.clearColor(r, g, b, a);
             Gl.clear(Gl.colorBufferBit | Gl.depthBufferBit);
         }
     }
 
-    /**
-     * Pause capturing to fbo.
-     */
+    /** Pause capturing to fbo. */
     public void capturePause(){
         if(capturing){
             capturing = false;
-            frameBuffer.end();
+            buffer.end();
         }
     }
 
@@ -195,7 +136,7 @@ public class Bloom{
     public void captureContinue(){
         if(!capturing){
             capturing = true;
-            frameBuffer.begin();
+            buffer.begin();
         }
     }
 
@@ -203,7 +144,7 @@ public class Bloom{
     public void render(){
         if(capturing){
             capturing = false;
-            frameBuffer.end();
+            buffer.end();
         }
 
         Gl.disable(Gl.blend);
@@ -217,39 +158,39 @@ public class Bloom{
             Gl.blendFunc(Gl.srcAlpha, Gl.oneMinusSrcAlpha);
         }
 
-        pingPongTex1.bind(1);
-        original.bind(0);
+        pingPong1.getTexture().bind(1);
+        buffer.getTexture().bind(0);
 
         bloomShader.bind();
-        fullScreenQuad.render(bloomShader, Gl.triangleFan);
+        quad.render(bloomShader, Gl.triangleFan);
     }
 
     private void gaussianBlur(){
         //cut bright areas of the picture and blit to smaller fbo
 
-        original.bind(0);
-        pingPongBuffer1.begin();
+        buffer.getTexture().bind(0);
+        pingPong1.begin();
         thresholdShader.bind();
-        fullScreenQuad.render(thresholdShader, Gl.triangleFan, 0, 4);
-        pingPongBuffer1.end();
+        quad.render(thresholdShader, Gl.triangleFan, 0, 4);
+        pingPong1.end();
 
         for(int i = 0; i < blurPasses; i++){
-            pingPongTex1.bind(0);
+            pingPong1.getTexture().bind(0);
 
             // horizontal
-            pingPongBuffer2.begin();
+            pingPong2.begin();
             blurShader.bind();
             blurShader.setUniformf("dir", 1f, 0f);
-            fullScreenQuad.render(blurShader, Gl.triangleFan, 0, 4);
-            pingPongBuffer2.end();
+            quad.render(blurShader, Gl.triangleFan, 0, 4);
+            pingPong2.end();
 
-            pingPongTex2.bind(0);
+            pingPong2.getTexture().bind(0);
             // vertical
-            pingPongBuffer1.begin();
+            pingPong1.begin();
             blurShader.bind();
             blurShader.setUniformf("dir", 0f, 1f);
-            fullScreenQuad.render(blurShader, Gl.triangleFan, 0, 4);
-            pingPongBuffer1.end();
+            quad.render(blurShader, Gl.triangleFan, 0, 4);
+            pingPong1.end();
         }
     }
 
@@ -291,25 +232,17 @@ public class Bloom{
     }
 
     private void setSize(int width, int height){
-        w = width;
-        h = height;
         blurShader.bind();
         blurShader.setUniformf("size", width, height);
-
-        original = frameBuffer.getTexture();
-        pingPongTex1 = pingPongBuffer1.getTexture();
-        pingPongTex2 = pingPongBuffer2.getTexture();
     }
 
     /** Disposes all resources. */
     public void dispose(){
         try{
-            if(disposeFBO) frameBuffer.dispose();
-
-            fullScreenQuad.dispose();
-
-            pingPongBuffer1.dispose();
-            pingPongBuffer2.dispose();
+            buffer.dispose();
+            quad.dispose();
+            pingPong1.dispose();
+            pingPong2.dispose();
 
             blurShader.dispose();
             bloomShader.dispose();
@@ -320,19 +253,14 @@ public class Bloom{
     }
 
     private static Mesh createFullScreenQuad(){
-        Mesh tmpMesh = new Mesh(true, 4, 0,
-        new VertexAttribute(Usage.position, 2, "a_position"),
-        new VertexAttribute(Usage.textureCoordinates, 2, "a_texCoord0")
-        );
-
-        tmpMesh.setVertices(new float[]{-1, -1, 0, 0, 1, -1, 1, 0, 1, 1, 1, 1, -1, 1, 0, 1});
-        return tmpMesh;
+        return new Mesh(true, 4, 0,
+            new VertexAttribute(Usage.position, 2, "a_position"),
+            new VertexAttribute(Usage.textureCoordinates, 2, "a_texCoord0"))
+            .setVertices(new float[]{-1, -1, 0, 0, 1, -1, 1, 0, 1, 1, 1, 1, -1, 1, 0, 1});
     }
 
     private static Shader createShader(String vertexName, String fragmentName){
-        String vertexShader = Core.files.internal("bloomshaders/" + vertexName + ".vert").readString();
-        String fragmentShader = Core.files.internal("bloomshaders/" + fragmentName + ".frag").readString();
-        return new Shader(vertexShader, fragmentShader);
+        return new Shader(Core.files.internal("bloomshaders/" + vertexName + ".vert"), Core.files.internal("bloomshaders/" + fragmentName + ".frag"));
     }
 
 }
