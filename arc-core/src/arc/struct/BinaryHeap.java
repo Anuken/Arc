@@ -1,7 +1,7 @@
 package arc.struct;
 
-@SuppressWarnings("unchecked")
 /** @author Nathan Sweet */
+@SuppressWarnings("unchecked")
 public class BinaryHeap<T extends BinaryHeap.Node>{
     private final boolean isMaxHeap;
     public int size;
