@@ -49,7 +49,7 @@ public class VertexBufferObject implements VertexData{
         ByteBuffer data = Buffers.newUnsafeByteBuffer(attributes.vertexSize * numVertices);
         data.limit(0);
         setBuffer(data, true, attributes);
-        setUsage(isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW);
+        setUsage(isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_STREAM_DRAW);
     }
 
     protected VertexBufferObject(int usage, ByteBuffer data, boolean ownsBuffer, VertexAttributes attributes){

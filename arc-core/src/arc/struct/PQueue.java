@@ -4,6 +4,7 @@ import arc.util.*;
 
 import java.util.*;
 
+/** A priority queue. */
 @SuppressWarnings("unchecked")
 public class PQueue<E>{
     private static final double CAPACITY_RATIO_LOW = 1.5f;
@@ -18,7 +19,7 @@ public class PQueue<E>{
     /** The number of elements in the priority queue. */
     public int size = 0;
     /** Function used for comparisons. */
-    private Comparator<E> comparator;
+    public Comparator<E> comparator;
 
     /**
      * Creates a {@code PriorityQueue} with the default initial capacity that orders its elements according to their
@@ -87,8 +88,7 @@ public class PQueue<E>{
 
     /** Removes all of the elements from this priority queue. The queue will be empty after this call returns. */
     public void clear(){
-        for(int i = 0; i < size; i++)
-            queue[i] = null;
+        for(int i = 0; i < size; i++) queue[i] = null;
         size = 0;
     }
 

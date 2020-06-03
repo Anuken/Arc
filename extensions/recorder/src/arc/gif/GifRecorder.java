@@ -2,54 +2,55 @@ package arc.gif;
 
 import arc.*;
 import arc.files.*;
-import arc.graphics.*;
+import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.input.*;
-import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 
 import javax.imageio.stream.*;
+import java.awt.*;
+import java.awt.datatransfer.*;
 import java.awt.image.*;
 import java.io.*;
+import java.text.*;
+import java.util.*;
 
 /** Records and saves GIFs. */
 public class GifRecorder{
 	private static final float defaultSize = 300;
 	private static BufferedImage outImage;
 
-	private KeyCode
+	public KeyCode
 			resizeKey = KeyCode.controlLeft,
 			openKey = KeyCode.e,
 			recordKey = KeyCode.t,
 			shiftKey = KeyCode.shiftLeft;
-	
-	private Mat matrix = new Mat();
 
-	private int recordfps = 30;
-	private float gifx, gify, gifwidth, gifheight, giftime;
+    public Fi exportDirectory;
+    public boolean disableGUI, autoCopy = true;
+    public float speedMultiplier = 1f;
+	public int recordfps = 30;
+	public float gifx, gify, gifwidth, gifheight, giftime;
+
 	private float offsetx, offsety;
-	private Fi exportdirectory;
-	private boolean disableGUI;
-	private float speedMultiplier = 1f;
-	
 	private Array<byte[]> frames = new Array<>();
 	private float frametime;
 	private boolean recording, open;
 	private boolean saving;
 	private float saveprogress;
 
-	public GifRecorder() {
-		this(Core.files.local("gifexport"), Core.files.local(".gifimages"));
+	public GifRecorder(){
+		this(Core.files.local("gifs"));
 	}
 
-	public GifRecorder(Fi exportdirectory, Fi workdirectory) {
+	public GifRecorder(Fi exportDirectory){
 		gifx = -defaultSize / 2;
 		gify = -defaultSize / 2;
 		gifwidth = defaultSize;
 		gifheight = defaultSize;
-		this.exportdirectory = exportdirectory;
+		this.exportDirectory = exportDirectory;
 	}
 
 	protected void doInput(){
@@ -67,7 +68,7 @@ public class GifRecorder{
 					startRecording();
 				}else{
 					finishRecording();
-					writeGIF(exportdirectory);
+					writeGIF(exportDirectory);
 				}
 			}
 		}
@@ -80,17 +81,15 @@ public class GifRecorder{
 		doInput();
 		float delta = Core.graphics.getDeltaTime();
 		
-		if(!open)
-			return;
+		if(!open) return;
 		
-		matrix.set(Draw.proj());
+		Tmp.m1.set(Draw.proj());
 		Draw.proj().setOrtho(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
 		
 		float wx = Core.graphics.getWidth() / 2;
 		float wy = Core.graphics.getHeight() / 2;
 		
-		if(!disableGUI)
-			Draw.color(Color.yellow);
+		if(!disableGUI) Draw.color(Color.yellow);
 
 		if(Core.input.keyDown(resizeKey)){
 			
@@ -106,8 +105,7 @@ public class GifRecorder{
 		}
 		
 		if(Core.input.keyDown(shiftKey)){
-			if(!disableGUI)
-				Draw.color(Color.orange);
+			if(!disableGUI) Draw.color(Color.orange);
 			
 			float xs = (Core.graphics.getWidth() / 2 - Core.input.mouseX());
 			float ys = (Core.graphics.getHeight() / 2 - Core.input.mouseY());
@@ -117,8 +115,7 @@ public class GifRecorder{
 
 		if(!disableGUI){
 			
-			if(recording)
-				Draw.color(Color.red);
+			if(recording) Draw.color(Color.red);
 
 			Fill.crect(gifx + wx + offsetx, gify + wy + offsety, gifwidth, 1f);
 			Fill.crect(gifx + wx + offsetx, gify + wy + gifheight + offsety, gifwidth, 1f);
@@ -126,8 +123,7 @@ public class GifRecorder{
 			Fill.crect(gifx + wx + offsetx + gifwidth, gify + wy + offsety, 1f, gifheight + 1f);
 
 			if(saving){
-				if(!disableGUI)
-					Draw.color(Color.black);
+				if(!disableGUI) Draw.color(Color.black);
 
 				float w = 200, h = 50;
 				Fill.crect(Core.graphics.getWidth() / 2 - w / 2, Core.graphics.getHeight() / 2 - h / 2, w, h);
@@ -150,7 +146,7 @@ public class GifRecorder{
 		if(recording){
 			giftime += delta;
 			frametime += delta*61f*speedMultiplier;
-			if(frametime >= (60 / recordfps)){
+			if(frametime >= (60f / recordfps)){
 				byte[] pix = ScreenUtils.getFrameBufferPixels((int)(gifx + offsetx) + 1 + Core.graphics.getWidth() / 2,
 						(int)(gify + offsety) + 1 + Core.graphics.getHeight() / 2,
 						(int)(gifwidth) - 2, (int)(gifheight) - 2, false);
@@ -161,17 +157,7 @@ public class GifRecorder{
 
 		Draw.color();
 		Draw.flush();
-		Draw.proj(matrix);
-	}
-	
-	/**Sets the speed multiplier. Higher numbers make the gif go slower, lower numbers make it go faster */
-	public void setSpeedMultiplier(float m){
-		this.speedMultiplier = m;
-	}
-	
-	/**Set to true to disable drawing the UI.*/
-	public void setGUIDisabled(boolean disabled){
-		this.disableGUI = true;
+		Draw.proj(Tmp.m1);
 	}
 
 	public boolean isSaving(){
@@ -214,26 +200,6 @@ public class GifRecorder{
 		recording = false;
 	}
 
-	public void setExportDirectory(Fi handle){
-		exportdirectory = handle;
-	}
-
-	public void setResizeKey(KeyCode key){
-		this.resizeKey = key;
-	}
-
-	public void setOpenKey(KeyCode key){
-		this.openKey = key;
-	}
-
-	public void setRecordKey(KeyCode key){
-		this.recordKey = key;
-	}
-
-	public void setFPS(int fps){
-		recordfps = fps;
-	}
-
 	/** Sets the bounds for recording, relative to the center of the screen */
 	public void setBounds(float x, float y, float width, float height){
 		this.gifx = x;
@@ -254,7 +220,28 @@ public class GifRecorder{
 		saveprogress = 0f;
 
 		new Thread(() -> {
-			compileGIF(frames, width, height, writedirectory);
+			File f = compileGIF(frames, width, height, writedirectory);
+
+			//copy image to clipboard
+			if(autoCopy){
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new Transferable(){
+                    @Override
+                    public DataFlavor[] getTransferDataFlavors() {
+                        return new DataFlavor[]{DataFlavor.javaFileListFlavor};
+                    }
+
+                    @Override
+                    public boolean isDataFlavorSupported(DataFlavor flavor) {
+                        return DataFlavor.javaFileListFlavor.equals(flavor);
+                    }
+
+                    @Override
+                    public Object getTransferData(DataFlavor flavor){
+                        return Collections.singletonList(f);
+                    }
+                }, (clipboard, contents) -> {});
+            }
+
 			saving = false;
         }).start();
 	}
@@ -265,10 +252,10 @@ public class GifRecorder{
 		}
 
 		try{
-			String time = "" + (int)(System.currentTimeMillis() / 1000);
+			String time = "" + new SimpleDateFormat("yyyy-MM-dd HH-mm-ss", Locale.getDefault()).format(new Date());
 			new File(directory.absolutePath()).mkdir();
 			BufferedImage firstImage = toImage(pixmaps.first(), width, height);
-			File file = new File(directory.absolutePath() + "/recording" + time + ".gif");
+			File file = new File(directory.absolutePath() + "/" + time + ".gif");
 			ImageOutputStream output = new FileImageOutputStream(file);
 			GifSequenceWriter writer = new GifSequenceWriter(output, firstImage.getType(), (int)(1f / recordfps * 1000f), true);
 

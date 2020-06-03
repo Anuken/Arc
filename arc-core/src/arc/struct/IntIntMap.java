@@ -289,6 +289,10 @@ public class IntIntMap implements Iterable<IntIntMap.Entry>{
         size++;
     }
 
+    public int get(int key){
+        return get(key, 0);
+    }
+
     /** @param defaultValue Returned if the key was not associated with a value. */
     public int get(int key, int defaultValue){
         if(key == 0){
