@@ -15,6 +15,7 @@ public class GridBits{
     }
 
     public boolean get(int x, int y){
+        if(x >= width || y >= height || x < 0 || y < 0) return false;
         return bits.get(x + y*width);
     }
 

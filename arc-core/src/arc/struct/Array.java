@@ -406,6 +406,10 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
         addAll(array);
     }
 
+    public T getFrac(float index){
+        return get(Mathf.clamp((int)(index * size), 0, size - 1));
+    }
+
     public T get(int index){
         if(index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
         return items[index];

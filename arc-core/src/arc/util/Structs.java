@@ -82,11 +82,11 @@ public class Structs{
         return out.toArray();
     }
 
+    /** Equivalent to Comparator#thenComparsing, but more compatible. */
     public static <T> Comparator<T> comps(Comparator<T> first, Comparator<T> second){
         return (a, b) -> {
             int value = first.compare(a, b);
-            if(value != 0) return value;
-            return second.compare(a, b);
+            return value != 0 ? value : second.compare(a, b);
         };
     }
 
