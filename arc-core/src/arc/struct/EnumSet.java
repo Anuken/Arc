@@ -1,13 +1,13 @@
 package arc.struct;
 
-import java.util.Iterator;
+import java.util.*;
 
 public class EnumSet<T extends Enum<T>> implements Iterable<T>{
     private int i;
     private T[] set;
     private EnumSetIterator iterator = new EnumSetIterator();
 
-    private EnumSet(){
+    EnumSet(){
     }
 
     public static <T extends Enum<T>> EnumSet<T> of(T... arr){
