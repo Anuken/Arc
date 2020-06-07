@@ -13,7 +13,7 @@ public final class Box2D{
     }
 
     /**
-     * Loads the Box2D native library and initializes the gdx-box2d extension. Must be called before any of the box2d
+     * Loads the Box2D native library and initializes the box2d extension. Must be called before any of the box2d
      * classes/methods can be used. Currently with the exception of the {@link Physics} class, which will also cause the Box2D
      * natives to be loaded.
      */
