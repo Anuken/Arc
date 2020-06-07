@@ -182,6 +182,10 @@ public class Vec2 implements Vector<Vec2>, Position{
         return this;
     }
 
+    public Vec2 inv(){
+        return scl(-1f);
+    }
+
     /**
      * Multiplies this vector by a scalar
      * @return This vector for chaining
