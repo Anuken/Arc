@@ -144,6 +144,10 @@ public class Vec2 implements Vector<Vec2>, Position{
         return this;
     }
 
+    public Vec2 add(Position pos){
+        return add(pos.getX(), pos.getY());
+    }
+
     public Vec2 add(Vec2 vec, float scl){
         this.x += vec.x * scl;
         this.y += vec.y * scl;
