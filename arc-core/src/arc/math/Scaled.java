@@ -38,4 +38,5 @@ public interface Scaled{
     default float fslope(){
         return (0.5f - Math.abs(fin() - 0.5f)) * 2f;
     }
+
 }

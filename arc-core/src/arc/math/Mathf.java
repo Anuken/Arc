@@ -519,6 +519,11 @@ public final class Mathf{
         return ((x % n) + n) % n;
     }
 
+    /** @return the input 0-1 value scaled to 0-1-0. */
+    public static float slope(float fin){
+        return 1f - Math.abs(fin - 0.5f) * 2f;
+    }
+
     /**Converts a 0-1 value to 0-1 when it is in [offset, 1].*/
     public static float curve(float f, float offset){
         if(f < offset){
