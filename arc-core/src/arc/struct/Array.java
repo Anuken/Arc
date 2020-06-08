@@ -245,9 +245,18 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
         return arr;
     }
 
-    /**Returns a new int array with the mapped values.*/
+    /** @return a new int array with the mapped values. */
     public IntArray mapInt(Intf<T> mapper){
         IntArray arr = new IntArray(size);
+        for(int i = 0; i < size; i++){
+            arr.add(mapper.get(items[i]));
+        }
+        return arr;
+    }
+
+    /** @return a new float array with the mapped values. */
+    public FloatArray mapFloat(Floatf<T> mapper){
+        FloatArray arr = new FloatArray(size);
         for(int i = 0; i < size; i++){
             arr.add(mapper.get(items[i]));
         }
