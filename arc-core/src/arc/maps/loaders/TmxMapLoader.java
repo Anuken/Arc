@@ -70,7 +70,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
 
             DirectImageResolver imageResolver = new DirectImageResolver(textures);
             TiledMap map = loadTilemap(root, tmxFile, imageResolver);
-            map.setOwnedResources(textures.values().toArray());
+            map.setOwnedResources(textures.values().toSeq());
             return map;
         }catch(IOException e){
             throw new ArcRuntimeException("Couldn't load tilemap '" + fileName + "'", e);

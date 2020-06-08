@@ -3,8 +3,8 @@ package arc.graphics.vector;
 import arc.struct.*;
 
 public class CanvasState{
-    final FloatArray dashArray = new FloatArray();
-    final Array<Clip> clips = new Array<>();
+    final FloatSeq dashArray = new FloatSeq();
+    final Seq<Clip> clips = new Seq<>();
     float globalAlpha = 1.0f;
     float strokeWidth = 1.0f;
     float miterLimit = 10.0f;

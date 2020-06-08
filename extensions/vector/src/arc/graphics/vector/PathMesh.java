@@ -7,11 +7,11 @@ import arc.util.pooling.Pool.*;
 import arc.util.pooling.*;
 
 public class PathMesh implements PathConstants, Poolable{
-    private final Array<PathComponent> components = new Array<>();
-    private final Array<PathComponent> dashedStrokeComponents = new Array<>();
+    private final Seq<PathComponent> components = new Seq<>();
+    private final Seq<PathComponent> dashedStrokeComponents = new Seq<>();
     private final float[] bounds = new float[]{1e6f, 1e6f, -1e6f, -1e6f};
     Canvas canvas;
-    private Array<PathComponent> strokeComponents;
+    private Seq<PathComponent> strokeComponents;
     private PathComponent lastComponent;
     private Point lastPoint;
 
@@ -28,7 +28,7 @@ public class PathMesh implements PathConstants, Poolable{
         return dx * dx + dy * dy < tol * tol;
     }
 
-    private void tesselatePath(FloatArray commands){
+    private void tesselatePath(FloatSeq commands){
         boolean firstComponent = true;
         addComponent();
 
@@ -103,7 +103,7 @@ public class PathMesh implements PathConstants, Poolable{
             return;
         }
 
-        Array<Point> points = lastComponent.points;
+        Seq<Point> points = lastComponent.points;
         if(points.size > 0 && lastPoint != null && lastPoint.pointEquals(x, y, Canvas.distanceTolerance)){
             lastPoint.flags |= flags;
         }else{

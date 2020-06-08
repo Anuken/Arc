@@ -108,7 +108,7 @@ public abstract class Shape implements Poolable{
     }
 
     private static class StrokeState{
-        private final FloatArray dashes = new FloatArray();
+        private final FloatSeq dashes = new FloatSeq();
         private float devicePixelRatio;
         private float strokeWidth = 1.0f;
         private float miterLimit = 10.0f;

@@ -5,8 +5,8 @@ import arc.util.pooling.Pool.*;
 import arc.util.pooling.*;
 
 public class GlPathComponent implements Poolable{
-    final Array<Vertex> triangleFanVertices = new Array<>();
-    final Array<Vertex> triangleStripVertices = new Array<>();
+    final Seq<Vertex> triangleFanVertices = new Seq<>();
+    final Seq<Vertex> triangleStripVertices = new Seq<>();
     int triangleFanVerticesOffset = -1;
     int triangleStripVerticesOffset = -1;
 

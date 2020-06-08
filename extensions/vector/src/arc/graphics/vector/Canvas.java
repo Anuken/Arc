@@ -16,9 +16,9 @@ import arc.util.pooling.*;
 public class Canvas implements Disposable, Poolable{
     public static final float distanceTolerance = 0.1f;
     final Dasher dasher = new Dasher();
-    private final Array<CanvasState> states = new Array<>(32);
-    private final Array<GlCall> calls = new Array<>(128);
-    private final Array<Clip> clips = new Array<>();
+    private final Seq<CanvasState> states = new Seq<>(32);
+    private final Seq<GlCall> calls = new Seq<>(128);
+    private final Seq<Clip> clips = new Seq<>();
     private final IntMap<Image> images = new IntMap<>();
     private final IntMap<Gradient> gradients = new IntMap<>();
     private final GradientBuilder gradientBuilder = new GradientBuilder();
@@ -122,7 +122,7 @@ public class Canvas implements Disposable, Poolable{
         }
     }
 
-    public int createGradient(FloatArray stops){
+    public int createGradient(FloatSeq stops){
         int gradientId = ++gradientIndex;
         gradients.put(gradientId, Gradient.obtain(gradientId, stops));
         return gradientId;
@@ -537,19 +537,19 @@ public class Canvas implements Disposable, Poolable{
         currentState.dashOffset = dashOffset;
     }
 
-    public FloatArray getStrokeDashArray(FloatArray out){
+    public FloatSeq getStrokeDashArray(FloatSeq out){
         out.addAll(currentState.dashArray);
         return out;
     }
 
-    public void setStrokeDashArray(FloatArray dashArray){
-        FloatArray dashes = currentState.dashArray;
+    public void setStrokeDashArray(FloatSeq dashArray){
+        FloatSeq dashes = currentState.dashArray;
         dashes.clear();
         dashes.addAll(dashArray);
     }
 
     public void setStrokeDashArray(float... dashArray){
-        FloatArray currentDashArray = currentState.dashArray;
+        FloatSeq currentDashArray = currentState.dashArray;
         currentDashArray.clear();
         currentDashArray.addAll(dashArray);
     }
@@ -1125,7 +1125,7 @@ public class Canvas implements Disposable, Poolable{
         restoreState();
     }
 
-    public void drawTexturedVertices(VertexMode mode, FloatArray vertices){
+    public void drawTexturedVertices(VertexMode mode, FloatSeq vertices){
         if(currentState.fillPaint.image == null){
             return;
         }
@@ -1136,7 +1136,7 @@ public class Canvas implements Disposable, Poolable{
         trianglesMesh.free();
     }
 
-    public void drawTexturedVertices(Image image, VertexMode mode, FloatArray vertices){
+    public void drawTexturedVertices(Image image, VertexMode mode, FloatSeq vertices){
         saveState(false);
         setFillToImage(1, 1, 1, 1, 0, 1, image);
         TrianglesMesh trianglesMesh = TrianglesMesh.obtain(this);
@@ -1147,7 +1147,7 @@ public class Canvas implements Disposable, Poolable{
         restoreState();
     }
 
-    public void drawTexturedVertices(int image, VertexMode mode, FloatArray vertices){
+    public void drawTexturedVertices(int image, VertexMode mode, FloatSeq vertices){
         saveState(false);
         setFillToImage(1, 1, 1, 1, 0, 1, image);
         TrianglesMesh trianglesMesh = TrianglesMesh.obtain(this);
@@ -1232,7 +1232,7 @@ public class Canvas implements Disposable, Poolable{
         trianglesMesh.free();
     }
 
-    public void drawVertices(VertexMode mode, FloatArray vertices){
+    public void drawVertices(VertexMode mode, FloatSeq vertices){
         TrianglesMesh trianglesMesh = TrianglesMesh.obtain(this);
         GlCall call = trianglesMesh.createCall(mode, vertices);
         calls.add(call);
@@ -1265,11 +1265,11 @@ public class Canvas implements Disposable, Poolable{
         appendDrawPath();
     }
 
-    public void drawLines(FloatArray points){
+    public void drawLines(FloatSeq points){
         drawLines(points, 0, points.size / 4);
     }
 
-    public void drawLines(FloatArray points, int offset, int count){
+    public void drawLines(FloatSeq points, int offset, int count){
         int i = offset;
         while(i <= offset + (count * 4) - 1){
             path.moveTo(points.get(i++), points.get(i++)).lineTo(points.get(i++), points.get(i++));
@@ -1303,7 +1303,7 @@ public class Canvas implements Disposable, Poolable{
         appendDrawPath();
     }
 
-    public void drawPolyline(FloatArray points){
+    public void drawPolyline(FloatSeq points){
         if(points.size < 4){
             return;
         }
@@ -1341,7 +1341,7 @@ public class Canvas implements Disposable, Poolable{
         appendDrawPath();
     }
 
-    public void drawPolygon(FloatArray points){
+    public void drawPolygon(FloatSeq points){
         if(points.size < 4){
             return;
         }
@@ -1422,11 +1422,11 @@ public class Canvas implements Disposable, Poolable{
         restoreState();
     }
 
-    public void drawPoints(FloatArray pts){
+    public void drawPoints(FloatSeq pts){
         drawPoints(pts, 0, pts.size / 2);
     }
 
-    public void drawPoints(FloatArray pts, int offset, int count){
+    public void drawPoints(FloatSeq pts, int offset, int count){
         saveState(true);
         setFillPaint(getStrokePaint());
         setDrawingStyle(DrawingStyle.fill);
@@ -1737,7 +1737,7 @@ public class Canvas implements Disposable, Poolable{
     }
 
     public class GradientBuilder{
-        final FloatArray stops = new FloatArray();
+        final FloatSeq stops = new FloatSeq();
 
         GradientBuilder start(){
             stops.clear();

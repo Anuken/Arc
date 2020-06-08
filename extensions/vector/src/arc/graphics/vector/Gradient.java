@@ -8,7 +8,7 @@ import arc.util.pooling.Pool.*;
 import arc.util.pooling.*;
 
 public class Gradient implements Poolable, Disposable{
-    final FloatArray stops = new FloatArray();
+    final FloatSeq stops = new FloatSeq();
     int id;
     Texture texture;
 
@@ -19,13 +19,13 @@ public class Gradient implements Poolable, Disposable{
         return Pools.obtain(Gradient.class, Gradient::new);
     }
 
-    public static Gradient obtain(FloatArray stops){
+    public static Gradient obtain(FloatSeq stops){
         Gradient gradient = obtain();
         gradient.stops.addAll(stops);
         return gradient;
     }
 
-    static Gradient obtain(int id, FloatArray stops){
+    static Gradient obtain(int id, FloatSeq stops){
         Gradient gradient = obtain();
         gradient.id = id;
         gradient.stops.addAll(stops);

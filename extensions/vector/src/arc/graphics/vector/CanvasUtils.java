@@ -39,7 +39,7 @@ class CanvasUtils{
         return length;
     }
 
-    static void resetArray(Array<?> poolables){
+    static void resetArray(Seq<?> poolables){
         for(int i = 0; i < poolables.size; i++){
             Object poolable = poolables.get(i);
             Pools.free(poolable);
@@ -47,7 +47,7 @@ class CanvasUtils{
         poolables.clear();
     }
 
-    static String arrayToString(Array<?> values){
+    static String arrayToString(Seq<?> values){
         StringBuilder builder = new StringBuilder();
         builder.append("[");
 

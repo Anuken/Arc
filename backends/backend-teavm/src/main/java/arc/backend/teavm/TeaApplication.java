@@ -19,7 +19,7 @@ public class TeaApplication implements Application{
     private String clipboard = "";
 
     private final TaskQueue queue = new TaskQueue();
-    private final Array<ApplicationListener> listeners = new Array<>();
+    private final Seq<ApplicationListener> listeners = new Seq<>();
 
     public TeaApplication(ApplicationListener listener, TeaApplicationConfig config){
         this.listeners.add(listener);
@@ -103,7 +103,7 @@ public class TeaApplication implements Application{
     }
 
     @Override
-    public Array<ApplicationListener> getListeners(){
+    public Seq<ApplicationListener> getListeners(){
         return listeners;
     }
 

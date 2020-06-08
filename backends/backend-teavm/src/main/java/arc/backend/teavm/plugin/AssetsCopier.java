@@ -23,7 +23,7 @@ public class AssetsCopier implements RendererListener{
     public void complete(){
         Fi main = new Fi("teavm/build/teavm");
         Fi assets = main.child("assets");
-        main.child("filesystem.json").writeString("[" + Array.with(assets.list()).toString(",\n", s -> json.toJson(new FileDescriptor(s.file()))) + "]");
+        main.child("filesystem.json").writeString("[" + Seq.with(assets.list()).toString(",\n", s -> json.toJson(new FileDescriptor(s.file()))) + "]");
     }
 
     class FileDescriptor{
@@ -35,7 +35,7 @@ public class AssetsCopier implements RendererListener{
             this.name = file.getName();
             this.directory = file.isDirectory();
             if(directory){
-                this.childFiles = Array.with(file.listFiles()).map(FileDescriptor::new).toArray(FileDescriptor.class);
+                this.childFiles = Seq.with(file.listFiles()).map(FileDescriptor::new).toArray(FileDescriptor.class);
             }
         }
     }

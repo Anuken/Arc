@@ -740,7 +740,7 @@ public class AssetManager implements Disposable{
         while(assetTypes.size > 0){
             // for each asset, figure out how often it was referenced
             dependencyCount.clear();
-            Seq<String> assets = assetTypes.keys().toArray();
+            Seq<String> assets = assetTypes.keys().toSeq();
             for(String asset : assets){
                 dependencyCount.put(asset, 0);
             }
@@ -822,7 +822,7 @@ public class AssetManager implements Disposable{
 
     /** @return the file names of all loaded assets. */
     public synchronized Seq<String> getAssetNames(){
-        return assetTypes.keys().toArray();
+        return assetTypes.keys().toSeq();
     }
 
     /** @return the dependencies of an asset or null if the asset has no dependencies. */

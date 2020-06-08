@@ -4,8 +4,8 @@ import arc.math.*;
 import arc.struct.*;
 
 abstract class PathTriangulator implements PathConstants{
-    final Array<Vertex> triangleFanVertices = new Array<>();
-    final Array<Vertex> triangleStripVertices = new Array<>();
+    final Seq<Vertex> triangleFanVertices = new Seq<>();
+    final Seq<Vertex> triangleStripVertices = new Seq<>();
     private final float[] bevelValues = new float[4];
     Canvas canvas;
     PathMesh pathMesh;
@@ -55,7 +55,7 @@ abstract class PathTriangulator implements PathConstants{
         }
     }
 
-    protected void bevelJoin(Array<Vertex> dst, Point p0, Point p1, float leftWidth, float rightWidth, float lu, float ru){
+    protected void bevelJoin( Seq<Vertex> dst, Point p0, Point p1, float leftWidth, float rightWidth, float lu, float ru){
         float rx0 = 0, ry0 = 0, rx1 = 0, ry1 = 0;
         float lx0 = 0, ly0 = 0, lx1 = 0, ly1 = 0;
         float dlx0 = p0.dy;
@@ -131,7 +131,7 @@ abstract class PathTriangulator implements PathConstants{
         }
     }
 
-    protected void roundJoin(Array<Vertex> dst, Point p0, Point p1, float lw, float rw, float lu, float ru, int ncap){
+    protected void roundJoin( Seq<Vertex> dst, Point p0, Point p1, float lw, float rw, float lu, float ru, int ncap){
         float dlx0 = p0.dy;
         float dly0 = -p0.dx;
         float dlx1 = p1.dy;

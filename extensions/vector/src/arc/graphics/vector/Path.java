@@ -16,8 +16,8 @@ public class Path implements PathConstants, Poolable{
     private static final float oneMinusKappa90 = 1 - kappa90;
     private static final int initCommandsSize = 256;
 
-    private final FloatArray commands = new FloatArray(initCommandsSize);
-    private final FloatArray tempCommands = new FloatArray(initCommandsSize);
+    private final FloatSeq commands = new FloatSeq(initCommandsSize);
+    private final FloatSeq tempCommands = new FloatSeq(initCommandsSize);
     private final Vec2 tempPoint = new Vec2();
     private final AffineTransform tempMatrix = AffineTransform.obtain();
     private final BoundingBox tempBounds = new BoundingBox();
@@ -639,11 +639,11 @@ public class Path implements PathConstants, Poolable{
         return this;
     }
 
-    public Path lines(FloatArray points){
+    public Path lines(FloatSeq points){
         return lines(points, 0, points.size / 4);
     }
 
-    public Path lines(FloatArray points, int offset, int count){
+    public Path lines(FloatSeq points, int offset, int count){
         int i = offset;
         while(i <= offset + (count * 4) - 1){
             moveTo(points.get(i++), points.get(i++)).lineTo(points.get(i++), points.get(i++));
@@ -677,7 +677,7 @@ public class Path implements PathConstants, Poolable{
         return this;
     }
 
-    public Path polyline(FloatArray points){
+    public Path polyline(FloatSeq points){
         if(points.size < 4){
             return this;
         }
@@ -715,7 +715,7 @@ public class Path implements PathConstants, Poolable{
         return this;
     }
 
-    public Path polygon(FloatArray points){
+    public Path polygon(FloatSeq points){
         if(points.size < 4){
             return this;
         }
@@ -746,7 +746,7 @@ public class Path implements PathConstants, Poolable{
         return this;
     }
 
-    public Path set(FloatArray commands){
+    public Path set(FloatSeq commands){
         this.commands.clear();
         this.commands.addAll(commands);
         return this;
@@ -774,7 +774,7 @@ public class Path implements PathConstants, Poolable{
         return this;
     }
 
-    public FloatArray getCommands(FloatArray out){
+    public FloatSeq getCommands(FloatSeq out){
         out.addAll(commands);
         return out;
     }
@@ -793,7 +793,7 @@ public class Path implements PathConstants, Poolable{
 
         int segmentStart = 0;
         int segmentCommandsCount = 0;
-        FloatArray segmentCommands = new FloatArray();
+        FloatSeq segmentCommands = new FloatSeq();
 
         int i = 0;
         while(i < commands.size){
@@ -918,7 +918,7 @@ public class Path implements PathConstants, Poolable{
         commands.addAll(tempCommands);
     }
 
-    private void reverseSegment(int segmentStart, FloatArray segmentCommands){
+    private void reverseSegment(int segmentStart, FloatSeq segmentCommands){
         int segment = segmentStart;
         int last = segmentCommands.size - 1;
         boolean segmentClosed = false;
@@ -978,17 +978,17 @@ public class Path implements PathConstants, Poolable{
         }
     }
 
-    FloatArray getCommands(){
+    FloatSeq getCommands(){
         return commands;
     }
 
     //TODO make private when canvas xform is processed by vertex shader
-    FloatArray getTansformedCommands(AffineTransform xform){
+    FloatSeq getTansformedCommands(AffineTransform xform){
         tempCommands.clear();
         return getTansformedCommands(tempCommands, xform);
     }
 
-    public FloatArray getTansformedCommands(FloatArray out, AffineTransform xform){
+    public FloatSeq getTansformedCommands(FloatSeq out, AffineTransform xform){
         if(xform.isIdentity()){
             out.addAll(commands);
             return out;
@@ -1029,7 +1029,7 @@ public class Path implements PathConstants, Poolable{
         return out;
     }
 
-    private void appendTransformedPoint(int pointIndex, FloatArray transformed, AffineTransform xform){
+    private void appendTransformedPoint(int pointIndex, FloatSeq transformed, AffineTransform xform){
         float sx = commands.get(pointIndex);
         float sy = commands.get(pointIndex + 1);
         float[] xformValues = xform.values;
@@ -1061,7 +1061,7 @@ public class Path implements PathConstants, Poolable{
         return boundsToRectangle(out);
     }
 
-    public BoundingBox getControlBounds(BoundingBox out, FloatArray commands){
+    public BoundingBox getControlBounds(BoundingBox out, FloatSeq commands){
         int i = 0;
         float lastX = 0;
         float lastY = 0;
@@ -1137,7 +1137,7 @@ public class Path implements PathConstants, Poolable{
         return boundsToRectangle(out);
     }
 
-    public BoundingBox getBounds(BoundingBox out, FloatArray commands){
+    public BoundingBox getBounds(BoundingBox out, FloatSeq commands){
         int i = 0;
         float lastX = 0;
         float lastY = 0;
@@ -1451,7 +1451,7 @@ public class Path implements PathConstants, Poolable{
         public UnmodifiablePath(){
         }
 
-        public UnmodifiablePath(FloatArray commands){
+        public UnmodifiablePath(FloatSeq commands){
             super.set(commands);
         }
 
@@ -1641,7 +1641,7 @@ public class Path implements PathConstants, Poolable{
         }
 
         @Override
-        public Path set(FloatArray commands){
+        public Path set(FloatSeq commands){
             throw new UnsupportedOperationException();
         }
 

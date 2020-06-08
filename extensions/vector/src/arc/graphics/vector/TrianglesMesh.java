@@ -7,7 +7,7 @@ import arc.util.pooling.Pool.*;
 import arc.util.pooling.*;
 
 class TrianglesMesh implements Poolable{
-    final Array<Vertex> triangleVertices = new Array<>();
+    final Seq<Vertex> triangleVertices = new Seq<>();
     Canvas canvas;
 
     static TrianglesMesh obtain(Canvas canvas){
@@ -36,12 +36,12 @@ class TrianglesMesh implements Poolable{
         }
     }
 
-    public GlCall createTexturedCall(VertexMode mode, FloatArray vertices){
+    public GlCall createTexturedCall(VertexMode mode, FloatSeq vertices){
         addTexturedVertices(vertices);
         return createCall(mode, true);
     }
 
-    private void addTexturedVertices(FloatArray vertices){
+    private void addTexturedVertices(FloatSeq vertices){
         if(vertices.size < 12){
             return;
         }
@@ -86,7 +86,7 @@ class TrianglesMesh implements Poolable{
         }
     }
 
-    GlCall createCall(VertexMode mode, boolean textured, Array<Vertex> vertices){
+    GlCall createCall(VertexMode mode, boolean textured, Seq<Vertex> vertices){
         triangleVertices.addAll(vertices);
         return createCall(mode, textured);
     }
@@ -107,12 +107,12 @@ class TrianglesMesh implements Poolable{
         }
     }
 
-    public GlCall createCall(VertexMode mode, FloatArray vertices){
+    public GlCall createCall(VertexMode mode, FloatSeq vertices){
         addVertices(vertices);
         return createCall(mode, false);
     }
 
-    private void addVertices(FloatArray vertices){
+    private void addVertices(FloatSeq vertices){
         if(vertices.size < 6){
             return;
         }

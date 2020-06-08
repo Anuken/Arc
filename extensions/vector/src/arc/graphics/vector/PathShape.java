@@ -5,7 +5,7 @@ import arc.struct.*;
 import arc.util.pooling.*;
 
 public class PathShape extends Shape{
-    private Array<PathCommand> commands = new Array<>();
+    private Seq<PathCommand> commands = new Seq<>();
 
     public PathShape arcTo(float startX, float startY, float endX, float endY, float radius){
         return arcTo(false, startX, startY, endX, endY, radius);

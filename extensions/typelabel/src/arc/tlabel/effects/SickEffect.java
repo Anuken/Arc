@@ -13,7 +13,7 @@ public class SickEffect extends Effect{
     public float distance = 1; // How far the glyphs should move
     public float intensity = 1; // How fast the glyphs should move
 
-    private IntArray indices = new IntArray();
+    private IntSeq indices = new IntSeq();
 
     public SickEffect(TypeLabel label){
         super(label);

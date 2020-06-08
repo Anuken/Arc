@@ -20,7 +20,7 @@ class FillPathTriangulator extends PathTriangulator{
 
     private void triangulateAntialiasedFill(float width){
         float woff = 0.5f * canvas.fringeWidth;
-        Array<Point> pts = component.points;
+        Seq<Point> pts = component.points;
 
         float rightWidth = width - woff;
         float leftWidth = width + woff;
@@ -81,7 +81,7 @@ class FillPathTriangulator extends PathTriangulator{
     }
 
     private void triangulateFill(){
-        Array<Point> points = component.points;
+        Seq<Point> points = component.points;
         for(int j = 0; j < points.size; ++j){
             Point p = points.get(j);
             newTriangleFanVertex(p.x, p.y, 0.5f, 1);

@@ -7,9 +7,9 @@ import arc.util.pooling.*;
 public class GlCall implements Poolable{
     final GlUniforms uniform = new GlUniforms();
     final GlUniforms stencilStrokesUniform = new GlUniforms();
-    final Array<GlPathComponent> components = new Array<>();
-    final Array<Vertex> triangleVertices = new Array<>();
-    final Array<Clip> clips = new Array<>();
+    final Seq<GlPathComponent> components = new Seq<>();
+    final Seq<Vertex> triangleVertices = new Seq<>();
+    final Seq<Clip> clips = new Seq<>();
     CallType callType = CallType.none;
     BlendMode blendMode = BlendMode.over;
     int triangleVerticesOffset = -1;

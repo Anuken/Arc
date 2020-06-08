@@ -1,6 +1,6 @@
 package arc.tlabel.effects;
 
-import arc.struct.FloatArray;
+import arc.struct.FloatSeq;
 import arc.math.*;
 import arc.tlabel.*;
 
@@ -9,7 +9,7 @@ public class ShakeEffect extends Effect{
     private static final float DEFAULT_DISTANCE = 0.12f;
     private static final float DEFAULT_INTENSITY = 0.5f;
 
-    private final FloatArray lastOffsets = new FloatArray();
+    private final FloatSeq lastOffsets = new FloatSeq();
 
     private float distance = 1; // How far the glyphs should move
     private float intensity = 1; // How fast the glyphs should move

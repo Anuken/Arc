@@ -21,7 +21,7 @@ public class TypeLabel extends Label{
 
     // Collections
     private final ObjectMap<String, String> variables = new ObjectMap<>();
-    protected final Array<TokenEntry> tokenEntries = new Array<>();
+    protected final Seq<TokenEntry> tokenEntries = new Seq<>();
 
     // Config
     private Color clearColor = new Color(TypingConfig.DEFAULT_CLEAR_COLOR);
@@ -30,11 +30,11 @@ public class TypeLabel extends Label{
 
     // Internal state
     private final StringBuilder originalText = new StringBuilder();
-    private final Array<TypingGlyph> glyphCache = new Array<>();
-    private final IntArray glyphRunCapacities = new IntArray();
-    private final IntArray offsetCache = new IntArray();
-    private final IntArray layoutLineBreaks = new IntArray();
-    private final Array<Effect> activeEffects = new Array<>();
+    private final Seq<TypingGlyph> glyphCache = new Seq<>();
+    private final IntSeq glyphRunCapacities = new IntSeq();
+    private final IntSeq offsetCache = new IntSeq();
+    private final IntSeq layoutLineBreaks = new IntSeq();
+    private final Seq<Effect> activeEffects = new Seq<>();
     private float textSpeed = TypingConfig.DEFAULT_SPEED_PER_CHAR;
     private float charCooldown = textSpeed;
     private int rawCharIndex = -2; // All chars, including color codes
@@ -618,7 +618,7 @@ public class TypeLabel extends Label{
     private void layoutCache(){
         BitmapFontCache cache = getBitmapFontCache();
         GlyphLayout layout = super.getGlyphLayout();
-        Array<GlyphRun> runs = layout.runs;
+        Seq<GlyphRun> runs = layout.runs;
 
         // Reset layout line breaks
         layoutLineBreaks.clear();
@@ -627,7 +627,7 @@ public class TypeLabel extends Label{
         int glyphCount = 0;
         glyphRunCapacities.setSize(runs.size);
         for(int i = 0; i < runs.size; i++){
-            Array<Glyph> glyphs = runs.get(i).glyphs;
+            Seq<Glyph> glyphs = runs.get(i).glyphs;
             glyphRunCapacities.set(i, glyphs.size);
             glyphCount += glyphs.size;
         }
@@ -643,7 +643,7 @@ public class TypeLabel extends Label{
         float lastY = 0;
         for(int i = 0; i < runs.size; i++){
             GlyphRun run = runs.get(i);
-            Array<Glyph> glyphs = run.glyphs;
+            Seq<Glyph> glyphs = run.glyphs;
             for(int j = 0; j < glyphs.size; j++){
 
                 // Detect and store layout line breaks
@@ -686,7 +686,7 @@ public class TypeLabel extends Label{
         // Remove exceeding glyphs from original array
         int glyphCountdown = glyphCharIndex;
         for(int i = 0; i < runs.size; i++){
-            Array<Glyph> glyphs = runs.get(i).glyphs;
+            Seq<Glyph> glyphs = runs.get(i).glyphs;
             if(glyphs.size < glyphCountdown){
                 glyphCountdown -= glyphs.size;
                 continue;
@@ -713,7 +713,7 @@ public class TypeLabel extends Label{
 
         // Get runs
         GlyphLayout layout = super.getGlyphLayout();
-        Array<GlyphRun> runs = layout.runs;
+        Seq<GlyphRun> runs = layout.runs;
 
         // Iterate through GlyphRuns to find the next glyph spot
         int glyphCount = 0;
@@ -725,7 +725,7 @@ public class TypeLabel extends Label{
             }
 
             // Get run and increase glyphCount up to its current size
-            Array<Glyph> glyphs = runs.get(runIndex).glyphs;
+            Seq<Glyph> glyphs = runs.get(runIndex).glyphs;
             glyphCount += glyphs.size;
 
             // Next glyphs go here

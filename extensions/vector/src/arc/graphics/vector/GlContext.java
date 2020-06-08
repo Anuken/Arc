@@ -28,7 +28,7 @@ public class GlContext implements Poolable{
     private int vertexBuffer;
     private FloatBuffer view = Buffers.newFloatBuffer(2);
 
-    private static int getVertFloatsCount(Array<GlCall> calls){
+    private static int getVertFloatsCount( Seq<GlCall> calls){
         int vertFloats = 0;
         for(GlCall call : calls){
             for(GlPathComponent path : call.components){
@@ -164,7 +164,7 @@ public class GlContext implements Poolable{
         }
     }
 
-    private Buffer getVertsBuffer(Array<GlCall> calls, int vertFloats){
+    private Buffer getVertsBuffer( Seq<GlCall> calls, int vertFloats){
         ensureVertsBufferCapacity(vertFloats);
 
         for(GlCall call : calls){
@@ -205,7 +205,7 @@ public class GlContext implements Poolable{
         vertsBuffer.limit(vertFloats);
     }
 
-    public void render(Array<GlCall> calls){
+    public void render( Seq<GlCall> calls){
         if(calls.size == 0){
             return;
         }
@@ -274,7 +274,7 @@ public class GlContext implements Poolable{
         blendMode = BlendMode.over;
     }
 
-    private void renderCalls(Array<GlCall> calls){
+    private void renderCalls( Seq<GlCall> calls){
         for(int i = 0; i < calls.size; i++){
             GlCall call = calls.get(i);
             setBlendMode(call.blendMode);
@@ -323,7 +323,7 @@ public class GlContext implements Poolable{
         setUniforms(call.uniform);
         checkError("convex fill");
 
-        Array<GlPathComponent> components = call.components;
+        Seq<GlPathComponent> components = call.components;
 
         for(int i = 0; i < components.size; i++){
             GlPathComponent component = components.get(i);
@@ -356,7 +356,7 @@ public class GlContext implements Poolable{
         Gl.stencilOpSeparate(GL20.GL_BACK, GL20.GL_KEEP, GL20.GL_KEEP, GL20.GL_DECR_WRAP);
         Gl.disable(GL20.GL_CULL_FACE);
 
-        Array<GlPathComponent> components = call.components;
+        Seq<GlPathComponent> components = call.components;
 
         for(int i = 0; i < components.size; i++){
             GlPathComponent component = components.get(i);
@@ -393,7 +393,7 @@ public class GlContext implements Poolable{
 
     private void stroke(GlCall call){
         int i;
-        Array<GlPathComponent> components = call.components;
+        Seq<GlPathComponent> components = call.components;
 
         if(stencilStrokes){
             Gl.enable(GL20.GL_STENCIL_TEST);

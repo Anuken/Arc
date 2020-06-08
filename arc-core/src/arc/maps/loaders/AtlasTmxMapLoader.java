@@ -88,7 +88,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
             AtlasResolver.DirectAtlasResolver atlasResolver = new AtlasResolver.DirectAtlasResolver(atlases);
             TiledMap map = loadMap(root, tmxFile, atlasResolver);
-            map.setOwnedResources(atlases.values().toArray());
+            map.setOwnedResources(atlases.values().toSeq());
             setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
             return map;
         }catch(IOException e){

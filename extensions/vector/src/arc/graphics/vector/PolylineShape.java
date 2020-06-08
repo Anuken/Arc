@@ -4,9 +4,9 @@ import arc.math.geom.*;
 import arc.struct.*;
 
 public class PolylineShape extends Shape{
-    private final FloatArray points = new FloatArray();
+    private final FloatSeq points = new FloatSeq();
 
-    public PolylineShape(FloatArray points){
+    public PolylineShape(FloatSeq points){
         this.points.addAll(points);
     }
 
@@ -33,7 +33,7 @@ public class PolylineShape extends Shape{
         markDataChanged();
     }
 
-    public void addPoints(FloatArray points){
+    public void addPoints(FloatSeq points){
         this.points.addAll(points);
         markDataChanged();
     }

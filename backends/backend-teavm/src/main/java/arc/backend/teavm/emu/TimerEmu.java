@@ -21,7 +21,7 @@ public class TimerEmu{
         return instance;
     }
 
-    private final Array<Task> tasks = new Array<>(false, 8);
+    private final Seq<Task> tasks = new Seq<>(false, 8);
 
     public TimerEmu(){
 

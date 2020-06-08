@@ -9,10 +9,10 @@ import arc.util.pooling.Pool.*;
 import static arc.graphics.GL20.GL_FRAMEBUFFER;
 
 class RenderGraph implements Poolable{
-    final Array<CanvasLayer> allLayers = new Array<>();
-    final Array<LayerRenderNode> layersStack = new Array<>();
-    private final Array<VFrameBuffer> frameBuffersCache = new Array<>();
-    private final Array<VFrameBuffer> frameBuffersStack = new Array<>();
+    final Seq<CanvasLayer> allLayers = new Seq<>();
+    final Seq<LayerRenderNode> layersStack = new Seq<>();
+    private final Seq<VFrameBuffer> frameBuffersCache = new Seq<>();
+    private final Seq<VFrameBuffer> frameBuffersStack = new Seq<>();
     int width;
     int height;
     GlContext glContext;
@@ -45,7 +45,7 @@ class RenderGraph implements Poolable{
         }
     }
 
-    public void addCalls(Array<GlCall> calls){
+    public void addCalls( Seq<GlCall> calls){
         if(lastSimple == null){
             lastSimple = SimpleRenderNode.obtain(calls);
             currentLayer.add(lastSimple);
@@ -110,13 +110,13 @@ class RenderGraph implements Poolable{
     }
 
     public static class SimpleRenderNode implements RenderNode{
-        private Array<GlCall> calls = new Array<>();
+        private Seq<GlCall> calls = new Seq<>();
 
         public SimpleRenderNode(){
 
         }
 
-        static SimpleRenderNode obtain(Array<GlCall> calls){
+        static SimpleRenderNode obtain( Seq<GlCall> calls){
             SimpleRenderNode command = new SimpleRenderNode();
             command.calls.addAll(calls);
             return command;
@@ -128,7 +128,7 @@ class RenderGraph implements Poolable{
             return command;
         }
 
-        public void addCalls(Array<GlCall> calls){
+        public void addCalls( Seq<GlCall> calls){
             this.calls.addAll(calls);
         }
 
@@ -138,8 +138,8 @@ class RenderGraph implements Poolable{
     }
 
     private static abstract class CompositeRenderNode implements RenderNode{
-        Array<RenderNode> nodes = new Array<>();
-        Array<GlCall> calls = new Array<>();
+        Seq<RenderNode> nodes = new Seq<>();
+        Seq<GlCall> calls = new Seq<>();
 
         void render(GlContext glContext){
             for(RenderNode node : nodes){
@@ -160,7 +160,7 @@ class RenderGraph implements Poolable{
             }
         }
 
-        private Array<GlCall> getCalls(){
+        private Seq<GlCall> getCalls(){
             for(RenderNode node : nodes){
                 if(node instanceof SimpleRenderNode){
                     calls.addAll(((SimpleRenderNode)node).calls);

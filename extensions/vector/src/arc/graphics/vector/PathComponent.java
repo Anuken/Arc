@@ -8,7 +8,7 @@ import arc.util.pooling.*;
 
 public class PathComponent implements PathConstants, Poolable{
     private static final float fillMiterLimit = 2.4f;
-    final Array<Point> points = new Array<>();
+    final Seq<Point> points = new Seq<>();
     final FillPathTriangulator fillTriangulator = new FillPathTriangulator(this);
     final StrokePathTriangulator strokeTriangulator = new StrokePathTriangulator(this);
     private final Vec2 tempPoint = new Vec2();

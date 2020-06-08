@@ -1,7 +1,7 @@
 package arc.tlabel;
 
-import arc.struct.Array;
 import arc.func.*;
+import arc.struct.*;
 
 /** Utility class to parse tokens from a {@link TypeLabel}. */
 class Parser{
@@ -225,8 +225,8 @@ class Parser{
 
     /** Returns the replacement string intended to be used on {RESET} tokens. */
     private static String getResetReplacement(){
-        Array<String> tokens = new Array<>();
-        TypingConfig.EFFECTS.keys().toArray(tokens);
+        Seq<String> tokens = new Seq<>();
+        TypingConfig.EFFECTS.keys().toSeq(tokens);
         tokens.replace(m -> "/" + m);
         tokens.add("clear");
         tokens.add("normal");

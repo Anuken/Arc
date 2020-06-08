@@ -379,7 +379,7 @@ public class JsonValue implements Iterable<JsonValue>{
      * Returns the children of this value as a newly allocated float array.
      * @throws IllegalStateException if this is not an array.
      */
-    public float[] asFloatArray(){
+    public float[] asFloatSeq(){
         if(type != ValueType.array) throw new IllegalStateException("Value is not an array: " + type);
         float[] array = new float[size];
         int i = 0;

@@ -15,7 +15,7 @@ class StrokePathTriangulator extends PathTriangulator{
     void triangulate(){
         float width = component.getStrokeWidth();
         int ncap = calculateNumberOfCapFragments(width);
-        Array<Point> points = component.points;
+        Seq<Point> points = component.points;
         float aa = canvas.fringeWidth;
         Point p0;
         Point p1;

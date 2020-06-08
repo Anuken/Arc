@@ -1,10 +1,9 @@
 package arc.backend.teavm;
 
 import arc.*;
-import arc.struct.*;
 import arc.func.*;
+import arc.struct.*;
 import org.teavm.jso.ajax.*;
-import org.teavm.jso.browser.*;
 
 import java.io.*;
 
@@ -51,7 +50,7 @@ public class TeaNet extends Net{
                     }
 
                     @Override
-                    public ObjectMap<String, Array<String>> getHeaders(){
+                    public ObjectMap<String, Seq<String>> getHeaders(){
                         throw new UnsupportedOperationException("Not implemented");
                     }
                 });

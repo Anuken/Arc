@@ -4,24 +4,24 @@ import arc.struct.*;
 import arc.util.pooling.Pool.*;
 
 class Dasher implements Poolable{
-    private final Array<Point> points = new Array<>();
-    private final Array<PathComponent> dashedComponents = new Array<>();
-    private final Array<Point> unusedPoints = new Array<>();
+    private final Seq<Point> points = new Seq<>();
+    private final Seq<PathComponent> dashedComponents = new Seq<>();
+    private final Seq<Point> unusedPoints = new Seq<>();
     int pointIndex;
     Point p0;
     Point p1;
     DashElement activeElement;
     private float length;
     private DashElement first = new DashElement();
-    private Array<DashElement> dashElements = new Array<>();
+    private Seq<DashElement> dashElements = new Seq<>();
     private PathMesh pathMesh;
 
-    void init(FloatArray dashes, float offset){
+    void init(FloatSeq dashes, float offset){
         initCommonElements(dashes);
         initFirstElement(offset);
     }
 
-    private void initCommonElements(FloatArray dashes){
+    private void initCommonElements(FloatSeq dashes){
         boolean visible = true;
         for(int i = 0; i < dashes.size; i++){
             float dashLength = dashes.get(i);
@@ -82,7 +82,7 @@ class Dasher implements Poolable{
         return dashElements.get((activeElement.index + 1) % dashElements.size);
     }
 
-    void appendDashedStrokeComponents(Array<PathComponent> out, PathComponent pathComponent){
+    void appendDashedStrokeComponents( Seq<PathComponent> out, PathComponent pathComponent){
         if(pathComponent.points.size < 2){
             return;
         }
@@ -107,7 +107,7 @@ class Dasher implements Poolable{
     }
 
     private void clonePoints(PathComponent pathComponent){
-        Array<Point> componentPoints = pathComponent.points;
+        Seq<Point> componentPoints = pathComponent.points;
         for(int i = 0; i < componentPoints.size; i++){
             appendPoint(componentPoints.get(i));
         }
