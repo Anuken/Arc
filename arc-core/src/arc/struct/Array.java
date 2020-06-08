@@ -24,7 +24,7 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
     public int size;
     public boolean ordered;
 
-    private ArrayIterable iterable;
+    private ArrayIterable<T> iterable;
 
     /** Creates an ordered array with a capacity of 16. */
     public Array(){
