@@ -1,6 +1,6 @@
 package arc.scene.ui;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.func.Boolc;
 import arc.func.Cons;
 import arc.scene.ui.layout.Table;
@@ -26,7 +26,7 @@ public class SettingsDialog extends Dialog{
     }
 
     public static class SettingsTable extends Table{
-        protected Array<Setting> list = new Array<>();
+        protected Seq<Setting> list = new Seq<>();
         protected Cons<SettingsTable> rebuilt;
 
         public SettingsTable(){
@@ -38,7 +38,7 @@ public class SettingsDialog extends Dialog{
             left();
         }
 
-        public Array<Setting> getSettings(){
+        public Seq<Setting> getSettings(){
             return list;
         }
 

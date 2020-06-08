@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.view.Window;
 import android.view.WindowManager;
 import arc.Application;
-import arc.struct.Array;
+import arc.struct.Seq;
 
 /**
  * Interface that abstracts the Android application class usages, so that Arc can be used with a fragment (or with any other
@@ -25,10 +25,10 @@ public interface AndroidApplicationBase extends Application{
     Context getContext();
 
     /** A set of usable runnables*/
-    Array<Runnable> getRunnables();
+    Seq<Runnable> getRunnables();
 
     /** The currently executed runnables*/
-    Array<Runnable> getExecutedRunnables();
+    Seq<Runnable> getExecutedRunnables();
 
     /**
      * Method signifies an intent of the caller to execute some action on the UI Thread.

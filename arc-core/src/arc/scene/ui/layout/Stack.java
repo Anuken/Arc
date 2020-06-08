@@ -27,8 +27,8 @@
 
 package arc.scene.ui.layout;
 
-import arc.struct.Array;
-import arc.struct.SnapshotArray;
+import arc.struct.Seq;
+import arc.struct.SnapshotSeq;
 import arc.scene.Element;
 import arc.scene.event.Touchable;
 import arc.scene.utils.Layout;
@@ -70,7 +70,7 @@ public class Stack extends WidgetGroup{
         minHeight = 0;
         maxWidth = 0;
         maxHeight = 0;
-        SnapshotArray<Element> children = getChildren();
+        SnapshotSeq<Element> children = getChildren();
         for(int i = 0, n = children.size; i < n; i++){
             Element child = children.get(i);
             float childMaxWidth, childMaxHeight;
@@ -101,7 +101,7 @@ public class Stack extends WidgetGroup{
     public void layout(){
         if(sizeInvalid) computeSize();
         float width = getWidth(), height = getHeight();
-        Array<Element> children = getChildren();
+        Seq<Element> children = getChildren();
         for(int i = 0, n = children.size; i < n; i++){
             Element child = children.get(i);
             child.setBounds(0, 0, width, height);

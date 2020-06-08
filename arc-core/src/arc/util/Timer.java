@@ -4,7 +4,7 @@ import arc.Application;
 import arc.ApplicationListener;
 import arc.Core;
 import arc.Files;
-import arc.struct.Array;
+import arc.struct.Seq;
 
 /**
  * Executes tasks in the future on the main loop thread.
@@ -17,7 +17,7 @@ public class Timer{
     static final Object threadLock = new Object();
     static TimerThread thread;
 
-    final Array<Task> tasks = new Array<>(false, 8);
+    final Seq<Task> tasks = new Seq<>(false, 8);
 
     public Timer(){
         start();
@@ -163,7 +163,7 @@ public class Timer{
     public void start(){
         synchronized(threadLock){
             TimerThread thread = thread();
-            Array<Timer> instances = thread.instances;
+            Seq<Timer> instances = thread.instances;
             if(instances.contains(this, true)) return;
             instances.add(this);
             threadLock.notifyAll();
@@ -291,7 +291,7 @@ public class Timer{
      */
     static class TimerThread implements Runnable, ApplicationListener{
         final Files files;
-        final Array<Timer> instances = new Array<>(1);
+        final Seq<Timer> instances = new Seq<>(1);
         Timer instance;
         private long pauseMillis;
 

@@ -1,6 +1,6 @@
 package arc.graphics.g2d;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.math.Mathf;
 
 /**
@@ -29,7 +29,7 @@ public class Animation<T>{
      * correct type of array. Otherwise, it returns an Object[].
      */
     @SuppressWarnings("unchecked")
-    public Animation(float frameDuration, Array<? extends T> keyFrames){
+    public Animation(float frameDuration, Seq<? extends T> keyFrames){
         this.frameDuration = frameDuration;
         Class arrayType = keyFrames.items.getClass().getComponentType();
         T[] frames = (T[])java.lang.reflect.Array.newInstance(arrayType, keyFrames.size);
@@ -45,7 +45,7 @@ public class Animation<T>{
      * @param keyFrames the objects representing the frames. If this Array is type-aware, {@link #getKeyFrames()} can
      * return the correct type of array. Otherwise, it returns an Object[].
      */
-    public Animation(float frameDuration, Array<? extends T> keyFrames, PlayMode playMode){
+    public Animation(float frameDuration, Seq<? extends T> keyFrames, PlayMode playMode){
         this(frameDuration, keyFrames);
         setPlayMode(playMode);
     }

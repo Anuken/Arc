@@ -12,33 +12,33 @@ import java.util.*;
  * @author Nathan Sweet
  */
 @SuppressWarnings("unchecked")
-public class Array<T> implements Iterable<T>, Eachable<T>{
+public class Seq<T> implements Iterable<T>, Eachable<T>{
     /** Debugging variable to count total number of iterators allocated.*/
     public static int iteratorsAllocated = 0;
     /**
      * Provides direct access to the underlying array. If the Array's generic type is not Object, this field may only be accessed
-     * if the {@link Array#Array(boolean, int, Class)} constructor was used.
+     * if the {@link Seq#Seq(boolean, int, Class)} constructor was used.
      */
     public T[] items;
 
     public int size;
     public boolean ordered;
 
-    private ArrayIterable<T> iterable;
+    private SeqIterable<T> iterable;
 
     /** Creates an ordered array with a capacity of 16. */
-    public Array(){
+    public Seq(){
         this(true, 16);
     }
 
     /** Creates an ordered array with the specified capacity. */
-    public Array(int capacity){
+    public Seq(int capacity){
         this(true, capacity);
     }
 
     /** Creates an ordered array with the specified capacity. */
-    public Array(boolean ordered){
-        this(true, 16);
+    public Seq(boolean ordered){
+        this(ordered, 16);
     }
 
     /**
@@ -46,7 +46,7 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
      * memory copy.
      * @param capacity Any elements added beyond this will cause the backing array to be grown.
      */
-    public Array(boolean ordered, int capacity){
+    public Seq(boolean ordered, int capacity){
         this.ordered = ordered;
         items = (T[])new Object[capacity];
     }
@@ -57,13 +57,13 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
      * memory copy.
      * @param capacity Any elements added beyond this will cause the backing array to be grown.
      */
-    public Array(boolean ordered, int capacity, Class arrayType){
+    public Seq(boolean ordered, int capacity, Class arrayType){
         this.ordered = ordered;
         items = (T[])java.lang.reflect.Array.newInstance(arrayType, capacity);
     }
 
     /** Creates an ordered array with {@link #items} of the specified type and a capacity of 16. */
-    public Array(Class arrayType){
+    public Seq(Class arrayType){
         this(true, 16, arrayType);
     }
 
@@ -72,7 +72,7 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
      * and will be ordered if the specified array is ordered. The capacity is set to the number of elements, so any subsequent
      * elements added will cause the backing array to be grown.
      */
-    public Array(Array<? extends T> array){
+    public Seq(Seq<? extends T> array){
         this(array.ordered, array.size, array.items.getClass().getComponentType());
         size = array.size;
         System.arraycopy(array.items, 0, items, 0, size);
@@ -83,7 +83,7 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
      * backing array. The capacity is set to the number of elements, so any subsequent elements added will cause the backing array
      * to be grown.
      */
-    public Array(T[] array){
+    public Seq(T[] array){
         this(true, array, 0, array.length);
     }
 
@@ -93,27 +93,27 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
      * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
      * memory copy.
      */
-    public Array(boolean ordered, T[] array, int start, int count){
+    public Seq(boolean ordered, T[] array, int start, int count){
         this(ordered, count, array.getClass().getComponentType());
         size = count;
         System.arraycopy(array, start, items, 0, size);
     }
 
-    /** @see #Array(Class) */
-    public static <T> Array<T> of(Class<T> arrayType){
-        return new Array<>(arrayType);
+    /** @see #Seq(Class) */
+    public static <T> Seq<T> of(Class<T> arrayType){
+        return new Seq<>(arrayType);
     }
 
-    /** @see #Array(boolean, int, Class) */
-    public static <T> Array<T> of(boolean ordered, int capacity, Class<T> arrayType){
-        return new Array<>(ordered, capacity, arrayType);
+    /** @see #Seq(boolean, int, Class) */
+    public static <T> Seq<T> of(boolean ordered, int capacity, Class<T> arrayType){
+        return new Seq<>(ordered, capacity, arrayType);
     }
 
-    public static <T> Array<T> withArrays(Object... arrays){
-        Array<T> result = new Array<>();
+    public static <T> Seq<T> withArrays(Object... arrays){
+        Seq<T> result = new Seq<>();
         for(Object a : arrays){
-            if(a instanceof Array){
-                result.addAll((Array<? extends T>) a);
+            if(a instanceof Seq){
+                result.addAll((Seq<? extends T>) a);
             }else{
                 result.add((T)a);
             }
@@ -121,22 +121,22 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
         return result;
     }
 
-    /** @see #Array(Object[]) */
-    public static <T> Array<T> with(T... array){
-        return new Array<>(array);
+    /** @see #Seq(Object[]) */
+    public static <T> Seq<T> with(T... array){
+        return new Seq<>(array);
     }
 
-    public static <T> Array<T> with(Iterable<T> array){
-        Array<T> out = new Array<>();
+    public static <T> Seq<T> with(Iterable<T> array){
+        Seq<T> out = new Seq<>();
         for(T thing : array){
             out.add((T)thing);
         }
         return out;
     }
 
-    /** @see #Array(Object[]) */
-    public static <T> Array<T> select(T[] array, Boolf<T> test){
-        Array<T> out = new Array<>(array.length);
+    /** @see #Seq(Object[]) */
+    public static <T> Seq<T> select(T[] array, Boolf<T> test){
+        Seq<T> out = new Seq<>(array.length);
         for(int i = 0; i < array.length; i++){
             if(test.get(array[i])){
                 out.add(array[i]);
@@ -162,8 +162,8 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
         return ObjectSet.with(this);
     }
 
-    public Array<T> copy(){
-        return new Array<>(this);
+    public Seq<T> copy(){
+        return new Seq<>(this);
     }
 
     public ArrayList<T> list(){
@@ -219,17 +219,17 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
     }
 
     /** Flattens this array of arrays into one array. Allocates a new instance.*/
-    public <R> Array<R> flatten(){
-        Array<R> arr = new Array<>();
+    public <R> Seq<R> flatten(){
+        Seq<R> arr = new Seq<>();
         for(int i = 0; i < size; i++){
-            arr.addAll((Array<R>)items[i]);
+            arr.addAll((Seq<R>)items[i]);
         }
         return arr;
     }
 
     /**Returns a new array with the mapped values.*/
-    public <R> Array<R> flatMap(Func<T, Iterable<R>> mapper){
-        Array<R> arr = new Array<>(size);
+    public <R> Seq<R> flatMap(Func<T, Iterable<R>> mapper){
+        Seq<R> arr = new Seq<>(size);
         for(int i = 0; i < size; i++){
             arr.addAll(mapper.get(items[i]));
         }
@@ -237,8 +237,8 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
     }
 
     /**Returns a new array with the mapped values.*/
-    public <R> Array<R> map(Func<T, R> mapper){
-        Array<R> arr = new Array<>(size);
+    public <R> Seq<R> map(Func<T, R> mapper){
+        Seq<R> arr = new Seq<>(size);
         for(int i = 0; i < size; i++){
             arr.add(mapper.get(items[i]));
         }
@@ -246,8 +246,8 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
     }
 
     /** @return a new int array with the mapped values. */
-    public IntArray mapInt(Intf<T> mapper){
-        IntArray arr = new IntArray(size);
+    public IntSeq mapInt(Intf<T> mapper){
+        IntSeq arr = new IntSeq(size);
         for(int i = 0; i < size; i++){
             arr.add(mapper.get(items[i]));
         }
@@ -255,8 +255,8 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
     }
 
     /** @return a new float array with the mapped values. */
-    public FloatArray mapFloat(Floatf<T> mapper){
-        FloatArray arr = new FloatArray(size);
+    public FloatSeq mapFloat(Floatf<T> mapper){
+        FloatSeq arr = new FloatSeq(size);
         for(int i = 0; i < size; i++){
             arr.add(mapper.get(items[i]));
         }
@@ -334,12 +334,12 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
         return null;
     }
 
-    public Array<T> with(Cons<Array<T>> cons){
+    public Seq<T> with(Cons<Seq<T>> cons){
         cons.get(this);
         return this;
     }
 
-    public Array<T> and(T value){
+    public Seq<T> and(T value){
         add(value);
         return this;
     }
@@ -377,11 +377,11 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
         size += 4;
     }
 
-    public void addAll(Array<? extends T> array){
+    public void addAll(Seq<? extends T> array){
         addAll(array.items, 0, array.size);
     }
 
-    public void addAll(Array<? extends T> array, int start, int count){
+    public void addAll(Seq<? extends T> array, int start, int count){
         if(start + count > array.size)
             throw new IllegalArgumentException("start + count must be <= size: " + start + " + " + count + " <= " + array.size);
         addAll(array.items, start, count);
@@ -400,8 +400,8 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
     }
 
     public void addAll(Iterable<? extends T> items){
-        if(items instanceof Array){
-            addAll((Array)items);
+        if(items instanceof Seq){
+            addAll((Seq)items);
         }else{
             for(T t : items){
                 add(t);
@@ -410,7 +410,7 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
     }
 
     /** Sets this array's contents to the specified array.*/
-    public void set(Array<? extends T> array){
+    public void set(Seq<? extends T> array){
         clear();
         addAll(array);
     }
@@ -588,7 +588,7 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
     }
 
     /** @return this object */
-    public Array<T> removeAll(Boolf<T> pred){
+    public Seq<T> removeAll(Boolf<T> pred){
         Iterator<T> iter = iterator();
         while(iter.hasNext()){
             if(pred.get(iter.next())){
@@ -598,7 +598,7 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
         return this;
     }
 
-    public boolean removeAll(Array<? extends T> array){
+    public boolean removeAll(Seq<? extends T> array){
         return removeAll(array, false);
     }
 
@@ -607,7 +607,7 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
      * @param identity True to use ==, false to use .equals().
      * @return true if this array was modified.
      */
-    public boolean removeAll(Array<? extends T> array, boolean identity){
+    public boolean removeAll(Seq<? extends T> array, boolean identity){
         int size = this.size;
         int startSize = size;
         T[] items = this.items;
@@ -729,28 +729,28 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
      * Sorts this array. The array elements must implement {@link Comparable}. This method is not thread safe (uses
      * {@link Sort#instance()}).
      */
-    public Array<T> sort(){
+    public Seq<T> sort(){
         Sort.instance().sort(items, 0, size);
         return this;
     }
 
     /** Sorts the array. This method is not thread safe (uses {@link Sort#instance()}). */
-    public Array<T> sort(Comparator<? super T> comparator){
+    public Seq<T> sort(Comparator<? super T> comparator){
         Sort.instance().sort(items, comparator, 0, size);
         return this;
     }
 
-    public Array<T> sort(Floatf<? super T> comparator){
+    public Seq<T> sort(Floatf<? super T> comparator){
         Sort.instance().sort(items, Structs.comparingFloat(comparator), 0, size);
         return this;
     }
 
-    public <U extends Comparable<? super U>> Array<T> sortComparing(Func<? super T, ? extends U> keyExtractor){
+    public <U extends Comparable<? super U>> Seq<T> sortComparing(Func<? super T, ? extends U> keyExtractor){
         sort(Structs.comparing(keyExtractor));
         return this;
     }
 
-    public Array<T> selectFrom(Array<T> base, Boolf<T> predicate){
+    public Seq<T> selectFrom(Seq<T> base, Boolf<T> predicate){
         clear();
         base.each(t -> {
             if(predicate.get(t)){
@@ -761,20 +761,20 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
     }
 
     /** Note that this allocates a new set. Mutates. */
-    public Array<T> distinct(){
+    public Seq<T> distinct(){
         ObjectSet<T> set = asSet();
         clear();
         addAll(set);
         return this;
     }
 
-    public <R> Array<R> as(){
-        return (Array<R>)this;
+    public <R> Seq<R> as(){
+        return (Seq<R>)this;
     }
 
     /** Allocates a new array with all elements that match the predicate.*/
-    public Array<T> select(Boolf<T> predicate){
-        Array<T> arr = new Array<>();
+    public Seq<T> select(Boolf<T> predicate){
+        Seq<T> arr = new Seq<>();
         for(int i = 0; i < size; i++){
             if(predicate.get(items[i])){
                 arr.add(items[i]);
@@ -784,7 +784,7 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
     }
 
     /** Removes everything that does not match this predicate. */
-    public Array<T> filter(Boolf<T> predicate){
+    public Seq<T> filter(Boolf<T> predicate){
         return removeAll(e -> !predicate.get(e));
     }
 
@@ -819,7 +819,7 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
      * @param kthLowest rank of desired object according to comparison, n is based on ordinal numbers, not array indices. for min
      * value use 1, for max value use size of array, using 0 results in runtime exception.
      * @return the index of the Nth lowest ranked object.
-     * @see Array#selectRanked(java.util.Comparator, int)
+     * @see Seq#selectRanked(java.util.Comparator, int)
      */
     public int selectRankedIndex(Comparator<T> comparator, int kthLowest){
         if(kthLowest < 1){
@@ -891,7 +891,7 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
     }
 
     /**
-     * Returns the items as an array. Note the array is typed, so the {@link #Array(Class)} constructor must have been used.
+     * Returns the items as an array. Note the array is typed, so the {@link #Seq(Class)} constructor must have been used.
      * Otherwise use {@link #toArray(Class)} to specify the array type.
      */
     public T[] toArray(){
@@ -919,8 +919,8 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
     public boolean equals(Object object){
         if(object == this) return true;
         if(!ordered) return false;
-        if(!(object instanceof Array)) return false;
-        Array array = (Array)object;
+        if(!(object instanceof Seq)) return false;
+        Seq array = (Seq)object;
         if(!array.ordered) return false;
         int n = size;
         if(n != array.size) return false;
@@ -973,20 +973,20 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
      */
     @Override
     public Iterator<T> iterator(){
-        if(iterable == null) iterable = new ArrayIterable(this);
+        if(iterable == null) iterable = new SeqIterable<>(this);
         return iterable.iterator();
     }
 
-    public static class ArrayIterable<T> implements Iterable<T>{
-        private final Array<T> array;
+    public static class SeqIterable<T> implements Iterable<T>{
+        private final Seq<T> array;
         private final boolean allowRemove;
-        private ArrayIterator iterator1 = new ArrayIterator(), iterator2 = new ArrayIterator();
+        private SeqIterator iterator1 = new SeqIterator(), iterator2 = new SeqIterator();
 
-        public ArrayIterable(Array<T> array){
+        public SeqIterable(Seq<T> array){
             this(array, true);
         }
 
-        public ArrayIterable(Array<T> array, boolean allowRemove){
+        public SeqIterable(Seq<T> array, boolean allowRemove){
             this.array = array;
             this.allowRemove = allowRemove;
         }
@@ -1005,10 +1005,10 @@ public class Array<T> implements Iterable<T>, Eachable<T>{
                 return iterator2;
             }
             //allocate new iterator in the case of 3+ nested loops.
-            return new ArrayIterator();
+            return new SeqIterator();
         }
 
-        private class ArrayIterator implements Iterator<T>{
+        private class SeqIterator implements Iterator<T>{
             int index;
             boolean done = true;
 

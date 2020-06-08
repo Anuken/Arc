@@ -14,7 +14,7 @@ import java.nio.*;
 /** Various pixmap utilities. */
 public class Pixmaps{
     private static Pixmap drawPixmap;
-    private static IntArray tmpArray = new IntArray();
+    private static IntSeq tmpArray = new IntSeq();
 
     public static Pixmap noise(int w, int h){
         Pixmap out = new Pixmap(w, h);
@@ -51,7 +51,7 @@ public class Pixmaps{
         return median(input, radius, percentile, tmpArray);
     }
 
-    public static Pixmap median(Pixmap input, int radius, double percentile, IntArray tmp){
+    public static Pixmap median(Pixmap input, int radius, double percentile, IntSeq tmp){
         Pixmap pixmap = new Pixmap(input.getWidth(), input.getHeight());
         input.each((x, y) -> {
             tmp.clear();

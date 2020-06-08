@@ -27,9 +27,9 @@ public class IOSApplication implements Application{
 
     /** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
     float displayScaleFactor;
-    Array<ApplicationListener> listeners = new Array<>();
-    Array<Runnable> runnables = new Array<>();
-    Array<Runnable> executedRunnables = new Array<>();
+    Seq<ApplicationListener> listeners = new Seq<>();
+    Seq<Runnable> runnables = new Seq<>();
+    Seq<Runnable> executedRunnables = new Seq<>();
     private CGRect lastScreenBounds = null;
 
 
@@ -213,7 +213,7 @@ public class IOSApplication implements Application{
     final void willTerminate(UIApplication uiApp){
         Log.info("[IOSApplication] disposed");
         graphics.makeCurrent();
-        Array<ApplicationListener> listeners = this.listeners;
+        Seq<ApplicationListener> listeners = this.listeners;
         synchronized(listeners){
             for(ApplicationListener listener : listeners){
                 listener.pause();
@@ -294,7 +294,7 @@ public class IOSApplication implements Application{
     }
 
     @Override
-    public Array<ApplicationListener> getListeners(){
+    public Seq<ApplicationListener> getListeners(){
         return listeners;
     }
 

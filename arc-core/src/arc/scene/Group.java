@@ -2,8 +2,8 @@ package arc.scene;
 
 import arc.graphics.g2d.*;
 import arc.math.geom.*;
-import arc.struct.Array;
-import arc.struct.SnapshotArray;
+import arc.struct.Seq;
+import arc.struct.SnapshotSeq;
 import arc.func.Cons;
 import arc.func.Boolf;
 import arc.math.Affine2;
@@ -26,7 +26,7 @@ import arc.scene.utils.Cullable;
 public abstract class Group extends Element implements Cullable{
     static private final Vec2 tmp = new Vec2();
 
-    final SnapshotArray<Element> children = new SnapshotArray<>(true, 4, Element.class);
+    final SnapshotSeq<Element> children = new SnapshotSeq<>(true, 4, Element.class);
     private final Affine2 worldTransform = new Affine2();
     private final Mat computedTransform = new Mat();
     private final Mat oldTransform = new Mat();
@@ -55,7 +55,7 @@ public abstract class Group extends Element implements Cullable{
 
     protected void drawChildren(){
         parentAlpha *= this.color.a;
-        SnapshotArray<Element> children = this.children;
+        SnapshotSeq<Element> children = this.children;
         Element[] actors = children.begin();
         Rect cullingArea = this.cullingArea;
         if(cullingArea != null){
@@ -360,7 +360,7 @@ public abstract class Group extends Element implements Cullable{
      */
     @SuppressWarnings("unchecked")
     public <T extends Element> T find(String name){
-        Array<Element> children = this.children;
+        Seq<Element> children = this.children;
         for(int i = 0, n = children.size; i < n; i++)
             if(name.equals(children.get(i).getName())) return (T)children.get(i);
         for(int i = 0, n = children.size; i < n; i++){
@@ -376,7 +376,7 @@ public abstract class Group extends Element implements Cullable{
     /** Finds only visible elements.*/
     @SuppressWarnings("unchecked")
     public <T extends Element> T findVisible(String name){
-        Array<Element> children = this.children;
+        Seq<Element> children = this.children;
         for(int i = 0, n = children.size; i < n; i++)
             if(name.equals(children.get(i).getName()) && children.get(i).isVisible()) return (T)children.get(i);
         for(int i = 0, n = children.size; i < n; i++){
@@ -392,7 +392,7 @@ public abstract class Group extends Element implements Cullable{
     /** Find element by a predicate. */
     @SuppressWarnings("unchecked")
     public <T extends Element> T find(Boolf<Element> pred){
-        Array<Element> children = this.children;
+        Seq<Element> children = this.children;
         for(int i = 0, n = children.size; i < n; i++)
             if(pred.get(children.get(i))) return (T)children.get(i);
 
@@ -432,7 +432,7 @@ public abstract class Group extends Element implements Cullable{
     }
 
     /** Returns an ordered list of child actors in this group. */
-    public SnapshotArray<Element> getChildren(){
+    public SnapshotSeq<Element> getChildren(){
         return children;
     }
 

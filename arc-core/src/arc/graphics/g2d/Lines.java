@@ -9,8 +9,8 @@ import arc.struct.*;
 public class Lines{
     private static float stroke = 1f;
     private static Vec2 vector = new Vec2(), u = new Vec2(), v = new Vec2(), inner = new Vec2(), outer = new Vec2();
-    private static FloatArray floats = new FloatArray(20);
-    private static FloatArray floatBuilder = new FloatArray(20);
+    private static FloatSeq floats = new FloatSeq(20);
+    private static FloatSeq floatBuilder = new FloatSeq(20);
     private static boolean building, precise;
     private static float circlePrecision = 0.4f;
 
@@ -104,7 +104,7 @@ public class Lines{
         building = false;
     }
 
-    public static void polyline(FloatArray points, boolean wrap){
+    public static void polyline(FloatSeq points, boolean wrap){
         polyline(points.items, points.size, wrap);
     }
 

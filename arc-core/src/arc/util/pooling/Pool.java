@@ -1,6 +1,6 @@
 package arc.util.pooling;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 
 /**
  * A pool of objects that can be reused to avoid allocation.
@@ -10,7 +10,7 @@ import arc.struct.Array;
 abstract public class Pool<T>{
     /** The maximum number of objects that will be pooled. */
     public final int max;
-    private final Array<T> freeObjects;
+    private final Seq<T> freeObjects;
     /** The highest number of free objects. Can be reset any time. */
     public int peak;
 
@@ -26,7 +26,7 @@ abstract public class Pool<T>{
 
     /** @param max The maximum number of free objects to store in this pool. */
     public Pool(int initialCapacity, int max){
-        freeObjects = new Array<>(false, initialCapacity);
+        freeObjects = new Seq<>(false, initialCapacity);
         this.max = max;
     }
 
@@ -69,9 +69,9 @@ abstract public class Pool<T>{
      * The pool does not check if an object is already freed, so the same object must not be freed multiple times.
      * @see #free(Object)
      */
-    public void freeAll(Array<T> objects){
+    public void freeAll(Seq<T> objects){
         if(objects == null) throw new IllegalArgumentException("objects cannot be null.");
-        Array<T> freeObjects = this.freeObjects;
+        Seq<T> freeObjects = this.freeObjects;
         int max = this.max;
         for(int i = 0; i < objects.size; i++){
             T object = objects.get(i);

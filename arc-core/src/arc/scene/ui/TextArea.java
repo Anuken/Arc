@@ -1,7 +1,7 @@
 package arc.scene.ui;
 
 import arc.Core;
-import arc.struct.IntArray;
+import arc.struct.IntSeq;
 import arc.graphics.g2d.BitmapFont;
 import arc.graphics.g2d.GlyphLayout;
 import arc.input.KeyCode;
@@ -16,7 +16,7 @@ import arc.util.pooling.Pools;
 public class TextArea extends TextField{
 
     /** Array storing lines breaks positions **/
-    IntArray linesBreak;
+    IntSeq linesBreak;
     /** Current line for the cursor **/
     int cursorLine;
     /** Index of the first line showed by the text area **/
@@ -41,7 +41,7 @@ public class TextArea extends TextField{
     protected void initialize(){
         super.initialize();
         writeEnters = true;
-        linesBreak = new IntArray();
+        linesBreak = new IntSeq();
         cursorLine = 0;
         firstLineShowing = 0;
         moveOffset = -1;

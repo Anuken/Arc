@@ -35,7 +35,7 @@ public class GifRecorder{
 	public float gifx, gify, gifwidth, gifheight, giftime;
 
 	private float offsetx, offsety;
-	private Array<byte[]> frames = new Array<>();
+	private Seq<byte[]> frames = new Seq<>();
 	private float frametime;
 	private boolean recording, open;
 	private boolean saving;
@@ -246,7 +246,7 @@ public class GifRecorder{
         }).start();
 	}
 
-	private File compileGIF(Array<byte[]> pixmaps, int width, int height, Fi directory){
+	private File compileGIF(Seq<byte[]> pixmaps, int width, int height, Fi directory){
 		if(pixmaps.size == 0){
 			throw new RuntimeException("No input files!");
 		}

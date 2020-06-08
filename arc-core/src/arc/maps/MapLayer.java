@@ -1,6 +1,6 @@
 package arc.maps;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.util.ArcRuntimeException;
 
 /** Map layer containing a set of objects and properties */
@@ -16,7 +16,7 @@ public class MapLayer{
     private boolean renderOffsetDirty = true;
     private MapLayer parent;
 
-    public final Array<MapObject> objects = new Array<>();
+    public final Seq<MapObject> objects = new Seq<>();
     public final MapProperties properties = new MapProperties();
 
     /** @return layer's x offset */

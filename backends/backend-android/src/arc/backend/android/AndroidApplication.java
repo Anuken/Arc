@@ -25,9 +25,9 @@ import java.util.concurrent.*;
  * @author mzechner
  */
 public class AndroidApplication extends Activity implements AndroidApplicationBase{
-    protected final Array<ApplicationListener> listeners = new Array<>();
-    protected final Array<Runnable> runnables = new Array<>();
-    protected final Array<Runnable> executedRunnables = new Array<>();
+    protected final Seq<ApplicationListener> listeners = new Seq<>();
+    protected final Seq<Runnable> runnables = new Seq<>();
+    protected final Seq<Runnable> executedRunnables = new Seq<>();
     private final ExecutorService exec = Executors.newSingleThreadExecutor();
     private final IntMap<AndroidEventListener> eventListeners = new IntMap<>();
     private int lastEventNumber = 43;
@@ -414,7 +414,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
     }
 
     @Override
-    public Array<ApplicationListener> getListeners(){
+    public Seq<ApplicationListener> getListeners(){
         return listeners;
     }
 
@@ -424,12 +424,12 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
     }
 
     @Override
-    public Array<Runnable> getRunnables(){
+    public Seq<Runnable> getRunnables(){
         return runnables;
     }
 
     @Override
-    public Array<Runnable> getExecutedRunnables(){
+    public Seq<Runnable> getExecutedRunnables(){
         return executedRunnables;
     }
 

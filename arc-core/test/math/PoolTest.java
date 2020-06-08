@@ -15,7 +15,7 @@ public class PoolTest{
         long start = 0;
 
         int objects = 100000;
-        Array<Object> list = new Array<>(objects);
+        Seq<Object> list = new Seq<>(objects);
         Pools.get(Object.class, Object::new, objects);
 
         for(int i = 0; i < objects; i++){

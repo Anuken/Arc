@@ -3,7 +3,7 @@ package arc.assets.loaders;
 import arc.assets.AssetDescriptor;
 import arc.assets.AssetLoaderParameters;
 import arc.assets.AssetManager;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.files.Fi;
 import arc.graphics.Pixmap;
 
@@ -32,7 +32,7 @@ public class PixmapLoader extends AsynchronousAssetLoader<Pixmap, PixmapLoader.P
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, PixmapParameter parameter){
+    public Seq<AssetDescriptor> getDependencies(String fileName, Fi file, PixmapParameter parameter){
         return null;
     }
 

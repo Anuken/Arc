@@ -1,6 +1,6 @@
 package arc.util.serialization;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -28,7 +28,7 @@ import java.io.Writer;
 //@on
 public class XmlWriter extends Writer{
     private final Writer writer;
-    private final Array<String> stack = new Array();
+    private final Seq<String> stack = new Seq();
     public int indent;
     private String currentElement;
     private boolean indentNextClose;

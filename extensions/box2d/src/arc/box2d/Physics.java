@@ -283,13 +283,13 @@ b2ContactFilter defaultFilter;
      * @warning This function is locked during callbacks.
      */
     public void destroyBody(Body body){
-        Array<JointEdge> jointList = body.getJointList();
+        Seq<JointEdge> jointList = body.getJointList();
         while(jointList.size > 0)
             destroyJoint(body.getJointList().get(0).joint);
         jniDestroyBody(addr, body.addr);
         body.setUserData(null);
         this.bodies.remove(body.addr);
-        Array<Fixture> fixtureList = body.getFixtureList();
+        Seq<Fixture> fixtureList = body.getFixtureList();
         while(fixtureList.size > 0){
             Fixture fixtureToDelete = fixtureList.remove(0);
             this.fixtures.remove(fixtureToDelete.addr).setUserData(null);
@@ -854,8 +854,8 @@ b2ContactFilter defaultFilter;
 // b2Contact* GetContactList();
 
     private long[] contactAddrs = new long[200];
-    private final Array<Contact> contacts = new Array<>();
-    private final Array<Contact> freeContacts = new Array<>();
+    private final Seq<Contact> contacts = new Seq<>();
+    private final Seq<Contact> freeContacts = new Seq<>();
 
     /**
      * Returns the list of {@link Contact} instances produced by the last call to {@link #step(float, int, int)}. Note that the
@@ -863,7 +863,7 @@ b2ContactFilter defaultFilter;
      * step. Use {@link ContactListener} to avoid missing contacts
      * @return the contact list
      */
-    public Array<Contact> getContactList(){
+    public Seq<Contact> getContactList(){
         int numContacts = getContactCount();
         if(numContacts > contactAddrs.length){
             int newSize = 2 * numContacts;
@@ -889,7 +889,7 @@ b2ContactFilter defaultFilter;
     }
 
     /** @param bodies an Array in which to place all bodies currently in the simulation */
-    public void getBodies(Array<Body> bodies){
+    public void getBodies(Seq<Body> bodies){
         bodies.clear();
         bodies.ensureCapacity(this.bodies.size);
         for(Iterator<Body> iter = this.bodies.values(); iter.hasNext(); ){
@@ -898,7 +898,7 @@ b2ContactFilter defaultFilter;
     }
 
     /** @param fixtures an Array in which to place all fixtures currently in the simulation */
-    public void getFixtures(Array<Fixture> fixtures){
+    public void getFixtures(Seq<Fixture> fixtures){
         fixtures.clear();
         fixtures.ensureCapacity(this.fixtures.size);
         for(Iterator<Fixture> iter = this.fixtures.values(); iter.hasNext(); ){
@@ -907,7 +907,7 @@ b2ContactFilter defaultFilter;
     }
 
     /** @param joints an Array in which to place all joints currently in the simulation */
-    public void getJoints(Array<Joint> joints){
+    public void getJoints(Seq<Joint> joints){
         joints.clear();
         joints.ensureCapacity(this.joints.size);
         for(Iterator<Joint> iter = this.joints.values(); iter.hasNext(); ){

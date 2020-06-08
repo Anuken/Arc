@@ -5,7 +5,7 @@ import arc.assets.AssetDescriptor;
 import arc.assets.AssetLoaderParameters;
 import arc.assets.AssetManager;
 import arc.audio.Music;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.files.Fi;
 
 /**
@@ -43,7 +43,7 @@ public class MusicLoader extends AsynchronousAssetLoader<Music, MusicLoader.Musi
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, MusicParameter parameter){
+    public Seq<AssetDescriptor> getDependencies(String fileName, Fi file, MusicParameter parameter){
         return null;
     }
 

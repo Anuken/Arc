@@ -3,7 +3,7 @@ package arc.assets.loaders;
 import arc.assets.AssetDescriptor;
 import arc.assets.AssetLoaderParameters;
 import arc.assets.AssetManager;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.files.Fi;
 import arc.graphics.gl.Shader;
 import arc.util.Log;
@@ -36,7 +36,7 @@ public class ShaderProgramLoader extends AsynchronousAssetLoader<Shader, ShaderP
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, ShaderProgramParameter parameter){
+    public Seq<AssetDescriptor> getDependencies(String fileName, Fi file, ShaderProgramParameter parameter){
         return null;
     }
 

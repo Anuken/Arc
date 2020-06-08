@@ -3,6 +3,6 @@ package arc.math.geom;
 import arc.struct.*;
 
 public class MeshResult{
-    public FloatArray vertices = new FloatArray();
-    public IntArray indices = new IntArray();
+    public FloatSeq vertices = new FloatSeq();
+    public IntSeq indices = new IntSeq();
 }

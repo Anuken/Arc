@@ -1,6 +1,6 @@
 package arc.graphics;
 
-import arc.struct.ByteArray;
+import arc.struct.ByteSeq;
 import arc.files.Fi;
 import arc.graphics.Pixmap.Format;
 import arc.util.ArcRuntimeException;
@@ -167,7 +167,7 @@ public class PixmapIO{
 
         private final ChunkBuffer buffer;
         private final Deflater deflater;
-        private ByteArray lineOutBytes, curLineBytes, prevLineBytes;
+        private ByteSeq lineOutBytes, curLineBytes, prevLineBytes;
         private boolean flipY = true;
         private int lastLineLen;
 
@@ -221,9 +221,9 @@ public class PixmapIO{
             int lineLen = pixmap.getWidth() * 4;
             byte[] lineOut, curLine, prevLine;
             if(lineOutBytes == null){
-                lineOut = (lineOutBytes = new ByteArray(lineLen)).items;
-                curLine = (curLineBytes = new ByteArray(lineLen)).items;
-                prevLine = (prevLineBytes = new ByteArray(lineLen)).items;
+                lineOut = (lineOutBytes = new ByteSeq(lineLen)).items;
+                curLine = (curLineBytes = new ByteSeq(lineLen)).items;
+                prevLine = (prevLineBytes = new ByteSeq(lineLen)).items;
             }else{
                 lineOut = lineOutBytes.ensureCapacity(lineLen);
                 curLine = curLineBytes.ensureCapacity(lineLen);

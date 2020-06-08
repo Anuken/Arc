@@ -11,7 +11,7 @@ import arc.util.*;
 import static arc.backend.sdl.jni.SDL.*;
 
 public class SdlApplication implements Application{
-    private final Array<ApplicationListener> listeners = new Array<>();
+    private final Seq<ApplicationListener> listeners = new Seq<>();
     private final TaskQueue runnables = new TaskQueue();
     private final int[] inputs = new int[34];
 
@@ -221,7 +221,7 @@ public class SdlApplication implements Application{
     }
 
     @Override
-    public Array<ApplicationListener> getListeners(){
+    public Seq<ApplicationListener> getListeners(){
         return listeners;
     }
 

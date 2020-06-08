@@ -113,7 +113,7 @@ public class VertexBatch3D{
     }
 
     private VertexAttribute[] buildVertexAttributes(boolean hasNormals, boolean hasColor, int numTexCoords){
-        Array<VertexAttribute> attribs = new Array<>();
+        Seq<VertexAttribute> attribs = new Seq<>();
         attribs.add(new VertexAttribute(Usage.position, 3, Shader.positionAttribute));
         if(hasNormals) attribs.add(new VertexAttribute(Usage.normal, 3, Shader.normalAttribute));
         if(hasColor) attribs.add(new VertexAttribute(Usage.colorPacked, 4, Shader.colorAttribute));

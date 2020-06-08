@@ -24,7 +24,7 @@ public class ZipFi extends Fi{
         try{
             zip = new ZipFile(zipFileLoc.file());
 
-            Array<String> names = Array.with(Collections.list(zip.entries())).map(ZipEntry::getName);
+            Seq<String> names = Seq.with(Collections.list(zip.entries())).map(ZipEntry::getName);
             ObjectSet<String> paths = new ObjectSet<>();
 
             for(String path : names){
@@ -41,7 +41,7 @@ public class ZipFi extends Fi{
                 paths.remove("/");
             }
 
-            Array<ZipFi> files = Array.with(paths).map(s -> zip.getEntry(s) != null ?
+            Seq<ZipFi> files = Seq.with(paths).map(s -> zip.getEntry(s) != null ?
                 new ZipFi(zip.getEntry(s), zip) : new ZipFi(s, zip));
 
             files.add(this);

@@ -5,7 +5,7 @@ import arc.backend.robovm.objectal.ALBuffer;
 import arc.backend.robovm.objectal.ALChannelSource;
 import arc.backend.robovm.objectal.ALSource;
 import arc.backend.robovm.objectal.OALSimpleAudio;
-import arc.struct.IntArray;
+import arc.struct.IntSeq;
 import arc.files.Fi;
 import org.robovm.apple.foundation.NSArray;
 
@@ -22,7 +22,7 @@ public class IOSSound implements Sound{
 
     private ALChannelSource channel;
     private NSArray<ALSource> sourcePool;
-    private IntArray streamIds = new IntArray(8);
+    private IntSeq streamIds = new IntSeq(8);
 
     public IOSSound(Fi filePath){
         soundPath = filePath.file().getPath().replace('\\', '/');

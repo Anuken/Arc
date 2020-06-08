@@ -239,7 +239,7 @@ public class Button extends Table implements Disableable{
             offsetY = style.unpressedOffsetY;
         }
 
-        Array<Element> children = getChildren();
+        Seq<Element> children = getChildren();
         for(int i = 0; i < children.size; i++)
             children.get(i).moveBy(offsetX, offsetY);
         super.draw();

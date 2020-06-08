@@ -1,6 +1,6 @@
 package arc.scene.utils;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.struct.ObjectMap;
 import arc.struct.ObjectMap.Entry;
 import arc.math.geom.Vec2;
@@ -24,7 +24,7 @@ public class DragAndDrop{
     Element dragActor;
     Target target;
     boolean isValidTarget;
-    Array<Target> targets = new Array<>();
+    Seq<Target> targets = new Seq<>();
     ObjectMap<Source, DragListener> sourceListeners = new ObjectMap<>();
     float dragActorX = 0, dragActorY = 0;
     float touchOffsetX, touchOffsetY;

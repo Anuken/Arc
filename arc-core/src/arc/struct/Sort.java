@@ -35,7 +35,7 @@ public class Sort{
         return instance;
     }
 
-    public <T> void sort(Array<T> a){
+    public <T> void sort(Seq<T> a){
         if(comparableTimSort == null) comparableTimSort = new ComparableTimSort();
         comparableTimSort.doSort(a.items, 0, a.size);
     }
@@ -50,7 +50,7 @@ public class Sort{
         comparableTimSort.doSort(a, fromIndex, toIndex);
     }
 
-    public <T> void sort(Array<T> a, Comparator<? super T> c){
+    public <T> void sort(Seq<T> a, Comparator<? super T> c){
         if(timSort == null) timSort = new TimSort();
         timSort.doSort(a.items, c, 0, a.size);
     }

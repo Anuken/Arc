@@ -3,7 +3,7 @@ package arc.assets;
 import arc.assets.loaders.AssetLoader;
 import arc.assets.loaders.AsynchronousAssetLoader;
 import arc.assets.loaders.SynchronousAssetLoader;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.files.Fi;
 import arc.util.*;
 import arc.util.async.AsyncExecutor;
@@ -23,7 +23,7 @@ class AssetLoadingTask implements AsyncTask<Void>{
     AssetManager manager;
     volatile boolean asyncDone = false;
     volatile boolean dependenciesLoaded = false;
-    volatile Array<AssetDescriptor> dependencies;
+    volatile Seq<AssetDescriptor> dependencies;
     volatile AsyncResult<Void> depsFuture = null;
     volatile AsyncResult<Void> loadFuture = null;
     volatile Object asset = null;
@@ -137,7 +137,7 @@ class AssetLoadingTask implements AsyncTask<Void>{
         return asset;
     }
 
-    private void removeDuplicates(Array<AssetDescriptor> array){
+    private void removeDuplicates(Seq<AssetDescriptor> array){
         boolean ordered = array.ordered;
         array.ordered = true;
         for(int i = 0; i < array.size; ++i){

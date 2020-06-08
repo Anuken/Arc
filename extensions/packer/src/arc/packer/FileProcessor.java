@@ -17,7 +17,7 @@ import java.util.regex.*;
 public class FileProcessor{
     FilenameFilter inputFilter;
     Comparator<File> comparator = Structs.comparing(File::getName);
-    Array<Pattern> inputRegex = new Array<>();
+    Seq<Pattern> inputRegex = new Seq<>();
     String outputSuffix;
     ArrayList<Entry> outputFiles = new ArrayList<>();
     boolean recursive = true;

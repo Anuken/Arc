@@ -5,8 +5,8 @@ import arc.struct.*;
 
 public class MockApplication implements Application{
     @Override
-    public Array<ApplicationListener> getListeners(){
-        return new Array<>();
+    public Seq<ApplicationListener> getListeners(){
+        return new Seq<>();
     }
 
     @Override

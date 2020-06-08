@@ -3,36 +3,36 @@ package arc.struct;
 import java.util.*;
 
 /**
- * An {@link ObjectSet} that also stores keys in an {@link Array} using the insertion order. {@link #iterator() Iteration} is
+ * An {@link ObjectSet} that also stores keys in an {@link Seq} using the insertion order. {@link #iterator() Iteration} is
  * ordered and faster than an unordered set. Keys can also be accessed and the order changed using {@link #orderedItems()}. There
  * is some additional overhead for put and remove. When used for faster iteration versus ObjectSet and the order does not actually
- * matter, copying during remove can be greatly reduced by setting {@link Array#ordered} to false for
+ * matter, copying during remove can be greatly reduced by setting {@link Seq#ordered} to false for
  * {@link OrderedSet#orderedItems()}.
  * @author Nathan Sweet
  */
 
 public class OrderedSet<T> extends ObjectSet<T>{
-    final Array<T> items;
+    final Seq<T> items;
     OrderedSetIterator iterator1, iterator2;
 
     public OrderedSet(){
-        items = new Array<>();
+        items = new Seq<>();
     }
 
     public OrderedSet(int initialCapacity, float loadFactor){
         super(initialCapacity, loadFactor);
-        items = new Array<>(capacity);
+        items = new Seq<>(capacity);
     }
 
     public OrderedSet(int initialCapacity){
         super(initialCapacity);
-        items = new Array<>(capacity);
+        items = new Seq<>(capacity);
     }
 
     @SuppressWarnings("unchecked")
     public OrderedSet(OrderedSet set){
         super(set);
-        items = new Array<>(capacity);
+        items = new Seq<>(capacity);
         items.addAll(set.items);
     }
 
@@ -79,7 +79,7 @@ public class OrderedSet<T> extends ObjectSet<T>{
         super.clear();
     }
 
-    public Array<T> orderedItems(){
+    public Seq<T> orderedItems(){
         return items;
     }
 

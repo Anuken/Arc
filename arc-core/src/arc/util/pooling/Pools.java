@@ -1,6 +1,6 @@
 package arc.util.pooling;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.struct.ObjectMap;
 import arc.func.Prov;
 
@@ -63,7 +63,7 @@ public class Pools{
      * Frees the specified objects from the {@link #get(Class, Prov) pool}. Null objects within the array are silently ignored. Objects
      * don't need to be from the same pool.
      */
-    public static void freeAll(Array objects){
+    public static void freeAll(Seq objects){
         freeAll(objects, false);
     }
 
@@ -71,7 +71,7 @@ public class Pools{
      * Frees the specified objects from the {@link #get(Class, Prov) pool}. Null objects within the array are silently ignored.
      * @param samePool If true, objects don't need to be from the same pool but the pool must be looked up for each object.
      */
-    public static void freeAll(Array objects, boolean samePool){
+    public static void freeAll(Seq objects, boolean samePool){
         if(objects == null) throw new IllegalArgumentException("Objects cannot be null.");
         Pool pool = null;
         for(int i = 0, n = objects.size; i < n; i++){

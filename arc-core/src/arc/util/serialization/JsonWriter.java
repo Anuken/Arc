@@ -1,6 +1,6 @@
 package arc.util.serialization;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.util.Strings;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  */
 public class JsonWriter extends Writer implements BaseJsonWriter{
     final Writer writer;
-    private final Array<JsonObject> stack = new Array<>();
+    private final Seq<JsonObject> stack = new Seq<>();
     private JsonObject current;
     private boolean named;
     private OutputType outputType = OutputType.json;

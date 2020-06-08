@@ -1,11 +1,11 @@
 package arc.util;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 
 /** @author xoppa */
 public class PerformanceCounters{
     private final static float nano2seconds = 1f / 1000000000.0f;
-    public final Array<PerformanceCounter> counters = new Array<>();
+    public final Seq<PerformanceCounter> counters = new Seq<>();
     private long lastTick = 0L;
 
     public PerformanceCounter add(final String name, final int windowSize){

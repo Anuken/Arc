@@ -13,11 +13,11 @@ import java.nio.*;
 import static arc.backend.sdl.jni.AL.*;
 
 public class ALAudio extends Audio{
-    Array<ALMusic> music = new Array<>(false, 1, ALMusic.class);
+    Seq<ALMusic> music = new Seq<>(false, 1, ALMusic.class);
     long device;
     long context;
     boolean noDevice = false;
-    private IntArray idleSources, allSources;
+    private IntSeq idleSources, allSources;
     private IntIntMap soundIdToSource;
     private IntIntMap sourceToSoundId;
     private int nextSoundId = 0;
@@ -53,13 +53,13 @@ public class ALAudio extends Audio{
             return;
         }
 
-        allSources = new IntArray(false, simultaneousSources);
+        allSources = new IntSeq(false, simultaneousSources);
         for(int i = 0; i < simultaneousSources; i++){
             int sourceID = alGenSources();
             if(alGetError() != AL_NO_ERROR) break;
             allSources.add(sourceID);
         }
-        idleSources = new IntArray(allSources);
+        idleSources = new IntSeq(allSources);
         soundIdToSource = new IntIntMap();
         sourceToSoundId = new IntIntMap();
 

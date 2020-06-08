@@ -22,7 +22,7 @@
 
 package arc.graphics.g2d;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.files.Fi;
 import arc.graphics.Texture.TextureFilter;
 import arc.graphics.gl.Shader;
@@ -38,7 +38,7 @@ import arc.graphics.gl.Shader;
 public class DistanceFieldFont extends BitmapFont{
     private float distanceFieldSmoothing;
 
-    public DistanceFieldFont(BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer){
+    public DistanceFieldFont(BitmapFontData data, Seq<TextureRegion> pageRegions, boolean integer){
         super(data, pageRegions, integer);
     }
 
@@ -116,7 +116,7 @@ public class DistanceFieldFont extends BitmapFont{
         super.load(data);
 
         // Distance field font rendering requires font texture to be filtered Linear.
-        final Array<TextureRegion> regions = getRegions();
+        final Seq<TextureRegion> regions = getRegions();
         for(TextureRegion region : regions)
             region.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
     }

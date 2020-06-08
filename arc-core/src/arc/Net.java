@@ -90,7 +90,7 @@ public class Net{
          * Returns a Map of the headers. The keys are Strings that represent the header name. Each values is a List of Strings that
          * represent the corresponding header values.
          */
-        ObjectMap<String, Array<String>> getHeaders();
+        ObjectMap<String, Seq<String>> getHeaders();
     }
 
     /** Provides all HTTP methods to use when creating a {@link HttpRequest}.*/

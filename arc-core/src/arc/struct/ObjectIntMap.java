@@ -700,8 +700,8 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>>{
             super(map);
         }
 
-        public Array<Entry<K>> toArray(){
-            Array<Entry<K>> out = new Array<>();
+        public Seq<Entry<K>> toArray(){
+            Seq<Entry<K>> out = new Seq<>();
             for(Entry<K> entry : this){
                 Entry<K> e = new Entry<>();
                 e.key = entry.key;
@@ -757,8 +757,8 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>>{
         }
 
         /** Returns a new array containing the remaining values. */
-        public IntArray toArray(){
-            IntArray array = new IntArray(true, map.size);
+        public IntSeq toArray(){
+            IntSeq array = new IntSeq(true, map.size);
             while(hasNext)
                 array.add(next());
             return array;
@@ -789,15 +789,15 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>>{
         }
 
         /** Returns a new array containing the remaining keys. */
-        public Array<K> toArray(){
-            Array array = new Array(true, map.size);
+        public Seq<K> toArray(){
+            Seq array = new Seq(true, map.size);
             while(hasNext)
                 array.add(next());
             return array;
         }
 
         /** Adds the remaining keys to the array. */
-        public Array<K> toArray(Array<K> array){
+        public Seq<K> toArray(Seq<K> array){
             while(hasNext)
                 array.add(next());
             return array;

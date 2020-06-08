@@ -24,10 +24,10 @@ public class Body{
     private final Physics world;
 
     /** Fixtures of this body **/
-    private Array<Fixture> fixtures = new Array<>(2);
+    private Seq<Fixture> fixtures = new Seq<>(2);
 
     /** Joints of this body **/
-    protected Array<JointEdge> joints = new Array<>(2);
+    protected Seq<JointEdge> joints = new Seq<>(2);
 
     /** user data **/
     private Object userData;
@@ -826,12 +826,12 @@ inline b2BodyType getBodyType( int type )
 	*/
 
     /** Get the list of all fixtures attached to this body. Do not modify the list! */
-    public Array<Fixture> getFixtureList(){
+    public Seq<Fixture> getFixtureList(){
         return fixtures;
     }
 
     /** Get the list of all joints attached to this body. Do not modify the list! */
-    public Array<JointEdge> getJointList(){
+    public Seq<JointEdge> getJointList(){
         return joints;
     }
 

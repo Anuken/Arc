@@ -1,6 +1,6 @@
 package arc.util.pooling;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 
 /**
  * A {@link Pool} which keeps track of the obtained items (see {@link #obtain()}), which can be free'd all at once using the
@@ -8,7 +8,7 @@ import arc.struct.Array;
  * @author Xoppa
  */
 public abstract class FlushablePool<T> extends Pool<T>{
-    protected Array<T> obtained = new Array<>();
+    protected Seq<T> obtained = new Seq<>();
 
     public FlushablePool(){
         super();
@@ -42,7 +42,7 @@ public abstract class FlushablePool<T> extends Pool<T>{
     }
 
     @Override
-    public void freeAll(Array<T> objects){
+    public void freeAll(Seq<T> objects){
         obtained.removeAll(objects, true);
         super.freeAll(objects);
     }

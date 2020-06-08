@@ -39,7 +39,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
     boolean isDirty = false;
     boolean isBound = false;
     int vaoHandle = -1;
-    IntArray cachedLocations = new IntArray();
+    IntSeq cachedLocations = new IntSeq();
 
 
     /**

@@ -17,9 +17,9 @@ public class HeadlessApplication implements Application{
     protected final MockAudio audio;
     protected final MockInput input;
     protected final MockGraphics graphics;
-    protected final Array<ApplicationListener> listeners = new Array<>();
-    protected final Array<Runnable> runnables = new Array<>();
-    protected final Array<Runnable> executedRunnables = new Array<>();
+    protected final Seq<ApplicationListener> listeners = new Seq<>();
+    protected final Seq<Runnable> runnables = new Seq<>();
+    protected final Seq<Runnable> executedRunnables = new Seq<>();
     protected final Cons<Throwable> exceptionHandler;
     private final long renderInterval;
     protected Thread mainLoopThread;
@@ -142,7 +142,7 @@ public class HeadlessApplication implements Application{
     }
 
     @Override
-    public Array<ApplicationListener> getListeners(){
+    public Seq<ApplicationListener> getListeners(){
         return listeners;
     }
 

@@ -5,7 +5,7 @@ import arc.Core;
 import arc.assets.AssetManager;
 import arc.assets.loaders.AssetLoader;
 import arc.assets.loaders.TextureLoader.TextureParameter;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.files.Fi;
 import arc.graphics.Pixmap.Format;
 import arc.graphics.gl.FileTextureData;
@@ -31,7 +31,7 @@ import java.util.Map;
  * @author badlogicgames@gmail.com
  */
 public class Texture extends GLTexture{
-    final static Map<Application, Array<Texture>> managedTextures = new HashMap<>();
+    final static Map<Application, Seq<Texture>> managedTextures = new HashMap<>();
     private static AssetManager assetManager;
     TextureData data;
 
@@ -89,8 +89,8 @@ public class Texture extends GLTexture{
     }
 
     private static void addManagedTexture(Application app, Texture texture){
-        Array<Texture> managedTextureArray = managedTextures.get(app);
-        if(managedTextureArray == null) managedTextureArray = new Array<>();
+        Seq<Texture> managedTextureArray = managedTextures.get(app);
+        if(managedTextureArray == null) managedTextureArray = new Seq<>();
         managedTextureArray.add(texture);
         managedTextures.put(app, managedTextureArray);
     }
@@ -102,7 +102,7 @@ public class Texture extends GLTexture{
 
     /** Invalidate all managed textures. This is an internal method. Do not use it! */
     public static void invalidateAllTextures(Application app){
-        Array<Texture> managedTextureArray = managedTextures.get(app);
+        Seq<Texture> managedTextureArray = managedTextures.get(app);
         if(managedTextureArray == null) return;
 
         if(assetManager == null){
@@ -118,7 +118,7 @@ public class Texture extends GLTexture{
 
             // next we go through each texture and reload either directly or via the
             // asset manager.
-            Array<Texture> textures = new Array<>(managedTextureArray);
+            Seq<Texture> textures = new Seq<>(managedTextureArray);
             for(Texture texture : textures){
                 String fileName = assetManager.getAssetFileName(texture);
                 if(fileName == null){

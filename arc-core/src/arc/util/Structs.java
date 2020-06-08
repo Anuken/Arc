@@ -1,7 +1,7 @@
 package arc.util;
 
 
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.func.*;
 import arc.math.Mathf;
 
@@ -75,7 +75,7 @@ public class Structs{
     }
 
     public static <T> T[] filter(Class<T> type, T[] array, Boolf<T> value){
-        Array<T> out = new Array<>(true, array.length, type);
+        Seq<T> out = new Seq<>(true, array.length, type);
         for(T t : array){
             if(value.get(t)) out.add(t);
         }

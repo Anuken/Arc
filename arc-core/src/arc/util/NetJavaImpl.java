@@ -2,7 +2,7 @@ package arc.util;
 
 import arc.Net;
 import arc.Net.*;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.struct.ObjectMap;
 import arc.func.Cons;
 import arc.util.async.AsyncExecutor;
@@ -175,13 +175,13 @@ public class NetJavaImpl{
         }
 
         @Override
-        public ObjectMap<String, Array<String>> getHeaders(){
+        public ObjectMap<String, Seq<String>> getHeaders(){
             //convert between the struct types
-            ObjectMap<String, Array<String>> out = new ObjectMap<>();
+            ObjectMap<String, Seq<String>> out = new ObjectMap<>();
             Map<String, List<String>> fields = connection.getHeaderFields();
             for(String key : fields.keySet()){
                 if(key != null){
-                    out.put(key, Array.with(fields.get(key).toArray(new String[0])));
+                    out.put(key, Seq.with(fields.get(key).toArray(new String[0])));
                 }
             }
             return out;

@@ -32,7 +32,7 @@ public class Scene implements InputProcessor, Disposable{
     private final boolean[] pointerTouched = new boolean[20];
     private final int[] pointerScreenX = new int[20];
     private final int[] pointerScreenY = new int[20];
-    private final SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray<>(true, 4, TouchFocus.class);
+    private final SnapshotSeq<TouchFocus> touchFocuses = new SnapshotSeq<>(true, 4, TouchFocus.class);
     private Viewport viewport;
     private int mouseScreenX, mouseScreenY;
     private Element mouseOverElement;
@@ -69,7 +69,7 @@ public class Scene implements InputProcessor, Disposable{
     }
 
     public void registerStyles(Class<?> type){
-        Array.with(type.getFields()).each(f -> f.getName().startsWith("default"), f -> addStyle(f.getType(), Reflect.get(f)));
+        Seq.with(type.getFields()).each(f -> f.getName().startsWith("default"), f -> addStyle(f.getType(), Reflect.get(f)));
     }
 
     public boolean hasMouse(){
@@ -290,7 +290,7 @@ public class Scene implements InputProcessor, Disposable{
         event.stageY = (tempCoords.y);
         event.pointer = (pointer);
 
-        SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
+        SnapshotSeq<TouchFocus> touchFocuses = this.touchFocuses;
         TouchFocus[] focuses = touchFocuses.begin();
         for(int i = 0, n = touchFocuses.size; i < n; i++){
             TouchFocus focus = focuses[i];
@@ -328,7 +328,7 @@ public class Scene implements InputProcessor, Disposable{
         event.pointer = (pointer);
         event.keyCode = (button);
 
-        SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
+        SnapshotSeq<TouchFocus> touchFocuses = this.touchFocuses;
         TouchFocus[] focuses = touchFocuses.begin();
         for(int i = 0, n = touchFocuses.size; i < n; i++){
             TouchFocus focus = focuses[i];
@@ -459,7 +459,7 @@ public class Scene implements InputProcessor, Disposable{
      * the listener may never receive a touchUp event if this method is used.
      */
     public void removeTouchFocus(EventListener listener, Element listenerActor, Element target, int pointer, KeyCode button){
-        SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
+        SnapshotSeq<TouchFocus> touchFocuses = this.touchFocuses;
         for(int i = touchFocuses.size - 1; i >= 0; i--){
             TouchFocus focus = touchFocuses.get(i);
             if(focus.listener == listener && focus.listenerActor == listenerActor && focus.target == target
@@ -482,7 +482,7 @@ public class Scene implements InputProcessor, Disposable{
 
         // Cancel all current touch focuses for the specified listener, allowing for concurrent modification, and never cancel the
         // same focus twice.
-        SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
+        SnapshotSeq<TouchFocus> touchFocuses = this.touchFocuses;
         TouchFocus[] items = touchFocuses.begin();
         for(int i = 0, n = touchFocuses.size; i < n; i++){
             TouchFocus focus = items[i];
@@ -522,7 +522,7 @@ public class Scene implements InputProcessor, Disposable{
 
         // Cancel all current touch focuses except for the specified listener, allowing for concurrent modification, and never
         // cancel the same focus twice.
-        SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
+        SnapshotSeq<TouchFocus> touchFocuses = this.touchFocuses;
         TouchFocus[] items = touchFocuses.begin();
         for(int i = 0, n = touchFocuses.size; i < n; i++){
             TouchFocus focus = items[i];
@@ -560,7 +560,7 @@ public class Scene implements InputProcessor, Disposable{
      * Returns the root's child actors.
      * @see Group#getChildren()
      */
-    public Array<Element> getElements(){
+    public Seq<Element> getElements(){
         return root.children;
     }
 

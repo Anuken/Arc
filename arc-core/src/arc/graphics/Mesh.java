@@ -33,7 +33,7 @@ import java.util.*;
  */
 public class Mesh implements Disposable{
     /** list of all meshes **/
-    static final Map<Application, Array<Mesh>> meshes = new HashMap<>();
+    static final Map<Application, Seq<Mesh>> meshes = new HashMap<>();
     final VertexData vertices;
     final IndexData indices;
     final boolean isVertexArray;
@@ -147,8 +147,8 @@ public class Mesh implements Disposable{
     }
 
     private static void addManagedMesh(Application app, Mesh mesh){
-        Array<Mesh> managedResources = meshes.get(app);
-        if(managedResources == null) managedResources = new Array<>();
+        Seq<Mesh> managedResources = meshes.get(app);
+        if(managedResources == null) managedResources = new Seq<>();
         managedResources.add(mesh);
         meshes.put(app, managedResources);
     }
@@ -157,7 +157,7 @@ public class Mesh implements Disposable{
      * Invalidates all meshes so the next time they are rendered new VBO handles are generated.
      */
     public static void invalidateAllMeshes(Application app){
-        Array<Mesh> meshesArray = meshes.get(app);
+        Seq<Mesh> meshesArray = meshes.get(app);
         if(meshesArray == null) return;
         for(int i = 0; i < meshesArray.size; i++){
             meshesArray.get(i).vertices.invalidate();

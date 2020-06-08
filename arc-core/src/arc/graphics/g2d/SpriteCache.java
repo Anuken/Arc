@@ -53,15 +53,15 @@ public class SpriteCache implements Disposable{
     private final Mat projectionMatrix = new Mat();
     private final Mat combinedMatrix = new Mat();
     private final Shader shader;
-    private final Array<Texture> textures = new Array<>(8);
-    private final IntArray counts = new IntArray(8);
+    private final Seq<Texture> textures = new Seq<>(8);
+    private final IntSeq counts = new IntSeq(8);
     private final Color color = new Color(1, 1, 1, 1);
     /** Number of render calls since the last {@link #begin()}. **/
     public int renderCalls = 0;
     /** Number of rendering calls, ever. Will not be reset unless set manually. **/
     public int totalRenderCalls = 0;
     private boolean drawing;
-    private Array<Cache> caches;
+    private Seq<Cache> caches;
     private Cache currentCache;
     private float colorPacked = Color.whiteFloatBits;
     private Shader customShader = null;
@@ -101,7 +101,7 @@ public class SpriteCache implements Disposable{
         Shader.positionAttribute), new VertexAttribute(Usage.colorPacked, 4, Shader.colorAttribute),
         new VertexAttribute(Usage.textureCoordinates, 2, Shader.texcoordAttribute + "0"));
         mesh.setAutoBind(false);
-        caches = new Array<>(cacheSize);
+        caches = new Seq<>(cacheSize);
 
         if(useIndices){
             int length = size * 6;
@@ -148,7 +148,7 @@ public class SpriteCache implements Disposable{
         return new Shader(vertexShader, fragmentShader);
     }
 
-    public Array<Cache> getCaches(){
+    public Seq<Cache> getCaches(){
         return caches;
     }
 

@@ -817,8 +817,8 @@ public class IntIntMap implements Iterable<IntIntMap.Entry>{
         }
 
         /** Returns a new array containing the remaining values. */
-        public IntArray toArray(){
-            IntArray array = new IntArray(true, map.size);
+        public IntSeq toArray(){
+            IntSeq array = new IntSeq(true, map.size);
             while(hasNext)
                 array.add(next());
             return array;
@@ -845,8 +845,8 @@ public class IntIntMap implements Iterable<IntIntMap.Entry>{
         }
 
         /** Returns a new array containing the remaining keys. */
-        public IntArray toArray(){
-            IntArray array = new IntArray(true, map.size);
+        public IntSeq toArray(){
+            IntSeq array = new IntSeq(true, map.size);
             while(hasNext)
                 array.add(next());
             return array;

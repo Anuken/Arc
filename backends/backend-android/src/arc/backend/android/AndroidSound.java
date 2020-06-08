@@ -13,7 +13,7 @@ final class AndroidSound implements Sound{
     final SoundPool soundPool;
     final AudioManager manager;
     final int soundId;
-    final IntArray streamIds = new IntArray(8);
+    final IntSeq streamIds = new IntSeq(8);
     final TaskQueue queue;
     final int[] mappedIDs;
     int lastID;

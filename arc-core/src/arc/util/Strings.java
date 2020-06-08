@@ -9,8 +9,8 @@ import java.nio.charset.*;
 public class Strings{
     public static final Charset utf8 = Charset.forName("UTF-8");
 
-    public static Array<Throwable> getCauses(Throwable e){
-        Array<Throwable> arr = new Array<>();
+    public static Seq<Throwable> getCauses(Throwable e){
+        Seq<Throwable> arr = new Seq<>();
         while(e != null){
             arr.add(e);
             e = e.getCause();

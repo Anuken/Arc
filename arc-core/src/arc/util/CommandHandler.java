@@ -1,14 +1,14 @@
 package arc.util;
 
 
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.struct.ObjectMap;
 import arc.func.Cons;
 
 /** Parses command syntax. */
 public class CommandHandler{
     private final ObjectMap<String, Command> commands = new ObjectMap<>();
-    private final Array<Command> orderedCommands = new Array<>();
+    private final Seq<Command> orderedCommands = new Seq<>();
     private String prefix;
 
     /** Creates a command handler with a specific command prefix.*/
@@ -36,7 +36,7 @@ public class CommandHandler{
         String commandstr = message.contains(" ") ? message.substring(0, message.indexOf(" ")) : message;
         String argstr = message.contains(" ") ? message.substring(commandstr.length() + 1) : "";
 
-        Array<String> result = new Array<>();
+        Seq<String> result = new Seq<>();
 
         Command command = commands.get(commandstr);
 
@@ -124,7 +124,7 @@ public class CommandHandler{
         return register(text, params, description, (args, p) -> runner.get(args));
     }
 
-    public Array<Command> getCommandList(){
+    public Seq<Command> getCommandList(){
         return orderedCommands;
     }
 

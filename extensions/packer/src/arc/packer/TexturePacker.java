@@ -24,7 +24,7 @@ public class TexturePacker{
     private final Settings settings;
     private final Packer packer;
     private final ImageProcessor imageProcessor;
-    private final Array<InputImage> inputImages = new Array<>();
+    private final Seq<InputImage> inputImages = new Seq<>();
     private ProgressListener progress;
 
     /** @param rootDir See {@link #setRootDir(File)}. */
@@ -121,7 +121,7 @@ public class TexturePacker{
             progress.start(0.19f);
             progress.count = 0;
             progress.total = imageProcessor.getImages().size;
-            Array<Page> pages = packer.pack(progress, imageProcessor.getImages());
+            Seq<Page> pages = packer.pack(progress, imageProcessor.getImages());
             progress.end();
 
             progress.start(0.45f);
@@ -147,7 +147,7 @@ public class TexturePacker{
         progress.end();
     }
 
-    private void writeImages(File outputDir, String scaledPackFileName, Array<Page> pages){
+    private void writeImages(File outputDir, String scaledPackFileName, Seq<Page> pages){
         File packFileNoExt = new File(outputDir, scaledPackFileName);
         File packDir = packFileNoExt.getParentFile();
         String imageName = packFileNoExt.getName();
@@ -322,7 +322,7 @@ public class TexturePacker{
         }
     }
 
-    private void writePackFile(File outputDir, String scaledPackFileName, Array<Page> pages) throws IOException{
+    private void writePackFile(File outputDir, String scaledPackFileName, Seq<Page> pages) throws IOException{
         File packFile = new File(outputDir, scaledPackFileName + settings.atlasExtension);
         File packDir = packFile.getParentFile();
         packDir.mkdirs();
@@ -353,7 +353,7 @@ public class TexturePacker{
             page.outputRects.sort();
             for(Rect rect : page.outputRects){
                 writeRect(writer, page, rect, rect.name);
-                Array<Alias> aliases = new Array<>(rect.aliases.toArray(new Alias[0]));
+                Seq<Alias> aliases = new Seq<>(rect.aliases.toArray(new Alias[0]));
                 aliases.sort();
                 for(Alias alias : aliases){
                     Rect aliasRect = new Rect();
@@ -416,7 +416,7 @@ public class TexturePacker{
     /** @author Nathan Sweet */
     static public class Page{
         public String imageName;
-        public Array<Rect> outputRects, remainingRects;
+        public Seq<Rect> outputRects, remainingRects;
         public float occupancy;
         public int x, y, width, height, imageWidth, imageHeight;
     }
@@ -674,9 +674,9 @@ public class TexturePacker{
     }
 
     public interface Packer{
-        Array<Page> pack(Array<Rect> inputRects);
+        Seq<Page> pack(Seq<Rect> inputRects);
 
-        Array<Page> pack(ProgressListener progress, Array<Rect> inputRects);
+        Seq<Page> pack(ProgressListener progress, Seq<Rect> inputRects);
     }
 
     static final class InputImage{
@@ -687,7 +687,7 @@ public class TexturePacker{
 
     static public abstract class ProgressListener{
         private float scale = 1, lastUpdate;
-        private final FloatArray portions = new FloatArray(8);
+        private final FloatSeq portions = new FloatSeq(8);
         volatile boolean cancel;
         private String message = "";
         int count, total;

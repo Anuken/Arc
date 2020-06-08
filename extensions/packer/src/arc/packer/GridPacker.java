@@ -12,12 +12,12 @@ public class GridPacker implements Packer{
     }
 
     @Override
-    public Array<Page> pack(Array<Rect> inputRects){
+    public Seq<Page> pack(Seq<Rect> inputRects){
         return pack(null, inputRects);
     }
 
     @Override
-    public Array<Page> pack(ProgressListener progress, Array<Rect> inputRects){
+    public Seq<Page> pack(ProgressListener progress, Seq<Rect> inputRects){
         if(!settings.silent) System.out.print("Packing");
 
         // Rects are packed with right and top padding, so the max size is increased to match. After packing the padding is
@@ -47,7 +47,7 @@ public class GridPacker implements Packer{
 
         inputRects.reverse();
 
-        Array<Page> pages = new Array<>();
+        Seq<Page> pages = new Seq<>();
         while(inputRects.size > 0){
             progress.count = n - inputRects.size + 1;
             if(progress.update(progress.count, n)) break;
@@ -60,9 +60,9 @@ public class GridPacker implements Packer{
         return pages;
     }
 
-    private Page packPage(Array<Rect> inputRects, int cellWidth, int cellHeight, int maxWidth, int maxHeight){
+    private Page packPage(Seq<Rect> inputRects, int cellWidth, int cellHeight, int maxWidth, int maxHeight){
         Page page = new Page();
-        page.outputRects = new Array<>();
+        page.outputRects = new Seq<>();
 
         int n = inputRects.size;
         int x = 0, y = 0;

@@ -21,11 +21,11 @@ import java.util.*;
 public class AssetManager implements Disposable{
     final ObjectMap<Class, ObjectMap<String, RefCountedContainer>> assets = new ObjectMap<>();
     final ObjectMap<String, Class> assetTypes = new ObjectMap<>();
-    final ObjectMap<String, Array<String>> assetDependencies = new ObjectMap<>();
+    final ObjectMap<String, Seq<String>> assetDependencies = new ObjectMap<>();
     final ObjectSet<String> injected = new ObjectSet<>();
 
     final ObjectMap<Class, ObjectMap<String, AssetLoader>> loaders = new ObjectMap<>();
-    final Array<AssetDescriptor> loadQueue = new Array<>();
+    final Seq<AssetDescriptor> loadQueue = new Seq<>();
     final AsyncExecutor executor;
 
     final Stack<AssetLoadingTask> tasks = new Stack<>();
@@ -109,7 +109,7 @@ public class AssetManager implements Disposable{
      * @param type the asset type
      * @return all the assets matching the specified type
      */
-    public synchronized <T> Array<T> getAll(Class<T> type, Array<T> out){
+    public synchronized <T> Seq<T> getAll(Class<T> type, Seq<T> out){
         ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
         if(assetsByType != null){
             for(ObjectMap.Entry<String, RefCountedContainer> asset : assetsByType.entries()){
@@ -201,7 +201,7 @@ public class AssetManager implements Disposable{
         }
 
         // remove any dependencies (or just decrement their ref count).
-        Array<String> dependencies = assetDependencies.get(fileName);
+        Seq<String> dependencies = assetDependencies.get(fileName);
         if(dependencies != null){
             for(String dependency : dependencies){
                 if(isLoaded(dependency)) unload(dependency);
@@ -360,7 +360,7 @@ public class AssetManager implements Disposable{
                 }
 
                 @Override
-                public Array<AssetDescriptor> getDependencies(String fileName, Fi file, AssetLoaderParameters parameter){
+                public Seq<AssetDescriptor> getDependencies(String fileName, Fi file, AssetLoaderParameters parameter){
                     return load.getDependencies();
                 }
             });
@@ -498,7 +498,7 @@ public class AssetManager implements Disposable{
         }
     }
 
-    synchronized void injectDependencies(String parentAssetFilename, Array<AssetDescriptor> dependendAssetDescs){
+    synchronized void injectDependencies(String parentAssetFilename, Seq<AssetDescriptor> dependendAssetDescs){
         ObjectSet<String> injected = this.injected;
         for(AssetDescriptor desc : dependendAssetDescs){
             if(injected.contains(desc.fileName)) continue; // Ignore subsequent dependencies if there are duplicates.
@@ -510,9 +510,9 @@ public class AssetManager implements Disposable{
 
     private synchronized void injectDependency(String parentAssetFilename, AssetDescriptor dependendAssetDesc){
         // add the asset as a dependency of the parent asset
-        Array<String> dependencies = assetDependencies.get(parentAssetFilename);
+        Seq<String> dependencies = assetDependencies.get(parentAssetFilename);
         if(dependencies == null){
-            dependencies = new Array();
+            dependencies = new Seq();
             assetDependencies.put(parentAssetFilename, dependencies);
         }
         dependencies.add(dependendAssetDesc.fileName);
@@ -628,7 +628,7 @@ public class AssetManager implements Disposable{
     }
 
     private void incrementRefCountedDependencies(String parent){
-        Array<String> dependencies = assetDependencies.get(parent);
+        Seq<String> dependencies = assetDependencies.get(parent);
         if(dependencies == null) return;
 
         for(String dependency : dependencies){
@@ -740,13 +740,13 @@ public class AssetManager implements Disposable{
         while(assetTypes.size > 0){
             // for each asset, figure out how often it was referenced
             dependencyCount.clear();
-            Array<String> assets = assetTypes.keys().toArray();
+            Seq<String> assets = assetTypes.keys().toArray();
             for(String asset : assets){
                 dependencyCount.put(asset, 0);
             }
 
             for(String asset : assets){
-                Array<String> dependencies = assetDependencies.get(asset);
+                Seq<String> dependencies = assetDependencies.get(asset);
                 if(dependencies == null) continue;
                 for(String dependency : dependencies){
                     int count = dependencyCount.get(dependency, 0);
@@ -800,7 +800,7 @@ public class AssetManager implements Disposable{
 
             Class type = assetTypes.get(fileName);
             RefCountedContainer assetRef = assets.get(type).get(fileName);
-            Array<String> dependencies = assetDependencies.get(fileName);
+            Seq<String> dependencies = assetDependencies.get(fileName);
 
             sb.append(type.getSimpleName());
 
@@ -821,12 +821,12 @@ public class AssetManager implements Disposable{
     }
 
     /** @return the file names of all loaded assets. */
-    public synchronized Array<String> getAssetNames(){
+    public synchronized Seq<String> getAssetNames(){
         return assetTypes.keys().toArray();
     }
 
     /** @return the dependencies of an asset or null if the asset has no dependencies. */
-    public synchronized Array<String> getDependencies(String fileName){
+    public synchronized Seq<String> getDependencies(String fileName){
         return assetDependencies.get(fileName);
     }
 

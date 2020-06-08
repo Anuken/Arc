@@ -75,7 +75,7 @@ public class KeybindDialog extends Dialog{
             //device.setColor(style.controllerColor);
             device.setAlignment(Align.center);
 
-            Array<InputDevice> devices = input.getDevices();
+            Seq<InputDevice> devices = input.getDevices();
 
             Table stable = new Table();
 

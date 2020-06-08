@@ -1,7 +1,7 @@
 package arc.scene.utils;
 
 import arc.Core;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.struct.OrderedSet;
 import arc.scene.Element;
 import arc.scene.event.ChangeListener.ChangeEvent;
@@ -113,7 +113,7 @@ public class Selection<T> implements Disableable, Iterable<T>{
         cleanup();
     }
 
-    public void setAll(Array<T> items){
+    public void setAll(Seq<T> items){
         boolean added = false;
         snapshot();
         lastSelected = null;
@@ -146,7 +146,7 @@ public class Selection<T> implements Disableable, Iterable<T>{
         }
     }
 
-    public void addAll(Array<T> items){
+    public void addAll(Seq<T> items){
         boolean added = false;
         snapshot();
         for(int i = 0, n = items.size; i < n; i++){
@@ -176,7 +176,7 @@ public class Selection<T> implements Disableable, Iterable<T>{
         }
     }
 
-    public void removeAll(Array<T> items){
+    public void removeAll(Seq<T> items){
         boolean removed = false;
         snapshot();
         for(int i = 0, n = items.size; i < n; i++){
@@ -245,12 +245,12 @@ public class Selection<T> implements Disableable, Iterable<T>{
         return selected.iterator();
     }
 
-    public Array<T> toArray(){
-        return selected.iterator().toArray();
+    public Seq<T> toArray(){
+        return selected.iterator().toSeq();
     }
 
-    public Array<T> toArray(Array<T> array){
-        return selected.iterator().toArray(array);
+    public Seq<T> toArray(Seq<T> array){
+        return selected.iterator().toSeq(array);
     }
 
     public boolean isDisabled(){

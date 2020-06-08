@@ -29,7 +29,7 @@ import java.util.*;
  */
 public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     /** the frame buffers **/
-    protected final static Map<Application, Array<GLFrameBuffer>> buffers = new HashMap<>();
+    protected final static Map<Application, Seq<GLFrameBuffer>> buffers = new HashMap<>();
 
     protected final static int GL_DEPTH24_STENCIL8_OES = 0x88F0;
     /** the currently bound framebuffer; null for the default one. */
@@ -41,7 +41,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     /** true if we have polled for the default handle already. */
     protected static boolean defaultFramebufferHandleInitialized = false;
     /** the color buffer texture **/
-    protected Array<T> textureAttachments = new Array<>();
+    protected Seq<T> textureAttachments = new Seq<>();
     /** the framebuffer that was bound before this one began (null to indicate that nothing was bound) **/
     protected GLFrameBuffer lastBoundFramebuffer = null;
     /** the framebuffer handle **/
@@ -79,8 +79,8 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     }
 
     private static void addManagedFrameBuffer(Application app, GLFrameBuffer frameBuffer){
-        Array<GLFrameBuffer> managedResources = buffers.get(app);
-        if(managedResources == null) managedResources = new Array<>();
+        Seq<GLFrameBuffer> managedResources = buffers.get(app);
+        if(managedResources == null) managedResources = new Seq<>();
         managedResources.add(frameBuffer);
         buffers.put(app, managedResources);
     }
@@ -92,7 +92,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     public static void invalidateAllFrameBuffers(Application app){
         if(Core.gl20 == null) return;
 
-        Array<GLFrameBuffer> bufferArray = buffers.get(app);
+        Seq<GLFrameBuffer> bufferArray = buffers.get(app);
         if(bufferArray == null) return;
         for(int i = 0; i < bufferArray.size; i++){
             bufferArray.get(i).build();
@@ -123,7 +123,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     }
 
     /** Return the Texture attachments attached to the fbo **/
-    public Array<T> getTextureAttachments(){
+    public Seq<T> getTextureAttachments(){
         return textureAttachments;
     }
 
@@ -453,7 +453,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     protected static abstract class GLFrameBufferBuilder<U extends GLFrameBuffer<? extends GLTexture>>{
         protected int width, height;
 
-        protected Array<FrameBufferTextureAttachmentSpec> textureAttachmentSpecs = new Array<>();
+        protected Seq<FrameBufferTextureAttachmentSpec> textureAttachmentSpecs = new Seq<>();
 
         protected FrameBufferRenderBufferAttachmentSpec stencilRenderBufferSpec;
         protected FrameBufferRenderBufferAttachmentSpec depthRenderBufferSpec;

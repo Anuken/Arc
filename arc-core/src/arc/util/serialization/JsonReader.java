@@ -3,7 +3,7 @@
 // Ragel.exe -G2 -J -o JsonReader.java JsonReader.rl
 package arc.util.serialization;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.files.Fi;
 import arc.util.Strings;
 import arc.util.io.Streams;
@@ -38,8 +38,8 @@ public class JsonReader implements BaseJsonReader{
     private static final byte[] _json_trans_targs = init__json_trans_targs_0();
     private static final byte[] _json_trans_actions = init__json_trans_actions_0();
     private static final byte[] _json_eof_actions = init__json_eof_actions_0();
-    private final Array<JsonValue> elements = new Array<>(8);
-    private final Array<JsonValue> lastChild = new Array<>(8);
+    private final Seq<JsonValue> elements = new Seq<>(8);
+    private final Seq<JsonValue> lastChild = new Seq<>(8);
     private JsonValue root, current;
 
     // line 421 "JsonReader.java"
@@ -154,7 +154,7 @@ public class JsonReader implements BaseJsonReader{
         int[] stack = new int[4];
 
         int s = 0;
-        Array<String> names = new Array<>(8);
+        Seq<String> names = new Seq<>(8);
         boolean needsUnescape = false, stringIsName = false, stringIsUnquoted = false;
         RuntimeException parseRuntimeEx = null;
 

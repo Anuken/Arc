@@ -87,7 +87,7 @@ public class ObjectSet<T> implements Iterable<T>, Eachable<T>{
         return set;
     }
 
-    public static <T> ObjectSet<T> with(Array<T> array){
+    public static <T> ObjectSet<T> with(Seq<T> array){
         ObjectSet<T> set = new ObjectSet<>();
         set.addAll(array);
         return set;
@@ -102,8 +102,8 @@ public class ObjectSet<T> implements Iterable<T>, Eachable<T>{
         return arr;
     }
 
-    public Array<T> asArray(){
-        return iterator().toArray();
+    public Seq<T> asArray(){
+        return iterator().toSeq();
     }
 
     @Override
@@ -162,11 +162,11 @@ public class ObjectSet<T> implements Iterable<T>, Eachable<T>{
         return true;
     }
 
-    public void addAll(Array<? extends T> array){
+    public void addAll(Seq<? extends T> array){
         addAll(array.items, 0, array.size);
     }
 
-    public void addAll(Array<? extends T> array, int offset, int length){
+    public void addAll(Seq<? extends T> array, int offset, int length){
         if(offset + length > array.size)
             throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
         addAll(array.items, offset, length);
@@ -602,15 +602,15 @@ public class ObjectSet<T> implements Iterable<T>, Eachable<T>{
         }
 
         /** Adds the remaining values to the array. */
-        public Array<T> toArray(Array<T> array){
+        public Seq<T> toSeq(Seq<T> array){
             while(hasNext)
                 array.add(next());
             return array;
         }
 
         /** Returns a new array containing the remaining values. */
-        public Array<T> toArray(){
-            return toArray(new Array(true, size));
+        public Seq<T> toSeq(){
+            return toSeq(new Seq<>(true, size));
         }
     }
 }

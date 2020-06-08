@@ -3,7 +3,7 @@ package arc.assets.loaders;
 import arc.assets.AssetDescriptor;
 import arc.assets.AssetLoaderParameters;
 import arc.assets.AssetManager;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.files.Fi;
 import arc.graphics.Texture;
 import arc.graphics.Texture.TextureFilter;
@@ -28,8 +28,8 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, BitmapFontParameter parameter){
-        Array<AssetDescriptor> deps = new Array();
+    public Seq<AssetDescriptor> getDependencies(String fileName, Fi file, BitmapFontParameter parameter){
+        Seq<AssetDescriptor> deps = new Seq();
         if(parameter != null && parameter.bitmapFontData != null){
             data = parameter.bitmapFontData;
             return deps;
@@ -75,7 +75,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
             return new BitmapFont(file, region);
         }else{
             int n = data.getImagePaths().length;
-            Array<TextureRegion> regs = new Array(n);
+            Seq<TextureRegion> regs = new Seq(n);
             for(int i = 0; i < n; i++){
                 regs.add(new TextureRegion(manager.get(data.getImagePath(i), Texture.class)));
             }

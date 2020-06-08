@@ -60,7 +60,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, TextureParameter parameter){
+    public Seq<AssetDescriptor> getDependencies(String fileName, Fi file, TextureParameter parameter){
         return null;
     }
 

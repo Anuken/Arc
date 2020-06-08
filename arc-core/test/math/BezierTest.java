@@ -1,6 +1,6 @@
 package math;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.math.geom.Bezier;
 import arc.math.geom.Vec2;
 import org.junit.Assert;
@@ -45,7 +45,7 @@ public class BezierTest{
         if(useSetter){
             bezier = new Bezier<>();
             if(type == ImportType.ArcArrays){
-                bezier.set(new Array<>(points), 0, points.length);
+                bezier.set(new Seq<>(points), 0, points.length);
             }else if(type == ImportType.JavaArrays){
                 bezier.set(points, 0, points.length);
             }else{
@@ -53,7 +53,7 @@ public class BezierTest{
             }
         }else{
             if(type == ImportType.ArcArrays){
-                bezier = new Bezier<>(new Array<>(points), 0, points.length);
+                bezier = new Bezier<>(new Seq<>(points), 0, points.length);
             }else if(type == ImportType.JavaArrays){
                 bezier = new Bezier<>(points, 0, points.length);
             }else{

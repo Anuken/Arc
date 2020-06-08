@@ -33,7 +33,7 @@ public class TextureAtlas implements Disposable{
         return i1 - i2;
     };
     private final ObjectSet<Texture> textures = new ObjectSet<>(4);
-    private final Array<AtlasRegion> regions = new Array<>();
+    private final Seq<AtlasRegion> regions = new Seq<>();
     private final ObjectMap<String, Drawable> drawables = new ObjectMap<>();
     private final ObjectMap<String, AtlasRegion> regionmap = new ObjectMap<>();
     private final ObjectMap<Texture, Pixmap> pixmaps = new ObjectMap<>();
@@ -196,7 +196,7 @@ public class TextureAtlas implements Disposable{
     }
 
     /** Returns all regions in the atlas. */
-    public Array<AtlasRegion> getRegions(){
+    public Seq<AtlasRegion> getRegions(){
         return regions;
     }
 
@@ -288,8 +288,8 @@ public class TextureAtlas implements Disposable{
      * Returns all regions with the specified name, ordered by smallest to largest {@link AtlasRegion#index index}. This method
      * uses string comparison to find the regions, so the result should be cached rather than calling this method multiple times.
      */
-    public Array<AtlasRegion> findRegions(String name){
-        Array<AtlasRegion> matched = new Array<>(AtlasRegion.class);
+    public Seq<AtlasRegion> findRegions(String name){
+        Seq<AtlasRegion> matched = new Seq<>(AtlasRegion.class);
         for(int i = 0, n = regions.size; i < n; i++){
             AtlasRegion region = regions.get(i);
             if(region.name.equals(name)) matched.add(new AtlasRegion(region));
@@ -343,8 +343,8 @@ public class TextureAtlas implements Disposable{
     }
 
     public static class TextureAtlasData{
-        final Array<Page> pages = new Array<>();
-        final Array<Region> regions = new Array<>();
+        final Seq<Page> pages = new Seq<>();
+        final Seq<Region> regions = new Seq<>();
 
         public TextureAtlasData(Fi packFile, Fi imagesDir, boolean flip){
             BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 64);
@@ -439,11 +439,11 @@ public class TextureAtlas implements Disposable{
             regions.sort(indexComparator);
         }
 
-        public Array<Page> getPages(){
+        public Seq<Page> getPages(){
             return pages;
         }
 
-        public Array<Region> getRegions(){
+        public Seq<Region> getRegions(){
             return regions;
         }
 

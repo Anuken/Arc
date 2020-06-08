@@ -3,7 +3,7 @@ package arc.assets.loaders;
 import arc.assets.AssetDescriptor;
 import arc.assets.AssetLoaderParameters;
 import arc.assets.AssetManager;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.files.Fi;
 import arc.graphics.Cubemap;
 import arc.graphics.CubemapData;
@@ -64,7 +64,7 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, CubemapParameter parameter){
+    public Seq<AssetDescriptor> getDependencies(String fileName, Fi file, CubemapParameter parameter){
         return null;
     }
 

@@ -1,8 +1,8 @@
 package arc.graphics.g2d;
 
-import arc.struct.Array;
-import arc.struct.FloatArray;
-import arc.struct.IntArray;
+import arc.struct.Seq;
+import arc.struct.FloatSeq;
+import arc.struct.IntSeq;
 import arc.graphics.Color;
 import arc.graphics.g2d.BitmapFont.BitmapFontData;
 import arc.graphics.g2d.BitmapFont.Glyph;
@@ -21,8 +21,8 @@ public class BitmapFontCache{
     static private final Color tempColor = new Color(1, 1, 1, 1);
 
     private final BitmapFont font;
-    private final Array<GlyphLayout> layouts = new Array<>();
-    private final Array<GlyphLayout> pooledLayouts = new Array<>();
+    private final Seq<GlyphLayout> layouts = new Seq<>();
+    private final Seq<GlyphLayout> pooledLayouts = new Seq<>();
     private final Color color = new Color(1, 1, 1, 1);
     private boolean integer;
     private int glyphCount;
@@ -37,7 +37,7 @@ public class BitmapFontCache{
      * For each page, an array with a value for each glyph from that page, where the value is the index of the character in the
      * full text being cached.
      */
-    private IntArray[] pageGlyphIndices;
+    private IntSeq[] pageGlyphIndices;
     /** Used internally to ensure a correct capacity for multi-page font vertex data. */
     private int[] tempGlyphCount;
 
@@ -58,9 +58,9 @@ public class BitmapFontCache{
         idx = new int[pageCount];
         if(pageCount > 1){
             // Contains the indices of the glyph in the cache as they are added.
-            pageGlyphIndices = new IntArray[pageCount];
+            pageGlyphIndices = new IntSeq[pageCount];
             for(int i = 0, n = pageGlyphIndices.length; i < n; i++)
-                pageGlyphIndices[i] = new IntArray();
+                pageGlyphIndices[i] = new IntSeq();
         }
         tempGlyphCount = new int[pageCount];
     }
@@ -112,7 +112,7 @@ public class BitmapFontCache{
             GlyphLayout layout = layouts.get(i);
             for(int ii = 0, nn = layout.runs.size; ii < nn; ii++){
                 GlyphRun run = layout.runs.get(ii);
-                Array<Glyph> glyphs = run.glyphs;
+                Seq<Glyph> glyphs = run.glyphs;
                 float colorFloat = tempColor.set(run.color).mul(tint).toFloatBits();
                 for(int iii = 0, nnn = glyphs.size; iii < nnn; iii++){
                     Glyph glyph = glyphs.get(iii);
@@ -191,7 +191,7 @@ public class BitmapFontCache{
         int pageCount = pageVertices.length;
         for(int i = 0; i < pageCount; i++){
             float[] vertices = pageVertices[i];
-            IntArray glyphIndices = pageGlyphIndices[i];
+            IntSeq glyphIndices = pageGlyphIndices[i];
             // Loop through the indices and determine whether the glyph is inside begin/end.
             for(int j = 0, n = glyphIndices.size; j < n; j++){
                 int glyphIndex = glyphIndices.items[j];
@@ -227,7 +227,7 @@ public class BitmapFontCache{
     }
 
     public void draw(){
-        Array<TextureRegion> regions = font.getRegions();
+        Seq<TextureRegion> regions = font.getRegions();
         for(int j = 0, n = pageVertices.length; j < n; j++){
             if(idx[j] > 0){ // ignore if this texture has no glyphs
                 float[] vertices = pageVertices[j];
@@ -243,12 +243,12 @@ public class BitmapFontCache{
         }
 
         // Determine vertex offset and count to render for each page. Some pages might not need to be rendered at all.
-        Array<TextureRegion> regions = font.getRegions();
+        Seq<TextureRegion> regions = font.getRegions();
         for(int i = 0, pageCount = pageVertices.length; i < pageCount; i++){
             int offset = -1, count = 0;
 
             // For each set of glyph indices, determine where to begin within the start/end bounds.
-            IntArray glyphIndices = pageGlyphIndices[i];
+            IntSeq glyphIndices = pageGlyphIndices[i];
             for(int ii = 0, n = glyphIndices.size; ii < n; ii++){
                 int glyphIndex = glyphIndices.get(ii);
 
@@ -311,7 +311,7 @@ public class BitmapFontCache{
                 tempGlyphCount[i] = 0;
             // Determine # of glyphs in each page.
             for(int i = 0, n = layout.runs.size; i < n; i++){
-                Array<Glyph> glyphs = layout.runs.get(i).glyphs;
+                Seq<Glyph> glyphs = layout.runs.get(i).glyphs;
                 for(int ii = 0, nn = glyphs.size; ii < nn; ii++)
                     tempGlyphCount[glyphs.get(ii).page]++;
             }
@@ -350,14 +350,14 @@ public class BitmapFontCache{
             System.arraycopy(idx, 0, newIdx, 0, idx.length);
             idx = newIdx;
 
-            IntArray[] newPageGlyphIndices = new IntArray[pageCount];
+            IntSeq[] newPageGlyphIndices = new IntSeq[pageCount];
             int pageGlyphIndicesLength = 0;
             if(pageGlyphIndices != null){
                 pageGlyphIndicesLength = pageGlyphIndices.length;
                 System.arraycopy(pageGlyphIndices, 0, newPageGlyphIndices, 0, pageGlyphIndices.length);
             }
             for(int i = pageGlyphIndicesLength; i < pageCount; i++)
-                newPageGlyphIndices[i] = new IntArray();
+                newPageGlyphIndices[i] = new IntSeq();
             pageGlyphIndices = newPageGlyphIndices;
 
             tempGlyphCount = new int[pageCount];
@@ -367,8 +367,8 @@ public class BitmapFontCache{
         requireGlyphs(layout);
         for(int i = 0, n = layout.runs.size; i < n; i++){
             GlyphRun run = layout.runs.get(i);
-            Array<Glyph> glyphs = run.glyphs;
-            FloatArray xAdvances = run.xAdvances;
+            Seq<Glyph> glyphs = run.glyphs;
+            FloatSeq xAdvances = run.xAdvances;
             float color = run.color.toFloatBits();
             float gx = x + run.x, gy = y + run.y;
             for(int ii = 0, nn = glyphs.size; ii < nn; ii++){
@@ -568,7 +568,7 @@ public class BitmapFontCache{
         return idx[page];
     }
 
-    public Array<GlyphLayout> getLayouts(){
+    public Seq<GlyphLayout> getLayouts(){
         return layouts;
     }
 }

@@ -1,7 +1,7 @@
 package arc.scene.utils;
 
 import arc.Core;
-import arc.struct.Array;
+import arc.struct.Seq;
 
 import java.util.Iterator;
 
@@ -10,11 +10,11 @@ import java.util.Iterator;
  * @author Nathan Sweet
  */
 public class ArraySelection<T> extends Selection<T>{
-    private Array<T> array;
+    private Seq<T> array;
     private boolean rangeSelect = true;
     private int rangeStart;
 
-    public ArraySelection(Array<T> array){
+    public ArraySelection(Seq<T> array){
         this.array = array;
     }
 
@@ -59,7 +59,7 @@ public class ArraySelection<T> extends Selection<T>{
      * selected item, the first item is selected.
      */
     public void validate(){
-        Array<T> array = this.array;
+        Seq<T> array = this.array;
         if(array.size == 0){
             clear();
             return;

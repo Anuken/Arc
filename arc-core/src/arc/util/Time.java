@@ -13,9 +13,9 @@ public class Time{
     private static final long nanosPerMilli = 1000000;
     private static double time;
     private static double globalTime;
-    private static Array<DelayRun> runs = new Array<>();
-    private static Array<DelayRun> removal = new Array<>();
-    private static LongArray marks = new LongArray();
+    private static Seq<DelayRun> runs = new Seq<>();
+    private static Seq<DelayRun> removal = new Seq<>();
+    private static LongSeq marks = new LongSeq();
     private static Floatp deltaimpl = () -> Math.min(Core.graphics.getDeltaTime() * 60f, 3f);
 
     public static synchronized void run(float delay, Runnable r){

@@ -4,7 +4,7 @@ import arc.assets.AssetDescriptor;
 import arc.assets.AssetManager;
 import arc.assets.loaders.FileHandleResolver;
 import arc.assets.loaders.resolvers.InternalFileHandleResolver;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.struct.ObjectMap;
 import arc.files.Fi;
 import arc.graphics.Texture;
@@ -28,7 +28,7 @@ import java.io.IOException;
  * @author Manuel Bua
  */
 public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasTiledMapLoaderParameters>{
-    protected Array<Texture> trackedTextures = new Array<>();
+    protected Seq<Texture> trackedTextures = new Seq<>();
 
     public AtlasTmxMapLoader(){
         super(new InternalFileHandleResolver());
@@ -43,8 +43,8 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, Fi tmxFile, AtlasTiledMapLoaderParameters parameter){
-        Array<AssetDescriptor> dependencies = new Array<>();
+    public Seq<AssetDescriptor> getDependencies(String fileName, Fi tmxFile, AtlasTiledMapLoaderParameters parameter){
+        Seq<AssetDescriptor> dependencies = new Seq<>();
         try{
             root = xml.parse(tmxFile);
 
@@ -348,7 +348,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
                 }
             }
 
-            Array<Element> tileElements = element.getChildrenByName("tile");
+            Seq<Element> tileElements = element.getChildrenByName("tile");
 
             for(Element tileElement : tileElements){
                 int localtid = tileElement.getIntAttribute("id", 0);

@@ -813,8 +813,8 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
         }
 
         /** Returns a new array containing the remaining values. */
-        public FloatArray toArray(){
-            FloatArray array = new FloatArray(true, map.size);
+        public FloatSeq toArray(){
+            FloatSeq array = new FloatSeq(true, map.size);
             while(hasNext)
                 array.add(next());
             return array;
@@ -841,8 +841,8 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
         }
 
         /** Returns a new array containing the remaining keys. */
-        public IntArray toArray(){
-            IntArray array = new IntArray(true, map.size);
+        public IntSeq toArray(){
+            IntSeq array = new IntSeq(true, map.size);
             while(hasNext)
                 array.add(next());
             return array;

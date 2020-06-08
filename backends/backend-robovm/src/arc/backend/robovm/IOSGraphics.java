@@ -5,7 +5,7 @@ import arc.Graphics.Cursor.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.gl.*;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.util.*;
 import arc.backend.robovm.custom.*;
 import org.robovm.apple.coregraphics.*;
@@ -160,7 +160,7 @@ public class IOSGraphics extends Graphics{
         if(!appPaused) return;
         appPaused = false;
 
-        Array<ApplicationListener> listeners = app.listeners;
+        Seq<ApplicationListener> listeners = app.listeners;
         synchronized(listeners){
             for(ApplicationListener listener : listeners){
                 listener.resume();
@@ -172,7 +172,7 @@ public class IOSGraphics extends Graphics{
         if(appPaused) return;
         appPaused = true;
 
-        Array<ApplicationListener> listeners = app.listeners;
+        Seq<ApplicationListener> listeners = app.listeners;
         synchronized(listeners){
             for(ApplicationListener listener : listeners){
                 listener.pause();

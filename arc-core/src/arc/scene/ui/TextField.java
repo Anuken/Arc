@@ -2,8 +2,8 @@ package arc.scene.ui;
 
 import arc.Core;
 import arc.Input;
-import arc.struct.Array;
-import arc.struct.FloatArray;
+import arc.struct.Seq;
+import arc.struct.FloatSeq;
 import arc.func.Cons;
 import arc.graphics.Color;
 import arc.graphics.g2d.BitmapFont;
@@ -67,7 +67,7 @@ public class TextField extends Element implements Disableable{
     public static float keyRepeatInitialTime = 0.4f;
     public static float keyRepeatTime = 0.1f;
     protected final GlyphLayout layout = new GlyphLayout();
-    protected final FloatArray glyphPositions = new FloatArray();
+    protected final FloatSeq glyphPositions = new FloatSeq();
     protected String text;
     protected int cursor, selectionStart;
     protected boolean hasSelection;
@@ -405,7 +405,7 @@ public class TextField extends Element implements Disableable{
         float x = 0;
         if(layout.runs.size > 0){
             GlyphRun run = layout.runs.first();
-            FloatArray xAdvances = run.xAdvances;
+            FloatSeq xAdvances = run.xAdvances;
             fontOffset = xAdvances.first();
             for(int i = 1, n = xAdvances.size; i < n; i++){
                 glyphPositions.add(x);
@@ -530,7 +530,7 @@ public class TextField extends Element implements Disableable{
         }
     }
 
-    private TextField findNextTextField(Array<Element> elements, TextField best, Vec2 bestCoords, Vec2 currentCoords,
+    private TextField findNextTextField(Seq<Element> elements, TextField best, Vec2 bestCoords, Vec2 currentCoords,
                                         boolean up){
         for(int i = 0, n = elements.size; i < n; i++){
             Element element = elements.get(i);

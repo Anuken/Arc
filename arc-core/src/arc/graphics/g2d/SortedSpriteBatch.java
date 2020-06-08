@@ -5,8 +5,8 @@ import arc.graphics.gl.*;
 import arc.struct.*;
 
 public class SortedSpriteBatch extends SpriteBatch{
-    protected Array<DrawRequest> requestPool = new Array<>(10000);
-    protected Array<DrawRequest> requests = new Array<>(DrawRequest.class);
+    protected Seq<DrawRequest> requestPool = new Seq<>(10000);
+    protected Seq<DrawRequest> requests = new Seq<>(DrawRequest.class);
     protected boolean sort;
     protected boolean flushing;
 

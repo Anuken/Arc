@@ -13,8 +13,8 @@ public final class Intersector{
     private final static Vec3 v0 = new Vec3();
     private final static Vec3 v1 = new Vec3();
     private final static Vec3 v2 = new Vec3();
-    private final static FloatArray floatArray = new FloatArray();
-    private final static FloatArray floatArray2 = new FloatArray();
+    private final static FloatSeq floatArray = new FloatSeq();
+    private final static FloatSeq floatArray2 = new FloatSeq();
     private final static Vec2 ip = new Vec2();
     private final static Vec2 ep1 = new Vec2();
     private final static Vec2 ep2 = new Vec2();
@@ -152,7 +152,7 @@ public final class Intersector{
      * @param point The point
      * @return true if the point is in the polygon
      */
-    public static boolean isInPolygon(Array<Vec2> polygon, Vec2 point){
+    public static boolean isInPolygon(Seq<Vec2> polygon, Vec2 point){
         Vec2 lastVertice = polygon.peek();
         boolean oddNodes = false;
         for(int i = 0; i < polygon.size; i++){

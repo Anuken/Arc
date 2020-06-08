@@ -1,6 +1,6 @@
 package arc.math.geom;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.func.Cons;
 import arc.math.geom.QuadTree.QuadTreeObject;
 
@@ -20,7 +20,7 @@ public class QuadTree<T extends QuadTreeObject>{
     private static final int maxObjectsPerNode = 5;
 
     public Rect bounds;
-    public Array<T> objects = new Array<>();
+    public Seq<T> objects = new Seq<>();
     public QuadTree<T> botLeft, botRight, topLeft, topRight;
     public boolean leaf = true;
 
@@ -189,7 +189,7 @@ public class QuadTree<T extends QuadTreeObject>{
      * <p>
      * This will result in false positives, but never a false negative.
      */
-    public void intersect(Rect toCheck, Array<T> out){
+    public void intersect(Rect toCheck, Seq<T> out){
         if(!leaf){
             if(topLeft.bounds.overlaps(toCheck)) topLeft.intersect(toCheck, out);
             if(topRight.bounds.overlaps(toCheck)) topRight.intersect(toCheck, out);

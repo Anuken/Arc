@@ -6,7 +6,7 @@ import arc.assets.loaders.FileHandleResolver;
 import arc.assets.loaders.TextureLoader;
 import arc.assets.loaders.TextureLoader.TextureParameter;
 import arc.assets.loaders.resolvers.InternalFileHandleResolver;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.struct.ObjectMap;
 import arc.files.Fi;
 import arc.graphics.Texture;
@@ -59,7 +59,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
             Fi tmxFile = resolve(fileName);
             root = xml.parse(tmxFile);
             ObjectMap<String, Texture> textures = new ObjectMap<>();
-            Array<Fi> textureFiles = loadTilesets(root, tmxFile);
+            Seq<Fi> textureFiles = loadTilesets(root, tmxFile);
             textureFiles.addAll(loadImages(root, tmxFile));
 
             for(Fi textureFile : textureFiles){
@@ -106,8 +106,8 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
      * @return dependencies for the given .tmx file
      */
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, Fi tmxFile, Parameters parameter){
-        Array<AssetDescriptor> dependencies = new Array<>();
+    public Seq<AssetDescriptor> getDependencies(String fileName, Fi tmxFile, Parameters parameter){
+        Seq<AssetDescriptor> dependencies = new Seq<>();
         try{
             root = xml.parse(tmxFile);
             boolean generateMipMaps = (parameter != null && parameter.generateMipMaps);
@@ -185,7 +185,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
         if(properties != null){
             loadProperties(map.properties, properties);
         }
-        Array<Element> tilesets = root.getChildrenByName("tileset");
+        Seq<Element> tilesets = root.getChildrenByName("tileset");
         for(Element element : tilesets){
             loadTileSet(map, element, tmxFile, imageResolver);
             root.removeChild(element);
@@ -202,8 +202,8 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
      * @param root the root XML element
      * @return a list of filenames for images containing tiles
      */
-    protected Array<Fi> loadTilesets(Element root, Fi tmxFile) throws IOException{
-        Array<Fi> images = new Array<>();
+    protected Seq<Fi> loadTilesets(Element root, Fi tmxFile) throws IOException{
+        Seq<Fi> images = new Seq<>();
         for(Element tileset : root.getChildrenByName("tileset")){
             String source = tileset.getAttribute("source", null);
             if(source != null){
@@ -244,8 +244,8 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
      * @param root the root XML element
      * @return a list of filenames for images inside image layers
      */
-    protected Array<Fi> loadImages(Element root, Fi tmxFile){
-        Array<Fi> images = new Array<>();
+    protected Seq<Fi> loadImages(Element root, Fi tmxFile){
+        Seq<Fi> images = new Seq<>();
 
         for(Element imageLayer : root.getChildrenByName("imagelayer")){
             Element image = imageLayer.getChildByName("image");
@@ -377,7 +377,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
                     }
                 }
             }else{
-                Array<Element> tileElements = element.getChildrenByName("tile");
+                Seq<Element> tileElements = element.getChildrenByName("tile");
                 for(Element tileElement : tileElements){
                     Element imageElement = tileElement.getChildByName("image");
                     if(imageElement != null){
@@ -399,7 +399,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
                     tileset.put(tile.id, tile);
                 }
             }
-            Array<Element> tileElements = element.getChildrenByName("tile");
+            Seq<Element> tileElements = element.getChildrenByName("tile");
 
             for(Element tileElement : tileElements){
                 int localtid = tileElement.getIntAttribute("id", 0);

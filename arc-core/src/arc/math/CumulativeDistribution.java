@@ -1,6 +1,6 @@
 package arc.math;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 
 /**
  * This class represents a cumulative distribution.
@@ -14,10 +14,10 @@ import arc.struct.Array;
  * @author Inferno
  */
 public class CumulativeDistribution<T>{
-    private Array<CumulativeValue> values;
+    private Seq<CumulativeValue> values;
 
     public CumulativeDistribution(){
-        values = new Array<>(false, 10, CumulativeValue.class);
+        values = new Seq<>(false, 10, CumulativeValue.class);
     }
 
     /** Adds a value with a given interval size to the distribution */

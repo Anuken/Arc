@@ -1,6 +1,6 @@
 package arc.math.geom;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.func.Intc2;
 import arc.util.pooling.Pool;
 import arc.util.pooling.Pools;
@@ -14,7 +14,7 @@ import arc.util.pooling.Pools;
  * @author badlogic
  */
 public class Bresenham2{
-    private final Array<Point2> points = new Array<>();
+    private final Seq<Point2> points = new Seq<>();
     private final Pool<Point2> pool = Pools.get(Point2.class, Point2::new);
 
     /**
@@ -70,7 +70,7 @@ public class Bresenham2{
      * @param end the end of the line
      * @return the list of points on the line at integer coordinates
      */
-    public Array<Point2> line(Point2 start, Point2 end){
+    public Seq<Point2> line(Point2 start, Point2 end){
         return line(start.x, start.y, end.x, end.y);
     }
 
@@ -82,7 +82,7 @@ public class Bresenham2{
      * @param endY the end y coordinate of the line
      * @return the list of points on the line at integer coordinates
      */
-    public Array<Point2> line(int startX, int startY, int endX, int endY){
+    public Seq<Point2> line(int startX, int startY, int endX, int endY){
         pool.freeAll(points);
         points.clear();
         return line(startX, startY, endX, endY, pool, points);
@@ -98,7 +98,7 @@ public class Bresenham2{
      * @param output the output array, will be cleared in this method
      * @return the list of points on the line at integer coordinates
      */
-    public Array<Point2> line(int startX, int startY, int endX, int endY, Pool<Point2> pool, Array<Point2> output){
+    public Seq<Point2> line(int startX, int startY, int endX, int endY, Pool<Point2> pool, Seq<Point2> output){
 
         int w = endX - startX;
         int h = endY - startY;
@@ -151,7 +151,7 @@ public class Bresenham2{
      * @param output the output array, will be cleared in this method
      * @return the list of points on the line at integer coordinates
      */
-    public Array<Point2> lineNoDiagonal(int startX, int startY, int endX, int endY, Pool<Point2> pool, Array<Point2> output){
+    public Seq<Point2> lineNoDiagonal(int startX, int startY, int endX, int endY, Pool<Point2> pool, Seq<Point2> output){
         int xDist = Math.abs(endX - startX);
         int yDist = -Math.abs(endY - startY);
         int xStep = (startX < endX ? +1 : -1);

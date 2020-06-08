@@ -5,7 +5,7 @@ import arc.assets.AssetLoaderParameters;
 import arc.assets.AssetManager;
 import arc.assets.loaders.FileHandleResolver;
 import arc.assets.loaders.SynchronousAssetLoader;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.files.Fi;
 
 /**
@@ -36,7 +36,7 @@ public class FreeTypeFontGeneratorLoader extends SynchronousAssetLoader<FreeType
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, FreeTypeFontGeneratorParameters parameter){
+    public Seq<AssetDescriptor> getDependencies(String fileName, Fi file, FreeTypeFontGeneratorParameters parameter){
         return null;
     }
 

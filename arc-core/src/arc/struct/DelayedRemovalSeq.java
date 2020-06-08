@@ -8,51 +8,51 @@ import java.util.Comparator;
  * IllegalStateException. Only {@link #remove(int)}, {@link #remove(Object, boolean)}, {@link #removeRange(int, int)},
  * {@link #clear()}, and add methods are allowed.
  * <p>
- * Code using this class must not rely on items being removed immediately. Consider using {@link SnapshotArray} if this is a
+ * Code using this class must not rely on items being removed immediately. Consider using {@link SnapshotSeq} if this is a
  * problem.
  * @author Nathan Sweet
  */
 @SuppressWarnings("unchecked")
-public class DelayedRemovalArray<T> extends Array<T>{
+public class DelayedRemovalSeq<T> extends Seq<T>{
     private int iterating;
-    private IntArray remove = new IntArray(0);
+    private IntSeq remove = new IntSeq(0);
     private int clear;
 
-    public DelayedRemovalArray(){
+    public DelayedRemovalSeq(){
         super();
     }
 
-    public DelayedRemovalArray(Array array){
+    public DelayedRemovalSeq(Seq array){
         super(array);
     }
 
-    public DelayedRemovalArray(boolean ordered, int capacity, Class arrayType){
+    public DelayedRemovalSeq(boolean ordered, int capacity, Class arrayType){
         super(ordered, capacity, arrayType);
     }
 
-    public DelayedRemovalArray(boolean ordered, int capacity){
+    public DelayedRemovalSeq(boolean ordered, int capacity){
         super(ordered, capacity);
     }
 
-    public DelayedRemovalArray(boolean ordered, T[] array, int startIndex, int count){
+    public DelayedRemovalSeq(boolean ordered, T[] array, int startIndex, int count){
         super(ordered, array, startIndex, count);
     }
 
-    public DelayedRemovalArray(Class arrayType){
+    public DelayedRemovalSeq(Class arrayType){
         super(arrayType);
     }
 
-    public DelayedRemovalArray(int capacity){
+    public DelayedRemovalSeq(int capacity){
         super(capacity);
     }
 
-    public DelayedRemovalArray(T[] array){
+    public DelayedRemovalSeq(T[] array){
         super(array);
     }
 
-    /** @see #DelayedRemovalArray(Object[]) */
-    public static <T> DelayedRemovalArray<T> with(T... array){
-        return new DelayedRemovalArray(array);
+    /** @see #DelayedRemovalSeq(Object[]) */
+    public static <T> DelayedRemovalSeq<T> with(T... array){
+        return new DelayedRemovalSeq(array);
     }
 
     public void begin(){
@@ -145,12 +145,12 @@ public class DelayedRemovalArray<T> extends Array<T>{
         return super.pop();
     }
 
-    public Array<T> sort(){
+    public Seq<T> sort(){
         if(iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
         return super.sort();
     }
 
-    public Array<T> sort(Comparator<? super T> comparator){
+    public Seq<T> sort(Comparator<? super T> comparator){
         if(iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
         return super.sort(comparator);
     }

@@ -17,7 +17,7 @@ import arc.util.*;
 public class ScissorStack{
     static final Rect viewport = new Rect();
     static Vec2 tmp = new Vec2();
-    private static Array<Rect> scissors = new Array<>();
+    private static Seq<Rect> scissors = new Seq<>();
 
     /**
      * Pushes a new scissor {@link Rect} onto the stack, merging it with the current top of the stack. The minimal area of

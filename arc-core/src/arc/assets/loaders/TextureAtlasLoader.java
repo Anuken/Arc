@@ -4,7 +4,7 @@ import arc.assets.AssetDescriptor;
 import arc.assets.AssetLoaderParameters;
 import arc.assets.AssetManager;
 import arc.assets.loaders.TextureLoader.TextureParameter;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.files.Fi;
 import arc.graphics.Texture;
 import arc.graphics.g2d.TextureAtlas;
@@ -36,7 +36,7 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, Fi atlasFile, TextureAtlasParameter parameter){
+    public Seq<AssetDescriptor> getDependencies(String fileName, Fi atlasFile, TextureAtlasParameter parameter){
         Fi imgDir = atlasFile.parent();
 
         if(parameter != null)
@@ -45,7 +45,7 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
             data = new TextureAtlasData(atlasFile, imgDir, false);
         }
 
-        Array<AssetDescriptor> dependencies = new Array<>();
+        Seq<AssetDescriptor> dependencies = new Seq<>();
         for(Page page : data.getPages()){
             TextureParameter params = new TextureParameter();
             params.format = page.format;

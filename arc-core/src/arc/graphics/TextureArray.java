@@ -2,7 +2,7 @@ package arc.graphics;
 
 import arc.Application;
 import arc.Core;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.files.Fi;
 import arc.util.ArcRuntimeException;
 
@@ -14,7 +14,7 @@ import java.util.Map;
  * @author Tomski
  */
 public class TextureArray extends GLTexture{
-    final static Map<Application, Array<TextureArray>> managedTextureArrays = new HashMap<>();
+    final static Map<Application, Seq<TextureArray>> managedTextureArrays = new HashMap<>();
 
     private TextureArrayData data;
 
@@ -55,8 +55,8 @@ public class TextureArray extends GLTexture{
     }
 
     private static void addManagedTexture(Application app, TextureArray texture){
-        Array<TextureArray> managedTextureArray = managedTextureArrays.get(app);
-        if(managedTextureArray == null) managedTextureArray = new Array<>();
+        Seq<TextureArray> managedTextureArray = managedTextureArrays.get(app);
+        if(managedTextureArray == null) managedTextureArray = new Seq<>();
         managedTextureArray.add(texture);
         managedTextureArrays.put(app, managedTextureArray);
     }
@@ -68,7 +68,7 @@ public class TextureArray extends GLTexture{
 
     /** Invalidate all managed TextureArrays. This is an internal method. Do not use it! */
     public static void invalidateAllTextureArrays(Application app){
-        Array<TextureArray> managedTextureArray = managedTextureArrays.get(app);
+        Seq<TextureArray> managedTextureArray = managedTextureArrays.get(app);
         if(managedTextureArray == null) return;
 
         for(int i = 0; i < managedTextureArray.size; i++){

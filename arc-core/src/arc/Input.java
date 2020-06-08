@@ -3,7 +3,7 @@ package arc;
 import arc.KeyBinds.Axis;
 import arc.KeyBinds.KeyBind;
 import arc.math.geom.*;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.struct.IntSet;
 import arc.func.Cons;
 import arc.input.*;
@@ -31,7 +31,7 @@ public abstract class Input implements Disposable{
     /** The default input device (keyboard) */
     protected KeyboardDevice keyboard = new KeyboardDevice();
     /** All available input devices, including controllers and keybowards. */
-    protected Array<InputDevice> devices = Array.with(keyboard);
+    protected Seq<InputDevice> devices = Seq.with(keyboard);
     /** An input multiplexer to handle events. */
     protected InputMultiplexer inputMultiplexer = new InputMultiplexer(keyboard);
     /** List of caught keys for Android. */
@@ -314,7 +314,7 @@ public abstract class Input implements Disposable{
     }
 
     /** @return the currently set {@link InputProcessor} or null. */
-    public Array<InputProcessor> getInputProcessors(){
+    public Seq<InputProcessor> getInputProcessors(){
         return inputMultiplexer.getProcessors();
     }
 
@@ -326,7 +326,7 @@ public abstract class Input implements Disposable{
      * Returns a list of input devices, such as keyboards or controllers.
      * This list always contains a keyboard device, regardless of whether one is connected or not (on Android).
      */
-    public Array<InputDevice> getDevices(){
+    public Seq<InputDevice> getDevices(){
         return devices;
     }
 

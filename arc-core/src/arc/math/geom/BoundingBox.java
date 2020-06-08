@@ -174,7 +174,7 @@ public class BoundingBox{
      * @param points The points.
      * @return This bounding box for chaining.
      */
-    public BoundingBox set(Array<Vec3> points){
+    public BoundingBox set(Seq<Vec3> points){
         this.inf();
         for(Vec3 l_point : points)
             this.ext(l_point);

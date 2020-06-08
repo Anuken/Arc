@@ -33,7 +33,7 @@ public class Classgen{
         StringBuilder result = new StringBuilder("public class AL{\n");
 
         str = str.replace("AL_API ", "").replace("AL_APIENTRY ", "").replace("ALC_API ", "").replace("ALC_APIENTRY ", "");
-        Array.with(str.split("\n")).select(s -> !s.isEmpty() && !s.startsWith("typedef") && s.trim().length() > 1 && !s.startsWith(" ") && !s.startsWith("typedef") && !(s.startsWith("#")&& !s.startsWith("#define"))).each(s -> {
+        Seq.with(str.split("\n")).select(s -> !s.isEmpty() && !s.startsWith("typedef") && s.trim().length() > 1 && !s.startsWith(" ") && !s.startsWith("typedef") && !(s.startsWith("#")&& !s.startsWith("#define"))).each(s -> {
 
             if(s.startsWith("#define")){
                 s = s.substring("#define ".length()).replaceAll(" +", " ");
@@ -58,8 +58,8 @@ public class Classgen{
                 String name = split[1].substring(0, split[1].indexOf("("));
                 result.append("    public static native " + map.get(ret, ret) + " " + name + "(");
                 String[] params = s.substring(s.indexOf("(") + 1, s.lastIndexOf(")")).split(", ");
-                Array<String> pnames = new Array<>();
-                Array<String> ptypes = new Array<>();
+                Seq<String> pnames = new Seq<>();
+                Seq<String> ptypes = new Seq<>();
 
                 if(!s.substring(s.indexOf("(") + 1, s.lastIndexOf(")")).isEmpty()){
                     int i = 0;

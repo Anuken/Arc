@@ -3,7 +3,7 @@ package arc.maps.loaders;
 import arc.assets.AssetLoaderParameters;
 import arc.assets.loaders.AsynchronousAssetLoader;
 import arc.assets.loaders.FileHandleResolver;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.files.Fi;
 import arc.graphics.Color;
 import arc.graphics.Texture.TextureFilter;
@@ -116,7 +116,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         return result;
     }
 
-    protected void loadTileGroup(TiledMap map, Array<MapLayer> parentLayers, Element element, Fi tmxFile, ImageResolver imageResolver){
+    protected void loadTileGroup(TiledMap map, Seq<MapLayer> parentLayers, Element element, Fi tmxFile, ImageResolver imageResolver){
         if(element.getName().equals("group")){
             MapGroupLayer groupLayer = new MapGroupLayer();
             loadBasicLayerInfo(groupLayer, element);
@@ -139,7 +139,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         }
     }
 
-    protected void loadLayer(TiledMap map, Array<MapLayer> parentLayers, Element element, Fi tmxFile, ImageResolver imageResolver){
+    protected void loadLayer(TiledMap map, Seq<MapLayer> parentLayers, Element element, Fi tmxFile, ImageResolver imageResolver){
         String name = element.getName();
         if(name.equals("group")){
             loadTileGroup(map, parentLayers, element, tmxFile, imageResolver);
@@ -152,7 +152,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         }
     }
 
-    protected void loadTileLayer(TiledMap map, Array<MapLayer> parentLayers, Element element){
+    protected void loadTileLayer(TiledMap map, Seq<MapLayer> parentLayers, Element element){
         if(element.getName().equals("layer")){
             int width = element.getIntAttribute("width", 0);
             int height = element.getIntAttribute("height", 0);
@@ -188,7 +188,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         }
     }
 
-    protected void loadObjectGroup(TiledMap map, Array<MapLayer> parentLayers, Element element){
+    protected void loadObjectGroup(TiledMap map, Seq<MapLayer> parentLayers, Element element){
         if(element.getName().equals("objectgroup")){
             MapLayer layer = new MapLayer();
             loadBasicLayerInfo(layer, element);
@@ -205,7 +205,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         }
     }
 
-    protected void loadImageLayer(TiledMap map, Array<MapLayer> parentLayers, Element element, Fi tmxFile, ImageResolver imageResolver){
+    protected void loadImageLayer(TiledMap map, Seq<MapLayer> parentLayers, Element element, Fi tmxFile, ImageResolver imageResolver){
         if(element.getName().equals("imagelayer")){
             int x = 0;
             int y = 0;
@@ -267,7 +267,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         loadObject(map, tile.getObjects(), element, tile.region.getHeight());
     }
 
-    protected void loadObject(TiledMap map, Array<MapObject> objects, Element element, float heightInPixels){
+    protected void loadObject(TiledMap map, Seq<MapObject> objects, Element element, float heightInPixels){
         if(element.getName().equals("object")){
             MapObject object = null;
 

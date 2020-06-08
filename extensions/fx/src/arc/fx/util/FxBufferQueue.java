@@ -10,7 +10,7 @@ import arc.util.*;
  * Provides looped access to an array of {@link FxBuffer}.
  */
 public class FxBufferQueue implements Disposable{
-    private final Array<FrameBuffer> buffers;
+    private final Seq<FrameBuffer> buffers;
     private int currentIdx = 0;
 
     private TextureWrap wrapU = TextureWrap.ClampToEdge;
@@ -22,7 +22,7 @@ public class FxBufferQueue implements Disposable{
         if(fboAmount < 1){
             throw new IllegalArgumentException("FBO amount should be a positive number.");
         }
-        buffers = new Array<>(true, fboAmount);
+        buffers = new Seq<>(true, fboAmount);
         for(int i = 0; i < fboAmount; i++){
             buffers.add(new FrameBuffer(pixelFormat, 4, 4));
         }

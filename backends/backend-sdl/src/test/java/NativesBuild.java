@@ -20,7 +20,7 @@ class NativesBuild{
     static final boolean compileMac = OS.isMac || defined("mac"), compileLinux = OS.isLinux || defined("linux"), compileWindows = OS.isWindows || defined("windows");
 
     public static void main(String[] args) throws Exception{
-        Array<BuildTarget> targets = new Array<>();
+        Seq<BuildTarget> targets = new Seq<>();
 
         if(compileMac){
             BuildTarget mac64 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);

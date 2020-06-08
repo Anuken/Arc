@@ -5,7 +5,7 @@ import arc.backend.robovm.custom.UIAccelerometerDelegate;
 import arc.backend.robovm.custom.UIAccelerometerDelegateAdapter;
 import arc.Core;
 import arc.Input;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.input.InputDevice;
 import arc.input.KeyCode;
 import arc.math.geom.Vec3;
@@ -50,7 +50,7 @@ public class IOSInput extends Input{
             return new TouchEvent();
         }
     };
-    Array<TouchEvent> touchEvents = new Array<>();
+    Seq<TouchEvent> touchEvents = new Seq<>();
     TouchEvent currentEvent = null;
     float[] rotation = new float[3];
     Vec3 accel = new Vec3();

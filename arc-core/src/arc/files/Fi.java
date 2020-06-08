@@ -564,8 +564,8 @@ public class Fi{
 
     /** Recursively iterates through all files in this directory and adds them to an array.
      * Directories are not handled. */
-    public Array<Fi> findAll(Boolf<Fi> test){
-        Array<Fi> out = new Array<>();
+    public Seq<Fi> findAll(Boolf<Fi> test){
+        Seq<Fi> out = new Seq<>();
         walk(f -> {
             if(test.get(f)){
                 out.add(f);
@@ -575,8 +575,8 @@ public class Fi{
     }
 
     /** Recursively iterates through all files in this directory and adds them to a newly allocated array.*/
-    public Array<Fi> findAll(){
-        Array<Fi> out = new Array<>();
+    public Seq<Fi> findAll(){
+        Seq<Fi> out = new Seq<>();
         walk(out::add);
         return out;
     }
@@ -710,7 +710,7 @@ public class Fi{
         if(parent == null){
             if(OS.isWindows){
                 return new Fi("", type){
-                    Fi[] children = Array.with(File.listRoots()).map(Fi::new).toArray(Fi.class);
+                    Fi[] children = Seq.with(File.listRoots()).map(Fi::new).toArray(Fi.class);
 
                     @Override
                     public Fi parent(){
@@ -739,7 +739,7 @@ public class Fi{
 
                     @Override
                     public Fi[] list(FileFilter filter){
-                        return Array.select(list(), f -> filter.accept(f.file)).toArray(Fi.class);
+                        return Seq.select(list(), f -> filter.accept(f.file)).toArray(Fi.class);
                     }
                 };
             }else{

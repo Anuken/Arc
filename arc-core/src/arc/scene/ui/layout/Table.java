@@ -32,9 +32,9 @@ public class Table extends WidgetGroup{
     static private float[] columnWeightedWidth, rowWeightedHeight;
     static private Pool<Cell> cellPool = Pools.get(Cell.class, Cell::new);
 
-    private final Array<Cell> cells = new Array<>(4);
+    private final Seq<Cell> cells = new Seq<>(4);
     private final Cell cellDefaults;
-    private final Array<Cell> columnDefaults = new Array<>(2);
+    private final Seq<Cell> columnDefaults = new Seq<>(2);
 
     float marginTop = unset, marginLeft = unset, marginBot = unset, marginRight = unset;
     int align = Align.center;
@@ -187,7 +187,7 @@ public class Table extends WidgetGroup{
             cells.peek().endRow = false;
         }
 
-        Array<Cell> cells = this.cells;
+        Seq<Cell> cells = this.cells;
         int cellCount = cells.size;
         if(cellCount > 0){
             // Set cell column and row.
@@ -577,7 +577,7 @@ public class Table extends WidgetGroup{
 
     /** Removes all actors and cells from the table. */
     public void clearChildren(){
-        Array<Cell> cells = this.cells;
+        Seq<Cell> cells = this.cells;
         for(int i = cells.size - 1; i >= 0; i--){
             Cell cell = cells.get(i);
             Element actor = cell.element;
@@ -627,7 +627,7 @@ public class Table extends WidgetGroup{
     }
 
     private void endRow(){
-        Array<Cell> cells = this.cells;
+        Seq<Cell> cells = this.cells;
         int rowColumns = 0;
         for(int i = cells.size - 1; i >= 0; i--){
             Cell cell = cells.get(i);
@@ -660,7 +660,7 @@ public class Table extends WidgetGroup{
 
     /** Returns the cell for the specified actor in this table, or null. */
     public <T extends Element> Cell getCell(T actor){
-        Array<Cell> cells = this.cells;
+        Seq<Cell> cells = this.cells;
         for(int i = 0, n = cells.size; i < n; i++){
             Cell c = cells.get(i);
             if(c.element == actor) return c;
@@ -669,7 +669,7 @@ public class Table extends WidgetGroup{
     }
 
     /** Returns the cells for this table. */
-    public Array<Cell> getCells(){
+    public Seq<Cell> getCells(){
         return cells;
     }
 
@@ -813,7 +813,7 @@ public class Table extends WidgetGroup{
      * @param y The y coordinate, where 0 is the top of the table.
      */
     public int getRow(float y){
-        Array<Cell> cells = this.cells;
+        Seq<Cell> cells = this.cells;
         int row = 0;
         y += getMarginTop();
         int i = 0, n = cells.size;
@@ -864,7 +864,7 @@ public class Table extends WidgetGroup{
 
         layout(0, 0, width, height);
 
-        Array<Cell> cells = this.cells;
+        Seq<Cell> cells = this.cells;
         if(round){
             for(int i = 0, n = cells.size; i < n; i++){
                 Cell c = cells.get(i);
@@ -887,7 +887,7 @@ public class Table extends WidgetGroup{
             }
         }
         // Validate children separately from sizing actors to ensure actors without a cell are validated.
-        Array<Element> children = getChildren();
+        Seq<Element> children = getChildren();
         for(int i = 0, n = children.size; i < n; i++){
             Element child = children.get(i);
             child.validate();
@@ -897,7 +897,7 @@ public class Table extends WidgetGroup{
     private void computeSize(){
         sizeInvalid = false;
 
-        Array<Cell> cells = this.cells;
+        Seq<Cell> cells = this.cells;
         int cellCount = cells.size;
 
         // Implicitly End the row for layout purposes.
@@ -1056,7 +1056,7 @@ public class Table extends WidgetGroup{
      * within the parent and size of the table.
      */
     private void layout(float layoutX, float layoutY, float layoutWidth, float layoutHeight){
-        Array<Cell> cells = this.cells;
+        Seq<Cell> cells = this.cells;
         int cellCount = cells.size;
 
         if(sizeInvalid) computeSize();

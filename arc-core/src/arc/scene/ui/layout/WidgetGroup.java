@@ -1,6 +1,6 @@
 package arc.scene.ui.layout;
 
-import arc.struct.SnapshotArray;
+import arc.struct.SnapshotSeq;
 import arc.scene.Element;
 import arc.scene.Group;
 import arc.scene.Scene;
@@ -60,7 +60,7 @@ public class WidgetGroup extends Group implements Layout{
     }
 
     private void setLayoutEnabled(Group parent, boolean enabled){
-        SnapshotArray<Element> children = parent.getChildren();
+        SnapshotSeq<Element> children = parent.getChildren();
         for(int i = 0, n = children.size; i < n; i++){
             Element actor = children.get(i);
             if(actor instanceof Layout)

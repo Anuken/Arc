@@ -1,6 +1,6 @@
 package arc.scene.actions;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.scene.Action;
 import arc.scene.Element;
 
@@ -9,7 +9,7 @@ import arc.scene.Element;
  * @author Nathan Sweet
  */
 public class AfterAction extends DelegateAction{
-    private Array<Action> waitForActions = new Array<>(false, 4);
+    private Seq<Action> waitForActions = new Seq<>(false, 4);
 
     public void setTarget(Element target){
         if(target != null) waitForActions.addAll(target.getActions());
@@ -22,7 +22,7 @@ public class AfterAction extends DelegateAction{
     }
 
     protected boolean delegate(float delta){
-        Array<Action> currentActions = target.getActions();
+        Seq<Action> currentActions = target.getActions();
         if(currentActions.size == 1) waitForActions.clear();
         for(int i = waitForActions.size - 1; i >= 0; i--){
             Action action = waitForActions.get(i);

@@ -1,6 +1,6 @@
 package arc.maps;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.graphics.g2d.TextureRegion;
 
 public class MapTile{
@@ -10,7 +10,7 @@ public class MapTile{
     public float offsetY;
 
     private MapProperties properties;
-    private Array<MapObject> objects;
+    private Seq<MapObject> objects;
 
     public MapTile(TextureRegion region){
         this.region = region;
@@ -23,9 +23,9 @@ public class MapTile{
         return properties;
     }
 
-    public Array<MapObject> getObjects(){
+    public Seq<MapObject> getObjects(){
         if(objects == null){
-            objects = new Array<>();
+            objects = new Seq<>();
         }
         return objects;
     }

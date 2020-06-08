@@ -8,7 +8,7 @@ import arc.util.*;
 
 public class MultiCacheBatch extends Batch{
     private static final int maxSpritesPerCache = 100000;
-    Array<SpriteCache> caches = new Array<>();
+    Seq<SpriteCache> caches = new Seq<>();
     Shader shader = SpriteCache.createDefaultShader();
     int currentid = -1;
     int maxCacheSize;

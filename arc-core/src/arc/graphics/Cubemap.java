@@ -5,7 +5,7 @@ import arc.Core;
 import arc.assets.AssetManager;
 import arc.assets.loaders.AssetLoader;
 import arc.assets.loaders.CubemapLoader.CubemapParameter;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.files.Fi;
 import arc.graphics.Pixmap.Format;
 import arc.graphics.Texture.TextureFilter;
@@ -23,7 +23,7 @@ import java.util.Map;
  * @author Xoppa
  */
 public class Cubemap extends GLTexture{
-    final static Map<Application, Array<Cubemap>> managedCubemaps = new HashMap<>();
+    final static Map<Application, Seq<Cubemap>> managedCubemaps = new HashMap<>();
     private static AssetManager assetManager;
     protected CubemapData data;
 
@@ -92,8 +92,8 @@ public class Cubemap extends GLTexture{
     }
 
     private static void addManagedCubemap(Application app, Cubemap cubemap){
-        Array<Cubemap> managedCubemapArray = managedCubemaps.get(app);
-        if(managedCubemapArray == null) managedCubemapArray = new Array<>();
+        Seq<Cubemap> managedCubemapArray = managedCubemaps.get(app);
+        if(managedCubemapArray == null) managedCubemapArray = new Seq<>();
         managedCubemapArray.add(cubemap);
         managedCubemaps.put(app, managedCubemapArray);
     }
@@ -105,7 +105,7 @@ public class Cubemap extends GLTexture{
 
     /** Invalidate all managed cubemaps. This is an internal method. Do not use it! */
     public static void invalidateAllCubemaps(Application app){
-        Array<Cubemap> managedCubemapArray = managedCubemaps.get(app);
+        Seq<Cubemap> managedCubemapArray = managedCubemaps.get(app);
         if(managedCubemapArray == null) return;
 
         if(assetManager == null){
@@ -121,7 +121,7 @@ public class Cubemap extends GLTexture{
 
             // next we go through each cubemap and reload either directly or via the
             // asset manager.
-            Array<Cubemap> cubemaps = new Array<>(managedCubemapArray);
+            Seq<Cubemap> cubemaps = new Seq<>(managedCubemapArray);
             for(Cubemap cubemap : cubemaps){
                 String fileName = assetManager.getAssetFileName(cubemap);
                 if(fileName == null){

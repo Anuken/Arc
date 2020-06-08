@@ -1,16 +1,16 @@
 package arc.maps;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 
 import java.util.Iterator;
 
 /** Collection of {@link TileSet} */
 public class TileSets implements Iterable<TileSet>{
-    private Array<TileSet> tilesets;
+    private Seq<TileSet> tilesets;
 
     /** Creates an empty struct of tilesets. */
     public TileSets(){
-        tilesets = new Array<>();
+        tilesets = new Seq<>();
     }
 
     /**

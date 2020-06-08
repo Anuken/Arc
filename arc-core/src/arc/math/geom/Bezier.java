@@ -1,6 +1,6 @@
 package arc.math.geom;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.math.Mathf;
 import arc.util.ArcRuntimeException;
 
@@ -9,7 +9,7 @@ import arc.util.ArcRuntimeException;
  * @author Xoppa
  */
 public class Bezier<T extends Vector<T>> implements Path<T>{
-    public Array<T> points = new Array<>();
+    public Seq<T> points = new Seq<>();
     private T tmp;
     private T tmp2;
     private T tmp3;
@@ -24,7 +24,7 @@ public class Bezier<T extends Vector<T>> implements Path<T>{
     public Bezier(final T[] points, final int offset, final int length){
         set(points, offset, length);
     }
-    public Bezier(final Array<T> points, final int offset, final int length){
+    public Bezier(final Seq<T> points, final int offset, final int length){
         set(points, offset, length);
     }
 
@@ -145,11 +145,11 @@ public class Bezier<T extends Vector<T>> implements Path<T>{
         return this;
     }
 
-    public Bezier set(final Array<T> points){
+    public Bezier set(final Seq<T> points){
         return set(points, 0, points.size);
     }
 
-    public Bezier set(final Array<T> points, final int offset, final int length){
+    public Bezier set(final Seq<T> points, final int offset, final int length){
         if(length < 2 || length > 4)
             throw new ArcRuntimeException("Only first, second and third degree Bezier curves are supported.");
         if(tmp == null) tmp = points.get(0).cpy();

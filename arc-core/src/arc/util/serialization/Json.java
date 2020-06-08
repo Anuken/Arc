@@ -1,6 +1,6 @@
 package arc.util.serialization;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.struct.*;
 import arc.struct.IntSet.*;
 import arc.struct.ObjectMap.*;
@@ -160,7 +160,7 @@ public class Json{
         OrderedMap<String, FieldMetadata> fields = typeToFields.get(type);
         if(fields != null) return fields;
 
-        Array<Class> classHierarchy = new Array();
+        Seq<Class> classHierarchy = new Seq();
         Class nextClass = type;
         while(nextClass != Object.class){
             classHierarchy.add(nextClass);
@@ -522,12 +522,12 @@ public class Json{
             }
 
             // JSON array special cases.
-            if(value instanceof Array){
-                if(knownType != null && actualType != knownType && actualType != Array.class)
+            if(value instanceof Seq){
+                if(knownType != null && actualType != knownType && actualType != Seq.class)
                     throw new SerializationException("Serialization of an Array other than the known type is not supported.\n"
                     + "Known type: " + knownType + "\nActual type: " + actualType);
                 writeArrayStart();
-                Array array = (Array)value;
+                Seq array = (Seq)value;
                 for(int i = 0, n = array.size; i < n; i++)
                     writeValue(array.get(i), elementType, null);
                 writeArrayEnd();
@@ -1103,9 +1103,9 @@ public class Json{
 
         if(jsonData.isArray()){
             // JSON array special cases.
-            if(type == null || type == Object.class) type = (Class<T>)Array.class;
-            if(Array.class.isAssignableFrom(type)){
-                Array result = type == Array.class ? new Array() : (Array)newInstance(type);
+            if(type == null || type == Object.class) type = (Class<T>)Seq.class;
+            if(Seq.class.isAssignableFrom(type)){
+                Seq result = type == Seq.class ? new Seq() : (Seq)newInstance(type);
                 for(JsonValue child = jsonData.child; child != null; child = child.next)
                     result.add(readValue(elementType, null, child));
                 return (T)result;

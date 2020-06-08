@@ -5,15 +5,15 @@ import arc.util.ArcRuntimeException;
 import java.util.NoSuchElementException;
 
 /**
- * An {@link ObjectMap} that also stores keys in an {@link Array} using the insertion order. Iteration over the
+ * An {@link ObjectMap} that also stores keys in an {@link Seq} using the insertion order. Iteration over the
  * {@link #entries()}, {@link #keys()}, and {@link #values()} is ordered and faster than an unordered map. Keys can also be
  * accessed and the order changed using {@link #orderedKeys()}. There is some additional overhead for put and remove. When used
  * for faster iteration versus ObjectMap and the order does not actually matter, copying during remove can be greatly reduced by
- * setting {@link Array#ordered} to false for {@link OrderedMap#orderedKeys()}.
+ * setting {@link Seq#ordered} to false for {@link OrderedMap#orderedKeys()}.
  * @author Nathan Sweet
  */
 public class OrderedMap<K, V> extends ObjectMap<K, V>{
-    final Array<K> keys;
+    final Seq<K> keys;
 
     public static <K, V> OrderedMap<K, V> of(Object... values){
         OrderedMap<K, V> map = new OrderedMap<>();
@@ -26,22 +26,22 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
     }
 
     public OrderedMap(){
-        keys = new Array<>();
+        keys = new Seq<>();
     }
 
     public OrderedMap(int initialCapacity){
         super(initialCapacity);
-        keys = new Array<>(capacity);
+        keys = new Seq<>(capacity);
     }
 
     public OrderedMap(int initialCapacity, float loadFactor){
         super(initialCapacity, loadFactor);
-        keys = new Array<>(capacity);
+        keys = new Seq<>(capacity);
     }
 
     public OrderedMap(OrderedMap<? extends K, ? extends V> map){
         super(map);
-        keys = new Array<>(map.keys);
+        keys = new Seq<>(map.keys);
     }
 
     public V put(K key, V value){
@@ -68,7 +68,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
         super.clear();
     }
 
-    public Array<K> orderedKeys(){
+    public Seq<K> orderedKeys(){
         return keys;
     }
 
@@ -143,7 +143,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
         if(size == 0) return "{}";
         StringBuilder buffer = new StringBuilder(32);
         buffer.append('{');
-        Array<K> keys = this.keys;
+        Seq<K> keys = this.keys;
         for(int i = 0, n = keys.size; i < n; i++){
             K key = keys.get(i);
             if(i > 0) buffer.append(", ");
@@ -156,7 +156,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
     }
 
     public static class OrderedMapEntries<K, V> extends Entries<K, V>{
-        private Array<K> keys;
+        private Seq<K> keys;
 
         public OrderedMapEntries(OrderedMap<K, V> map){
             super(map);
@@ -186,7 +186,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
     }
 
     public static class OrderedMapKeys<K> extends Keys<K>{
-        private Array<K> keys;
+        private Seq<K> keys;
 
         public OrderedMapKeys(OrderedMap<K, ?> map){
             super(map);
@@ -217,7 +217,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
     }
 
     public static class OrderedMapValues<V> extends Values<V>{
-        private Array keys;
+        private Seq keys;
 
         public OrderedMapValues(OrderedMap<?, V> map){
             super(map);

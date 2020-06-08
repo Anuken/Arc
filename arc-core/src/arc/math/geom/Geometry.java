@@ -1,8 +1,8 @@
 package arc.math.geom;
 
-import arc.struct.Array;
-import arc.struct.FloatArray;
-import arc.struct.IntArray;
+import arc.struct.Seq;
+import arc.struct.FloatSeq;
+import arc.struct.IntSeq;
 import arc.func.Intc2;
 import arc.func.Floatc2;
 import arc.func.Floatc4;
@@ -77,8 +77,8 @@ public final class Geometry{
         }
     }
 
-    public static FloatArray vectorsToFloats(Array<Vec2> result){
-        FloatArray out = new FloatArray(result.size * 2);
+    public static FloatSeq vectorsToFloats(Seq<Vec2> result){
+        FloatSeq out = new FloatSeq(result.size * 2);
         result.each(v -> out.add(v.x, v.y));
         return out;
     }
@@ -128,7 +128,7 @@ public final class Geometry{
 
     public static Vec2[] pixelCircle(float index, SolidChecker checker){
         int size = (int)(index * 2);
-        IntArray ints = new IntArray();
+        IntSeq ints = new IntSeq();
 
         //add edges (bottom left corner)
         for(int x = -1; x < size + 1; x++){
@@ -140,7 +140,7 @@ public final class Geometry{
             }
         }
 
-        Array<Vec2> path = new Array<>();
+        Seq<Vec2> path = new Seq<>();
 
         int cindex = 0;
         while(ints.size > 0){

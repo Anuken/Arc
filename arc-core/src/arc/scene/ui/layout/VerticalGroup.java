@@ -1,7 +1,7 @@
 package arc.scene.ui.layout;
 
-import arc.struct.FloatArray;
-import arc.struct.SnapshotArray;
+import arc.struct.FloatSeq;
+import arc.struct.SnapshotSeq;
 import arc.scene.Element;
 import arc.scene.event.Touchable;
 import arc.scene.utils.Layout;
@@ -22,7 +22,7 @@ import arc.util.Align;
 public class VerticalGroup extends WidgetGroup{
     private float prefWidth, prefHeight, lastPrefWidth;
     private boolean sizeInvalid = true;
-    private FloatArray columnSizes; // column height, column width, ...
+    private FloatSeq columnSizes; // column height, column width, ...
 
     private int align = Align.top, columnAlign;
     private boolean reverse, round = true, wrap, expand;
@@ -39,16 +39,16 @@ public class VerticalGroup extends WidgetGroup{
 
     private void computeSize(){
         sizeInvalid = false;
-        SnapshotArray<Element> children = getChildren();
+        SnapshotSeq<Element> children = getChildren();
         int n = children.size;
         prefWidth = 0;
         if(wrap){
             prefHeight = 0;
             if(columnSizes == null)
-                columnSizes = new FloatArray();
+                columnSizes = new FloatSeq();
             else
                 columnSizes.clear();
-            FloatArray columnSizes = this.columnSizes;
+            FloatSeq columnSizes = this.columnSizes;
             float space = this.space, wrapSpace = this.wrapSpace;
             float pad = padTop + padBottom, groupHeight = getHeight() - pad, x = 0, y = 0, columnWidth = 0;
             int i = 0, incr = 1;
@@ -136,7 +136,7 @@ public class VerticalGroup extends WidgetGroup{
 
         align = columnAlign;
 
-        SnapshotArray<Element> children = getChildren();
+        SnapshotSeq<Element> children = getChildren();
         int i = 0, n = children.size, incr = 1;
         if(reverse){
             i = n - 1;
@@ -207,8 +207,8 @@ public class VerticalGroup extends WidgetGroup{
 
         align = columnAlign;
 
-        FloatArray columnSizes = this.columnSizes;
-        SnapshotArray<Element> children = getChildren();
+        FloatSeq columnSizes = this.columnSizes;
+        SnapshotSeq<Element> children = getChildren();
         int i = 0, n = children.size, incr = 1;
         if(reverse){
             i = n - 1;

@@ -1,10 +1,10 @@
 package arc.maps;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 
 /** Map layer containing a set of MapLayers, objects and properties */
 public class MapGroupLayer extends MapLayer{
-    public Array<MapLayer> layers = new Array<>();
+    public Seq<MapLayer> layers = new Seq<>();
 
     @Override
     public void invalidateRenderOffset(){

@@ -5,7 +5,7 @@ import arc.assets.AssetLoaderParameters;
 import arc.assets.AssetManager;
 import arc.assets.loaders.AsynchronousAssetLoader;
 import arc.assets.loaders.FileHandleResolver;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.files.Fi;
 import arc.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import arc.graphics.g2d.BitmapFont;
@@ -35,8 +35,8 @@ public class FreetypeFontLoader extends AsynchronousAssetLoader<BitmapFont, Free
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, Fi file, FreeTypeFontLoaderParameter parameter){
-        Array<AssetDescriptor> deps = new Array<>();
+    public Seq<AssetDescriptor> getDependencies(String fileName, Fi file, FreeTypeFontLoaderParameter parameter){
+        Seq<AssetDescriptor> deps = new Seq<>();
         deps.add(new AssetDescriptor<>(parameter.fontFileName + ".gen", FreeTypeFontGenerator.class));
         return deps;
     }

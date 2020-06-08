@@ -1,7 +1,7 @@
 package arc.scene.ui.layout;
 
-import arc.struct.FloatArray;
-import arc.struct.SnapshotArray;
+import arc.struct.FloatSeq;
+import arc.struct.SnapshotSeq;
 import arc.scene.Element;
 import arc.scene.event.Touchable;
 import arc.scene.ui.Label;
@@ -23,7 +23,7 @@ import arc.util.Align;
 public class HorizontalGroup extends WidgetGroup{
     private float prefWidth, prefHeight, lastPrefHeight;
     private boolean sizeInvalid = true;
-    private FloatArray rowSizes; // row width, row height, ...
+    private FloatSeq rowSizes; // row width, row height, ...
 
     private int align = Align.left, rowAlign;
     private boolean reverse, round = true, wrap, expand;
@@ -40,16 +40,16 @@ public class HorizontalGroup extends WidgetGroup{
 
     private void computeSize(){
         sizeInvalid = false;
-        SnapshotArray<Element> children = getChildren();
+        SnapshotSeq<Element> children = getChildren();
         int n = children.size;
         prefHeight = 0;
         if(wrap){
             prefWidth = 0;
             if(rowSizes == null)
-                rowSizes = new FloatArray();
+                rowSizes = new FloatSeq();
             else
                 rowSizes.clear();
-            FloatArray rowSizes = this.rowSizes;
+            FloatSeq rowSizes = this.rowSizes;
             float space = this.space, wrapSpace = this.wrapSpace;
             float pad = padLeft + padRight, groupWidth = getWidth() - pad, x = 0, y = 0, rowHeight = 0;
             int i = 0, incr = 1;
@@ -137,7 +137,7 @@ public class HorizontalGroup extends WidgetGroup{
 
         align = rowAlign;
 
-        SnapshotArray<Element> children = getChildren();
+        SnapshotSeq<Element> children = getChildren();
         int i = 0, n = children.size, incr = 1;
         if(reverse){
             i = n - 1;
@@ -208,8 +208,8 @@ public class HorizontalGroup extends WidgetGroup{
         groupWidth -= padRight;
         align = this.rowAlign;
 
-        FloatArray rowSizes = this.rowSizes;
-        SnapshotArray<Element> children = getChildren();
+        FloatSeq rowSizes = this.rowSizes;
+        SnapshotSeq<Element> children = getChildren();
         int i = 0, n = children.size, incr = 1;
         if(reverse){
             i = n - 1;

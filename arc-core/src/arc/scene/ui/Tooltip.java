@@ -1,7 +1,7 @@
 package arc.scene.ui;
 
 import arc.*;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.func.Cons;
 import arc.input.KeyCode;
 import arc.math.Interp;
@@ -134,7 +134,7 @@ public class Tooltip extends InputListener{
     public static class Tooltips{
         static private Tooltips instance;
         static private StaticReset reset = new StaticReset();
-        final Array<Tooltip> shown = new Array<>();
+        final Seq<Tooltip> shown = new Seq<>();
         /**
          * Seconds from when an element is hovered to when the tooltip is shown. Default is 2. Call {@link #hideAll()} after changing to
          * reset internal state.

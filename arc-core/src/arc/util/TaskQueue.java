@@ -3,8 +3,8 @@ package arc.util;
 import arc.struct.*;
 
 public class TaskQueue{
-    private final Array<Runnable> runnables = new Array<>();
-    private final Array<Runnable> executedRunnables = new Array<>();
+    private final Seq<Runnable> runnables = new Seq<>();
+    private final Seq<Runnable> executedRunnables = new Seq<>();
 
     public void run(){
         synchronized(runnables){

@@ -32,12 +32,12 @@ public class MaxRectsPacker implements Packer{
     }
 
     @Override
-    public Array<Page> pack(Array<Rect> inputRects){
+    public Seq<Page> pack(Seq<Rect> inputRects){
         return pack(null, inputRects);
     }
 
     @Override
-    public Array<Page> pack(ProgressListener progress, Array<Rect> inputRects){
+    public Seq<Page> pack(ProgressListener progress, Seq<Rect> inputRects){
         int n = inputRects.size;
         for(int i = 0; i < n; i++){
             Rect rect = inputRects.get(i);
@@ -59,7 +59,7 @@ public class MaxRectsPacker implements Packer{
             }
         }
 
-        Array<Page> pages = new Array<>();
+        Seq<Page> pages = new Seq<>();
         while(inputRects.size > 0){
             progress.count = n - inputRects.size + 1;
             if(progress.update(progress.count, n)) break;
@@ -72,7 +72,7 @@ public class MaxRectsPacker implements Packer{
 
     }
 
-    private Page packPage(Array<Rect> inputRects){
+    private Page packPage(Seq<Rect> inputRects){
         int paddingX = settings.paddingX, paddingY = settings.paddingY;
         float maxWidth = settings.maxWidth, maxHeight = settings.maxHeight;
         boolean edgePadX = false, edgePadY = false;
@@ -196,7 +196,7 @@ public class MaxRectsPacker implements Packer{
      * @param fully If true, the only results that pack all rects will be considered. If false, all results are considered, not
      * all rects may be packed.
      */
-    private Page packAtSize(boolean fully, int width, int height, Array<Rect> inputRects){
+    private Page packAtSize(boolean fully, int width, int height, Seq<Rect> inputRects){
         Page bestResult = null;
         for(int i = 0, n = methods.length; i < n; i++){
             maxRects.init(width, height);
@@ -204,7 +204,7 @@ public class MaxRectsPacker implements Packer{
             if(!settings.fast){
                 result = maxRects.pack(inputRects, methods[i]);
             }else{
-                Array<Rect> remaining = new Array();
+                Seq<Rect> remaining = new Seq();
                 for(int ii = 0, nn = inputRects.size; ii < nn; ii++){
                     Rect rect = inputRects.get(ii);
                     if(maxRects.insert(rect, methods[i]) == null){
@@ -280,8 +280,8 @@ public class MaxRectsPacker implements Packer{
      */
     class MaxRects{
         private int binWidth, binHeight;
-        private final Array<Rect> usedRectangles = new Array();
-        private final Array<Rect> freeRectangles = new Array();
+        private final Seq<Rect> usedRectangles = new Seq();
+        private final Seq<Rect> freeRectangles = new Seq();
 
         public void init(int width, int height){
             binWidth = width;
@@ -328,8 +328,8 @@ public class MaxRectsPacker implements Packer{
         }
 
         /** For each rectangle, packs each one then chooses the best and packs that. Slow! */
-        public Page pack(Array<Rect> rects, FreeRectChoiceHeuristic method){
-            rects = new Array<>(rects);
+        public Page pack(Seq<Rect> rects, FreeRectChoiceHeuristic method){
+            rects = new Seq<>(rects);
             while(rects.size > 0){
                 int bestRectIndex = -1;
                 Rect bestNode = new Rect();
@@ -371,7 +371,7 @@ public class MaxRectsPacker implements Packer{
                 h = Math.max(h, rect.y + rect.height);
             }
             Page result = new Page();
-            result.outputRects = new Array<>(usedRectangles);
+            result.outputRects = new Seq<>(usedRectangles);
             result.occupancy = getOccupancy();
             result.width = w;
             result.height = h;
@@ -620,7 +620,7 @@ public class MaxRectsPacker implements Packer{
             if(x == 0 || x + width == binWidth) score += height;
             if(y == 0 || y + height == binHeight) score += width;
 
-            Array<Rect> usedRectangles = this.usedRectangles;
+            Seq<Rect> usedRectangles = this.usedRectangles;
             for(int i = 0, n = usedRectangles.size; i < n; i++){
                 Rect rect = usedRectangles.get(i);
                 if(rect.x == x + width || rect.x + rect.width == x)
@@ -637,7 +637,7 @@ public class MaxRectsPacker implements Packer{
             Rect bestNode = new Rect();
             bestNode.score1 = -1; // best contact score
 
-            Array<Rect> freeRectangles = this.freeRectangles;
+            Seq<Rect> freeRectangles = this.freeRectangles;
             for(int i = 0, n = freeRectangles.size; i < n; i++){
                 // Try to place the rectangle in upright (non-rotated) orientation.
                 Rect free = freeRectangles.get(i);
@@ -711,7 +711,7 @@ public class MaxRectsPacker implements Packer{
 
         private void pruneFreeList(){
             // Go through each pair and remove any rectangle that is redundant.
-            Array<Rect> freeRectangles = this.freeRectangles;
+            Seq<Rect> freeRectangles = this.freeRectangles;
             for(int i = 0, n = freeRectangles.size; i < n; i++)
                 for(int j = i + 1; j < n; ++j){
                     Rect rect1 = freeRectangles.get(i);

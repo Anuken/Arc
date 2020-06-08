@@ -20,7 +20,7 @@ public abstract class ALMusic implements Music{
     protected final Fi file;
     private final ALAudio audio;
     protected int bufferOverhead = 0;
-    private FloatArray renderedSecondsQueue = new FloatArray(bufferCount);
+    private FloatSeq renderedSecondsQueue = new FloatSeq(bufferCount);
     private IntBuffer buffers;
     private int sourceID = -1;
     private int format, sampleRate;

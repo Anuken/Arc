@@ -7,7 +7,7 @@ import arc.util.*;
 public interface Application extends Disposable{
 
     /** Returns a list of all the application listeners used. */
-    Array<ApplicationListener> getListeners();
+    Seq<ApplicationListener> getListeners();
 
     /** Adds a new application listener. */
     default void addListener(ApplicationListener listener){

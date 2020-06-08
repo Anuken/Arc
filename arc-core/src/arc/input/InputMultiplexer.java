@@ -1,7 +1,7 @@
 package arc.input;
 
-import arc.struct.Array;
-import arc.struct.SnapshotArray;
+import arc.struct.Seq;
+import arc.struct.SnapshotSeq;
 
 /**
  * An {@link InputProcessor} that delegates to an ordered list of other InputProcessors. Delegation for an event stops if a
@@ -9,7 +9,7 @@ import arc.struct.SnapshotArray;
  * @author Nathan Sweet
  */
 public class InputMultiplexer implements InputProcessor{
-    private SnapshotArray<InputProcessor> processors = new SnapshotArray<>(4);
+    private SnapshotSeq<InputProcessor> processors = new SnapshotSeq<>(4);
 
     public InputMultiplexer(){
     }
@@ -45,7 +45,7 @@ public class InputMultiplexer implements InputProcessor{
         processors.clear();
     }
 
-    public SnapshotArray<InputProcessor> getProcessors(){
+    public SnapshotSeq<InputProcessor> getProcessors(){
         return processors;
     }
 
@@ -54,7 +54,7 @@ public class InputMultiplexer implements InputProcessor{
         this.processors.addAll(processors);
     }
 
-    public void setProcessors(Array<InputProcessor> processors){
+    public void setProcessors(Seq<InputProcessor> processors){
         this.processors.clear();
         this.processors.addAll(processors);
     }

@@ -74,7 +74,7 @@ import java.util.*;
  * @author Rob Rendell
  */
 public class PixmapPacker implements Disposable{
-    final Array<Page> pages = new Array<>();
+    final Seq<Page> pages = new Seq<>();
     boolean packToTexture;
     boolean disposed;
     int pageWidth, pageHeight;
@@ -128,7 +128,7 @@ public class PixmapPacker implements Disposable{
      * Sorts the images to the optimzal order they should be packed. Some packing strategies rely heavily on the images being
      * sorted.
      */
-    public void sort(Array<Pixmap> images){
+    public void sort(Seq<Pixmap> images){
         packStrategy.sort(images);
     }
 
@@ -232,7 +232,7 @@ public class PixmapPacker implements Disposable{
      * @return the {@link Page} instances created so far. If multiple threads are accessing the packer, iterating over the pages
      * must be done only after synchronizing on the packer.
      */
-    public Array<Page> getPages(){
+    public Seq<Page> getPages(){
         return pages;
     }
 
@@ -342,7 +342,7 @@ public class PixmapPacker implements Disposable{
      * Calls {@link Page#updateTexture(TextureFilter, TextureFilter, boolean) updateTexture} for each page and adds a region to
      * the specified array for each page texture.
      */
-    public synchronized void updateTextureRegions(Array<TextureRegion> regions, TextureFilter minFilter, TextureFilter magFilter,
+    public synchronized void updateTextureRegions(Seq<TextureRegion> regions, TextureFilter minFilter, TextureFilter magFilter,
                                                   boolean useMipMaps){
         updatePageTextures(minFilter, magFilter, useMipMaps);
         while(regions.size < pages.size)
@@ -547,7 +547,7 @@ public class PixmapPacker implements Disposable{
      * @author Nathan Sweet
      */
     public interface PackStrategy{
-        void sort(Array<Pixmap> images);
+        void sort(Seq<Pixmap> images);
 
         /** Returns the page the rectangle should be placed in and modifies the specified rectangle position. */
         Page pack(PixmapPacker packer, String name, Rect rect);
@@ -559,7 +559,7 @@ public class PixmapPacker implements Disposable{
      * @author Rob Rendell
      */
     public static class Page{
-        final Array<String> addedRects = new Array<>();
+        final Seq<String> addedRects = new Seq<>();
         OrderedMap<String, PixmapPackerRect> rects = new OrderedMap<>();
         Pixmap image;
         Texture texture;
@@ -634,7 +634,7 @@ public class PixmapPacker implements Disposable{
         Comparator<Pixmap> comparator;
 
         @Override
-        public void sort(Array<Pixmap> pixmaps){
+        public void sort(Seq<Pixmap> pixmaps){
             if(comparator == null){
                 comparator = Structs.comparingInt(o -> Math.max(o.getWidth(), o.getHeight()));
             }
@@ -746,7 +746,7 @@ public class PixmapPacker implements Disposable{
     public static class SkylineStrategy implements PackStrategy{
         Comparator<Pixmap> comparator;
 
-        public void sort(Array<Pixmap> images){
+        public void sort(Seq<Pixmap> images){
             if(comparator == null){
                 comparator = (o1, o2) -> o1.getHeight() - o2.getHeight();
             }
@@ -804,7 +804,7 @@ public class PixmapPacker implements Disposable{
         }
 
         static class SkylinePage extends Page{
-            Array<Row> rows = new Array<>();
+            Seq<Row> rows = new Seq<>();
 
             public SkylinePage(PixmapPacker packer){
                 super(packer);

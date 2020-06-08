@@ -3,7 +3,7 @@
 // Ragel.exe -G2 -J -o XmlReader.java XmlReader.rl
 package arc.util.serialization;
 
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.struct.ObjectMap;
 import arc.struct.ObjectMap.Entry;
 import arc.files.Fi;
@@ -37,7 +37,7 @@ public class XmlReader{
     private static final byte[] _xml_indicies = init__xml_indicies_0();
     private static final byte[] _xml_trans_targs = init__xml_trans_targs_0();
     private static final byte[] _xml_trans_actions = init__xml_trans_actions_0();
-    private final Array<Element> elements = new Array(8);
+    private final Seq<Element> elements = new Seq(8);
     private final StringBuilder textBuffer = new StringBuilder(64);
     private Element root, current;
 
@@ -425,7 +425,7 @@ public class XmlReader{
     public static class Element{
         private final String name;
         private ObjectMap<String, String> attributes;
-        private Array<Element> children;
+        private Seq<Element> children;
         private String text;
         private Element parent;
 
@@ -481,7 +481,7 @@ public class XmlReader{
         }
 
         public void addChild(Element element){
-            if(children == null) children = new Array(8);
+            if(children == null) children = new Seq(8);
             children.add(element);
         }
 
@@ -591,10 +591,10 @@ public class XmlReader{
 
         /**
          * @param name the name of the children
-         * @return the children with the given name or an empty {@link Array}
+         * @return the children with the given name or an empty {@link Seq}
          */
-        public Array<Element> getChildrenByName(String name){
-            Array<Element> result = new Array<>();
+        public Seq<Element> getChildrenByName(String name){
+            Seq<Element> result = new Seq<>();
             if(children == null) return result;
             for(int i = 0; i < children.size; i++){
                 Element child = children.get(i);
@@ -605,15 +605,15 @@ public class XmlReader{
 
         /**
          * @param name the name of the children
-         * @return the children with the given name or an empty {@link Array}
+         * @return the children with the given name or an empty {@link Seq}
          */
-        public Array<Element> getChildrenByNameRecursively(String name){
-            Array<Element> result = new Array<>();
+        public Seq<Element> getChildrenByNameRecursively(String name){
+            Seq<Element> result = new Seq<>();
             getChildrenByNameRecursively(name, result);
             return result;
         }
 
-        private void getChildrenByNameRecursively(String name, Array<Element> result){
+        private void getChildrenByNameRecursively(String name, Seq<Element> result){
             if(children == null) return;
             for(int i = 0; i < children.size; i++){
                 Element child = children.get(i);

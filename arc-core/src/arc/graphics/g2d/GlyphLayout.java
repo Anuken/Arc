@@ -1,7 +1,7 @@
 package arc.graphics.g2d;
 
-import arc.struct.Array;
-import arc.struct.FloatArray;
+import arc.struct.Seq;
+import arc.struct.FloatSeq;
 import arc.graphics.Color;
 import arc.graphics.Colors;
 import arc.graphics.g2d.BitmapFont.BitmapFontData;
@@ -18,8 +18,8 @@ import arc.util.pooling.Pools;
  * @author Alexander Dorokhov
  */
 public class GlyphLayout implements Poolable{
-    public final Array<GlyphRun> runs = new Array<>();
-    private final Array<Color> colorStack = new Array<>(4);
+    public final Seq<GlyphRun> runs = new Seq<>();
+    private final Seq<Color> colorStack = new Seq<>(4);
     public float width, height;
 
     /** Creates an empty GlyphLayout. */
@@ -78,7 +78,7 @@ public class GlyphLayout implements Poolable{
         boolean markupEnabled = fontData.markupEnabled;
 
         Pool<GlyphRun> glyphRunPool = Pools.get(GlyphRun.class, GlyphRun::new);
-        Array<GlyphRun> runs = this.runs;
+        Seq<GlyphRun> runs = this.runs;
         glyphRunPool.freeAll(runs);
         runs.clear();
 
@@ -86,7 +86,7 @@ public class GlyphLayout implements Poolable{
         int lines = 0, blankLines = 0;
         Glyph lastGlyph = null;
 
-        Array<Color> colorStack = this.colorStack;
+        Seq<Color> colorStack = this.colorStack;
         Color nextColor = color;
         colorStack.add(color);
         Pool<Color> colorPool = Pools.get(Color.class, Color::new);
@@ -346,9 +346,9 @@ public class GlyphLayout implements Poolable{
      * @return May be null if second run is all whitespace.
      */
     private GlyphRun wrap(BitmapFontData fontData, GlyphRun first, Pool<GlyphRun> glyphRunPool, int wrapIndex, int widthIndex){
-        Array<Glyph> glyphs2 = first.glyphs; // Starts with all the glyphs.
+        Seq<Glyph> glyphs2 = first.glyphs; // Starts with all the glyphs.
         int glyphCount = first.glyphs.size;
-        FloatArray xAdvances2 = first.xAdvances; // Starts with all the xAdvances.
+        FloatSeq xAdvances2 = first.xAdvances; // Starts with all the xAdvances.
 
         // Skip whitespace before the wrap index.
         int firstEnd = wrapIndex;
@@ -375,13 +375,13 @@ public class GlyphLayout implements Poolable{
             second = glyphRunPool.obtain();
             second.color.set(first.color);
 
-            Array<Glyph> glyphs1 = second.glyphs; // Starts empty.
+            Seq<Glyph> glyphs1 = second.glyphs; // Starts empty.
             glyphs1.addAll(glyphs2, 0, firstEnd);
             glyphs2.removeRange(0, secondStart - 1);
             first.glyphs = glyphs1;
             second.glyphs = glyphs2;
 
-            FloatArray xAdvances1 = second.xAdvances; // Starts empty.
+            FloatSeq xAdvances1 = second.xAdvances; // Starts empty.
             xAdvances1.addAll(xAdvances2, 0, firstEnd + 1);
             xAdvances2.removeRange(1, secondStart); // Leave first entry to be overwritten by next line.
             xAdvances2.set(0, -glyphs2.first().xoffset * fontData.scaleX - fontData.padLeft);
@@ -491,12 +491,12 @@ public class GlyphLayout implements Poolable{
      */
     public static class GlyphRun implements Poolable{
         public final Color color = new Color();
-        public Array<Glyph> glyphs = new Array<>();
+        public Seq<Glyph> glyphs = new Seq<>();
         /**
          * Contains glyphs.size+1 entries: First entry is X offset relative to the drawing position. Subsequent entries are the X
          * advance relative to previous glyph position. Last entry is the width of the last glyph.
          */
-        public FloatArray xAdvances = new FloatArray();
+        public FloatSeq xAdvances = new FloatSeq();
         public float x, y, width;
 
         public void reset(){
@@ -507,7 +507,7 @@ public class GlyphLayout implements Poolable{
 
         public String toString(){
             StringBuilder buffer = new StringBuilder(glyphs.size);
-            Array<Glyph> glyphs = this.glyphs;
+            Seq<Glyph> glyphs = this.glyphs;
             for(int i = 0, n = glyphs.size; i < n; i++){
                 Glyph g = glyphs.get(i);
                 buffer.append((char)g.id);

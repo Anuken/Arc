@@ -1,6 +1,6 @@
 package arc.input;
 
-import arc.struct.IntArray;
+import arc.struct.IntSeq;
 import arc.util.Time;
 
 /**
@@ -17,8 +17,8 @@ public class InputEventQueue implements InputProcessor{
     static private final int TOUCH_DRAGGED = 5;
     static private final int MOUSE_MOVED = 6;
     static private final int SCROLLED = 7;
-    private final IntArray queue = new IntArray();
-    private final IntArray processingQueue = new IntArray();
+    private final IntSeq queue = new IntSeq();
+    private final IntSeq processingQueue = new IntSeq();
     private InputProcessor processor;
     private long currentEventTime;
 

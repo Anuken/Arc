@@ -240,7 +240,7 @@ public class Jval{
     }
 
     /** Alias class of json arrays. */
-    public static class JsonArray extends Array<Jval>{
+    public static class JsonArray extends Seq<Jval>{
 
     }
 

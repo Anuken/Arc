@@ -18,7 +18,7 @@ public class ImageProcessor{
 
     private final Settings settings;
     private final HashMap<String, Rect> crcs = new HashMap<>();
-    private final Array<Rect> rects = new Array<>();
+    private final Seq<Rect> rects = new Seq<>();
     private float scale = 1;
     private Resampling resampling = Resampling.bicubic;
 
@@ -94,7 +94,7 @@ public class ImageProcessor{
         this.resampling = resampling;
     }
 
-    public Array<Rect> getImages(){
+    public Seq<Rect> getImages(){
         return rects;
     }
 

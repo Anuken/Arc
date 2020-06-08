@@ -1,7 +1,7 @@
 package arc.scene.ui;
 
 import arc.Core;
-import arc.struct.Array;
+import arc.struct.Seq;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.scene.Element;
@@ -25,7 +25,7 @@ import static arc.Core.scene;
  * @author Nathan Sweet
  */
 public class TreeElement extends WidgetGroup{
-    final Array<Node> rootNodes = new Array<>();
+    final Seq<Node> rootNodes = new Seq<>();
     final Selection<Node> selection;
     TreeStyle style;
     float ySpacing = 4, iconSpacingLeft = 2, iconSpacingRight = 2, padding = 0, indentSpacing;
@@ -58,7 +58,7 @@ public class TreeElement extends WidgetGroup{
         initialize();
     }
 
-    static boolean findExpandedObjects(Array<Node> nodes, Array<Object> objects){
+    static boolean findExpandedObjects(Seq<Node> nodes, Seq<Object> objects){
         boolean expanded = false;
         for(int i = 0, n = nodes.size; i < n; i++){
             Node node = nodes.get(i);
@@ -67,7 +67,7 @@ public class TreeElement extends WidgetGroup{
         return expanded;
     }
 
-    static Node findNode(Array<Node> nodes, Object object){
+    static Node findNode(Seq<Node> nodes, Object object){
         for(int i = 0, n = nodes.size; i < n; i++){
             Node node = nodes.get(i);
             if(object.equals(node.object)) return node;
@@ -80,7 +80,7 @@ public class TreeElement extends WidgetGroup{
         return null;
     }
 
-    static void collapseAll(Array<Node> nodes){
+    static void collapseAll(Seq<Node> nodes){
         for(int i = 0, n = nodes.size; i < n; i++){
             Node node = nodes.get(i);
             node.setExpanded(false);
@@ -88,7 +88,7 @@ public class TreeElement extends WidgetGroup{
         }
     }
 
-    static void expandAll(Array<Node> nodes){
+    static void expandAll(Seq<Node> nodes){
         for(int i = 0, n = nodes.size; i < n; i++)
             nodes.get(i).expandAll();
     }
@@ -172,7 +172,7 @@ public class TreeElement extends WidgetGroup{
         selection.clear();
     }
 
-    public Array<Node> getNodes(){
+    public Seq<Node> getNodes(){
         return rootNodes;
     }
 
@@ -193,7 +193,7 @@ public class TreeElement extends WidgetGroup{
         prefHeight = getHeight() - prefHeight;
     }
 
-    private void computeSize(Array<Node> nodes, float indent){
+    private void computeSize(Seq<Node> nodes, float indent){
         float ySpacing = this.ySpacing;
         float spacing = iconSpacingLeft + iconSpacingRight;
         for(int i = 0, n = nodes.size; i < n; i++){
@@ -223,7 +223,7 @@ public class TreeElement extends WidgetGroup{
         layout(rootNodes, leftColumnWidth + indentSpacing + iconSpacingRight, getHeight() - ySpacing / 2);
     }
 
-    private float layout(Array<Node> nodes, float indent, float y){
+    private float layout(Seq<Node> nodes, float indent, float y){
         float ySpacing = this.ySpacing;
         for(int i = 0, n = nodes.size; i < n; i++){
             Node node = nodes.get(i);
@@ -256,7 +256,7 @@ public class TreeElement extends WidgetGroup{
     }
 
     /** Draws selection, icons, and expand icons. */
-    private void draw(Array<Node> nodes, float indent){
+    private void draw(Seq<Node> nodes, float indent){
         Drawable plus = style.plus, minus = style.minus;
         float x = getX(), y = getY();
         for(int i = 0, n = nodes.size; i < n; i++){
@@ -293,7 +293,7 @@ public class TreeElement extends WidgetGroup{
         return foundNode;
     }
 
-    private float getNodeAt(Array<Node> nodes, float y, float rowY){
+    private float getNodeAt(Seq<Node> nodes, float y, float rowY){
         for(int i = 0, n = nodes.size; i < n; i++){
             Node node = nodes.get(i);
             float height = node.height;
@@ -311,7 +311,7 @@ public class TreeElement extends WidgetGroup{
         return rowY;
     }
 
-    void selectNodes(Array<Node> nodes, float low, float high){
+    void selectNodes(Seq<Node> nodes, float low, float high){
         for(int i = 0, n = nodes.size; i < n; i++){
             Node node = nodes.get(i);
             if(node.element.getY() < low) break;
@@ -334,7 +334,7 @@ public class TreeElement extends WidgetGroup{
         indentSpacing = Math.max(style.plus.getMinWidth(), style.minus.getMinWidth()) + iconSpacingLeft;
     }
 
-    public Array<Node> getRootNodes(){
+    public Seq<Node> getRootNodes(){
         return rootNodes;
     }
 
@@ -389,11 +389,11 @@ public class TreeElement extends WidgetGroup{
         return prefHeight;
     }
 
-    public void findExpandedObjects(Array objects){
+    public void findExpandedObjects(Seq objects){
         findExpandedObjects(rootNodes, objects);
     }
 
-    public void restoreExpandedObjects(Array objects){
+    public void restoreExpandedObjects(Seq objects){
         for(int i = 0, n = objects.size; i < n; i++){
             Node node = findNode(objects.get(i));
             if(node != null){
@@ -424,7 +424,7 @@ public class TreeElement extends WidgetGroup{
 
     public static class Node{
         final Element element;
-        final Array<Node> children = new Array<>(0);
+        final Seq<Node> children = new Seq<>(0);
         Node parent;
         boolean selectable = true;
         boolean expanded;
@@ -458,7 +458,7 @@ public class TreeElement extends WidgetGroup{
             insert(children.size, node);
         }
 
-        public void addAll(Array<Node> nodes){
+        public void addAll(Seq<Node> nodes){
             for(int i = 0, n = nodes.size; i < n; i++)
                 insert(children.size, nodes.get(i));
         }
@@ -527,7 +527,7 @@ public class TreeElement extends WidgetGroup{
         }
 
         /** If the children order is changed, {@link #updateChildren()} must be called. */
-        public Array<Node> getChildren(){
+        public Seq<Node> getChildren(){
             return children;
         }
 
@@ -608,11 +608,11 @@ public class TreeElement extends WidgetGroup{
             this.selectable = selectable;
         }
 
-        public void findExpandedObjects(Array<Object> objects){
+        public void findExpandedObjects(Seq<Object> objects){
             if(expanded && !TreeElement.findExpandedObjects(children, objects)) objects.add(object);
         }
 
-        public void restoreExpandedObjects(Array objects){
+        public void restoreExpandedObjects(Seq objects){
             for(int i = 0, n = objects.size; i < n; i++){
                 Node node = findNode(objects.get(i));
                 if(node != null){

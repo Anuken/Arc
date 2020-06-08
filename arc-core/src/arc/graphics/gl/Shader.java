@@ -54,7 +54,7 @@ public class Shader implements Disposable{
     /** default name for boneweight attribute **/
     public static final String boneweightAttribute = "a_boneWeight";
     /** the list of currently available shaders **/
-    private final static ObjectMap<Application, Array<Shader>> shaders = new ObjectMap<>();
+    private final static ObjectMap<Application, Seq<Shader>> shaders = new ObjectMap<>();
     /** flag indicating whether attributes & uniforms must be present at all times **/
     public static boolean pedantic = false;
     /**
@@ -140,7 +140,7 @@ public class Shader implements Disposable{
     public static void invalidateAllShaderPrograms(Application app){
         if(Core.gl20 == null) return;
 
-        Array<Shader> shaderArray = shaders.get(app);
+        Seq<Shader> shaderArray = shaders.get(app);
         if(shaderArray == null) return;
 
         for(int i = 0; i < shaderArray.size; i++){
@@ -684,8 +684,8 @@ public class Shader implements Disposable{
     }
 
     private void addManagedShader(Application app, Shader shader){
-        Array<Shader> managedResources = shaders.get(app);
-        if(managedResources == null) managedResources = new Array<>();
+        Seq<Shader> managedResources = shaders.get(app);
+        if(managedResources == null) managedResources = new Seq<>();
         managedResources.add(shader);
         shaders.put(app, managedResources);
     }
