@@ -14,6 +14,8 @@ public class Tmp{
     public static final Vec2 v2 = new Vec2();
     public static final Vec2 v3 = new Vec2();
     public static final Vec2 v4 = new Vec2();
+    public static final Vec2 v5 = new Vec2();
+    public static final Vec2 v6 = new Vec2();
 
     public static final Vec3 v31 = new Vec3();
     public static final Vec3 v32 = new Vec3();
