@@ -104,7 +104,7 @@ public class Label extends Element{
      * If this text starts with '$', this label will look in {@link Core#bundle} for matching text.
      */
     public void setText(CharSequence newText){
-        if(bundle != null && newText != null && newText.length() > 0 && newText.charAt(0) == '$'){
+        if(bundle != null && newText != null && newText.length() > 0 && (newText.charAt(0) == '$' || newText.charAt(0) == '@')){
             String out = newText.toString().substring(1);
             setTextInternal(bundle.get(out, out));
         }else{
@@ -334,7 +334,7 @@ public class Label extends Element{
             this.ellipsis = null;
     }
 
-    /** Allows subclasses to access the cache in {@link #draw(Batch, float)}. */
+    /** Allows subclasses to access the cache. */
     protected BitmapFontCache getBitmapFontCache(){
         return cache;
     }
