@@ -109,6 +109,15 @@ public class Vec3 implements Vector<Vec3>{
     }
 
     @Override
+    public Vec3 div(Vec3 other){
+        x /= other.x;
+        y /= other.y;
+        z /= other.z;
+
+        return this;
+    }
+
+    @Override
     public Vec3 set(final Vec3 vector){
         return this.set(vector.x, vector.y, vector.z);
     }

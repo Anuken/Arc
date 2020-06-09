@@ -55,6 +55,13 @@ public class Vec2 implements Vector<Vec2>, Position{
     }
 
     @Override
+    public Vec2 div(Vec2 other){
+        x /= other.x;
+        y /= other.y;
+        return this;
+    }
+
+    @Override
     public Vec2 cpy(){
         return new Vec2(this);
     }

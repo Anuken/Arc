@@ -109,6 +109,9 @@ public interface Vector<T extends Vector<T>>{
      */
     T scl(T v);
 
+    /** Inverse of scl() */
+    T div(T other);
+
     /**
      * @param v The other vector
      * @return the distance between this and the other vector
@@ -230,4 +233,20 @@ public interface Vector<T extends Vector<T>>{
      * @return This vector for chaining
      */
     T setZero();
+
+    default T plus(T other){
+        return add(other);
+    }
+
+    default T minus(T other){
+        return sub(other);
+    }
+
+    default T unaryMinus(){
+        return scl(-1);
+    }
+
+    default T times(T other){
+        return scl(other);
+    }
 }
