@@ -365,7 +365,6 @@ public interface GL30 extends GL20{
     int glGetUniformBlockIndex(int program, String uniformBlockName);
     void glGetActiveUniformBlockiv(int program, int uniformBlockIndex, int pname, java.nio.IntBuffer params);
     void glGetActiveUniformBlockName(int program, int uniformBlockIndex, java.nio.Buffer length, java.nio.Buffer uniformBlockName);
-    String glGetActiveUniformBlockName(int program, int uniformBlockIndex);
     void glUniformBlockBinding(int program, int uniformBlockIndex, int uniformBlockBinding);
     void glDrawArraysInstanced(int mode, int first, int count, int instanceCount);
     void glDrawElementsInstanced(int mode, int count, int type, int indicesOffset, int instanceCount);

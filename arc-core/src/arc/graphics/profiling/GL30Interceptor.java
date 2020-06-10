@@ -1546,14 +1546,6 @@ public class GL30Interceptor extends GLInterceptor implements GL30{
     }
 
     @Override
-    public String glGetActiveUniformBlockName(int program, int uniformBlockIndex){
-        calls++;
-        final String result = gl30.glGetActiveUniformBlockName(program, uniformBlockIndex);
-        check();
-        return result;
-    }
-
-    @Override
     public void glUniformBlockBinding(int program, int uniformBlockIndex, int uniformBlockBinding){
         calls++;
         gl30.glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);

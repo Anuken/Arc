@@ -63,7 +63,6 @@ public class SdlGL30 extends SdlGL20 implements GL30{
     @Override public void glGetActiveUniformsiv(int program, int uniformCount, IntBuffer uniformIndices, int pname, IntBuffer params){ SDLGL.glGetActiveUniformsiv(program, uniformCount, uniformIndices, pname, params); }
     @Override public int glGetUniformBlockIndex(int program, String uniformBlockName){ return SDLGL.glGetUniformBlockIndex(program, uniformBlockName); }
     @Override public void glGetActiveUniformBlockiv(int program, int uniformBlockIndex, int pname, IntBuffer params){ SDLGL.glGetActiveUniformBlockiv(program, uniformBlockIndex, pname, params); }
-    @Override public String glGetActiveUniformBlockName(int program, int uniformBlockIndex){ return SDLGL.glGetActiveUniformBlockName(program, uniformBlockIndex); }
     @Override public void glGetActiveUniformBlockName(int program, int uniformBlockIndex, Buffer length, Buffer uniformBlockName){ SDLGL.glGetActiveUniformBlockName(program, uniformBlockIndex, length, uniformBlockName); }
     @Override public void glUniformBlockBinding(int program, int uniformBlockIndex, int uniformBlockBinding){ SDLGL.glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding); }
     @Override public void glDrawArraysInstanced(int mode, int first, int count, int instanceCount){ SDLGL.glDrawArraysInstanced(mode, first, count, instanceCount); }

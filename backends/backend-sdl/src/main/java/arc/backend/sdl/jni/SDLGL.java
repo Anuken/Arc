@@ -573,7 +573,7 @@ public class SDLGL{
     */
 
     public static native void glGetUniformiv(int program, int location, IntBuffer params); /*
-        glGetUniformiv(program, location, params);
+        glGetUniformiv(program, location, (GLint*)params);
     */
 
     public static native int glGetUniformLocation(int program, String name); /*
@@ -878,11 +878,11 @@ public class SDLGL{
     */
 
     public static native void glGenQueries(int n, IntBuffer ids); /*
-        glGenQueries(n, ids);
+        glGenQueries(n, (GLuint*)ids);
     */
 
     public static native void glDeleteQueries(int n, IntBuffer ids); /*
-        glDeleteQueries(n, ids);
+        glDeleteQueries(n, (GLuint*)ids);
     */
 
     public static native boolean glIsQuery(int id); /*
@@ -902,7 +902,7 @@ public class SDLGL{
     */
 
     public static native void glGetQueryObjectuiv(int id, int pname, IntBuffer params); /*
-        glGetQueryObjectuiv(id, pname, params);
+        glGetQueryObjectuiv(id, pname, (GLuint*)params);
     */
 
     public static native boolean glUnmapBuffer(int target); /*
@@ -910,11 +910,11 @@ public class SDLGL{
     */
 
     public static native Buffer glGetBufferPointerv(int target, int pname); /*
-        return glGetBufferPointerv(target, pname);
+        env->ThrowNew(IAEClass, "Unsupported method");
     */
 
     public static native void glDrawBuffers(int n, IntBuffer bufs); /*
-        glDrawBuffers(n, bufs);
+        glDrawBuffers(n, (GLenum*)bufs);
     */
 
     public static native void glUniformMatrix2x3fv(int location, int count, boolean transpose, FloatBuffer value); /*
@@ -962,11 +962,11 @@ public class SDLGL{
     */
 
     public static native void glDeleteVertexArrays(int n, IntBuffer arrays); /*
-        glDeleteVertexArrays(n, arrays);
+        glDeleteVertexArrays(n, (GLuint*)arrays);
     */
 
     public static native void glGenVertexArrays(int n, IntBuffer arrays); /*
-        glGenVertexArrays(n, arrays);
+        glGenVertexArrays(n, (GLuint*)arrays);
     */
 
     public static native boolean glIsVertexArray(int array); /*
@@ -990,11 +990,11 @@ public class SDLGL{
     */
 
     public static native void glTransformFeedbackVaryings(int program, String[] varyings, int bufferMode); /*
-        glTransformFeedbackVaryings(program, varyings, bufferMode);
+        env->ThrowNew(IAEClass, "Unsupported method");
     */
 
     public static native void glVertexAttribIPointer(int index, int size, int type, int stride, int offset); /*
-        glVertexAttribIPointer(index, size, type, stride, offset);
+        glVertexAttribIPointer(index, size, type, stride, (void*)offset);
     */
 
     public static native void glGetVertexAttribIiv(int index, int pname, IntBuffer params); /*
@@ -1002,7 +1002,7 @@ public class SDLGL{
     */
 
     public static native void glGetVertexAttribIuiv(int index, int pname, IntBuffer params); /*
-        glGetVertexAttribIuiv(index, pname, params);
+        glGetVertexAttribIuiv(index, pname, (GLuint*)params);
     */
 
     public static native void glVertexAttribI4i(int index, int x, int y, int z, int w); /*
@@ -1014,7 +1014,7 @@ public class SDLGL{
     */
 
     public static native void glGetUniformuiv(int program, int location, IntBuffer params); /*
-        glGetUniformuiv(program, location, params);
+        glGetUniformuiv(program, location, (GLuint*)params);
     */
 
     public static native int glGetFragDataLocation(int program, String name); /*
@@ -1022,15 +1022,15 @@ public class SDLGL{
     */
 
     public static native void glUniform1uiv(int location, int count, IntBuffer value); /*
-        glUniform1uiv(location, count, value);
+        glUniform1uiv(location, count, (GLuint*)value);
     */
 
     public static native void glUniform3uiv(int location, int count, IntBuffer value); /*
-        glUniform3uiv(location, count, value);
+        glUniform3uiv(location, count, (GLuint*)value);
     */
 
     public static native void glUniform4uiv(int location, int count, IntBuffer value); /*
-        glUniform4uiv(location, count, value);
+        glUniform4uiv(location, count, (GLuint*)value);
     */
 
     public static native void glClearBufferiv(int buffer, int drawbuffer, IntBuffer value); /*
@@ -1038,7 +1038,7 @@ public class SDLGL{
     */
 
     public static native void glClearBufferuiv(int buffer, int drawbuffer, IntBuffer value); /*
-        glClearBufferuiv(buffer, drawbuffer, value);
+        glClearBufferuiv(buffer, drawbuffer, (GLuint*)value);
     */
 
     public static native void glClearBufferfv(int buffer, int drawbuffer, FloatBuffer value); /*
@@ -1050,7 +1050,7 @@ public class SDLGL{
     */
 
     public static native String glGetStringi(int name, int index); /*
-        return glGetStringi(name, index);
+        return env->NewStringUTF((const char*)glGetStringi(name, index));
     */
 
     public static native void glCopyBufferSubData(int readTarget, int writeTarget, int readOffset, int writeOffset, int size); /*
@@ -1058,11 +1058,11 @@ public class SDLGL{
     */
 
     public static native void glGetUniformIndices(int program, String[] uniformNames, IntBuffer uniformIndices); /*
-        glGetUniformIndices(program, uniformNames, uniformIndices);
+        env->ThrowNew(IAEClass, "Unsupported method");
     */
 
     public static native void glGetActiveUniformsiv(int program, int uniformCount, IntBuffer uniformIndices, int pname, IntBuffer params); /*
-        glGetActiveUniformsiv(program, uniformCount, uniformIndices, pname, params);
+        glGetActiveUniformsiv(program, uniformCount, (GLuint*)uniformIndices, pname, (GLint*)params);
     */
 
     public static native int glGetUniformBlockIndex(int program, String uniformBlockName); /*
@@ -1073,12 +1073,8 @@ public class SDLGL{
         glGetActiveUniformBlockiv(program, uniformBlockIndex, pname, params);
     */
 
-    public static native String glGetActiveUniformBlockName(int program, int uniformBlockIndex); /*
-        return glGetActiveUniformBlockName(program, uniformBlockIndex);
-    */
-
     public static native void glGetActiveUniformBlockName(int program, int uniformBlockIndex, Buffer length, Buffer uniformBlockName); /*
-        glGetActiveUniformBlockName(program, uniformBlockIndex, length, uniformBlockName);
+        env->ThrowNew(IAEClass, "Unsupported method");
     */
 
     public static native void glUniformBlockBinding(int program, int uniformBlockIndex, int uniformBlockBinding); /*
@@ -1090,23 +1086,23 @@ public class SDLGL{
     */
 
     public static native void glDrawElementsInstanced(int mode, int count, int type, int indicesOffset, int instanceCount); /*
-        glDrawElementsInstanced(mode, count, type, indicesOffset, instanceCount);
+        glDrawElementsInstanced(mode, count, type, (void*)indicesOffset, instanceCount);
     */
 
     public static native void glGetInteger64v(int pname, LongBuffer params); /*
-        glGetInteger64v(pname, params);
+        glGetInteger64v(pname, (GLint64*)params);
     */
 
     public static native void glGetBufferParameteri64v(int target, int pname, LongBuffer params); /*
-        glGetBufferParameteri64v(target, pname, params);
+        glGetBufferParameteri64v(target, pname, (GLint64*)params);
     */
 
     public static native void glGenSamplers(int count, IntBuffer samplers); /*
-        glGenSamplers(count, samplers);
+        glGenSamplers(count, (GLuint*)samplers);
     */
 
     public static native void glDeleteSamplers(int count, IntBuffer samplers); /*
-        glDeleteSamplers(count, samplers);
+        glDeleteSamplers(count, (GLuint*)samplers);
     */
 
     public static native boolean glIsSampler(int sampler); /*
@@ -1150,11 +1146,11 @@ public class SDLGL{
     */
 
     public static native void glDeleteTransformFeedbacks(int n, IntBuffer ids); /*
-        glDeleteTransformFeedbacks(n, ids);
+        glDeleteTransformFeedbacks(n, (GLuint*)ids);
     */
 
     public static native void glGenTransformFeedbacks(int n, IntBuffer ids); /*
-        glGenTransformFeedbacks(n, ids);
+        glGenTransformFeedbacks(n, (GLuint*)ids);
     */
 
     public static native boolean glIsTransformFeedback(int id); /*
@@ -1174,11 +1170,11 @@ public class SDLGL{
     */
 
     public static native void glInvalidateFramebuffer(int target, int numAttachments, IntBuffer attachments); /*
-        glInvalidateFramebuffer(target, numAttachments, attachments);
+        glInvalidateFramebuffer(target, numAttachments, (GLenum*)attachments);
     */
 
     public static native void glInvalidateSubFramebuffer(int target, int numAttachments, IntBuffer attachments, int x, int y, int width, int height); /*
-        glInvalidateSubFramebuffer(target, numAttachments, attachments, x, y, width, height);
+        glInvalidateSubFramebuffer(target, numAttachments, (GLenum*)attachments, x, y, width, height);
     */
 
     //endregion

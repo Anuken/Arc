@@ -306,11 +306,6 @@ public class AndroidGL30 extends AndroidGL20 implements GL30{
     }
 
     @Override
-    public String glGetActiveUniformBlockName(int program, int uniformBlockIndex){
-        return GLES30.glGetActiveUniformBlockName(program, uniformBlockIndex);
-    }
-
-    @Override
     public void glUniformBlockBinding(int program, int uniformBlockIndex, int uniformBlockBinding){
         GLES30.glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);
     }
