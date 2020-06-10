@@ -1,6 +1,5 @@
 package arc.graphics.gl;
 
-import arc.Application.*;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.Pixmap.*;
@@ -60,8 +59,7 @@ public class FloatTextureData implements TextureData{
 
     @Override
     public void consumeCustomData(int target){
-        if(Core.app.getType() == ApplicationType.Android || Core.app.getType() == ApplicationType.iOS
-        || Core.app.getType() == ApplicationType.WebGL){
+        if(Core.app.isAndroid() || Core.app.isIOS() || Core.app.isWeb()){
 
             if(!Core.graphics.supportsExtension("OES_texture_float"))
                 throw new ArcRuntimeException("Extension OES_texture_float not supported!");

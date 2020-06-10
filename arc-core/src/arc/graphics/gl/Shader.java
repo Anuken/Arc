@@ -140,9 +140,18 @@ public class Shader implements Disposable{
     private static String preprocess(String source, boolean fragment){
         //preprocess source to function correctly with OpenGL 3.x core
         //note that this is required on Mac
-        if(Core.gl30 != null && OS.isMac){
+        if(Core.gl30 != null){
+
+            //if there already is a version, do nothing
+            //if on a desktop platform, pick 150 or 130 depending on supported version
+            //if on anything else, it's GLES, so pick 300 ES
+            String version =
+                source.contains("#version ") ? "" :
+                Core.app.isDesktop() ? (Core.graphics.getGLVersion().atLeast(3, 2) ? "150" : "130") :
+                "300 es";
+
             return
-                (Core.graphics.getGLVersion().atLeast(3, 2) ? "#version 150\n" :"#version 130\n")
+                "#version " + version + "\n"
                 + (fragment ? "out vec4 fragColor;\n" : "")
                 + source
                 .replace("varying", fragment ? "in" : "out")

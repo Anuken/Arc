@@ -326,7 +326,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
     @Override
     public ApplicationType getType(){
-        return ApplicationType.Android;
+        return ApplicationType.android;
     }
 
     @Override

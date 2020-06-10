@@ -39,7 +39,7 @@ public class SdlGraphics extends Graphics{
         String rendererString = gl20.glGetString(GL20.GL_RENDERER);
 
         cursors = new ObjectMap<>();
-        glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
+        glVersion = new GLVersion(Application.ApplicationType.desktop, versionString, vendorString, rendererString);
         bufferFormat = new BufferFormat(app.config.r, app.config.g, app.config.b, app.config.a, app.config.depth, app.config.stencil, app.config.samples, false);
 
         if(!glVersion.atLeast(2, 0) || !supportsFBO()){

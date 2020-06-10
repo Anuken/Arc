@@ -1,7 +1,6 @@
 package arc.graphics.gl;
 
 import arc.*;
-import arc.Application.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.struct.*;
@@ -143,7 +142,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
         // iOS uses a different framebuffer handle! (not necessarily 0)
         if(!defaultFramebufferHandleInitialized){
             defaultFramebufferHandleInitialized = true;
-            if(Core.app.getType() == ApplicationType.iOS){
+            if(Core.app.isIOS()){
                 IntBuffer intbuf = ByteBuffer.allocateDirect(16 * Integer.SIZE / 8).order(ByteOrder.nativeOrder()).asIntBuffer();
                 Gl.getIntegerv(Gl.framebufferBinding, intbuf);
                 defaultFramebufferHandle = intbuf.get(0);

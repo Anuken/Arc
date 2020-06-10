@@ -231,7 +231,7 @@ public class SdlApplication implements Application{
 
     @Override
     public ApplicationType getType(){
-        return ApplicationType.Desktop;
+        return ApplicationType.desktop;
     }
 
     @Override

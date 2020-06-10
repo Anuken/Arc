@@ -11,7 +11,7 @@ public class MockApplication implements Application{
 
     @Override
     public ApplicationType getType(){
-        return ApplicationType.HeadlessDesktop;
+        return ApplicationType.headless;
     }
 
     @Override

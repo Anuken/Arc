@@ -1,6 +1,5 @@
 package arc.graphics.gl;
 
-import arc.Application.*;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.Texture.*;
@@ -53,7 +52,7 @@ public class FloatFrameBuffer extends FrameBuffer{
         attachmentSpec.isGpuOnly
         );
         Texture result = new Texture(data);
-        if(Core.app.getType() == ApplicationType.Desktop)
+        if(Core.app.isDesktop())
             result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
         else
             // no filtering for float textures in OpenGL ES

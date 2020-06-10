@@ -19,7 +19,7 @@ public class MockGraphics extends Graphics{
     int frames = 0;
     int fps;
     long lastTime = System.nanoTime();
-    GLVersion glVersion = new GLVersion(Application.ApplicationType.HeadlessDesktop, "", "", "");
+    GLVersion glVersion = new GLVersion(Application.ApplicationType.headless, "", "", "");
 
     @Override
     public boolean isGL30Available(){

@@ -1,7 +1,6 @@
 package arc.audio;
 
 import arc.*;
-import arc.Application.*;
 import arc.files.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -30,7 +29,7 @@ import arc.util.*;
 public interface Sound extends Disposable{
 
     default float calcPan(float x, float y){
-        if(Core.app.getType() == ApplicationType.HeadlessDesktop) return 0f;
+        if(Core.app.isHeadless()) return 0f;
 
         return Mathf.clamp((x - Core.camera.position.x) / (Core.camera.width / 2f), -0.9f, 0.9f);
     }
@@ -40,7 +39,7 @@ public interface Sound extends Disposable{
     }
 
     default float calcFalloff(float x, float y){
-        if(Core.app.getType() == ApplicationType.HeadlessDesktop) return 1f;
+        if(Core.app.isHeadless()) return 1f;
 
         float dst = Mathf.dst(x, y, Core.camera.position.x, Core.camera.position.y);
         return Mathf.clamp(1f/(dst*dst/Core.audio.falloff));

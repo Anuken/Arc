@@ -15,10 +15,10 @@ public class GLVersion{
     public int releaseVersion;
 
     public GLVersion(Application.ApplicationType appType, String versionString, String vendorString, String rendererString){
-        if(appType == Application.ApplicationType.Android) this.type = Type.GLES;
+        if(appType == Application.ApplicationType.android) this.type = Type.GLES;
         else if(appType == Application.ApplicationType.iOS) this.type = Type.GLES;
-        else if(appType == Application.ApplicationType.Desktop) this.type = Type.OpenGL;
-        else if(appType == Application.ApplicationType.WebGL) this.type = Type.WebGL;
+        else if(appType == Application.ApplicationType.desktop) this.type = Type.OpenGL;
+        else if(appType == Application.ApplicationType.web) this.type = Type.WebGL;
         else this.type = Type.NONE;
 
         if(type == Type.GLES){

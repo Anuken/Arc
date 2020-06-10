@@ -1,7 +1,6 @@
 package arc.scene.ui.layout;
 
-import arc.Application.ApplicationType;
-import arc.Core;
+import arc.*;
 
 /** Utilities for UI scale.*/
 public class Scl{
@@ -27,9 +26,7 @@ public class Scl{
     public static float scl(float amount){
         if(scl < 0f){
             //calculate scaling value if it hasn't been set yet
-            if(Core.app.getType() == ApplicationType.Desktop){
-                scl = 1f * product;
-            }else if(Core.app.getType() == ApplicationType.WebGL){
+            if(Core.app.isDesktop() || Core.app.isWeb()){
                 scl = 1f * product;
             }else{
                 //mobile scaling

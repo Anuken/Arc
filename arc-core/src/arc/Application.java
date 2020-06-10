@@ -26,6 +26,30 @@ public interface Application extends Disposable{
     /** @return what {@link ApplicationType} this application has, e.g. Android or Desktop */
     ApplicationType getType();
 
+    default boolean isDesktop(){
+        return getType() == ApplicationType.desktop;
+    }
+
+    default boolean isHeadless(){
+        return getType() == ApplicationType.headless;
+    }
+
+    default boolean isAndroid(){
+        return getType() == ApplicationType.android;
+    }
+
+    default boolean isIOS(){
+        return getType() == ApplicationType.iOS;
+    }
+
+    default boolean isMobile(){
+        return isAndroid() || isIOS();
+    }
+
+    default boolean isWeb(){
+        return getType() == ApplicationType.web;
+    }
+
     /** @return the Android API level on Android, the major OS version on iOS (5, 6, 7, ..), or 0 on the desktop. */
     default int getVersion(){
         return 0;
@@ -112,6 +136,6 @@ public interface Application extends Disposable{
 
     /** Enumeration of possible {@link Application} types */
     enum ApplicationType{
-        Android, Desktop, HeadlessDesktop, WebGL, iOS
+        android, desktop, headless, web, iOS
     }
 }

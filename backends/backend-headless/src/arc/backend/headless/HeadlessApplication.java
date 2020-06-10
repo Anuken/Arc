@@ -123,7 +123,7 @@ public class HeadlessApplication implements Application{
 
     @Override
     public ApplicationType getType(){
-        return ApplicationType.HeadlessDesktop;
+        return ApplicationType.headless;
     }
 
     @Override

@@ -207,7 +207,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
         String versionString = gl.glGetString(GL10.GL_VERSION);
         String vendorString = gl.glGetString(GL10.GL_VENDOR);
         String rendererString = gl.glGetString(GL10.GL_RENDERER);
-        glVersion = new GLVersion(Application.ApplicationType.Android, versionString, vendorString, rendererString);
+        glVersion = new GLVersion(Application.ApplicationType.android, versionString, vendorString, rendererString);
         if(config.useGL30 && glVersion.majorVersion > 2){
             if(gl30 != null) return;
             gl20 = gl30 = new AndroidGL30();

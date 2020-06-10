@@ -1,6 +1,5 @@
 package arc.graphics.g2d;
 
-import arc.Application.*;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.VertexAttributes.*;
@@ -245,7 +244,7 @@ public class SpriteCache implements Disposable{
         counts.clear();
 
         //fixes teaVM bug, since it draws based on offset apparently
-        if(Core.app.getType() == ApplicationType.WebGL){
+        if(Core.app.isWeb()){
             mesh.getVerticesBuffer().position(0);
         }
 

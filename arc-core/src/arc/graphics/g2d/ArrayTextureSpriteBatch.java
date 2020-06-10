@@ -1,6 +1,5 @@
 package arc.graphics.g2d;
 
-import arc.Application.*;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.Mesh.*;
@@ -34,7 +33,6 @@ import java.nio.*;
  */
 
 public class ArrayTextureSpriteBatch extends Batch{
-
     private final float[] vertices;
 
     private final int spriteVertexSize = SpriteBatch.VERTEX_SIZE;
@@ -43,16 +41,13 @@ public class ArrayTextureSpriteBatch extends Batch{
     /** The maximum number of available texture slots for the fragment shader */
     private final int maxTextureSlots;
 
-    /** WebGL requires special handling for FBOs */
-    private static final boolean isWebGL = Core.app.getType().equals(ApplicationType.WebGL);
-
     /** Textures in use (index: Texture Slot, value: Texture) */
     private final Texture[] usedTextures;
 
     /** This slot gets replaced once texture cache space runs out. */
     private int usedTexturesNextSwapSlot;
 
-    private final IntBuffer FBO_READ_INTBUFF;
+    private final IntBuffer tmpInts;
 
     private final FrameBuffer copyFramebuffer;
 
@@ -149,13 +144,12 @@ public class ArrayTextureSpriteBatch extends Batch{
         if(defaultShader == null){
             shader = createDefaultShader();
             ownsShader = true;
-
         }else{
             shader = defaultShader;
             ownsShader = false;
         }
 
-        FBO_READ_INTBUFF = ByteBuffer.allocateDirect(16 * 4).order(ByteOrder.nativeOrder()).asIntBuffer();
+        tmpInts = ByteBuffer.allocateDirect(16 * 4).order(ByteOrder.nativeOrder()).asIntBuffer();
 
         usedTextures = new Texture[maxTextureSlots];
 
@@ -171,6 +165,7 @@ public class ArrayTextureSpriteBatch extends Batch{
         new VertexAttribute(Usage.position, 2, Shader.positionAttribute),
         new VertexAttribute(Usage.colorPacked, 4, Shader.colorAttribute),
         new VertexAttribute(Usage.textureCoordinates, 2, Shader.texcoordAttribute + "0"),
+        new VertexAttribute(Usage.colorPacked, 4, Shader.mixColorAttribute),
         new VertexAttribute(Usage.generic, 1, "texture_index"));
 
         projectionMatrix.setOrtho(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
@@ -191,9 +186,8 @@ public class ArrayTextureSpriteBatch extends Batch{
 
         mesh.setIndices(indices);
 
-        if(Core.app.getType() == ApplicationType.Android){
+        if(Core.app.isAndroid()){
             Core.app.addListener(listener = new ApplicationListener(){
-
                 @Override
                 public void resume(){
                     initializeArrayTexture();
@@ -209,7 +203,6 @@ public class ArrayTextureSpriteBatch extends Batch{
     }
 
     private void initializeArrayTexture(){
-
         // This forces a re-population of the Array Texture
         currentTextureLFUSize = 0;
 
@@ -223,7 +216,6 @@ public class ArrayTextureSpriteBatch extends Batch{
 
         Core.gl30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_S, GL30.GL_REPEAT);
         Core.gl30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_T, GL30.GL_REPEAT);
-
         Core.gl30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_NONE);
     }
 
@@ -281,8 +273,8 @@ public class ArrayTextureSpriteBatch extends Batch{
     /** Returns a new instance of the default shader used by ArrayTextureSpriteBatch when no shader is specified. */
     public static Shader createDefaultShader(){
 
-        // The texture index is just passed to the fragment shader, maybe there's an more elegant way.
-        String vertexShader = "in vec4 " + Shader.positionAttribute + ";\n"
+        return new Shader(
+        "in vec4 " + Shader.positionAttribute + ";\n"
         + "in vec4 " + Shader.colorAttribute + ";\n"
         + "in vec2 " + Shader.texcoordAttribute + "0;\n"
         + "in float texture_index;\n"
@@ -298,10 +290,9 @@ public class ArrayTextureSpriteBatch extends Batch{
         + "   v_texCoords = " + Shader.texcoordAttribute + "0;\n"
         + "   v_texture_index = texture_index;\n"
         + "   gl_Position =  u_projTrans * " + Shader.positionAttribute + ";\n"
-        + "}\n";
+        + "}\n",
 
-        // The texture is simply selected from an array of textures
-        String fragmentShader = "#ifdef GL_ES\n"
+        "#ifdef GL_ES\n"
         + "#define LOWP lowp\n"
         + "precision mediump float;\n"
         + "#else\n"
@@ -316,19 +307,7 @@ public class ArrayTextureSpriteBatch extends Batch{
         + "void main(){\n"
         + "  vec4 c = texture(u_texturearray, vec3(v_texCoords, v_texture_index));\n"
         + "  diffuseColor = v_color * mix(c, vec4(v_mix_color.rgb, c.a), v_mix_color.a);\n"
-        + "}";
-
-        final ApplicationType appType = Core.app.getType();
-
-        if(appType == ApplicationType.Android || appType == ApplicationType.iOS || appType == ApplicationType.WebGL){
-            vertexShader = "#version 300 es\n" + vertexShader;
-            fragmentShader = "#version 300 es\n" + fragmentShader;
-        }else{
-            vertexShader = "#version 150\n" + vertexShader;
-            fragmentShader = "#version 150\n" + fragmentShader;
-        }
-
-        return new Shader(vertexShader, fragmentShader);
+        + "}");
     }
 
     @Override
@@ -343,16 +322,15 @@ public class ArrayTextureSpriteBatch extends Batch{
         // therefore this loop iterates over the vertices stored in parameter spriteVertices.
         for(int srcPos = 0; srcPos < count; srcPos += spriteVertexSize){
 
-            //TODO incorrect
-            // Copy the vertices
             System.arraycopy(spriteVertices, srcPos, vertices, idx, spriteVertexSize);
 
             // Advance idx by vertex float count
-            idx += spriteVertexSize - 2;
+            idx += spriteVertexSize - 3;
 
             // Scale UV coordinates to fit array texture
-            vertices[idx++] *= subImageScaleWidth;
-            vertices[idx++] *= subImageScaleHeight;
+            vertices[idx++] *= subImageScaleWidth; //u
+            vertices[idx++] *= subImageScaleHeight; //v
+            idx++; //mixcolor (ignored)
 
             // Inject texture unit index and advance idx
             vertices[idx++] = ti;
@@ -439,34 +417,36 @@ public class ArrayTextureSpriteBatch extends Batch{
         final float u2 = region.u2 * subImageScaleWidth;
         final float v2 = region.v * subImageScaleHeight;
 
-        float color = this.colorPacked;
-
         vertices[idx++] = x1;
         vertices[idx++] = y1;
-        vertices[idx++] = color;
+        vertices[idx++] = colorPacked;
         vertices[idx++] = u;
         vertices[idx++] = v;
+        vertices[idx++] = mixColorPacked;
         vertices[idx++] = ti;
 
         vertices[idx++] = x2;
         vertices[idx++] = y2;
-        vertices[idx++] = color;
+        vertices[idx++] = colorPacked;
         vertices[idx++] = u;
         vertices[idx++] = v2;
+        vertices[idx++] = mixColorPacked;
         vertices[idx++] = ti;
 
         vertices[idx++] = x3;
         vertices[idx++] = y3;
-        vertices[idx++] = color;
+        vertices[idx++] = colorPacked;
         vertices[idx++] = u2;
         vertices[idx++] = v2;
+        vertices[idx++] = mixColorPacked;
         vertices[idx++] = ti;
 
         vertices[idx++] = x4;
         vertices[idx++] = y4;
-        vertices[idx++] = color;
+        vertices[idx++] = colorPacked;
         vertices[idx++] = u2;
         vertices[idx++] = v;
+        vertices[idx++] = mixColorPacked;
         vertices[idx++] = ti;
     }
 
@@ -639,11 +619,11 @@ public class ArrayTextureSpriteBatch extends Batch{
 
         int previousFrameBufferHandle = 0;
 
-        if(!isWebGL){
+        if(!Core.app.isWeb()){
             // Query current Framebuffer configuration
-            Core.gl30.glGetIntegerv(GL30.GL_FRAMEBUFFER_BINDING, FBO_READ_INTBUFF);
+            Core.gl30.glGetIntegerv(GL30.GL_FRAMEBUFFER_BINDING, tmpInts);
 
-            previousFrameBufferHandle = FBO_READ_INTBUFF.get(0);
+            previousFrameBufferHandle = tmpInts.get(0);
         }
 
         // Bind CopyFrameBuffer
@@ -658,7 +638,7 @@ public class ArrayTextureSpriteBatch extends Batch{
         Core.gl30.glCopyTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, slot, 0, 0, copyFramebuffer.getWidth(),
         copyFramebuffer.getHeight());
 
-        if(!isWebGL){
+        if(!Core.app.isWeb()){
             // Restore previous FrameBuffer configuration
             Core.gl30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, previousFrameBufferHandle);
         }

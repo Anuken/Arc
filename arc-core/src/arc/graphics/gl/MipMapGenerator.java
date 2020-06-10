@@ -1,6 +1,5 @@
 package arc.graphics.gl;
 
-import arc.Application.*;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.Pixmap.Blending;
@@ -37,8 +36,7 @@ public class MipMapGenerator{
             return;
         }
 
-        if(Core.app.getType() == ApplicationType.Android || Core.app.getType() == ApplicationType.WebGL
-        || Core.app.getType() == ApplicationType.iOS){
+        if(Core.app.isAndroid() || Core.app.isWeb() || Core.app.isIOS()){
             generateMipMapGLES20(target, pixmap);
         }else{
             generateMipMapDesktop(target, pixmap, textureWidth, textureHeight);

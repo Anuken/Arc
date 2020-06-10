@@ -1,15 +1,14 @@
 package arc.scene.ui;
 
 import arc.*;
-import arc.Application.*;
 import arc.KeyBinds.*;
-import arc.struct.*;
 import arc.graphics.*;
 import arc.input.*;
 import arc.input.InputDevice.*;
 import arc.scene.event.*;
 import arc.scene.style.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
 
 import static arc.Core.*;
@@ -213,7 +212,7 @@ public class KeybindDialog extends Dialog{
             rebindDialog.addListener(new InputListener(){
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-                    if(Core.app.getType() == ApplicationType.Android) return false;
+                    if(Core.app.isAndroid()) return false;
                     rebind(section, name, button);
                     return false;
                 }

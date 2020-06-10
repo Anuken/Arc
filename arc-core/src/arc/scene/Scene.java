@@ -1,8 +1,6 @@
 package arc.scene;
 
 import arc.*;
-import arc.Application.*;
-import arc.struct.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -15,12 +13,13 @@ import arc.scene.event.InputEvent.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.pooling.Pool.*;
 import arc.util.pooling.*;
 import arc.util.viewport.*;
 
-import static arc.Core.graphics;
+import static arc.Core.*;
 
 
 public class Scene implements InputProcessor, Disposable{
@@ -148,8 +147,7 @@ public class Scene implements InputProcessor, Disposable{
             pointerOverActors[pointer] = fireEnterAndExit(overLast, pointerScreenX[pointer], pointerScreenY[pointer], pointer);
         }
         // Update over element for the mouse on the desktop.
-        ApplicationType type = Core.app.getType();
-        if(type == ApplicationType.Desktop || type == ApplicationType.WebGL)
+        if(Core.app.isDesktop() || Core.app.isWeb())
             mouseOverElement = fireEnterAndExit(mouseOverElement, mouseScreenX, mouseScreenY, -1);
 
         if(scrollFocus != null && (!scrollFocus.isVisible() || scrollFocus.getScene() == null)) scrollFocus = null;
