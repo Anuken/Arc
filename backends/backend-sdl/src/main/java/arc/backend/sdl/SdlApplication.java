@@ -80,8 +80,12 @@ public class SdlApplication implements Application{
         check(() -> SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
 
         //set up openGL 2.0 profile
-        check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2));
+        check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, config.gl30 ? 3 : 2));
         check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0));
+
+        if(config.gl30){
+            check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
+        }
 
         check(() -> SDL_GL_SetAttribute(SDL_GL_RED_SIZE, config.r));
         check(() -> SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, config.g));
@@ -90,7 +94,7 @@ public class SdlApplication implements Application{
         check(() -> SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, config.stencil));
         check(() -> SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1));
 
-        //this doesn't actually do anything
+        //this doesn't seem to do anything, but at least I tried
         if(config.samples > 0){
             check(() -> SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1));
             check(() -> SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, config.samples));

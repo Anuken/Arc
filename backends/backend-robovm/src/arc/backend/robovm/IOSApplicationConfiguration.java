@@ -92,9 +92,8 @@ public class IOSApplicationConfiguration{
     public boolean keyboardCloseOnReturn = true;
 
     /**
-     * Experimental, whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0.
-     * When GL ES 3 is enabled, {@link Core#gl30} can be used to access it's functionality.
-     * This option is currently experimental and not yet fully supported, expect issues.
+     * Whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0.
+     * When GLES3 is enabled, {@link Core#gl30} can be used to access its functionality.
      */
     public boolean useGL30 = false;
 

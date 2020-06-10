@@ -67,7 +67,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
         buffer.flip();
         byteBuffer.flip();
         bufferHandle = Gl.genBuffer();
-        usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
+        usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_STREAM_DRAW;
         createVAO();
     }
 
@@ -130,14 +130,12 @@ public class VertexBufferObjectWithVAO implements VertexData{
 
     @Override
     public void bind(Shader shader, int[] locations){
-        GL30 gl = Core.gl30;
-
-        gl.glBindVertexArray(vaoHandle);
+        Core.gl30.glBindVertexArray(vaoHandle);
 
         bindAttributes(shader, locations);
 
-        //if our data has changed upload it:
-        bindData(gl);
+        //if our data has changed upload it
+        bindData();
 
         isBound = true;
     }
@@ -199,11 +197,11 @@ public class VertexBufferObjectWithVAO implements VertexData{
         }
     }
 
-    private void bindData(GL20 gl){
+    private void bindData(){
         if(isDirty){
-            gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
+            Core.gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
             byteBuffer.limit(buffer.limit() * 4);
-            gl.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+            Core.gl.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
             isDirty = false;
         }
     }
@@ -219,8 +217,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
 
     @Override
     public void unbind(final Shader shader, final int[] locations){
-        GL30 gl = Core.gl30;
-        gl.glBindVertexArray(0);
+        Core.gl30.glBindVertexArray(0);
         isBound = false;
     }
 
@@ -229,7 +226,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
      */
     @Override
     public void invalidate(){
-        bufferHandle = Core.gl30.glGenBuffer();
+        bufferHandle = Core.gl.glGenBuffer();
         createVAO();
         isDirty = true;
     }
@@ -239,10 +236,8 @@ public class VertexBufferObjectWithVAO implements VertexData{
      */
     @Override
     public void dispose(){
-        GL30 gl = Core.gl30;
-
-        gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
-        gl.glDeleteBuffer(bufferHandle);
+        Core.gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
+        Core.gl.glDeleteBuffer(bufferHandle);
         bufferHandle = 0;
         Buffers.disposeUnsafeByteBuffer(byteBuffer);
         deleteVAO();

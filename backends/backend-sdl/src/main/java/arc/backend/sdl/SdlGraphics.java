@@ -12,6 +12,7 @@ import static arc.backend.sdl.jni.SDL.*;
 
 public class SdlGraphics extends Graphics{
     private GL20 gl20;
+    private GL30 gl30;
     private GLVersion glVersion;
     private BufferFormat bufferFormat;
     private SdlApplication app;
@@ -43,6 +44,11 @@ public class SdlGraphics extends Graphics{
 
         if(!glVersion.isVersionEqualToOrHigher(2, 0) || !supportsFBO()){
             throw new ArcRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + versionString);
+        }
+
+        //use GL30 version if possible
+        if(glVersion.isVersionEqualToOrHigher(3, 0) && app.config.gl30){
+            Core.gl = Core.gl20 = gl20 = Core.gl30 = gl30 = new SdlGL30();
         }
 
         clear(app.config.initialBackgroundColor);
@@ -80,7 +86,7 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public boolean isGL30Available(){
-        return false;
+        return gl30 != null;
     }
 
     @Override
@@ -96,12 +102,13 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public GL30 getGL30(){
-        return null;
+        return gl30;
     }
 
     @Override
     public void setGL30(GL30 gl30){
-
+        this.gl20 = this.gl30 = gl30;
+        Core.gl = Core.gl20 = gl30;
     }
 
     @Override

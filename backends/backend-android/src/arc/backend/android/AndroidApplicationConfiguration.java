@@ -91,7 +91,7 @@ public class AndroidApplicationConfiguration{
     public @Nullable Cons<Throwable> errorHandler;
 
     /**
-     * Experimental, whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0.
+     * Whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0.
      * When GL ES 3* is enabled, {@link Core#gl30} can be used to access its functionality. Requires at least Android 4.3 (API level 18).
      */
     public boolean useGL30 = false;

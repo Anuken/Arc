@@ -18,6 +18,7 @@ public class SdlConfig{
     public boolean resizable = true;
     public boolean decorated = true;
     public boolean maximized = false;
+    public boolean gl30 = false;
 
     public String title = "Arc Application";
     public Color initialBackgroundColor = Color.black;

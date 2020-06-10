@@ -328,24 +328,20 @@ final public class SDL{
     //openGL stuff
 
     public static final int
-    SDL_GL_RED_SIZE = SDL_GL_RED_SIZE(),
-    SDL_GL_GREEN_SIZE = SDL_GL_GREEN_SIZE(),
-    SDL_GL_BLUE_SIZE = SDL_GL_BLUE_SIZE(),
-    SDL_GL_DEPTH_SIZE = SDL_GL_DEPTH_SIZE(),
+    SDL_GL_RED_SIZE = 0,
+    SDL_GL_GREEN_SIZE = 1,
+    SDL_GL_BLUE_SIZE = 2,
+    SDL_GL_ALPHA_SIZE = 3,
+    SDL_GL_DEPTH_SIZE = 6,
     SDL_GL_STENCIL_SIZE = 7,
-    SDL_GL_DOUBLEBUFFER = SDL_GL_DOUBLEBUFFER(),
-    SDL_GL_CONTEXT_MAJOR_VERSION = SDL_GL_CONTEXT_MAJOR_VERSION(),
-    SDL_GL_CONTEXT_MINOR_VERSION = SDL_GL_CONTEXT_MINOR_VERSION(),
+    SDL_GL_DOUBLEBUFFER = 5,
+    SDL_GL_CONTEXT_MAJOR_VERSION = 17,
+    SDL_GL_CONTEXT_MINOR_VERSION = 18,
     SDL_GL_MULTISAMPLEBUFFERS = 13,
-    SDL_GL_MULTISAMPLESAMPLES = 14;
-
-    private static native int SDL_GL_RED_SIZE(); /* return SDL_GL_RED_SIZE; */
-    private static native int SDL_GL_GREEN_SIZE(); /* return SDL_GL_GREEN_SIZE; */
-    private static native int SDL_GL_BLUE_SIZE(); /* return SDL_GL_BLUE_SIZE; */
-    private static native int SDL_GL_DEPTH_SIZE(); /* return SDL_GL_DEPTH_SIZE; */
-    private static native int SDL_GL_DOUBLEBUFFER(); /* return SDL_GL_DOUBLEBUFFER; */
-    private static native int SDL_GL_CONTEXT_MAJOR_VERSION(); /* return SDL_GL_CONTEXT_MAJOR_VERSION; */
-    private static native int SDL_GL_CONTEXT_MINOR_VERSION(); /* return SDL_GL_CONTEXT_MINOR_VERSION; */
+    SDL_GL_MULTISAMPLESAMPLES = 14,
+    SDL_GL_CONTEXT_PROFILE_CORE = 1,
+    SDL_GL_CONTEXT_PROFILE_MASK = 21,
+    SDL_GL_CONTEXT_FLAGS = 20;
 
     public static native int SDL_GL_SetAttribute(int attribute, int value); /*
         return SDL_GL_SetAttribute((SDL_GLattr)attribute, value);

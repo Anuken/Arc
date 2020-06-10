@@ -7,6 +7,8 @@ import java.nio.*;
 import java.util.*;
 
 public class Gl{
+    private static final boolean optimize = true;
+
     public static final int
     esVersion20 = 1,
     depthBufferBit = 0x00000100,
@@ -343,14 +345,14 @@ public class Gl{
     }
 
     public static void activeTexture(int texture){
-        if(lastActiveTexture == texture) return;
+        if(optimize && lastActiveTexture == texture) return;
 
         Core.gl.glActiveTexture(texture);
         lastActiveTexture = texture;
     }
 
     public static void bindTexture(int target, int texture){
-        if(target == texture2d){
+        if(optimize && target == texture2d){
             //current bound texture unit
             int index = lastActiveTexture - texture0;
             //make sure it's valid
@@ -425,7 +427,7 @@ public class Gl{
     }
 
     public static void depthMask(boolean flag){
-        if(wasDepthMask != flag) return;
+        if(optimize && wasDepthMask != flag) return;
 
         Core.gl.glDepthMask(flag);
         wasDepthMask = flag;
@@ -436,7 +438,7 @@ public class Gl{
     }
 
     public static void disable(int cap){
-        if(!enabled.get(cap)){
+        if(optimize && !enabled.get(cap)){
             return;
         }
         Core.gl.glDisable(cap);
@@ -452,7 +454,7 @@ public class Gl{
     }
 
     public static void enable(int cap){
-        if(enabled.get(cap)){
+        if(optimize && enabled.get(cap)){
             return;
         }
         Core.gl.glEnable(cap);
@@ -928,7 +930,7 @@ public class Gl{
     }
 
     public static void useProgram(int program){
-        if(lastUsedProgram == program){
+        if(optimize && lastUsedProgram == program){
             return;
         }
         Core.gl.glUseProgram(program);
