@@ -34,7 +34,9 @@ public abstract class Graphics implements Disposable{
      * {@link Application} instance to use OpenGL ES 3.0!
      * @return whether OpenGL ES 3.0 is available
      */
-    public abstract boolean isGL30Available();
+    public boolean isGL30Available(){
+        return Core.gl30 != null;
+    }
 
     /** @return the {@link GL20} instance */
     public abstract GL20 getGL20();

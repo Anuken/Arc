@@ -47,7 +47,7 @@ public class FloatTextureData implements TextureData{
         if(isPrepared) throw new ArcRuntimeException("Already prepared");
         if(!isGpuOnly){
             int amountOfFloats = 4;
-            if(Core.graphics.getGLVersion().getType().equals(GLVersion.Type.OpenGL)){
+            if(Core.graphics.getGLVersion().type.equals(GLVersion.Type.OpenGL)){
                 if(internalFormat == GL30.GL_RGBA16F || internalFormat == GL30.GL_RGBA32F) amountOfFloats = 4;
                 if(internalFormat == GL30.GL_RGB16F || internalFormat == GL30.GL_RGB32F) amountOfFloats = 3;
                 if(internalFormat == GL30.GL_RG16F || internalFormat == GL30.GL_RG32F) amountOfFloats = 2;

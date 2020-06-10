@@ -42,12 +42,12 @@ public class SdlGraphics extends Graphics{
         glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
         bufferFormat = new BufferFormat(app.config.r, app.config.g, app.config.b, app.config.a, app.config.depth, app.config.stencil, app.config.samples, false);
 
-        if(!glVersion.isVersionEqualToOrHigher(2, 0) || !supportsFBO()){
+        if(!glVersion.atLeast(2, 0) || !supportsFBO()){
             throw new ArcRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + versionString);
         }
 
         //use GL30 version if possible
-        if(glVersion.isVersionEqualToOrHigher(3, 0) && app.config.gl30){
+        if(glVersion.atLeast(3, 0) && app.config.gl30){
             Core.gl = Core.gl20 = gl20 = Core.gl30 = gl30 = new SdlGL30();
         }
 
@@ -56,7 +56,7 @@ public class SdlGraphics extends Graphics{
     }
 
     boolean supportsFBO(){
-        return glVersion.isVersionEqualToOrHigher(3, 0) || SDL_GL_ExtensionSupported("GL_EXT_framebuffer_object");
+        return glVersion.atLeast(3, 0) || SDL_GL_ExtensionSupported("GL_EXT_framebuffer_object");
     }
 
     void update(){

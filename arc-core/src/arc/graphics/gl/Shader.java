@@ -140,7 +140,14 @@ public class Shader implements Disposable{
     private static String preprocess(String source, boolean fragment){
         //preprocess source to function correctly with OpenGL 3.0 core
         if(Core.gl30 != null){
-            return "#version 130\n" + (fragment ? "out vec4 fragColor;\n" : "") + source.replace("varying", fragment ? "in" : "out").replace("attribute", fragment ? "???" : "in").replace("gl_FragColor", "fragColor");
+            return
+                (Core.graphics.getGLVersion().atLeast(3, 2) ? "#version 150\n" :"#version 130\n")
+                + (fragment ? "out vec4 fragColor;\n" : "")
+                + source
+                .replace("varying", fragment ? "in" : "out")
+                .replace("attribute", fragment ? "???" : "in")
+                .replace("texture2D(", "texture(")
+                .replace("gl_FragColor", "fragColor");
         }
         return source;
     }

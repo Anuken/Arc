@@ -7,14 +7,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GLVersion{
-
-    private final String vendorString;
-    private final String rendererString;
-    private final Type type;
-    private final String TAG = "GLVersion";
-    private int majorVersion;
-    private int minorVersion;
-    private int releaseVersion;
+    public final String vendorString;
+    public final String rendererString;
+    public final Type type;
+    public final String TAG = "GLVersion";
+    public int majorVersion;
+    public int minorVersion;
+    public int releaseVersion;
 
     public GLVersion(Application.ApplicationType appType, String versionString, String vendorString, String rendererString){
         if(appType == Application.ApplicationType.Android) this.type = Type.GLES;
@@ -72,46 +71,13 @@ public class GLVersion{
         }
     }
 
-    /** @return what {@link Type} of GL implementation this application has access to, e.g. {@link Type#OpenGL} or {@link Type#GLES} */
-    public Type getType(){
-        return type;
-    }
-
-    /** @return the major version of current GL connection. -1 if running headless */
-    public int getMajorVersion(){
-        return majorVersion;
-    }
-
-    /** @return the minor version of the current GL connection. -1 if running headless */
-    public int getMinorVersion(){
-        return minorVersion;
-    }
-
-    /** @return the release version of the current GL connection. -1 if running headless */
-    public int getReleaseVersion(){
-        return releaseVersion;
-    }
-
-    /** @return the vendor string associated with the current GL connection */
-    public String getVendorString(){
-        return vendorString;
-    }
-
-    /**
-     * @return the name of the renderer associated with the current GL connection.
-     * This name is typically specific to a particular configuration of a hardware platform.
-     */
-    public String getRendererString(){
-        return rendererString;
-    }
-
     /**
      * Checks to see if the current GL connection version is higher, or equal to the provided test versions.
      * @param testMajorVersion the major version to test against
      * @param testMinorVersion the minor version to test against
      * @return true if the current version is higher or equal to the test version
      */
-    public boolean isVersionEqualToOrHigher(int testMajorVersion, int testMinorVersion){
+    public boolean atLeast(int testMajorVersion, int testMinorVersion){
         return majorVersion > testMajorVersion || (majorVersion == testMajorVersion && minorVersion >= testMinorVersion);
     }
 

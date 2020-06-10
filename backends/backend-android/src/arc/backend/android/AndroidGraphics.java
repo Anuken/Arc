@@ -163,12 +163,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
 
     /** {@inheritDoc} */
     @Override
-    public boolean isGL30Available(){
-        return gl30 != null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public GL30 getGL30(){
         return gl30;
     }
@@ -214,7 +208,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
         String vendorString = gl.glGetString(GL10.GL_VENDOR);
         String rendererString = gl.glGetString(GL10.GL_RENDERER);
         glVersion = new GLVersion(Application.ApplicationType.Android, versionString, vendorString, rendererString);
-        if(config.useGL30 && glVersion.getMajorVersion() > 2){
+        if(config.useGL30 && glVersion.majorVersion > 2){
             if(gl30 != null) return;
             gl20 = gl30 = new AndroidGL30();
 
