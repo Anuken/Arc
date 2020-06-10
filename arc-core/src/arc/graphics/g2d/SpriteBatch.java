@@ -109,12 +109,7 @@ public class SpriteBatch extends Batch{
         if(spritesInBatch > maxSpritesInBatch) maxSpritesInBatch = spritesInBatch;
         int count = spritesInBatch * 6;
 
-        if(blending != Blending.disabled){
-            Gl.enable(Gl.blend);
-            Gl.blendFuncSeparate(blending.src, blending.dst, blending.src, blending.dst);
-        }else{
-            Gl.disable(Gl.blend);
-        }
+        blending.apply();
 
         lastTexture.bind();
         Mesh mesh = this.mesh;

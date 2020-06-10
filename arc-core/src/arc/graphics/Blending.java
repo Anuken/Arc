@@ -4,7 +4,13 @@ package arc.graphics;
 public enum Blending{
     normal(Gl.srcAlpha, Gl.oneMinusSrcAlpha),
     additive(Gl.srcAlpha, Gl.one),
-    disabled(Gl.srcAlpha, Gl.oneMinusSrcAlpha);
+    disabled(Gl.srcAlpha, Gl.oneMinusSrcAlpha){
+
+        @Override
+        public void apply(){
+            Gl.disable(Gl.blend);
+        }
+    };
 
     public final int src, dst;
 
@@ -13,7 +19,9 @@ public enum Blending{
         this.dst = dst;
     }
 
+    /** Enables/disables blending and sets the correct GL blend function. */
     public void apply(){
+        Gl.enable(Gl.blend);
         Gl.blendFunc(src, dst);
     }
 }
