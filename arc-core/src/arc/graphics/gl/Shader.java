@@ -147,6 +147,7 @@ public class Shader implements Disposable{
                 .replace("varying", fragment ? "in" : "out")
                 .replace("attribute", fragment ? "???" : "in")
                 .replace("texture2D(", "texture(")
+                .replace("textureCube(", "texture(")
                 .replace("gl_FragColor", "fragColor");
         }
         return source;

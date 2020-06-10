@@ -10,7 +10,6 @@ public class GLVersion{
     public final String vendorString;
     public final String rendererString;
     public final Type type;
-    public final String TAG = "GLVersion";
     public int majorVersion;
     public int minorVersion;
     public int releaseVersion;
