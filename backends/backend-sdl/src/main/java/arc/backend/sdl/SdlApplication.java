@@ -80,10 +80,10 @@ public class SdlApplication implements Application{
         check(() -> SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
 
         //set up openGL 2.0 profile
-        check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, config.gl30 ? 3 : 2));
-        check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0));
+        check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, config.gl30 ? config.gl30Major : 2));
+        check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,  config.gl30 ? config.gl30Minor : 0));
 
-        if(config.gl30){
+        if(config.gl30 && OS.isMac){
             check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
         }
 

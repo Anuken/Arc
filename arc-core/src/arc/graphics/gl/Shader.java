@@ -111,10 +111,11 @@ public class Shader implements Disposable{
         if(vertexShader == null) throw new IllegalArgumentException("vertex shader must not be null");
         if(fragmentShader == null) throw new IllegalArgumentException("fragment shader must not be null");
 
-        if(prependVertexCode != null && prependVertexCode.length() > 0)
-            vertexShader = prependVertexCode + vertexShader;
-        if(prependFragmentCode != null && prependFragmentCode.length() > 0)
-            fragmentShader = prependFragmentCode + fragmentShader;
+        vertexShader = preprocess(vertexShader, false);
+        fragmentShader = preprocess(fragmentShader, true);
+
+        if(prependVertexCode != null && prependVertexCode.length() > 0) vertexShader = prependVertexCode + vertexShader;
+        if(prependFragmentCode != null && prependFragmentCode.length() > 0) fragmentShader = prependFragmentCode + fragmentShader;
 
         this.vertexShaderSource = vertexShader;
         this.fragmentShaderSource = fragmentShader;
@@ -135,6 +136,14 @@ public class Shader implements Disposable{
 
     /**Applies all relevant uniforms, if applicable. Should be overriden.*/
     public void apply(){}
+
+    private static String preprocess(String source, boolean fragment){
+        //preprocess source to function correctly with OpenGL 3.0 core
+        if(Core.gl30 != null){
+            return "#version 130\n" + (fragment ? "out vec4 fragColor;\n" : "") + source.replace("varying", fragment ? "in" : "out").replace("attribute", fragment ? "???" : "in").replace("gl_FragColor", "fragColor");
+        }
+        return source;
+    }
 
     /**Invalidates all shaders so the next time they are used new handles are generated*/
     public static void invalidateAllShaderPrograms(Application app){
