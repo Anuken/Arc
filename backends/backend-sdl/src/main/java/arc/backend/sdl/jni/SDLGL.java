@@ -6,6 +6,7 @@ import arc.util.ArcAnnotate.*;
 import java.nio.*;
 
 public class SDLGL{
+    //region initialization
 
     /*JNI
 
@@ -128,6 +129,9 @@ public class SDLGL{
             return env->NewStringUTF("Missing framebuffer_object extension.");
         }
     */
+
+    //endregion
+    //region openGL 2.0
 
     public static native void glActiveTexture(int texture); /*
         glActiveTexture(texture);
@@ -837,4 +841,345 @@ public class SDLGL{
     public static native void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, int ptr); /*
         glVertexAttribPointer(indx, size, type, normalized, stride, (const void*)ptr);
     */
+
+    //endregion
+    //region openGL 3.0
+
+    public static native void glReadBuffer(int mode); /*
+        glReadBuffer(mode);
+    */
+
+    public static native void glDrawRangeElements(int mode, int start, int end, int count, int type, int offset); /*
+        glDrawRangeElements(mode, start, end, count, type, (void*)offset);
+    */
+
+    public static native void glDrawRangeElements(int mode, int start, int end, int count, int type, Buffer indices); /*
+        glDrawRangeElements(mode, start, end, count, type, indices);
+    */
+
+    public static native void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, int offset); /*
+        glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, (void*)offset);
+    */
+
+    public static native void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, Buffer pixels); /*
+        glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+    */
+
+    public static native void glTexSubImage3D(int target, int level, int xoffset, int yoffset, int zoffset, int width, int height, int depth, int format, int type, int offset); /*
+        glTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, (void*)offset);
+    */
+
+    public static native void glTexSubImage3D(int target, int level, int xoffset, int yoffset, int zoffset, int width, int height, int depth, int format, int type, Buffer pixels); /*
+        glTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
+    */
+
+    public static native void glCopyTexSubImage3D(int target, int level, int xoffset, int yoffset, int zoffset, int x, int y, int width, int height); /*
+        glCopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
+    */
+
+    public static native void glGenQueries(int n, IntBuffer ids); /*
+        glGenQueries(n, ids);
+    */
+
+    public static native void glDeleteQueries(int n, IntBuffer ids); /*
+        glDeleteQueries(n, ids);
+    */
+
+    public static native boolean glIsQuery(int id); /*
+        return glIsQuery(id);
+    */
+
+    public static native void glBeginQuery(int target, int id); /*
+        glBeginQuery(target, id);
+    */
+
+    public static native void glEndQuery(int target); /*
+        glEndQuery(target);
+    */
+
+    public static native void glGetQueryiv(int target, int pname, IntBuffer params); /*
+        glGetQueryiv(target, pname, params);
+    */
+
+    public static native void glGetQueryObjectuiv(int id, int pname, IntBuffer params); /*
+        glGetQueryObjectuiv(id, pname, params);
+    */
+
+    public static native boolean glUnmapBuffer(int target); /*
+        return glUnmapBuffer(target);
+    */
+
+    public static native Buffer glGetBufferPointerv(int target, int pname); /*
+        return glGetBufferPointerv(target, pname);
+    */
+
+    public static native void glDrawBuffers(int n, IntBuffer bufs); /*
+        glDrawBuffers(n, bufs);
+    */
+
+    public static native void glUniformMatrix2x3fv(int location, int count, boolean transpose, FloatBuffer value); /*
+        glUniformMatrix2x3fv(location, count, transpose, value);
+    */
+
+    public static native void glUniformMatrix3x2fv(int location, int count, boolean transpose, FloatBuffer value); /*
+        glUniformMatrix3x2fv(location, count, transpose, value);
+    */
+
+    public static native void glUniformMatrix2x4fv(int location, int count, boolean transpose, FloatBuffer value); /*
+        glUniformMatrix2x4fv(location, count, transpose, value);
+    */
+
+    public static native void glUniformMatrix4x2fv(int location, int count, boolean transpose, FloatBuffer value); /*
+        glUniformMatrix4x2fv(location, count, transpose, value);
+    */
+
+    public static native void glUniformMatrix3x4fv(int location, int count, boolean transpose, FloatBuffer value); /*
+        glUniformMatrix3x4fv(location, count, transpose, value);
+    */
+
+    public static native void glUniformMatrix4x3fv(int location, int count, boolean transpose, FloatBuffer value); /*
+        glUniformMatrix4x3fv(location, count, transpose, value);
+    */
+
+    public static native void glBlitFramebuffer(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, int mask, int filter); /*
+        glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+    */
+
+    public static native void glRenderbufferStorageMultisample(int target, int samples, int internalformat, int width, int height); /*
+        glRenderbufferStorageMultisample(target, samples, internalformat, width, height);
+    */
+
+    public static native void glFramebufferTextureLayer(int target, int attachment, int texture, int level, int layer); /*
+        glFramebufferTextureLayer(target, attachment, texture, level, layer);
+    */
+
+    public static native void glFlushMappedBufferRange(int target, int offset, int length); /*
+        glFlushMappedBufferRange(target, offset, length);
+    */
+
+    public static native void glBindVertexArray(int array); /*
+        glBindVertexArray(array);
+    */
+
+    public static native void glDeleteVertexArrays(int n, IntBuffer arrays); /*
+        glDeleteVertexArrays(n, arrays);
+    */
+
+    public static native void glGenVertexArrays(int n, IntBuffer arrays); /*
+        glGenVertexArrays(n, arrays);
+    */
+
+    public static native boolean glIsVertexArray(int array); /*
+        return glIsVertexArray(array);
+    */
+
+    public static native void glBeginTransformFeedback(int primitiveMode); /*
+        glBeginTransformFeedback(primitiveMode);
+    */
+
+    public static native void glEndTransformFeedback(); /*
+        glEndTransformFeedback();
+    */
+
+    public static native void glBindBufferRange(int target, int index, int buffer, int offset, int size); /*
+        glBindBufferRange(target, index, buffer, offset, size);
+    */
+
+    public static native void glBindBufferBase(int target, int index, int buffer); /*
+        glBindBufferBase(target, index, buffer);
+    */
+
+    public static native void glTransformFeedbackVaryings(int program, String[] varyings, int bufferMode); /*
+        glTransformFeedbackVaryings(program, varyings, bufferMode);
+    */
+
+    public static native void glVertexAttribIPointer(int index, int size, int type, int stride, int offset); /*
+        glVertexAttribIPointer(index, size, type, stride, offset);
+    */
+
+    public static native void glGetVertexAttribIiv(int index, int pname, IntBuffer params); /*
+        glGetVertexAttribIiv(index, pname, params);
+    */
+
+    public static native void glGetVertexAttribIuiv(int index, int pname, IntBuffer params); /*
+        glGetVertexAttribIuiv(index, pname, params);
+    */
+
+    public static native void glVertexAttribI4i(int index, int x, int y, int z, int w); /*
+        glVertexAttribI4i(index, x, y, z, w);
+    */
+
+    public static native void glVertexAttribI4ui(int index, int x, int y, int z, int w); /*
+        glVertexAttribI4ui(index, x, y, z, w);
+    */
+
+    public static native void glGetUniformuiv(int program, int location, IntBuffer params); /*
+        glGetUniformuiv(program, location, params);
+    */
+
+    public static native int glGetFragDataLocation(int program, String name); /*
+        return glGetFragDataLocation(program, name);
+    */
+
+    public static native void glUniform1uiv(int location, int count, IntBuffer value); /*
+        glUniform1uiv(location, count, value);
+    */
+
+    public static native void glUniform3uiv(int location, int count, IntBuffer value); /*
+        glUniform3uiv(location, count, value);
+    */
+
+    public static native void glUniform4uiv(int location, int count, IntBuffer value); /*
+        glUniform4uiv(location, count, value);
+    */
+
+    public static native void glClearBufferiv(int buffer, int drawbuffer, IntBuffer value); /*
+        glClearBufferiv(buffer, drawbuffer, value);
+    */
+
+    public static native void glClearBufferuiv(int buffer, int drawbuffer, IntBuffer value); /*
+        glClearBufferuiv(buffer, drawbuffer, value);
+    */
+
+    public static native void glClearBufferfv(int buffer, int drawbuffer, FloatBuffer value); /*
+        glClearBufferfv(buffer, drawbuffer, value);
+    */
+
+    public static native void glClearBufferfi(int buffer, int drawbuffer, float depth, int stencil); /*
+        glClearBufferfi(buffer, drawbuffer, depth, stencil);
+    */
+
+    public static native String glGetStringi(int name, int index); /*
+        return glGetStringi(name, index);
+    */
+
+    public static native void glCopyBufferSubData(int readTarget, int writeTarget, int readOffset, int writeOffset, int size); /*
+        glCopyBufferSubData(readTarget, writeTarget, readOffset, writeOffset, size);
+    */
+
+    public static native void glGetUniformIndices(int program, String[] uniformNames, IntBuffer uniformIndices); /*
+        glGetUniformIndices(program, uniformNames, uniformIndices);
+    */
+
+    public static native void glGetActiveUniformsiv(int program, int uniformCount, IntBuffer uniformIndices, int pname, IntBuffer params); /*
+        glGetActiveUniformsiv(program, uniformCount, uniformIndices, pname, params);
+    */
+
+    public static native int glGetUniformBlockIndex(int program, String uniformBlockName); /*
+        return glGetUniformBlockIndex(program, uniformBlockName);
+    */
+
+    public static native void glGetActiveUniformBlockiv(int program, int uniformBlockIndex, int pname, IntBuffer params); /*
+        glGetActiveUniformBlockiv(program, uniformBlockIndex, pname, params);
+    */
+
+    public static native String glGetActiveUniformBlockName(int program, int uniformBlockIndex); /*
+        return glGetActiveUniformBlockName(program, uniformBlockIndex);
+    */
+
+    public static native void glGetActiveUniformBlockName(int program, int uniformBlockIndex, Buffer length, Buffer uniformBlockName); /*
+        glGetActiveUniformBlockName(program, uniformBlockIndex, length, uniformBlockName);
+    */
+
+    public static native void glUniformBlockBinding(int program, int uniformBlockIndex, int uniformBlockBinding); /*
+        glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);
+    */
+
+    public static native void glDrawArraysInstanced(int mode, int first, int count, int instanceCount); /*
+        glDrawArraysInstanced(mode, first, count, instanceCount);
+    */
+
+    public static native void glDrawElementsInstanced(int mode, int count, int type, int indicesOffset, int instanceCount); /*
+        glDrawElementsInstanced(mode, count, type, indicesOffset, instanceCount);
+    */
+
+    public static native void glGetInteger64v(int pname, LongBuffer params); /*
+        glGetInteger64v(pname, params);
+    */
+
+    public static native void glGetBufferParameteri64v(int target, int pname, LongBuffer params); /*
+        glGetBufferParameteri64v(target, pname, params);
+    */
+
+    public static native void glGenSamplers(int count, IntBuffer samplers); /*
+        glGenSamplers(count, samplers);
+    */
+
+    public static native void glDeleteSamplers(int count, IntBuffer samplers); /*
+        glDeleteSamplers(count, samplers);
+    */
+
+    public static native boolean glIsSampler(int sampler); /*
+        return glIsSampler(sampler);
+    */
+
+    public static native void glBindSampler(int unit, int sampler); /*
+        glBindSampler(unit, sampler);
+    */
+
+    public static native void glSamplerParameteri(int sampler, int pname, int param); /*
+        glSamplerParameteri(sampler, pname, param);
+    */
+
+    public static native void glSamplerParameteriv(int sampler, int pname, IntBuffer param); /*
+        glSamplerParameteriv(sampler, pname, param);
+    */
+
+    public static native void glSamplerParameterf(int sampler, int pname, float param); /*
+        glSamplerParameterf(sampler, pname, param);
+    */
+
+    public static native void glSamplerParameterfv(int sampler, int pname, FloatBuffer param); /*
+        glSamplerParameterfv(sampler, pname, param);
+    */
+
+    public static native void glGetSamplerParameteriv(int sampler, int pname, IntBuffer params); /*
+        glGetSamplerParameteriv(sampler, pname, params);
+    */
+
+    public static native void glGetSamplerParameterfv(int sampler, int pname, FloatBuffer params); /*
+        glGetSamplerParameterfv(sampler, pname, params);
+    */
+
+    public static native void glVertexAttribDivisor(int index, int divisor); /*
+        glVertexAttribDivisor(index, divisor);
+    */
+
+    public static native void glBindTransformFeedback(int target, int id); /*
+        glBindTransformFeedback(target, id);
+    */
+
+    public static native void glDeleteTransformFeedbacks(int n, IntBuffer ids); /*
+        glDeleteTransformFeedbacks(n, ids);
+    */
+
+    public static native void glGenTransformFeedbacks(int n, IntBuffer ids); /*
+        glGenTransformFeedbacks(n, ids);
+    */
+
+    public static native boolean glIsTransformFeedback(int id); /*
+        return glIsTransformFeedback(id);
+    */
+
+    public static native void glPauseTransformFeedback(); /*
+        glPauseTransformFeedback();
+    */
+
+    public static native void glResumeTransformFeedback(); /*
+        glResumeTransformFeedback();
+    */
+
+    public static native void glProgramParameteri(int program, int pname, int value); /*
+        glProgramParameteri(program, pname, value);
+    */
+
+    public static native void glInvalidateFramebuffer(int target, int numAttachments, IntBuffer attachments); /*
+        glInvalidateFramebuffer(target, numAttachments, attachments);
+    */
+
+    public static native void glInvalidateSubFramebuffer(int target, int numAttachments, IntBuffer attachments, int x, int y, int width, int height); /*
+        glInvalidateSubFramebuffer(target, numAttachments, attachments, x, y, width, height);
+    */
+
+    //endregion
 }

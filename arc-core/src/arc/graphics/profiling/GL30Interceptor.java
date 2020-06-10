@@ -1187,23 +1187,9 @@ public class GL30Interceptor extends GLInterceptor implements GL30{
     }
 
     @Override
-    public void glGenQueries(int n, int[] ids, int offset){
-        calls++;
-        gl30.glGenQueries(n, ids, offset);
-        check();
-    }
-
-    @Override
     public void glGenQueries(int n, IntBuffer ids){
         calls++;
         gl30.glGenQueries(n, ids);
-        check();
-    }
-
-    @Override
-    public void glDeleteQueries(int n, int[] ids, int offset){
-        calls++;
-        gl30.glDeleteQueries(n, ids, offset);
         check();
     }
 
@@ -1353,23 +1339,9 @@ public class GL30Interceptor extends GLInterceptor implements GL30{
     }
 
     @Override
-    public void glDeleteVertexArrays(int n, int[] arrays, int offset){
-        calls++;
-        gl30.glDeleteVertexArrays(n, arrays, offset);
-        check();
-    }
-
-    @Override
     public void glDeleteVertexArrays(int n, IntBuffer arrays){
         calls++;
         gl30.glDeleteVertexArrays(n, arrays);
-        check();
-    }
-
-    @Override
-    public void glGenVertexArrays(int n, int[] arrays, int offset){
-        calls++;
-        gl30.glGenVertexArrays(n, arrays, offset);
         check();
     }
 
@@ -1621,23 +1593,9 @@ public class GL30Interceptor extends GLInterceptor implements GL30{
     }
 
     @Override
-    public void glGenSamplers(int count, int[] samplers, int offset){
-        calls++;
-        gl30.glGenSamplers(count, samplers, offset);
-        check();
-    }
-
-    @Override
     public void glGenSamplers(int count, IntBuffer samplers){
         calls++;
         gl30.glGenSamplers(count, samplers);
-        check();
-    }
-
-    @Override
-    public void glDeleteSamplers(int count, int[] samplers, int offset){
-        calls++;
-        gl30.glDeleteSamplers(count, samplers, offset);
         check();
     }
 
@@ -1720,23 +1678,9 @@ public class GL30Interceptor extends GLInterceptor implements GL30{
     }
 
     @Override
-    public void glDeleteTransformFeedbacks(int n, int[] ids, int offset){
-        calls++;
-        gl30.glDeleteTransformFeedbacks(n, ids, offset);
-        check();
-    }
-
-    @Override
     public void glDeleteTransformFeedbacks(int n, IntBuffer ids){
         calls++;
         gl30.glDeleteTransformFeedbacks(n, ids);
-        check();
-    }
-
-    @Override
-    public void glGenTransformFeedbacks(int n, int[] ids, int offset){
-        calls++;
-        gl30.glGenTransformFeedbacks(n, ids, offset);
         check();
     }
 

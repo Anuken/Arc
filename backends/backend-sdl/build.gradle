@@ -26,3 +26,8 @@ task sdlnatives(dependsOn: classes, type: JavaExec){
     if(project.hasProperty("windows")) systemProperties.put("windows", "true")
     if(project.hasProperty("mac")) systemProperties.put("mac", "true")
 }
+
+task glclassgen(dependsOn: classes, type: JavaExec){
+    main = 'GlClassgen'
+    classpath = sourceSets.test.runtimeClasspath
+}

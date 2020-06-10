@@ -2,11 +2,20 @@ sourceSets.main.java.srcDirs = ["src"]
 sourceSets.test.java.srcDirs = ["test"]
 sourceSets.test.resources.srcDirs = ["test/resources"]
 
+//set to true when generating code, make sure to clean first
+def useParameters = false
+
 import com.badlogic.gdx.jnigen.*
 
 dependencies{
     testImplementation libraries.junit
     testImplementation aproj(":natives:natives-desktop")
+}
+
+if(useParameters){
+    compileJava{
+        options.compilerArgs << '-parameters'
+    }
 }
 
 test{

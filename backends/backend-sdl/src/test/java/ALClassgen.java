@@ -2,7 +2,7 @@ import arc.struct.*;
 import arc.files.*;
 import arc.util.*;
 
-public class Classgen{
+public class ALClassgen{
 
     public static void main(String[] args){
         String str = new Fi("/home/anuke/work/alc.h").readString();

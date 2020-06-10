@@ -1,9 +1,7 @@
 package arc.graphics;
-
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-
 /**
  * Interface wrapping all the methods of OpenGL ES 2.0
  * @author mzechner
@@ -315,316 +313,165 @@ public interface GL20{
     int GL_MAX_RENDERBUFFER_SIZE = 0x84E8;
     int GL_INVALID_FRAMEBUFFER_OPERATION = 0x0506;
     int GL_VERTEX_PROGRAM_POINT_SIZE = 0x8642;
-
     // Extensions
     int GL_COVERAGE_BUFFER_BIT_NV = 0x8000;
     int GL_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FE;
     int GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FF;
 
     void glActiveTexture(int texture);
-
     void glBindTexture(int target, int texture);
-
     void glBlendFunc(int sfactor, int dfactor);
-
     void glClear(int mask);
-
     void glClearColor(float red, float green, float blue, float alpha);
-
     void glClearDepthf(float depth);
-
     void glClearStencil(int s);
-
     void glColorMask(boolean red, boolean green, boolean blue, boolean alpha);
-
     void glCompressedTexImage2D(int target, int level, int internalformat, int width, int height, int border, int imageSize, Buffer data);
-
     void glCompressedTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int imageSize, Buffer data);
-
     void glCopyTexImage2D(int target, int level, int internalformat, int x, int y, int width, int height, int border);
-
     void glCopyTexSubImage2D(int target, int level, int xoffset, int yoffset, int x, int y, int width, int height);
-
     void glCullFace(int mode);
-
     void glDeleteTexture(int texture);
-
     void glDepthFunc(int func);
-
     void glDepthMask(boolean flag);
-
     void glDepthRangef(float zNear, float zFar);
-
     void glDisable(int cap);
-
     void glDrawArrays(int mode, int first, int count);
-
     void glDrawElements(int mode, int count, int type, Buffer indices);
-
     void glEnable(int cap);
-
     void glFinish();
-
     void glFlush();
-
     void glFrontFace(int mode);
-
     int glGenTexture();
-
     int glGetError();
-
     void glGetIntegerv(int pname, IntBuffer params);
-
     String glGetString(int name);
-
     void glHint(int target, int mode);
-
     void glLineWidth(float width);
-
     void glPixelStorei(int pname, int param);
-
     void glPolygonOffset(float factor, float units);
-
     void glReadPixels(int x, int y, int width, int height, int format, int type, Buffer pixels);
-
     void glScissor(int x, int y, int width, int height);
-
     void glStencilFunc(int func, int ref, int mask);
-
     void glStencilMask(int mask);
-
     void glStencilOp(int fail, int zfail, int zpass);
-
     void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, Buffer pixels);
-
     void glTexParameterf(int target, int pname, float param);
-
     void glTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, Buffer pixels);
-
     void glViewport(int x, int y, int width, int height);
-
     void glAttachShader(int program, int shader);
-
     void glBindAttribLocation(int program, int index, String name);
-
     void glBindBuffer(int target, int buffer);
-
     void glBindFramebuffer(int target, int framebuffer);
-
     void glBindRenderbuffer(int target, int renderbuffer);
-
     void glBlendColor(float red, float green, float blue, float alpha);
-
     void glBlendEquation(int mode);
-
     void glBlendEquationSeparate(int modeRGB, int modeAlpha);
-
     void glBlendFuncSeparate(int srcRGB, int dstRGB, int srcAlpha, int dstAlpha);
-
     void glBufferData(int target, int size, Buffer data, int usage);
-
     void glBufferSubData(int target, int offset, int size, Buffer data);
-
     int glCheckFramebufferStatus(int target);
-
     void glCompileShader(int shader);
-
     int glCreateProgram();
-
     int glCreateShader(int type);
-
     void glDeleteBuffer(int buffer);
-
     void glDeleteFramebuffer(int framebuffer);
-
     void glDeleteProgram(int program);
-
     void glDeleteRenderbuffer(int renderbuffer);
-
     void glDeleteShader(int shader);
-
     void glDetachShader(int program, int shader);
-
     void glDisableVertexAttribArray(int index);
-
     void glDrawElements(int mode, int count, int type, int indices);
-
     void glEnableVertexAttribArray(int index);
-
     void glFramebufferRenderbuffer(int target, int attachment, int renderbuffertarget, int renderbuffer);
-
     void glFramebufferTexture2D(int target, int attachment, int textarget, int texture, int level);
-
     int glGenBuffer();
-
     void glGenerateMipmap(int target);
-
     int glGenFramebuffer();
-
     int glGenRenderbuffer();
-
     String glGetActiveAttrib(int program, int index, IntBuffer size, IntBuffer type);
-
     String glGetActiveUniform(int program, int index, IntBuffer size, IntBuffer type);
-
     int glGetAttribLocation(int program, String name);
-
     void glGetBooleanv(int pname, Buffer params);
-
     void glGetBufferParameteriv(int target, int pname, IntBuffer params);
-
     void glGetFloatv(int pname, FloatBuffer params);
-
     void glGetFramebufferAttachmentParameteriv(int target, int attachment, int pname, IntBuffer params);
-
     void glGetProgramiv(int program, int pname, IntBuffer params);
-
     String glGetProgramInfoLog(int program);
-
     void glGetRenderbufferParameteriv(int target, int pname, IntBuffer params);
-
     void glGetShaderiv(int shader, int pname, IntBuffer params);
-
     String glGetShaderInfoLog(int shader);
-
     void glGetShaderPrecisionFormat(int shadertype, int precisiontype, IntBuffer range, IntBuffer precision);
-
     void glGetTexParameterfv(int target, int pname, FloatBuffer params);
-
     void glGetTexParameteriv(int target, int pname, IntBuffer params);
-
     void glGetUniformfv(int program, int location, FloatBuffer params);
-
     void glGetUniformiv(int program, int location, IntBuffer params);
-
     int glGetUniformLocation(int program, String name);
-
     void glGetVertexAttribfv(int index, int pname, FloatBuffer params);
-
     void glGetVertexAttribiv(int index, int pname, IntBuffer params);
-
     boolean glIsBuffer(int buffer);
-
     boolean glIsEnabled(int cap);
-
     boolean glIsFramebuffer(int framebuffer);
-
     boolean glIsProgram(int program);
-
     boolean glIsRenderbuffer(int renderbuffer);
-
     boolean glIsShader(int shader);
-
     boolean glIsTexture(int texture);
-
     void glLinkProgram(int program);
-
     void glReleaseShaderCompiler();
-
     void glRenderbufferStorage(int target, int internalformat, int width, int height);
-
     void glSampleCoverage(float value, boolean invert);
-
     void glShaderSource(int shader, String string);
-
     void glStencilFuncSeparate(int face, int func, int ref, int mask);
-
     void glStencilMaskSeparate(int face, int mask);
-
     void glStencilOpSeparate(int face, int fail, int zfail, int zpass);
-
     void glTexParameterfv(int target, int pname, FloatBuffer params);
-
     void glTexParameteri(int target, int pname, int param);
-
     void glTexParameteriv(int target, int pname, IntBuffer params);
-
     void glUniform1f(int location, float x);
-
     void glUniform1fv(int location, int count, FloatBuffer v);
-
     void glUniform1fv(int location, int count, float[] v, int offset);
-
     void glUniform1i(int location, int x);
-
     void glUniform1iv(int location, int count, IntBuffer v);
-
     void glUniform1iv(int location, int count, int[] v, int offset);
-
     void glUniform2f(int location, float x, float y);
-
     void glUniform2fv(int location, int count, FloatBuffer v);
-
     void glUniform2fv(int location, int count, float[] v, int offset);
-
     void glUniform2i(int location, int x, int y);
-
     void glUniform2iv(int location, int count, IntBuffer v);
-
     void glUniform2iv(int location, int count, int[] v, int offset);
-
     void glUniform3f(int location, float x, float y, float z);
-
     void glUniform3fv(int location, int count, FloatBuffer v);
-
     void glUniform3fv(int location, int count, float[] v, int offset);
-
     void glUniform3i(int location, int x, int y, int z);
-
     void glUniform3iv(int location, int count, IntBuffer v);
-
     void glUniform3iv(int location, int count, int[] v, int offset);
-
     void glUniform4f(int location, float x, float y, float z, float w);
-
     void glUniform4fv(int location, int count, FloatBuffer v);
-
     void glUniform4fv(int location, int count, float[] v, int offset);
-
     void glUniform4i(int location, int x, int y, int z, int w);
-
     void glUniform4iv(int location, int count, IntBuffer v);
-
     void glUniform4iv(int location, int count, int[] v, int offset);
-
     void glUniformMatrix2fv(int location, int count, boolean transpose, FloatBuffer value);
-
     void glUniformMatrix2fv(int location, int count, boolean transpose, float[] value, int offset);
-
     void glUniformMatrix3fv(int location, int count, boolean transpose, FloatBuffer value);
-
     void glUniformMatrix3fv(int location, int count, boolean transpose, float[] value, int offset);
-
     void glUniformMatrix4fv(int location, int count, boolean transpose, FloatBuffer value);
-
     void glUniformMatrix4fv(int location, int count, boolean transpose, float[] value, int offset);
-
     void glUseProgram(int program);
-
     void glValidateProgram(int program);
-
     void glVertexAttrib1f(int indx, float x);
-
     void glVertexAttrib1fv(int indx, FloatBuffer values);
-
     void glVertexAttrib2f(int indx, float x, float y);
-
     void glVertexAttrib2fv(int indx, FloatBuffer values);
-
     void glVertexAttrib3f(int indx, float x, float y, float z);
-
     void glVertexAttrib3fv(int indx, FloatBuffer values);
-
     void glVertexAttrib4f(int indx, float x, float y, float z, float w);
-
     void glVertexAttrib4fv(int indx, FloatBuffer values);
-
     /**
      * In OpenGl core profiles (3.1+), passing a pointer to client memory is not valid.
      * In 3.0 and later, use the other version of this function instead, pass a zero-based
      * offset which references the buffer currently bound to GL_ARRAY_BUFFER.
      */
     void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, Buffer ptr);
-
     void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, int ptr);
 }

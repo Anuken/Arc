@@ -129,6 +129,10 @@ public final class Mathf{
         return (float) Math.sqrt(x);
     }
 
+    public static float sqr(float x){
+        return x * x;
+    }
+
     public static float map(float value, float froma, float toa, float fromb, float tob){
         return fromb + (value - froma) * (tob - fromb) / (toa - froma);
     }

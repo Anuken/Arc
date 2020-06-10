@@ -31,11 +31,7 @@ public class IOSGLES30 extends IOSGLES20 implements GL30{
 
     public native void glCopyTexSubImage3D(int target, int level, int xoffset, int yoffset, int zoffset, int x, int y, int width, int height);
 
-    public native void glGenQueries(int n, int[] ids, int offset);
-
     public native void glGenQueries(int n, IntBuffer ids);
-
-    public native void glDeleteQueries(int n, int[] ids, int offset);
 
     public native void glDeleteQueries(int n, IntBuffer ids);
 
@@ -77,11 +73,7 @@ public class IOSGLES30 extends IOSGLES20 implements GL30{
 
     public native void glBindVertexArray(int array);
 
-    public native void glDeleteVertexArrays(int n, int[] arrays, int offset);
-
     public native void glDeleteVertexArrays(int n, IntBuffer arrays);
-
-    public native void glGenVertexArrays(int n, int[] arrays, int offset);
 
     public native void glGenVertexArrays(int n, IntBuffer arrays);
 
@@ -151,11 +143,7 @@ public class IOSGLES30 extends IOSGLES20 implements GL30{
 
     public native void glGetBufferParameteri64v(int target, int pname, LongBuffer params);
 
-    public native void glGenSamplers(int count, int[] samplers, int offset);
-
     public native void glGenSamplers(int count, IntBuffer samplers);
-
-    public native void glDeleteSamplers(int count, int[] samplers, int offset);
 
     public native void glDeleteSamplers(int count, IntBuffer samplers);
 
@@ -179,11 +167,7 @@ public class IOSGLES30 extends IOSGLES20 implements GL30{
 
     public native void glBindTransformFeedback(int target, int id);
 
-    public native void glDeleteTransformFeedbacks(int n, int[] ids, int offset);
-
     public native void glDeleteTransformFeedbacks(int n, IntBuffer ids);
-
-    public native void glGenTransformFeedbacks(int n, int[] ids, int offset);
 
     public native void glGenTransformFeedbacks(int n, IntBuffer ids);
 
