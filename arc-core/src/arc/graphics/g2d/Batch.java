@@ -137,7 +137,7 @@ public abstract class Batch implements Disposable{
 
     protected void setupMatrices(){
         combinedMatrix.set(projectionMatrix).mul(transformMatrix);
-        getShader().setUniformMatrix4("u_projTrans", BatchShader.copyTransform(combinedMatrix));
+        getShader().setUniformMatrix4("u_projTrans", combinedMatrix);
         getShader().setUniformi("u_texture", 0);
     }
 

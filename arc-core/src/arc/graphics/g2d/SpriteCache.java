@@ -500,7 +500,7 @@ public class SpriteCache implements Disposable{
         combinedMatrix.set(projectionMatrix).mul(transformMatrix);
         Shader shader = customShader != null ? customShader : this.shader;
         shader.bind();
-        shader.setUniformMatrix4("u_projectionViewMatrix", BatchShader.copyTransform(combinedMatrix));
+        shader.setUniformMatrix4("u_projectionViewMatrix", combinedMatrix);
         shader.setUniformi("u_texture", 0);
         mesh.bind(shader);
         drawing = true;

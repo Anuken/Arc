@@ -138,8 +138,9 @@ public class Shader implements Disposable{
     public void apply(){}
 
     private static String preprocess(String source, boolean fragment){
-        //preprocess source to function correctly with OpenGL 3.0 core
-        if(Core.gl30 != null){
+        //preprocess source to function correctly with OpenGL 3.x core
+        //note that this is required on Mac
+        if(Core.gl30 != null && OS.isMac){
             return
                 (Core.graphics.getGLVersion().atLeast(3, 2) ? "#version 150\n" :"#version 130\n")
                 + (fragment ? "out vec4 fragColor;\n" : "")
@@ -517,6 +518,16 @@ public class Shader implements Disposable{
         Gl.uniformMatrix4fv(fetchUniformLocation(name), 1, false, val, 0);
     }
 
+    public void setUniformMatrix4(String name, Mat mat){
+        checkManaged();
+        Gl.uniformMatrix4fv(fetchUniformLocation(name), 1, false, copyTransform(mat), 0);
+    }
+
+    public void setUniformMatrix4(String name, Mat mat, float near, float far){
+        checkManaged();
+        Gl.uniformMatrix4fv(fetchUniformLocation(name), 1, false, copyTransform(mat, near, far), 0);
+    }
+
     /**
      * Sets an array of uniform matrices with the given name. The {@link Shader} must be bound for this to work.
      * @param name the name of the uniform
@@ -842,5 +853,41 @@ public class Shader implements Disposable{
     /** @return the source of the fragment shader */
     public String getFragmentShaderSource(){
         return fragmentShaderSource;
+    }
+
+    private static final float[] val = new float[16];
+
+
+    //mistakes were made
+    public static float[] copyTransform(Mat matrix){
+        val[4] = matrix.val[Mat.M01];
+        val[1] = matrix.val[Mat.M10];
+
+        val[0] = matrix.val[Mat.M00];
+        val[5] = matrix.val[Mat.M11];
+        val[10] = matrix.val[Mat.M22];
+        val[12] = matrix.val[Mat.M02];
+        val[13] = matrix.val[Mat.M12];
+        val[15] = 1;
+        return val;
+    }
+
+    public static float[] copyTransform(Mat matrix, float near, float far){
+        val[4] = matrix.val[Mat.M01];
+        val[1] = matrix.val[Mat.M10];
+
+        val[0] = matrix.val[Mat.M00];
+        val[5] = matrix.val[Mat.M11];
+        val[10] = matrix.val[Mat.M22];
+        val[12] = matrix.val[Mat.M02];
+        val[13] = matrix.val[Mat.M12];
+        val[15] = 1;
+
+        float z_orth = -2 / (far - near);
+        float tz = -(far + near) / (far - near);
+
+        val[10] = z_orth;
+        val[14] = tz;
+        return val;
     }
 }
