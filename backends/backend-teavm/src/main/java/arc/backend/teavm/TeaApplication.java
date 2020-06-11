@@ -124,7 +124,7 @@ public class TeaApplication implements Application{
 
     @Override
     public ApplicationType getType(){
-        return ApplicationType.WebGL;
+        return ApplicationType.web;
     }
 
     @Override

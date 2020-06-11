@@ -83,6 +83,7 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
         build();
     }
 
+    /** Blits this buffer onto the screen using the specified shader. */
     public void blit(Shader shader){
         Draw.blit(this, shader);
     }

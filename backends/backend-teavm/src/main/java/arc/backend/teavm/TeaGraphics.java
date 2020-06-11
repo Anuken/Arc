@@ -41,7 +41,7 @@ public class TeaGraphics extends Graphics{
         String versionString = gl20.glGetString(GL20.GL_VERSION);
         String vendorString = gl20.glGetString(GL20.GL_VENDOR);
         String rendererString = gl20.glGetString(GL20.GL_RENDERER);
-        glVersion = new GLVersion(Application.ApplicationType.WebGL, versionString, vendorString, rendererString);
+        glVersion = new GLVersion(Application.ApplicationType.web, versionString, vendorString, rendererString);
     }
 
     @Override

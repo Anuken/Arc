@@ -156,36 +156,30 @@ public class Bloom{
         }
 
         pingPong1.getTexture().bind(1);
-        buffer.getTexture().bind(0);
-
-        bloomShader.bind();
-        Draw.blit(bloomShader);
+        buffer.blit(bloomShader);
     }
 
     private void gaussianBlur(){
         //cut bright areas of the picture and blit to smaller fbo
 
-        buffer.getTexture().bind(0);
         pingPong1.begin();
-        Draw.blit(thresholdShader);
+        buffer.blit(thresholdShader);
         pingPong1.end();
 
         for(int i = 0; i < blurPasses; i++){
-            pingPong1.getTexture().bind(0);
 
             // horizontal
             pingPong2.begin();
             blurShader.bind();
             blurShader.setUniformf("dir", 1f, 0f);
-            Draw.blit(blurShader);
+            pingPong1.blit(blurShader);
             pingPong2.end();
 
-            pingPong2.getTexture().bind(0);
             // vertical
             pingPong1.begin();
             blurShader.bind();
             blurShader.setUniformf("dir", 0f, 1f);
-            Draw.blit(blurShader);
+            pingPong2.blit(blurShader);
             pingPong1.end();
         }
     }
