@@ -137,7 +137,7 @@ public class Shader implements Disposable{
     /**Applies all relevant uniforms, if applicable. Should be overriden.*/
     public void apply(){}
 
-    private static String preprocess(String source, boolean fragment){
+    protected String preprocess(String source, boolean fragment){
         //preprocess source to function correctly with OpenGL 3.x core
         //note that this is required on Mac
         if(Core.gl30 != null){

@@ -274,46 +274,6 @@ public class ArrayTextureSpriteBatch extends Batch{
         mipMapsDirty = useMipMaps;
     }
 
-    /** Returns a new instance of the default shader used by ArrayTextureSpriteBatch when no shader is specified. */
-    public static Shader createDefaultShader(){
-
-        return new Shader(
-        "in vec4 " + Shader.positionAttribute + ";\n"
-        + "in vec4 " + Shader.colorAttribute + ";\n"
-        + "in vec2 " + Shader.texcoordAttribute + "0;\n"
-        + "in float texture_index;\n"
-        + "uniform mat4 u_projTrans;\n"
-        + "out vec4 v_color;\n"
-        + "out vec4 v_mix_color;\n"
-        + "out vec2 v_texCoords;\n"
-        + "out float v_texture_index;\n"
-        + "\n"
-        + "void main(){\n"
-        + "   v_color = " + Shader.colorAttribute + ";\n"
-        + "   v_color.a = v_color.a * (255.0/254.0);\n"
-        + "   v_texCoords = " + Shader.texcoordAttribute + "0;\n"
-        + "   v_texture_index = texture_index;\n"
-        + "   gl_Position =  u_projTrans * " + Shader.positionAttribute + ";\n"
-        + "}\n",
-
-        "#ifdef GL_ES\n"
-        + "#define LOWP lowp\n"
-        + "precision mediump float;\n"
-        + "#else\n"
-        + "#define LOWP\n"
-        + "#endif\n"
-        + "in LOWP vec4 v_color;\n"
-        + "in LOWP vec4 v_mix_color;\n"
-        + "in vec2 v_texCoords;\n"
-        + "in float v_texture_index;\n"
-        + "uniform sampler2DArray u_texturearray;\n"
-        + "out vec4 diffuseColor;\n"
-        + "void main(){\n"
-        + "  vec4 c = texture(u_texturearray, vec3(v_texCoords, v_texture_index));\n"
-        + "  diffuseColor = v_color * mix(c, vec4(v_mix_color.rgb, c.a), v_mix_color.a);\n"
-        + "}");
-    }
-
     @Override
     public void draw(Texture texture, float[] spriteVertices, int offset, int count){
 
@@ -647,6 +607,64 @@ public class ArrayTextureSpriteBatch extends Batch{
         if(useMipMaps){
             mipMapsDirty = true;
         }
+    }
+
+    /** Returns a new instance of the default shader used by ArrayTextureSpriteBatch when no shader is specified. */
+    public static Shader createDefaultShader(){
+
+        return new Shader(
+          "in vec4 " + Shader.positionAttribute + ";\n"
+        + "in vec4 " + Shader.colorAttribute + ";\n"
+        + "in vec2 " + Shader.texcoordAttribute + "0;\n"
+        + "in float texture_index;\n"
+        + "uniform mat4 u_projTrans;\n"
+        + "out vec4 v_color;\n"
+        + "out vec4 v_mix_color;\n"
+        + "out vec2 v_texCoords;\n"
+        + "out float v_texture_index;\n"
+        + "\n"
+        + "void main(){\n"
+        + "   v_color = " + Shader.colorAttribute + ";\n"
+        + "   v_color.a = v_color.a * (255.0/254.0);\n"
+        + "   v_texCoords = " + Shader.texcoordAttribute + "0;\n"
+        + "   v_texture_index = texture_index;\n"
+        + "   gl_Position =  u_projTrans * " + Shader.positionAttribute + ";\n"
+        + "}\n",
+
+          "#ifdef GL_ES\n"
+        + "#define LOWP lowp\n"
+        + "precision mediump float;\n"
+        + "#else\n"
+        + "#define LOWP\n"
+        + "#endif\n"
+        + "in LOWP vec4 v_color;\n"
+        + "in LOWP vec4 v_mix_color;\n"
+        + "in vec2 v_texCoords;\n"
+        + "in float v_texture_index;\n"
+        + "uniform sampler2DArray u_texturearray;\n"
+        + "out vec4 diffuseColor;\n"
+        + "void main(){\n"
+        + "  vec4 c = texture(u_texturearray, vec3(v_texCoords, v_texture_index));\n"
+        + "  diffuseColor = v_color * mix(c, vec4(v_mix_color.rgb, c.a), v_mix_color.a);\n"
+        + "}");
+    }
+
+    /** Converts a 'standard' shader into an array texture shader. This MUST be called before the GL3 preprocessor is run in a shader.
+     * */
+    public static String preprocessShader(String shader, boolean fragment){
+        if(fragment){
+
+        }else{
+            //vertex shaders require a texture index parameter
+            int maini = shader.indexOf("void main(){");
+            if(maini == -1) maini = shader.indexOf("void main() {");
+            if(maini == -1) throw new IllegalArgumentException("Your shader is missing a `void main(){` function. Add it, or fix your formatting. Don't dare use newline curly braces.");
+            int offset = "void main() {".length();
+            maini += offset;
+            shader = "out float v_texture_index;\n" + shader.substring(0, maini) + "\nv_texture_index = texture_index;\n" + shader.substring(maini);
+        }
+
+        return shader;
     }
 
 }

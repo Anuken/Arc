@@ -6,7 +6,7 @@ import arc.util.*;
 import arc.util.pooling.*;
 import org.junit.*;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class PoolTest{
 
@@ -47,7 +47,7 @@ public class PoolTest{
         Log.info("Memory delta: @ b", (post - pre));
         Log.info("Total memory allocated: @ mb", Strings.fixed((post - start)/1024f/1024f, 1));
 
-        assertEquals("Memory usage of pools must be 0.", pre - post, 0);
+        assertTrue("Memory usage of pools must be 0 (or less).", post - pre <= 0);
     }
 
     long memory(){
