@@ -2,6 +2,7 @@ package arc.graphics;
 
 import arc.*;
 import arc.struct.Bits;
+import arc.util.*;
 
 import java.nio.*;
 import java.util.*;
@@ -321,6 +322,7 @@ public class Gl{
 
     //STATE - optimizes GL calls
 
+    private static IntBuffer ibuf = Buffers.newIntBuffer(1);
     //last active texture unit
     private static int lastActiveTexture = -1;
     //last bound texture2ds, mapping from texture unit to texture handle
@@ -483,6 +485,12 @@ public class Gl{
 
     public static void getIntegerv(int pname, IntBuffer params){
         Core.gl.glGetIntegerv(pname, params);
+    }
+
+    public static int getInt(int name){
+        ibuf.position(0);
+        getIntegerv(name, ibuf);
+        return ibuf.get(0);
     }
 
     public static String getString(int name){

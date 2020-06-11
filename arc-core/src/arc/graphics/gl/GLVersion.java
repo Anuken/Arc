@@ -88,6 +88,11 @@ public class GLVersion{
         "Renderer: " + rendererString;
     }
 
+    @Override
+    public String toString(){
+        return type + " " + majorVersion + "." + minorVersion + "." + releaseVersion + " / " + vendorString + " / " + rendererString;
+    }
+
     public enum Type{
         OpenGL,
         GLES,
