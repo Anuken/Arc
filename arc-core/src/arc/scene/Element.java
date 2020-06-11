@@ -211,8 +211,12 @@ public class Element implements Layout{
     public void dragged(Floatc2 cons){
         addListener(new InputListener(){
             float lastX, lastY;
+
+
             @Override
             public void touchDragged(InputEvent event, float mx, float my, int pointer){
+                if(Core.app.isMobile() && pointer != 0) return;
+
                 cons.get(mx - lastX, my - lastY);
                 lastX = mx;
                 lastY = my;
@@ -220,6 +224,8 @@ public class Element implements Layout{
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
+                if(Core.app.isMobile() && pointer != 0) return false;
+
                 lastX = x;
                 lastY = y;
                 return true;
