@@ -375,7 +375,6 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     /** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
     public void end(){
         Draw.flush();
-        getTexture().modifications ++;
         //there was a buffer before this one
         if(lastBoundFramebuffer != null){
             //rebind the last framebuffer and set its viewport

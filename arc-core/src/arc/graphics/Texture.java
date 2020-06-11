@@ -195,8 +195,6 @@ public class Texture extends GLTexture{
         unsafeSetFilter(minFilter, magFilter, true);
         unsafeSetWrap(uWrap, vWrap, true);
         Gl.bindTexture(glTarget, 0);
-
-        modifications ++;
     }
 
     /**
@@ -226,7 +224,6 @@ public class Texture extends GLTexture{
 
         bind();
         Gl.texSubImage2D(glTarget, 0, x, y, pixmap.getWidth(), pixmap.getHeight(), pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
-        modifications ++;
     }
 
     @Override
