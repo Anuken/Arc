@@ -3,6 +3,7 @@ package arc.graphics.gl;
 import arc.graphics.*;
 import arc.graphics.Pixmap.*;
 import arc.graphics.Texture.*;
+import arc.graphics.g2d.*;
 import arc.util.*;
 
 /**
@@ -80,6 +81,10 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
         if(hasStencil) frameBufferBuilder.addBasicStencilRenderBuffer();
         this.bufferBuilder = frameBufferBuilder;
         build();
+    }
+
+    public void blit(Shader shader){
+        Draw.blit(this, shader);
     }
 
     /** Note that this does nothing if the width and height are correct. */

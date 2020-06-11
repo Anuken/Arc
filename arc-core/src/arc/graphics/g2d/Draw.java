@@ -29,10 +29,11 @@ public class Draw{
         return squad;
     }
 
-    /** Blits an already-bound onto the screen with a shader.
+    /** Blits an already-bound texture onto the screen with a shader.
      * This does not use a spritebatch! */
     public static void blit(Shader shader){
         shader.bind();
+        shader.apply();
         getQuad().render(shader);
     }
 
@@ -41,7 +42,14 @@ public class Draw{
     public static void blit(Texture texture, Shader shader){
         texture.bind();
         shader.bind();
+        shader.apply();
         getQuad().render(shader);
+    }
+
+    /** Blits a framebuffer onto the screen with a shader.
+     * This does not use a spritebatch! */
+    public static void blit(FrameBuffer buffer, Shader shader){
+        blit(buffer.getTexture(), shader);
     }
 
     public static void batch(Batch nextBatch){

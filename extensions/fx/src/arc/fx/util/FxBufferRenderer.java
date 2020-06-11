@@ -2,7 +2,6 @@ package arc.fx.util;
 
 import arc.*;
 import arc.graphics.*;
-import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.util.*;
 
@@ -29,6 +28,7 @@ public class FxBufferRenderer implements Disposable{
         "    v_texCoords = a_texCoord0;\n" +
         "    gl_Position = a_position;\n" +
         "}",
+
         "#ifdef GL_ES\n" +
         "    #define PRECISION mediump\n" +
         "    precision PRECISION float;\n" +
@@ -60,17 +60,14 @@ public class FxBufferRenderer implements Disposable{
     }
 
     public void renderToScreen(FrameBuffer input, int x, int y, int width, int height){
-        input.getTexture().bind(0);
         Gl.viewport(x, y, width, height);
 
-        Draw.blit(shader);
+        input.blit(shader);
     }
 
     public void renderToFbo(FrameBuffer input, FrameBuffer output){
-        input.getTexture().bind(0);
-
         output.begin();
-        Draw.blit(shader);
+        input.blit(shader);
         output.end();
     }
 }
