@@ -1,6 +1,7 @@
 package arc.fx.filters;
 
 import arc.fx.util.*;
+import arc.graphics.g2d.*;
 
 public class GaussianBlurFilter extends MultipassVfxFilter{
     private BlurType type;
@@ -39,9 +40,9 @@ public class GaussianBlurFilter extends MultipassVfxFilter{
     }
 
     @Override
-    public void render(ScreenQuad mesh, PingPongBuffer buffer){
+    public void render(PingPongBuffer buffer){
         for(int i = 0; i < this.passes; i++){
-            convolve.render(mesh, buffer);
+            convolve.render(buffer);
 
             if(i < this.passes - 1){
                 buffer.swap();

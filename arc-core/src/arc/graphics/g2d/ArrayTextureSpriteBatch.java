@@ -79,12 +79,19 @@ public class ArrayTextureSpriteBatch extends Batch{
     /** The current number of texture swaps in the LFU cache. Gets reset when calling {@link#begin()} **/
     public int currentTextureLFUSwaps = 0;
 
+    public ArrayTextureSpriteBatch(){
+        this(10);
+    }
+
+    public ArrayTextureSpriteBatch(int maxTextures){
+        this(4096, 2048, 2048, maxTextures, Gl.linear, Gl.linear, null);
+    }
+
     /**
      * Constructs a new ArrayTextureSpriteBatch with the default shader, texture cache size and texture filters.
      * @see ArrayTextureSpriteBatch#ArrayTextureSpriteBatch(int, int, int, int, int, int, Shader)
      */
-    public ArrayTextureSpriteBatch(int maxSprites, int maxTextureWidth, int maxTextureHeight, int maxConcurrentTextures,
-                                   int texFilterMag, int texFilterMin) throws IllegalStateException{
+    public ArrayTextureSpriteBatch(int maxSprites, int maxTextureWidth, int maxTextureHeight, int maxConcurrentTextures, int texFilterMag, int texFilterMin){
         this(maxSprites, maxTextureWidth, maxTextureHeight, maxConcurrentTextures, texFilterMag, texFilterMin, null);
     }
 
@@ -112,9 +119,7 @@ public class ArrayTextureSpriteBatch extends Batch{
      * Framebuffer Objects. Make sure to implement a Fallback to {@link SpriteBatch} in case Texture Arrays are not
      * supported on a device.
      */
-    public ArrayTextureSpriteBatch(int maxSprites, int maxTextureWidth, int maxTextureHeight, int maxConcurrentTextures,
-                                   int texFilterMag, int texFilterMin, Shader defaultShader) throws IllegalStateException{
-
+    public ArrayTextureSpriteBatch(int maxSprites, int maxTextureWidth, int maxTextureHeight, int maxConcurrentTextures, int texFilterMag, int texFilterMin, Shader defaultShader){
         if(Core.gl30 == null){
             throw new IllegalStateException("GL30 is not available. Remember to set \"useGL30 = true\" in your application config.");
         }
@@ -129,8 +134,7 @@ public class ArrayTextureSpriteBatch extends Batch{
         }
 
         if(maxTextureWidth < 1 || maxTextureHeight < 1){
-            throw new IllegalArgumentException(
-            "Maximum Texture width / height must both be greater than zero: " + maxTextureWidth + " / " + maxTextureHeight);
+            throw new IllegalArgumentException("Maximum Texture width / height must both be greater than zero: " + maxTextureWidth + " / " + maxTextureHeight);
         }
 
         maxTextureSlots = maxConcurrentTextures;
@@ -543,11 +547,9 @@ public class ArrayTextureSpriteBatch extends Batch{
             usedTextures[currentTextureLFUSize] = texture;
 
             copyTextureIntoArrayTexture(texture, currentTextureLFUSize);
-
             currentTextureLFUSwaps++;
 
             return currentTextureLFUSize++;
-
         }else{
 
             // We have to flush if there is something in the pipeline using this texture already,
@@ -559,7 +561,6 @@ public class ArrayTextureSpriteBatch extends Batch{
             final int slot = usedTexturesNextSwapSlot;
 
             usedTexturesNextSwapSlot = (usedTexturesNextSwapSlot + 1) % currentTextureLFUSize;
-
             usedTextures[slot] = texture;
 
             copyTextureIntoArrayTexture(texture, slot);

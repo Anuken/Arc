@@ -3,7 +3,6 @@ package arc.graphics.g2d;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.Pixmap.*;
-import arc.graphics.VertexAttributes.*;
 import arc.graphics.gl.*;
 
 /**
@@ -24,7 +23,6 @@ public class Bloom{
     public int blurPasses = 1;
 
     private Shader thresholdShader, bloomShader, blurShader;
-    private Mesh quad;
     private FrameBuffer buffer, pingPong1, pingPong2;
 
     private float bloomIntensity, originalIntensity, threshold;
@@ -83,7 +81,6 @@ public class Bloom{
         pingPong1 = new FrameBuffer(format, width, height, false);
         pingPong2 = new FrameBuffer(format, width, height, false);
 
-        quad = createFullScreenQuad();
         final String alpha = useBlending ? "alpha_" : "";
 
         bloomShader = createShader("screenspace", alpha + "bloom");
@@ -162,7 +159,7 @@ public class Bloom{
         buffer.getTexture().bind(0);
 
         bloomShader.bind();
-        quad.render(bloomShader, Gl.triangleFan);
+        Draw.blit(bloomShader);
     }
 
     private void gaussianBlur(){
@@ -170,8 +167,7 @@ public class Bloom{
 
         buffer.getTexture().bind(0);
         pingPong1.begin();
-        thresholdShader.bind();
-        quad.render(thresholdShader, Gl.triangleFan, 0, 4);
+        Draw.blit(thresholdShader);
         pingPong1.end();
 
         for(int i = 0; i < blurPasses; i++){
@@ -181,7 +177,7 @@ public class Bloom{
             pingPong2.begin();
             blurShader.bind();
             blurShader.setUniformf("dir", 1f, 0f);
-            quad.render(blurShader, Gl.triangleFan, 0, 4);
+            Draw.blit(blurShader);
             pingPong2.end();
 
             pingPong2.getTexture().bind(0);
@@ -189,7 +185,7 @@ public class Bloom{
             pingPong1.begin();
             blurShader.bind();
             blurShader.setUniformf("dir", 0f, 1f);
-            quad.render(blurShader, Gl.triangleFan, 0, 4);
+            Draw.blit(blurShader);
             pingPong1.end();
         }
     }
@@ -240,7 +236,6 @@ public class Bloom{
     public void dispose(){
         try{
             buffer.dispose();
-            quad.dispose();
             pingPong1.dispose();
             pingPong2.dispose();
 
@@ -250,13 +245,6 @@ public class Bloom{
         }catch(Throwable ignored){
 
         }
-    }
-
-    private static Mesh createFullScreenQuad(){
-        return new Mesh(true, 4, 0,
-            new VertexAttribute(Usage.position, 2, "a_position"),
-            new VertexAttribute(Usage.textureCoordinates, 2, "a_texCoord0"))
-            .setVertices(new float[]{-1, -1, 0, 0, 1, -1, 1, 0, 1, 1, 1, 1, -1, 1, 0, 1});
     }
 
     private static Shader createShader(String vertexName, String fragmentName){

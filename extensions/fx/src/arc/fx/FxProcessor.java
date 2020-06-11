@@ -26,7 +26,6 @@ public final class FxProcessor implements Disposable{
     private final Seq<FxFilter> effectsEnabled = new Seq<>();
 
     /** A mesh that is shared among basic filters to draw to full screen. */
-    private final ScreenQuad screenQuad = new ScreenQuad();
     private final FxBufferRenderer bufferRenderer = new FxBufferRenderer();
 
     private final Format fboFormat;
@@ -63,7 +62,6 @@ public final class FxProcessor implements Disposable{
     @Override
     public void dispose(){
         pingPongBuffer.dispose();
-        screenQuad.dispose();
     }
 
     public void resize(int width, int height){
@@ -290,9 +288,7 @@ public final class FxProcessor implements Disposable{
             pingPongBuffer.begin();
             for(int i = 0; i < count; i++){
                 FxFilter effect = effectChain.get(i);
-                effect.render(screenQuad,
-                pingPongBuffer.getSrcBuffer(),
-                pingPongBuffer.getDstBuffer());
+                effect.render(pingPongBuffer.getSrcBuffer(), pingPongBuffer.getDstBuffer());
                 if(i < count - 1){
                     pingPongBuffer.swap();
                 }

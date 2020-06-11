@@ -2,8 +2,8 @@ package arc.fx;
 
 import arc.*;
 import arc.files.*;
-import arc.fx.util.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.util.*;
 
@@ -92,7 +92,7 @@ public abstract class FxFilter implements Disposable{
      * Sets the parameter to the specified value for this filter. This is for one-off operations since the shader is being bound
      * and unbound once per call: for a batch-ready version of this function see and use setParams instead.
      */
-    public void render(ScreenQuad mesh){
+    public void render(){
         boolean manualBufferBind = outputBuffer != null && !outputBuffer.isBound();
         if(manualBufferBind){
             outputBuffer.begin();
@@ -105,7 +105,7 @@ public abstract class FxFilter implements Disposable{
         if(autobind){
             setParams();
         }
-        mesh.render(shader);
+        Draw.blit(shader);
 
         if(manualBufferBind){
             outputBuffer.end();
@@ -118,8 +118,8 @@ public abstract class FxFilter implements Disposable{
     }
 
     /** Concrete objects shall implements its own rendering, given the source and destination buffers. */
-    public void render(ScreenQuad mesh, final FrameBuffer src, final FrameBuffer dst){
-        setInput(src).setOutput(dst).render(mesh);
+    public void render(FrameBuffer src, FrameBuffer dst){
+        setInput(src).setOutput(dst).render();
     }
 
     /** Whether or not this effect is disabled and shouldn't be processed */

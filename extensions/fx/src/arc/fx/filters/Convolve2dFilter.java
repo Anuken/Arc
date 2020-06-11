@@ -38,15 +38,15 @@ public final class Convolve2dFilter extends MultipassVfxFilter{
     }
 
     @Override
-    public void render(ScreenQuad mesh, PingPongBuffer buffer){
+    public void render(PingPongBuffer buffer){
         hor.setInput(buffer.getSrcTexture())
         .setOutput(buffer.getDstBuffer())
-        .render(mesh);
+        .render();
 
         buffer.swap();
 
         vert.setInput(buffer.getSrcTexture())
         .setOutput(buffer.getDstBuffer())
-        .render(mesh);
+        .render();
     }
 }

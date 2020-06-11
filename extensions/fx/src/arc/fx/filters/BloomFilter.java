@@ -61,7 +61,7 @@ public class BloomFilter extends FxFilter{
     }
 
     @Override
-    public void render(ScreenQuad mesh, final FrameBuffer src, final FrameBuffer dst){
+    public void render(final FrameBuffer src, final FrameBuffer dst){
         Texture texSrc = src.getTexture();
 
         Gl.disable(Gl.blend);
@@ -70,11 +70,11 @@ public class BloomFilter extends FxFilter{
 
         // Threshold / high-pass filter
         // Only areas with pixels >= threshold are blit to smaller FBO
-        threshold.setInput(texSrc).setOutput(buffer.getDstBuffer()).render(mesh);
+        threshold.setInput(texSrc).setOutput(buffer.getDstBuffer()).render();
         buffer.swap();
 
         // Blur pass
-        blur.render(mesh, buffer);
+        blur.render(buffer);
 
         buffer.end();
 
@@ -86,6 +86,6 @@ public class BloomFilter extends FxFilter{
         // Mix original scene and blurred threshold, modulate via set(Base|BloomEffect)(Saturation|Intensity)
         combine.setInput(texSrc, buffer.getDstTexture())
         .setOutput(dst)
-        .render(mesh);
+        .render();
     }
 }

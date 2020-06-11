@@ -2,20 +2,18 @@ package arc.fx.util;
 
 import arc.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.util.*;
 
 /**
- * Simple renderer that is capable of drawing
- * {@link FxBuffer}'s texture onto the screen or into another buffer.
+ * Simple renderer that is capable of drawing textures onto the screen or into another buffer.
  * <p>
  */
 public class FxBufferRenderer implements Disposable{
-    private final ScreenQuad mesh;
     private final Shader shader;
 
     public FxBufferRenderer(){
-        mesh = new ScreenQuad();
 
         shader = new Shader(
         "#ifdef GL_ES\n" +
@@ -50,7 +48,6 @@ public class FxBufferRenderer implements Disposable{
     @Override
     public void dispose(){
         shader.dispose();
-        mesh.dispose();
     }
 
     public void rebind(){
@@ -66,20 +63,14 @@ public class FxBufferRenderer implements Disposable{
         input.getTexture().bind(0);
         Gl.viewport(x, y, width, height);
 
-        shader.bind();
-        mesh.render(shader);
+        Draw.blit(shader);
     }
 
     public void renderToFbo(FrameBuffer input, FrameBuffer output){
         input.getTexture().bind(0);
 
         output.begin();
-        shader.bind();
-        mesh.render(shader);
+        Draw.blit(shader);
         output.end();
-    }
-
-    public ScreenQuad getMesh(){
-        return mesh;
     }
 }

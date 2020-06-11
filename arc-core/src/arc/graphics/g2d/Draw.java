@@ -12,6 +12,9 @@ import arc.util.ArcAnnotate.*;
 import static arc.Core.*;
 
 public class Draw{
+    private static final StaticReset reset = new StaticReset();
+    private static ScreenQuad squad;
+
     private static final Color[] carr = new Color[3];
     private static final float[] vertices = new float[SpriteBatch.SPRITE_SIZE];
     private static @Nullable Camera lastProj;
@@ -19,6 +22,27 @@ public class Draw{
 
     public static float scl = 1f;
     public static float xscl = 1f, yscl = 1f;
+
+    private static ScreenQuad getQuad(){
+        if(reset.check()) squad = null;
+        if(squad == null) squad = new ScreenQuad();
+        return squad;
+    }
+
+    /** Blits an already-bound onto the screen with a shader.
+     * This does not use a spritebatch! */
+    public static void blit(Shader shader){
+        shader.bind();
+        getQuad().render(shader);
+    }
+
+    /** Blits a texture onto the screen with a shader.
+     * This does not use a spritebatch! */
+    public static void blit(Texture texture, Shader shader){
+        texture.bind();
+        shader.bind();
+        getQuad().render(shader);
+    }
 
     public static void batch(Batch nextBatch){
         flush();
@@ -467,5 +491,12 @@ public class Draw{
         vertices[23] = mixColor;
 
         Draw.vert(vertices);
+    }
+
+    public static void dispose(){
+        if(squad != null){
+            squad.dispose();
+            squad = null;
+        }
     }
 }

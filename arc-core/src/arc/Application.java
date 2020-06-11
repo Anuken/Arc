@@ -130,6 +130,7 @@ public interface Application extends Disposable{
             Core.input.dispose();
         }
 
+        Draw.dispose();
         Fill.dispose();
         Events.dispose();
     }

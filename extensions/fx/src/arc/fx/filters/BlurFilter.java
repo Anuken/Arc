@@ -51,26 +51,26 @@ public class BlurFilter extends FxFilter{
     }
 
     @Override
-    public void render(ScreenQuad mesh, FrameBuffer src, FrameBuffer dst){
+    public void render(FrameBuffer src, FrameBuffer dst){
         if(blur.getPasses() < 1){
             // Do not apply blur filter.
-            copy.setInput(src).setOutput(dst).render(mesh);
+            copy.setInput(src).setOutput(dst).render();
             return;
         }
 
         Gl.disable(Gl.blend);
 
         pingPongBuffer.begin();
-        copy.setInput(src).setOutput(pingPongBuffer.getDstBuffer()).render(mesh);
+        copy.setInput(src).setOutput(pingPongBuffer.getDstBuffer()).render();
         pingPongBuffer.swap();
         // Blur filter performs multiple passes of mixing ping-pong buffers and expects src and dst to have valid data.
         // So for the first run we just make both src and dst buffers identical.
         if(firstRender){
             firstRender = false;
-            copy.setInput(src).setOutput(pingPongBuffer.getDstBuffer()).render(mesh);
+            copy.setInput(src).setOutput(pingPongBuffer.getDstBuffer()).render();
             pingPongBuffer.swap();
         }
-        blur.render(mesh, pingPongBuffer);
+        blur.render(pingPongBuffer);
         pingPongBuffer.end();
 
         if(blending != Blending.disabled){
@@ -80,7 +80,7 @@ public class BlurFilter extends FxFilter{
 
         copy.setInput(pingPongBuffer.getDstTexture())
         .setOutput(dst)
-        .render(mesh);
+        .render();
     }
 
 }

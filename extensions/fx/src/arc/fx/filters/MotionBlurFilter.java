@@ -71,11 +71,11 @@ public class MotionBlurFilter extends FxFilter{
     }
 
     @Override
-    public void render(ScreenQuad mesh, FrameBuffer src, FrameBuffer dst){
+    public void render(FrameBuffer src, FrameBuffer dst){
         FrameBuffer prevFrame = this.localBuffer.changeToNext();
-        setInput(src).setOutput(prevFrame).render(mesh);
+        setInput(src).setOutput(prevFrame).render();
         lastFrameTex = prevFrame.getTexture();
-        copyFilter.setInput(prevFrame).setOutput(dst).render(mesh);
+        copyFilter.setInput(prevFrame).setOutput(dst).render();
     }
 
     /** Defines which function will be used to mix the two frames to produce motion blur effect. */

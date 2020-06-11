@@ -19,5 +19,5 @@ public abstract class MultipassVfxFilter implements Disposable{
     /** @see FxFilter#rebind() */
     public abstract void setParams();
 
-    public abstract void render(ScreenQuad mesh, PingPongBuffer pingPongBuffer);
+    public abstract void render(PingPongBuffer pingPongBuffer);
 }
