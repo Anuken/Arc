@@ -20,6 +20,9 @@ public abstract class GLTexture implements Disposable{
     protected TextureWrap uWrap = TextureWrap.ClampToEdge;
     protected TextureWrap vWrap = TextureWrap.ClampToEdge;
 
+    /** How many times this texture has been modified, either through #load() or through #draw(). */
+    public int modifications, lastModifications;
+
     /** Generates a new OpenGL texture with the specified target. */
     public GLTexture(int glTarget){
         this(glTarget, Gl.genTexture());

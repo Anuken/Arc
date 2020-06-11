@@ -351,14 +351,20 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
 
     /** Binds the frame buffer and sets the viewport accordingly, so everything gets drawn to it. */
     public void begin(){
-        if(currentBoundFramebuffer == this) throw new IllegalArgumentException("Do not begin() twice.");
         Draw.flush();
+        //save last buffer
+        beginBind();
+        setFrameBufferViewport();
+    }
+
+    /** Begins the buffer without setting the viewport or flushing the batch. */
+    public void beginBind(){
+        if(currentBoundFramebuffer == this) throw new IllegalArgumentException("Do not begin() twice.");
         //save last buffer
         lastBoundFramebuffer = currentBoundFramebuffer;
         currentBoundFramebuffer = this;
         bufferNesting ++;
         bind();
-        setFrameBufferViewport();
     }
 
     /** Sets viewport to the dimensions of framebuffer. Called by {@link #begin()}. */
@@ -369,6 +375,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     /** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
     public void end(){
         Draw.flush();
+        getTexture().modifications ++;
         //there was a buffer before this one
         if(lastBoundFramebuffer != null){
             //rebind the last framebuffer and set its viewport
@@ -378,6 +385,25 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
             //bind to default buffer and viewport
             unbind();
             Gl.viewport(0, 0, Core.graphics.getBackBufferWidth(), Core.graphics.getBackBufferHeight());
+        }
+
+        bufferNesting --;
+
+        //set last bound framebuffer as current
+        currentBoundFramebuffer = lastBoundFramebuffer;
+        //no longer bound, so nothing came last
+        lastBoundFramebuffer = null;
+    }
+
+    /** Stop binding. This does not flush the batch or change the viewport. */
+    public void endBind(){
+        //there was a buffer before this one
+        if(lastBoundFramebuffer != null){
+            //rebind the last framebuffer and set its viewport
+            lastBoundFramebuffer.bind();
+        }else{
+            //bind to default buffer and viewport
+            unbind();
         }
 
         bufferNesting --;

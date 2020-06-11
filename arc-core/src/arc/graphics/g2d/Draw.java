@@ -40,7 +40,7 @@ public class Draw{
     /** Blits a texture onto the screen with a shader.
      * This does not use a spritebatch! */
     public static void blit(Texture texture, Shader shader){
-        texture.bind();
+        texture.bind(0);
         shader.bind();
         shader.apply();
         getQuad().render(shader);

@@ -138,6 +138,38 @@ public class Shader implements Disposable{
     public void apply(){}
 
     protected String preprocess(String source, boolean fragment){
+
+        //disallow gles qualifiers
+        if(source.contains("#ifdef GL_ES")){
+            throw new ArcRuntimeException("Shader contains GL_ES specific code; this should be handled by the preprocessor. Code: \n```\n" + source + "\n```");
+        }
+
+        //disallow explicit versions
+        if(source.contains("#version")){
+            throw new ArcRuntimeException("Shader contains explicit version requirement; this should be handled by the preprocessor. Code: \n```\n" + source + "\n```");
+        }
+
+        //add GL_ES precision qualifiers
+        if(fragment){
+            source =
+            "#ifdef GL_ES\n" +
+            "precision mediump float;\n" +
+            "precision mediump int;\n" +
+            "#else\n" +
+            "#define lowp  \n" +
+            "#define mediump \n" +
+            "#define highp \n" +
+            "#endif\n" + source;
+        }else{
+            //strip away precision qualifiers
+            source =
+            "#ifndef GL_ES\n" +
+            "#define lowp  \n" +
+            "#define mediump \n" +
+            "#define highp \n" +
+            "#endif\n" + source;
+        }
+
         //preprocess source to function correctly with OpenGL 3.x core
         //note that this is required on Mac
         if(Core.gl30 != null){
@@ -152,7 +184,7 @@ public class Shader implements Disposable{
 
             return
                 "#version " + version + "\n"
-                + (fragment ? "out vec4 fragColor;\n" : "")
+                + (fragment ? "out lowp vec4 fragColor;\n" : "")
                 + source
                 .replace("varying", fragment ? "in" : "out")
                 .replace("attribute", fragment ? "???" : "in")

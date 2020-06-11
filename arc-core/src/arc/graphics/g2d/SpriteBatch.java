@@ -14,8 +14,6 @@ public class SpriteBatch extends Batch{
 
     protected final float[] vertices;
 
-    /** Number of render calls. **/
-    int renderCalls = 0;
     /** Number of rendering calls, ever. Will not be reset unless set manually. **/
     int totalRenderCalls = 0;
     /** The maximum number of sprites rendered in one batch so far. **/
@@ -93,7 +91,6 @@ public class SpriteBatch extends Batch{
     protected void flush(){
         if(idx == 0) return;
 
-        renderCalls = 0;
 
         getShader().bind();
         setupMatrices();
@@ -103,7 +100,6 @@ public class SpriteBatch extends Batch{
         }
 
         Gl.depthMask(false);
-        renderCalls++;
         totalRenderCalls++;
         int spritesInBatch = idx / SPRITE_SIZE;
         if(spritesInBatch > maxSpritesInBatch) maxSpritesInBatch = spritesInBatch;
@@ -301,15 +297,9 @@ public class SpriteBatch extends Batch{
         "   gl_Position = u_projTrans * a_position;\n" +
         "}",
 
-        "#ifdef GL_ES\n" +
-        "#define LOWP lowp\n" +
-        "precision mediump float;\n" +
-        "#else\n" +
-        "#define LOWP \n" +
-        "#endif\n" +
         "\n" +
-        "varying LOWP vec4 v_color;\n" +
-        "varying LOWP vec4 v_mix_color;\n" +
+        "varying lowp vec4 v_color;\n" +
+        "varying lowp vec4 v_mix_color;\n" +
         "varying vec2 v_texCoords;\n" +
         "uniform sampler2D u_texture;\n" +
         "\n" +

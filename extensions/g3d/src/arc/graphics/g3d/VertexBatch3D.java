@@ -81,7 +81,7 @@ public class VertexBatch3D{
     }
 
     static private String createFragmentShader(boolean hasNormals, boolean hasColors, int numTexCoords){
-        StringBuilder shader = new StringBuilder("#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif\n");
+        StringBuilder shader = new StringBuilder();
 
         if(hasColors) shader.append("varying vec4 v_col;\n");
         for(int i = 0; i < numTexCoords; i++){
@@ -89,7 +89,7 @@ public class VertexBatch3D{
             shader.append("uniform sampler2D u_sampler").append(i).append(";\n");
         }
 
-        shader.append("void main() {\n" + "   gl_FragColor = ").append(hasColors ? "v_col" : "vec4(1, 1, 1, 1)");
+        shader.append("void main(){\n   gl_FragColor = ").append(hasColors ? "v_col" : "vec4(1, 1, 1, 1)");
 
         if(numTexCoords > 0) shader.append(" * ");
 

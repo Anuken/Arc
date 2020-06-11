@@ -731,8 +731,7 @@ public class FreeTypeFontGenerator implements Disposable{
         }
 
         public void getGlyphs(GlyphRun run, CharSequence str, int start, int end, Glyph lastGlyph){
-            if(packer != null)
-                packer.setPackToTexture(true); // All glyphs added after this are packed directly to the texture.
+            if(packer != null) packer.setPackToTexture(true); // All glyphs added after this are packed directly to the texture.
             super.getGlyphs(run, str, start, end, lastGlyph);
             if(dirty){
                 dirty = false;

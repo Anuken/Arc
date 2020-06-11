@@ -75,31 +75,28 @@ public class DistanceFieldFont extends BitmapFont{
      * u_smoothing uniform > 0.0. Otherwise the same code as the default SpriteBatch shader is used.
      */
     public static Shader createDistanceFieldShader(){
-        String vertexShader = "attribute vec4 " + Shader.positionAttribute + ";\n" //
+        String vertexShader =
+          "attribute vec4 " + Shader.positionAttribute + ";\n" //
         + "attribute vec4 " + Shader.colorAttribute + ";\n" //
         + "attribute vec2 " + Shader.texcoordAttribute + "0;\n" //
         + "uniform mat4 u_projTrans;\n" //
         + "varying vec4 v_color;\n" //
         + "varying vec2 v_texCoords;\n" //
         + "\n" //
-        + "void main() {\n" //
+        + "void main(){\n" //
         + "	v_color = " + Shader.colorAttribute + ";\n" //
         + "	v_color.a = v_color.a * (255.0/254.0);\n" //
         + "	v_texCoords = " + Shader.texcoordAttribute + "0;\n" //
         + "	gl_Position =  u_projTrans * " + Shader.positionAttribute + ";\n" //
         + "}\n";
 
-        String fragmentShader = "#ifdef GL_ES\n" //
-        + "	precision mediump float;\n" //
-        + "	precision mediump int;\n" //
-        + "#endif\n" //
-        + "\n" //
-        + "uniform sampler2D u_texture;\n" //
+        String fragmentShader =
+          "uniform sampler2D u_texture;\n" //
         + "uniform float u_smoothing;\n" //
         + "varying vec4 v_color;\n" //
         + "varying vec2 v_texCoords;\n" //
         + "\n" //
-        + "void main() {\n" //
+        + "void main(){\n" //
         + "	if (u_smoothing > 0.0) {\n" //
         + "		float smoothing = 0.25 / u_smoothing;\n" //
         + "		float distance = texture2D(u_texture, v_texCoords).a;\n" //

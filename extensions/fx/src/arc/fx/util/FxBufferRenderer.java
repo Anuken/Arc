@@ -15,29 +15,17 @@ public class FxBufferRenderer implements Disposable{
     public FxBufferRenderer(){
 
         shader = new Shader(
-        "#ifdef GL_ES\n" +
-        "    #define PRECISION mediump\n" +
-        "    precision PRECISION float;\n" +
-        "#else\n" +
-        "    #define PRECISION\n" +
-        "#endif\n" +
         "attribute vec4 a_position;\n" +
         "attribute vec2 a_texCoord0;\n" +
         "varying vec2 v_texCoords;\n" +
-        "void main() {\n" +
+        "void main(){\n" +
         "    v_texCoords = a_texCoord0;\n" +
         "    gl_Position = a_position;\n" +
         "}",
 
-        "#ifdef GL_ES\n" +
-        "    #define PRECISION mediump\n" +
-        "    precision PRECISION float;\n" +
-        "#else\n" +
-        "    #define PRECISION\n" +
-        "#endif\n" +
         "varying vec2 v_texCoords;\n" +
         "uniform sampler2D u_texture0;\n" +
-        "void main() {\n" +
+        "void main(){\n" +
         "    gl_FragColor = texture2D(u_texture0, v_texCoords);\n" +
         "}"
         );

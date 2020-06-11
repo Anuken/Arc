@@ -33,6 +33,7 @@ import java.util.Map;
 public class Texture extends GLTexture{
     final static Map<Application, Seq<Texture>> managedTextures = new HashMap<>();
     private static AssetManager assetManager;
+
     TextureData data;
 
     public Texture(String internalPath){
@@ -189,16 +190,18 @@ public class Texture extends GLTexture{
         if(!data.isPrepared()) data.prepare();
 
         bind();
-        uploadImageData(GL20.GL_TEXTURE_2D, data);
+        uploadImageData(Gl.texture2d, data);
 
         unsafeSetFilter(minFilter, magFilter, true);
         unsafeSetWrap(uWrap, vWrap, true);
         Gl.bindTexture(glTarget, 0);
+
+        modifications ++;
     }
 
     /**
      * Used internally to reload after context loss. Creates a new GL handle then calls {@link #load(TextureData)}. Use this only
-     * if you know what you do!
+     * if you know what you're doing!
      */
     @Override
     protected void reload(){
@@ -222,8 +225,8 @@ public class Texture extends GLTexture{
         if(data.isManaged()) throw new ArcRuntimeException("can't draw to a managed texture");
 
         bind();
-        Gl.texSubImage2D(glTarget, 0, x, y, pixmap.getWidth(), pixmap.getHeight(), pixmap.getGLFormat(), pixmap.getGLType(),
-        pixmap.getPixels());
+        Gl.texSubImage2D(glTarget, 0, x, y, pixmap.getWidth(), pixmap.getHeight(), pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
+        modifications ++;
     }
 
     @Override
@@ -246,11 +249,13 @@ public class Texture extends GLTexture{
     }
 
     /** @return whether this texture is managed or not. */
+    @Override
     public boolean isManaged(){
         return data.isManaged();
     }
 
     /** Disposes all resources associated with the texture */
+    @Override
     public void dispose(){
         // this is a hack. reason: we have to set the glHandle to 0 for textures that are
         // reloaded through the asset manager as we first remove (and thus dispose) the texture

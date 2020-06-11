@@ -7,8 +7,7 @@ import arc.graphics.Pixmap.*;
 import arc.graphics.VertexAttributes.*;
 import arc.graphics.gl.*;
 import arc.math.*;
-
-import java.nio.*;
+import arc.util.*;
 
 /**
  * Draws batched quads using indices.
@@ -47,8 +46,6 @@ public class ArrayTextureSpriteBatch extends Batch{
     /** This slot gets replaced once texture cache space runs out. */
     private int usedTexturesNextSwapSlot;
 
-    private final IntBuffer tmpInts;
-
     private final FrameBuffer copyFramebuffer;
 
     private int arrayTextureHandle;
@@ -64,9 +61,6 @@ public class ArrayTextureSpriteBatch extends Batch{
     private boolean mipMapsDirty = true;
     private ApplicationListener listener;
 
-    /** Number of render calls since the last begin. **/
-    public int renderCalls = 0;
-
     /** Number of rendering calls, ever. Will not be reset unless set manually. **/
     public int totalRenderCalls = 0;
 
@@ -80,7 +74,7 @@ public class ArrayTextureSpriteBatch extends Batch{
     public int currentTextureLFUSwaps = 0;
 
     public ArrayTextureSpriteBatch(){
-        this(10);
+        this(16);
     }
 
     public ArrayTextureSpriteBatch(int maxTextures){
@@ -153,8 +147,6 @@ public class ArrayTextureSpriteBatch extends Batch{
             ownsShader = false;
         }
 
-        tmpInts = ByteBuffer.allocateDirect(16 * 4).order(ByteOrder.nativeOrder()).asIntBuffer();
-
         usedTextures = new Texture[maxTextureSlots];
 
         arrayTextureMagFilter = texFilterMag;
@@ -162,7 +154,7 @@ public class ArrayTextureSpriteBatch extends Batch{
 
         initializeArrayTexture();
 
-        copyFramebuffer = new FrameBuffer(Format.RGBA8888, maxTextureWidth, maxTextureHeight, false, false);
+        copyFramebuffer = new FrameBuffer(Format.RGBA8888, maxTextureWidth, maxTextureHeight);
 
         // The vertex data is extended with one float for the texture index.
         mesh = new Mesh(VertexDataType.VertexBufferObjectWithVAO, false, maxSprites * 4, maxSprites * 6,
@@ -265,10 +257,8 @@ public class ArrayTextureSpriteBatch extends Batch{
 
         if(glTextureMagFilter >= GL30.GL_NEAREST_MIPMAP_NEAREST && glTextureMagFilter <= GL30.GL_LINEAR_MIPMAP_LINEAR){
             useMipMaps = true;
-        }else if(glTextureMinFilter >= GL30.GL_NEAREST_MIPMAP_NEAREST && glTextureMinFilter <= GL30.GL_LINEAR_MIPMAP_LINEAR){
-            useMipMaps = true;
         }else{
-            useMipMaps = false;
+            useMipMaps = glTextureMinFilter >= GL30.GL_NEAREST_MIPMAP_NEAREST && glTextureMinFilter <= GL30.GL_LINEAR_MIPMAP_LINEAR;
         }
 
         mipMapsDirty = useMipMaps;
@@ -277,14 +267,12 @@ public class ArrayTextureSpriteBatch extends Batch{
     @Override
     public void draw(Texture texture, float[] spriteVertices, int offset, int count){
 
-        flushIfFull();
-
         // Assigns a texture unit to this texture, flushing if none is available
         final float ti = (float)activateTexture(texture);
 
         // spriteVertexSize is the number of floats an unmodified input vertex consists of,
         // therefore this loop iterates over the vertices stored in parameter spriteVertices.
-        for(int srcPos = 0; srcPos < count; srcPos += spriteVertexSize){
+        for(int srcPos = offset; srcPos < count; srcPos += spriteVertexSize){
 
             System.arraycopy(spriteVertices, srcPos, vertices, idx, spriteVertexSize);
 
@@ -298,14 +286,13 @@ public class ArrayTextureSpriteBatch extends Batch{
 
             // Inject texture unit index and advance idx
             vertices[idx++] = ti;
+
+            flushIfFull();
         }
     }
 
     @Override
     public void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
-
-        float[] vertices = this.vertices;
-
         flushIfFull();
 
         final float ti = activateTexture(region.texture);
@@ -319,14 +306,6 @@ public class ArrayTextureSpriteBatch extends Batch{
         float fy2 = height - originY;
 
         // construct corner points, start from top left and go counter clockwise
-        final float p1x = fx;
-        final float p1y = fy;
-        final float p2x = fx;
-        final float p2y = fy2;
-        final float p3x = fx2;
-        final float p3y = fy2;
-        final float p4x = fx2;
-        final float p4y = fy;
 
         float x1;
         float y1;
@@ -342,29 +321,29 @@ public class ArrayTextureSpriteBatch extends Batch{
             final float cos = Mathf.cosDeg(rotation);
             final float sin = Mathf.sinDeg(rotation);
 
-            x1 = cos * p1x - sin * p1y;
-            y1 = sin * p1x + cos * p1y;
+            x1 = cos * fx - sin * fy;
+            y1 = sin * fx + cos * fy;
 
-            x2 = cos * p2x - sin * p2y;
-            y2 = sin * p2x + cos * p2y;
+            x2 = cos * fx - sin * fy2;
+            y2 = sin * fx + cos * fy2;
 
-            x3 = cos * p3x - sin * p3y;
-            y3 = sin * p3x + cos * p3y;
+            x3 = cos * fx2 - sin * fy2;
+            y3 = sin * fx2 + cos * fy2;
 
             x4 = x1 + (x3 - x2);
             y4 = y3 - (y2 - y1);
         }else{
-            x1 = p1x;
-            y1 = p1y;
+            x1 = fx;
+            y1 = fy;
 
-            x2 = p2x;
-            y2 = p2y;
+            x2 = fx;
+            y2 = fy2;
 
-            x3 = p3x;
-            y3 = p3y;
+            x3 = fx2;
+            y3 = fy2;
 
-            x4 = p4x;
-            y4 = p4y;
+            x4 = fx2;
+            y4 = fy;
         }
 
         x1 += worldOriginX;
@@ -429,7 +408,6 @@ public class ArrayTextureSpriteBatch extends Batch{
     public void flush(){
         if(idx == 0) return;
 
-        renderCalls = 0;
         currentTextureLFUSwaps = 0;
 
         Core.gl30.glActiveTexture(GL30.GL_TEXTURE0);
@@ -439,7 +417,6 @@ public class ArrayTextureSpriteBatch extends Batch{
 
         setupMatrices();
 
-        renderCalls++;
         totalRenderCalls++;
 
         int spritesInBatch = idx / (spriteFloatSize + 4);
@@ -460,11 +437,7 @@ public class ArrayTextureSpriteBatch extends Batch{
 
         blending.apply();
 
-        if(customShader != null){
-            mesh.render(customShader, GL30.GL_TRIANGLES, 0, count);
-        }else{
-            mesh.render(shader, GL30.GL_TRIANGLES, 0, count);
-        }
+        mesh.render(getShader(), GL30.GL_TRIANGLES, 0, count);
 
         idx = 0;
     }
@@ -491,9 +464,15 @@ public class ArrayTextureSpriteBatch extends Batch{
 
         if(textureSlot >= 0){
 
-            // We don't want to throw out a texture we just used
+            //don't throw out a texture we just used
             if(textureSlot == usedTexturesNextSwapSlot){
                 usedTexturesNextSwapSlot = (usedTexturesNextSwapSlot + 1) % currentTextureLFUSize;
+            }
+
+            //update texture when it gets modified
+            if(texture.lastModifications != texture.modifications){
+                Log.info("Updating modified texture");
+                copyTextureIntoArrayTexture(texture, textureSlot);
             }
 
             return textureSlot;
@@ -502,6 +481,7 @@ public class ArrayTextureSpriteBatch extends Batch{
         // If a free texture unit is available we just use it
         // If not we have to flush and then throw out the least accessed one.
         if(currentTextureLFUSize < maxTextureSlots){
+            Log.info("Copying texture @ into LFU, slot @", texture, currentTextureLFUSize);
 
             // Put the texture into the next free slot
             usedTextures[currentTextureLFUSize] = texture;
@@ -577,18 +557,8 @@ public class ArrayTextureSpriteBatch extends Batch{
      * @param slot The slice of the Array Texture to copy the texture onto.
      */
     private void copyTextureIntoArrayTexture(Texture texture, int slot){
-
-        int previousFrameBufferHandle = 0;
-
-        if(!Core.app.isWeb()){
-            // Query current Framebuffer configuration
-            Core.gl30.glGetIntegerv(GL30.GL_FRAMEBUFFER_BINDING, tmpInts);
-
-            previousFrameBufferHandle = tmpInts.get(0);
-        }
-
         // Bind CopyFrameBuffer
-        copyFramebuffer.bind();
+        copyFramebuffer.beginBind();
 
         Core.gl30.glFramebufferTexture2D(GL30.GL_READ_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_TEXTURE_2D, texture.getTextureObjectHandle(), 0);
 
@@ -596,17 +566,16 @@ public class ArrayTextureSpriteBatch extends Batch{
 
         Core.gl30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, arrayTextureHandle);
 
-        Core.gl30.glCopyTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, slot, 0, 0, copyFramebuffer.getWidth(),
-        copyFramebuffer.getHeight());
+        Core.gl30.glCopyTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, slot, 0, 0, copyFramebuffer.getWidth(), copyFramebuffer.getHeight());
 
-        if(!Core.app.isWeb()){
-            // Restore previous FrameBuffer configuration
-            Core.gl30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, previousFrameBufferHandle);
-        }
+        copyFramebuffer.endBind();
 
         if(useMipMaps){
             mipMapsDirty = true;
         }
+
+        //save modifications so we know when it changes
+        texture.lastModifications = texture.modifications;
     }
 
     /** Returns a new instance of the default shader used by ArrayTextureSpriteBatch when no shader is specified. */
@@ -616,6 +585,7 @@ public class ArrayTextureSpriteBatch extends Batch{
           "in vec4 " + Shader.positionAttribute + ";\n"
         + "in vec4 " + Shader.colorAttribute + ";\n"
         + "in vec2 " + Shader.texcoordAttribute + "0;\n"
+        + "in vec4 a_mix_color;\n"
         + "in float texture_index;\n"
         + "uniform mat4 u_projTrans;\n"
         + "out vec4 v_color;\n"
@@ -626,42 +596,60 @@ public class ArrayTextureSpriteBatch extends Batch{
         + "void main(){\n"
         + "   v_color = " + Shader.colorAttribute + ";\n"
         + "   v_color.a = v_color.a * (255.0/254.0);\n"
+        + "   v_mix_color = a_mix_color;\n"
+        + "   v_mix_color.a *= (255.0/254.0);\n"
         + "   v_texCoords = " + Shader.texcoordAttribute + "0;\n"
         + "   v_texture_index = texture_index;\n"
         + "   gl_Position =  u_projTrans * " + Shader.positionAttribute + ";\n"
         + "}\n",
 
-          "#ifdef GL_ES\n"
-        + "#define LOWP lowp\n"
-        + "precision mediump float;\n"
-        + "#else\n"
-        + "#define LOWP\n"
-        + "#endif\n"
-        + "in LOWP vec4 v_color;\n"
-        + "in LOWP vec4 v_mix_color;\n"
+
+          "in lowp vec4 v_color;\n"
+        + "in lowp vec4 v_mix_color;\n"
         + "in vec2 v_texCoords;\n"
         + "in float v_texture_index;\n"
-        + "uniform sampler2DArray u_texturearray;\n"
-        + "out vec4 diffuseColor;\n"
+        + "uniform mediump sampler2DArray u_texturearray;\n"
         + "void main(){\n"
         + "  vec4 c = texture(u_texturearray, vec3(v_texCoords, v_texture_index));\n"
-        + "  diffuseColor = v_color * mix(c, vec4(v_mix_color.rgb, c.a), v_mix_color.a);\n"
+        + "  fragColor = v_color * mix(c, vec4(v_mix_color.rgb, c.a), v_mix_color.a);\n"
         + "}");
     }
 
-    /** Converts a 'standard' shader into an array texture shader. This MUST be called before the GL3 preprocessor is run in a shader.
+    /**
+     * Converts a 'standard' shader into an array texture shader. This MUST be called before the GL3 preprocessor is run in a shader.
+     * Does not cover all cases. Performs simple string replacement only.
      * */
     public static String preprocessShader(String shader, boolean fragment){
-        if(fragment){
 
+        if(fragment){
+            //fragment shaders require:
+            // - a uniform sampler array (u_texturearray)
+            // - an in v_texture_index parameter to specify the texture
+            // - a bridge function that samples the texture array with the index
+            // - replacement of all calls of texture2D(...) with the bridge function above
+
+            //find last definition of relevant variable
+            int endIndex = shader.lastIndexOf("\n", Math.max(shader.lastIndexOf("varying"), shader.lastIndexOf("uniform")));
+
+            //the function to inject
+            String function = "\nvec4 __SAMPLE_ARRAY(vec2 coords){ return texture(u_texturearray, vec3(coords, v_texture_index)); }\n";
+
+            return "uniform mediump sampler2DArray u_texturearray;\nin float v_texture_index;\n" //prepend sampler info
+                + shader.substring(0, endIndex)
+                + function
+                + shader.substring(endIndex)
+                    .replace("texture2D(u_texture,", "__SAMPLE_ARRAY("); //replace samplings of u_texture with sample array
         }else{
-            //vertex shaders require a texture index parameter
+            //vertex shaders require:
+            // - a texture index parameter (in + out variants)
+            // - an assignment of that index from in to out in the main() method
+
             int maini = shader.indexOf("void main(){");
             if(maini == -1) maini = shader.indexOf("void main() {");
             if(maini == -1) throw new IllegalArgumentException("Your shader is missing a `void main(){` function. Add it, or fix your formatting. Don't dare use newline curly braces.");
             int offset = "void main() {".length();
             maini += offset;
-            shader = "out float v_texture_index;\n" + shader.substring(0, maini) + "\nv_texture_index = texture_index;\n" + shader.substring(maini);
+            shader = "\nin float texture_index;\nout float v_texture_index;\n" + shader.substring(0, maini) + "\nv_texture_index = texture_index;\n" + shader.substring(maini);
         }
 
         return shader;

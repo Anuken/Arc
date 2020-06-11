@@ -89,7 +89,7 @@ public class VertexBatch{
     }
 
     static private String createFragmentShader(boolean hasNormals, boolean hasColors, int numTexCoords){
-        StringBuilder shader = new StringBuilder("#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif\n");
+        StringBuilder shader = new StringBuilder();
 
         if(hasColors) shader.append("varying vec4 v_col;\n");
         for(int i = 0; i < numTexCoords; i++){
