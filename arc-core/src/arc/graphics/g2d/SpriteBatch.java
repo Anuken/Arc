@@ -91,7 +91,6 @@ public class SpriteBatch extends Batch{
     protected void flush(){
         if(idx == 0) return;
 
-
         getShader().bind();
         setupMatrices();
 
@@ -158,54 +157,34 @@ public class SpriteBatch extends Batch{
 
         if(!Mathf.zero(rotation)){
             //bottom left and top right corner points relative to origin
-            final float worldOriginX = x + originX;
-            final float worldOriginY = y + originY;
+            float worldOriginX = x + originX;
+            float worldOriginY = y + originY;
             float fx = -originX;
             float fy = -originY;
             float fx2 = width - originX;
             float fy2 = height - originY;
 
-            float x1;
-            float y1;
-            float x2;
-            float y2;
-            float x3;
-            float y3;
-            float x4;
-            float y4;
-
             // rotate
-            final float cos = Mathf.cosDeg(rotation);
-            final float sin = Mathf.sinDeg(rotation);
+            float cos = Mathf.cosDeg(rotation);
+            float sin = Mathf.sinDeg(rotation);
 
-            x1 = cos * fx - sin * fy;
-            y1 = sin * fx + cos * fy;
+            float x1 = cos * fx - sin * fy + worldOriginX;
+            float y1 = sin * fx + cos * fy + worldOriginY;
+            float x2 = cos * fx - sin * fy2 + worldOriginX;
+            float y2 = sin * fx + cos * fy2 + worldOriginY;
+            float x3 = cos * fx2 - sin * fy2 + worldOriginX;
+            float y3 = sin * fx2 + cos * fy2 + worldOriginY;
+            float x4 = x1 + (x3 - x2);
+            float y4 = y3 - (y2 - y1);
 
-            x2 = cos * fx - sin * fy2;
-            y2 = sin * fx + cos * fy2;
+            float u = region.u;
+            float v = region.v2;
+            float u2 = region.u2;
+            float v2 = region.v;
 
-            x3 = cos * fx2 - sin * fy2;
-            y3 = sin * fx2 + cos * fy2;
+            float color = this.colorPacked;
+            float mixColor = this.mixColorPacked;
 
-            x4 = x1 + (x3 - x2);
-            y4 = y3 - (y2 - y1);
-
-            x1 += worldOriginX;
-            y1 += worldOriginY;
-            x2 += worldOriginX;
-            y2 += worldOriginY;
-            x3 += worldOriginX;
-            y3 += worldOriginY;
-            x4 += worldOriginX;
-            y4 += worldOriginY;
-
-            final float u = region.u;
-            final float v = region.v2;
-            final float u2 = region.u2;
-            final float v2 = region.v;
-
-            final float color = this.colorPacked;
-            final float mixColor = this.mixColorPacked;
             vertices[idx] = x1;
             vertices[idx + 1] = y1;
             vertices[idx + 2] = color;
@@ -236,15 +215,16 @@ public class SpriteBatch extends Batch{
 
             idx += SPRITE_SIZE;
         }else{
-            final float fx2 = x + width;
-            final float fy2 = y + height;
-            final float u = region.u;
-            final float v = region.v2;
-            final float u2 = region.u2;
-            final float v2 = region.v;
+            float fx2 = x + width;
+            float fy2 = y + height;
+            float u = region.u;
+            float v = region.v2;
+            float u2 = region.u2;
+            float v2 = region.v;
 
-            final float color = this.colorPacked;
-            final float mixColor = this.mixColorPacked;
+            float color = this.colorPacked;
+            float mixColor = this.mixColorPacked;
+
             vertices[idx] = x;
             vertices[idx + 1] = y;
             vertices[idx + 2] = color;
