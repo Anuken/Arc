@@ -69,4 +69,13 @@ public class Reflect{
     public static void set(Class<?> type, String name, Object value){
         set(type, null, name, value);
     }
+
+    public static <T> T make(String type){
+        try{
+            Class<T> c = (Class<T>)Class.forName(type);
+            return c.getDeclaredConstructor().newInstance();
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 }

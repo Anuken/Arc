@@ -194,6 +194,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         }
     }
 
+    @Override
     public void each(Cons<? super T> consumer){
         for(int i = 0; i < size; i++){
             consumer.get(items[i]);
