@@ -122,7 +122,7 @@ public class SDLGL{
             return env->NewStringUTF((const char*)glewGetErrorString(glewError));
         }
 
-        if((glewIsSupported("GL_VERSION_3_0") || glewIsSupported("GL_EXT_framebuffer_object")) && (glGenFramebuffers != 0 || glGenFramebuffersEXT != 0)){
+        if(glGenFramebuffers != 0 || glGenFramebuffersEXT != 0){
             //no error message
             return NULL;
         }else{
