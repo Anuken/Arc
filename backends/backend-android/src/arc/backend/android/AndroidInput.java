@@ -558,7 +558,6 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
             }
         }else
             compassAvailable = false;
-        Log.infoTag("AndroidInput", "sensor listener setup");
     }
 
     void unregisterSensorListeners(){
@@ -581,7 +580,6 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
             }
             manager = null;
         }
-        Log.infoTag("AndroidInput", "sensor listener tear down");
     }
 
     @Override
@@ -636,7 +634,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
         for(int i = 0; i < len; i++){
             sb.append(i).append(":").append(realId[i]).append(" ");
         }
-        Log.infoTag("AndroidInput", "Pointer ID lookup failed: " + pointerId + ", " + sb.toString());
+        Log.err("AndroidInput: Pointer ID lookup failed: " + pointerId + ", " + sb.toString());
         return -1;
     }
 
