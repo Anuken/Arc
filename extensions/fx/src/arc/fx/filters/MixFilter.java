@@ -2,7 +2,6 @@ package arc.fx.filters;
 
 import arc.*;
 import arc.fx.*;
-import arc.fx.util.*;
 import arc.graphics.*;
 import arc.graphics.gl.*;
 
@@ -30,13 +29,11 @@ public final class MixFilter extends FxFilter{
         return this;
     }
 
-    /** @deprecated use {@link #setInput(FxBuffer, FxBuffer)} instead. */
     @Override
     public MixFilter setInput(FrameBuffer input){
         throw new UnsupportedOperationException("Use #setInput(FboWrapper, FboWrapper)} instead.");
     }
 
-    /** @deprecated use {@link #setInput(Texture, Texture)} instead. */
     @Override
     public MixFilter setInput(Texture input){
         throw new UnsupportedOperationException("Use #setInput(Texture, Texture)} instead.");

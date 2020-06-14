@@ -240,7 +240,7 @@ b2ContactFilter defaultFilter;
      * Create a rigid body given a definition. No reference to the definition is retained.
      * Bodies created by this method are pooled internally by the World object.
      * They will be freed upon calling {@link Physics#destroyBody(Body)}
-     * @warning This function is locked during callbacks.
+     * Warning: This function is locked during callbacks.
      * @see Pool
      */
     public Body createBody(BodyDef def){
@@ -279,8 +279,8 @@ b2ContactFilter defaultFilter;
     /**
      * Destroy a rigid body given a definition. No reference to the definition is retained. This function is locked during
      * callbacks.
-     * @warning This automatically deletes all associated shapes and joints.
-     * @warning This function is locked during callbacks.
+     * Warning: This automatically deletes all associated shapes and joints.
+     * Warning: This function is locked during callbacks.
      */
     public void destroyBody(Body body){
         Seq<JointEdge> jointList = body.getJointList();
@@ -355,7 +355,7 @@ b2ContactFilter defaultFilter;
     /**
      * Create a joint to constrain bodies together. No reference to the definition is retained. This may cause the connected bodies
      * to cease colliding.
-     * @warning This function is locked during callbacks.
+     * Warning: This function is locked during callbacks.
      */
     public Joint createJoint(JointDef def){
         long jointAddr = createProperJoint(def);
@@ -631,7 +631,7 @@ b2ContactFilter defaultFilter;
 
     /**
      * Destroy a joint. This may cause the connected bodies to begin colliding.
-     * @warning This function is locked during callbacks.
+     * Warning: This function is locked during callbacks.
      */
     public void destroyJoint(Joint joint){
         joint.setUserData(null);
@@ -850,7 +850,7 @@ b2ContactFilter defaultFilter;
 // /// Get the world contact list. With the returned contact, use b2Contact::GetNext to get
 // /// the next contact in the world list. A NULL contact indicates the end of the list.
 // /// @return the head of the world contact list.
-// /// @warning contacts are
+// /// Warning: contacts are
 // b2Contact* GetContactList();
 
     private long[] contactAddrs = new long[200];

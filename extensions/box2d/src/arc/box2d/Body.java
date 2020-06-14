@@ -57,7 +57,7 @@ public class Body{
      * Otherwise you can create the fixture directly from a shape. If the density is non-zero, this function automatically updates
      * the mass of the body. Contacts are not created until the next time step.
      * @param def the fixture definition.
-     * @warning This function is locked during callbacks.
+     * Warning: This function is locked during callbacks.
      */
     public Fixture createFixture(FixtureDef def){
         long fixtureAddr = jniCreateFixture(addr, def.shape.addr, def.friction, def.restitution, def.density, def.isSensor,
@@ -93,7 +93,7 @@ public class Body{
      * updates the mass of the body.
      * @param shape the shape to be cloned.
      * @param density the shape density (set to zero for static bodies).
-     * @warning This function is locked during callbacks.
+     * Warning: This function is locked during callbacks.
      */
     public Fixture createFixture(Shape shape, float density){
         long fixtureAddr = jniCreateFixture(addr, shape.addr, density);
@@ -115,7 +115,7 @@ public class Body{
      * This will automatically adjust the mass of the body if the body is dynamic and the fixture has positive density. All
      * fixtures attached to a body are implicitly destroyed when the body is destroyed.
      * @param fixture the fixture to be removed.
-     * @warning This function is locked during callbacks.
+     * Warning: This function is locked during callbacks.
      */
     public void destroyFixture(Fixture fixture){
         this.world.destroyFixture(this, fixture);
@@ -836,7 +836,7 @@ inline b2BodyType getBodyType( int type )
     }
 
     /** Get the list of all contacts attached to this body.
-     * @warning this list changes during the time step and you may miss some collisions if you don't use b2ContactListener. Do not
+     * Warning: this list changes during the time step and you may miss some collisions if you don't use b2ContactListener. Do not
      *          modify the returned list! */
 // Array<ContactEdge> getContactList()
 // {

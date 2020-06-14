@@ -8,7 +8,7 @@ import arc.math.geom.*;
  * local anchor points and a local axis so that the initial configuration can violate the constraint slightly. The joint
  * translation is zero when the local anchor points coincide in world space. Using local anchors and a local axis helps when
  * saving and loading a game.
- * @warning at least one body should by dynamic with a non-fixed rotation.
+ * Warning: at least one body should by dynamic with a non-fixed rotation.
  */
 public class PrismaticJointDef extends JointDef{
     public PrismaticJointDef(){

@@ -6,9 +6,7 @@ import arc.graphics.gl.*;
 import arc.struct.*;
 import arc.util.*;
 
-/**
- * Provides looped access to an array of {@link FxBuffer}.
- */
+/** Provides looped access to an array of Framebuffers. */
 public class FxBufferQueue implements Disposable{
     private final Seq<FrameBuffer> buffers;
     private int currentIdx = 0;

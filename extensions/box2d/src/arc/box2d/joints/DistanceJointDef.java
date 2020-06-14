@@ -7,7 +7,7 @@ import arc.math.geom.*;
  * Distance joint definition. This requires defining an anchor point on both bodies and the non-zero length of the distance joint.
  * The definition uses local anchor points so that the initial configuration can violate the constraint slightly. This helps when
  * saving and loading a game.
- * @warning Do not use a zero or short length.
+ * Warning: Do not use a zero or short length.
  */
 public class DistanceJointDef extends JointDef{
     public DistanceJointDef(){
