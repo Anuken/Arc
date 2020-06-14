@@ -79,7 +79,7 @@ public class Camera3D{
      * recalculating the up vector via a cross product between right and direction.
      */
     public void normalizeUp(){
-        tmpVec.set(direction).crs(up).nor();
+        tmpVec.set(direction).crs(up);
         up.set(tmpVec).crs(direction).nor();
     }
 
