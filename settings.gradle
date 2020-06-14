@@ -27,6 +27,7 @@ include ":natives:natives-freetype-android"
 include ":natives:natives-freetype-ios"
 include ":natives:natives-box2d-desktop"
 include ":natives:natives-box2d-android"
+include ":natives:natives-box2d-ios"
 include ":natives:natives-freetype-ios"
 
 rootProject.name = "arc"
