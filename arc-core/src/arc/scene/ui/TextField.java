@@ -53,12 +53,12 @@ import static arc.Core.scene;
  * @author Nathan Sweet
  */
 public class TextField extends Element implements Disableable{
-    static protected final char ENTER_DESKTOP = '\r';
-    static protected final char ENTER_ANDROID = '\r';
-    static private final char BACKSPACE = 8;
-    static private final char TAB = '\t';
-    static private final char DELETE = 127;
-    static private final char BULLET = 149;
+    //static protected final char ENTER_DESKTOP = '\r';
+    //static protected final char ENTER_ANDROID = '\r';
+    static protected final char BACKSPACE = 8;
+    static protected final char TAB = '\t';
+    static protected final char DELETE = 127;
+    static protected final char BULLET = 149;
 
     static private final Vec2 tmp1 = new Vec2();
     static private final Vec2 tmp2 = new Vec2();
@@ -465,7 +465,7 @@ public class TextField extends Element implements Disableable{
         for(int i = 0, n = content.length(); i < n; i++){
             if(!withinMaxLength(textLength + buffer.length())) break;
             char c = content.charAt(i);
-            if(!(writeEnters && (c == ENTER_ANDROID || c == ENTER_DESKTOP))){
+            if(!(writeEnters && (c == '\n' || c == '\r'))){
                 if(c == '\r' || c == '\n') continue;
                 if(onlyFontChars && !data.hasGlyph(c)) continue;
                 if(filter != null && !filter.acceptChar(this, c)) continue;
@@ -1056,6 +1056,10 @@ public class TextField extends Element implements Disableable{
             return true;
         }
 
+        protected boolean checkFocusTraverse(char character){
+            return focusTraversal && (character == TAB || ((character == '\r' || character == '\n') && Core.app.isMobile()));
+        }
+
         @Override
         public boolean keyTyped(InputEvent event, char character){
             if(disabled) return false;
@@ -1064,7 +1068,8 @@ public class TextField extends Element implements Disableable{
             switch(character){
                 case BACKSPACE:
                 case TAB:
-                case ENTER_DESKTOP:
+                case '\r':
+                case '\n':
                     break;
                 default:
                     if(character < 32) return false;
@@ -1075,12 +1080,12 @@ public class TextField extends Element implements Disableable{
 
             if(OS.isMac && Core.input.keyDown(KeyCode.sym)) return true;
 
-            if((character == TAB) && focusTraversal){
+            if(checkFocusTraverse(character)){
                 next(Core.input.shift());
             }else{
                 boolean delete = character == DELETE;
                 boolean backspace = character == BACKSPACE;
-                boolean enter = character == ENTER_DESKTOP || character == ENTER_ANDROID;
+                boolean enter = character == '\n' || character == '\r';
                 boolean add = enter ? writeEnters : (!onlyFontChars || style.font.getData().hasGlyph(character));
                 boolean remove = backspace || delete;
                 if(add || remove){
