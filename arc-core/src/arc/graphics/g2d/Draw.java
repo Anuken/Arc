@@ -241,6 +241,11 @@ public class Draw{
     }
 
     /** Draws a portion of a world-sized texture. */
+    public static void fbo(FrameBuffer buffer, int worldWidth, int worldHeight, int tilesize){
+        fbo(buffer.getTexture(), worldWidth, worldHeight, tilesize);
+    }
+
+    /** Draws a portion of a world-sized texture. */
     public static void fbo(Texture texture, int worldWidth, int worldHeight, int tilesize){
         float ww = worldWidth * tilesize, wh = worldHeight * tilesize;
         float x = camera.position.x + tilesize / 2f, y = camera.position.y + tilesize / 2f;
