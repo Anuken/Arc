@@ -280,11 +280,6 @@ public class Draw{
         Fill.rect(camera.position.x, camera.position.y, camera.width, camera.height);
     }
 
-    /** Blits a framebuffer texture to the camera. */
-    public static void rect(FrameBuffer buffer){
-        rect(wrap(buffer.getTexture()), camera.position.x, camera.position.y, camera.width, -camera.height);
-    }
-
     public static void rect(String region, float x, float y, float w, float h){
         rect(Core.atlas.find(region), x, y, w, h);
     }

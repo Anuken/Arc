@@ -332,6 +332,8 @@ public class Gl{
     /** enabled bits, from glEnable/disable */
     private static Bits enabled = new Bits();
     private static boolean wasDepthMask = true;
+    //blending state
+    private static int lastSfactor = -1, lastDfactor = -1;
 
     static{
         reset();
@@ -344,6 +346,8 @@ public class Gl{
         lastUsedProgram = 0;
         enabled.clear();
         wasDepthMask = true;
+        lastSfactor = -1;
+        lastDfactor = -1;
     }
 
     public static void activeTexture(int texture){
@@ -371,7 +375,8 @@ public class Gl{
     }
 
     public static void blendFunc(int sfactor, int dfactor){
-        Core.gl.glBlendFunc(sfactor, dfactor);
+        if(lastSfactor == sfactor && lastDfactor == dfactor) return;
+        Core.gl.glBlendFunc(lastSfactor = sfactor, lastDfactor = dfactor);
     }
 
     public static void clear(int mask){

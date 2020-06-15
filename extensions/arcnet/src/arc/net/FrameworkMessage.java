@@ -1,8 +1,7 @@
 package arc.net;
 
 /**
- * Marker interface to denote that a message is used by the Ninja framework and
- * is generally invisible to the developer.
+ * Marker interface for internal messages.
  * @author Nathan Sweet <misc@n4te.com>
  */
 public interface FrameworkMessage{
