@@ -5,6 +5,7 @@ import arc.util.*;
 /**
  * Core library binding for the official <a href="https://github.com/discordapp/discord-rpc" target="_blank">Discord RPC SDK</a>.
  * Supports Windows/Mac/Linux. No 32-bit support.
+ * Has no support for callbacks or any interaction besides setting the displayed rich presence. Use the SDK for that.
  */
 public class DiscordRPC{
 
@@ -12,51 +13,6 @@ public class DiscordRPC{
 
     #include <discord-rpc/linux-dynamic/include/discord_rpc.h>
     #include <string.h>
-
-    static jobject callback = 0;
-    static jmethodID mready;
-    static jmethodID mdisconnected;
-    static jmethodID merror;
-    static jmethodID mjoin;
-    static jmethodID mspectate;
-    static jmethodID mjoinrequest;
-    static JNIEnv* senv;
-
-    static void handleDiscordReady(const DiscordUser* user){
-        if(callback){
-			senv->CallVoidMethod(callback, mready, senv->NewStringUTF(user->userId), senv->NewStringUTF(user->username), senv->NewStringUTF(user->discriminator), senv->NewStringUTF(user->avatar));
-		}
-    }
-
-    static void handleDiscordDisconnected(int errcode, const char* message){
-        if(callback){
-			senv->CallVoidMethod(callback, mdisconnected, (jint)errcode, senv->NewStringUTF(message));
-		}
-    }
-
-    static void handleDiscordError(int errcode, const char* message){
-        if(callback){
-			senv->CallVoidMethod(callback, merror, (jint)errcode, senv->NewStringUTF(message));
-		}
-    }
-
-    static void handleDiscordJoin(const char* secret){
-        if(callback){
-			senv->CallVoidMethod(callback, mjoin, senv->NewStringUTF(secret));
-		}
-    }
-
-    static void handleDiscordSpectate(const char* secret){
-        if(callback){
-			senv->CallVoidMethod(callback, mspectate, senv->NewStringUTF(secret));
-		}
-    }
-
-    static void handleDiscordJoinRequest(const DiscordUser* user){
-        if(callback){
-			senv->CallVoidMethod(callback, mjoinrequest, senv->NewStringUTF(user->userId), senv->NewStringUTF(user->username), senv->NewStringUTF(user->discriminator), senv->NewStringUTF(user->avatar));
-		}
-    }
 
 	 */
 
@@ -66,64 +22,19 @@ public class DiscordRPC{
         }.load("discord-rpc");
 
         new SharedLibraryLoader().load("arc-discord");
-
-        init();
     }
 
-    private static native void init(); /*
-        jclass callbackClass = env->FindClass("arc/discord/DiscordRPC$DiscordEventHandler");
-        jclass exception = env->FindClass("java/lang/Exception");
-
-        mready = env->GetMethodID(callbackClass, "onReady", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
-		if(!mready) env->ThrowNew(exception, "Couldn't find onReady() method");
-
-        mdisconnected = env->GetMethodID(callbackClass, "onDisconnected", "(ILjava/lang/String;)V");
-		if(!mdisconnected) env->ThrowNew(exception, "Couldn't find onDisconnected() method");
-
-        merror = env->GetMethodID(callbackClass, "onErrored", "(ILjava/lang/String;)V");
-		if(!merror) env->ThrowNew(exception, "Couldn't find onErrored() method");
-
-        mjoin = env->GetMethodID(callbackClass, "onJoinGame", "(Ljava/lang/String;)V");
-		if(!mjoin)  env->ThrowNew(exception, "Couldn't find onJoinGame() method");
-
-		mspectate = env->GetMethodID(callbackClass, "onSpectateGame", "(Ljava/lang/String;)V");
-		if(!mspectate)  env->ThrowNew(exception, "Couldn't find onSpectateGame() method");
-
-        mjoinrequest = env->GetMethodID(callbackClass, "onJoinRequest", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
-		if(!mjoinrequest) env->ThrowNew(exception, "Couldn't find onJoinRequest() method");
-    */
-
-    /** Used to decline a request via {@link #respond(String, int)} */
-    public static final int replyNo = 0;
-    /** Used to accept a request via {@link #respond(String, int)} */
-    public static final int replyYes = 1;
-    /** Currently unsused response, treated like NO. Used with {@link #respond(String, int)} */
-    public static final int replyIgnore = 2;
-
     /**
-     * Initializes the library, supply with application details and event handlers.
-     * Handlers are only called when the {@link #runCallbacks()} method is invoked!
+     * Initializes the library, supply with application details.
      * <br><b>Before closing the application it is recommended to call {@link #shutdown()}</b>
      * @param applicationId The ID for this RPC application,
      * retrieved from the <a href="https://discordappc.com/developers/applications/me" target="_blank">developer dashboard</a>
-     * @param handle Nullable instance of {@link DiscordEventHandler}
      * @param autoRegister {@code true} to automatically register the game's steam and application ID
      * @param steamId Possible steam ID of the running game
      */
-    public static native void initialize(String applicationId, DiscordEventHandler handle, boolean autoRegister, String steamId); /*
+    public static native void initialize(String applicationId, boolean autoRegister, String steamId); /*
         DiscordEventHandlers handlers;
         memset(&handlers, 0, sizeof(handlers));
-
-        handlers.ready = handleDiscordReady;
-        handlers.disconnected = handleDiscordDisconnected;
-        handlers.errored = handleDiscordError;
-        handlers.joinGame = handleDiscordJoin;
-        handlers.spectateGame = handleDiscordSpectate;
-        handlers.joinRequest = handleDiscordJoinRequest;
-
-        senv = env;
-        callback = handle;
-
         Discord_Initialize(applicationId, &handlers, autoRegister, steamId);
     */
 
@@ -133,16 +44,6 @@ public class DiscordRPC{
      */
     public static native void shutdown(); /*
         Discord_Shutdown();
-    */
-
-    /**
-     * Executes the registered handlers for currently queued events.
-     * <br>If this is not called the handlers will not receive any events!
-     *
-     * <p>It is recommended to call this in a <u>2 second interval</u>
-     */
-    public static native void runCallbacks(); /*
-        Discord_RunCallbacks();
     */
 
     /**
@@ -165,22 +66,6 @@ public class DiscordRPC{
         Discord_ClearPresence();
     */
 
-    /**
-     * Responds to the given user with the specified reply type.
-     *
-     * <h1>Possible Replies</h1>
-     * <ul>
-     *   <li>{@link #replyNo}</li>
-     *   <li>{@link #replyYes}</li>
-     *   <li>{@link #replyIgnore}</li>
-     * </ul>
-     * @param userid The id of the user to respond to
-     * @param reply The reply type
-     */
-    public static native void respond(String userid, int reply); /*
-        Discord_Respond(userid, reply);
-    */
-
     /*
      * void Discord_Initialize(const char* applicationId, DiscordEventHandlers* handlers, int autoRegister, const char* optionalSteamId);
      * void Discord_Shutdown(void);
@@ -193,7 +78,19 @@ public class DiscordRPC{
 
     private static native void updatePresenceJni(String state, String details, long startTimestamp, long endTimestamp, String largeImageKey, String largeImageText,
                                                     String smallImageKey, String smallImageText, String partyId, int partySize, int partyMax, String matchSecret,
-                                                    String joinSecret, String spectateSecret, byte instance); /*
+                                                    String joinSecret, String spectateSecret, byte instance); /*MANUAL
+
+        char* state = obj_state ? (char*)env->GetStringUTFChars(obj_state, 0) : 0;
+        char* details = obj_details ? (char*)env->GetStringUTFChars(obj_details, 0) : 0;
+        char* largeImageKey = obj_largeImageKey ? (char*)env->GetStringUTFChars(obj_largeImageKey, 0) : 0;
+        char* largeImageText = obj_largeImageText ? (char*)env->GetStringUTFChars(obj_largeImageText, 0) : 0;
+        char* smallImageKey = obj_smallImageKey ? (char*)env->GetStringUTFChars(obj_smallImageKey, 0) : 0;
+        char* smallImageText = obj_smallImageText ? (char*)env->GetStringUTFChars(obj_smallImageText, 0) : 0;
+        char* partyId = obj_partyId ? (char*)env->GetStringUTFChars(obj_partyId, 0) : 0;
+        char* matchSecret = obj_matchSecret ? (char*)env->GetStringUTFChars(obj_matchSecret, 0) : 0;
+        char* joinSecret = obj_joinSecret ? (char*)env->GetStringUTFChars(obj_joinSecret, 0) : 0;
+        char* spectateSecret = obj_spectateSecret ? (char*)env->GetStringUTFChars(obj_spectateSecret, 0) : 0;
+
         DiscordRichPresence pres;
         memset(&pres, 0, sizeof(pres));
 
@@ -214,6 +111,17 @@ public class DiscordRPC{
         pres.instance = instance;
 
         Discord_UpdatePresence(&pres);
+
+        if(obj_state) env->ReleaseStringUTFChars(obj_state, state);
+        if(obj_details) env->ReleaseStringUTFChars(obj_details, details);
+        if(obj_largeImageKey) env->ReleaseStringUTFChars(obj_largeImageKey, largeImageKey);
+        if(obj_largeImageText) env->ReleaseStringUTFChars(obj_largeImageText, largeImageText);
+        if(obj_smallImageKey) env->ReleaseStringUTFChars(obj_smallImageKey, smallImageKey);
+        if(obj_smallImageText) env->ReleaseStringUTFChars(obj_smallImageText, smallImageText);
+        if(obj_partyId) env->ReleaseStringUTFChars(obj_partyId, partyId);
+        if(obj_matchSecret) env->ReleaseStringUTFChars(obj_matchSecret, matchSecret);
+        if(obj_joinSecret) env->ReleaseStringUTFChars(obj_joinSecret, joinSecret);
+        if(obj_spectateSecret) env->ReleaseStringUTFChars(obj_spectateSecret, spectateSecret);
     */
 
     /** Struct binding for a RichPresence */
@@ -332,18 +240,5 @@ public class DiscordRPC{
          * <br>Example: 1
          */
         public byte instance;
-    }
-
-    /**
-     * Struct containing handlers for RPC events
-     * <br>Provided handlers can be null.
-     */
-    public interface DiscordEventHandler{
-        default void onReady(String id, String username, String discriminator, String avatar){}
-        default void onDisconnected(int errorCode, String message){}
-        default void onErrored(int errorCode, String message){}
-        default void onJoinGame(String secret){}
-        default void onSpectateGame(String secret){}
-        default void onJoinRequest(String id, String username, String discriminator, String avatar){}
     }
 }
