@@ -39,17 +39,15 @@ task natives(dependsOn: [classes, deleteJniFolder]){
 
         BuildTarget[] targets = [
             BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Windows, true).tap{
-                //cIncludes = cppIncludes = ["discord-rpc/win64-dynamic/include/*.h"]
                 libraries += "-L$jnidir/discord-rpc/win64-dynamic/lib -l:discord-rpc.lib"
             },
             BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Linux, true).tap{
-                //cIncludes = cppIncludes = ["discord-rpc/linux-dynamic/include/*.h"]
                 libraries += "-L$jnidir/discord-rpc/linux-dynamic/lib -l:libdiscord-rpc.so"
             },
             BuildTarget.newDefaultTarget(BuildTarget.TargetOs.MacOsX, true).tap{
-                //cIncludes = cppIncludes = ["discord-rpc/osx-dynamic/include/*.h"]
-                linkerFlags += "-framework AppKit"
-                libraries += "-L$jnidir/discord-rpc/osx-dynamic/lib -l:libdiscord-rpc.dylib"
+                libraries += "$jnidir/discord-rpc/osx-dynamic/lib/libdiscord-rpc.dylib -Wl,-framework,AppKit"
+                cppFlags = "-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.7 -stdlib=libc++"
+                linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.7 -stdlib=libc++ -framework CoreServices -framework Carbon"
             },
         ] as BuildTarget[]
 
@@ -96,7 +94,7 @@ task natives(dependsOn: [classes, deleteJniFolder]){
         //cleanup
         delete{ delete "obj" }
         delete{ delete "out" }
-        delete{ delete "jni" }
+        //delete{ delete "jni" }
         delete{ delete "libs" }
 
         //delete extra garbage, not sure why it even exists
