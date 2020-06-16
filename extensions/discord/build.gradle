@@ -48,7 +48,8 @@ task natives(dependsOn: [classes, deleteJniFolder]){
             },
             BuildTarget.newDefaultTarget(BuildTarget.TargetOs.MacOsX, true).tap{
                 //cIncludes = cppIncludes = ["discord-rpc/osx-dynamic/include/*.h"]
-                libraries += "-framework AppKit -L$jnidir/discord-rpc/osx-dynamic/lib -l:libdiscord-rpc.dylib"
+                linkerFlags += "-framework AppKit"
+                libraries += "-L$jnidir/discord-rpc/osx-dynamic/lib -l:libdiscord-rpc.dylib"
             },
         ] as BuildTarget[]
 
