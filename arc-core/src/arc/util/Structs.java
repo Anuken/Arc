@@ -106,6 +106,10 @@ public class Structs{
         return (c1, c2) -> Integer.compare(keyExtractor.get(c1), keyExtractor.get(c2));
     }
 
+    public static <T> Comparator<T> comparingBool(Boolf<? super T> keyExtractor){
+        return (c1, c2) -> Boolean.compare(keyExtractor.get(c1), keyExtractor.get(c2));
+    }
+
     public static <T> void each(Cons<T> cons, T... objects){
         for(T t : objects){
             cons.get(t);

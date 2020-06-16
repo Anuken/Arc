@@ -50,8 +50,7 @@ public class IOSApplication implements Application{
 
         Log.info("[IOSApplication] Running in " + (Bro.IS_64BIT ? "64-bit" : "32-bit") + " mode");
 
-        float scale = (float)(getIosVersion() >= 8 ? UIScreen.getMainScreen().getNativeScale() : UIScreen.getMainScreen()
-        .getScale());
+        float scale = (float)UIScreen.getMainScreen().getNativeScale();
         if(scale >= 2.0f){
             Log.info("[IOSApplication] scale: " + scale);
             if(UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad){
@@ -101,11 +100,6 @@ public class IOSApplication implements Application{
 
     protected IOSInput createInput(){
         return new IOSInput(this);
-    }
-
-    int getIosVersion(){
-        String systemVersion = UIDevice.getCurrentDevice().getSystemVersion();
-        return Integer.parseInt(systemVersion.split("\\.")[0]);
     }
 
     /**
@@ -229,7 +223,7 @@ public class IOSApplication implements Application{
 
     @Override
     public int getVersion(){
-        return Integer.parseInt(UIDevice.getCurrentDevice().getSystemVersion().split("\\.")[0]);
+        return (int)NSProcessInfo.getSharedProcessInfo().getOperatingSystemVersion().getMajorVersion();
     }
 
     @Override

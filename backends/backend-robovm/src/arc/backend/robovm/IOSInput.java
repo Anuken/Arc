@@ -1,29 +1,22 @@
 package arc.backend.robovm;
 
-import arc.backend.robovm.custom.UIAcceleration;
+import arc.*;
 import arc.backend.robovm.custom.UIAccelerometerDelegate;
 import arc.backend.robovm.custom.UIAccelerometerDelegateAdapter;
-import arc.Core;
-import arc.Input;
-import arc.struct.Seq;
-import arc.input.InputDevice;
-import arc.input.KeyCode;
-import arc.math.geom.Vec3;
-import arc.util.ArcRuntimeException;
-import arc.util.Log;
-import arc.util.pooling.Pool;
-import org.robovm.apple.audiotoolbox.AudioServices;
-import org.robovm.apple.coregraphics.CGPoint;
-import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.foundation.NSExtensions;
-import org.robovm.apple.foundation.NSObject;
-import org.robovm.apple.foundation.NSRange;
+import arc.backend.robovm.custom.*;
+import arc.input.*;
+import arc.math.geom.*;
+import arc.struct.*;
+import arc.util.*;
+import arc.util.pooling.*;
+import org.robovm.apple.audiotoolbox.*;
+import org.robovm.apple.coregraphics.*;
+import org.robovm.apple.foundation.*;
 import org.robovm.apple.uikit.*;
-import org.robovm.objc.annotation.Method;
-import org.robovm.rt.VM;
-import org.robovm.rt.bro.NativeObject;
-import org.robovm.rt.bro.annotation.MachineSizedUInt;
-import org.robovm.rt.bro.annotation.Pointer;
+import org.robovm.objc.annotation.*;
+import org.robovm.rt.*;
+import org.robovm.rt.bro.*;
+import org.robovm.rt.bro.annotation.*;
 
 @SuppressWarnings("deprecation")
 public class IOSInput extends Input{
@@ -76,8 +69,8 @@ public class IOSInput extends Input{
             char[] chars = new char[string.length()];
             string.getChars(0, string.length(), chars, 0);
 
-            for(int i = 0; i < chars.length; i++){
-                app.input.inputMultiplexer.keyTyped(chars[i]);
+            for(char c : chars){
+                app.input.inputMultiplexer.keyTyped(c);
             }
             Core.graphics.requestRendering();
 
@@ -114,7 +107,7 @@ public class IOSInput extends Input{
         UIDevice device = UIDevice.getCurrentDevice();
         if(device.getModel().equalsIgnoreCase("iphone")) hasVibrator = true;
 
-        if(app.getIosVersion() >= 9){
+        if(app.getVersion() >= 9){
             UIForceTouchCapability forceTouchCapability = UIScreen.getMainScreen().getTraitCollection().getForceTouchCapability();
             pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
         }
@@ -125,8 +118,8 @@ public class IOSInput extends Input{
             accelerometerDelegate = new UIAccelerometerDelegateAdapter(){
 
                 @Method(selector = "accelerometer:didAccelerate:")
-                public void didAccelerate(arc.backend.robovm.custom.UIAccelerometer accelerometer, @Pointer long valuesPtr){
-                    arc.backend.robovm.custom.UIAcceleration values = UI_ACCELERATION_WRAPPER.wrap(valuesPtr);
+                public void didAccelerate(UIAccelerometer accelerometer, @Pointer long valuesPtr){
+                    UIAcceleration values = UI_ACCELERATION_WRAPPER.wrap(valuesPtr);
                     float x = (float)values.getX() * 10;
                     float y = (float)values.getY() * 10;
                     float z = (float)values.getZ() * 10;
@@ -134,8 +127,8 @@ public class IOSInput extends Input{
                     accel.set(-x, -y, -z);
                 }
             };
-            arc.backend.robovm.custom.UIAccelerometer.getSharedAccelerometer().setDelegate(accelerometerDelegate);
-            arc.backend.robovm.custom.UIAccelerometer.getSharedAccelerometer().setUpdateInterval(config.accelerometerUpdate);
+            UIAccelerometer.getSharedAccelerometer().setDelegate(accelerometerDelegate);
+            UIAccelerometer.getSharedAccelerometer().setUpdateInterval(config.accelerometerUpdate);
         }
     }
 

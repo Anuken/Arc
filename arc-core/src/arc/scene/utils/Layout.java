@@ -29,7 +29,7 @@ public interface Layout{
     /**
      * Ensures the actor has been laid out. Calls {@link #layout()} if {@link #invalidate()} has been called since the last time
      * {@link #validate()} was called, or if the actor otherwise needs to be laid out. This method is usually called in
-     * {@link Element#draw(Batch, float)} by the actor itself before drawing is performed.
+     * {@link Element#draw()} by the actor itself before drawing is performed.
      */
     void validate();
 
