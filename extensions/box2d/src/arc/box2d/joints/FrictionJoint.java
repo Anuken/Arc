@@ -5,9 +5,8 @@ import arc.math.geom.*;
 
 /** Friction joint. This is used for top-down friction. It provides 2D translational friction and angular friction. */
 public class FrictionJoint extends Joint{
-    // @off
 	/*JNI
-#include <Box2D/Box2D.h> 
+    #include <Box2D/Box2D.h>
 	 */
 
     private final float[] tmp = new float[2];

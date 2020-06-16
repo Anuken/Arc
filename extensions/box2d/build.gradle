@@ -89,13 +89,6 @@ task box2dNatives(dependsOn: [classes, deleteJniFolder]){
             }
         }
 
-        copy{
-            include{ file -> matches(file.path, ["arm", "x86"]) && !file.path.contains("ios") }
-            from "libs/"
-            into "../../natives/natives-box2d-android/libs/"
-        }
-
-        
         //cleanup
         delete{ delete "libs" }
         delete{ delete "obj" }
