@@ -378,29 +378,37 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         size += 4;
     }
 
-    public void addAll(Seq<? extends T> array){
+    public Seq<T> addAll(Seq<? extends T> array){
         addAll(array.items, 0, array.size);
+
+        return this;
     }
 
-    public void addAll(Seq<? extends T> array, int start, int count){
+    public Seq<T> addAll(Seq<? extends T> array, int start, int count){
         if(start + count > array.size)
             throw new IllegalArgumentException("start + count must be <= size: " + start + " + " + count + " <= " + array.size);
         addAll(array.items, start, count);
+
+        return this;
     }
 
-    public void addAll(T... array){
+    public Seq<T> addAll(T... array){
         addAll(array, 0, array.length);
+
+        return this;
     }
 
-    public void addAll(T[] array, int start, int count){
+    public Seq<T> addAll(T[] array, int start, int count){
         T[] items = this.items;
         int sizeNeeded = size + count;
         if(sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
         System.arraycopy(array, start, items, size, count);
         size += count;
+
+        return this;
     }
 
-    public void addAll(Iterable<? extends T> items){
+    public Seq<T> addAll(Iterable<? extends T> items){
         if(items instanceof Seq){
             addAll((Seq)items);
         }else{
@@ -408,6 +416,8 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
                 add(t);
             }
         }
+
+        return this;
     }
 
     /** Sets this array's contents to the specified array.*/
@@ -675,11 +685,13 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return size > 0;
     }
 
-    public void clear(){
+    public Seq<T> clear(){
         T[] items = this.items;
         for(int i = 0, n = size; i < n; i++)
             items[i] = null;
         size = 0;
+
+        return this;
     }
 
     /**

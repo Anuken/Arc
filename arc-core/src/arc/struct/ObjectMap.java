@@ -313,8 +313,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
     public V get(K key, Prov<V> supplier){
         V val = get(key);
         if(val == null){
-            val = supplier.get();
-            put(key, val);
+            put(key, val = supplier.get());
         }
         return val;
     }
