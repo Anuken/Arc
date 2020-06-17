@@ -135,9 +135,10 @@ public class SnapshotSeq<T> extends Seq<T>{
         return super.pop();
     }
 
-    public void clear(){
+    public Seq<T> clear(){
         modified();
         super.clear();
+        return this;
     }
 
     public Seq<T> sort(){

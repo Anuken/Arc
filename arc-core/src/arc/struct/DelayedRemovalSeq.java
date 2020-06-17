@@ -117,12 +117,12 @@ public class DelayedRemovalSeq<T> extends Seq<T>{
             super.removeRange(start, end);
     }
 
-    public void clear(){
+    public Seq<T> clear(){
         if(iterating > 0){
             clear = size;
-            return;
+            return this;
         }
-        super.clear();
+        return super.clear();
     }
 
     public void set(int index, T value){
