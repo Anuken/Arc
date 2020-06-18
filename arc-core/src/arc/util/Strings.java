@@ -41,7 +41,19 @@ public class Strings{
         return e;
     }
 
-    public static String parseException(Throwable e, boolean stacktrace){
+    public static String getStackTrace(Throwable e){
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        return sw.toString();
+    }
+
+    /** @return a neat error message of a throwable, with stack trace. */
+    public static String neatError(Throwable e){
+        return neatError(e, true);
+    }
+
+    /** @return a neat error message of a throwable, with stack trace. */
+    public static String neatError(Throwable e, boolean stacktrace){
         StringBuilder build = new StringBuilder();
 
         while(e != null){
