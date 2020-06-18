@@ -11,16 +11,23 @@ public class DiscordRPC{
 
     /*JNI
 
-    #include <discord-rpc/linux-dynamic/include/discord_rpc.h>
-    #include <string.h>
+    #ifdef __MINGW32__
+
+    #include <discord-rpc/win64-static/include/discord_rpc.h>
+
+    #elif __GNUC__
+
+    #include <discord-rpc/linux-static/include/discord_rpc.h>
+
+    #elif __APPLE__
+
+    #include <discord-rpc/osx-static/include/discord_rpc.h>
+
+    #endif
 
 	 */
 
     static{
-        new SharedLibraryLoader(){
-            @Override public String mapLibraryName(String libraryName){ return OS.isWindows ? "discord-rpc.dll" : OS.isLinux ? "libdiscord-rpc.so" : "libdiscord-rpc.dylib"; }
-        }.load("discord-rpc");
-
         new SharedLibraryLoader().load("arc-discord");
     }
 
@@ -33,9 +40,7 @@ public class DiscordRPC{
      * @param steamId Possible steam ID of the running game
      */
     public static native void initialize(String applicationId, boolean autoRegister, String steamId); /*
-        DiscordEventHandlers handlers;
-        memset(&handlers, 0, sizeof(handlers));
-        Discord_Initialize(applicationId, &handlers, autoRegister, steamId);
+        Discord_Initialize(applicationId, NULL, autoRegister, steamId);
     */
 
     /**
@@ -92,7 +97,6 @@ public class DiscordRPC{
         char* spectateSecret = obj_spectateSecret ? (char*)env->GetStringUTFChars(obj_spectateSecret, 0) : 0;
 
         DiscordRichPresence pres;
-        memset(&pres, 0, sizeof(pres));
 
         pres.state = state;
         pres.details = details;

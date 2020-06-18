@@ -37,12 +37,13 @@ task natives(dependsOn: [classes, deleteJniFolder]){
             "unzip $jnidir/${platform}.zip -d $jnidir".execute()
         }
 
+        //this doesn't actually work, because reasons
         BuildTarget[] targets = [
             BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Windows, true).tap{
-                libraries += "-L$jnidir/discord-rpc/win64-dynamic/lib -l:discord-rpc.lib"
+                libraries += "-L$jnidir/discord-rpc/win64-static/lib -l:discord-rpc.lib"
             },
             BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Linux, true).tap{
-                libraries += "-L$jnidir/discord-rpc/linux-dynamic/lib -l:libdiscord-rpc.so"
+                libraries += "-L$jnidir/discord-rpc/linux-static/lib -l:libdiscord-rpc.a"
             },
             BuildTarget.newDefaultTarget(BuildTarget.TargetOs.MacOsX, true).tap{
                 libraries += "$jnidir/discord-rpc/osx-dynamic/lib/libdiscord-rpc.dylib -Wl,-framework,AppKit"
@@ -50,6 +51,8 @@ task natives(dependsOn: [classes, deleteJniFolder]){
                 linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.7 -stdlib=libc++ -framework CoreServices -framework Carbon"
             },
         ] as BuildTarget[]
+
+        targets*.cIncludes = [] as String[]
 
         new AntScriptGenerator().generate(new BuildConfig("arc-discord", "$root/build", "libs/", jnidir), targets)
 
@@ -75,26 +78,10 @@ task natives(dependsOn: [classes, deleteJniFolder]){
             }
         }
 
-        //copy discord DLLs
-        copy{
-            from "jni/discord-rpc/linux-dynamic/lib/libdiscord-rpc.so"
-            into "natives/"
-        }
-
-        copy{
-            from "jni/discord-rpc/win64-dynamic/bin/discord-rpc.dll"
-            into "natives/"
-        }
-
-        copy{
-            from "jni/discord-rpc/osx-dynamic/lib/libdiscord-rpc.dylib"
-            into "natives/"
-        }
-
         //cleanup
         delete{ delete "obj" }
         delete{ delete "out" }
-        //delete{ delete "jni" }
+        delete{ delete "jni" }
         delete{ delete "libs" }
 
         //delete extra garbage, not sure why it even exists
