@@ -25,7 +25,6 @@ public interface TypingListener{
      * the variable will be <tt>townName</tt>
      * @return The replacement String, or {@code null} if this method should be ignored and the regular values should be
      * used instead.
-     * @see TypeLabel#setVariable(String, String)
      */
     default String replaceVariable(String variable){
         return variable;

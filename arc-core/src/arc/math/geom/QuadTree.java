@@ -159,12 +159,12 @@ public class QuadTree<T extends QuadTreeObject>{
      * <p>
      * This will never result in false positives.
      */
-    public void intersect(float height, float x, float y, float width, Cons<T> out){
+    public void intersect(float x, float y, float width, float height, Cons<T> out){
         if(!leaf){
-            if(topLeft.bounds.overlaps(x, y, width, height)) topLeft.intersect(height, x, y, width, out);
-            if(topRight.bounds.overlaps(x, y, width, height)) topRight.intersect(height, x, y, width, out);
-            if(botLeft.bounds.overlaps(x, y, width, height)) botLeft.intersect(height, x, y, width, out);
-            if(botRight.bounds.overlaps(x, y, width, height)) botRight.intersect(height, x, y, width, out);
+            if(topLeft.bounds.overlaps(x, y, width, height)) topLeft.intersect(x, y, width, height, out);
+            if(topRight.bounds.overlaps(x, y, width, height)) topRight.intersect(x, y, width, height, out);
+            if(botLeft.bounds.overlaps(x, y, width, height)) botLeft.intersect(x, y, width, height, out);
+            if(botRight.bounds.overlaps(x, y, width, height)) botRight.intersect(x, y, width, height, out);
         }
 
         for(int i = 0; i < objects.size; i++){
@@ -181,7 +181,7 @@ public class QuadTree<T extends QuadTreeObject>{
      * This will never result in false positives.
      */
     public void intersect(Rect rect, Cons<T> out){
-        intersect(rect.height, rect.x, rect.y, rect.width, out);
+        intersect(rect.x, rect.y, rect.width, rect.height, out);
     }
 
     /**
