@@ -45,6 +45,7 @@ public class Color{
 
     public static final Color red = new Color(0xff0000ff);
     public static final Color scarlet = new Color(0xff341cff);
+    public static final Color crimson = new Color(0xdc143cff);
     public static final Color coral = new Color(0xff7f50ff);
     public static final Color salmon = new Color(0xfa8072ff);
     public static final Color pink = new Color(0xff69b4ff);

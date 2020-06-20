@@ -83,6 +83,7 @@ public final class Colors{
 
         map.put("RED", Color.red);
         map.put("SCARLET", Color.scarlet);
+        map.put("CRIMSON", Color.crimson);
         map.put("CORAL", Color.coral);
         map.put("SALMON", Color.salmon);
         map.put("PINK", Color.pink);
@@ -127,6 +128,7 @@ public final class Colors{
 
         map.put("red", Color.red);
         map.put("scarlet", Color.scarlet);
+        map.put("crimson", Color.crimson);
         map.put("coral", Color.coral);
         map.put("salmon", Color.salmon);
         map.put("pink", Color.pink);
@@ -135,8 +137,6 @@ public final class Colors{
         map.put("purple", Color.purple);
         map.put("violet", Color.violet);
         map.put("maroon", Color.maroon);
-        map.put("crimson", Color.scarlet);
-        map.put("scarlet", Color.scarlet);
     }
 
 }
