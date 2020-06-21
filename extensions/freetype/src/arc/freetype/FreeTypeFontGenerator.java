@@ -144,25 +144,25 @@ public class FreeTypeFontGenerator implements Disposable{
     private int getLoadingFlags(FreeTypeFontParameter parameter){
         int loadingFlags = FreeType.FT_LOAD_DEFAULT;
         switch(parameter.hinting){
-            case None:
+            case none:
                 loadingFlags |= FreeType.FT_LOAD_NO_HINTING;
                 break;
-            case Slight:
+            case slight:
                 loadingFlags |= FreeType.FT_LOAD_TARGET_LIGHT;
                 break;
-            case Medium:
+            case medium:
                 loadingFlags |= FreeType.FT_LOAD_TARGET_NORMAL;
                 break;
-            case Full:
+            case full:
                 loadingFlags |= FreeType.FT_LOAD_TARGET_MONO;
                 break;
-            case AutoSlight:
+            case autoSlight:
                 loadingFlags |= FreeType.FT_LOAD_FORCE_AUTOHINT | FreeType.FT_LOAD_TARGET_LIGHT;
                 break;
-            case AutoMedium:
+            case autoMedium:
                 loadingFlags |= FreeType.FT_LOAD_FORCE_AUTOHINT | FreeType.FT_LOAD_TARGET_NORMAL;
                 break;
-            case AutoFull:
+            case autoFull:
                 loadingFlags |= FreeType.FT_LOAD_FORCE_AUTOHINT | FreeType.FT_LOAD_TARGET_MONO;
                 break;
         }
@@ -407,7 +407,7 @@ public class FreeTypeFontGenerator implements Disposable{
                 packStrategy = new SkylineStrategy();
             }
             ownsAtlas = true;
-            packer = new PixmapPacker(size, size, Format.RGBA8888, 1, false, packStrategy);
+            packer = new PixmapPacker(size, size, Format.rgba8888, 1, false, packStrategy);
             packer.setTransparentColor(parameter.color);
             packer.getTransparentColor().a = 0;
             if(parameter.borderWidth > 0){
@@ -540,7 +540,7 @@ public class FreeTypeFontGenerator implements Disposable{
             return null;
         }
         Bitmap mainBitmap = mainGlyph.getBitmap();
-        Pixmap mainPixmap = mainBitmap.getPixmap(Format.RGBA8888, parameter.color, parameter.gamma);
+        Pixmap mainPixmap = mainBitmap.getPixmap(Format.rgba8888, parameter.color, parameter.gamma);
 
         if(mainBitmap.getWidth() != 0 && mainBitmap.getRows() != 0){
             int offsetX = 0, offsetY = 0;
@@ -555,7 +555,7 @@ public class FreeTypeFontGenerator implements Disposable{
 
                 // Render border (pixmap is bigger than main).
                 Bitmap borderBitmap = borderGlyph.getBitmap();
-                Pixmap borderPixmap = borderBitmap.getPixmap(Format.RGBA8888, parameter.borderColor, parameter.borderGamma);
+                Pixmap borderPixmap = borderBitmap.getPixmap(Format.rgba8888, parameter.borderColor, parameter.borderGamma);
 
                 // Draw main glyph on top of border.
                 for(int i = 0, n = parameter.renderCount; i < n; i++)
@@ -666,19 +666,19 @@ public class FreeTypeFontGenerator implements Disposable{
     /** Font smoothing algorithm. */
     public enum Hinting{
         /** Disable hinting. Generated glyphs will look blurry. */
-        None,
+        none,
         /** Light hinting with fuzzy edges, but close to the original shape */
-        Slight,
+        slight,
         /** Average hinting */
-        Medium,
+        medium,
         /** Strong hinting with crisp edges at the expense of shape fidelity */
-        Full,
+        full,
         /** Light hinting with fuzzy edges, but close to the original shape. Uses the FreeType auto-hinter. */
-        AutoSlight,
+        autoSlight,
         /** Average hinting. Uses the FreeType auto-hinter. */
-        AutoMedium,
+        autoMedium,
         /** Strong hinting with crisp edges at the expense of shape fidelity. Uses the FreeType auto-hinter. */
-        AutoFull,
+        autoFull,
     }
 
     /**
@@ -763,7 +763,7 @@ public class FreeTypeFontGenerator implements Disposable{
         /** If true, font smoothing is disabled. */
         public boolean mono;
         /** Strength of hinting */
-        public Hinting hinting = Hinting.AutoMedium;
+        public Hinting hinting = Hinting.autoMedium;
         /** Foreground color (required for non-black borders) */
         public Color color = Color.white;
         /** Glyph gamma. Values > 1 reduce antialiasing. */

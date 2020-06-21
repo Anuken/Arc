@@ -336,13 +336,13 @@ public abstract class Input implements Disposable{
     }
 
     /**
-     * Queries whether a {@link Peripheral} is currently available. In case of Android and the {@link Peripheral#HardwareKeyboard}
+     * Queries whether a {@link Peripheral} is currently available. In case of Android and the {@link Peripheral#hardwareKeyboard}
      * this returns the whether the keyboard is currently slid out or not.
      * @param peripheral the {@link Peripheral}
      * @return whether the peripheral is available or not.
      */
     public boolean isPeripheralAvailable(Peripheral peripheral){
-        return peripheral == Peripheral.HardwareKeyboard;
+        return peripheral == Peripheral.hardwareKeyboard;
     }
 
     /** @return the rotation of the device with respect to its native orientation. */
@@ -352,7 +352,7 @@ public abstract class Input implements Disposable{
 
     /** @return the native orientation of the device. */
     public Orientation getNativeOrientation(){
-        return Orientation.Landscape;
+        return Orientation.landscape;
     }
 
     /** @return whether the mouse cursor is catched. */
@@ -377,12 +377,12 @@ public abstract class Input implements Disposable{
     }
 
     public enum Orientation{
-        Landscape, Portrait
+        landscape, portrait
     }
 
     /** Enumeration of potentially available peripherals. Use with {@link Input#isPeripheralAvailable(Peripheral)}. */
     public enum Peripheral{
-        HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, Gyroscope, RotationVector, Pressure
+        hardwareKeyboard, onscreenKeyboard, multitouchScreen, accelerometer, compass, vibrator, gyroscope, rotationVector, pressure
     }
 
     /** Parameters for text input. */

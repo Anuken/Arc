@@ -85,7 +85,7 @@ public class GLOnlyTextureData implements TextureData{
 
     @Override
     public Format getFormat(){
-        return Format.RGBA8888;
+        return Format.rgba8888;
     }
 
     @Override

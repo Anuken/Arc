@@ -25,7 +25,7 @@ public class MotionBlurFilter extends FxFilter{
 
         copyFilter = new CopyFilter();
 
-        localBuffer = new FxBufferQueue(Format.RGBA8888,
+        localBuffer = new FxBufferQueue(Format.rgba8888,
         // On WebGL (GWT) we cannot render from/into the same texture simultaneously.
         // Will use ping-pong approach to avoid "writing into itself".
         Core.app.getType() == Application.ApplicationType.web ? 2 : 1);

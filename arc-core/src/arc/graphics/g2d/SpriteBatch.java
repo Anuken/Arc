@@ -52,7 +52,7 @@ public class SpriteBatch extends Batch{
         projectionMatrix.setOrtho(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
 
         if(size > 0){
-            VertexDataType vertexDataType = Core.gl30 != null ? VertexDataType.VertexBufferObjectWithVAO : VertexDataType.VertexArray;
+            VertexDataType vertexDataType = Core.gl30 != null ? VertexDataType.vertexBufferObjectWithVAO : VertexDataType.vertexArray;
 
             mesh = new Mesh(vertexDataType, false, size * 4, size * 6,
             new VertexAttribute(Usage.position, 2, Shader.positionAttribute),

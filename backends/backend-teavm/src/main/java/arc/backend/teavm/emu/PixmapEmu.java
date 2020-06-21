@@ -47,14 +47,14 @@ public class PixmapEmu implements Disposable{
         if(img == null){
             throw new ArcRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
         }
-        create(img.getWidth(), img.getHeight(), Format.RGBA8888);
+        create(img.getWidth(), img.getHeight(), Format.rgba8888);
         context.setGlobalCompositeOperation("copy");
         context.drawImage(img, 0, 0);
         context.setGlobalCompositeOperation("source-over");
     }
 
     public PixmapEmu(HTMLImageElement img){
-        create(img.getWidth(), img.getHeight(), Format.RGBA8888);
+        create(img.getWidth(), img.getHeight(), Format.rgba8888);
         context.drawImage(img, 0, 0);
     }
 
@@ -65,7 +65,7 @@ public class PixmapEmu implements Disposable{
     private void create(int width, int height, @SuppressWarnings("unused") Pixmap.Format format2){
         this.width = width;
         this.height = height;
-        this.format = Format.RGBA8888;
+        this.format = Format.rgba8888;
         canvas = (HTMLCanvasElement)document.createElement("canvas");
         canvas.getStyle().setProperty("display", "none");
         document.getBody().appendChild(canvas);
@@ -152,15 +152,15 @@ public class PixmapEmu implements Disposable{
     }
 
     public void fill(){
-        rectangle(0, 0, getWidth(), getHeight(), DrawType.FILL);
+        rectangle(0, 0, getWidth(), getHeight(), DrawType.fill);
     }
 
     public void drawLine(int x, int y, int x2, int y2){
-        line(x, y, x2, y2, DrawType.STROKE);
+        line(x, y, x2, y2, DrawType.stroke);
     }
 
     public void drawRectangle(int x, int y, int width, int height){
-        rectangle(x, y, width, height, DrawType.STROKE);
+        rectangle(x, y, width, height, DrawType.stroke);
     }
 
     public void drawPixmap(PixmapEmu pixmap, int x, int y){
@@ -179,19 +179,19 @@ public class PixmapEmu implements Disposable{
     }
 
     public void fillRectangle(int x, int y, int width, int height){
-        rectangle(x, y, width, height, DrawType.FILL);
+        rectangle(x, y, width, height, DrawType.fill);
     }
 
     public void drawCircle(int x, int y, int radius){
-        circle(x, y, radius, DrawType.STROKE);
+        circle(x, y, radius, DrawType.stroke);
     }
 
     public void fillCircle(int x, int y, int radius){
-        circle(x, y, radius, DrawType.FILL);
+        circle(x, y, radius, DrawType.fill);
     }
 
     public void fillTriangle(int x1, int y1, int x2, int y2, int x3, int y3){
-        triangle(x1, y1, x2, y2, x3, y3, DrawType.FILL);
+        triangle(x1, y1, x2, y2, x3, y3, DrawType.fill);
     }
 
     public int getPixel(int x, int y){
@@ -241,7 +241,7 @@ public class PixmapEmu implements Disposable{
     private native byte[] bufferAsArray(ArrayBuffer array);
 
     public void draw(int x, int y){
-        rectangle(x, y, 1, 1, DrawType.FILL);
+        rectangle(x, y, 1, 1, DrawType.fill);
     }
 
     public void draw(int x, int y, int color){
@@ -250,7 +250,7 @@ public class PixmapEmu implements Disposable{
     }
 
     private void circle(int x, int y, int radius, DrawType drawType){
-        if(blending == Blending.None){
+        if(blending == Blending.none){
             context.setFillStyle(clearColor);
             context.setStrokeStyle(clearColor);
             context.setGlobalCompositeOperation("clear");
@@ -270,7 +270,7 @@ public class PixmapEmu implements Disposable{
     }
 
     private void line(int x, int y, int x2, int y2, DrawType drawType){
-        if(blending == Blending.None){
+        if(blending == Blending.none){
             context.setFillStyle(clearColor);
             context.setStrokeStyle(clearColor);
             context.setGlobalCompositeOperation("clear");
@@ -291,7 +291,7 @@ public class PixmapEmu implements Disposable{
     }
 
     private void rectangle(int x, int y, int width, int height, DrawType drawType){
-        if(blending == Blending.None){
+        if(blending == Blending.none){
             context.setFillStyle(clearColor);
             context.setStrokeStyle(clearColor);
             context.setGlobalCompositeOperation("clear");
@@ -311,7 +311,7 @@ public class PixmapEmu implements Disposable{
     }
 
     private void triangle(int x1, int y1, int x2, int y2, int x3, int y3, DrawType drawType){
-        if(blending == Blending.None){
+        if(blending == Blending.none){
             context.setFillStyle(clearColor);
             context.setStrokeStyle(clearColor);
             context.setGlobalCompositeOperation("clear");
@@ -338,13 +338,13 @@ public class PixmapEmu implements Disposable{
 
     private void image(HTMLCanvasElement image, int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY,
                        int dstWidth, int dstHeight){
-        if(blending == Blending.None){
+        if(blending == Blending.none){
             context.setFillStyle(clearColor);
             context.setStrokeStyle(clearColor);
             context.setGlobalCompositeOperation("clear");
             context.beginPath();
             context.rect(dstX, dstY, dstWidth, dstHeight);
-            fillOrStrokePath(DrawType.FILL);
+            fillOrStrokePath(DrawType.fill);
             context.closePath();
             context.setFillStyle(color);
             context.setStrokeStyle(color);
@@ -356,16 +356,16 @@ public class PixmapEmu implements Disposable{
 
     private void fillOrStrokePath(DrawType drawType){
         switch(drawType){
-            case FILL:
+            case fill:
                 context.fill();
                 break;
-            case STROKE:
+            case stroke:
                 context.stroke();
                 break;
         }
     }
 
     private enum DrawType{
-        FILL, STROKE
+        fill, stroke
     }
 }

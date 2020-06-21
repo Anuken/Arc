@@ -120,13 +120,13 @@ public class FacedCubemapData implements CubemapData{
     @Override
     public int getWidth(){
         int tmp, width = 0;
-        if(data[CubemapSide.PositiveZ.index] != null && (tmp = data[CubemapSide.PositiveZ.index].getWidth()) > width)
+        if(data[CubemapSide.positiveZ.index] != null && (tmp = data[CubemapSide.positiveZ.index].getWidth()) > width)
             width = tmp;
-        if(data[CubemapSide.NegativeZ.index] != null && (tmp = data[CubemapSide.NegativeZ.index].getWidth()) > width)
+        if(data[CubemapSide.negativeZ.index] != null && (tmp = data[CubemapSide.negativeZ.index].getWidth()) > width)
             width = tmp;
-        if(data[CubemapSide.PositiveY.index] != null && (tmp = data[CubemapSide.PositiveY.index].getWidth()) > width)
+        if(data[CubemapSide.positiveY.index] != null && (tmp = data[CubemapSide.positiveY.index].getWidth()) > width)
             width = tmp;
-        if(data[CubemapSide.NegativeY.index] != null && (tmp = data[CubemapSide.NegativeY.index].getWidth()) > width)
+        if(data[CubemapSide.negativeY.index] != null && (tmp = data[CubemapSide.negativeY.index].getWidth()) > width)
             width = tmp;
         return width;
     }
@@ -134,13 +134,13 @@ public class FacedCubemapData implements CubemapData{
     @Override
     public int getHeight(){
         int tmp, height = 0;
-        if(data[CubemapSide.PositiveZ.index] != null && (tmp = data[CubemapSide.PositiveZ.index].getHeight()) > height)
+        if(data[CubemapSide.positiveZ.index] != null && (tmp = data[CubemapSide.positiveZ.index].getHeight()) > height)
             height = tmp;
-        if(data[CubemapSide.NegativeZ.index] != null && (tmp = data[CubemapSide.NegativeZ.index].getHeight()) > height)
+        if(data[CubemapSide.negativeZ.index] != null && (tmp = data[CubemapSide.negativeZ.index].getHeight()) > height)
             height = tmp;
-        if(data[CubemapSide.PositiveX.index] != null && (tmp = data[CubemapSide.PositiveX.index].getHeight()) > height)
+        if(data[CubemapSide.positiveX.index] != null && (tmp = data[CubemapSide.positiveX.index].getHeight()) > height)
             height = tmp;
-        if(data[CubemapSide.NegativeX.index] != null && (tmp = data[CubemapSide.NegativeX.index].getHeight()) > height)
+        if(data[CubemapSide.negativeX.index] != null && (tmp = data[CubemapSide.negativeX.index].getHeight()) > height)
             height = tmp;
         return height;
     }
@@ -167,7 +167,7 @@ public class FacedCubemapData implements CubemapData{
                 boolean disposePixmap = data[i].disposePixmap();
                 if(data[i].getFormat() != pixmap.getFormat()){
                     Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), data[i].getFormat());
-                    tmp.setBlending(Blending.None);
+                    tmp.setBlending(Blending.none);
                     tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
                     if(data[i].disposePixmap()) pixmap.dispose();
                     pixmap = tmp;

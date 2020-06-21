@@ -75,7 +75,7 @@ public class Bloom{
 
     private void init(int width, int height, boolean hasDepth, boolean useBlending){
         blending = useBlending;
-        Format format = useBlending ? Format.RGBA8888 : Format.RGB888;
+        Format format = useBlending ? Format.rgba8888 : Format.rgb888;
 
         buffer = new FrameBuffer(format, Core.graphics.getWidth(), Core.graphics.getHeight(), hasDepth);
         pingPong1 = new FrameBuffer(format, width, height, false);

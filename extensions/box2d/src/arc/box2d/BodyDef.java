@@ -14,7 +14,7 @@ public class BodyDef{
      * moved by solver dynamic: positive mass, non-zero velocity determined by forces, moved by solver
      */
     public enum BodyType{
-        StaticBody(0), KinematicBody(1), DynamicBody(2);
+        staticBody(0), kinematicBody(1), dynamicBody(2);
 
         public final int value;
 
@@ -24,7 +24,7 @@ public class BodyDef{
     }
 
     /** The body type: static, kinematic, or dynamic. Note: if a dynamic body would have zero mass, the mass is set to one. **/
-    public BodyType type = BodyType.StaticBody;
+    public BodyType type = BodyType.staticBody;
 
     /** The world position of the body. Avoid creating bodies at the origin since this can lead to many overlapping shapes. **/
     public final Vec2 position = new Vec2();

@@ -395,13 +395,13 @@ public class TexturePacker{
 
     private int getBufferedImageType(Format format){
         switch(settings.format){
-            case RGBA8888:
-            case RGBA4444:
+            case rgba8888:
+            case rgba4444:
                 return BufferedImage.TYPE_INT_ARGB;
-            case RGB565:
-            case RGB888:
+            case rgb565:
+            case rgb888:
                 return BufferedImage.TYPE_INT_RGB;
-            case Alpha:
+            case alpha:
                 return BufferedImage.TYPE_BYTE_GRAY;
             default:
                 throw new RuntimeException("Unsupported format: " + settings.format);
@@ -780,7 +780,7 @@ public class TexturePacker{
         public int alphaThreshold;
         public TextureFilter filterMin = TextureFilter.nearest, filterMag = TextureFilter.nearest;
         public TextureWrap wrapX = TextureWrap.clampToEdge, wrapY = TextureWrap.clampToEdge;
-        public Format format = Format.RGBA8888;
+        public Format format = Format.rgba8888;
         public boolean alias = true;
         public String outputFormat = "png";
         public float jpegQuality = 0.9f;

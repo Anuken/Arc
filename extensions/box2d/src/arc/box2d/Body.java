@@ -697,10 +697,10 @@ inline b2BodyType getBodyType( int type )
     /** Get the type of this body. */
     public BodyType getType(){
         int type = jniGetType(addr);
-        if(type == 0) return BodyType.StaticBody;
-        if(type == 1) return BodyType.KinematicBody;
-        if(type == 2) return BodyType.DynamicBody;
-        return BodyType.StaticBody;
+        if(type == 0) return BodyType.staticBody;
+        if(type == 1) return BodyType.kinematicBody;
+        if(type == 2) return BodyType.dynamicBody;
+        return BodyType.staticBody;
     }
 
     private native int jniGetType(long addr); /*

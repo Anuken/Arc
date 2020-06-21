@@ -20,7 +20,7 @@ public class Animation<T>{
     private float animationDuration;
     private int lastFrameNumber;
     private float lastStateTime;
-    private PlayMode playMode = PlayMode.NORMAL;
+    private PlayMode playMode = PlayMode.normal;
 
     /**
      * Constructor, storing the frame duration and key frames.
@@ -72,16 +72,16 @@ public class Animation<T>{
         // we set the play mode by overriding the previous mode based on looping
         // parameter value
         PlayMode oldPlayMode = playMode;
-        if(looping && (playMode == PlayMode.NORMAL || playMode == PlayMode.REVERSED)){
-            if(playMode == PlayMode.NORMAL)
-                playMode = PlayMode.LOOP;
+        if(looping && (playMode == PlayMode.normal || playMode == PlayMode.reversed)){
+            if(playMode == PlayMode.normal)
+                playMode = PlayMode.loop;
             else
-                playMode = PlayMode.LOOP_REVERSED;
-        }else if(!looping && !(playMode == PlayMode.NORMAL || playMode == PlayMode.REVERSED)){
-            if(playMode == PlayMode.LOOP_REVERSED)
-                playMode = PlayMode.REVERSED;
+                playMode = PlayMode.loopReversed;
+        }else if(!looping && !(playMode == PlayMode.normal || playMode == PlayMode.reversed)){
+            if(playMode == PlayMode.loopReversed)
+                playMode = PlayMode.reversed;
             else
-                playMode = PlayMode.LOOP;
+                playMode = PlayMode.loop;
         }
 
         T frame = getKeyFrame(stateTime);
@@ -109,18 +109,18 @@ public class Animation<T>{
 
         int frameNumber = (int)(stateTime / frameDuration);
         switch(playMode){
-            case NORMAL:
+            case normal:
                 frameNumber = Math.min(keyFrames.length - 1, frameNumber);
                 break;
-            case LOOP:
+            case loop:
                 frameNumber = frameNumber % keyFrames.length;
                 break;
-            case LOOP_PINGPONG:
+            case loopPingPong:
                 frameNumber = frameNumber % ((keyFrames.length * 2) - 2);
                 if(frameNumber >= keyFrames.length)
                     frameNumber = keyFrames.length - 2 - (frameNumber - keyFrames.length);
                 break;
-            case LOOP_RANDOM:
+            case loopRandom:
                 int lastFrameNumber = (int)((lastStateTime) / frameDuration);
                 if(lastFrameNumber != frameNumber){
                     frameNumber = Mathf.random(keyFrames.length - 1);
@@ -128,10 +128,10 @@ public class Animation<T>{
                     frameNumber = this.lastFrameNumber;
                 }
                 break;
-            case REVERSED:
+            case reversed:
                 frameNumber = Math.max(keyFrames.length - frameNumber - 1, 0);
                 break;
-            case LOOP_REVERSED:
+            case loopReversed:
                 frameNumber = frameNumber % keyFrames.length;
                 frameNumber = keyFrames.length - frameNumber - 1;
                 break;
@@ -200,11 +200,11 @@ public class Animation<T>{
 
     /** Defines possible playback modes for an {@link Animation}. */
     public enum PlayMode{
-        NORMAL,
-        REVERSED,
-        LOOP,
-        LOOP_REVERSED,
-        LOOP_PINGPONG,
-        LOOP_RANDOM,
+        normal,
+        reversed,
+        loop,
+        loopReversed,
+        loopPingPong,
+        loopRandom,
     }
 }

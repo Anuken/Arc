@@ -111,29 +111,29 @@ class Parser{
             Effect effect = null;
             int indexOffset = 0;
 
-            TokenCategory tokenCategory = TokenCategory.EVENT;
+            TokenCategory tokenCategory = TokenCategory.event;
             InternalToken tmpToken = InternalToken.fromName(text);
             if(tmpToken == null){
                 if(TypingConfig.EFFECTS.containsKey(text)){
-                    tokenCategory = TokenCategory.EFFECT_START;
+                    tokenCategory = TokenCategory.effectStart;
                 }else if(!text.isEmpty() && TypingConfig.EFFECTS.containsKey(text.substring(1))){
-                    tokenCategory = TokenCategory.EFFECT_END;
+                    tokenCategory = TokenCategory.effectEnd;
                 }
             }else{
                 tokenCategory = tmpToken.category;
             }
 
             switch(tokenCategory){
-                case WAIT:{
+                case wait:{
                     floatValue = TypingConfig.DEFAULT_WAIT_VALUE;
                     break;
                 }
-                case EVENT:{
+                case event:{
                     stringValue = text;
                     indexOffset = -1;
                     break;
                 }
-                case SPEED:{
+                case speed:{
                     switch(text){
                         case "slower":
                             floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / 0.500f;
@@ -153,12 +153,12 @@ class Parser{
                     }
                     break;
                 }
-                case EFFECT_START:{
+                case effectStart:{
                     effect = TypingConfig.EFFECTS.get(text).get(label);
                     effect.endToken = "/" + text;
                     break;
                 }
-                case EFFECT_END:{
+                case effectEnd:{
                     break;
                 }
             }

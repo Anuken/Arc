@@ -100,7 +100,7 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener{
             dialog.dismiss();
             dialog = null;
         }
-        if(visible && dialog == null && !input.isPeripheralAvailable(Peripheral.HardwareKeyboard)){
+        if(visible && dialog == null && !input.isPeripheralAvailable(Peripheral.hardwareKeyboard)){
             handler.post(() -> {
                 dialog = createDialog();
                 dialog.show();

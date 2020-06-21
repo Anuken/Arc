@@ -27,7 +27,7 @@ public class TextureArray extends GLTexture{
     }
 
     public TextureArray(boolean useMipMaps, Fi... files){
-        this(useMipMaps, Pixmap.Format.RGBA8888, files);
+        this(useMipMaps, Pixmap.Format.rgba8888, files);
     }
 
     public TextureArray(boolean useMipMaps, Pixmap.Format format, Fi... files){

@@ -203,7 +203,7 @@ public class PixmapPacker implements Disposable{
         }else
             page.dirty = true;
 
-        page.image.setBlending(Pixmap.Blending.None);
+        page.image.setBlending(Pixmap.Blending.none);
 
         page.image.draw(image, rectX, rectY);
 

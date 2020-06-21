@@ -235,7 +235,7 @@ public class PixmapIO{
 
             ByteBuffer pixels = pixmap.getPixels();
             int oldPosition = pixels.position();
-            boolean rgba8888 = pixmap.getFormat() == Format.RGBA8888;
+            boolean rgba8888 = pixmap.getFormat() == Format.rgba8888;
             for(int y = 0, h = pixmap.getHeight(); y < h; y++){
                 int py = flipY ? (h - y - 1) : y;
                 if(rgba8888){

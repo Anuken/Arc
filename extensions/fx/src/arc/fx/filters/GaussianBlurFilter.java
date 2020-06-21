@@ -1,7 +1,6 @@
 package arc.fx.filters;
 
 import arc.fx.util.*;
-import arc.graphics.g2d.*;
 
 public class GaussianBlurFilter extends MultipassVfxFilter{
     private BlurType type;
@@ -12,7 +11,7 @@ public class GaussianBlurFilter extends MultipassVfxFilter{
     private Convolve2dFilter convolve;
 
     public GaussianBlurFilter(){
-        this(BlurType.Gaussian5x5);
+        this(BlurType.gaussian5x5);
     }
 
     public GaussianBlurFilter(BlurType blurType){
@@ -101,13 +100,13 @@ public class GaussianBlurFilter extends MultipassVfxFilter{
         float dy = this.invHeight;
 
         switch(this.type){
-            case Gaussian3x3:
-            case Gaussian5x5:
+            case gaussian3x3:
+            case gaussian5x5:
                 computeKernel(this.type.tap.radius, this.amount, outWeights);
                 computeOffsets(this.type.tap.radius, this.invWidth, this.invHeight, outOffsetsH, outOffsetsV);
                 break;
 
-            case Gaussian3x3b:
+            case gaussian3x3b:
                 // Weights and offsets are computed from a binomial distribution
                 // and reduced to be used *only* with bilinearly-filtered texture lookups
                 // with radius = 1f
@@ -141,7 +140,7 @@ public class GaussianBlurFilter extends MultipassVfxFilter{
 
                 break;
 
-            case Gaussian5x5b:
+            case gaussian5x5b:
 
                 // Weights and offsets are computed from a binomial distribution
                 // and reduced to be used *only* with bilinearly-filtered texture lookups
@@ -234,8 +233,8 @@ public class GaussianBlurFilter extends MultipassVfxFilter{
     }
 
     private enum Tap{
-        Tap3x3(1),
-        Tap5x5(2),
+        tap3x3(1),
+        tap5x5(2),
         // Tap7x7(3),
         ;
 
@@ -247,8 +246,8 @@ public class GaussianBlurFilter extends MultipassVfxFilter{
     }
 
     public enum BlurType{
-        Gaussian3x3(Tap.Tap3x3), Gaussian3x3b(Tap.Tap3x3), // R=5 (11x11, policy "higher-then-discard")
-        Gaussian5x5(Tap.Tap5x5), Gaussian5x5b(Tap.Tap5x5), // R=9 (19x19, policy "higher-then-discard")
+        gaussian3x3(Tap.tap3x3), gaussian3x3b(Tap.tap3x3), // R=5 (11x11, policy "higher-then-discard")
+        gaussian5x5(Tap.tap5x5), gaussian5x5b(Tap.tap5x5), // R=9 (19x19, policy "higher-then-discard")
         ;
 
         public final Tap tap;

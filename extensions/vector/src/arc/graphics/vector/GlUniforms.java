@@ -128,7 +128,7 @@ class GlUniforms implements Poolable{
             }
 
             Format format = image.texture.getTextureData().getFormat();
-            if(format == Format.Alpha || format == Format.Intensity || format == Format.LuminanceAlpha){
+            if(format == Format.alpha || format == Format.intensity || format == Format.luminanceAlpha){
                 imageType = ImageType.alpha;
             }else{
                 imageType = image.premultiplied ? ImageType.rgbaPremultiplied : ImageType.rgba;

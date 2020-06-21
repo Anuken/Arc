@@ -114,9 +114,9 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
         DisplayMode mode = activity.graphics.getDisplayMode();
         if(((rotation == 0 || rotation == 180) && (mode.width >= mode.height))
         || ((rotation == 90 || rotation == 270) && (mode.width <= mode.height))){
-            nativeOrientation = Orientation.Landscape;
+            nativeOrientation = Orientation.landscape;
         }else{
-            nativeOrientation = Orientation.Portrait;
+            nativeOrientation = Orientation.portrait;
         }
     }
 
@@ -584,15 +584,15 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
 
     @Override
     public boolean isPeripheralAvailable(Peripheral peripheral){
-        if(peripheral == Peripheral.Accelerometer) return accelerometerAvailable;
-        if(peripheral == Peripheral.Gyroscope) return gyroscopeAvailable;
-        if(peripheral == Peripheral.Compass) return compassAvailable;
-        if(peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
-        if(peripheral == Peripheral.OnscreenKeyboard) return true;
-        if(peripheral == Peripheral.Vibrator) return vibrator != null && vibrator.hasVibrator();
-        if(peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
-        if(peripheral == Peripheral.RotationVector) return rotationVectorAvailable;
-        return peripheral == Peripheral.Pressure;
+        if(peripheral == Peripheral.accelerometer) return accelerometerAvailable;
+        if(peripheral == Peripheral.gyroscope) return gyroscopeAvailable;
+        if(peripheral == Peripheral.compass) return compassAvailable;
+        if(peripheral == Peripheral.hardwareKeyboard) return keyboardAvailable;
+        if(peripheral == Peripheral.onscreenKeyboard) return true;
+        if(peripheral == Peripheral.vibrator) return vibrator != null && vibrator.hasVibrator();
+        if(peripheral == Peripheral.multitouchScreen) return hasMultitouch;
+        if(peripheral == Peripheral.rotationVector) return rotationVectorAvailable;
+        return peripheral == Peripheral.pressure;
     }
 
     public int getFreePointerIndex(){
@@ -770,7 +770,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
         @Override
         public void onSensorChanged(SensorEvent event){
             if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
-                if(nativeOrientation == Orientation.Portrait){
+                if(nativeOrientation == Orientation.portrait){
                     System.arraycopy(event.values, 0, accelerometerValues, 0, accelerometerValues.length);
                 }else{
                     accelerometerValues[0] = event.values[1];
@@ -782,7 +782,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
                 System.arraycopy(event.values, 0, magneticFieldValues, 0, magneticFieldValues.length);
             }
             if(event.sensor.getType() == Sensor.TYPE_GYROSCOPE){
-                if(nativeOrientation == Orientation.Portrait){
+                if(nativeOrientation == Orientation.portrait){
                     System.arraycopy(event.values, 0, gyroscopeValues, 0, gyroscopeValues.length);
                 }else{
                     gyroscopeValues[0] = event.values[1];
@@ -791,7 +791,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
                 }
             }
             if(event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR){
-                if(nativeOrientation == Orientation.Portrait){
+                if(nativeOrientation == Orientation.portrait){
                     System.arraycopy(event.values, 0, rotationVectorValues, 0, rotationVectorValues.length);
                 }else{
                     rotationVectorValues[0] = event.values[1];

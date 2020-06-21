@@ -312,12 +312,12 @@ public class IOSInput extends Input{
 
     @Override
     public boolean isPeripheralAvailable(Peripheral peripheral){
-        if(peripheral == Peripheral.Accelerometer && config.useAccelerometer) return true;
-        if(peripheral == Peripheral.MultitouchScreen) return true;
-        if(peripheral == Peripheral.Vibrator) return hasVibrator;
-        if(peripheral == Peripheral.Compass) return compassSupported;
-        if(peripheral == Peripheral.OnscreenKeyboard) return true;
-        if(peripheral == Peripheral.Pressure) return pressureSupported;
+        if(peripheral == Peripheral.accelerometer && config.useAccelerometer) return true;
+        if(peripheral == Peripheral.multitouchScreen) return true;
+        if(peripheral == Peripheral.vibrator) return hasVibrator;
+        if(peripheral == Peripheral.compass) return compassSupported;
+        if(peripheral == Peripheral.onscreenKeyboard) return true;
+        if(peripheral == Peripheral.pressure) return pressureSupported;
         return false;
     }
 
@@ -342,9 +342,9 @@ public class IOSInput extends Input{
         switch(app.uiApp.getStatusBarOrientation()){
             case LandscapeLeft:
             case LandscapeRight:
-                return Orientation.Landscape;
+                return Orientation.landscape;
             default:
-                return Orientation.Portrait;
+                return Orientation.portrait;
         }
     }
 

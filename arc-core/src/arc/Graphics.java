@@ -310,7 +310,7 @@ public abstract class Graphics implements Disposable{
     public Cursor newCursor(String filename, int scale){
         if(scale == 1 || OS.isAndroid || OS.isIos) return newCursor(filename);
         Pixmap base = new Pixmap(Core.files.internal("cursors/" + filename + ".png"));
-        Pixmap result = Pixmaps.scale(base, base.getWidth() * scale, base.getHeight() * scale, Filter.NearestNeighbour);
+        Pixmap result = Pixmaps.scale(base, base.getWidth() * scale, base.getHeight() * scale, Filter.nearestNeighbour);
         base.dispose();
         return newCursor(result, result.getWidth()/2, result.getHeight()/2);
     }

@@ -620,10 +620,10 @@ public class FreeType {
 			int pixelMode = getPixelMode();
 			int rowBytes = Math.abs(getPitch()); // We currently ignore negative pitch.
 			if (color == Color.white && pixelMode == FT_PIXEL_MODE_GRAY && rowBytes == width && gamma == 1) {
-				pixmap = new Pixmap(width, rows, Format.Alpha);
+				pixmap = new Pixmap(width, rows, Format.alpha);
 				Buffers.copy(src, pixmap.getPixels(), pixmap.getPixels().capacity());
 			} else {
-				pixmap = new Pixmap(width, rows, Format.RGBA8888);
+				pixmap = new Pixmap(width, rows, Format.rgba8888);
 				int rgba = color.rgba8888();
 				byte[] srcRow = new byte[rowBytes];
 				int[] dstRow = new int[width];
@@ -669,7 +669,7 @@ public class FreeType {
 			Pixmap converted = pixmap;
 			if (format != pixmap.getFormat()) {
 				converted = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), format);
-				converted.setBlending(Blending.None);
+				converted.setBlending(Blending.none);
 				converted.drawPixmap(pixmap, 0, 0);
 				pixmap.dispose();
 			}

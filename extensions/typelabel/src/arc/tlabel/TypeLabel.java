@@ -393,33 +393,33 @@ public class TypeLabel extends Label{
 
                 // Process tokens
                 switch(category){
-                    case SPEED:{
+                    case speed:{
                         textSpeed = entry.floatValue;
                         continue;
                     }
-                    case WAIT:{
+                    case wait:{
                         glyphCharIndex--;
                         glyphCharCompensation++;
                         charCooldown += entry.floatValue;
                         continue;
                     }
-                    case SKIP:{
+                    case skip:{
                         Log.info("SKIP at " + rawCharIndex + " from " + rawCharIndex + " to " + (rawCharIndex + entry.stringValue.length()));
                         if(entry.stringValue != null){
                             rawCharIndex += entry.stringValue.length();
                         }
                         continue;
                     }
-                    case EVENT:{
+                    case event:{
                         if(this.listener != null && !ignoringEvents){
                             listener.event(entry.stringValue);
                         }
                         continue;
                     }
-                    case EFFECT_START:
-                    case EFFECT_END: {
+                    case effectStart:
+                    case effectEnd: {
                         // Get effect class
-                        boolean isStart = category == TokenCategory.EFFECT_START;
+                        boolean isStart = category == TokenCategory.effectStart;
 
                         // End all effects of the same type
                         for(int i = 0; i < activeEffects.size; i++){

@@ -101,7 +101,7 @@ public class FloatTextureData implements TextureData{
 
     @Override
     public Format getFormat(){
-        return Format.RGBA8888; // it's not true, but FloatTextureData.getFormat() isn't used anywhere
+        return Format.rgba8888; // it's not true, but FloatTextureData.getFormat() isn't used anywhere
     }
 
     @Override

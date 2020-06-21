@@ -1,20 +1,20 @@
 package arc.tlabel;
 
 enum InternalToken{
-    WAIT("WAIT", TokenCategory.WAIT),
-    SPEED("SPEED", TokenCategory.SPEED),
-    SLOWER("SLOWER", TokenCategory.SPEED),
-    SLOW("SLOW", TokenCategory.SPEED),
-    NORMAL("NORMAL", TokenCategory.SPEED),
-    FAST("FAST", TokenCategory.SPEED),
-    FASTER("FASTER", TokenCategory.SPEED),
-    COLOR("COLOR", TokenCategory.COLOR),
-    CLEARCOLOR("CLEARCOLOR", TokenCategory.COLOR),
-    ENDCOLOR("ENDCOLOR", TokenCategory.COLOR),
-    VAR("VAR", TokenCategory.VARIABLE),
-    EVENT("EVENT", TokenCategory.EVENT),
-    RESET("RESET", TokenCategory.RESET),
-    SKIP("SKIP", TokenCategory.SKIP);
+    WAIT("WAIT", TokenCategory.wait),
+    SPEED("SPEED", TokenCategory.speed),
+    SLOWER("SLOWER", TokenCategory.speed),
+    SLOW("SLOW", TokenCategory.speed),
+    NORMAL("NORMAL", TokenCategory.speed),
+    FAST("FAST", TokenCategory.speed),
+    FASTER("FASTER", TokenCategory.speed),
+    COLOR("COLOR", TokenCategory.color),
+    CLEARCOLOR("CLEARCOLOR", TokenCategory.color),
+    ENDCOLOR("ENDCOLOR", TokenCategory.color),
+    VAR("VAR", TokenCategory.variable),
+    EVENT("EVENT", TokenCategory.event),
+    RESET("RESET", TokenCategory.reset),
+    SKIP("SKIP", TokenCategory.skip);
 
     final String name;
     final TokenCategory category;

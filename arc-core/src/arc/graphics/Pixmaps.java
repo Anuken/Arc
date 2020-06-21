@@ -63,7 +63,7 @@ public class Pixmaps{
     }
 
     public static Pixmap copy(Pixmap input){
-        Pixmap pixmap = new Pixmap(input.getWidth(), input.getHeight(), Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(input.getWidth(), input.getHeight(), Format.rgba8888);
         pixmap.drawPixmap(input, 0, 0);
         return pixmap;
     }
@@ -80,7 +80,7 @@ public class Pixmaps{
     }
 
     public static Pixmap scale(Pixmap input, float scalex, float scaley){
-        Pixmap pixmap = new Pixmap((int)(input.getWidth() * scalex), (int)(input.getHeight() * scaley), Format.RGBA8888);
+        Pixmap pixmap = new Pixmap((int)(input.getWidth() * scalex), (int)(input.getHeight() * scaley), Format.rgba8888);
         for(int x = 0; x < pixmap.getWidth(); x++){
             for(int y = 0; y < pixmap.getHeight(); y++){
                 pixmap.draw(x, y, input.getPixel((int)(x / scalex), (int)(y / scaley)));
@@ -136,7 +136,7 @@ public class Pixmaps{
     }
 
     public static Pixmap zoom(Pixmap input, int scale){
-        Pixmap pixmap = new Pixmap(input.getWidth(), input.getHeight(), Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(input.getWidth(), input.getHeight(), Format.rgba8888);
         for(int x = 0; x < pixmap.getWidth(); x++){
             for(int y = 0; y < pixmap.getHeight(); y++){
                 pixmap.draw(x, y, input.getPixel(x / scale + pixmap.getWidth() / 2 / scale, y / scale + pixmap.getHeight() / 2 / scale));
@@ -146,14 +146,14 @@ public class Pixmaps{
     }
 
     public static Pixmap resize(Pixmap input, int width, int height){
-        Pixmap pixmap = new Pixmap(width, height, Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(width, height, Format.rgba8888);
         pixmap.drawPixmap(input, width / 2 - input.getWidth() / 2, height / 2 - input.getHeight() / 2);
 
         return pixmap;
     }
 
     public static Pixmap resize(Pixmap input, int width, int height, int backgroundColor){
-        Pixmap pixmap = new Pixmap(width, height, Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(width, height, Format.rgba8888);
         pixmap.setColor(backgroundColor);
         pixmap.fill();
         pixmap.drawPixmap(input, width / 2 - input.getWidth() / 2, height / 2 - input.getHeight() / 2);
@@ -162,14 +162,14 @@ public class Pixmaps{
     }
 
     public static Pixmap crop(Pixmap input, int x, int y, int width, int height){
-        Pixmap pixmap = new Pixmap(width, height, Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(width, height, Format.rgba8888);
         pixmap.drawPixmap(input, 0, 0, x, y, width, height);
         return pixmap;
     }
 
     public static Pixmap rotate(Pixmap input, float angle){
         Vec2 vector = new Vec2();
-        Pixmap pixmap = new Pixmap(input.getHeight(), input.getWidth(), Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(input.getHeight(), input.getWidth(), Format.rgba8888);
 
         for(int x = 0; x < input.getWidth(); x++){
             for(int y = 0; y < input.getHeight(); y++){
@@ -197,7 +197,7 @@ public class Pixmaps{
     }
 
     public static Pixmap huePixmap(int width, int height){
-        Pixmap pixmap = new Pixmap(width, height, Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(width, height, Format.rgba8888);
         Color color = new Color(1, 1, 1, 1);
 
         for(int x = 0; x < width; x++){
@@ -215,7 +215,7 @@ public class Pixmaps{
     }
 
     public static Pixmap blankPixmap(){
-        Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(1, 1, Format.rgba8888);
         pixmap.setColor(Color.white);
         pixmap.fill();
         return pixmap;
@@ -233,7 +233,7 @@ public class Pixmaps{
 
     public static void drawPixel(Texture texture, int x, int y, int color){
         if(drawPixmap == null){
-            drawPixmap = new Pixmap(1, 1, Format.RGBA8888);
+            drawPixmap = new Pixmap(1, 1, Format.rgba8888);
         }
 
         drawPixmap.setColor(color);

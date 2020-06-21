@@ -152,7 +152,7 @@ public class Gradient implements Poolable, Disposable{
     private Texture createTexture(){
         int gradientStops = getLength();
         int width = gradientStops * 2;
-        Pixmap data = new Pixmap(width, 1, Format.RGBA8888);
+        Pixmap data = new Pixmap(width, 1, Format.rgba8888);
 
         for(int i = 0; i < gradientStops; i++){
             data.draw(i * 2, 0, Color.rgba8888(getOffset(i), 0, 0, 1));

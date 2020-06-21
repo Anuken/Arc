@@ -54,7 +54,7 @@ public final class ScreenUtils{
         final int potH = Mathf.nextPowerOfTwo(h);
 
         final Pixmap pixmap = getFrameBufferPixmap(x, y, w, h);
-        final Pixmap potPixmap = new Pixmap(potW, potH, Format.RGBA8888);
+        final Pixmap potPixmap = new Pixmap(potW, potH, Format.rgba8888);
         potPixmap.drawPixmap(pixmap, 0, 0);
         Texture texture = new Texture(potPixmap);
         TextureRegion textureRegion = new TextureRegion(texture, 0, h, w, -h);
@@ -67,7 +67,7 @@ public final class ScreenUtils{
     public static Pixmap getFrameBufferPixmap(int x, int y, int w, int h){
         Gl.pixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
 
-        final Pixmap pixmap = new Pixmap(w, h, Format.RGBA8888);
+        final Pixmap pixmap = new Pixmap(w, h, Format.rgba8888);
         ByteBuffer pixels = pixmap.getPixels();
         Gl.readPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
 
@@ -76,7 +76,7 @@ public final class ScreenUtils{
 
     public static Pixmap getFrameBufferPixmap(int x, int y, int w, int h, boolean flip){
         byte[] lines = getFrameBufferPixels(x, y, w, h, flip);
-        Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.rgba8888);
         Buffers.copy(lines, 0, pixmap.getPixels(), lines.length);
         return pixmap;
     }

@@ -120,22 +120,22 @@ public class Mesh implements Disposable{
      */
     public Mesh(VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttributes attributes){
         switch(type){
-            case VertexBufferObject:
+            case vertexBufferObject:
                 vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
                 indices = new IndexBufferObject(isStatic, maxIndices);
                 isVertexArray = false;
                 break;
-            case VertexBufferObjectSubData:
+            case vertexBufferObjectSubData:
                 vertices = new VertexBufferObjectSubData(isStatic, maxVertices, attributes);
                 indices = new IndexBufferObjectSubData(isStatic, maxIndices);
                 isVertexArray = false;
                 break;
-            case VertexBufferObjectWithVAO:
+            case vertexBufferObjectWithVAO:
                 vertices = new VertexBufferObjectWithVAO(isStatic, maxVertices, attributes);
                 indices = new IndexBufferObjectSubData(isStatic, maxIndices);
                 isVertexArray = false;
                 break;
-            case VertexArray:
+            case vertexArray:
             default:
                 vertices = new VertexArray(maxVertices, attributes);
                 indices = new IndexArray(maxIndices);
@@ -736,6 +736,6 @@ public class Mesh implements Disposable{
     }
 
     public enum VertexDataType{
-        VertexArray, VertexBufferObject, VertexBufferObjectSubData, VertexBufferObjectWithVAO
+        vertexArray, vertexBufferObject, vertexBufferObjectSubData, vertexBufferObjectWithVAO
     }
 }

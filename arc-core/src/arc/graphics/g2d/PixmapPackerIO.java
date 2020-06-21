@@ -40,11 +40,11 @@ public class PixmapPackerIO{
             if(page.rects.size > 0){
                 Fi pageFile = file.sibling(file.nameWithoutExtension() + "_" + (++index) + parameters.format.getExtension());
                 switch(parameters.format){
-                    case CIM:{
+                    case cim:{
                         PixmapIO.writeCIM(pageFile, page.image);
                         break;
                     }
-                    case PNG:{
+                    case png:{
                         PixmapIO.writePNG(pageFile, page.image);
                         break;
                     }
@@ -80,9 +80,9 @@ public class PixmapPackerIO{
     /** Image formats which can be used when saving a PixmapPacker. */
     public enum ImageFormat{
         /** A simple compressed image format which is arc specific. */
-        CIM(".cim"),
+        cim(".cim"),
         /** A standard compressed image format which is not arc specific. */
-        PNG(".png");
+        png(".png");
 
         private final String extension;
 
@@ -98,7 +98,7 @@ public class PixmapPackerIO{
 
     /** Additional parameters which will be used when writing a PixmapPacker. */
     public static class SaveParameters{
-        public ImageFormat format = ImageFormat.PNG;
+        public ImageFormat format = ImageFormat.png;
         public TextureFilter minFilter = TextureFilter.nearest;
         public TextureFilter magFilter = TextureFilter.nearest;
     }

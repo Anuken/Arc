@@ -34,13 +34,13 @@ public class Pixmap implements Disposable{
     
     final NativePixmap pixmap;
     int color = 0;
-    private Blending blending = Blending.SourceOver;
-    private Filter filter = Filter.BiLinear;
+    private Blending blending = Blending.sourceOver;
+    private Filter filter = Filter.bilinear;
     private boolean disposed;
 
     /** Uses RGBA8888.*/
     public Pixmap(int width, int height){
-        this(width, height, Format.RGBA8888);
+        this(width, height, Format.rgba8888);
     }
 
     /**
@@ -380,12 +380,12 @@ public class Pixmap implements Disposable{
     }
 
     /**
-     * Sets the type of {@link Blending} to be used for all operations. Default is {@link Blending#SourceOver}.
+     * Sets the type of {@link Blending} to be used for all operations. Default is {@link Blending#sourceOver}.
      * @param blending the blending type
      */
     public void setBlending(Blending blending){
         this.blending = blending;
-        int blend = blending == Blending.None ? 0 : 1;
+        int blend = blending == Blending.none ? 0 : 1;
         setBlend(pixmap.basePtr, blend);
     }
 
@@ -401,7 +401,7 @@ public class Pixmap implements Disposable{
      */
     public void setFilter(Filter filter){
         this.filter = filter;
-        int scale = filter == Filter.NearestNeighbour ? pixmapScaleNearest : pixmapScaleLinear;
+        int scale = filter == Filter.nearestNeighbour ? pixmapScaleNearest : pixmapScaleLinear;
         setScale(pixmap.basePtr, scale);
     }
 
@@ -410,29 +410,29 @@ public class Pixmap implements Disposable{
      * @author mzechner
      */
     public enum Format{
-        Alpha, Intensity, LuminanceAlpha, RGB565, RGBA4444, RGB888, RGBA8888;
+        alpha, intensity, luminanceAlpha, rgb565, rgba4444, rgb888, rgba8888;
 
         public int toPixmapFormat(){
             switch(this){
-                case Alpha:
-                case Intensity: return pixmapFormatAlpha;
-                case LuminanceAlpha: return pixmapFormatLuminanceAlpha;
-                case RGB565: return pixmapFormatRGB565;
-                case RGBA4444: return pixmapFormatRGBA4444;
-                case RGB888: return pixmapFormatRGB888;
-                case RGBA8888: return pixmapFormatRGBA8888;
+                case alpha:
+                case intensity: return pixmapFormatAlpha;
+                case luminanceAlpha: return pixmapFormatLuminanceAlpha;
+                case rgb565: return pixmapFormatRGB565;
+                case rgba4444: return pixmapFormatRGBA4444;
+                case rgb888: return pixmapFormatRGB888;
+                case rgba8888: return pixmapFormatRGBA8888;
                 default: throw new ArcRuntimeException("Unknown Format: " + this);
             }
         }
 
         public static Format fromPixmapFormat(int format){
             switch(format){
-                case pixmapFormatAlpha: return Alpha;
-                case pixmapFormatLuminanceAlpha: return LuminanceAlpha;
-                case pixmapFormatRGB565: return RGB565;
-                case pixmapFormatRGBA4444: return RGBA4444;
-                case pixmapFormatRGB888: return RGB888;
-                case pixmapFormatRGBA8888: return RGBA8888;
+                case pixmapFormatAlpha: return alpha;
+                case pixmapFormatLuminanceAlpha: return luminanceAlpha;
+                case pixmapFormatRGB565: return rgb565;
+                case pixmapFormatRGBA4444: return rgba4444;
+                case pixmapFormatRGB888: return rgb888;
+                case pixmapFormatRGBA8888: return rgba8888;
                 default: throw new ArcRuntimeException("Unknown Pixmap Format: " + format);
             }
         }
@@ -475,7 +475,7 @@ public class Pixmap implements Disposable{
      * @author mzechner
      */
     public enum Blending{
-        None, SourceOver
+        none, sourceOver
     }
 
     /**
@@ -483,7 +483,7 @@ public class Pixmap implements Disposable{
      * @author mzechner
      */
     public enum Filter{
-        NearestNeighbour, BiLinear
+        nearestNeighbour, bilinear
     }
 
     /*JNI

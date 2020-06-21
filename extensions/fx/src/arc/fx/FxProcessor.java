@@ -41,11 +41,11 @@ public final class FxProcessor implements Disposable{
     private int width, height;
 
     public FxProcessor(){
-        this(Format.RGBA8888, Core.graphics.getBackBufferWidth(), Core.graphics.getBackBufferHeight());
+        this(Format.rgba8888, Core.graphics.getBackBufferWidth(), Core.graphics.getBackBufferHeight());
     }
 
     public FxProcessor(int w, int h){
-        this(Format.RGBA8888, w, h);
+        this(Format.rgba8888, w, h);
     }
 
     public FxProcessor(Format fboFormat, int bufferWidth, int bufferHeight){

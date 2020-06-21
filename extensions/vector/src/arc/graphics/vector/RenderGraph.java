@@ -79,7 +79,7 @@ class RenderGraph implements Poolable{
         if(frameBuffersCache.size > 0){
             return frameBuffersCache.pop();
         }else{
-            return VFrameBuffer.obtain(width, height, Format.RGBA8888);
+            return VFrameBuffer.obtain(width, height, Format.rgba8888);
         }
     }
 

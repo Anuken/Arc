@@ -123,20 +123,6 @@ public class TeaInput extends Input implements EventListener{
         return currentEventTimeStamp;
     }
 
-    @Override
-    public boolean isPeripheralAvailable(Peripheral peripheral){
-        switch(peripheral){
-            case Accelerometer:
-            case Compass:
-            case OnscreenKeyboard:
-            case Vibrator:
-                return false;
-            case HardwareKeyboard:
-                return true;
-        }
-        return false;
-    }
-
     //TODO this is broken
     protected int getRelativeX(MouseEvent e, HTMLCanvasElement target){
 //        System.out.println("left " + target.getOffsetHeight() + " " + target.getAbsoluteLeft() + " " + target.getScrollLeft());

@@ -18,7 +18,7 @@ public class BloomFilter extends FxFilter{
     public int scaling = 4;
 
     public BloomFilter(){
-        buffer = new PingPongBuffer(Format.RGBA8888);
+        buffer = new PingPongBuffer(Format.rgba8888);
 
         blur = new GaussianBlurFilter();
         threshold = new ThresholdFilter();
