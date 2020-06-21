@@ -99,8 +99,8 @@ public class PixmapPackerIO{
     /** Additional parameters which will be used when writing a PixmapPacker. */
     public static class SaveParameters{
         public ImageFormat format = ImageFormat.PNG;
-        public TextureFilter minFilter = TextureFilter.Nearest;
-        public TextureFilter magFilter = TextureFilter.Nearest;
+        public TextureFilter minFilter = TextureFilter.nearest;
+        public TextureFilter magFilter = TextureFilter.nearest;
     }
 
 }

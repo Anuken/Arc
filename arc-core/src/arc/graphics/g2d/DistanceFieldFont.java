@@ -115,7 +115,7 @@ public class DistanceFieldFont extends BitmapFont{
         // Distance field font rendering requires font texture to be filtered Linear.
         final Seq<TextureRegion> regions = getRegions();
         for(TextureRegion region : regions)
-            region.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+            region.getTexture().setFilter(TextureFilter.linear, TextureFilter.linear);
     }
 
     @Override

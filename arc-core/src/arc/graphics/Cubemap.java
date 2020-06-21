@@ -83,10 +83,10 @@ public class Cubemap extends GLTexture{
     public Cubemap(TextureData positiveX, TextureData negativeX, TextureData positiveY, TextureData negativeY,
                    TextureData positiveZ, TextureData negativeZ){
         super(GL20.GL_TEXTURE_CUBE_MAP);
-        minFilter = TextureFilter.Nearest;
-        magFilter = TextureFilter.Nearest;
-        uWrap = TextureWrap.ClampToEdge;
-        vWrap = TextureWrap.ClampToEdge;
+        minFilter = TextureFilter.nearest;
+        magFilter = TextureFilter.nearest;
+        uWrap = TextureWrap.clampToEdge;
+        vWrap = TextureWrap.clampToEdge;
         data = new FacedCubemapData(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ);
         load(data);
     }

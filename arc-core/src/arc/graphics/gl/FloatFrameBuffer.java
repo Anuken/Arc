@@ -53,11 +53,11 @@ public class FloatFrameBuffer extends FrameBuffer{
         );
         Texture result = new Texture(data);
         if(Core.app.isDesktop())
-            result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+            result.setFilter(TextureFilter.linear, TextureFilter.linear);
         else
             // no filtering for float textures in OpenGL ES
-            result.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-        result.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+            result.setFilter(TextureFilter.nearest, TextureFilter.nearest);
+        result.setWrap(TextureWrap.clampToEdge, TextureWrap.clampToEdge);
         return result;
     }
 

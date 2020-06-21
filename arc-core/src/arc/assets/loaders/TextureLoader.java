@@ -79,10 +79,10 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
         public Texture texture = null;
         /** TextureData for textures created on the fly, optional. When set, all format and genMipMaps are ignored */
         public TextureData textureData = null;
-        public TextureFilter minFilter = TextureFilter.Nearest;
-        public TextureFilter magFilter = TextureFilter.Nearest;
-        public TextureWrap wrapU = TextureWrap.ClampToEdge;
-        public TextureWrap wrapV = TextureWrap.ClampToEdge;
+        public TextureFilter minFilter = TextureFilter.nearest;
+        public TextureFilter magFilter = TextureFilter.nearest;
+        public TextureWrap wrapU = TextureWrap.clampToEdge;
+        public TextureWrap wrapV = TextureWrap.clampToEdge;
 
         public TextureParameter(){
         }

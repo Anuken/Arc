@@ -95,11 +95,11 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
         /** Generates mipmaps for the font if {@code true}. Defaults to {@code false}. **/
         public boolean genMipMaps = false;
 
-        /** The {@link TextureFilter} to use when scaling down the {@link BitmapFont}. Defaults to {@link TextureFilter#Nearest}. */
-        public TextureFilter minFilter = TextureFilter.Nearest;
+        /** The {@link TextureFilter} to use when scaling down the {@link BitmapFont}. Defaults to {@link TextureFilter#nearest}. */
+        public TextureFilter minFilter = TextureFilter.nearest;
 
-        /** The {@link TextureFilter} to use when scaling up the {@link BitmapFont}. Defaults to {@link TextureFilter#Nearest}. */
-        public TextureFilter magFilter = TextureFilter.Nearest;
+        /** The {@link TextureFilter} to use when scaling up the {@link BitmapFont}. Defaults to {@link TextureFilter#nearest}. */
+        public TextureFilter magFilter = TextureFilter.nearest;
 
         /** optional {@link BitmapFontData} to be used instead of loading the {@link Texture} directly. **/
         public BitmapFontData bitmapFontData = null;

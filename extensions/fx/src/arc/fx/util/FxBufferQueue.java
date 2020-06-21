@@ -11,10 +11,10 @@ public class FxBufferQueue implements Disposable{
     private final Seq<FrameBuffer> buffers;
     private int currentIdx = 0;
 
-    private TextureWrap wrapU = TextureWrap.ClampToEdge;
-    private TextureWrap wrapV = TextureWrap.ClampToEdge;
-    private TextureFilter filterMin = TextureFilter.Nearest;
-    private TextureFilter filterMag = TextureFilter.Nearest;
+    private TextureWrap wrapU = TextureWrap.clampToEdge;
+    private TextureWrap wrapV = TextureWrap.clampToEdge;
+    private TextureFilter filterMin = TextureFilter.nearest;
+    private TextureFilter filterMag = TextureFilter.nearest;
 
     public FxBufferQueue(Pixmap.Format pixelFormat, int fboAmount){
         if(fboAmount < 1){

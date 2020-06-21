@@ -276,37 +276,37 @@ public class Texture extends GLTexture{
 
     public enum TextureFilter{
         /** Fetch the nearest texel that best maps to the pixel on screen. */
-        Nearest(GL20.GL_NEAREST),
+        nearest(GL20.GL_NEAREST),
 
         /** Fetch four nearest texels that best maps to the pixel on screen. */
-        Linear(GL20.GL_LINEAR),
+        linear(GL20.GL_LINEAR),
 
-        /** @see TextureFilter#MipMapLinearLinear */
-        MipMap(GL20.GL_LINEAR_MIPMAP_LINEAR),
+        /** @see TextureFilter#mipMapLinearLinear */
+        mipMap(GL20.GL_LINEAR_MIPMAP_LINEAR),
 
         /**
          * Fetch the best fitting image from the mip map chain based on the pixel/texel ratio and then sample the texels with a
          * nearest filter.
          */
-        MipMapNearestNearest(GL20.GL_NEAREST_MIPMAP_NEAREST),
+        mipMapNearestNearest(GL20.GL_NEAREST_MIPMAP_NEAREST),
 
         /**
          * Fetch the best fitting image from the mip map chain based on the pixel/texel ratio and then sample the texels with a
          * Linear filter.
          */
-        MipMapLinearNearest(GL20.GL_LINEAR_MIPMAP_NEAREST),
+        mipMapLinearNearest(GL20.GL_LINEAR_MIPMAP_NEAREST),
 
         /**
          * Fetch the two best fitting images from the mip map chain and then sample the nearest texel from each of the two images,
          * combining them to the final output pixel.
          */
-        MipMapNearestLinear(GL20.GL_NEAREST_MIPMAP_LINEAR),
+        mipMapNearestLinear(GL20.GL_NEAREST_MIPMAP_LINEAR),
 
         /**
          * Fetch the two best fitting images from the mip map chain and then sample the four nearest texels from each of the two
          * images, combining them to the final output pixel.
          */
-        MipMapLinearLinear(GL20.GL_LINEAR_MIPMAP_LINEAR);
+        mipMapLinearLinear(GL20.GL_LINEAR_MIPMAP_LINEAR);
 
         public final int glEnum;
 
@@ -320,7 +320,7 @@ public class Texture extends GLTexture{
     }
 
     public enum TextureWrap{
-        MirroredRepeat(GL20.GL_MIRRORED_REPEAT), ClampToEdge(GL20.GL_CLAMP_TO_EDGE), Repeat(GL20.GL_REPEAT);
+        mirroredRepeat(GL20.GL_MIRRORED_REPEAT), clampToEdge(GL20.GL_CLAMP_TO_EDGE), repeat(GL20.GL_REPEAT);
 
         final int glEnum;
 

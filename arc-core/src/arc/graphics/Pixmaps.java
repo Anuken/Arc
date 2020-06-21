@@ -29,7 +29,7 @@ public class Pixmaps{
     public static Texture noiseTex(int w, int h){
         Pixmap p = noise(w, h);
         Texture tex = new Texture(p);
-        tex.setWrap(TextureWrap.Repeat);
+        tex.setWrap(TextureWrap.repeat);
         p.dispose();
         return tex;
     }
@@ -223,7 +223,7 @@ public class Pixmaps{
 
     public static Texture blankTexture(){
         Texture texture = new Texture(blankPixmap());
-        texture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+        texture.setWrap(TextureWrap.repeat, TextureWrap.repeat);
         return texture;
     }
 

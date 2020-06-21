@@ -15,10 +15,10 @@ public abstract class GLTexture implements Disposable{
     /** The target of this texture, used when binding the texture, e.g. GL_TEXTURE_2D */
     public final int glTarget;
     protected int glHandle;
-    protected TextureFilter minFilter = TextureFilter.Nearest;
-    protected TextureFilter magFilter = TextureFilter.Nearest;
-    protected TextureWrap uWrap = TextureWrap.ClampToEdge;
-    protected TextureWrap vWrap = TextureWrap.ClampToEdge;
+    protected TextureFilter minFilter = TextureFilter.nearest;
+    protected TextureFilter magFilter = TextureFilter.nearest;
+    protected TextureWrap uWrap = TextureWrap.clampToEdge;
+    protected TextureWrap vWrap = TextureWrap.clampToEdge;
 
     /** Generates a new OpenGL texture with the specified target. */
     public GLTexture(int glTarget){

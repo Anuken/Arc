@@ -387,9 +387,9 @@ public class TexturePacker{
     }
 
     private String getRepeatValue(){
-        if(settings.wrapX == TextureWrap.Repeat && settings.wrapY == TextureWrap.Repeat) return "xy";
-        if(settings.wrapX == TextureWrap.Repeat && settings.wrapY == TextureWrap.ClampToEdge) return "x";
-        if(settings.wrapX == TextureWrap.ClampToEdge && settings.wrapY == TextureWrap.Repeat) return "y";
+        if(settings.wrapX == TextureWrap.repeat && settings.wrapY == TextureWrap.repeat) return "xy";
+        if(settings.wrapX == TextureWrap.repeat && settings.wrapY == TextureWrap.clampToEdge) return "x";
+        if(settings.wrapX == TextureWrap.clampToEdge && settings.wrapY == TextureWrap.repeat) return "y";
         return "none";
     }
 
@@ -778,8 +778,8 @@ public class TexturePacker{
         public boolean square = false;
         public boolean stripWhitespaceX, stripWhitespaceY;
         public int alphaThreshold;
-        public TextureFilter filterMin = TextureFilter.Nearest, filterMag = TextureFilter.Nearest;
-        public TextureWrap wrapX = TextureWrap.ClampToEdge, wrapY = TextureWrap.ClampToEdge;
+        public TextureFilter filterMin = TextureFilter.nearest, filterMag = TextureFilter.nearest;
+        public TextureWrap wrapX = TextureWrap.clampToEdge, wrapY = TextureWrap.clampToEdge;
         public Format format = Format.RGBA8888;
         public boolean alias = true;
         public String outputFormat = "png";

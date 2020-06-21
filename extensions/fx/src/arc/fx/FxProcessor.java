@@ -126,7 +126,7 @@ public final class FxProcessor implements Disposable{
     }
 
     public void setTextureFilter(TextureFilter filter){
-        setBufferTextureParams(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, filter, filter);
+        setBufferTextureParams(TextureWrap.clampToEdge, TextureWrap.clampToEdge, filter, filter);
     }
 
     public boolean isCapturing(){

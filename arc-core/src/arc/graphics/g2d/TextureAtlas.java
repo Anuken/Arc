@@ -371,15 +371,15 @@ public class TextureAtlas implements Disposable{
                         TextureFilter max = TextureFilter.valueOf(tuple[1]);
 
                         String direction = readValue(reader);
-                        TextureWrap repeatX = ClampToEdge;
-                        TextureWrap repeatY = ClampToEdge;
+                        TextureWrap repeatX = clampToEdge;
+                        TextureWrap repeatY = clampToEdge;
                         if(direction.equals("x"))
-                            repeatX = Repeat;
+                            repeatX = repeat;
                         else if(direction.equals("y"))
-                            repeatY = Repeat;
+                            repeatY = repeat;
                         else if(direction.equals("xy")){
-                            repeatX = Repeat;
-                            repeatY = Repeat;
+                            repeatX = repeat;
+                            repeatY = repeat;
                         }
 
                         pageImage = new Page(file, width, height, min.isMipMap(), format, min, max, repeatX, repeatY);

@@ -425,9 +425,9 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         /** generate mipmaps? **/
         public boolean generateMipMaps = false;
         /** The TextureFilter to use for minification **/
-        public TextureFilter textureMinFilter = TextureFilter.Nearest;
+        public TextureFilter textureMinFilter = TextureFilter.nearest;
         /** The TextureFilter to use for magnification **/
-        public TextureFilter textureMagFilter = TextureFilter.Nearest;
+        public TextureFilter textureMagFilter = TextureFilter.nearest;
         /** Whether to convert the objects' pixel position and size to the equivalent in tile space. **/
         public boolean convertObjectToTileSpace = false;
         /**

@@ -39,10 +39,10 @@ public final class PingPongBuffer{
     /** Where capturing is started. Should be true between {@link #begin()} and {@link #end()}. */
     private boolean capturing;
 
-    private TextureWrap wrapU = TextureWrap.ClampToEdge;
-    private TextureWrap wrapV = TextureWrap.ClampToEdge;
-    private TextureFilter filterMin = TextureFilter.Linear;
-    private TextureFilter filterMag = TextureFilter.Linear;
+    private TextureWrap wrapU = TextureWrap.clampToEdge;
+    private TextureWrap wrapV = TextureWrap.clampToEdge;
+    private TextureFilter filterMin = TextureFilter.linear;
+    private TextureFilter filterMag = TextureFilter.linear;
 
     /**
      * Initializes ping-pong buffer with the size of the client's area (usually window size).

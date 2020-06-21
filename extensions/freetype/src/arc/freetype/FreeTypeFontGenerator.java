@@ -805,9 +805,9 @@ public class FreeTypeFontGenerator implements Disposable{
         /** Whether to generate mip maps for the resulting texture */
         public boolean genMipMaps = false;
         /** Minification filter */
-        public TextureFilter minFilter = TextureFilter.Nearest;
+        public TextureFilter minFilter = TextureFilter.nearest;
         /** Magnification filter */
-        public TextureFilter magFilter = TextureFilter.Nearest;
+        public TextureFilter magFilter = TextureFilter.nearest;
         /**
          * When true, glyphs are rendered on the fly to the font's glyph page textures as they are needed. The
          * FreeTypeFontGenerator must not be disposed until the font is no longer needed. The FreeTypeBitmapFontData must be

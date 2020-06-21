@@ -81,9 +81,9 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
         public Cubemap cubemap = null;
         /** CubemapData for textures created on the fly, optional. When set, all format and genMipMaps are ignored */
         public CubemapData cubemapData = null;
-        public TextureFilter minFilter = TextureFilter.Nearest;
-        public TextureFilter magFilter = TextureFilter.Nearest;
-        public TextureWrap wrapU = TextureWrap.ClampToEdge;
-        public TextureWrap wrapV = TextureWrap.ClampToEdge;
+        public TextureFilter minFilter = TextureFilter.nearest;
+        public TextureFilter magFilter = TextureFilter.nearest;
+        public TextureWrap wrapU = TextureWrap.clampToEdge;
+        public TextureWrap wrapV = TextureWrap.clampToEdge;
     }
 }

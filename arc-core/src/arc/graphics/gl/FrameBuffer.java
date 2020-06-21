@@ -125,8 +125,8 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
     protected Texture createTexture(FrameBufferTextureAttachmentSpec attachmentSpec){
         GLOnlyTextureData data = new GLOnlyTextureData(bufferBuilder.width, bufferBuilder.height, 0, attachmentSpec.internalFormat, attachmentSpec.format, attachmentSpec.type);
         Texture result = new Texture(data);
-        result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-        result.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+        result.setFilter(TextureFilter.linear, TextureFilter.linear);
+        result.setWrap(TextureWrap.clampToEdge, TextureWrap.clampToEdge);
         return result;
     }
 
