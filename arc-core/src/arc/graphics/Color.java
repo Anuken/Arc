@@ -19,6 +19,7 @@ public class Color{
     /** Convenience for frequently used <code>WHITE.toFloatBits()</code> */
     public static final float whiteFloatBits = white.toFloatBits();
     public static final float clearFloatBits = clear.toFloatBits();
+    public static final float blackFloatBits = black.toFloatBits();
 
     public static final Color blue = new Color(0, 0, 1, 1);
     public static final Color navy = new Color(0, 0, 0.5f, 1);

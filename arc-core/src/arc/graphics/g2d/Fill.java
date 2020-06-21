@@ -58,6 +58,66 @@ public class Fill{
         quad(x1, y1, x2, y2, x3, y3, x3, y3);
     }
 
+    /**
+     * Draws an uncentered drop shadow.
+     * @param x shadow bottom left X
+     * @param y shadow bottom left Y
+     * */
+    public static void dropShadowRect(float x, float y, float width, float height, float blur, float opacity){
+        dropShadow(x + width/2f, y + height/2f, width, height, blur, opacity);
+    }
+
+    /**
+     * Draws a centered drop shadow.
+     * @param blur shadow size in units
+     * @param opacity shadow opacity
+     * @param x shadow center X
+     * @param y shadow center Y
+     * */
+    public static void dropShadow(float x, float y, float width, float height, float blur, float opacity){
+        float edge = Color.clearFloatBits;
+        float center = Color.toFloatBits(0, 0, 0, opacity);
+        float inside = blur/2f, outside = blur;
+
+        float x1 = x - Math.max(width/2f - inside, 0), y1 = y - Math.max(height/2f - inside, 0), x2 = x + Math.max(width/2f - inside, 0), y2 = y + Math.max(height/2f - inside, 0);
+        float bx1 = x1 - outside, by1 = y1 - outside, bx2 = x2 + outside, by2 = y2 + outside;
+
+        //center
+        quad(x1, y1, center, x2, y1, center, x2, y2, center, x1, y2, center);
+
+        //bottom
+        quad(
+        x1, y1, center,
+        bx1, by1, edge,
+        bx2, by1, edge,
+        x2, y1, center
+        );
+
+        //right
+        quad(
+        x2, y1, center,
+        bx2, by1, edge,
+        bx2, by2, edge,
+        x2, y2, center
+        );
+
+        //top
+        quad(
+        x1, y2, center,
+        bx1, by2, edge,
+        bx2, by2, edge,
+        x2, y2, center
+        );
+
+        //left
+        quad(
+        x1, y1, center,
+        bx1, by1, edge,
+        bx1, by2, edge,
+        x1, y2, center
+        );
+    }
+
     public static void light(float x, float y, int sides, float radius, Color center, Color edge){
         float centerf = center.toFloatBits(), edgef = edge.toFloatBits();
 
