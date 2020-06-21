@@ -47,8 +47,8 @@ class VFrameBuffer implements Poolable{
 
     private boolean init(int width, int height, Format format){
         Texture texture = new Texture(width, height, format);
-        texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-        texture.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+        texture.setFilter(TextureFilter.linear, TextureFilter.linear);
+        texture.setWrap(TextureWrap.clampToEdge, TextureWrap.clampToEdge);
         ownsTexture = true;
         return init(texture);
     }
