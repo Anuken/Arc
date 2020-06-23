@@ -317,19 +317,19 @@ public class IntIntMap implements Iterable<IntIntMap.Entry>{
         return defaultValue;
     }
 
-    public int inc(int key){
-        return inc(key, 1);
+    public int increment(int key){
+        return increment(key, 1);
     }
 
-    public int inc(int key, int amount){
-        return getAndIncrement(key, 0, amount);
+    public int increment(int key, int amount){
+        return increment(key, 0, amount);
     }
 
     /**
      * Returns the key's current value and increments the stored value. If the key is not in the map, defaultValue + increment is
      * put into the map.
      */
-    public int getAndIncrement(int key, int defaultValue, int increment){
+    public int increment(int key, int defaultValue, int increment){
         if(key == 0){
             if(hasZeroValue){
                 int value = zeroValue;

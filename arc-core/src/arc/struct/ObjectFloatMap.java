@@ -298,7 +298,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>>{
      * Returns the key's current value and increments the stored value. If the key is not in the map, defaultValue + increment is
      * put into the map.
      */
-    public float getAndIncrement(K key, float defaultValue, float increment){
+    public float increment(K key, float defaultValue, float increment){
         int hashCode = key.hashCode();
         int index = hashCode & mask;
         if(!key.equals(keyTable[index])){

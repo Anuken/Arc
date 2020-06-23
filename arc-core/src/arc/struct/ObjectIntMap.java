@@ -293,18 +293,18 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>>{
     }
 
     public int increment(K key){
-        return getAndIncrement(key, 0, 1);
+        return increment(key, 0, 1);
     }
 
     public int increment(K key, int amount){
-        return getAndIncrement(key, 0, amount);
+        return increment(key, 0, amount);
     }
 
     /**
      * Returns the key's current value and increments the stored value. If the key is not in the map, defaultValue + increment is
      * put into the map.
      */
-    public int getAndIncrement(K key, int defaultValue, int increment){
+    public int increment(K key, int defaultValue, int increment){
         int hashCode = key.hashCode();
         int index = hashCode & mask;
         if(!key.equals(keyTable[index])){

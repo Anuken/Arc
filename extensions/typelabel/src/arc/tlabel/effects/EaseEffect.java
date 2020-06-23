@@ -25,7 +25,7 @@ public class EaseEffect extends Effect{
         float realIntensity = intensity * (elastic ? 3f : 1f) * DEFAULT_INTENSITY;
 
         // Calculate progress
-        float timePassed = timePassedByGlyphIndex.getAndIncrement(localIndex, 0, delta);
+        float timePassed = timePassedByGlyphIndex.increment(localIndex, 0, delta);
         float progress = timePassed / realIntensity;
         if(progress < 0 || progress > 1){
             return;
