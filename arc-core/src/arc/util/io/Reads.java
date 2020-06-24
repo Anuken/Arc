@@ -124,6 +124,15 @@ public class Reads implements Closeable{
         }
     }
 
+    /** skip bytes */
+    public void skip(int amount){
+        try{
+            input.skipBytes(amount);
+        }catch(IOException e){
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void close(){
         if(input instanceof Closeable){
