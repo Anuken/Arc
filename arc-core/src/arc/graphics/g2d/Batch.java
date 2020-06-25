@@ -13,7 +13,6 @@ public abstract class Batch implements Disposable{
     protected boolean sortAscending = true;
     protected int idx = 0;
     protected Texture lastTexture = null;
-    protected float invTexWidth = 0, invTexHeight = 0;
 
     protected boolean apply;
 
@@ -144,8 +143,6 @@ public abstract class Batch implements Disposable{
     protected void switchTexture(Texture texture){
         flush();
         lastTexture = texture;
-        invTexWidth = 1.0f / texture.getWidth();
-        invTexHeight = 1.0f / texture.getHeight();
     }
 
     protected void setShader(Shader shader){

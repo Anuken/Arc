@@ -162,6 +162,26 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
             alert.setNegativeButton(context.getString(android.R.string.cancel), (dialog, whichButton) -> Core.app.post(() -> info.canceled.run()));
             alert.setOnCancelListener(arg0 -> Core.app.post(() -> info.canceled.run()));
             AlertDialog dialog = alert.show();
+
+            input.addTextChangedListener(new TextWatcher(){
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2){
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2){
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable){
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(!input.getText().toString().trim().isEmpty());
+                }
+            });
+
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(!input.getText().toString().trim().isEmpty());
+
             dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
             dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         });
