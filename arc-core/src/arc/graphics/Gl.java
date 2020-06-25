@@ -377,6 +377,9 @@ public class Gl{
     public static void blendFunc(int sfactor, int dfactor){
         if(lastSfactor == sfactor && lastDfactor == dfactor) return;
         Core.gl.glBlendFunc(lastSfactor = sfactor, lastDfactor = dfactor);
+
+        lastSfactor = sfactor;
+        lastDfactor = dfactor;
     }
 
     public static void clear(int mask){
