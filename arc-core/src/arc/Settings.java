@@ -252,13 +252,17 @@ public class Settings{
         modified = true;
     }
 
-    public <T> T getJson(String name, Class<T> type, Prov<T> def){
+    public <T> T getJson(String name, Class<T> type, Class elementType, Prov<T> def){
         try{
             byteInputStream.setBytes(getBytes(name));
-            return json.readValue(type, ureader.parse(byteInputStream));
+            return json.readValue(type, elementType, ureader.parse(byteInputStream));
         }catch(Throwable e){
             return def.get();
         }
+    }
+
+    public <T> T getJson(String name, Class<T> type, Prov<T> def){
+        return getJson(name, type, null, def);
     }
 
     public float getFloat(String name, float def){
