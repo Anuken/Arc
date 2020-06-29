@@ -594,6 +594,9 @@ public class Server implements EndPoint{
         return connections;
     }
 
+    //I don't care about deprecation here, as the socket system methods won't be removed
+    //it really doesn't matter if the multicast works or not
+    @SuppressWarnings("deprecation")
     class DiscoveryReceiver{
         MulticastSocket socket = null;
         Thread multicastThread;
