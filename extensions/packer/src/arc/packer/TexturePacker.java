@@ -611,7 +611,7 @@ public class TexturePacker{
             TexturePackerFileProcessor processor = new TexturePackerFileProcessor(settings, packFileName, progress);
             processor.process(new File(input), new File(output));
         }catch(Exception ex){
-            throw new RuntimeException("Error packing images.", ex);
+            throw new RuntimeException("Error packing images: " + Strings.getFinalMesage(ex), ex);
         }
     }
 
