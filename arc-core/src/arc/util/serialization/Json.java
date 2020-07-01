@@ -156,6 +156,7 @@ public class Json{
         metadata.elementType = elementType;
     }
 
+    @SuppressWarnings("deprecation")
     public OrderedMap<String, FieldMetadata> getFields(Class type){
         OrderedMap<String, FieldMetadata> fields = typeToFields.get(type);
         if(fields != null) return fields;
@@ -166,19 +167,19 @@ public class Json{
             classHierarchy.add(nextClass);
             nextClass = nextClass.getSuperclass();
         }
-        ArrayList<Field> allFields = new ArrayList();
+        Seq<Field> allFields = new Seq<>();
         for(int i = classHierarchy.size - 1; i >= 0; i--)
-            Collections.addAll(allFields, classHierarchy.get(i).getDeclaredFields());
+            allFields.addAll(classHierarchy.get(i).getDeclaredFields());
 
-        OrderedMap<String, FieldMetadata> nameToField = new OrderedMap(allFields.size());
-        for(int i = 0, n = allFields.size(); i < n; i++){
-            Field field = allFields.get(i);
+        OrderedMap<String, FieldMetadata> nameToField = new OrderedMap(allFields.size);
+        for(Field field: allFields){
 
             if(Modifier.isTransient(field.getModifiers())) continue;
             if(Modifier.isStatic(field.getModifiers())) continue;
             if(field.isSynthetic()) continue;
             if(type.isEnum()) continue;
 
+            //this is deprecated, but I know what I'm doing
             if(!field.isAccessible()){
                 try{
                     field.setAccessible(true);
