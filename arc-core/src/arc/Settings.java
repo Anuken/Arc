@@ -23,6 +23,8 @@ public class Settings{
     protected boolean modified;
     protected Cons<Throwable> errorHandler;
     protected boolean hasErrored;
+    protected boolean shouldAutosave = true;
+    protected boolean loaded = false;
 
     //IO utility objects
     protected ByteArrayOutputStream byteStream = new ByteArrayOutputStream(32);
@@ -49,11 +51,18 @@ public class Settings{
         errorHandler = handler;
     }
 
+    /** Set whether the data should autosave immediately upon changing a value.
+     * Default value: true. */
+    public void setAutosave(boolean autosave){
+        this.shouldAutosave = autosave;
+    }
+
     /** Loads all values and keybinds. */
     public void load(){
         try{
             loadValues();
             keybinds.load();
+            loaded = true;
         }catch(Throwable error){
             if(errorHandler != null){
                 if(!hasErrored) errorHandler.get(error);
@@ -79,9 +88,16 @@ public class Settings{
         }
     }
 
+    /** Manually save, if the settings have been loaded at some point. */
+    public void manualSave(){
+        if(loaded){
+            forceSave();
+        }
+    }
+
     /** Saves if any modifications were done. */
     public void autosave(){
-        if(modified){
+        if(modified && shouldAutosave){
             forceSave();
             modified = false;
         }

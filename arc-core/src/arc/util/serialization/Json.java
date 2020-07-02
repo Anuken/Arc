@@ -1319,11 +1319,4 @@ public class Json{
         }
         return null;
     }
-
-    static abstract public class ReadOnlySerializer<T> implements Serializer<T>{
-        public void write(Json json, T object, Class knownType){
-        }
-
-        abstract public T read(Json json, JsonValue jsonData, Class type);
-    }
 }
