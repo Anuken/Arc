@@ -122,6 +122,15 @@ public final class AndroidAudio extends Audio implements Runnable{
         if(soundPool == null){
             throw new ArcRuntimeException("Android audio is not enabled by the application config.");
         }
+        //make sure the file is of type AndroidFileHandle, and if not, make it so
+        if(!(file instanceof AndroidFi)){
+            Fi destination = Core.files.local("__android_audio__").child(file.name());
+            if(!destination.exists() || destination.length() != file.length()){
+                file.copyTo(destination);
+            }
+            file = destination;
+        }
+
         AndroidFi aHandle = (AndroidFi)file;
 
         MediaPlayer mediaPlayer = new MediaPlayer();
