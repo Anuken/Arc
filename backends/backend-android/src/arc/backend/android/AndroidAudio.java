@@ -122,7 +122,8 @@ public final class AndroidAudio extends Audio implements Runnable{
         if(soundPool == null){
             throw new ArcRuntimeException("Android audio is not enabled by the application config.");
         }
-        AndroidFi aHandle = (AndroidFi)file;
+
+        AndroidFi aHandle = checkFile(file);
 
         MediaPlayer mediaPlayer = new MediaPlayer();
 
@@ -190,16 +191,9 @@ public final class AndroidAudio extends Audio implements Runnable{
         if(soundPool == null){
             throw new ArcRuntimeException("Android audio is not enabled by the application config.");
         }
-        //make sure the file is of type AndroidFileHandle, and if not, make it so
-        if(!(file instanceof AndroidFi)){
-            Fi destination = Core.files.local("__android_audio__").child(file.name());
-            if(!destination.exists() || destination.length() != file.length()){
-                file.copyTo(destination);
-            }
-            file = destination;
-        }
 
-        AndroidFi aHandle = (AndroidFi)file;
+        AndroidFi aHandle = checkFile(file);
+
         if(aHandle.type() == FileType.internal){
             try{
                 AssetFileDescriptor descriptor = aHandle.getAssetFileDescriptor();
@@ -226,6 +220,20 @@ public final class AndroidAudio extends Audio implements Runnable{
             throw new ArcRuntimeException("Android audio is not enabled by the application config.");
         }
         return new AndroidAudioRecorder(samplingRate, isMono);
+    }
+
+    private AndroidFi checkFile(Fi file){
+        //make sure the file is of type AndroidFileHandle, and if not, make it so
+        if(!(file instanceof AndroidFi)){
+            Fi cacheDir = Core.files.absolute(((AndroidApplication)Core.app).getContext().getCacheDir().getAbsolutePath());
+            //copy file to cache directory
+            Fi destination = cacheDir.child("audiocache").child(file.name());
+            if(!destination.exists() || destination.length() != file.length()){
+                file.copyTo(destination);
+            }
+            return (AndroidFi)destination;
+        }
+        return (AndroidFi)file;
     }
 
     /** Kills the soundpool and all other resources */
