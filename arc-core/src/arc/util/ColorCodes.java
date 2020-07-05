@@ -1,7 +1,6 @@
 package arc.util;
 
-import arc.struct.ObjectMap;
-import arc.struct.ObjectMap.Keys;
+import arc.struct.*;
 
 /** Note that these color codes will only work on linux or mac terminals. */
 public class ColorCodes{
@@ -31,7 +30,7 @@ public class ColorCodes{
     public static String BACK_YELLOW = "\u001B[43m";
     public static String BACK_BLUE = "\u001B[44m";
 
-    private static ObjectMap<String, String> codes = new ObjectMap<>();
+    public static final ObjectMap<String, String> codes = new ObjectMap<>();
 
     static{
         //disable color codes on windows
@@ -70,7 +69,7 @@ public class ColorCodes{
     }
 
     public static Iterable<String> getColorCodes(){
-        return new Keys<>(codes);
+        return codes.keys();
     }
 
     public static String getColorText(String code){
