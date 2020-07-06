@@ -31,6 +31,8 @@ public class ColorCodes{
     public static String BACK_BLUE = "\u001B[44m";
 
     public static final ObjectMap<String, String> codes = new ObjectMap<>();
+    public static final String[] colorCodes;
+    public static final String[] colorValues;
 
     static{
         //disable color codes on windows
@@ -66,10 +68,9 @@ public class ColorCodes{
         codes.put("bg", BACK_GREEN);
         codes.put("by", BACK_YELLOW);
         codes.put("bb", BACK_BLUE);
-    }
 
-    public static Iterable<String> getColorCodes(){
-        return codes.keys();
+        colorCodes = codes.keys().toSeq().toArray(String.class);
+        colorValues = codes.values().toSeq().toArray(String.class);
     }
 
     public static String getColorText(String code){

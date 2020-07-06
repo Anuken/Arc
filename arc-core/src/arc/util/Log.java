@@ -86,11 +86,11 @@ public class Log{
         text = Strings.format(text, args);
 
         if(useColors){
-            for(String color : ColorCodes.getColorCodes()){
+            for(String color : ColorCodes.colorCodes){
                 text = text.replace("&" + color, ColorCodes.getColorText(color));
             }
         }else{
-            for(String color : ColorCodes.getColorCodes()){
+            for(String color : ColorCodes.colorCodes){
                 text = text.replace("&" + color, "");
             }
         }
@@ -98,7 +98,7 @@ public class Log{
     }
 
     public static String removeCodes(String text){
-        for(String color : ColorCodes.getColorCodes()){
+        for(String color : ColorCodes.colorCodes){
             text = text.replace("&" + color, "");
         }
         return text;
