@@ -374,18 +374,18 @@ public class Table extends WidgetGroup{
     }
 
     public Cell<CheckBox> check(String text, Boolc listener){
-        CheckBox button = Elements.newCheck(text, listener);
+        CheckBox button = Elem.newCheck(text, listener);
         return add(button);
     }
 
     public Cell<CheckBox> check(String text, boolean checked, Boolc listener){
-        CheckBox button = Elements.newCheck(text, listener);
+        CheckBox button = Elem.newCheck(text, listener);
         button.setChecked(checked);
         return add(button);
     }
 
     public Cell<CheckBox> check(String text, float imagesize, boolean checked, Boolc listener){
-        CheckBox button = Elements.newCheck(text, listener);
+        CheckBox button = Elem.newCheck(text, listener);
         button.getImageCell().size(imagesize);
         button.setChecked(checked);
         return add(button);
@@ -408,22 +408,22 @@ public class Table extends WidgetGroup{
     }
 
     public Cell<TextButton> button(String text, Runnable listener){
-        TextButton button = Elements.newButton(text, listener);
+        TextButton button = Elem.newButton(text, listener);
         return add(button);
     }
 
     public Cell<TextButton> button(String text, TextButtonStyle style, Runnable listener){
-        TextButton button = Elements.newButton(text, style, listener);
+        TextButton button = Elem.newButton(text, style, listener);
         return add(button);
     }
 
     public Cell<ImageButton> button(Drawable icon, Runnable listener){
-        ImageButton button = Elements.newImageButton(icon, listener);
+        ImageButton button = Elem.newImageButton(icon, listener);
         return add(button);
     }
 
     public Cell<ImageButton> button(Drawable icon, float isize, Runnable listener){
-        ImageButton button = Elements.newImageButton(icon, listener);
+        ImageButton button = Elem.newImageButton(icon, listener);
         button.resizeImage(isize);
         return add(button);
     }
@@ -443,7 +443,7 @@ public class Table extends WidgetGroup{
     }
 
     public Cell<TextField> field(String text, Cons<String> listener){
-        TextField field = Elements.newField(text, listener);
+        TextField field = Elem.newField(text, listener);
         return add(field);
     }
 
@@ -460,7 +460,7 @@ public class Table extends WidgetGroup{
     }
 
     public Cell<TextField> field(String text, TextFieldFilter filter, Cons<String> listener){
-        TextField field = Elements.newField(text, listener);
+        TextField field = Elem.newField(text, listener);
         field.setFilter(filter);
         return add(field);
     }

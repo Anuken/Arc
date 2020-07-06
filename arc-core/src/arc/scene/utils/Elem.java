@@ -7,7 +7,7 @@ import arc.scene.ui.*;
 import arc.scene.ui.ImageButton.*;
 import arc.scene.ui.TextButton.*;
 
-public class Elements{
+public class Elem{
 
     public static CheckBox newCheck(String text, Boolc listener){
         CheckBox button = new CheckBox(text);
