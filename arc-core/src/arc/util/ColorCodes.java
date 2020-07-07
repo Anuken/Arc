@@ -30,9 +30,8 @@ public class ColorCodes{
     public static String BACK_YELLOW = "\u001B[43m";
     public static String BACK_BLUE = "\u001B[44m";
 
-    public static final ObjectMap<String, String> codes = new ObjectMap<>();
-    public static final String[] colorCodes;
-    public static final String[] colorValues;
+    public static final String[] codes;
+    public static final String[] values;
 
     static{
         //disable color codes on windows
@@ -43,37 +42,36 @@ public class ColorCodes{
             = WHITE = BACK_DEFAULT = BACK_RED = BACK_YELLOW = BACK_BLUE = BACK_GREEN = ITALIC = "";
         }
 
-        codes.put("ff", FLUSH);
-        codes.put("fr", RESET);
-        codes.put("fb", BOLD);
-        codes.put("fi", ITALIC);
-        codes.put("fu", UNDERLINED);
-        codes.put("bk", BLACK);
-        codes.put("r", RED);
-        codes.put("g", GREEN);
-        codes.put("y", YELLOW);
-        codes.put("b", BLUE);
-        codes.put("p", PURPLE);
-        codes.put("c", CYAN);
-        codes.put("lr", LIGHT_RED);
-        codes.put("lg", LIGHT_GREEN);
-        codes.put("ly", LIGHT_YELLOW);
-        codes.put("lm", LIGHT_MAGENTA);
-        codes.put("lb", LIGHT_BLUE);
-        codes.put("lc", LIGHT_CYAN);
-        codes.put("w", WHITE);
+        ObjectMap<String, String> map = ObjectMap.of(
+        "ff", FLUSH,
+        "fr", RESET,
+        "fb", BOLD,
+        "fi", ITALIC,
+        "fu", UNDERLINED,
+        "bk", BLACK,
+        "r", RED,
+        "g", GREEN,
+        "y", YELLOW,
+        "b", BLUE,
+        "p", PURPLE,
+        "c", CYAN,
+        "lr", LIGHT_RED,
+        "lg", LIGHT_GREEN,
+        "ly", LIGHT_YELLOW,
+        "lm", LIGHT_MAGENTA,
+        "lb", LIGHT_BLUE,
+        "lc", LIGHT_CYAN,
+        "w", WHITE,
 
-        codes.put("bd", BACK_DEFAULT);
-        codes.put("br", BACK_RED);
-        codes.put("bg", BACK_GREEN);
-        codes.put("by", BACK_YELLOW);
-        codes.put("bb", BACK_BLUE);
+        "bd", BACK_DEFAULT,
+        "br", BACK_RED,
+        "bg", BACK_GREEN,
+        "by", BACK_YELLOW,
+        "bb", BACK_BLUE
+        );
 
-        colorCodes = codes.keys().toSeq().toArray(String.class);
-        colorValues = codes.values().toSeq().toArray(String.class);
+        codes = map.keys().toSeq().toArray(String.class);
+        values = map.values().toSeq().toArray(String.class);
     }
-
-    public static String getColorText(String code){
-        return codes.get(code);
-    }
+    
 }
