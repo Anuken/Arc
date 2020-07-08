@@ -19,8 +19,7 @@ public class ScreenRecorder{
                     r.invoke(recorder, args);
                 }catch(Throwable ignored){}
             };
-        }catch(Throwable e){
-            e.printStackTrace();
+        }catch(Throwable ignored){
         }
     }
 
