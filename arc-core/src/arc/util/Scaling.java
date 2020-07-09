@@ -13,6 +13,10 @@ public enum Scaling{
      */
     fit,
     /**
+     * Scales the source to fit the target if it is larger, otherwise does not scale.
+     */
+    bounded,
+    /**
      * Scales the source to fill the target while keeping the same aspect ratio. This may cause the source to be larger than the
      * target in one direction.
      */
@@ -90,6 +94,12 @@ public enum Scaling{
                 temp.x = sourceWidth;
                 temp.y = targetHeight;
                 break;
+            case bounded:
+                if(sourceHeight > targetHeight || sourceWidth > targetWidth){
+                    return fit.apply(sourceWidth, sourceHeight, targetWidth, targetHeight);
+                }else{
+                    return none.apply(sourceWidth, sourceHeight, targetWidth, targetHeight);
+                }
             case none:
                 temp.x = sourceWidth;
                 temp.y = sourceHeight;
