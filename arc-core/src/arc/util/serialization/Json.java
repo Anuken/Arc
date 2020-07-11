@@ -1,12 +1,11 @@
 package arc.util.serialization;
 
-import arc.struct.Seq;
+import arc.files.*;
 import arc.struct.*;
 import arc.struct.IntSet.*;
 import arc.struct.ObjectMap.*;
 import arc.struct.Queue;
 import arc.struct.OrderedMap.*;
-import arc.files.*;
 import arc.util.ArcAnnotate.*;
 import arc.util.*;
 import arc.util.io.*;
@@ -1198,10 +1197,16 @@ public class Json{
      * type.
      */
     public void copyFields(Object from, Object to){
+        copyFields(from, to, false);
+    }
+
+    public void copyFields(Object from, Object to, boolean setFinals){
         ObjectMap<String, FieldMetadata> toFields = getFields(from.getClass());
         for(ObjectMap.Entry<String, FieldMetadata> entry : getFields(from.getClass())){
             FieldMetadata toField = toFields.get(entry.key);
             Field fromField = entry.value.field;
+            if(Modifier.isFinal(fromField.getModifiers()) && !setFinals) continue;
+
             if(toField == null) throw new SerializationException("To object is missing field" + entry.key);
             try{
                 toField.field.set(to, fromField.get(from));
