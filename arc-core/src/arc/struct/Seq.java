@@ -650,7 +650,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
 
     /** If this array is empty, returns an object specified by the constructor.
      * Otherwise, acts like pop(). */
-    public T popOr(Prov<T> constructor){
+    public T pop(Prov<T> constructor){
         if(size == 0) return constructor.get();
         return pop();
     }
