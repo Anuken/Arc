@@ -13,7 +13,7 @@ public interface ServerDiscoveryHandler{
      * Called when the {@link Server} receives a {@link DiscoverHost} packet.
      * @throws IOException from sending a response.
      */
-    void onDiscoverRecieved(InetAddress address, ReponseHandler handler) throws IOException;
+    void onDiscoverReceived(InetAddress address, ReponseHandler handler) throws IOException;
 
     interface ReponseHandler{
         void respond(ByteBuffer buffer) throws IOException;

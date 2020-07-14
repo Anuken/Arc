@@ -308,7 +308,7 @@ public class Server implements EndPoint{
                             }
                             if(object instanceof DiscoverHost){
                                 try{
-                                    discoveryHandler.onDiscoverRecieved(fromAddress.getAddress(), buff -> udp.datagramChannel.send(buff, fromAddress));
+                                    discoveryHandler.onDiscoverReceived(fromAddress.getAddress(), buff -> udp.datagramChannel.send(buff, fromAddress));
                                 }catch(IOException ignored){
                                 }
                                 continue;
@@ -626,7 +626,7 @@ public class Server implements EndPoint{
                     DatagramPacket packet = new DatagramPacket(new byte[256], 256);
                     while(true){
                         socket.receive(packet);
-                        discoveryHandler.onDiscoverRecieved(packet.getAddress(), buffer -> {
+                        discoveryHandler.onDiscoverReceived(packet.getAddress(), buffer -> {
                             byte[] data = buffer.array();
                             DatagramPacket out = new DatagramPacket(data, data.length);
                             out.setSocketAddress(packet.getSocketAddress());
