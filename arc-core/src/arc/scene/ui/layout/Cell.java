@@ -191,6 +191,31 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
+    /** For text fields. */
+    public Cell<T> maxTextLength(int length){
+        if(element instanceof TextField){
+            ((TextField)element).setMaxLength(length);
+        }
+        return this;
+    }
+
+    /** For text fields. */
+    public Cell<T> addInputDialog(){
+        if(element instanceof TextField){
+            ((TextField)element).addInputDialog();
+        }
+        return this;
+    }
+
+    /** For text fields. */
+    public Cell<T> addInputDialog(int maxLength){
+        if(element instanceof TextField){
+            ((TextField)element).setMaxLength(maxLength);
+            ((TextField)element).addInputDialog();
+        }
+        return this;
+    }
+
     public Cell<T> wrap(){
         if(get() instanceof Label){
             ((Label) get()).setWrap(true);

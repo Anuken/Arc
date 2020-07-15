@@ -1,38 +1,26 @@
 package arc.scene.ui;
 
-import arc.Core;
-import arc.Input;
-import arc.struct.Seq;
-import arc.struct.FloatSeq;
-import arc.func.Cons;
-import arc.graphics.Color;
-import arc.graphics.g2d.BitmapFont;
-import arc.graphics.g2d.BitmapFont.BitmapFontData;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.GlyphLayout;
-import arc.graphics.g2d.GlyphLayout.GlyphRun;
-import arc.input.KeyCode;
-import arc.math.Mathf;
-import arc.math.geom.Vec2;
-import arc.scene.Element;
-import arc.scene.Group;
-import arc.scene.Scene;
-import arc.scene.event.ChangeListener.ChangeEvent;
-import arc.scene.event.ClickListener;
-import arc.scene.event.IbeamCursorListener;
-import arc.scene.event.InputEvent;
-import arc.scene.event.InputListener;
-import arc.scene.style.Drawable;
-import arc.scene.style.Style;
-import arc.scene.utils.Disableable;
+import arc.*;
+import arc.Input.*;
+import arc.func.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.graphics.g2d.BitmapFont.*;
+import arc.graphics.g2d.GlyphLayout.*;
+import arc.input.*;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.scene.*;
+import arc.scene.event.ChangeListener.*;
+import arc.scene.event.*;
+import arc.scene.style.*;
+import arc.scene.utils.*;
+import arc.struct.*;
 import arc.util.*;
-import arc.util.Timer.Task;
-import arc.util.pooling.Pools;
+import arc.util.Timer.*;
+import arc.util.pooling.*;
 
-import java.lang.StringBuilder;
-
-import static arc.Core.bundle;
-import static arc.Core.scene;
+import static arc.Core.*;
 
 /**
  * A single-line text input field.
@@ -172,6 +160,24 @@ public class TextField extends Element implements Disableable{
 
     boolean withinMaxLength(int size){
         return maxLength <= 0 || size < maxLength;
+    }
+
+    public void addInputDialog(){
+        //mobile only
+        if(!app.isMobile()) return;
+
+        tapped(() -> {
+            TextInput input = new TextInput();
+            input.text = getText();
+            if(maxLength > 0) input.maxLength = maxLength;
+            input.accepted = text -> {
+                clearText();
+                appendText(text);
+                change();
+                Core.input.setOnscreenKeyboardVisible(false);
+            };
+            Core.input.getTextInput(input);
+        });
     }
 
     public int getMaxLength(){
