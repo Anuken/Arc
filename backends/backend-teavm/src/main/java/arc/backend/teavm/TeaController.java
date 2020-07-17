@@ -6,8 +6,8 @@ import arc.struct.*;
 import org.teavm.jso.gamepad.*;
 
 public class TeaController extends Controller{
-    private final static KeyCode[] buttonToKey = new KeyCode[16];
-    private final static float deadzone = 0.2f;
+    private static final KeyCode[] buttonToKey = new KeyCode[16];
+    private static final float deadzone = 0.2f;
 
     public Gamepad gamepad;
 

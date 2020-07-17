@@ -15,7 +15,7 @@ import static arc.util.OS.*;
  * @author Nathan Sweet
  */
 public class SharedLibraryLoader{
-    static private final HashSet<String> loadedLibraries = new HashSet<>();
+    private static final HashSet<String> loadedLibraries = new HashSet<>();
     private String nativesJar;
 
     public SharedLibraryLoader(){

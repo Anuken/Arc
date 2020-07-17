@@ -60,24 +60,24 @@ public class JsonValue implements Iterable<JsonValue>{
         set(value);
     }
 
-    static private boolean isFlat(JsonValue object){
+    private static boolean isFlat(JsonValue object){
         for(JsonValue child = object.child; child != null; child = child.next)
             if(child.isObject() || child.isArray()) return false;
         return true;
     }
 
-    static private boolean isNumeric(JsonValue object){
+    private static boolean isNumeric(JsonValue object){
         for(JsonValue child = object.child; child != null; child = child.next)
             if(!child.isNumber()) return false;
         return true;
     }
 
-    static private void indent(int count, StringBuilder buffer){
+    private static void indent(int count, StringBuilder buffer){
         for(int i = 0; i < count; i++)
             buffer.append('\t');
     }
 
-    static private void indent(int count, Writer buffer) throws IOException{
+    private static void indent(int count, Writer buffer) throws IOException{
         for(int i = 0; i < count; i++)
             buffer.append('\t');
     }

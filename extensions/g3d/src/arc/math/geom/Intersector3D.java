@@ -6,9 +6,9 @@ import arc.math.*;
 import java.util.*;
 
 public class Intersector3D{
-    private final static Vec3 v0 = new Vec3();
-    private final static Vec3 v1 = new Vec3();
-    private final static Vec3 v2 = new Vec3();
+    private static final Vec3 v0 = new Vec3();
+    private static final Vec3 v1 = new Vec3();
+    private static final Vec3 v2 = new Vec3();
     private static final Plane p = new Plane(new Vec3(), 0);
     private static final Vec3 i = new Vec3();
     static Vec3 best = new Vec3();

@@ -141,7 +141,7 @@ public class DistanceFieldFont extends BitmapFont{
      * needed for smoothing factor, so a flush is performed before and after every font rendering.
      * @author Florian Falkner
      */
-    static private class DistanceFieldFontCache extends BitmapFontCache{
+    private static class DistanceFieldFontCache extends BitmapFontCache{
         public DistanceFieldFontCache(DistanceFieldFont font){
             super(font, font.usesIntegerPositions());
         }

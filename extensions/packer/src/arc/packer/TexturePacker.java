@@ -306,11 +306,11 @@ public class TexturePacker{
         }
     }
 
-    static private void plot(BufferedImage dst, int x, int y, int argb){
+    private static void plot(BufferedImage dst, int x, int y, int argb){
         if(0 <= x && x < dst.getWidth() && 0 <= y && y < dst.getHeight()) dst.setRGB(x, y, argb);
     }
 
-    static private void copy(BufferedImage src, int x, int y, int w, int h, BufferedImage dst, int dx, int dy, boolean rotated){
+    private static void copy(BufferedImage src, int x, int y, int w, int h, BufferedImage dst, int dx, int dy, boolean rotated){
         if(rotated){
             for(int i = 0; i < w; i++)
                 for(int j = 0; j < h; j++)
@@ -414,7 +414,7 @@ public class TexturePacker{
     }
 
     /** @author Nathan Sweet */
-    static public class Page{
+    public static class Page{
         public String imageName;
         public Seq<Rect> outputRects, remainingRects;
         public float occupancy;
@@ -425,7 +425,7 @@ public class TexturePacker{
      * @author Regnarock
      * @author Nathan Sweet
      */
-    static public class Alias implements Comparable<Alias>{
+    public static class Alias implements Comparable<Alias>{
         public String name;
         public int index;
         public int[] splits;
@@ -461,7 +461,7 @@ public class TexturePacker{
     }
 
     /** @author Nathan Sweet */
-    static public class Rect implements Comparable<Rect>{
+    public static class Rect implements Comparable<Rect>{
         public String name;
         public int offsetX, offsetY, regionWidth, regionHeight, originalWidth, originalHeight;
         public int x, y;
@@ -570,7 +570,7 @@ public class TexturePacker{
             return name + (index != -1 ? "_" + index : "") + "[" + x + "," + y + " " + width + "x" + height + "]";
         }
 
-        static public String getAtlasName(String name, boolean flattenPaths){
+        public static String getAtlasName(String name, boolean flattenPaths){
             return flattenPaths ? new Fi(name).name() : name;
         }
     }
@@ -591,11 +591,11 @@ public class TexturePacker{
      * Packs using defaults settings.
      * @see TexturePacker#process(Settings, String, String, String)
      */
-    static public void process(String input, String output, String packFileName){
+    public static void process(String input, String output, String packFileName){
         process(new Settings(), input, output, packFileName);
     }
 
-    static public void process(Settings settings, String input, String output, String packFileName){
+    public static void process(Settings settings, String input, String output, String packFileName){
         process(settings, input, output, packFileName, null);
     }
 
@@ -605,7 +605,7 @@ public class TexturePacker{
      * @param packFileName The name of the pack file. Also used to name the page images.
      * @param progress May be null.
      */
-    static public void process(Settings settings, String input, String output, String packFileName,
+    public static void process(Settings settings, String input, String output, String packFileName,
                                final ProgressListener progress){
         try{
             TexturePackerFileProcessor processor = new TexturePackerFileProcessor(settings, packFileName, progress);
@@ -619,7 +619,7 @@ public class TexturePacker{
      * @return true if the output file does not yet exist or its last modification date is before the last modification date of
      * the input file
      */
-    static public boolean isModified(String input, String output, String packFileName, Settings settings){
+    public static boolean isModified(String input, String output, String packFileName, Settings settings){
         String packFullFileName = output;
 
         if(!packFullFileName.endsWith("/")){
@@ -644,7 +644,7 @@ public class TexturePacker{
         return isModified(inputFile, outputFile.lastModified());
     }
 
-    static private boolean isModified(File file, long lastModified){
+    private static boolean isModified(File file, long lastModified){
         if(file.lastModified() > lastModified) return true;
         File[] children = file.listFiles();
         if(children != null){
@@ -654,7 +654,7 @@ public class TexturePacker{
         return false;
     }
 
-    static public boolean processIfModified(String input, String output, String packFileName){
+    public static boolean processIfModified(String input, String output, String packFileName){
         // Default settings (Needed to access the default atlas extension string)
         Settings settings = new Settings();
 
@@ -665,7 +665,7 @@ public class TexturePacker{
         return false;
     }
 
-    static public boolean processIfModified(Settings settings, String input, String output, String packFileName){
+    public static boolean processIfModified(Settings settings, String input, String output, String packFileName){
         if(isModified(input, output, packFileName, settings)){
             process(settings, input, output, packFileName);
             return true;
@@ -685,7 +685,7 @@ public class TexturePacker{
         BufferedImage image;
     }
 
-    static public abstract class ProgressListener{
+    public static abstract class ProgressListener{
         private float scale = 1, lastUpdate;
         private final FloatSeq portions = new FloatSeq(8);
         volatile boolean cancel;
@@ -766,7 +766,7 @@ public class TexturePacker{
     }
 
     /** @author Nathan Sweet */
-    static public class Settings{
+    public static class Settings{
         public boolean pot = true;
         public boolean multipleOfFour;
         public int paddingX = 2, paddingY = 2;
@@ -870,7 +870,7 @@ public class TexturePacker{
         }
     }
 
-    static public void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception{
         Settings settings = null;
         String input = null, output = null, packFileName = "pack.atlas";
 

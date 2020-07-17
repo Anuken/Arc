@@ -57,9 +57,9 @@ import java.util.regex.Pattern;
  * @author Matthias Mann
  */
 public class BitmapFont implements Disposable{
-    static private final int LOG2_PAGE_SIZE = 9;
-    static private final int PAGE_SIZE = 1 << LOG2_PAGE_SIZE;
-    static private final int PAGES = 0x10000 / PAGE_SIZE;
+    private static final int LOG2_PAGE_SIZE = 9;
+    private static final int PAGE_SIZE = 1 << LOG2_PAGE_SIZE;
+    private static final int PAGES = 0x10000 / PAGE_SIZE;
 
     final BitmapFontData data;
     private final BitmapFontCache cache;

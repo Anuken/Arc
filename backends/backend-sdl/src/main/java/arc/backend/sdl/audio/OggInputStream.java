@@ -35,7 +35,7 @@ import java.nio.*;
  * @author kevin
  */
 public class OggInputStream extends InputStream{
-    private final static int BUFFER_SIZE = 512;
+    private static final int BUFFER_SIZE = 512;
     /** Temporary scratch buffer */
     byte[] buffer;
     /** The number of bytes read */

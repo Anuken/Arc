@@ -8,13 +8,13 @@ import org.teavm.jso.browser.*;
 
 @Replace(Timer.class)
 public class TimerEmu{
-    static private final int CANCELLED = -1;
-    static private final int FOREVER = -2;
+    private static final int CANCELLED = -1;
+    private static final int FOREVER = -2;
 
     /** Timer instance for general application wide usage. Static methods on Timer make convenient use of this instance. */
     static TimerEmu instance = new TimerEmu();
 
-    static public TimerEmu instance(){
+    public static TimerEmu instance(){
         if(instance == null){
             instance = new TimerEmu();
         }
@@ -116,19 +116,19 @@ public class TimerEmu{
 
     }
 
-    static public Timer.Task post(Timer.Task task){
+    public static Timer.Task post(Timer.Task task){
         return instance().postTask(task);
     }
 
-    static public Timer.Task schedule(Timer.Task task, float delaySeconds){
+    public static Timer.Task schedule(Timer.Task task, float delaySeconds){
         return instance().scheduleTask(task, delaySeconds);
     }
 
-    static public Timer.Task schedule(Timer.Task task, float delaySeconds, float intervalSeconds){
+    public static Timer.Task schedule(Timer.Task task, float delaySeconds, float intervalSeconds){
         return instance().scheduleTask(task, delaySeconds, intervalSeconds);
     }
 
-    static public Timer.Task schedule(Timer.Task task, float delaySeconds, float intervalSeconds, int repeatCount){
+    public static Timer.Task schedule(Timer.Task task, float delaySeconds, float intervalSeconds, int repeatCount){
         return instance().scheduleTask(task, delaySeconds, intervalSeconds, repeatCount);
     }
 }

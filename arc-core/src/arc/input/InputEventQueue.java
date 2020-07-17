@@ -8,15 +8,15 @@ import arc.util.Time;
  * @author Nathan Sweet
  */
 public class InputEventQueue implements InputProcessor{
-    static private final int SKIP = -1;
-    static private final int KEY_DOWN = 0;
-    static private final int KEY_UP = 1;
-    static private final int KEY_TYPED = 2;
-    static private final int TOUCH_DOWN = 3;
-    static private final int TOUCH_UP = 4;
-    static private final int TOUCH_DRAGGED = 5;
-    static private final int MOUSE_MOVED = 6;
-    static private final int SCROLLED = 7;
+    private static final int SKIP = -1;
+    private static final int KEY_DOWN = 0;
+    private static final int KEY_UP = 1;
+    private static final int KEY_TYPED = 2;
+    private static final int TOUCH_DOWN = 3;
+    private static final int TOUCH_UP = 4;
+    private static final int TOUCH_DRAGGED = 5;
+    private static final int MOUSE_MOVED = 6;
+    private static final int SCROLLED = 7;
     private final IntSeq queue = new IntSeq();
     private final IntSeq processingQueue = new IntSeq();
     private InputProcessor processor;

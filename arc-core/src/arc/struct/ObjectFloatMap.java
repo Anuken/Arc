@@ -644,7 +644,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>>{
         }
     }
 
-    static private class MapIterator<K>{
+    private static class MapIterator<K>{
         final ObjectFloatMap<K> map;
         public boolean hasNext;
         int nextIndex, currentIndex;

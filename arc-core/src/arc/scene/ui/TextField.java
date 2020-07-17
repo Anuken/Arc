@@ -48,9 +48,9 @@ public class TextField extends Element implements Disableable{
     static protected final char DELETE = 127;
     static protected final char BULLET = 149;
 
-    static private final Vec2 tmp1 = new Vec2();
-    static private final Vec2 tmp2 = new Vec2();
-    static private final Vec2 tmp3 = new Vec2();
+    private static final Vec2 tmp1 = new Vec2();
+    private static final Vec2 tmp2 = new Vec2();
+    private static final Vec2 tmp3 = new Vec2();
 
     public static float keyRepeatInitialTime = 0.4f;
     public static float keyRepeatTime = 0.1f;

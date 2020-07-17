@@ -84,7 +84,7 @@ public class Fi{
         }
     }
 
-    static private void emptyDirectory(File file, boolean preserveTree){
+    private static void emptyDirectory(File file, boolean preserveTree){
         if(file.exists()){
             File[] files = file.listFiles();
             if(files != null){
@@ -100,12 +100,12 @@ public class Fi{
         }
     }
 
-    static private boolean deleteDirectory(File file){
+    private static boolean deleteDirectory(File file){
         emptyDirectory(file, false);
         return file.delete();
     }
 
-    static private void copyFile(Fi source, Fi dest){
+    private static void copyFile(Fi source, Fi dest){
         try{
             dest.write(source.read(), false);
         }catch(Exception ex){
@@ -114,7 +114,7 @@ public class Fi{
         }
     }
 
-    static private void copyDirectory(Fi sourceDir, Fi destDir){
+    private static void copyDirectory(Fi sourceDir, Fi destDir){
         destDir.mkdirs();
         Fi[] files = sourceDir.list();
         for(Fi srcFile : files){

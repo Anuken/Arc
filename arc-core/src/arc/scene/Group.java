@@ -24,7 +24,7 @@ import arc.scene.utils.Cullable;
  * @author Nathan Sweet
  */
 public abstract class Group extends Element implements Cullable{
-    static private final Vec2 tmp = new Vec2();
+    private static final Vec2 tmp = new Vec2();
 
     final SnapshotSeq<Element> children = new SnapshotSeq<>(true, 4, Element.class);
     private final Affine2 worldTransform = new Affine2();

@@ -13,8 +13,8 @@ import java.util.*;
 import java.util.regex.*;
 
 public class ImageProcessor{
-    static private final BufferedImage emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
-    static private Pattern indexPattern = Pattern.compile("(.+)_(\\d+)$");
+    private static final BufferedImage emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
+    private static Pattern indexPattern = Pattern.compile("(.+)_(\\d+)$");
 
     private final Settings settings;
     private final HashMap<String, Rect> crcs = new HashMap<>();
@@ -249,7 +249,7 @@ public class ImageProcessor{
         return new Rect(source, left, top, newWidth, newHeight, false);
     }
 
-    static private String splitError(int x, int y, int[] rgba, String name){
+    private static String splitError(int x, int y, int[] rgba, String name){
         throw new RuntimeException("Invalid " + name + " ninepatch split pixel at " + x + ", " + y + ", rgba: " + rgba[0] + ", "
         + rgba[1] + ", " + rgba[2] + ", " + rgba[3]);
     }
@@ -375,7 +375,7 @@ public class ImageProcessor{
      * pixel if startPoint is false. Returns 0 if none found, as 0 is considered an invalid split point being in the outer border
      * which will be stripped.
      */
-    static private int getSplitPoint(WritableRaster raster, String name, int startX, int startY, boolean startPoint,
+    private static int getSplitPoint(WritableRaster raster, String name, int startX, int startY, boolean startPoint,
                                      boolean xAxis){
         int[] rgba = new int[4];
 
@@ -402,7 +402,7 @@ public class ImageProcessor{
         return 0;
     }
 
-    static private String hash(BufferedImage image){
+    private static String hash(BufferedImage image){
         try{
             MessageDigest digest = MessageDigest.getInstance("SHA1");
 
@@ -432,7 +432,7 @@ public class ImageProcessor{
         }
     }
 
-    static private void hash(MessageDigest digest, int value){
+    private static void hash(MessageDigest digest, int value){
         digest.update((byte)(value >> 24));
         digest.update((byte)(value >> 16));
         digest.update((byte)(value >> 8));

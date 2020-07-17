@@ -9,7 +9,7 @@ import arc.scene.Element;
  * here do nothing with the event. Users are expected to override the methods they are interested in, like this:
  */
 public class InputListener implements EventListener{
-    static private final Vec2 tmpCoords = new Vec2();
+    private static final Vec2 tmpCoords = new Vec2();
 
     public boolean handle(SceneEvent e){
         if(!(e instanceof InputEvent)) return false;

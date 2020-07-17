@@ -58,7 +58,7 @@ public class FreeTypeFontGenerator implements Disposable{
      * if necessary. Default is 1024.
      * @see #setMaxTextureSize(int)
      */
-    static private int maxTextureSize = 1024;
+    private static int maxTextureSize = 1024;
 
     final Library library;
     final Face face;

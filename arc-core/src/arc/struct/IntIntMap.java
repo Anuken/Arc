@@ -705,7 +705,7 @@ public class IntIntMap implements Iterable<IntIntMap.Entry>{
         }
     }
 
-    static private class MapIterator{
+    private static class MapIterator{
         static final int INDEX_ILLEGAL = -2;
         static final int INDEX_ZERO = -1;
         final IntIntMap map;

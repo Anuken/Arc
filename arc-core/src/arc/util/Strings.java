@@ -355,7 +355,7 @@ public class Strings{
         return buf.toString();
     }
 
-    static private void append(StringBuilder tgt, String pfx, int dgt, long val){
+    private static void append(StringBuilder tgt, String pfx, int dgt, long val){
         tgt.append(pfx);
         if(dgt > 1){
             int pad = (dgt - 1);

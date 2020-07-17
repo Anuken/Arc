@@ -22,8 +22,8 @@ import arc.struct.ShortSeq;
  * @author Nathan Sweet (rewrite, return indices, no allocation, optimizations)
  */
 public class EarClippingTriangulator{
-    static private final int CONCAVE = -1;
-    static private final int CONVEX = 1;
+    private static final int CONCAVE = -1;
+    private static final int CONVEX = 1;
 
     private final ShortSeq indicesArray = new ShortSeq();
     private final IntSeq vertexTypes = new IntSeq();
@@ -32,7 +32,7 @@ public class EarClippingTriangulator{
     private float[] vertices;
     private int vertexCount;
 
-    static private boolean areVerticesClockwise(float[] vertices, int offset, int count){
+    private static boolean areVerticesClockwise(float[] vertices, int offset, int count){
         if(count <= 2) return false;
         float area = 0, p1x, p1y, p2x, p2y;
         for(int i = offset, n = offset + count - 3; i < n; i += 2){
@@ -49,7 +49,7 @@ public class EarClippingTriangulator{
         return area + p1x * p2y - p2x * p1y < 0;
     }
 
-    static private int computeSpannedAreaSign(float p1x, float p1y, float p2x, float p2y, float p3x, float p3y){
+    private static int computeSpannedAreaSign(float p1x, float p1y, float p2x, float p2y, float p3x, float p3y){
         float area = p1x * (p3y - p2y);
         area += p2x * (p1y - p3y);
         area += p3x * (p2y - p1y);

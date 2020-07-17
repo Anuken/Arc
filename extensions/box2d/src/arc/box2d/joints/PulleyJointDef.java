@@ -8,7 +8,7 @@ import arc.math.geom.*;
  * pulley ratio.
  */
 public class PulleyJointDef extends JointDef{
-    private final static float minPulleyLength = 2.0f;
+    private static final float minPulleyLength = 2.0f;
 
     public PulleyJointDef(){
         type = JointType.PulleyJoint;

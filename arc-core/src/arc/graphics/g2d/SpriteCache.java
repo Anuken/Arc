@@ -45,7 +45,7 @@ public class SpriteCache implements Disposable{
     //xy + color + uv + mix_color
     static final int VERTEX_SIZE = 2 + 1 + 2;
 
-    static private final float[] tempVertices = new float[VERTEX_SIZE * 6];
+    private static final float[] tempVertices = new float[VERTEX_SIZE * 6];
 
     private final Mesh mesh;
     private final Mat transformMatrix = new Mat();
@@ -611,7 +611,7 @@ public class SpriteCache implements Disposable{
         return drawing;
     }
 
-    static private class Cache{
+    private static class Cache{
         final int id;
         final int offset;
         int maxCount;

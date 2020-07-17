@@ -10,7 +10,7 @@ import arc.func.Prov;
  */
 @SuppressWarnings("unchecked")
 public class Pools{
-    static private final ObjectMap<Class, Pool> typePools = new ObjectMap<>();
+    private static final ObjectMap<Class, Pool> typePools = new ObjectMap<>();
 
     private Pools(){
     }

@@ -54,7 +54,7 @@ public class VertexBatch3D{
         }
     }
 
-    static private String createVertexShader(boolean hasNormals, boolean hasColors, int numTexCoords){
+    private static String createVertexShader(boolean hasNormals, boolean hasColors, int numTexCoords){
         StringBuilder shader = new StringBuilder("attribute vec4 " + Shader.positionAttribute + ";\n"
         + (hasNormals ? "attribute vec3 " + Shader.normalAttribute + ";\n" : "")
         + (hasColors ? "attribute vec4 " + Shader.colorAttribute + ";\n" : ""));
@@ -80,7 +80,7 @@ public class VertexBatch3D{
         return shader.toString();
     }
 
-    static private String createFragmentShader(boolean hasNormals, boolean hasColors, int numTexCoords){
+    private static String createFragmentShader(boolean hasNormals, boolean hasColors, int numTexCoords){
         StringBuilder shader = new StringBuilder();
 
         if(hasColors) shader.append("varying vec4 v_col;\n");

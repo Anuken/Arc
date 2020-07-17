@@ -54,7 +54,7 @@ public class Shader implements Disposable{
     /** default name for boneweight attribute **/
     public static final String boneweightAttribute = "a_boneWeight";
     /** the list of currently available shaders **/
-    private final static ObjectMap<Application, Seq<Shader>> shaders = new ObjectMap<>();
+    private static final ObjectMap<Application, Seq<Shader>> shaders = new ObjectMap<>();
     /** flag indicating whether attributes & uniforms must be present at all times **/
     public static boolean pedantic = false;
     /**

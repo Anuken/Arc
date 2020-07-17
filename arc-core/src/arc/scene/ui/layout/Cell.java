@@ -18,8 +18,8 @@ import arc.util.pooling.Pool.*;
  * @author Nathan Sweet
  */
 public class Cell<T extends Element> implements Poolable{
-    static private Cell defaults;
-    static private StaticReset reset = new StaticReset();
+    private static Cell defaults;
+    private static StaticReset reset = new StaticReset();
     static final float unset = Float.NEGATIVE_INFINITY;
 
     float minWidth, minHeight;

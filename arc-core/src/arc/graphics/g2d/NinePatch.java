@@ -34,7 +34,7 @@ public class NinePatch{
     public static final int BOTTOM_CENTER = 7;
     public static final int BOTTOM_RIGHT = 8;
 
-    static private final Color tmpDrawColor = new Color();
+    private static final Color tmpDrawColor = new Color();
     private final Color color = new Color(Color.white);
     private Texture texture;
     private int bottomLeft = -1, bottomCenter = -1, bottomRight = -1;

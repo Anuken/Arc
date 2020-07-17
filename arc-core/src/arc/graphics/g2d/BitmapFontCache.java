@@ -18,7 +18,7 @@ import arc.util.pooling.Pools;
  * @author Alexander Dorokhov
  */
 public class BitmapFontCache{
-    static private final Color tempColor = new Color(1, 1, 1, 1);
+    private static final Color tempColor = new Color(1, 1, 1, 1);
 
     private final BitmapFont font;
     private final Seq<GlyphLayout> layouts = new Seq<>();

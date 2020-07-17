@@ -29,8 +29,8 @@ import static arc.scene.ui.layout.Cell.unset;
  * @author Nathan Sweet
  */
 public class Table extends WidgetGroup{
-    static private float[] columnWeightedWidth, rowWeightedHeight;
-    static private Pool<Cell> cellPool = Pools.get(Cell.class, Cell::new);
+    private static float[] columnWeightedWidth, rowWeightedHeight;
+    private static Pool<Cell> cellPool = Pools.get(Cell.class, Cell::new);
 
     private final Seq<Cell> cells = new Seq<>(4);
     private final Cell cellDefaults;

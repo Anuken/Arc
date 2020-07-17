@@ -12,7 +12,7 @@ public class Vec3 implements Vector<Vec3>{
     public final static Vec3 Y = new Vec3(0, 1, 0);
     public final static Vec3 Z = new Vec3(0, 0, 1);
     public final static Vec3 Zero = new Vec3(0, 0, 0);
-    private final static Mat tmpMat = new Mat();
+    private static final Mat tmpMat = new Mat();
     /** the x-component of this vector **/
     public float x;
     /** the y-component of this vector **/

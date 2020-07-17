@@ -705,7 +705,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>>{
         }
     }
 
-    static private class MapIterator<V>{
+    private static class MapIterator<V>{
         static final int INDEX_ILLEGAL = -2;
         static final int INDEX_ZERO = -1;
         final LongMap<V> map;

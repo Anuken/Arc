@@ -13,10 +13,10 @@ import arc.math.geom.Vec2;
  * @author Nathan Sweet
  */
 public class DelaunayTriangulator{
-    static private final float EPSILON = 0.000001f;
-    static private final int INSIDE = 0;
-    static private final int COMPLETE = 1;
-    static private final int INCOMPLETE = 2;
+    private static final float EPSILON = 0.000001f;
+    private static final int INSIDE = 0;
+    private static final int COMPLETE = 1;
+    private static final int INCOMPLETE = 2;
 
     private final IntSeq quicksortStack = new IntSeq();
     private final ShortSeq triangles = new ShortSeq(false, 16);

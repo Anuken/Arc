@@ -34,7 +34,7 @@ public final class Geometry{
         new Point2(-1, -1),
         new Point2(1, -1)
     };
-    static private final Vec2 tmp1 = new Vec2(), tmp2 = new Vec2(), tmp3 = new Vec2();
+    private static final Vec2 tmp1 = new Vec2(), tmp2 = new Vec2(), tmp3 = new Vec2();
 
     public static Point2 d4(int i){
         return d4[Mathf.mod(i, 4)];

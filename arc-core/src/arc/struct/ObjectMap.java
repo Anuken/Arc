@@ -727,7 +727,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
         }
     }
 
-    static private abstract class MapIterator<K, V, I> implements Iterable<I>, Iterator<I>{
+    private static abstract class MapIterator<K, V, I> implements Iterable<I>, Iterator<I>{
         final ObjectMap<K, V> map;
         public boolean hasNext;
         int nextIndex, currentIndex;

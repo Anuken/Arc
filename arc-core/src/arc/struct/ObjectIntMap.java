@@ -651,7 +651,7 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>>{
         }
     }
 
-    static private class MapIterator<K>{
+    private static class MapIterator<K>{
         final ObjectIntMap<K> map;
         public boolean hasNext;
         int nextIndex, currentIndex;

@@ -148,6 +148,6 @@ public class TeaApplication implements Application{
         }
 
         @JSBody(params = "message", script = "console.log(\"Arc: \" + message);")
-        native static public void consoleLog(String message);
+        native public static void consoleLog(String message);
     }
 }

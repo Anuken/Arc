@@ -24,7 +24,7 @@ import java.util.Vector;
 
 public class APKExpansionSupport{
     // The shared path to all app expansion files
-    private final static String EXP_PATH = "/Android/obb/";
+    private static final String EXP_PATH = "/Android/obb/";
 
     static String[] getAPKExpansionFiles(Context ctx, int mainVersion,
                                          int patchVersion){

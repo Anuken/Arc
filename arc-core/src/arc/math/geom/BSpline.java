@@ -5,7 +5,7 @@ import arc.math.Mathf;
 
 /** @author Xoppa */
 public class BSpline<T extends Vector<T>> implements Path<T>{
-    private final static float d6 = 1f / 6f;
+    private static final float d6 = 1f / 6f;
     public T[] controlPoints;
     public Seq<T> knots;
     public int degree;

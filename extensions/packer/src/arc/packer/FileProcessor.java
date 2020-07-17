@@ -224,7 +224,7 @@ public class FileProcessor{
     }
 
     /** @author Nathan Sweet */
-    static public class Entry{
+    public static class Entry{
         public File inputFile;
         /** May be null. */
         public File outputDir;

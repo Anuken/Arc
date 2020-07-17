@@ -10,7 +10,7 @@ import arc.math.FloatCounter;
  * @author xoppa
  */
 public class PerformanceCounter{
-    private final static float nano2seconds = 1f / 1000000000.0f;
+    private static final float nano2seconds = 1f / 1000000000.0f;
     /** The time value of this counter (seconds) */
     public final FloatCounter time;
     /** The load value of this counter */

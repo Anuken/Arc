@@ -46,7 +46,7 @@ public enum Scaling{
     /** The source is not scaled. */
     none;
 
-    static private final Vec2 temp = new Vec2();
+    private static final Vec2 temp = new Vec2();
 
     /**
      * Returns the size of the source scaled to the target. Note the same Vec2 instance is always returned and should never be

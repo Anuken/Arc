@@ -23,8 +23,8 @@ import static arc.Core.scene;
  * @author Nathan Sweet
  */
 public class Label extends Element{
-    static private final Color tempColor = new Color();
-    static private final GlyphLayout prefSizeLayout = new GlyphLayout();
+    private static final Color tempColor = new Color();
+    private static final GlyphLayout prefSizeLayout = new GlyphLayout();
     private final GlyphLayout layout = new GlyphLayout();
     private final Vec2 prefSize = new Vec2();
     private final StringBuilder text = new StringBuilder();

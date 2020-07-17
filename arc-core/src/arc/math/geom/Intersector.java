@@ -10,16 +10,16 @@ import arc.struct.*;
  * @author Nathan Sweet
  */
 public final class Intersector{
-    private final static Vec3 v0 = new Vec3();
-    private final static Vec3 v1 = new Vec3();
-    private final static Vec3 v2 = new Vec3();
-    private final static FloatSeq floatArray = new FloatSeq();
-    private final static FloatSeq floatArray2 = new FloatSeq();
-    private final static Vec2 ip = new Vec2();
-    private final static Vec2 ep1 = new Vec2();
-    private final static Vec2 ep2 = new Vec2();
-    private final static Vec2 s = new Vec2();
-    private final static Vec2 e = new Vec2();
+    private static final Vec3 v0 = new Vec3();
+    private static final Vec3 v1 = new Vec3();
+    private static final Vec3 v2 = new Vec3();
+    private static final FloatSeq floatArray = new FloatSeq();
+    private static final FloatSeq floatArray2 = new FloatSeq();
+    private static final Vec2 ip = new Vec2();
+    private static final Vec2 ep1 = new Vec2();
+    private static final Vec2 ep2 = new Vec2();
+    private static final Vec2 s = new Vec2();
+    private static final Vec2 e = new Vec2();
     private static final Vec3 i = new Vec3();
     private static final Vec3 dir = new Vec3();
     private static final Vec3 start = new Vec3();

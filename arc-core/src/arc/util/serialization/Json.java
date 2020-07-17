@@ -24,7 +24,7 @@ import java.util.*;
  */
 @SuppressWarnings("unchecked")
 public class Json{
-    static private final boolean debug = false;
+    private static final boolean debug = false;
     private final ObjectMap<Class, OrderedMap<String, FieldMetadata>> typeToFields = new ObjectMap();
     private final ObjectMap<String, Class> tagToClass = new ObjectMap();
     private final ObjectMap<Class, String> classToTag = new ObjectMap();
@@ -1290,7 +1290,7 @@ public class Json{
         void read(Json json, JsonValue jsonData);
     }
 
-    static public class FieldMetadata{
+    public static class FieldMetadata{
         public final Field field;
         public @Nullable Class elementType;
         public @Nullable Class keyType;
