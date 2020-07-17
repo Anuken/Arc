@@ -255,7 +255,7 @@ public class Strings{
         return parseInt(s) != Integer.MIN_VALUE;
     }
 
-    public static boolean canParsePostiveInt(String s){
+    public static boolean canParsePositiveInt(String s){
         int p = parseInt(s);
         return p >= 0;
     }
@@ -288,7 +288,7 @@ public class Strings{
 
     /** Returns Integer.MIN_VALUE if parsing failed. */
     public static int parsePositiveInt(String s){
-        if(!canParsePostiveInt(s)) return Integer.MIN_VALUE;
+        if(!canParsePositiveInt(s)) return Integer.MIN_VALUE;
         try{
             return Integer.parseInt(s);
         }catch(Exception e){
