@@ -19,7 +19,7 @@ import java.nio.channels.FileChannel;
  */
 public class AndroidFi extends Fi{
     // The asset manager, or null if this is not an internal file.
-    final private AssetManager assets;
+    private final AssetManager assets;
 
     AndroidFi(AssetManager assets, String fileName, FileType type){
         super(fileName.replace('\\', '/'), type);

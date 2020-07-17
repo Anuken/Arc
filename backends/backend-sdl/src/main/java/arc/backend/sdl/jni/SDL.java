@@ -5,7 +5,7 @@ import arc.util.*;
 import java.io.*;
 import java.nio.*;
 
-final public class SDL{
+public class SDL{
     /*JNI
 
     #ifdef __APPLE__
