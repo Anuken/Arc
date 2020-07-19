@@ -217,13 +217,13 @@ public class IOSGraphics extends Graphics{
 
         input.processEvents();
         frameId++;
+        app.defaultUpdate();
         runProtected(() -> {
             for(ApplicationListener listener : app.listeners){
                 listener.update();
             }
         });
         input.processDevices();
-        Core.settings.autosave();
     }
 
     void makeCurrent(){

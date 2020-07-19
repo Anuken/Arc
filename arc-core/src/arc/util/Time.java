@@ -10,6 +10,9 @@ public class Time{
     /** Conversion factors for ticks to other unit values. */
     public static final float toSeconds = 60f, toMinutes = 60f * 60f, toHours = 60f * 60f * 60f;
 
+    /** Global delta value. Do not change. */
+    public static float delta = 1f;
+
     private static final long nanosPerMilli = 1000000;
     private static double time;
     private static double globalTime;
@@ -52,12 +55,11 @@ public class Time{
 
     public static void updateGlobal(){
         globalTime += Core.graphics.getDeltaTime()*60f;
+        delta = deltaimpl.get();
     }
 
     /** Use normal delta time (e. g. delta * 60) */
     public static void update(){
-        float delta = delta();
-
         time += delta;
         removal.clear();
 
@@ -80,10 +82,6 @@ public class Time{
 
     public static synchronized void clear(){
         runs.clear();
-    }
-
-    public static float delta(){
-        return deltaimpl.get();
     }
 
     public static void setDeltaProvider(Floatp impl){

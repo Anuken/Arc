@@ -84,9 +84,9 @@ public class TeaApplication implements Application{
             listen(l -> l.resize(canvas.getWidth(), canvas.getHeight()));
         }
 
+        defaultUpdate();
         listen(ApplicationListener::update);
         input.postUpdate();
-        Core.settings.autosave();
         delayedStep();
     }
 

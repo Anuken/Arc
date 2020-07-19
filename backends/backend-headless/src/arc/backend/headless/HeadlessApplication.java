@@ -88,13 +88,14 @@ public class HeadlessApplication implements Application{
 
                 executeRunnables();
                 graphics.incrementFrameId();
+                defaultUpdate();
+
                 synchronized(listeners){
                     for(ApplicationListener listener : listeners){
                         listener.update();
                     }
                 }
                 graphics.updateTime();
-                Core.settings.autosave();
 
                 // If one of the runnables set running to false, for example after an exit().
                 if(!running) break;

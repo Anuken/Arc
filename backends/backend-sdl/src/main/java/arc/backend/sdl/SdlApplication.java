@@ -153,6 +153,7 @@ public class SdlApplication implements Application{
             if(audio != null){
                 audio.update();
             }
+            defaultUpdate();
 
             listen(ApplicationListener::update);
 
@@ -160,7 +161,6 @@ public class SdlApplication implements Application{
 
             SDL_GL_SwapWindow(window);
             input.postUpdate();
-            Core.settings.autosave();
         }
     }
 

@@ -186,7 +186,7 @@ public final class Mathf{
     }
 
     public static boolean chanceDelta(double d){
-        return random.nextFloat() < d * Time.delta();
+        return random.nextFloat() < d * Time.delta;
     }
 
     public static boolean chance(double d){
@@ -378,7 +378,7 @@ public final class Mathf{
 
     /** Approaches a value at linear speed. Multiplied by the delta. */
     public static float approachDelta(float from, float to, float speed){
-        return approach(from, to, Time.delta() * speed);
+        return approach(from, to, Time.delta * speed);
     }
 
 
@@ -389,7 +389,7 @@ public final class Mathf{
 
     /** Linearly interpolates between fromValue to toValue on progress position. Multiplied by Time.delta().*/
     public static float lerpDelta(float fromValue, float toValue, float progress){
-        return lerp(fromValue, toValue, clamp(progress * Time.delta()));
+        return lerp(fromValue, toValue, clamp(progress * Time.delta));
     }
 
     /**
@@ -419,7 +419,7 @@ public final class Mathf{
     }
 
     public static float slerpDelta(float fromDegrees, float toDegrees, float progress){
-        return slerp(fromDegrees, toDegrees, clamp(progress * Time.delta()));
+        return slerp(fromDegrees, toDegrees, clamp(progress * Time.delta));
     }
 
     /**

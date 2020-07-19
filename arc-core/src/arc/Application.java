@@ -23,6 +23,12 @@ public interface Application extends Disposable{
         }
     }
 
+    /** Call this before update() in each backend. */
+    default void defaultUpdate(){
+        Core.settings.autosave();
+        Time.updateGlobal();
+    }
+
     /** @return what {@link ApplicationType} this application has, e.g. Android or Desktop */
     ApplicationType getType();
 

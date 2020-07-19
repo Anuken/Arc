@@ -419,6 +419,8 @@ public class AndroidGraphics extends Graphics implements Renderer{
 
             ((AndroidInput)Core.input).processEvents();
             frameId++;
+            app.defaultUpdate();
+
             Seq<ApplicationListener> listeners = app.getListeners();
             runProtected(() -> {
                 synchronized(listeners){
@@ -429,7 +431,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
             });
 
             ((AndroidInput)Core.input).processDevices();
-            Core.settings.autosave();
         }
 
         if(lpause){

@@ -27,7 +27,7 @@ public class FilmGrainFilter extends FxFilter{
 
     @Override
     public void update(){
-        this.time = (this.time + Time.delta()/60f) % 1f;
+        this.time = (this.time + Time.delta /60f) % 1f;
         seed = time;
     }
 }

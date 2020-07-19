@@ -509,7 +509,7 @@ public class Vec2 implements Vector<Vec2>, Position{
     }
 
     public Vec2 approachDelta(Vec2 target, float alpha){
-        return approach(target, Time.delta() * alpha);
+        return approach(target, Time.delta * alpha);
     }
 
     public Vec2 approach(Vec2 target, float alpha){
@@ -535,7 +535,7 @@ public class Vec2 implements Vector<Vec2>, Position{
     }
 
     public Vec2 lerpDelta(float tx, float ty, float alpha){
-        alpha = Mathf.clamp(alpha * Time.delta());
+        alpha = Mathf.clamp(alpha * Time.delta);
         final float invAlpha = 1.0f - alpha;
         this.x = (x * invAlpha) + (tx * alpha);
         this.y = (y * invAlpha) + (ty * alpha);
@@ -543,7 +543,7 @@ public class Vec2 implements Vector<Vec2>, Position{
     }
 
     public Vec2 lerpDelta(Position target, float alpha){
-        alpha = Mathf.clamp(alpha * Time.delta());
+        alpha = Mathf.clamp(alpha * Time.delta);
         final float invAlpha = 1.0f - alpha;
         this.x = (x * invAlpha) + (target.getX() * alpha);
         this.y = (y * invAlpha) + (target.getY() * alpha);
