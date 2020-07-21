@@ -156,9 +156,6 @@ public class Lines{
                 Fill.quad(x1, y1, x3, y3, x4, y4, x2, y2);
             }
         }
-
-
-
     }
 
     public static void dashLine(float x1, float y1, float x2, float y2, int divisions){
