@@ -7,6 +7,7 @@ package arc.scene.actions;
 public class TimeScaleAction extends DelegateAction{
     private float scale;
 
+    @Override
     protected boolean delegate(float delta){
         return action == null || action.act(delta * scale);
     }

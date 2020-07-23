@@ -1,10 +1,8 @@
 package arc.scene.ui.layout;
 
-import arc.struct.SnapshotSeq;
-import arc.scene.Element;
-import arc.scene.Group;
-import arc.scene.Scene;
-import arc.scene.utils.Layout;
+import arc.scene.*;
+import arc.scene.utils.*;
+import arc.struct.*;
 
 /**
  * A {@link Group} that participates in layout and provides a minimum, preferred, and maximum size.
@@ -18,9 +16,8 @@ import arc.scene.utils.Layout;
  * are added and removed.
  * @author Nathan Sweet
  */
-public class WidgetGroup extends Group implements Layout{
+public class WidgetGroup extends Group{
     private boolean needsLayout = true;
-    private boolean fillParent;
     private boolean layoutEnabled = true;
 
     public WidgetGroup(){
@@ -62,11 +59,7 @@ public class WidgetGroup extends Group implements Layout{
     private void setLayoutEnabled(Group parent, boolean enabled){
         SnapshotSeq<Element> children = parent.getChildren();
         for(int i = 0, n = children.size; i < n; i++){
-            Element actor = children.get(i);
-            if(actor instanceof Layout)
-                actor.setLayoutEnabled(enabled);
-            else if(actor instanceof Group) //
-                setLayoutEnabled((Group)actor, enabled);
+            children.get(i).setLayoutEnabled(enabled);
         }
     }
 
@@ -74,7 +67,7 @@ public class WidgetGroup extends Group implements Layout{
     public void validate(){
         if(!layoutEnabled) return;
 
-        Group parent = getParent();
+        Group parent = this.parent;
         if(fillParent && parent != null){
             float parentWidth, parentHeight;
             Scene stage = getScene();
@@ -111,7 +104,7 @@ public class WidgetGroup extends Group implements Layout{
     @Override
     public void invalidateHierarchy(){
         invalidate();
-        Group parent = getParent();
+        Group parent = this.parent;
         if(parent != null) parent.invalidateHierarchy();
     }
 

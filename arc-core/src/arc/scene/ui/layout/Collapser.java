@@ -74,7 +74,8 @@ public class Collapser extends WidgetGroup{
     }
 
     private void updateTouchable(){
-        touchable(collapsed ? Touchable.disabled : Touchable.enabled);
+        Touchable touchable1 = collapsed ? Touchable.disabled : Touchable.enabled;
+        this.touchable = touchable1;
     }
 
     @Override

@@ -126,7 +126,7 @@ public class SettingsDialog extends Dialog{
             public abstract void add(SettingsTable table);
         }
 
-        public class CheckSetting extends Setting{
+        public static class CheckSetting extends Setting{
             boolean def;
             Boolc changed;
 
@@ -156,7 +156,7 @@ public class SettingsDialog extends Dialog{
             }
         }
 
-        public class SliderSetting extends Setting{
+        public static class SliderSetting extends Setting{
             int def;
             int min;
             int max;

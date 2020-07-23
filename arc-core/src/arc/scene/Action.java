@@ -79,6 +79,7 @@ abstract public class Action implements Poolable{
      * <p>
      * If a subclass has optional state, it must override this method, call super, and reset the optional state.
      */
+    @Override
     public void reset(){
         actor = null;
         target = null;

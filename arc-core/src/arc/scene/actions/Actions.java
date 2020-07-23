@@ -96,9 +96,7 @@ public class Actions{
 
     public static RunnableAction translateTo(float amountX, float amountY){
         RunnableAction action = action(RunnableAction.class, RunnableAction::new);
-        action.setRunnable(() -> {
-            action.getActor().setTranslation(amountX, amountY);
-        });
+        action.setRunnable(() -> action.getActor().setTranslation(amountX, amountY));
         return action;
     }
 

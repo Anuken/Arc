@@ -74,10 +74,12 @@ public class ImageButton extends Button{
         this(new ImageButtonStyle(null, null, null, imageUp, imageDown, imageChecked));
     }
 
+    @Override
     public ImageButtonStyle getStyle(){
         return style;
     }
 
+    @Override
     public void setStyle(ButtonStyle style){
         if(!(style instanceof ImageButtonStyle))
             throw new IllegalArgumentException("style must be an ImageButtonStyle.");
@@ -106,7 +108,7 @@ public class ImageButton extends Button{
         else if(style.imageUp != null)
             drawable = style.imageUp;
 
-        Color color = image.getColor();
+        Color color = image.color;
 
         if(isDisabled && style.imageDisabledColor != null)
             color = style.imageDisabledColor;

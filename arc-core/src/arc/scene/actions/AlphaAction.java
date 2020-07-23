@@ -1,6 +1,7 @@
 package arc.scene.actions;
 
 import arc.graphics.Color;
+import arc.scene.*;
 
 /**
  * Sets the alpha for an actor's color (or a specified color), from the current alpha to the new alpha. Note this action
@@ -11,15 +12,18 @@ public class AlphaAction extends TemporalAction{
     private float start, end;
     private Color color;
 
+    @Override
     protected void begin(){
-        if(color == null) color = target.getColor();
+        if(color == null) color = target.color;
         start = color.a;
     }
 
+    @Override
     protected void update(float percent){
         color.a = start + (end - start) * percent;
     }
 
+    @Override
     public void reset(){
         super.reset();
         color = null;

@@ -43,6 +43,7 @@ public class SequenceAction extends ParallelAction{
         addAction(action5);
     }
 
+    @Override
     public boolean act(float delta){
         if(index >= actions.size) return true;
         Pool pool = getPool();
@@ -59,6 +60,7 @@ public class SequenceAction extends ParallelAction{
         }
     }
 
+    @Override
     public void restart(){
         super.restart();
         index = 0;

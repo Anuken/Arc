@@ -5,7 +5,6 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.input.KeyCode;
 import arc.math.geom.*;
-import arc.math.geom.Vec2;
 import arc.scene.Element;
 import arc.scene.event.ChangeListener.ChangeEvent;
 import arc.scene.event.InputEvent;
@@ -139,7 +138,7 @@ public class Touchpad extends Element{
     public void draw(){
         validate();
 
-        Color c = getColor();
+        Color c = color;
         Draw.color(c.r, c.g, c.b, c.a * parentAlpha);
 
         float x = getX();

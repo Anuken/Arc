@@ -7,8 +7,9 @@ package arc.scene.actions;
 public class TranslateByAction extends RelativeTemporalAction{
     private float amountX, amountY;
 
+    @Override
     protected void updateRelative(float percentDelta){
-        target.getTranslation().add(amountX * percentDelta, amountY * percentDelta);
+        target.translation.add(amountX * percentDelta, amountY * percentDelta);
     }
 
     public void setAmount(float x, float y){

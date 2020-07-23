@@ -11,6 +11,7 @@ public class RemoveListenerAction extends Action{
     private EventListener listener;
     private boolean capture;
 
+    @Override
     public boolean act(float delta){
         if(capture)
             target.removeCaptureListener(listener);
@@ -35,6 +36,7 @@ public class RemoveListenerAction extends Action{
         this.capture = capture;
     }
 
+    @Override
     public void reset(){
         super.reset();
         listener = null;

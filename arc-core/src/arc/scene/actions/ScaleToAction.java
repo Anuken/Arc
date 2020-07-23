@@ -8,11 +8,13 @@ public class ScaleToAction extends TemporalAction{
     private float startX, startY;
     private float endX, endY;
 
+    @Override
     protected void begin(){
-        startX = target.getScaleX();
-        startY = target.getScaleY();
+        startX = target.scaleX;
+        startY = target.scaleY;
     }
 
+    @Override
     protected void update(float percent){
         target.setScale(startX + (endX - startX) * percent, startY + (endY - startY) * percent);
     }

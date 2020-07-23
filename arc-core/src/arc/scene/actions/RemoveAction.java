@@ -9,6 +9,7 @@ import arc.scene.Action;
 public class RemoveAction extends Action{
     private Action action;
 
+    @Override
     public boolean act(float delta){
         target.removeAction(action);
         return true;
@@ -22,6 +23,7 @@ public class RemoveAction extends Action{
         this.action = action;
     }
 
+    @Override
     public void reset(){
         super.reset();
         action = null;

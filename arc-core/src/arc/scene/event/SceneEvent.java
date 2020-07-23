@@ -53,6 +53,7 @@ public class SceneEvent implements Poolable{
         stopped = true;
     }
 
+    @Override
     public void reset(){
         targetActor = null;
         listenerActor = null;

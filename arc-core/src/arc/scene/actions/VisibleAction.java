@@ -1,6 +1,6 @@
 package arc.scene.actions;
 
-import arc.scene.Action;
+import arc.scene.*;
 
 /**
  * Sets the actor's {@link Element#visible(boolean) visibility}.
@@ -9,8 +9,9 @@ import arc.scene.Action;
 public class VisibleAction extends Action{
     private boolean visible;
 
+    @Override
     public boolean act(float delta){
-        target.visible(visible);
+        target.visible = visible;
         return true;
     }
 

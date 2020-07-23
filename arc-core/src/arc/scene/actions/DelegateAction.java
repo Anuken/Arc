@@ -22,6 +22,7 @@ abstract public class DelegateAction extends Action{
 
     abstract protected boolean delegate(float delta);
 
+    @Override
     public final boolean act(float delta){
         Pool pool = getPool();
         setPool(null); // Ensure this action can't be returned to the pool inside the delegate action.
@@ -32,20 +33,24 @@ abstract public class DelegateAction extends Action{
         }
     }
 
+    @Override
     public void restart(){
         if(action != null) action.restart();
     }
 
+    @Override
     public void reset(){
         super.reset();
         action = null;
     }
 
+    @Override
     public void setActor(Element actor){
         if(action != null) action.setActor(actor);
         super.setActor(actor);
     }
 
+    @Override
     public void setTarget(Element target){
         if(action != null) action.setTarget(target);
         super.setTarget(target);

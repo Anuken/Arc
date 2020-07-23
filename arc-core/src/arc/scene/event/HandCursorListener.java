@@ -3,7 +3,7 @@ package arc.scene.event;
 import arc.Core;
 import arc.Graphics.Cursor.SystemCursor;
 import arc.func.Boolp;
-import arc.scene.Element;
+import arc.scene.*;
 import arc.scene.utils.Disableable;
 
 public class HandCursorListener extends ClickListener{
@@ -34,6 +34,6 @@ public class HandCursorListener extends ClickListener{
     }
 
     static boolean isDisabled(Element element){
-        return element != null && (((element instanceof Disableable && ((Disableable)element).isDisabled()) || !element.isVisible()) || isDisabled(element.getParent()));
+        return element != null && (((element instanceof Disableable && ((Disableable)element).isDisabled()) || !element.visible) || isDisabled(element.parent));
     }
 }

@@ -241,6 +241,7 @@ public class Selection<T> implements Disableable, Iterable<T>{
         return null;
     }
 
+    @Override
     public Iterator<T> iterator(){
         return selected.iterator();
     }
@@ -253,11 +254,13 @@ public class Selection<T> implements Disableable, Iterable<T>{
         return selected.iterator().toSeq(array);
     }
 
+    @Override
     public boolean isDisabled(){
         return isDisabled;
     }
 
     /** If true, prevents {@link #choose(Object)} from changing the selection. Default is false. */
+    @Override
     public void setDisabled(boolean isDisabled){
         this.isDisabled = isDisabled;
     }

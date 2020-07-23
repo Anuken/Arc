@@ -139,7 +139,7 @@ public class Cell<T extends Element> implements Poolable{
     }
 
     public Cell<T> name(String name){
-        get().setName(name);
+        get().name = name;
         return this;
     }
 
@@ -165,7 +165,7 @@ public class Cell<T extends Element> implements Poolable{
     }
 
     public Cell<T> touchable(Touchable touchable){
-        get().touchable(touchable);
+        get().touchable = touchable;
         return this;
     }
 
@@ -180,7 +180,7 @@ public class Cell<T extends Element> implements Poolable{
     }
 
     public Cell<T> visible(boolean visible){
-        get().visible(visible);
+        get().visible = visible;
         return this;
     }
 
@@ -611,6 +611,7 @@ public class Cell<T extends Element> implements Poolable{
     }
 
     /** Reset state so the cell can be reused, setting all constraints to their {@link #defaults() default} values. */
+    @Override
     public void reset(){
         element = null;
         table = null;

@@ -7,6 +7,7 @@ import arc.scene.Element;
  * @author Nathan Sweet
  */
 abstract public class FocusListener implements EventListener{
+    @Override
     public boolean handle(SceneEvent event){
         if(!(event instanceof FocusEvent)) return false;
         FocusEvent focusEvent = (FocusEvent)event;
@@ -38,6 +39,7 @@ abstract public class FocusListener implements EventListener{
         public Type type;
         public Element relatedActor;
 
+        @Override
         public void reset(){
             super.reset();
             relatedActor = null;

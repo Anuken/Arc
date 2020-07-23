@@ -84,7 +84,7 @@ public class Button extends Table implements Disableable{
     }
 
     private void initialize(){
-        touchable(Touchable.enabled);
+        this.touchable = Touchable.enabled;
         addListener(clickListener = new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
@@ -136,6 +136,7 @@ public class Button extends Table implements Disableable{
         return clickListener;
     }
 
+    @Override
     public boolean isDisabled(){
         return isDisabled;
     }
@@ -145,6 +146,7 @@ public class Button extends Table implements Disableable{
     }
 
     /** When true, the button will not toggle {@link #isChecked()} when clicked and will not fire a {@link ChangeEvent}. */
+    @Override
     public void setDisabled(boolean isDisabled){
         this.isDisabled = isDisabled;
     }
@@ -251,6 +253,7 @@ public class Button extends Table implements Disableable{
             Core.graphics.requestRendering();
     }
 
+    @Override
     public float getPrefWidth(){
         float width = super.getPrefWidth();
         if(style.up != null) width = Math.max(width, style.up.getMinWidth());
@@ -259,6 +262,7 @@ public class Button extends Table implements Disableable{
         return width;
     }
 
+    @Override
     public float getPrefHeight(){
         float height = super.getPrefHeight();
         if(style.up != null) height = Math.max(height, style.up.getMinHeight());
@@ -267,10 +271,12 @@ public class Button extends Table implements Disableable{
         return height;
     }
 
+    @Override
     public float getMinWidth(){
         return getPrefWidth();
     }
 
+    @Override
     public float getMinHeight(){
         return getPrefHeight();
     }

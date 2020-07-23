@@ -1,11 +1,10 @@
 package arc.scene.ui.layout;
 
-import arc.struct.FloatSeq;
-import arc.struct.SnapshotSeq;
-import arc.scene.Element;
-import arc.scene.event.Touchable;
-import arc.scene.utils.Layout;
-import arc.util.Align;
+import arc.scene.*;
+import arc.scene.event.*;
+import arc.scene.utils.*;
+import arc.struct.*;
+import arc.util.*;
 
 /**
  * A group that lays out its children top to bottom vertically, with optional wrapping. This can be easier than using
@@ -29,9 +28,10 @@ public class VerticalGroup extends WidgetGroup{
     private float space, wrapSpace, fill, padTop, padLeft, padBottom, padRight;
 
     public VerticalGroup(){
-        touchable(Touchable.childrenOnly);
+        this.touchable = Touchable.childrenOnly;
     }
 
+    @Override
     public void invalidate(){
         super.invalidate();
         sizeInvalid = true;
@@ -61,9 +61,9 @@ public class VerticalGroup extends WidgetGroup{
                 Element child = children.get(i);
 
                 float width, height;
-                if(child instanceof Layout){
-                    width = ((Layout)child).getPrefWidth();
-                    height = ((Layout)child).getPrefHeight();
+                if(child != null){
+                    width = (child).getPrefWidth();
+                    height = (child).getPrefHeight();
                 }else{
                     width = child.getWidth();
                     height = child.getHeight();
@@ -92,9 +92,9 @@ public class VerticalGroup extends WidgetGroup{
             prefHeight = padTop + padBottom + space * (n - 1);
             for(int i = 0; i < n; i++){
                 Element child = children.get(i);
-                if(child instanceof Layout){
-                    prefWidth = Math.max(prefWidth, ((Layout)child).getPrefWidth());
-                    prefHeight += ((Layout)child).getPrefHeight();
+                if(child != null){
+                    prefWidth = Math.max(prefWidth, (child).getPrefWidth());
+                    prefHeight += (child).getPrefHeight();
                 }else{
                     prefWidth = Math.max(prefWidth, child.getWidth());
                     prefHeight += child.getHeight();
@@ -108,6 +108,7 @@ public class VerticalGroup extends WidgetGroup{
         }
     }
 
+    @Override
     public void layout(){
         if(sizeInvalid) computeSize();
 
@@ -147,23 +148,15 @@ public class VerticalGroup extends WidgetGroup{
             Element child = children.get(i);
 
             float width, height;
-            Layout layout = null;
-            if(child instanceof Layout){
-                layout = child;
-                width = layout.getPrefWidth();
-                height = layout.getPrefHeight();
-            }else{
-                width = child.getWidth();
-                height = child.getHeight();
-            }
+            width = child.getPrefWidth();
+            height = child.getPrefHeight();
+
 
             if(fill > 0) width = columnWidth * fill;
 
-            if(layout != null){
-                width = Math.max(width, layout.getMinWidth());
-                float maxWidth = layout.getMaxWidth();
-                if(maxWidth > 0 && width > maxWidth) width = maxWidth;
-            }
+            width = Math.max(width, child.getMinWidth());
+            float maxWidth = child.getMaxWidth();
+            if(maxWidth > 0 && width > maxWidth) width = maxWidth;
 
             float x = startX;
             if((align & Align.right) != 0)
@@ -177,7 +170,7 @@ public class VerticalGroup extends WidgetGroup{
             else
                 child.setBounds(x, y, width, height);
 
-            if(layout != null) layout.validate();
+            child.validate();
         }
     }
 
@@ -219,15 +212,9 @@ public class VerticalGroup extends WidgetGroup{
             Element child = children.get(i);
 
             float width, height;
-            Layout layout = null;
-            if(child instanceof Layout){
-                layout = child;
-                width = layout.getPrefWidth();
-                height = layout.getPrefHeight();
-            }else{
-                width = child.getWidth();
-                height = child.getHeight();
-            }
+            width = child.getPrefWidth();
+            height = child.getPrefHeight();
+
 
             if(y - height - space < padBottom || r == 0){
                 y = yStart;
@@ -245,11 +232,9 @@ public class VerticalGroup extends WidgetGroup{
 
             if(fill > 0) width = columnWidth * fill;
 
-            if(layout != null){
-                width = Math.max(width, layout.getMinWidth());
-                float maxWidth = layout.getMaxWidth();
-                if(maxWidth > 0 && width > maxWidth) width = maxWidth;
-            }
+            width = Math.max(width, child.getMinWidth());
+            float maxWidth = child.getMaxWidth();
+            if(maxWidth > 0 && width > maxWidth) width = maxWidth;
 
             float x = columnX;
             if((align & Align.right) != 0)
@@ -263,15 +248,17 @@ public class VerticalGroup extends WidgetGroup{
             else
                 child.setBounds(x, y, width, height);
 
-            if(layout != null) layout.validate();
+            child.validate();
         }
     }
 
+    @Override
     public float getPrefWidth(){
         if(sizeInvalid) computeSize();
         return prefWidth;
     }
 
+    @Override
     public float getPrefHeight(){
         if(wrap) return 0;
         if(sizeInvalid) computeSize();

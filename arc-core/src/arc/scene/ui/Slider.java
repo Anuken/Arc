@@ -95,6 +95,7 @@ public class Slider extends ProgressBar{
      * Returns the slider's style. Modifying the returned style may not have an effect until {@link #setStyle(SliderStyle)} is
      * called.
      */
+    @Override
     public SliderStyle getStyle(){
         return (SliderStyle)super.getStyle();
     }
@@ -105,6 +106,7 @@ public class Slider extends ProgressBar{
         super.setStyle(style);
     }
 
+    @Override
     protected Drawable getKnobDrawable(){
         SliderStyle style = getStyle();
         return (disabled && style.disabledKnob != null) ? style.disabledKnob

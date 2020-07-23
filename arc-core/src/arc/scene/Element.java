@@ -17,8 +17,16 @@ import arc.util.pooling.*;
 
 import static arc.util.Align.*;
 
-public class Element implements Layout{
+public class Element{
     public final Color color = new Color(1, 1, 1, 1);
+    public float originX, originY, scaleX = 1, scaleY = 1, rotation;
+    public String name;
+    public boolean fillParent;
+    public Vec2 translation = new Vec2(0, 0);
+    public boolean visible = true;
+    public Object userObject;
+    public Touchable touchable = Touchable.enabled;
+    public Group parent;
 
     private final DelayedRemovalSeq<EventListener> listeners = new DelayedRemovalSeq<>(0);
     private final DelayedRemovalSeq<EventListener> captureListeners = new DelayedRemovalSeq<>(0);
@@ -30,18 +38,9 @@ public class Element implements Layout{
     protected float width, height;
     /** Alpha value of the parent. Should be multiplied with the actor's alpha, allowing a parent's alpha to affect all children. */
     protected float parentAlpha = 1f;
-    protected Vec2 translation = new Vec2(0, 0);
-    Group parent;
-    float originX, originY;
-    float scaleX = 1, scaleY = 1;
-    float rotation;
+
     private Scene stage;
-    private String name;
-    private Touchable touchable = Touchable.enabled;
-    private boolean visible = true;
-    private Object userObject;
     private boolean needsLayout = true;
-    protected boolean fillParent;
     private boolean layoutEnabled = true;
     private Boolp visibility;
     private Runnable update;
@@ -77,14 +76,14 @@ public class Element implements Layout{
         }
 
         if(touchableSupplier != null)
-            touchable(touchableSupplier.get());
+            this.touchable = touchableSupplier.get();
         if(update != null)
             update.run();
     }
 
     public void updateVisibility(){
         if(visibility != null)
-            visible(visibility.get());
+            this.visible = visibility.get();
     }
 
     public boolean hasMouse(){
@@ -367,50 +366,9 @@ public class Element implements Layout{
         return parent != null;
     }
 
-    /** Returns the parent actor, or null if not in a group. */
-    public Group getParent(){
-        return parent;
-    }
-
-    /**
-     * Called by the framework when an actor is added to or removed from a group.
-     * @param parent May be null if the actor has been removed from the parent.
-     */
-    protected void setParent(Group parent){
-        this.parent = parent;
-    }
-
     /** Returns true if input events are processed by this actor. */
     public boolean isTouchable(){
         return touchable == Touchable.enabled;
-    }
-
-    public Touchable getTouchable(){
-        return touchable;
-    }
-
-    /** Determines how touch events are distributed to this actor. Default is {@link Touchable#enabled}. */
-    public void touchable(Touchable touchable){
-        this.touchable = touchable;
-    }
-
-    public boolean isVisible(){
-        return visible;
-    }
-
-    /** If false, the actor will not be drawn and will not receive touch events. Default is true. */
-    public void visible(boolean visible){
-        this.visible = visible;
-    }
-
-    /** Returns an application specific object for convenience, or null. */
-    public Object getUserObject(){
-        return userObject;
-    }
-
-    /** Sets an application specific object for convenience. */
-    public void setUserObject(Object userObject){
-        this.userObject = userObject;
     }
 
     /** Returns the X position of the actor's left edge. */
@@ -587,22 +545,6 @@ public class Element implements Layout{
         }
     }
 
-    public float getOriginX(){
-        return originX;
-    }
-
-    public void setOriginX(float originX){
-        this.originX = originX;
-    }
-
-    public float getOriginY(){
-        return originY;
-    }
-
-    public void setOriginY(float originY){
-        this.originY = originY;
-    }
-
     /** Sets the origin position which is relative to the actor's bottom left corner. */
     public void setOrigin(float originX, float originY){
         this.originX = originX;
@@ -624,22 +566,6 @@ public class Element implements Layout{
             originY = height;
         else
             originY = height / 2;
-    }
-
-    public float getScaleX(){
-        return scaleX;
-    }
-
-    public void setScaleX(float scaleX){
-        this.scaleX = scaleX;
-    }
-
-    public float getScaleY(){
-        return scaleY;
-    }
-
-    public void setScaleY(float scaleY){
-        this.scaleY = scaleY;
     }
 
     /** Sets the scale for both X and Y */
@@ -697,29 +623,8 @@ public class Element implements Layout{
         color.set(r, g, b, a);
     }
 
-    /** Returns the color the actor will be tinted when drawn. The returned instance can be modified to change the color. */
-    public Color getColor(){
-        return color;
-    }
-
     public void setColor(Color color){
         this.color.set(color);
-    }
-
-    /**
-     * @return May be null.
-     */
-    public String getName(){
-        return name;
-    }
-
-    /**
-     * Set the actor's name, which is used for identification convenience and by {@link #toString()}.
-     * @param name May be null.
-     */
-    public Element setName(String name){
-        this.name = name;
-        return this;
     }
 
     /** Changes the z-order for this actor so it is in front of all siblings. */
@@ -912,11 +817,10 @@ public class Element implements Layout{
         if(enabled) invalidateHierarchy();
     }
 
-    @Override
     public void validate(){
         if(!layoutEnabled) return;
 
-        Group parent = getParent();
+        Group parent = this.parent;
         if(fillParent && parent != null){
             float parentWidth, parentHeight;
             Scene stage = getScene();
@@ -947,7 +851,7 @@ public class Element implements Layout{
     public void invalidateHierarchy(){
         if(!layoutEnabled) return;
         invalidate();
-        Group parent = getParent();
+        Group parent = this.parent;
         if(parent != null) parent.invalidateHierarchy();
     }
 
@@ -966,10 +870,6 @@ public class Element implements Layout{
     public void setTranslation(float x, float y){
         translation.x = x;
         translation.y = y;
-    }
-
-    public Vec2 getTranslation(){
-        return translation;
     }
 
     public void keyDown(KeyCode key, Runnable l){

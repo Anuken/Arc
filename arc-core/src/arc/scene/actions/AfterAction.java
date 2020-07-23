@@ -11,16 +11,19 @@ import arc.scene.Element;
 public class AfterAction extends DelegateAction{
     private Seq<Action> waitForActions = new Seq<>(false, 4);
 
+    @Override
     public void setTarget(Element target){
         if(target != null) waitForActions.addAll(target.getActions());
         super.setTarget(target);
     }
 
+    @Override
     public void restart(){
         super.restart();
         waitForActions.clear();
     }
 
+    @Override
     protected boolean delegate(float delta){
         Seq<Action> currentActions = target.getActions();
         if(currentActions.size == 1) waitForActions.clear();

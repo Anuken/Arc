@@ -14,6 +14,7 @@ public class DelayAction extends DelegateAction{
         this.duration = duration;
     }
 
+    @Override
     protected boolean delegate(float delta){
         if(time < duration){
             time += delta;
@@ -28,6 +29,7 @@ public class DelayAction extends DelegateAction{
         time = duration;
     }
 
+    @Override
     public void restart(){
         super.restart();
         time = 0;

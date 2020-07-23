@@ -9,6 +9,7 @@ import arc.scene.Action;
 public class AddAction extends Action{
     private Action action;
 
+    @Override
     public boolean act(float delta){
         target.addAction(action);
         return true;
@@ -22,10 +23,12 @@ public class AddAction extends Action{
         this.action = action;
     }
 
+    @Override
     public void restart(){
         if(action != null) action.restart();
     }
 
+    @Override
     public void reset(){
         super.reset();
         action = null;

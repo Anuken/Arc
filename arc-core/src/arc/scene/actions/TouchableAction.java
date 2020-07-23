@@ -1,6 +1,6 @@
 package arc.scene.actions;
 
-import arc.scene.Action;
+import arc.scene.*;
 import arc.scene.event.Touchable;
 
 /**
@@ -10,8 +10,9 @@ import arc.scene.event.Touchable;
 public class TouchableAction extends Action{
     private Touchable touchable;
 
+    @Override
     public boolean act(float delta){
-        target.touchable(touchable);
+        target.touchable = touchable;
         return true;
     }
 

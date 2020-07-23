@@ -38,6 +38,7 @@ public class DragAndDrop{
 
     public void addSource(final Source source){
         arc.scene.event.DragListener listener = new arc.scene.event.DragListener(){
+            @Override
             public void dragStart(InputEvent event, float x, float y, int pointer){
                 if(activePointer != -1){
                     event.stop();
@@ -54,14 +55,15 @@ public class DragAndDrop{
                     source.getActor().getScene().cancelTouchFocusExcept(this, source.getActor());
             }
 
+            @Override
             public void drag(InputEvent event, float x, float y, int pointer){
                 if(payload == null) return;
                 if(pointer != activePointer) return;
 
                 Touchable dragActorTouchable = null;
                 if(dragActor != null){
-                    dragActorTouchable = dragActor.getTouchable();
-                    dragActor.touchable(Touchable.disabled);
+                    dragActorTouchable = dragActor.touchable;
+                    dragActor.touchable = Touchable.disabled;
                 }
 
                 // Find target.
@@ -88,7 +90,7 @@ public class DragAndDrop{
                 if(newTarget != null)
                     isValidTarget = newTarget.drag(source, payload, tmpVector.x, tmpVector.y, pointer);
 
-                if(dragActor != null) dragActor.touchable(dragActorTouchable);
+                if(dragActor != null) dragActor.touchable = dragActorTouchable;
 
                 // Add/remove and position the drag actor.
                 Element actor = null;
@@ -111,6 +113,7 @@ public class DragAndDrop{
                 actor.setPosition(actorX, actorY);
             }
 
+            @Override
             public void dragStop(InputEvent event, float x, float y, int pointer){
                 if(pointer != activePointer) return;
                 activePointer = -1;

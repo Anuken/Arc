@@ -30,10 +30,12 @@ public class NinePatchDrawable extends BaseDrawable implements TransformDrawable
         setPatch(drawable.patch);
     }
 
+    @Override
     public void draw(float x, float y, float width, float height){
         patch.draw(x, y, width, height);
     }
 
+    @Override
     public void draw(float x, float y, float originX, float originY, float width, float height, float scaleX, float scaleY, float rotation){
         patch.draw(x, y, originX, originY, width, height, scaleX, scaleY, rotation);
     }

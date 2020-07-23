@@ -14,6 +14,7 @@ public class ScaleByAction extends RelativeTemporalAction{
         setAmount(amount);
     }
 
+    @Override
     protected void updateRelative(float percentDelta){
         target.scaleBy(amountX * percentDelta, amountY * percentDelta);
     }

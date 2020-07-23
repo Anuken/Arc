@@ -11,15 +11,18 @@ public class MoveToAction extends TemporalAction{
     private float endX, endY;
     private int alignment = Align.bottomLeft;
 
+    @Override
     protected void begin(){
         startX = target.getX(alignment);
         startY = target.getY(alignment);
     }
 
+    @Override
     protected void update(float percent){
         target.setPosition(startX + (endX - startX) * percent, startY + (endY - startY) * percent, alignment);
     }
 
+    @Override
     public void reset(){
         super.reset();
         alignment = Align.bottomLeft;

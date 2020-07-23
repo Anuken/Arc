@@ -8,7 +8,7 @@ public class IbeamCursorListener extends ClickListener{
     @Override
     public void enter(InputEvent event, float x, float y, int pointer, Element fromActor){
         super.enter(event, x, y, pointer, fromActor);
-        if(pointer == -1 && event.targetActor.isVisible()){
+        if(pointer == -1 && event.targetActor.visible){
             Core.graphics.cursor(SystemCursor.ibeam);
         }
     }

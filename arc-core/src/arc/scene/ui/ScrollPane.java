@@ -271,6 +271,7 @@ public class ScrollPane extends WidgetGroup{
         invalidateHierarchy();
     }
 
+    @Override
     public void act(float delta){
         super.act(delta);
 
@@ -369,6 +370,7 @@ public class ScrollPane extends WidgetGroup{
         }
     }
 
+    @Override
     public void layout(){
         final Drawable bg = style.background;
         final Drawable hScrollKnob = style.hScrollKnob;
@@ -400,14 +402,9 @@ public class ScrollPane extends WidgetGroup{
 
         // Get widget's desired width.
         float widgetWidth, widgetHeight;
-        if(widget instanceof Layout){
-            Layout layout = widget;
-            widgetWidth = layout.getPrefWidth();
-            widgetHeight = layout.getPrefHeight();
-        }else{
-            widgetWidth = widget.getWidth();
-            widgetHeight = widget.getHeight();
-        }
+        widgetWidth = widget.getPrefWidth();
+        widgetHeight = widget.getPrefHeight();
+
 
         // Determine if horizontal/vertical scrollbars are needed.
         scrollX = forceScrollX || (widgetWidth > areaWidth && !disableX);
@@ -627,6 +624,7 @@ public class ScrollPane extends WidgetGroup{
         this.velocityY = velocityY;
     }
 
+    @Override
     public float getPrefWidth(){
         float width = 0;
         if(widget != null){
@@ -643,6 +641,7 @@ public class ScrollPane extends WidgetGroup{
         return width;
     }
 
+    @Override
     public float getPrefHeight(){
         float height = 0;
         if(widget != null){
@@ -685,6 +684,7 @@ public class ScrollPane extends WidgetGroup{
         if(widget != null) super.addChild(widget);
     }
 
+    @Override
     public boolean removeChild(Element actor){
         if(actor == null) throw new IllegalArgumentException("actor cannot be null.");
         if(actor != widget) return false;
@@ -692,6 +692,7 @@ public class ScrollPane extends WidgetGroup{
         return true;
     }
 
+    @Override
     public boolean removeChild(Element actor, boolean unfocus){
         if(actor == null) throw new IllegalArgumentException("actor cannot be null.");
         if(actor != widget) return false;
@@ -699,6 +700,7 @@ public class ScrollPane extends WidgetGroup{
         return super.removeChild(actor, unfocus);
     }
 
+    @Override
     public Element hit(float x, float y, boolean touchable){
         if(x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) return null;
         if(scrollX && hScrollBounds.contains(x, y)) return this;

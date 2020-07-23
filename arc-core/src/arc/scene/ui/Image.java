@@ -109,15 +109,15 @@ public class Image extends Element{
 
         float x = getX();
         float y = getY();
-        float scaleX = getScaleX();
-        float scaleY = getScaleY();
-        Draw.color(getColor());
-        Draw.alpha(parentAlpha * getColor().a);
+        float scaleX = this.scaleX;
+        float scaleY = this.scaleY;
+        Draw.color(color);
+        Draw.alpha(parentAlpha * color.a);
 
         if(drawable instanceof TransformDrawable){
             float rotation = getRotation();
             if(scaleX != 1 || scaleY != 1 || rotation != 0){
-                drawable.draw(x + imageX, y + imageY, getOriginX() - imageX, getOriginY() - imageY,
+                drawable.draw(x + imageX, y + imageY, originX - imageX, originY - imageY,
                 imageWidth, imageHeight, scaleX, scaleY, rotation);
                 return;
             }
@@ -162,19 +162,23 @@ public class Image extends Element{
         invalidate();
     }
 
+    @Override
     public float getMinWidth(){
         return 0;
     }
 
+    @Override
     public float getMinHeight(){
         return 0;
     }
 
+    @Override
     public float getPrefWidth(){
         if(drawable != null) return drawable.getMinWidth();
         return 0;
     }
 
+    @Override
     public float getPrefHeight(){
         if(drawable != null) return drawable.getMinHeight();
         return 0;

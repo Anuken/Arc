@@ -92,7 +92,7 @@ public class ProgressBar extends Element implements Disableable{
         final Drawable knobBefore = (disabled && style.disabledKnobBefore != null) ? style.disabledKnobBefore : style.knobBefore;
         final Drawable knobAfter = (disabled && style.disabledKnobAfter != null) ? style.disabledKnobAfter : style.knobAfter;
 
-        Color color = getColor();
+        Color color = this.color;
         float x = getX();
         float y = getY();
         float width = getWidth();
@@ -278,6 +278,7 @@ public class ProgressBar extends Element implements Disableable{
         else if(value > max) setValue(max);
     }
 
+    @Override
     public float getPrefWidth(){
         if(vertical){
             final Drawable knob = getKnobDrawable();
@@ -287,6 +288,7 @@ public class ProgressBar extends Element implements Disableable{
             return 140;
     }
 
+    @Override
     public float getPrefHeight(){
         if(vertical)
             return 140;
@@ -335,10 +337,12 @@ public class ProgressBar extends Element implements Disableable{
         this.round = round;
     }
 
+    @Override
     public boolean isDisabled(){
         return disabled;
     }
 
+    @Override
     public void setDisabled(boolean disabled){
         this.disabled = disabled;
     }

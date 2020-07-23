@@ -1,6 +1,7 @@
 package arc.scene.actions;
 
 import arc.graphics.Color;
+import arc.scene.*;
 
 /**
  * Sets the actor's color (or a specified color), from the current to the new color. Note this action transitions from the color
@@ -12,14 +13,16 @@ public class ColorAction extends TemporalAction{
     private float startR, startG, startB, startA;
     private Color color;
 
+    @Override
     protected void begin(){
-        if(color == null) color = target.getColor();
+        if(color == null) color = target.color;
         startR = color.r;
         startG = color.g;
         startB = color.b;
         startA = color.a;
     }
 
+    @Override
     protected void update(float percent){
         float r = startR + (end.r - startR) * percent;
         float g = startG + (end.g - startG) * percent;
@@ -28,6 +31,7 @@ public class ColorAction extends TemporalAction{
         color.set(r, g, b, a);
     }
 
+    @Override
     public void reset(){
         super.reset();
         color = null;

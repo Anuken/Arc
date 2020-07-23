@@ -31,7 +31,6 @@ import arc.struct.Seq;
 import arc.struct.SnapshotSeq;
 import arc.scene.Element;
 import arc.scene.event.Touchable;
-import arc.scene.utils.Layout;
 
 /**
  * A stack is a container that sizes its children to its size and positions them at 0,0 on top of each other.
@@ -48,7 +47,7 @@ public class Stack extends WidgetGroup{
         setTransform(false);
         setWidth(150);
         setHeight(150);
-        touchable(Touchable.childrenOnly);
+        this.touchable = Touchable.childrenOnly;
     }
 
     public Stack(Element... actors){
@@ -57,6 +56,7 @@ public class Stack extends WidgetGroup{
             addChild(actor);
     }
 
+    @Override
     public void invalidate(){
         super.invalidate();
         sizeInvalid = true;
@@ -74,13 +74,13 @@ public class Stack extends WidgetGroup{
         for(int i = 0, n = children.size; i < n; i++){
             Element child = children.get(i);
             float childMaxWidth, childMaxHeight;
-            if(child instanceof Layout){
-                prefWidth = Math.max(prefWidth, ((Layout)child).getPrefWidth());
-                prefHeight = Math.max(prefHeight, ((Layout)child).getPrefHeight());
-                minWidth = Math.max(minWidth, ((Layout)child).getMinWidth());
-                minHeight = Math.max(minHeight, ((Layout)child).getMinHeight());
-                childMaxWidth = ((Layout)child).getMaxWidth();
-                childMaxHeight = ((Layout)child).getMaxHeight();
+            if(child != null){
+                prefWidth = Math.max(prefWidth, (child).getPrefWidth());
+                prefHeight = Math.max(prefHeight, (child).getPrefHeight());
+                minWidth = Math.max(minWidth, (child).getMinWidth());
+                minHeight = Math.max(minHeight, (child).getMinHeight());
+                childMaxWidth = (child).getMaxWidth();
+                childMaxHeight = (child).getMaxHeight();
             }else{
                 prefWidth = Math.max(prefWidth, child.getWidth());
                 prefHeight = Math.max(prefHeight, child.getHeight());
@@ -98,6 +98,7 @@ public class Stack extends WidgetGroup{
         addChild(actor);
     }
 
+    @Override
     public void layout(){
         if(sizeInvalid) computeSize();
         float width = getWidth(), height = getHeight();
@@ -105,25 +106,29 @@ public class Stack extends WidgetGroup{
         for(int i = 0, n = children.size; i < n; i++){
             Element child = children.get(i);
             child.setBounds(0, 0, width, height);
-            if(child instanceof Layout) child.validate();
+            if(child != null) child.validate();
         }
     }
 
+    @Override
     public float getPrefWidth(){
         if(sizeInvalid) computeSize();
         return prefWidth;
     }
 
+    @Override
     public float getPrefHeight(){
         if(sizeInvalid) computeSize();
         return prefHeight;
     }
 
+    @Override
     public float getMinWidth(){
         if(sizeInvalid) computeSize();
         return minWidth;
     }
 
+    @Override
     public float getMinHeight(){
         if(sizeInvalid) computeSize();
         return minHeight;

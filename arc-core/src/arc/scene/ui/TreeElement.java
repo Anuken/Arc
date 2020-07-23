@@ -11,7 +11,6 @@ import arc.scene.event.ClickListener;
 import arc.scene.event.InputEvent;
 import arc.scene.style.Drawable;
 import arc.scene.ui.layout.WidgetGroup;
-import arc.scene.utils.Layout;
 import arc.scene.utils.Selection;
 
 import static arc.Core.scene;
@@ -41,6 +40,7 @@ public class TreeElement extends WidgetGroup{
 
     public TreeElement(TreeStyle style){
         selection = new Selection<Node>(){
+            @Override
             protected void changed(){
                 switch(size()){
                     case 0:
@@ -95,6 +95,7 @@ public class TreeElement extends WidgetGroup{
 
     private void initialize(){
         addListener(clickListener = new arc.scene.event.ClickListener(){
+            @Override
             public void clicked(InputEvent event, float x, float y){
                 Node node = getNodeAt(y);
                 if(node == null) return;
@@ -130,11 +131,13 @@ public class TreeElement extends WidgetGroup{
                 if(!selection.isEmpty()) rangeStart = node;
             }
 
+            @Override
             public boolean mouseMoved(InputEvent event, float x, float y){
                 setOverNode(getNodeAt(y));
                 return false;
             }
 
+            @Override
             public void exit(InputEvent event, float x, float y, int pointer, Element toActor){
                 super.exit(event, x, y, pointer, toActor);
                 if(toActor == null || !toActor.isDescendantOf(TreeElement.this)) setOverNode(null);
@@ -165,6 +168,7 @@ public class TreeElement extends WidgetGroup{
     }
 
     /** Removes all tree nodes. */
+    @Override
     public void clearChildren(){
         super.clearChildren();
         setOverNode(null);
@@ -176,6 +180,7 @@ public class TreeElement extends WidgetGroup{
         return rootNodes;
     }
 
+    @Override
     public void invalidate(){
         super.invalidate();
         sizeInvalid = true;
@@ -200,10 +205,10 @@ public class TreeElement extends WidgetGroup{
             Node node = nodes.get(i);
             float rowWidth = indent + iconSpacingRight;
             Element element = node.element;
-            if(element instanceof Layout){
-                rowWidth += ((Layout)element).getPrefWidth();
-                node.height = ((Layout)element).getPrefHeight();
-                ((Layout)element).pack();
+            if(element != null){
+                rowWidth += (element).getPrefWidth();
+                node.height = (element).getPrefHeight();
+                (element).pack();
             }else{
                 rowWidth += element.getWidth();
                 node.height = element.getHeight();
@@ -218,6 +223,7 @@ public class TreeElement extends WidgetGroup{
         }
     }
 
+    @Override
     public void layout(){
         if(sizeInvalid) computeSize();
         layout(rootNodes, leftColumnWidth + indentSpacing + iconSpacingRight, getHeight() - ySpacing / 2);
@@ -240,7 +246,7 @@ public class TreeElement extends WidgetGroup{
     @Override
     public void draw(){
         drawBackground();
-        Color color = getColor();
+        Color color = this.color;
         Draw.color(color.r, color.g, color.b, color.a * parentAlpha);
         draw(rootNodes, leftColumnWidth);
         super.draw(); // Draw elements.
@@ -249,7 +255,7 @@ public class TreeElement extends WidgetGroup{
     /** Called to draw the background. Default implementation draws the style background drawable. */
     protected void drawBackground(){
         if(style.background != null){
-            Color color = getColor();
+            Color color = this.color;
             Draw.color(color.r, color.g, color.b, color.a * parentAlpha);
             style.background.draw(getX(), getY(), getWidth(), getHeight());
         }
@@ -271,7 +277,7 @@ public class TreeElement extends WidgetGroup{
 
             if(node.icon != null){
                 float iconY = element.getY() + Math.round((node.height - node.icon.getMinHeight()) / 2);
-                Draw.color(element.getColor());
+                Draw.color(element.color);
                 node.icon.draw(x + node.element.getX() - iconSpacingRight - node.icon.getMinWidth(), y + iconY,
                 node.icon.getMinWidth(), node.icon.getMinHeight());
                 Draw.color(Color.white);
@@ -379,11 +385,13 @@ public class TreeElement extends WidgetGroup{
         this.iconSpacingRight = right;
     }
 
+    @Override
     public float getPrefWidth(){
         if(sizeInvalid) computeSize();
         return prefWidth;
     }
 
+    @Override
     public float getPrefHeight(){
         if(sizeInvalid) computeSize();
         return prefHeight;
@@ -497,7 +505,7 @@ public class TreeElement extends WidgetGroup{
 
         /** Returns the tree this node is currently in, or null. */
         public TreeElement getTree(){
-            Group parent = element.getParent();
+            Group parent = element.parent;
             if(!(parent instanceof TreeElement)) return null;
             return (TreeElement)parent;
         }

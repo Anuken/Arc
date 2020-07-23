@@ -20,10 +20,12 @@ public class IntAction extends TemporalAction{
         this.end = end;
     }
 
+    @Override
     protected void begin(){
         value = start;
     }
 
+    @Override
     protected void update(float percent){
         value = (int)(start + (end - start) * percent);
     }

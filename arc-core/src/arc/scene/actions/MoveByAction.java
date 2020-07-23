@@ -7,6 +7,7 @@ package arc.scene.actions;
 public class MoveByAction extends RelativeTemporalAction{
     private float amountX, amountY;
 
+    @Override
     protected void updateRelative(float percentDelta){
         target.moveBy(amountX * percentDelta, amountY * percentDelta);
     }

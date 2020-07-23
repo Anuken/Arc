@@ -33,18 +33,22 @@ public class ScaledNinePatchDrawable extends NinePatchDrawable{
         setMinHeight(patch.getTotalHeight() * scale);
     }
 
+    @Override
     public float getLeftWidth(){
         return patch.getPadLeft() * scale;
     }
 
+    @Override
     public float getRightWidth(){
         return patch.getPadRight() * scale;
     }
 
+    @Override
     public float getTopHeight(){
         return patch.getPadTop() * scale;
     }
 
+    @Override
     public float getBottomHeight(){
         return patch.getPadBottom() * scale;
     }

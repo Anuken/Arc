@@ -41,13 +41,14 @@ public class Tooltip extends InputListener{
         this.manager = manager;
 
         container = new Table(){
+            @Override
             public void act(float delta){
                 super.act(delta);
                 if(targetActor != null && targetActor.getScene() == null) remove();
             }
         };
         contents.get(container);
-        container.touchable(Touchable.disabled);
+        container.touchable = Touchable.disabled;
     }
 
     public Tooltips getManager(){
@@ -106,6 +107,7 @@ public class Tooltip extends InputListener{
         container.setOrigin(point.x, point.y);
     }
 
+    @Override
     public void enter(InputEvent event, float x, float y, int pointer, Element fromActor){
         if(pointer != -1) return;
         if(Core.input.isTouched()) return;
@@ -118,6 +120,7 @@ public class Tooltip extends InputListener{
             show.run();
     }
 
+    @Override
     public void exit(InputEvent event, float x, float y, int pointer, Element toActor){
         if(toActor != null && toActor.isDescendantOf(event.listenerActor)) return;
         hide();
@@ -159,6 +162,7 @@ public class Tooltip extends InputListener{
         public float edgeDistance = 7;
         float time = initialTime;
         final Task resetTask = new Task(){
+            @Override
             public void run(){
                 time = initialTime;
             }
@@ -166,6 +170,7 @@ public class Tooltip extends InputListener{
 
         Tooltip showTooltip;
         final Task showTask = new Task(){
+            @Override
             public void run(){
                 if(showTooltip == null) return;
 
@@ -228,7 +233,7 @@ public class Tooltip extends InputListener{
         protected void showAction(Tooltip tooltip){
             float actionTime = animations ? (time > 0 ? 0.5f : 0.15f) : 0.1f;
             tooltip.container.setTransform(true);
-            tooltip.container.getColor().a = 0.2f;
+            tooltip.container.color.a = 0.2f;
             tooltip.container.setScale(0.05f);
             tooltip.container.addAction(parallel(fadeIn(actionTime, fade), scaleTo(1, 1, actionTime, Interp.fade)));
         }

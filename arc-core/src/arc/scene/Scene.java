@@ -104,7 +104,7 @@ public class Scene implements InputProcessor, Disposable{
         Camera camera = viewport.getCamera();
         camera.update();
 
-        if(!root.isVisible()) return;
+        if(!root.visible) return;
 
         Draw.proj(camera);
 
@@ -150,16 +150,16 @@ public class Scene implements InputProcessor, Disposable{
         if(Core.app.isDesktop() || Core.app.isWeb())
             mouseOverElement = fireEnterAndExit(mouseOverElement, mouseScreenX, mouseScreenY, -1);
 
-        if(scrollFocus != null && (!scrollFocus.isVisible() || scrollFocus.getScene() == null)) scrollFocus = null;
-        if(keyboardFocus != null && (!keyboardFocus.isVisible() || keyboardFocus.getScene() == null)) keyboardFocus = null;
+        if(scrollFocus != null && (!scrollFocus.visible || scrollFocus.getScene() == null)) scrollFocus = null;
+        if(keyboardFocus != null && (!keyboardFocus.visible || keyboardFocus.getScene() == null)) keyboardFocus = null;
         if(scrollFocus != null){
             Element curr = scrollFocus;
-            while(curr.getParent() != null){
-                if(!curr.isVisible()){
+            while(curr.parent != null){
+                if(!curr.visible){
                     scrollFocus = null;
                     break;
                 }
-                curr = curr.getParent();
+                curr = curr.parent;
             }
         }
 
@@ -258,7 +258,7 @@ public class Scene implements InputProcessor, Disposable{
 
         Element target = hit(tempCoords.x, tempCoords.y, true);
         if(target == null){
-            if(root.getTouchable() == Touchable.enabled) root.fire(event);
+            if(root.touchable == Touchable.enabled) root.fire(event);
         }else{
             target.fire(event);
         }
@@ -272,6 +272,7 @@ public class Scene implements InputProcessor, Disposable{
      * Applies a touch moved event to the stage and returns true if an actor in the scene {@link SceneEvent#handle() handled} the
      * event. Only {@link InputListener listeners} that returned true for touchDown will receive this event.
      */
+    @Override
     public boolean touchDragged(int screenX, int screenY, int pointer){
         pointerScreenX[pointer] = screenX;
         pointerScreenY[pointer] = screenY;
@@ -802,6 +803,7 @@ public class Scene implements InputProcessor, Disposable{
         int pointer;
         KeyCode button;
 
+        @Override
         public void reset(){
             listenerActor = null;
             listener = null;

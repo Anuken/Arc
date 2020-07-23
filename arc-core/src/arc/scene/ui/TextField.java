@@ -301,7 +301,7 @@ public class TextField extends Element implements Disableable{
         final Drawable cursorPatch = style.cursor;
         final Drawable background = getBackgroundDrawable();
 
-        Color color = getColor();
+        Color color = this.color;
         float x = getX();
         float y = getY();
         float width = getWidth();
@@ -518,7 +518,7 @@ public class TextField extends Element implements Disableable{
         if(stage == null) return;
         TextField current = this;
         while(true){
-            current.getParent().localToStageCoordinates(tmp1.set(getX(), getY()));
+            current.parent.localToStageCoordinates(tmp1.set(getX(), getY()));
             TextField textField = current.findNextTextField(stage.getElements(), null, tmp2, tmp1, up);
             if(textField == null){ // Try to wrap around.
                 if(up)
@@ -544,7 +544,7 @@ public class TextField extends Element implements Disableable{
             if(element instanceof TextField){
                 TextField textField = (TextField)element;
                 if(textField.isDisabled() || !textField.focusTraversal) continue;
-                Vec2 elementCoords = element.getParent().localToStageCoordinates(tmp3.set(element.getX(), element.getY()));
+                Vec2 elementCoords = element.parent.localToStageCoordinates(tmp3.set(element.getX(), element.getY()));
                 if((elementCoords.y < currentCoords.y || (elementCoords.y == currentCoords.y && elementCoords.x > currentCoords.x)) ^ up){
                     if(best == null
                     || (elementCoords.y > bestCoords.y || (elementCoords.y == bestCoords.y && elementCoords.x < bestCoords.x)) ^ up){
@@ -728,10 +728,12 @@ public class TextField extends Element implements Disableable{
         this.keyboard = keyboard;
     }
 
+    @Override
     public float getPrefWidth(){
         return 150;
     }
 
+    @Override
     public float getPrefHeight(){
         float topAndBottom = 0, minHeight = 0;
         if(style.background != null){
@@ -785,10 +787,12 @@ public class TextField extends Element implements Disableable{
         this.blinkTime = blinkTime;
     }
 
+    @Override
     public boolean isDisabled(){
         return disabled;
     }
 
+    @Override
     public void setDisabled(boolean disabled){
         this.disabled = disabled;
     }
@@ -887,6 +891,7 @@ public class TextField extends Element implements Disableable{
     class KeyRepeatTask extends Task{
         KeyCode keycode;
 
+        @Override
         public void run(){
             inputListener.keyDown(null, keycode);
         }

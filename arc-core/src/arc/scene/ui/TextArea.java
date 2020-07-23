@@ -48,6 +48,7 @@ public class TextArea extends TextField{
         linesShowing = 0;
     }
 
+    @Override
     protected int letterUnderCursor(float x){
         if(linesBreak.size > 0){
             if(cursorLine * 2 >= linesBreak.size){

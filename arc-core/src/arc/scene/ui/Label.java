@@ -112,6 +112,7 @@ public class Label extends Element{
         }
     }
 
+    @Override
     public void invalidate(){
         super.invalidate();
         prefSizeInvalid = true;
@@ -140,6 +141,7 @@ public class Label extends Element{
         prefSize.set(prefSizeLayout.width, prefSizeLayout.height);
     }
 
+    @Override
     public void layout(){
         BitmapFont font = cache.getFont();
         float oldScaleX = font.getScaleX();
@@ -204,7 +206,7 @@ public class Label extends Element{
     @Override
     public void draw(){
         validate();
-        Color color = tempColor.set(getColor());
+        Color color = tempColor.set(this.color);
         color.a *= parentAlpha;
         if(style.background != null){
             Draw.color(color.r, color.g, color.b, color.a);
@@ -216,6 +218,7 @@ public class Label extends Element{
         cache.draw();
     }
 
+    @Override
     public float getPrefWidth(){
         if(wrap) return 0;
         if(prefSizeInvalid) scaleAndComputePrefSize();
@@ -225,6 +228,7 @@ public class Label extends Element{
         return width;
     }
 
+    @Override
     public float getPrefHeight(){
         if(prefSizeInvalid) scaleAndComputePrefSize();
         float descentScaleCorrection = 1;

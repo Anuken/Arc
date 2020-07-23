@@ -18,6 +18,7 @@ public class InputEvent extends SceneEvent{
     public char character;
     public Element relatedActor;
 
+    @Override
     public void reset(){
         super.reset();
         relatedActor = null;

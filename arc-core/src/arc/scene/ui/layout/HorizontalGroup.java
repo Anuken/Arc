@@ -1,12 +1,11 @@
 package arc.scene.ui.layout;
 
-import arc.struct.FloatSeq;
-import arc.struct.SnapshotSeq;
-import arc.scene.Element;
-import arc.scene.event.Touchable;
-import arc.scene.ui.Label;
-import arc.scene.utils.Layout;
-import arc.util.Align;
+import arc.scene.*;
+import arc.scene.event.*;
+import arc.scene.ui.*;
+import arc.scene.utils.*;
+import arc.struct.*;
+import arc.util.*;
 
 /**
  * A group that lays out its children side by side horizontally, with optional wrapping. This can be easier than using
@@ -30,9 +29,10 @@ public class HorizontalGroup extends WidgetGroup{
     private float space, wrapSpace, fill, padTop, padLeft, padBottom, padRight;
 
     public HorizontalGroup(){
-        touchable(Touchable.childrenOnly);
+        this.touchable = Touchable.childrenOnly;
     }
 
+    @Override
     public void invalidate(){
         super.invalidate();
         sizeInvalid = true;
@@ -62,9 +62,9 @@ public class HorizontalGroup extends WidgetGroup{
                 Element child = children.get(i);
 
                 float width, height;
-                if(child instanceof Layout){
-                    width = ((Layout)child).getPrefWidth();
-                    height = ((Layout)child).getPrefHeight();
+                if(child != null){
+                    width = (child).getPrefWidth();
+                    height = (child).getPrefHeight();
                 }else{
                     width = child.getWidth();
                     height = child.getHeight();
@@ -93,9 +93,9 @@ public class HorizontalGroup extends WidgetGroup{
             prefWidth = padLeft + padRight + space * (n - 1);
             for(int i = 0; i < n; i++){
                 Element child = children.get(i);
-                if(child instanceof Layout){
-                    prefWidth += ((Layout)child).getPrefWidth();
-                    prefHeight = Math.max(prefHeight, ((Layout)child).getPrefHeight());
+                if(child != null){
+                    prefWidth += (child).getPrefWidth();
+                    prefHeight = Math.max(prefHeight, (child).getPrefHeight());
                 }else{
                     prefWidth += child.getWidth();
                     prefHeight = Math.max(prefHeight, child.getHeight());
@@ -109,6 +109,7 @@ public class HorizontalGroup extends WidgetGroup{
         }
     }
 
+    @Override
     public void layout(){
         if(sizeInvalid) computeSize();
 
@@ -148,23 +149,15 @@ public class HorizontalGroup extends WidgetGroup{
             Element child = children.get(i);
 
             float width, height;
-            Layout layout = null;
-            if(child instanceof Layout){
-                layout = child;
-                width = layout.getPrefWidth();
-                height = layout.getPrefHeight();
-            }else{
-                width = child.getWidth();
-                height = child.getHeight();
-            }
+            width = child.getPrefWidth();
+            height = child.getPrefHeight();
+
 
             if(fill > 0) height = rowHeight * fill;
 
-            if(layout != null){
-                height = Math.max(height, layout.getMinHeight());
-                float maxHeight = layout.getMaxHeight();
-                if(maxHeight > 0 && height > maxHeight) height = maxHeight;
-            }
+            height = Math.max(height, child.getMinHeight());
+            float maxHeight = child.getMaxHeight();
+            if(maxHeight > 0 && height > maxHeight) height = maxHeight;
 
             float y = startY;
             if((align & Align.top) != 0)
@@ -178,7 +171,7 @@ public class HorizontalGroup extends WidgetGroup{
                 child.setBounds(x, y, width, height);
             x += width + space;
 
-            if(layout != null) layout.validate();
+            child.validate();
         }
     }
 
@@ -220,15 +213,9 @@ public class HorizontalGroup extends WidgetGroup{
             Element child = children.get(i);
 
             float width, height;
-            Layout layout = null;
-            if(child instanceof Layout){
-                layout = child;
-                width = layout.getPrefWidth();
-                height = layout.getPrefHeight();
-            }else{
-                width = child.getWidth();
-                height = child.getHeight();
-            }
+            width = child.getPrefWidth();
+            height = child.getPrefHeight();
+
 
             if(x + width > groupWidth || r == 0){
                 x = xStart;
@@ -244,11 +231,9 @@ public class HorizontalGroup extends WidgetGroup{
 
             if(fill > 0) height = rowHeight * fill;
 
-            if(layout != null){
-                height = Math.max(height, layout.getMinHeight());
-                float maxHeight = layout.getMaxHeight();
-                if(maxHeight > 0 && height > maxHeight) height = maxHeight;
-            }
+            height = Math.max(height, child.getMinHeight());
+            float maxHeight = child.getMaxHeight();
+            if(maxHeight > 0 && height > maxHeight) height = maxHeight;
 
             float y = rowY;
             if((align & Align.top) != 0)
@@ -262,16 +247,18 @@ public class HorizontalGroup extends WidgetGroup{
                 child.setBounds(x, y, width, height);
             x += width + space;
 
-            if(layout != null) layout.validate();
+            child.validate();
         }
     }
 
+    @Override
     public float getPrefWidth(){
         if(wrap) return 0;
         if(sizeInvalid) computeSize();
         return prefWidth;
     }
 
+    @Override
     public float getPrefHeight(){
         if(sizeInvalid) computeSize();
         return prefHeight;

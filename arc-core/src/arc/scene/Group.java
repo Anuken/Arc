@@ -8,7 +8,6 @@ import arc.func.Cons;
 import arc.func.Boolf;
 import arc.math.Affine2;
 import arc.math.Mat;
-import arc.math.geom.Vec2;
 import arc.scene.event.Touchable;
 import arc.scene.style.*;
 import arc.scene.ui.layout.Table;
@@ -38,7 +37,7 @@ public abstract class Group extends Element implements Cullable{
         super.act(delta);
         Element[] actors = children.begin();
         for(int i = 0, n = children.size; i < n; i++){
-            if(actors[i].isVisible()){
+            if(actors[i].visible){
                 actors[i].act(delta);
             }
             actors[i].updateVisibility();
@@ -68,7 +67,7 @@ public abstract class Group extends Element implements Cullable{
                 for(int i = 0, n = children.size; i < n; i++){
                     Element child = actors[i];
                     child.parentAlpha = parentAlpha;
-                    if(!child.isVisible()) continue;
+                    if(!child.visible) continue;
                     float cx = child.x, cy = child.y;
                     child.x += child.translation.x;
                     child.y += child.translation.y;
@@ -85,11 +84,11 @@ public abstract class Group extends Element implements Cullable{
                 for(int i = 0, n = children.size; i < n; i++){
                     Element child = actors[i];
                     child.parentAlpha = parentAlpha;
-                    if(!child.isVisible()) continue;
+                    if(!child.visible) continue;
                     float cx = child.x, cy = child.y;
                     if(cx <= cullRight && cy <= cullTop && cx + child.width >= cullLeft && cy + child.height >= cullBottom){
-                        child.x = cx + offsetX + child.getTranslation().x;
-                        child.y = cy + offsetY + child.getTranslation().y;
+                        child.x = cx + offsetX + child.translation.x;
+                        child.y = cy + offsetY + child.translation.y;
                         child.draw();
                         child.x = cx;
                         child.y = cy;
@@ -104,7 +103,7 @@ public abstract class Group extends Element implements Cullable{
                 for(int i = 0, n = children.size; i < n; i++){
                     Element child = actors[i];
                     child.parentAlpha = parentAlpha;
-                    if(!child.isVisible()) continue;
+                    if(!child.visible) continue;
                     child.x += child.translation.x;
                     child.y += child.translation.y;
                     child.draw();
@@ -119,10 +118,10 @@ public abstract class Group extends Element implements Cullable{
                 for(int i = 0, n = children.size; i < n; i++){
                     Element child = actors[i];
                     child.parentAlpha = parentAlpha;
-                    if(!child.isVisible()) continue;
+                    if(!child.visible) continue;
                     float cx = child.x, cy = child.y;
-                    child.x = cx + offsetX + child.getTranslation().x;
-                    child.y = cy + offsetY + child.getTranslation().y;
+                    child.x = cx + offsetX + child.translation.x;
+                    child.y = cy + offsetY + child.translation.y;
                     child.draw();
                     child.x = cx;
                     child.y = cy;
@@ -190,12 +189,12 @@ public abstract class Group extends Element implements Cullable{
 
     @Override
     public Element hit(float x, float y, boolean touchable){
-        if(touchable && getTouchable() == Touchable.disabled) return null;
+        if(touchable && this.touchable == Touchable.disabled) return null;
         Vec2 point = tmp;
         Element[] childrenArray = children.items;
         for(int i = children.size - 1; i >= 0; i--){
             Element child = childrenArray[i];
-            if(!child.isVisible()) continue;
+            if(!child.visible) continue;
             child.parentToLocalCoordinates(point.set(x, y));
             Element hit = child.hit(point.x, point.y, touchable);
             if(hit != null) return hit;
@@ -252,7 +251,7 @@ public abstract class Group extends Element implements Cullable{
             actor.parent.removeChild(actor, false);
         }
         children.add(actor);
-        actor.setParent(this);
+        actor.parent = this;
         actor.setScene(getScene());
         childrenChanged();
     }
@@ -271,7 +270,7 @@ public abstract class Group extends Element implements Cullable{
             children.add(actor);
         else
             children.insert(index, actor);
-        actor.setParent(this);
+        actor.parent = this;
         actor.setScene(getScene());
         childrenChanged();
     }
@@ -287,7 +286,7 @@ public abstract class Group extends Element implements Cullable{
         }
         int index = children.indexOf(actorBefore, true);
         children.insert(index, actor);
-        actor.setParent(this);
+        actor.parent = this;
         actor.setScene(getScene());
         childrenChanged();
     }
@@ -306,7 +305,7 @@ public abstract class Group extends Element implements Cullable{
             children.add(actor);
         else
             children.insert(index + 1, actor);
-        actor.setParent(this);
+        actor.parent = this;
         actor.setScene(getScene());
         childrenChanged();
     }
@@ -329,7 +328,7 @@ public abstract class Group extends Element implements Cullable{
             Scene stage = getScene();
             if(stage != null) stage.unfocus(actor);
         }
-        actor.setParent(null);
+        actor.parent = null;
         actor.setScene(null);
         childrenChanged();
         return true;
@@ -341,7 +340,7 @@ public abstract class Group extends Element implements Cullable{
         for(int i = 0, n = children.size; i < n; i++){
             Element child = actors[i];
             child.setScene(null);
-            child.setParent(null);
+            child.parent = null;
         }
         children.end();
         children.clear();
@@ -349,6 +348,7 @@ public abstract class Group extends Element implements Cullable{
     }
 
     /** Removes all children, actions, and listeners from this group. */
+    @Override
     public void clear(){
         super.clear();
         clearChildren();
@@ -362,7 +362,7 @@ public abstract class Group extends Element implements Cullable{
     public <T extends Element> T find(String name){
         Seq<Element> children = this.children;
         for(int i = 0, n = children.size; i < n; i++)
-            if(name.equals(children.get(i).getName())) return (T)children.get(i);
+            if(name.equals(children.get(i).name)) return (T)children.get(i);
         for(int i = 0, n = children.size; i < n; i++){
             Element child = children.get(i);
             if(child instanceof Group){
@@ -378,10 +378,10 @@ public abstract class Group extends Element implements Cullable{
     public <T extends Element> T findVisible(String name){
         Seq<Element> children = this.children;
         for(int i = 0, n = children.size; i < n; i++)
-            if(name.equals(children.get(i).getName()) && children.get(i).isVisible()) return (T)children.get(i);
+            if(name.equals(children.get(i).name) && children.get(i).visible) return (T)children.get(i);
         for(int i = 0, n = children.size; i < n; i++){
             Element child = children.get(i);
-            if(child instanceof Group && child.isVisible()){
+            if(child instanceof Group && child.visible){
                 Element actor = ((Group)child).findVisible(name);
                 if(actor != null) return (T)actor;
             }
@@ -406,6 +406,7 @@ public abstract class Group extends Element implements Cullable{
         return null;
     }
 
+    @Override
     protected void setScene(Scene stage){
         super.setScene(stage);
         Element[] childrenArray = children.items;

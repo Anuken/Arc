@@ -57,7 +57,7 @@ public class Table extends WidgetGroup{
         cellDefaults = obtainCell();
 
         setTransform(false);
-        touchable(Touchable.childrenOnly);
+        this.touchable = Touchable.childrenOnly;
     }
 
     public Table(Drawable background){
@@ -121,7 +121,7 @@ public class Table extends WidgetGroup{
      */
     protected void drawBackground(float x, float y){
         if(background == null) return;
-        Color color = getColor();
+        Color color = this.color;
         Draw.color(color.r, color.g, color.b, color.a * parentAlpha);
         background.draw(x, y, width, height);
     }
@@ -148,9 +148,10 @@ public class Table extends WidgetGroup{
             invalidate();
     }
 
+    @Override
     public Element hit(float x, float y, boolean touchable){
         if(clip){
-            if(touchable && getTouchable() == Touchable.disabled) return null;
+            if(touchable && this.touchable == Touchable.disabled) return null;
             if(x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) return null;
         }
         return super.hit(x, y, touchable);
@@ -170,6 +171,7 @@ public class Table extends WidgetGroup{
         invalidate();
     }
 
+    @Override
     public void invalidate(){
         sizeInvalid = true;
         super.invalidate();
@@ -467,6 +469,7 @@ public class Table extends WidgetGroup{
 
     public Cell rect(DrawRect draw){
         return add(new Element(){
+            @Override
             public void draw(){
                 draw.draw(getX(), getY(), getWidth(), getHeight());
             }
@@ -564,10 +567,12 @@ public class Table extends WidgetGroup{
         return add(slider);
     }
 
+    @Override
     public boolean removeChild(Element element){
         return removeChild(element, true);
     }
 
+    @Override
     public boolean removeChild(Element element, boolean unfocus){
         if(!super.removeChild(element, unfocus)) return false;
         Cell cell = getCell(element);
@@ -576,6 +581,7 @@ public class Table extends WidgetGroup{
     }
 
     /** Removes all actors and cells from the table. */
+    @Override
     public void clearChildren(){
         Seq<Cell> cells = this.cells;
         for(int i = cells.size - 1; i >= 0; i--){
@@ -673,6 +679,7 @@ public class Table extends WidgetGroup{
         return cells;
     }
 
+    @Override
     public float getPrefWidth(){
         if(sizeInvalid) computeSize();
         float width = tablePrefWidth;
@@ -680,6 +687,7 @@ public class Table extends WidgetGroup{
         return width;
     }
 
+    @Override
     public float getPrefHeight(){
         if(sizeInvalid) computeSize();
         float height = tablePrefHeight;
@@ -687,11 +695,13 @@ public class Table extends WidgetGroup{
         return height;
     }
 
+    @Override
     public float getMinWidth(){
         if(sizeInvalid) computeSize();
         return tableMinWidth;
     }
 
+    @Override
     public float getMinHeight(){
         if(sizeInvalid) computeSize();
         return tableMinHeight;

@@ -58,7 +58,7 @@ public class Dialog extends Table{
 
     public Dialog(String title, DialogStyle style){
         if(title == null) throw new IllegalArgumentException("title cannot be null.");
-        touchable(Touchable.enabled);
+        this.touchable = Touchable.enabled;
         setClip(true);
 
         this.title = new Label(title, new LabelStyle(style.titleFont, style.titleFontColor));
@@ -128,7 +128,7 @@ public class Dialog extends Table{
                 float minWidth = getMinWidth();
                 float minHeight = getMinHeight();
                 Scene stage = getScene();
-                boolean clampPosition = keepWithinStage && getParent() == stage.root;
+                boolean clampPosition = keepWithinStage && parent == stage.root;
 
                 if((edge & MOVE) != 0){
                     float amountX = x - startX, amountY = y - startY;
@@ -204,10 +204,12 @@ public class Dialog extends Table{
         buttons.defaults().pad(3);
 
         focusListener = new FocusListener(){
+            @Override
             public void keyboardFocusChanged(FocusEvent event, Element actor, boolean focused){
                 if(!focused) focusChanged(event);
             }
 
+            @Override
             public void scrollFocusChanged(FocusEvent event, Element actor, boolean focused){
                 if(!focused) focusChanged(event);
             }
@@ -286,7 +288,7 @@ public class Dialog extends Table{
     }
 
     protected void drawStageBackground(float x, float y, float width, float height){
-        Color color = getColor();
+        Color color = this.color;
         Draw.color(color.r, color.g, color.b, color.a * parentAlpha);
         style.stageBackground.draw(x, y, width, height);
     }
@@ -294,7 +296,7 @@ public class Dialog extends Table{
     @Override
     public Element hit(float x, float y, boolean touchable){
         Element hit = super.hit(x, y, touchable);
-        if(hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled)) return this;
+        if(hit == null && isModal && (!touchable || this.touchable == Touchable.enabled)) return this;
         return hit;
     }
 
@@ -368,6 +370,7 @@ public class Dialog extends Table{
         defaultShowAction = prov;
     }
 
+    @Override
     protected void setScene(Scene stage){
         if(stage == null)
             addListener(focusListener);

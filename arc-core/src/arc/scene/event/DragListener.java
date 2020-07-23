@@ -24,6 +24,7 @@ public class DragListener extends InputListener{
         return true;
     }
 
+    @Override
     public void touchDragged(InputEvent event, float x, float y, int pointer){
         if(pointer != pressedPointer) return;
         if(!dragging && (Math.abs(touchDownX - x) > tapSquareSize || Math.abs(touchDownY - y) > tapSquareSize)){

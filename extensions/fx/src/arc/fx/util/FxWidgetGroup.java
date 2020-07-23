@@ -75,7 +75,7 @@ public class FxWidgetGroup extends WidgetGroup{
 
         // If something was captured, render result to the screen.
         if(fxProcessor.hasResult()){
-            Color color = getColor();
+            Color color = this.color;
             Draw.color(color.r, color.g, color.b, color.a * parentAlpha);
             Draw.rect(Draw.wrap(fxProcessor.getResultBuffer().getTexture()), x + width / 2f, y + height / 2f, width, height);
         }

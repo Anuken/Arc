@@ -7,6 +7,7 @@ package arc.scene.actions;
 public class SizeByAction extends RelativeTemporalAction{
     private float amountWidth, amountHeight;
 
+    @Override
     protected void updateRelative(float percentDelta){
         target.sizeBy(amountWidth * percentDelta, amountHeight * percentDelta);
     }
