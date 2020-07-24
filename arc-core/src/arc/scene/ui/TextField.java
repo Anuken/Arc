@@ -41,8 +41,6 @@ import static arc.Core.*;
  * @author Nathan Sweet
  */
 public class TextField extends Element implements Disableable{
-    //static protected final char ENTER_DESKTOP = '\r';
-    //static protected final char ENTER_ANDROID = '\r';
     static protected final char BACKSPACE = 8;
     static protected final char TAB = '\t';
     static protected final char DELETE = 127;
