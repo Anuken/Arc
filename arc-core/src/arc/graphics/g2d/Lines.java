@@ -60,18 +60,13 @@ public class Lines{
     }
 
     public static void line(TextureRegion region, float x, float y, float x2, float y2, CapStyle cap, float padding){
-        float length = Mathf.dst(x, y, x2, y2) + (cap == CapStyle.none || cap == CapStyle.round ? padding * 2f : stroke + padding * 2);
+        float length = Mathf.dst(x, y, x2, y2) + (cap == CapStyle.none ? padding * 2f : stroke + padding * 2);
         float angle = (precise ? (float)Math.atan2(y2 - y, x2 - x) : Mathf.atan2(x2 - x, y2 - y)) * Mathf.radDeg;
 
         if(cap == CapStyle.square){
             Draw.rect(region, x - stroke / 2 - padding + length/2f, y, length, stroke, stroke / 2 + padding, stroke / 2, angle);
         }else if(cap == CapStyle.none){
             Draw.rect(region, x - padding + length/2f, y, length, stroke, padding, stroke / 2, angle);
-        }else if(cap == CapStyle.round){ //TODO remove or fix
-            TextureRegion cir = Core.atlas.has("hcircle") ? Core.atlas.find("hcircle") : Core.atlas.find("circle");
-            Draw.rect(region, x - padding + length/2f, y, length, stroke, padding, stroke / 2, angle);
-            Draw.rect(cir, x, y, stroke, stroke, angle + 180f);
-            Draw.rect(cir, x2, y2, stroke, stroke, angle);
         }
     }
 
