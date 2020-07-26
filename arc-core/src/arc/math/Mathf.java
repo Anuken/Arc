@@ -462,6 +462,10 @@ public final class Mathf{
         return (int)(value + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
     }
 
+    public static int round(int value, int step){
+        return (value / step) * step;
+    }
+
     public static float round(float value, float step){
         return (int)(value / step) * step;
     }
