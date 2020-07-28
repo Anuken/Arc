@@ -371,6 +371,10 @@ public final class Mathf{
         return value;
     }
 
+    public static float maxZero(float val){
+        return Math.max(val, 0);
+    }
+
     /** Approaches a value at linear speed. */
     public static float approach(float from, float to, float speed){
         return from + Mathf.clamp(to - from, -speed, speed);
