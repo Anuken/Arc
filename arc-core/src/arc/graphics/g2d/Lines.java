@@ -117,7 +117,7 @@ public class Lines{
         }else{
             floats.clear();
 
-            for(int i = 0; i < (wrap ? length : length - 2); i += 2){
+            for(int i = 0; i < length; i += 2){
                 float x0 = points[Mathf.mod(i - 2, length)];
                 float y0 = points[Mathf.mod(i - 1, length)];
                 float x1 = points[i];

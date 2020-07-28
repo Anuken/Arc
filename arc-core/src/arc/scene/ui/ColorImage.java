@@ -6,7 +6,7 @@ public class ColorImage extends Image{
     private Color set;
 
     public ColorImage(Color set){
-        this.set = set;
+        this.set = new Color(set);
     }
 
     @Override
