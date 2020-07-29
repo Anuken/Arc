@@ -5,8 +5,6 @@ import android.media.*;
 import arc.*;
 import arc.audio.*;
 import arc.backend.android.surfaceview.*;
-import arc.func.*;
-import arc.util.ArcAnnotate.*;
 
 /**
  * Class defining the configuration of an {@link AndroidApplication}. Allows you to disable the use of the accelerometer to save
@@ -86,9 +84,6 @@ public class AndroidApplicationConfiguration{
 
     /** set this to true to enable Android 4.4 KitKat's 'Immersive mode' **/
     public boolean useImmersiveMode = true;
-
-    /** handles any errors in the main loop.*/
-    public @Nullable Cons<Throwable> errorHandler;
 
     /**
      * Whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0.

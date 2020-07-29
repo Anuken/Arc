@@ -7,7 +7,6 @@ import android.view.*;
 import arc.*;
 import arc.Graphics.Cursor.*;
 import arc.backend.android.surfaceview.*;
-import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.gl.*;
 import arc.math.*;
@@ -355,124 +354,111 @@ public class AndroidGraphics extends Graphics implements Renderer{
 
     @Override
     public void onDrawFrame(GL10 gl){
-        try{
-            long time = System.nanoTime();
-            deltaTime = (time - lastFrameTime) / 1000000000.0f;
-            lastFrameTime = time;
+        long time = System.nanoTime();
+        deltaTime = (time - lastFrameTime) / 1000000000.0f;
+        lastFrameTime = time;
 
-            // After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
-            if(!resume){
-                mean.add(deltaTime);
-            }else{
-                deltaTime = 0;
+        // After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
+        if(!resume){
+            mean.add(deltaTime);
+        }else{
+            deltaTime = 0;
+        }
+
+        boolean lrunning;
+        boolean lpause;
+        boolean ldestroy;
+        boolean lresume;
+
+        synchronized(synch){
+            lrunning = running;
+            lpause = pause;
+            ldestroy = destroy;
+            lresume = resume;
+
+            if(resume){
+                resume = false;
             }
 
-            boolean lrunning;
-            boolean lpause;
-            boolean ldestroy;
-            boolean lresume;
-
-            synchronized(synch){
-                lrunning = running;
-                lpause = pause;
-                ldestroy = destroy;
-                lresume = resume;
-
-                if(resume){
-                    resume = false;
-                }
-
-                if(pause){
-                    pause = false;
-                    synch.notifyAll();
-                }
-
-                if(destroy){
-                    destroy = false;
-                    synch.notifyAll();
-                }
+            if(pause){
+                pause = false;
+                synch.notifyAll();
             }
 
-            if(lresume){
-                Gl.reset();
-                Seq<ApplicationListener> listeners = app.getListeners();
-                synchronized(listeners){
-                    for(int i = 0, n = listeners.size; i < n; ++i){
-                        listeners.get(i).resume();
-                    }
-                }
-                Log.infoTag(LOG_TAG, "resumed");
-            }
-
-            if(lrunning){
-
-                synchronized(app.getRunnables()){
-                    app.getExecutedRunnables().clear();
-                    app.getExecutedRunnables().addAll(app.getRunnables());
-                    app.getRunnables().clear();
-                }
-
-                for(int i = 0; i < app.getExecutedRunnables().size; i++){
-                    app.getExecutedRunnables().get(i).run();
-                }
-
-                ((AndroidInput)Core.input).processEvents();
-                frameId++;
-                app.defaultUpdate();
-
-                Seq<ApplicationListener> listeners = app.getListeners();
-                synchronized(listeners){
-                    for(int i = 0, n = listeners.size; i < n; ++i){
-                        listeners.get(i).update();
-                    }
-                }
-
-                ((AndroidInput)Core.input).processDevices();
-            }
-
-            if(lpause){
-                Seq<ApplicationListener> listeners = app.getListeners();
-                synchronized(listeners){
-                    for(int i = 0, n = listeners.size; i < n; ++i){
-                        listeners.get(i).pause();
-                    }
-                }
-                Log.infoTag(LOG_TAG, "paused");
-            }
-
-            if(ldestroy){
-                Seq<ApplicationListener> listeners = app.getListeners();
-                synchronized(listeners){
-                    for(int i = 0, n = listeners.size; i < n; ++i){
-                        try{
-                            listeners.get(i).dispose();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                app.dispose();
-                Log.infoTag(LOG_TAG, "destroyed");
-            }
-
-            if(time - frameStart > 1000000000){
-                fps = frames;
-                frames = 0;
-                frameStart = time;
-            }
-            frames++;
-        }catch(Throwable t){
-            if(config.errorHandler != null){
-                app.getListeners().clear();
-                app.getExecutedRunnables().clear();
-                app.getRunnables().clear();
-                Cons<Throwable> handler = config.errorHandler;
-                config.errorHandler = null;
-                handler.get(t);
-            }else{
-                throw new RuntimeException(t);
+            if(destroy){
+                destroy = false;
+                synch.notifyAll();
             }
         }
+
+        if(lresume){
+            Gl.reset();
+            Seq<ApplicationListener> listeners = app.getListeners();
+            synchronized(listeners){
+                for(int i = 0, n = listeners.size; i < n; ++i){
+                    listeners.get(i).resume();
+                }
+            }
+            Log.infoTag(LOG_TAG, "resumed");
+        }
+
+        if(lrunning){
+
+            synchronized(app.getRunnables()){
+                app.getExecutedRunnables().clear();
+                app.getExecutedRunnables().addAll(app.getRunnables());
+                app.getRunnables().clear();
+            }
+
+            for(int i = 0; i < app.getExecutedRunnables().size; i++){
+                app.getExecutedRunnables().get(i).run();
+            }
+
+            ((AndroidInput)Core.input).processEvents();
+            frameId++;
+            app.defaultUpdate();
+
+            Seq<ApplicationListener> listeners = app.getListeners();
+            synchronized(listeners){
+                for(int i = 0, n = listeners.size; i < n; ++i){
+                    listeners.get(i).update();
+                }
+            }
+
+            ((AndroidInput)Core.input).processDevices();
+        }
+
+        if(lpause){
+            Seq<ApplicationListener> listeners = app.getListeners();
+            synchronized(listeners){
+                for(int i = 0, n = listeners.size; i < n; ++i){
+                    listeners.get(i).pause();
+                }
+            }
+            Log.infoTag(LOG_TAG, "paused");
+        }
+
+        if(ldestroy){
+            Seq<ApplicationListener> listeners = app.getListeners();
+            synchronized(listeners){
+                for(int i = 0, n = listeners.size; i < n; ++i){
+                    try{
+                        listeners.get(i).dispose();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+            app.dispose();
+            Log.infoTag(LOG_TAG, "destroyed");
+        }
+
+        if(time - frameStart > 1000000000){
+            fps = frames;
+            frames = 0;
+            frameStart = time;
+        }
+        frames++;
     }
 
     @Override
