@@ -48,7 +48,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
     protected WindowedMean mean = new WindowedMean(5);
     int width;
     int height;
-    AndroidApplicationBase app;
+    AndroidApplication app;
     GL20 gl20;
     GL30 gl30;
     EGLContext eglContext;
@@ -69,12 +69,12 @@ public class AndroidGraphics extends Graphics implements Renderer{
     private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
     private boolean isContinuous = true;
 
-    public AndroidGraphics(AndroidApplicationBase application, AndroidApplicationConfiguration config,
+    public AndroidGraphics(AndroidApplication application, AndroidApplicationConfiguration config,
                            ResolutionStrategy resolutionStrategy){
         this(application, config, resolutionStrategy, true);
     }
 
-    public AndroidGraphics(AndroidApplicationBase application, AndroidApplicationConfiguration config,
+    public AndroidGraphics(AndroidApplication application, AndroidApplicationConfiguration config,
                            ResolutionStrategy resolutionStrategy, boolean focusableView){
         this.config = config;
         this.app = application;
@@ -86,7 +86,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
         }
     }
 
-    protected GLSurfaceView20 createGLSurfaceView(AndroidApplicationBase application, final ResolutionStrategy resolutionStrategy){
+    protected GLSurfaceView20 createGLSurfaceView(AndroidApplication application, final ResolutionStrategy resolutionStrategy){
         if(!checkGL20()) throw new ArcRuntimeException("Arc requires OpenGL ES 2.0");
 
         Gl.reset();

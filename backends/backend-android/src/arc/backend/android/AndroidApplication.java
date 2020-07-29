@@ -24,7 +24,9 @@ import java.util.concurrent.*;
  * configuration for the GLSurfaceView.
  * @author mzechner
  */
-public class AndroidApplication extends Activity implements AndroidApplicationBase{
+public class AndroidApplication extends Activity implements Application{
+    public static final int MINIMUM_SDK = 14;
+
     protected final Seq<ApplicationListener> listeners = new Seq<>();
     protected final Seq<Runnable> runnables = new Seq<>();
     protected final Seq<Runnable> executedRunnables = new Seq<>();
@@ -204,7 +206,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
     }
 
     @TargetApi(19)
-    @Override
     public void useImmersiveMode(boolean use){
         if(!use || getVersion() < Build.VERSION_CODES.KITKAT) return;
 
@@ -418,27 +419,22 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
         return listeners;
     }
 
-    @Override
     public Context getContext(){
         return this;
     }
 
-    @Override
     public Seq<Runnable> getRunnables(){
         return runnables;
     }
 
-    @Override
     public Seq<Runnable> getExecutedRunnables(){
         return executedRunnables;
     }
 
-    @Override
     public Window getApplicationWindow(){
         return this.getWindow();
     }
 
-    @Override
     public Handler getHandler(){
         return this.handler;
     }
