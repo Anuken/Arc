@@ -86,6 +86,7 @@ public class Time{
 
     public static void setDeltaProvider(Floatp impl){
         deltaimpl = impl;
+        delta = impl.get();
     }
 
     static void dispose(){
