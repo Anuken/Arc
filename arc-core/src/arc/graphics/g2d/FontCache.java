@@ -4,8 +4,8 @@ import arc.struct.Seq;
 import arc.struct.FloatSeq;
 import arc.struct.IntSeq;
 import arc.graphics.Color;
-import arc.graphics.g2d.BitmapFont.BitmapFontData;
-import arc.graphics.g2d.BitmapFont.Glyph;
+import arc.graphics.g2d.Font.FontData;
+import arc.graphics.g2d.Font.Glyph;
 import arc.graphics.g2d.GlyphLayout.GlyphRun;
 import arc.util.Align;
 import arc.util.pooling.Pools;
@@ -17,10 +17,10 @@ import arc.util.pooling.Pools;
  * @author davebaol
  * @author Alexander Dorokhov
  */
-public class BitmapFontCache{
+public class FontCache{
     private static final Color tempColor = new Color(1, 1, 1, 1);
 
-    private final BitmapFont font;
+    private final Font font;
     private final Seq<GlyphLayout> layouts = new Seq<>();
     private final Seq<GlyphLayout> pooledLayouts = new Seq<>();
     private final Color color = new Color(1, 1, 1, 1);
@@ -41,12 +41,12 @@ public class BitmapFontCache{
     /** Used internally to ensure a correct capacity for multi-page font vertex data. */
     private int[] tempGlyphCount;
 
-    public BitmapFontCache(BitmapFont font){
+    public FontCache(Font font){
         this(font, font.usesIntegerPositions());
     }
 
     /** @param integer If true, rendering positions will be at integer values to avoid filtering artifacts. */
-    public BitmapFontCache(BitmapFont font, boolean integer){
+    public FontCache(Font font, boolean integer){
         this.font = font;
         this.integer = integer;
 
@@ -508,7 +508,7 @@ public class BitmapFontCache{
     /**
      * Adds glyphs for the the specified text.
      * @param x The x position for the left most character.
-     * @param y The y position for the top of most capital letters in the font (the {@link BitmapFontData#capHeight cap height}).
+     * @param y The y position for the top of most capital letters in the font (the {@link FontData#capHeight cap height}).
      * @param start The first character of the string to draw.
      * @param end The last character of the string to draw (exclusive).
      * @param targetWidth The width of the area the text will be drawn, for wrapping or truncation.
@@ -542,7 +542,7 @@ public class BitmapFontCache{
         return y;
     }
 
-    public BitmapFont getFont(){
+    public Font getFont(){
         return font;
     }
 

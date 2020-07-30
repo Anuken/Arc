@@ -8,14 +8,14 @@ import arc.assets.loaders.FileHandleResolver;
 import arc.struct.Seq;
 import arc.files.Fi;
 import arc.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import arc.graphics.g2d.BitmapFont;
+import arc.graphics.g2d.Font;
 
 /**
- * Creates {@link BitmapFont} instances from FreeType font files. Requires a {@link FreeTypeFontLoaderParameter} to be
+ * Creates {@link Font} instances from FreeType font files. Requires a {@link FreeTypeFontLoaderParameter} to be
  * passed to {@link AssetManager#load(String, Class, AssetLoaderParameters)} which specifies the name of the TTF
  * file as well the parameters used to generate the BitmapFont (size, characters, etc.)
  */
-public class FreetypeFontLoader extends AsynchronousAssetLoader<BitmapFont, FreetypeFontLoader.FreeTypeFontLoaderParameter>{
+public class FreetypeFontLoader extends AsynchronousAssetLoader<Font, FreetypeFontLoader.FreeTypeFontLoaderParameter>{
     public FreetypeFontLoader(FileHandleResolver resolver){
         super(resolver);
     }
@@ -27,7 +27,7 @@ public class FreetypeFontLoader extends AsynchronousAssetLoader<BitmapFont, Free
     }
 
     @Override
-    public BitmapFont loadSync(AssetManager manager, String fileName, Fi file, FreeTypeFontLoaderParameter parameter){
+    public Font loadSync(AssetManager manager, String fileName, Fi file, FreeTypeFontLoaderParameter parameter){
         if(parameter == null)
             throw new RuntimeException("FreetypeFontParameter must be set in AssetManager#load to point at a TTF file!");
         FreeTypeFontGenerator generator = manager.get(parameter.fontFileName + ".gen", FreeTypeFontGenerator.class);
@@ -41,7 +41,7 @@ public class FreetypeFontLoader extends AsynchronousAssetLoader<BitmapFont, Free
         return deps;
     }
 
-    public static class FreeTypeFontLoaderParameter extends AssetLoaderParameters<BitmapFont>{
+    public static class FreeTypeFontLoaderParameter extends AssetLoaderParameters<Font>{
         /** the name of the TTF file to be used to load the font **/
         public String fontFileName;
         /** the parameters used to generate the font, e.g. size, characters, etc. **/

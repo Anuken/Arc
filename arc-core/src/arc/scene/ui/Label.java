@@ -3,8 +3,8 @@ package arc.scene.ui;
 import arc.Core;
 import arc.func.Prov;
 import arc.graphics.Color;
-import arc.graphics.g2d.BitmapFont;
-import arc.graphics.g2d.BitmapFontCache;
+import arc.graphics.g2d.Font;
+import arc.graphics.g2d.FontCache;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.GlyphLayout;
 import arc.math.geom.Vec2;
@@ -29,7 +29,7 @@ public class Label extends Element{
     private final Vec2 prefSize = new Vec2();
     private final StringBuilder text = new StringBuilder();
     private LabelStyle style;
-    private BitmapFontCache cache;
+    private FontCache cache;
     private int labelAlign = Align.left;
     private int lineAlign = Align.left;
     protected boolean wrap;
@@ -119,7 +119,7 @@ public class Label extends Element{
     }
 
     private void scaleAndComputePrefSize(){
-        BitmapFont font = cache.getFont();
+        Font font = cache.getFont();
         float oldScaleX = font.getScaleX();
         float oldScaleY = font.getScaleY();
         if(fontScaleChanged) font.getData().setScale(fontScaleX, fontScaleY);
@@ -143,7 +143,7 @@ public class Label extends Element{
 
     @Override
     public void layout(){
-        BitmapFont font = cache.getFont();
+        Font font = cache.getFont();
         float oldScaleX = font.getScaleX();
         float oldScaleY = font.getScaleY();
         if(fontScaleChanged) font.getData().setScale(fontScaleX, fontScaleY);
@@ -339,7 +339,7 @@ public class Label extends Element{
     }
 
     /** Allows subclasses to access the cache. */
-    protected BitmapFontCache getBitmapFontCache(){
+    protected FontCache getFontCache(){
         return cache;
     }
 
@@ -352,7 +352,7 @@ public class Label extends Element{
      * @author Nathan Sweet
      */
     public static class LabelStyle extends Style{
-        public BitmapFont font;
+        public Font font;
         /** Optional. */
         public Color fontColor;
         /** Optional. */
@@ -361,7 +361,7 @@ public class Label extends Element{
         public LabelStyle(){
         }
 
-        public LabelStyle(BitmapFont font, Color fontColor){
+        public LabelStyle(Font font, Color fontColor){
             this.font = font;
             this.fontColor = fontColor;
         }

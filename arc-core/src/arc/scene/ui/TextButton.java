@@ -1,7 +1,7 @@
 package arc.scene.ui;
 
 import arc.graphics.Color;
-import arc.graphics.g2d.BitmapFont;
+import arc.graphics.g2d.Font;
 import arc.scene.style.Drawable;
 import arc.scene.ui.Label.LabelStyle;
 import arc.scene.ui.layout.Cell;
@@ -89,14 +89,14 @@ public class TextButton extends Button{
      * @author Nathan Sweet
      */
     public static class TextButtonStyle extends ButtonStyle{
-        public BitmapFont font;
+        public Font font;
         /** Optional. */
         public Color fontColor, downFontColor, overFontColor, checkedFontColor, checkedOverFontColor, disabledFontColor;
 
         public TextButtonStyle(){
         }
 
-        public TextButtonStyle(Drawable up, Drawable down, Drawable checked, BitmapFont font){
+        public TextButtonStyle(Drawable up, Drawable down, Drawable checked, Font font){
             super(up, down, checked);
             this.font = font;
         }

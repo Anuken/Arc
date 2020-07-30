@@ -4,8 +4,8 @@ import arc.struct.Seq;
 import arc.struct.FloatSeq;
 import arc.graphics.Color;
 import arc.graphics.Colors;
-import arc.graphics.g2d.BitmapFont.BitmapFontData;
-import arc.graphics.g2d.BitmapFont.Glyph;
+import arc.graphics.g2d.Font.FontData;
+import arc.graphics.g2d.Font.Glyph;
 import arc.util.Align;
 import arc.util.pooling.Pool;
 import arc.util.pooling.Pool.Poolable;
@@ -26,15 +26,15 @@ public class GlyphLayout implements Poolable{
     public GlyphLayout(){
     }
 
-    public GlyphLayout(BitmapFont font, CharSequence str){
+    public GlyphLayout(Font font, CharSequence str){
         setText(font, str);
     }
 
-    public GlyphLayout(BitmapFont font, CharSequence str, Color color, float targetWidth, int halign, boolean wrap){
+    public GlyphLayout(Font font, CharSequence str, Color color, float targetWidth, int halign, boolean wrap){
         setText(font, str, color, targetWidth, halign, wrap);
     }
 
-    public GlyphLayout(BitmapFont font, CharSequence str, int start, int end, Color color, float targetWidth, int halign,
+    public GlyphLayout(Font font, CharSequence str, int start, int end, Color color, float targetWidth, int halign,
                        boolean wrap, String truncate){
         setText(font, str, start, end, color, targetWidth, halign, wrap, truncate);
     }
@@ -47,17 +47,17 @@ public class GlyphLayout implements Poolable{
         Pools.free(this);
     }
 
-    public void setText(BitmapFont font, CharSequence str){
+    public void setText(Font font, CharSequence str){
         setText(font, str, 0, str.length(), font.getColor(), 0, Align.left, false, null);
     }
 
-    public void setText(BitmapFont font, CharSequence str, Color color, float targetWidth, int halign, boolean wrap){
+    public void setText(Font font, CharSequence str, Color color, float targetWidth, int halign, boolean wrap){
         setText(font, str, 0, str.length(), color, targetWidth, halign, wrap, null);
     }
 
     /**
-     * @param color The default color to use for the text (the BitmapFont {@link BitmapFont#getColor() color} is not used). If
-     * {@link BitmapFontData#markupEnabled} is true, color markup tags in the specified string may change the color for
+     * @param color The default color to use for the text (the BitmapFont {@link Font#getColor() color} is not used). If
+     * {@link FontData#markupEnabled} is true, color markup tags in the specified string may change the color for
      * portions of the text.
      * @param halign Horizontal alignment of the text, see {@link Align}.
      * @param targetWidth The width used for alignment, line wrapping, and truncation. May be zero if those features are not used.
@@ -65,10 +65,10 @@ public class GlyphLayout implements Poolable{
      * specified truncate string are placed at the end. Empty string can be used to truncate without adding glyphs.
      * Truncate should not be used with text that contains multiple lines. Wrap is ignored if truncate is not null.
      */
-    public void setText(BitmapFont font, CharSequence str, int start, int end, Color color, float targetWidth, int halign,
+    public void setText(Font font, CharSequence str, int start, int end, Color color, float targetWidth, int halign,
                         boolean wrap, String truncate){
 
-        BitmapFontData fontData = font.data;
+        FontData fontData = font.data;
 
         if(truncate != null)
             wrap = true; // Causes truncate code to run, doesn't actually cause wrapping.
@@ -294,7 +294,7 @@ public class GlyphLayout implements Poolable{
     }
 
     /** @param truncate May be empty string. */
-    private void truncate(BitmapFontData fontData, GlyphRun run, float targetWidth, String truncate, int widthIndex,
+    private void truncate(FontData fontData, GlyphRun run, float targetWidth, String truncate, int widthIndex,
                           Pool<GlyphRun> glyphRunPool){
 
         // Determine truncate string size.
@@ -345,7 +345,7 @@ public class GlyphLayout implements Poolable{
      * Breaks a run into two runs at the specified wrapIndex.
      * @return May be null if second run is all whitespace.
      */
-    private GlyphRun wrap(BitmapFontData fontData, GlyphRun first, Pool<GlyphRun> glyphRunPool, int wrapIndex, int widthIndex){
+    private GlyphRun wrap(FontData fontData, GlyphRun first, Pool<GlyphRun> glyphRunPool, int wrapIndex, int widthIndex){
         Seq<Glyph> glyphs2 = first.glyphs; // Starts with all the glyphs.
         int glyphCount = first.glyphs.size;
         FloatSeq xAdvances2 = first.xAdvances; // Starts with all the xAdvances.
@@ -404,7 +404,7 @@ public class GlyphLayout implements Poolable{
     }
 
     /** Adjusts the xadvance of the last glyph to use its width instead of xadvance. */
-    private void adjustLastGlyph(BitmapFontData fontData, GlyphRun run){
+    private void adjustLastGlyph(FontData fontData, GlyphRun run){
         Glyph last = run.glyphs.peek();
         if(last.fixedWidth) return;
         float width = (last.width + last.xoffset) * fontData.scaleX - fontData.padRight;

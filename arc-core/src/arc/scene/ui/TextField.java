@@ -5,7 +5,7 @@ import arc.Input.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.graphics.g2d.BitmapFont.*;
+import arc.graphics.g2d.Font.*;
 import arc.graphics.g2d.GlyphLayout.*;
 import arc.input.*;
 import arc.math.*;
@@ -292,7 +292,7 @@ public class TextField extends Element implements Disableable{
         boolean focused = stage != null && stage.getKeyboardFocus() == this;
         if(!focused) keyRepeatTask.cancel();
 
-        final BitmapFont font = style.font;
+        final Font font = style.font;
         final Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor
         : ((focused && style.focusedFontColor != null) ? style.focusedFontColor : style.fontColor);
         final Drawable selection = style.selection;
@@ -323,7 +323,7 @@ public class TextField extends Element implements Disableable{
         float yOffset = font.isFlipped() ? -textHeight : 0;
         if(displayText.length() == 0){
             if(!focused && messageText != null){
-                BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
+                Font messageFont = style.messageFont != null ? style.messageFont : font;
 
                 if(style.messageFontColor != null){
                     messageFont.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b,
@@ -351,7 +351,7 @@ public class TextField extends Element implements Disableable{
         return validator == null || validator.valid(text);
     }
 
-    protected float getTextY(BitmapFont font, Drawable background){
+    protected float getTextY(Font font, Drawable background){
         float height = getHeight();
         float textY = textHeight / 2 + font.getDescent();
         if(background != null){
@@ -365,23 +365,23 @@ public class TextField extends Element implements Disableable{
     }
 
     /** Draws selection rectangle **/
-    protected void drawSelection(Drawable selection, BitmapFont font, float x, float y){
+    protected void drawSelection(Drawable selection, Font font, float x, float y){
         selection.draw(x + textOffset + selectionX + fontOffset, y - textHeight - font.getDescent(), selectionWidth, textHeight);
     }
 
-    protected void drawText(BitmapFont font, float x, float y){
+    protected void drawText(Font font, float x, float y){
         font.draw(displayText, x + textOffset, y, visibleTextStart, visibleTextEnd, 0, Align.left, false);
     }
 
-    protected void drawCursor(Drawable cursorPatch, BitmapFont font, float x, float y){
+    protected void drawCursor(Drawable cursorPatch, Font font, float x, float y){
         cursorPatch.draw(
         x + textOffset + glyphPositions.get(cursor) - glyphPositions.get(visibleTextStart) + fontOffset + font.getData().cursorX,
         y - textHeight - font.getDescent(), cursorPatch.getMinWidth(), textHeight);
     }
 
     protected void updateDisplayText(){
-        BitmapFont font = style.font;
-        BitmapFontData data = font.getData();
+        Font font = style.font;
+        FontData data = font.getData();
         String text = this.text;
         int textLength = text.length();
 
@@ -465,7 +465,7 @@ public class TextField extends Element implements Disableable{
         StringBuilder buffer = new StringBuilder();
         int textLength = text.length();
         if(hasSelection) textLength -= Math.abs(cursor - selectionStart);
-        BitmapFontData data = style.font.getData();
+        FontData data = style.font.getData();
         for(int i = 0, n = content.length(); i < n; i++){
             if(!withinMaxLength(textLength + buffer.length())) break;
             char c = content.charAt(i);
@@ -773,7 +773,7 @@ public class TextField extends Element implements Disableable{
     }
 
     /**
-     * Sets the password character for the text field. The character must be present in the {@link BitmapFont}. Default is 149
+     * Sets the password character for the text field. The character must be present in the {@link Font}. Default is 149
      * (bullet).
      */
     public void setPasswordCharacter(char passwordCharacter){
@@ -857,14 +857,14 @@ public class TextField extends Element implements Disableable{
      * @author Nathan Sweet
      */
     public static class TextFieldStyle extends Style{
-        public BitmapFont font;
+        public Font font;
         public Color fontColor;
         /** Optional. */
         public Color focusedFontColor, disabledFontColor;
         /** Optional. */
         public Drawable background, focusedBackground, disabledBackground, invalidBackground, cursor, selection;
         /** Optional. */
-        public BitmapFont messageFont;
+        public Font messageFont;
         /** Optional. */
         public Color messageFontColor;
 

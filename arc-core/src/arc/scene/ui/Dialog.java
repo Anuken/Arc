@@ -490,7 +490,7 @@ public class Dialog extends Table{
     public static class DialogStyle extends Style{
         /** Optional. */
         public Drawable background;
-        public BitmapFont titleFont;
+        public Font titleFont;
         /** Optional. */
         public Color titleFontColor = new Color(1, 1, 1, 1);
         /** Optional. */

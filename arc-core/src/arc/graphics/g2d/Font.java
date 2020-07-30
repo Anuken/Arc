@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
  * Renders bitmap fonts. The font consists of 2 files: an image file or {@link TextureRegion} containing the glyphs and a file in
  * the AngleCode BMFont text format that describes where each glyph is on the image.
  * <p>
- * Text is drawn using a {@link Batch}. Text can be cached in a {@link BitmapFontCache} for faster rendering of static text, which
+ * Text is drawn using a {@link Batch}. Text can be cached in a {@link FontCache} for faster rendering of static text, which
  * saves needing to compute the location of each glyph each frame.
  * <p>
  * * The texture for a BitmapFont loaded from a file is managed. {@link #dispose()} must be called to free the texture when no
@@ -56,13 +56,13 @@ import java.util.regex.Pattern;
  * @author Nathan Sweet
  * @author Matthias Mann
  */
-public class BitmapFont implements Disposable{
+public class Font implements Disposable{
     private static final int LOG2_PAGE_SIZE = 9;
     private static final int PAGE_SIZE = 1 << LOG2_PAGE_SIZE;
     private static final int PAGES = 0x10000 / PAGE_SIZE;
 
-    final BitmapFontData data;
-    private final BitmapFontCache cache;
+    final FontData data;
+    private final FontCache cache;
     Seq<TextureRegion> regions;
     boolean integer;
     private boolean flipped;
@@ -78,7 +78,7 @@ public class BitmapFont implements Disposable{
      * @param region The texture region containing the glyphs. The glyphs must be relative to the lower left corner (ie, the region
      * should not be flipped). If the region is null the glyph images are loaded from the image path in the font file.
      */
-    public BitmapFont(Fi fontFile, TextureRegion region){
+    public Font(Fi fontFile, TextureRegion region){
         this(fontFile, region, false);
     }
 
@@ -90,15 +90,15 @@ public class BitmapFont implements Disposable{
      * should not be flipped). If the region is null the glyph images are loaded from the image path in the font file.
      * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
      */
-    public BitmapFont(Fi fontFile, TextureRegion region, boolean flip){
-        this(new BitmapFontData(fontFile, flip), region, true);
+    public Font(Fi fontFile, TextureRegion region, boolean flip){
+        this(new FontData(fontFile, flip), region, true);
     }
 
     /**
      * Creates a BitmapFont from a BMFont file. The image file name is read from the BMFont file and the image is loaded from the
      * same directory. The font data is not flipped.
      */
-    public BitmapFont(Fi fontFile){
+    public Font(Fi fontFile){
         this(fontFile, false);
     }
 
@@ -107,8 +107,8 @@ public class BitmapFont implements Disposable{
      * same directory.
      * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
      */
-    public BitmapFont(Fi fontFile, boolean flip){
-        this(new BitmapFontData(fontFile, flip), (TextureRegion)null, true);
+    public Font(Fi fontFile, boolean flip){
+        this(new FontData(fontFile, flip), (TextureRegion)null, true);
     }
 
     /**
@@ -116,7 +116,7 @@ public class BitmapFont implements Disposable{
      * ignored.
      * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
      */
-    public BitmapFont(Fi fontFile, Fi imageFile, boolean flip){
+    public Font(Fi fontFile, Fi imageFile, boolean flip){
         this(fontFile, imageFile, flip, true);
     }
 
@@ -126,13 +126,13 @@ public class BitmapFont implements Disposable{
      * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
      * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts.
      */
-    public BitmapFont(Fi fontFile, Fi imageFile, boolean flip, boolean integer){
-        this(new BitmapFontData(fontFile, flip), new TextureRegion(new Texture(imageFile, false)), integer);
+    public Font(Fi fontFile, Fi imageFile, boolean flip, boolean integer){
+        this(new FontData(fontFile, flip), new TextureRegion(new Texture(imageFile, false)), integer);
         ownsTexture = true;
     }
 
     /**
-     * Constructs a new BitmapFont from the given {@link BitmapFontData} and {@link TextureRegion}. If the TextureRegion is null,
+     * Constructs a new BitmapFont from the given {@link FontData} and {@link TextureRegion}. If the TextureRegion is null,
      * the image path(s) will be read from the BitmapFontData. The dispose() method will not dispose the texture of the region(s)
      * if the region is != null.
      * <p>
@@ -141,17 +141,17 @@ public class BitmapFont implements Disposable{
      * manually with the TextureRegion[] constructor.
      * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts.
      */
-    public BitmapFont(BitmapFontData data, TextureRegion region, boolean integer){
+    public Font(FontData data, TextureRegion region, boolean integer){
         this(data, region != null ? Seq.with(region) : null, integer);
     }
 
     /**
-     * Constructs a new BitmapFont from the given {@link BitmapFontData} and array of {@link TextureRegion}. If the TextureRegion
+     * Constructs a new BitmapFont from the given {@link FontData} and array of {@link TextureRegion}. If the TextureRegion
      * is null or empty, the image path(s) will be read from the BitmapFontData. The dispose() method will not dispose the texture
      * of the region(s) if the regions array is != null and not empty.
      * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts.
      */
-    public BitmapFont(BitmapFontData data, Seq<TextureRegion> pageRegions, boolean integer){
+    public Font(FontData data, Seq<TextureRegion> pageRegions, boolean integer){
         this.flipped = data.flipped;
         this.data = data;
         this.integer = integer;
@@ -189,7 +189,7 @@ public class BitmapFont implements Disposable{
         return n;
     }
 
-    protected void load(BitmapFontData data){
+    protected void load(FontData data){
         for(Glyph[] page : data.glyphs){
             if(page == null) continue;
             for(Glyph glyph : page)
@@ -200,7 +200,7 @@ public class BitmapFont implements Disposable{
 
     /**
      * Draws text at the specified position.
-     * @see BitmapFontCache#addText(CharSequence, float, float)
+     * @see FontCache#addText(CharSequence, float, float)
      */
     public GlyphLayout draw(CharSequence str, float x, float y){
         cache.clear();
@@ -228,7 +228,7 @@ public class BitmapFont implements Disposable{
 
     /**
      * Draws text at the specified position.
-     * @see BitmapFontCache#addText(CharSequence, float, float, int, int, float, int, boolean, String)
+     * @see FontCache#addText(CharSequence, float, float, int, int, float, int, boolean, String)
      */
     public GlyphLayout draw(CharSequence str, float x, float y, float targetWidth, int halign, boolean wrap){
         cache.clear();
@@ -239,7 +239,7 @@ public class BitmapFont implements Disposable{
 
     /**
      * Draws text at the specified position.
-     * @see BitmapFontCache#addText(CharSequence, float, float, int, int, float, int, boolean, String)
+     * @see FontCache#addText(CharSequence, float, float, int, int, float, int, boolean, String)
      */
     public GlyphLayout draw(CharSequence str, float x, float y, int start, int end, float targetWidth, int halign, boolean wrap){
         cache.clear();
@@ -250,7 +250,7 @@ public class BitmapFont implements Disposable{
 
     /**
      * Draws text at the specified position.
-     * @see BitmapFontCache#addText(CharSequence, float, float, int, int, float, int, boolean, String)
+     * @see FontCache#addText(CharSequence, float, float, int, int, float, int, boolean, String)
      */
     public GlyphLayout draw(CharSequence str, float x, float y, int start, int end, float targetWidth, int halign,
                             boolean wrap, String truncate){
@@ -262,7 +262,7 @@ public class BitmapFont implements Disposable{
 
     /**
      * Draws text at the specified position.
-     * @see BitmapFontCache#addText(CharSequence, float, float, int, int, float, int, boolean, String)
+     * @see FontCache#addText(CharSequence, float, float, int, int, float, int, boolean, String)
      */
     public void draw(GlyphLayout layout, float x, float y){
         cache.clear();
@@ -382,7 +382,7 @@ public class BitmapFont implements Disposable{
      * centering a score or loading percentage text, it will not jump around as different numbers are shown.
      */
     public void setFixedWidthGlyphs(CharSequence glyphs){
-        BitmapFontData data = this.data;
+        FontData data = this.data;
         int maxAdvance = 0;
         for(int index = 0, end = glyphs.length(); index < end; index++){
             Glyph g = data.getGlyph(glyphs.charAt(index));
@@ -414,12 +414,12 @@ public class BitmapFont implements Disposable{
      * example, to manipulate glyph colors within a specific index.
      * @return the bitmap font cache used by this font
      */
-    public BitmapFontCache getCache(){
+    public FontCache getCache(){
         return cache;
     }
 
-    /** Gets the underlying {@link BitmapFontData} for this BitmapFont. */
-    public BitmapFontData getData(){
+    /** Gets the underlying {@link FontData} for this BitmapFont. */
+    public FontData getData(){
         return data;
     }
 
@@ -444,8 +444,8 @@ public class BitmapFont implements Disposable{
      * Note this method is called by the BitmapFont constructors. If a subclass overrides this method, it will be called before the
      * subclass constructors.
      */
-    public BitmapFontCache newFontCache(){
-        return new BitmapFontCache(this, integer);
+    public FontCache newFontCache(){
+        return new FontCache(this, integer);
     }
 
     public String toString(){
@@ -488,8 +488,8 @@ public class BitmapFont implements Disposable{
         }
     }
 
-    /** Backing data for a {@link BitmapFont}. */
-    public static class BitmapFontData{
+    /** Backing data for a {@link Font}. */
+    public static class FontData{
         public final Glyph[][] glyphs = new Glyph[PAGES][];
         /** An array of the image paths, for multiple texture pages. */
         public String[] imagePaths;
@@ -539,10 +539,10 @@ public class BitmapFont implements Disposable{
          * Creates an empty BitmapFontData for configuration before calling {@link #load(Fi, boolean)}, to subclass, or to
          * populate yourself, e.g. using stb-truetype or FreeType.
          */
-        public BitmapFontData(){
+        public FontData(){
         }
 
-        public BitmapFontData(Fi fontFile, boolean flip){
+        public FontData(Fi fontFile, boolean flip){
             this.fontFile = fontFile;
             this.flipped = flip;
             load(fontFile, flip);

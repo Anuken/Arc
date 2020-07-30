@@ -7,9 +7,9 @@ import arc.graphics.Color;
 import arc.graphics.Pixmap;
 import arc.graphics.Pixmap.Format;
 import arc.graphics.Texture.TextureFilter;
-import arc.graphics.g2d.BitmapFont;
-import arc.graphics.g2d.BitmapFont.BitmapFontData;
-import arc.graphics.g2d.BitmapFont.Glyph;
+import arc.graphics.g2d.Font;
+import arc.graphics.g2d.Font.FontData;
+import arc.graphics.g2d.Font.Glyph;
 import arc.graphics.g2d.GlyphLayout.GlyphRun;
 import arc.graphics.g2d.PixmapPacker;
 import arc.graphics.g2d.PixmapPacker.GuillotineStrategy;
@@ -29,7 +29,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 /**
- * Generates {@link BitmapFont} and {@link BitmapFontData} instances from TrueType, OTF, and other FreeType supported fonts.
+ * Generates {@link Font} and {@link FontData} instances from TrueType, OTF, and other FreeType supported fonts.
  * </p>
  * <p>
  * Usage example:
@@ -40,7 +40,7 @@ import java.nio.ByteBuffer;
  * gen.dispose(); // Don't dispose if doing incremental glyph generation.
  * </pre>
  * <p>
- * The generator has to be disposed once it is no longer used. The returned {@link BitmapFont} instances are managed by the user
+ * The generator has to be disposed once it is no longer used. The returned {@link Font} instances are managed by the user
  * and have to be disposed as usual.
  * @author mzechner
  * @author Nathan Sweet
@@ -191,23 +191,23 @@ public class FreeTypeFontGenerator implements Disposable{
         return bitmapped;
     }
 
-    public BitmapFont generateFont(FreeTypeFontParameter parameter){
-        return generateFont(parameter, new FreeTypeBitmapFontData());
+    public Font generateFont(FreeTypeFontParameter parameter){
+        return generateFont(parameter, new FreeTypeFontData());
     }
 
     /**
-     * Generates a new {@link BitmapFont}. The size is expressed in pixels. Throws a ArcRuntimeException if the font could not be
+     * Generates a new {@link Font}. The size is expressed in pixels. Throws a ArcRuntimeException if the font could not be
      * generated. Using big sizes might cause such an exception.
      * @param parameter configures how the font is generated
      */
-    public BitmapFont generateFont(FreeTypeFontParameter parameter, FreeTypeBitmapFontData data){
+    public Font generateFont(FreeTypeFontParameter parameter, FreeTypeFontData data){
         boolean updateTextureRegions = data.regions == null && parameter.packer != null;
         if(updateTextureRegions) data.regions = new Seq<>();
         generateData(parameter, data);
         if(updateTextureRegions)
             parameter.packer.updateTextureRegions(data.regions, parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
         if(data.regions.isEmpty()) throw new ArcRuntimeException("Unable to create a font with no texture regions.");
-        BitmapFont font = new BitmapFont(data, data.regions, true);
+        Font font = new Font(data, data.regions, true);
         font.setOwnsTexture(parameter.packer == null);
         return font;
     }
@@ -309,17 +309,17 @@ public class FreeTypeFontGenerator implements Disposable{
     }
 
     /**
-     * Generates a new {@link BitmapFontData} instance, expert usage only. Throws a ArcRuntimeException if something went wrong.
+     * Generates a new {@link FontData} instance, expert usage only. Throws a ArcRuntimeException if something went wrong.
      * @param size the size in pixels
      */
-    public FreeTypeBitmapFontData generateData(int size){
+    public FreeTypeFontData generateData(int size){
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();
         parameter.size = size;
         return generateData(parameter);
     }
 
-    public FreeTypeBitmapFontData generateData(FreeTypeFontParameter parameter){
-        return generateData(parameter, new FreeTypeBitmapFontData());
+    public FreeTypeFontData generateData(FreeTypeFontParameter parameter){
+        return generateData(parameter, new FreeTypeFontData());
     }
 
     void setPixelSizes(int pixelWidth, int pixelHeight){
@@ -328,10 +328,10 @@ public class FreeTypeFontGenerator implements Disposable{
     }
 
     /**
-     * Generates a new {@link BitmapFontData} instance, expert usage only. Throws a ArcRuntimeException if something went wrong.
+     * Generates a new {@link FontData} instance, expert usage only. Throws a ArcRuntimeException if something went wrong.
      * @param parameter configures how the font is generated
      */
-    public FreeTypeBitmapFontData generateData(FreeTypeFontParameter parameter, FreeTypeBitmapFontData data){
+    public FreeTypeFontData generateData(FreeTypeFontParameter parameter, FreeTypeFontData data){
         parameter = parameter == null ? new FreeTypeFontParameter() : parameter;
         char[] characters = parameter.characters.toCharArray();
         int charactersLength = characters.length;
@@ -522,7 +522,7 @@ public class FreeTypeFontGenerator implements Disposable{
     }
 
     /** @return null if glyph was not found. */
-    Glyph createGlyph(char c, FreeTypeBitmapFontData data, FreeTypeFontParameter parameter, Stroker stroker, float baseLine,
+    Glyph createGlyph(char c, FreeTypeFontData data, FreeTypeFontParameter parameter, Stroker stroker, float baseLine,
                       PixmapPacker packer){
 
         boolean missing = face.getCharIndex(c) == 0 && c != 0;
@@ -682,12 +682,12 @@ public class FreeTypeFontGenerator implements Disposable{
     }
 
     /**
-     * {@link BitmapFontData} used for fonts generated via the {@link FreeTypeFontGenerator}. The texture storing the glyphs is
+     * {@link FontData} used for fonts generated via the {@link FreeTypeFontGenerator}. The texture storing the glyphs is
      * held in memory, thus the {@link #getImagePaths()} and {@link #getFontFile()} methods will return null.
      * @author mzechner
      * @author Nathan Sweet
      */
-    public static class FreeTypeBitmapFontData extends BitmapFontData implements Disposable{
+    public static class FreeTypeFontData extends FontData implements Disposable{
         Seq<TextureRegion> regions;
 
         // Fields for incremental glyph generation.
@@ -747,13 +747,13 @@ public class FreeTypeFontGenerator implements Disposable{
     }
 
     /**
-     * Parameter container class that helps configure how {@link FreeTypeBitmapFontData} and {@link BitmapFont} instances are
+     * Parameter container class that helps configure how {@link FreeTypeFontData} and {@link Font} instances are
      * generated.
      * <p>
      * The packer field is for advanced usage, where it is necessary to pack multiple BitmapFonts (i.e. styles, sizes, families)
      * into a single Texture atlas. If no packer is specified, the generator will use its own PixmapPacker to pack the glyphs into
-     * a power-of-two sized texture, and the resulting {@link FreeTypeBitmapFontData} will have a valid {@link TextureRegion} which
-     * can be used to construct a new {@link BitmapFont}.
+     * a power-of-two sized texture, and the resulting {@link FreeTypeFontData} will have a valid {@link TextureRegion} which
+     * can be used to construct a new {@link Font}.
      * @author siondream
      * @author Nathan Sweet
      */
@@ -791,7 +791,7 @@ public class FreeTypeFontGenerator implements Disposable{
         public int spaceX, spaceY;
         /** Pixels to add to the glyph in the texture. Can be negative. */
         public int padTop, padLeft, padBottom, padRight;
-        /** The characters the font should contain. If '\0' is not included then {@link BitmapFontData#missingGlyph} is not set. */
+        /** The characters the font should contain. If '\0' is not included then {@link FontData#missingGlyph} is not set. */
         public String characters = DEFAULT_CHARS;
         /** Whether the font should include kerning */
         public boolean kerning = true;

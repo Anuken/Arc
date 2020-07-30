@@ -35,14 +35,14 @@ import arc.graphics.gl.Shader;
  * Attention: The batch is flushed before and after each string is rendered.
  * @author Florian Falkner
  */
-public class DistanceFieldFont extends BitmapFont{
+public class DistanceFieldFont extends Font{
     private float distanceFieldSmoothing;
 
-    public DistanceFieldFont(BitmapFontData data, Seq<TextureRegion> pageRegions, boolean integer){
+    public DistanceFieldFont(FontData data, Seq<TextureRegion> pageRegions, boolean integer){
         super(data, pageRegions, integer);
     }
 
-    public DistanceFieldFont(BitmapFontData data, TextureRegion region, boolean integer){
+    public DistanceFieldFont(FontData data, TextureRegion region, boolean integer){
         super(data, region, integer);
     }
 
@@ -109,7 +109,7 @@ public class DistanceFieldFont extends BitmapFont{
         return new Shader(vertexShader, fragmentShader);
     }
 
-    protected void load(BitmapFontData data){
+    protected void load(FontData data){
         super.load(data);
 
         // Distance field font rendering requires font texture to be filtered Linear.
@@ -119,7 +119,7 @@ public class DistanceFieldFont extends BitmapFont{
     }
 
     @Override
-    public BitmapFontCache newFontCache(){
+    public FontCache newFontCache(){
         return new DistanceFieldFontCache(this, integer);
     }
 
@@ -141,7 +141,7 @@ public class DistanceFieldFont extends BitmapFont{
      * needed for smoothing factor, so a flush is performed before and after every font rendering.
      * @author Florian Falkner
      */
-    private static class DistanceFieldFontCache extends BitmapFontCache{
+    private static class DistanceFieldFontCache extends FontCache{
         public DistanceFieldFontCache(DistanceFieldFont font){
             super(font, font.usesIntegerPositions());
         }

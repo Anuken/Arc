@@ -53,7 +53,7 @@ public class AssetManager implements Disposable{
     public AssetManager(FileHandleResolver resolver, boolean defaultLoaders){
         this.resolver = resolver;
         if(defaultLoaders){
-            setLoader(BitmapFont.class, new BitmapFontLoader(resolver));
+            setLoader(Font.class, new FontLoader(resolver));
             setLoader(Music.class, new MusicLoader(resolver));
             setLoader(Pixmap.class, new PixmapLoader(resolver));
             setLoader(Sound.class, new SoundLoader(resolver));

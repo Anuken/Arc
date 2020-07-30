@@ -2,7 +2,7 @@ package arc.scene.ui;
 
 import arc.Core;
 import arc.struct.IntSeq;
-import arc.graphics.g2d.BitmapFont;
+import arc.graphics.g2d.Font;
 import arc.graphics.g2d.GlyphLayout;
 import arc.input.KeyCode;
 import arc.scene.Scene;
@@ -169,14 +169,14 @@ public class TextArea extends TextField{
         lastText = null; // Cause calculateOffsets to recalculate the line breaks.
 
         // The number of lines showed must be updated whenever the height is updated
-        BitmapFont font = style.font;
+        Font font = style.font;
         Drawable background = style.background;
         float availableHeight = getHeight() - (background == null ? 0 : background.getBottomHeight() + background.getTopHeight());
         linesShowing = (int)Math.floor(availableHeight / font.getLineHeight());
     }
 
     @Override
-    protected float getTextY(BitmapFont font, Drawable background){
+    protected float getTextY(Font font, Drawable background){
         float textY = getHeight();
         if(background != null){
             textY = (int)(textY - background.getTopHeight());
@@ -185,7 +185,7 @@ public class TextArea extends TextField{
     }
 
     @Override
-    protected void drawSelection(Drawable selection, BitmapFont font, float x, float y){
+    protected void drawSelection(Drawable selection, Font font, float x, float y){
         int i = firstLineShowing * 2;
         float offsetY = 0;
         int minIndex = Math.min(cursor, selectionStart);
@@ -214,7 +214,7 @@ public class TextArea extends TextField{
     }
 
     @Override
-    protected void drawText(BitmapFont font, float x, float y){
+    protected void drawText(Font font, float x, float y){
         float offsetY = 0;
         for(int i = firstLineShowing * 2; i < (firstLineShowing + linesShowing) * 2 && i < linesBreak.size; i += 2){
             font.draw(displayText, x, y + offsetY, linesBreak.items[i], linesBreak.items[i + 1], 0, Align.left, false);
@@ -223,7 +223,7 @@ public class TextArea extends TextField{
     }
 
     @Override
-    protected void drawCursor(Drawable cursorPatch, BitmapFont font, float x, float y){
+    protected void drawCursor(Drawable cursorPatch, Font font, float x, float y){
         float textOffset = cursor >= glyphPositions.size || cursorLine * 2 >= linesBreak.size ? 0
         : glyphPositions.get(cursor) - glyphPositions.get(linesBreak.items[cursorLine * 2]);
         cursorPatch.draw(x + textOffset + fontOffset + font.getData().cursorX,
@@ -236,7 +236,7 @@ public class TextArea extends TextField{
         super.calculateOffsets();
         if(!this.text.equals(lastText)){
             this.lastText = text;
-            BitmapFont font = style.font;
+            Font font = style.font;
             float maxWidthLine = this.getWidth()
             - (style.background != null ? style.background.getLeftWidth() + style.background.getRightWidth() : 0);
             linesBreak.clear();
@@ -327,7 +327,7 @@ public class TextArea extends TextField{
     }
 
     public float getCursorY(){
-        BitmapFont font = style.font;
+        Font font = style.font;
         return -(-font.getDescent() / 2 - (cursorLine - firstLineShowing + 1) * font.getLineHeight());
     }
 
@@ -339,7 +339,7 @@ public class TextArea extends TextField{
             moveOffset = -1;
 
             Drawable background = style.background;
-            BitmapFont font = style.font;
+            Font font = style.font;
 
             float height = getHeight();
 
