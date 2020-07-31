@@ -1,5 +1,6 @@
 package arc.util;
 
+import arc.graphics.*;
 import arc.struct.*;
 
 import java.io.*;
@@ -87,8 +88,76 @@ public class Strings{
         return build.toString();
     }
 
-    public static String stripColors(String text){
-        return text.replaceAll("/*\\[[^]]*]", "");
+    public static String stripColors(CharSequence str){
+        StringBuilder out = new StringBuilder(str.length());
+
+        int i = 0;
+        while(i < str.length()){
+            char c = str.charAt(i);
+
+            // Possible color tag.
+            if(c == '['){
+                int length = parseColorMarkup(str, i + 1, str.length());
+                if(length >= 0){
+                    i += length + 2;
+                }else{
+                    out.append(c);
+                    //escaped string
+                    i++;
+                }
+            }else{
+                out.append(c);
+                i++;
+            }
+        }
+
+        return out.toString();
+    }
+
+    private static int parseColorMarkup(CharSequence str, int start, int end){
+        if(start >= end) return -1; // String ended with "[".
+        switch(str.charAt(start)){
+            case '#':
+                // Parse hex color RRGGBBAA where AA is optional and defaults to 0xFF if less than 6 chars are used.
+                int colorInt = 0;
+                for(int i = start + 1; i < end; i++){
+                    char ch = str.charAt(i);
+                    if(ch == ']'){
+                        if(i < start + 2 || i > start + 9) break; // Illegal number of hex digits.
+                        if(i - start <= 7){ // RRGGBB or fewer chars.
+                            for(int ii = 0, nn = 9 - (i - start); ii < nn; ii++)
+                                colorInt = colorInt << 4;
+                            colorInt |= 0xff;
+                        }
+                        //colorInt is the result value, do something with it if you want
+                        return i - start;
+                    }
+                    if(ch >= '0' && ch <= '9')
+                        colorInt = colorInt * 16 + (ch - '0');
+                    else if(ch >= 'a' && ch <= 'f')
+                        colorInt = colorInt * 16 + (ch - ('a' - 10));
+                    else if(ch >= 'A' && ch <= 'F')
+                        colorInt = colorInt * 16 + (ch - ('A' - 10));
+                    else
+                        break; // Unexpected character in hex color.
+                }
+                return -1;
+            case '[': // "[[" is an escaped left square bracket.
+                return -2;
+            case ']': // "[]" is a "pop" color tag.
+                //pop the color stack here if needed
+                return 0;
+        }
+        // Parse named color.
+        for(int i = start + 1; i < end; i++){
+            char ch = str.charAt(i);
+            if(ch != ']') continue;
+            Color namedColor = Colors.get(str.subSequence(start, i).toString());
+            if(namedColor == null) return -1; // Unknown color name.
+            //namedColor is the result color here
+            return i - start;
+        }
+        return -1; // Unclosed color tag.
     }
 
     public static int count(String str, String substring){
