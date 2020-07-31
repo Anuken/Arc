@@ -10,6 +10,7 @@ import arc.scene.ui.Button.*;
 import arc.scene.ui.Label.*;
 import arc.scene.ui.ScrollPane.*;
 import arc.scene.ui.TextField.*;
+import arc.scene.ui.Tooltip.*;
 import arc.util.*;
 import arc.util.pooling.Pool.*;
 
@@ -123,6 +124,11 @@ public class Cell<T extends Element> implements Poolable{
 
     public float minHeight(){
         return minHeight == unset ? element == null ? 0 : element.getMinHeight() : minHeight;
+    }
+
+    public Cell<T> tooltip(String text){
+        element.addListener(Tooltips.getInstance().create(text));
+        return this;
     }
 
     /** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified value. */

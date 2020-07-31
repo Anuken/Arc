@@ -1,18 +1,18 @@
 package arc.scene.ui;
 
 import arc.*;
-import arc.struct.Seq;
-import arc.func.Cons;
-import arc.input.KeyCode;
-import arc.math.Interp;
-import arc.math.geom.Vec2;
+import arc.func.*;
+import arc.input.*;
+import arc.math.*;
+import arc.math.geom.*;
 import arc.scene.*;
 import arc.scene.event.*;
-import arc.scene.ui.layout.Table;
+import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
-import arc.util.Timer.Task;
+import arc.util.Timer.*;
 
-import static arc.math.Interp.fade;
+import static arc.math.Interp.*;
 import static arc.scene.actions.Actions.*;
 
 /**
@@ -138,6 +138,9 @@ public class Tooltip extends InputListener{
         private static Tooltips instance;
         private static StaticReset reset = new StaticReset();
         final Seq<Tooltip> shown = new Seq<>();
+
+        /** Default text tooltip provider. */
+        public Func<String, Tooltip> textProvider = text -> new Tooltip(t -> t.add(text));
         /**
          * Seconds from when an element is hovered to when the tooltip is shown. Default is 2. Call {@link #hideAll()} after changing to
          * reset internal state.
@@ -195,6 +198,10 @@ public class Tooltip extends InputListener{
                 instance = new Tooltips();
             }
             return instance;
+        }
+
+        public Tooltip create(String text){
+            return textProvider.get(text);
         }
 
         public void touchDown(Tooltip tooltip){
