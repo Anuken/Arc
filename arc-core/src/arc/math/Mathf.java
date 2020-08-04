@@ -32,7 +32,7 @@ public final class Mathf{
     private static final double BIG_ENOUGH_ROUND = BIG_ENOUGH_INT + 0.5f;
     private static final Rand seedr = new Rand();
 
-    public static Rand random = new Rand();
+    public static Rand rand = new Rand();
 
     /** Returns the sine in radians from a lookup table. */
     public static float sin(float radians){
@@ -186,36 +186,36 @@ public final class Mathf{
     }
 
     public static boolean chanceDelta(double d){
-        return random.nextFloat() < d * Time.delta;
+        return rand.nextFloat() < d * Time.delta;
     }
 
     public static boolean chance(double d){
-        return random.nextFloat() < d;
+        return rand.nextFloat() < d;
     }
 
     /** Returns a random number between 0 (inclusive) and the specified value (inclusive). */
     public static int random(int range){
-        return random.nextInt(range + 1);
+        return rand.nextInt(range + 1);
     }
 
     /** Returns a random number between start (inclusive) and end (inclusive). */
     public static int random(int start, int end){
-        return start + random.nextInt(end - start + 1);
+        return start + rand.nextInt(end - start + 1);
     }
 
     /** Returns a random number between 0 (inclusive) and the specified value (inclusive). */
     public static long random(long range){
-        return (long)(random.nextDouble() * range);
+        return (long)(rand.nextDouble() * range);
     }
 
     /** Returns a random number between start (inclusive) and end (inclusive). */
     public static long random(long start, long end){
-        return start + (long)(random.nextDouble() * (end - start));
+        return start + (long)(rand.nextDouble() * (end - start));
     }
 
     /** Returns a random boolean value. */
     public static boolean randomBoolean(){
-        return random.nextBoolean();
+        return rand.nextBoolean();
     }
 
     /** Returns true if a random value between 0 and 1 is less than the specified value. */
@@ -225,22 +225,22 @@ public final class Mathf{
 
     /** Returns random number between 0.0 (inclusive) and 1.0 (exclusive). */
     public static float random(){
-        return random.nextFloat();
+        return rand.nextFloat();
     }
 
     /** Returns a random number between 0 (inclusive) and the specified value (exclusive). */
     public static float random(float range){
-        return random.nextFloat() * range;
+        return rand.nextFloat() * range;
     }
 
     /** Returns a random number between start (inclusive) and end (exclusive). */
     public static float random(float start, float end){
-        return start + random.nextFloat() * (end - start);
+        return start + rand.nextFloat() * (end - start);
     }
 
     /** Returns -1 or 1, randomly. */
     public static int randomSign(){
-        return 1 | (random.nextInt() >> 31);
+        return 1 | (rand.nextInt() >> 31);
     }
 
     /** Inclusive. */
@@ -280,7 +280,7 @@ public final class Mathf{
      * This is an optimized version of {@link #randomTriangular(float, float, float) randomTriangular(-1, 1, 0)}
      */
     public static float randomTriangular(){
-        return random.nextFloat() - random.nextFloat();
+        return rand.nextFloat() - rand.nextFloat();
     }
 
     /**
@@ -291,7 +291,7 @@ public final class Mathf{
      * @param max the upper limit
      */
     public static float randomTriangular(float max){
-        return (random.nextFloat() - random.nextFloat()) * max;
+        return (rand.nextFloat() - rand.nextFloat()) * max;
     }
 
     /**
@@ -314,7 +314,7 @@ public final class Mathf{
      * @param mode the point around which the values are more likely
      */
     public static float randomTriangular(float min, float max, float mode){
-        float u = random.nextFloat();
+        float u = rand.nextFloat();
         float d = max - min;
         if(u <= (mode - min) / d) return min + (float)Math.sqrt(u * d * (mode - min));
         return max - (float)Math.sqrt((1 - u) * d * (max - mode));

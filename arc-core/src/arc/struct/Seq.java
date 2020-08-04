@@ -880,7 +880,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
 
     /** Returns a random item from the array, or null if the array is empty. */
     public T random(){
-        return random(Mathf.random);
+        return random(Mathf.rand);
     }
 
     /** Returns a random item from the array, excluding the specified element. If the array is empty, returns null.
