@@ -27,6 +27,8 @@ public class Element{
     public Object userObject;
     public Touchable touchable = Touchable.enabled;
     public Group parent;
+    public Boolp visibility;
+    public Prov<Touchable> touchablility;
 
     private final DelayedRemovalSeq<EventListener> listeners = new DelayedRemovalSeq<>(0);
     private final DelayedRemovalSeq<EventListener> captureListeners = new DelayedRemovalSeq<>(0);
@@ -42,9 +44,7 @@ public class Element{
     private Scene stage;
     private boolean needsLayout = true;
     private boolean layoutEnabled = true;
-    private Boolp visibility;
     private Runnable update;
-    private Prov<Touchable> touchableSupplier = null;
 
     /** Draws the element. Does nothing by default. */
     public void draw(){
@@ -75,8 +75,8 @@ public class Element{
             }
         }
 
-        if(touchableSupplier != null)
-            this.touchable = touchableSupplier.get();
+        if(touchablility != null)
+            this.touchable = touchablility.get();
         if(update != null)
             update.run();
     }
@@ -997,7 +997,7 @@ public class Element{
     }
 
     public void touchable(Prov<Touchable> touch){
-        this.touchableSupplier = touch;
+        this.touchablility = touch;
     }
 
     @Override
