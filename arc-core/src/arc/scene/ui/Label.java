@@ -101,12 +101,12 @@ public class Label extends Element{
 
     /**
      * @param newText May be null, "" will be used.
-     * If this text starts with '$', this label will look in {@link Core#bundle} for matching text.
+     * If this text starts with '$' or '@', this label will look in {@link Core#bundle} for matching text.
      */
     public void setText(CharSequence newText){
         if(bundle != null && newText != null && newText.length() > 0 && (newText.charAt(0) == '$' || newText.charAt(0) == '@')){
             String out = newText.toString().substring(1);
-            setTextInternal(bundle.get(out, out));
+            setTextInternal(bundle.get(out, newText.toString()));
         }else{
             setTextInternal(newText);
         }
