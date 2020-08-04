@@ -13,7 +13,7 @@ public class Events{
         events.get(type, Seq::new).add(listener);
     }
 
-    public static void on(Object type, Runnable listener){
+    public static void run(Object type, Runnable listener){
         events.get(type, Seq::new).add(e -> listener.run());
     }
 
