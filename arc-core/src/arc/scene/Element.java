@@ -30,8 +30,7 @@ public class Element{
     public Boolp visibility;
     public Prov<Touchable> touchablility;
 
-    private final DelayedRemovalSeq<EventListener> listeners = new DelayedRemovalSeq<>(0);
-    private final DelayedRemovalSeq<EventListener> captureListeners = new DelayedRemovalSeq<>(0);
+    private final DelayedRemovalSeq<EventListener> listeners = new DelayedRemovalSeq<>(0), captureListeners = new DelayedRemovalSeq<>(0);
     private final Seq<Action> actions = new Seq<>(0);
 
     /** DO NOT modify without calling positionChanged. */
