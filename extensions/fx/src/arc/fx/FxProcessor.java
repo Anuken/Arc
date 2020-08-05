@@ -65,14 +65,16 @@ public final class FxProcessor implements Disposable{
     }
 
     public void resize(int width, int height){
-        this.width = width;
-        this.height = height;
+        if(this.width != width || this.height != height){
+            this.width = width;
+            this.height = height;
 
-        pingPongBuffer.resize(width, height);
+            pingPongBuffer.resize(width, height);
 
-        for(FxFilter filter : effectsAll){
-            filter.resize(width, height);
-            filter.rebind();
+            for(FxFilter filter : effectsAll){
+                filter.resize(width, height);
+                filter.rebind();
+            }
         }
     }
 

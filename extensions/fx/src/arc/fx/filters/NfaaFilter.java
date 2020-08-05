@@ -11,6 +11,10 @@ import arc.math.geom.*;
 public final class NfaaFilter extends FxFilter{
     private final Vec2 viewportInverse = new Vec2();
 
+    public NfaaFilter(){
+        this(false);
+    }
+
     public NfaaFilter(boolean supportAlpha){
         super(compileShader(
         Core.files.classpath("shaders/screenspace.vert"),
