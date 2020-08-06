@@ -350,6 +350,11 @@ public class Strings{
         return parseInt(s, Integer.MIN_VALUE);
     }
 
+    public static boolean canParseFloat(String s){
+        float p = parseFloat(s);
+        return p >= 0;
+    }
+
     public static boolean canParsePositiveFloat(String s){
         float p = parseFloat(s);
         return p >= 0;
@@ -362,6 +367,14 @@ public class Strings{
             return Integer.parseInt(s);
         }catch(Exception e){
             return Integer.MIN_VALUE;
+        }
+    }
+
+    public static double parseDouble(String s, double defaultValue){
+        try{
+            return Double.parseDouble(s);
+        }catch(Exception e){
+            return defaultValue;
         }
     }
 
