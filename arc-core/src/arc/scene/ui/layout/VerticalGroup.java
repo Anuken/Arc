@@ -2,7 +2,6 @@ package arc.scene.ui.layout;
 
 import arc.scene.*;
 import arc.scene.event.*;
-import arc.scene.utils.*;
 import arc.struct.*;
 import arc.util.*;
 
@@ -307,7 +306,7 @@ public class VerticalGroup extends WidgetGroup{
     }
 
     /** Sets the marginTop, marginLeft, marginBottom, and marginRight to the specified value. */
-    public VerticalGroup pad(float pad){
+    public VerticalGroup margin(float pad){
         padTop = pad;
         padLeft = pad;
         padBottom = pad;
@@ -315,7 +314,7 @@ public class VerticalGroup extends WidgetGroup{
         return this;
     }
 
-    public VerticalGroup pad(float top, float left, float bottom, float right){
+    public VerticalGroup margin(float top, float left, float bottom, float right){
         padTop = top;
         padLeft = left;
         padBottom = bottom;

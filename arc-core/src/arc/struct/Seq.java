@@ -506,6 +506,13 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return -1;
     }
 
+    public int indexOf(Boolf<T> value){
+        T[] items = this.items;
+        for(int i = 0, n = size; i < n; i++)
+            if(value.get(items[i])) return i;
+        return -1;
+    }
+
     /**
      * Returns an index of last occurrence of value in array or -1 if no such value exists. Search is started from the end of an
      * array.

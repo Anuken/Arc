@@ -89,7 +89,8 @@ public class Time{
         delta = impl.get();
     }
 
-    static void dispose(){
+    public static void dispose(){
+        time = globalTime = 0;
         runs.clear();
     }
 

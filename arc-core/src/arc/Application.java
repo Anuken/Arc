@@ -139,6 +139,7 @@ public interface Application extends Disposable{
         Draw.dispose();
         Fill.dispose();
         Events.dispose();
+        Time.dispose();
     }
 
     /** Enumeration of possible {@link Application} types */
