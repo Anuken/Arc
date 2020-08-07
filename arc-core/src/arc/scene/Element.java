@@ -688,8 +688,8 @@ public class Element{
         final float rotation = -this.rotation;
         final float scaleX = this.scaleX;
         final float scaleY = this.scaleY;
-        final float x = this.x;
-        final float y = this.y;
+        final float x = this.x + this.translation.x;
+        final float y = this.y + this.translation.y;
         if(rotation == 0){
             if(scaleX == 1 && scaleY == 1){
                 localCoords.x += x;

@@ -58,6 +58,7 @@ public class ScrollPane extends WidgetGroup{
     private boolean clamp = true;
     private boolean scrollbarsOnTop;
     private boolean variableSizeKnobs = true;
+    private boolean clip = true;
 
     /** @param widget May be null. */
     public ScrollPane(Element widget){
@@ -370,6 +371,10 @@ public class ScrollPane extends WidgetGroup{
         }
     }
 
+    public void setClip(boolean clip){
+        this.clip = clip;
+    }
+
     @Override
     public void layout(){
         final Drawable bg = style.background;
@@ -582,11 +587,17 @@ public class ScrollPane extends WidgetGroup{
         // project those to screen coordinates for OpenGL ES to consume.
         scene.calculateScissors(widgetAreaBounds, scissorBounds);
 
-        // Enable scissors for widget area and draw the widget.
-        if(ScissorStack.push(scissorBounds)){
+        if(clip){
+            // Enable scissors for widget area and draw the widget.
+            if(ScissorStack.push(scissorBounds)){
+                drawChildren();
+                ScissorStack.pop();
+            }
+        }else{
             drawChildren();
-            ScissorStack.pop();
         }
+
+
 
         // Render scrollbars and knobs on top.
         Draw.color(color.r, color.g, color.b, color.a * parentAlpha * Interp.fade.apply(fadeAlpha / fadeAlphaSeconds));
