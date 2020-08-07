@@ -477,7 +477,7 @@ public class Table extends WidgetGroup{
         return add(new Element(){
             @Override
             public void draw(){
-                draw.draw(getX(), getY(), getWidth(), getHeight());
+                draw.draw(x, y, getWidth(), getHeight());
             }
         });
     }

@@ -123,7 +123,7 @@ public class Dialog extends Table{
             public void touchDragged(InputEvent event, float x, float y, int pointer){
                 if(!dragging) return;
                 float width = getWidth(), height = getHeight();
-                float windowX = getX(), windowY = getY();
+                float windowX = Dialog.this.x, windowY = Dialog.this.y;
 
                 float minWidth = getMinWidth();
                 float minHeight = getMinHeight();
@@ -281,7 +281,7 @@ public class Dialog extends Table{
         if(style.stageBackground != null){
             stageToLocalCoordinates(tmpPosition.set(0, 0));
             stageToLocalCoordinates(tmpSize.set(stage.getWidth(), stage.getHeight()));
-            drawStageBackground(getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x, getY() + tmpSize.y);
+            drawStageBackground(x + tmpPosition.x, y + tmpPosition.y, x + tmpSize.x, y + tmpSize.y);
         }
 
         super.draw();

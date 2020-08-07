@@ -141,8 +141,8 @@ public class Touchpad extends Element{
         Color c = color;
         Draw.color(c.r, c.g, c.b, c.a * parentAlpha);
 
-        float x = getX();
-        float y = getY();
+        float x = this.x;
+        float y = this.y;
         float w = getWidth();
         float h = getHeight();
 

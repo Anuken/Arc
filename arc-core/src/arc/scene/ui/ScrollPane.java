@@ -568,8 +568,8 @@ public class ScrollPane extends WidgetGroup{
         widget.setPosition(x, y);
 
         if(widget instanceof Cullable){
-            widgetCullingArea.x = -widget.getX() + widgetAreaBounds.x;
-            widgetCullingArea.y = -widget.getY() + widgetAreaBounds.y;
+            widgetCullingArea.x = -widget.x + widgetAreaBounds.x;
+            widgetCullingArea.y = -widget.y + widgetAreaBounds.y;
             widgetCullingArea.width = widgetAreaBounds.width;
             widgetCullingArea.height = widgetAreaBounds.height;
             ((Cullable)widget).setCullingArea(widgetCullingArea);

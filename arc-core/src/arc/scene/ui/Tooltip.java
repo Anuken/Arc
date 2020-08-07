@@ -103,7 +103,7 @@ public class Tooltip extends InputListener{
         container.setPosition(point.x, point.y);
 
         point = element.localToStageCoordinates(tmp.set(element.getWidth() / 2, element.getHeight() / 2));
-        point.sub(container.getX(), container.getY());
+        point.sub(container.x, container.y);
         container.setOrigin(point.x, point.y);
     }
 

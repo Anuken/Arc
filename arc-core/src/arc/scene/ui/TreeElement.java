@@ -105,7 +105,7 @@ public class TreeElement extends WidgetGroup{
                     if(rangeStart == null) rangeStart = node;
                     Node rangeStart = TreeElement.this.rangeStart;
                     if(!Core.input.ctrl()) selection.clear();
-                    float start = rangeStart.element.getY(), end = node.element.getY();
+                    float start = rangeStart.element.y, end = node.element.y;
                     if(start > end)
                         selectNodes(rootNodes, end, start);
                     else{
@@ -119,7 +119,7 @@ public class TreeElement extends WidgetGroup{
                 }
                 if(node.children.size > 0 && (!selection.getMultiple() || !Core.input.ctrl())){
                     // Toggle expanded.
-                    float rowX = node.element.getX();
+                    float rowX = node.element.x;
                     if(node.icon != null) rowX -= iconSpacingRight + node.icon.getMinWidth();
                     if(x < rowX){
                         node.setExpanded(!node.expanded);
@@ -257,28 +257,28 @@ public class TreeElement extends WidgetGroup{
         if(style.background != null){
             Color color = this.color;
             Draw.color(color.r, color.g, color.b, color.a * parentAlpha);
-            style.background.draw(getX(), getY(), getWidth(), getHeight());
+            style.background.draw(x, y, getWidth(), getHeight());
         }
     }
 
     /** Draws selection, icons, and expand icons. */
     private void draw(Seq<Node> nodes, float indent){
         Drawable plus = style.plus, minus = style.minus;
-        float x = getX(), y = getY();
+        float x = this.x, y = this.y;
         for(int i = 0, n = nodes.size; i < n; i++){
             Node node = nodes.get(i);
             Element element = node.element;
 
             if(selection.contains(node) && style.selection != null){
-                style.selection.draw(x, y + element.getY() - ySpacing / 2, getWidth(), node.height + ySpacing);
+                style.selection.draw(x, y + element.y - ySpacing / 2, getWidth(), node.height + ySpacing);
             }else if(node == overNode && style.over != null){
-                style.over.draw(x, y + element.getY() - ySpacing / 2, getWidth(), node.height + ySpacing);
+                style.over.draw(x, y + element.y - ySpacing / 2, getWidth(), node.height + ySpacing);
             }
 
             if(node.icon != null){
-                float iconY = element.getY() + Math.round((node.height - node.icon.getMinHeight()) / 2);
+                float iconY = element.y + Math.round((node.height - node.icon.getMinHeight()) / 2);
                 Draw.color(element.color);
-                node.icon.draw(x + node.element.getX() - iconSpacingRight - node.icon.getMinWidth(), y + iconY,
+                node.icon.draw(x + node.element.x - iconSpacingRight - node.icon.getMinWidth(), y + iconY,
                 node.icon.getMinWidth(), node.icon.getMinHeight());
                 Draw.color(Color.white);
             }
@@ -286,7 +286,7 @@ public class TreeElement extends WidgetGroup{
             if(node.children.size == 0) continue;
 
             Drawable expandIcon = node.expanded ? minus : plus;
-            float iconY = element.getY() + Math.round((node.height - expandIcon.getMinHeight()) / 2);
+            float iconY = element.y + Math.round((node.height - expandIcon.getMinHeight()) / 2);
             expandIcon.draw(x + indent - iconSpacingLeft, y + iconY, expandIcon.getMinWidth(), expandIcon.getMinHeight());
             if(node.expanded) draw(node.children, indent + indentSpacing);
         }
@@ -320,9 +320,9 @@ public class TreeElement extends WidgetGroup{
     void selectNodes(Seq<Node> nodes, float low, float high){
         for(int i = 0, n = nodes.size; i < n; i++){
             Node node = nodes.get(i);
-            if(node.element.getY() < low) break;
+            if(node.element.y < low) break;
             if(!node.isSelectable()) continue;
-            if(node.element.getY() <= high) selection.add(node);
+            if(node.element.y <= high) selection.add(node);
             if(node.expanded) selectNodes(node.children, low, high);
         }
     }

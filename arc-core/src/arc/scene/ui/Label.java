@@ -214,7 +214,7 @@ public class Label extends Element{
         }
         if(style.fontColor != null) color.mul(style.fontColor);
         cache.tint(color);
-        cache.setPosition(getX(), getY());
+        cache.setPosition(x, y);
         cache.draw();
     }
 

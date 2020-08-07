@@ -107,8 +107,8 @@ public class Image extends Element{
     public void draw(){
         validate();
 
-        float x = getX();
-        float y = getY();
+        float x = this.x;
+        float y = this.y;
         float scaleX = this.scaleX;
         float scaleY = this.scaleY;
         Draw.color(color);

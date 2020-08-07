@@ -33,8 +33,8 @@ public class Element{
     private final DelayedRemovalSeq<EventListener> listeners = new DelayedRemovalSeq<>(0), captureListeners = new DelayedRemovalSeq<>(0);
     private final Seq<Action> actions = new Seq<>(0);
 
-    /** DO NOT modify without calling positionChanged. */
-    protected float x, y;
+    public float x, y;
+
     /** DO NOT modify without calling sizeChanged. */
     protected float width, height;
     /** Alpha value of the parent. Should be multiplied with the actor's alpha, allowing a parent's alpha to affect all children. */
@@ -210,7 +210,6 @@ public class Element{
         addListener(new InputListener(){
             float lastX, lastY;
 
-
             @Override
             public void touchDragged(InputEvent event, float mx, float my, int pointer){
                 if(Core.app.isMobile() && pointer != 0) return;
@@ -370,18 +369,6 @@ public class Element{
         return touchable == Touchable.enabled;
     }
 
-    /** Returns the X position of the actor's left edge. */
-    public float getX(){
-        return x;
-    }
-
-    public void setX(float x){
-        if(this.x != x){
-            this.x = x;
-            positionChanged();
-        }
-    }
-
     /** Returns the X position of the specified {@link Align alignment}. */
     public float getX(int alignment){
         float x = this.x;
@@ -390,18 +377,6 @@ public class Element{
         else if((alignment & left) == 0) //
             x += width / 2;
         return x;
-    }
-
-    /** Returns the Y position of the actor's bottom edge. */
-    public float getY(){
-        return y;
-    }
-
-    public void setY(float y){
-        if(this.y != y){
-            this.y = y;
-            positionChanged();
-        }
     }
 
     /** Returns the Y position of the specified {@link Align alignment}. */
@@ -419,7 +394,6 @@ public class Element{
         if(this.x != x || this.y != y){
             this.x = x;
             this.y = y;
-            positionChanged();
         }
     }
 
@@ -441,7 +415,6 @@ public class Element{
         if(this.x != x || this.y != y){
             this.x = x;
             this.y = y;
-            positionChanged();
         }
     }
 
@@ -450,7 +423,6 @@ public class Element{
         if(x != 0 || y != 0){
             this.x += x;
             this.y += y;
-            positionChanged();
         }
     }
 
@@ -484,10 +456,6 @@ public class Element{
     /** Returns x plus width. */
     public float getRight(){
         return x + width;
-    }
-
-    /** Called when the actor's position has been changed. */
-    protected void positionChanged(){
     }
 
     /** Called when the actor's size has been changed. */
@@ -535,7 +503,6 @@ public class Element{
         if(this.x != x || this.y != y){
             this.x = x;
             this.y = y;
-            positionChanged();
         }
         if(this.width != width || this.height != height){
             this.width = width;

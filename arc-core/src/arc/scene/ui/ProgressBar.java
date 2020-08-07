@@ -93,8 +93,8 @@ public class ProgressBar extends Element implements Disableable{
         final Drawable knobAfter = (disabled && style.disabledKnobAfter != null) ? style.disabledKnobAfter : style.knobAfter;
 
         Color color = this.color;
-        float x = getX();
-        float y = getY();
+        float x = this.x;
+        float y = this.y;
         float width = getWidth();
         float height = getHeight();
         float knobHeight = knob == null ? 0 : knob.getMinHeight();
