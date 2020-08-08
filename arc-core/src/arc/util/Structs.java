@@ -37,6 +37,14 @@ public class Structs{
         return array[Mathf.random(array.length - 1)];
     }
 
+    public static <T> int count(T[] array, Boolf<T> value){
+        int total = 0;
+        for(T t : array){
+            if(value.get(t)) total ++;
+        }
+        return total;
+    }
+
     /**Uses identity comparisons.*/
     public static <T> boolean contains(T[] array, T value){
         for(T t : array){
