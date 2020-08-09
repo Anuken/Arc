@@ -151,6 +151,9 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
             }
         }
 
+        //save last buffer's handle
+        int lastHandle = currentBoundFramebuffer == null ? defaultFramebufferHandle : currentBoundFramebuffer.framebufferHandle;
+
         framebufferHandle = Gl.genFramebuffer();
         Gl.bindFramebuffer(Gl.framebuffer, framebufferHandle);
 
@@ -260,7 +263,8 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
             result = Gl.checkFramebufferStatus(Gl.framebuffer);
         }
 
-        Gl.bindFramebuffer(Gl.framebuffer, defaultFramebufferHandle);
+        //restore old bound buffer
+        Gl.bindFramebuffer(Gl.framebuffer, lastHandle);
 
         if(result != Gl.framebufferComplete){
             for(T texture : textureAttachments){

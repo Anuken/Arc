@@ -350,6 +350,7 @@ public class Draw{
     }
 
     public static void proj(float x, float y, float w, float h){
+        Draw.flush();
         lastProj = null;
         batch.getProjection().setOrtho(x, y, w, h);
     }
