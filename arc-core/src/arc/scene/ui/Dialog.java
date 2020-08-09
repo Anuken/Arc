@@ -247,18 +247,7 @@ public class Dialog extends Table{
 
     void keepWithinStage(){
         if(!keepWithinStage) return;
-        Scene stage = getScene();
-        Camera camera = stage.getCamera();
-        float parentWidth = stage.getWidth();
-        float parentHeight = stage.getHeight();
-        if(getX(Align.right) - camera.position.x > parentWidth / 2)
-            setPosition(camera.position.x + parentWidth / 2, getY(Align.right), Align.right);
-        if(getX(Align.left) - camera.position.x < -parentWidth / 2)
-            setPosition(camera.position.x - parentWidth / 2, getY(Align.left), Align.left);
-        if(getY(Align.top) - camera.position.y > parentHeight / 2)
-            setPosition(getX(Align.top), camera.position.y + parentHeight / 2, Align.top);
-        if(getY(Align.bottom) - camera.position.y < -parentHeight / 2)
-            setPosition(getX(Align.bottom), camera.position.y - parentHeight / 2, Align.bottom);
+        keepInStage();
     }
 
     @Override

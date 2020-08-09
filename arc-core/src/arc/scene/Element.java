@@ -833,6 +833,21 @@ public class Element{
 
     public void layout(){}
 
+    public void keepInStage(){
+        if(stage == null) return;
+        Camera camera = stage.getCamera();
+        float parentWidth = stage.getWidth();
+        float parentHeight = stage.getHeight();
+        if(getX(Align.right) - camera.position.x > parentWidth / 2)
+            setPosition(camera.position.x + parentWidth / 2, getY(Align.right), Align.right);
+        if(getX(Align.left) - camera.position.x < -parentWidth / 2)
+            setPosition(camera.position.x - parentWidth / 2, getY(Align.left), Align.left);
+        if(getY(Align.top) - camera.position.y > parentHeight / 2)
+            setPosition(getX(Align.top), camera.position.y + parentHeight / 2, Align.top);
+        if(getY(Align.bottom) - camera.position.y < -parentHeight / 2)
+            setPosition(getX(Align.bottom), camera.position.y - parentHeight / 2, Align.bottom);
+    }
+
     public void setTranslation(float x, float y){
         translation.x = x;
         translation.y = y;
