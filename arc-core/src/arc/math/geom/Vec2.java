@@ -305,7 +305,7 @@ public class Vec2 implements Vector<Vec2>, Position{
         return "(" + x + "," + y + ")";
     }
 
-    public Vec2 clamp(float minx, float maxx, float miny, float maxy){
+    public Vec2 clamp(float minx, float miny, float maxy, float maxx){
         x = Mathf.clamp(x, minx, maxx);
         y = Mathf.clamp(y, miny, maxy);
         return this;
