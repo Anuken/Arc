@@ -1,13 +1,7 @@
 package utils;
 
-import arc.files.*;
-import arc.struct.Bits;
-import arc.util.*;
-import arc.util.serialization.*;
-import org.junit.Test;
-
-import java.io.*;
-import java.util.zip.*;
+import arc.struct.*;
+import org.junit.*;
 
 import static org.junit.Assert.*;
 

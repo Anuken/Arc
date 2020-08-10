@@ -488,6 +488,11 @@ public final class Mathf{
         return Math.abs(value) <= FLOAT_ROUNDING_ERROR;
     }
 
+    /** Returns true if the value is zero (using the default tolerance as upper bound) */
+    public static boolean zero(double value){
+        return Math.abs(value) <= FLOAT_ROUNDING_ERROR;
+    }
+
     /**
      * Returns true if the value is zero.
      * @param tolerance represent an upper bound below which the value is considered zero.
