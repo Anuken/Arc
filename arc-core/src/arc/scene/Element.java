@@ -29,6 +29,7 @@ public class Element{
     public Group parent;
     public Boolp visibility;
     public Prov<Touchable> touchablility;
+    public boolean cullable = true;
 
     private final DelayedRemovalSeq<EventListener> listeners = new DelayedRemovalSeq<>(0), captureListeners = new DelayedRemovalSeq<>(0);
     private final Seq<Action> actions = new Seq<>(0);

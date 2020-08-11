@@ -71,7 +71,7 @@ public abstract class Group extends Element implements Cullable{
                     float cx = child.x, cy = child.y;
                     child.x += child.translation.x;
                     child.y += child.translation.y;
-                    if(cx <= cullRight && cy <= cullTop && cx + child.width >= cullLeft && cy + child.height >= cullBottom)
+                    if((cx <= cullRight && cy <= cullTop && cx + child.width >= cullLeft && cy + child.height >= cullBottom) || !child.cullable)
                         child.draw();
                     child.x -= child.translation.x;
                     child.y -= child.translation.y;
@@ -86,7 +86,7 @@ public abstract class Group extends Element implements Cullable{
                     child.parentAlpha = parentAlpha;
                     if(!child.visible) continue;
                     float cx = child.x, cy = child.y;
-                    if(cx <= cullRight && cy <= cullTop && cx + child.width >= cullLeft && cy + child.height >= cullBottom){
+                    if((cx <= cullRight && cy <= cullTop && cx + child.width >= cullLeft && cy + child.height >= cullBottom) || !child.cullable){
                         child.x = cx + offsetX + child.translation.x;
                         child.y = cy + offsetY + child.translation.y;
                         child.draw();

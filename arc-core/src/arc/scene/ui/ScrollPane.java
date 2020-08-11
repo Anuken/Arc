@@ -597,8 +597,6 @@ public class ScrollPane extends WidgetGroup{
             drawChildren();
         }
 
-
-
         // Render scrollbars and knobs on top.
         Draw.color(color.r, color.g, color.b, color.a * parentAlpha * Interp.fade.apply(fadeAlpha / fadeAlphaSeconds));
         if(scrollX && scrollY){
