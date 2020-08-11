@@ -23,10 +23,10 @@ public class Lines{
         return 11 + (int)(rad * circlePrecision);
     }
 
-    public static void lineAngle(float x, float y, float angle, float length, CapStyle style){
+    public static void lineAngle(float x, float y, float angle, float length, boolean cap){
         vector.set(1, 1).setLength(length).setAngle(angle);
 
-        line(x, y, x + vector.x, y + vector.y, style);
+        line(x, y, x + vector.x, y + vector.y, cap);
     }
 
     public static void lineAngle(float x, float y, float angle, float length){
@@ -48,24 +48,24 @@ public class Lines{
     }
 
     public static void line(float x, float y, float x2, float y2){
-        line(x, y, x2, y2, CapStyle.square, 0f);
+        line(x, y, x2, y2, true, 0f);
     }
 
-    public static void line(float x, float y, float x2, float y2, CapStyle cap){
+    public static void line(float x, float y, float x2, float y2, boolean cap){
         line(x, y, x2, y2, cap, 0f);
     }
 
-    public static void line(float x, float y, float x2, float y2, CapStyle cap, float padding){
+    public static void line(float x, float y, float x2, float y2, boolean cap, float padding){
         line(Core.atlas.white(), x, y, x2, y2, cap, padding);
     }
 
-    public static void line(TextureRegion region, float x, float y, float x2, float y2, CapStyle cap, float padding){
-        float length = Mathf.dst(x, y, x2, y2) + (cap == CapStyle.none ? padding * 2f : stroke + padding * 2);
+    public static void line(TextureRegion region, float x, float y, float x2, float y2, boolean cap, float padding){
+        float length = Mathf.dst(x, y, x2, y2) + (!cap ? padding * 2f : stroke + padding * 2);
         float angle = (precise ? (float)Math.atan2(y2 - y, x2 - x) : Mathf.atan2(x2 - x, y2 - y)) * Mathf.radDeg;
 
-        if(cap == CapStyle.square){
+        if(cap){
             Draw.rect(region, x - stroke / 2 - padding + length/2f, y, length, stroke, stroke / 2 + padding, stroke / 2, angle);
-        }else if(cap == CapStyle.none){
+        }else{
             Draw.rect(region, x - padding + length/2f, y, length, stroke, padding, stroke / 2, angle);
         }
     }
