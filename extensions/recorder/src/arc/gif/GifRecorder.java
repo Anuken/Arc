@@ -5,6 +5,7 @@ import arc.files.*;
 import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.input.*;
+import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
@@ -32,6 +33,7 @@ public class GifRecorder{
     public boolean disableGUI, autoCopy = true;
     public float speedMultiplier = 1f;
 	public int recordfps = 30;
+    public float driftSpeed = 1f;
 	public float gifx, gify, gifwidth, gifheight, giftime;
 
 	private float offsetx, offsety;
@@ -109,8 +111,8 @@ public class GifRecorder{
 			
 			float xs = (Core.graphics.getWidth() / 2 - Core.input.mouseX());
 			float ys = (Core.graphics.getHeight() / 2 - Core.input.mouseY());
-			offsetx = -xs;
-			offsety = -ys;
+			offsetx = Mathf.lerpDelta(offsetx, -xs, driftSpeed);
+            offsety = Mathf.lerpDelta(offsety, -ys, driftSpeed);
 		}
 
 		if(!disableGUI){
