@@ -302,6 +302,23 @@ public class Strings{
         return result.toString();
     }
 
+    /** Adds spaces to a camel/pascal case string. */
+    public static String insertSpaces(String s){
+        StringBuilder result = new StringBuilder(s.length());
+
+        for(int i = 0; i < s.length(); i++){
+            char c = s.charAt(i);
+
+            if(i > 0 && Character.isUpperCase(c)){
+                result.append(' ');
+            }
+
+            result.append(c);
+        }
+
+        return result.toString();
+    }
+
     /**Converts a Space Separated string to camelCase.
      * For example: "Camel Case" -> "camelCase"*/
     public static String camelize(String s){
