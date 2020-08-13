@@ -623,7 +623,7 @@ public class Server implements EndPoint{
                 try{
                     socket = new MulticastSocket(multicastPort);
                     socket.joinGroup(multicastGroup);
-                    DatagramPacket packet = new DatagramPacket(new byte[256], 256);
+                    DatagramPacket packet = new DatagramPacket(new byte[512], 512);
                     while(true){
                         socket.receive(packet);
                         discoveryHandler.onDiscoverReceived(packet.getAddress(), buffer -> {
