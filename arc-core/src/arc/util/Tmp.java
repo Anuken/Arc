@@ -37,9 +37,9 @@ public class Tmp{
     public static final Color c3 = new Color();
     public static final Color c4 = new Color();
 
-    public static final Point2 g1 = new Point2();
-    public static final Point2 g2 = new Point2();
-    public static final Point2 g3 = new Point2();
+    public static final Point2 p1 = new Point2();
+    public static final Point2 p2 = new Point2();
+    public static final Point2 p3 = new Point2();
 
     public static final TextureRegion tr1 = new TextureRegion();
     public static final TextureRegion tr2 = new TextureRegion();
