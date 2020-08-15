@@ -341,10 +341,6 @@ public class Draw{
         Core.batch.draw(texture, vertices, offset, length);
     }
 
-    public static void vert(float[] vertices){
-        vert(Core.atlas.texture(), vertices, 0, vertices.length);
-    }
-
     public static void flush(){
         Core.batch.flush();
     }
@@ -407,46 +403,25 @@ public class Draw{
         y -= height/2f;
 
         //bottom left and top right corner points relative to origin
-        final float worldOriginX = x + originX;
-        final float worldOriginY = y + originY;
+        float worldOriginX = x + originX;
+        float worldOriginY = y + originY;
         float fx = -originX;
         float fy = -originY;
         float fx2 = width - originX;
         float fy2 = height - originY;
 
-        float x1;
-        float y1;
-        float x2;
-        float y2;
-        float x3;
-        float y3;
-        float x4;
-        float y4;
-
         // rotate
-        final float cos = Mathf.cosDeg(rotation);
-        final float sin = Mathf.sinDeg(rotation);
+        float cos = Mathf.cosDeg(rotation);
+        float sin = Mathf.sinDeg(rotation);
 
-        x1 = cos * fx - sin * fy;
-        y1 = sin * fx + cos * fy;
-
-        x2 = cos * fx - sin * fy2;
-        y2 = sin * fx + cos * fy2;
-
-        x3 = cos * fx2 - sin * fy2;
-        y3 = sin * fx2 + cos * fy2;
-
-        x4 = x1 + (x3 - x2);
-        y4 = y3 - (y2 - y1);
-
-        x1 += worldOriginX;
-        y1 += worldOriginY;
-        x2 += worldOriginX;
-        y2 += worldOriginY;
-        x3 += worldOriginX;
-        y3 += worldOriginY;
-        x4 += worldOriginX;
-        y4 += worldOriginY;
+        float x1 = cos * fx - sin * fy + worldOriginX;
+        float y1 = sin * fx + cos * fy + worldOriginY;
+        float x2 = cos * fx - sin * fy2 + worldOriginX;
+        float y2 = sin * fx + cos * fy2 + worldOriginY;
+        float x3 = cos * fx2 - sin * fy2 + worldOriginX;
+        float y3 = sin * fx2 + cos * fy2 + worldOriginY;
+        float x4 = x1 + (x3 - x2);
+        float y4 = y3 - (y2 - y1);
 
         tweaker.get(Tmp.v1.set(x1, y1));
         x1 = Tmp.v1.x;
@@ -499,7 +474,7 @@ public class Draw{
         vertices[22] = v;
         vertices[23] = mixColor;
 
-        Draw.vert(vertices);
+        Draw.vert(region.getTexture(), vertices, 0, vertices.length);
     }
 
     public static void dispose(){
