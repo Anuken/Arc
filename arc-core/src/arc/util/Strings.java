@@ -10,6 +10,14 @@ import java.nio.charset.*;
 public class Strings{
     public static final Charset utf8 = Charset.forName("UTF-8");
 
+    public static int count(CharSequence s, char c){
+        int total = 0;
+        for(int i = 0; i < s.length(); i++){
+            if(s.charAt(i) == c) total ++;
+        }
+        return total;
+    }
+
     public static Seq<Throwable> getCauses(Throwable e){
         Seq<Throwable> arr = new Seq<>();
         while(e != null){

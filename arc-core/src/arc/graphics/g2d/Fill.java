@@ -170,29 +170,42 @@ public class Fill{
     }
 
     public static void poly(float x, float y, int sides, float radius, float rotation){
-        float space = 360f / sides;
+        if(sides == 3){
+            float space = 360f / 3;
 
-        for(int i = 0; i < sides; i += 2){
+            float px = Angles.trnsx(rotation, radius);
+            float py = Angles.trnsy(rotation, radius);
+            float px2 = Angles.trnsx(space + rotation, radius);
+            float py2 = Angles.trnsy(space + rotation, radius);
+            float px3 = Angles.trnsx(space * (2) + rotation, radius);
+            float py3 = Angles.trnsy(space * (2) + rotation, radius);
+            tri(x + px, y + py, x + px2, y + py2, x + px3, y + py3);
+        }else{
+
+            float space = 360f / sides;
+
+            for(int i = 0; i < sides; i += 2){
+                float px = Angles.trnsx(space * i + rotation, radius);
+                float py = Angles.trnsy(space * i + rotation, radius);
+                float px2 = Angles.trnsx(space * (i + 1) + rotation, radius);
+                float py2 = Angles.trnsy(space * (i + 1) + rotation, radius);
+                float px3 = Angles.trnsx(space * (i + 2) + rotation, radius);
+                float py3 = Angles.trnsy(space * (i + 2) + rotation, radius);
+                quad(x, y, x + px, y + py, x + px2, y + py2, x + px3, y + py3);
+            }
+
+            int mod = sides % 2;
+
+            if(mod == 0 || sides < 4) return;
+
+            int i = sides - 2;
+
             float px = Angles.trnsx(space * i + rotation, radius);
             float py = Angles.trnsy(space * i + rotation, radius);
             float px2 = Angles.trnsx(space * (i + 1) + rotation, radius);
             float py2 = Angles.trnsy(space * (i + 1) + rotation, radius);
-            float px3 = Angles.trnsx(space * (i + 2) + rotation, radius);
-            float py3 = Angles.trnsy(space * (i + 2) + rotation, radius);
-            quad(x, y, x + px, y + py, x + px2, y + py2, x + px3, y + py3);
+            tri(x, y, x + px, y + py, x + px2, y + py2);
         }
-
-        int mod = sides % 2;
-
-        if(mod == 0 || sides < 4) return;
-
-        int i = sides - 2;
-
-        float px = Angles.trnsx(space * i + rotation, radius);
-        float py = Angles.trnsy(space * i + rotation, radius);
-        float px2 = Angles.trnsx(space * (i + 1) + rotation, radius);
-        float py2 = Angles.trnsy(space * (i + 1) + rotation, radius);
-        tri(x, y, x + px, y + py, x + px2, y + py2);
     }
 
     public static void circle(float x, float y, float radius){
