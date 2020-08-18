@@ -10,6 +10,7 @@ public class Reflect{
     public static <T> Prov<T> cons(Class<T> type){
         try{
             Constructor<T> c = type.getDeclaredConstructor();
+            c.setAccessible(true);
             return () -> {
                 try{
                     return c.newInstance();
