@@ -153,6 +153,7 @@ public class ScrollPane extends WidgetGroup{
             @Override
             public boolean mouseMoved(InputEvent event, float x, float y){
                 if(!flickScroll) resetFade();
+                requestScroll();
                 return false;
             }
         });
@@ -795,6 +796,7 @@ public class ScrollPane extends WidgetGroup{
     }
 
     public float getScrollPercentX(){
+        if(Float.isNaN(amountX / maxX)) return 1f;
         return Mathf.clamp(amountX / maxX, 0, 1);
     }
 
@@ -803,6 +805,7 @@ public class ScrollPane extends WidgetGroup{
     }
 
     public float getScrollPercentY(){
+        if(Float.isNaN(amountY / maxY)) return 1f;
         return Mathf.clamp(amountY / maxY, 0, 1);
     }
 
