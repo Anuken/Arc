@@ -534,11 +534,10 @@ public class TextField extends Element implements Disableable{
         }
     }
 
-    private TextField findNextTextField(Seq<Element> elements, TextField best, Vec2 bestCoords, Vec2 currentCoords,
-                                        boolean up){
+    private TextField findNextTextField(Seq<Element> elements, TextField best, Vec2 bestCoords, Vec2 currentCoords, boolean up){
         for(int i = 0, n = elements.size; i < n; i++){
             Element element = elements.get(i);
-            if(element == this) continue;
+            if(element == this || !element.visible) continue;
             if(element instanceof TextField){
                 TextField textField = (TextField)element;
                 if(textField.isDisabled() || !textField.focusTraversal) continue;

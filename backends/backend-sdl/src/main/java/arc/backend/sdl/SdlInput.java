@@ -33,19 +33,12 @@ public class SdlInput extends Input{
                 }
             }
 
-            //backspace is special
-            if(key == KeyCode.backspace && down){
-                queue.keyTyped((char)8);
-            }
-
-            //so is enter
-            if(key == KeyCode.enter && down){
-                queue.keyTyped((char)13);
-            }
-
-            //so is enter
-            if(key == KeyCode.forwardDel && down){
-                queue.keyTyped((char)127);
+            //special keys
+            if(down){
+                if(key == KeyCode.backspace) queue.keyTyped((char)8);
+                if(key == KeyCode.tab) queue.keyTyped('\t');
+                if(key == KeyCode.enter) queue.keyTyped((char)13);
+                if(key == KeyCode.forwardDel) queue.keyTyped((char)127);
             }
         }else if(type == SDL_EVENT_MOUSE_BUTTON){
             boolean down = input[1] == 1;
