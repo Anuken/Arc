@@ -449,6 +449,8 @@ public class UBJsonWriter implements Closeable, BaseJsonWriter{
             return value(((Character)object).charValue());
         }else if(object instanceof CharSequence){
             return value(object.toString());
+        }else if(object instanceof Boolean){
+            return value((boolean)object);
         }else
             throw new IOException("Unknown object type.");
 
