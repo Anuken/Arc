@@ -74,12 +74,11 @@ public class ZipFi extends Fi{
     public boolean delete(){
         try{
             zip.close();
+            return true;
         }catch(IOException e){
             Log.err(e);
             return false;
         }
-
-        return super.delete();
     }
 
     @Override
