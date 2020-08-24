@@ -367,6 +367,10 @@ public class IntIntMap implements Iterable<IntIntMap.Entry>{
         return defaultValue;
     }
 
+    public int remove(int key){
+        return remove(key, 0);
+    }
+
     public int remove(int key, int defaultValue){
         if(key == 0){
             if(!hasZeroValue) return defaultValue;
