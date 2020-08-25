@@ -71,6 +71,10 @@ public class Scene implements InputProcessor, Disposable{
         Seq.with(type.getFields()).each(f -> f.getName().startsWith("default"), f -> addStyle(f.getType(), Reflect.get(f)));
     }
 
+    public boolean hasField(){
+        return getKeyboardFocus() instanceof TextField;
+    }
+
     public boolean hasMouse(){
         return hit(Core.input.mouseX(), Core.input.mouseY(), true) != null;
     }
