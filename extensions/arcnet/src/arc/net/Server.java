@@ -2,9 +2,8 @@
 
 package arc.net;
 
-import arc.struct.*;
-import arc.func.*;
 import arc.net.FrameworkMessage.*;
+import arc.struct.*;
 import arc.util.async.*;
 
 import java.io.*;
@@ -34,10 +33,9 @@ public class Server implements EndPoint{
     private final Object updateLock = new Object();
     private Thread updateThread;
     private int multicastPort = 21010;
-    private Cons<Exception> errorHandler = e -> {};
-    private InetAddress multicastGroup;
-    private DiscoveryReceiver discoveryReceiver;
-    private ServerDiscoveryHandler discoveryHandler;
+    protected InetAddress multicastGroup;
+    protected DiscoveryReceiver discoveryReceiver;
+    protected ServerDiscoveryHandler discoveryHandler;
 
     private NetListener dispatchListener = new NetListener(){
         public void connected(Connection connection){
@@ -111,10 +109,6 @@ public class Server implements EndPoint{
         }catch(IOException e){
             e.printStackTrace();
         }
-    }
-
-    public void setErrorHandler(Cons<Exception> handler){
-        this.errorHandler = handler;
     }
 
     public void setDiscoveryHandler(ServerDiscoveryHandler newDiscoveryHandler){
@@ -229,7 +223,7 @@ public class Server implements EndPoint{
                                         fromConnection.notifyReceived(object);
                                     }
                                 }catch(IOException | ArcNetException ex){
-                                    errorHandler.get(new ArcNetException("Error reading TCP from connection: " + fromConnection, ex));
+                                    ArcNet.handleError(new ArcNetException("Error reading TCP from connection: " + fromConnection, ex));
                                     fromConnection.close(ex.getMessage() != null && ex.getMessage().contains("closed") ? DcReason.closed : DcReason.error);
                                 }
                             }
@@ -252,7 +246,7 @@ public class Server implements EndPoint{
                                 if(socketChannel != null)
                                     acceptOperation(socketChannel);
                             }catch(IOException ex){
-                                errorHandler.get(ex);
+                                ArcNet.handleError(ex);
                             }
                             continue;
                         }
@@ -266,7 +260,7 @@ public class Server implements EndPoint{
                         try{
                             fromAddress = udp.readFromAddress();
                         }catch(IOException ex){
-                            errorHandler.get(ex);
+                            ArcNet.handleError(ex);
                             continue;
                         }
                         if(fromAddress == null)
@@ -284,7 +278,7 @@ public class Server implements EndPoint{
                         try{
                             object = udp.readObject();
                         }catch(ArcNetException ex){
-                            errorHandler.get(new ArcNetException("Error reading UDP from connection: " + (fromConnection == null ? fromAddress : fromAddress), ex));
+                            ArcNet.handleError(new ArcNetException("Error reading UDP from connection: " + (fromConnection == null ? fromAddress : fromAddress), ex));
                             continue;
                         }
 
@@ -614,7 +608,7 @@ public class Server implements EndPoint{
                     socket.close();
                 }
             }catch(IOException e){
-                errorHandler.get(e);
+                ArcNet.handleError(e);
             }
         }
 
@@ -634,7 +628,7 @@ public class Server implements EndPoint{
                         });
                     }
                 }catch(IOException e){
-                    errorHandler.get(e);
+                    ArcNet.handleError(e);
                 }
             });
         }

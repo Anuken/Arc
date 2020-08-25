@@ -75,6 +75,7 @@ public class Connection{
             return tcp.send(object);
         }catch(IOException | ArcNetException ex){
             close(DcReason.error);
+            ArcNet.handleError(ex);
             return 0;
         }
     }
@@ -99,6 +100,7 @@ public class Connection{
             return udp.send(object, address);
         }catch(IOException | ArcNetException ex){
             close(DcReason.error);
+            ArcNet.handleError(ex);
             return 0;
         }
     }
