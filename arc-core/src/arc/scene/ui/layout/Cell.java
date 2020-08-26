@@ -190,6 +190,13 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
+    public Cell<T> scaling(Scaling scaling){
+        if(element instanceof Image){
+            ((Image)element).setScaling(scaling);
+        }
+        return this;
+    }
+
     public Cell<T> valid(TextFieldValidator val){
         if(get() instanceof TextField){
             ((TextField) get()).setValidator(val);

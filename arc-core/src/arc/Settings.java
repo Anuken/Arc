@@ -57,6 +57,10 @@ public class Settings{
         this.shouldAutosave = autosave;
     }
 
+    public boolean modified(){
+        return modified;
+    }
+
     /** Loads all values and keybinds. */
     public void load(){
         try{
@@ -86,6 +90,7 @@ public class Settings{
             }
             hasErrored = true;
         }
+        modified = false;
     }
 
     /** Manually save, if the settings have been loaded at some point. */
