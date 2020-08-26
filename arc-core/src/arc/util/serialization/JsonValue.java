@@ -1125,7 +1125,6 @@ public class JsonValue implements Iterable<JsonValue>{
                 outer:
                 while(true){
                     buffer.append(newLines ? "{\n" : "{ ");
-                    int i = 0;
                     for(JsonValue child = object.child; child != null; child = child.next){
                         if(newLines) indent(indent, buffer);
                         buffer.append(outputType.quoteName(child.name));
