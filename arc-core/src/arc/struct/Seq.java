@@ -1013,8 +1013,8 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
     }
 
     public static class SeqIterable<T> implements Iterable<T>{
-        private final Seq<T> array;
-        private final boolean allowRemove;
+        final Seq<T> array;
+        final boolean allowRemove;
         private SeqIterator iterator1 = new SeqIterator(), iterator2 = new SeqIterator();
 
         public SeqIterable(Seq<T> array){
@@ -1049,6 +1049,9 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
 
             {
                 iteratorsAllocated ++;
+            }
+
+            SeqIterator(){
             }
 
             @Override

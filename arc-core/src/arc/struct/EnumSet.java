@@ -4,7 +4,7 @@ import java.util.*;
 
 public class EnumSet<T extends Enum<T>> implements Iterable<T>{
     private int i;
-    private T[] set;
+    T[] set;
     private EnumSetIterator iterator = new EnumSetIterator();
 
     EnumSet(){

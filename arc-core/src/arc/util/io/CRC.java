@@ -1,6 +1,6 @@
 // SevenZip/CRC.java
 
-package arc.util.compression;
+package arc.util.io;
 
 public class CRC{
     public static int[] table = new int[256];

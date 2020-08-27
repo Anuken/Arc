@@ -39,7 +39,7 @@ public class KeyBinds{
     private Section[] sections;
 
     public void setDefaults(KeyBind[] defs, Section... sectionArr){
-        defaultSection =  new Section("default");
+        defaultSection = new Section("default");
         definitions = defs;
         sections = new Section[sectionArr.length + 1];
         sections[0] = defaultSection;
@@ -204,7 +204,7 @@ public class KeyBinds{
      * Each section has a device, which may be a controller or keyboard, and a name (for example, "player2")
      * The default section uses a keyboard and is named 'default'.
      */
-    public class Section{
+    public static class Section{
         public final String name;
         public ObjectMap<DeviceType, OrderedMap<KeyBind, Axis>> binds = new ObjectMap<>();
         public InputDevice device = input.getKeyboard();

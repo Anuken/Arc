@@ -10,7 +10,7 @@ import java.util.regex.*;
 /** An hsjon parser. Can be used as a standard json value.
  * Output can be converted to standard JSON. This class is heavily based upon the Hjson Java implementation.*/
 public class Jval{
-    private static final String eol = System.getProperty("line.separator");
+    static final String eol = System.getProperty("line.separator");
 
     public static final Jval TRUE = new Jval(true);
     public static final Jval FALSE = new Jval(false);

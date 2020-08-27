@@ -291,7 +291,7 @@ public class PixmapIO{
             output.flush();
         }
 
-        /** Disposal will happen automatically in {@link #finalize()} but can be done explicitly if desired. */
+        @Override
         public void dispose(){
             deflater.end();
         }

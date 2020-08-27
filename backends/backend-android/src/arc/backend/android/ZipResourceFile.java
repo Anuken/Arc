@@ -392,7 +392,6 @@ public class ZipResourceFile{
                     return new AssetFileDescriptor(pfd, getOffset(),
                     mUncompressedLength);
                 }catch(FileNotFoundException e){
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }

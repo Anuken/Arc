@@ -137,7 +137,7 @@ public class CommandHandler{
         public final String paramText;
         public final String description;
         public final CommandParam[] params;
-        private final CommandRunner runner;
+        final CommandRunner runner;
 
         public Command(String text, String paramText, String description, CommandRunner runner){
             this.text = text;
@@ -205,7 +205,7 @@ public class CommandHandler{
         }
     }
 
-    public class CommandResponse{
+    public static class CommandResponse{
         public final ResponseType type;
         public final Command command;
         public final String runCommand;

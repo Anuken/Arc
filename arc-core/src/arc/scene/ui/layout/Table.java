@@ -22,7 +22,7 @@ import static arc.Core.scene;
 import static arc.scene.ui.layout.Cell.unset;
 
 /**
- * A group that sizes and positions children using table constraints. By default, {@link #getTouchable()} is
+ * A group that sizes and positions children using table constraints. By default, touchable is
  * {@link Touchable#childrenOnly}.
  * <p>
  * The preferred and minimum sizes are that of the children when laid out in columns and rows.
@@ -34,7 +34,6 @@ public class Table extends WidgetGroup{
 
     private final Seq<Cell> cells = new Seq<>(4);
     private final Cell cellDefaults;
-    private final Seq<Cell> columnDefaults = new Seq<>(2);
 
     float marginTop = unset, marginLeft = unset, marginBot = unset, marginRight = unset;
     int align = Align.center;
@@ -220,13 +219,7 @@ public class Table extends WidgetGroup{
         }
         cells.add(cell);
 
-        //TODO are row/column defaults even used? hmm
         cell.set(cellDefaults);
-        if(cell.column < columnDefaults.size){
-            Cell columnCell = columnDefaults.get(cell.column);
-            //if(columnCell != null) cell.merge(columnCell);
-        }
-        //cell.merge(rowDefaults);
 
         if(element != null) addChild(element);
 
@@ -618,11 +611,6 @@ public class Table extends WidgetGroup{
         marginRight = unset;
         align = Align.center;
         cellDefaults.reset();
-        for(int i = 0, n = columnDefaults.size; i < n; i++){
-            Cell columnCell = columnDefaults.get(i);
-            if(columnCell != null) cellPool.free(columnCell);
-        }
-        columnDefaults.clear();
     }
 
     /** Indicates that subsequent cells should be added to a new row and returns this table.*/
@@ -649,25 +637,6 @@ public class Table extends WidgetGroup{
         columns = Math.max(columns, rowColumns);
         rows++;
         cells.peek().endRow = true;
-    }
-
-    /**
-     * Gets the cell values that will be used as the defaults for all cells in the specified column. Columns are indexed starting
-     * at 0.
-     */
-    public Cell columnDefaults(int column){
-        Cell cell = columnDefaults.size > column ? columnDefaults.get(column) : null;
-        if(cell == null){
-            cell = obtainCell();
-            cell.clear();
-            if(column >= columnDefaults.size){
-                for(int i = columnDefaults.size; i < column; i++)
-                    columnDefaults.add(null);
-                columnDefaults.add(cell);
-            }else
-                columnDefaults.set(column, cell);
-        }
-        return cell;
     }
 
     /** Returns the cell for the specified actor in this table, or null. */

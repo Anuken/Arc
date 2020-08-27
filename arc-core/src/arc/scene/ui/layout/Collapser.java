@@ -7,12 +7,12 @@ import arc.scene.event.*;
 import arc.util.*;
 
 public class Collapser extends WidgetGroup{
-    private Table table;
+    Table table;
     private CollapseAction collapseAction = new CollapseAction();
-    private boolean collapsed;
-    private boolean actionRunning;
-    private float currentHeight;
-    private float seconds = 0.4f;
+    boolean collapsed;
+    boolean actionRunning;
+    float currentHeight;
+    float seconds = 0.4f;
 
     public Collapser(Cons<Table> cons, boolean collapsed){
         this(new Table(), collapsed);
@@ -146,6 +146,9 @@ public class Collapser extends WidgetGroup{
     }
 
     private class CollapseAction extends Action{
+        CollapseAction(){
+        }
+
         @Override
         public boolean act(float delta){
             if(collapsed){

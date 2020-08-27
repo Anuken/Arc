@@ -491,7 +491,7 @@ public class Pixmap implements Disposable{
     #include <stdlib.h>
      */
 
-    private static native ByteBuffer load(long[] nativeData, byte[] buffer, int offset, int len); /*MANUAL
+    static native ByteBuffer load(long[] nativeData, byte[] buffer, int offset, int len); /*MANUAL
         const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);
         pix_handle* pixmap = pix_load(p_buffer + offset, len);
         env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
@@ -510,7 +510,7 @@ public class Pixmap implements Disposable{
         return pixel_buffer;
      */
 
-    private static native ByteBuffer newPixmap(long[] nativeData, int width, int height, int format); /*MANUAL
+    static native ByteBuffer newPixmap(long[] nativeData, int width, int height, int format); /*MANUAL
         pix_handle* pixmap = pix_new(width, height, format);
         if(pixmap==0)
             return 0;
@@ -526,7 +526,7 @@ public class Pixmap implements Disposable{
         return pixel_buffer;
      */
 
-    private static native void free(long pixmap); /*
+    static native void free(long pixmap); /*
         pix_free((pix_handle*)pixmap);
      */
 
@@ -566,8 +566,8 @@ public class Pixmap implements Disposable{
         pix_fill_triangle((pix_handle*)pixmap, x1, y1, x2, y2, x3, y3, color);
      */
 
-    private static native void drawPixmap(long src, long dst, int srcX, int srcY, int srcWidth, int srcHeight, int dstX,
-                                          int dstY, int dstWidth, int dstHeight); /*
+    static native void drawPixmap(long src, long dst, int srcX, int srcY, int srcWidth, int srcHeight, int dstX,
+                                  int dstY, int dstWidth, int dstHeight); /*
         pix_draw_pixmap((pix_handle*)src, (pix_handle*)dst, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
      */
 

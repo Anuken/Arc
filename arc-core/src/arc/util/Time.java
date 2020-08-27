@@ -141,8 +141,8 @@ public class Time{
     }
 
     public static class DelayRun implements Poolable{
-        private float delay;
-        private Runnable finish;
+        float delay;
+        Runnable finish;
 
         @Override
         public void reset(){
