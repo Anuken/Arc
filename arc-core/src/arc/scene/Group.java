@@ -25,12 +25,12 @@ import arc.scene.utils.Cullable;
 public abstract class Group extends Element implements Cullable{
     private static final Vec2 tmp = new Vec2();
 
-    final SnapshotSeq<Element> children = new SnapshotSeq<>(true, 4, Element.class);
+    protected final SnapshotSeq<Element> children = new SnapshotSeq<>(true, 4, Element.class);
     private final Affine2 worldTransform = new Affine2();
     private final Mat computedTransform = new Mat();
     private final Mat oldTransform = new Mat();
-    boolean transform = false;
-    private Rect cullingArea;
+    protected boolean transform = false;
+    protected Rect cullingArea;
 
     @Override
     public void act(float delta){
