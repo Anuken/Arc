@@ -125,7 +125,7 @@ public class Log{
         public void log(LogLevel level, String text){
             System.out.println(format((
                 level == LogLevel.debug ? "&lc&fb" :
-                level == LogLevel.info ? "&lg&fb" :
+                level == LogLevel.info ? "&fb" :
                 level == LogLevel.warn ? "&ly&fb" :
                 level == LogLevel.err ? "&lr&fb" :
                 "") + text + "&fr"));
