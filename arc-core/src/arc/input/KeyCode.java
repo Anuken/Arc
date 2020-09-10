@@ -201,6 +201,7 @@ public enum KeyCode implements KeybindValue{
     scrollLock(KeyType.key, "Scroll Lock");
 
     public static final KeyCode[] all = values();
+    public static final KeyCode[] numbers = {num0, num1, num2, num3, num4, num5, num6, num7, num8, num9};
     public final KeyType type;
     public final String value;
     public final boolean axis;
