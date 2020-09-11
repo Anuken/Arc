@@ -7,7 +7,7 @@ import arc.math.*;
 import arc.util.*;
 
 public class MultiCacheBatch extends Batch{
-    private static final int maxSpritesPerCache = 100000;
+    private static final int maxSpritesPerCache = 102000;
     Seq<SpriteCache> caches = new Seq<>();
     Shader shader = SpriteCache.createDefaultShader();
     int currentid = -1;
