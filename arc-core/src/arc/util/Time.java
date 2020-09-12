@@ -13,7 +13,8 @@ public class Time{
     /** Global delta value. Do not change. */
     public static float delta = 1f;
 
-    private static final long nanosPerMilli = 1000000;
+    public static final long nanosPerMilli = 1000000;
+
     private static double time;
     private static double globalTime;
     private static Seq<DelayRun> runs = new Seq<>();
