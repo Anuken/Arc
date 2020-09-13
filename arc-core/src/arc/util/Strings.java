@@ -376,8 +376,12 @@ public class Strings{
     }
 
     public static boolean canParseFloat(String s){
-        float p = parseFloat(s);
-        return p >= 0;
+        try{
+            Float.parseFloat(s);
+            return true;
+        }catch(Exception e){
+            return false;
+        }
     }
 
     public static boolean canParsePositiveFloat(String s){

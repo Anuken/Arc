@@ -294,7 +294,7 @@ public class Draw{
     }
 
     public static void rect(TextureRegion region, float x, float y){
-        rect(region, x, y, region.getWidth() * scl * xscl, region.getHeight() * scl * yscl);
+        rect(region, x, y, region.width * scl * xscl, region.height * scl * yscl);
     }
 
     public static void rect(String region, float x, float y){
@@ -330,7 +330,7 @@ public class Draw{
     }
 
     public static void rect(TextureRegion region, float x, float y, float rotation){
-        rect(region, x, y, region.getWidth() * scl * xscl, region.getHeight() * scl * yscl, rotation);
+        rect(region, x, y, region.width * scl * xscl, region.height * scl * yscl, rotation);
     }
 
     public static void rect(String region, float x, float y, float rotation){

@@ -97,6 +97,8 @@ public class TextureArray extends GLTexture{
         if(this.data != null && data.isManaged() != this.data.isManaged())
             throw new ArcRuntimeException("New data must have the same managed status as the old data");
         this.data = data;
+        this.width = data.getWidth();
+        this.height = data.getHeight();
 
         bind();
         Core.gl30.glTexImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, data.getInternalFormat(), data.getWidth(), data.getHeight(), data.getDepth(), 0, data.getInternalFormat(), data.getGLType(), null);
@@ -108,16 +110,6 @@ public class TextureArray extends GLTexture{
         setFilter(minFilter, magFilter);
         setWrap(uWrap, vWrap);
         Gl.bindTexture(glTarget, 0);
-    }
-
-    @Override
-    public int getWidth(){
-        return data.getWidth();
-    }
-
-    @Override
-    public int getHeight(){
-        return data.getHeight();
     }
 
     @Override

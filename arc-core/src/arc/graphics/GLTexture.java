@@ -14,6 +14,9 @@ import arc.util.*;
 public abstract class GLTexture implements Disposable{
     /** The target of this texture, used when binding the texture, e.g. GL_TEXTURE_2D */
     public final int glTarget;
+    /** Do not change. This is read-only and only set after texture data is loaded. */
+    public int width, height;
+
     protected int glHandle;
     protected TextureFilter minFilter = TextureFilter.nearest;
     protected TextureFilter magFilter = TextureFilter.nearest;
@@ -70,12 +73,6 @@ public abstract class GLTexture implements Disposable{
         }
         if(disposePixmap) pixmap.dispose();
     }
-
-    /** @return the width of the texture in pixels */
-    public abstract int getWidth();
-
-    /** @return the height of the texture in pixels */
-    public abstract int getHeight();
 
     /** @return the depth of the texture in pixels */
     public abstract int getDepth();

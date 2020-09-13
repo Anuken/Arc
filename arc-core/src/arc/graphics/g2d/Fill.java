@@ -20,8 +20,8 @@ public class Fill{
     public static void quad(float x1, float y1, float c1, float x2, float y2, float c2, float x3, float y3, float c3, float x4, float y4, float c4){
         TextureRegion region = atlas.white();
         float mcolor = Core.batch.getPackedMixColor();
-        float u = region.getU();
-        float v = region.getV();
+        float u = region.u;
+        float v = region.v;
         vertices[0] = x1;
         vertices[1] = y1;
         vertices[2] = c1;

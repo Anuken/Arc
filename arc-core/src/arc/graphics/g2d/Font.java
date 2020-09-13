@@ -23,11 +23,10 @@
 package arc.graphics.g2d;
 
 import arc.Core;
+import arc.graphics.*;
 import arc.struct.Seq;
 import arc.struct.FloatSeq;
 import arc.files.Fi;
-import arc.graphics.Color;
-import arc.graphics.Texture;
 import arc.graphics.Texture.TextureFilter;
 import arc.graphics.g2d.GlyphLayout.GlyphRun;
 import arc.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -740,14 +739,14 @@ public class Font implements Disposable{
 
         public void setGlyphRegion(Glyph glyph, TextureRegion region){
             Texture texture = region.getTexture();
-            float invTexWidth = 1.0f / texture.getWidth();
-            float invTexHeight = 1.0f / texture.getHeight();
+            float invTexWidth = 1.0f / texture.width;
+            float invTexHeight = 1.0f / texture.height;
 
             float offsetX = 0, offsetY = 0;
             float u = region.u;
             float v = region.v;
-            float regionWidth = region.getWidth();
-            float regionHeight = region.getHeight();
+            float regionWidth = region.width;
+            float regionHeight = region.height;
             if(region instanceof AtlasRegion){
                 // Compensate for whitespace stripped from left and top edges.
                 AtlasRegion atlasRegion = (AtlasRegion)region;

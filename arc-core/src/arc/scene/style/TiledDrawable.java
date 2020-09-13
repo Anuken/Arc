@@ -1,7 +1,6 @@
 package arc.scene.style;
 
-import arc.graphics.Color;
-import arc.graphics.Texture;
+import arc.graphics.*;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Tmp;
@@ -29,8 +28,8 @@ public class TiledDrawable extends TextureRegionDrawable{
     @Override
     public void setRegion(TextureRegion region){
         super.setRegion(region);
-        this.tileWidth = region.getWidth();
-        this.tileHeight = region.getHeight();
+        this.tileWidth = region.width;
+        this.tileHeight = region.height;
     }
 
     public void setTileSize(float w, float h){
@@ -55,12 +54,12 @@ public class TiledDrawable extends TextureRegionDrawable{
             x += regionWidth;
         }
         Texture texture = region.getTexture();
-        float u = region.getU();
-        float v2 = region.getV2();
+        float u = region.u;
+        float v2 = region.v2;
         if(remainingX > 0){
             // Right edge.
-            float u2 = u + remainingX / texture.getWidth();
-            float v = region.getV();
+            float u2 = u + remainingX / texture.width;
+            float v = region.v;
             y = startY;
             for(int ii = 0; ii < fullY; ii++){
                 Tmp.tr1.set(texture);
@@ -71,7 +70,7 @@ public class TiledDrawable extends TextureRegionDrawable{
             }
             // Upper right corner.
             if(remainingY > 0){
-                v = v2 - remainingY / texture.getHeight();
+                v = v2 - remainingY / texture.height;
                 Tmp.tr1.set(texture);
                 Tmp.tr1.set(u, v2, u2, v);
 
@@ -80,8 +79,8 @@ public class TiledDrawable extends TextureRegionDrawable{
         }
         if(remainingY > 0){
             // Top edge.
-            float u2 = region.getU2();
-            float v = v2 - remainingY / texture.getHeight();
+            float u2 = region.u2;
+            float v = v2 - remainingY / texture.height;
             x = startX;
             for(int i = 0; i < fullX; i++){
 

@@ -229,7 +229,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
                 String source = image.getAttribute("source");
                 Fi handle = getRelativeFileHandle(tmxFile, source);
                 texture = imageResolver.getImage(handle.path());
-                y -= texture.getHeight();
+                y -= texture.height;
             }
 
             ImageLayer layer = new ImageLayer(texture, x, y);
@@ -264,7 +264,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
     }
 
     protected void loadObject(TiledMap map, MapTile tile, Element element){
-        loadObject(map, tile.getObjects(), element, tile.region.getHeight());
+        loadObject(map, tile.getObjects(), element, tile.region.height);
     }
 
     protected void loadObject(TiledMap map, Seq<MapObject> objects, Element element, float heightInPixels){
@@ -322,10 +322,10 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
                     tileMapObject.x = x;
                     float y1 = flipY ? y : y - height;
                     tileMapObject.y = y1;
-                    float objectWidth = element.getFloatAttribute("width", textureRegion.getWidth());
-                    float objectHeight = element.getFloatAttribute("height", textureRegion.getHeight());
-                    tileMapObject.scaleX = scaleX * (objectWidth / textureRegion.getWidth());
-                    tileMapObject.scaleY = scaleY * (objectHeight / textureRegion.getHeight());
+                    float objectWidth = element.getFloatAttribute("width", textureRegion.width);
+                    float objectHeight = element.getFloatAttribute("height", textureRegion.height);
+                    tileMapObject.scaleX = scaleX * (objectWidth / textureRegion.width);
+                    tileMapObject.scaleY = scaleY * (objectHeight / textureRegion.height);
                     tileMapObject.rotation = element.getFloatAttribute("rotation", 0);
                     object = tileMapObject;
                 }else{

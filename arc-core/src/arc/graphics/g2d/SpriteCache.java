@@ -299,7 +299,7 @@ public class SpriteCache implements Disposable{
 
     /** Adds the specified region to the cache. */
     public void add(TextureRegion region, float x, float y){
-        add(region, x, y, region.getWidth(), region.getHeight());
+        add(region, x, y, region.width, region.height);
     }
 
     /** Adds the specified region to the cache. */

@@ -103,10 +103,10 @@ public class PlaneBatch3D extends Batch{
         x4 += worldOriginX;
         y4 += worldOriginY;
 
-        final float u = region.getU();
-        final float v = region.getV2();
-        final float u2 = region.getU2();
-        final float v2 = region.getV();
+        final float u = region.u;
+        final float v = region.v2;
+        final float u2 = region.u2;
+        final float v2 = region.v;
         final float color = this.colorPacked;
 
         vertex(x2, y2, color, u, v2);

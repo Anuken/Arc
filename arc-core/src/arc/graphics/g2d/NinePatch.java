@@ -1,7 +1,6 @@
 package arc.graphics.g2d;
 
-import arc.graphics.Color;
-import arc.graphics.Texture;
+import arc.graphics.*;
 import arc.graphics.Texture.TextureFilter;
 import arc.math.Mathf;
 import arc.util.ArcRuntimeException;
@@ -67,8 +66,8 @@ public class NinePatch{
      */
     public NinePatch(TextureRegion region, int left, int right, int top, int bottom){
         if(region == null) throw new IllegalArgumentException("region cannot be null.");
-        final int middleWidth = region.getWidth() - left - right;
-        final int middleHeight = region.getHeight() - top - bottom;
+        final int middleWidth = region.width - left - right;
+        final int middleHeight = region.height - top - bottom;
 
         TextureRegion[] patches = new TextureRegion[9];
         if(top > 0){
@@ -152,30 +151,30 @@ public class NinePatch{
         load(patches);
 
         float leftWidth = getLeftWidth();
-        if((patches[TOP_LEFT] != null && patches[TOP_LEFT].getWidth() != leftWidth)
-        || (patches[MIDDLE_LEFT] != null && patches[MIDDLE_LEFT].getWidth() != leftWidth)
-        || (patches[BOTTOM_LEFT] != null && patches[BOTTOM_LEFT].getWidth() != leftWidth)){
+        if((patches[TOP_LEFT] != null && patches[TOP_LEFT].width != leftWidth)
+        || (patches[MIDDLE_LEFT] != null && patches[MIDDLE_LEFT].width != leftWidth)
+        || (patches[BOTTOM_LEFT] != null && patches[BOTTOM_LEFT].width != leftWidth)){
             throw new ArcRuntimeException("Left side patches must have the same width");
         }
 
         float rightWidth = getRightWidth();
-        if((patches[TOP_RIGHT] != null && patches[TOP_RIGHT].getWidth() != rightWidth)
-        || (patches[MIDDLE_RIGHT] != null && patches[MIDDLE_RIGHT].getWidth() != rightWidth)
-        || (patches[BOTTOM_RIGHT] != null && patches[BOTTOM_RIGHT].getWidth() != rightWidth)){
+        if((patches[TOP_RIGHT] != null && patches[TOP_RIGHT].width != rightWidth)
+        || (patches[MIDDLE_RIGHT] != null && patches[MIDDLE_RIGHT].width != rightWidth)
+        || (patches[BOTTOM_RIGHT] != null && patches[BOTTOM_RIGHT].width != rightWidth)){
             throw new ArcRuntimeException("Right side patches must have the same width");
         }
 
         float bottomHeight = getBottomHeight();
-        if((patches[BOTTOM_LEFT] != null && patches[BOTTOM_LEFT].getHeight() != bottomHeight)
-        || (patches[BOTTOM_CENTER] != null && patches[BOTTOM_CENTER].getHeight() != bottomHeight)
-        || (patches[BOTTOM_RIGHT] != null && patches[BOTTOM_RIGHT].getHeight() != bottomHeight)){
+        if((patches[BOTTOM_LEFT] != null && patches[BOTTOM_LEFT].height != bottomHeight)
+        || (patches[BOTTOM_CENTER] != null && patches[BOTTOM_CENTER].height != bottomHeight)
+        || (patches[BOTTOM_RIGHT] != null && patches[BOTTOM_RIGHT].height != bottomHeight)){
             throw new ArcRuntimeException("Bottom side patches must have the same height");
         }
 
         float topHeight = getTopHeight();
-        if((patches[TOP_LEFT] != null && patches[TOP_LEFT].getHeight() != topHeight)
-        || (patches[TOP_CENTER] != null && patches[TOP_CENTER].getHeight() != topHeight)
-        || (patches[TOP_RIGHT] != null && patches[TOP_RIGHT].getHeight() != topHeight)){
+        if((patches[TOP_LEFT] != null && patches[TOP_LEFT].height != topHeight)
+        || (patches[TOP_CENTER] != null && patches[TOP_CENTER].height != topHeight)
+        || (patches[TOP_RIGHT] != null && patches[TOP_RIGHT].height != topHeight)){
             throw new ArcRuntimeException("Top side patches must have the same height");
         }
     }
@@ -220,48 +219,48 @@ public class NinePatch{
 
         if(patches[BOTTOM_LEFT] != null){
             bottomLeft = add(patches[BOTTOM_LEFT], color, false, false);
-            leftWidth = patches[BOTTOM_LEFT].getWidth();
-            bottomHeight = patches[BOTTOM_LEFT].getHeight();
+            leftWidth = patches[BOTTOM_LEFT].width;
+            bottomHeight = patches[BOTTOM_LEFT].height;
         }
         if(patches[BOTTOM_CENTER] != null){
             bottomCenter = add(patches[BOTTOM_CENTER], color, true, false);
-            middleWidth = Math.max(middleWidth, patches[BOTTOM_CENTER].getWidth());
-            bottomHeight = Math.max(bottomHeight, patches[BOTTOM_CENTER].getHeight());
+            middleWidth = Math.max(middleWidth, patches[BOTTOM_CENTER].width);
+            bottomHeight = Math.max(bottomHeight, patches[BOTTOM_CENTER].height);
         }
         if(patches[BOTTOM_RIGHT] != null){
             bottomRight = add(patches[BOTTOM_RIGHT], color, false, false);
-            rightWidth = Math.max(rightWidth, patches[BOTTOM_RIGHT].getWidth());
-            bottomHeight = Math.max(bottomHeight, patches[BOTTOM_RIGHT].getHeight());
+            rightWidth = Math.max(rightWidth, patches[BOTTOM_RIGHT].width);
+            bottomHeight = Math.max(bottomHeight, patches[BOTTOM_RIGHT].height);
         }
         if(patches[MIDDLE_LEFT] != null){
             middleLeft = add(patches[MIDDLE_LEFT], color, false, true);
-            leftWidth = Math.max(leftWidth, patches[MIDDLE_LEFT].getWidth());
-            middleHeight = Math.max(middleHeight, patches[MIDDLE_LEFT].getHeight());
+            leftWidth = Math.max(leftWidth, patches[MIDDLE_LEFT].width);
+            middleHeight = Math.max(middleHeight, patches[MIDDLE_LEFT].height);
         }
         if(patches[MIDDLE_CENTER] != null){
             middleCenter = add(patches[MIDDLE_CENTER], color, true, true);
-            middleWidth = Math.max(middleWidth, patches[MIDDLE_CENTER].getWidth());
-            middleHeight = Math.max(middleHeight, patches[MIDDLE_CENTER].getHeight());
+            middleWidth = Math.max(middleWidth, patches[MIDDLE_CENTER].width);
+            middleHeight = Math.max(middleHeight, patches[MIDDLE_CENTER].height);
         }
         if(patches[MIDDLE_RIGHT] != null){
             middleRight = add(patches[MIDDLE_RIGHT], color, false, true);
-            rightWidth = Math.max(rightWidth, patches[MIDDLE_RIGHT].getWidth());
-            middleHeight = Math.max(middleHeight, patches[MIDDLE_RIGHT].getHeight());
+            rightWidth = Math.max(rightWidth, patches[MIDDLE_RIGHT].width);
+            middleHeight = Math.max(middleHeight, patches[MIDDLE_RIGHT].height);
         }
         if(patches[TOP_LEFT] != null){
             topLeft = add(patches[TOP_LEFT], color, false, false);
-            leftWidth = Math.max(leftWidth, patches[TOP_LEFT].getWidth());
-            topHeight = Math.max(topHeight, patches[TOP_LEFT].getHeight());
+            leftWidth = Math.max(leftWidth, patches[TOP_LEFT].width);
+            topHeight = Math.max(topHeight, patches[TOP_LEFT].height);
         }
         if(patches[TOP_CENTER] != null){
             topCenter = add(patches[TOP_CENTER], color, true, false);
-            middleWidth = Math.max(middleWidth, patches[TOP_CENTER].getWidth());
-            topHeight = Math.max(topHeight, patches[TOP_CENTER].getHeight());
+            middleWidth = Math.max(middleWidth, patches[TOP_CENTER].width);
+            topHeight = Math.max(topHeight, patches[TOP_CENTER].height);
         }
         if(patches[TOP_RIGHT] != null){
             topRight = add(patches[TOP_RIGHT], color, false, false);
-            rightWidth = Math.max(rightWidth, patches[TOP_RIGHT].getWidth());
-            topHeight = Math.max(topHeight, patches[TOP_RIGHT].getHeight());
+            rightWidth = Math.max(rightWidth, patches[TOP_RIGHT].width);
+            topHeight = Math.max(topHeight, patches[TOP_RIGHT].height);
         }
         if(idx < vertices.length){
             float[] newVertices = new float[idx];
@@ -286,12 +285,12 @@ public class NinePatch{
         // of the texel where the neighboring pixel has 0% contribution in Linear blending mode.
         if(texture.getMagFilter() == TextureFilter.linear || texture.getMinFilter() == TextureFilter.linear){
             if(isStretchW){
-                float halfTexelWidth = 0.5f * 1.0f / texture.getWidth();
+                float halfTexelWidth = 0.5f * 1.0f / texture.width;
                 u += halfTexelWidth;
                 u2 -= halfTexelWidth;
             }
             if(isStretchH){
-                float halfTexelHeight = 0.5f * 1.0f / texture.getHeight();
+                float halfTexelHeight = 0.5f * 1.0f / texture.height;
                 v -= halfTexelHeight;
                 v2 += halfTexelHeight;
             }

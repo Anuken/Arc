@@ -44,7 +44,7 @@ public final class VignettingFilter extends FxFilter{
         lutEnabled = (lutTexture != null);
 
         if(lutEnabled){
-            lutStep = 1f / (float)texture.getHeight();
+            lutStep = 1f / (float)texture.height;
             lutStepOffset = lutStep / 2f; // center texel
         }
     }

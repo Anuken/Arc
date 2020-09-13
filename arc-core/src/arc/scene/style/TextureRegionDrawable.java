@@ -35,7 +35,7 @@ public class TextureRegionDrawable extends BaseDrawable implements TransformDraw
 
     @Override
     public float imageSize(){
-        return region.getWidth();
+        return region.width;
     }
 
     @Override
@@ -61,8 +61,8 @@ public class TextureRegionDrawable extends BaseDrawable implements TransformDraw
 
     public void setRegion(TextureRegion region){
         this.region = region;
-        setMinWidth(Scl.scl(scale * region.getWidth()));
-        setMinHeight(Scl.scl(scale * region.getHeight()));
+        setMinWidth(Scl.scl(scale * region.width));
+        setMinHeight(Scl.scl(scale * region.height));
     }
 
     /** Creates a new drawable that renders the same as this drawable tinted the specified color. */

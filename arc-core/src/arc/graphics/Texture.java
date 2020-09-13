@@ -186,6 +186,8 @@ public class Texture extends GLTexture{
         if(this.data != null && data.isManaged() != this.data.isManaged())
             throw new ArcRuntimeException("New data must have the same managed status as the old data");
         this.data = data;
+        this.width = data.getWidth();
+        this.height = data.getHeight();
 
         if(!data.isPrepared()) data.prepare();
 
@@ -224,16 +226,6 @@ public class Texture extends GLTexture{
 
         bind();
         Gl.texSubImage2D(glTarget, 0, x, y, pixmap.getWidth(), pixmap.getHeight(), pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
-    }
-
-    @Override
-    public int getWidth(){
-        return data.getWidth();
-    }
-
-    @Override
-    public int getHeight(){
-        return data.getHeight();
     }
 
     @Override

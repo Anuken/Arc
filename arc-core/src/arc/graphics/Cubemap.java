@@ -186,6 +186,8 @@ public class Cubemap extends GLTexture{
     /** Sets the sides of this cubemap to the specified {@link CubemapData}. */
     public void load(CubemapData data){
         if(!data.isPrepared()) data.prepare();
+        this.width = data.getWidth();
+        this.height = data.getHeight();
         bind();
         unsafeSetFilter(minFilter, magFilter, true);
         unsafeSetWrap(uWrap, vWrap, true);
@@ -207,16 +209,6 @@ public class Cubemap extends GLTexture{
         if(!isManaged()) throw new ArcRuntimeException("Tried to reload an unmanaged Cubemap");
         glHandle = Gl.genTexture();
         load(data);
-    }
-
-    @Override
-    public int getWidth(){
-        return data.getWidth();
-    }
-
-    @Override
-    public int getHeight(){
-        return data.getHeight();
     }
 
     @Override
