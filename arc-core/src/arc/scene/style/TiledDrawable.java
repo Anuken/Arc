@@ -58,7 +58,7 @@ public class TiledDrawable extends TextureRegionDrawable{
         float v2 = region.v2;
         if(remainingX > 0){
             // Right edge.
-            float u2 = u + remainingX / texture.width;
+            float u2 = u + remainingX / texture.getWidth();
             float v = region.v;
             y = startY;
             for(int ii = 0; ii < fullY; ii++){

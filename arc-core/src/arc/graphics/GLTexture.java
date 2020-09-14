@@ -74,6 +74,11 @@ public abstract class GLTexture implements Disposable{
         if(disposePixmap) pixmap.dispose();
     }
 
+    /** @return the width of the texture in pixels */
+    public final int getWidth(){
+        return width;
+    }
+
     /** @return the depth of the texture in pixels */
     public abstract int getDepth();
 

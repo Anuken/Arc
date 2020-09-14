@@ -69,6 +69,18 @@ public class Draw{
         Core.batch = prev;
     }
 
+    public static void stencil(Runnable stencil, Runnable contents){
+        beginStencil();
+
+        stencil.run();
+
+        beginStenciled();
+
+        contents.run();
+
+        endStencil();
+    }
+
     public static void beginStencil(){
         flush();
 
