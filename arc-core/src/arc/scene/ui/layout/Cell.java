@@ -245,6 +245,10 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
+    public Cell<T> labelAlign(int label){
+        return labelAlign(label, label);
+    }
+
     public <N extends Button> Cell<T> group(ButtonGroup<N> group){
         if(get() instanceof Button){
             group.add((N) get());
