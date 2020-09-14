@@ -347,7 +347,10 @@ public class Table extends WidgetGroup{
     }
 
     public Cell<Image> image(Prov<TextureRegion> reg){
-        return add(new Image(reg.get())).update(i -> ((TextureRegionDrawable)i.getDrawable()).setRegion(reg.get()));
+        return add(new Image(reg.get())).update(i -> {
+            ((TextureRegionDrawable)i.getDrawable()).setRegion(reg.get());
+            i.layout();
+        });
     }
 
     public Cell<Image> image(){
