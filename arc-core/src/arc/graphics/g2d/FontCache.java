@@ -1,9 +1,9 @@
 package arc.graphics.g2d;
 
+import arc.graphics.*;
 import arc.struct.Seq;
 import arc.struct.FloatSeq;
 import arc.struct.IntSeq;
-import arc.graphics.Color;
 import arc.graphics.g2d.Font.FontData;
 import arc.graphics.g2d.Font.Glyph;
 import arc.graphics.g2d.GlyphLayout.GlyphRun;
@@ -231,14 +231,14 @@ public class FontCache{
         for(int j = 0, n = pageVertices.length; j < n; j++){
             if(idx[j] > 0){ // ignore if this texture has no glyphs
                 float[] vertices = pageVertices[j];
-                Draw.vert(regions.get(j).getTexture(), vertices, 0, idx[j]);
+                Draw.vert(regions.get(j).texture, vertices, 0, idx[j]);
             }
         }
     }
 
     public void draw(int start, int end){
         if(pageVertices.length == 1){ // 1 page.
-            Draw.vert(font.getRegion().getTexture(), pageVertices[0], start * 24, (end - start) * 24);
+            Draw.vert(font.getRegion().texture, pageVertices[0], start * 24, (end - start) * 24);
             return;
         }
 
@@ -267,7 +267,7 @@ public class FontCache{
             if(offset == -1 || count == 0) continue;
 
             // Render the page vertex data with the offset and count.
-            Draw.vert(regions.get(i).getTexture(), pageVertices[i], offset * 24, count * 24);
+            Draw.vert(regions.get(i).texture, pageVertices[i], offset * 24, count * 24);
         }
     }
 

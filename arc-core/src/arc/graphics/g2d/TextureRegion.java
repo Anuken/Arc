@@ -11,7 +11,7 @@ import arc.graphics.g2d.TextureAtlas.AtlasRegion;
  * @author Nathan Sweet
  */
 public class TextureRegion{
-    Texture texture;
+    public Texture texture;
 
     /** Read-only. Use setters to change. */
     public float u, v, u2, v2;
@@ -143,14 +143,6 @@ public class TextureRegion{
     public void set(Texture texture, int x, int y, int width, int height){
         this.texture = texture;
         set(x, y, width, height);
-    }
-
-    public Texture getTexture(){
-        return texture;
-    }
-
-    public void setTexture(Texture texture){
-        this.texture = texture;
     }
 
     public void setU(float u){

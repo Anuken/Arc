@@ -53,7 +53,7 @@ public class TiledDrawable extends TextureRegionDrawable{
             }
             x += regionWidth;
         }
-        Texture texture = region.getTexture();
+        Texture texture = region.texture;
         float u = region.u;
         float v2 = region.v2;
         if(remainingX > 0){

@@ -55,7 +55,7 @@ public class PlaneBatch3D extends Batch{
     @Override
     protected void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
 
-        Texture texture = region.getTexture();
+        Texture texture = region.texture;
         if(texture != lastTexture){
             switchTexture(texture);
         }

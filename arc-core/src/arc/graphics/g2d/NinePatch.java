@@ -271,8 +271,8 @@ public class NinePatch{
 
     private int add(TextureRegion region, float color, boolean isStretchW, boolean isStretchH){
         if(texture == null)
-            texture = region.getTexture();
-        else if(texture != region.getTexture()) //
+            texture = region.texture;
+        else if(texture != region.texture) //
             throw new IllegalArgumentException("All regions must be from the same texture.");
 
         float u = region.u;

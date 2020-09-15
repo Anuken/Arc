@@ -363,7 +363,7 @@ public class Font implements Disposable{
     public void dispose(){
         if(ownsTexture){
             for(int i = 0; i < regions.size; i++)
-                regions.get(i).getTexture().dispose();
+                regions.get(i).texture.dispose();
         }
     }
 
@@ -371,7 +371,7 @@ public class Font implements Disposable{
     public boolean isDisposed(){
         if(ownsTexture){
             //it's a fair assumption to say that if one region is disposed, the whole font is disposed
-            return regions.contains(t -> t.getTexture().isDisposed());
+            return regions.contains(t -> t.texture.isDisposed());
         }
         return false;
     }
@@ -738,7 +738,7 @@ public class Font implements Disposable{
         }
 
         public void setGlyphRegion(Glyph glyph, TextureRegion region){
-            Texture texture = region.getTexture();
+            Texture texture = region.texture;
             float invTexWidth = 1.0f / texture.getWidth();
             float invTexHeight = 1.0f / texture.height;
 

@@ -50,7 +50,41 @@ public class Fill{
         vertices[22] = v;
         vertices[23] = mcolor;
 
-        Draw.vert(region.getTexture(), vertices, 0, vertices.length);
+        Draw.vert(region.texture, vertices, 0, vertices.length);
+    }
+
+    public static void quad(TextureRegion region, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4){
+        float u = region.u, v = region.v, u2 = region.u2, v2 = region.v2, color = Core.batch.getPackedColor(), mcolor = Core.batch.getPackedMixColor();
+
+        vertices[0] = x1;
+        vertices[1] = y1;
+        vertices[2] = color;
+        vertices[3] = u;
+        vertices[4] = v;
+        vertices[5] = mcolor;
+
+        vertices[6] = x2;
+        vertices[7] = y2;
+        vertices[8] = color;
+        vertices[9] = u;
+        vertices[10] = v2;
+        vertices[11] = mcolor;
+
+        vertices[12] = x3;
+        vertices[13] = y3;
+        vertices[14] = color;
+        vertices[15] = u2;
+        vertices[16] = v2;
+        vertices[17] = mcolor;
+
+        vertices[18] = x4;
+        vertices[19] = y4;
+        vertices[20] = color;
+        vertices[21] = u2;
+        vertices[22] = v;
+        vertices[23] = mcolor;
+
+        Draw.vert(region.texture, vertices, 0, vertices.length);
     }
 
     public static void tri(float x1, float y1, float x2, float y2, float x3, float y3){
@@ -209,7 +243,7 @@ public class Fill{
     }
 
     public static void circle(float x, float y, float radius){
-        if(circleRegion == null || circleRegion.getTexture().isDisposed()){
+        if(circleRegion == null || circleRegion.texture.isDisposed()){
             circleRegion = atlas.find("circle");
         }
 

@@ -486,7 +486,7 @@ public class Draw{
         vertices[22] = v;
         vertices[23] = mixColor;
 
-        Draw.vert(region.getTexture(), vertices, 0, vertices.length);
+        Draw.vert(region.texture, vertices, 0, vertices.length);
     }
 
     public static void dispose(){

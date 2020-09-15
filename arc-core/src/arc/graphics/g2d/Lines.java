@@ -11,7 +11,7 @@ public class Lines{
     private static Vec2 vector = new Vec2(), u = new Vec2(), v = new Vec2(), inner = new Vec2(), outer = new Vec2();
     private static FloatSeq floats = new FloatSeq(20);
     private static FloatSeq floatBuilder = new FloatSeq(20);
-    private static boolean building, precise;
+    private static boolean building;
     private static float circlePrecision = 0.4f;
 
     /** Set the vertices used for drawing a line circle. */
@@ -48,30 +48,53 @@ public class Lines{
     }
 
     public static void line(float x, float y, float x2, float y2){
-        line(x, y, x2, y2, true, 0f);
+        line(x, y, x2, y2, true);
     }
 
     public static void line(float x, float y, float x2, float y2, boolean cap){
-        line(x, y, x2, y2, cap, 0f);
+        line(Core.atlas.white(), x, y, x2, y2, cap);
     }
 
-    public static void line(float x, float y, float x2, float y2, boolean cap, float padding){
-        line(Core.atlas.white(), x, y, x2, y2, cap, padding);
-    }
-
-    public static void line(TextureRegion region, float x, float y, float x2, float y2, boolean cap, float padding){
-        float length = Mathf.dst(x, y, x2, y2) + (!cap ? padding * 2f : stroke + padding * 2);
-        float angle = (precise ? (float)Math.atan2(y2 - y, x2 - x) : Mathf.atan2(x2 - x, y2 - y)) * Mathf.radDeg;
+    public static void line(TextureRegion region, float x, float y, float x2, float y2, boolean cap){
+        float hstroke = stroke/2f;
+        float len = Mathf.len(x2 - x, y2 - y);
+        float diffx = (x2 - x) / len * hstroke, diffy = (y2 - y) / len * hstroke;
 
         if(cap){
-            Draw.rect(region, x - stroke / 2 - padding + length/2f, y, length, stroke, stroke / 2 + padding, stroke / 2, angle);
-        }else{
-            Draw.rect(region, x - padding + length/2f, y, length, stroke, padding, stroke / 2, angle);
-        }
-    }
+            Fill.quad(
+            region,
 
-    public static void precise(boolean precise){
-        Lines.precise = precise;
+            x - diffx - diffy,
+            y - diffy + diffx,
+
+            x - diffx + diffy,
+            y - diffy - diffx,
+
+            x2 + diffx + diffy,
+            y2 + diffy - diffx,
+
+            x2 + diffx - diffy,
+            y2 + diffy + diffx
+
+            );
+        }else{
+            Fill.quad(
+            region,
+
+            x - diffy,
+            y + diffx,
+
+            x + diffy,
+            y - diffx,
+
+            x2 + diffy,
+            y2 - diffx,
+
+            x2 - diffy,
+            y2 + diffx
+
+            );
+        }
     }
 
     public static void linePoint(Position p){
