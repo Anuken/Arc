@@ -387,6 +387,19 @@ public class Color{
     }
 
     /**
+     * Multiplies RGBA components of this Color with the given value.
+     * @param value the value
+     * @return this color
+     */
+    public Color mula(float value){
+        this.r *= value;
+        this.g *= value;
+        this.b *= value;
+        this.a *= value;
+        return clamp();
+    }
+
+    /**
      * Adds the given color to this color.
      * @param color the color
      * @return this color
