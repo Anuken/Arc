@@ -4,173 +4,122 @@ package arc.math;
  * Takes a Linear value in the range of 0-1 and outputs a (usually) non-Linear, interpolated value.
  * @author Nathan Sweet
  */
-public abstract class Interp{
-    public static final Interp linear = new Interp(){
-        public float apply(float a){
-            return a;
-        }
-    };
+public interface Interp{
+    Interp linear = a -> a;
     /** Aka "smoothstep". */
-    public static final Interp smooth = new Interp(){
-        public float apply(float a){
-            return a * a * (3 - 2 * a);
-        }
-    };
+    Interp smooth = a -> a * a * (3 - 2 * a);
 
     //
-    public static final Interp smooth2 = new Interp(){
-        public float apply(float a){
-            a = a * a * (3 - 2 * a);
-            return a * a * (3 - 2 * a);
-        }
+    Interp smooth2 = a -> {
+        a = a * a * (3 - 2 * a);
+        return a * a * (3 - 2 * a);
     };
 
     //
     /** By Ken Perlin. */
-    public static final Interp smoother = new Interp(){
-        public float apply(float a){
-            return a * a * a * (a * (a * 6 - 15) + 10);
-        }
-    };
-    public static final Interp fade = smoother;
-    public static final Pow pow2 = new Pow(2);
+    Interp smoother = a -> a * a * a * (a * (a * 6 - 15) + 10);
+    Interp fade = smoother;
+    Pow pow2 = new Pow(2);
     /** Slow, then fast. */
-    public static final PowIn pow2In = new PowIn(2);
-
-    //
-    public static final PowIn slowFast = pow2In;
+    PowIn pow2In = new PowIn(2);
+    PowIn slowFast = pow2In;
     /** Fast, then slow. */
-    public static final PowOut pow2Out = new PowOut(2);
-    public static final PowOut fastSlow = pow2Out;
-    public static final Interp pow2InInverse = new Interp(){
-        public float apply(float a){
-            return (float)Math.sqrt(a);
-        }
-    };
-    public static final Interp pow2OutInverse = new Interp(){
-        public float apply(float a){
-            return 1 - (float)Math.sqrt(-(a - 1));
-        }
-    };
-    public static final Pow pow3 = new Pow(3);
-    public static final PowIn pow3In = new PowIn(3);
-    public static final PowOut pow3Out = new PowOut(3);
-    public static final Interp pow3InInverse = new Interp(){
-        public float apply(float a){
-            return (float)Math.cbrt(a);
-        }
-    };
-    public static final Interp pow3OutInverse = new Interp(){
-        public float apply(float a){
-            return 1 - (float)Math.cbrt(-(a - 1));
-        }
-    };
-    public static final Pow pow4 = new Pow(4);
-    public static final PowIn pow4In = new PowIn(4);
-    public static final PowOut pow4Out = new PowOut(4);
-    public static final Pow pow5 = new Pow(5);
-    public static final PowIn pow5In = new PowIn(5);
-    public static final PowIn pow10In = new PowIn(10);
-    public static final PowOut pow5Out = new PowOut(5);
-    public static final Interp sine = new Interp(){
-        public float apply(float a){
-            return (1 - Mathf.cos(a * Mathf.PI)) / 2;
-        }
-    };
-    public static final Interp sineIn = new Interp(){
-        public float apply(float a){
-            return 1 - Mathf.cos(a * Mathf.PI / 2);
-        }
-    };
-    public static final Interp sineOut = new Interp(){
-        public float apply(float a){
-            return Mathf.sin(a * Mathf.PI / 2);
-        }
-    };
-    public static final Exp exp10 = new Exp(2, 10);
-    public static final ExpIn exp10In = new ExpIn(2, 10);
-    public static final ExpOut exp10Out = new ExpOut(2, 10);
-    public static final Exp exp5 = new Exp(2, 5);
-    public static final ExpIn exp5In = new ExpIn(2, 5);
-    public static final ExpOut exp5Out = new ExpOut(2, 5);
-    public static final Interp circle = new Interp(){
-        public float apply(float a){
-            if(a <= 0.5f){
-                a *= 2;
-                return (1 - (float)Math.sqrt(1 - a * a)) / 2;
-            }
-            a--;
+    PowOut pow2Out = new PowOut(2);
+    PowOut fastSlow = pow2Out;
+    Interp pow2InInverse = a -> (float)Math.sqrt(a);
+    Interp pow2OutInverse = a -> 1 - (float)Math.sqrt(-(a - 1));
+    Pow pow3 = new Pow(3);
+    PowIn pow3In = new PowIn(3);
+    PowOut pow3Out = new PowOut(3);
+    Interp pow3InInverse = a -> (float)Math.cbrt(a);
+    Interp pow3OutInverse = a -> 1 - (float)Math.cbrt(-(a - 1));
+    Pow pow4 = new Pow(4);
+    PowIn pow4In = new PowIn(4);
+    PowOut pow4Out = new PowOut(4);
+    Pow pow5 = new Pow(5);
+    PowIn pow5In = new PowIn(5);
+    PowIn pow10In = new PowIn(10);
+    PowOut pow5Out = new PowOut(5);
+    Interp sine = a -> (1 - Mathf.cos(a * Mathf.PI)) / 2;
+    Interp sineIn = a -> 1 - Mathf.cos(a * Mathf.PI / 2);
+    Interp sineOut = a -> Mathf.sin(a * Mathf.PI / 2);
+    Exp exp10 = new Exp(2, 10);
+    ExpIn exp10In = new ExpIn(2, 10);
+    ExpOut exp10Out = new ExpOut(2, 10);
+    Exp exp5 = new Exp(2, 5);
+    ExpIn exp5In = new ExpIn(2, 5);
+    ExpOut exp5Out = new ExpOut(2, 5);
+    Interp circle = a -> {
+        if(a <= 0.5f){
             a *= 2;
-            return ((float)Math.sqrt(1 - a * a) + 1) / 2;
+            return (1 - (float)Math.sqrt(1 - a * a)) / 2;
         }
+        a--;
+        a *= 2;
+        return ((float)Math.sqrt(1 - a * a) + 1) / 2;
     };
-    public static final Interp circleIn = new Interp(){
-        public float apply(float a){
-            return 1 - (float)Math.sqrt(1 - a * a);
-        }
+    Interp circleIn = a -> 1 - (float)Math.sqrt(1 - a * a);
+    Interp circleOut = a -> {
+        a--;
+        return (float)Math.sqrt(1 - a * a);
     };
-    public static final Interp circleOut = new Interp(){
-        public float apply(float a){
-            a--;
-            return (float)Math.sqrt(1 - a * a);
-        }
-    };
-    public static final Elastic elastic = new Elastic(2, 10, 7, 1);
-    public static final ElasticIn elasticIn = new ElasticIn(2, 10, 6, 1);
-    public static final ElasticOut elasticOut = new ElasticOut(2, 10, 7, 1);
-    public static final Swing swing = new Swing(1.5f);
-    public static final SwingIn swingIn = new SwingIn(2f);
-    public static final SwingOut swingOut = new SwingOut(2f);
-    public static final Bounce bounce = new Bounce(4);
-    public static final BounceIn bounceIn = new BounceIn(4);
-    public static final BounceOut bounceOut = new BounceOut(4);
+    Elastic elastic = new Elastic(2, 10, 7, 1);
+    ElasticIn elasticIn = new ElasticIn(2, 10, 6, 1);
+    ElasticOut elasticOut = new ElasticOut(2, 10, 7, 1);
+    Swing swing = new Swing(1.5f);
+    SwingIn swingIn = new SwingIn(2f);
+    SwingOut swingOut = new SwingOut(2f);
+    Bounce bounce = new Bounce(4);
+    BounceIn bounceIn = new BounceIn(4);
+    BounceOut bounceOut = new BounceOut(4);
 
     /** @param a Alpha value between 0 and 1. */
-    abstract public float apply(float a);
+    float apply(float a);
 
     /** @param a Alpha value between 0 and 1. */
-    public float apply(float start, float end, float a){
+    default float apply(float start, float end, float a){
         return start + (end - start) * apply(a);
     }
 
     //
 
-    public static class Pow extends Interp{
+    class Pow implements Interp{
         final int power;
 
         public Pow(int power){
             this.power = power;
         }
 
+        @Override
         public float apply(float a){
             if(a <= 0.5f) return (float)Math.pow(a * 2, power) / 2;
             return (float)Math.pow((a - 1) * 2, power) / (power % 2 == 0 ? -2 : 2) + 1;
         }
     }
 
-    public static class PowIn extends Pow{
+    class PowIn extends Pow{
         public PowIn(int power){
             super(power);
         }
 
+        @Override
         public float apply(float a){
             return (float)Math.pow(a, power);
         }
     }
 
-    public static class PowOut extends Pow{
+    class PowOut extends Pow{
         public PowOut(int power){
             super(power);
         }
 
+        @Override
         public float apply(float a){
             return (float)Math.pow(a - 1, power) * (power % 2 == 0 ? -1 : 1) + 1;
         }
     }
 
-    //
-
-    public static class Exp extends Interp{
+    class Exp implements Interp{
         final float value, power, min, scale;
 
         public Exp(float value, float power){
@@ -180,35 +129,36 @@ public abstract class Interp{
             scale = 1 / (1 - min);
         }
 
+        @Override
         public float apply(float a){
             if(a <= 0.5f) return ((float)Math.pow(value, power * (a * 2 - 1)) - min) * scale / 2;
             return (2 - ((float)Math.pow(value, -power * (a * 2 - 1)) - min) * scale) / 2;
         }
     }
 
-    public static class ExpIn extends Exp{
+    class ExpIn extends Exp{
         public ExpIn(float value, float power){
             super(value, power);
         }
 
+        @Override
         public float apply(float a){
             return ((float)Math.pow(value, power * (a - 1)) - min) * scale;
         }
     }
 
-    public static class ExpOut extends Exp{
+    class ExpOut extends Exp{
         public ExpOut(float value, float power){
             super(value, power);
         }
 
+        @Override
         public float apply(float a){
             return 1 - ((float)Math.pow(value, -power * a) - min) * scale;
         }
     }
 
-    //
-
-    public static class Elastic extends Interp{
+    class Elastic implements Interp{
         final float value, power, scale, bounces;
 
         public Elastic(float value, float power, int bounces, float scale){
@@ -218,6 +168,7 @@ public abstract class Interp{
             this.bounces = bounces * Mathf.PI * (bounces % 2 == 0 ? 1 : -1);
         }
 
+        @Override
         public float apply(float a){
             if(a <= 0.5f){
                 a *= 2;
@@ -229,22 +180,24 @@ public abstract class Interp{
         }
     }
 
-    public static class ElasticIn extends Elastic{
+    class ElasticIn extends Elastic{
         public ElasticIn(float value, float power, int bounces, float scale){
             super(value, power, bounces, scale);
         }
 
+        @Override
         public float apply(float a){
             if(a >= 0.99) return 1;
             return (float)Math.pow(value, power * (a - 1)) * Mathf.sin(a * bounces) * scale;
         }
     }
 
-    public static class ElasticOut extends Elastic{
+    class ElasticOut extends Elastic{
         public ElasticOut(float value, float power, int bounces, float scale){
             super(value, power, bounces, scale);
         }
 
+        @Override
         public float apply(float a){
             if(a == 0) return 0;
             a = 1 - a;
@@ -252,9 +205,7 @@ public abstract class Interp{
         }
     }
 
-    //
-
-    public static class Bounce extends BounceOut{
+    class Bounce extends BounceOut{
         public Bounce(float[] widths, float[] heights){
             super(widths, heights);
         }
@@ -269,13 +220,14 @@ public abstract class Interp{
             return super.apply(a);
         }
 
+        @Override
         public float apply(float a){
             if(a <= 0.5f) return (1 - out(1 - a * 2)) / 2;
             return out(a * 2 - 1) / 2 + 0.5f;
         }
     }
 
-    public static class BounceOut extends Interp{
+    class BounceOut implements Interp{
         final float[] widths, heights;
 
         public BounceOut(float[] widths, float[] heights){
@@ -328,6 +280,7 @@ public abstract class Interp{
             widths[0] *= 2;
         }
 
+        @Override
         public float apply(float a){
             if(a == 1) return 1;
             a += widths[0] / 2;
@@ -346,7 +299,7 @@ public abstract class Interp{
         }
     }
 
-    public static class BounceIn extends BounceOut{
+    class BounceIn extends BounceOut{
         public BounceIn(float[] widths, float[] heights){
             super(widths, heights);
         }
@@ -355,20 +308,20 @@ public abstract class Interp{
             super(bounces);
         }
 
+        @Override
         public float apply(float a){
             return 1 - super.apply(1 - a);
         }
     }
 
-    //
-
-    public static class Swing extends Interp{
+    class Swing implements Interp{
         private final float scale;
 
         public Swing(float scale){
             this.scale = scale * 2;
         }
 
+        @Override
         public float apply(float a){
             if(a <= 0.5f){
                 a *= 2;
@@ -380,26 +333,28 @@ public abstract class Interp{
         }
     }
 
-    public static class SwingOut extends Interp{
+    class SwingOut implements Interp{
         private final float scale;
 
         public SwingOut(float scale){
             this.scale = scale;
         }
 
+        @Override
         public float apply(float a){
             a--;
             return a * a * ((scale + 1) * a + scale) + 1;
         }
     }
 
-    public static class SwingIn extends Interp{
+    class SwingIn implements Interp{
         private final float scale;
 
         public SwingIn(float scale){
             this.scale = scale;
         }
 
+        @Override
         public float apply(float a){
             return a * a * ((scale + 1) * a - scale);
         }
