@@ -739,7 +739,7 @@ public class Font implements Disposable{
 
         public void setGlyphRegion(Glyph glyph, TextureRegion region){
             Texture texture = region.texture;
-            float invTexWidth = 1.0f / texture.getWidth();
+            float invTexWidth = 1.0f / texture.width;
             float invTexHeight = 1.0f / texture.height;
 
             float offsetX = 0, offsetY = 0;

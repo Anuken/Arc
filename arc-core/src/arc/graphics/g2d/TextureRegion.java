@@ -26,7 +26,7 @@ public class TextureRegion{
     public TextureRegion(Texture texture){
         if(texture == null) throw new IllegalArgumentException("texture cannot be null.");
         this.texture = texture;
-        set(0, 0, texture.getWidth(), texture.height);
+        set(0, 0, texture.width, texture.height);
     }
 
     /**
@@ -91,7 +91,7 @@ public class TextureRegion{
     /** Sets the texture and sets the coordinates to the size of the specified texture. */
     public void set(Texture texture){
         this.texture = texture;
-        set(0, 0, texture.getWidth(), texture.height);
+        set(0, 0, texture.width, texture.height);
     }
 
     /**
@@ -99,7 +99,7 @@ public class TextureRegion{
      * @param height The height of the texture region. May be negative to flip the sprite when drawn.
      */
     public void set(int x, int y, int width, int height){
-        float invTexWidth = 1f / texture.getWidth();
+        float invTexWidth = 1f / texture.width;
         float invTexHeight = 1f / texture.height;
         set(x * invTexWidth, y * invTexHeight, (x + width) * invTexWidth, (y + height) * invTexHeight);
         this.width = Math.abs(width);
@@ -107,7 +107,7 @@ public class TextureRegion{
     }
 
     public void set(float u, float v, float u2, float v2){
-        int texWidth = texture.getWidth(), texHeight = texture.height;
+        int texWidth = texture.width, texHeight = texture.height;
         width = Math.round(Math.abs(u2 - u) * texWidth);
         height = Math.round(Math.abs(v2 - v) * texHeight);
 
@@ -147,7 +147,7 @@ public class TextureRegion{
 
     public void setU(float u){
         this.u = u;
-        width = Math.round(Math.abs(u2 - u) * texture.getWidth());
+        width = Math.round(Math.abs(u2 - u) * texture.width);
     }
 
     public void setV(float v){
@@ -157,7 +157,7 @@ public class TextureRegion{
 
     public void setU2(float u2){
         this.u2 = u2;
-        width = Math.round(Math.abs(u2 - u) * texture.getWidth());
+        width = Math.round(Math.abs(u2 - u) * texture.width);
     }
 
     public void setV2(float v2){
@@ -166,11 +166,11 @@ public class TextureRegion{
     }
 
     public int getX(){
-        return Math.round(u * texture.getWidth());
+        return Math.round(u * texture.width);
     }
 
     public void setX(int x){
-        setU(x / (float)texture.getWidth());
+        setU(x / (float)texture.width);
     }
 
     public int getY(){
@@ -183,9 +183,9 @@ public class TextureRegion{
 
     public void setWidth(int width){
         if(isFlipX()){
-            setU(u2 + width / (float)texture.getWidth());
+            setU(u2 + width / (float)texture.width);
         }else{
-            setU2(u + width / (float)texture.getWidth());
+            setU2(u + width / (float)texture.width);
         }
     }
 
@@ -226,9 +226,9 @@ public class TextureRegion{
      */
     public void scroll(float xAmount, float yAmount){
         if(xAmount != 0){
-            float width = (u2 - u) * texture.getWidth();
+            float width = (u2 - u) * texture.width;
             u = (u + xAmount) % 1;
-            u2 = u + width / texture.getWidth();
+            u2 = u + width / texture.width;
         }
         if(yAmount != 0){
             float height = (v2 - v) * texture.height;
