@@ -45,6 +45,8 @@ public class VertexArray implements VertexData{
         buffer = byteBuffer.asFloatBuffer();
         buffer.flip();
         byteBuffer.flip();
+
+        byteBuffer.asFloatBuffer();
     }
 
     @Override
