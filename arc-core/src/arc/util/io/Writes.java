@@ -8,7 +8,7 @@ import java.io.*;
 public class Writes implements Closeable{
     private static Writes instance = new Writes(null);
 
-    public @NonNull DataOutput output;
+    public DataOutput output;
 
     public Writes(DataOutput output){
         this.output = output;

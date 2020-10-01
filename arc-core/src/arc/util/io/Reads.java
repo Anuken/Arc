@@ -1,14 +1,12 @@
 package arc.util.io;
 
-import arc.util.ArcAnnotate.*;
-
 import java.io.*;
 
 /** A wrapper for DataInput with more concise method names and no IOExceptions. */
 public class Reads implements Closeable{
     private static Reads instance = new Reads(null);
 
-    public @NonNull DataInput input;
+    public DataInput input;
 
     public Reads(DataInput input){
         this.input = input;

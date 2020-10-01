@@ -15,7 +15,7 @@ public class ZipFi extends Fi{
     private ZipFi parent;
 
     private final @Nullable ZipEntry entry;
-    private final @NonNull ZipFile zip;
+    private final ZipFile zip;
 
     public ZipFi(Fi zipFileLoc){
         super(new File(""), FileType.absolute);

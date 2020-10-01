@@ -23,7 +23,7 @@ import java.util.NoSuchElementException;
  * @author Nathan Sweet
  */
 public class JsonValue implements Iterable<JsonValue>{
-    public String name;
+    public @Nullable String name;
     public @Nullable JsonValue child, next, prev, parent;
     public int size;
     private ValueType type;

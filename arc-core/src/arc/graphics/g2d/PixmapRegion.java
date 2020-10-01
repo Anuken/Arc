@@ -5,7 +5,7 @@ import arc.util.ArcAnnotate.*;
 
 /** Defines a region of a pixmap, like a TextureRegion. */
 public class PixmapRegion{
-    public @NonNull Pixmap pixmap;
+    public Pixmap pixmap;
     public int x, y, width, height;
 
     public PixmapRegion(Pixmap pixmap, int x, int y, int width, int height){
