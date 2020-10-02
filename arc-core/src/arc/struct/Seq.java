@@ -113,7 +113,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         Seq<T> result = new Seq<>();
         for(Object a : arrays){
             if(a instanceof Seq){
-                result.addAll((Seq<? extends T>) a);
+                result.addAll((Seq<? extends T>)a);
             }else{
                 result.add((T)a);
             }
