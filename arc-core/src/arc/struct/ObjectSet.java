@@ -34,7 +34,7 @@ public class ObjectSet<T> implements Iterable<T>, Eachable<T>{
     private int stashCapacity;
     private int pushIterations;
 
-    private ObjectSetIterator iterator1, iterator2;
+    private @Nullable ObjectSetIterator iterator1, iterator2;
 
     /** Creates a new set with an initial capacity of 51 and a load factor of 0.8. */
     public ObjectSet(){

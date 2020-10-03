@@ -24,7 +24,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
     public int size;
     public boolean ordered;
 
-    private SeqIterable<T> iterable;
+    private @Nullable SeqIterable<T> iterable;
 
     /** Creates an ordered array with a capacity of 16. */
     public Seq(){
@@ -939,6 +939,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return result;
     }
 
+    @Override
     public int hashCode(){
         if(!ordered) return super.hashCode();
         Object[] items = this.items;
@@ -951,6 +952,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return h;
     }
 
+    @Override
     public boolean equals(Object object){
         if(object == this) return true;
         if(!ordered) return false;
