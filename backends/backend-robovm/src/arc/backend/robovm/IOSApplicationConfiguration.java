@@ -53,8 +53,8 @@ public class IOSApplicationConfiguration{
     public float displayScaleSmallScreenIfRetina = 1.0f;
 
     /** handles any errors in the main loop.*/
-    public @Nullable
-    Cons<Throwable> errorHandler;
+    @Nullable
+    public Cons<Throwable> errorHandler;
 
     /**
      * Scale factor to use on large screens without retina display, i.e. iPad 1+2 (has no effect on retina screens).
