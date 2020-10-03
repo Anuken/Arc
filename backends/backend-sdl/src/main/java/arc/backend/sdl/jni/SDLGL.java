@@ -1,7 +1,6 @@
 package arc.backend.sdl.jni;
 
 import arc.util.*;
-import arc.util.ArcAnnotate.*;
 
 import java.nio.*;
 

@@ -1,7 +1,6 @@
 package arc.util.serialization;
 
 import arc.struct.*;
-import arc.util.ArcAnnotate.*;
 import arc.util.*;
 
 import java.io.*;

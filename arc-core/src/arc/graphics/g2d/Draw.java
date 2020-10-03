@@ -7,7 +7,6 @@ import arc.graphics.gl.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
-import arc.util.ArcAnnotate.*;
 
 import static arc.Core.*;
 

@@ -1,7 +1,6 @@
 package arc.graphics.g2d;
 
 import arc.graphics.*;
-import arc.util.ArcAnnotate.*;
 
 /** Defines a region of a pixmap, like a TextureRegion. */
 public class PixmapRegion{

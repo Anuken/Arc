@@ -6,7 +6,6 @@ import arc.struct.IntSet.*;
 import arc.struct.ObjectMap.*;
 import arc.struct.Queue;
 import arc.struct.OrderedMap.*;
-import arc.util.ArcAnnotate.*;
 import arc.util.*;
 import arc.util.io.*;
 import arc.util.serialization.JsonValue.*;

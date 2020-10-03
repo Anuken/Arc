@@ -1,7 +1,5 @@
 package arc.util.io;
 
-import arc.util.ArcAnnotate.*;
-
 import java.io.*;
 
 /** A wrapper for DataOutput with more concise method names and no IOExceptions. */

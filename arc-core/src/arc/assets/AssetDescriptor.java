@@ -2,7 +2,7 @@ package arc.assets;
 
 import arc.files.*;
 import arc.func.*;
-import arc.util.ArcAnnotate.*;
+import arc.util.*;
 
 /**
  * Describes an asset to be loaded by its filename, type and {@link AssetLoaderParameters}. Instances of this are used in

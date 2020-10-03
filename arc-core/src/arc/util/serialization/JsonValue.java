@@ -1,6 +1,6 @@
 package arc.util.serialization;
 
-import arc.util.ArcAnnotate.*;
+import arc.util.*;
 import arc.util.serialization.JsonWriter.OutputType;
 
 import java.io.IOException;

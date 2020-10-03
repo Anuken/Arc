@@ -2,7 +2,7 @@ package arc.backend.robovm;
 
 import arc.*;
 import arc.func.*;
-import arc.util.ArcAnnotate.*;
+import arc.util.*;
 import org.robovm.apple.glkit.*;
 import org.robovm.apple.uikit.*;
 

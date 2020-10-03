@@ -3,7 +3,6 @@ package arc.files;
 import arc.Files.*;
 import arc.struct.*;
 import arc.util.*;
-import arc.util.ArcAnnotate.*;
 
 import java.io.*;
 import java.util.*;
