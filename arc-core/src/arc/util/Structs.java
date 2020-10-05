@@ -9,6 +9,10 @@ import java.util.*;
 
 public class Structs{
 
+    public static boolean eq(Object a, Object b){
+        return (a == b) || (a != null && a.equals(b));
+    }
+
     public static <T> T[] arr(T... array){
         return array;
     }
