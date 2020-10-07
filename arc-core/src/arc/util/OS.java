@@ -20,15 +20,11 @@ public class OS{
     static{
         if(propNoNull("java.runtime.name").contains("Android Runtime") || propNoNull("java.vm.vendor").contains("The Android Project") || propNoNull("java.vendor").contains("The Android Project")){
             isAndroid = true;
-            isWindows = false;
             isLinux = false;
-            isMac = false;
             is64Bit = false;
         }
         if(propNoNull("moe.platform.name").equals("iOS") || (!isAndroid && !isWindows && !isLinux && !isMac)){
             isIos = true;
-            isAndroid = false;
-            isWindows = false;
             isLinux = false;
             isMac = false;
             is64Bit = false;
