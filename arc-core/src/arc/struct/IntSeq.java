@@ -377,9 +377,13 @@ public class IntSeq{
     }
 
     public void shuffle(){
+       shuffle(Mathf.rand);
+    }
+
+    public void shuffle(Rand rand){
         int[] items = this.items;
         for(int i = size - 1; i >= 0; i--){
-            int ii = Mathf.random(i);
+            int ii = rand.nextInt(i + 1);
             int temp = items[i];
             items[i] = items[ii];
             items[ii] = temp;

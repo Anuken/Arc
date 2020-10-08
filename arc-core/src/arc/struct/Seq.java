@@ -441,7 +441,9 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         addAll(array);
     }
 
+    @Nullable
     public T getFrac(float index){
+        if(isEmpty()) return null;
         return get(Mathf.clamp((int)(index * size), 0, size - 1));
     }
 
