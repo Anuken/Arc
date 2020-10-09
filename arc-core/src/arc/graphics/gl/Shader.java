@@ -132,6 +132,10 @@ public class Shader implements Disposable{
 
     public Shader(Fi vertexShader, Fi fragmentShader){
         this(vertexShader.readString(), fragmentShader.readString());
+
+        if(!log.isEmpty()){
+            Log.warn("Shader " + vertexShader + " | " + fragmentShader + ":\n" + log);
+        }
     }
 
     /**Applies all relevant uniforms, if applicable. Should be overriden.*/
@@ -259,11 +263,14 @@ public class Shader implements Disposable{
         Gl.compileShader(shader);
         Gl.getShaderiv(shader, GL20.GL_COMPILE_STATUS, intbuf);
 
-        int compiled = intbuf.get(0);
-        if(compiled == 0){
-            String infoLog = Gl.getShaderInfoLog(shader);
+        String infoLog = Gl.getShaderInfoLog(shader);
+        if(!infoLog.isEmpty()){
             log += type == GL20.GL_VERTEX_SHADER ? "Vertex shader\n" : "Fragment shader:\n";
             log += infoLog;
+        }
+
+        int compiled = intbuf.get(0);
+        if(compiled == 0){
             return -1;
         }
 
