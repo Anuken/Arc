@@ -1,16 +1,14 @@
 package arc.backend.android;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Environment;
-import arc.Core;
-import arc.Files;
-import arc.files.Fi;
-import arc.util.ArcRuntimeException;
+import android.app.*;
+import android.content.*;
+import android.content.res.*;
+import android.os.*;
+import arc.*;
+import arc.files.*;
+import arc.util.*;
 
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author mzechner
@@ -86,8 +84,6 @@ public class AndroidFiles implements Files{
             Context context;
             if(Core.app instanceof Activity){
                 context = ((Activity)Core.app).getBaseContext();
-            }else if(Core.app instanceof Fragment){
-                context = ((Fragment)Core.app).getActivity().getBaseContext();
             }else{
                 throw new ArcRuntimeException("APK expansion not supported for application type");
             }
