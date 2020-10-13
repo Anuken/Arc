@@ -194,6 +194,10 @@ public class Rand extends Random{
         return nextFloat() * max;
     }
 
+    public int random(int max){
+        return nextInt(max + 1);
+    }
+
     public float random(float min, float max){
         return min + (max - min) * nextFloat();
     }
