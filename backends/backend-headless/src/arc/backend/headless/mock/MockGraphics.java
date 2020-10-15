@@ -77,11 +77,6 @@ public class MockGraphics extends Graphics{
     }
 
     @Override
-    public float getRawDeltaTime(){
-        return 0;
-    }
-
-    @Override
     public int getFramesPerSecond(){
         return fps;
     }
