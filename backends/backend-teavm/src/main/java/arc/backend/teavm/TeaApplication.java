@@ -42,7 +42,7 @@ public class TeaApplication implements Application{
     private void startArc(){
         canvas = config.canvas;
 
-        Log.setLogger(new TeaLogger());
+        Log.logger = new TeaLogger();
 
         Core.app = this;
         Core.graphics = graphics = new TeaGraphics(canvas, config);
