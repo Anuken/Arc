@@ -38,7 +38,7 @@ public class SdlInput extends Input{
                 if(key == KeyCode.backspace) queue.keyTyped((char)8);
                 if(key == KeyCode.tab) queue.keyTyped('\t');
                 if(key == KeyCode.enter) queue.keyTyped((char)13);
-                if(key == KeyCode.forwardDel) queue.keyTyped((char)127);
+                if(key == KeyCode.forwardDel || key == KeyCode.del) queue.keyTyped((char)127);
             }
         }else if(type == SDL_EVENT_MOUSE_BUTTON){
             boolean down = input[1] == 1;
