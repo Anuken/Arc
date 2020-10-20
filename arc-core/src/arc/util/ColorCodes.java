@@ -4,70 +4,74 @@ import arc.struct.*;
 
 /** Note that these color codes will only work on linux or mac terminals. */
 public class ColorCodes{
-    public static String FLUSH = "\033[H\033[2J";
-    public static String RESET = "\u001B[0m";
-    public static String BOLD = "\u001B[1m";
-    public static String ITALIC = "\u001B[3m";
-    public static String UNDERLINED = "\u001B[4m";
-    public static String BLACK = "\u001B[30m";
-    public static String RED = "\u001B[31m";
-    public static String GREEN = "\u001B[32m";
-    public static String YELLOW = "\u001B[33m";
-    public static String BLUE = "\u001B[34m";
-    public static String PURPLE = "\u001B[35m";
-    public static String CYAN = "\u001B[36m";
-    public static String LIGHT_RED = "\u001B[91m";
-    public static String LIGHT_GREEN = "\u001B[92m";
-    public static String LIGHT_YELLOW = "\u001B[93m";
-    public static String LIGHT_BLUE = "\u001B[94m";
-    public static String LIGHT_MAGENTA = "\u001B[95m";
-    public static String LIGHT_CYAN = "\u001B[96m";
-    public static String WHITE = "\u001B[37m";
+    public static String
+    flush = "\033[H\033[2J",
+    reset = "\u001B[0m",
+    bold = "\u001B[1m",
+    italic = "\u001B[3m",
+    underline = "\u001B[4m",
+    black = "\u001B[30m",
+    red = "\u001B[31m",
+    green = "\u001B[32m",
+    yellow = "\u001B[33m",
+    blue = "\u001B[34m",
+    purple = "\u001B[35m",
+    cyan = "\u001B[36m",
+    lightBlack = "\u001b[90m",
+    lightRed = "\u001B[91m",
+    lightGreen = "\u001B[92m",
+    lightYellow = "\u001B[93m",
+    lightBlue = "\u001B[94m",
+    lightMagenta = "\u001B[95m",
+    lightCyan = "\u001B[96m",
+    lightWhite = "\u001b[97m",
+    white = "\u001B[37m",
 
-    public static String BACK_DEFAULT = "\u001B[49m";
-    public static String BACK_RED = "\u001B[41m";
-    public static String BACK_GREEN = "\u001B[42m";
-    public static String BACK_YELLOW = "\u001B[43m";
-    public static String BACK_BLUE = "\u001B[44m";
+    backDefault = "\u001B[49m",
+    backRed = "\u001B[41m",
+    backGreen = "\u001B[42m",
+    backYellow = "\u001B[43m",
+    backBlue = "\u001B[44m";
 
-    public static final String[] codes;
-    public static final String[] values;
+    public static final String[] codes, values;
 
     static{
-        //disable color codes on windows
 
+        //disable color codes on windows/android
         if(OS.isWindows || OS.isAndroid){
-            FLUSH = RESET = BOLD = UNDERLINED = BLACK = RED = GREEN = YELLOW = BLUE = PURPLE = CYAN
-            = LIGHT_RED = LIGHT_GREEN = LIGHT_YELLOW = LIGHT_BLUE = LIGHT_MAGENTA = LIGHT_CYAN
-            = WHITE = BACK_DEFAULT = BACK_RED = BACK_YELLOW = BACK_BLUE = BACK_GREEN = ITALIC = "";
+            flush = reset = bold = underline = black = red = green = yellow = blue = purple = cyan = lightWhite
+            = lightBlack = lightRed = lightGreen = lightYellow = lightBlue = lightMagenta = lightCyan
+            = white = backDefault = backRed = backYellow = backBlue = backGreen = italic = "";
         }
 
         ObjectMap<String, String> map = ObjectMap.of(
-        "ff", FLUSH,
-        "fr", RESET,
-        "fb", BOLD,
-        "fi", ITALIC,
-        "fu", UNDERLINED,
-        "bk", BLACK,
-        "r", RED,
-        "g", GREEN,
-        "y", YELLOW,
-        "b", BLUE,
-        "p", PURPLE,
-        "c", CYAN,
-        "lr", LIGHT_RED,
-        "lg", LIGHT_GREEN,
-        "ly", LIGHT_YELLOW,
-        "lm", LIGHT_MAGENTA,
-        "lb", LIGHT_BLUE,
-        "lc", LIGHT_CYAN,
-        "w", WHITE,
+        "ff", flush,
+        "fr", reset,
+        "fb", bold,
+        "fi", italic,
+        "fu", underline,
+        "k", black,
+        "lk", lightBlack,
+        "lw", lightWhite,
+        "r", red,
+        "g", green,
+        "y", yellow,
+        "b", blue,
+        "p", purple,
+        "c", cyan,
+        "lr", lightRed,
+        "lg", lightGreen,
+        "ly", lightYellow,
+        "lm", lightMagenta,
+        "lb", lightBlue,
+        "lc", lightCyan,
+        "w", white,
 
-        "bd", BACK_DEFAULT,
-        "br", BACK_RED,
-        "bg", BACK_GREEN,
-        "by", BACK_YELLOW,
-        "bb", BACK_BLUE
+        "bd", backDefault,
+        "br", backRed,
+        "bg", backGreen,
+        "by", backYellow,
+        "bb", backBlue
         );
 
         codes = map.keys().toSeq().toArray(String.class);

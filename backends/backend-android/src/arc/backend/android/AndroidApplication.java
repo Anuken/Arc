@@ -49,7 +49,7 @@ public class AndroidApplication extends Activity implements Application{
 
     static{
         ArcNativesLoader.load();
-        Log.setLogger(new AndroidApplicationLogger());
+        Log.logger = new AndroidApplicationLogger();
     }
 
     /**

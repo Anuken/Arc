@@ -5,21 +5,11 @@ import java.io.StringWriter;
 
 public class Log{
     private static final Object[] empty = {};
-    private static boolean useColors = true;
-    private static LogLevel level = LogLevel.info;
-    private static LogHandler logger = new DefaultLogHandler();
 
-    public static void setLogger(LogHandler log){
-        logger = log;
-    }
-
-    public static LogHandler getLogger(){
-        return logger;
-    }
-
-    public static void setUseColors(boolean colors){
-        useColors = colors;
-    }
+    public static boolean useColors = true;
+    public static LogLevel level = LogLevel.info;
+    public static LogHandler logger = new DefaultLogHandler();
+    public static LogFormatter formatter = new DefaultLogFormatter();
 
     public static void log(LogLevel level, String text, Object... args){
         if(Log.level.ordinal() > level.ordinal()) return;
@@ -83,29 +73,21 @@ public class Log{
     }
 
     public static String formatColors(String text, boolean useColors, Object... args){
-        text = Strings.format(text, args);
-
-        if(useColors){
-            for(int i = 0; i < ColorCodes.codes.length; i++){
-                text = text.replace("&" + ColorCodes.codes[i], ColorCodes.values[i]);
-            }
-        }else{
-            for(String color : ColorCodes.codes){
-                text = text.replace("&" + color, "");
-            }
-        }
-        return text;
+        return formatter.format(text, useColors, args);
     }
 
-    public static String removeCodes(String text){
+    public static String removeColors(String text){
         for(String color : ColorCodes.codes){
             text = text.replace("&" + color, "");
         }
         return text;
     }
 
-    public static void setLogLevel(LogLevel level){
-        Log.level = level;
+    public static String addColors(String text){
+        for(int i = 0; i < ColorCodes.codes.length; i++){
+            text = text.replace("&" + ColorCodes.codes[i], ColorCodes.values[i]);
+        }
+        return text;
     }
 
     public enum LogLevel{
@@ -114,6 +96,18 @@ public class Log{
         warn,
         err,
         none
+    }
+
+    public interface LogFormatter{
+        String format(String text, boolean useColors, Object... args);
+    }
+
+    public static class DefaultLogFormatter implements LogFormatter{
+        @Override
+        public String format(String text, boolean useColors, Object... args){
+            text = Strings.format(text, args);
+            return useColors ? addColors(text) : removeColors(text);
+        }
     }
 
     public interface LogHandler{
