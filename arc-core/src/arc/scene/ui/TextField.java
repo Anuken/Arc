@@ -608,7 +608,7 @@ public class TextField extends Element implements Disableable{
      * @param messageText may be null.
      */
     public void setMessageText(String messageText){
-        if(messageText != null && messageText.startsWith("$") && bundle != null && bundle.has(messageText.substring(1))){
+        if(messageText != null && (messageText.startsWith("$") || messageText.startsWith("@")) && bundle != null && bundle.has(messageText.substring(1))){
             this.messageText = bundle.get(messageText.substring(1));
         }else{
             this.messageText = messageText;
