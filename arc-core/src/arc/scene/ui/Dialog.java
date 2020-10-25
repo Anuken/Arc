@@ -394,6 +394,15 @@ public class Dialog extends Table{
         //no default implementation; should be implemented by subclasses
     }
 
+    /** Adds a listener for back/escape keys to hide this dialog. */
+    public void closeOnBack(){
+        keyDown(key -> {
+            if(key == KeyCode.escape || key == KeyCode.back){
+                Core.app.post(this::hide);
+            }
+        });
+    }
+
     public boolean isShown(){
         return getScene() != null;
     }
