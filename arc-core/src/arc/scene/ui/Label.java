@@ -119,6 +119,7 @@ public class Label extends Element{
     }
 
     private void scaleAndComputePrefSize(){
+        if(cache == null) return;
         Font font = cache.getFont();
         float oldScaleX = font.getScaleX();
         float oldScaleY = font.getScaleY();
@@ -143,6 +144,7 @@ public class Label extends Element{
 
     @Override
     public void layout(){
+        if(cache == null) return;
         Font font = cache.getFont();
         float oldScaleX = font.getScaleX();
         float oldScaleY = font.getScaleY();
@@ -220,6 +222,7 @@ public class Label extends Element{
 
     @Override
     public float getPrefWidth(){
+        if(style == null) return 0;
         if(wrap) return 0;
         if(prefSizeInvalid) scaleAndComputePrefSize();
         float width = prefSize.x;
@@ -230,6 +233,7 @@ public class Label extends Element{
 
     @Override
     public float getPrefHeight(){
+        if(style == null) return 0;
         if(prefSizeInvalid) scaleAndComputePrefSize();
         float descentScaleCorrection = 1;
         if(fontScaleChanged) descentScaleCorrection = fontScaleY / style.font.getScaleY();

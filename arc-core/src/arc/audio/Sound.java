@@ -45,11 +45,16 @@ public interface Sound extends Disposable{
         return Mathf.clamp(1f/(dst*dst/Core.audio.falloff));
     }
 
-
     /** Plays this sound at a certain position, with correct panning and volume applied.
      * Automatically uses the "sfxvolume" setting.*/
     default int at(float x, float y, float pitch){
-        float vol = calcVolume(x, y);
+        return at(x, y, pitch, 1f);
+    }
+
+    /** Plays this sound at a certain position, with correct panning and volume applied.
+     * Automatically uses the "sfxvolume" setting.*/
+    default int at(float x, float y, float pitch, float volume){
+        float vol = calcVolume(x, y) * volume;
         if(vol < 0.01f) return -1; //discard
         return play(vol, pitch, calcPan(x, y));
     }
