@@ -1,7 +1,6 @@
 package arc.backend.headless;
 
 import arc.*;
-import arc.backend.headless.mock.*;
 import arc.func.*;
 import arc.mock.*;
 import arc.struct.*;
@@ -13,15 +12,12 @@ import arc.util.async.*;
  * @author Jon Renner
  */
 public class HeadlessApplication implements Application{
-    protected final HeadlessFiles files;
-    protected final MockAudio audio;
-    protected final MockInput input;
     protected final MockGraphics graphics;
     protected final Seq<ApplicationListener> listeners = new Seq<>();
     protected final Seq<Runnable> runnables = new Seq<>();
     protected final Seq<Runnable> executedRunnables = new Seq<>();
     protected final Cons<Throwable> exceptionHandler;
-    private final long renderInterval;
+    protected long renderInterval;
     protected Thread mainLoopThread;
     protected boolean running = true;
 
@@ -34,21 +30,18 @@ public class HeadlessApplication implements Application{
             config = new HeadlessApplicationConfiguration();
 
         addListener(listener);
-        this.files = new HeadlessFiles();
         this.exceptionHandler = exceptionHandler;
         // the following elements are not applicable for headless applications
         // they are only implemented as mock objects
         this.graphics = new MockGraphics();
-        this.audio = new MockAudio();
-        this.input = new MockInput();
 
         Core.settings = new Settings();
         Core.app = this;
-        Core.files = files;
+        Core.files = new MockFiles();
         Core.net = new Net();
-        Core.audio = audio;
+        Core.audio = new MockAudio();
         Core.graphics = graphics;
-        Core.input = input;
+        Core.input = new MockInput();
 
         renderInterval = config.renderInterval > 0 ? (long)(config.renderInterval * 1000000000f) : (config.renderInterval < 0 ? -1 : 0);
 

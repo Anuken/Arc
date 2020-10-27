@@ -1,12 +1,9 @@
-package arc.backend.headless.mock;
+package arc.mock;
 
-import arc.Application;
-import arc.Graphics;
-import arc.Graphics.Cursor.SystemCursor;
-import arc.graphics.GL20;
-import arc.graphics.GL30;
-import arc.graphics.Pixmap;
-import arc.graphics.gl.GLVersion;
+import arc.*;
+import arc.Graphics.Cursor.*;
+import arc.graphics.*;
+import arc.graphics.gl.*;
 
 /**
  * The headless backend does its best to mock elements. This is intended to make code-sharing between

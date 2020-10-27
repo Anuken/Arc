@@ -1,6 +1,6 @@
-package arc.backend.headless.mock;
+package arc.mock;
 
-import arc.Input;
+import arc.*;
 
 /**
  * The headless backend does its best to mock elements. This is intended to make code-sharing between
