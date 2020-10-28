@@ -3,7 +3,7 @@ ext{
     libraries = [:]
 }
 
-versions.robovm = "2.3.7"
+versions.robovm = "2.3.11"
 versions.jlayer = "1.0.1-gdx"
 versions.jorbis = "0.0.17"
 versions.junit = "4.11"
