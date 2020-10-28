@@ -469,8 +469,9 @@ public class TextField extends Element implements Disableable{
         for(int i = 0, n = content.length(); i < n; i++){
             if(!withinMaxLength(textLength + buffer.length())) break;
             char c = content.charAt(i);
-            if(!(writeEnters && (c == '\n' || c == '\r'))){
-                if(c == '\r' || c == '\n') continue;
+            if(c == '\r') continue;
+            if(!(writeEnters && (c == '\n'))){
+                if(c == '\n') continue;
                 if(onlyFontChars && !data.hasGlyph(c)) continue;
                 if(filter != null && !filter.acceptChar(this, c)) continue;
             }
