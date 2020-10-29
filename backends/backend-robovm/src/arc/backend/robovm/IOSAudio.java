@@ -1,15 +1,11 @@
 package arc.backend.robovm;
 
-import arc.Audio;
-import arc.audio.AudioDevice;
-import arc.audio.AudioRecorder;
-import arc.audio.Music;
-import arc.audio.Sound;
-import arc.backend.robovm.objectal.OALAudioTrack;
-import arc.backend.robovm.objectal.OALSimpleAudio;
-import arc.files.Fi;
-import arc.util.ArcRuntimeException;
-import arc.util.Log;
+import arc.*;
+import arc.audio.*;
+import arc.backend.robovm.objectal.*;
+import arc.files.*;
+import arc.mock.*;
+import arc.util.*;
 
 public class IOSAudio extends Audio{
 
@@ -47,7 +43,8 @@ public class IOSAudio extends Audio{
                 return new IOSMusic(track);
             }
         }
-        throw new ArcRuntimeException("Error opening music file at " + path);
+        Log.err("Error opening music file at " + path);
+        return new MockMusic();
     }
 
 }

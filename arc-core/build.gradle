@@ -12,6 +12,41 @@ dependencies{
     testImplementation aproj(":natives:natives-desktop")
 }
 
+//TODO implement this
+/*
+apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
+
+file("jni").mkdir()
+
+jnigen{
+    sharedLibName = "arc"
+    temporaryDir = "../target/native"
+    all{
+        cppExcludes = ["iosgl/**"]
+    }
+    add(Windows, x32)
+    add(Windows, x64)
+    add(Linux, x64)
+    add(Android){
+        linkerFlags += " -llog"
+    }
+    add(MacOsX, x64)
+    add(IOS){
+        headerDirs = ["iosgl"]
+        cppExcludes = []
+    }
+}
+
+task preJni{
+    copy{
+        include "**"
+        from "csrc/"
+        into "jni/"
+    }
+}
+
+jnigenBuild.dependsOn preJni*/
+
 if(useParameters){
     compileJava{
         options.compilerArgs << '-parameters'
@@ -42,7 +77,7 @@ task natives(dependsOn: [classes, deleteJniFolder]){
         def mac = System.getProperty("os.name").toLowerCase().contains("mac")
         def root =  "$project.rootDir/arc-core"
         def jnidir = "$root/jni"
-        def libdir = mac ? "$project.rootDir/libs" : "$root/libs"
+        def libdir = "$root/libs"
 
         new NativeCodeGenerator().generate("$root/src", "$root/build/classes/java/main", jnidir, null, null)
 
