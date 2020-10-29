@@ -53,7 +53,7 @@ public abstract class Audio implements Disposable{
      * </p>
      *
      * <p>
-     * Currently supported formats are WAV, MP3 and OGG.
+     * Currently supported formats are WAV, MP3 and OGG. Except OGG, which doesn't actually work on iOS!
      * </p>
      *
      * <p>
