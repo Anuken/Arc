@@ -60,10 +60,7 @@ task natives(dependsOn: [classes, deleteJniFolder]){
             BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Windows, true),
             BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Linux, true),
             BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Android, false),
-            BuildTarget.newDefaultTarget(BuildTarget.TargetOs.MacOsX, true).tap{
-                cppFlags = "-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.7 -stdlib=libc++"
-                linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.7 -stdlib=libc++"
-            },
+            BuildTarget.newDefaultTarget(BuildTarget.TargetOs.MacOsX, true),
             BuildTarget.newDefaultTarget(BuildTarget.TargetOs.IOS, false).tap{
                 headerDirs = ["iosgl"] as String[]
                 cppExcludes = []
