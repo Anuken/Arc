@@ -40,9 +40,9 @@ clean.dependsOn(deleteJniFolder)
 task natives(dependsOn: [classes, deleteJniFolder]){
     doLast{
         def mac = System.getProperty("os.name").toLowerCase().contains("mac")
-        def root = mac ? "$project.rootDir" : "$project.rootDir/arc-core"
+        def root =  "$project.rootDir/arc-core"
         def jnidir = "$root/jni"
-        def libdir = "$root/libs"
+        def libdir = mac ? "$project.rootDir/libs" : "$root/libs"
 
         new NativeCodeGenerator().generate("$root/src", "$root/build/classes/java/main", jnidir, null, null)
 
