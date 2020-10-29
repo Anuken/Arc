@@ -4,7 +4,7 @@ sourceSets.main.resources.srcDirs = ["libs/linux64", "libs/macosx64","libs/windo
 dependencies {
     api libraries.sdl
 
-    testImplementation "com.badlogicgames.gdx:gdx-jnigen:1.9.10"
+    testImplementation libraries.jnigen
     testImplementation aproj(":arc-core")
 }
 

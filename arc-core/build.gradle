@@ -26,7 +26,7 @@ test{
 
 buildscript{
     dependencies{
-        classpath "com.badlogicgames.gdx:gdx-jnigen:1.9.10"
+        classpath libraries.jnigen
     }
 }
 
@@ -60,28 +60,20 @@ task natives(dependsOn: [classes, deleteJniFolder]){
             BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Windows, true),
             BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Linux, true),
             BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Android, false),
-            BuildTarget.newDefaultTarget(BuildTarget.TargetOs.MacOsX, true),
-            BuildTarget.newDefaultTarget(BuildTarget.TargetOs.IOS, false)
-        ] as BuildTarget[]
-
-        targets*.cppExcludes = ["iosgl/**"] as String[]
-
-        def matches = { String path, List<String> pattern ->
-            return pattern.find{ path.contains(it) } != null
-        }
-
-        targets.find{ it.os == BuildTarget.TargetOs.IOS }.with{
-            if(it != null){
+            BuildTarget.newDefaultTarget(BuildTarget.TargetOs.MacOsX, true).tap{
+                cppFlags = "-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.7 -stdlib=libc++"
+                linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.7 -stdlib=libc++"
+            },
+            BuildTarget.newDefaultTarget(BuildTarget.TargetOs.IOS, false).tap{
                 headerDirs = ["iosgl"] as String[]
                 cppExcludes = []
             }
-        }
+        ] as BuildTarget[]
 
-        targets.find{ it.os == BuildTarget.TargetOs.MacOsX }.with{
-            if(it != null){
-                cppFlags = "-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.7 -stdlib=libc++"
-                linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.7 -stdlib=libc++"
-            }
+        targets.collect{it.os != BuildTarget.TargetOs.IOS}*.cppExcludes = ["iosgl/**"] as String[]
+
+        def matches = { String path, List<String> pattern ->
+            return pattern.find{ path.contains(it) } != null
         }
 
         new AntScriptGenerator().generate(new BuildConfig("arc", "$root/build", "libs/", jnidir), targets)

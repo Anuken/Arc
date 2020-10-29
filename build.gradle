@@ -12,6 +12,7 @@ versions.androidSdk = 29
 versions.androidBuildTools = "29.0.3"
 versions.teavm = '0.7.0-dev-1087'
 versions.reflections = '0.9.11'
+versions.jnigen = "d4663a5878154ad2a39eb83b208394a5d21131b9"
 
 libraries.robovm = [
     "com.mobidevelop.robovm:robovm-rt:${versions.robovm}",
@@ -37,6 +38,10 @@ libraries.teavm = [
      "org.reflections:reflections:$versions.reflections"
 ]
 
+libraries.jnigen = [
+    "com.github.libgdx.gdx-jnigen:gdx-jnigen:$versions.jnigen"
+]
+
 allprojects{
     group = 'com.github.Anuken'
     version = '1.0'
@@ -47,6 +52,7 @@ allprojects{
             jcenter()
             maven{ url "https://oss.sonatype.org/content/repositories/snapshots/" }
             google()
+            maven{ url 'https://jitpack.io' }
         }
     }
 
@@ -56,6 +62,7 @@ allprojects{
         maven{ url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven{ url "https://dl.bintray.com/konsoletyper/teavm" }
         google()
+        maven{ url 'https://jitpack.io' }
     }
 
     ext.aproj = { String module ->
