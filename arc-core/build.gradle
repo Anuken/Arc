@@ -39,8 +39,8 @@ clean.dependsOn(deleteJniFolder)
 
 task natives(dependsOn: [classes, deleteJniFolder]){
     doLast{
-
-        def root = "$project.rootDir/arc-core"
+        def mac = System.getProperty("os.name").toLowerCase().contains("mac")
+        def root = mac ? "$project.rootDir" : "$project.rootDir/arc-core"
         def jnidir = "$root/jni"
         def libdir = "$root/libs"
 
@@ -87,7 +87,7 @@ task natives(dependsOn: [classes, deleteJniFolder]){
         file("$jnidir/build-linux64.xml").text = file("$jnidir/build-linux64.xml").text.replace("-Wl,-wrap,memcpy", "-Wl,-wrap,memcpy,-wrap,pow")
 
         for(BuildTarget target : targets){
-            if((target.os == BuildTarget.TargetOs.IOS || target.os == BuildTarget.TargetOs.MacOsX) != System.getProperty("os.name").toLowerCase().contains("mac")) continue
+            if((target.os == BuildTarget.TargetOs.IOS || target.os == BuildTarget.TargetOs.MacOsX) != mac) continue
 
             String buildFileName = "build-" + target.os.toString().toLowerCase() + (target.is64Bit ? "64" : "32") + ".xml"
             BuildExecutor.executeAnt("$jnidir/" + buildFileName, "-Dhas-compiler=true -Drelease=true clean postcompile")
