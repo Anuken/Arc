@@ -79,9 +79,9 @@ task natives(dependsOn: [classes, deleteJniFolder]){
         new File("$jnidir/Application.mk").text = "APP_ABI := all\nAPP_PLATFORM := android-16"
 
         //set correct memcpy wrap contents...
-        file("$jnidir/memcpy_wrap.c").text = file("$rootDir/natives/memcpy_wrap.c").text
+        if(!mac) file("$jnidir/memcpy_wrap.c").text = file("$rootDir/natives/memcpy_wrap.c").text
         //wrap functions with right version of glibc
-        file("$jnidir/build-linux64.xml").text = file("$jnidir/build-linux64.xml").text.replace("-Wl,-wrap,memcpy", "-Wl,-wrap,memcpy,-wrap,pow")
+        if(!mac) file("$jnidir/build-linux64.xml").text = file("$jnidir/build-linux64.xml").text.replace("-Wl,-wrap,memcpy", "-Wl,-wrap,memcpy,-wrap,pow")
 
         for(BuildTarget target : targets){
             if((target.os == BuildTarget.TargetOs.IOS || target.os == BuildTarget.TargetOs.MacOsX) != mac) continue
@@ -111,15 +111,17 @@ task natives(dependsOn: [classes, deleteJniFolder]){
             into "../natives/natives-android/libs/"
         }
 
-        //cleanup
-        //delete{ delete "libs" }
-        //delete{ delete "obj" }
-        //delete{ delete "out" }
-        //delete{ delete "jni" }
+        if(!project.hasProperty("no-clean")){
+            //cleanup
+            delete{ delete "libs" }
+            delete{ delete "obj" }
+            delete{ delete "out" }
+            delete{ delete "jni" }
 
-        //delete extra garbage, not sure why it even exists
-        //delete{
-        //    delete "../libs"
-        //}
+            //delete extra garbage, not sure why it even exists
+            delete{
+                delete "../libs"
+            }
+        }
     }
 }
