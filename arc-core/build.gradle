@@ -17,7 +17,7 @@ jnigen{
     libsDir = file("libs").absolutePath
 
     all{
-        cppExcludes = ["iosgl/**"]
+        cppExcludes = ["iosgl/**", "soloud/src/audiosource/ay/**"]
         cppIncludes = ["*.cpp"]
         cIncludes = ["*.c"]
         headerDirs += ["soloud/include"]
@@ -47,14 +47,14 @@ jnigen{
     add(MacOsX, x64){
         cppIncludes += ["soloud/src/backend/coreaudio/*.cpp"]
         cppFlags = "-DWITH_COREAUDIO " + cppFlags
-        libraries += " -Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
+        libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
     }
     add(IOS){
         headerDirs += ["iosgl"]
-        cppExcludes = []
+        cppExcludes = ["soloud/src/audiosource/ay/**"]
         cppIncludes += ["soloud/src/backend/coreaudio/*.cpp"]
         cppFlags = "-DWITH_COREAUDIO " + cppFlags
-        libraries += " -Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
+        //libraries += "-framework CoreAudio -framework AudioToolbox"
     }
 }
 
