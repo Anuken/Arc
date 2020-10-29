@@ -3,14 +3,10 @@ package arc.util.io;
 import java.io.*;
 
 public class CounterInputStream extends FilterInputStream{
-    protected int count;
+    public int count;
 
     public CounterInputStream(InputStream inputStream){
         super(inputStream);
-    }
-
-    public int count(){
-        return count;
     }
 
     public void resetCount(){
@@ -19,8 +15,9 @@ public class CounterInputStream extends FilterInputStream{
 
     @Override
     public long skip(long l) throws IOException{
-        count += l;
-        return super.skip(l);
+        long skipped = super.skip(l);
+        count += skipped;
+        return skipped;
     }
 
     @Override
