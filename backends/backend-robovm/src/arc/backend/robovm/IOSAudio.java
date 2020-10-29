@@ -31,6 +31,7 @@ public class IOSAudio extends Audio{
 
     @Override
     public Sound newSound(Fi fileHandle){
+        if(OALSimpleAudio.sharedInstance() == null) return new MockSound();
         return new IOSSound(fileHandle);
     }
 
