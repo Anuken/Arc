@@ -70,7 +70,7 @@ task natives(dependsOn: [classes, deleteJniFolder]){
             }
         ] as BuildTarget[]
 
-        targets.collect{it.os != BuildTarget.TargetOs.IOS}*.cppExcludes = ["iosgl/**"] as String[]
+        targets.findAll{it.os != BuildTarget.TargetOs.IOS}*.cppExcludes = ["iosgl/**"] as String[]
 
         def matches = { String path, List<String> pattern ->
             return pattern.find{ path.contains(it) } != null
