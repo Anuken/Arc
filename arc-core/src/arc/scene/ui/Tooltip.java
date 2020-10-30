@@ -115,9 +115,9 @@ public class Tooltip extends InputListener{
         if(fromActor != null && fromActor.isDescendantOf(element)) return;
         setContainerPosition(element, x, y);
         manager.enter(this);
+        container.pack();
 
-        if(show != null)
-            show.run();
+        if(show != null) show.run();
     }
 
     @Override

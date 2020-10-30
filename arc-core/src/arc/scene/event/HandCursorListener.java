@@ -1,23 +1,28 @@
 package arc.scene.event;
 
-import arc.Core;
-import arc.Graphics.Cursor.SystemCursor;
-import arc.func.Boolp;
+import arc.*;
+import arc.Graphics.Cursor.*;
+import arc.func.*;
 import arc.scene.*;
-import arc.scene.utils.Disableable;
+import arc.scene.utils.*;
 
 public class HandCursorListener extends ClickListener{
-    private Boolp enabled = () -> true;
+    public Boolp enabled = () -> true;
+    public boolean checkEnabled = true;
 
-    public void setEnabled(Boolp vis){
-        this.enabled = vis;
+    public HandCursorListener(Boolp enabled, boolean check){
+        this.enabled = enabled;
+        this.checkEnabled = check;
+    }
+
+    public HandCursorListener(){
     }
 
     @Override
     public void enter(InputEvent event, float x, float y, int pointer, Element fromActor){
         super.enter(event, x, y, pointer, fromActor);
 
-        if(pointer != -1 || !enabled.get() || isDisabled(event.targetActor) || isDisabled(fromActor)){
+        if(pointer != -1 || !enabled.get() || (checkEnabled && (isDisabled(event.targetActor) || isDisabled(fromActor)))){
             return;
         }
 
