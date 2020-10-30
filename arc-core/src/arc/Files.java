@@ -1,5 +1,6 @@
 package arc;
 
+import arc.audio.Audio;
 import arc.files.Fi;
 import arc.util.ArcRuntimeException;
 
@@ -81,7 +82,7 @@ public interface Files{
     enum FileType{
         /**
          * Path relative to the root of the classpath. Classpath files are always readonly. Note that classpath files are not
-         * compatible with some functionality on Android, such as {@link Audio#newSound(Fi)} and
+         * compatible with some functionality on Android, such as {@link arc.audio.Audio#newSound(Fi)} and
          * {@link Audio#newMusic(Fi)}.
          */
         classpath,

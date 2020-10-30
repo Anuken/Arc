@@ -1,0 +1,166 @@
+package arc.audio;
+
+import arc.*;
+import arc.files.*;
+import arc.util.*;
+
+import static arc.audio.Soloud.*;
+
+/**
+ * This interface encapsulates the creation and management of audio resources. It allows you to get direct access to the audio
+ * hardware via the {@link AudioDevice} and {@link AudioRecorder} interfaces, create sound effects via the {@link Sound} interface
+ * and play music streams via the {@link Music} interface.
+ *
+ * <p>
+ * All resources created via this interface have to be disposed as soon as they are no longer used.
+ * </p>
+ *
+ * <p>
+ * Note that all {@link Music} instances will be automatically paused when the {@link ApplicationListener#pause()} method is
+ * called, and automatically resumed when the {@link ApplicationListener#resume()} method is called.
+ * </p>
+ */
+public class Audio implements Disposable{
+    /** Falloff when playing audio.*/
+    public float falloff = 16000f;
+
+    boolean initialized;
+
+    /** Global bus for all sounds. */
+    public AudioBus soundBus = new AudioBus();
+    /** Global bus for all music. */
+    public AudioBus musicBus = new AudioBus();
+
+    /** Intializes Soloud audio by default. May throw an exception if initialization fails. */
+    public Audio(){
+        initialize();
+    }
+
+    public boolean initialized(){
+        return initialized;
+    }
+
+    /** Intializes Soloud audio. If this fails, prints an error and disables audio. */
+    protected void initialize(){
+        try{
+            init();
+            Log.info("[Audio] Initialized SoLoud @ using @ at @hz / @ samples / @ channels",
+            version(), backendString(), backendSamplerate(), backendBufferSize(), backendChannels());
+
+            initialized = true;
+            soundBus = new AudioBus().init();
+            musicBus = new AudioBus().init();
+            boolean autopause = Core.app.isMobile();
+
+            Core.app.addListener(new ApplicationListener(){
+
+                @Override
+                public void pause(){
+                    if(autopause){
+                        pauseAll(true);
+                    }
+                }
+
+                @Override
+                public void resume(){
+                    if(autopause){
+                        pauseAll(false);
+                    }
+                }
+            });
+        }catch(Throwable error){
+            Log.info("Failed to initialize audio, disabling sound", error);
+        }
+    }
+
+    public Sound newSound(Fi file){
+        try{
+            return new Sound(file);
+        }catch(Throwable t){
+            Log.err("Error loading sound: " + file, t);
+            return new Sound();
+        }
+    }
+
+    public Music newMusic(Fi file){
+        try{
+            return new Music(file);
+        }catch(Throwable t){
+            Log.err("Error loading music: " + file, t);
+            return new Music();
+        }
+    }
+
+    public boolean isPlaying(int soundId){
+        if(!initialized) return false;
+        return idValid(soundId);
+    }
+
+    public void protect(int voice, boolean protect){
+        if(!initialized) return;
+        idProtected(voice, protect);
+    }
+
+    public int play(AudioSource source, float volume, float pitch, float pan, boolean loop){
+        if(!initialized || source.handle == 0) return -1;
+        return sourcePlay(source.handle, volume, pitch, pan, loop);
+    }
+
+    public void stop(AudioSource source){
+        if(!initialized || source.handle == 0) return;
+        sourceStop(source.handle);
+    }
+
+    public void stop(int soundId){
+        if(!initialized) return;
+        idStop(soundId);
+    }
+
+    public void setPaused(int soundId, boolean paused){
+        if(!initialized) return;
+        idPause(soundId, paused);
+    }
+
+    public void setLooping(int soundId, boolean looping){
+        if(!initialized) return;
+        idLooping(soundId, looping);
+    }
+
+    public void setPitch(int soundId, float pitch){
+        if(!initialized) return;
+        idPitch(soundId, pitch);
+    }
+
+    public void setVolume(int soundId, float volume){
+        if(!initialized) return;
+        idVolume(soundId, volume);
+    }
+
+    public void set(int soundId, float pan, float volume){
+        if(!initialized) return;
+        idVolume(soundId, volume);
+        idPan(soundId, pan);
+    }
+
+    public void fadeFilterParam(int voice, int filter, int attribute, float value, float timeSec){
+        if(!initialized) return;
+        filterFade(voice, filter, attribute, value, timeSec);
+    }
+
+    public void setFilterParam(int voice, int filter, int attribute, float value){
+        if(!initialized) return;
+        filterSet(voice, filter, attribute, value);
+    }
+
+    public void setFilter(int index, @Nullable AudioFilter filter){
+        if(!initialized) return;
+        setGlobalFilter(index, filter == null ? 0 : filter.handle);
+    }
+
+    @Override
+    public void dispose(){
+        if(!initialized) return;
+        deinit();
+    }
+
+}

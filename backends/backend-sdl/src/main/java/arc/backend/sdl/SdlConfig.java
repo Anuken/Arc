@@ -5,7 +5,6 @@ import arc.graphics.*;
 import arc.graphics.gl.*;
 
 public class SdlConfig{
-    public boolean disableAudio = false;
     public int audioDeviceSimultaneousSources = 32;
 
     public int r = 8, g = 8, b = 8, a = 8;

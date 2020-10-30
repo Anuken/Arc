@@ -1,12 +1,11 @@
 package arc.assets.loaders;
 
-import arc.Core;
-import arc.assets.AssetDescriptor;
-import arc.assets.AssetLoaderParameters;
-import arc.assets.AssetManager;
-import arc.audio.Music;
-import arc.struct.Seq;
-import arc.files.Fi;
+import arc.*;
+import arc.assets.*;
+import arc.audio.*;
+import arc.files.*;
+import arc.struct.*;
+import arc.util.*;
 
 /**
  * {@link AssetLoader} for {@link Music} instances. The Music instance is loaded synchronously.
@@ -32,7 +31,7 @@ public class MusicLoader extends AsynchronousAssetLoader<Music, MusicLoader.Musi
 
     @Override
     public void loadAsync(AssetManager manager, String fileName, Fi file, MusicParameter parameter){
-        music = Core.audio.newMusic(file);
+        music = parameter == null || parameter.music == null ? Core.audio.newMusic(file) : music;
     }
 
     @Override
@@ -48,7 +47,13 @@ public class MusicLoader extends AsynchronousAssetLoader<Music, MusicLoader.Musi
     }
 
     public static class MusicParameter extends AssetLoaderParameters<Music>{
+        public @Nullable Music music;
+
         public MusicParameter(){
+        }
+
+        public MusicParameter(@Nullable Music music){
+            this.music = music;
         }
 
         public MusicParameter(LoadedCallback loadedCallback){
