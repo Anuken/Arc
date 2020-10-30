@@ -238,6 +238,11 @@ public class Soloud{
         return soloud.play(*wav);
     */
 
+    static native int sourceCount(long handle); /*
+        AudioSource* wav = (AudioSource*)handle;
+        return soloud.countAudioSource(*wav);
+    */
+
     static native int sourcePlay(long handle, float volume, float pitch, float pan, boolean loop); /*
         AudioSource* wav = (AudioSource*)handle;
 

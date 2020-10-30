@@ -4,8 +4,6 @@ ext{
 }
 
 versions.robovm = "2.3.11"
-versions.jlayer = "1.0.1-gdx"
-versions.jorbis = "0.0.17"
 versions.junit = "4.11"
 versions.androidPlugin = "3.4.1"
 versions.androidSdk = 29
@@ -21,8 +19,6 @@ libraries.robovm = [
 ]
 
 libraries.sdl = [
-    "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
-    "org.jcraft:jorbis:${versions.jorbis}"
 ]
 
 libraries.junit = [

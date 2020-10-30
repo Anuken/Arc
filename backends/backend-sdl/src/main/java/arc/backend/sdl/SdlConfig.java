@@ -5,8 +5,6 @@ import arc.graphics.*;
 import arc.graphics.gl.*;
 
 public class SdlConfig{
-    public int audioDeviceSimultaneousSources = 32;
-
     public int r = 8, g = 8, b = 8, a = 8;
     public int depth = 16, stencil = 0;
     public int samples = 0;

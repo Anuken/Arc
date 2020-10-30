@@ -6,20 +6,7 @@ import arc.util.*;
 
 import static arc.audio.Soloud.*;
 
-/**
- * This interface encapsulates the creation and management of audio resources. It allows you to get direct access to the audio
- * hardware via the {@link AudioDevice} and {@link AudioRecorder} interfaces, create sound effects via the {@link Sound} interface
- * and play music streams via the {@link Music} interface.
- *
- * <p>
- * All resources created via this interface have to be disposed as soon as they are no longer used.
- * </p>
- *
- * <p>
- * Note that all {@link Music} instances will be automatically paused when the {@link ApplicationListener#pause()} method is
- * called, and automatically resumed when the {@link ApplicationListener#resume()} method is called.
- * </p>
- */
+/** High-level wrapper for the Soloud library. */
 public class Audio implements Disposable{
     /** Falloff when playing audio.*/
     public float falloff = 16000f;
@@ -73,6 +60,7 @@ public class Audio implements Disposable{
         }
     }
 
+    /** Loads a sound, logging an error and returning a dummy track upon failure. */
     public Sound newSound(Fi file){
         try{
             return new Sound(file);
@@ -82,6 +70,7 @@ public class Audio implements Disposable{
         }
     }
 
+    /** Loads music, logging an error and returning a dummy track upon failure. */
     public Music newMusic(Fi file){
         try{
             return new Music(file);

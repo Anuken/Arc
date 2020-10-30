@@ -6,8 +6,6 @@ import arc.util.*;
 import static arc.audio.Soloud.*;
 
 public class AudioBus extends AudioSource{
-    protected long handle;
-
     public int id;
 
     public AudioBus(){
@@ -16,17 +14,17 @@ public class AudioBus extends AudioSource{
         }
     }
 
+    @Override
+    public void setFilter(int index, @Nullable AudioFilter filter){
+        if(handle == 0) return;
+        sourceFilter(handle, index, filter == null ? 0 : filter.handle);
+    }
+
     AudioBus init(){
         if(handle != 0) return this;
         this.handle = busNew();
         this.id = sourcePlay(handle);
         return this;
-    }
-
-    @Override
-    public void setFilter(int index, @Nullable AudioFilter filter){
-        if(handle == 0) return;
-        sourceFilter(handle, index, filter == null ? 0 : filter.handle);
     }
 
     public void play(){
