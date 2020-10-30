@@ -1115,7 +1115,7 @@ public class TextField extends Element implements Disableable{
                         // Character may be added to the text.
                         if(filter != null && !filter.acceptChar(TextField.this, character)) return true;
                         if(!withinMaxLength(text.length())) return true;
-                        String insertion = enter ? "\r" : String.valueOf(character);
+                        String insertion = enter ? "\n" : String.valueOf(character);
                         text = insert(cursor++, insertion, text);
                     }
                     if(changeText(oldText, text)){
