@@ -28,8 +28,8 @@ public final class ScreenUtils{
 
     /**
      * Returns the default framebuffer contents as a {@link TextureRegion} with a width and height equal to the current screen
-     * size. The base {@link Texture} always has {@link Mathf#nextPowerOfTwo} dimensions and RGBA8888 {@link Format}. It can be
-     * accessed via {@link TextureRegion#getTexture}. The texture is not managed and has to be reloaded manually on a context loss.
+     * size. The base {@link Texture} always has {@link Mathf#nextPowerOfTwo} dimensions and RGBA8888 {@link Format}.
+     * The texture is not managed and has to be reloaded manually on a context loss.
      * The returned TextureRegion is flipped along the Y axis by default.
      */
     public static TextureRegion getFrameBufferTexture(){
@@ -41,7 +41,7 @@ public final class ScreenUtils{
     /**
      * Returns a portion of the default framebuffer contents specified by x, y, width and height as a {@link TextureRegion} with
      * the same dimensions. The base {@link Texture} always has {@link Mathf#nextPowerOfTwo} dimensions and RGBA8888
-     * {@link Format}. It can be accessed via {@link TextureRegion#getTexture}. This texture is not managed and has to be reloaded
+     * {@link Format}. This texture is not managed and has to be reloaded
      * manually on a context loss. If the width and height specified are larger than the framebuffer dimensions, the Texture will
      * be padded accordingly. Pixels that fall outside of the current screen will have RGBA values of 0.
      * @param x the x position of the framebuffer contents to capture
