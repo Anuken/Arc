@@ -75,15 +75,12 @@ public class Element{
             }
         }
 
-        if(touchablility != null)
-            this.touchable = touchablility.get();
-        if(update != null)
-            update.run();
+        if(touchablility != null) this.touchable = touchablility.get();
+        if(update != null) update.run();
     }
 
     public void updateVisibility(){
-        if(visibility != null)
-            this.visible = visibility.get();
+        if(visibility != null) this.visible = visibility.get();
     }
 
     public boolean hasMouse(){
