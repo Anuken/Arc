@@ -35,7 +35,7 @@ public class Bloom{
         bloomShader.setUniformi("u_texture0", 0);
         bloomShader.setUniformi("u_texture1", 1);
 
-        setSize(buffer.getWidth(), buffer.getHeight());
+        setSize(pingPong1.getWidth(), pingPong1.getHeight());
         setThreshold(threshold);
         setBloomIntesity(bloomIntensity);
         setOriginalIntesity(originalIntensity);
