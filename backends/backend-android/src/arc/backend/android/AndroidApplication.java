@@ -378,7 +378,7 @@ public class AndroidApplication extends Activity implements Application{
 
     @Override
     public void exit(){
-        handler.post(AndroidApplication.this::finish);
+        handler.post(Build.VERSION.SDK_INT < 21 ? AndroidApplication.this::finish : AndroidApplication.this::finishAndRemoveTask);
     }
 
     @Override
