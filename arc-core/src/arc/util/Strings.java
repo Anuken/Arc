@@ -32,7 +32,7 @@ public class Strings{
         return fcause.getMessage() == null ? fcause.getClass().getSimpleName() : fcause.getClass().getSimpleName() + ": " + fcause.getMessage();
     }
 
-    public static String getFinalMesage(Throwable e){
+    public static String getFinalMessage(Throwable e){
         String message = e.getMessage();
         while(e.getCause() != null){
             e = e.getCause();
@@ -185,12 +185,7 @@ public class Strings{
     }
 
     public static String encode(String str){
-        try{
-            return URLEncoder.encode(str, "UTF-8");
-        }catch(UnsupportedEncodingException why){
-            //why the HECK does this even throw an exception
-            throw new RuntimeException(why);
-        }
+        return URLEncoder.encode(str, utf8);
     }
 
     public static String format(String text, Object... args){
@@ -430,7 +425,7 @@ public class Strings{
 
     public static String fixed(float d, int decimalPlaces){
         if(decimalPlaces < 0 || decimalPlaces > 8){
-            throw new IllegalArgumentException("Unsupported number of " + "decimal places: " + decimalPlaces);
+            throw new IllegalArgumentException("Unsupported number of decimal places: " + decimalPlaces);
         }
         String s = "" + Math.round(d * Math.pow(10, decimalPlaces));
         int len = s.length();
