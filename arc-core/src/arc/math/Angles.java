@@ -79,6 +79,39 @@ public class Angles{
             i.get(j);
         }
     }
+    
+    public static float circumference(float r){
+        return 2 * Mathf.PI * r;
+    }
+    
+    /** Takes radius and angle, returns arc length */
+    public static float arcLen(float r, float a){
+        return circumference(r) * (a / 360)
+    }
+    
+    /** Takes radius and length, returns arc angle */
+    public static float arcAng(float r, float l){
+        return l / circumference(r) * 360;
+    }
+    
+    /** Returns the arc angle of an arc on the second radiius who would have the same length as the first */
+    public static float equalArcLen(float r1, float r2, float l){
+        return equalArcMeasures(r1, r2, arcAng(r1, l));
+    }
+    
+    /** Returns the length of an arc on the second radiius who would have the same arc angle as the first */
+    public static float equalArcAng(float r1, float r2, float a){
+        return equalArcMeasures(r1, r2, arcLen(r1, a));
+    }
+    
+    /** Returns the arc angle or length of an arc on the second radiius who would have the same length or arc angle as the first, respsectively */
+    public static float equalArcMeasures(float r1, float r2, float v){
+        return (r2 / r1) * v;
+    }
+    
+    public static float chordLen(float r, float a1, float a2){
+        return 2 * r * Mathf.sinDeg(angleDist(a1, a2));
+    }
 
     public static void circle(int points, float offset, Floatc cons){
         for(int i = 0; i < points; i++){
