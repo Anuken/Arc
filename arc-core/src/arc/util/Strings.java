@@ -32,7 +32,7 @@ public class Strings{
         return fcause.getMessage() == null ? fcause.getClass().getSimpleName() : fcause.getClass().getSimpleName() + ": " + fcause.getMessage();
     }
 
-    public static String getFinalMesage(Throwable e){
+    public static String getFinalMessage(Throwable e){
         String message = e.getMessage();
         while(e.getCause() != null){
             e = e.getCause();
