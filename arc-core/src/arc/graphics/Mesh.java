@@ -185,7 +185,7 @@ public class Mesh implements Disposable{
         if(Core.gl30 != null){
             return new VertexBufferObjectWithVAO(isStatic, maxVertices, vertexAttributes);
         }else{
-            return new VertexBufferObject(isStatic, maxVertices, vertexAttributes);
+            return new VertexArray(maxVertices, vertexAttributes);
         }
     }
 

@@ -1,9 +1,9 @@
 package arc.graphics.g2d;
 
-import arc.struct.*;
 import arc.graphics.*;
 import arc.graphics.gl.*;
 import arc.math.*;
+import arc.struct.*;
 import arc.util.*;
 
 public class MultiCacheBatch extends Batch{
