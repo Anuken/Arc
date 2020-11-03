@@ -280,8 +280,8 @@ public class SpriteBatch extends Batch{
         "\n" +
         "varying lowp vec4 v_color;\n" +
         "varying lowp vec4 v_mix_color;\n" +
-        "varying vec2 v_texCoords;\n" +
-        "uniform sampler2D u_texture;\n" +
+        "varying highp vec2 v_texCoords;\n" +
+        "uniform highp sampler2D u_texture;\n" +
         "\n" +
         "void main(){\n" +
         "  vec4 c = texture2D(u_texture, v_texCoords);\n" +

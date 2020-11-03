@@ -322,7 +322,7 @@ public class Gl{
 
     //STATE - optimizes GL calls
 
-    private static IntBuffer ibuf = Buffers.newIntBuffer(1);
+    private static IntBuffer ibuf = Buffers.newIntBuffer(1), ibuf2 = Buffers.newIntBuffer(2);
     //last active texture unit
     private static int lastActiveTexture = -1;
     //last bound texture2ds, mapping from texture unit to texture handle
@@ -498,6 +498,13 @@ public class Gl{
     public static int getInt(int name){
         ibuf.position(0);
         getIntegerv(name, ibuf);
+        return ibuf.get(0);
+    }
+
+    public static int getShaderPrecision(int shaderType, int precisionType){
+        ibuf.position(0);
+        ibuf2.position(0);
+        getShaderPrecisionFormat(shaderType, precisionType, ibuf2, ibuf);
         return ibuf.get(0);
     }
 
