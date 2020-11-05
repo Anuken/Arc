@@ -305,6 +305,8 @@ public class SDL{
                     data[2] = e.key.keysym.sym;
                     data[3] = e.key.repeat;
                     data[4] = e.key.keysym.scancode;
+                    data[5] = e.key.keysym.mod;
+                    data[6] = e.key.timestamp;
                     break;
                 case SDL_TEXTINPUT:
                     data[0] = 6;
