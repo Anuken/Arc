@@ -2,51 +2,105 @@ sourceSets.main.java.srcDirs = ["src"]
 sourceSets.test.java.srcDirs = ["test"]
 sourceSets.test.resources.srcDirs = ["test/resources"]
 
-//set to true when generating code, make sure to clean first
-def useParameters = false
-
-import com.badlogic.gdx.jnigen.*
-
 dependencies{
     testImplementation libraries.junit
     testImplementation aproj(":natives:natives-desktop")
 }
 
-//TODO implement this
-/*
 apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 
 file("jni").mkdir()
 
 jnigen{
     sharedLibName = "arc"
-    temporaryDir = "../target/native"
+    temporaryDir = file("build/target/native").absolutePath
+    libsDir = file("libs").absolutePath
+
     all{
         cppExcludes = ["iosgl/**"]
+        cppIncludes = ["*.cpp"]
+        cIncludes = ["*.c"]
+        headerDirs += ["soloud/include"]
+        cppIncludes += ["soloud/src/core/**", "soloud/src/audiosource/**", "soloud/src/filter/**"]
+        cIncludes += ["soloud/src/core/**", "soloud/src/audiosource/**", "soloud/src/filter/**"]
     }
-    add(Windows, x32)
-    add(Windows, x64)
-    add(Linux, x64)
+    add(Linux, x64){
+        cppIncludes += ["soloud/src/backend/miniaudio/*.cpp"]
+        cppFlags = "-DWITH_MINIAUDIO " + cppFlags
+        libraries += " -lpthread"
+    }
+    //TODO uncomment when done testing
+    /*
+    add(Windows, x32){
+        cppIncludes += ["soloud/src/backend/winmm/*.cpp"]
+        cppFlags = "-msse -DWITH_WINMM " + cppFlags
+        libraries += " -lwinmm"
+    }
+    add(Windows, x64){
+        cppIncludes += ["soloud/src/backend/winmm/*.cpp"]
+        cppFlags = "-msse -DWITH_WINMM " + cppFlags
+        libraries += " -lwinmm"
+    }
     add(Android){
-        linkerFlags += " -llog"
+        linkerFlags += " -llog -lOpenSLES"
+        cppIncludes += ["soloud/src/backend/opensles/*.cpp"]
+        cppFlags = "-DWITH_OPENSLES " + cppFlags
     }
-    add(MacOsX, x64)
+    add(MacOsX, x64){
+        cppIncludes += ["soloud/src/backend/coreaudio/*.cpp"]
+        cppFlags = "-DWITH_COREAUDIO " + cppFlags
+        libraries += " -Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
+    }
     add(IOS){
         headerDirs = ["iosgl"]
         cppExcludes = []
-    }
+        cppIncludes += ["soloud/src/backend/coreaudio/*.cpp"]
+        cppFlags = "-DWITH_COREAUDIO " + cppFlags
+        libraries += " -Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
+    }*/
 }
 
 task preJni{
+    if(!file("csrc/stb_image.h").exists()){
+        println "Fetching stb_image source..."
+        "curl -o $rootDir/arc-core/csrc/stb_image.h https://raw.githubusercontent.com/nothings/stb/master/stb_image.h".execute().waitFor()
+    }
+
+    if(!file("csrc/soloud").exists()){
+        println "Fetching soloud source..."
+        "git clone https://github.com/jarikomppa/soloud.git $rootDir/arc-core/csrc/soloud --depth 1".execute()
+    }
+
     copy{
-        include "**"
         from "csrc/"
         into "jni/"
+        include "**"
     }
 }
 
-jnigenBuild.dependsOn preJni*/
+//copies files into the right locations
+task postJni{
+    doLast{
+        copy{
+            from "libs/linux64", "libs/windows32", "libs/windows64", "libs/macosx64"
+            into "../natives/natives-desktop/libs"
+            include "**"
+        }
 
+        ["arm64-v8a", "x86", "x86_64", "armeabi-v7a"].each{ p ->
+            copy{
+                from "libs/$p"
+                into "../natives/natives-android/libs/$p/"
+                include "**"
+            }
+        }
+    }
+}
+
+jnigenBuild.dependsOn preJni
+jnigenBuild.finalizedBy postJni
+
+/*
 if(useParameters){
     compileJava{
         options.compilerArgs << '-parameters'
@@ -159,4 +213,4 @@ task natives(dependsOn: [classes, deleteJniFolder]){
             }
         }
     }
-}
+}*/

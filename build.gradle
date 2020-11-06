@@ -57,7 +57,7 @@ allprojects{
 
         dependencies{
             //TODO uncomment when it works
-            //classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.0.0-SNAPSHOT"
+            classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.0.0-SNAPSHOT"
         }
     }
 

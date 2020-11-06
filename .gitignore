@@ -49,7 +49,9 @@ arc-*.zip.MD5
 /backends/backend-sdl/jni
 /arc-core/jni/
 /arc-core/obj/
-
+/arc-core/libs/
+/arc-core/csrc/stb_image.h
+/arc-core/csrc/soloud
 #directories created by fetch.xml
 /tmp/
 
