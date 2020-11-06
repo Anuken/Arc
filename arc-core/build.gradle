@@ -52,7 +52,7 @@ jnigen{
     add(IOS){
         headerDirs += ["iosgl"]
         cppExcludes = ["soloud/src/audiosource/ay/**"]
-        cppIncludes += ["soloud/src/backend/coreaudio/*.cpp"]
+        cppIncludes += ["soloud/src/backend/coreaudio/*.cpp", "iosgl/**"]
         cppFlags = "-DWITH_COREAUDIO " + cppFlags
     }
 }
