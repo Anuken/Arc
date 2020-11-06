@@ -1,6 +1,7 @@
 package arc.backend.robovm;
 
 import arc.*;
+import arc.audio.*;
 import arc.backend.robovm.objectal.*;
 import arc.graphics.*;
 import arc.struct.*;
@@ -21,7 +22,7 @@ public class IOSApplication implements Application{
     IOSViewControllerListener viewControllerListener;
     IOSApplicationConfiguration config;
     IOSGraphics graphics;
-    IOSAudio audio;
+    SoloudAudio audio;
     IOSFiles files;
     IOSInput input;
 
@@ -76,7 +77,7 @@ public class IOSApplication implements Application{
         Core.gl = Core.gl20 = graphics.gl20;
         Core.gl30 = graphics.gl30;
         this.files = new IOSFiles();
-        this.audio = new IOSAudio(config);
+        this.audio = new SoloudAudio();
 
         Core.settings = new Settings();
         Core.net = new Net();

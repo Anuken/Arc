@@ -92,6 +92,14 @@ task postJni{
                 include "**"
             }
         }
+
+        [".tvos", ""].each{ p ->
+            copy{
+                from "libs/ios32/libarc.a$p"
+                into "../natives/natives-ios/libs/$p/"
+                include "**"
+            }
+        }
     }
 }
 
