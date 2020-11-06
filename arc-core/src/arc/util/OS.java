@@ -57,10 +57,16 @@ public class OS{
 
     public static String exec(String... args){
         try{
-            BufferedReader in = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(args).getInputStream()));
+            Process process = Runtime.getRuntime().exec(args);
+            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder result = new StringBuilder();
             String line;
             while((line = in.readLine()) != null){
+                result.append(line).append("\n");
+            }
+
+            BufferedReader inerr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            while((line = inerr.readLine()) != null){
                 result.append(line).append("\n");
             }
             return result.toString();
