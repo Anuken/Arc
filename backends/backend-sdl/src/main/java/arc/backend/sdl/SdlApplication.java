@@ -2,7 +2,6 @@ package arc.backend.sdl;
 
 import arc.*;
 import arc.audio.*;
-import arc.backend.sdl.audio.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.mock.*;
@@ -19,8 +18,6 @@ public class SdlApplication implements Application{
     final SdlGraphics graphics;
     final SdlInput input;
     final SdlConfig config;
-    @Nullable
-    ALAudio audio;
 
     boolean running = true;
     long window, context;
@@ -152,9 +149,6 @@ public class SdlApplication implements Application{
 
             graphics.update();
             input.update();
-            if(audio != null){
-                audio.update();
-            }
             defaultUpdate();
 
             listen(ApplicationListener::update);

@@ -22,7 +22,8 @@ public class TeaSound implements Sound{
         return play(volume, pitch, pan, true);
     }
 
-    private int play(float volume, float pitch, float pan, boolean loop){
+    @Override
+    public int play(float volume, float pitch, float pan, boolean loop){
         final int id = nextId++;
         final TeaMusic instance = new TeaMusic(file);
         instance.setVolume(volume);
