@@ -45,8 +45,8 @@ jnigen{
         cppFlags = "-DWITH_OPENSLES " + cppFlags
     }
     add(MacOsX, x64){
-        cppIncludes += ["soloud/src/backend/coreaudio/*.cpp"]
-        cppFlags = "-DWITH_COREAUDIO " + cppFlags
+        cppIncludes += ["soloud/src/backend/miniaudio/*.cpp"]
+        cppFlags = "-DWITH_MINIAUDIO " + cppFlags
         libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
     }
     add(IOS){
@@ -54,7 +54,6 @@ jnigen{
         cppExcludes = ["soloud/src/audiosource/ay/**"]
         cppIncludes += ["soloud/src/backend/coreaudio/*.cpp"]
         cppFlags = "-DWITH_COREAUDIO " + cppFlags
-        //libraries += "-framework CoreAudio -framework AudioToolbox"
     }
 }
 
