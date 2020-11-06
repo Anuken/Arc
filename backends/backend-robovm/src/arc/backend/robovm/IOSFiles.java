@@ -1,8 +1,8 @@
 package arc.backend.robovm;
 
-import arc.Files;
-import arc.files.Fi;
-import org.robovm.apple.foundation.NSBundle;
+import arc.*;
+import arc.files.*;
+import org.robovm.apple.foundation.*;
 
 public class IOSFiles implements Files{
     // TODO: Use NSSearchPathForDirectoriesInDomains instead?
@@ -10,6 +10,7 @@ public class IOSFiles implements Files{
     static final String appDir = System.getenv("HOME");
     static final String externalPath = appDir + "/Documents/";
     static final String localPath = appDir + "/Library/local/";
+    static final String cachePath = appDir + "/Library/Caches/";
     static final String internalPath = NSBundle.getMainBundle().getBundlePath();
 
     public IOSFiles(){
@@ -40,5 +41,14 @@ public class IOSFiles implements Files{
     @Override
     public boolean isLocalStorageAvailable(){
         return true;
+    }
+
+    @Override
+    public String getCachePath(){
+        try{
+            return NSFileManager.getDefaultManager().getURLsForDirectory(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.AllDomainsMask).get(0).getPath();
+        }catch(Throwable ignored){
+            return cachePath;
+        }
     }
 }

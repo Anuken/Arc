@@ -34,7 +34,10 @@ public abstract class Audio implements Disposable{
      * @return the AudioDevice
      * @throws ArcRuntimeException in case the device could not be created
      */
-    public abstract AudioDevice newAudioDevice(int samplingRate, boolean isMono);
+    @Nullable
+    public AudioDevice newAudioDevice(int samplingRate, boolean isMono){
+        return null;
+    }
 
     /**
      * Creates a new {@link AudioRecorder}. The AudioRecorder has to be disposed after it is no longer used.
@@ -43,7 +46,10 @@ public abstract class Audio implements Disposable{
      * @return the AudioRecorder
      * @throws ArcRuntimeException in case the recorder could not be created
      */
-    public abstract AudioRecorder newAudioRecorder(int samplingRate, boolean isMono);
+    @Nullable
+    public AudioRecorder newAudioRecorder(int samplingRate, boolean isMono){
+        return null;
+    }
 
     /**
      * <p>

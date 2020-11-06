@@ -1,6 +1,7 @@
 package arc.backend.sdl;
 
 import arc.*;
+import arc.audio.*;
 import arc.backend.sdl.audio.*;
 import arc.func.*;
 import arc.graphics.*;
@@ -18,6 +19,7 @@ public class SdlApplication implements Application{
     final SdlGraphics graphics;
     final SdlInput input;
     final SdlConfig config;
+    @Nullable
     ALAudio audio;
 
     boolean running = true;
@@ -37,7 +39,7 @@ public class SdlApplication implements Application{
         Core.settings = new Settings();
 
         try{
-            Core.audio = config.disableAudio ? new MockAudio() : (audio = new ALAudio(config.audioDeviceSimultaneousSources));
+            Core.audio = config.disableAudio ? new MockAudio() : new SoloudAudio();
         }catch(Throwable t){
             Log.err(t);
             Log.err("Error initializing; disabling audio.");

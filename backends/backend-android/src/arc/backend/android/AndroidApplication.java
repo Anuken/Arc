@@ -11,6 +11,7 @@ import android.view.*;
 import android.widget.*;
 import arc.Application;
 import arc.*;
+import arc.audio.*;
 import arc.backend.android.surfaceview.*;
 import arc.func.*;
 import arc.struct.*;
@@ -36,7 +37,7 @@ public class AndroidApplication extends Activity implements Application{
     public Handler handler;
     protected AndroidGraphics graphics;
     protected AndroidInput input;
-    protected AndroidAudio audio;
+    protected SoloudAudio audio;
     protected AndroidFiles files;
     protected Net net;
     protected Settings settings;
@@ -109,7 +110,7 @@ public class AndroidApplication extends Activity implements Application{
         }
         graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy);
         input = new AndroidInput(this, this, graphics.view, config);
-        audio = new AndroidAudio(this, config);
+        audio = new SoloudAudio();
         this.getFilesDir(); // workaround for Android bug #10515463
         files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
         net = new Net();
@@ -120,24 +121,9 @@ public class AndroidApplication extends Activity implements Application{
         this.hideStatusBar = config.hideStatusBar;
         this.honeycombClipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
 
-        // Add a specialized audio lifecycle listener
-        addListener(new ApplicationListener(){
-            @Override
-            public void pause(){
-                audio.pause();
-            }
-
-            @Override
-            public void dispose(){
-                audio.dispose();
-                graphics.dispose();
-            }
-        });
-
         Core.app = this;
         Core.settings = settings;
         Core.input = input;
-        Core.audio = audio;
         Core.files = files;
         Core.graphics = graphics;
         Core.net = net;
@@ -197,7 +183,6 @@ public class AndroidApplication extends Activity implements Application{
         if(hasFocus){
             this.wasFocusChanged = 1;
             if(this.isWaitingForAudio){
-                this.audio.resume();
                 this.isWaitingForAudio = false;
             }
         }else{
@@ -276,7 +261,6 @@ public class AndroidApplication extends Activity implements Application{
 
         this.isWaitingForAudio = true;
         if(this.wasFocusChanged == 1 || this.wasFocusChanged == -1){
-            this.audio.resume();
             this.isWaitingForAudio = false;
         }
         super.onResume();

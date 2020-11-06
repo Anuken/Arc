@@ -29,8 +29,6 @@ jnigen{
         cppFlags = "-DWITH_MINIAUDIO " + cppFlags
         libraries += " -lpthread"
     }
-    //TODO uncomment when done testing
-    /*
     add(Windows, x32){
         cppIncludes += ["soloud/src/backend/winmm/*.cpp"]
         cppFlags = "-msse -DWITH_WINMM " + cppFlags
@@ -57,7 +55,7 @@ jnigen{
         cppIncludes += ["soloud/src/backend/coreaudio/*.cpp"]
         cppFlags = "-DWITH_COREAUDIO " + cppFlags
         libraries += " -Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
-    }*/
+    }
 }
 
 task preJni{

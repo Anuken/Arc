@@ -42,26 +42,36 @@ public interface Files{
         return get(path, FileType.local);
     }
 
+    /** Convenience method that returns a cache file handle. */
+    default Fi cache(String path){
+        return get(getCachePath(), FileType.absolute).child(path);
+    }
+
     /**
-     * Returns the external storage path directory. This is the SD card on Android and the home directory of the current user on
+     * @return the external storage path directory. This is the SD card on Android and the home directory of the current user on
      * the desktop.
      */
     String getExternalStoragePath();
 
     /**
-     * Returns true if the external storage is ready for file IO. Eg, on Android, the SD card is not available when mounted for use
+     * @return true if the external storage is ready for file IO. Eg, on Android, the SD card is not available when mounted for use
      * with a PC.
      */
     boolean isExternalStorageAvailable();
 
     /**
-     * Returns the local storage path directory. This is the private files directory on Android and the directory of the jar on the
+     * @return the local storage path directory. This is the private files directory on Android and the directory of the jar on the
      * desktop.
      */
     String getLocalStoragePath();
 
-    /** Returns true if the local storage is ready for file IO. */
+    /** @return true if the local storage is ready for file IO. */
     boolean isLocalStorageAvailable();
+
+    /** @return absolute path to cache directory. */
+    default String getCachePath(){
+        return local("cache").absolutePath();
+    }
 
     /**
      * Indicates how to resolve a path to a file.
