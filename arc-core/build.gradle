@@ -50,7 +50,7 @@ jnigen{
         libraries += " -Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
     }
     add(IOS){
-        headerDirs = ["iosgl"]
+        headerDirs += ["iosgl"]
         cppExcludes = []
         cppIncludes += ["soloud/src/backend/coreaudio/*.cpp"]
         cppFlags = "-DWITH_COREAUDIO " + cppFlags
