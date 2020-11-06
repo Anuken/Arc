@@ -88,7 +88,7 @@ task postJni{
         ["arm64-v8a", "x86", "x86_64", "armeabi-v7a"].each{ p ->
             copy{
                 from "libs/$p"
-                into "../natives/natives-android/libs/"
+                into "../natives/natives-android/libs/$p/"
                 include "**"
             }
         }
@@ -96,7 +96,7 @@ task postJni{
         [".tvos", ""].each{ p ->
             copy{
                 from "libs/ios32/libarc.a$p"
-                into "../natives/natives-ios/libs/libarc.a$p"
+                into "../natives/natives-ios/libs/"
                 include "**"
             }
         }
