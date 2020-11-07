@@ -52,8 +52,13 @@ public abstract class Audio implements Disposable{
         return null;
     }
 
-    /** Sets a filter at a specified index. */
+    /** Sets a -global- filter at a specified index. */
     public void setFilter(int index, @Nullable AudioFilter filter){
+
+    }
+
+    /** Sets the maximum simultaneous sounds. */
+    public void setMaxSounds(int max){
 
     }
 

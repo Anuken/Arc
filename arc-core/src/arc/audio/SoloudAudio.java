@@ -15,6 +15,7 @@ public class SoloudAudio extends Audio{
     /** Intializes Soloud audio. May throw an exception. */
     public SoloudAudio(){
         init();
+        setMaxSounds(16);
     }
 
     protected void addUpdater(){
@@ -65,6 +66,11 @@ public class SoloudAudio extends Audio{
     @Override
     public void dispose(){
         deinit();
+    }
+
+    @Override
+    public void setMaxSounds(int max){
+
     }
 
     static class SoloudSound implements Sound{
@@ -348,6 +354,7 @@ public class SoloudAudio extends Audio{
     using namespace SoLoud;
 
     Soloud soloud;
+    int maxSounds;
 
     void throwError(JNIEnv* env, int result){
         jclass excClass = env->FindClass("arc/util/ArcRuntimeException");
@@ -382,6 +389,10 @@ public class SoloudAudio extends Audio{
 
     static native void deinit(); /*
         soloud.deinit();
+    */
+
+    static native void maxSounds(int val); /*
+        maxSounds = val;
     */
 
     static native void biquadSet(long handle, int type, float frequency, float resonance); /*
@@ -514,14 +525,13 @@ public class SoloudAudio extends Audio{
         AudioSource* wav = (AudioSource*)handle;
 
         //don't play at all when there are too many voices
-        if(soloud.getVoiceCount() > 32 && kill){
+        if(soloud.getVoiceCount() > maxSounds && kill){
             return 0;
         }
 
         int voice = soloud.play(*wav, volume, pan);
         soloud.setLooping(voice, loop);
         soloud.setRelativePlaySpeed(voice, pitch);
-        soloud.setInaudibleBehavior(voice, false, kill);
 
         return voice;
     */
