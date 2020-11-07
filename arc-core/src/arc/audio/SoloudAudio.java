@@ -167,18 +167,25 @@ public class SoloudAudio extends Audio{
             try{
                 handle = streamLoad(result.absolutePath());
             }catch(Exception e){
-                Log.info("that didn't work, try...");
                 Log.err(e);
 
                 String name = file.nameWithoutExtension() + "__" + file.length() + "." + file.extension();
-                result = Core.files.local(name);
+                result = new Fi(name);
+
+                Log.info("that didn't work, trying @", result);
                 //check if file already exists (use length as "hash")
                 if(!(result.exists() && !result.isDirectory() && result.length() == file.length())){
                     //save to the cached file
                     file.copyTo(result);
                 }
 
-                handle = streamLoad(result.absolutePath());
+                try{
+                    handle = streamLoad(result.absolutePath());
+                }catch(Exception e3){
+                    e3.printStackTrace();
+                    Log.info("suffering");
+                    handle = streamLoad(result.path());
+                }
             }
 
 
@@ -291,24 +298,12 @@ public class SoloudAudio extends Audio{
         }
     }
 
-    public enum FilterType{
-        biquad,
-        echo,
-        lofi,
-        flanger,
-        fft,
-        bassboost,
-        waveshaper,
-        robotize,
-        freeverb
-    }
-
     //TODO
-    public static class Filter{
+    public abstract static class Filter{
         long handle;
 
-        public Filter(FilterType type){
-
+        protected Filter(long handle){
+            this.handle = handle;
         }
     }
 
@@ -318,6 +313,16 @@ public class SoloudAudio extends Audio{
     #include "soloud_wavstream.h"
     #include "soloud_speech.h"
     #include "soloud_thread.h"
+    #include "soloud_filter.h"
+    #include "soloud_biquadresonantfilter.h"
+    #include "soloud_echofilter.h"
+    #include "soloud_lofifilter.h"
+    #include "soloud_flangerfilter.h"
+    #include "soloud_fftfilter.h"
+    #include "soloud_waveshaperfilter.h"
+    #include "soloud_bassboostfilter.h"
+    #include "soloud_robotizefilter.h"
+    #include "soloud_freeverbfilter.h"
     #include <stdio.h>
 
     using namespace SoLoud;
@@ -329,7 +334,7 @@ public class SoloudAudio extends Audio{
         env->ThrowNew(excClass, soloud.getErrorString(result));
     }
 
-     */
+    */
 
     static native void init(); /*
         int result = soloud.init();
@@ -341,7 +346,21 @@ public class SoloudAudio extends Audio{
         soloud.deinit();
     */
 
+    static native long filterBiquad(); /* return (jlong)(new BiquadResonantFilter()); */
+    static native long filterEcho(); /* return (jlong)(new EchoFilter()); */
+    static native long filterLofi(); /* return (jlong)(new LofiFilter()); */
+    static native long filterFlanger(); /* return (jlong)(new FlangerFilter()); */
+    static native long filterFft(); /* return (jlong)(new FFTFilter()); */
+    static native long filterBassBoost(); /* return (jlong)(new BassBoostFilter()); */
+    static native long filterWaveshaper(); /* return (jlong)(new WaveShaperFilter()); */
+    static native long filterRobotize(); /* return (jlong)(new RobotizeFilter()); */
+    static native long filterFreeverb(); /* return (jlong)(new FreeverbFilter()); */
+
     static native long makeFilter(int type); /*
+        return 0;
+     */
+
+    static native long filterParam(long handle, int index, float value); /*
         return 0;
      */
 
