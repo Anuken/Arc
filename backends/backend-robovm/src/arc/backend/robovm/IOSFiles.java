@@ -41,9 +41,4 @@ public class IOSFiles implements Files{
     public boolean isLocalStorageAvailable(){
         return true;
     }
-
-    @Override
-    public String fixPath(String path){
-        return NSFileManager.getDefaultManager().getFileSystemRepresentationForPath(path);
-    }
 }

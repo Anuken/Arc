@@ -174,25 +174,10 @@ public class SoloudAudio extends Audio{
                 throw new UnsupportedOperationException(e);
             }
 
-            try{
-                Log.info("attempt 1: @", result.absolutePath());
-                handle = streamLoad(result.absolutePath());
-            }catch(Exception e){
-                Log.err(e);
 
-                try{
-                    String p2 = Core.files.fixPath(result.absolutePath());
-                    Log.info("attempt 2: @", p2);
-                    handle = streamLoad(p2);
-                }catch(Exception e2){
-                    Log.err(e2);
 
-                    String p3 = Core.files.fixPath(result.path());
-
-                    Log.info("attempt 3: @", p3);
-                    handle = streamLoad(p3);
-                }
-            }
+            Log.info("attempt 1: @", result.absolutePath());
+            handle = streamLoad(result.absolutePath());
         }
 
         public void update(){
@@ -328,7 +313,7 @@ public class SoloudAudio extends Audio{
 
     public static class LofiFilter extends AudioFilter{
         public LofiFilter(){ super(filterLofi()); }
-        public void set(int type, float sampleRate, float depth){ lofiSet(handle, type, sampleRate, depth); }
+        public void set(float sampleRate, float depth){ lofiSet(handle, sampleRate, depth); }
     }
 
     public static class FlangerFilter extends AudioFilter{
@@ -358,6 +343,7 @@ public class SoloudAudio extends Audio{
 
     /*JNI
     #include "soloud.h"
+    #include "soloud_file.h"
     #include "soloud_wav.h"
     #include "soloud_wavstream.h"
     #include "soloud_speech.h"
@@ -384,6 +370,24 @@ public class SoloudAudio extends Audio{
 
     */
 
+    public static native boolean canFopen(String path); /*
+        return fopen(path, "rb") != NULL;
+    */
+
+    public static native boolean canSoloudFopen(String path); /*
+        DiskFile fp;
+		int res = fp.open(aFilename);
+
+		return (res == SO_NO_ERROR);
+    */
+
+    public static native int soloudFopenCode(String path); /*
+        DiskFile fp;
+		int res = fp.open(aFilename);
+
+		return res;
+    */
+
     static native void init(); /*
         int result = soloud.init();
 
@@ -402,28 +406,28 @@ public class SoloudAudio extends Audio{
         ((EchoFilter*)handle)->setParams(delay, decay, filter);
     */
 
-    static native void lofiSet(long handle, int type, float sampleRate, float bitDepth); /*
-        ((LofiFilter*)handle)->setParams(type, sampleRate, bitDepth);
+    static native void lofiSet(long handle, float sampleRate, float bitDepth); /*
+        ((LofiFilter*)handle)->setParams(sampleRate, bitDepth);
     */
 
     static native void flangerSet(long handle, float delay, float frequency); /*
-        ((FlangerFilter*)handle)->setParams(type, delay, frequency);
+        ((FlangerFilter*)handle)->setParams(delay, frequency);
     */
 
     static native void waveShaperSet(long handle, float amount); /*
-        ((WaveShaperFilter*)handle)->setParams(type, amount);
+        ((WaveShaperFilter*)handle)->setParams(amount);
     */
 
     static native void bassBoostSet(long handle, float amount); /*
-        ((BassBoostFilter*)handle)->setParams(type, amount);
+        ((BassboostFilter*)handle)->setParams( amount);
     */
 
     static native void robotizeSet(long handle, float freq, int waveform); /*
-        ((RobotizeFilter*)handle)->setParams(type, freq, waveform);
+        ((RobotizeFilter*)handle)->setParams(freq, waveform);
     */
 
     static native void freeverbSet(long handle, float mode, float roomSize, float damp, float width); /*
-        ((FreeverbFilter*)handle)->setParams(type, mode, roomSize, damp, width);
+        ((FreeverbFilter*)handle)->setParams(mode, roomSize, damp, width);
     */
 
     static native long filterBiquad(); /* return (jlong)(new BiquadResonantFilter()); */
@@ -431,7 +435,7 @@ public class SoloudAudio extends Audio{
     static native long filterLofi(); /* return (jlong)(new LofiFilter()); */
     static native long filterFlanger(); /* return (jlong)(new FlangerFilter()); */
     static native long filterFft(); /* return (jlong)(new FFTFilter()); */
-    static native long filterBassBoost(); /* return (jlong)(new BassBoostFilter()); */
+    static native long filterBassBoost(); /* return (jlong)(new BassboostFilter()); */
     static native long filterWaveShaper(); /* return (jlong)(new WaveShaperFilter()); */
     static native long filterRobotize(); /* return (jlong)(new RobotizeFilter()); */
     static native long filterFreeverb(); /* return (jlong)(new FreeverbFilter()); */
