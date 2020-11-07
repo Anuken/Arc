@@ -2,7 +2,6 @@ package arc.backend.robovm;
 
 import arc.*;
 import arc.audio.*;
-import arc.backend.robovm.objectal.*;
 import arc.graphics.*;
 import arc.mock.*;
 import arc.struct.*;
@@ -15,7 +14,7 @@ import org.robovm.rt.bro.*;
 
 import java.lang.Runtime;
 
-import static org.robovm.apple.foundation.NSPathUtilities.getDocumentsDirectory;
+import static org.robovm.apple.foundation.NSPathUtilities.*;
 
 public class IOSApplication implements Application{
     UIApplication uiApp;
@@ -175,33 +174,6 @@ public class IOSApplication implements Application{
             return lastScreenBounds;
     }
 
-    final void didBecomeActive(UIApplication uiApp){
-        Log.info("[IOSApplication] resumed");
-        // workaround for ObjectAL crash problem
-        // see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
-        OALAudioSession audioSession = OALAudioSession.sharedInstance();
-        if(audioSession != null){
-            audioSession.forceEndInterruption();
-        }
-        if(config.allowIpod){
-            OALSimpleAudio audio = OALSimpleAudio.sharedInstance();
-            if(audio != null){
-                audio.setUseHardwareIfAvailable(false);
-            }
-        }
-        graphics.makeCurrent();
-        graphics.resume();
-    }
-
-    final void willEnterForeground(UIApplication uiApp){
-        // workaround for ObjectAL crash problem
-        // see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
-        OALAudioSession audioSession = OALAudioSession.sharedInstance();
-        if(audioSession != null){
-            audioSession.forceEndInterruption();
-        }
-    }
-
     final void willResignActive(UIApplication uiApp){
         Log.info("[IOSApplication] paused");
         graphics.makeCurrent();
@@ -324,12 +296,10 @@ public class IOSApplication implements Application{
 
         @Override
         public void didBecomeActive(UIApplication application){
-            app.didBecomeActive(application);
         }
 
         @Override
         public void willEnterForeground(UIApplication application){
-            app.willEnterForeground(application);
         }
 
         @Override
