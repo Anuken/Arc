@@ -2,6 +2,7 @@ package arc.audio;
 
 import arc.*;
 import arc.files.*;
+import arc.mock.*;
 import arc.struct.*;
 import arc.util.*;
 
@@ -42,6 +43,9 @@ public class SoloudAudio extends Audio{
             }
             music.add(out);
             return out;
+        }catch(UnsupportedOperationException e){ //cache may be unavailable - don't crash in that case
+            Log.err(e.getCause());
+            return new MockMusic();
         }catch(ArcRuntimeException e){
             throw new ArcRuntimeException("Error loading music: " + file, e);
         }
@@ -131,16 +135,20 @@ public class SoloudAudio extends Audio{
         public SoloudMusic(Fi file){
             Fi result;
 
-            if(file.file().exists()){
-                result = file;
-            }else{
-                String name = file.nameWithoutExtension() + "__" + file.length() + "." + file.extension();
-                result = Core.files.cache(name);
-                //check if file already exists (use length as "hash")
-                if(!(result.exists() && !result.isDirectory() && result.length() == file.length())){
-                    //save to the cached file
-                    file.copyTo(result);
+            try{
+                if(file.file().exists()){
+                    result = file;
+                }else{
+                    String name = file.nameWithoutExtension() + "__" + file.length() + "." + file.extension();
+                    result = Core.files.cache(name);
+                    //check if file already exists (use length as "hash")
+                    if(!(result.exists() && !result.isDirectory() && result.length() == file.length())){
+                        //save to the cached file
+                        file.copyTo(result);
+                    }
                 }
+            }catch(Exception e){
+                throw new UnsupportedOperationException(e);
             }
 
             handle = streamLoad(result.absolutePath());

@@ -4,6 +4,7 @@ import arc.*;
 import arc.audio.*;
 import arc.backend.robovm.objectal.*;
 import arc.graphics.*;
+import arc.mock.*;
 import arc.struct.*;
 import arc.util.*;
 import org.robovm.apple.coregraphics.*;
@@ -22,7 +23,6 @@ public class IOSApplication implements Application{
     IOSViewControllerListener viewControllerListener;
     IOSApplicationConfiguration config;
     IOSGraphics graphics;
-    SoloudAudio audio;
     IOSFiles files;
     IOSInput input;
 
@@ -77,13 +77,16 @@ public class IOSApplication implements Application{
         Core.gl = Core.gl20 = graphics.gl20;
         Core.gl30 = graphics.gl30;
         this.files = new IOSFiles();
-        this.audio = new SoloudAudio();
+        try{
+            Core.audio = new SoloudAudio();
+        }catch(Throwable t){
+            Core.audio = new MockAudio();
+        }
 
         Core.settings = new Settings();
         Core.net = new Net();
         Core.files = this.files;
         Core.graphics = this.graphics;
-        Core.audio = this.audio;
         Core.input = this.input;
 
         this.input.setupPeripherals();
