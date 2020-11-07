@@ -1,6 +1,7 @@
 package arc.audio;
 
 import arc.*;
+import arc.Files.*;
 import arc.files.*;
 import arc.mock.*;
 import arc.struct.*;
@@ -146,7 +147,8 @@ public class SoloudAudio extends Audio{
             Fi result;
 
             try{
-                if(file.file().exists()){
+                if(file.type() == FileType.external){
+                    Log.info("using direct file");
                     result = file;
                 }else{
                     String name = file.nameWithoutExtension() + "__" + file.length() + "." + file.extension();
@@ -156,6 +158,7 @@ public class SoloudAudio extends Audio{
                         //save to the cached file
                         file.copyTo(result);
                     }
+                    Log.info("using cache file: @", result.absolutePath());
                 }
             }catch(Exception e){
                 throw new UnsupportedOperationException(e);
