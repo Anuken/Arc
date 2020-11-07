@@ -7,6 +7,8 @@ import arc.mock.*;
 import arc.struct.*;
 import arc.util.*;
 
+import java.io.*;
+
 public class SoloudAudio extends Audio{
     Seq<SoloudMusic> music = new Seq<>();
 
@@ -43,19 +45,12 @@ public class SoloudAudio extends Audio{
     @Override
     public Music newMusic(Fi file){
         try{
-            try{
-                SoloudMusic out = new SoloudMusic(file);
-                if(music.isEmpty()){
-                    addUpdater();
-                }
-                music.add(out);
-                return out;
-            }catch(UnsupportedOperationException e){ //cache may be unavailable - don't crash in that case
-                Log.err(e.getCause());
-                return new MockMusic();
-            }catch(ArcRuntimeException e){
-                throw new ArcRuntimeException("Error loading music: " + file, e);
+            SoloudMusic out = new SoloudMusic(file);
+            if(music.isEmpty()){
+                addUpdater();
             }
+            music.add(out);
+            return out;
         }catch(Throwable t){
             Log.err(t);
             return new MockMusic();
@@ -86,7 +81,7 @@ public class SoloudAudio extends Audio{
 
         @Override
         public int play(float volume, float pitch, float pan, boolean loop){
-            return sourcePlay(handle, volume, pitch, pan, loop);
+            return sourcePlay(handle, volume, pitch, pan, loop, true);
         }
 
         @Override
@@ -153,31 +148,22 @@ public class SoloudAudio extends Audio{
         float volume = 1f, pitch = 1f, pan = 0f;
         OnCompletionListener listener;
 
-        public SoloudMusic(Fi file){
+        public SoloudMusic(Fi file) throws IOException{
             Fi result;
 
-            try{
-                if(file.type() == FileType.external){
-                    Log.info("using direct file");
-                    result = file;
-                }else{
-                    String name = file.nameWithoutExtension() + "__" + file.length() + "." + file.extension();
-                    result = Core.files.cache(name);
-                    //check if file already exists (use length as "hash")
-                    if(!(result.exists() && !result.isDirectory() && result.length() == file.length())){
-                        //save to the cached file
-                        file.copyTo(result);
-                    }
-                    Log.info("using cache file: @", result.path() + " aka " + result.absolutePath());
+            if(file.type() == FileType.external){
+                result = file;
+            }else{
+                String name = file.nameWithoutExtension() + "__" + file.length() + "." + file.extension();
+                result = Core.files.cache(name);
+                //check if file already exists (use length as "hash")
+                if(!(result.exists() && !result.isDirectory() && result.length() == file.length())){
+                    //save to the cached file
+                    file.copyTo(result);
                 }
-            }catch(Exception e){
-                throw new UnsupportedOperationException(e);
             }
 
-
-
-            Log.info("attempt 1: @", result.absolutePath());
-            handle = streamLoad(result.absolutePath());
+            handle = streamLoad(result.file().getCanonicalPath());
         }
 
         public void update(){
@@ -200,7 +186,7 @@ public class SoloudAudio extends Audio{
             if(!playing){
                 playing = true;
                 paused = false;
-                voice = sourcePlay(handle, volume, pitch, pan, looping);
+                voice = sourcePlay(handle, volume, pitch, pan, looping, false);
                 idProtected(voice, true);
             }else if(paused){
                 idPause(voice, paused = false);
@@ -447,10 +433,11 @@ public class SoloudAudio extends Audio{
         Wav* wav = new Wav();
 
         int result = wav->loadMem((unsigned char*)bytes, length, true, true);
-        //do not play when inaudible
-        wav->setInaudibleBehavior(false, true);
 
         if(result != 0) throwError(env, result);
+
+        //do not play when inaudible
+        wav->setInaudibleBehavior(false, true);
 
         return (jlong)wav;
     */
@@ -523,12 +510,13 @@ public class SoloudAudio extends Audio{
         delete source;
     */
 
-    static native int sourcePlay(long handle, float volume, float pitch, float pan, boolean loop); /*
+    static native int sourcePlay(long handle, float volume, float pitch, float pan, boolean loop, boolean kill); /*
         AudioSource* wav = (AudioSource*)handle;
 
         int voice = soloud.play(*wav, volume, pan);
         soloud.setLooping(voice, loop);
         soloud.setRelativePlaySpeed(voice, pitch);
+        soloud.setInaudibleBehavior(voice, false, kill);
 
         return voice;
     */

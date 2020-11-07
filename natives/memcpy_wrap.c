@@ -29,12 +29,16 @@ float __wrap_expf(float x){
 	return expf(x);
 }
 
-double __wrap_exp(float x){
+double __wrap_exp(double x){
 	return exp(x);
 }
 
 double __wrap_log(double x){
         return log(x);
+}
+
+double __wrap_logf(float x){
+        return logf(x);
 }
 
 double __wrap_pow(double x, double y){

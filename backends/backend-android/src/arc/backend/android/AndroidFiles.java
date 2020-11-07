@@ -53,6 +53,11 @@ public class AndroidFiles implements Files{
     }
 
     @Override
+    public String getCachePath(){
+        return ((Activity)Core.app).getCacheDir().getAbsolutePath();
+    }
+
+    @Override
     public String getExternalStoragePath(){
         return sdcard;
     }

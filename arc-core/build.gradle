@@ -27,7 +27,7 @@ jnigen{
     add(Linux, x64){
         cppIncludes += ["soloud/src/backend/miniaudio/*.cpp"]
         cppFlags = "-DWITH_MINIAUDIO " + cppFlags
-        libraries += " -lpthread"
+        libraries += " -lpthread -lrt"
     }
     add(Windows, x32){
         cppIncludes += ["soloud/src/backend/winmm/*.cpp"]

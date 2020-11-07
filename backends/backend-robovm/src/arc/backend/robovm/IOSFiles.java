@@ -10,11 +10,21 @@ public class IOSFiles implements Files{
     static final String appDir = System.getenv("HOME");
     static final String externalPath = appDir + "/Documents/";
     static final String localPath = appDir + "/Library/local/";
+    static final String cachePath = appDir + "/Library/Caches/";
     static final String internalPath = NSBundle.getMainBundle().getBundlePath();
 
     public IOSFiles(){
         new Fi(externalPath).mkdirs();
         new Fi(localPath).mkdirs();
+    }
+
+    @Override
+    public String getCachePath(){
+        try{
+            return NSFileManager.getDefaultManager().getURLsForDirectory(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.AllDomainsMask).get(0).getPath();
+        }catch(Throwable ignored){
+            return cachePath;
+        }
     }
 
     @Override

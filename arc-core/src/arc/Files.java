@@ -44,7 +44,12 @@ public interface Files{
 
     /** Convenience method that returns a cache file handle. */
     default Fi cache(String path){
-        return local("cache").child(path);
+        return get(getCachePath(), FileType.absolute).child(path);
+    }
+
+    /** @return absolute path to cache directory. */
+    default String getCachePath(){
+        return local("cache").absolutePath();
     }
 
     /**
