@@ -80,6 +80,7 @@ public class IOSApplication implements Application{
         try{
             Core.audio = new SoloudAudio();
         }catch(Throwable t){
+            Log.err(t);
             Core.audio = new MockAudio();
         }
 
