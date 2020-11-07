@@ -174,6 +174,15 @@ public class IOSApplication implements Application{
             return lastScreenBounds;
     }
 
+    final void didBecomeActive(UIApplication uiApp){
+        Log.info("[IOSApplication] resumed");
+        graphics.makeCurrent();
+        graphics.resume();
+    }
+
+    final void willEnterForeground(UIApplication uiApp){
+    }
+
     final void willResignActive(UIApplication uiApp){
         Log.info("[IOSApplication] paused");
         graphics.makeCurrent();
@@ -296,10 +305,12 @@ public class IOSApplication implements Application{
 
         @Override
         public void didBecomeActive(UIApplication application){
+            app.didBecomeActive(application);
         }
 
         @Override
         public void willEnterForeground(UIApplication application){
+            app.willEnterForeground(application);
         }
 
         @Override
