@@ -63,6 +63,11 @@ public class SoloudAudio extends Audio{
     }
 
     @Override
+    public void setFilter(int index, @Nullable AudioFilter filter){
+        setGlobalFilter(index, filter == null ? 0 : filter.handle);
+    }
+
+    @Override
     public void dispose(){
         deinit();
     }
@@ -72,6 +77,11 @@ public class SoloudAudio extends Audio{
 
         public SoloudSound(byte[] data){
             handle = wavLoad(data, data.length);
+        }
+
+        @Override
+        public void setFilter(int index, @Nullable AudioFilter filter){
+            sourceFilter(handle, index, filter == null ? 0 : filter.handle);
         }
 
         @Override
@@ -165,21 +175,22 @@ public class SoloudAudio extends Audio{
             }
 
             try{
-                Log.info("attempt 1");
-                handle = streamLoad(result.path());
+                Log.info("attempt 1: @", result.absolutePath());
+                handle = streamLoad(result.absolutePath());
             }catch(Exception e){
                 Log.err(e);
 
                 try{
-                    Log.info("attempt 2");
-                    String second = result.absolutePath().substring(Fi.get("").absolutePath().length());
-                    if(second.startsWith("/")) second = second.substring(1);
-                    handle = streamLoad(second);
+                    String p2 = Core.files.fixPath(result.absolutePath());
+                    Log.info("attempt 2: @", p2);
+                    handle = streamLoad(p2);
                 }catch(Exception e2){
                     Log.err(e2);
 
-                    Log.info("attempt 3");
-                    handle = streamLoad(result.absolutePath());
+                    String p3 = Core.files.fixPath(result.path());
+
+                    Log.info("attempt 3: @", p3);
+                    handle = streamLoad(p3);
                 }
             }
         }
@@ -192,6 +203,11 @@ public class SoloudAudio extends Audio{
                     listener.complete(this);
                 }
             }
+        }
+
+        @Override
+        public void setFilter(int index, @Nullable AudioFilter filter){
+            sourceFilter(handle, index, filter == null ? 0 : filter.handle);
         }
 
         @Override
@@ -292,57 +308,52 @@ public class SoloudAudio extends Audio{
     }
 
     //TODO
-    public abstract static class Filter{
+    public abstract static class AudioFilter{
         long handle;
 
-        protected Filter(long handle){
+        protected AudioFilter(long handle){
             this.handle = handle;
         }
     }
 
-    public static class BiquadFilter extends Filter{
+    public static class BiquadFilter extends AudioFilter{
         public BiquadFilter(){ super(filterBiquad()); }
         public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }
     }
 
-    public static class EchoFilter extends Filter{
+    public static class EchoFilter extends AudioFilter{
         public EchoFilter(){ super(filterEcho()); }
-        public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }
+        public void set(float delay, float decay, float filter){ echoSet(handle, delay, decay, filter); }
     }
 
-    public static class LofiFilter extends Filter{
+    public static class LofiFilter extends AudioFilter{
         public LofiFilter(){ super(filterLofi()); }
-        public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }
+        public void set(int type, float sampleRate, float depth){ lofiSet(handle, type, sampleRate, depth); }
     }
 
-    public static class FlangerFilter extends Filter{
+    public static class FlangerFilter extends AudioFilter{
         public FlangerFilter(){ super(filterFlanger()); }
-        public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }
+        public void set(float delay, float frequency){ flangerSet(handle, delay, frequency); }
     }
 
-    public static class FftFilter extends Filter{
-        public FftFilter(){ super(filterFft()); }
-        public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }
-    }
-
-    public static class WaveShaperFilter extends Filter{
+    public static class WaveShaperFilter extends AudioFilter{
         public WaveShaperFilter(){ super(filterWaveShaper()); }
-        public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }
+        public void set(float amount){ waveShaperSet(handle, amount); }
     }
 
-    public static class BassBoostFilter extends Filter{
+    public static class BassBoostFilter extends AudioFilter{
         public BassBoostFilter(){ super(filterBassBoost()); }
-        public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }
+        public void set(float amount){ bassBoostSet(handle, amount); }
     }
 
-    public static class RobotizeFilter extends Filter{
+    public static class RobotizeFilter extends AudioFilter{
         public RobotizeFilter(){ super(filterRobotize()); }
-        public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }
+        public void set(float freq, int waveform){ robotizeSet(handle, freq, waveform); }
     }
 
-    public static class FreeverbFilter extends Filter{
+    public static class FreeverbFilter extends AudioFilter{
         public FreeverbFilter(){ super(filterFreeverb()); }
-        public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }
+        public void set(float mode, float roomSize, float damp, float width){ freeverbSet(handle, mode, roomSize, damp, width); }
     }
 
     /*JNI
@@ -356,7 +367,6 @@ public class SoloudAudio extends Audio{
     #include "soloud_echofilter.h"
     #include "soloud_lofifilter.h"
     #include "soloud_flangerfilter.h"
-    #include "soloud_fftfilter.h"
     #include "soloud_waveshaperfilter.h"
     #include "soloud_bassboostfilter.h"
     #include "soloud_robotizefilter.h"
@@ -392,32 +402,28 @@ public class SoloudAudio extends Audio{
         ((EchoFilter*)handle)->setParams(delay, decay, filter);
     */
 
-    static native void lofiSet(long handle, int type, float frequency, float resonance); /*
-        ((LofiFilter*)handle)->setParams(type, frequency, resonance);
+    static native void lofiSet(long handle, int type, float sampleRate, float bitDepth); /*
+        ((LofiFilter*)handle)->setParams(type, sampleRate, bitDepth);
     */
 
-    static native void flangerSet(long handle, int type, float frequency, float resonance); /*
-        ((FlangerFilter*)handle)->setParams(type, frequency, resonance);
+    static native void flangerSet(long handle, float delay, float frequency); /*
+        ((FlangerFilter*)handle)->setParams(type, delay, frequency);
     */
 
-    static native void fftSet(long handle, int type, float frequency, float resonance); /*
-        ((FFTFilter*)handle)->setParams(type, frequency, resonance);
+    static native void waveShaperSet(long handle, float amount); /*
+        ((WaveShaperFilter*)handle)->setParams(type, amount);
     */
 
-    static native void waveShaperSet(long handle, int type, float frequency, float resonance); /*
-        ((WaveShaperFilter*)handle)->setParams(type, frequency, resonance);
+    static native void bassBoostSet(long handle, float amount); /*
+        ((BassBoostFilter*)handle)->setParams(type, amount);
     */
 
-    static native void bassBoostSet(long handle, int type, float frequency, float resonance); /*
-        ((BassBoostFilter*)handle)->setParams(type, frequency, resonance);
+    static native void robotizeSet(long handle, float freq, int waveform); /*
+        ((RobotizeFilter*)handle)->setParams(type, freq, waveform);
     */
 
-    static native void robotizeSet(long handle, int type, float frequency, float resonance); /*
-        ((RobotizeFilter*)handle)->setParams(type, frequency, resonance);
-    */
-
-    static native void freeverbSet(long handle, int type, float frequency, float resonance); /*
-        ((FreeverbFilter*)handle)->setParams(type, frequency, resonance);
+    static native void freeverbSet(long handle, float mode, float roomSize, float damp, float width); /*
+        ((FreeverbFilter*)handle)->setParams(type, mode, roomSize, damp, width);
     */
 
     static native long filterBiquad(); /* return (jlong)(new BiquadResonantFilter()); */
@@ -430,13 +436,9 @@ public class SoloudAudio extends Audio{
     static native long filterRobotize(); /* return (jlong)(new RobotizeFilter()); */
     static native long filterFreeverb(); /* return (jlong)(new FreeverbFilter()); */
 
-    static native long makeFilter(int type); /*
-        return 0;
-     */
-
-    static native long filterParam(long handle, int index, float value); /*
-        return 0;
-     */
+    static native void setGlobalFilter(int index, long handle); /*
+        soloud.setGlobalFilter(index, ((Filter*)handle));
+    */
 
     static native long wavLoad(byte[] bytes, int length); /*
         Wav* wav = new Wav();
@@ -534,5 +536,9 @@ public class SoloudAudio extends Audio{
     static native void sourceStop(long handle); /*
         AudioSource* source = (AudioSource*)handle;
         source->stop();
+    */
+
+    static native void sourceFilter(long handle, int index, long filter); /*
+        ((AudioSource*)handle)->setFilter(index, ((Filter*)filter));
     */
 }

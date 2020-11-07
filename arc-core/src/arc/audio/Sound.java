@@ -1,6 +1,7 @@
 package arc.audio;
 
 import arc.*;
+import arc.audio.SoloudAudio.*;
 import arc.files.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -27,6 +28,14 @@ import arc.util.*;
  * @author badlogicgames@gmail.com
  */
 public interface Sound extends Disposable{
+
+    default void setFilter(int index, @Nullable AudioFilter filter){
+
+    }
+
+    default void setFilter(@Nullable AudioFilter filter){
+        setFilter(0, filter);
+    }
 
     default float calcPan(float x, float y){
         if(Core.app.isHeadless()) return 0f;

@@ -3,6 +3,7 @@ package arc;
 import arc.audio.AudioDevice;
 import arc.audio.AudioRecorder;
 import arc.audio.Music;
+import arc.audio.SoloudAudio.*;
 import arc.audio.Sound;
 import arc.files.Fi;
 import arc.util.*;
@@ -49,6 +50,11 @@ public abstract class Audio implements Disposable{
     @Nullable
     public AudioRecorder newAudioRecorder(int samplingRate, boolean isMono){
         return null;
+    }
+
+    /** Sets a filter at a specified index. */
+    public void setFilter(int index, @Nullable AudioFilter filter){
+
     }
 
     /**

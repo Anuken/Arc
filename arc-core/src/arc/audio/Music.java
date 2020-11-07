@@ -1,10 +1,9 @@
 package arc.audio;
 
-import arc.Application;
-import arc.ApplicationListener;
-import arc.Audio;
-import arc.files.Fi;
-import arc.util.Disposable;
+import arc.*;
+import arc.audio.SoloudAudio.*;
+import arc.files.*;
+import arc.util.*;
 
 /**
  * <p>
@@ -27,6 +26,15 @@ import arc.util.Disposable;
  * @author mzechner
  */
 public interface Music extends Disposable{
+
+    default void setFilter(int index, @Nullable AudioFilter filter){
+
+    }
+
+    default void setFilter(@Nullable AudioFilter filter){
+        setFilter(0, filter);
+    }
+
     /**
      * Starts the play back of the music stream. In case the stream was paused this will resume the play back. In case the music
      * stream is finished playing this will restart the play back.
