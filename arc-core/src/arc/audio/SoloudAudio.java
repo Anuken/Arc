@@ -164,7 +164,7 @@ public class SoloudAudio extends Audio{
                 throw new UnsupportedOperationException(e);
             }
 
-            handle = streamLoad(result.absolutePath());
+            handle = streamLoad(result.path());
         }
 
         public void update(){

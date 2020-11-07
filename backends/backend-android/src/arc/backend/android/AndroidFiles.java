@@ -72,11 +72,6 @@ public class AndroidFiles implements Files{
         return true;
     }
 
-    @Override
-    public String getCachePath(){
-        return ((Activity)Core.app).getCacheDir().getAbsolutePath();
-    }
-
     /**
      * This method can be called to set the version code of the APK expansion
      * file(s) used by the application
