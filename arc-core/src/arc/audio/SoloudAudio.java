@@ -165,30 +165,23 @@ public class SoloudAudio extends Audio{
             }
 
             try{
-                handle = streamLoad(result.absolutePath());
+                Log.info("attempt 1");
+                handle = streamLoad(result.path());
             }catch(Exception e){
                 Log.err(e);
 
-                String name = file.nameWithoutExtension() + "__" + file.length() + "." + file.extension();
-                result = new Fi(name);
-
-                Log.info("that didn't work, trying @", result);
-                //check if file already exists (use length as "hash")
-                if(!(result.exists() && !result.isDirectory() && result.length() == file.length())){
-                    //save to the cached file
-                    file.copyTo(result);
-                }
-
                 try{
+                    Log.info("attempt 2");
+                    String second = result.absolutePath().substring(Fi.get("").absolutePath().length());
+                    if(second.startsWith("/")) second = second.substring(1);
+                    handle = streamLoad(second);
+                }catch(Exception e2){
+                    Log.err(e2);
+
+                    Log.info("attempt 3");
                     handle = streamLoad(result.absolutePath());
-                }catch(Exception e3){
-                    e3.printStackTrace();
-                    Log.info("suffering");
-                    handle = streamLoad(result.path());
                 }
             }
-
-
         }
 
         public void update(){
@@ -307,6 +300,51 @@ public class SoloudAudio extends Audio{
         }
     }
 
+    public static class BiquadFilter extends Filter{
+        public BiquadFilter(){ super(filterBiquad()); }
+        public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }
+    }
+
+    public static class EchoFilter extends Filter{
+        public EchoFilter(){ super(filterEcho()); }
+        public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }
+    }
+
+    public static class LofiFilter extends Filter{
+        public LofiFilter(){ super(filterLofi()); }
+        public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }
+    }
+
+    public static class FlangerFilter extends Filter{
+        public FlangerFilter(){ super(filterFlanger()); }
+        public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }
+    }
+
+    public static class FftFilter extends Filter{
+        public FftFilter(){ super(filterFft()); }
+        public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }
+    }
+
+    public static class WaveShaperFilter extends Filter{
+        public WaveShaperFilter(){ super(filterWaveShaper()); }
+        public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }
+    }
+
+    public static class BassBoostFilter extends Filter{
+        public BassBoostFilter(){ super(filterBassBoost()); }
+        public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }
+    }
+
+    public static class RobotizeFilter extends Filter{
+        public RobotizeFilter(){ super(filterRobotize()); }
+        public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }
+    }
+
+    public static class FreeverbFilter extends Filter{
+        public FreeverbFilter(){ super(filterFreeverb()); }
+        public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }
+    }
+
     /*JNI
     #include "soloud.h"
     #include "soloud_wav.h"
@@ -346,13 +384,49 @@ public class SoloudAudio extends Audio{
         soloud.deinit();
     */
 
+    static native void biquadSet(long handle, int type, float frequency, float resonance); /*
+        ((BiquadResonantFilter*)handle)->setParams(type, frequency, resonance);
+    */
+
+    static native void echoSet(long handle, float delay, float decay, float filter); /*
+        ((EchoFilter*)handle)->setParams(delay, decay, filter);
+    */
+
+    static native void lofiSet(long handle, int type, float frequency, float resonance); /*
+        ((LofiFilter*)handle)->setParams(type, frequency, resonance);
+    */
+
+    static native void flangerSet(long handle, int type, float frequency, float resonance); /*
+        ((FlangerFilter*)handle)->setParams(type, frequency, resonance);
+    */
+
+    static native void fftSet(long handle, int type, float frequency, float resonance); /*
+        ((FFTFilter*)handle)->setParams(type, frequency, resonance);
+    */
+
+    static native void waveShaperSet(long handle, int type, float frequency, float resonance); /*
+        ((WaveShaperFilter*)handle)->setParams(type, frequency, resonance);
+    */
+
+    static native void bassBoostSet(long handle, int type, float frequency, float resonance); /*
+        ((BassBoostFilter*)handle)->setParams(type, frequency, resonance);
+    */
+
+    static native void robotizeSet(long handle, int type, float frequency, float resonance); /*
+        ((RobotizeFilter*)handle)->setParams(type, frequency, resonance);
+    */
+
+    static native void freeverbSet(long handle, int type, float frequency, float resonance); /*
+        ((FreeverbFilter*)handle)->setParams(type, frequency, resonance);
+    */
+
     static native long filterBiquad(); /* return (jlong)(new BiquadResonantFilter()); */
     static native long filterEcho(); /* return (jlong)(new EchoFilter()); */
     static native long filterLofi(); /* return (jlong)(new LofiFilter()); */
     static native long filterFlanger(); /* return (jlong)(new FlangerFilter()); */
     static native long filterFft(); /* return (jlong)(new FFTFilter()); */
     static native long filterBassBoost(); /* return (jlong)(new BassBoostFilter()); */
-    static native long filterWaveshaper(); /* return (jlong)(new WaveShaperFilter()); */
+    static native long filterWaveShaper(); /* return (jlong)(new WaveShaperFilter()); */
     static native long filterRobotize(); /* return (jlong)(new RobotizeFilter()); */
     static native long filterFreeverb(); /* return (jlong)(new FreeverbFilter()); */
 
