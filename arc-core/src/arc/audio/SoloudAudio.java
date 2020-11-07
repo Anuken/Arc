@@ -158,13 +158,30 @@ public class SoloudAudio extends Audio{
                         //save to the cached file
                         file.copyTo(result);
                     }
-                    Log.info("using cache file: @", result.absolutePath());
+                    Log.info("using cache file: @", result.path() + " aka " + result.absolutePath());
                 }
             }catch(Exception e){
                 throw new UnsupportedOperationException(e);
             }
 
-            handle = streamLoad(result.path());
+            try{
+                handle = streamLoad(result.absolutePath());
+            }catch(Exception e){
+                Log.info("that didn't work, try...");
+                Log.err(e);
+
+                String name = file.nameWithoutExtension() + "__" + file.length() + "." + file.extension();
+                result = Core.files.local(name);
+                //check if file already exists (use length as "hash")
+                if(!(result.exists() && !result.isDirectory() && result.length() == file.length())){
+                    //save to the cached file
+                    file.copyTo(result);
+                }
+
+                handle = streamLoad(result.absolutePath());
+            }
+
+
         }
 
         public void update(){
@@ -274,6 +291,26 @@ public class SoloudAudio extends Audio{
         }
     }
 
+    public enum FilterType{
+        biquad,
+        echo,
+        lofi,
+        flanger,
+        fft,
+        bassboost,
+        waveshaper,
+        robotize,
+        freeverb
+    }
+
+    //TODO
+    public static class Filter{
+        long handle;
+
+        public Filter(FilterType type){
+
+        }
+    }
 
     /*JNI
     #include "soloud.h"
@@ -303,6 +340,10 @@ public class SoloudAudio extends Audio{
     static native void deinit(); /*
         soloud.deinit();
     */
+
+    static native long makeFilter(int type); /*
+        return 0;
+     */
 
     static native long wavLoad(byte[] bytes, int length); /*
         Wav* wav = new Wav();
