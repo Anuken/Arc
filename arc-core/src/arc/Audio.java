@@ -57,11 +57,6 @@ public abstract class Audio implements Disposable{
 
     }
 
-    /** Sets the maximum simultaneous sounds. */
-    public void setMaxSounds(int max){
-
-    }
-
     /**
      * <p>
      * Creates a new {@link Sound} which is used to play back audio effects such as gun shots or explosions. The Sound's audio data

@@ -15,7 +15,6 @@ public class SoloudAudio extends Audio{
     /** Intializes Soloud audio. May throw an exception. */
     public SoloudAudio(){
         init();
-        setMaxSounds(16);
     }
 
     protected void addUpdater(){
@@ -33,7 +32,7 @@ public class SoloudAudio extends Audio{
     public Sound newSound(Fi file){
         try{
             try{
-                return new SoloudSound(file.readBytes());
+                return new SoloudSound(file);
             }catch(ArcRuntimeException e){
                 throw new ArcRuntimeException("Error loading sound: " + file, e);
             }
@@ -68,15 +67,13 @@ public class SoloudAudio extends Audio{
         deinit();
     }
 
-    @Override
-    public void setMaxSounds(int max){
-        maxSounds(max);
-    }
-
     static class SoloudSound implements Sound{
         long handle;
+        Fi file;
 
-        public SoloudSound(byte[] data){
+        public SoloudSound(Fi file){
+            byte[] data = file.readBytes();
+            this.file = file;
             handle = wavLoad(data, data.length);
         }
 
@@ -87,7 +84,7 @@ public class SoloudAudio extends Audio{
 
         @Override
         public int play(float volume, float pitch, float pan, boolean loop){
-            return sourcePlay(handle, volume, pitch, pan, loop, true);
+            return sourcePlayClocked(handle, Time.millis(), volume, pitch, pan, loop);
         }
 
         @Override
@@ -145,9 +142,15 @@ public class SoloudAudio extends Audio{
             idVolume(soundId, volume);
             idPan(soundId, pan);
         }
+
+        @Override
+        public String toString(){
+            return "SoloudSound: " + file;
+        }
     }
 
     static class SoloudMusic implements Music{
+        Fi file;
         long handle;
         boolean playing, looping, paused;
         int voice;
@@ -155,6 +158,7 @@ public class SoloudAudio extends Audio{
         OnCompletionListener listener;
 
         public SoloudMusic(Fi file) throws IOException{
+            this.file = file;
             Fi result;
 
             if(file.type() == FileType.external){
@@ -176,10 +180,19 @@ public class SoloudAudio extends Audio{
             if(playing && !idValid(voice)){
                 voice = 0;
                 playing = paused = false;
-                if(listener != null){
+
+                //if looping, play again.
+                if(looping){
+                    play();
+                }else if(listener != null){
                     listener.complete(this);
                 }
             }
+        }
+
+        @Override
+        public String toString(){
+            return "SoloudMusic: " + file;
         }
 
         @Override
@@ -192,7 +205,7 @@ public class SoloudAudio extends Audio{
             if(!playing){
                 playing = true;
                 paused = false;
-                voice = sourcePlay(handle, volume, pitch, pan, looping, false);
+                voice = sourcePlay(handle, volume, pitch, pan, looping);
                 idProtected(voice, true);
             }else if(paused){
                 idPause(voice, paused = false);
@@ -354,31 +367,12 @@ public class SoloudAudio extends Audio{
     using namespace SoLoud;
 
     Soloud soloud;
-    int maxSounds;
 
     void throwError(JNIEnv* env, int result){
         jclass excClass = env->FindClass("arc/util/ArcRuntimeException");
         env->ThrowNew(excClass, soloud.getErrorString(result));
     }
 
-    */
-
-    public static native boolean canFopen(String path); /*
-        return fopen(path, "rb") != NULL;
-    */
-
-    public static native boolean canSoloudFopen(String path); /*
-        DiskFile fp;
-		int res = fp.open(path);
-
-		return (res == SO_NO_ERROR);
-    */
-
-    public static native int soloudFopenCode(String path); /*
-        DiskFile fp;
-		int res = fp.open(path);
-
-		return res;
     */
 
     static native void init(); /*
@@ -389,10 +383,6 @@ public class SoloudAudio extends Audio{
 
     static native void deinit(); /*
         soloud.deinit();
-    */
-
-    static native void maxSounds(int val); /*
-        maxSounds = val;
     */
 
     static native void biquadSet(long handle, int type, float frequency, float resonance); /*
@@ -446,9 +436,6 @@ public class SoloudAudio extends Audio{
         int result = wav->loadMem((unsigned char*)bytes, length, true, true);
 
         if(result != 0) throwError(env, result);
-
-        //do not play when inaudible
-        wav->setInaudibleBehavior(false, true);
 
         return (jlong)wav;
     */
@@ -505,9 +492,6 @@ public class SoloudAudio extends Audio{
 
         if(result != 0) throwError(env, result);
 
-        //do not overlap music
-        stream->setSingleInstance(true);
-
         return (jlong)stream;
     */
 
@@ -521,15 +505,20 @@ public class SoloudAudio extends Audio{
         delete source;
     */
 
-    static native int sourcePlay(long handle, float volume, float pitch, float pan, boolean loop, boolean kill); /*
+    static native int sourcePlay(long handle, float volume, float pitch, float pan, boolean loop); /*
         AudioSource* wav = (AudioSource*)handle;
 
-        //don't play at all when there are too many voices
-        if(soloud.getVoiceCount() > maxSounds && kill){
-            return 0;
-        }
-
         int voice = soloud.play(*wav, volume, pan);
+        soloud.setLooping(voice, loop);
+        soloud.setRelativePlaySpeed(voice, pitch);
+
+        return voice;
+    */
+
+    static native int sourcePlayClocked(long handle, double time, float volume, float pitch, float pan, boolean loop); /*
+        AudioSource* wav = (AudioSource*)handle;
+
+        int voice = soloud.playClocked(time, *wav, volume, pan);
         soloud.setLooping(voice, loop);
         soloud.setRelativePlaySpeed(voice, pitch);
 
