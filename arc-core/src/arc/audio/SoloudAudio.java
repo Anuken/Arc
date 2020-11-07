@@ -513,6 +513,11 @@ public class SoloudAudio extends Audio{
     static native int sourcePlay(long handle, float volume, float pitch, float pan, boolean loop, boolean kill); /*
         AudioSource* wav = (AudioSource*)handle;
 
+        //don't play at all when there are too many voices
+        if(soloud.getVoiceCount() > 32 && kill){
+            return 0;
+        }
+
         int voice = soloud.play(*wav, volume, pan);
         soloud.setLooping(voice, loop);
         soloud.setRelativePlaySpeed(voice, pitch);
