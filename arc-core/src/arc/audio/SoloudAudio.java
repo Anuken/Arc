@@ -376,14 +376,14 @@ public class SoloudAudio extends Audio{
 
     public static native boolean canSoloudFopen(String path); /*
         DiskFile fp;
-		int res = fp.open(aFilename);
+		int res = fp.open(path);
 
 		return (res == SO_NO_ERROR);
     */
 
     public static native int soloudFopenCode(String path); /*
         DiskFile fp;
-		int res = fp.open(aFilename);
+		int res = fp.open(path);
 
 		return res;
     */
