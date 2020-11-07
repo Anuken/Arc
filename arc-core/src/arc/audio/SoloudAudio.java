@@ -28,26 +28,36 @@ public class SoloudAudio extends Audio{
     @Override
     public Sound newSound(Fi file){
         try{
-            return new SoloudSound(file.readBytes());
-        }catch(ArcRuntimeException e){
-            throw new ArcRuntimeException("Error loading sound: " + file, e);
+            try{
+                return new SoloudSound(file.readBytes());
+            }catch(ArcRuntimeException e){
+                throw new ArcRuntimeException("Error loading sound: " + file, e);
+            }
+        }catch(Throwable t){
+            Log.err(t);
+            return new MockSound();
         }
     }
 
     @Override
     public Music newMusic(Fi file){
         try{
-            SoloudMusic out = new SoloudMusic(file);
-            if(music.isEmpty()){
-                addUpdater();
+            try{
+                SoloudMusic out = new SoloudMusic(file);
+                if(music.isEmpty()){
+                    addUpdater();
+                }
+                music.add(out);
+                return out;
+            }catch(UnsupportedOperationException e){ //cache may be unavailable - don't crash in that case
+                Log.err(e.getCause());
+                return new MockMusic();
+            }catch(ArcRuntimeException e){
+                throw new ArcRuntimeException("Error loading music: " + file, e);
             }
-            music.add(out);
-            return out;
-        }catch(UnsupportedOperationException e){ //cache may be unavailable - don't crash in that case
-            Log.err(e.getCause());
+        }catch(Throwable t){
+            Log.err(t);
             return new MockMusic();
-        }catch(ArcRuntimeException e){
-            throw new ArcRuntimeException("Error loading music: " + file, e);
         }
     }
 
