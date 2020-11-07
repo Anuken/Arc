@@ -70,7 +70,7 @@ public class SoloudAudio extends Audio{
 
     @Override
     public void setMaxSounds(int max){
-
+        maxSounds(max);
     }
 
     static class SoloudSound implements Sound{
