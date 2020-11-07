@@ -57,6 +57,26 @@ jnigen{
     }
 }
 
+task fixWrap{
+    doFirst{
+        println "--FIXING SCRIPTS--"
+        copy{
+            from "../natives/memcpy_wrap.c"
+            into "jni/"
+        }
+
+        def f = file("$rootDir/arc-core/jni/build-linux64.xml");
+
+        if(f.exists()){
+            f.text = f.text.replace("-Wl,-wrap,memcpy", "-Wl,-wrap,memcpy,-wrap,pow,-wrap,powf,-wrap,log,-wrap,logf,-wrap,exp,-wrap,expf,-wrap,clock_gettime")
+        }
+    }
+}
+
+getTasksByName("jnigen", true).each{
+    it.finalizedBy fixWrap
+}
+
 task preJni{
     if(!file("csrc/stb_image.h").exists()){
         println "Fetching stb_image source..."

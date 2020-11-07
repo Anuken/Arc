@@ -434,7 +434,6 @@ public class SoloudAudio extends Audio{
     static native long filterEcho(); /* return (jlong)(new EchoFilter()); */
     static native long filterLofi(); /* return (jlong)(new LofiFilter()); */
     static native long filterFlanger(); /* return (jlong)(new FlangerFilter()); */
-    static native long filterFft(); /* return (jlong)(new FFTFilter()); */
     static native long filterBassBoost(); /* return (jlong)(new BassboostFilter()); */
     static native long filterWaveShaper(); /* return (jlong)(new WaveShaperFilter()); */
     static native long filterRobotize(); /* return (jlong)(new RobotizeFilter()); */
@@ -448,6 +447,8 @@ public class SoloudAudio extends Audio{
         Wav* wav = new Wav();
 
         int result = wav->loadMem((unsigned char*)bytes, length, true, true);
+        //do not play when inaudible
+        wav->setInaudibleBehavior(false, true);
 
         if(result != 0) throwError(env, result);
 
