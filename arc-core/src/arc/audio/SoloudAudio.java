@@ -84,7 +84,7 @@ public class SoloudAudio extends Audio{
 
         @Override
         public int play(float volume, float pitch, float pan, boolean loop){
-            return sourcePlayClocked(handle, Time.millis(), volume, pitch, pan, loop);
+            return sourcePlay(handle, volume, pitch, pan, loop);
         }
 
         @Override
@@ -509,16 +509,6 @@ public class SoloudAudio extends Audio{
         AudioSource* wav = (AudioSource*)handle;
 
         int voice = soloud.play(*wav, volume, pan);
-        soloud.setLooping(voice, loop);
-        soloud.setRelativePlaySpeed(voice, pitch);
-
-        return voice;
-    */
-
-    static native int sourcePlayClocked(long handle, double time, float volume, float pitch, float pan, boolean loop); /*
-        AudioSource* wav = (AudioSource*)handle;
-
-        int voice = soloud.playClocked(time, *wav, volume, pan);
         soloud.setLooping(voice, loop);
         soloud.setRelativePlaySpeed(voice, pitch);
 

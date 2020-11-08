@@ -77,7 +77,17 @@ getTasksByName("jnigen", true).each{
     it.finalizedBy fixWrap
 }
 
+task cleanNatives{
+    doLast{
+        delete{delete "$rootDir/arc-core/jni"}
+        delete{delete "$rootDir/arc-core/libs"}
+        delete{delete "$rootDir/arc-core/csrc/soloud"}
+        delete{delete "$rootDir/arc-core/csrc/stb_image.h"}
+    }
+}
+
 task preJni{
+
     if(!file("csrc/stb_image.h").exists()){
         println "Fetching stb_image source..."
         "curl -o $rootDir/arc-core/csrc/stb_image.h https://raw.githubusercontent.com/nothings/stb/master/stb_image.h".execute().waitFor()
