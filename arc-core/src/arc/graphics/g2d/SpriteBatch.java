@@ -49,9 +49,9 @@ public class SpriteBatch extends Batch{
         // 32767 is max vertex index, so 32767 / 4 vertices per sprite = 8191 sprites max.
         if(size > 8191) throw new IllegalArgumentException("Can't have more than 8191 sprites per batch: " + size);
 
-        projectionMatrix.setOrtho(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
-
         if(size > 0){
+            projectionMatrix.setOrtho(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
+
             VertexDataType vertexDataType = Core.gl30 != null ? VertexDataType.vertexBufferObjectWithVAO : VertexDataType.vertexArray;
 
             mesh = new Mesh(vertexDataType, false, size * 4, size * 6,
