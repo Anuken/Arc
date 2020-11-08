@@ -88,6 +88,11 @@ public class SoloudAudio extends Audio{
         }
 
         @Override
+        public boolean isPlaying(int soundId){
+            return idValid(soundId);
+        }
+
+        @Override
         public void stop(){
             sourceStop(handle);
         }
@@ -503,6 +508,11 @@ public class SoloudAudio extends Audio{
     static native double streamDestroy(long handle); /*
         WavStream* source = (WavStream*)handle;
         delete source;
+    */
+
+    static native void sourceInaudible(long handle, boolean tick, boolean play); /*
+        AudioSource* wav = (AudioSource*)handle;
+        wav->setInaudibleBehavior(tick, play);
     */
 
     static native int sourcePlay(long handle, float volume, float pitch, float pan, boolean loop); /*

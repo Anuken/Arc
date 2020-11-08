@@ -155,6 +155,11 @@ public interface Sound extends Disposable{
         return play(volume, pitch, pan, true);
     }
 
+    /** @return whether the specific sound ID is currently playing. */
+    default boolean isPlaying(int soundId){
+        return true;
+    }
+
     /** Stops playing all instances of this sound. */
     void stop();
 
