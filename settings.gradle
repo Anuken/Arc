@@ -15,7 +15,7 @@ include ":backends:backend-android"
 include ":backends:backend-headless"
 include ":backends:backend-sdl"
 include ":backends:backend-robovm"
-include ":backends:backend-teavm"
+//include ":backends:backend-teavm"
 
 include ":natives"
 include ":natives:natives-desktop"
