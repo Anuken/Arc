@@ -64,7 +64,9 @@ public class SoloudAudio extends Audio{
 
     @Override
     public void dispose(){
-        deinit();
+        if(Core.app.isMobile()){
+            deinit();
+        }
     }
 
     static class SoloudSound implements Sound{
