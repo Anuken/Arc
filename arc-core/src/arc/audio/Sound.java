@@ -223,5 +223,5 @@ public interface Sound extends Disposable{
      * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
      * @param volume the volume in the range [0,1].
      */
-    void setPan(int soundId, float pan, float volume);
+    void set(int soundId, float pan, float volume);
 }

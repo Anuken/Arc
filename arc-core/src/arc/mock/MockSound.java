@@ -94,7 +94,7 @@ public class MockSound implements Sound{
     }
 
     @Override
-    public void setPan(int soundId, float pan, float volume){
+    public void set(int soundId, float pan, float volume){
 
     }
 }

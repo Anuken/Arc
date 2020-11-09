@@ -145,7 +145,7 @@ public class SoloudAudio extends Audio{
         }
 
         @Override
-        public void setPan(int soundId, float pan, float volume){
+        public void set(int soundId, float pan, float volume){
             idVolume(soundId, volume);
             idPan(soundId, pan);
         }
