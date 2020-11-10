@@ -1,7 +1,7 @@
 package arc;
 
-import arc.struct.*;
 import arc.graphics.g2d.*;
+import arc.struct.*;
 import arc.util.*;
 
 public interface Application extends Disposable{
@@ -134,6 +134,10 @@ public interface Application extends Disposable{
 
         if(Core.input != null){
             Core.input.dispose();
+        }
+
+        if(Core.audio != null){
+            Core.audio.dispose();
         }
 
         Draw.dispose();

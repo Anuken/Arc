@@ -7,6 +7,8 @@ import arc.math.geom.*;
 import arc.struct.*;
 
 public class Lines{
+    public static boolean useLegacyLine = false;
+
     private static float stroke = 1f;
     private static Vec2 vector = new Vec2(), u = new Vec2(), v = new Vec2(), inner = new Vec2(), outer = new Vec2();
     private static FloatSeq floats = new FloatSeq(20);
@@ -56,44 +58,55 @@ public class Lines{
     }
 
     public static void line(TextureRegion region, float x, float y, float x2, float y2, boolean cap){
-        float hstroke = stroke/2f;
-        float len = Mathf.len(x2 - x, y2 - y);
-        float diffx = (x2 - x) / len * hstroke, diffy = (y2 - y) / len * hstroke;
+        if(useLegacyLine){
+            float length = Mathf.dst(x, y, x2, y2) + (!cap ? 0 : stroke + (float)0 * 2);
+            float angle = (Mathf.atan2(x2 - x, y2 - y)) * Mathf.radDeg;
 
-        if(cap){
-            Fill.quad(
-            region,
-
-            x - diffx - diffy,
-            y - diffy + diffx,
-
-            x - diffx + diffy,
-            y - diffy - diffx,
-
-            x2 + diffx + diffy,
-            y2 + diffy - diffx,
-
-            x2 + diffx - diffy,
-            y2 + diffy + diffx
-
-            );
+            if(cap){
+                Draw.rect(region, x - stroke / 2 - length/2f, y, length, stroke, stroke / 2, stroke / 2, angle);
+            }else{
+                Draw.rect(region, x - length/2f, y, length, stroke, 0, stroke / 2, angle);
+            }
         }else{
-            Fill.quad(
-            region,
+            float hstroke = stroke/2f;
+            float len = Mathf.len(x2 - x, y2 - y);
+            float diffx = (x2 - x) / len * hstroke, diffy = (y2 - y) / len * hstroke;
 
-            x - diffy,
-            y + diffx,
+            if(cap){
+                Fill.quad(
+                region,
 
-            x + diffy,
-            y - diffx,
+                x - diffx - diffy,
+                y - diffy + diffx,
 
-            x2 + diffy,
-            y2 - diffx,
+                x - diffx + diffy,
+                y - diffy - diffx,
 
-            x2 - diffy,
-            y2 + diffx
+                x2 + diffx + diffy,
+                y2 + diffy - diffx,
 
-            );
+                x2 + diffx - diffy,
+                y2 + diffy + diffx
+
+                );
+            }else{
+                Fill.quad(
+                region,
+
+                x - diffy,
+                y + diffx,
+
+                x + diffy,
+                y - diffx,
+
+                x2 + diffy,
+                y2 - diffx,
+
+                x2 - diffy,
+                y2 + diffx
+
+                );
+            }
         }
     }
 

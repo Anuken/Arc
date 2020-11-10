@@ -178,7 +178,6 @@ public class SdlApplication implements Application{
             }
         });
         dispose();
-        Core.audio.dispose();
 
         SDL_DestroyWindow(window);
         SDL_Quit();
