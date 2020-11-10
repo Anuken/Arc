@@ -74,10 +74,13 @@ public class HeadlessApplication implements Application{
             while(running){
                 final long n = Time.nanos();
                 if(t > n){
-                    Threads.sleep((t - n) / 1000000);
-                    t = Time.nanos() + renderInterval;
-                }else
+                    long sleep = t - n;
+                    Threads.sleep(sleep / 1000000, (int)(sleep % 1000000));
+
+                    t += renderInterval;
+                }else{
                     t = n + renderInterval;
+                }
 
                 executeRunnables();
                 graphics.incrementFrameId();

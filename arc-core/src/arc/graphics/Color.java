@@ -634,6 +634,10 @@ public class Color{
         return this;
     }
 
+    public Color write(Color to){
+        return to.set(this);
+    }
+
     public float hue(){
         toHsv(tmpHSV);
         return tmpHSV[0];
