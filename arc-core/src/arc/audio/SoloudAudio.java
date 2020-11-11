@@ -1,7 +1,6 @@
 package arc.audio;
 
 import arc.*;
-import arc.Files.*;
 import arc.files.*;
 import arc.mock.*;
 import arc.struct.*;
@@ -173,6 +172,12 @@ public class SoloudAudio extends Audio{
         }
     }
 
+    static Fi[] caches(String name) throws IOException{
+        return new Fi[]{
+        Core.files.cache(name), Core.settings.getDataDirectory().child("cache").child(name), Core.files.absolute(File.createTempFile(name, "mind").getAbsolutePath())
+        };
+    }
+
     static class SoloudMusic implements Music{
         Fi file;
         long handle;
@@ -181,23 +186,31 @@ public class SoloudAudio extends Audio{
         float volume = 1f, pitch = 1f, pan = 0f;
         OnCompletionListener listener;
 
-        public SoloudMusic(Fi file) throws IOException{
+        public SoloudMusic(Fi file) throws Exception{
             this.file = file;
-            Fi result;
 
-            if(file.type() == FileType.external){
-                result = file;
-            }else{
-                String name = file.nameWithoutExtension() + "__" + file.length() + "." + file.extension();
-                result = Core.files.cache(name);
+            Exception last = null;
+
+            for(Fi result : caches(file.nameWithoutExtension() + "__" + file.length() + "." + file.extension())){
                 //check if file already exists (use length as "hash")
                 if(!(result.exists() && !result.isDirectory() && result.length() == file.length())){
                     //save to the cached file
                     file.copyTo(result);
                 }
+
+                try{
+                    handle = streamLoad(result.file().getCanonicalPath());
+                    return;
+                }catch(Exception e){
+                    try{
+                        handle = streamLoad(result.file().getAbsolutePath());
+                        return;
+                    }catch(Exception ignored){}
+                    last = new ArcRuntimeException("Error loading music: " + result.file().getCanonicalPath(), e);
+                }
             }
 
-            handle = streamLoad(result.file().getCanonicalPath());
+            if(last != null) throw last;
         }
 
         public void update(){
