@@ -91,6 +91,7 @@ public class SoloudAudio extends Audio{
     @Override
     public void dispose(){
         if(initialized){
+            stopAll();
             deinit();
         }
     }
