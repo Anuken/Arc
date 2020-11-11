@@ -59,13 +59,13 @@ public class Lines{
 
     public static void line(TextureRegion region, float x, float y, float x2, float y2, boolean cap){
         if(useLegacyLine){
-            float length = Mathf.dst(x, y, x2, y2) + (!cap ? 0 : stroke + (float)0 * 2);
+            float length = Mathf.dst(x, y, x2, y2) + (!cap ? 0 : stroke);
             float angle = (Mathf.atan2(x2 - x, y2 - y)) * Mathf.radDeg;
 
             if(cap){
-                Draw.rect(region, x - stroke / 2 - length/2f, y, length, stroke, stroke / 2, stroke / 2, angle);
+                Draw.rect(region, x - stroke / 2 + length/2f, y, length, stroke, stroke / 2, stroke / 2, angle);
             }else{
-                Draw.rect(region, x - length/2f, y, length, stroke, 0, stroke / 2, angle);
+                Draw.rect(region, x + length/2f, y, length, stroke, 0, stroke / 2, angle);
             }
         }else{
             float hstroke = stroke/2f;

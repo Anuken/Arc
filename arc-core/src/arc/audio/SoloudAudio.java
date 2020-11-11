@@ -11,10 +11,12 @@ import java.io.*;
 
 public class SoloudAudio extends Audio{
     Seq<SoloudMusic> music = new Seq<>();
+    boolean initialized;
 
     /** Intializes Soloud audio. May throw an exception. */
     public SoloudAudio(){
         init();
+        initialized = true;
     }
 
     protected void addUpdater(){
@@ -69,7 +71,7 @@ public class SoloudAudio extends Audio{
 
     @Override
     public void dispose(){
-        if(Core.app.isMobile()){
+        if(initialized){
             deinit();
         }
     }
