@@ -27,6 +27,20 @@ public class SoloudAudio extends Audio{
                     music.update();
                 }
             }
+
+            @Override
+            public void pause(){
+                if(Core.app.isMobile()){
+                    pauseAll(true);
+                }
+            }
+
+            @Override
+            public void resume(){
+                if(Core.app.isMobile()){
+                    pauseAll(false);
+                }
+            }
         });
     }
 
@@ -378,6 +392,14 @@ public class SoloudAudio extends Audio{
 
     static native void deinit(); /*
         soloud.deinit();
+    */
+
+    static native void stopAll(); /*
+        soloud.stopAll();
+    */
+
+    static native void pauseAll(boolean paused); /*
+        soloud.pauseAll(paused);
     */
 
     static native void biquadSet(long handle, int type, float frequency, float resonance); /*
