@@ -299,14 +299,6 @@ public class SoloudAudio extends Audio{
         }
     }
 
-    public abstract static class AudioFilter{
-        long handle;
-
-        protected AudioFilter(long handle){
-            this.handle = handle;
-        }
-    }
-
     public static class BiquadFilter extends AudioFilter{
         public BiquadFilter(){ super(filterBiquad()); }
         public void set(int type, float frequency, float resonance){ biquadSet(handle, type, frequency, resonance); }

@@ -1,10 +1,6 @@
 package arc;
 
-import arc.audio.AudioDevice;
-import arc.audio.AudioRecorder;
-import arc.audio.Music;
-import arc.audio.SoloudAudio.*;
-import arc.audio.Sound;
+import arc.audio.*;
 import arc.files.Fi;
 import arc.util.*;
 
