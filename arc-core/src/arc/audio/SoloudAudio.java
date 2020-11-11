@@ -30,18 +30,23 @@ public class SoloudAudio extends Audio{
 
             @Override
             public void pause(){
-                if(Core.app.isMobile()){
+                if(shouldAutoPause()){
                     pauseAll(true);
                 }
             }
 
             @Override
             public void resume(){
-                if(Core.app.isMobile()){
+                if(shouldAutoPause()){
                     pauseAll(false);
                 }
             }
         });
+    }
+
+    //technically this is only needed for Android, but w/e
+    public boolean shouldAutoPause(){
+        return Core.app.isMobile();
     }
 
     @Override
@@ -399,7 +404,7 @@ public class SoloudAudio extends Audio{
     */
 
     static native void pauseAll(boolean paused); /*
-        soloud.pauseAll(paused);
+        soloud.setPauseAll(paused);
     */
 
     static native void biquadSet(long handle, int type, float frequency, float resonance); /*
