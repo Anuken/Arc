@@ -469,6 +469,20 @@ public class SoloudAudio extends Audio{
         soloud.fadeFilterParameter(voice, filter, attribute, value, timeSec);
     */
 
+    static native long speechNew(); /*
+        return (jlong)(new Speech());
+    */
+
+    static native void speechText(long handle, String text); /*
+        Speech* source = (Speech*)handle;
+        source->setText(text);
+    */
+
+    static native void speechParams(long handle, int freq, float speed, float declination, int waveform); /*
+        Speech* source = (Speech*)handle;
+        source->setParams(freq, speed, declination, waveform);
+    */
+
     static native long wavLoad(byte[] bytes, int length); /*
         Wav* wav = new Wav();
 
