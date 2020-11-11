@@ -57,6 +57,12 @@ public abstract class Audio implements Disposable{
 
     }
 
+    /** Fades a specific sound's filter parameter to a value over several seconds.
+     * See SoLoud documentation for details on attributes and filter types. */
+    public void fadeFilter(int soundId, int filter, int attribute, float value, float timeSec){
+
+    }
+
     /**
      * <p>
      * Creates a new {@link Sound} which is used to play back audio effects such as gun shots or explosions. The Sound's audio data

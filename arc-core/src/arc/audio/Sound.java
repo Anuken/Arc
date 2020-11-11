@@ -163,12 +163,6 @@ public interface Sound extends Disposable{
     /** Stops playing all instances of this sound. */
     void stop();
 
-    /** Pauses all instances of this sound. */
-    void pause();
-
-    /** Resumes all paused instances of this sound. */
-    void resume();
-
     /** Releases all the resources. */
     void dispose();
 

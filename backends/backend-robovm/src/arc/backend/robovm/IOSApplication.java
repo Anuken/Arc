@@ -12,8 +12,6 @@ import org.robovm.apple.foundation.*;
 import org.robovm.apple.uikit.*;
 import org.robovm.rt.bro.*;
 
-import java.lang.Runtime;
-
 import static org.robovm.apple.foundation.NSPathUtilities.*;
 
 public class IOSApplication implements Application{
@@ -210,11 +208,6 @@ public class IOSApplication implements Application{
     @Override
     public int getVersion(){
         return (int)NSProcessInfo.getSharedProcessInfo().getOperatingSystemVersion().getMajorVersion();
-    }
-
-    @Override
-    public long getJavaHeap(){
-        return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
     }
 
     @Override

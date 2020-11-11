@@ -230,11 +230,6 @@ public class SdlApplication implements Application{
     }
 
     @Override
-    public long getJavaHeap(){
-        return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-    }
-
-    @Override
     public String getClipboardText(){
         return SDL_GetClipboardText();
     }

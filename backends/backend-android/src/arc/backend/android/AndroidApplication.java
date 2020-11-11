@@ -320,11 +320,6 @@ public class AndroidApplication extends Activity implements Application{
     }
 
     @Override
-    public long getJavaHeap(){
-        return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-    }
-
-    @Override
     public long getNativeHeap(){
         return Debug.getNativeHeapAllocatedSize();
     }

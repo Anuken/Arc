@@ -14,36 +14,34 @@ import arc.util.async.*;
 public class HeadlessApplication implements Application{
     protected final MockGraphics graphics;
     protected final Seq<ApplicationListener> listeners = new Seq<>();
-    protected final Seq<Runnable> runnables = new Seq<>();
-    protected final Seq<Runnable> executedRunnables = new Seq<>();
+    protected final TaskQueue runnables = new TaskQueue();
     protected final Cons<Throwable> exceptionHandler;
     protected long renderInterval;
     protected Thread mainLoopThread;
     protected boolean running = true;
 
     public HeadlessApplication(ApplicationListener listener){
-        this(listener, null, t -> { throw new RuntimeException(t); });
+        this(listener, 1f / 60f, t -> { throw new RuntimeException(t); });
     }
 
-    public HeadlessApplication(ApplicationListener listener, HeadlessApplicationConfiguration config, Cons<Throwable> exceptionHandler){
-        if(config == null)
-            config = new HeadlessApplicationConfiguration();
+    public HeadlessApplication(ApplicationListener listener, Cons<Throwable> exceptionHandler){
+        this(listener, 1f / 60f, exceptionHandler);
+    }
+
+    public HeadlessApplication(ApplicationListener listener, float renderIntervalSec, Cons<Throwable> exceptionHandler){
 
         addListener(listener);
         this.exceptionHandler = exceptionHandler;
-        // the following elements are not applicable for headless applications
-        // they are only implemented as mock objects
-        this.graphics = new MockGraphics();
-
+        
         Core.settings = new Settings();
         Core.app = this;
         Core.files = new MockFiles();
         Core.net = new Net();
         Core.audio = new MockAudio();
-        Core.graphics = graphics;
+        Core.graphics = this.graphics = new MockGraphics();
         Core.input = new MockInput();
 
-        renderInterval = config.renderInterval > 0 ? (long)(config.renderInterval * 1000000000f) : (config.renderInterval < 0 ? -1 : 0);
+        renderInterval = renderIntervalSec > 0 ? (long)(renderIntervalSec * 1000000000f) : (renderIntervalSec < 0 ? -1 : 0);
 
         initialize();
     }
@@ -82,7 +80,7 @@ public class HeadlessApplication implements Application{
                     t = n + renderInterval;
                 }
 
-                executeRunnables();
+                runnables.run();
                 graphics.incrementFrameId();
                 defaultUpdate();
 
@@ -107,25 +105,9 @@ public class HeadlessApplication implements Application{
         }
     }
 
-    public void executeRunnables(){
-        synchronized(runnables){
-            for(int i = runnables.size - 1; i >= 0; i--)
-                executedRunnables.add(runnables.get(i));
-            runnables.clear();
-        }
-        if(executedRunnables.size == 0) return;
-        for(int i = executedRunnables.size - 1; i >= 0; i--)
-            executedRunnables.remove(i).run();
-    }
-
     @Override
     public ApplicationType getType(){
         return ApplicationType.headless;
-    }
-
-    @Override
-    public long getJavaHeap(){
-        return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
     }
 
     @Override
@@ -145,9 +127,7 @@ public class HeadlessApplication implements Application{
 
     @Override
     public void post(Runnable runnable){
-        synchronized(runnables){
-            runnables.add(runnable);
-        }
+        runnables.post(runnable);
     }
 
     @Override
@@ -155,8 +135,4 @@ public class HeadlessApplication implements Application{
         post(() -> running = false);
     }
 
-    public static class HeadlessApplicationConfiguration{
-        /** The minimum time (in seconds) between each call to the render method or negative to not call the render method at all. */
-        public float renderInterval = 1f / 60f;
-    }
 }

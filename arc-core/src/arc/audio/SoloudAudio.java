@@ -58,6 +58,11 @@ public class SoloudAudio extends Audio{
     }
 
     @Override
+    public void fadeFilter(int voice, int filter, int attribute, float value, float timeSec){
+        filterFade(voice, filter, attribute, value, timeSec);
+    }
+
+    @Override
     public void setFilter(int index, @Nullable AudioFilter filter){
         setGlobalFilter(index, filter == null ? 0 : filter.handle);
     }
@@ -97,16 +102,6 @@ public class SoloudAudio extends Audio{
         @Override
         public void stop(){
             sourceStop(handle);
-        }
-
-        @Override
-        public void pause(){
-            //TODO remove
-        }
-
-        @Override
-        public void resume(){
-            //TODO remove
         }
 
         @Override
@@ -304,7 +299,6 @@ public class SoloudAudio extends Audio{
         }
     }
 
-    //TODO
     public abstract static class AudioFilter{
         long handle;
 
@@ -435,6 +429,10 @@ public class SoloudAudio extends Audio{
 
     static native void setGlobalFilter(int index, long handle); /*
         soloud.setGlobalFilter(index, ((Filter*)handle));
+    */
+
+    static native void filterFade(int voice, int filter, int attribute, float value, float timeSec); /*
+        soloud.fadeFilterParameter(voice, filter, attribute, value, timeSec);
     */
 
     static native long wavLoad(byte[] bytes, int length); /*

@@ -63,7 +63,7 @@ public interface Application extends Disposable{
 
     /** @return the Java heap memory use in bytes. */
     default long getJavaHeap(){
-        return 0;
+        return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
     }
 
     /** @return the Native heap memory use in bytes. Only valid on Android. */
@@ -71,6 +71,7 @@ public interface Application extends Disposable{
         return 0;
     }
 
+    @Nullable
     String getClipboardText();
 
     void setClipboardText(String text);
