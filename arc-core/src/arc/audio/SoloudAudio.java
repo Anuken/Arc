@@ -15,6 +15,8 @@ public class SoloudAudio extends Audio{
     /** Intializes Soloud audio. May throw an exception. */
     public SoloudAudio(){
         init();
+        Log.info("[Audio] Initialized SoLoud @ using @ at @hz / @ samples / @ channels",
+            version(), backendString(), backendSamplerate(), backendBufferSize(), backendChannels());
         initialized = true;
     }
 
@@ -410,6 +412,30 @@ public class SoloudAudio extends Audio{
 
     static native void deinit(); /*
         soloud.deinit();
+    */
+
+    static native String backendString(); /*
+        return env->NewStringUTF(soloud.getBackendString());
+    */
+
+    static native int backendId(); /*
+        return soloud.getBackendId();
+    */
+
+    static native int backendChannels(); /*
+        return soloud.getBackendChannels();
+    */
+
+    static native int backendSamplerate(); /*
+        return soloud.getBackendSamplerate();
+    */
+
+    static native int backendBufferSize(); /*
+        return soloud.getBackendBufferSize();
+    */
+
+    static native int version(); /*
+        return soloud.getVersion();
     */
 
     static native void stopAll(); /*

@@ -25,9 +25,9 @@ jnigen{
         cIncludes += ["soloud/src/core/**", "soloud/src/audiosource/**", "soloud/src/filter/**"]
     }
     add(Linux, x64){
-        cppIncludes += ["soloud/src/backend/miniaudio/*.cpp"]
-        cppFlags = "-DWITH_MINIAUDIO " + cppFlags
-        libraries += " -lpthread -lrt"
+        cppIncludes += ["soloud/src/backend/miniaudio/*.cpp", "soloud/src/backend/alsa/*.cpp"]
+        cppFlags = "-DWITH_MINIAUDIO -DWITH_ALSA " + cppFlags
+        libraries += " -lpthread -lrt -lasound -lm -ldl"
     }
     add(Windows, x32){
         cppIncludes += ["soloud/src/backend/winmm/*.cpp"]
