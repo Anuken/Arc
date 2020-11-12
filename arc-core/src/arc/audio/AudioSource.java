@@ -9,7 +9,6 @@ public abstract class AudioSource implements Disposable{
 
     public void setFilter(int index, @Nullable AudioFilter filter){
         if(handle == 0) return;
-
         sourceFilter(handle, index, filter == null ? 0 : filter.handle);
     }
 

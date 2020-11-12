@@ -1,10 +1,10 @@
 package arc.audio;
 
 import arc.*;
-import arc.util.*;
 
 import static arc.audio.Soloud.*;
 
+/** A*/
 public class AudioBus extends AudioSource{
     protected long handle;
 
@@ -21,12 +21,6 @@ public class AudioBus extends AudioSource{
         this.handle = busNew();
         this.id = sourcePlay(handle);
         return this;
-    }
-
-    @Override
-    public void setFilter(int index, @Nullable AudioFilter filter){
-        if(handle == 0) return;
-        sourceFilter(handle, index, filter == null ? 0 : filter.handle);
     }
 
     public void play(){
