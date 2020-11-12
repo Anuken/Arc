@@ -1,12 +1,11 @@
 package arc.assets.loaders;
 
-import arc.Core;
-import arc.assets.AssetDescriptor;
-import arc.assets.AssetLoaderParameters;
-import arc.assets.AssetManager;
-import arc.audio.Sound;
-import arc.struct.Seq;
-import arc.files.Fi;
+import arc.*;
+import arc.assets.*;
+import arc.audio.*;
+import arc.files.*;
+import arc.struct.*;
+import arc.util.*;
 
 /**
  * {@link AssetLoader} to load {@link Sound} instances.
@@ -32,7 +31,7 @@ public class SoundLoader extends AsynchronousAssetLoader<Sound, SoundLoader.Soun
 
     @Override
     public void loadAsync(AssetManager manager, String fileName, Fi file, SoundParameter parameter){
-        sound = Core.audio.newSound(file);
+        sound = parameter == null || parameter.sound == null ? Core.audio.newSound(file) : parameter.sound;
     }
 
     @Override
@@ -48,7 +47,13 @@ public class SoundLoader extends AsynchronousAssetLoader<Sound, SoundLoader.Soun
     }
 
     public static class SoundParameter extends AssetLoaderParameters<Sound>{
+        public @Nullable Sound sound;
+
         public SoundParameter(){
+        }
+
+        public SoundParameter(@Nullable Sound sound){
+            this.sound = sound;
         }
 
         public SoundParameter(LoadedCallback loadedCallback){

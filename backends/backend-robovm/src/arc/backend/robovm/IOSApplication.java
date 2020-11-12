@@ -3,7 +3,6 @@ package arc.backend.robovm;
 import arc.*;
 import arc.audio.*;
 import arc.graphics.*;
-import arc.mock.*;
 import arc.struct.*;
 import arc.util.*;
 import org.robovm.apple.coregraphics.*;
@@ -20,7 +19,6 @@ public class IOSApplication implements Application{
     IOSViewControllerListener viewControllerListener;
     IOSApplicationConfiguration config;
     IOSGraphics graphics;
-    IOSFiles files;
     IOSInput input;
 
     /** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
@@ -73,17 +71,10 @@ public class IOSApplication implements Application{
         this.graphics = createGraphics(scale);
         Core.gl = Core.gl20 = graphics.gl20;
         Core.gl30 = graphics.gl30;
-        this.files = new IOSFiles();
-        try{
-            Core.audio = new SoloudAudio();
-        }catch(Throwable t){
-            Log.err(t);
-            Core.audio = new MockAudio();
-        }
-
+        Core.audio = new Audio();
         Core.settings = new Settings();
         Core.net = new Net();
-        Core.files = this.files;
+        Core.files = new IOSFiles();
         Core.graphics = this.graphics;
         Core.input = this.input;
 

@@ -1,6 +1,7 @@
 package arc;
 
 import arc.assets.AssetManager;
+import arc.audio.Audio;
 import arc.graphics.Camera;
 import arc.graphics.GL20;
 import arc.graphics.GL30;

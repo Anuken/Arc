@@ -4,6 +4,10 @@ import arc.*;
 import arc.files.*;
 import arc.util.*;
 
+import java.io.*;
+
+import static arc.audio.Soloud.*;
+
 /**
  * <p>
  * A Music instance represents a streamed audio file. The interface supports pausing, resuming
@@ -24,80 +28,131 @@ import arc.util.*;
  * </p>
  * @author mzechner
  */
-public interface Music extends Disposable{
+public class Music extends AudioSource{
+    @Nullable Fi file;
+    int voice = -1;
+    boolean looping;
+    float volume = 1f, pitch = 1f, pan = 0f;
 
-    default void setFilter(int index, @Nullable AudioFilter filter){
+    /** Loads music from a file. */
+    public Music(Fi file) throws Exception{
+        load(file);
+    }
+
+    /** Creates an empty music instance. This instance cannot be played until loaded. */
+    public Music(){
 
     }
 
-    default void setFilter(@Nullable AudioFilter filter){
-        setFilter(0, filter);
+    public void load(Fi file) throws Exception{
+        this.file = file;
+
+        Exception last = null;
+
+        for(Fi result : caches(file.nameWithoutExtension() + "__" + file.length() + "." + file.extension())){
+            //check if file already exists (use length as "hash")
+            if(!(result.exists() && !result.isDirectory() && result.length() == file.length())){
+                //save to the cached file
+                file.copyTo(result);
+            }
+
+            try{
+                handle = streamLoad(result.file().getCanonicalPath());
+                return;
+            }catch(Exception e){
+                try{
+                    handle = streamLoad(result.file().getAbsolutePath());
+                    return;
+                }catch(Exception ignored){
+                }
+                last = new ArcRuntimeException("Error loading music: " + result.file().getCanonicalPath(), e);
+            }
+        }
+
+        if(last != null) throw last;
     }
 
-    /**
-     * Starts the play back of the music stream. In case the stream was paused this will resume the play back. In case the music
-     * stream is finished playing this will restart the play back.
-     */
-    void play();
+    public void play(){
+        if(handle == 0) return;
 
-    /**
-     * Pauses the play back. If the music stream has not been started yet or has finished playing a call to this method will be
-     * ignored.
-     */
-    void pause();
+        if(idValid(voice) && idGetPause(voice)){
+            pause(false);
+        }else{
+            voice = sourcePlayBus(handle, Core.audio.musicBus.handle, volume, pitch, pan, looping);
 
-    /** Stops a playing or paused Music instance. Next time play() is invoked the Music will start from the beginning. */
-    void stop();
+            idProtected(voice, true);
+        }
+    }
 
-    /** @return whether this music stream is playing */
-    boolean isPlaying();
+    public void pause(boolean pause){
+        if(handle == 0) return;
 
-    /** @return whether the music stream is playing. */
-    boolean isLooping();
+        idPause(voice, pause);
+    }
 
-    /**
-     * Sets whether the music stream is looping. This can be called at any time, whether the stream is playing.
-     * @param isLooping whether to loop the stream
-     */
-    void setLooping(boolean isLooping);
+    public void stop(){
+        if(handle == 0) return;
 
-    /** @return the volume of this music stream. */
-    float getVolume();
+        sourceStop(handle);
+    }
 
-    /**
-     * Sets the volume of this music stream. The volume must be given in the range [0,1] with 0 being silent and 1 being the
-     * maximum volume.
-     */
-    void setVolume(float volume);
+    public boolean isPlaying(){
+        if(handle == 0) return false;
 
-    /**
-     * Sets the panning and volume of this music stream.
-     * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
-     * @param volume the volume in the range [0,1].
-     */
-    void setPan(float pan, float volume);
+        return idValid(voice) && !idGetPause(voice);
+    }
 
-    /** Returns the playback position in seconds. */
-    float getPosition();
+    public boolean isLooping(){
+        return looping;
+    }
 
-    /** Set the playback position in seconds. */
-    void setPosition(float position);
+    public void setLooping(boolean isLooping){
+        if(handle == 0) return;
 
-    /** Needs to be called when the Music is no longer needed. */
-    void dispose();
+        idLooping(voice, looping = isLooping);
+    }
 
-    /**
-     * Register a callback to be invoked when the end of a music stream has been reached during playback.
-     * @param listener the callback that will be run.
-     */
-    void setCompletionListener(OnCompletionListener listener);
+    public float getVolume(){
+        return volume;
+    }
 
-    /** Interface definition for a callback to be invoked when playback of a music stream has completed. */
-    interface OnCompletionListener{
-        /**
-         * Called when the end of a media source is reached during playback.
-         * @param music the Music that reached the end of the file
-         */
-        void complete(Music music);
+    public void setVolume(float volume){
+        if(handle == 0) return;
+
+        this.volume = volume;
+        idVolume(voice, volume);
+    }
+
+    public void set(float pan, float volume){
+        if(handle == 0) return;
+
+        this.volume = volume;
+        this.pan = pan;
+
+        idVolume(voice, volume);
+        idPan(voice, pan);
+    }
+
+    public float getPosition(){
+        if(handle == 0) return 0;
+
+        return idPosition(voice);
+    }
+
+    public void setPosition(float position){
+        if(handle == 0) return;
+
+        idSeek(voice, position);
+    }
+
+    @Override
+    public String toString(){
+        return "SoloudMusic: " + file;
+    }
+
+    protected static Fi[] caches(String name) throws IOException{
+        return new Fi[]{
+        Core.files.cache(name), Core.settings.getDataDirectory().child("cache").child(name), Core.files.absolute(File.createTempFile(name, "mind").getAbsolutePath())
+        };
     }
 }

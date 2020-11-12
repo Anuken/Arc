@@ -4,7 +4,6 @@ import arc.*;
 import arc.audio.*;
 import arc.func.*;
 import arc.graphics.*;
-import arc.mock.*;
 import arc.struct.*;
 import arc.util.*;
 
@@ -34,14 +33,7 @@ public class SdlApplication implements Application{
         Core.graphics = this.graphics = new SdlGraphics(this);
         Core.input = this.input = new SdlInput();
         Core.settings = new Settings();
-
-        try{
-            Core.audio = config.disableAudio ? new MockAudio() : new SoloudAudio();
-        }catch(Throwable t){
-            Log.err(t);
-            Log.err("Error initializing; disabling audio.");
-            Core.audio = new MockAudio();
-        }
+        Core.audio = new Audio();
 
         initIcon();
 

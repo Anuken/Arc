@@ -4,7 +4,8 @@ import arc.*;
 import arc.files.*;
 import arc.math.*;
 import arc.math.geom.*;
-import arc.util.*;
+
+import static arc.audio.Soloud.*;
 
 /**
  * <p>
@@ -24,62 +25,96 @@ import arc.util.*;
  * <p>
  * <b>Note</b>: any values provided will not be clamped, it is the developer's responsibility to do so
  * </p>
- * @author badlogicgames@gmail.com
  */
-public interface Sound extends Disposable{
+public class Sound extends AudioSource{
+    AudioBus bus = Core.audio == null ? null : Core.audio.soundBus;
+    long framePlayed;
+    Fi file;
 
-    default void setFilter(int index, @Nullable AudioFilter filter){
+    /** Creates an empty sound. This sound cannot be played until it is loaded. */
+    public Sound(){
 
     }
 
-    default void setFilter(@Nullable AudioFilter filter){
-        setFilter(0, filter);
+    /** Loads a sound from a file. */
+    public Sound(Fi file){
+        byte[] data = file.readBytes();
+        this.file = file;
+        handle = wavLoad(data, data.length);
     }
 
-    default float calcPan(float x, float y){
+    /**
+     * Plays the sound. If the sound is already playing, it will be played again, concurrently.
+     * @param volume the volume in the range [0,1]
+     * @param pitch the pitch multiplier, 1 == default, >1 == faster, <1 == slower, the value has to be between 0.5 and 2.0
+     * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
+     * @return the id of the sound instance if successful, or -1 on failure.
+     */
+    public int play(float volume, float pitch, float pan, boolean loop){
+        if(handle == 0 || framePlayed == Core.graphics.getFrameId() || bus == null) return -1;
+        framePlayed = Core.graphics.getFrameId();
+        return sourcePlayBus(handle, bus.handle, volume, pitch, pan, loop);
+    }
+
+    /** Sets the bus that will be used for the next play of this SFX. */
+    public void setBus(AudioBus bus){
+        this.bus = bus;
+    }
+
+    public void stop(){
+        sourceStop(handle);
+    }
+
+    public float calcPan(float x, float y){
         if(Core.app.isHeadless()) return 0f;
 
         return Mathf.clamp((x - Core.camera.position.x) / (Core.camera.width / 2f), -0.9f, 0.9f);
     }
 
-    default float calcVolume(float x, float y){
+    public float calcVolume(float x, float y){
         return calcFalloff(x, y) * Core.settings.getInt("sfxvol") / 100f;
     }
 
-    default float calcFalloff(float x, float y){
+    public float calcFalloff(float x, float y){
         if(Core.app.isHeadless()) return 1f;
 
         float dst = Mathf.dst(x, y, Core.camera.position.x, Core.camera.position.y);
-        return Mathf.clamp(1f/(dst*dst/Core.audio.falloff));
+        return Mathf.clamp(1f / (dst * dst / Core.audio.falloff));
     }
 
-    /** Plays this sound at a certain position, with correct panning and volume applied.
-     * Automatically uses the "sfxvolume" setting.*/
-    default int at(float x, float y, float pitch){
+    /**
+     * Plays this sound at a certain position, with correct panning and volume applied.
+     * Automatically uses the "sfxvolume" setting.
+     */
+    public int at(float x, float y, float pitch){
         return at(x, y, pitch, 1f);
     }
 
-    /** Plays this sound at a certain position, with correct panning and volume applied.
-     * Automatically uses the "sfxvolume" setting.*/
-    default int at(float x, float y, float pitch, float volume){
+    /**
+     * Plays this sound at a certain position, with correct panning and volume applied.
+     * Automatically uses the "sfxvolume" setting.
+     */
+    public int at(float x, float y, float pitch, float volume){
         float vol = calcVolume(x, y) * volume;
         if(vol < 0.01f) return -1; //discard
         return play(vol, pitch, calcPan(x, y));
     }
 
-    /** Plays this sound at a certain position, with correct panning and volume applied.
-     * Automatically uses the "sfxvolume" setting.*/
-    default int at(float x, float y){
+    /**
+     * Plays this sound at a certain position, with correct panning and volume applied.
+     * Automatically uses the "sfxvolume" setting.
+     */
+    public int at(float x, float y){
         return at(x, y, 1f);
     }
 
-    /** Plays #at() with this position.*/
-    default int at(Position pos){
+    /** Plays #at() with this position. */
+    public int at(Position pos){
         return at(pos.getX(), pos.getY());
     }
 
-    /** Plays #at() with this position.*/
-    default int at(Position pos, float pitch){
+    /** Plays #at() with this position. */
+    public int at(Position pos, float pitch){
         return at(pos.getX(), pos.getY(), pitch);
     }
 
@@ -88,7 +123,7 @@ public interface Sound extends Disposable{
      * Automatically uses the "sfxvolume" setting.
      * @return the id of the sound instance if successful, or -1 on failure.
      */
-    default int play(){
+    public int play(){
         return play(1f * Core.settings.getInt("sfxvol") / 100f);
     }
 
@@ -98,7 +133,7 @@ public interface Sound extends Disposable{
      * @param volume the volume in the range [0,1]
      * @return the id of the sound instance if successful, or -1 on failure.
      */
-    default int play(float volume){
+    public int play(float volume){
         return play(volume, 1f, 0f);
     }
 
@@ -109,18 +144,7 @@ public interface Sound extends Disposable{
      * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
      * @return the id of the sound instance if successful, or -1 on failure.
      */
-    default int play(float volume, float pitch, float pan, boolean loop){
-        return 0; //todo make non default later
-    }
-
-    /**
-     * Plays the sound. If the sound is already playing, it will be played again, concurrently.
-     * @param volume the volume in the range [0,1]
-     * @param pitch the pitch multiplier, 1 == default, >1 == faster, <1 == slower, the value has to be between 0.5 and 2.0
-     * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
-     * @return the id of the sound instance if successful, or -1 on failure.
-     */
-    default int play(float volume, float pitch, float pan){
+    public int play(float volume, float pitch, float pan){
         return play(volume, pitch, pan, false);
     }
 
@@ -128,93 +152,32 @@ public interface Sound extends Disposable{
      * Plays the sound, looping. If the sound is already playing, it will be played again, concurrently.
      * @return the id of the sound instance if successful, or -1 on failure.
      */
-    default int loop(){
+    public int loop(){
         return loop(1f);
     }
 
     /**
-     * Plays the sound, looping. If the sound is already playing, it will be played again, concurrently. You need to stop the sound
-     * via a call to {@link #stop(int)} using the returned id.
+     * Plays the sound, looping. If the sound is already playing, it will be played again, concurrently.
      * @param volume the volume in the range [0, 1]
      * @return the id of the sound instance if successful, or -1 on failure.
      */
-    default int loop(float volume){
+    public int loop(float volume){
         return loop(1f, 1f, 0f);
     }
 
     /**
-     * Plays the sound, looping. If the sound is already playing, it will be played again, concurrently. You need to stop the sound
-     * via a call to {@link #stop(int)} using the returned id.
+     * Plays the sound, looping. If the sound is already playing, it will be played again, concurrently.
      * @param volume the volume in the range [0,1]
      * @param pitch the pitch multiplier, 1 == default, >1 == faster, <1 == slower, the value has to be between 0.5 and 2.0
      * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
      * @return the id of the sound instance if successful, or -1 on failure.
      */
-    default int loop(float volume, float pitch, float pan){
+    public int loop(float volume, float pitch, float pan){
         return play(volume, pitch, pan, true);
     }
 
-    /** @return whether the specific sound ID is currently playing. */
-    default boolean isPlaying(int soundId){
-        return true;
+    @Override
+    public String toString(){
+        return "SoloudSound: " + file;
     }
-
-    /** Stops playing all instances of this sound. */
-    void stop();
-
-    /** Releases all the resources. */
-    void dispose();
-
-    /**
-     * Stops the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the sound is no longer
-     * playing, this has no effect.
-     * @param soundId the sound id
-     */
-    void stop(int soundId);
-
-    /**
-     * Pauses the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the sound is no
-     * longer playing, this has no effect.
-     * @param soundId the sound id
-     */
-    void pause(int soundId);
-
-    /**
-     * Resumes the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the sound is not
-     * paused, this has no effect.
-     * @param soundId the sound id
-     */
-    void resume(int soundId);
-
-    /**
-     * Sets the sound instance with the given id to be looping. If the sound is no longer playing this has no effect.s
-     * @param soundId the sound id
-     * @param looping whether to loop or not.
-     */
-    void setLooping(int soundId, boolean looping);
-
-    /**
-     * Changes the pitch multiplier of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}.
-     * If the sound is no longer playing, this has no effect.
-     * @param soundId the sound id
-     * @param pitch the pitch multiplier, 1 == default, >1 == faster, <1 == slower, the value has to be between 0.5 and 2.0
-     */
-    void setPitch(int soundId, float pitch);
-
-    /**
-     * Changes the volume of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the
-     * sound is no longer playing, this has no effect.
-     * @param soundId the sound id
-     * @param volume the volume in the range 0 (silent) to 1 (max volume).
-     */
-    void setVolume(int soundId, float volume);
-
-    /**
-     * Sets the panning and volume of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}.
-     * If the sound is no longer playing, this has no effect. Note that panning only works for mono sounds, not for stereo sounds!
-     * @param soundId the sound id
-     * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
-     * @param volume the volume in the range [0,1].
-     */
-    void set(int soundId, float pan, float volume);
 }
