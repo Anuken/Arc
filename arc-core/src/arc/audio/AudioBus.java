@@ -1,19 +1,23 @@
 package arc.audio;
 
 import arc.*;
+import arc.util.*;
 
 import static arc.audio.Soloud.*;
 
-/** A*/
 public class AudioBus extends AudioSource{
-    protected long handle;
-
     public int id;
 
     public AudioBus(){
         if(Core.audio != null && Core.audio.initialized){
             init();
         }
+    }
+
+    @Override
+    public void setFilter(int index, @Nullable AudioFilter filter){
+        if(handle == 0) return;
+        sourceFilter(handle, index, filter == null ? 0 : filter.handle);
     }
 
     AudioBus init(){
