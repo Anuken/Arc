@@ -9,8 +9,24 @@ import arc.func.Cons;
 public class Events{
     private static final ObjectMap<Object, Seq<Cons<?>>> events = new ObjectMap<>();
 
+    public static <T> void on(Class<T> type, Cons<T> listener, Cons<Throwable> error){
+        try{
+            on(type, listener);
+        }catch(Throwable t){
+            error.get(t);
+        }
+    }
+
     public static <T> void on(Class<T> type, Cons<T> listener){
         events.get(type, Seq::new).add(listener);
+    }
+
+    public static void run(Object type, Runnable listener, Cons<Throwable> error){
+        try{
+            run(type, listener);
+        }catch(Throwable t){
+            error.get(t);
+        }
     }
 
     public static void run(Object type, Runnable listener){
