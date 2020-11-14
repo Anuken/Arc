@@ -501,13 +501,6 @@ public class Gl{
         return ibuf.get(0);
     }
 
-    public static int getShaderPrecision(int shaderType, int precisionType){
-        ibuf.position(0);
-        ibuf2.position(0);
-        getShaderPrecisionFormat(shaderType, precisionType, ibuf2, ibuf);
-        return ibuf.get(0);
-    }
-
     public static String getString(int name){
         return Core.gl.glGetString(name);
     }
