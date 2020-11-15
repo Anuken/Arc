@@ -85,19 +85,19 @@ public class Music extends AudioSource{
     }
 
     public void pause(boolean pause){
-        if(handle == 0) return;
+        if(handle == 0 || voice <= 0) return;
 
         idPause(voice, pause);
     }
 
     public void stop(){
-        if(handle == 0) return;
+        if(handle == 0 || voice <= 0) return;
 
         sourceStop(handle);
     }
 
     public boolean isPlaying(){
-        if(handle == 0) return false;
+        if(handle == 0 || voice <= 0) return false;
 
         return idValid(voice) && !idGetPause(voice);
     }
@@ -107,9 +107,10 @@ public class Music extends AudioSource{
     }
 
     public void setLooping(boolean isLooping){
-        if(handle == 0) return;
+        this.looping = isLooping;
+        if(handle == 0 || voice <= 0) return;
 
-        idLooping(voice, looping = isLooping);
+        idLooping(voice, isLooping);
     }
 
     public float getVolume(){
@@ -117,17 +118,17 @@ public class Music extends AudioSource{
     }
 
     public void setVolume(float volume){
-        if(handle == 0) return;
-
         this.volume = volume;
+        if(handle == 0 || voice <= 0) return;
+
         idVolume(voice, volume);
     }
 
     public void set(float pan, float volume){
-        if(handle == 0) return;
-
         this.volume = volume;
         this.pan = pan;
+
+        if(handle == 0 || voice <= 0) return;
 
         idVolume(voice, volume);
         idPan(voice, pan);
@@ -140,7 +141,7 @@ public class Music extends AudioSource{
     }
 
     public void setPosition(float position){
-        if(handle == 0) return;
+        if(handle == 0 || voice <= 0) return;
 
         idSeek(voice, position);
     }
