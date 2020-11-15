@@ -12,6 +12,7 @@ import java.util.zip.*;
 public class ZipFi extends Fi{
     private ZipFi[] children = {};
     private ZipFi parent;
+    private String path;
 
     private final @Nullable ZipEntry entry;
     private final ZipFile zip;
@@ -22,8 +23,9 @@ public class ZipFi extends Fi{
 
         try{
             zip = new ZipFile(zipFileLoc.file());
+            path = "";
 
-            Seq<String> names = Seq.with(Collections.list(zip.entries())).map(ZipEntry::getName);
+            Seq<String> names = Seq.with(Collections.list(zip.entries())).map(z -> z.getName().replace('\\', '/'));
             ObjectSet<String> paths = new ObjectSet<>();
 
             for(String path : names){
@@ -47,7 +49,7 @@ public class ZipFi extends Fi{
 
             //find parents
             files.each(file -> file.parent = files.find(other -> other.isDirectory() && other != file
-                && file.path().startsWith(other.path()) && !file.path().substring(1 + other.path().length()).contains("/")));
+                && file.path().startsWith(other.path()) && countSlahes(file.path().substring(1 + other.path().length())) <= 1));
             //transform parents into children
             files.each(file -> file.children = files.select(f -> f.parent == file).toArray(ZipFi.class));
 
@@ -57,14 +59,24 @@ public class ZipFi extends Fi{
         }
     }
 
+    private int countSlahes(String str){
+        int sum = 0;
+        for(int i = 0; i < str.length(); i++){
+            if(str.charAt(i) == '/') sum ++;
+        }
+        return sum;
+    }
+
     private ZipFi(ZipEntry entry, ZipFile file){
         super(new File(entry.getName()), FileType.absolute);
+        this.path = entry.getName().replace('\\', '/');
         this.entry = entry;
         this.zip = file;
     }
 
     private ZipFi(String path, ZipFile file){
         super(new File(path), FileType.absolute);
+        this.path = path.replace('\\', '/');
         this.entry = null;
         this.zip = file;
     }
@@ -106,6 +118,11 @@ public class ZipFi extends Fi{
     }
 
     @Override
+    public String path(){
+        return path;
+    }
+
+    @Override
     public Fi parent(){
         return parent;
     }
@@ -133,5 +150,10 @@ public class ZipFi extends Fi{
     @Override
     public long length(){
         return isDirectory() ? 0 : entry.getSize();
+    }
+
+    @Override
+    public String toString(){
+        return path();
     }
 }

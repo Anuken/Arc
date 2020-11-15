@@ -237,7 +237,7 @@ public class Settings{
         }
     }
 
-    /** Clears all prefence values. */
+    /** Clears all preference values. */
     public void clear(){
         values.clear();
     }
