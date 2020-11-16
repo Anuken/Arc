@@ -119,6 +119,14 @@ public abstract class Input implements Disposable{
     /** @return whether a new touch down event just occurred. */
     public abstract boolean justTouched();
 
+    public int getTouches(){
+        int sum = 0;
+        for(int i = 0; i < 10; i++){
+            if(isTouched(i)) sum ++;
+        }
+        return sum;
+    }
+
     /**
      * Whether the screen is currently touched by the pointer with the given index. Pointers are indexed from 0 to n. The pointer
      * id identifies the order in which the fingers went down on the screen, e.g. 0 is the first finger, 1 is the second and so on.
