@@ -49,7 +49,9 @@ public class ZipFi extends Fi{
 
             //find parents
             files.each(file -> file.parent = files.find(other -> other.isDirectory() && other != file
-                && file.path().startsWith(other.path()) && countSlahes(file.path().substring(1 + other.path().length())) <= 1));
+                && file.path().startsWith(other.path())
+                && (!file.path().substring(1 + other.path().length()).contains("/") || //do not allow extra slashes in the path
+                    (file.path().endsWith("/") && countSlahes(file.path().substring(1 + other.path().length())) == 1)))); //unless it's a directory
             //transform parents into children
             files.each(file -> file.children = files.select(f -> f.parent == file).toArray(ZipFi.class));
 
