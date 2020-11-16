@@ -38,6 +38,10 @@ public class Sound extends AudioSource{
 
     /** Loads a sound from a file. */
     public Sound(Fi file){
+        load(file);
+    }
+
+    public void load(Fi file){
         byte[] data = file.readBytes();
         this.file = file;
         handle = wavLoad(data, data.length);

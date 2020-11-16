@@ -12,7 +12,6 @@ import arc.util.*;
  * @author mzechner
  */
 public class MusicLoader extends AsynchronousAssetLoader<Music, MusicLoader.MusicParameter>{
-
     private Music music;
 
     public MusicLoader(FileHandleResolver resolver){
@@ -31,7 +30,15 @@ public class MusicLoader extends AsynchronousAssetLoader<Music, MusicLoader.Musi
 
     @Override
     public void loadAsync(AssetManager manager, String fileName, Fi file, MusicParameter parameter){
-        music = parameter == null || parameter.music == null ? Core.audio.newMusic(file) : music;
+        if(parameter != null && parameter.music != null){
+            try{
+                (music = parameter.music).load(file);
+            }catch(Exception e){
+                Log.err(e);
+            }
+        }else{
+            music = Core.audio.newMusic(file);
+        }
     }
 
     @Override

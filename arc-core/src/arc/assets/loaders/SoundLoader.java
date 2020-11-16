@@ -12,7 +12,6 @@ import arc.util.*;
  * @author mzechner
  */
 public class SoundLoader extends AsynchronousAssetLoader<Sound, SoundLoader.SoundParameter>{
-
     private Sound sound;
 
     public SoundLoader(FileHandleResolver resolver){
@@ -31,7 +30,11 @@ public class SoundLoader extends AsynchronousAssetLoader<Sound, SoundLoader.Soun
 
     @Override
     public void loadAsync(AssetManager manager, String fileName, Fi file, SoundParameter parameter){
-        sound = parameter == null || parameter.sound == null ? Core.audio.newSound(file) : parameter.sound;
+        if(parameter != null && parameter.sound != null){
+            (sound = parameter.sound).load(file);
+        }else{
+            sound = Core.audio.newSound(file);
+        }
     }
 
     @Override
