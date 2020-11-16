@@ -513,7 +513,7 @@ public class FreeTypeFontGenerator implements Disposable{
         if(spaceGlyph == null){
             spaceGlyph = new Glyph();
             spaceGlyph.xadvance = (int)data.spaceXadvance + parameter.spaceX;
-            spaceGlyph.id = (int)' ';
+            spaceGlyph.id = ' ';
             data.setGlyph(' ', spaceGlyph);
         }
         if(spaceGlyph.width == 0) spaceGlyph.width = (int)(spaceGlyph.xadvance + data.padRight);
