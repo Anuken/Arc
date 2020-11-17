@@ -437,10 +437,7 @@ public class Gl{
     }
 
     public static void depthMask(boolean flag){
-        if(optimize && wasDepthMask != flag) return;
-
         Core.gl.glDepthMask(flag);
-        wasDepthMask = flag;
     }
 
     public static void depthRangef(float zNear, float zFar){
