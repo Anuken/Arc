@@ -124,6 +124,14 @@ public class Net{
         /** Whether a cross-origin request will include credentials. By default false. */
         public boolean includeCredentials = false;
 
+        public HttpRequest(){
+
+        }
+
+        public HttpRequest(HttpMethod method){
+            this.method = method;
+        }
+
         public HttpRequest method(HttpMethod method){
             this.method = method;
             return this;
