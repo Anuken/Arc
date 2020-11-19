@@ -10,7 +10,7 @@ versions.androidSdk = 29
 versions.androidBuildTools = "29.0.3"
 versions.teavm = '0.7.0-dev-1087'
 versions.reflections = '0.9.11'
-versions.jnigen = "d4663a5878154ad2a39eb83b208394a5d21131b9"
+versions.jnigen = "dffc32eecbf77aad264991ea44f1767a58cbee9d"
 
 libraries.robovm = [
     "com.mobidevelop.robovm:robovm-rt:${versions.robovm}",
@@ -52,7 +52,6 @@ allprojects{
         }
 
         dependencies{
-            //TODO uncomment when it works
             classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.0.0-SNAPSHOT"
         }
     }
