@@ -37,26 +37,25 @@ public class Audio implements Disposable{
             initialized = true;
             soundBus = new AudioBus().init();
             musicBus = new AudioBus().init();
-            boolean autopause = Core.app.isMobile();
 
             Core.app.addListener(new ApplicationListener(){
 
                 @Override
                 public void pause(){
-                    if(autopause){
+                    if(Core.app.isMobile()){
                         pauseAll(true);
                     }
                 }
 
                 @Override
                 public void resume(){
-                    if(autopause){
+                    if(Core.app.isMobile()){
                         pauseAll(false);
                     }
                 }
             });
         }catch(Throwable error){
-            Log.info("Failed to initialize audio, disabling sound", error);
+            Log.err("Failed to initialize audio, disabling sound", error);
         }
     }
 
