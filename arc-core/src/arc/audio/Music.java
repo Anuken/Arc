@@ -73,7 +73,7 @@ public class Music extends AudioSource{
     }
 
     public void play(){
-        if(handle == 0) return;
+        if(handle == 0 || !Core.audio.initialized) return;
 
         if(idValid(voice) && idGetPause(voice)){
             pause(false);
