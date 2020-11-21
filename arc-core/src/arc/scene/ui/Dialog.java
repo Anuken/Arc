@@ -437,6 +437,15 @@ public class Dialog extends Table{
         return this;
     }
 
+    /** Shows this dialog if it was hidden, and vice versa. */
+    public void toggle(){
+        if(isShown()){
+            hide();
+        }else{
+            show();
+        }
+    }
+
     /** Shows using the ModuleController's UI. */
     public Dialog show(){
         return show(Core.scene);
