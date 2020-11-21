@@ -110,7 +110,7 @@ public class AndroidApplication extends Activity implements Application{
         }
         graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy);
         input = new AndroidInput(this, this, graphics.view, config);
-        audio = new Audio();
+
         this.getFilesDir(); // workaround for Android bug #10515463
         files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
         net = new Net();
@@ -122,6 +122,7 @@ public class AndroidApplication extends Activity implements Application{
         this.honeycombClipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
 
         Core.app = this;
+        Core.audio = audio = new Audio();
         Core.settings = settings;
         Core.input = input;
         Core.files = files;
