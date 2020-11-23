@@ -336,6 +336,15 @@ public class Element{
         this.stage = stage;
     }
 
+    public boolean isDescendantOf(Boolf<Element> actor){
+        Element parent = this;
+        while(parent != null){
+            if(actor.get(parent)) return true;
+            parent = parent.parent;
+        }
+        return false;
+    }
+
     /** Returns true if this actor is the same as or is the descendant of the specified actor. */
     public boolean isDescendantOf(Element actor){
         if(actor == null) throw new IllegalArgumentException("actor cannot be null.");
