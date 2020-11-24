@@ -52,7 +52,7 @@ jnigen{
         headerDirs += ["iosgl"]
         cppExcludes = ["soloud/src/audiosource/ay/**"]
         cppIncludes += ["soloud/src/backend/coreaudio/*.cpp", "iosgl/**"]
-        cppFlags = "-stdlib=libc++ -DWITH_COREAUDIO " + cppFlags
+        cppFlags = "-stdlib=libc++ -std=c++11 -DWITH_COREAUDIO " + cppFlags
     }
 }
 
