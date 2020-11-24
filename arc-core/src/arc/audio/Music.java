@@ -153,7 +153,7 @@ public class Music extends AudioSource{
 
     protected static Fi[] caches(String name) throws IOException{
         return new Fi[]{
-        Core.files.cache(name), Core.settings.getDataDirectory().child("cache").child(name), Core.files.absolute(File.createTempFile(name, "mind").getAbsolutePath())
+        Core.files.absolute(File.createTempFile(name, "mind").getAbsolutePath()), Core.settings.getDataDirectory().child("cache").child(name), Core.files.cache(name)
         };
     }
 }
