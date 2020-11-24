@@ -24,9 +24,9 @@ jnigen{
         cIncludes += ["soloud/src/core/**", "soloud/src/audiosource/**", "soloud/src/filter/**"]
     }
     add(Linux, x64){
-        cppIncludes += ["soloud/src/backend/alsa/*.cpp"]
-        cppFlags = "-DWITH_ALSA " + cppFlags
-        libraries += " -lpthread -lrt -lasound"
+        cppIncludes += ["soloud/src/backend/miniaudio/*.cpp", "soloud/src/backend/alsa/*.cpp"]
+        cppFlags = "-DWITH_MINIAUDIO -DWITH_ALSA " + cppFlags
+        libraries += " -lpthread -lrt -lasound -lm -ldl"
     }
     add(Windows, x32){
         cppIncludes += ["soloud/src/backend/winmm/*.cpp"]
@@ -45,7 +45,7 @@ jnigen{
     }
     add(MacOsX, x64){
         cppIncludes += ["soloud/src/backend/coreaudio/*.cpp"]
-        cppFlags = "-DWITH_COREAUDIO " + cppFlags
+        cppFlags = "-std=c++11 -DWITH_COREAUDIO " + cppFlags
         libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
     }
     add(IOS){
