@@ -14,6 +14,7 @@ file("jni").mkdir()
 jnigen{
     sharedLibName = "arc"
     temporaryDir = file("build/target/native").absolutePath
+    libsDir = file("libs").absolutePath
 
     all{
         cppExcludes = ["iosgl/**", "soloud/src/audiosource/ay/**"]

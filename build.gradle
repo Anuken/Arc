@@ -52,7 +52,7 @@ allprojects{
         }
 
         dependencies{
-            classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.0.0-SNAPSHOT"
+            classpath "com.github.libgdx.gdx-jnigen:gdx-jnigen-gradle:dffc32eecbf77aad264991ea44f1767a58cbee9d"
         }
     }
 
