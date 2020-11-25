@@ -432,7 +432,7 @@ public class Strings{
         if(decimalPlaces < 0 || decimalPlaces > 8){
             throw new IllegalArgumentException("Unsupported number of " + "decimal places: " + decimalPlaces);
         }
-        String s = "" + Math.round(d * Math.pow(10, decimalPlaces));
+        String s = "" + (int)(d * Math.pow(10, decimalPlaces));
         int len = s.length();
         int decimalPosition = len - decimalPlaces;
         StringBuilder result = new StringBuilder();
