@@ -66,6 +66,7 @@ public class Sound extends AudioSource{
     }
 
     public void stop(){
+        if(handle == 0) return;
         sourceStop(handle);
     }
 
