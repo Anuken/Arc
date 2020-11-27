@@ -335,7 +335,7 @@ public class Color{
         return this;
     }
 
-    /** Returns the different of all the HSV components combined. */
+    /** Returns the difference of all the HSV components combined. */
     public float diff(Color other){
         return Math.abs(hue() - other.hue()) / 360f + Math.abs(value() - other.value()) + Math.abs(saturation() - other.saturation());
     }
