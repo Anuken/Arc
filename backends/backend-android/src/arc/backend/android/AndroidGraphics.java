@@ -65,7 +65,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
     private float ppcX = 0;
     private float ppcY = 0;
     private float density = 1;
-    private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
+    private BufferFormat bufferFormat = new BufferFormat(8, 8, 8, 0, 16, 0, 0, false);
     private boolean isContinuous = true;
 
     public AndroidGraphics(AndroidApplication application, AndroidApplicationConfiguration config,

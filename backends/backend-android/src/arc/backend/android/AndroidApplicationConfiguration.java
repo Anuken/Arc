@@ -13,7 +13,7 @@ import arc.backend.android.surfaceview.*;
  */
 public class AndroidApplicationConfiguration{
     /** number of bits per color channel **/
-    public int r = 5, g = 6, b = 5, a = 0;
+    public int r = 8, g = 8, b = 8, a = 0;
 
     /** number of bits for depth and stencil buffer **/
     public int depth = 16, stencil = 0;
