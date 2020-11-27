@@ -100,9 +100,6 @@ public class IOSApplicationConfiguration{
     /** whether the home indicator should be hidden or not **/
     public boolean hideHomeIndicator = true;
 
-    /** Whether to override the ringer/mute switch, see #4430 */
-    public boolean overrideRingerSwitch = false;
-
     /**
      * Edges where app gestures must be fired over system gestures.
      * Prior to iOS 11, UIRectEdge.All was default behaviour if status bar hidden, see #5110
