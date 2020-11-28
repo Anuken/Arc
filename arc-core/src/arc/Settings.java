@@ -17,7 +17,7 @@ public class Settings{
 
     //general state data
     protected Fi dataDirectory;
-    protected String appName;
+    protected String appName = "app";
     protected ObjectMap<String, Object> defaults = new ObjectMap<>();
     protected ObjectMap<String, Object> values = new ObjectMap<>();
     protected boolean modified;
