@@ -133,6 +133,6 @@ public abstract class FxFilter implements Disposable{
     }
 
     public void update(){
-        time = Time.time();
+        time = Time.time;
     }
 }

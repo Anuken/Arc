@@ -3,6 +3,7 @@ package arc.util;
 import arc.*;
 import arc.struct.*;
 import arc.func.*;
+import arc.util.Timer.*;
 import arc.util.pooling.Pool.*;
 import arc.util.pooling.*;
 
@@ -12,33 +13,29 @@ public class Time{
 
     /** Global delta value. Do not change. */
     public static float delta = 1f;
+    /** Global time values. Do not change. */
+    public static float time, globalTime;
 
     public static final long nanosPerMilli = 1000000;
 
-    private static double time;
-    private static double globalTime;
+    private static double timeRaw, globalTimeRaw;
+
     private static Seq<DelayRun> runs = new Seq<>();
     private static Seq<DelayRun> removal = new Seq<>();
     private static LongSeq marks = new LongSeq();
     private static Floatp deltaimpl = () -> Math.min(Core.graphics.getDeltaTime() * 60f, 3f);
 
-    public static synchronized void run(float delay, Runnable r){
+    /** Runs a task with a delay of several ticks. If Time.clear() is called, this task will be cancelled. */
+    public static void run(float delay, Runnable r){
         DelayRun run = Pools.obtain(DelayRun.class, DelayRun::new);
         run.finish = r;
         run.delay = delay;
         runs.add(run);
     }
 
-    public static synchronized void runTask(float delay, Runnable r){
-        Timer.schedule(r, delay / 60f);
-    }
-
-    public static float time(){
-        return (float)time;
-    }
-
-    public static float globalTime(){
-        return (float)globalTime;
+    /** Runs a task with a delay of several ticks. Unless the application is closed, this task will always complete. */
+    public static Task runTask(float delay, Runnable r){
+        return Timer.schedule(r, delay / 60f);
     }
 
     public static void mark(){
@@ -55,17 +52,24 @@ public class Time{
     }
 
     public static void updateGlobal(){
-        globalTime += Core.graphics.getDeltaTime()*60f;
+        globalTimeRaw += Core.graphics.getDeltaTime()*60f;
         delta = deltaimpl.get();
+
+        if(Double.isInfinite(timeRaw) || Double.isNaN(timeRaw)){
+            timeRaw = 0;
+        }
+
+        time = (float)timeRaw;
+        globalTime = (float)globalTimeRaw;
     }
 
     /** Use normal delta time (e. g. delta * 60) */
     public static void update(){
-        time += delta;
+        timeRaw += delta;
         removal.clear();
 
-        if(Double.isInfinite(time) || Double.isNaN(time)){
-            time = 0;
+        if(Double.isInfinite(timeRaw) || Double.isNaN(timeRaw)){
+            timeRaw = 0;
         }
 
         for(DelayRun run : runs){
@@ -81,7 +85,7 @@ public class Time{
         runs.removeAll(removal);
     }
 
-    public static synchronized void clear(){
+    public static void clear(){
         runs.clear();
     }
 
@@ -91,6 +95,7 @@ public class Time{
     }
 
     public static void dispose(){
+        timeRaw = globalTimeRaw = 0;
         time = globalTime = 0;
         runs.clear();
     }

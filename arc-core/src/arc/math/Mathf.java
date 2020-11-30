@@ -55,7 +55,7 @@ public final class Mathf{
     }
 
     public static float absin(float scl, float mag){
-        return absin(Time.time(), scl, mag);
+        return absin(Time.time, scl, mag);
     }
 
     public static float absin(float in, float scl, float mag){
@@ -67,7 +67,7 @@ public final class Mathf{
     }
 
     public static float sin(float scl, float mag){
-        return sin(Time.time() / scl) * mag;
+        return sin(Time.time / scl) * mag;
     }
 
     public static float sin(float radians, float scl, float mag){

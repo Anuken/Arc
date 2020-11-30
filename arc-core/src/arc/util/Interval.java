@@ -21,16 +21,16 @@ public class Interval{
         if(id >= times.length) throw new RuntimeException("Out of bounds! Max timer size is " + times.length + "!");
 
         boolean got = check(id, time);
-        if(got) times[id] = Time.time();
+        if(got) times[id] = Time.time;
         return got;
     }
 
     public boolean check(int id, float time){
-        return Time.time() - times[id] >= time || Time.time() < times[id];
+        return Time.time - times[id] >= time || Time.time < times[id];
     }
 
     public void reset(int id, float time){
-        times[id] = Time.time() - time;
+        times[id] = Time.time - time;
     }
 
     public void clear(){
@@ -38,7 +38,7 @@ public class Interval{
     }
 
     public float getTime(int id){
-        return Time.time() - times[id];
+        return Time.time - times[id];
     }
 
     public float[] getTimes(){
