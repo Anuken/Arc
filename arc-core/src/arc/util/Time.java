@@ -72,6 +72,9 @@ public class Time{
             timeRaw = 0;
         }
 
+        time = (float)timeRaw;
+        globalTime = (float)globalTimeRaw;
+
         for(DelayRun run : runs){
             run.delay -= delta;
 
