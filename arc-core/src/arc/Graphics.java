@@ -90,6 +90,11 @@ public abstract class Graphics implements Disposable{
     /** @return the height of the framebuffer in physical pixels */
     public abstract int getBackBufferHeight();
 
+    /** @return the safe area insets, in the order left-right-top-bottom. */
+    public int[] getSafeInsets(){
+        return new int[4];
+    }
+
     /**
      * Returns the id of the current frame. The general contract of this method is that the id is incremented only when the
      * application is in the running state right before calling the {@link ApplicationListener#update()} method. Also, the id of

@@ -48,6 +48,7 @@ public class IOSGraphics extends Graphics{
     private long frameId = -1;
     private boolean isContinuous = true;
     private boolean isFrameRequested = true;
+    private int[] insets = new int[4];
 
     public IOSGraphics(float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, boolean useGLES30){
         this.config = config;
@@ -194,6 +195,7 @@ public class IOSGraphics extends Graphics{
             String rendererString = gl20.glGetString(GL20.GL_RENDERER);
             glVersion = new GLVersion(Application.ApplicationType.iOS, versionString, vendorString, rendererString);
 
+            updateSafeInsets();
             for(ApplicationListener listener : app.listeners){
                 listener.init();
                 listener.resize(width, height);
@@ -258,7 +260,22 @@ public class IOSGraphics extends Graphics{
         }
     }
 
+    protected void updateSafeInsets() {
+        if(Foundation.getMajorSystemVersion() >= 11){
+            UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
+            insets[0] = (int)edgeInsets.getLeft();
+            insets[1] = (int)edgeInsets.getRight();
+            insets[2] = (int)edgeInsets.getTop();
+            insets[3] = (int)edgeInsets.getBottom();
+        }
+    }
+
     public void willPause(GLKViewController controller, boolean pause){ }
+
+    @Override
+    public int[] getSafeInsets(){
+        return insets;
+    }
 
     @Override
     public GL20 getGL20(){
@@ -551,6 +568,7 @@ public class IOSGraphics extends Graphics{
             graphics.width = (int)bounds.getWidth();
             graphics.height = (int)bounds.getHeight();
             graphics.makeCurrent();
+            graphics.updateSafeInsets();
             if(graphics.created){
                 for(ApplicationListener list : app.listeners){
                     list.resize(graphics.width, graphics.height);
