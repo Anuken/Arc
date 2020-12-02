@@ -795,16 +795,7 @@ public class Element{
 
         Group parent = this.parent;
         if(fillParent && parent != null){
-            float parentWidth, parentHeight;
-            Scene stage = getScene();
-            if(stage != null && parent == stage.root){
-                parentWidth = stage.getWidth();
-                parentHeight = stage.getHeight();
-            }else{
-                parentWidth = parent.getWidth();
-                parentHeight = parent.getHeight();
-            }
-            setSize(parentWidth, parentHeight);
+            setSize(parent.getWidth(), parent.getHeight());
         }
 
         if(!needsLayout) return;

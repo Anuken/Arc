@@ -29,7 +29,8 @@ public class Dialog extends Table{
     defaultShowAction = () -> Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.4f, Interp.fade)),
     defaultHideAction = () -> Actions.fadeOut(0.4f, Interp.fade);
     protected InputListener ignoreTouchDown = new InputListener(){
-        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+        @Override
+        public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
             event.cancel();
             return false;
         }
@@ -291,7 +292,7 @@ public class Dialog extends Table{
 
     /** Centers the dialog in the scene. */
     public void centerWindow(){
-        setPosition(Math.round((scene.getWidth() - getWidth()) / 2), Math.round((scene.getHeight() - getHeight()) / 2));
+        setPosition(Math.round(((Core.scene.getWidth() - scene.marginLeft - scene.marginRight) - getWidth()) / 2), Math.round(((Core.scene.getHeight() - scene.marginTop - scene.marginBottom) - getHeight()) / 2));
     }
 
     public boolean isMovable(){
@@ -454,7 +455,7 @@ public class Dialog extends Table{
     /** {@link #pack() Packs} the dialog and adds it to the stage, centered with default fadeIn action */
     public Dialog show(Scene stage){
         show(stage, defaultShowAction.get());
-        setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
+        centerWindow();
         return this;
     }
 

@@ -23,8 +23,10 @@ import static arc.Core.*;
 
 
 public class Scene implements InputProcessor, Disposable{
-    //public final Skin skin;
     public final Group root;
+    /** Margins for fill layouts. */
+    public float marginLeft, marginRight, marginTop, marginBottom;
+
     private final ObjectMap<Class, Object> styleDefaults = new ObjectMap<>();
     private final Vec2 tempCoords = new Vec2();
     private final Element[] pointerOverActors = new Element[20];
@@ -47,7 +49,17 @@ public class Scene implements InputProcessor, Disposable{
             }
         };
 
-        root = new Group(){};
+        root = new Group(){
+            @Override
+            public float getHeight(){
+                return Scene.this.getHeight() - marginTop - marginBottom;
+            }
+
+            @Override
+            public float getWidth(){
+                return Scene.this.getWidth();
+            }
+        };
         root.setScene(this);
 
         viewport.update(graphics.getWidth(), graphics.getHeight(), true);
@@ -127,6 +139,9 @@ public class Scene implements InputProcessor, Disposable{
      * @param delta Time in seconds since the last frame.
      */
     public void act(float delta){
+        root.y = marginBottom;
+        root.height = getHeight() - marginBottom - marginTop;
+
         // Update over actors. Done in act() because actors may change position, which can fire enter/exit without an input event.
         for(int pointer = 0, n = pointerOverActors.length; pointer < n; pointer++){
             Element overLast = pointerOverActors[pointer];

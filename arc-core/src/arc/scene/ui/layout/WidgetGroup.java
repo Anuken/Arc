@@ -1,7 +1,6 @@
 package arc.scene.ui.layout;
 
 import arc.scene.*;
-import arc.scene.utils.*;
 import arc.struct.*;
 
 /**
@@ -69,15 +68,9 @@ public class WidgetGroup extends Group{
 
         Group parent = this.parent;
         if(fillParent && parent != null){
-            float parentWidth, parentHeight;
-            Scene stage = getScene();
-            if(stage != null && parent == stage.root){
-                parentWidth = stage.getWidth();
-                parentHeight = stage.getHeight();
-            }else{
-                parentWidth = parent.getWidth();
-                parentHeight = parent.getHeight();
-            }
+            float parentWidth = parent.getWidth();
+            float parentHeight = parent.getHeight();
+
             if(getWidth() != parentWidth || getHeight() != parentHeight){
                 setWidth(parentWidth);
                 setHeight(parentHeight);
