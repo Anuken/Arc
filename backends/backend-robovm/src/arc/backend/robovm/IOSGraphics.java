@@ -17,6 +17,8 @@ import org.robovm.objc.*;
 import org.robovm.objc.annotation.*;
 import org.robovm.rt.bro.annotation.*;
 
+import java.util.*;
+
 public class IOSGraphics extends Graphics{
     private static final String tag = "IOSGraphics";
 
@@ -267,6 +269,8 @@ public class IOSGraphics extends Graphics{
             insets[1] = (int)edgeInsets.getRight();
             insets[2] = (int)edgeInsets.getTop();
             insets[3] = (int)edgeInsets.getBottom();
+
+            Log.info("Insets: @", Arrays.toString(insets));
         }
     }
 
