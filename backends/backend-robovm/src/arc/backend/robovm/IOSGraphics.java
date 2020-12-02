@@ -64,10 +64,7 @@ public class IOSGraphics extends Graphics{
 
         if(useGLES30){
             context = new EAGLContext(EAGLRenderingAPI.OpenGLES3);
-            if(context != null)
-                gl20 = gl30 = new IOSGLES30();
-            else
-                Log.infoTag("IOGraphics", "OpenGL ES 3.0 not supported, falling back on 2.0");
+            gl20 = gl30 = new IOSGLES30();
         }
         if(context == null){
             context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
@@ -265,10 +262,10 @@ public class IOSGraphics extends Graphics{
     protected void updateSafeInsets() {
         if(Foundation.getMajorSystemVersion() >= 11){
             UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
-            insets[0] = (int)edgeInsets.getLeft();
-            insets[1] = (int)edgeInsets.getRight();
-            insets[2] = (int)edgeInsets.getTop();
-            insets[3] = (int)edgeInsets.getBottom();
+            insets[0] = (int)(edgeInsets.getLeft() * view.getContentScaleFactor());
+            insets[1] = (int)(edgeInsets.getRight() * view.getContentScaleFactor());
+            insets[2] = (int)(edgeInsets.getTop() * view.getContentScaleFactor());
+            insets[3] = (int)(edgeInsets.getBottom() * view.getContentScaleFactor());
 
             Log.info("Insets: @", Arrays.toString(insets));
         }
