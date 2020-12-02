@@ -334,6 +334,13 @@ public class Settings{
         }
     }
 
+    /** Returns true once, and never again. */
+    public boolean getBoolOnce(String name){
+        boolean val = getBool(name, false);
+        put(name, true);
+        return val;
+    }
+
     public byte[] getBytes(String name){
         return getBytes(name, (byte[])defaults.get(name));
     }
