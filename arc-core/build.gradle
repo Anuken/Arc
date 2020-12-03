@@ -26,7 +26,7 @@ jnigen{
     }
     add(Linux, x64){
         cppIncludes += ["soloud/src/backend/miniaudio/*.cpp", "soloud/src/backend/alsa/*.cpp"]
-        cppFlags = "-DWITH_MINIAUDIO -DWITH_ALSA " + cppFlags
+        cppFlags = "-DWITH_MINIAUDIO -DWITH_ALSA -DMA_NO_PULSEAUDIO " + cppFlags
         libraries += " -lpthread -lrt -lasound -lm -ldl"
     }
     add(Windows, x32){
