@@ -95,7 +95,7 @@ task preJni{
 
     if(!file("csrc/soloud").exists()){
         println "Fetching soloud source..."
-        "git clone https://github.com/Anuken/soloud.git $rootDir/arc-core/csrc/soloud --depth 1".execute()
+        "git clone https://github.com/Anuken/soloud.git $rootDir/arc-core/csrc/soloud --depth 1".execute().waitFor()
     }
 
     copy{
