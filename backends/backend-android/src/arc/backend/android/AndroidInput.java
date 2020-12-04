@@ -25,8 +25,6 @@ import java.util.*;
  * An implementation of the {@link Input} interface for Android.
  * @author mzechner
  */
-
-/** @author jshapcot */
 public class AndroidInput extends Input implements OnKeyListener, OnTouchListener, OnGenericMotionListener{
     public static final int NUM_TOUCHES = 20;
     protected final float[] accelerometerValues = new float[3];
@@ -98,8 +96,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
         view.requestFocus();
         this.config = config;
 
-        for(int i = 0; i < realId.length; i++)
-            realId[i] = -1;
+        Arrays.fill(realId, -1);
         handle = new Handler();
         this.app = activity;
         this.context = context;
