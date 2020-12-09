@@ -365,6 +365,11 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return this;
     }
 
+    public Seq<T> and(T[] value){
+        addAll(value);
+        return this;
+    }
+
     public void add(T value){
         T[] items = this.items;
         if(size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
