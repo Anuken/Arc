@@ -1,5 +1,6 @@
 package arc.math;
 
+import arc.math.geom.*;
 import arc.util.*;
 
 public final class Mathf{
@@ -28,9 +29,9 @@ public final class Mathf{
     private static final int BIG_ENOUGH_INT = 16 * 1024;
     private static final double BIG_ENOUGH_FLOOR = BIG_ENOUGH_INT;
     private static final double CEIL = 0.9999999;
-    private static final double BIG_ENOUGH_CEIL = 16384.999999999996;
     private static final double BIG_ENOUGH_ROUND = BIG_ENOUGH_INT + 0.5f;
     private static final Rand seedr = new Rand();
+    private static final Vec2 v1 = new Vec2(), v2 = new Vec2(), v3 = new Vec2();
 
     public static Rand rand = new Rand();
 
@@ -600,6 +601,22 @@ public final class Mathf{
     /** Manhattan distance. */
     public static float dstm(float x1, float y1, float x2, float y2){
         return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+    }
+
+    public static Vec2 arrive(Position pos, Position target, Vec2 curVel, float radius, float tolerance, float speed, float smoothTime){
+        return arrive(pos.getX(), pos.getY(), target.getX(), target.getY(), curVel, radius, tolerance, speed, smoothTime);
+    }
+
+    //TODO kind of a mess
+    public static Vec2 arrive(float x, float y, float destX, float destY, Vec2 curVel, float radius, float tolerance, float speed, float accel){
+        Vec2 toTarget = v1.set(destX, destY).sub(x, y);
+        float distance = toTarget.len();
+
+        if(distance <= tolerance) return v3.setZero();
+        float targetSpeed = speed;
+        if(distance <= radius) targetSpeed *= distance / radius;
+
+        return toTarget.sub(curVel.x / accel, curVel.y / accel).limit(targetSpeed);
     }
 
     public static boolean within(float x1, float y1, float x2, float y2, float dst){

@@ -39,8 +39,8 @@ jnigen{
     }
     add(Android){
         linkerFlags += " -llog -lOpenSLES"
-        cppIncludes += ["soloud/src/backend/opensles/*.cpp"]
-        cppFlags = "-DWITH_OPENSLES " + cppFlags
+        cppIncludes += ["soloud/src/backend/miniaudio/*.cpp"]
+        cppFlags = "-DWITH_MINIAUDIO " + cppFlags
     }
     add(MacOsX, x64){
         cppIncludes += ["soloud/src/backend/coreaudio/*.cpp"]
