@@ -23,26 +23,26 @@ public class SdlScanmap{
             case 56:
             case 84: return KeyCode.slash;
             case 85: return KeyCode.asterisk;
-            case 98: return KeyCode.numpad0;
-            case 89: return KeyCode.numpad1;
-            case 90: return KeyCode.numpad2;
-            case 91: return KeyCode.numpad3;
-            case 92: return KeyCode.numpad4;
-            case 93: return KeyCode.numpad5;
-            case 94: return KeyCode.numpad6;
-            case 95: return KeyCode.numpad7;
-            case 96: return KeyCode.numpad8;
-            case 97: return KeyCode.numpad9;
-            case 39: return KeyCode.num0;
-            case 30: return KeyCode.num1;
-            case 31: return KeyCode.num2;
-            case 32: return KeyCode.num3;
-            case 33: return KeyCode.num4;
-            case 34: return KeyCode.num5;
-            case 35: return KeyCode.num6;
-            case 36: return KeyCode.num7;
-            case 37: return KeyCode.num8;
-            case 38: return KeyCode.num9;
+            case 39:
+            case 98: return KeyCode.num0;
+            case 30:
+            case 89: return KeyCode.num1;
+            case 31:
+            case 90: return KeyCode.num2;
+            case 32:
+            case 91: return KeyCode.num3;
+            case 33:
+            case 92: return KeyCode.num4;
+            case 34:
+            case 93: return KeyCode.num5;
+            case 35:
+            case 94: return KeyCode.num6;
+            case 36:
+            case 95: return KeyCode.num7;
+            case 37:
+            case 96: return KeyCode.num8;
+            case 38:
+            case 97: return KeyCode.num9;
             case 203: return KeyCode.colon;
             case 51: return KeyCode.semicolon;
             case 52: return KeyCode.apostrophe;
