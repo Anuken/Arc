@@ -624,7 +624,7 @@ public final class Mathf{
     }
 
     public static boolean within(float x1, float y1, float dst){
-        return (x1 * x1 + y1*y1) < dst*dst;
+        return Math.max(x1, y1) - Math.min(x1, y1) < dst;
     }
 
     private static class Sin{
