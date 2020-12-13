@@ -619,12 +619,14 @@ public final class Mathf{
         return toTarget.sub(curVel.x / accel, curVel.y / accel).limit(targetSpeed);
     }
 
+    /** Is the distance between 2 points less than the input distance? */
     public static boolean within(float x1, float y1, float x2, float y2, float dst){
         return dst2(x1, y1, x2, y2) < dst*dst;
     }
 
+    /** Is the distance between (0, 0) and a point less than the input distance? */
     public static boolean within(float x1, float y1, float dst){
-        return (x1 * x1 + y1*y1) < dst*dst;
+        return (x1 * x1 + y1 * y1) < dst*dst;
     }
 
     private static class Sin{
