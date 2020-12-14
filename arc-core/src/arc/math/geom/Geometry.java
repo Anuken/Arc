@@ -287,8 +287,8 @@ public final class Geometry{
         if(nearTimeX > farTimeY || nearTimeY > farTimeX)
             return null;
 
-        float nearTime = nearTimeX > nearTimeY ? nearTimeX : nearTimeY;
-        float farTime = farTimeX < farTimeY ? farTimeX : farTimeY;
+        float nearTime = Math.max(nearTimeX, nearTimeY);
+        float farTime = Math.min(farTimeX, farTimeY);
 
         if(nearTime >= 1 || farTime <= 0)
             return null;
@@ -311,7 +311,7 @@ public final class Geometry{
         float ax = a.x + a.width / 2, bx = b.x + b.width / 2;
         float ay = a.y + a.height / 2, by = b.y + b.height / 2;
 
-        // Vector from A to B
+        //Vector from A to B
         float nx = ax - bx,
         ny = ay - by;
 
