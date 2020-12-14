@@ -64,7 +64,6 @@ task fixWrap{
         }
 
         def f = file("$rootDir/arc-core/jni/build-linux64.xml");
-
         if(f.exists()){
             f.text = f.text.replace("-Wl,-wrap,memcpy", "-Wl,-wrap,memcpy,-wrap,pow,-wrap,powf,-wrap,log,-wrap,logf,-wrap,exp,-wrap,expf,-wrap,clock_gettime")
         }
