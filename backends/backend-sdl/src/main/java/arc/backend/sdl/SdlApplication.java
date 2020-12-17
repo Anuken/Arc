@@ -171,6 +171,7 @@ public class SdlApplication implements Application{
         });
         dispose();
 
+        SDL_StopTextInput();
         SDL_DestroyWindow(window);
         SDL_Quit();
     }

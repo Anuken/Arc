@@ -178,6 +178,7 @@ public class TextField extends Element implements Disableable{
                 if(hasKeyboard()){
                     scene.setKeyboardFocus(null);
                 }
+                Core.input.setOnscreenKeyboardVisible(false);
             };
             Core.input.getTextInput(input);
         });
