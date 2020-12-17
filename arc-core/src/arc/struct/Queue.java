@@ -11,7 +11,7 @@ import java.util.*;
  * adding). Deque functionality is provided via {@link #removeLast()} and {@link #addFirst(Object)}.
  */
 @SuppressWarnings("unchecked")
-public class Queue<T> implements Iterable<T>{
+public class Queue<T> implements Iterable<T>, Eachable<T>{
     /** Number of elements in the queue. */
     public int size = 0;
     /** Contains the values in the queue. Head and tail indices go in a circle around this array, wrapping at the end. */
@@ -360,9 +360,18 @@ public class Queue<T> implements Iterable<T>{
      * Returns an iterator for the items in the queue. Remove is supported. Note that the same iterator instance is returned each
      * time this method is called. Use the constructor for nested or multithreaded iteration.
      */
+    @Override
     public Iterator<T> iterator(){
         if(iterable == null) iterable = new QueueIterable<>(this);
         return iterable.iterator();
+    }
+
+    @Override
+    public void each(Cons<? super T> c){
+
+        for(int i = 0; i < size; i++){
+            c.get(get(i));
+        }
     }
 
     public String toString(){
