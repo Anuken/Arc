@@ -34,8 +34,9 @@ jnigen{
         cppFlags = "-msse -DWITH_MINIAUDIO " + cppFlags
     }
     add(Windows, x64){
-        cppIncludes += ["soloud/src/backend/miniaudio/*.cpp"]
-        cppFlags = "-msse -DWITH_MINIAUDIO " + cppFlags
+        cppIncludes += ["soloud/src/backend/winmm/*.cpp"]
+        cppFlags = "-msse -DWITH_WINMM " + cppFlags
+        libraries += " -lwinmm"
     }
     add(Android){
         linkerFlags += " -llog -lOpenSLES"
