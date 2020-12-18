@@ -11,6 +11,7 @@ import arc.scene.ui.Label.*;
 import arc.scene.ui.ScrollPane.*;
 import arc.scene.ui.TextField.*;
 import arc.scene.ui.Tooltip.*;
+import arc.scene.utils.*;
 import arc.util.*;
 import arc.util.pooling.Pool.*;
 
@@ -161,16 +162,19 @@ public class Cell<T extends Element> implements Poolable{
     }
 
     public Cell<T> disabled(Boolf<T> vis){
-        if(get() instanceof Button){
+        if(element instanceof Button){
             T t = get();
-            ((Button) get()).setDisabled(() -> vis.get(t));
+            ((Button)element).setDisabled(() -> vis.get(t));
+        }else if(element instanceof Disableable){
+            T t = get();
+            element.update(() -> ((Disableable)element).setDisabled(vis.get(t)));
         }
         return this;
     }
 
     public Cell<T> disabled(boolean disabled){
-        if(get() instanceof Button){
-            ((Button) get()).setDisabled(disabled);
+        if(get() instanceof Disableable){
+            ((Disableable)get()).setDisabled(disabled);
         }
         return this;
     }
@@ -203,8 +207,8 @@ public class Cell<T extends Element> implements Poolable{
     }
 
     public Cell<T> valid(TextFieldValidator val){
-        if(get() instanceof TextField){
-            ((TextField) get()).setValidator(val);
+        if(element instanceof TextField){
+            ((TextField)element).setValidator(val);
         }
         return this;
     }
