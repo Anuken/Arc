@@ -149,6 +149,7 @@ public class Audio implements Disposable{
     public void dispose(){
         if(!initialized) return;
         deinit();
+        initialized = false;
     }
 
 }
