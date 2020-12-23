@@ -155,7 +155,7 @@ public class Jval{
 
     public String getString(String name, String defaultValue){
         Jval value = get(name);
-        return value != null ? value.asString() : defaultValue;
+        return value != null && !value.isNull() ? value.asString() : defaultValue;
     }
 
     /**
