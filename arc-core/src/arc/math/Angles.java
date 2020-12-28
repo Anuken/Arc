@@ -9,11 +9,11 @@ public class Angles{
     private static final Vec2 rv = new Vec2();
 
     public static float forwardDistance(float angle1, float angle2){
-        return angle1 > angle2 ? angle1 - angle2 : angle2 - angle1;
+        return Math.abs(angle1 - angle2);
     }
 
     public static float backwardDistance(float angle1, float angle2){
-        return 360 - forwardDistance(angle1, angle2);
+        return 360 - Math.abs(angle1 - angle2);
     }
 
     public static boolean within(float a, float b, float margin){
@@ -33,8 +33,7 @@ public class Angles{
         angle = Mathf.mod(angle, 360f);
         to = Mathf.mod(to, 360f);
 
-        if((angle > to && backwardDistance(angle, to) > forwardDistance(angle, to)) ||
-            (angle < to && backwardDistance(angle, to) < forwardDistance(angle, to))){
+        if(angle > to == backwardDistance(angle, to) > forwardDistance(angle, to)){
             angle -= speed;
         }else{
             angle += speed;
