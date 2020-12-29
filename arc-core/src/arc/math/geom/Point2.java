@@ -178,6 +178,21 @@ public class Point2{
         return new Point2(this);
     }
 
+    /** Rotates this point in 90-degree increments several times. */
+    public Point2 rotate(int steps){
+        for(int i = 0; i < Math.abs(steps); i++){
+            int x = this.x;
+            if(steps >= 0){
+                this.x = -y;
+                y = x;
+            }else{
+                this.x = y;
+                y = -x;
+            }
+        }
+        return this;
+    }
+
     public boolean equals(int x, int y){
         return this.x == x && this.y == y;
     }
