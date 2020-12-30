@@ -57,7 +57,7 @@ public class Scene implements InputProcessor, Disposable{
 
             @Override
             public float getWidth(){
-                return Scene.this.getWidth();
+                return Scene.this.getWidth() - marginLeft - marginRight;
             }
         };
         root.setScene(this);
@@ -140,7 +140,9 @@ public class Scene implements InputProcessor, Disposable{
      */
     public void act(float delta){
         root.y = marginBottom;
+        root.x = marginLeft;
         root.height = getHeight() - marginBottom - marginTop;
+        root.width = getWidth() - marginLeft - marginRight;
 
         // Update over actors. Done in act() because actors may change position, which can fire enter/exit without an input event.
         for(int pointer = 0, n = pointerOverActors.length; pointer < n; pointer++){
