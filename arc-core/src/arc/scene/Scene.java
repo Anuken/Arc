@@ -60,6 +60,7 @@ public class Scene implements InputProcessor, Disposable{
                 return Scene.this.getWidth() - marginLeft - marginRight;
             }
         };
+        root.touchable = Touchable.childrenOnly;
         root.setScene(this);
 
         viewport.update(graphics.getWidth(), graphics.getHeight(), true);
