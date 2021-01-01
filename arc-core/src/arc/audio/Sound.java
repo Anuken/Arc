@@ -167,7 +167,7 @@ public class Sound extends AudioSource{
      * @return the id of the sound instance if successful, or -1 on failure.
      */
     public int loop(float volume){
-        return loop(1f, 1f, 0f);
+        return loop(volume, 1f, 0f);
     }
 
     /**
