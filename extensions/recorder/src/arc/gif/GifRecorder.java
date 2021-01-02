@@ -24,7 +24,7 @@ import java.util.*;
 /** Records and saves GIFs. */
 public class GifRecorder{
     private static final float defaultSize = 300;
-    private static final boolean encodeMP4 = false;
+    private static final boolean encodeMP4 = true;
     private static BufferedImage outImage;
 
     public KeyCode
