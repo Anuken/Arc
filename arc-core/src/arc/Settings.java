@@ -9,6 +9,7 @@ import arc.util.io.*;
 import arc.util.serialization.*;
 
 import java.io.*;
+import java.util.*;
 
 import static arc.Core.keybinds;
 
@@ -19,7 +20,7 @@ public class Settings{
     protected Fi dataDirectory;
     protected String appName = "app";
     protected ObjectMap<String, Object> defaults = new ObjectMap<>();
-    protected ObjectMap<String, Object> values = new ObjectMap<>();
+    protected HashMap<String, Object> values = new HashMap<>();
     protected boolean modified;
     protected Cons<Throwable> errorHandler;
     protected boolean hasErrored;
@@ -173,12 +174,12 @@ public class Settings{
         Fi file = getSettingsFile();
 
         try(DataOutputStream stream = new DataOutputStream(file.write(false, 8192))){
-            stream.writeInt(values.size);
+            stream.writeInt(values.size());
 
-            for(Entry<String, Object> entry : values.entries()){
-                stream.writeUTF(entry.key);
+            for(Map.Entry<String, Object> entry : values.entrySet()){
+                stream.writeUTF(entry.getKey());
 
-                Object value = entry.value;
+                Object value = entry.getValue();
 
                 if(value instanceof Boolean){
                     stream.writeByte(TYPE_BOOL);
@@ -251,7 +252,7 @@ public class Settings{
     }
 
     public Object get(String name, Object def){
-        return values.get(name, def);
+        return values.containsKey(name) ? values.get(name) : def;
     }
 
     public boolean isModified(){
@@ -287,11 +288,11 @@ public class Settings{
     }
 
     public float getFloat(String name, float def){
-        return (float)values.get(name, def);
+        return (float)get(name, def);
     }
 
     public long getLong(String name, long def){
-        return (long)values.get(name, def);
+        return (long)get(name, def);
     }
 
     public Long getLong(String name){
@@ -299,19 +300,19 @@ public class Settings{
     }
 
     public int getInt(String name, int def){
-        return (int)values.get(name, def);
+        return (int)get(name, def);
     }
 
     public boolean getBool(String name, boolean def){
-        return (boolean)values.get(name, def);
+        return (boolean)get(name, def);
     }
 
     public byte[] getBytes(String name, byte[] def){
-        return (byte[])values.get(name, def);
+        return (byte[])get(name, def);
     }
 
     public String getString(String name, String def){
-        return (String)values.get(name, def);
+        return (String)get(name, def);
     }
 
     public float getFloat(String name){
@@ -372,10 +373,10 @@ public class Settings{
     }
 
     public Iterable<String> keys(){
-        return values.keys();
+        return values.keySet();
     }
 
     public int keySize(){
-        return values.size;
+        return values.size();
     }
 }
