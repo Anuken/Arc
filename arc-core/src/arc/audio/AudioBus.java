@@ -27,6 +27,10 @@ public class AudioBus extends AudioSource{
         return this;
     }
 
+    public boolean playing(){
+        return handle != 0 && Core.audio.isPlaying(id);
+    }
+
     public void play(){
         if(handle == 0 || idValid(id)) return;
         id = sourcePlay(handle);
@@ -34,6 +38,7 @@ public class AudioBus extends AudioSource{
 
     public void stop(){
         Core.audio.stop(id);
+        id = 0;
     }
 
     public void fadeFilterParam(int filter, int attribute, float value, float timeSec){

@@ -27,7 +27,8 @@ import static arc.audio.Soloud.*;
  * </p>
  */
 public class Sound extends AudioSource{
-    AudioBus bus = Core.audio == null ? null : Core.audio.soundBus;
+    public AudioBus bus = Core.audio == null ? null : Core.audio.soundBus;
+
     long framePlayed;
     Fi file;
 

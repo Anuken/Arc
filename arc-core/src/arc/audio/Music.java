@@ -94,6 +94,7 @@ public class Music extends AudioSource{
         if(handle == 0 || voice <= 0) return;
 
         sourceStop(handle);
+        voice = 0;
     }
 
     public boolean isPlaying(){
