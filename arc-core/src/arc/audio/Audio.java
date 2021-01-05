@@ -148,6 +148,7 @@ public class Audio implements Disposable{
     @Override
     public void dispose(){
         if(!initialized) return;
+        stopAll();
         deinit();
         initialized = false;
     }
