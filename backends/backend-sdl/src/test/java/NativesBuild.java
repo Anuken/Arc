@@ -1,3 +1,4 @@
+import arc.files.*;
 import arc.struct.*;
 import arc.util.*;
 import com.badlogic.gdx.jnigen.*;
@@ -73,6 +74,7 @@ class NativesBuild{
     }
 
     private static void buildScripts(BuildTarget... targets) throws Exception{
+        new Fi("../../arc-core/build/classes/java/main").copyTo(new Fi("build/classes/java"));
         new NativeCodeGenerator().generate("src/main/java", "build/classes/java/main", "jni");
 
         new AntScriptGenerator().generate(new BuildConfig("sdl-arc"), targets);
