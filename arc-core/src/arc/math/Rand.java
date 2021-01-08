@@ -207,6 +207,7 @@ public class Rand extends Random{
     }
 
     public int random(int min, int max){
+        if(min >= max) return min;
         return min + nextInt(max - min + 1);
     }
 
