@@ -19,6 +19,10 @@ public class CommandHandler{
     public void setPrefix(String prefix){
         this.prefix = prefix;
     }
+    
+    public String getPrefix(){
+        return prefix;   
+    }
 
     /** Handles a message with no additional parameters.*/
     public CommandResponse handleMessage(String message){
