@@ -566,6 +566,18 @@ public final class Mathf{
         }
     }
 
+    /** Transforms a 0-1 value to a value with a 0.5 plateau in the middle. When margin = 0.5, this method doesn't do anything. */
+    public static float curveMargin(float f, float margin){
+        return curveMargin(f, margin, margin);
+    }
+
+    /** Transforms a 0-1 value to a value with a 0.5 plateau in the middle. When margin = 0.5, this method doesn't do anything. */
+    public static float curveMargin(float f, float marginLeft, float marginRight){
+        if(f < marginLeft) return f/marginLeft * 0.5f;
+        if(f > 1f-marginRight) return (f - 1f + marginRight) / marginRight * 0.5f + 0.5f;
+        return 0.5f;
+    }
+
     public static float len(float x, float y){
         return (float)Math.sqrt(x * x + y * y);
     }
@@ -619,10 +631,12 @@ public final class Mathf{
         return toTarget.sub(curVel.x / accel, curVel.y / accel).limit(targetSpeed);
     }
 
+    /** @return whether dst(x1, y1, x2, y2) < dst */
     public static boolean within(float x1, float y1, float x2, float y2, float dst){
         return dst2(x1, y1, x2, y2) < dst*dst;
     }
 
+    /** @return whether dst(x, y, 0, 0) < dst */
     public static boolean within(float x1, float y1, float dst){
         return (x1 * x1 + y1*y1) < dst*dst;
     }
