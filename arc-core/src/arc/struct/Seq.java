@@ -36,7 +36,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         this(true, capacity);
     }
 
-    /** Creates an ordered array with the specified capacity. */
+    /** Creates an ordered/unordered array with the specified capacity. */
     public Seq(boolean ordered){
         this(ordered, 16);
     }

@@ -20,7 +20,7 @@ public class QuadTree<T extends QuadTreeObject>{
     private static final int maxObjectsPerNode = 5;
 
     public Rect bounds;
-    public Seq<T> objects = new Seq<>();
+    public Seq<T> objects = new Seq<>(false);
     public QuadTree<T> botLeft, botRight, topLeft, topRight;
     public boolean leaf = true;
 
