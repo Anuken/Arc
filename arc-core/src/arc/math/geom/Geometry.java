@@ -347,13 +347,11 @@ public final class Geometry{
             }
         }
 
-        float percent = 1f,
-        slop = 0.0f,
-        m = Math.max(penetration - slop, 0.0f);
+        float m = Math.max(penetration, 0.0f);
 
         // Apply correctional impulse
-        float cx = m * tmp1.x * percent,
-        cy = m * tmp1.y * percent;
+        float cx = m * tmp1.x,
+        cy = m * tmp1.y;
 
         tmp1.x = -cx;
         tmp1.y = -cy;
