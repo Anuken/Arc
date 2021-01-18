@@ -424,7 +424,7 @@ public class Strings{
     }
 
     public static String autoFixed(float value, int max){
-        int precision = Math.abs((int)value - value) <= 0.001f ? 0 : Math.abs((int)(value * 10) - value * 10) <= 0.001f ? 1 : 2;
+        int precision = Math.abs((int)value - value) <= 0.0001f ? 0 : Math.abs((int)(value * 10) - value * 10) <= 0.0001f ? 1 : 2;
         return fixed(value, Math.min(precision, max));
     }
 
@@ -432,7 +432,7 @@ public class Strings{
         if(decimalPlaces < 0 || decimalPlaces > 8){
             throw new IllegalArgumentException("Unsupported number of " + "decimal places: " + decimalPlaces);
         }
-        String s = "" + (int)(d * Math.pow(10, decimalPlaces));
+        String s = "" + (int)(d * Math.pow(10, decimalPlaces) + 0.000001f);
         int len = s.length();
         int decimalPosition = len - decimalPlaces;
         StringBuilder result = new StringBuilder();
