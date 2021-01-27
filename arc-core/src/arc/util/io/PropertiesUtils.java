@@ -33,7 +33,7 @@ import java.util.Date;
  */
 public final class PropertiesUtils{
     private static final int NONE = 0, SLASH = 1, UNICODE = 2, CONTINUE = 3, KEY_DONE = 4, IGNORE = 5;
-    private static final String LINE_SEPARATOR = "\n";
+    private static final String LINE_SEPARATOR = System.lineSeparator();
 
     private PropertiesUtils(){
     }
