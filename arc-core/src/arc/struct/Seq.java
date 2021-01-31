@@ -57,13 +57,13 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
      * memory copy.
      * @param capacity Any elements added beyond this will cause the backing array to be grown.
      */
-    public Seq(boolean ordered, int capacity, Class arrayType){
+    public Seq(boolean ordered, int capacity, Class<?> arrayType){
         this.ordered = ordered;
         items = (T[])java.lang.reflect.Array.newInstance(arrayType, capacity);
     }
 
     /** Creates an ordered array with {@link #items} of the specified type and a capacity of 16. */
-    public Seq(Class arrayType){
+    public Seq(Class<?> arrayType){
         this(true, 16, arrayType);
     }
 
