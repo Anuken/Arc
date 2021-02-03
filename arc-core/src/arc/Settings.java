@@ -67,7 +67,6 @@ public class Settings{
         try{
             loadValues();
             keybinds.load();
-            loaded = true;
         }catch(Throwable error){
             if(errorHandler != null){
                 if(!hasErrored) errorHandler.get(error);
@@ -76,10 +75,14 @@ public class Settings{
             }
             hasErrored = true;
         }
+        //if loading failed, it still counts
+        loaded = true;
     }
 
     /** Saves all values and keybinds. */
     public void forceSave(){
+        //never loaded, nothing to save
+        if(!loaded) return;
         try{
             keybinds.save();
             saveValues();

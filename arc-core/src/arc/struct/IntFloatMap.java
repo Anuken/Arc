@@ -283,6 +283,10 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
         size++;
     }
 
+    public float get(int key){
+        return get(key, 0);
+    }
+
     /** @param defaultValue Returned if the key was not associated with a value. */
     public float get(int key, float defaultValue){
         if(key == 0){
@@ -305,6 +309,10 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
         for(int i = capacity, n = i + stashSize; i < n; i++)
             if(key == keyTable[i]) return valueTable[i];
         return defaultValue;
+    }
+
+    public float increment(int key, float increment){
+        return increment(key, 0, increment);
     }
 
     /**
