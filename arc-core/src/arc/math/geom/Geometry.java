@@ -48,6 +48,10 @@ public final class Geometry{
         return d4y[Mathf.mod(i, 4)];
     }
 
+    public boolean inFront(int x, int y, int rot, int ox, int oy){
+        return Mathf.clamp(ox - x, -1, 1) == Geometry.d4x(rot) && Mathf.clamp(oy - y, -1, 1) == Geometry.d4y(rot);
+    }
+
     public static Point2 d8(int i){
         return d8[Mathf.mod(i, 8)];
     }
