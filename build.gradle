@@ -45,7 +45,6 @@ allprojects{
     buildscript{
         repositories{
             mavenCentral()
-            jcenter()
             maven{ url "https://oss.sonatype.org/content/repositories/snapshots/" }
             google()
             maven{ url 'https://jitpack.io' }
@@ -58,7 +57,6 @@ allprojects{
 
     repositories{
         mavenCentral()
-        jcenter()
         maven{ url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven{ url "https://dl.bintray.com/konsoletyper/teavm" }
         google()
