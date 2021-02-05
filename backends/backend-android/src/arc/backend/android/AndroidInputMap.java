@@ -103,9 +103,9 @@ public class AndroidInputMap{
             case 128: return KeyCode.metaShiftRightOn;
             case 129: return KeyCode.controlLeft;
             case 130: return KeyCode.controlRight;
-            case 131: return KeyCode.escape;
-            case 132: return KeyCode.end;
-            case 133: return KeyCode.insert;
+            case 111: return KeyCode.escape;
+            case 123: return KeyCode.end;
+            case 124: return KeyCode.insert;
             case 92: return KeyCode.pageUp;
             case 93: return KeyCode.pageDown;
             case 94: return KeyCode.pictSymbols;
@@ -137,17 +137,18 @@ public class AndroidInputMap{
             case 152: return KeyCode.numpad8;
             case 153: return KeyCode.numpad9;
             case 243: return KeyCode.colon;
-            case 244: return KeyCode.f1;
-            case 245: return KeyCode.f2;
-            case 246: return KeyCode.f3;
-            case 247: return KeyCode.f4;
-            case 248: return KeyCode.f5;
-            case 249: return KeyCode.f6;
-            case 250: return KeyCode.f7;
-            case 251: return KeyCode.f8;
-            case 252: return KeyCode.f9;
-            case 253: return KeyCode.f10;
-            case 254: return KeyCode.f11;
+            case 131: return KeyCode.f1;
+            case 132: return KeyCode.f2;
+            case 133: return KeyCode.f3;
+            case 134: return KeyCode.f4;
+            case 135: return KeyCode.f5;
+            case 136: return KeyCode.f6;
+            case 137: return KeyCode.f7;
+            case 138: return KeyCode.f8;
+            case 139: return KeyCode.f9;
+            case 140: return KeyCode.f10;
+            case 141: return KeyCode.f11;
+            case 142: return KeyCode.f12;
             default: return KeyCode.unknown;
         }
     }
