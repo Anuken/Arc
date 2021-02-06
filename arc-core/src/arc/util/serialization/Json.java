@@ -35,7 +35,7 @@ public class Json{
     private boolean usePrototypes = true;
     private OutputType outputType;
     private boolean quoteLongValues;
-    private boolean ignoreUnknownFields;
+    private boolean ignoreUnknownFields = true;
     private boolean ignoreDeprecated;
     private boolean readDeprecated;
     private boolean enumNames = true;
@@ -54,8 +54,7 @@ public class Json{
     }
 
     /**
-     * When true, fields in the JSON that are not found on the class will not throw a {@link SerializationException}. Default is
-     * false.
+     * When true, fields in the JSON that are not found on the class will not throw a {@link SerializationException}. Default is true.
      */
     public void setIgnoreUnknownFields(boolean ignoreUnknownFields){
         this.ignoreUnknownFields = ignoreUnknownFields;
