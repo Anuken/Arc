@@ -35,6 +35,7 @@ public class IOSGraphics extends Graphics{
     int fps;
     BufferFormat bufferFormat;
     String extensions;
+    volatile boolean resume = false;
     volatile boolean appPaused;
     IOSApplicationConfiguration config;
     EAGLContext context;
@@ -166,6 +167,7 @@ public class IOSGraphics extends Graphics{
                 listener.resume();
             }
         }
+        resume = true;
     }
 
     public void pause(){
@@ -206,7 +208,12 @@ public class IOSGraphics extends Graphics{
         }
 
         long time = System.nanoTime();
-        deltaTime = (time - lastFrameTime) / 1000000000.0f;
+        if(!resume){
+            deltaTime = (time - lastFrameTime) / 1000000000.0f;
+        }else{
+            resume = false;
+            deltaTime = 0;
+        }
         lastFrameTime = time;
 
         frames++;
