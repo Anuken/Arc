@@ -365,6 +365,8 @@ public class AndroidGraphics extends Graphics implements Renderer{
             deltaTime = 0;
         }
 
+        if(Mathf.equal(deltaTime, 0f)) deltaTime = 1f / 60f;
+
         boolean lrunning;
         boolean lpause;
         boolean ldestroy;
