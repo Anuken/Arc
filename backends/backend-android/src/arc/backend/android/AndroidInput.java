@@ -25,6 +25,8 @@ import java.util.*;
  * An implementation of the {@link Input} interface for Android.
  * @author mzechner
  */
+//uses legacy APIs for vibration and key input that have no good equivalent
+@SuppressWarnings("deprecation")
 public class AndroidInput extends Input implements OnKeyListener, OnTouchListener, OnGenericMotionListener{
     public static final int NUM_TOUCHES = 20;
     protected final float[] accelerometerValues = new float[3];

@@ -20,6 +20,8 @@ import org.robovm.rt.bro.annotation.*;
 
 import java.util.*;
 
+//lots of openGL stuff is deprecated, I don't care about it
+@SuppressWarnings("deprecation")
 public class IOSGraphics extends Graphics{
     private static final String tag = "IOSGraphics";
 
