@@ -5,6 +5,7 @@ import arc.Graphics.Cursor.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.gl.*;
+import arc.math.*;
 import arc.struct.Seq;
 import arc.util.*;
 import arc.backend.robovm.custom.*;
@@ -214,6 +215,7 @@ public class IOSGraphics extends Graphics{
             resume = false;
             deltaTime = 0;
         }
+        if(Mathf.equal(deltaTime, 0f)) deltaTime = 1f / 60f;
         lastFrameTime = time;
 
         frames++;
