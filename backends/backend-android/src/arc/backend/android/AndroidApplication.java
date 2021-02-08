@@ -3,7 +3,6 @@ package arc.backend.android;
 import android.annotation.*;
 import android.app.*;
 import android.content.*;
-import android.content.pm.*;
 import android.content.res.*;
 import android.net.*;
 import android.os.*;
@@ -293,21 +292,12 @@ public class AndroidApplication extends Activity implements Application{
 
     @Override
     public boolean openURI(String URI){
-        boolean result = false;
-        final Uri uri = Uri.parse(URI);
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        PackageManager pm = getContext().getPackageManager();
-        if(pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null){
-            runOnUiThread(() -> {
-                Intent intent1 = new Intent(Intent.ACTION_VIEW, uri);
-                // LiveWallpaper and Daydream applications need this flag
-                if(!(getContext() instanceof Activity))
-                    intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent1);
-            });
-            result = true;
+        try{
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URI)));
+            return true;
+        }catch(ActivityNotFoundException e){
+            return false;
         }
-        return result;
     }
 
     @Override
