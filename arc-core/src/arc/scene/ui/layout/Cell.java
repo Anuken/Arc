@@ -98,6 +98,11 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
+    public Cell<T> self(Cons<Cell<T>> c){
+        c.get(this);
+        return this;
+    }
+
     /** getElement shortcut */
     public T get(){
         return (T)element;
