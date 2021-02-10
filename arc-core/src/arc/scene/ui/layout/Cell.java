@@ -387,7 +387,8 @@ public class Cell<T extends Element> implements Poolable{
 
     /** Sets the maxWidth and maxHeight to the specified values. */
     public Cell<T> maxSize(float width, float height){
-        maxWidth = maxHeight = scl(width);
+        maxWidth = scl(width);
+        maxHeight = scl(height);
         return this;
     }
 
