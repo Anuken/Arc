@@ -365,7 +365,8 @@ public class Cell<T extends Element> implements Poolable{
 
     /** Sets the minWidth and minHeight to the specified values. */
     public Cell<T> minSize(float width, float height){
-        minWidth = minHeight = scl(width);
+        minWidth = scl(width);
+        minHeight = scl(height);
         return this;
     }
 
