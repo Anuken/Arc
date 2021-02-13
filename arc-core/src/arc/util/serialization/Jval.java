@@ -445,7 +445,11 @@ public class Jval{
                             }
                     }
                     if(isEol){
-                        // remove any whitespace at the end (ignored in quoteless strings)
+                        //remove trailing commas
+                        if(value.length() > 0 && value.charAt(value.length() - 1) == ','){
+                            value.setLength(value.length() - 1);
+                        }
+                        //remove any whitespace at the end (ignored in quoteless strings)
                         return new Jval(value.toString().trim());
                     }
                 }

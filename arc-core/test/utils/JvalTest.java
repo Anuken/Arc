@@ -30,6 +30,14 @@ public class JvalTest{
     }
 
     @Test
+    public void parseWithComma(){
+        Jval val = Jval.read("name: always,");
+
+        assertEquals(Jtype.string, val.get("name").getType());
+        assertEquals("always", val.getString("name"));
+    }
+
+    @Test
     public void parseJson(){
         //taken from hjson site
         Jval val = Jval.read("\n" +
