@@ -9,7 +9,7 @@ import arc.files.Fi;
 import arc.graphics.Texture;
 import arc.graphics.g2d.TextureAtlas;
 import arc.graphics.g2d.TextureAtlas.TextureAtlasData;
-import arc.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
+import arc.graphics.g2d.TextureAtlas.TextureAtlasData.AtlasPage;
 
 /**
  * {@link AssetLoader} to load {@link TextureAtlas} instances. Passing a {@link TextureAtlasParameter} to
@@ -26,7 +26,7 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
 
     @Override
     public TextureAtlas load(AssetManager assetManager, String fileName, Fi file, TextureAtlasParameter parameter){
-        for(Page page : data.getPages()){
+        for(AtlasPage page : data.getPages()){
             page.texture = assetManager.get(page.textureFile.path().replaceAll("\\\\", "/"), Texture.class);
         }
 
@@ -46,7 +46,7 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
         }
 
         Seq<AssetDescriptor> dependencies = new Seq<>();
-        for(Page page : data.getPages()){
+        for(AtlasPage page : data.getPages()){
             TextureParameter params = new TextureParameter();
             params.format = page.format;
             params.genMipMaps = page.useMipMaps;

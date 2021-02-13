@@ -24,14 +24,14 @@ import static arc.Core.scene;
  * @author Nathan Sweet
  */
 public class TreeElement extends WidgetGroup{
-    final Seq<Node> rootNodes = new Seq<>();
-    final Selection<Node> selection;
+    final Seq<TreeElementNode> rootNodes = new Seq<>();
+    final Selection<TreeElementNode> selection;
     TreeStyle style;
     float ySpacing = 4, iconSpacingLeft = 2, iconSpacingRight = 2, padding = 0, indentSpacing;
-    Node overNode, rangeStart;
+    TreeElementNode overNode, rangeStart;
     private float leftColumnWidth, prefWidth, prefHeight;
     private boolean sizeInvalid = true;
-    private Node foundNode;
+    private TreeElementNode foundNode;
     private ClickListener clickListener;
 
     public TreeElement(){
@@ -39,7 +39,7 @@ public class TreeElement extends WidgetGroup{
     }
 
     public TreeElement(TreeStyle style){
-        selection = new Selection<Node>(){
+        selection = new Selection<TreeElementNode>(){
             @Override
             protected void changed(){
                 switch(size()){
@@ -58,37 +58,37 @@ public class TreeElement extends WidgetGroup{
         initialize();
     }
 
-    static boolean findExpandedObjects(Seq<Node> nodes, Seq<Object> objects){
+    static boolean findExpandedObjects(Seq<TreeElementNode> nodes, Seq<Object> objects){
         boolean expanded = false;
         for(int i = 0, n = nodes.size; i < n; i++){
-            Node node = nodes.get(i);
+            TreeElementNode node = nodes.get(i);
             if(node.expanded && !findExpandedObjects(node.children, objects)) objects.add(node.object);
         }
         return expanded;
     }
 
-    static Node findNode(Seq<Node> nodes, Object object){
+    static TreeElementNode findNode(Seq<TreeElementNode> nodes, Object object){
         for(int i = 0, n = nodes.size; i < n; i++){
-            Node node = nodes.get(i);
+            TreeElementNode node = nodes.get(i);
             if(object.equals(node.object)) return node;
         }
         for(int i = 0, n = nodes.size; i < n; i++){
-            Node node = nodes.get(i);
-            Node found = findNode(node.children, object);
+            TreeElementNode node = nodes.get(i);
+            TreeElementNode found = findNode(node.children, object);
             if(found != null) return found;
         }
         return null;
     }
 
-    static void collapseAll(Seq<Node> nodes){
+    static void collapseAll(Seq<TreeElementNode> nodes){
         for(int i = 0, n = nodes.size; i < n; i++){
-            Node node = nodes.get(i);
+            TreeElementNode node = nodes.get(i);
             node.setExpanded(false);
             collapseAll(node.children);
         }
     }
 
-    static void expandAll(Seq<Node> nodes){
+    static void expandAll(Seq<TreeElementNode> nodes){
         for(int i = 0, n = nodes.size; i < n; i++)
             nodes.get(i).expandAll();
     }
@@ -97,13 +97,13 @@ public class TreeElement extends WidgetGroup{
         addListener(clickListener = new arc.scene.event.ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                Node node = getNodeAt(y);
+                TreeElementNode node = getNodeAt(y);
                 if(node == null) return;
                 if(node != getNodeAt(getTouchDownY())) return;
                 if(selection.getMultiple() && selection.hasItems() && Core.input.shift()){
                     // Select range (shift).
                     if(rangeStart == null) rangeStart = node;
-                    Node rangeStart = TreeElement.this.rangeStart;
+                    TreeElementNode rangeStart = TreeElement.this.rangeStart;
                     if(!Core.input.ctrl()) selection.clear();
                     float start = rangeStart.element.y, end = node.element.y;
                     if(start > end)
@@ -145,11 +145,11 @@ public class TreeElement extends WidgetGroup{
         });
     }
 
-    public void add(Node node){
+    public void add(TreeElementNode node){
         insert(rootNodes.size, node);
     }
 
-    public void insert(int index, Node node){
+    public void insert(int index, TreeElementNode node){
         remove(node);
         node.parent = null;
         rootNodes.insert(index, node);
@@ -157,7 +157,7 @@ public class TreeElement extends WidgetGroup{
         invalidateHierarchy();
     }
 
-    public void remove(Node node){
+    public void remove(TreeElementNode node){
         if(node.parent != null){
             node.parent.remove(node);
             return;
@@ -176,7 +176,7 @@ public class TreeElement extends WidgetGroup{
         selection.clear();
     }
 
-    public Seq<Node> getNodes(){
+    public Seq<TreeElementNode> getNodes(){
         return rootNodes;
     }
 
@@ -198,11 +198,11 @@ public class TreeElement extends WidgetGroup{
         prefHeight = getHeight() - prefHeight;
     }
 
-    private void computeSize(Seq<Node> nodes, float indent){
+    private void computeSize(Seq<TreeElementNode> nodes, float indent){
         float ySpacing = this.ySpacing;
         float spacing = iconSpacingLeft + iconSpacingRight;
         for(int i = 0, n = nodes.size; i < n; i++){
-            Node node = nodes.get(i);
+            TreeElementNode node = nodes.get(i);
             float rowWidth = indent + iconSpacingRight;
             Element element = node.element;
             if(element != null){
@@ -229,10 +229,10 @@ public class TreeElement extends WidgetGroup{
         layout(rootNodes, leftColumnWidth + indentSpacing + iconSpacingRight, getHeight() - ySpacing / 2);
     }
 
-    private float layout(Seq<Node> nodes, float indent, float y){
+    private float layout(Seq<TreeElementNode> nodes, float indent, float y){
         float ySpacing = this.ySpacing;
         for(int i = 0, n = nodes.size; i < n; i++){
-            Node node = nodes.get(i);
+            TreeElementNode node = nodes.get(i);
             float x = indent;
             if(node.icon != null) x += node.icon.getMinWidth();
             y -= node.getHeight();
@@ -262,11 +262,11 @@ public class TreeElement extends WidgetGroup{
     }
 
     /** Draws selection, icons, and expand icons. */
-    private void draw(Seq<Node> nodes, float indent){
+    private void draw(Seq<TreeElementNode> nodes, float indent){
         Drawable plus = style.plus, minus = style.minus;
         float x = this.x, y = this.y;
         for(int i = 0, n = nodes.size; i < n; i++){
-            Node node = nodes.get(i);
+            TreeElementNode node = nodes.get(i);
             Element element = node.element;
 
             if(selection.contains(node) && style.selection != null){
@@ -293,15 +293,15 @@ public class TreeElement extends WidgetGroup{
     }
 
     /** @return May be null. */
-    public Node getNodeAt(float y){
+    public TreeElementNode getNodeAt(float y){
         foundNode = null;
         getNodeAt(rootNodes, y, getHeight());
         return foundNode;
     }
 
-    private float getNodeAt(Seq<Node> nodes, float y, float rowY){
+    private float getNodeAt(Seq<TreeElementNode> nodes, float y, float rowY){
         for(int i = 0, n = nodes.size; i < n; i++){
-            Node node = nodes.get(i);
+            TreeElementNode node = nodes.get(i);
             float height = node.height;
             rowY -= node.getHeight() - height; // Node subclass may increase getHeight.
             if(y >= rowY - height - ySpacing && y < rowY){
@@ -317,9 +317,9 @@ public class TreeElement extends WidgetGroup{
         return rowY;
     }
 
-    void selectNodes(Seq<Node> nodes, float low, float high){
+    void selectNodes(Seq<TreeElementNode> nodes, float low, float high){
         for(int i = 0, n = nodes.size; i < n; i++){
-            Node node = nodes.get(i);
+            TreeElementNode node = nodes.get(i);
             if(node.element.y < low) break;
             if(!node.isSelectable()) continue;
             if(node.element.y <= high) selection.add(node);
@@ -327,7 +327,7 @@ public class TreeElement extends WidgetGroup{
         }
     }
 
-    public Selection<Node> getSelection(){
+    public Selection<TreeElementNode> getSelection(){
         return selection;
     }
 
@@ -340,17 +340,17 @@ public class TreeElement extends WidgetGroup{
         indentSpacing = Math.max(style.plus.getMinWidth(), style.minus.getMinWidth()) + iconSpacingLeft;
     }
 
-    public Seq<Node> getRootNodes(){
+    public Seq<TreeElementNode> getRootNodes(){
         return rootNodes;
     }
 
     /** @return May be null. */
-    public Node getOverNode(){
+    public TreeElementNode getOverNode(){
         return overNode;
     }
 
     /** @param overNode May be null. */
-    public void setOverNode(Node overNode){
+    public void setOverNode(TreeElementNode overNode){
         this.overNode = overNode;
     }
 
@@ -403,7 +403,7 @@ public class TreeElement extends WidgetGroup{
 
     public void restoreExpandedObjects(Seq objects){
         for(int i = 0, n = objects.size; i < n; i++){
-            Node node = findNode(objects.get(i));
+            TreeElementNode node = findNode(objects.get(i));
             if(node != null){
                 node.setExpanded(true);
                 node.expandTo();
@@ -412,7 +412,7 @@ public class TreeElement extends WidgetGroup{
     }
 
     /** Returns the node with the specified object, or null. */
-    public Node findNode(Object object){
+    public TreeElementNode findNode(Object object){
         if(object == null) throw new IllegalArgumentException("object cannot be null.");
         return findNode(rootNodes, object);
     }
@@ -430,17 +430,17 @@ public class TreeElement extends WidgetGroup{
         return clickListener;
     }
 
-    public static class Node{
+    public static class TreeElementNode{
         final Element element;
-        final Seq<Node> children = new Seq<>(0);
-        Node parent;
+        final Seq<TreeElementNode> children = new Seq<>(0);
+        TreeElementNode parent;
         boolean selectable = true;
         boolean expanded;
         Drawable icon;
         float height;
         Object object;
 
-        public Node(Element element){
+        public TreeElementNode(Element element){
             if(element == null) throw new IllegalArgumentException("element cannot be null.");
             this.element = element;
         }
@@ -459,19 +459,19 @@ public class TreeElement extends WidgetGroup{
             if(!expanded) return;
             Object[] children = this.children.items;
             for(int i = 0, n = this.children.size; i < n; i++)
-                ((Node)children[i]).removeFromTree(tree);
+                ((TreeElementNode)children[i]).removeFromTree(tree);
         }
 
-        public void add(Node node){
+        public void add(TreeElementNode node){
             insert(children.size, node);
         }
 
-        public void addAll(Seq<Node> nodes){
+        public void addAll(Seq<TreeElementNode> nodes){
             for(int i = 0, n = nodes.size; i < n; i++)
                 insert(children.size, nodes.get(i));
         }
 
-        public void insert(int index, Node node){
+        public void insert(int index, TreeElementNode node){
             node.parent = this;
             children.insert(index, node);
             updateChildren();
@@ -485,7 +485,7 @@ public class TreeElement extends WidgetGroup{
                 parent.remove(this);
         }
 
-        public void remove(Node node){
+        public void remove(TreeElementNode node){
             children.remove(node, true);
             if(!expanded) return;
             TreeElement tree = getTree();
@@ -535,7 +535,7 @@ public class TreeElement extends WidgetGroup{
         }
 
         /** If the children order is changed, {@link #updateChildren()} must be called. */
-        public Seq<Node> getChildren(){
+        public Seq<TreeElementNode> getChildren(){
             return children;
         }
 
@@ -548,7 +548,7 @@ public class TreeElement extends WidgetGroup{
         }
 
         /** @return May be null. */
-        public Node getParent(){
+        public TreeElementNode getParent(){
             return parent;
         }
 
@@ -572,7 +572,7 @@ public class TreeElement extends WidgetGroup{
 
         public int getLevel(){
             int level = 0;
-            Node current = this;
+            TreeElementNode current = this;
             do{
                 level++;
                 current = current.getParent();
@@ -581,7 +581,7 @@ public class TreeElement extends WidgetGroup{
         }
 
         /** Returns this node or the child node with the specified object, or null. */
-        public Node findNode(Object object){
+        public TreeElementNode findNode(Object object){
             if(object == null) throw new IllegalArgumentException("object cannot be null.");
             if(object.equals(this.object)) return this;
             return TreeElement.findNode(children, object);
@@ -601,7 +601,7 @@ public class TreeElement extends WidgetGroup{
 
         /** Expands all parent nodes of this node. */
         public void expandTo(){
-            Node node = parent;
+            TreeElementNode node = parent;
             while(node != null){
                 node.setExpanded(true);
                 node = node.parent;
@@ -622,7 +622,7 @@ public class TreeElement extends WidgetGroup{
 
         public void restoreExpandedObjects(Seq objects){
             for(int i = 0, n = objects.size; i < n; i++){
-                Node node = findNode(objects.get(i));
+                TreeElementNode node = findNode(objects.get(i));
                 if(node != null){
                     node.setExpanded(true);
                     node.expandTo();

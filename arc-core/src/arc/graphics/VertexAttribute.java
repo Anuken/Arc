@@ -84,35 +84,35 @@ public final class VertexAttribute{
         this.usageIndex = Integer.numberOfTrailingZeros(usage);
     }
 
-    public static VertexAttribute Position(){
+    public static VertexAttribute position(){
         return new VertexAttribute(Usage.position, 3, Shader.positionAttribute);
     }
 
-    public static VertexAttribute TexCoords(int unit){
+    public static VertexAttribute texCoords(int unit){
         return new VertexAttribute(Usage.textureCoordinates, 2, Shader.texcoordAttribute + unit, unit);
     }
 
-    public static VertexAttribute Normal(){
+    public static VertexAttribute normal(){
         return new VertexAttribute(Usage.normal, 3, Shader.normalAttribute);
     }
 
-    public static VertexAttribute ColorPacked(){
+    public static VertexAttribute colorPacked(){
         return new VertexAttribute(Usage.colorPacked, 4, GL20.GL_UNSIGNED_BYTE, true, Shader.colorAttribute);
     }
 
-    public static VertexAttribute ColorUnpacked(){
+    public static VertexAttribute colorUnpacked(){
         return new VertexAttribute(Usage.colorUnpacked, 4, GL20.GL_FLOAT, false, Shader.colorAttribute);
     }
 
-    public static VertexAttribute Tangent(){
+    public static VertexAttribute tangent(){
         return new VertexAttribute(Usage.tangent, 3, Shader.tangentAttribute);
     }
 
-    public static VertexAttribute Binormal(){
+    public static VertexAttribute binormal(){
         return new VertexAttribute(Usage.biNormal, 3, Shader.binormalAttribute);
     }
 
-    public static VertexAttribute BoneWeight(int unit){
+    public static VertexAttribute boneWeight(int unit){
         return new VertexAttribute(Usage.boneWeight, 2, Shader.boneweightAttribute + unit, unit);
     }
 

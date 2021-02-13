@@ -1278,13 +1278,11 @@ public class Json{
 
     public interface Serializer<T>{
         void write(Json json, T object, Class knownType);
-
         T read(Json json, JsonValue jsonData, Class type);
     }
 
     public interface JsonSerializable{
         void write(Json json);
-
         void read(Json json, JsonValue jsonData);
     }
 

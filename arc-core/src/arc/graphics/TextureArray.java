@@ -2,6 +2,7 @@ package arc.graphics;
 
 import arc.Application;
 import arc.Core;
+import arc.graphics.TextureArrayData.*;
 import arc.struct.Seq;
 import arc.files.Fi;
 import arc.util.ArcRuntimeException;
@@ -31,7 +32,7 @@ public class TextureArray extends GLTexture{
     }
 
     public TextureArray(boolean useMipMaps, Pixmap.Format format, Fi... files){
-        this(TextureArrayData.Factory.loadFromFiles(format, useMipMaps, files));
+        this(TextureArrayFactory.loadFromFiles(format, useMipMaps, files));
     }
 
     public TextureArray(TextureArrayData data){

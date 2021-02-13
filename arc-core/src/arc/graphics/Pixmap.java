@@ -17,7 +17,7 @@ import java.nio.*;
  * </p>
  *
  * <p>
- * By default all methods use blending. You can disable blending with {@link Pixmap#setBlending(Blending)}. The
+ * By default all methods use blending. You can disable blending with {@link Pixmap#setBlending(PixmapBlending)}. The
  * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)} method will scale and stretch the source image to a
  * target image. There either nearest neighbour or bilinear filtering can be used.
  * </p>
@@ -34,8 +34,8 @@ public class Pixmap implements Disposable{
     
     final NativePixmap pixmap;
     int color = 0;
-    private Blending blending = Blending.sourceOver;
-    private Filter filter = Filter.bilinear;
+    private PixmapBlending blending = PixmapBlending.sourceOver;
+    private PixmapFilter filter = PixmapFilter.bilinear;
     private boolean disposed;
 
     /** Uses RGBA8888.*/
@@ -214,7 +214,7 @@ public class Pixmap implements Disposable{
 
     /**
      * Draws an area from another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
-     * specified target rectangle. Use {@link Pixmap#setFilter(Filter)} to specify the type of filtering to be used (nearest
+     * specified target rectangle. Use {@link Pixmap#setFilter(PixmapFilter)} to specify the type of filtering to be used (nearest
      * neighbour or bilinear).
      * @param pixmap The other Pixmap
      * @param srcx The source x-coordinate (top left corner)
@@ -374,34 +374,34 @@ public class Pixmap implements Disposable{
         return Format.fromPixmapFormat(pixmap.format);
     }
 
-    /** @return the currently set {@link Blending} */
-    public Blending getBlending(){
+    /** @return the currently set {@link PixmapBlending} */
+    public PixmapBlending getBlending(){
         return blending;
     }
 
     /**
-     * Sets the type of {@link Blending} to be used for all operations. Default is {@link Blending#sourceOver}.
+     * Sets the type of {@link PixmapBlending} to be used for all operations. Default is {@link PixmapBlending#sourceOver}.
      * @param blending the blending type
      */
-    public void setBlending(Blending blending){
+    public void setBlending(PixmapBlending blending){
         this.blending = blending;
-        int blend = blending == Blending.none ? 0 : 1;
+        int blend = blending == PixmapBlending.none ? 0 : 1;
         setBlend(pixmap.basePtr, blend);
     }
 
-    /** @return the currently set {@link Filter} */
-    public Filter getFilter(){
+    /** @return the currently set {@link PixmapFilter} */
+    public PixmapFilter getFilter(){
         return filter;
     }
 
     /**
-     * Sets the type of interpolation {@link Filter} to be used in conjunction with
+     * Sets the type of interpolation {@link PixmapFilter} to be used in conjunction with
      * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
      * @param filter the filter.
      */
-    public void setFilter(Filter filter){
+    public void setFilter(PixmapFilter filter){
         this.filter = filter;
-        int scale = filter == Filter.nearestNeighbour ? pixmapScaleNearest : pixmapScaleLinear;
+        int scale = filter == PixmapFilter.nearestNeighbour ? pixmapScaleNearest : pixmapScaleLinear;
         setScale(pixmap.basePtr, scale);
     }
 
@@ -474,7 +474,7 @@ public class Pixmap implements Disposable{
      * Blending functions to be set with {@link Pixmap#setBlending}.
      * @author mzechner
      */
-    public enum Blending{
+    public enum PixmapBlending{
         none, sourceOver
     }
 
@@ -482,7 +482,7 @@ public class Pixmap implements Disposable{
      * Filters to be used with {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
      * @author mzechner
      */
-    public enum Filter{
+    public enum PixmapFilter{
         nearestNeighbour, bilinear
     }
 

@@ -5,6 +5,7 @@ import arc.Core;
 import arc.assets.AssetManager;
 import arc.assets.loaders.AssetLoader;
 import arc.assets.loaders.TextureLoader.TextureParameter;
+import arc.graphics.TextureData.*;
 import arc.struct.Seq;
 import arc.files.Fi;
 import arc.graphics.Pixmap.Format;
@@ -49,7 +50,7 @@ public class Texture extends GLTexture{
     }
 
     public Texture(Fi file, Format format, boolean useMipMaps){
-        this(TextureData.Factory.loadFromFile(file, format, useMipMaps));
+        this(TextureDataFactory.loadFromFile(file, format, useMipMaps));
     }
 
     public Texture(Pixmap pixmap){

@@ -155,7 +155,7 @@ public class Scene implements InputProcessor, Disposable{
                     screenToStageCoordinates(tempCoords.set(pointerScreenX[pointer], pointerScreenY[pointer]));
                     // Exit over last.
                     InputEvent event = Pools.obtain(InputEvent.class, InputEvent::new);
-                    event.type = (InputEvent.Type.exit);
+                    event.type = (InputEventType.exit);
                     event.stageX = (tempCoords.x);
                     event.stageY = (tempCoords.y);
                     event.relatedActor = (overLast);
@@ -238,7 +238,7 @@ public class Scene implements InputProcessor, Disposable{
             event.stageX = (tempCoords.x);
             event.stageY = (tempCoords.y);
             event.pointer = (pointer);
-            event.type = (InputEvent.Type.exit);
+            event.type = (InputEventType.exit);
             event.relatedActor = (over);
             overLast.fire(event);
             Pools.free(event);
@@ -249,7 +249,7 @@ public class Scene implements InputProcessor, Disposable{
             event.stageX = (tempCoords.x);
             event.stageY = (tempCoords.y);
             event.pointer = (pointer);
-            event.type = (InputEvent.Type.enter);
+            event.type = (InputEventType.enter);
             event.relatedActor = (overLast);
             over.fire(event);
             Pools.free(event);
@@ -272,7 +272,7 @@ public class Scene implements InputProcessor, Disposable{
         screenToStageCoordinates(tempCoords.set(screenX, screenY));
 
         InputEvent event = Pools.obtain(InputEvent.class, InputEvent::new);
-        event.type = (Type.touchDown);
+        event.type = (InputEventType.touchDown);
         event.stageX = (tempCoords.x);
         event.stageY = (tempCoords.y);
         event.pointer = (pointer);
@@ -306,7 +306,7 @@ public class Scene implements InputProcessor, Disposable{
         screenToStageCoordinates(tempCoords.set(screenX, screenY));
 
         InputEvent event = Pools.obtain(InputEvent.class, InputEvent::new);
-        event.type = (Type.touchDragged);
+        event.type = (InputEventType.touchDragged);
         event.stageX = (tempCoords.x);
         event.stageY = (tempCoords.y);
         event.pointer = (pointer);
@@ -343,7 +343,7 @@ public class Scene implements InputProcessor, Disposable{
         screenToStageCoordinates(tempCoords.set(screenX, screenY));
 
         InputEvent event = Pools.obtain(InputEvent.class, InputEvent::new);
-        event.type = (Type.touchUp);
+        event.type = (InputEventType.touchUp);
         event.stageX = (tempCoords.x);
         event.stageY = (tempCoords.y);
         event.pointer = (pointer);
@@ -381,7 +381,7 @@ public class Scene implements InputProcessor, Disposable{
         screenToStageCoordinates(tempCoords.set(screenX, screenY));
 
         InputEvent event = Pools.obtain(InputEvent.class, InputEvent::new);
-        event.type = (Type.mouseMoved);
+        event.type = (InputEventType.mouseMoved);
         event.stageX = (tempCoords.x);
         event.stageY = (tempCoords.y);
 
@@ -405,7 +405,7 @@ public class Scene implements InputProcessor, Disposable{
         screenToStageCoordinates(tempCoords.set(mouseScreenX, mouseScreenY));
 
         InputEvent event = Pools.obtain(InputEvent.class, InputEvent::new);
-        event.type = (InputEvent.Type.scrolled);
+        event.type = (InputEventType.scrolled);
         event.scrollAmountX = amountX;
         event.scrollAmountY = amountY;
         event.stageX = (tempCoords.x);
@@ -424,7 +424,7 @@ public class Scene implements InputProcessor, Disposable{
     public boolean keyDown(KeyCode keyCode){
         Element target = keyboardFocus == null ? root : keyboardFocus;
         InputEvent event = Pools.obtain(InputEvent.class, InputEvent::new);
-        event.type = (InputEvent.Type.keyDown);
+        event.type = (InputEventType.keyDown);
         event.keyCode = keyCode;
         target.fire(event);
         boolean handled = event.handled;
@@ -440,7 +440,7 @@ public class Scene implements InputProcessor, Disposable{
     public boolean keyUp(KeyCode keyCode){
         Element target = keyboardFocus == null ? root : keyboardFocus;
         InputEvent event = Pools.obtain(InputEvent.class, InputEvent::new);
-        event.type = (InputEvent.Type.keyUp);
+        event.type = (InputEventType.keyUp);
         event.keyCode = keyCode;
         target.fire(event);
         boolean handled = event.handled;
@@ -456,7 +456,7 @@ public class Scene implements InputProcessor, Disposable{
     public boolean keyTyped(char character){
         Element target = keyboardFocus == null ? root : keyboardFocus;
         InputEvent event = Pools.obtain(InputEvent.class, InputEvent::new);
-        event.type = (InputEvent.Type.keyTyped);
+        event.type = (InputEventType.keyTyped);
         event.character = character;
         target.fire(event);
         boolean handled = event.handled;
@@ -497,7 +497,7 @@ public class Scene implements InputProcessor, Disposable{
      */
     public void cancelTouchFocus(Element actor){
         InputEvent event = Pools.obtain(InputEvent.class, InputEvent::new);
-        event.type = (InputEvent.Type.touchUp);
+        event.type = (InputEventType.touchUp);
         event.stageX = (Integer.MIN_VALUE);
         event.stageY = (Integer.MIN_VALUE);
 
@@ -537,7 +537,7 @@ public class Scene implements InputProcessor, Disposable{
      */
     public void cancelTouchFocusExcept(EventListener exceptListener, Element exceptActor){
         InputEvent event = Pools.obtain(InputEvent.class, InputEvent::new);
-        event.type = (InputEvent.Type.touchUp);
+        event.type = (InputEventType.touchUp);
         event.stageX = (Integer.MIN_VALUE);
         event.stageY = (Integer.MIN_VALUE);
 

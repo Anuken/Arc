@@ -12,7 +12,7 @@ import arc.graphics.gl.MipMapGenerator;
  * the Texture will invoke the other methods to find out about the size of the image data, the format, whether mipmaps should be
  * generated and whether the TextureData is able to manage the pixel data if the OpenGL ES context is lost.</p>
  * <p>
- * In case the TextureData implementation has the type {@link TextureDataType#Custom}, the implementation has to generate the
+ * In case the TextureData implementation has the type {@link TextureDataType#custom}, the implementation has to generate the
  * mipmaps itself if necessary. See {@link MipMapGenerator}.</p>
  * <p>
  * Before a call to either {@link #consumePixmap()} or {@link #consumeCustomData(int)}, Texture will bind the OpenGL ES
@@ -77,14 +77,14 @@ public interface TextureData{
      * @author mzechner
      */
     enum TextureDataType{
-        Pixmap, Custom
+        pixmap, custom
     }
 
     /**
      * Provides static method to instantiate the right implementation (Pixmap, ETC1, KTX).
      * @author Vincent Bousquet
      */
-    class Factory{
+    class TextureDataFactory{
 
         public static TextureData loadFromFile(Fi file, boolean useMipMaps){
             return loadFromFile(file, null, useMipMaps);

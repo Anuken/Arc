@@ -114,8 +114,8 @@ public class TextureAtlas implements Disposable{
     }
 
     private void load(TextureAtlasData data){
-        ObjectMap<Page, Texture> pageToTexture = new ObjectMap<>();
-        for(Page page : data.pages){
+        ObjectMap<AtlasPage, Texture> pageToTexture = new ObjectMap<>();
+        for(AtlasPage page : data.pages){
             Texture texture = null;
             if(page.texture == null){
                 texture = new Texture(page.textureFile, page.format, page.useMipMaps);
@@ -343,13 +343,13 @@ public class TextureAtlas implements Disposable{
     }
 
     public static class TextureAtlasData{
-        final Seq<Page> pages = new Seq<>();
+        final Seq<AtlasPage> pages = new Seq<>();
         final Seq<Region> regions = new Seq<>();
 
         public TextureAtlasData(Fi packFile, Fi imagesDir, boolean flip){
             BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 64);
             try{
-                Page pageImage = null;
+                AtlasPage pageImage = null;
                 while(true){
                     String line = reader.readLine();
                     if(line == null) break;
@@ -382,7 +382,7 @@ public class TextureAtlas implements Disposable{
                             repeatY = repeat;
                         }
 
-                        pageImage = new Page(file, width, height, min.isMipMap(), format, min, max, repeatX, repeatY);
+                        pageImage = new AtlasPage(file, width, height, min.isMipMap(), format, min, max, repeatX, repeatY);
                         pages.add(pageImage);
                     }else{
                         boolean rotate = Boolean.valueOf(readValue(reader));
@@ -439,7 +439,7 @@ public class TextureAtlas implements Disposable{
             regions.sort(indexComparator);
         }
 
-        public Seq<Page> getPages(){
+        public Seq<AtlasPage> getPages(){
             return pages;
         }
 
@@ -447,7 +447,7 @@ public class TextureAtlas implements Disposable{
             return regions;
         }
 
-        public static class Page{
+        public static class AtlasPage{
             public final Fi textureFile;
             public final float width, height;
             public final boolean useMipMaps;
@@ -458,8 +458,8 @@ public class TextureAtlas implements Disposable{
             public final TextureWrap vWrap;
             public Texture texture;
 
-            public Page(Fi handle, float width, float height, boolean useMipMaps, Format format, TextureFilter minFilter,
-                        TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap){
+            public AtlasPage(Fi handle, float width, float height, boolean useMipMaps, Format format, TextureFilter minFilter,
+                             TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap){
                 this.width = width;
                 this.height = height;
                 this.textureFile = handle;
@@ -473,7 +473,7 @@ public class TextureAtlas implements Disposable{
         }
 
         public static class Region{
-            public Page page;
+            public AtlasPage page;
             public int index;
             public String name;
             public float offsetX;

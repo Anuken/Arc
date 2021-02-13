@@ -21,7 +21,7 @@ public class MipMapTextureData implements TextureData{
 
     @Override
     public TextureDataType getType(){
-        return TextureDataType.Custom;
+        return TextureDataType.custom;
     }
 
     @Override

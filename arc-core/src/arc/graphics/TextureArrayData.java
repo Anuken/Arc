@@ -54,7 +54,7 @@ public interface TextureArrayData{
      * Provides static method to instantiate the right implementation.
      * @author Tomski
      */
-    class Factory{
+    class TextureArrayFactory{
 
         public static TextureArrayData loadFromFiles(Pixmap.Format format, boolean useMipMaps, Fi... files){
             return new FileTextureArrayData(format, useMipMaps, files);

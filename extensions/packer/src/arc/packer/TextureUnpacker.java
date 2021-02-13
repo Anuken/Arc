@@ -62,7 +62,7 @@ public class TextureUnpacker{
             if(!quiet) System.out.println(String.format("Creating directory: %s", outputDirFile.getPath()));
         }
 
-        for(Page page : atlas.getPages()){
+        for(AtlasPage page : atlas.getPages()){
             // load the image file belonging to this page as a Buffered Image
             File file = page.textureFile.file();
             if(!file.exists()) throw new RuntimeException("Unable to find atlas image: " + file.getAbsolutePath());

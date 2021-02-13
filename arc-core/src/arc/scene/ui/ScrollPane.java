@@ -6,6 +6,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.*;
 import arc.scene.event.*;
+import arc.scene.event.InputEvent.*;
 import arc.scene.style.*;
 import arc.scene.ui.layout.*;
 import arc.scene.utils.*;
@@ -185,7 +186,7 @@ public class ScrollPane extends WidgetGroup{
             @Override
             public boolean handle(SceneEvent event){
                 if(super.handle(event)){
-                    if(((InputEvent)event).type == InputEvent.Type.touchDown) flingTimer = 0;
+                    if(((InputEvent)event).type == InputEventType.touchDown) flingTimer = 0;
                     return true;
                 }
                 return false;

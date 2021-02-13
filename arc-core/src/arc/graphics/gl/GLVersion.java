@@ -9,25 +9,25 @@ import java.util.regex.Pattern;
 public class GLVersion{
     public final String vendorString;
     public final String rendererString;
-    public final Type type;
+    public final GlType type;
     public int majorVersion;
     public int minorVersion;
     public int releaseVersion;
 
     public GLVersion(Application.ApplicationType appType, String versionString, String vendorString, String rendererString){
-        if(appType == Application.ApplicationType.android) this.type = Type.GLES;
-        else if(appType == Application.ApplicationType.iOS) this.type = Type.GLES;
-        else if(appType == Application.ApplicationType.desktop) this.type = Type.OpenGL;
-        else if(appType == Application.ApplicationType.web) this.type = Type.WebGL;
-        else this.type = Type.NONE;
+        if(appType == Application.ApplicationType.android) this.type = GlType.GLES;
+        else if(appType == Application.ApplicationType.iOS) this.type = GlType.GLES;
+        else if(appType == Application.ApplicationType.desktop) this.type = GlType.OpenGL;
+        else if(appType == Application.ApplicationType.web) this.type = GlType.WebGL;
+        else this.type = GlType.NONE;
 
-        if(type == Type.GLES){
+        if(type == GlType.GLES){
             //OpenGL<space>ES<space><version number><space><vendor-specific information>.
             extractVersion("OpenGL ES (\\d(\\.\\d){0,2})", versionString);
-        }else if(type == Type.WebGL){
+        }else if(type == GlType.WebGL){
             //WebGL<space><version number><space><vendor-specific information>
             extractVersion("WebGL (\\d(\\.\\d){0,2})", versionString);
-        }else if(type == Type.OpenGL){
+        }else if(type == GlType.OpenGL){
             //<version number><space><vendor-specific information>
             extractVersion("(\\d(\\.\\d){0,2})", versionString);
         }else{
@@ -93,7 +93,7 @@ public class GLVersion{
         return type + " " + majorVersion + "." + minorVersion + "." + releaseVersion + " / " + vendorString + " / " + rendererString;
     }
 
-    public enum Type{
+    public enum GlType{
         OpenGL,
         GLES,
         WebGL,

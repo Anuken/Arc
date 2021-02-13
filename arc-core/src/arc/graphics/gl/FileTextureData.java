@@ -94,7 +94,7 @@ public class FileTextureData implements TextureData{
 
     @Override
     public TextureDataType getType(){
-        return TextureDataType.Pixmap;
+        return TextureDataType.pixmap;
     }
 
     @Override

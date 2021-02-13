@@ -10,7 +10,7 @@ import arc.scene.Scene;
  * @see InputListener
  */
 public class InputEvent extends SceneEvent{
-    public Type type;
+    public InputEventType type;
     public float stageX, stageY;
     public int pointer;
     public float scrollAmountX, scrollAmountY;
@@ -45,7 +45,7 @@ public class InputEvent extends SceneEvent{
     }
 
     /** Types of low-level input events supported by scene2d. */
-    public enum Type{
+    public enum InputEventType{
         /** A new touch for a pointer on the stage was detected */
         touchDown,
         /** A pointer has stopped touching the stage. */

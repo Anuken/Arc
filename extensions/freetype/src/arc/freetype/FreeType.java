@@ -4,7 +4,7 @@ import arc.struct.LongMap;
 import arc.files.Fi;
 import arc.graphics.Color;
 import arc.graphics.Pixmap;
-import arc.graphics.Pixmap.Blending;
+import arc.graphics.Pixmap.PixmapBlending;
 import arc.graphics.Pixmap.Format;
 import arc.util.ArcRuntimeException;
 import arc.util.Buffers;
@@ -669,7 +669,7 @@ public class FreeType {
 			Pixmap converted = pixmap;
 			if (format != pixmap.getFormat()) {
 				converted = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), format);
-				converted.setBlending(Blending.none);
+				converted.setBlending(PixmapBlending.none);
 				converted.drawPixmap(pixmap, 0, 0);
 				pixmap.dispose();
 			}

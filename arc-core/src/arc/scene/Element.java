@@ -163,7 +163,7 @@ public class Element{
                 event.handle();
                 if(event instanceof InputEvent){
                     InputEvent inputEvent = (InputEvent)event;
-                    if(inputEvent.type == Type.touchDown){
+                    if(inputEvent.type == InputEventType.touchDown){
                         getScene().addTouchFocus(listener, this, inputEvent.targetActor, inputEvent.pointer,
                         inputEvent.keyCode);
                     }

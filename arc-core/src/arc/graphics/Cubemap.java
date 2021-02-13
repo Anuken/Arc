@@ -5,6 +5,7 @@ import arc.Core;
 import arc.assets.AssetManager;
 import arc.assets.loaders.AssetLoader;
 import arc.assets.loaders.CubemapLoader.CubemapParameter;
+import arc.graphics.TextureData.*;
 import arc.struct.Seq;
 import arc.files.Fi;
 import arc.graphics.Pixmap.Format;
@@ -52,9 +53,9 @@ public class Cubemap extends GLTexture{
 
     /** Construct a Cubemap with the specified texture files for the sides, optionally generating mipmaps. */
     public Cubemap(Fi positiveX, Fi negativeX, Fi positiveY, Fi negativeY, Fi positiveZ, Fi negativeZ, boolean useMipMaps){
-        this(TextureData.Factory.loadFromFile(positiveX, useMipMaps), TextureData.Factory.loadFromFile(negativeX, useMipMaps),
-        TextureData.Factory.loadFromFile(positiveY, useMipMaps), TextureData.Factory.loadFromFile(negativeY, useMipMaps),
-        TextureData.Factory.loadFromFile(positiveZ, useMipMaps), TextureData.Factory.loadFromFile(negativeZ, useMipMaps));
+        this(TextureDataFactory.loadFromFile(positiveX, useMipMaps), TextureDataFactory.loadFromFile(negativeX, useMipMaps),
+        TextureDataFactory.loadFromFile(positiveY, useMipMaps), TextureDataFactory.loadFromFile(negativeY, useMipMaps),
+        TextureDataFactory.loadFromFile(positiveZ, useMipMaps), TextureDataFactory.loadFromFile(negativeZ, useMipMaps));
     }
 
     /** Construct a Cubemap with the specified {@link Pixmap}s for the sides, does not generate mipmaps. */

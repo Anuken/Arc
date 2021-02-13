@@ -1,6 +1,7 @@
 package arc.assets.loaders;
 
 import arc.assets.*;
+import arc.graphics.TextureData.*;
 import arc.struct.*;
 import arc.files.*;
 import arc.graphics.Pixmap.*;
@@ -35,7 +36,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
                 info.texture = parameter.texture;
             }
 
-            info.data = TextureData.Factory.loadFromFile(file, format, genMipMaps);
+            info.data = TextureDataFactory.loadFromFile(file, format, genMipMaps);
         }else{
             info.data = parameter.textureData;
             info.texture = parameter.texture;

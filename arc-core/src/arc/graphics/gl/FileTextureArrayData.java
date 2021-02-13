@@ -4,8 +4,10 @@ import arc.Core;
 import arc.files.Fi;
 import arc.graphics.GL30;
 import arc.graphics.Pixmap;
+import arc.graphics.Pixmap.*;
 import arc.graphics.TextureArrayData;
 import arc.graphics.TextureData;
+import arc.graphics.TextureData.*;
 import arc.util.ArcRuntimeException;
 
 /** @author Tomski **/
@@ -23,7 +25,7 @@ public class FileTextureArrayData implements TextureArrayData{
         this.depth = files.length;
         textureDatas = new TextureData[files.length];
         for(int i = 0; i < files.length; i++){
-            textureDatas[i] = TextureData.Factory.loadFromFile(files[i], format, useMipMaps);
+            textureDatas[i] = TextureDataFactory.loadFromFile(files[i], format, useMipMaps);
         }
     }
 
@@ -53,7 +55,7 @@ public class FileTextureArrayData implements TextureArrayData{
     @Override
     public void consumeTextureArrayData(){
         for(int i = 0; i < textureDatas.length; i++){
-            if(textureDatas[i].getType() == TextureData.TextureDataType.Custom){
+            if(textureDatas[i].getType() == TextureData.TextureDataType.custom){
                 textureDatas[i].consumeCustomData(GL30.GL_TEXTURE_2D_ARRAY);
             }else{
                 TextureData texData = textureDatas[i];
@@ -61,7 +63,7 @@ public class FileTextureArrayData implements TextureArrayData{
                 boolean disposePixmap = texData.disposePixmap();
                 if(texData.getFormat() != pixmap.getFormat()){
                     Pixmap temp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), texData.getFormat());
-                    temp.setBlending(Pixmap.Blending.none);
+                    temp.setBlending(PixmapBlending.none);
                     temp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
                     if(texData.disposePixmap()){
                         pixmap.dispose();

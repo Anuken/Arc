@@ -68,7 +68,7 @@ public class Pixmaps{
         return pixmap;
     }
 
-    public static Pixmap scale(Pixmap pixmap, int width, int height, Filter filter){
+    public static Pixmap scale(Pixmap pixmap, int width, int height, PixmapFilter filter){
         Pixmap dest = new Pixmap(width, height);
         dest.setFilter(filter);
         dest.drawPixmap(pixmap, 0, 0, pixmap.getWidth(), pixmap.getHeight(), 0, 0, width, height);
