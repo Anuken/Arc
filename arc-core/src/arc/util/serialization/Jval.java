@@ -424,19 +424,18 @@ public class Jval{
             while(true){
                 read();
                 boolean isEol = current < 0 || current == '\r' || current == '\n' || (current == ',' && isArray) || current == ']';
-                if(isEol || current == ',' ||
-                current == '}' || current == ']' ||
-                current == '#' ||
-                current == '/' && (peek() == '/' || peek() == '*')
+                if(isEol || current == ',' || current == '}' || current == '#' || current == '/' && (peek() == '/' || peek() == '*')
                 ){
                     switch(first){
                         case 'f':
                         case 'n':
                         case 't':
                             String svalue = value.toString().trim();
-                            if(svalue.equals("false")) return FALSE;
-                            else if(svalue.equals("null")) return NULL;
-                            else if(svalue.equals("true")) return TRUE;
+                            switch(svalue){
+                                case "false": return FALSE;
+                                case "null": return NULL;
+                                case "true": return TRUE;
+                            }
                             break;
                         default:
                             if(first == '-' || first >= '0' && first <= '9'){
