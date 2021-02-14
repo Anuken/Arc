@@ -1,6 +1,8 @@
 package arc.graphics;
 
-import arc.struct.OrderedMap;
+import arc.struct.*;
+
+import java.util.*;
 
 /**
  * A general purpose class containing named colors that can be changed at will. For example, the markup language defined by the
@@ -58,7 +60,7 @@ public final class Colors{
         map.put("GRAY", Color.gray);
         map.put("DARK_GRAY", Color.darkGray);
 
-        map.put("BLUE", Color.blue);
+        map.put("BLUE", Color.royal); //overridden for better visuals
         map.put("NAVY", Color.navy);
         map.put("ROYAL", Color.royal);
         map.put("SLATE", Color.slate);
@@ -66,7 +68,7 @@ public final class Colors{
         map.put("CYAN", Color.cyan);
         map.put("TEAL", Color.teal);
 
-        map.put("GREEN", Color.green);
+        map.put("GREEN", Color.valueOf("38d667")); //overridden for better visuals
         map.put("ACID", Color.acid);
         map.put("LIME", Color.lime);
         map.put("FOREST", Color.forest);
@@ -81,7 +83,7 @@ public final class Colors{
         map.put("TAN", Color.tan);
         map.put("BRICK", Color.brick);
 
-        map.put("RED", Color.red);
+        map.put("RED", Color.valueOf("e55454")); //overridden for better visuals
         map.put("SCARLET", Color.scarlet);
         map.put("CRIMSON", Color.crimson);
         map.put("CORAL", Color.coral);
@@ -93,50 +95,9 @@ public final class Colors{
         map.put("VIOLET", Color.violet);
         map.put("MAROON", Color.maroon);
 
-        //lowercase versions too!
+        //lowercase versions
 
-        map.put("clear", Color.clear);
-        map.put("black", Color.black);
-
-        map.put("white", Color.white);
-        map.put("lightgray", Color.lightGray);
-        map.put("gray", Color.gray);
-        map.put("darkgray", Color.darkGray);
-
-        map.put("blue", Color.blue);
-        map.put("navy", Color.navy);
-        map.put("royal", Color.royal);
-        map.put("slate", Color.slate);
-        map.put("sky", Color.sky);
-        map.put("cyan", Color.cyan);
-        map.put("teal", Color.teal);
-
-        map.put("green", Color.green);
-        map.put("acid", Color.acid);
-        map.put("lime", Color.lime);
-        map.put("forest", Color.forest);
-        map.put("olive", Color.olive);
-
-        map.put("yellow", Color.yellow);
-        map.put("gold", Color.gold);
-        map.put("goldenrod", Color.goldenrod);
-        map.put("orange", Color.orange);
-
-        map.put("brown", Color.brown);
-        map.put("tan", Color.tan);
-        map.put("brick", Color.brick);
-
-        map.put("red", Color.red);
-        map.put("scarlet", Color.scarlet);
-        map.put("crimson", Color.crimson);
-        map.put("coral", Color.coral);
-        map.put("salmon", Color.salmon);
-        map.put("pink", Color.pink);
-        map.put("magenta", Color.magenta);
-
-        map.put("purple", Color.purple);
-        map.put("violet", Color.violet);
-        map.put("maroon", Color.maroon);
+        map.copy().each((key, val) -> map.put(key.toLowerCase(Locale.ROOT).replace("_", ""), val));
     }
 
 }
