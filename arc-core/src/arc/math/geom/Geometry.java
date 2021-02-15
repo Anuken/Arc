@@ -16,6 +16,14 @@ public final class Geometry{
         new Point2(-1, 0),
         new Point2(0, -1)
     };
+    /** Points representing cardinal directions, starting at the left and going counter-clockwise. Also contains a center point - 0,0. */
+    public final static Point2[] d4c = {
+        new Point2(1, 0),
+        new Point2(0, 1),
+        new Point2(-1, 0),
+        new Point2(0, -1),
+        new Point2(0, 0)
+    };
     public final static int[] d4x = {1, 0, -1, 0};
     public final static int[] d4y = {0, 1, 0, -1};
     public final static Point2[] d8 = {
