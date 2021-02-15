@@ -637,6 +637,14 @@ public class Vec2 implements Vector<Vec2>, Position{
         return epsilonEquals(x, y, Mathf.FLOAT_ROUNDING_ERROR);
     }
 
+    public boolean isNaN(){
+        return Float.isNaN(x) || Float.isNaN(y);
+    }
+
+    public boolean isInfinite(){
+        return Float.isInfinite(x) || Float.isInfinite(y);
+    }
+
     @Override
     public boolean isUnit(){
         return isUnit(0.000000001f);
