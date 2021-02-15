@@ -3,7 +3,7 @@ package arc.graphics.gl;
 import arc.files.*;
 import arc.graphics.*;
 import arc.graphics.Cubemap.*;
-import arc.graphics.Pixmap.PixmapBlending;
+import arc.graphics.Pixmap.Blending;
 import arc.graphics.Pixmap.*;
 import arc.graphics.TextureData.*;
 import arc.util.*;
@@ -168,7 +168,7 @@ public class FacedCubemapData implements CubemapData{
                 boolean disposePixmap = data[i].disposePixmap();
                 if(data[i].getFormat() != pixmap.getFormat()){
                     Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), data[i].getFormat());
-                    tmp.setBlending(PixmapBlending.none);
+                    tmp.setBlending(Blending.none);
                     tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
                     if(data[i].disposePixmap()) pixmap.dispose();
                     pixmap = tmp;

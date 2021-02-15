@@ -63,7 +63,7 @@ public class FileTextureArrayData implements TextureArrayData{
                 boolean disposePixmap = texData.disposePixmap();
                 if(texData.getFormat() != pixmap.getFormat()){
                     Pixmap temp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), texData.getFormat());
-                    temp.setBlending(PixmapBlending.none);
+                    temp.setBlending(Blending.none);
                     temp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
                     if(texData.disposePixmap()){
                         pixmap.dispose();

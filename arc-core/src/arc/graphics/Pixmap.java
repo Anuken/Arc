@@ -17,7 +17,7 @@ import java.nio.*;
  * </p>
  *
  * <p>
- * By default all methods use blending. You can disable blending with {@link Pixmap#setBlending(PixmapBlending)}. The
+ * By default all methods use blending. You can disable blending with {@link Pixmap#setBlending(Blending)}. The
  * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)} method will scale and stretch the source image to a
  * target image. There either nearest neighbour or bilinear filtering can be used.
  * </p>
@@ -34,7 +34,7 @@ public class Pixmap implements Disposable{
     
     final NativePixmap pixmap;
     int color = 0;
-    private PixmapBlending blending = PixmapBlending.sourceOver;
+    private Blending blending = Blending.sourceOver;
     private PixmapFilter filter = PixmapFilter.bilinear;
     private boolean disposed;
 
@@ -374,18 +374,18 @@ public class Pixmap implements Disposable{
         return Format.fromPixmapFormat(pixmap.format);
     }
 
-    /** @return the currently set {@link PixmapBlending} */
-    public PixmapBlending getBlending(){
+    /** @return the currently set {@link Blending} */
+    public Blending getBlending(){
         return blending;
     }
 
     /**
-     * Sets the type of {@link PixmapBlending} to be used for all operations. Default is {@link PixmapBlending#sourceOver}.
+     * Sets the type of {@link Blending} to be used for all operations. Default is {@link Blending#sourceOver}.
      * @param blending the blending type
      */
-    public void setBlending(PixmapBlending blending){
+    public void setBlending(Blending blending){
         this.blending = blending;
-        int blend = blending == PixmapBlending.none ? 0 : 1;
+        int blend = blending == Blending.none ? 0 : 1;
         setBlend(pixmap.basePtr, blend);
     }
 
@@ -474,7 +474,7 @@ public class Pixmap implements Disposable{
      * Blending functions to be set with {@link Pixmap#setBlending}.
      * @author mzechner
      */
-    public enum PixmapBlending{
+    public enum Blending{
         none, sourceOver
     }
 

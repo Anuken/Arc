@@ -2,7 +2,7 @@ package arc.graphics.gl;
 
 import arc.*;
 import arc.graphics.*;
-import arc.graphics.Pixmap.PixmapBlending;
+import arc.graphics.Pixmap.Blending;
 import arc.util.*;
 
 public class MipMapGenerator{
@@ -70,7 +70,7 @@ public class MipMapGenerator{
         int level = 1;
         while(width > 0 && height > 0){
             Pixmap tmp = new Pixmap(width, height, pixmap.getFormat());
-            tmp.setBlending(PixmapBlending.none);
+            tmp.setBlending(Blending.none);
             tmp.drawPixmap(pixmap, 0, 0, pixmap.getWidth(), pixmap.getHeight(), 0, 0, width, height);
             if(level > 1) pixmap.dispose();
             pixmap = tmp;
