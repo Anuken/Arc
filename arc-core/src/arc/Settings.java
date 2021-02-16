@@ -9,9 +9,10 @@ import arc.util.io.*;
 import arc.util.serialization.*;
 
 import java.io.*;
+import java.text.*;
 import java.util.*;
 
-import static arc.Core.keybinds;
+import static arc.Core.*;
 
 public class Settings{
     protected final static byte TYPE_BOOL = 0, TYPE_INT = 1, TYPE_LONG = 2, TYPE_FLOAT = 3, TYPE_STRING = 4, TYPE_BINARY = 5;
@@ -68,6 +69,7 @@ public class Settings{
             loadValues();
             keybinds.load();
         }catch(Throwable error){
+            writeLog("Error in load: " + Strings.getStackTrace(error));
             if(errorHandler != null){
                 if(!hasErrored) errorHandler.get(error);
             }else{
@@ -87,6 +89,7 @@ public class Settings{
             keybinds.save();
             saveValues();
         }catch(Throwable error){
+            writeLog("Error in forceSave to " + getSettingsFile() + ":\n" + Strings.getStackTrace(error));
             if(errorHandler != null){
                 if(!hasErrored) errorHandler.get(error);
             }else{
@@ -116,6 +119,7 @@ public class Settings{
     public void loadValues(){
         //don't load settings files if neither of them exist
         if(!getSettingsFile().exists() && !getBackupSettingsFile().exists()){
+            writeLog("No settings files found: " + getSettingsFile().absolutePath() + " and " + getBackupSettingsFile().absolutePath());
             return;
         }
 
@@ -124,15 +128,19 @@ public class Settings{
 
             //back up the save file, as the values have now been loaded successfully
             getSettingsFile().copyTo(getBackupSettingsFile());
+            writeLog("Backed up " + getSettingsFile() + " to " + getBackupSettingsFile() + " (" + getSettingsFile().length() + " bytes)");
         }catch(Throwable e){
             Log.err("Failed to load base settings file, attempting to load backup.", e);
+            writeLog("Failed to load base file " + getSettingsFile() + ":\n" + Strings.getStackTrace(e));
             try{
                 //attempt to load backup
                 loadValues(getBackupSettingsFile());
                 //copy to normal settings file for future use
                 getBackupSettingsFile().copyTo(getSettingsFile());
                 Log.info("Loaded backup settings file.");
+                writeLog("Loaded backup settings file after load failure. Length: " + getBackupSettingsFile().length());
             }catch(Throwable e2){
+                writeLog("Failed to load backup file " + getSettingsFile() + ":\n" + Strings.getStackTrace(e2));
                 Log.err("Failed to load backup settings file.", e2);
             }
         }
@@ -381,5 +389,15 @@ public class Settings{
 
     public int keySize(){
         return values.size();
+    }
+
+    /** Appends to the settings log. Used for diagnosis of the save wipe bug. Never throws an error. */
+    void writeLog(String text){
+        try{
+            Fi log = getDataDirectory().child("settings.log");
+            log.writeString("[" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()) + "] " + text + "\n", true);
+        }catch(Throwable t){
+            Log.err("Failed to write settings log", t);
+        }
     }
 }
