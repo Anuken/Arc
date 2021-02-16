@@ -158,8 +158,9 @@ public class Bresenham2{
         int yStep = (startY < endY ? +1 : -1);
         int error = xDist + yDist;
 
+        output.add(pool.obtain().set(startX, startY));
+
         while(startX != endX || startY != endY){
-            output.add(pool.obtain().set(startX, startY));
 
             if(2 * error - yDist > xDist - 2 * error){
                 error += yDist;
@@ -168,6 +169,8 @@ public class Bresenham2{
                 error += xDist;
                 startY += yStep;
             }
+
+            output.add(pool.obtain().set(startX, startY));
         }
         return output;
     }
