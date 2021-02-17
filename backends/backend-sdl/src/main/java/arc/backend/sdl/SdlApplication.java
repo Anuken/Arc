@@ -125,9 +125,9 @@ public class SdlApplication implements Application{
                     if(type == SDL_WINDOWEVENT_SIZE_CHANGED){
                         graphics.updateSize(inputs[2], inputs[3]);
                         listen(l -> l.resize(inputs[2], inputs[3]));
-                    }else if(type == SDL_WINDOWEVENT_SHOWN){
+                    }else if(type == SDL_WINDOWEVENT_FOCUS_GAINED){
                         listen(ApplicationListener::resume);
-                    }else if(type == SDL_WINDOWEVENT_HIDDEN){
+                    }else if(type == SDL_WINDOWEVENT_FOCUS_LOST){
                         listen(ApplicationListener::pause);
                     }
                 }else if(inputs[0] == SDL_EVENT_MOUSE_MOTION ||
