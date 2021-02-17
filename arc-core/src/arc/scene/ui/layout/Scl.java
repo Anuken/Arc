@@ -27,7 +27,7 @@ public class Scl{
         if(scl < 0f){
             //calculate scaling value if it hasn't been set yet
             if(Core.app.isDesktop() || Core.app.isWeb()){
-                scl = 1f * product;
+                scl = product;
             }else{
                 //mobile scaling
                 scl = Math.max(Math.round((Core.graphics.getDensity() / 1.5f + addition) / 0.5) * 0.5f, 1f) * product;
