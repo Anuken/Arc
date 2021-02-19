@@ -188,6 +188,11 @@ public class IOSApplication implements Application{
                 listener.pause();
             }
         }
+        synchronized(listeners){
+            for(ApplicationListener listener : listeners){
+                listener.exit();
+            }
+        }
         Gl.finish();
     }
 

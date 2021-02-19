@@ -52,6 +52,14 @@ public interface ApplicationListener{
     }
 
     /**
+     * Called when the applications exits graacefully, either through `Core.app.exit()` or through a window closing.
+     * Never called after a crash, unlike dispose().
+     * */
+    default void exit(){
+
+    }
+
+    /**
      * Called when an external file is dropped into the window, e.g from the desktop.
      */
     default void fileDropped(Fi file){

@@ -6,6 +6,7 @@ import arc.func.*;
 import arc.graphics.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.async.*;
 
 import static arc.backend.sdl.jni.SDL.*;
 
@@ -41,6 +42,7 @@ public class SdlApplication implements Application{
 
         try{
             loop();
+            listen(ApplicationListener::exit);
         }finally{
             try{
                 cleanup();
@@ -183,14 +185,16 @@ public class SdlApplication implements Application{
 
     @Override
     public boolean openFolder(String file){
-        if(OS.isWindows){
-            return OS.execSafe("explorer.exe /select," + file.replace("/", "\\"));
-        }else if(OS.isLinux){
-            return OS.execSafe("xdg-open " + file);
-        }else if(OS.isMac){
-            return OS.execSafe("open " + file);
-        }
-        return false;
+        Threads.daemon(() -> {
+            if(OS.isWindows){
+                OS.execSafe("explorer.exe /select," + file.replace("/", "\\"));
+            }else if(OS.isLinux){
+                OS.execSafe("xdg-open " + file);
+            }else if(OS.isMac){
+                OS.execSafe("open " + file);
+            }
+        });
+        return true;
     }
 
     @Override
