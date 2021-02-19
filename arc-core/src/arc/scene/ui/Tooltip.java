@@ -22,8 +22,9 @@ import static arc.scene.actions.Actions.*;
 public class Tooltip extends InputListener{
     static Vec2 tmp = new Vec2();
 
-    final Tooltips manager;
-    final Table container;
+    public final Tooltips manager;
+    public final Table container;
+
     boolean instant = true, always;
     Element targetActor;
     Runnable show;
@@ -113,17 +114,22 @@ public class Tooltip extends InputListener{
         if(Core.input.isTouched()) return;
         Element element = event.listenerActor;
         if(fromActor != null && fromActor.isDescendantOf(element)) return;
-        setContainerPosition(element, x, y);
-        manager.enter(this);
-        container.pack();
 
-        if(show != null) show.run();
+        show(element, x, y);
     }
 
     @Override
     public void exit(InputEvent event, float x, float y, int pointer, Element toActor){
         if(toActor != null && toActor.isDescendantOf(event.listenerActor)) return;
         hide();
+    }
+
+    public void show(Element element, float x, float y){
+        setContainerPosition(element, x, y);
+        manager.enter(this);
+        container.pack();
+
+        if(show != null) show.run();
     }
 
     public void hide(){

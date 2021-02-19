@@ -17,12 +17,9 @@ public class InputListener implements EventListener{
         InputEvent event = (InputEvent)e;
 
         switch(event.type){
-            case keyDown:
-                return keyDown(event, event.keyCode);
-            case keyUp:
-                return keyUp(event, event.keyCode);
-            case keyTyped:
-                return keyTyped(event, event.character);
+            case keyDown: return keyDown(event, event.keyCode);
+            case keyUp: return keyUp(event, event.keyCode);
+            case keyTyped: return keyTyped(event, event.character);
         }
 
         event.toCoordinates(event.listenerActor, tmpCoords);
