@@ -1,11 +1,11 @@
-package arc.tlabel.effects;
+package arc.flabel.effects;
 
+import arc.flabel.*;
 import arc.math.*;
 import arc.struct.*;
-import arc.tlabel.*;
 
 /** Moves the text vertically easing it into the final position. Doesn't repeat itself. */
-public class EaseEffect extends Effect{
+public class EaseEffect extends FEffect{
     private static final float DEFAULT_DISTANCE = 0.15f;
     private static final float DEFAULT_INTENSITY = 0.075f;
 
@@ -15,12 +15,12 @@ public class EaseEffect extends Effect{
 
     private IntFloatMap timePassedByGlyphIndex = new IntFloatMap();
 
-    public EaseEffect(TypeLabel label){
+    public EaseEffect(FLabel label){
         super(label);
     }
 
     @Override
-    protected void onApply(TypingGlyph glyph, int localIndex, float delta){
+    protected void onApply(FGlyph glyph, int localIndex, float delta){
         // Calculate real intensity
         float realIntensity = intensity * (elastic ? 3f : 1f) * DEFAULT_INTENSITY;
 

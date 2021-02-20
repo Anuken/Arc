@@ -1,10 +1,10 @@
-package arc.tlabel.effects;
+package arc.flabel.effects;
 
+import arc.flabel.*;
 import arc.graphics.Color;
-import arc.tlabel.*;
 
 /** Tints the text in a gradient pattern. */
-public class GradientEffect extends Effect{
+public class GradientEffect extends FEffect{
     private static final float DEFAULT_DISTANCE = 0.975f;
     private static final float DEFAULT_FREQUENCY = 2f;
 
@@ -13,7 +13,7 @@ public class GradientEffect extends Effect{
     private float distance = 1; // How extensive the rainbow effect should be.
     private float frequency = 1; // How frequently the color pattern should move through the text.
 
-    public GradientEffect(TypeLabel label){
+    public GradientEffect(FLabel label){
         super(label);
 
         // Validate parameters
@@ -22,7 +22,7 @@ public class GradientEffect extends Effect{
     }
 
     @Override
-    protected void onApply(TypingGlyph glyph, int localIndex, float delta){
+    protected void onApply(FGlyph glyph, int localIndex, float delta){
         // Calculate progress
         float distanceMod = (1f / distance) * (1f - DEFAULT_DISTANCE);
         float frequencyMod = (1f / frequency) * DEFAULT_FREQUENCY;

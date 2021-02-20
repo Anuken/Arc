@@ -1,19 +1,16 @@
-package arc.tlabel;
+package arc.flabel;
 
 import arc.graphics.Color;
-import arc.graphics.g2d.BitmapFont.Glyph;
+import arc.graphics.g2d.Font.Glyph;
 import arc.graphics.g2d.GlyphLayout.GlyphRun;
 import arc.util.pooling.Pool.Poolable;
 
 /** Extension of {@link Glyph} with additional data exposed to the user. */
-public class TypingGlyph extends Glyph implements Poolable{
-
+public class FGlyph extends Glyph implements Poolable{
     /** {@link GlyphRun} this glyph belongs to. */
     public GlyphRun run = null;
-
     /** Internal index associated with this glyph. Internal use only. Defaults to -1. */
     int internalIndex = -1;
-
     /** Color of this glyph. If set to null, the run's color will be used. Defaults to null. */
     public Color color = null;
     

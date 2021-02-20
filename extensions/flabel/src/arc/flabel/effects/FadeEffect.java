@@ -1,12 +1,12 @@
-package arc.tlabel.effects;
+package arc.flabel.effects;
 
+import arc.flabel.*;
 import arc.struct.IntFloatMap;
 import arc.graphics.Color;
 import arc.math.Mathf;
-import arc.tlabel.*;
 
 /** Fades the text's color from between colors or alphas. Doesn't repeat itself. */
-public class FadeEffect extends Effect{
+public class FadeEffect extends FEffect{
     private Color color1 = null; // First color of the effect.
     private Color color2 = null; // Second color of the effect.
     private float alpha1 = 0; // First alpha of the effect, in case a color isn't provided.
@@ -15,12 +15,12 @@ public class FadeEffect extends Effect{
 
     private IntFloatMap timePassedByGlyphIndex = new IntFloatMap();
 
-    public FadeEffect(TypeLabel label){
+    public FadeEffect(FLabel label){
         super(label);
     }
 
     @Override
-    protected void onApply(TypingGlyph glyph, int localIndex, float delta){
+    protected void onApply(FGlyph glyph, int localIndex, float delta){
         // Calculate progress
         float timePassed = timePassedByGlyphIndex.increment(localIndex, 0, delta);
         float progress = timePassed / fadeDuration;

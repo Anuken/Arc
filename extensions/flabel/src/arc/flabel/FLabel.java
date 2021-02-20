@@ -1,9 +1,9 @@
-package arc.tlabel;
+package arc.flabel;
 
 import arc.struct.*;
 import arc.graphics.Color;
 import arc.graphics.g2d.*;
-import arc.graphics.g2d.BitmapFont.Glyph;
+import arc.graphics.g2d.Font.Glyph;
 import arc.graphics.g2d.GlyphLayout.GlyphRun;
 import arc.math.Mathf;
 import arc.scene.style.Drawable;
@@ -17,25 +17,25 @@ import arc.util.pooling.Pools;
  * use of tokens in the following format: <tt>{TOKEN=PARAMETER}</tt>.
  * Code taken and ported from https://github.com/rafaskb/typing-label
  */
-public class TypeLabel extends Label{
+public class FLabel extends Label{
 
     // Collections
     private final ObjectMap<String, String> variables = new ObjectMap<>();
-    protected final Seq<TokenEntry> tokenEntries = new Seq<>();
+    protected final Seq<FParser.TokenEntry> tokenEntries = new Seq<>();
 
     // Config
-    private Color clearColor = new Color(TypingConfig.DEFAULT_CLEAR_COLOR);
-    private TypingListener listener = null;
-    boolean forceMarkupColor = TypingConfig.FORCE_COLOR_MARKUP_BY_DEFAULT;
+    private Color clearColor = new Color(FConfig.defaultClearColor);
+    private FListener listener = null;
+    boolean forceMarkupColor = FConfig.forceColorMarkupByDefault;
 
     // Internal state
     private final StringBuilder originalText = new StringBuilder();
-    private final Seq<TypingGlyph> glyphCache = new Seq<>();
+    private final Seq<FGlyph> glyphCache = new Seq<>();
     private final IntSeq glyphRunCapacities = new IntSeq();
     private final IntSeq offsetCache = new IntSeq();
     private final IntSeq layoutLineBreaks = new IntSeq();
-    private final Seq<Effect> activeEffects = new Seq<>();
-    private float textSpeed = TypingConfig.DEFAULT_SPEED_PER_CHAR;
+    private final Seq<FEffect> activeEffects = new Seq<>();
+    private float textSpeed = FConfig.defaultSpeedPerChar;
     private float charCooldown = textSpeed;
     private int rawCharIndex = -2; // All chars, including color codes
     private int glyphCharIndex = -1; // Only renderable chars, excludes color codes
@@ -51,7 +51,7 @@ public class TypeLabel extends Label{
     private boolean ignoringEffects = false;
     private String defaultToken = "";
 
-    public TypeLabel(CharSequence text){
+    public FLabel(CharSequence text){
         super(text);
         saveOriginalText();
     }
@@ -101,21 +101,21 @@ public class TypeLabel extends Label{
         this.parsed = false;
     }
 
-    /** Returns the {@link TypingListener} associated with this label. May be {@code null}. */
-    public TypingListener getTypingListener(){
+    /** Returns the {@link FListener} associated with this label. May be {@code null}. */
+    public FListener getTypingListener(){
         return listener;
     }
 
-    /** Sets the {@link TypingListener} associated with this label, or {@code null} to remove the current one. */
-    public void setTypingListener(TypingListener listener){
+    /** Sets the {@link FListener} associated with this label, or {@code null} to remove the current one. */
+    public void setTypingListener(FListener listener){
         this.listener = listener;
     }
 
     /**
      * Returns a {@link Color} instance with the color to be used on {@code CLEARCOLOR} tokens. Modify this instance to
-     * change the token color. Default value is specified by {@link TypingConfig}.
+     * change the token color. Default value is specified by {@link FConfig}.
      *
-     * @see TypingConfig#DEFAULT_CLEAR_COLOR
+     * @see FConfig#defaultClearColor
      */
     public Color getClearColor(){
         return clearColor;
@@ -124,7 +124,7 @@ public class TypeLabel extends Label{
     /**
      * Sets whether or not this instance should enable markup color by force.
      *
-     * @see TypingConfig#FORCE_COLOR_MARKUP_BY_DEFAULT
+     * @see FConfig#forceColorMarkupByDefault
      */
     public void setForceMarkupColor(boolean forceMarkupColor){
         this.forceMarkupColor = forceMarkupColor;
@@ -148,7 +148,7 @@ public class TypeLabel extends Label{
     /** Parses all tokens of this label. Use this after setting the text and any variables that should be replaced. */
     public void parseTokens(){
         this.setText(getDefaultToken() + getText(), false);
-        Parser.parseTokens(this);
+        FParser.parseTokens(this);
         parsed = true;
     }
 
@@ -237,7 +237,7 @@ public class TypeLabel extends Label{
         activeEffects.clear();
 
         // Reset state
-        textSpeed = TypingConfig.DEFAULT_SPEED_PER_CHAR;
+        textSpeed = FConfig.defaultSpeedPerChar;
         charCooldown = textSpeed;
         rawCharIndex = -2;
         glyphCharIndex = -1;
@@ -301,7 +301,7 @@ public class TypeLabel extends Label{
         // Restore glyph offsets
         if(activeEffects.size > 0){
             for(int i = 0; i < glyphCache.size; i++){
-                TypingGlyph glyph = glyphCache.get(i);
+                FGlyph glyph = glyphCache.get(i);
                 glyph.xoffset = offsetCache.get(i * 2);
                 glyph.yoffset = offsetCache.get(i * 2 + 1);
             }
@@ -310,7 +310,7 @@ public class TypeLabel extends Label{
         // Apply effects
         if(!ignoringEffects){
             for(int i = activeEffects.size - 1; i >= 0; i--){
-                Effect effect = activeEffects.get(i);
+                FEffect effect = activeEffects.get(i);
                 effect.update(delta);
                 int start = effect.indexStart;
                 int end = effect.indexEnd >= 0 ? effect.indexEnd : glyphCharIndex;
@@ -323,7 +323,7 @@ public class TypeLabel extends Label{
 
                 // Apply effect to glyph
                 for(int j = Math.max(0, start); j <= glyphCharIndex && j <= end && j < glyphCache.size; j++){
-                    TypingGlyph glyph = glyphCache.get(j);
+                    FGlyph glyph = glyphCache.get(j);
                     effect.apply(glyph, j, delta);
                 }
             }
@@ -360,7 +360,7 @@ public class TypeLabel extends Label{
             char primitiveChar = '\u0000'; // Null character by default
             if(glyphCache.size > 0){
                 primitiveChar = (char)glyphCache.get(safeIndex).id;//getText().charAt(safeIndex);
-                float intervalMultiplier = TypingConfig.INTERVAL_MULTIPLIERS_BY_CHAR.get(primitiveChar, 1);
+                float intervalMultiplier = FConfig.intervalMultipliersByChar.get(primitiveChar, 1);
                 charCooldown += textSpeed * intervalMultiplier;
             }
 
@@ -387,9 +387,9 @@ public class TypeLabel extends Label{
 
             // Process tokens according to the current index
             while(tokenEntries.size > 0 && tokenEntries.peek().index == rawCharIndex){
-                TokenEntry entry = tokenEntries.pop();
+                FParser.TokenEntry entry = tokenEntries.pop();
                 String token = entry.token;
-                TokenCategory category = entry.category;
+                FParser.TokenCategory category = entry.category;
 
                 // Process tokens
                 switch(category){
@@ -419,11 +419,11 @@ public class TypeLabel extends Label{
                     case effectStart:
                     case effectEnd: {
                         // Get effect class
-                        boolean isStart = category == TokenCategory.effectStart;
+                        boolean isStart = category == FParser.TokenCategory.effectStart;
 
                         // End all effects of the same type
                         for(int i = 0; i < activeEffects.size; i++){
-                            Effect effect = activeEffects.get(i);
+                            FEffect effect = activeEffects.get(i);
                             if(effect.indexEnd < 0){
                                 if(effect.endToken.equals(token)){
                                     effect.indexEnd = glyphCharIndex - 1;
@@ -462,7 +462,7 @@ public class TypeLabel extends Label{
 
             // Break loop if enough chars were processed
             charCounter++;
-            int charLimit = TypingConfig.CHAR_LIMIT_PER_FRAME;
+            int charLimit = FConfig.charLimitPerFrame;
             if(!skipping && charLimit > 0 && charCounter > charLimit){
                 charCooldown = textSpeed;
                 break;
@@ -478,8 +478,8 @@ public class TypeLabel extends Label{
     }
 
     @Override
-    public BitmapFontCache getBitmapFontCache(){
-        return super.getBitmapFontCache();
+    public FontCache getFontCache(){
+        return super.getFontCache();
     }
 
     @Override
@@ -533,14 +533,14 @@ public class TypeLabel extends Label{
     @Override
     public void layout(){
         // --- SUPERCLASS IMPLEMENTATION (but with accessible getters instead) ---
-        BitmapFontCache cache = getBitmapFontCache();
+        FontCache cache = getFontCache();
         StringBuilder text = getText();
         GlyphLayout layout = super.getGlyphLayout();
         int lineAlign = getLineAlign();
         int labelAlign = getLabelAlign();
         LabelStyle style = getStyle();
 
-        BitmapFont font = cache.getFont();
+        Font font = cache.getFont();
         float oldScaleX = font.getScaleX();
         float oldScaleY = font.getScaleY();
         if(fontScaleChanged) font.getData().setScale(getFontScaleX(), getFontScaleY());
@@ -601,7 +601,7 @@ public class TypeLabel extends Label{
 
         // --- END OF SUPERCLASS IMPLEMENTATION ---
 
-        // Store coordinates passed to BitmapFontCache
+        // Store coordinates passed to FontCache
         lastLayoutX = x;
         lastLayoutY = y;
 
@@ -616,7 +616,7 @@ public class TypeLabel extends Label{
      * the layout changes.
      */
     private void layoutCache(){
-        BitmapFontCache cache = getBitmapFontCache();
+        FontCache cache = getFontCache();
         GlyphLayout layout = super.getGlyphLayout();
         Seq<GlyphRun> runs = layout.runs;
 
@@ -659,12 +659,12 @@ public class TypeLabel extends Label{
                 Glyph original = glyphs.get(j);
 
                 // Get clone glyph
-                TypingGlyph clone = null;
+                FGlyph clone = null;
                 if(index < glyphCache.size){
                     clone = glyphCache.get(index);
                 }
                 if(clone == null){
-                    clone = Pools.obtain(TypingGlyph.class, TypingGlyph::new);
+                    clone = Pools.obtain(FGlyph.class, FGlyph::new);
                     glyphCache.set(index, clone);
                 }
                 clone.set(original);
@@ -701,11 +701,11 @@ public class TypeLabel extends Label{
             }
         }
 
-        // Pass new layout with custom glyphs to BitmapFontCache
+        // Pass new layout with custom glyphs to FontCache
         cache.setText(layout, lastLayoutX, lastLayoutY);
     }
 
-    /** Adds cached glyphs to the active BitmapFontCache as the char index progresses. */
+    /** Adds cached glyphs to the active FontCache as the char index progresses. */
     private void addMissingGlyphs(){
         // Add additional glyphs to layout array, if any
         int glyphLeft = glyphCharIndex - cachedGlyphCharIndex;
@@ -739,7 +739,7 @@ public class TypeLabel extends Label{
 
                 // Put new glyph to this run
                 cachedGlyphCharIndex++;
-                TypingGlyph glyph = glyphCache.get(cachedGlyphCharIndex);
+                FGlyph glyph = glyphCache.get(cachedGlyphCharIndex);
                 glyphs.add(glyph);
 
                 // Cache glyph's vertex index
@@ -758,13 +758,13 @@ public class TypeLabel extends Label{
         addMissingGlyphs();
 
         // Update cache with new glyphs
-        BitmapFontCache bitmapFontCache = getBitmapFontCache();
-        getBitmapFontCache().setText(getGlyphLayout(), lastLayoutX, lastLayoutY);
+        FontCache FontCache = getFontCache();
+        getFontCache().setText(getGlyphLayout(), lastLayoutX, lastLayoutY);
 
         // Tint glyphs
-        for(TypingGlyph glyph : glyphCache){
+        for(FGlyph glyph : glyphCache){
             if(glyph.internalIndex >= 0 && glyph.color != null){
-                bitmapFontCache.setColors(glyph.color, glyph.internalIndex, glyph.internalIndex + 1);
+                FontCache.setColors(glyph.color, glyph.internalIndex, glyph.internalIndex + 1);
             }
         }
 

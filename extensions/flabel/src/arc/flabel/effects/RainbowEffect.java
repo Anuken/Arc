@@ -1,10 +1,10 @@
-package arc.tlabel.effects;
+package arc.flabel.effects;
 
+import arc.flabel.*;
 import arc.graphics.Color;
-import arc.tlabel.*;
 
 /** Tints the text in a rainbow pattern. */
-public class RainbowEffect extends Effect{
+public class RainbowEffect extends FEffect{
     private static final float DEFAULT_DISTANCE = 0.975f;
     private static final float DEFAULT_FREQUENCY = 2f;
 
@@ -13,12 +13,12 @@ public class RainbowEffect extends Effect{
     private float saturation = 1; // Color saturation
     private float brightness = 1; // Color brightness
 
-    public RainbowEffect(TypeLabel label){
+    public RainbowEffect(FLabel label){
         super(label);
     }
 
     @Override
-    protected void onApply(TypingGlyph glyph, int localIndex, float delta){
+    protected void onApply(FGlyph glyph, int localIndex, float delta){
         // Calculate progress
         float distanceMod = (1f / distance) * (1f - DEFAULT_DISTANCE);
         float frequencyMod = (1f / frequency) * DEFAULT_FREQUENCY;

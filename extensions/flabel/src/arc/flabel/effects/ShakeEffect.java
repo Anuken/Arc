@@ -1,11 +1,11 @@
-package arc.tlabel.effects;
+package arc.flabel.effects;
 
+import arc.flabel.*;
 import arc.struct.FloatSeq;
 import arc.math.*;
-import arc.tlabel.*;
 
 /** Shakes the text in a random pattern. */
-public class ShakeEffect extends Effect{
+public class ShakeEffect extends FEffect{
     private static final float DEFAULT_DISTANCE = 0.12f;
     private static final float DEFAULT_INTENSITY = 0.5f;
 
@@ -14,12 +14,12 @@ public class ShakeEffect extends Effect{
     private float distance = 1; // How far the glyphs should move
     private float intensity = 1; // How fast the glyphs should move
 
-    public ShakeEffect(TypeLabel label){
+    public ShakeEffect(FLabel label){
         super(label);
     }
 
     @Override
-    protected void onApply(TypingGlyph glyph, int localIndex, float delta){
+    protected void onApply(FGlyph glyph, int localIndex, float delta){
         // Make sure we can hold enough entries for the current index
         if(localIndex >= lastOffsets.size / 2){
             lastOffsets.setSize(lastOffsets.size + 16);

@@ -1,11 +1,11 @@
-package arc.tlabel.effects;
+package arc.flabel.effects;
 
+import arc.flabel.*;
 import arc.math.*;
 import arc.struct.*;
-import arc.tlabel.*;
 
 /** Drips the text in a random pattern. */
-public class SickEffect extends Effect{
+public class SickEffect extends FEffect{
     private static final float DEFAULT_FREQUENCY = 50f;
     private static final float DEFAULT_DISTANCE = .125f;
     private static final float DEFAULT_INTENSITY = 1f;
@@ -15,12 +15,12 @@ public class SickEffect extends Effect{
 
     private IntSeq indices = new IntSeq();
 
-    public SickEffect(TypeLabel label){
+    public SickEffect(FLabel label){
         super(label);
     }
 
     @Override
-    protected void onApply(TypingGlyph glyph, int localIndex, float delta){
+    protected void onApply(FGlyph glyph, int localIndex, float delta){
         // Calculate progress
         float progressModifier = (1f / intensity) * DEFAULT_INTENSITY;
         float progressOffset = localIndex / DEFAULT_FREQUENCY;

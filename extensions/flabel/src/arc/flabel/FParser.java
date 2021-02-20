@@ -1,21 +1,21 @@
-package arc.tlabel;
+package arc.flabel;
 
 import arc.func.*;
 import arc.struct.*;
 
-/** Utility class to parse tokens from a {@link TypeLabel}. */
-class Parser{
+/** Utility class to parse tokens from a {@link FLabel}. */
+class FParser{
     private static String RESET_REPLACEMENT;
 
-    /** Parses all tokens from the given {@link TypeLabel}. */
-    static void parseTokens(TypeLabel label){
+    /** Parses all tokens from the given {@link FLabel}. */
+    static void parseTokens(FLabel label){
         // Compile patterns if necessary
-        if(RESET_REPLACEMENT == null || TypingConfig.dirtyEffectMaps){
+        if(RESET_REPLACEMENT == null || FConfig.dirtyEffectMaps){
             RESET_REPLACEMENT = getResetReplacement();
         }
 
         // Adjust and check markup color
-        if(label.forceMarkupColor) label.getBitmapFontCache().getFont().getData().markupEnabled = true;
+        if(label.forceMarkupColor) label.getFontCache().getFont().getData().markupEnabled = true;
 
         // Remove any previous entries
         label.tokenEntries.clear();
@@ -41,7 +41,7 @@ class Parser{
         label.tokenEntries.reverse();
     }
 
-    private static void baseParse(TypeLabel label, TokenHandler replacer){
+    private static void baseParse(FLabel label, TokenHandler replacer){
         StringBuilder text = label.getText();
         StringBuilder result = new StringBuilder();
         result.ensureCapacity(text.length());
@@ -74,7 +74,7 @@ class Parser{
         label.setText(result);
     }
 
-    private static void parseReplacements(TypeLabel label){
+    private static void parseReplacements(FLabel label){
 
         baseParse(label, (text, index) -> {
             String replacement = null;
@@ -92,7 +92,7 @@ class Parser{
 
                 // If replacement is still null, get value from global scope
                 if(replacement == null){
-                    replacement = TypingConfig.GLOBAL_VARS.get(varname);
+                    replacement = FConfig.globalVars.get(varname);
                 }
             }else if(text.equals("/color")){ //end color
                 replacement = "[#" + label.getClearColor().toString() + "]";
@@ -104,19 +104,19 @@ class Parser{
         });
     }
 
-    private static void parseRegularTokens(TypeLabel label){
+    private static void parseRegularTokens(FLabel label){
         baseParse(label, (text, index) -> {
             float floatValue = 0;
             String stringValue = null;
-            Effect effect = null;
+            FEffect effect = null;
             int indexOffset = 0;
 
             TokenCategory tokenCategory = TokenCategory.event;
             InternalToken tmpToken = InternalToken.fromName(text);
             if(tmpToken == null){
-                if(TypingConfig.EFFECTS.containsKey(text)){
+                if(FConfig.effects.containsKey(text)){
                     tokenCategory = TokenCategory.effectStart;
-                }else if(!text.isEmpty() && TypingConfig.EFFECTS.containsKey(text.substring(1))){
+                }else if(!text.isEmpty() && FConfig.effects.containsKey(text.substring(1))){
                     tokenCategory = TokenCategory.effectEnd;
                 }
             }else{
@@ -125,7 +125,7 @@ class Parser{
 
             switch(tokenCategory){
                 case wait:{
-                    floatValue = TypingConfig.DEFAULT_WAIT_VALUE;
+                    floatValue = FConfig.defaultWaitValue;
                     break;
                 }
                 case event:{
@@ -136,25 +136,25 @@ class Parser{
                 case speed:{
                     switch(text){
                         case "slower":
-                            floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / 0.500f;
+                            floatValue = FConfig.defaultSpeedPerChar / 0.500f;
                             break;
                         case "slow":
-                            floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / 0.667f;
+                            floatValue = FConfig.defaultSpeedPerChar / 0.667f;
                             break;
                         case "normal":
-                            floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR;
+                            floatValue = FConfig.defaultSpeedPerChar;
                             break;
                         case "fast":
-                            floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / 2.000f;
+                            floatValue = FConfig.defaultSpeedPerChar / 2.000f;
                             break;
                         case "faster":
-                            floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / 4.000f;
+                            floatValue = FConfig.defaultSpeedPerChar / 4.000f;
                             break;
                     }
                     break;
                 }
                 case effectStart:{
-                    effect = TypingConfig.EFFECTS.get(text).get(label);
+                    effect = FConfig.effects.get(text).get(label);
                     effect.endToken = "/" + text;
                     break;
                 }
@@ -171,7 +171,7 @@ class Parser{
         });
     }
 
-    private static void parseAllTokens(TypeLabel label, boolean square, Intc2 handler){
+    private static void parseAllTokens(FLabel label, boolean square, Intc2 handler){
         StringBuilder text = label.getText();
 
         for(int i = 0; i < text.length(); i++){
@@ -207,7 +207,7 @@ class Parser{
         }
     }
 
-    private static void stripTokens(TypeLabel label){
+    private static void stripTokens(FLabel label){
         baseParse(label, (text, index) -> "");
 
         int[] offset = {0};
@@ -226,7 +226,7 @@ class Parser{
     /** Returns the replacement string intended to be used on {RESET} tokens. */
     private static String getResetReplacement(){
         Seq<String> tokens = new Seq<>();
-        TypingConfig.EFFECTS.keys().toSeq(tokens);
+        FConfig.effects.keys().toSeq(tokens);
         tokens.replace(m -> "/" + m);
         tokens.add("clear");
         tokens.add("normal");
@@ -242,4 +242,80 @@ class Parser{
         String handle(String string, int position);
     }
 
+    enum InternalToken{
+        WAIT("WAIT", TokenCategory.wait),
+        SPEED("SPEED", TokenCategory.speed),
+        SLOWER("SLOWER", TokenCategory.speed),
+        SLOW("SLOW", TokenCategory.speed),
+        NORMAL("NORMAL", TokenCategory.speed),
+        FAST("FAST", TokenCategory.speed),
+        FASTER("FASTER", TokenCategory.speed),
+        COLOR("COLOR", TokenCategory.color),
+        CLEARCOLOR("CLEARCOLOR", TokenCategory.color),
+        ENDCOLOR("ENDCOLOR", TokenCategory.color),
+        VAR("VAR", TokenCategory.variable),
+        EVENT("EVENT", TokenCategory.event),
+        RESET("RESET", TokenCategory.reset),
+        SKIP("SKIP", TokenCategory.skip);
+
+        final String name;
+        final TokenCategory category;
+
+        InternalToken(String name, TokenCategory category){
+            this.name = name;
+            this.category = category;
+        }
+
+        @Override
+        public String toString(){
+            return name;
+        }
+
+        static InternalToken fromName(String name){
+            if(name != null){
+                for(InternalToken token : InternalToken.values()){
+                    if(name.equalsIgnoreCase(token.name)){
+                        return token;
+                    }
+                }
+            }
+            return null;
+        }
+    }
+
+    public enum TokenCategory{
+        wait,
+        speed,
+        color,
+        variable,
+        event,
+        reset,
+        skip,
+        effectStart,
+        effectEnd
+    }
+
+    /** Container representing a token, parsed parameters and its position in text. */
+    static class TokenEntry implements Comparable<TokenEntry>{
+        String token;
+        TokenCategory category;
+        int index;
+        float floatValue;
+        String stringValue;
+        FEffect effect;
+
+        TokenEntry(String token, TokenCategory category, int index, float floatValue, String stringValue){
+            this.token = token;
+            this.category = category;
+            this.index = index;
+            this.floatValue = floatValue;
+            this.stringValue = stringValue;
+        }
+
+        @Override
+        public int compareTo(TokenEntry o){
+            return Integer.compare(index, o.index);
+        }
+
+    }
 }

@@ -1,10 +1,10 @@
-package arc.tlabel.effects;
+package arc.flabel.effects;
 
-import arc.tlabel.*;
+import arc.flabel.*;
 import arc.util.noise.Simplex;
 
 /** Moves the text in a wind pattern. */
-public class WindEffect extends Effect{
+public class WindEffect extends FEffect{
     private static final float DEFAULT_SPACING = 10f;
     private static final float DEFAULT_DISTANCE = 0.33f;
     private static final float DEFAULT_INTENSITY = 0.375f;
@@ -20,7 +20,7 @@ public class WindEffect extends Effect{
     private float spacing = 1; // How much space there should be between waves
     private float intensity = 1; // How strong the wind should be
 
-    public WindEffect(TypeLabel label){
+    public WindEffect(FLabel label){
         super(label);
     }
 
@@ -34,7 +34,7 @@ public class WindEffect extends Effect{
     }
 
     @Override
-    protected void onApply(TypingGlyph glyph, int localIndex, float delta){
+    protected void onApply(FGlyph glyph, int localIndex, float delta){
         // Calculate progress
         float progressModifier = (1f / intensity) * DEFAULT_INTENSITY;
         float normalSpacing = (1f / spacing) * DEFAULT_SPACING;

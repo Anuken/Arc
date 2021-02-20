@@ -1,10 +1,10 @@
-package arc.tlabel.effects;
+package arc.flabel.effects;
 
+import arc.flabel.*;
 import arc.math.*;
-import arc.tlabel.*;
 
 /** Makes the text jumps and falls as if there was gravity. */
-public class JumpEffect extends Effect{
+public class JumpEffect extends FEffect{
     private static final float DEFAULT_FREQUENCY = 50f;
     private static final float DEFAULT_DISTANCE = 1.33f;
     private static final float DEFAULT_INTENSITY = 1f;
@@ -13,12 +13,12 @@ public class JumpEffect extends Effect{
     private float frequency = 1; // How frequently the wave pattern repeats
     private float intensity = 1; // How fast the glyphs should move
 
-    public JumpEffect(TypeLabel label){
+    public JumpEffect(FLabel label){
         super(label);
     }
 
     @Override
-    protected void onApply(TypingGlyph glyph, int localIndex, float delta){
+    protected void onApply(FGlyph glyph, int localIndex, float delta){
         // Calculate progress
         float progressModifier = (1f / intensity) * DEFAULT_INTENSITY;
         float normalFrequency = (1f / frequency) * DEFAULT_FREQUENCY;

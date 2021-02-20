@@ -1,10 +1,10 @@
-package arc.tlabel.effects;
+package arc.flabel.effects;
 
+import arc.flabel.*;
 import arc.math.*;
-import arc.tlabel.*;
 
 /** Moves the text vertically in a sine wave pattern. */
-public class WaveEffect extends Effect{
+public class WaveEffect extends FEffect{
     private static final float DEFAULT_FREQUENCY = 15f;
     private static final float DEFAULT_DISTANCE = 0.33f;
     private static final float DEFAULT_INTENSITY = 0.5f;
@@ -13,12 +13,12 @@ public class WaveEffect extends Effect{
     private float frequency = 1; // How frequently the wave pattern repeats
     private float intensity = 1; // How fast the glyphs should move
 
-    public WaveEffect(TypeLabel label){
+    public WaveEffect(FLabel label){
         super(label);
     }
 
     @Override
-    protected void onApply(TypingGlyph glyph, int localIndex, float delta){
+    protected void onApply(FGlyph glyph, int localIndex, float delta){
         // Calculate progress
         float progressModifier = (1f / intensity) * DEFAULT_INTENSITY;
         float normalFrequency = (1f / frequency) * DEFAULT_FREQUENCY;

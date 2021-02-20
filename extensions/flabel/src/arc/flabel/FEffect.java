@@ -1,18 +1,18 @@
-package arc.tlabel;
+package arc.flabel;
 
 import arc.math.*;
 
 /** Abstract text effect. */
-public abstract class Effect{
+public abstract class FEffect{
     private static final float FADEOUT_SPLIT = 0.25f;
-    protected final transient TypeLabel label;
+    protected final transient FLabel label;
     public int indexStart = -1;
     public int indexEnd = -1;
     public float duration = Float.POSITIVE_INFINITY;
     public String endToken;
     protected float totalTime;
 
-    public Effect(TypeLabel label){
+    public FEffect(FLabel label){
         this.label = label;
     }
 
@@ -21,13 +21,13 @@ public abstract class Effect{
     }
 
     /** Applies the effect to the given glyph. */
-    public final void apply(TypingGlyph glyph, int glyphIndex, float delta){
+    public final void apply(FGlyph glyph, int glyphIndex, float delta){
         int localIndex = glyphIndex - indexStart;
         onApply(glyph, localIndex, delta);
     }
 
     /** Called when this effect should be applied to the given glyph. */
-    protected abstract void onApply(TypingGlyph glyph, int localIndex, float delta);
+    protected abstract void onApply(FGlyph glyph, int localIndex, float delta);
 
     /** Returns whether or not this effect is finished and should be removed. Note that effects are infinite by default. */
     public boolean isFinished(){
@@ -82,7 +82,7 @@ public abstract class Effect{
 
     /** Returns the line height of the label controlling this effect. */
     protected float getLineHeight(){
-        return label.getBitmapFontCache().getFont().getLineHeight() * label.getFontScaleY();
+        return label.getFontCache().getFont().getLineHeight() * label.getFontScaleY();
     }
 
 }

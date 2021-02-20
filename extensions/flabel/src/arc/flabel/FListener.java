@@ -1,7 +1,7 @@
-package arc.tlabel;
+package arc.flabel;
 
-/** Simple listener for label events. */
-public interface TypingListener{
+/** Simple listener for fancy label events. */
+public interface FListener{
 
     /**
      * Called each time an {@code EVENT} token is processed.
