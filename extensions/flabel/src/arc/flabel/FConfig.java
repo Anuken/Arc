@@ -40,7 +40,7 @@ public class FConfig{
     public static final ObjectMap<String, String> globalVars = new ObjectMap<>();
 
     /** Map of start tokens and their effect classes. Internal use only. */
-    static final ObjectMap<String, Func<FLabel, FEffect>> effects = new ObjectMap<>();
+    static final ObjectMap<String, Prov<FEffect>> effects = new ObjectMap<>();
 
     /** Whether or not effect tokens are dirty and need to be recalculated. */
     static boolean dirtyEffectMaps = true;
@@ -50,7 +50,7 @@ public class FConfig{
      *
      * @param tokenName Name of the token that starts the effect, such as WAVE.
      */
-    public static void registerEffect(String tokenName, Func<FLabel, FEffect> effect){
+    public static void registerEffect(String tokenName, Prov<FEffect> effect){
         effects.put(tokenName, effect);
         dirtyEffectMaps = true;
     }

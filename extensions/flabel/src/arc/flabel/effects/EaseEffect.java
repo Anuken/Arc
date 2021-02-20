@@ -6,23 +6,19 @@ import arc.struct.*;
 
 /** Moves the text vertically easing it into the final position. Doesn't repeat itself. */
 public class EaseEffect extends FEffect{
-    private static final float DEFAULT_DISTANCE = 0.15f;
-    private static final float DEFAULT_INTENSITY = 0.075f;
+    private static final float defaultDistance = 0.15f;
+    private static final float defaultIntensity = 0.075f;
 
-    private float distance = 1; // How much of their height they should move
-    private float intensity = 1; // How fast the glyphs should move
-    private boolean elastic = false; // Whether or not the glyphs have an elastic movement
+    public float distance = 1; // How much of their height they should move
+    public float intensity = 1; // How fast the glyphs should move
+    public boolean elastic = false; // Whether or not the glyphs have an elastic movement
 
     private IntFloatMap timePassedByGlyphIndex = new IntFloatMap();
 
-    public EaseEffect(FLabel label){
-        super(label);
-    }
-
     @Override
-    protected void onApply(FGlyph glyph, int localIndex, float delta){
+    protected void onApply(FLabel label, FGlyph glyph, int localIndex, float delta){
         // Calculate real intensity
-        float realIntensity = intensity * (elastic ? 3f : 1f) * DEFAULT_INTENSITY;
+        float realIntensity = intensity * (elastic ? 3f : 1f) * defaultIntensity;
 
         // Calculate progress
         float timePassed = timePassedByGlyphIndex.increment(localIndex, 0, delta);
@@ -34,7 +30,7 @@ public class EaseEffect extends FEffect{
         // Calculate offset
         Interp interpolation = elastic ? Interp.swingOut : Interp.sine;
         float interpolatedValue = interpolation.apply(1, 0, progress);
-        float y = getLineHeight() * distance * interpolatedValue * DEFAULT_DISTANCE;
+        float y = getLineHeight(label) * distance * interpolatedValue * defaultDistance;
 
         // Apply changes
         glyph.yoffset += y;

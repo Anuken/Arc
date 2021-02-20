@@ -5,28 +5,22 @@ import arc.math.*;
 
 /** Moves the text vertically in a sine wave pattern. */
 public class WaveEffect extends FEffect{
-    private static final float DEFAULT_FREQUENCY = 15f;
-    private static final float DEFAULT_DISTANCE = 0.33f;
-    private static final float DEFAULT_INTENSITY = 0.5f;
+    private static final float defaultFrequency = 15f, defaultDistance = 0.33f, defaultIntensity = 0.5f;
 
-    private float distance = 1; // How much of their height they should move
-    private float frequency = 1; // How frequently the wave pattern repeats
-    private float intensity = 1; // How fast the glyphs should move
-
-    public WaveEffect(FLabel label){
-        super(label);
-    }
+    public float distance = 1; // How much of their height they should move
+    public float frequency = 1; // How frequently the wave pattern repeats
+    public float intensity = 1; // How fast the glyphs should move
 
     @Override
-    protected void onApply(FGlyph glyph, int localIndex, float delta){
+    protected void onApply(FLabel label, FGlyph glyph, int localIndex, float delta){
         // Calculate progress
-        float progressModifier = (1f / intensity) * DEFAULT_INTENSITY;
-        float normalFrequency = (1f / frequency) * DEFAULT_FREQUENCY;
+        float progressModifier = (1f / intensity) * defaultIntensity;
+        float normalFrequency = (1f / frequency) * defaultFrequency;
         float progressOffset = localIndex / normalFrequency;
         float progress = calculateProgress(progressModifier, progressOffset);
 
         // Calculate offset
-        float y = getLineHeight() * distance * Interp.sine.apply(-1, 1, progress) * DEFAULT_DISTANCE;
+        float y = getLineHeight(label) * distance * Interp.sine.apply(-1, 1, progress) * defaultDistance;
 
         // Calculate fadeout
         float fadeout = calculateFadeout();

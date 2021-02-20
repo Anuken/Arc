@@ -4,30 +4,26 @@ import arc.math.*;
 
 /** Abstract text effect. */
 public abstract class FEffect{
-    private static final float FADEOUT_SPLIT = 0.25f;
-    protected final transient FLabel label;
+    private static final float fadeoutSplit = 0.25f;
+    
     public int indexStart = -1;
     public int indexEnd = -1;
     public float duration = Float.POSITIVE_INFINITY;
     public String endToken;
     protected float totalTime;
 
-    public FEffect(FLabel label){
-        this.label = label;
-    }
-
     public void update(float delta){
         totalTime += delta;
     }
 
     /** Applies the effect to the given glyph. */
-    public final void apply(FGlyph glyph, int glyphIndex, float delta){
+    public final void apply(FLabel label, FGlyph glyph, int glyphIndex, float delta){
         int localIndex = glyphIndex - indexStart;
-        onApply(glyph, localIndex, delta);
+        onApply(label, glyph, localIndex, delta);
     }
 
     /** Called when this effect should be applied to the given glyph. */
-    protected abstract void onApply(FGlyph glyph, int localIndex, float delta);
+    protected abstract void onApply(FLabel label, FGlyph glyph, int localIndex, float delta);
 
     /** Returns whether or not this effect is finished and should be removed. Note that effects are infinite by default. */
     public boolean isFinished(){
@@ -42,10 +38,10 @@ public abstract class FEffect{
         float progress = Mathf.clamp(totalTime / duration, 0, 1);
 
         // If progress is before the split point, return a full factor
-        if(progress < FADEOUT_SPLIT) return 1;
+        if(progress < fadeoutSplit) return 1;
 
         // Otherwise calculate from the split point
-        return Interp.smooth.apply(1, 0, (progress - FADEOUT_SPLIT) / (1f - FADEOUT_SPLIT));
+        return Interp.smooth.apply(1, 0, (progress - fadeoutSplit) / (1f - fadeoutSplit));
     }
 
     /**
@@ -81,7 +77,7 @@ public abstract class FEffect{
     }
 
     /** Returns the line height of the label controlling this effect. */
-    protected float getLineHeight(){
+    protected float getLineHeight(FLabel label){
         return label.getFontCache().getFont().getLineHeight() * label.getFontScaleY();
     }
 

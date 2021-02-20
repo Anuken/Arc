@@ -5,27 +5,19 @@ import arc.graphics.Color;
 
 /** Tints the text in a gradient pattern. */
 public class GradientEffect extends FEffect{
-    private static final float DEFAULT_DISTANCE = 0.975f;
-    private static final float DEFAULT_FREQUENCY = 2f;
+    private static final float defaultDistance = 0.975f;
+    private static final float defaultFrequency = 2f;
 
-    private Color color1 = null; // First color of the gradient.
-    private Color color2 = null; // Second color of the gradient.
-    private float distance = 1; // How extensive the rainbow effect should be.
-    private float frequency = 1; // How frequently the color pattern should move through the text.
-
-    public GradientEffect(FLabel label){
-        super(label);
-
-        // Validate parameters
-        if(this.color1 == null) this.color1 = new Color(Color.white);
-        if(this.color2 == null) this.color2 = new Color(Color.white);
-    }
+    public Color color1 = new Color(Color.white); // First color of the gradient.
+    public Color color2 = new Color(Color.white); // Second color of the gradient.
+    public float distance = 1; // How extensive the rainbow effect should be.
+    public float frequency = 1; // How frequently the color pattern should move through the text.
 
     @Override
-    protected void onApply(FGlyph glyph, int localIndex, float delta){
+    protected void onApply(FLabel label, FGlyph glyph, int localIndex, float delta){
         // Calculate progress
-        float distanceMod = (1f / distance) * (1f - DEFAULT_DISTANCE);
-        float frequencyMod = (1f / frequency) * DEFAULT_FREQUENCY;
+        float distanceMod = (1f / distance) * (1f - defaultDistance);
+        float frequencyMod = (1f / frequency) * defaultFrequency;
         float progress = calculateProgress(frequencyMod, distanceMod * localIndex, true);
 
         // Calculate color

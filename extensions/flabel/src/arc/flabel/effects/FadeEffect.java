@@ -9,18 +9,14 @@ import arc.math.Mathf;
 public class FadeEffect extends FEffect{
     private Color color1 = null; // First color of the effect.
     private Color color2 = null; // Second color of the effect.
-    private float alpha1 = 0; // First alpha of the effect, in case a color isn't provided.
-    private float alpha2 = 1; // Second alpha of the effect, in case a color isn't provided.
-    private float fadeDuration = 1; // Duration of the fade effect
+    public float alpha1 = 0; // First alpha of the effect, in case a color isn't provided.
+    public float alpha2 = 1; // Second alpha of the effect, in case a color isn't provided.
+    public float fadeDuration = 1; // Duration of the fade effect
 
     private IntFloatMap timePassedByGlyphIndex = new IntFloatMap();
 
-    public FadeEffect(FLabel label){
-        super(label);
-    }
-
     @Override
-    protected void onApply(FGlyph glyph, int localIndex, float delta){
+    protected void onApply(FLabel label, FGlyph glyph, int localIndex, float delta){
         // Calculate progress
         float timePassed = timePassedByGlyphIndex.increment(localIndex, 0, delta);
         float progress = timePassed / fadeDuration;

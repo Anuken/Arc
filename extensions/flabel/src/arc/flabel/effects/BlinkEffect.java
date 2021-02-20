@@ -1,31 +1,21 @@
 package arc.flabel.effects;
 
 import arc.flabel.*;
-import arc.graphics.Color;
-import arc.math.Mathf;
+import arc.graphics.*;
 
 /** Blinks the entire text in two different colors at once, without interpolation. */
 public class BlinkEffect extends FEffect{
-    private static final float DEFAULT_FREQUENCY = 1f;
+    private static final float defaultFrequency = 1f;
 
-    private Color color1 = null; // First color of the effect.
-    private Color color2 = null; // Second color of the effect.
-    private float frequency = 1; // How frequently the color pattern should move through the text.
-    private float threshold = 0.5f; // Point to switch colors.
-
-    public BlinkEffect(FLabel label){
-        super(label);
-
-        // Validate parameters
-        if(this.color1 == null) this.color1 = new Color(Color.white);
-        if(this.color2 == null) this.color2 = new Color(Color.white);
-        this.threshold = Mathf.clamp(this.threshold, 0, 1);
-    }
+    public Color color1 = new Color(Color.white); // First color of the effect.
+    public Color color2 = new Color(Color.white); // Second color of the effect.
+    public float frequency = 1; // How frequently the color pattern should move through the text.
+    public float threshold = 0.5f; // Point to switch colors.
 
     @Override
-    protected void onApply(FGlyph glyph, int localIndex, float delta){
+    protected void onApply(FLabel label, FGlyph glyph, int localIndex, float delta){
         // Calculate progress
-        float frequencyMod = (1f / frequency) * DEFAULT_FREQUENCY;
+        float frequencyMod = (1f / frequency) * defaultFrequency;
         float progress = calculateProgress(frequencyMod);
 
         // Calculate color

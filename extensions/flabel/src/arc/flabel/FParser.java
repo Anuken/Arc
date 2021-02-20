@@ -5,13 +5,13 @@ import arc.struct.*;
 
 /** Utility class to parse tokens from a {@link FLabel}. */
 class FParser{
-    private static String RESET_REPLACEMENT;
+    private static String resetReplacement;
 
     /** Parses all tokens from the given {@link FLabel}. */
     static void parseTokens(FLabel label){
         // Compile patterns if necessary
-        if(RESET_REPLACEMENT == null || FConfig.dirtyEffectMaps){
-            RESET_REPLACEMENT = getResetReplacement();
+        if(resetReplacement == null || FConfig.dirtyEffectMaps){
+            resetReplacement = getResetReplacement();
         }
 
         // Adjust and check markup color
@@ -97,7 +97,7 @@ class FParser{
             }else if(text.equals("/color")){ //end color
                 replacement = "[#" + label.getClearColor().toString() + "]";
             }else if(text.equals("reset")){ //reset
-                replacement = RESET_REPLACEMENT + label.getDefaultToken();
+                replacement = resetReplacement + label.getDefaultToken();
             }
 
             return replacement;
@@ -154,7 +154,7 @@ class FParser{
                     break;
                 }
                 case effectStart:{
-                    effect = FConfig.effects.get(text).get(label);
+                    effect = FConfig.effects.get(text).get();
                     effect.endToken = "/" + text;
                     break;
                 }
@@ -243,26 +243,26 @@ class FParser{
     }
 
     enum InternalToken{
-        WAIT("WAIT", TokenCategory.wait),
-        SPEED("SPEED", TokenCategory.speed),
-        SLOWER("SLOWER", TokenCategory.speed),
-        SLOW("SLOW", TokenCategory.speed),
-        NORMAL("NORMAL", TokenCategory.speed),
-        FAST("FAST", TokenCategory.speed),
-        FASTER("FASTER", TokenCategory.speed),
-        COLOR("COLOR", TokenCategory.color),
-        CLEARCOLOR("CLEARCOLOR", TokenCategory.color),
-        ENDCOLOR("ENDCOLOR", TokenCategory.color),
-        VAR("VAR", TokenCategory.variable),
-        EVENT("EVENT", TokenCategory.event),
-        RESET("RESET", TokenCategory.reset),
-        SKIP("SKIP", TokenCategory.skip);
+        WAIT(TokenCategory.wait),
+        SPEED(TokenCategory.speed),
+        SLOWER(TokenCategory.speed),
+        SLOW(TokenCategory.speed),
+        NORMAL(TokenCategory.speed),
+        FAST(TokenCategory.speed),
+        FASTER(TokenCategory.speed),
+        COLOR(TokenCategory.color),
+        CLEARCOLOR(TokenCategory.color),
+        ENDCOLOR(TokenCategory.color),
+        VAR(TokenCategory.variable),
+        EVENT(TokenCategory.event),
+        RESET(TokenCategory.reset),
+        SKIP(TokenCategory.skip);
 
         final String name;
         final TokenCategory category;
 
-        InternalToken(String name, TokenCategory category){
-            this.name = name;
+        InternalToken(TokenCategory category){
+            this.name = name();
             this.category = category;
         }
 

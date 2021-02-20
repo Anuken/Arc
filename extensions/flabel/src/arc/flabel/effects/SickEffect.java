@@ -6,24 +6,18 @@ import arc.struct.*;
 
 /** Drips the text in a random pattern. */
 public class SickEffect extends FEffect{
-    private static final float DEFAULT_FREQUENCY = 50f;
-    private static final float DEFAULT_DISTANCE = .125f;
-    private static final float DEFAULT_INTENSITY = 1f;
+    private static final float defaultFrequency = 50f, defaultDistance = .125f, defaultIntensity = 1f;
 
     public float distance = 1; // How far the glyphs should move
     public float intensity = 1; // How fast the glyphs should move
 
     private IntSeq indices = new IntSeq();
 
-    public SickEffect(FLabel label){
-        super(label);
-    }
-
     @Override
-    protected void onApply(FGlyph glyph, int localIndex, float delta){
+    protected void onApply(FLabel label, FGlyph glyph, int localIndex, float delta){
         // Calculate progress
-        float progressModifier = (1f / intensity) * DEFAULT_INTENSITY;
-        float progressOffset = localIndex / DEFAULT_FREQUENCY;
+        float progressModifier = (1f / intensity) * defaultIntensity;
+        float progressOffset = localIndex / defaultFrequency;
         float progress = calculateProgress(progressModifier, -progressOffset, false);
 
         if(progress < .01f && Math.random() > .25f && !indices.contains(localIndex))
@@ -46,7 +40,7 @@ public class SickEffect extends FEffect{
         }else{
             interpolation = Interp.pow2In.apply(1, 0, (progress - split) / (1f - split));
         }
-        float y = getLineHeight() * distance * interpolation * DEFAULT_DISTANCE;
+        float y = getLineHeight(label) * distance * interpolation * defaultDistance;
 
         if(indices.contains(localIndex))
             y *= 2.15f;
