@@ -23,15 +23,17 @@ import static arc.Core.scene;
  * @author Nathan Sweet
  */
 public class Label extends Element{
-    private static final Color tempColor = new Color();
-    private static final GlyphLayout prefSizeLayout = new GlyphLayout();
-    private final GlyphLayout layout = new GlyphLayout();
-    private final Vec2 prefSize = new Vec2();
-    private final StringBuilder text = new StringBuilder();
-    private LabelStyle style;
-    private FontCache cache;
-    private int labelAlign = Align.left;
-    private int lineAlign = Align.left;
+    protected static final Color tempColor = new Color();
+    protected static final GlyphLayout prefSizeLayout = new GlyphLayout();
+
+    protected final GlyphLayout layout = new GlyphLayout();
+    protected final Vec2 prefSize = new Vec2();
+    protected final StringBuilder text = new StringBuilder();
+    protected LabelStyle style;
+    protected FontCache cache;
+    protected int labelAlign = Align.left;
+    protected int lineAlign = Align.left;
+
     protected boolean wrap;
     protected float lastPrefHeight;
     protected boolean prefSizeInvalid = true;
@@ -343,7 +345,7 @@ public class Label extends Element{
     }
 
     /** Allows subclasses to access the cache. */
-    protected FontCache getFontCache(){
+    public FontCache getFontCache(){
         return cache;
     }
 

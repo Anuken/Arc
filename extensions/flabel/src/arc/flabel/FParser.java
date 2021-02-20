@@ -20,8 +20,6 @@ class FParser{
         // Remove any previous entries
         label.tokenEntries.clear();
 
-        //{color=red} (NOT NEEDED) or {var=value} or {endcolor} or {clearcolor} or {reset}
-
         // Parse all tokens with text replacements, namely color and var.
         parseReplacements(label);
 
@@ -37,7 +35,6 @@ class FParser{
 
         // Sort token entries
         label.tokenEntries.sort();
-        //Log.info(new Json().prettyPrint(label.tokenEntries));
         label.tokenEntries.reverse();
     }
 
@@ -124,16 +121,14 @@ class FParser{
             }
 
             switch(tokenCategory){
-                case wait:{
+                case wait:
                     floatValue = FConfig.defaultWaitValue;
                     break;
-                }
-                case event:{
+                case event:
                     stringValue = text;
                     indexOffset = -1;
                     break;
-                }
-                case speed:{
+                case speed:
                     switch(text){
                         case "slower":
                             floatValue = FConfig.defaultSpeedPerChar / 0.500f;
@@ -152,15 +147,12 @@ class FParser{
                             break;
                     }
                     break;
-                }
-                case effectStart:{
+                case effectStart:
                     effect = FConfig.effects.get(text).get();
                     effect.endToken = "/" + text;
                     break;
-                }
-                case effectEnd:{
+                case effectEnd:
                     break;
-                }
             }
 
             TokenEntry entry = new TokenEntry(text, tokenCategory, index + indexOffset - 1, floatValue, stringValue);
@@ -187,9 +179,7 @@ class FParser{
                 for(int j = i + 1; j < text.length(); j++){
                     if(text.charAt(j) == ']'){
                         //found token end!
-                        int tokenFrom = i + 1;
-                        int tokenTo = j;
-                        handler.get(tokenFrom, tokenTo);
+                        handler.get(i + 1, j);
                         break;
                     }
                 }
@@ -197,9 +187,7 @@ class FParser{
                 for(int j = i + 1; j < text.length(); j++){
                     if(text.charAt(j) == '}'){
                         //found token end!
-                        int tokenFrom = i + 1;
-                        int tokenTo = j;
-                        handler.get(tokenFrom, tokenTo);
+                        handler.get(i + 1, j);
                         break;
                     }
                 }
@@ -210,17 +198,8 @@ class FParser{
     private static void stripTokens(FLabel label){
         baseParse(label, (text, index) -> "");
 
-        int[] offset = {0};
-        //label.tokenEntries.add(new TokenEntry("SKIP", TokenCategory.SKIP, 4, 0, new String(new char[8])));
-        //label.tokenEntries.add(new TokenEntry("SKIP", TokenCategory.SKIP, 16, 0, new String(new char[2])));
-
         //must be a square token
-        parseAllTokens(label, true, (from, to) -> {
-            //Log.info(label.getText().substring(from - 1, to + 1));
-            //label.tokenEntries.add(new TokenEntry("SKIP", TokenCategory.SKIP, from - 2, 0, label.getText().substring(from - 1, to + 1)));
-            //Log.info("index = " + (from - 1 + offset[0]) + " from = "+ from);
-            offset[0] -= 2;
-        });
+        parseAllTokens(label, true, (from, to) -> {});
     }
 
     /** Returns the replacement string intended to be used on {RESET} tokens. */
@@ -243,23 +222,25 @@ class FParser{
     }
 
     enum InternalToken{
-        WAIT(TokenCategory.wait),
-        SPEED(TokenCategory.speed),
-        SLOWER(TokenCategory.speed),
-        SLOW(TokenCategory.speed),
-        NORMAL(TokenCategory.speed),
-        FAST(TokenCategory.speed),
-        FASTER(TokenCategory.speed),
-        COLOR(TokenCategory.color),
-        CLEARCOLOR(TokenCategory.color),
-        ENDCOLOR(TokenCategory.color),
-        VAR(TokenCategory.variable),
-        EVENT(TokenCategory.event),
-        RESET(TokenCategory.reset),
-        SKIP(TokenCategory.skip);
+        wait(TokenCategory.wait),
+        speed(TokenCategory.speed),
+        slower(TokenCategory.speed),
+        slow(TokenCategory.speed),
+        normal(TokenCategory.speed),
+        fast(TokenCategory.speed),
+        faster(TokenCategory.speed),
+        color(TokenCategory.color),
+        clearcolor(TokenCategory.color),
+        endcolor(TokenCategory.color),
+        var(TokenCategory.variable),
+        event(TokenCategory.event),
+        reset(TokenCategory.reset),
+        skip(TokenCategory.skip);
 
         final String name;
         final TokenCategory category;
+
+        static final InternalToken[] all = values();
 
         InternalToken(TokenCategory category){
             this.name = name();
@@ -273,7 +254,7 @@ class FParser{
 
         static InternalToken fromName(String name){
             if(name != null){
-                for(InternalToken token : InternalToken.values()){
+                for(InternalToken token : all){
                     if(name.equalsIgnoreCase(token.name)){
                         return token;
                     }

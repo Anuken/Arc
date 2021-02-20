@@ -478,59 +478,6 @@ public class FLabel extends Label{
     }
 
     @Override
-    public FontCache getFontCache(){
-        return super.getFontCache();
-    }
-
-    @Override
-    public void setEllipsis(String ellipsis){
-        // Mimics superclass but keeps an accessible reference
-        super.setEllipsis(ellipsis);
-        this.ellipsis = ellipsis;
-    }
-
-    @Override
-    public void setEllipsis(boolean ellipsis){
-        // Mimics superclass but keeps an accessible reference
-        super.setEllipsis(ellipsis);
-        if(ellipsis)
-            this.ellipsis = "...";
-        else
-            this.ellipsis = null;
-    }
-
-    @Override
-    public void setWrap(boolean wrap){
-        // Mimics superclass but keeps an accessible reference
-        super.setWrap(wrap);
-        this.wrap = wrap;
-    }
-
-    @Override
-    public void setFontScale(float fontScale){
-        super.setFontScale(fontScale);
-        this.fontScaleChanged = true;
-    }
-
-    @Override
-    public void setFontScale(float fontScaleX, float fontScaleY){
-        super.setFontScale(fontScaleX, fontScaleY);
-        this.fontScaleChanged = true;
-    }
-
-    @Override
-    public void setFontScaleX(float fontScaleX){
-        super.setFontScaleX(fontScaleX);
-        this.fontScaleChanged = true;
-    }
-
-    @Override
-    public void setFontScaleY(float fontScaleY){
-        super.setFontScaleY(fontScaleY);
-        this.fontScaleChanged = true;
-    }
-
-    @Override
     public void layout(){
         // --- SUPERCLASS IMPLEMENTATION (but with accessible getters instead) ---
         FontCache cache = getFontCache();
