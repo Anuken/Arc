@@ -1,16 +1,15 @@
 package arc.flabel;
 
-import arc.struct.*;
-import arc.graphics.Color;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.graphics.g2d.Font.Glyph;
-import arc.graphics.g2d.GlyphLayout.GlyphRun;
-import arc.math.Mathf;
-import arc.scene.style.Drawable;
-import arc.scene.ui.Label;
-import arc.util.Align;
-import arc.util.Log;
-import arc.util.pooling.Pools;
+import arc.graphics.g2d.Font.*;
+import arc.graphics.g2d.GlyphLayout.*;
+import arc.math.*;
+import arc.scene.style.*;
+import arc.scene.ui.*;
+import arc.struct.*;
+import arc.util.*;
+import arc.util.pooling.*;
 
 /**
  * An extension of {@link Label} that progressively shows the text as if it was being typed in real time, and allows the
@@ -393,31 +392,26 @@ public class FLabel extends Label{
 
                 // Process tokens
                 switch(category){
-                    case speed:{
+                    case speed:
                         textSpeed = entry.floatValue;
                         continue;
-                    }
-                    case wait:{
+                    case wait:
                         glyphCharIndex--;
                         glyphCharCompensation++;
                         charCooldown += entry.floatValue;
                         continue;
-                    }
-                    case skip:{
-                        Log.info("SKIP at " + rawCharIndex + " from " + rawCharIndex + " to " + (rawCharIndex + entry.stringValue.length()));
+                    case skip:
                         if(entry.stringValue != null){
                             rawCharIndex += entry.stringValue.length();
                         }
                         continue;
-                    }
-                    case event:{
+                    case event:
                         if(this.listener != null && !ignoringEvents){
                             listener.event(entry.stringValue);
                         }
                         continue;
-                    }
                     case effectStart:
-                    case effectEnd: {
+                    case effectEnd:
                         // Get effect class
                         boolean isStart = category == FParser.TokenCategory.effectStart;
 
@@ -438,7 +432,6 @@ public class FLabel extends Label{
                         }
 
                         continue;
-                    }
                 }
             }
 

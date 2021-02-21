@@ -46,6 +46,7 @@ class FParser{
         int[] lastIndex = {0};
         int[] afterIndex = {0};
 
+        //TODO this is broken with nested tokens, e.g. {[red]death}
         parseAllTokens(label, false, (from, to) -> {
             String replacement = text.charAt(from - 1) == '{' ? replacer.handle(text.substring(from, to), from + afterIndex[0]) : "[" + text.substring(from, to) + "]";
             afterIndex[0] -= (to - from + 2);
