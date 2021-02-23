@@ -25,41 +25,27 @@ public class Bresenham2{
      * @param endY the end y coordinate of the line
      */
     public static void line(int startX, int startY, int endX, int endY, Intc2 consumer){
+        int dx = Math.abs(endX - startX);
+        int dy = Math.abs(endY - startY);
 
-        int w = endX - startX;
-        int h = endY - startY;
-        int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
-        if(w < 0){
-            dx1 = -1;
-            dx2 = -1;
-        }else if(w > 0){
-            dx1 = 1;
-            dx2 = 1;
-        }
-        if(h < 0)
-            dy1 = -1;
-        else if(h > 0) dy1 = 1;
-        int longest = Math.abs(w);
-        int shortest = Math.abs(h);
-        if(longest <= shortest){
-            longest = Math.abs(h);
-            shortest = Math.abs(w);
-            if(h < 0)
-                dy2 = -1;
-            else if(h > 0) dy2 = 1;
-            dx2 = 0;
-        }
-        int numerator = longest >> 1;
-        for(int i = 0; i <= longest; i++){
+        int sx = startX < endX ? 1 : -1;
+        int sy = startY < endY ? 1 : -1;
+
+        int err = dx - dy;
+        int e2;
+        while(true){
             consumer.get(startX, startY);
-            numerator += shortest;
-            if(numerator > longest){
-                numerator -= longest;
-                startX += dx1;
-                startY += dy1;
-            }else{
-                startX += dx2;
-                startY += dy2;
+            if(startX == endX && startY == endY) break;
+
+            e2 = 2 * err;
+            if(e2 > -dy){
+                err = err - dy;
+                startX = startX + sx;
+            }
+
+            if(e2 < dx){
+                err = err + dx;
+                startY = startY + sy;
             }
         }
     }
