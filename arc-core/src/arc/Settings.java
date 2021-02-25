@@ -64,7 +64,7 @@ public class Settings{
     }
 
     /** Loads all values and keybinds. */
-    public void load(){
+    public synchronized void load(){
         try{
             loadValues();
             keybinds.load();
@@ -82,7 +82,7 @@ public class Settings{
     }
 
     /** Saves all values and keybinds. */
-    public void forceSave(){
+    public synchronized void forceSave(){
         //never loaded, nothing to save
         if(!loaded) return;
         try{
@@ -101,14 +101,14 @@ public class Settings{
     }
 
     /** Manually save, if the settings have been loaded at some point. */
-    public void manualSave(){
+    public synchronized void manualSave(){
         if(loaded){
             forceSave();
         }
     }
 
     /** Saves if any modifications were done. */
-    public void autosave(){
+    public synchronized void autosave(){
         if(modified && shouldAutosave){
             forceSave();
             modified = false;
@@ -116,7 +116,7 @@ public class Settings{
     }
 
     /** Loads a settings file into {@link #values} using the specified appName. */
-    public void loadValues(){
+    public synchronized void loadValues(){
         //don't load settings files if neither of them exist
         if(!getSettingsFile().exists() && !getBackupSettingsFile().exists()){
             writeLog("No settings files found: " + getSettingsFile().absolutePath() + " and " + getBackupSettingsFile().absolutePath());
@@ -146,7 +146,7 @@ public class Settings{
         }
     }
 
-    public void loadValues(Fi file) throws IOException{
+    public synchronized void loadValues(Fi file) throws IOException{
         try(DataInputStream stream = new DataInputStream(file.read(8192))){
             int amount = stream.readInt();
             for(int i = 0; i < amount; i++){
@@ -181,7 +181,7 @@ public class Settings{
     }
 
     /** Saves all entries from {@link #values} into the correct location. */
-    public void saveValues(){
+    public synchronized void saveValues(){
         Fi file = getSettingsFile();
 
         try(DataOutputStream stream = new DataOutputStream(file.write(false, 8192))){
@@ -243,26 +243,26 @@ public class Settings{
      * Set up a list of defaults values.
      * Format: name1, default1, name2, default2, etc
      */
-    public void defaults(Object... objects){
+    public synchronized void defaults(Object... objects){
         for(int i = 0; i < objects.length; i += 2){
             defaults.put((String)objects[i], objects[i + 1]);
         }
     }
 
     /** Clears all preference values. */
-    public void clear(){
+    public synchronized void clear(){
         values.clear();
     }
 
-    public Object getDefault(String name){
+    public synchronized Object getDefault(String name){
         return defaults.get(name);
     }
 
-    public boolean has(String name){
+    public synchronized boolean has(String name){
         return values.containsKey(name);
     }
 
-    public Object get(String name, Object def){
+    public synchronized Object get(String name, Object def){
         return values.containsKey(name) ? values.get(name) : def;
     }
 
@@ -270,11 +270,11 @@ public class Settings{
         return modified;
     }
 
-    public void putJson(String name, Object value){
+    public synchronized void putJson(String name, Object value){
         putJson(name, null, value);
     }
 
-    public void putJson(String name, Class<?> elementType, Object value){
+    public synchronized void putJson(String name, Class<?> elementType, Object value){
         byteStream.reset();
 
         json.setWriter(new UBJsonWriter(byteStream));
@@ -285,11 +285,13 @@ public class Settings{
         modified = true;
     }
 
-    public <T> T getJson(String name, Class<T> type, Class elementType, Prov<T> def){
+    public synchronized <T> T getJson(String name, Class<T> type, Class elementType, Prov<T> def){
         try{
+            if(!has(name)) return def.get();
             byteInputStream.setBytes(getBytes(name));
             return json.readValue(type, elementType, ureader.parse(byteInputStream));
         }catch(Throwable e){
+            writeLog("Failed to write JSON key=" + name + " type=" + type + ":\n" + Strings.getStackTrace(e));
             return def.get();
         }
     }
@@ -368,7 +370,7 @@ public class Settings{
     }
 
     /** Stores an object in the preference map. */
-    public void put(String name, Object object){
+    public synchronized void put(String name, Object object){
         if(object instanceof Float || object instanceof Integer || object instanceof Boolean || object instanceof Long
         || object instanceof String || object instanceof byte[]){
             values.put(name, object);
@@ -378,16 +380,16 @@ public class Settings{
         }
     }
 
-    public void remove(String name){
+    public synchronized void remove(String name){
         values.remove(name);
         modified = true;
     }
 
-    public Iterable<String> keys(){
+    public synchronized Iterable<String> keys(){
         return values.keySet();
     }
 
-    public int keySize(){
+    public synchronized int keySize(){
         return values.size();
     }
 
