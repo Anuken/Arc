@@ -942,7 +942,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
      * Otherwise use {@link #toArray(Class)} to specify the array type.
      */
     public T[] toArray(){
-        return (T[])toArray(items.getClass().getComponentType());
+        return toArray(items.getClass().getComponentType());
     }
 
     public <V> V[] toArray(Class type){
