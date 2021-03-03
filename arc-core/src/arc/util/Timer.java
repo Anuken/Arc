@@ -336,6 +336,7 @@ public class Timer{
 
         @Override
         public void resume(){
+            if(Core.app.isDesktop()) return;
             synchronized(threadLock){
                 long delayMillis = System.nanoTime() / 1000000 - pauseMillis;
                 for(int i = 0, n = instances.size; i < n; i++)
@@ -347,6 +348,8 @@ public class Timer{
 
         @Override
         public void pause(){
+            //allow tasks to run in the background on desktop
+            if(Core.app.isDesktop()) return;
             synchronized(threadLock){
                 pauseMillis = System.nanoTime() / 1000000;
                 threadLock.notifyAll();
