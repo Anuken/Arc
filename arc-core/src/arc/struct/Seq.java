@@ -201,17 +201,6 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         }
     }
 
-    /** Iterates through the array and removes items if the consumer returns true. */
-    public void eachFilter(Boolf<? super T> consumer){
-        Iterator<T> it = iterator();
-        while(it.hasNext()){
-            T t = it.next();
-            if(consumer.get(t)){
-                it.remove();
-            }
-        }
-    }
-
     /**Replaces values without creating a new array.*/
     public void replace(Func<T, T> mapper){
         for(int i = 0; i < size; i++){
