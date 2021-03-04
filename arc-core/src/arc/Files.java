@@ -98,8 +98,8 @@ public interface Files{
         external,
 
         /**
-         * Path that is a fully qualified, absolute filesystem path. To ensure portability across platforms use absolute files only
-         * when absolutely (heh) necessary.
+         * Path that is interpreted as a verbatim filesystem path. To ensure portability across platforms use absolute files only
+         * when absolutely (heh) necessary. Relative paths will use the current working directory.
          */
         absolute,
 
