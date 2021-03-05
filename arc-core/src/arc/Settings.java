@@ -213,6 +213,8 @@ public class Settings{
                     stream.write((byte[])value);
                 }
             }
+
+            writeLog("Saving " + values.size() + " values; " + file.length() + " bytes");
         }catch(Throwable e){
             //file is now corrupt, delete it
             file.delete();
