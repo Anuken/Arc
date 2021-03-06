@@ -169,12 +169,11 @@ public class Json{
             allFields.addAll(classHierarchy.get(i).getDeclaredFields());
 
         OrderedMap<String, FieldMetadata> nameToField = new OrderedMap(allFields.size);
-        for(Field field: allFields){
 
+        for(Field field: allFields){
             if(Modifier.isTransient(field.getModifiers())) continue;
             if(Modifier.isStatic(field.getModifiers())) continue;
-            if(field.isSynthetic()) continue;
-            if(type.isEnum()) continue;
+            if(field.isSynthetic() || type.isEnum() || Reflect.isWrapper(type)) continue;
 
             //this is deprecated, but I know what I'm doing
             if(!field.isAccessible()){
