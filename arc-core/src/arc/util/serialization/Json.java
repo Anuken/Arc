@@ -13,7 +13,6 @@ import arc.util.serialization.JsonWriter.*;
 
 import java.io.*;
 import java.lang.reflect.*;
-import java.security.*;
 import java.util.*;
 
 /**
@@ -179,7 +178,7 @@ public class Json{
             if(!field.isAccessible()){
                 try{
                     field.setAccessible(true);
-                }catch(AccessControlException ex){
+                }catch(Exception ex){
                     continue;
                 }
             }
