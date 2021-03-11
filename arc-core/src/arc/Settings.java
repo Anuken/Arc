@@ -15,7 +15,7 @@ import java.util.*;
 import static arc.Core.*;
 
 public class Settings{
-    protected final static byte TYPE_BOOL = 0, TYPE_INT = 1, TYPE_LONG = 2, TYPE_FLOAT = 3, TYPE_STRING = 4, TYPE_BINARY = 5;
+    protected final static byte typeBool = 0, typeInt = 1, typeLong = 2, typeFloat = 3, typeString = 4, typeBinary = 5;
 
     //general state data
     protected Fi dataDirectory;
@@ -125,6 +125,7 @@ public class Settings{
 
         try{
             loadValues(getSettingsFile());
+            writeLog("Loaded " + values.size() + " values");
 
             //back up the save file, as the values have now been loaded successfully
             getSettingsFile().copyTo(getBackupSettingsFile());
@@ -154,22 +155,22 @@ public class Settings{
                 byte type = stream.readByte();
 
                 switch(type){
-                    case TYPE_BOOL:
+                    case typeBool:
                         values.put(key, stream.readBoolean());
                         break;
-                    case TYPE_INT:
+                    case typeInt:
                         values.put(key, stream.readInt());
                         break;
-                    case TYPE_LONG:
+                    case typeLong:
                         values.put(key, stream.readLong());
                         break;
-                    case TYPE_FLOAT:
+                    case typeFloat:
                         values.put(key, stream.readFloat());
                         break;
-                    case TYPE_STRING:
+                    case typeString:
                         values.put(key, stream.readUTF());
                         break;
-                    case TYPE_BINARY:
+                    case typeBinary:
                         int length = stream.readInt();
                         byte[] bytes = new byte[length];
                         stream.read(bytes);
@@ -193,33 +194,34 @@ public class Settings{
                 Object value = entry.getValue();
 
                 if(value instanceof Boolean){
-                    stream.writeByte(TYPE_BOOL);
+                    stream.writeByte(typeBool);
                     stream.writeBoolean((Boolean)value);
                 }else if(value instanceof Integer){
-                    stream.writeByte(TYPE_INT);
+                    stream.writeByte(typeInt);
                     stream.writeInt((Integer)value);
                 }else if(value instanceof Long){
-                    stream.writeByte(TYPE_LONG);
+                    stream.writeByte(typeLong);
                     stream.writeLong((Long)value);
                 }else if(value instanceof Float){
-                    stream.writeByte(TYPE_FLOAT);
+                    stream.writeByte(typeFloat);
                     stream.writeFloat((Float)value);
                 }else if(value instanceof String){
-                    stream.writeByte(TYPE_STRING);
+                    stream.writeByte(typeString);
                     stream.writeUTF((String)value);
                 }else if(value instanceof byte[]){
-                    stream.writeByte(TYPE_BINARY);
+                    stream.writeByte(typeBinary);
                     stream.writeInt(((byte[])value).length);
                     stream.write((byte[])value);
                 }
             }
 
-            writeLog("Saving " + values.size() + " values; " + file.length() + " bytes");
         }catch(Throwable e){
             //file is now corrupt, delete it
             file.delete();
             throw new RuntimeException("Error writing preferences: " + file, e);
         }
+
+        writeLog("Saving " + values.size() + " values; " + file.length() + " bytes");
     }
 
     /** Returns the file used for writing settings to. Not available on all platforms! */
