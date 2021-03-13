@@ -77,7 +77,7 @@ class FParser{
         baseParse(label, (text, index) -> {
             String replacement = null;
 
-            if(!text.isEmpty() && text.charAt(1) == '$'){ //variable
+            if(text.length() > 1 && text.charAt(1) == '$'){ //variable
                 String varname = text.substring(1);
                 if(label.getTypingListener() != null){
                     replacement = label.getTypingListener().replaceVariable(varname);
@@ -175,18 +175,13 @@ class FParser{
                 continue;
             }
 
-            //search for an end to the token
-            if(c == '['){
+            char end = (/*c == '[' ? ']' : */c == '{' ? '}' : '_');
+            if(end != '_'){
                 for(int j = i + 1; j < text.length(); j++){
-                    if(text.charAt(j) == ']'){
-                        //found token end!
-                        handler.get(i + 1, j);
+                    //nested tokens, do not parse
+                    if(text.charAt(j) == c){
                         break;
-                    }
-                }
-            }else if(c == '{'){
-                for(int j = i + 1; j < text.length(); j++){
-                    if(text.charAt(j) == '}'){
+                    }else if(text.charAt(j) == end){
                         //found token end!
                         handler.get(i + 1, j);
                         break;
