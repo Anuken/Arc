@@ -231,15 +231,11 @@ public class Table extends WidgetGroup{
     }
 
     public Cell<Collapser> collapser(Cons<Table> cons, Boolp shown){
-        Collapser col = new Collapser(cons, !shown.get());
-        col.setCollapsed(() -> !shown.get());
-        return add(col);
+        return collapser(cons, false, shown);
     }
 
     public Cell<Collapser> collapser(Table table, Boolp shown){
-        Collapser col = new Collapser(table, !shown.get());
-        col.setCollapsed(() -> !shown.get());
-        return add(col);
+        return collapser(table, false, shown);
     }
 
     public Cell<Collapser> collapser(Cons<Table> cons, boolean animate, Boolp shown){
