@@ -699,6 +699,13 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return items[0];
     }
 
+    /** Returns the first item, or null if this Seq is empty. */
+    @Nullable
+    public T firstOpt(){
+        if(size == 0) return null;
+        return items[0];
+    }
+
     /** Returns true if the array is empty. */
     public boolean isEmpty(){
         return size == 0;
