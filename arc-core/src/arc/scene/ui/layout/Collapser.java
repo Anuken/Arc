@@ -8,8 +8,9 @@ import arc.util.*;
 
 public class Collapser extends WidgetGroup{
     Table table;
+    @Nullable Boolp collapsedFunc;
     private CollapseAction collapseAction = new CollapseAction();
-    boolean collapsed;
+    boolean collapsed, autoAnimate;
     boolean actionRunning;
     float currentHeight;
     float seconds = 0.4f;
@@ -30,6 +31,17 @@ public class Collapser extends WidgetGroup{
 
     public Collapser setDuration(float seconds){
         this.seconds = seconds;
+        return this;
+    }
+
+    public Collapser setCollapsed(Boolp collapsed){
+        this.collapsedFunc = collapsed;
+        return this;
+    }
+
+    public Collapser setCollapsed(boolean autoAnimate, Boolp collapsed){
+        this.collapsedFunc = collapsed;
+        this.autoAnimate = autoAnimate;
         return this;
     }
 
@@ -86,6 +98,18 @@ public class Collapser extends WidgetGroup{
                 super.draw();
                 Draw.flush();
                 clipEnd();
+            }
+        }
+    }
+
+    @Override
+    public void act(float delta){
+        super.act(delta);
+
+        if(collapsedFunc != null){
+            boolean col = collapsedFunc.get();
+            if(col != collapsed){
+                setCollapsed(col, autoAnimate);
             }
         }
     }

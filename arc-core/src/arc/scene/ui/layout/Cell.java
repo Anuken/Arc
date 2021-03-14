@@ -245,16 +245,16 @@ public class Cell<T extends Element> implements Poolable{
 
     public Cell<T> wrap(){
         if(get() instanceof Label){
-            ((Label) get()).setWrap(true);
+            ((Label)get()).setWrap(true);
         }else if(get() instanceof TextButton){
-            ((TextButton) get()).getLabel().setWrap(true);
+            ((TextButton)get()).getLabel().setWrap(true);
         }
         return this;
     }
 
     public Cell<T> labelAlign(int label, int line){
         if(get() instanceof Label){
-            ((Label) get()).setAlignment(label, line);
+            ((Label)get()).setAlignment(label, line);
         }
         return this;
     }
@@ -265,7 +265,7 @@ public class Cell<T extends Element> implements Poolable{
 
     public <N extends Button> Cell<T> group(ButtonGroup<N> group){
         if(get() instanceof Button){
-            group.add((N) get());
+            group.add((N)get());
         }
         return this;
     }

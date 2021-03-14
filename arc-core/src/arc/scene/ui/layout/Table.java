@@ -230,6 +230,30 @@ public class Table extends WidgetGroup{
         for(Element element : elements) add(element);
     }
 
+    public Cell<Collapser> collapser(Cons<Table> cons, Boolp shown){
+        Collapser col = new Collapser(cons, !shown.get());
+        col.setCollapsed(() -> !shown.get());
+        return add(col);
+    }
+
+    public Cell<Collapser> collapser(Table table, Boolp shown){
+        Collapser col = new Collapser(table, !shown.get());
+        col.setCollapsed(() -> !shown.get());
+        return add(col);
+    }
+
+    public Cell<Collapser> collapser(Cons<Table> cons, boolean animate, Boolp shown){
+        Collapser col = new Collapser(cons, !shown.get());
+        col.setCollapsed(animate, () -> !shown.get());
+        return add(col);
+    }
+
+    public Cell<Collapser> collapser(Table table, boolean animate, Boolp shown){
+        Collapser col = new Collapser(table, !shown.get());
+        col.setCollapsed(animate, () -> !shown.get());
+        return add(col);
+    }
+
     public Cell<Table> table(){
         return table((Drawable)null);
     }
