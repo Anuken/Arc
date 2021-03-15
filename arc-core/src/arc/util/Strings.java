@@ -1,6 +1,7 @@
 package arc.util;
 
 import arc.graphics.*;
+import arc.math.*;
 import arc.struct.*;
 
 import java.io.*;
@@ -366,20 +367,148 @@ public class Strings{
         return p >= 0;
     }
 
-    public static long parseLong(String s, long defaultValue){
-        try{
-            return Long.parseLong(s);
-        }catch(Exception e){
+    public static int parseInt(String s, int defaultValue){
+        return parseInt(s, 10, defaultValue);
+    }
+
+    public static int parseInt(String s, int radix, int defaultValue){
+        boolean negative = false;
+        int i = 0, len = s.length(), limit = -2147483647;
+        if(len <= 0){
             return defaultValue;
+        }else{
+            char firstChar = s.charAt(0);
+            if(firstChar < '0'){
+                if(firstChar == '-'){
+                    negative = true;
+                    limit = -2147483648;
+                }else if(firstChar != '+'){
+                    return defaultValue;
+                }
+
+                if(len == 1) return defaultValue;
+
+                ++i;
+            }
+
+            int digit, result;
+            for(result = 0; i < len; result -= digit){
+                digit = Character.digit(s.charAt(i++), radix);
+                if(digit < 0){
+                    return defaultValue;
+                }
+
+                result *= radix;
+                if(result < limit + digit){
+                    return defaultValue;
+                }
+            }
+
+            return negative ? result : -result;
         }
     }
 
-    public static int parseInt(String s, int defaultValue){
-        try{
-            return Integer.parseInt(s);
-        }catch(Exception e){
+    public static long parseLong(String s, long defaultValue){
+        return parseLong(s, 10, defaultValue);
+    }
+    public static long parseLong(String s, int radix, long defaultValue){
+        return parseLong(s, radix, 0, s.length(), defaultValue);
+    }
+
+    public static long parseLong(String s, int radix, int start, int end, long defaultValue){
+        boolean negative = false;
+        int i = start, len = end - start;
+        long limit = -9223372036854775807L;
+        if(len <= 0){
             return defaultValue;
+        }else{
+            char firstChar = s.charAt(i);
+            if(firstChar < '0'){
+                if(firstChar == '-'){
+                    negative = true;
+                    limit = -9223372036854775808L;
+                }else if(firstChar != '+'){
+                    return defaultValue;
+                }
+
+                if(len == 1) return defaultValue;
+
+                ++i;
+            }
+
+            long result;
+            int digit;
+            for(result = 0L; i < end; result -= digit){
+                digit = Character.digit(s.charAt(i++), radix);
+                if(digit < 0){
+                    return defaultValue;
+                }
+
+                result *= radix;
+                if(result < limit + (long)digit){
+                    return defaultValue;
+                }
+            }
+
+            return negative ? result : -result;
         }
+    }
+
+    /** Faster double parser that doesn't throw exceptions. */
+    public static double parseDouble(String value, double defaultValue){
+        //valid formats:
+        //[+/-] at start
+        // 000e000
+        // 000
+        // 000.00
+        // .000
+        // 000.
+        // any of the above with F/f at the end
+        int len = value.length();
+        if(len == 0) return defaultValue;
+
+        int start = 0, end = len;
+        char last = value.charAt(len - 1), first = value.charAt(0);
+        if(last == 'F' || last == 'f' || last == '.'){
+            end --;
+        }
+        if(first == '+'){
+            start ++;
+        }
+
+        int dot = -1, e = -1;
+        for(int i = start; i < end; i++){
+            char c = value.charAt(i);
+            if(c == '.') dot = i;
+            if(c == 'e' || c == 'E') e = i;
+        }
+
+        if(dot != -1 && dot < end){
+            //negation as first character
+            if(dot == 1 && first == '-'){
+                long dec = parseLong(value, 10, dot + 1, end, Long.MIN_VALUE);
+                if(dec < 0) return defaultValue;
+                return -dec / Math.pow(10, (end - dot - 1));
+            }
+            long whole = start == dot ? 0 : parseLong(value, 10, start, dot, Long.MIN_VALUE);
+            if(whole == Long.MIN_VALUE) return defaultValue;
+            long dec = parseLong(value, 10, dot + 1, end, Long.MIN_VALUE);
+            if(dec < 0) return defaultValue;
+            return whole + Math.copySign(dec / Math.pow(10, (end - dot - 1)), whole);
+        }
+
+        //check scientific notation
+        if(e != -1){
+            long whole = parseLong(value, 10, start, e, Long.MIN_VALUE);
+            if(whole == Long.MIN_VALUE) return defaultValue;
+            long power = parseLong(value, 10, e + 1, end, Long.MIN_VALUE);
+            if(power == Long.MIN_VALUE) return defaultValue;
+            return whole * Mathf.pow(10, power);
+        }
+
+        //parse as standard integer
+        long out = parseLong(value, 10, start, end, Long.MIN_VALUE);
+        return out == Long.MIN_VALUE ? defaultValue : out;
     }
 
     /** Returns Integer.MIN_VALUE if parsing failed. */
@@ -406,20 +535,9 @@ public class Strings{
 
     /** Returns Integer.MIN_VALUE if parsing failed. */
     public static int parsePositiveInt(String s){
-        if(!canParsePositiveInt(s)) return Integer.MIN_VALUE;
-        try{
-            return Integer.parseInt(s);
-        }catch(Exception e){
-            return Integer.MIN_VALUE;
-        }
-    }
+        int value = parseInt(s, Integer.MIN_VALUE);
 
-    public static double parseDouble(String s, double defaultValue){
-        try{
-            return Double.parseDouble(s);
-        }catch(Exception e){
-            return defaultValue;
-        }
+        return value <= 0 ? Integer.MIN_VALUE : value;
     }
 
     /** Returns Float.NEGATIVE_INFINITY if parsing failed. */
