@@ -9,6 +9,8 @@ import java.net.*;
 import java.nio.charset.*;
 
 public class Strings{
+    private static StringBuilder tmp1 = new StringBuilder(), tmp2 = new StringBuilder();
+
     public static final Charset utf8 = Charset.forName("UTF-8");
 
     public static int count(CharSequence s, char c){
@@ -456,14 +458,6 @@ public class Strings{
 
     /** Faster double parser that doesn't throw exceptions. */
     public static double parseDouble(String value, double defaultValue){
-        //valid formats:
-        //[+/-] at start
-        // 000e000
-        // 000
-        // 000.00
-        // .000
-        // 000.
-        // any of the above with F/f at the end
         int len = value.length();
         if(len == 0) return defaultValue;
 
@@ -473,7 +467,7 @@ public class Strings{
             end --;
         }
         if(first == '+'){
-            start ++;
+            start = 1;
         }
 
         int dot = -1, e = -1;
@@ -559,29 +553,37 @@ public class Strings{
     }
 
     public static String fixed(float d, int decimalPlaces){
+        return fixedBuilder(d, decimalPlaces).toString();
+    }
+
+    public static StringBuilder fixedBuilder(float d, int decimalPlaces){
         if(decimalPlaces < 0 || decimalPlaces > 8){
             throw new IllegalArgumentException("Unsupported number of " + "decimal places: " + decimalPlaces);
         }
-        String s = "" + (int)(d * Math.pow(10, decimalPlaces) + 0.000001f);
-        int len = s.length();
+        StringBuilder dec = tmp2;
+        tmp2.setLength(0);
+        tmp2.append((int)(d * Math.pow(10, decimalPlaces) + 0.000001f));
+
+        int len = dec.length();
         int decimalPosition = len - decimalPlaces;
-        StringBuilder result = new StringBuilder();
+        StringBuilder result = tmp1;
+        tmp1.setLength(0);
         if(decimalPlaces == 0){
-            return s;
+            return dec;
         }else if(decimalPosition > 0){
             // Insert a dot in the right place
-            result.append(s, 0, decimalPosition);
+            result.append(dec, 0, decimalPosition);
             result.append(".");
-            result.append(s.substring(decimalPosition));
+            result.append(dec, decimalPosition, dec.length());
         }else{
             result.append("0.");
             // Insert leading zeroes into the decimal part
             while(decimalPosition++ < 0){
                 result.append("0");
             }
-            result.append(s);
+            result.append(dec);
         }
-        return result.toString();
+        return result;
     }
 
     public static String formatMillis(long val){

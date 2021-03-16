@@ -169,6 +169,7 @@ public class Tooltip extends InputListener{
          * the mouse cursor. Default is 7.
          */
         public float edgeDistance = 7;
+
         float time = initialTime;
         final Task resetTask = new Task(){
             @Override
