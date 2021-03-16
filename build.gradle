@@ -18,9 +18,6 @@ libraries.robovm = [
     "com.mobidevelop.robovm:robovm-cocoatouch:${versions.robovm}"
 ]
 
-libraries.sdl = [
-]
-
 libraries.junit = [
     "junit:junit:${versions.junit}"
 ]
