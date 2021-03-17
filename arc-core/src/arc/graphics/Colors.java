@@ -59,6 +59,9 @@ public final class Colors{
         map.put("LIGHT_GRAY", Color.lightGray);
         map.put("GRAY", Color.gray);
         map.put("DARK_GRAY", Color.darkGray);
+        map.put("LIGHT_GREY", Color.lightGray);
+        map.put("GREY", Color.gray);
+        map.put("DARK_GREY", Color.darkGray);
 
         map.put("BLUE", Color.royal); //overridden for better visuals
         map.put("NAVY", Color.navy);
