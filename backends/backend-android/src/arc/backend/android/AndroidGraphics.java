@@ -436,8 +436,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
             synchronized(listeners){
                 for(int i = 0, n = listeners.size; i < n; ++i){
                     try{
-                        Log.info("calling exit()");
-                        //TODO test if exit() is called when there's no crash
                         listeners.get(i).exit();
                         listeners.get(i).dispose();
                     }catch(Exception e){
@@ -447,6 +445,8 @@ public class AndroidGraphics extends Graphics implements Renderer{
             }
             app.dispose();
             Log.infoTag(LOG_TAG, "destroyed");
+            //force exit to reset statics and free resources
+            System.exit(0);
         }
 
         if(time - frameStart > 1000000000){

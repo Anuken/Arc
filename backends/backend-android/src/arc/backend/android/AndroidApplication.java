@@ -268,6 +268,8 @@ public class AndroidApplication extends Activity implements Application{
     @Override
     protected void onDestroy(){
         super.onDestroy();
+        //force exit to reset statics and free resources
+        System.exit(0);
     }
 
     @Override
