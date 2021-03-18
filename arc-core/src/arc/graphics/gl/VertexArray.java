@@ -2,7 +2,6 @@ package arc.graphics.gl;
 
 import arc.graphics.GL20;
 import arc.graphics.VertexAttribute;
-import arc.graphics.VertexAttributes;
 import arc.util.Buffers;
 
 import java.nio.ByteBuffer;
@@ -55,7 +54,7 @@ public class VertexArray implements VertexData{
     }
 
     @Override
-    public FloatBuffer getBuffer(){
+    public FloatBuffer buffer(){
         return buffer;
     }
 
@@ -70,14 +69,14 @@ public class VertexArray implements VertexData{
     }
 
     @Override
-    public void setVertices(float[] vertices, int offset, int count){
+    public void set(float[] vertices, int offset, int count){
         Buffers.copy(vertices, byteBuffer, count, offset);
         buffer.position(0);
         buffer.limit(count);
     }
 
     @Override
-    public void updateVertices(int targetOffset, float[] vertices, int sourceOffset, int count){
+    public void update(int targetOffset, float[] vertices, int sourceOffset, int count){
         final int pos = byteBuffer.position();
         byteBuffer.position(targetOffset * 4);
         Buffers.copy(vertices, sourceOffset, count, byteBuffer);
@@ -108,37 +107,18 @@ public class VertexArray implements VertexData{
         isBound = true;
     }
 
-    /**
-     * Unbinds this VertexBufferObject.
-     * @param shader the shader
-     */
     @Override
     public void unbind(Shader shader){
-        unbind(shader, null);
-    }
-
-    @Override
-    public void unbind(Shader shader, int[] locations){
         final int numAttributes = attributes.size();
-        if(locations == null){
-            for(int i = 0; i < numAttributes; i++){
-                shader.disableVertexAttribute(attributes.get(i).alias);
-            }
-        }else{
-            for(int i = 0; i < numAttributes; i++){
-                final int location = locations[i];
-                if(location >= 0) shader.disableVertexAttribute(location);
-            }
+        for(int i = 0; i < numAttributes; i++){
+            shader.disableVertexAttribute(attributes.get(i).alias);
         }
+
         isBound = false;
     }
 
     @Override
     public VertexAttributes getAttributes(){
         return attributes;
-    }
-
-    @Override
-    public void invalidate(){
     }
 }

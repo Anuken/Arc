@@ -7,7 +7,6 @@ import arc.struct.*;
 import arc.util.*;
 
 import java.nio.*;
-import java.util.*;
 
 /**
  * <p>
@@ -27,9 +26,6 @@ import java.util.*;
  * @author mzechner, realitix
  */
 public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
-    /** the frame buffers **/
-    protected final static Map<Application, Seq<GLFrameBuffer>> buffers = new HashMap<>();
-
     protected final static int GL_DEPTH24_STENCIL8_OES = 0x88F0;
     /** the currently bound framebuffer; null for the default one. */
     protected static GLFrameBuffer currentBoundFramebuffer;
@@ -75,45 +71,6 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     /** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
     public static void unbind(){
         Gl.bindFramebuffer(Gl.framebuffer, defaultFramebufferHandle);
-    }
-
-    private static void addManagedFrameBuffer(Application app, GLFrameBuffer frameBuffer){
-        Seq<GLFrameBuffer> managedResources = buffers.get(app);
-        if(managedResources == null) managedResources = new Seq<>();
-        managedResources.add(frameBuffer);
-        buffers.put(app, managedResources);
-    }
-
-    /**
-     * Invalidates all frame buffers. This can be used when the OpenGL context is lost to rebuild all managed frame buffers. This
-     * assumes that the texture attached to this buffer has already been rebuild! Use with care.
-     */
-    public static void invalidateAllFrameBuffers(Application app){
-        if(Core.gl20 == null) return;
-
-        Seq<GLFrameBuffer> bufferArray = buffers.get(app);
-        if(bufferArray == null) return;
-        for(int i = 0; i < bufferArray.size; i++){
-            bufferArray.get(i).build();
-        }
-    }
-
-    public static void clearAllFrameBuffers(Application app){
-        buffers.remove(app);
-    }
-
-    public static StringBuilder getManagedStatus(final StringBuilder builder){
-        builder.append("Managed buffers/app: { ");
-        for(Application app : buffers.keySet()){
-            builder.append(buffers.get(app).size);
-            builder.append(" ");
-        }
-        builder.append("}");
-        return builder;
-    }
-
-    public static String getManagedStatus(){
-        return getManagedStatus(new StringBuilder()).toString();
     }
 
     /** Convenience method to return the first Texture attachment present in the fbo **/
@@ -290,8 +247,6 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
                 throw new IllegalStateException("Frame buffer couldn't be constructed: unsupported combination of formats");
             throw new IllegalStateException("Frame buffer couldn't be constructed: unknown error " + result);
         }
-
-        addManagedFrameBuffer(Core.app, this);
     }
 
     private void checkValidBuilder(){
@@ -333,8 +288,6 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
         }
 
         Gl.deleteFramebuffer(framebufferHandle);
-
-        if(buffers.get(Core.app) != null) buffers.get(Core.app).remove(this, true);
     }
 
     /** Makes the frame buffer current so everything gets drawn to it. */

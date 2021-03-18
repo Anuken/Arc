@@ -8,7 +8,6 @@ package arc.graphics;
  * <p>
  * Before a call to either {@link #consumeCubemapData()}, Cubemap will bind the OpenGL ES texture.</p>
  * <p>
- * Look at {@link KTXTextureData} for example implementation of this interface.
  * @author Vincent Bousquet
  */
 public interface CubemapData{
@@ -34,8 +33,5 @@ public interface CubemapData{
 
     /** @return the height of the pixel data */
     int getHeight();
-
-    /** @return whether this implementation can cope with a EGL context loss. */
-    boolean isManaged();
 
 }

@@ -70,8 +70,4 @@ public class MipMapTextureData implements TextureData{
         return false;
     }
 
-    @Override
-    public boolean isManaged(){
-        return true;
-    }
 }

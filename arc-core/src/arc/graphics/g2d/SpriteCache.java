@@ -2,7 +2,6 @@ package arc.graphics.g2d;
 
 import arc.*;
 import arc.graphics.*;
-import arc.graphics.VertexAttributes.*;
 import arc.graphics.gl.*;
 import arc.math.*;
 import arc.struct.*;

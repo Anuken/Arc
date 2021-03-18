@@ -77,11 +77,6 @@ public abstract class GLTexture implements Disposable{
     /** @return the depth of the texture in pixels */
     public abstract int getDepth();
 
-    /** @return whether this texture is managed or not. */
-    public abstract boolean isManaged();
-
-    protected abstract void reload();
-
     /**
      * Binds this texture. The texture will be bound to the currently active texture unit specified via
      * {@link GL20#glActiveTexture(int)}.

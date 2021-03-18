@@ -1,31 +1,18 @@
 package arc.graphics;
 
-import arc.Application;
-import arc.Core;
-import arc.assets.AssetManager;
-import arc.assets.loaders.AssetLoader;
-import arc.assets.loaders.CubemapLoader.CubemapParameter;
+import arc.*;
+import arc.files.*;
+import arc.graphics.Pixmap.*;
+import arc.graphics.Texture.*;
 import arc.graphics.TextureData.*;
-import arc.struct.Seq;
-import arc.files.Fi;
-import arc.graphics.Pixmap.Format;
-import arc.graphics.Texture.TextureFilter;
-import arc.graphics.Texture.TextureWrap;
-import arc.graphics.gl.FacedCubemapData;
-import arc.graphics.gl.PixmapTextureData;
-import arc.math.geom.Vec3;
-import arc.util.ArcRuntimeException;
-
-import java.util.HashMap;
-import java.util.Map;
+import arc.graphics.gl.*;
+import arc.math.geom.*;
 
 /**
  * Wraps a standard OpenGL ES Cubemap. Must be disposed when it is no longer used.
  * @author Xoppa
  */
 public class Cubemap extends GLTexture{
-    final static Map<Application, Seq<Cubemap>> managedCubemaps = new HashMap<>();
-    private static AssetManager assetManager;
     protected CubemapData data;
 
     /** Construct a Cubemap based on the given CubemapData. */
@@ -92,98 +79,6 @@ public class Cubemap extends GLTexture{
         load(data);
     }
 
-    private static void addManagedCubemap(Application app, Cubemap cubemap){
-        Seq<Cubemap> managedCubemapArray = managedCubemaps.get(app);
-        if(managedCubemapArray == null) managedCubemapArray = new Seq<>();
-        managedCubemapArray.add(cubemap);
-        managedCubemaps.put(app, managedCubemapArray);
-    }
-
-    /** Clears all managed cubemaps. This is an internal method. Do not use it! */
-    public static void clearAllCubemaps(Application app){
-        managedCubemaps.remove(app);
-    }
-
-    /** Invalidate all managed cubemaps. This is an internal method. Do not use it! */
-    public static void invalidateAllCubemaps(Application app){
-        Seq<Cubemap> managedCubemapArray = managedCubemaps.get(app);
-        if(managedCubemapArray == null) return;
-
-        if(assetManager == null){
-            for(int i = 0; i < managedCubemapArray.size; i++){
-                Cubemap cubemap = managedCubemapArray.get(i);
-                cubemap.reload();
-            }
-        }else{
-            // first we have to make sure the AssetManager isn't loading anything anymore,
-            // otherwise the ref counting trick below wouldn't work (when a cubemap is
-            // currently on the task stack of the manager.)
-            assetManager.finishLoading();
-
-            // next we go through each cubemap and reload either directly or via the
-            // asset manager.
-            Seq<Cubemap> cubemaps = new Seq<>(managedCubemapArray);
-            for(Cubemap cubemap : cubemaps){
-                String fileName = assetManager.getAssetFileName(cubemap);
-                if(fileName == null){
-                    cubemap.reload();
-                }else{
-                    // get the ref count of the cubemap, then set it to 0 so we
-                    // can actually remove it from the assetmanager. Also set the
-                    // handle to zero, otherwise we might accidentially dispose
-                    // already reloaded cubemaps.
-                    final int refCount = assetManager.getReferenceCount(fileName);
-                    assetManager.setReferenceCount(fileName, 0);
-                    cubemap.glHandle = 0;
-
-                    // create the parameters, passing the reference to the cubemap as
-                    // well as a callback that sets the ref count.
-                    CubemapParameter params = new CubemapParameter();
-                    params.cubemapData = cubemap.getCubemapData();
-                    params.minFilter = cubemap.getMinFilter();
-                    params.magFilter = cubemap.getMagFilter();
-                    params.wrapU = cubemap.getUWrap();
-                    params.wrapV = cubemap.getVWrap();
-                    params.cubemap = cubemap; // special parameter which will ensure that the references stay the same.
-                    params.loadedCallback = (assetManager, fileName1, type) -> assetManager.setReferenceCount(fileName1, refCount);
-
-                    // unload the c, create a new gl handle then reload it.
-                    assetManager.unload(fileName);
-                    cubemap.glHandle = Gl.genTexture();
-                    assetManager.load(fileName, Cubemap.class, params);
-                }
-            }
-            managedCubemapArray.clear();
-            managedCubemapArray.addAll(cubemaps);
-        }
-    }
-
-    /**
-     * Sets the {@link AssetManager}. When the context is lost, cubemaps managed by the asset manager are reloaded by the manager
-     * on a separate thread (provided that a suitable {@link AssetLoader} is registered with the manager). Cubemaps not managed by
-     * the AssetManager are reloaded via the usual means on the rendering thread.
-     * @param manager the asset manager.
-     */
-    public static void setAssetManager(AssetManager manager){
-        Cubemap.assetManager = manager;
-    }
-
-    public static String getManagedStatus(){
-        StringBuilder builder = new StringBuilder();
-        builder.append("Managed cubemap/app: { ");
-        for(Application app : managedCubemaps.keySet()){
-            builder.append(managedCubemaps.get(app).size);
-            builder.append(" ");
-        }
-        builder.append("}");
-        return builder.toString();
-    }
-
-    /** @return the number of managed cubemaps currently loaded */
-    public static int getNumManagedCubemaps(){
-        return managedCubemaps.get(Core.app).size;
-    }
-
     /** Sets the sides of this cubemap to the specified {@link CubemapData}. */
     public void load(CubemapData data){
         if(!data.isPrepared()) data.prepare();
@@ -201,18 +96,6 @@ public class Cubemap extends GLTexture{
     }
 
     @Override
-    public boolean isManaged(){
-        return data.isManaged();
-    }
-
-    @Override
-    protected void reload(){
-        if(!isManaged()) throw new ArcRuntimeException("Tried to reload an unmanaged Cubemap");
-        glHandle = Gl.genTexture();
-        load(data);
-    }
-
-    @Override
     public int getDepth(){
         return 0;
     }
@@ -226,8 +109,6 @@ public class Cubemap extends GLTexture{
         // removal from the asset manager.
         if(glHandle == 0) return;
         delete();
-        if(data.isManaged())
-            if(managedCubemaps.get(Core.app) != null) managedCubemaps.get(Core.app).remove(this, true);
     }
 
     /** Enum to identify each side of a Cubemap */

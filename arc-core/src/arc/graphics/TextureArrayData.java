@@ -41,9 +41,6 @@ public interface TextureArrayData{
     /** @return the layer count of this TextureArray */
     int getDepth();
 
-    /** @return whether this implementation can cope with a EGL context loss. */
-    boolean isManaged();
-
     /** @return the internal format of this TextureArray */
     int getInternalFormat();
 

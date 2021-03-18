@@ -110,11 +110,6 @@ public class FloatTextureData implements TextureData{
         return false;
     }
 
-    @Override
-    public boolean isManaged(){
-        return true;
-    }
-
     public FloatBuffer getBuffer(){
         return buffer;
     }

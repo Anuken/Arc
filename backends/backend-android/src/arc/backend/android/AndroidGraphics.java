@@ -256,15 +256,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
         logConfig(config);
         updatePpi();
 
-        Mesh.invalidateAllMeshes(app);
-        Texture.invalidateAllTextures(app);
-        Cubemap.invalidateAllCubemaps(app);
-        TextureArray.invalidateAllTextureArrays(app);
-        Shader.invalidateAllShaderPrograms(app);
-        FrameBuffer.invalidateAllFrameBuffers(app);
-
-        logManagedCachesStatus();
-
         Display display = app.getWindowManager().getDefaultDisplay();
         this.width = display.getWidth();
         this.height = display.getHeight();
@@ -487,25 +478,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
     @Override
     public int getFramesPerSecond(){
         return fps;
-    }
-
-    public void clearManagedCaches(){
-        Mesh.clearAllMeshes(app);
-        Texture.clearAllTextures(app);
-        Cubemap.clearAllCubemaps(app);
-        TextureArray.clearAllTextureArrays(app);
-        Shader.clearAllShaderPrograms(app);
-        FrameBuffer.clearAllFrameBuffers(app);
-
-        logManagedCachesStatus();
-    }
-
-    protected void logManagedCachesStatus(){
-        Log.infoTag(LOG_TAG, Mesh.getManagedStatus());
-        Log.infoTag(LOG_TAG, Texture.getManagedStatus());
-        Log.infoTag(LOG_TAG, Cubemap.getManagedStatus());
-        Log.infoTag(LOG_TAG, Shader.getManagedStatus());
-        Log.infoTag(LOG_TAG, FrameBuffer.getManagedStatus());
     }
 
     public View getView(){

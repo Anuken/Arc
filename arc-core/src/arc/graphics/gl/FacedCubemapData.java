@@ -77,13 +77,6 @@ public class FacedCubemapData implements CubemapData{
         data[5] = negativeZ;
     }
 
-    @Override
-    public boolean isManaged(){
-        for(TextureData data : this.data)
-            if(!data.isManaged()) return false;
-        return true;
-    }
-
     /**
      * Loads the texture specified using the {@link Fi} and sets it to specified side, overwriting any previous data set to
      * that side. Note that you need to reload through {@link Cubemap#load(CubemapData)} any cubemap using this data for the change

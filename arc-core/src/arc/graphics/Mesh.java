@@ -2,11 +2,9 @@ package arc.graphics;
 
 import arc.*;
 import arc.graphics.gl.*;
-import arc.struct.*;
 import arc.util.*;
 
 import java.nio.*;
-import java.util.*;
 
 /**
  * <p>
@@ -31,11 +29,11 @@ import java.util.*;
  * @author mzechner, Dave Clayton <contact@redskyforge.com>, Xoppa
  */
 public class Mesh implements Disposable{
-    /** list of all meshes **/
-    static final Map<Application, Seq<Mesh>> meshes = new HashMap<>();
+    public final int vertexSize;
+    public final VertexAttribute[] attributes;
+
     final VertexData vertices;
     final IndexData indices;
-    final boolean isVertexArray;
     boolean autoBind = true;
 
     /**
@@ -47,11 +45,8 @@ public class Mesh implements Disposable{
      * normal or texture coordinate
      */
     public Mesh(boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes){
-        vertices = makeVertexBuffer(isStatic, maxVertices, new VertexAttributes(attributes));
+        vertices = makeVertexBuffer(isStatic, maxVertices);
         indices = new IndexBufferObject(isStatic, maxIndices);
-        isVertexArray = false;
-
-        addManagedMesh(Core.app, this);
     }
 
     /**
@@ -60,37 +55,29 @@ public class Mesh implements Disposable{
      * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
      * @param maxVertices the maximum number of vertices this mesh can hold
      * @param maxIndices the maximum number of indices this mesh can hold
-     * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
-     * normal or texture coordinate
      */
     public Mesh(VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes){
-        this(type, isStatic, maxVertices, maxIndices, new VertexAttributes(attributes));
-    }
+        int count = 0;
+        for(int i = 0; i < attributes.length; i++){
+            count += attributes[i].size;
+        }
 
-    /**
-     * Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own risk.
-     * @param type the {@link VertexDataType} to be used, VBO or VA.
-     * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
-     * @param maxVertices the maximum number of vertices this mesh can hold
-     * @param maxIndices the maximum number of indices this mesh can hold
-     * @param attributes the {@link VertexAttributes}.
-     */
-    public Mesh(VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttributes attributes){
+        this.vertexSize = count;
+        this.attributes = attributes;
+
         switch(type){
             case vertexBufferObject:
                 vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
                 indices = new IndexBufferObject(isStatic, maxIndices);
-                isVertexArray = false;
                 break;
             case vertexBufferObjectSubData:
+                //TODO what is the difference between subdata nad standard VBO?
                 vertices = new VertexBufferObjectSubData(isStatic, maxVertices, attributes);
                 indices = new IndexBufferObjectSubData(isStatic, maxIndices);
-                isVertexArray = false;
                 break;
             case vertexBufferObjectWithVAO:
                 vertices = new VertexBufferObjectWithVAO(isStatic, maxVertices, attributes);
                 indices = new IndexBufferObjectSubData(isStatic, maxIndices);
-                isVertexArray = false;
                 break;
             case vertexArray:
             default:
@@ -99,46 +86,9 @@ public class Mesh implements Disposable{
                 isVertexArray = true;
                 break;
         }
-
-        addManagedMesh(Core.app, this);
     }
 
-    private static void addManagedMesh(Application app, Mesh mesh){
-        Seq<Mesh> managedResources = meshes.get(app);
-        if(managedResources == null) managedResources = new Seq<>();
-        managedResources.add(mesh);
-        meshes.put(app, managedResources);
-    }
-
-    /**
-     * Invalidates all meshes so the next time they are rendered new VBO handles are generated.
-     */
-    public static void invalidateAllMeshes(Application app){
-        Seq<Mesh> meshesArray = meshes.get(app);
-        if(meshesArray == null) return;
-        for(int i = 0; i < meshesArray.size; i++){
-            meshesArray.get(i).vertices.invalidate();
-            meshesArray.get(i).indices.invalidate();
-        }
-    }
-
-    /** Will clear the managed mesh cache. I wouldn't use this if i was you :) */
-    public static void clearAllMeshes(Application app){
-        meshes.remove(app);
-    }
-
-    public static String getManagedStatus(){
-        StringBuilder builder = new StringBuilder();
-        builder.append("Managed meshes/app: { ");
-        for(Application app : meshes.keySet()){
-            builder.append(meshes.get(app).size);
-            builder.append(" ");
-        }
-        builder.append("}");
-        return builder.toString();
-    }
-
-    private VertexData makeVertexBuffer(boolean isStatic, int maxVertices, VertexAttributes vertexAttributes){
+    private VertexData makeVertexBuffer(boolean isStatic, int maxVertices){
         if(Core.gl30 != null){
             return new VertexBufferObjectWithVAO(isStatic, maxVertices, vertexAttributes);
         }else{
@@ -152,7 +102,7 @@ public class Mesh implements Disposable{
      * @return the mesh for invocation chaining.
      */
     public Mesh setVertices(float[] vertices){
-        this.vertices.setVertices(vertices, 0, vertices.length);
+        this.vertices.set(vertices, 0, vertices.length);
 
         return this;
     }
@@ -165,7 +115,7 @@ public class Mesh implements Disposable{
      * @return the mesh for invocation chaining.
      */
     public Mesh setVertices(float[] vertices, int offset, int count){
-        this.vertices.setVertices(vertices, offset, count);
+        this.vertices.set(vertices, offset, count);
 
         return this;
     }
@@ -187,7 +137,7 @@ public class Mesh implements Disposable{
      * @param count the number of floats to update
      */
     public Mesh updateVertices(int targetOffset, float[] source, int sourceOffset, int count){
-        this.vertices.updateVertices(targetOffset, source, sourceOffset, count);
+        this.vertices.update(targetOffset, source, sourceOffset, count);
         return this;
     }
 
@@ -252,7 +202,7 @@ public class Mesh implements Disposable{
      * @return the mesh for invocation chaining.
      */
     public Mesh setIndices(short[] indices){
-        this.indices.setIndices(indices, 0, indices.length);
+        this.indices.set(indices, 0, indices.length);
 
         return this;
     }
@@ -265,7 +215,7 @@ public class Mesh implements Disposable{
      * @return the mesh for invocation chaining.
      */
     public Mesh setIndices(short[] indices, int offset, int count){
-        this.indices.setIndices(indices, offset, count);
+        this.indices.set(indices, offset, count);
 
         return this;
     }
@@ -461,7 +411,7 @@ public class Mesh implements Disposable{
 
         if(isVertexArray){
             if(indices.getNumIndices() > 0){
-                ShortBuffer buffer = indices.getBuffer();
+                ShortBuffer buffer = indices.buffer();
                 int oldPosition = buffer.position();
                 int oldLimit = buffer.limit();
                 buffer.position(offset);
@@ -491,24 +441,18 @@ public class Mesh implements Disposable{
     /** Frees all resources associated with this Mesh */
     @Override
     public void dispose(){
-        if(meshes.get(Core.app) != null) meshes.get(Core.app).remove(this, true);
         vertices.dispose();
         indices.dispose();
     }
 
-    /** @return the vertex attributes of this Mesh */
-    public VertexAttributes getVertexAttributes(){
-        return vertices.getAttributes();
-    }
-
     /** @return the backing FloatBuffer holding the vertices. Does not have to be a direct buffer on Android! */
     public FloatBuffer getVerticesBuffer(){
-        return vertices.getBuffer();
+        return vertices.buffer();
     }
 
     /** @return the backing shortbuffer holding the indices. Does not have to be a direct buffer on Android! */
     public ShortBuffer getIndicesBuffer(){
-        return indices.getBuffer();
+        return indices.buffer();
     }
 
     public enum VertexDataType{

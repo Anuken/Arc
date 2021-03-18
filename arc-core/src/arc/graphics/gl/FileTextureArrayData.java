@@ -102,13 +102,4 @@ public class FileTextureArrayData implements TextureArrayData{
         return format.toGlType();
     }
 
-    @Override
-    public boolean isManaged(){
-        for(TextureData data : textureDatas){
-            if(!data.isManaged()){
-                return false;
-            }
-        }
-        return true;
-    }
 }

@@ -225,7 +225,6 @@ public class AndroidApplication extends Activity implements Application{
         input.onPause();
 
         if(isFinishing()){
-            graphics.clearManagedCaches();
             graphics.destroy();
         }
 

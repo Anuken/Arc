@@ -86,7 +86,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
     }
 
     @Override
-    public FloatBuffer getBuffer(){
+    public FloatBuffer buffer(){
         isDirty = true;
         return buffer;
     }
@@ -99,7 +99,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
     }
 
     @Override
-    public void setVertices(float[] vertices, int offset, int count){
+    public void set(float[] vertices, int offset, int count){
         isDirty = true;
         Buffers.copy(vertices, byteBuffer, count, offset);
         buffer.position(0);
@@ -108,7 +108,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
     }
 
     @Override
-    public void updateVertices(int targetOffset, float[] vertices, int sourceOffset, int count){
+    public void update(int targetOffset, float[] vertices, int sourceOffset, int count){
         isDirty = true;
         final int pos = byteBuffer.position();
         byteBuffer.position(targetOffset * 4);
@@ -185,29 +185,10 @@ public class VertexBufferObjectWithVAO implements VertexData{
         }
     }
 
-    /**
-     * Unbinds this VertexBufferObject.
-     * @param shader the shader
-     */
-    @Override
-    public void unbind(final Shader shader){
-        unbind(shader, null);
-    }
-
     @Override
     public void unbind(Shader shader){
         Core.gl30.glBindVertexArray(0);
         isBound = false;
-    }
-
-    /**
-     * Invalidates the VertexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss.
-     */
-    @Override
-    public void invalidate(){
-        bufferHandle = Core.gl.glGenBuffer();
-        createVAO();
-        isDirty = true;
     }
 
     /**

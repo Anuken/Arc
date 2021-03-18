@@ -69,9 +69,6 @@ public interface TextureData{
     /** @return whether to generate mipmaps or not. */
     boolean useMipMaps();
 
-    /** @return whether this implementation can cope with a EGL context loss. */
-    boolean isManaged();
-
     /**
      * The type of this {@link TextureData}.
      * @author mzechner

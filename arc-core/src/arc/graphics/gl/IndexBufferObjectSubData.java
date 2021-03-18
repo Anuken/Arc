@@ -12,7 +12,7 @@ import java.nio.*;
  *
  * <p>
  * You can also use this to store indices for vertex arrays. Do not call {@link #bind()} or {@link #unbind()} in this case but
- * rather use {@link #getBuffer()} to use the buffer directly with glDrawElements. You must also create the IndexBufferObject with
+ * rather use {@link #buffer()} to use the buffer directly with glDrawElements. You must also create the IndexBufferObject with
  * the second constructor and specify isDirect as true as glDrawElements in conjunction with vertex arrays needs direct buffers.
  * </p>
  *
@@ -92,7 +92,7 @@ public class IndexBufferObjectSubData implements IndexData{
      * @param offset the offset to start copying the data from
      * @param count the number of floats to copy
      */
-    public void setIndices(short[] indices, int offset, int count){
+    public void set(short[] indices, int offset, int count){
         isDirty = true;
         buffer.clear();
         buffer.put(indices, offset, count);
@@ -106,7 +106,7 @@ public class IndexBufferObjectSubData implements IndexData{
         }
     }
 
-    public void setIndices(ShortBuffer indices){
+    public void set(ShortBuffer indices){
         int pos = indices.position();
         isDirty = true;
         buffer.clear();
@@ -123,7 +123,7 @@ public class IndexBufferObjectSubData implements IndexData{
     }
 
     @Override
-    public void updateIndices(int targetOffset, short[] indices, int offset, int count){
+    public void update(int targetOffset, short[] indices, int offset, int count){
         isDirty = true;
         final int pos = byteBuffer.position();
         byteBuffer.position(targetOffset * 2);
@@ -141,11 +141,11 @@ public class IndexBufferObjectSubData implements IndexData{
     /**
      * <p>
      * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to {@link #bind()}.
-     * If you need immediate uploading use {@link #setIndices(short[], int, int)}.
+     * If you need immediate uploading use {@link #set(short[], int, int)}.
      * </p>
      * @return the underlying short buffer.
      */
-    public ShortBuffer getBuffer(){
+    public ShortBuffer buffer(){
         isDirty = true;
         return buffer;
     }
@@ -168,12 +168,6 @@ public class IndexBufferObjectSubData implements IndexData{
     public void unbind(){
         Gl.bindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
         isBound = false;
-    }
-
-    /** Invalidates the IndexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss. */
-    public void invalidate(){
-        bufferHandle = createBufferObject();
-        isDirty = true;
     }
 
     /** Disposes this IndexBufferObject and all its associated OpenGL resources. */

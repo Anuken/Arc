@@ -75,7 +75,7 @@ public class VertexBufferObject implements VertexData{
     }
 
     @Override
-    public FloatBuffer getBuffer(){
+    public FloatBuffer buffer(){
         isDirty = true;
         return buffer;
     }
@@ -109,7 +109,7 @@ public class VertexBufferObject implements VertexData{
     }
 
     @Override
-    public void setVertices(float[] vertices, int offset, int count){
+    public void set(float[] vertices, int offset, int count){
         isDirty = true;
         Buffers.copy(vertices, byteBuffer, count, offset);
         buffer.position(0);
@@ -118,7 +118,7 @@ public class VertexBufferObject implements VertexData{
     }
 
     @Override
-    public void updateVertices(int targetOffset, float[] vertices, int sourceOffset, int count){
+    public void update(int targetOffset, float[] vertices, int sourceOffset, int count){
         isDirty = true;
         final int pos = byteBuffer.position();
         byteBuffer.position(targetOffset * 4);
@@ -178,13 +178,6 @@ public class VertexBufferObject implements VertexData{
         }
         Gl.bindBuffer(GL20.GL_ARRAY_BUFFER, 0);
         isBound = false;
-    }
-
-    /** Invalidates the VertexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss. */
-    @Override
-    public void invalidate(){
-        bufferHandle = Gl.genBuffer();
-        isDirty = true;
     }
 
     /** Disposes of all resources this VertexBufferObject uses. */

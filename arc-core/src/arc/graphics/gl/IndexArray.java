@@ -52,7 +52,7 @@ public class IndexArray implements IndexData{
      * @param offset the offset to start copying the data from
      * @param count the number of shorts to copy
      */
-    public void setIndices(short[] indices, int offset, int count){
+    public void set(short[] indices, int offset, int count){
         buffer.clear();
         buffer.put(indices, offset, count);
         buffer.flip();
@@ -60,7 +60,7 @@ public class IndexArray implements IndexData{
         byteBuffer.limit(count << 1);
     }
 
-    public void setIndices(ShortBuffer indices){
+    public void set(ShortBuffer indices){
         int pos = indices.position();
         buffer.clear();
         buffer.limit(indices.remaining());
@@ -72,7 +72,7 @@ public class IndexArray implements IndexData{
     }
 
     @Override
-    public void updateIndices(int targetOffset, short[] indices, int offset, int count){
+    public void update(int targetOffset, short[] indices, int offset, int count){
         final int pos = byteBuffer.position();
         byteBuffer.position(targetOffset * 2);
         Buffers.copy(indices, offset, byteBuffer, count);
@@ -82,11 +82,11 @@ public class IndexArray implements IndexData{
     /**
      * <p>
      * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to {@link #bind()}.
-     * If you need immediate uploading use {@link #setIndices(short[], int, int)}.
+     * If you need immediate uploading use {@link #set(short[], int, int)}.
      * </p>
      * @return the underlying short buffer.
      */
-    public ShortBuffer getBuffer(){
+    public ShortBuffer buffer(){
         return buffer;
     }
 
@@ -96,10 +96,6 @@ public class IndexArray implements IndexData{
 
     /** Unbinds this IndexArray. */
     public void unbind(){
-    }
-
-    /** Invalidates the IndexArray so a new OpenGL buffer handle is created. Use this in case of a context loss. */
-    public void invalidate(){
     }
 
     /** Disposes this IndexArray and all its associated OpenGL resources. */

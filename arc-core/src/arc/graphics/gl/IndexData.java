@@ -28,7 +28,7 @@ public interface IndexData extends Disposable{
      * @param offset the offset to start copying the data from
      * @param count the number of shorts to copy
      */
-    void setIndices(short[] indices, int offset, int count);
+    void set(short[] indices, int offset, int count);
 
     /**
      * Copies the specified indices to the indices of this IndexBufferObject, discarding the old indices. Copying start at the
@@ -37,7 +37,7 @@ public interface IndexData extends Disposable{
      * instantly.
      * @param indices the index data to copy
      */
-    void setIndices(ShortBuffer indices);
+    void set(ShortBuffer indices);
 
     /**
      * Update (a portion of) the indices.
@@ -46,25 +46,22 @@ public interface IndexData extends Disposable{
      * @param offset the offset to start copying the data from
      * @param count the number of shorts to copy
      */
-    void updateIndices(int targetOffset, short[] indices, int offset, int count);
+    void update(int targetOffset, short[] indices, int offset, int count);
 
     /**
      * <p>
      * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to {@link #bind()}.
-     * If you need immediate uploading use {@link #setIndices(short[], int, int)}.
+     * If you need immediate uploading use {@link #set(short[], int, int)}.
      * </p>
      * @return the underlying short buffer.
      */
-    ShortBuffer getBuffer();
+    ShortBuffer buffer();
 
     /** Binds this IndexBufferObject for rendering with glDrawElements. */
     void bind();
 
     /** Unbinds this IndexBufferObject. */
     void unbind();
-
-    /** Invalidates the IndexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss. */
-    void invalidate();
 
     /** Disposes this IndexDatat and all its associated OpenGL resources. */
     void dispose();

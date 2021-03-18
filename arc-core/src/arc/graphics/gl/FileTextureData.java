@@ -83,11 +83,6 @@ public class FileTextureData implements TextureData{
         return useMipMaps;
     }
 
-    @Override
-    public boolean isManaged(){
-        return true;
-    }
-
     public Fi getFileHandle(){
         return file;
     }
