@@ -27,10 +27,10 @@ public interface VertexData extends Disposable{
     }
 
     /** @return the number of vertices this VertexData stores */
-    int getNumVertices();
+    int size();
 
     /** @return the number of vertices this VertexData can store */
-    int getNumMaxVertices();
+    int max();
 
     /**
      * Sets the vertices of this VertexData, discarding the old vertex data. The count must equal the number of floats per vertex

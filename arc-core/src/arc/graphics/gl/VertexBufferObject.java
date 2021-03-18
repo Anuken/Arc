@@ -42,12 +42,12 @@ public class VertexBufferObject implements VertexData{
     }
 
     @Override
-    public int getNumVertices(){
+    public int size(){
         return buffer.limit() * 4 / mesh.vertexSize;
     }
 
     @Override
-    public int getNumMaxVertices(){
+    public int max(){
         return byteBuffer.capacity() / mesh.vertexSize;
     }
 
@@ -80,7 +80,7 @@ public class VertexBufferObject implements VertexData{
     private void bufferChanged(){
         if(isBound){
             //possible alternative: Gl.bufferSubData(GL20.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
-            Gl.bufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+            Gl.bufferData(Gl.arrayBuffer, byteBuffer.limit(), byteBuffer, usage);
             isDirty = false;
         }
     }
@@ -111,10 +111,10 @@ public class VertexBufferObject implements VertexData{
      */
     @Override
     public void bind(Shader shader){
-        Gl.bindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
+        Gl.bindBuffer(Gl.arrayBuffer, bufferHandle);
         if(isDirty){
             byteBuffer.limit(buffer.limit() * 4);
-            Gl.bufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+            Gl.bufferData(Gl.arrayBuffer, byteBuffer.limit(), byteBuffer, usage);
             isDirty = false;
         }
 
@@ -132,20 +132,19 @@ public class VertexBufferObject implements VertexData{
         isBound = true;
     }
 
-
     @Override
     public void unbind(Shader shader){
         for(VertexAttribute attribute : mesh.attributes){
             shader.disableVertexAttribute(attribute.alias);
         }
-        Gl.bindBuffer(GL20.GL_ARRAY_BUFFER, 0);
+        Gl.bindBuffer(Gl.arrayBuffer, 0);
         isBound = false;
     }
 
     /** Disposes of all resources this VertexBufferObject uses. */
     @Override
     public void dispose(){
-        Gl.bindBuffer(GL20.GL_ARRAY_BUFFER, 0);
+        Gl.bindBuffer(Gl.arrayBuffer, 0);
         Gl.deleteBuffer(bufferHandle);
         bufferHandle = 0;
         if(ownsBuffer) Buffers.disposeUnsafeByteBuffer(byteBuffer);

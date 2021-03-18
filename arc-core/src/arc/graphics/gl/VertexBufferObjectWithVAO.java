@@ -60,12 +60,12 @@ public class VertexBufferObjectWithVAO implements VertexData{
     }
 
     @Override
-    public int getNumVertices(){
+    public int size(){
         return buffer.limit() * 4 / mesh.vertexSize;
     }
 
     @Override
-    public int getNumMaxVertices(){
+    public int max(){
         return byteBuffer.capacity() / mesh.vertexSize;
     }
 

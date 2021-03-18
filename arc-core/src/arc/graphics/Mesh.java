@@ -205,12 +205,12 @@ public class Mesh implements Disposable{
 
     /** @return the number of defined vertices */
     public int getNumVertices(){
-        return vertices.getNumVertices();
+        return vertices.size();
     }
 
     /** @return the maximum number of vertices this mesh can hold */
     public int getMaxVertices(){
-        return vertices.getNumMaxVertices();
+        return vertices.max();
     }
 
     /** @return the maximum number of indices this mesh can hold */
