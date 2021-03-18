@@ -25,7 +25,7 @@ import static arc.Core.keybinds;
  * </p>
  * @author mzechner
  */
-public abstract class Input implements Disposable{
+public abstract class Input{
     /** Controller stick deadzone. */
     protected final static float deadzone = 0.3f;
     /** The default input device (keyboard) */
@@ -402,10 +402,5 @@ public abstract class Input implements Disposable{
         public Cons<String> accepted = s -> { };
         public Runnable canceled = () -> { };
         public int maxLength = -1;
-    }
-
-    @Override
-    public void dispose(){
-        inputMultiplexer = new InputMultiplexer();
     }
 }

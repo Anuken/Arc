@@ -97,12 +97,6 @@ public class Time{
         delta = impl.get();
     }
 
-    public static void dispose(){
-        timeRaw = globalTimeRaw = 0;
-        time = globalTime = 0;
-        runs.clear();
-    }
-
     /** @return The current value of the system timer, in nanoseconds. */
     public static long nanos(){
         return System.nanoTime();

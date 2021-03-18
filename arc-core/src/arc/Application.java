@@ -1,6 +1,5 @@
 package arc;
 
-import arc.graphics.g2d.*;
 import arc.struct.*;
 import arc.util.*;
 
@@ -113,38 +112,9 @@ public interface Application extends Disposable{
             Core.settings.autosave();
         }
 
-        if(Core.assets != null){
-            Core.assets.dispose();
-            Core.assets = null;
-        }
-
-        if(Core.scene != null){
-            Core.scene.dispose();
-            Core.scene = null;
-        }
-
-        if(Core.atlas != null){
-            Core.atlas.dispose();
-            Core.atlas = null;
-        }
-
-        if(Core.batch != null){
-            Core.batch.dispose();
-            Core.batch = null;
-        }
-
-        if(Core.input != null){
-            Core.input.dispose();
-        }
-
         if(Core.audio != null){
             Core.audio.dispose();
         }
-
-        Draw.dispose();
-        Fill.dispose();
-        Events.dispose();
-        Time.dispose();
     }
 
     /** Enumeration of possible {@link Application} types */

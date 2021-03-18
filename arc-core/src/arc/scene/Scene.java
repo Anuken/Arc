@@ -22,7 +22,7 @@ import arc.util.viewport.*;
 import static arc.Core.*;
 
 
-public class Scene implements InputProcessor, Disposable{
+public class Scene implements InputProcessor{
     public final Group root;
     /** Margins for fill layouts. */
     public float marginLeft, marginRight, marginTop, marginBottom;

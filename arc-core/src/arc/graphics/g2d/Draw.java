@@ -487,11 +487,4 @@ public class Draw{
 
         Draw.vert(region.texture, vertices, 0, vertices.length);
     }
-
-    public static void dispose(){
-        if(squad != null){
-            squad.dispose();
-            squad = null;
-        }
-    }
 }

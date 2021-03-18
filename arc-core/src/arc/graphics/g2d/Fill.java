@@ -273,8 +273,4 @@ public class Fill{
     public static void square(float x, float y, float radius, float rotation){
         Draw.rect(atlas.white(), x, y, radius*2, radius*2, rotation);
     }
-
-    public static void dispose(){
-        circleRegion = null;
-    }
 }

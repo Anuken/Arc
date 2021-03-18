@@ -29,8 +29,4 @@ public class Events{
         if(events.get(type) != null) events.get(type).each(e -> ((Cons<T>)e).get(type));
         if(events.get(ctype) != null) events.get(ctype).each(e -> ((Cons<T>)e).get(type));
     }
-
-    public static void dispose(){
-        events.clear();
-    }
 }
