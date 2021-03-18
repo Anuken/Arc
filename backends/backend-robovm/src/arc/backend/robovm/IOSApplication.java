@@ -207,11 +207,6 @@ public class IOSApplication implements Application{
     }
 
     @Override
-    public long getNativeHeap(){
-        return getJavaHeap();
-    }
-
-    @Override
     public boolean openURI(String URI){
         NSURL url = new NSURL(URI);
         if(uiApp.canOpenURL(url)){
