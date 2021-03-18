@@ -151,11 +151,6 @@ public class VertexBufferObject implements VertexData{
      */
     @Override
     public void bind(Shader shader){
-        bind(shader, null);
-    }
-
-    @Override
-    public void bind(Shader shader, int[] locations){
         Gl.bindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
         if(isDirty){
             byteBuffer.limit(buffer.limit() * 4);
@@ -163,51 +158,23 @@ public class VertexBufferObject implements VertexData{
             isDirty = false;
         }
 
-        final int numAttributes = attributes.size();
-        if(locations == null){
-            for(int i = 0; i < numAttributes; i++){
-                final VertexAttribute attribute = attributes.get(i);
-                final int location = shader.getAttributeLocation(attribute.alias);
-                if(location < 0) continue;
+        for(VertexAttribute attribute : attributes.attributes){
+            int location = shader.getAttributeLocation(attribute.alias);
+            if(location < 0) continue;
 
-                shader.enableVertexAttribute(location);
-                shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize, attribute.offset);
-            }
-
-        }else{
-            for(int i = 0; i < numAttributes; i++){
-                final VertexAttribute attribute = attributes.get(i);
-                final int location = locations[i];
-                if(location < 0) continue;
-
-                shader.enableVertexAttribute(location);
-                shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize, attribute.offset);
-            }
+            shader.enableVertexAttribute(location);
+            shader.setVertexAttribute(location, attribute.components, attribute.type, attribute.normalized, attributes.vertexSize, attribute.offset);
         }
+
         isBound = true;
     }
 
-    /**
-     * Unbinds this VertexBufferObject.
-     * @param shader the shader
-     */
-    @Override
-    public void unbind(final Shader shader){
-        unbind(shader, null);
-    }
 
     @Override
-    public void unbind(final Shader shader, final int[] locations){
+    public void unbind(Shader shader){
         final int numAttributes = attributes.size();
-        if(locations == null){
-            for(int i = 0; i < numAttributes; i++){
-                shader.disableVertexAttribute(attributes.get(i).alias);
-            }
-        }else{
-            for(int i = 0; i < numAttributes; i++){
-                final int location = locations[i];
-                if(location >= 0) shader.disableVertexAttribute(location);
-            }
+        for(int i = 0; i < numAttributes; i++){
+            shader.disableVertexAttribute(attributes.get(i).alias);
         }
         Gl.bindBuffer(GL20.GL_ARRAY_BUFFER, 0);
         isBound = false;

@@ -1,7 +1,6 @@
 package arc.graphics.g3d;
 
 import arc.graphics.*;
-import arc.graphics.VertexAttributes.*;
 import arc.graphics.gl.*;
 import arc.math.geom.*;
 import arc.struct.*;
@@ -44,9 +43,24 @@ public class VertexBatch3D{
 
         vertices = new float[maxVertices * (mesh.getVertexAttributes().vertexSize / 4)];
         vertexSize = mesh.getVertexAttributes().vertexSize / 4;
-        normalOffset = mesh.getVertexAttribute(Usage.normal) != null ? mesh.getVertexAttribute(Usage.normal).offset / 4 : 0;
-        colorOffset = mesh.getVertexAttribute(Usage.colorPacked) != null ? mesh.getVertexAttribute(Usage.colorPacked).offset / 4 : 0;
-        texCoordOffset = mesh.getVertexAttribute(Usage.textureCoordinates) != null ? mesh.getVertexAttribute(Usage.textureCoordinates).offset / 4 : 0;
+
+        int offset = 3;
+
+        if(hasNormals){
+            normalOffset = offset;
+            offset += 2;
+        }else{
+            normalOffset = 0;
+        }
+
+        if(hasColors){
+            colorOffset = offset;
+            offset += 1;
+        }else{
+            colorOffset = 0;
+        }
+
+        texCoordOffset = offset;
 
         shaderUniformNames = new String[numTexCoords];
         for(int i = 0; i < numTexCoords; i++){
@@ -114,11 +128,11 @@ public class VertexBatch3D{
 
     private VertexAttribute[] buildVertexAttributes(boolean hasNormals, boolean hasColor, int numTexCoords){
         Seq<VertexAttribute> attribs = new Seq<>();
-        attribs.add(new VertexAttribute(Usage.position, 3, Shader.positionAttribute));
-        if(hasNormals) attribs.add(new VertexAttribute(Usage.normal, 3, Shader.normalAttribute));
-        if(hasColor) attribs.add(new VertexAttribute(Usage.colorPacked, 4, Shader.colorAttribute));
+        attribs.add(VertexAttribute.position3);
+        if(hasNormals) attribs.add(VertexAttribute.normal);
+        if(hasColor) attribs.add(VertexAttribute.color);
         for(int i = 0; i < numTexCoords; i++){
-            attribs.add(new VertexAttribute(Usage.textureCoordinates, 2, Shader.texcoordAttribute + i));
+            attribs.add(new VertexAttribute(2, Shader.texcoordAttribute + i));
         }
         return attribs.toArray(VertexAttribute.class);
     }

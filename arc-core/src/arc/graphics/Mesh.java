@@ -1,7 +1,6 @@
 package arc.graphics;
 
 import arc.*;
-import arc.graphics.VertexAttributes.*;
 import arc.graphics.gl.*;
 import arc.struct.*;
 import arc.util.*;
@@ -39,14 +38,6 @@ public class Mesh implements Disposable{
     final boolean isVertexArray;
     boolean autoBind = true;
 
-    protected Mesh(VertexData vertices, IndexData indices, boolean isVertexArray){
-        this.vertices = vertices;
-        this.indices = indices;
-        this.isVertexArray = isVertexArray;
-
-        addManagedMesh(Core.app, this);
-    }
-
     /**
      * Creates a new Mesh with the given attributes.
      * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
@@ -58,40 +49,6 @@ public class Mesh implements Disposable{
     public Mesh(boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes){
         vertices = makeVertexBuffer(isStatic, maxVertices, new VertexAttributes(attributes));
         indices = new IndexBufferObject(isStatic, maxIndices);
-        isVertexArray = false;
-
-        addManagedMesh(Core.app, this);
-    }
-
-    /**
-     * Creates a new Mesh with the given attributes.
-     * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
-     * @param maxVertices the maximum number of vertices this mesh can hold
-     * @param maxIndices the maximum number of indices this mesh can hold
-     * @param attributes the {@link VertexAttributes}. Each vertex attribute defines one property of a vertex such as position,
-     * normal or texture coordinate
-     */
-    public Mesh(boolean isStatic, int maxVertices, int maxIndices, VertexAttributes attributes){
-        vertices = makeVertexBuffer(isStatic, maxVertices, attributes);
-        indices = new IndexBufferObject(isStatic, maxIndices);
-        isVertexArray = false;
-
-        addManagedMesh(Core.app, this);
-    }
-
-    /**
-     * Creates a new Mesh with the given attributes. Adds extra optimizations for dynamic (frequently modified) meshes.
-     * @param staticVertices whether vertices of this mesh are static or not. Allows for internal optimizations.
-     * @param staticIndices whether indices of this mesh are static or not. Allows for internal optimizations.
-     * @param maxVertices the maximum number of vertices this mesh can hold
-     * @param maxIndices the maximum number of indices this mesh can hold
-     * @param attributes the {@link VertexAttributes}. Each vertex attribute defines one property of a vertex such as position,
-     * normal or texture coordinate
-     * @author Jaroslaw Wisniewski <j.wisniewski@appsisle.com>
-     **/
-    public Mesh(boolean staticVertices, boolean staticIndices, int maxVertices, int maxIndices, VertexAttributes attributes){
-        vertices = makeVertexBuffer(staticVertices, maxVertices, attributes);
-        indices = new IndexBufferObject(staticIndices, maxIndices);
         isVertexArray = false;
 
         addManagedMesh(Core.app, this);
@@ -406,17 +363,7 @@ public class Mesh implements Disposable{
      * @param shader the shader (does not bind the shader)
      */
     public void bind(final Shader shader){
-        bind(shader, null);
-    }
-
-    /**
-     * Binds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} if indices where given. Use this with OpenGL
-     * ES 2.0 and when auto-bind is disabled.
-     * @param shader the shader (does not bind the shader)
-     * @param locations array containing the attribute locations.
-     */
-    public void bind(final Shader shader, final int[] locations){
-        vertices.bind(shader, locations);
+        vertices.bind(shader);
         if(indices.getNumIndices() > 0) indices.bind();
     }
 
@@ -426,17 +373,7 @@ public class Mesh implements Disposable{
      * @param shader the shader (does not unbind the shader)
      */
     public void unbind(final Shader shader){
-        unbind(shader, null);
-    }
-
-    /**
-     * Unbinds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} is indices were given. Use this with OpenGL
-     * ES 1.x and when auto-bind is disabled.
-     * @param shader the shader (does not unbind the shader)
-     * @param locations array containing the attribute locations.
-     */
-    public void unbind(final Shader shader, final int[] locations){
-        vertices.unbind(shader, locations);
+        vertices.unbind(shader);
         if(indices.getNumIndices() > 0) indices.unbind();
     }
 
@@ -552,24 +489,11 @@ public class Mesh implements Disposable{
     }
 
     /** Frees all resources associated with this Mesh */
+    @Override
     public void dispose(){
         if(meshes.get(Core.app) != null) meshes.get(Core.app).remove(this, true);
         vertices.dispose();
         indices.dispose();
-    }
-
-    /**
-     * Returns the first {@link VertexAttribute} having the given {@link Usage}.
-     * @param usage the Usage.
-     * @return the VertexAttribute or null if no attribute with that usage was found.
-     */
-    public VertexAttribute getVertexAttribute(int usage){
-        VertexAttributes attributes = vertices.getAttributes();
-        int len = attributes.size();
-        for(int i = 0; i < len; i++)
-            if(attributes.get(i).usage == usage) return attributes.get(i);
-
-        return null;
     }
 
     /** @return the vertex attributes of this Mesh */

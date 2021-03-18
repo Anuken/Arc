@@ -41,7 +41,6 @@ public class VertexBufferObjectWithVAO implements VertexData{
     int vaoHandle = -1;
     IntSeq cachedLocations = new IntSeq();
 
-
     /**
      * Constructs a new interleaved VertexBufferObjectWithVAO.
      * @param isStatic whether the vertex data is static.
@@ -119,20 +118,11 @@ public class VertexBufferObjectWithVAO implements VertexData{
         bufferChanged();
     }
 
-    /**
-     * Binds this VertexBufferObject for rendering via glDrawArrays or glDrawElements
-     * @param shader the shader
-     */
     @Override
     public void bind(Shader shader){
-        bind(shader, null);
-    }
-
-    @Override
-    public void bind(Shader shader, int[] locations){
         Core.gl30.glBindVertexArray(vaoHandle);
 
-        bindAttributes(shader, locations);
+        bindAttributes(shader);
 
         //if our data has changed upload it
         bindData();
@@ -140,22 +130,15 @@ public class VertexBufferObjectWithVAO implements VertexData{
         isBound = true;
     }
 
-    private void bindAttributes(Shader shader, int[] locations){
+    private void bindAttributes(Shader shader){
         boolean stillValid = this.cachedLocations.size != 0;
         final int numAttributes = attributes.size();
 
         if(stillValid){
-            if(locations == null){
-                for(int i = 0; stillValid && i < numAttributes; i++){
-                    VertexAttribute attribute = attributes.get(i);
-                    int location = shader.getAttributeLocation(attribute.alias);
-                    stillValid = location == this.cachedLocations.get(i);
-                }
-            }else{
-                stillValid = locations.length == this.cachedLocations.size;
-                for(int i = 0; stillValid && i < numAttributes; i++){
-                    stillValid = locations[i] == this.cachedLocations.get(i);
-                }
+            for(int i = 0; stillValid && i < numAttributes; i++){
+                VertexAttribute attribute = attributes.get(i);
+                int location = shader.getAttributeLocation(attribute.alias);
+                stillValid = location == this.cachedLocations.get(i);
             }
         }
 
@@ -166,11 +149,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
 
             for(int i = 0; i < numAttributes; i++){
                 VertexAttribute attribute = attributes.get(i);
-                if(locations == null){
-                    this.cachedLocations.add(shader.getAttributeLocation(attribute.alias));
-                }else{
-                    this.cachedLocations.add(locations[i]);
-                }
+                this.cachedLocations.add(shader.getAttributeLocation(attribute.alias));
 
                 int location = this.cachedLocations.get(i);
                 if(location < 0){
@@ -178,7 +157,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
                 }
 
                 shader.enableVertexAttribute(location);
-                shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize, attribute.offset);
+                shader.setVertexAttribute(location, attribute.components, attribute.type, attribute.normalized, attributes.vertexSize, attribute.offset);
             }
         }
     }
@@ -216,7 +195,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
     }
 
     @Override
-    public void unbind(final Shader shader, final int[] locations){
+    public void unbind(Shader shader){
         Core.gl30.glBindVertexArray(0);
         isBound = false;
     }
