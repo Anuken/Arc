@@ -16,7 +16,8 @@ public final class VertexAttribute{
     position3 = new VertexAttribute(3, Shader.positionAttribute),
     texCoords = new VertexAttribute(2, Shader.texcoordAttribute + "0"),
     normal = new VertexAttribute(3, Shader.normalAttribute),
-    color = new VertexAttribute(4, GL20.GL_UNSIGNED_BYTE, true, Shader.colorAttribute);
+    color = new VertexAttribute(4, GL20.GL_UNSIGNED_BYTE, true, Shader.colorAttribute),
+    mixColor = new VertexAttribute(4, GL20.GL_UNSIGNED_BYTE, true, Shader.mixColorAttribute);
 
     /** the number of components this attribute has **/
     public final int components;

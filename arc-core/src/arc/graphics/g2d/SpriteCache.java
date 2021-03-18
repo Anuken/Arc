@@ -95,9 +95,11 @@ public class SpriteCache implements Disposable{
         if(useIndices && size > 8191)
             throw new IllegalArgumentException("Can't have more than 8191 sprites per batch: " + size);
 
-        mesh = new Mesh(true, size * (useIndices ? 4 : 6), useIndices ? size * 6 : 0, new VertexAttribute(Usage.position, 2,
-        Shader.positionAttribute), new VertexAttribute(Usage.colorPacked, 4, Shader.colorAttribute),
-        new VertexAttribute(Usage.textureCoordinates, 2, Shader.texcoordAttribute + "0"));
+        mesh = new Mesh(true, size * (useIndices ? 4 : 6), useIndices ? size * 6 : 0,
+        VertexAttribute.position,
+        VertexAttribute.color,
+        VertexAttribute.texCoords
+        );
         mesh.setAutoBind(false);
         caches = new Seq<>(cacheSize);
 

@@ -17,7 +17,6 @@ public class IndexArray implements IndexData{
      * @param maxIndices the maximum number of indices this buffer can hold
      */
     public IndexArray(int maxIndices){
-
         empty = maxIndices == 0;
         if(empty){
             maxIndices = 1; // avoid allocating a zero-sized buffer because of bug in Android's ART < Android 5.0
@@ -30,11 +29,13 @@ public class IndexArray implements IndexData{
     }
 
     /** @return the number of indices currently stored in this buffer */
+    @Override
     public int getNumIndices(){
         return empty ? 0 : buffer.limit();
     }
 
     /** @return the maximum number of indices this IndexArray can store. */
+    @Override
     public int getNumMaxIndices(){
         return empty ? 0 : buffer.capacity();
     }
@@ -52,6 +53,7 @@ public class IndexArray implements IndexData{
      * @param offset the offset to start copying the data from
      * @param count the number of shorts to copy
      */
+    @Override
     public void set(short[] indices, int offset, int count){
         buffer.clear();
         buffer.put(indices, offset, count);
@@ -60,6 +62,7 @@ public class IndexArray implements IndexData{
         byteBuffer.limit(count << 1);
     }
 
+    @Override
     public void set(ShortBuffer indices){
         int pos = indices.position();
         buffer.clear();
@@ -86,19 +89,23 @@ public class IndexArray implements IndexData{
      * </p>
      * @return the underlying short buffer.
      */
+    @Override
     public ShortBuffer buffer(){
         return buffer;
     }
 
     /** Binds this IndexArray for rendering with glDrawElements. */
+    @Override
     public void bind(){
     }
 
     /** Unbinds this IndexArray. */
+    @Override
     public void unbind(){
     }
 
     /** Disposes this IndexArray and all its associated OpenGL resources. */
+    @Override
     public void dispose(){
         Buffers.disposeUnsafeByteBuffer(byteBuffer);
     }

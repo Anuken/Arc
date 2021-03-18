@@ -2,7 +2,6 @@ package arc.graphics.g2d;
 
 import arc.*;
 import arc.graphics.*;
-import arc.graphics.Mesh.*;
 import arc.graphics.gl.*;
 import arc.math.*;
 
@@ -51,13 +50,12 @@ public class SpriteBatch extends Batch{
         if(size > 0){
             projectionMatrix.setOrtho(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
 
-            VertexDataType vertexDataType = Core.gl30 != null ? VertexDataType.vertexBufferObjectWithVAO : VertexDataType.vertexArray;
-
-            mesh = new Mesh(vertexDataType, false, size * 4, size * 6,
-            new VertexAttribute(Usage.position, 2, Shader.positionAttribute),
-            new VertexAttribute(Usage.colorPacked, 4, Shader.colorAttribute),
-            new VertexAttribute(Usage.textureCoordinates, 2, Shader.texcoordAttribute + "0"),
-            new VertexAttribute(Usage.colorPacked, 4, Shader.mixColorAttribute));
+            mesh = new Mesh(true, false, size * 4, size * 6,
+            VertexAttribute.position,
+            VertexAttribute.color,
+            VertexAttribute.texCoords,
+            VertexAttribute.mixColor
+            );
 
             vertices = new float[size * SPRITE_SIZE];
 

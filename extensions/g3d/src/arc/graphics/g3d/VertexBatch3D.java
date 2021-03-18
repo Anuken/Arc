@@ -41,8 +41,8 @@ public class VertexBatch3D{
         VertexAttribute[] attribs = buildVertexAttributes(hasNormals, hasColors, numTexCoords);
         mesh = new Mesh(false, maxVertices, 0, attribs);
 
-        vertices = new float[maxVertices * (mesh.getVertexAttributes().vertexSize / 4)];
-        vertexSize = mesh.getVertexAttributes().vertexSize / 4;
+        vertices = new float[maxVertices * (mesh.vertexSize / 4)];
+        vertexSize = mesh.vertexSize / 4;
 
         int offset = 3;
 

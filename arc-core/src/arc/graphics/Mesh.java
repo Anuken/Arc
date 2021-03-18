@@ -8,7 +8,7 @@ import java.nio.*;
 
 /**
  * <p>
- * A Mesh holds vertices composed of attributes specified by a {@link VertexAttributes} instance. The vertices are held either in
+ * A Mesh holds vertices composed of attributes specified by an array of {@link VertexAttribute} instances. The vertices are held either in
  * VRAM in form of vertex buffer objects or in RAM in form of vertex arrays. The former variant is more performant and is
  * preferred over vertex arrays if hardware supports it.
  * </p>
@@ -29,7 +29,9 @@ import java.nio.*;
  * @author mzechner, Dave Clayton <contact@redskyforge.com>, Xoppa
  */
 public class Mesh implements Disposable{
+    /** The size of one vertex, in bytes. */
     public final int vertexSize;
+    /** Do not modify. */
     public final VertexAttribute[] attributes;
 
     final VertexData vertices;
@@ -45,54 +47,34 @@ public class Mesh implements Disposable{
      * normal or texture coordinate
      */
     public Mesh(boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes){
-        vertices = makeVertexBuffer(isStatic, maxVertices);
-        indices = new IndexBufferObject(isStatic, maxIndices);
+        this(false, isStatic, maxVertices, maxIndices, attributes);
     }
 
     /**
      * Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own risk.
-     * @param type the {@link VertexDataType} to be used, VBO or VA.
+     * @param useVertexArray whether to use VBOs or VAOs. Note that the latter is not supported with OpenGL 3.0.
      * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
      * @param maxVertices the maximum number of vertices this mesh can hold
      * @param maxIndices the maximum number of indices this mesh can hold
      */
-    public Mesh(VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes){
+    public Mesh(boolean useVertexArray, boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes){
         int count = 0;
-        for(int i = 0; i < attributes.length; i++){
-            count += attributes[i].size;
+        for(VertexAttribute attribute : attributes){
+            count += attribute.size;
         }
 
         this.vertexSize = count;
         this.attributes = attributes;
 
-        switch(type){
-            case vertexBufferObject:
-                vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
-                indices = new IndexBufferObject(isStatic, maxIndices);
-                break;
-            case vertexBufferObjectSubData:
-                //TODO what is the difference between subdata nad standard VBO?
-                vertices = new VertexBufferObjectSubData(isStatic, maxVertices, attributes);
-                indices = new IndexBufferObjectSubData(isStatic, maxIndices);
-                break;
-            case vertexBufferObjectWithVAO:
-                vertices = new VertexBufferObjectWithVAO(isStatic, maxVertices, attributes);
-                indices = new IndexBufferObjectSubData(isStatic, maxIndices);
-                break;
-            case vertexArray:
-            default:
-                vertices = new VertexArray(maxVertices, attributes);
-                indices = new IndexArray(maxIndices);
-                isVertexArray = true;
-                break;
-        }
-    }
-
-    private VertexData makeVertexBuffer(boolean isStatic, int maxVertices){
-        if(Core.gl30 != null){
-            return new VertexBufferObjectWithVAO(isStatic, maxVertices, vertexAttributes);
+        if(useVertexArray && Core.gl30 == null){
+            vertices = new VertexArray(maxVertices, this);
+            indices = new IndexArray(maxIndices);
+        }else if(Core.gl30 != null){
+            vertices = new VertexBufferObjectWithVAO(isStatic, maxVertices, this);
+            indices = new IndexBufferObjectSubData(isStatic, maxIndices);
         }else{
-            return new VertexBufferObject(isStatic, maxVertices, vertexAttributes);
+            vertices = new VertexBufferObject(isStatic, maxVertices, this);
+            indices = new IndexBufferObject(isStatic, maxIndices);
         }
     }
 
@@ -139,61 +121,6 @@ public class Mesh implements Disposable{
     public Mesh updateVertices(int targetOffset, float[] source, int sourceOffset, int count){
         this.vertices.update(targetOffset, source, sourceOffset, count);
         return this;
-    }
-
-    /**
-     * Copies the vertices from the Mesh to the float array. The float array must be large enough to hold all the Mesh's vertices.
-     * @param vertices the array to copy the vertices to
-     */
-    public float[] getVertices(float[] vertices){
-        return getVertices(0, -1, vertices);
-    }
-
-    /**
-     * Copies the the remaining vertices from the Mesh to the float array. The float array must be large enough to hold the
-     * remaining vertices.
-     * @param srcOffset the offset (in number of floats) of the vertices in the mesh to copy
-     * @param vertices the array to copy the vertices to
-     */
-    public float[] getVertices(int srcOffset, float[] vertices){
-        return getVertices(srcOffset, -1, vertices);
-    }
-
-    /**
-     * Copies the specified vertices from the Mesh to the float array. The float array must be large enough to hold count vertices.
-     * @param srcOffset the offset (in number of floats) of the vertices in the mesh to copy
-     * @param count the amount of floats to copy
-     * @param vertices the array to copy the vertices to
-     */
-    public float[] getVertices(int srcOffset, int count, float[] vertices){
-        return getVertices(srcOffset, count, vertices, 0);
-    }
-
-    /**
-     * Copies the specified vertices from the Mesh to the float array. The float array must be large enough to hold
-     * destOffset+count vertices.
-     * @param srcOffset the offset (in number of floats) of the vertices in the mesh to copy
-     * @param count the amount of floats to copy
-     * @param vertices the array to copy the vertices to
-     * @param destOffset the offset (in floats) in the vertices array to start copying
-     */
-    public float[] getVertices(int srcOffset, int count, float[] vertices, int destOffset){
-        // TODO: Perhaps this method should be vertexSize aware??
-        final int max = getNumVertices() * getVertexSize() / 4;
-        if(count == -1){
-            count = max - srcOffset;
-            if(count > vertices.length - destOffset) count = vertices.length - destOffset;
-        }
-        if(srcOffset < 0 || count <= 0 || (srcOffset + count) > max || destOffset < 0 || destOffset >= vertices.length)
-            throw new IndexOutOfBoundsException();
-        if((vertices.length - destOffset) < count)
-            throw new IllegalArgumentException("not enough room in vertices array, has " + vertices.length + " floats, needs "
-            + count);
-        int pos = getVerticesBuffer().position();
-        getVerticesBuffer().position(srcOffset);
-        getVerticesBuffer().get(vertices, destOffset, count);
-        getVerticesBuffer().position(pos);
-        return vertices;
     }
 
     /**
@@ -293,7 +220,7 @@ public class Mesh implements Disposable{
 
     /** @return the size of a single vertex in bytes */
     public int getVertexSize(){
-        return vertices.getAttributes().vertexSize;
+        return vertexSize;
     }
 
     /**
@@ -327,54 +254,12 @@ public class Mesh implements Disposable{
         if(indices.getNumIndices() > 0) indices.unbind();
     }
 
-    /**
-     * <p>
-     * Renders the mesh using the given primitive type. If indices are set for this mesh then getNumIndices() / #vertices per
-     * primitive primitives are rendered. If no indices are set then getNumVertices() / #vertices per primitive are rendered.
-     * </p>
-     *
-     * <p>
-     * This method will automatically bind each vertex attribute as specified at construction time via {@link VertexAttributes} to
-     * the respective shader attributes. The binding is based on the alias defined for each VertexAttribute.
-     * </p>
-     *
-     * <p>
-     * This method must only be called after the {@link Shader#bind()} method has been called!
-     * </p>
-     *
-     * <p>
-     * This method is intended for use with OpenGL ES 2.0 and will throw an IllegalStateException when OpenGL ES 1.x is used.
-     * </p>
-     * @param primitiveType the primitive type
-     */
+    /** @see #render(Shader, int, int, int, boolean) */
     public void render(Shader shader, int primitiveType){
         render(shader, primitiveType, 0, indices.getNumMaxIndices() > 0 ? getNumIndices() : getNumVertices(), autoBind);
     }
 
-    /**
-     * <p>
-     * Renders the mesh using the given primitive type. offset specifies the offset into either the vertex buffer or the index
-     * buffer depending on whether indices are defined. count specifies the number of vertices or indices to use thus count /
-     * #vertices per primitive primitives are rendered.
-     * </p>
-     *
-     * <p>
-     * This method will automatically bind each vertex attribute as specified at construction time via {@link VertexAttributes} to
-     * the respective shader attributes. The binding is based on the alias defined for each VertexAttribute.
-     * </p>
-     *
-     * <p>
-     * This method must only be called after the {@link Shader#bind()} method has been called!
-     * </p>
-     *
-     * <p>
-     * This method is intended for use with OpenGL ES 2.0 and will throw an IllegalStateException when OpenGL ES 1.x is used.
-     * </p>
-     * @param shader the shader to be used
-     * @param primitiveType the primitive type
-     * @param offset the offset into the vertex or index buffer
-     * @param count number of vertices or indices to use
-     */
+    /** @see #render(Shader, int, int, int, boolean) */
     public void render(Shader shader, int primitiveType, int offset, int count){
         render(shader, primitiveType, offset, count, autoBind);
     }
@@ -387,7 +272,7 @@ public class Mesh implements Disposable{
      * </p>
      *
      * <p>
-     * This method will automatically bind each vertex attribute as specified at construction time via {@link VertexAttributes} to
+     * This method will automatically bind each vertex attribute as specified at construction time to
      * the respective shader attributes. The binding is based on the alias defined for each VertexAttribute.
      * </p>
      *
@@ -409,31 +294,7 @@ public class Mesh implements Disposable{
 
         if(autoBind) bind(shader);
 
-        if(isVertexArray){
-            if(indices.getNumIndices() > 0){
-                ShortBuffer buffer = indices.buffer();
-                int oldPosition = buffer.position();
-                int oldLimit = buffer.limit();
-                buffer.position(offset);
-                buffer.limit(offset + count);
-                Gl.drawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, buffer);
-                buffer.position(oldPosition);
-                buffer.limit(oldLimit);
-            }else{
-                Gl.drawArrays(primitiveType, offset, count);
-            }
-        }else{
-            if(indices.getNumIndices() > 0){
-                if(count + offset > indices.getNumMaxIndices()){
-                    throw new ArcRuntimeException("Mesh attempting to access memory outside of the index buffer (count: "
-                    + count + ", offset: " + offset + ", max: " + indices.getNumMaxIndices() + ")");
-                }
-
-                Gl.drawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2);
-            }else{
-                Gl.drawArrays(primitiveType, offset, count);
-            }
-        }
+        vertices.render(indices, primitiveType, offset, count);
 
         if(autoBind) unbind(shader);
     }
@@ -453,9 +314,5 @@ public class Mesh implements Disposable{
     /** @return the backing shortbuffer holding the indices. Does not have to be a direct buffer on Android! */
     public ShortBuffer getIndicesBuffer(){
         return indices.buffer();
-    }
-
-    public enum VertexDataType{
-        vertexArray, vertexBufferObject, vertexBufferObjectSubData, vertexBufferObjectWithVAO
     }
 }

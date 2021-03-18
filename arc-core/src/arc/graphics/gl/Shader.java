@@ -97,7 +97,7 @@ public class Shader implements Disposable{
     private int vertexShaderHandle;
     /** fragment shader handle **/
     private int fragmentShaderHandle;
-    , private boolean disposed;
+    private boolean disposed;
 
     /**
      * Constructs a new Shader and immediately compiles it.

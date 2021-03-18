@@ -1,11 +1,9 @@
 package arc.graphics.gl;
 
-import arc.graphics.GL20;
-import arc.graphics.VertexAttribute;
-import arc.util.Buffers;
+import arc.graphics.*;
+import arc.util.*;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
+import java.nio.*;
 
 /**
  * <p>
@@ -19,7 +17,7 @@ import java.nio.FloatBuffer;
  * @author mzechner, Dave Clayton <contact@redskyforge.com>
  */
 public class VertexArray implements VertexData{
-    final VertexAttributes attributes;
+    final Mesh mesh;
     final FloatBuffer buffer;
     final ByteBuffer byteBuffer;
     boolean isBound = false;
@@ -27,25 +25,31 @@ public class VertexArray implements VertexData{
     /**
      * Constructs a new interleaved VertexArray
      * @param numVertices the maximum number of vertices
-     * @param attributes the {@link VertexAttribute}s
      */
-    public VertexArray(int numVertices, VertexAttribute... attributes){
-        this(numVertices, new VertexAttributes(attributes));
-    }
-
-    /**
-     * Constructs a new interleaved VertexArray
-     * @param numVertices the maximum number of vertices
-     * @param attributes the {@link VertexAttributes}
-     */
-    public VertexArray(int numVertices, VertexAttributes attributes){
-        this.attributes = attributes;
-        byteBuffer = Buffers.newUnsafeByteBuffer(this.attributes.vertexSize * numVertices);
+    public VertexArray(int numVertices, Mesh mesh){
+        this.mesh = mesh;
+        byteBuffer = Buffers.newUnsafeByteBuffer(this.mesh.vertexSize * numVertices);
         buffer = byteBuffer.asFloatBuffer();
         buffer.flip();
         byteBuffer.flip();
 
         byteBuffer.asFloatBuffer();
+    }
+
+    @Override
+    public void render(IndexData indices, int primitiveType, int offset, int count){
+        if(indices.getNumIndices() > 0){
+            ShortBuffer buffer = indices.buffer();
+            int oldPosition = buffer.position();
+            int oldLimit = buffer.limit();
+            buffer.position(offset);
+            buffer.limit(offset + count);
+            Gl.drawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, buffer);
+            buffer.position(oldPosition);
+            buffer.limit(oldLimit);
+        }else{
+            Gl.drawArrays(primitiveType, offset, count);
+        }
     }
 
     @Override
@@ -60,12 +64,12 @@ public class VertexArray implements VertexData{
 
     @Override
     public int getNumVertices(){
-        return buffer.limit() * 4 / attributes.vertexSize;
+        return buffer.limit() * 4 / mesh.vertexSize;
     }
 
     @Override
     public int getNumMaxVertices(){
-        return byteBuffer.capacity() / attributes.vertexSize;
+        return byteBuffer.capacity() / mesh.vertexSize;
     }
 
     @Override
@@ -85,22 +89,22 @@ public class VertexArray implements VertexData{
 
     @Override
     public void bind(Shader shader){
-        final int numAttributes = attributes.size();
         byteBuffer.limit(buffer.limit() * 4);
-        for(int i = 0; i < numAttributes; i++){
-            final VertexAttribute attribute = attributes.get(i);
-            final int location = shader.getAttributeLocation(attribute.alias);
+
+        int offset = 0;
+        for(VertexAttribute attribute : mesh.attributes){
+            int location = shader.getAttributeLocation(attribute.alias);
+            int aoffset = offset;
+            offset += attribute.size;
             if(location < 0) continue;
             shader.enableVertexAttribute(location);
 
             if(attribute.type == GL20.GL_FLOAT){
-                buffer.position(attribute.offset / 4);
-                shader.setVertexAttribute(location, attribute.components, attribute.type, attribute.normalized,
-                attributes.vertexSize, buffer);
+                buffer.position(aoffset / 4);
+                shader.setVertexAttribute(location, attribute.components, attribute.type, attribute.normalized, mesh.vertexSize, buffer);
             }else{
-                byteBuffer.position(attribute.offset);
-                shader.setVertexAttribute(location, attribute.components, attribute.type, attribute.normalized,
-                attributes.vertexSize, byteBuffer);
+                byteBuffer.position(aoffset);
+                shader.setVertexAttribute(location, attribute.components, attribute.type, attribute.normalized, mesh.vertexSize, byteBuffer);
             }
         }
 
@@ -109,16 +113,10 @@ public class VertexArray implements VertexData{
 
     @Override
     public void unbind(Shader shader){
-        final int numAttributes = attributes.size();
-        for(int i = 0; i < numAttributes; i++){
-            shader.disableVertexAttribute(attributes.get(i).alias);
+        for(VertexAttribute attribute : mesh.attributes){
+            shader.disableVertexAttribute(attribute.alias);
         }
 
         isBound = false;
-    }
-
-    @Override
-    public VertexAttributes getAttributes(){
-        return attributes;
     }
 }

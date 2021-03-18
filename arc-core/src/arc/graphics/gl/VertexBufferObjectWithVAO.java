@@ -30,7 +30,7 @@ import java.nio.*;
 public class VertexBufferObjectWithVAO implements VertexData{
     final static IntBuffer tmpHandle = Buffers.newIntBuffer(1);
 
-    final VertexAttributes attributes;
+    final Mesh mesh;
     final FloatBuffer buffer;
     final ByteBuffer byteBuffer;
     final boolean isStatic;
@@ -45,23 +45,12 @@ public class VertexBufferObjectWithVAO implements VertexData{
      * Constructs a new interleaved VertexBufferObjectWithVAO.
      * @param isStatic whether the vertex data is static.
      * @param numVertices the maximum number of vertices
-     * @param attributes the {@link arc.graphics.VertexAttribute}s.
      */
-    public VertexBufferObjectWithVAO(boolean isStatic, int numVertices, VertexAttribute... attributes){
-        this(isStatic, numVertices, new VertexAttributes(attributes));
-    }
-
-    /**
-     * Constructs a new interleaved VertexBufferObjectWithVAO.
-     * @param isStatic whether the vertex data is static.
-     * @param numVertices the maximum number of vertices
-     * @param attributes the {@link VertexAttributes}.
-     */
-    public VertexBufferObjectWithVAO(boolean isStatic, int numVertices, VertexAttributes attributes){
+    public VertexBufferObjectWithVAO(boolean isStatic, int numVertices, Mesh mesh){
         this.isStatic = isStatic;
-        this.attributes = attributes;
+        this.mesh = mesh;
 
-        byteBuffer = Buffers.newUnsafeByteBuffer(this.attributes.vertexSize * numVertices);
+        byteBuffer = Buffers.newUnsafeByteBuffer(this.mesh.vertexSize * numVertices);
         buffer = byteBuffer.asFloatBuffer();
         buffer.flip();
         byteBuffer.flip();
@@ -71,18 +60,13 @@ public class VertexBufferObjectWithVAO implements VertexData{
     }
 
     @Override
-    public VertexAttributes getAttributes(){
-        return attributes;
-    }
-
-    @Override
     public int getNumVertices(){
-        return buffer.limit() * 4 / attributes.vertexSize;
+        return buffer.limit() * 4 / mesh.vertexSize;
     }
 
     @Override
     public int getNumMaxVertices(){
-        return byteBuffer.capacity() / attributes.vertexSize;
+        return byteBuffer.capacity() / mesh.vertexSize;
     }
 
     @Override
@@ -132,11 +116,10 @@ public class VertexBufferObjectWithVAO implements VertexData{
 
     private void bindAttributes(Shader shader){
         boolean stillValid = this.cachedLocations.size != 0;
-        final int numAttributes = attributes.size();
 
         if(stillValid){
-            for(int i = 0; stillValid && i < numAttributes; i++){
-                VertexAttribute attribute = attributes.get(i);
+            for(int i = 0; stillValid && i < mesh.attributes.length; i++){
+                VertexAttribute attribute = mesh.attributes[i];
                 int location = shader.getAttributeLocation(attribute.alias);
                 stillValid = location == this.cachedLocations.get(i);
             }
@@ -147,9 +130,12 @@ public class VertexBufferObjectWithVAO implements VertexData{
             unbindAttributes(shader);
             this.cachedLocations.clear();
 
-            for(int i = 0; i < numAttributes; i++){
-                VertexAttribute attribute = attributes.get(i);
+            int offset = 0;
+            for(int i = 0; i < mesh.attributes.length; i++){
+                VertexAttribute attribute = mesh.attributes[i];
                 this.cachedLocations.add(shader.getAttributeLocation(attribute.alias));
+                int aoffset = offset;
+                offset += attribute.size;
 
                 int location = this.cachedLocations.get(i);
                 if(location < 0){
@@ -157,7 +143,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
                 }
 
                 shader.enableVertexAttribute(location);
-                shader.setVertexAttribute(location, attribute.components, attribute.type, attribute.normalized, attributes.vertexSize, attribute.offset);
+                shader.setVertexAttribute(location, attribute.components, attribute.type, attribute.normalized, mesh.vertexSize, aoffset);
             }
         }
     }
@@ -166,8 +152,8 @@ public class VertexBufferObjectWithVAO implements VertexData{
         if(cachedLocations.size == 0){
             return;
         }
-        int numAttributes = attributes.size();
-        for(int i = 0; i < numAttributes; i++){
+
+        for(int i = 0; i < mesh.attributes.length; i++){
             int location = cachedLocations.get(i);
             if(location < 0){
                 continue;

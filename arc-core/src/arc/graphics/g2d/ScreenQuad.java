@@ -8,9 +8,7 @@ public class ScreenQuad implements Disposable{
     public final Mesh mesh;
 
     public ScreenQuad(){
-        mesh = new Mesh(true, 4, 0,
-            new VertexAttribute(Usage.position, 2, "a_position"),
-            new VertexAttribute(Usage.textureCoordinates, 2, "a_texCoord0"));
+        mesh = new Mesh(true, 4, 0, VertexAttribute.position, VertexAttribute.texCoords);
         mesh.setVertices(new float[]{-1f, -1f, 0f, 0f, 1f, -1f, 1f, 0f, 1f, 1f, 1f, 1f, -1f, 1f, 0f, 1f});
     }
 

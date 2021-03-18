@@ -607,7 +607,7 @@ public class PixmapPacker implements Disposable{
                 if(!dirty) return false;
                 texture.load(texture.getTextureData());
             }else{
-                texture = new Texture(new PixmapTextureData(image, image.getFormat(), useMipMaps, false, true)){
+                texture = new Texture(new PixmapTextureData(image, image.getFormat(), useMipMaps, false)){
                     @Override
                     public void dispose(){
                         super.dispose();

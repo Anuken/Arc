@@ -9,10 +9,8 @@ import java.nio.*;
  * <p>
  * A {@link VertexData} implementation based on OpenGL vertex buffer objects.
  * <p>
- * If the OpenGL ES context was lost you can call {@link #invalidate()} to recreate a new OpenGL vertex buffer object.
  * <p>
- * The data is bound via glVertexAttribPointer() according to the attribute aliases specified via {@link VertexAttributes}
- * in the constructor.
+ * The data is bound via glVertexAttribPointer() according to the attribute aliases specified in the constructor.
  * <p>
  * VertexBufferObjects must be disposed via the {@link #dispose()} method when no longer needed
  * @author mzechner, Dave Clayton <contact@redskyforge.com>
@@ -20,7 +18,7 @@ import java.nio.*;
 public class VertexBufferObject implements VertexData{
     boolean isDirty = false;
     boolean isBound = false;
-    private VertexAttributes attributes;
+    private Mesh mesh;
     private FloatBuffer buffer;
     private ByteBuffer byteBuffer;
     private boolean ownsBuffer;
@@ -31,47 +29,26 @@ public class VertexBufferObject implements VertexData{
      * Constructs a new interleaved VertexBufferObject.
      * @param isStatic whether the vertex data is static.
      * @param numVertices the maximum number of vertices
-     * @param attributes the {@link VertexAttribute}s.
      */
-    public VertexBufferObject(boolean isStatic, int numVertices, VertexAttribute... attributes){
-        this(isStatic, numVertices, new VertexAttributes(attributes));
-    }
-
-    /**
-     * Constructs a new interleaved VertexBufferObject.
-     * @param isStatic whether the vertex data is static.
-     * @param numVertices the maximum number of vertices
-     * @param attributes the {@link VertexAttributes}.
-     */
-    public VertexBufferObject(boolean isStatic, int numVertices, VertexAttributes attributes){
+    public VertexBufferObject(boolean isStatic, int numVertices, Mesh mesh){
+        this.mesh = mesh;
+        //to create with subdata support: Gl.bufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.capacity(), null, usage);
         bufferHandle = Gl.genBuffer();
+        usage = isStatic ? Gl.staticDraw : Gl.streamDraw;
 
-        ByteBuffer data = Buffers.newUnsafeByteBuffer(attributes.vertexSize * numVertices);
+        ByteBuffer data = Buffers.newUnsafeByteBuffer(mesh.vertexSize * numVertices);
         data.limit(0);
-        setBuffer(data, true, attributes);
-        setUsage(isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_STREAM_DRAW);
-    }
-
-    protected VertexBufferObject(int usage, ByteBuffer data, boolean ownsBuffer, VertexAttributes attributes){
-        bufferHandle = Gl.genBuffer();
-
-        setBuffer(data, ownsBuffer, attributes);
-        setUsage(usage);
-    }
-
-    @Override
-    public VertexAttributes getAttributes(){
-        return attributes;
+        setBuffer(data, true);
     }
 
     @Override
     public int getNumVertices(){
-        return buffer.limit() * 4 / attributes.vertexSize;
+        return buffer.limit() * 4 / mesh.vertexSize;
     }
 
     @Override
     public int getNumMaxVertices(){
-        return byteBuffer.capacity() / attributes.vertexSize;
+        return byteBuffer.capacity() / mesh.vertexSize;
     }
 
     @Override
@@ -83,11 +60,10 @@ public class VertexBufferObject implements VertexData{
     /**
      * Low level method to reset the buffer and attributes to the specified values. Use with care!
      */
-    protected void setBuffer(Buffer data, boolean ownsBuffer, VertexAttributes value){
+    protected void setBuffer(Buffer data, boolean ownsBuffer){
         if(isBound) throw new ArcRuntimeException("Cannot change attributes while VBO is bound");
         if(this.ownsBuffer && byteBuffer != null)
             Buffers.disposeUnsafeByteBuffer(byteBuffer);
-        attributes = value;
         if(data instanceof ByteBuffer)
             byteBuffer = (ByteBuffer)data;
         else
@@ -103,6 +79,7 @@ public class VertexBufferObject implements VertexData{
 
     private void bufferChanged(){
         if(isBound){
+            //possible alternative: Gl.bufferSubData(GL20.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
             Gl.bufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
             isDirty = false;
         }
@@ -129,23 +106,6 @@ public class VertexBufferObject implements VertexData{
     }
 
     /**
-     * @return The GL enum used in the call to {@link GL20#glBufferData(int, int, java.nio.Buffer, int)}, e.g. GL_STATIC_DRAW or
-     * GL_DYNAMIC_DRAW
-     */
-    protected int getUsage(){
-        return usage;
-    }
-
-    /**
-     * Set the GL enum used in the call to {@link GL20#glBufferData(int, int, java.nio.Buffer, int)}, can only be called when the
-     * VBO is not bound.
-     */
-    protected void setUsage(int value){
-        if(isBound) throw new ArcRuntimeException("Cannot change usage while VBO is bound");
-        usage = value;
-    }
-
-    /**
      * Binds this VertexBufferObject for rendering via glDrawArrays or glDrawElements
      * @param shader the shader
      */
@@ -158,12 +118,15 @@ public class VertexBufferObject implements VertexData{
             isDirty = false;
         }
 
-        for(VertexAttribute attribute : attributes.attributes){
+        int offset = 0;
+        for(VertexAttribute attribute : mesh.attributes){
             int location = shader.getAttributeLocation(attribute.alias);
+            int aoffset = offset;
+            offset += attribute.size;
             if(location < 0) continue;
 
             shader.enableVertexAttribute(location);
-            shader.setVertexAttribute(location, attribute.components, attribute.type, attribute.normalized, attributes.vertexSize, attribute.offset);
+            shader.setVertexAttribute(location, attribute.components, attribute.type, attribute.normalized, mesh.vertexSize, aoffset);
         }
 
         isBound = true;
@@ -172,9 +135,8 @@ public class VertexBufferObject implements VertexData{
 
     @Override
     public void unbind(Shader shader){
-        final int numAttributes = attributes.size();
-        for(int i = 0; i < numAttributes; i++){
-            shader.disableVertexAttribute(attributes.get(i).alias);
+        for(VertexAttribute attribute : mesh.attributes){
+            shader.disableVertexAttribute(attribute.alias);
         }
         Gl.bindBuffer(GL20.GL_ARRAY_BUFFER, 0);
         isBound = false;

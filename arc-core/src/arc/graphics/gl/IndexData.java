@@ -63,6 +63,6 @@ public interface IndexData extends Disposable{
     /** Unbinds this IndexBufferObject. */
     void unbind();
 
-    /** Disposes this IndexDatat and all its associated OpenGL resources. */
+    /** Disposes this IndexData and all its associated OpenGL resources. */
     void dispose();
 }
