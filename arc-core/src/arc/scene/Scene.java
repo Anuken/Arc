@@ -740,7 +740,7 @@ public class Scene implements InputProcessor{
      * Returns the {@link Element} at the specified location in stage coordinates. Hit testing is performed in the order the actors
      * were inserted into the stage, last inserted actors being tested first. To get stage coordinates from screen coordinates, use
      * {@link #screenToStageCoordinates(Vec2)}.
-     * @param touchable If true, the hit detection will respect the {@link Element#touchable(Touchable) touchability}.
+     * @param touchable If true, the hit detection will respect the touchability.
      * @return May be null if no actor was hit.
      */
     public Element hit(float stageX, float stageY, boolean touchable){
@@ -808,11 +808,6 @@ public class Scene implements InputProcessor{
     /** Updates the viewport. */
     public void resize(int width, int height){
         viewport.update(width, height, true);
-    }
-
-    @Override
-    public void dispose(){
-        //skin.dispose();
     }
 
     /**
