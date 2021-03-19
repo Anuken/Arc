@@ -38,7 +38,7 @@ public class VertexArray implements VertexData{
 
     @Override
     public void render(IndexData indices, int primitiveType, int offset, int count){
-        if(indices.getNumIndices() > 0){
+        if(indices.size() > 0){
             ShortBuffer buffer = indices.buffer();
             int oldPosition = buffer.position();
             int oldLimit = buffer.limit();

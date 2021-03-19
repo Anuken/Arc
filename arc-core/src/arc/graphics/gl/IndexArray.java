@@ -30,13 +30,13 @@ public class IndexArray implements IndexData{
 
     /** @return the number of indices currently stored in this buffer */
     @Override
-    public int getNumIndices(){
+    public int size(){
         return empty ? 0 : buffer.limit();
     }
 
     /** @return the maximum number of indices this IndexArray can store. */
     @Override
-    public int getNumMaxIndices(){
+    public int max(){
         return empty ? 0 : buffer.capacity();
     }
 

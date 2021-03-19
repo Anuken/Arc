@@ -10,10 +10,10 @@ import java.nio.ShortBuffer;
  */
 public interface IndexData extends Disposable{
     /** @return the number of indices currently stored in this buffer */
-    int getNumIndices();
+    int size();
 
     /** @return the maximum number of indices this IndexBufferObject can store. */
-    int getNumMaxIndices();
+    int max();
 
     /**
      * <p>

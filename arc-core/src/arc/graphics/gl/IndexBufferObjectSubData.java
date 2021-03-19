@@ -70,12 +70,12 @@ public class IndexBufferObjectSubData implements IndexData{
     }
 
     /** @return the number of indices currently stored in this buffer */
-    public int getNumIndices(){
+    public int size(){
         return buffer.limit();
     }
 
     /** @return the maximum number of indices this IndexBufferObject can store. */
-    public int getNumMaxIndices(){
+    public int max(){
         return buffer.capacity();
     }
 

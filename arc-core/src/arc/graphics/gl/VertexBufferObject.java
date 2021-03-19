@@ -16,8 +16,8 @@ import java.nio.*;
  * @author mzechner, Dave Clayton <contact@redskyforge.com>
  */
 public class VertexBufferObject implements VertexData{
-    boolean isDirty = false;
-    boolean isBound = false;
+    boolean dirty = false;
+    boolean bound = false;
     private Mesh mesh;
     private FloatBuffer buffer;
     private ByteBuffer byteBuffer;
@@ -53,7 +53,7 @@ public class VertexBufferObject implements VertexData{
 
     @Override
     public FloatBuffer buffer(){
-        isDirty = true;
+        dirty = true;
         return buffer;
     }
 
@@ -61,7 +61,7 @@ public class VertexBufferObject implements VertexData{
      * Low level method to reset the buffer and attributes to the specified values. Use with care!
      */
     protected void setBuffer(Buffer data, boolean ownsBuffer){
-        if(isBound) throw new ArcRuntimeException("Cannot change attributes while VBO is bound");
+        if(bound) throw new ArcRuntimeException("Cannot change attributes while VBO is bound");
         if(this.ownsBuffer && byteBuffer != null)
             Buffers.disposeUnsafeByteBuffer(byteBuffer);
         if(data instanceof ByteBuffer)
@@ -78,16 +78,16 @@ public class VertexBufferObject implements VertexData{
     }
 
     private void bufferChanged(){
-        if(isBound){
+        if(bound){
             //possible alternative: Gl.bufferSubData(GL20.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
             Gl.bufferData(Gl.arrayBuffer, byteBuffer.limit(), byteBuffer, usage);
-            isDirty = false;
+            dirty = false;
         }
     }
 
     @Override
     public void set(float[] vertices, int offset, int count){
-        isDirty = true;
+        dirty = true;
         Buffers.copy(vertices, byteBuffer, count, offset);
         buffer.position(0);
         buffer.limit(count);
@@ -96,7 +96,7 @@ public class VertexBufferObject implements VertexData{
 
     @Override
     public void update(int targetOffset, float[] vertices, int sourceOffset, int count){
-        isDirty = true;
+        dirty = true;
         final int pos = byteBuffer.position();
         byteBuffer.position(targetOffset * 4);
         Buffers.copy(vertices, sourceOffset, count, byteBuffer);
@@ -106,17 +106,27 @@ public class VertexBufferObject implements VertexData{
     }
 
     /**
+     * Binds the buffer and updates data if necessary. Does not activate/deactivate attributes.
+     * Advanced use only.
+     * */
+    public void bind(){
+        Gl.bindBuffer(Gl.arrayBuffer, bufferHandle);
+        if(dirty){
+            byteBuffer.limit(buffer.limit() * 4);
+            Gl.bufferData(Gl.arrayBuffer, byteBuffer.limit(), byteBuffer, usage);
+            dirty = false;
+        }
+
+        bound = true;
+    }
+
+    /**
      * Binds this VertexBufferObject for rendering via glDrawArrays or glDrawElements
      * @param shader the shader
      */
     @Override
     public void bind(Shader shader){
-        Gl.bindBuffer(Gl.arrayBuffer, bufferHandle);
-        if(isDirty){
-            byteBuffer.limit(buffer.limit() * 4);
-            Gl.bufferData(Gl.arrayBuffer, byteBuffer.limit(), byteBuffer, usage);
-            isDirty = false;
-        }
+        bind();
 
         int offset = 0;
         for(VertexAttribute attribute : mesh.attributes){
@@ -128,8 +138,6 @@ public class VertexBufferObject implements VertexData{
             shader.enableVertexAttribute(location);
             shader.setVertexAttribute(location, attribute.components, attribute.type, attribute.normalized, mesh.vertexSize, aoffset);
         }
-
-        isBound = true;
     }
 
     @Override
@@ -138,7 +146,7 @@ public class VertexBufferObject implements VertexData{
             shader.disableVertexAttribute(attribute.alias);
         }
         Gl.bindBuffer(Gl.arrayBuffer, 0);
-        isBound = false;
+        bound = false;
     }
 
     /** Disposes of all resources this VertexBufferObject uses. */

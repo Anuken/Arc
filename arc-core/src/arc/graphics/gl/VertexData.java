@@ -14,10 +14,10 @@ public interface VertexData extends Disposable{
 
     default void render(IndexData indices, int primitiveType, int offset, int count){
 
-        if(indices.getNumIndices() > 0){
-            if(count + offset > indices.getNumMaxIndices()){
+        if(indices.size() > 0){
+            if(count + offset > indices.max()){
                 throw new ArcRuntimeException("Mesh attempting to access memory outside of the index buffer (count: "
-                + count + ", offset: " + offset + ", max: " + indices.getNumMaxIndices() + ")");
+                + count + ", offset: " + offset + ", max: " + indices.max() + ")");
             }
 
             Gl.drawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2);
@@ -64,7 +64,4 @@ public interface VertexData extends Disposable{
 
     /** Unbinds this VertexData. */
     void unbind(Shader shader);
-
-    /** Disposes this VertexData and all its associated OpenGL resources. */
-    void dispose();
 }

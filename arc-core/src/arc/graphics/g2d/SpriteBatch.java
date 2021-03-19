@@ -154,6 +154,7 @@ public class SpriteBatch extends Batch{
 
         float[] vertices = this.vertices;
         int idx = this.idx;
+        this.idx += SPRITE_SIZE;
 
         if(!Mathf.zero(rotation)){
             //bottom left and top right corner points relative to origin
@@ -212,8 +213,6 @@ public class SpriteBatch extends Batch{
             vertices[idx + 21] = u2;
             vertices[idx + 22] = v;
             vertices[idx + 23] = mixColor;
-
-            this.idx += SPRITE_SIZE;
         }else{
             float fx2 = x + width;
             float fy2 = y + height;
@@ -252,8 +251,6 @@ public class SpriteBatch extends Batch{
             vertices[idx + 21] = u2;
             vertices[idx + 22] = v;
             vertices[idx + 23] = mixColor;
-
-            this.idx += SPRITE_SIZE;
         }
     }
 

@@ -34,8 +34,9 @@ public class Mesh implements Disposable{
     /** Do not modify. */
     public final VertexAttribute[] attributes;
 
-    final VertexData vertices;
-    final IndexData indices;
+    public final VertexData vertices;
+    public final IndexData indices;
+
     boolean autoBind = true;
 
     /**
@@ -200,7 +201,7 @@ public class Mesh implements Disposable{
 
     /** @return the number of defined indices */
     public int getNumIndices(){
-        return indices.getNumIndices();
+        return indices.size();
     }
 
     /** @return the number of defined vertices */
@@ -215,7 +216,7 @@ public class Mesh implements Disposable{
 
     /** @return the maximum number of indices this mesh can hold */
     public int getMaxIndices(){
-        return indices.getNumMaxIndices();
+        return indices.max();
     }
 
     /** @return the size of a single vertex in bytes */
@@ -241,7 +242,7 @@ public class Mesh implements Disposable{
      */
     public void bind(final Shader shader){
         vertices.bind(shader);
-        if(indices.getNumIndices() > 0) indices.bind();
+        if(indices.size() > 0) indices.bind();
     }
 
     /**
@@ -251,12 +252,12 @@ public class Mesh implements Disposable{
      */
     public void unbind(final Shader shader){
         vertices.unbind(shader);
-        if(indices.getNumIndices() > 0) indices.unbind();
+        if(indices.size() > 0) indices.unbind();
     }
 
     /** @see #render(Shader, int, int, int, boolean) */
     public void render(Shader shader, int primitiveType){
-        render(shader, primitiveType, 0, indices.getNumMaxIndices() > 0 ? getNumIndices() : getNumVertices(), autoBind);
+        render(shader, primitiveType, 0, indices.max() > 0 ? getNumIndices() : getNumVertices(), autoBind);
     }
 
     /** @see #render(Shader, int, int, int, boolean) */
