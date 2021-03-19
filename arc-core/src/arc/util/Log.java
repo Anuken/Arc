@@ -19,6 +19,10 @@ public class Log{
     public static void debug(String text, Object... args){
         log(LogLevel.debug, text, args);
     }
+    
+    public static void debug(Object object){
+        debug(String.valueOf(object), empty);
+    }
 
     public static void infoList(Object... args){
         if(level.ordinal() > LogLevel.info.ordinal()) return;
