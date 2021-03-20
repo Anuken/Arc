@@ -16,8 +16,8 @@ import java.util.Iterator;
  * @author Anuke
  */
 public class QuadTree<T extends QuadTreeObject>{
-    private final Rect tmp = new Rect();
-    private static final int maxObjectsPerNode = 5;
+    protected final Rect tmp = new Rect();
+    protected static final int maxObjectsPerNode = 5;
 
     public Rect bounds;
     public Seq<T> objects = new Seq<>(false);
@@ -45,7 +45,7 @@ public class QuadTree<T extends QuadTreeObject>{
         // Transfer objects to children if they fit entirely in one
         for(Iterator<T> iterator = objects.iterator(); iterator.hasNext();){
             T obj = iterator.next();
-            obj.hitbox(tmp);
+            hitbox(obj);
             QuadTree<T> child = getFittingChild(tmp);
             if(child != null){
                 child.insert(obj);
@@ -67,7 +67,7 @@ public class QuadTree<T extends QuadTreeObject>{
      * Inserts an object into this node or its child nodes. This will split a leaf node if it exceeds the object limit.
      */
     public void insert(T obj){
-        obj.hitbox(tmp);
+        hitbox(obj);
         if(!bounds.overlaps(tmp)){
             // New object not in quad tree, ignoring
             // throw an exception?
@@ -80,7 +80,7 @@ public class QuadTree<T extends QuadTreeObject>{
             // Leaf, so no need to add to children, just add to root
             objects.add(obj);
         }else{
-            obj.hitbox(tmp);
+            hitbox(obj);
             // Add to relevant child, or root if can't fit completely in a child
             QuadTree<T> child = getFittingChild(tmp);
             if(child != null){
@@ -100,7 +100,7 @@ public class QuadTree<T extends QuadTreeObject>{
             objects.remove(obj, true);
         }else{
             // Remove from relevant child
-            obj.hitbox(tmp);
+            hitbox(obj);
             QuadTree<T> child = getFittingChild(tmp);
 
             if(child != null){
@@ -168,7 +168,7 @@ public class QuadTree<T extends QuadTreeObject>{
         }
 
         for(int i = 0; i < objects.size; i++){
-            objects.get(i).hitbox(tmp);
+            hitbox(objects.get(i));
             if(tmp.overlaps(x, y, width, height)){
                 out.get(objects.get(i));
             }
@@ -198,7 +198,7 @@ public class QuadTree<T extends QuadTreeObject>{
         }
 
         for(int i = 0; i < objects.size; i++){
-            objects.get(i).hitbox(tmp);
+            hitbox(objects.get(i));
             if(tmp.overlaps(toCheck)){
                 out.add(objects.get(i));
             }
@@ -214,6 +214,10 @@ public class QuadTree<T extends QuadTreeObject>{
             count += botLeft.getTotalObjectCount() + topRight.getTotalObjectCount() + topLeft.getTotalObjectCount() + botRight.getTotalObjectCount();
         }
         return count;
+    }
+
+    public void hitbox(T t){
+        t.hitbox(tmp);
     }
 
     /**Represents an object in a QuadTree.*/
