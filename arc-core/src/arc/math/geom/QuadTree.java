@@ -35,10 +35,10 @@ public class QuadTree<T extends QuadTreeObject>{
         float subH = bounds.height / 2;
 
         if(botLeft == null){
-            botLeft = new QuadTree<>(new Rect(bounds.x, bounds.y, subW, subH));
-            botRight = new QuadTree<>(new Rect(bounds.x + subW, bounds.y, subW, subH));
-            topLeft = new QuadTree<>(new Rect(bounds.x, bounds.y + subH, subW, subH));
-            topRight = new QuadTree<>(new Rect(bounds.x + subW, bounds.y + subH, subW, subH));
+            botLeft = newChild(new Rect(bounds.x, bounds.y, subW, subH));
+            botRight = newChild(new Rect(bounds.x + subW, bounds.y, subW, subH));
+            topLeft = newChild(new Rect(bounds.x, bounds.y + subH, subW, subH));
+            topRight = newChild(new Rect(bounds.x + subW, bounds.y + subH, subW, subH));
         }
         leaf = false;
 
@@ -167,10 +167,13 @@ public class QuadTree<T extends QuadTreeObject>{
             if(botRight.bounds.overlaps(x, y, width, height)) botRight.intersect(x, y, width, height, out);
         }
 
+        Seq<?> objects = this.objects;
+
         for(int i = 0; i < objects.size; i++){
-            hitbox(objects.get(i));
+            T item = (T)objects.items[i];
+            hitbox(item);
             if(tmp.overlaps(x, y, width, height)){
-                out.get(objects.get(i));
+                out.get(item);
             }
         }
     }
@@ -197,10 +200,13 @@ public class QuadTree<T extends QuadTreeObject>{
             if(botRight.bounds.overlaps(toCheck)) botRight.intersect(toCheck, out);
         }
 
+        Seq<?> objects = this.objects;
+
         for(int i = 0; i < objects.size; i++){
-            hitbox(objects.get(i));
+            T item = (T)objects.items[i];
+            hitbox(item);
             if(tmp.overlaps(toCheck)){
-                out.add(objects.get(i));
+                out.add(item);
             }
         }
     }
@@ -216,7 +222,11 @@ public class QuadTree<T extends QuadTreeObject>{
         return count;
     }
 
-    public void hitbox(T t){
+    protected QuadTree<T> newChild(Rect rect){
+        return new QuadTree<>(rect);
+    }
+
+    protected void hitbox(T t){
         t.hitbox(tmp);
     }
 
