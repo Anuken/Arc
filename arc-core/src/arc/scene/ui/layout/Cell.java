@@ -20,6 +20,7 @@ import arc.util.pooling.Pool.*;
  * @author Nathan Sweet
  */
 public class Cell<T extends Element> implements Poolable{
+    private static boolean dset;
     private static Cell defaults;
     static final float unset = Float.NEGATIVE_INFINITY;
 
@@ -50,7 +51,8 @@ public class Cell<T extends Element> implements Poolable{
      * for spacing).
      */
     public static Cell defaults(){
-        if(defaults == null){
+        if(!dset){
+            dset = true;
             defaults = new Cell();
             defaults.minWidth = unset;
             defaults.minHeight = unset;
