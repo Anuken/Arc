@@ -20,8 +20,8 @@ public class MipMapTextureData implements TextureData{
     }
 
     @Override
-    public TextureDataType getType(){
-        return TextureDataType.custom;
+    public boolean isCustom(){
+        return true;
     }
 
     @Override

@@ -29,7 +29,7 @@ public class Bloom{
     private boolean blending = false, capturing = false;
     private float r, g, b, a;
 
-    /** Rebinds the context. Necessary on Android/IOS. */
+    /** Rebinds the context. Necessary on Android/IOS. TODO or is it? */
     public void resume(){
         bloomShader.bind();
         bloomShader.setUniformi("u_texture0", 0);

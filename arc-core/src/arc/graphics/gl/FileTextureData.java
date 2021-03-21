@@ -1,14 +1,11 @@
 package arc.graphics.gl;
 
-import arc.files.Fi;
-import arc.graphics.Pixmap;
-import arc.graphics.Pixmap.Format;
-import arc.graphics.PixmapIO;
-import arc.graphics.TextureData;
-import arc.util.ArcRuntimeException;
+import arc.files.*;
+import arc.graphics.*;
+import arc.graphics.Pixmap.*;
+import arc.util.*;
 
 public class FileTextureData implements TextureData{
-
     final Fi file;
     int width = 0;
     int height = 0;
@@ -38,10 +35,7 @@ public class FileTextureData implements TextureData{
     public void prepare(){
         if(isPrepared) throw new ArcRuntimeException("Already prepared");
         if(pixmap == null){
-            if(file.extension().equals("cim"))
-                pixmap = PixmapIO.readCIM(file);
-            else
-                pixmap = new Pixmap(file);
+            pixmap = new Pixmap(file);
             width = pixmap.getWidth();
             height = pixmap.getHeight();
             if(format == null) format = pixmap.getFormat();
@@ -88,8 +82,8 @@ public class FileTextureData implements TextureData{
     }
 
     @Override
-    public TextureDataType getType(){
-        return TextureDataType.pixmap;
+    public boolean isCustom(){
+        return false;
     }
 
     @Override

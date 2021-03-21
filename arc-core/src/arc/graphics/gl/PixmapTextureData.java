@@ -49,8 +49,8 @@ public class PixmapTextureData implements TextureData{
     }
 
     @Override
-    public TextureDataType getType(){
-        return TextureDataType.pixmap;
+    public boolean isCustom(){
+        return false;
     }
 
     @Override

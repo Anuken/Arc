@@ -4,10 +4,10 @@ import java.util.Random;
 
 //TODO this class a disaster:
 //- nobody knows what range functions return
-//- generally bizzare outputs
+//- generally bizarre outputs
 //- bad parameter inputs, have to use 1/scale
 //- may need a replacement with a completely different class
-//- should use float instead of double, nobody needs this sort of percision
+//- should use float instead of double, nobody needs this sort of precision
 public class Simplex{
     static final int[][] grad3 = {
     {1, 1, 0}, {-1, 1, 0}, {1, -1, 0}, {-1, -1, 0},

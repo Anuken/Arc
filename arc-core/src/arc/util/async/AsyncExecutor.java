@@ -11,6 +11,7 @@ import java.util.concurrent.*;
  * running tasks will not be executed.
  * @author badlogic
  */
+//TODO this is just a crappy wrapper for newFixedThreadPool and offers no additional utility
 public class AsyncExecutor implements Disposable{
     private final ExecutorService executor;
 

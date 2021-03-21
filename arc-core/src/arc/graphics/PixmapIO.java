@@ -17,24 +17,6 @@ import java.util.zip.*;
  * @author Nathan Sweet
  */
 public class PixmapIO{
-    /**
-     * Writes the {@link Pixmap} to the given file using a custom compression scheme. First three integers define the width, height
-     * and format, remaining bytes are zlib compressed pixels. To be able to load the Pixmap to a Texture, use ".cim" as the file
-     * suffix. Throws a ArcRuntimeException in case the Pixmap couldn't be written to the file.
-     * @param file the file to write the Pixmap to
-     */
-    public static void writeCIM(Fi file, Pixmap pixmap){
-        CIM.write(file, pixmap);
-    }
-
-    /**
-     * Reads the {@link Pixmap} from the given file, assuming the Pixmap was written with the
-     * {@link PixmapIO#writeCIM(Fi, Pixmap)} method. Throws a ArcRuntimeException in case the file couldn't be read.
-     * @param file the file to read the Pixmap from
-     */
-    public static Pixmap readCIM(Fi file){
-        return CIM.read(file);
-    }
 
     /**
      * Writes the pixmap as a PNG with compression. See {@link PNG} to configure the compression level, more efficiently flip the
@@ -51,80 +33,6 @@ public class PixmapIO{
             }
         }catch(IOException ex){
             throw new ArcRuntimeException("Error writing PNG: " + file, ex);
-        }
-    }
-
-    /** @author mzechner */
-    private static class CIM{
-        private static final int BUFFER_SIZE = 32000;
-        private static final byte[] writeBuffer = new byte[BUFFER_SIZE];
-        private static final byte[] readBuffer = new byte[BUFFER_SIZE];
-
-        public static void write(Fi file, Pixmap pixmap){
-            DataOutputStream out = null;
-
-            try{
-                DeflaterOutputStream deflaterOutputStream = new DeflaterOutputStream(file.write(false));
-                out = new DataOutputStream(deflaterOutputStream);
-                out.writeInt(pixmap.getWidth());
-                out.writeInt(pixmap.getHeight());
-                out.writeInt(pixmap.getFormat().toPixmapFormat());
-
-                ByteBuffer pixelBuf = pixmap.getPixels();
-                pixelBuf.position(0);
-                pixelBuf.limit(pixelBuf.capacity());
-
-                int remainingBytes = pixelBuf.capacity() % BUFFER_SIZE;
-                int iterations = pixelBuf.capacity() / BUFFER_SIZE;
-
-                synchronized(writeBuffer){
-                    for(int i = 0; i < iterations; i++){
-                        pixelBuf.get(writeBuffer);
-                        out.write(writeBuffer);
-                    }
-
-                    pixelBuf.get(writeBuffer, 0, remainingBytes);
-                    out.write(writeBuffer, 0, remainingBytes);
-                }
-
-                pixelBuf.position(0);
-                pixelBuf.limit(pixelBuf.capacity());
-            }catch(Exception e){
-                throw new ArcRuntimeException("Couldn't write Pixmap to file '" + file + "'", e);
-            }finally{
-                Streams.close(out);
-            }
-        }
-
-        public static Pixmap read(Fi file){
-            DataInputStream in = null;
-
-            try{
-                in = new DataInputStream(new InflaterInputStream(new BufferedInputStream(file.read())));
-                int width = in.readInt();
-                int height = in.readInt();
-                Format format = Format.fromPixmapFormat(in.readInt());
-                Pixmap pixmap = new Pixmap(width, height, format);
-
-                ByteBuffer pixelBuf = pixmap.getPixels();
-                pixelBuf.position(0);
-                pixelBuf.limit(pixelBuf.capacity());
-
-                synchronized(readBuffer){
-                    int readBytes = 0;
-                    while((readBytes = in.read(readBuffer)) > 0){
-                        pixelBuf.put(readBuffer, 0, readBytes);
-                    }
-                }
-
-                pixelBuf.position(0);
-                pixelBuf.limit(pixelBuf.capacity());
-                return pixmap;
-            }catch(Exception e){
-                throw new ArcRuntimeException("Couldn't read Pixmap from file '" + file + "'", e);
-            }finally{
-                Streams.close(in);
-            }
         }
     }
 

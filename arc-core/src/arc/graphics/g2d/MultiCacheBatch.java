@@ -6,7 +6,7 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 
-//TODO this is an abomination that must be removed eventually
+//TODO this is an abomination that must be removed eventually (after Mindustry 7.0)
 public class MultiCacheBatch extends Batch{
     private static final int maxSpritesPerCache = 102000;
     Seq<SpriteCache> caches = new Seq<>();

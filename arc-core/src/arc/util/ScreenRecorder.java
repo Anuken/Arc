@@ -4,6 +4,7 @@ import arc.*;
 
 import java.lang.reflect.*;
 
+/** Wrapper for GifRecorder utility that attempts to dynamically resolve the class. */
 public class ScreenRecorder{
     private static Runnable record;
 

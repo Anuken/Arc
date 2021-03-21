@@ -30,8 +30,7 @@ public class CRC{
 
     public void update(byte[] data){
         int size = data.length;
-        for(int i = 0; i < size; i++)
-            _value = table[(_value ^ data[i]) & 0xFF] ^ (_value >>> 8);
+        for(byte datum : data) _value = table[(_value ^ datum) & 0xFF] ^ (_value >>> 8);
     }
 
     public void updateByte(int b){

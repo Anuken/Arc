@@ -11,7 +11,7 @@ import arc.graphics.*;
  * @author badlogic
  */
 public class HdpiUtils{
-    private static HdpiMode mode = HdpiMode.Logical;
+    private static HdpiMode mode = HdpiMode.logical;
 
     /**
      * Allows applications to override HDPI coordinate conversion for glViewport and glScissor calls.
@@ -37,7 +37,7 @@ public class HdpiUtils{
      * automatically converts them to backbuffer coordinates, which may be bigger on HDPI screens.
      */
     public static void glScissor(int x, int y, int width, int height){
-        if(mode == HdpiMode.Logical && (Core.graphics.getWidth() != Core.graphics.getBackBufferWidth()
+        if(mode == HdpiMode.logical && (Core.graphics.getWidth() != Core.graphics.getBackBufferWidth()
         || Core.graphics.getHeight() != Core.graphics.getBackBufferHeight())){
             Gl.scissor(toBackBufferX(x), toBackBufferY(y), toBackBufferX(width), toBackBufferY(height));
         }else{
@@ -50,7 +50,7 @@ public class HdpiUtils{
      * automatically converts them to backbuffer coordinates, which may be bigger on HDPI screens.
      */
     public static void glViewport(int x, int y, int width, int height){
-        if(mode == HdpiMode.Logical && (Core.graphics.getWidth() != Core.graphics.getBackBufferWidth()
+        if(mode == HdpiMode.logical && (Core.graphics.getWidth() != Core.graphics.getBackBufferWidth()
         || Core.graphics.getHeight() != Core.graphics.getBackBufferHeight())){
             Gl.viewport(toBackBufferX(x), toBackBufferY(y), toBackBufferX(width), toBackBufferY(height));
         }else{

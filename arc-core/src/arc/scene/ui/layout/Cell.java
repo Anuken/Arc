@@ -21,7 +21,6 @@ import arc.util.pooling.Pool.*;
  */
 public class Cell<T extends Element> implements Poolable{
     private static Cell defaults;
-    private static StaticReset reset = new StaticReset();
     static final float unset = Float.NEGATIVE_INFINITY;
 
     float minWidth, minHeight;
@@ -51,7 +50,7 @@ public class Cell<T extends Element> implements Poolable{
      * for spacing).
      */
     public static Cell defaults(){
-        if(reset.check()){
+        if(defaults == null){
             defaults = new Cell();
             defaults.minWidth = unset;
             defaults.minHeight = unset;

@@ -142,7 +142,6 @@ public class Tooltip extends InputListener{
      */
     public static class Tooltips{
         private static Tooltips instance;
-        private static StaticReset reset = new StaticReset();
         final Seq<Tooltip> shown = new Seq<>();
 
         /** Default text tooltip provider. */
@@ -201,7 +200,7 @@ public class Tooltip extends InputListener{
         };
 
         public static Tooltips getInstance(){
-            if(reset.check()){
+            if(instance == null){
                 instance = new Tooltips();
             }
             return instance;

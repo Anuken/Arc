@@ -2,7 +2,7 @@ package arc.graphics;
 
 import arc.*;
 import arc.files.*;
-import arc.graphics.TextureArrayData.*;
+import arc.graphics.gl.*;
 import arc.util.*;
 
 /**
@@ -25,7 +25,7 @@ public class TextureArray extends GLTexture{
     }
 
     public TextureArray(boolean useMipMaps, Pixmap.Format format, Fi... files){
-        this(TextureArrayFactory.loadFromFiles(format, useMipMaps, files));
+        this(new FileTextureArrayData(format, useMipMaps, files));
     }
 
     public TextureArray(TextureArrayData data){

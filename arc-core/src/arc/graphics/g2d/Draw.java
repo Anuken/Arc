@@ -11,7 +11,6 @@ import arc.util.*;
 import static arc.Core.*;
 
 public class Draw{
-    private static final StaticReset reset = new StaticReset();
     private static ScreenQuad squad;
 
     private static final Color[] carr = new Color[3];
@@ -23,7 +22,6 @@ public class Draw{
     public static float xscl = 1f, yscl = 1f;
 
     private static ScreenQuad getQuad(){
-        if(reset.check()) squad = null;
         if(squad == null) squad = new ScreenQuad();
         return squad;
     }

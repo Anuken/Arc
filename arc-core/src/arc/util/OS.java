@@ -10,7 +10,7 @@ public class OS{
     public static final String username = prop("user.name"), userhome = prop("user.home");
 
     public static boolean isWindows = propNoNull("os.name").contains("Windows");
-    public static boolean isLinux = propNoNull("os.name").contains("Linux") || propNoNull("os.name").contains("FreeBSD");
+    public static boolean isLinux = propNoNull("os.name").contains("Linux") || propNoNull("os.name").contains("BSD");
     public static boolean isMac = propNoNull("os.name").contains("Mac");
     public static boolean isIos = false;
     public static boolean isAndroid = false;

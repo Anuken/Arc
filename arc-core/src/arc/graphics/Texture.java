@@ -3,7 +3,6 @@ package arc.graphics;
 import arc.*;
 import arc.files.*;
 import arc.graphics.Pixmap.*;
-import arc.graphics.TextureData.*;
 import arc.graphics.gl.*;
 
 /**
@@ -37,7 +36,7 @@ public class Texture extends GLTexture{
     }
 
     public Texture(Fi file, Format format, boolean useMipMaps){
-        this(TextureDataFactory.loadFromFile(file, format, useMipMaps));
+        this(TextureData.load(file, format, useMipMaps));
     }
 
     public Texture(Pixmap pixmap){
@@ -119,10 +118,6 @@ public class Texture extends GLTexture{
     /** Disposes all resources associated with the texture */
     @Override
     public void dispose(){
-        // this is a hack. reason: we have to set the glHandle to 0 for textures that are
-        // reloaded through the asset manager as we first remove (and thus dispose) the texture
-        // and then reload it. the glHandle is set to 0 in invalidateAllTextures prior to
-        // removal from the asset manager.
         if(glHandle == 0) return;
         delete();
     }

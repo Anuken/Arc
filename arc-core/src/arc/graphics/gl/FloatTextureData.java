@@ -11,8 +11,8 @@ import java.nio.*;
 /** A {@link TextureData} implementation which should be used to create float textures. */
 public class FloatTextureData implements TextureData{
 
-    int width = 0;
-    int height = 0;
+    int width;
+    int height;
 
     int internalFormat;
     int format;
@@ -33,8 +33,8 @@ public class FloatTextureData implements TextureData{
     }
 
     @Override
-    public TextureDataType getType(){
-        return TextureDataType.custom;
+    public boolean isCustom(){
+        return true;
     }
 
     @Override

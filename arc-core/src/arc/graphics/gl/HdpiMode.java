@@ -12,12 +12,12 @@ public enum HdpiMode{
      * when calling {@link GL20#glScissor} or {@link GL20#glViewport} which
      * expect raw coordinates.
      */
-    Logical,
+    logical,
 
     /**
      * Mouse coordinates, {@link Graphics#getWidth()} and
      * {@link Graphics#getHeight()} will return raw pixel coordinates
      * irrespective of the system defined HDPI scaling.
      */
-    Pixels
+    pixels
 }

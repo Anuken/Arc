@@ -8,7 +8,7 @@ public class SdlConfig{
     public int r = 8, g = 8, b = 8, a = 8;
     public int depth = 0, stencil = 0;
     public int samples = 0;
-    public HdpiMode hdpiMode = HdpiMode.Logical;
+    public HdpiMode hdpiMode = HdpiMode.logical;
 
     public int width = 640;
     public int height = 480;

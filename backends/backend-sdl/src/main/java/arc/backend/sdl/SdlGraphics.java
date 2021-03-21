@@ -113,7 +113,7 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public int getWidth(){
-        if(app.config.hdpiMode == HdpiMode.Pixels){
+        if(app.config.hdpiMode == HdpiMode.pixels){
             return backBufferWidth;
         }else{
             return logicalWidth;
@@ -122,7 +122,7 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public int getHeight(){
-        if(app.config.hdpiMode == HdpiMode.Pixels){
+        if(app.config.hdpiMode == HdpiMode.pixels){
             return backBufferHeight;
         }else{
             return logicalHeight;

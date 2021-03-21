@@ -1,14 +1,10 @@
 package arc.graphics.gl;
 
-import arc.Core;
-import arc.files.Fi;
-import arc.graphics.GL30;
-import arc.graphics.Pixmap;
-import arc.graphics.Pixmap.*;
-import arc.graphics.TextureArrayData;
-import arc.graphics.TextureData;
-import arc.graphics.TextureData.*;
-import arc.util.ArcRuntimeException;
+import arc.*;
+import arc.files.*;
+import arc.graphics.*;
+import arc.graphics.Pixmap.Blending;
+import arc.util.*;
 
 /** @author Tomski **/
 public class FileTextureArrayData implements TextureArrayData{
@@ -25,7 +21,7 @@ public class FileTextureArrayData implements TextureArrayData{
         this.depth = files.length;
         textureDatas = new TextureData[files.length];
         for(int i = 0; i < files.length; i++){
-            textureDatas[i] = TextureDataFactory.loadFromFile(files[i], format, useMipMaps);
+            textureDatas[i] = TextureData.load(files[i], format, useMipMaps);
         }
     }
 
@@ -55,7 +51,7 @@ public class FileTextureArrayData implements TextureArrayData{
     @Override
     public void consumeTextureArrayData(){
         for(int i = 0; i < textureDatas.length; i++){
-            if(textureDatas[i].getType() == TextureData.TextureDataType.custom){
+            if(textureDatas[i].isCustom()){
                 textureDatas[i].consumeCustomData(GL30.GL_TEXTURE_2D_ARRAY);
             }else{
                 TextureData texData = textureDatas[i];

@@ -5,7 +5,6 @@ import arc.graphics.*;
 import arc.graphics.Cubemap.*;
 import arc.graphics.Pixmap.Blending;
 import arc.graphics.Pixmap.*;
-import arc.graphics.TextureData.*;
 import arc.util.*;
 
 /**
@@ -13,7 +12,6 @@ import arc.util.*;
  * @author Vincent Nousquet
  */
 public class FacedCubemapData implements CubemapData{
-
     protected final TextureData[] data = new TextureData[6];
 
     /**
@@ -25,32 +23,28 @@ public class FacedCubemapData implements CubemapData{
     }
 
     /** Construct a Cubemap with the specified texture files for the sides, optionally generating mipmaps. */
-    public FacedCubemapData(Fi positiveX, Fi negativeX, Fi positiveY, Fi negativeY,
-                            Fi positiveZ, Fi negativeZ){
-        this(TextureDataFactory.loadFromFile(positiveX, false), TextureDataFactory.loadFromFile(negativeX,
-        false), TextureDataFactory.loadFromFile(positiveY, false), TextureDataFactory.loadFromFile(
-        negativeY, false), TextureDataFactory.loadFromFile(positiveZ, false), TextureDataFactory
-        .loadFromFile(negativeZ, false));
+    public FacedCubemapData(Fi positiveX, Fi negativeX, Fi positiveY, Fi negativeY, Fi positiveZ, Fi negativeZ){
+        this(
+        TextureData.load(positiveX, false), TextureData.load(negativeX, false), TextureData.load(positiveY, false),
+        TextureData.load(negativeY, false), TextureData.load(positiveZ, false), TextureData.load(negativeZ, false)
+        );
     }
 
     /** Construct a Cubemap with the specified texture files for the sides, optionally generating mipmaps. */
-    public FacedCubemapData(Fi positiveX, Fi negativeX, Fi positiveY, Fi negativeY,
-                            Fi positiveZ, Fi negativeZ, boolean useMipMaps){
-        this(TextureDataFactory.loadFromFile(positiveX, useMipMaps), TextureDataFactory.loadFromFile(
-        negativeX, useMipMaps), TextureDataFactory.loadFromFile(positiveY, useMipMaps), TextureDataFactory
-        .loadFromFile(negativeY, useMipMaps), TextureDataFactory.loadFromFile(positiveZ, useMipMaps),
-        TextureDataFactory.loadFromFile(negativeZ, useMipMaps));
+    public FacedCubemapData(Fi positiveX, Fi negativeX, Fi positiveY, Fi negativeY, Fi positiveZ, Fi negativeZ, boolean useMipMaps){
+        this(
+        TextureData.load(positiveX, useMipMaps), TextureData.load(negativeX, useMipMaps), TextureData.load(positiveY, useMipMaps),
+        TextureData.load(negativeY, useMipMaps), TextureData.load(positiveZ, useMipMaps), TextureData.load(negativeZ, useMipMaps)
+        );
     }
 
     /** Construct a Cubemap with the specified {@link Pixmap}s for the sides, does not generate mipmaps. */
-    public FacedCubemapData(Pixmap positiveX, Pixmap negativeX, Pixmap positiveY, Pixmap negativeY, Pixmap positiveZ,
-                            Pixmap negativeZ){
+    public FacedCubemapData(Pixmap positiveX, Pixmap negativeX, Pixmap positiveY, Pixmap negativeY, Pixmap positiveZ, Pixmap negativeZ){
         this(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ, false);
     }
 
     /** Construct a Cubemap with the specified {@link Pixmap}s for the sides, optionally generating mipmaps. */
-    public FacedCubemapData(Pixmap positiveX, Pixmap negativeX, Pixmap positiveY, Pixmap negativeY, Pixmap positiveZ,
-                            Pixmap negativeZ, boolean useMipMaps){
+    public FacedCubemapData(Pixmap positiveX, Pixmap negativeX, Pixmap positiveY, Pixmap negativeY, Pixmap positiveZ, Pixmap negativeZ, boolean useMipMaps){
         this(positiveX == null ? null : new PixmapTextureData(positiveX, null, useMipMaps, false), negativeX == null ? null
         : new PixmapTextureData(negativeX, null, useMipMaps, false), positiveY == null ? null : new PixmapTextureData(positiveY,
         null, useMipMaps, false), negativeY == null ? null : new PixmapTextureData(negativeY, null, useMipMaps, false),
@@ -85,7 +79,7 @@ public class FacedCubemapData implements CubemapData{
      * @param file The texture {@link Fi}
      */
     public void load(CubemapSide side, Fi file){
-        data[side.index] = TextureDataFactory.loadFromFile(file, false);
+        data[side.index] = TextureData.load(file, false);
     }
 
     /**
@@ -147,14 +141,13 @@ public class FacedCubemapData implements CubemapData{
     @Override
     public void prepare(){
         if(!isComplete()) throw new ArcRuntimeException("You need to complete your cubemap data before using it");
-        for(int i = 0; i < data.length; i++)
-            if(!data[i].isPrepared()) data[i].prepare();
+        for(TextureData datum : data) if(!datum.isPrepared()) datum.prepare();
     }
 
     @Override
     public void consumeCubemapData(){
         for(int i = 0; i < data.length; i++){
-            if(data[i].getType() == TextureData.TextureDataType.custom){
+            if(data[i].isCustom()){
                 data[i].consumeCustomData(GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i);
             }else{
                 Pixmap pixmap = data[i].consumePixmap();

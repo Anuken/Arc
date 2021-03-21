@@ -2,7 +2,6 @@ package arc.graphics;
 
 import arc.graphics.Pixmap.Blending;
 import arc.graphics.Texture.*;
-import arc.graphics.TextureData.*;
 import arc.graphics.gl.*;
 import arc.util.*;
 
@@ -45,8 +44,7 @@ public abstract class GLTexture implements Disposable{
 
         if(!data.isPrepared()) data.prepare();
 
-        final TextureDataType type = data.getType();
-        if(type == TextureDataType.custom){
+        if(data.isCustom()){
             data.consumeCustomData(target);
             return;
         }

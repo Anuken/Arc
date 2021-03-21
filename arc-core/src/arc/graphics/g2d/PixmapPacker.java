@@ -1,5 +1,6 @@
 package arc.graphics.g2d;
 
+import arc.files.*;
 import arc.graphics.*;
 import arc.graphics.Pixmap.*;
 import arc.graphics.Texture.*;
@@ -9,6 +10,7 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -82,7 +84,6 @@ public class PixmapPacker implements Disposable{
     int padding;
     boolean duplicateBorder;
     boolean stripWhitespaceX, stripWhitespaceY;
-    int alphaThreshold;
     Color transparentColor = new Color(0f, 0f, 0f, 0f);
     PackStrategy packStrategy;
     private Color c = new Color();
@@ -540,6 +541,57 @@ public class PixmapPacker implements Disposable{
         }
 
         return 0;
+    }
+
+    /**
+     * Saves the provided PixmapPacker to the provided file. The resulting file will use the standard TextureAtlas file format and
+     * can be loaded by TextureAtlas as if it had been created using TexturePacker.
+     * @param file the file to which the atlas descriptor will be written, images will be written as siblings
+     * @throws IOException if the atlas file can not be written
+     */
+    public void save(Fi file) throws IOException{
+        save(file, TextureFilter.nearest, TextureFilter.nearest);
+    }
+
+    /**
+     * Saves the provided PixmapPacker to the provided file. The resulting file will use the standard TextureAtlas file format and
+     * can be loaded by TextureAtlas as if it had been created using TexturePacker.
+     * @param file the file to which the atlas descriptor will be written, images will be written as siblings
+     * @throws IOException if the atlas file can not be written
+     */
+    public void save(Fi file, TextureFilter minFilter, TextureFilter maxFilter) throws IOException{
+        Writer writer = file.writer(false);
+        int index = 0;
+        for(Page page : pages){
+            if(page.rects.size > 0){
+                Fi pageFile = file.sibling(file.nameWithoutExtension() + "_" + (++index) + ".PNG");
+                PixmapIO.writePNG(pageFile, page.image);
+
+                writer.write("\n");
+                writer.write(pageFile.name() + "\n");
+                writer.write("size: " + page.image.getWidth() + "," + page.image.getHeight() + "\n");
+                writer.write("format: " + pageFormat.name() + "\n");
+                writer.write("filter: " + minFilter.name() + "," + maxFilter.name() + "\n");
+                writer.write("repeat: none" + "\n");
+                for(String name : page.rects.keys()){
+                    writer.write(name + "\n");
+                    PixmapPackerRect rect = page.rects.get(name);
+                    writer.write("  rotate: false" + "\n");
+                    writer.write("  xy: " + (int)rect.x + "," + (int)rect.y + "\n");
+                    writer.write("  size: " + (int)rect.width + "," + (int)rect.height + "\n");
+                    if(rect.splits != null){
+                        writer.write("  split: " + rect.splits[0] + ", " + rect.splits[1] + ", " + rect.splits[2] + ", " + rect.splits[3] + "\n");
+                        if(rect.pads != null){
+                            writer.write("  pad: " + rect.pads[0] + ", " + rect.pads[1] + ", " + rect.pads[2] + ", " + rect.pads[3] + "\n");
+                        }
+                    }
+                    writer.write("  orig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
+                    writer.write("  offset: " + rect.offsetX + ", " + (int)(rect.originalHeight - rect.height - rect.offsetY) + "\n");
+                    writer.write("  index: -1" + "\n");
+                }
+            }
+        }
+        writer.close();
     }
 
     /**
