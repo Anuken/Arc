@@ -25,6 +25,7 @@ public class OS{
             isMac = false;
             is64Bit = false;
         }
+        //if it's none of the standard operating systems, it's iOS
         if(propNoNull("moe.platform.name").equals("iOS") || (!isAndroid && !isWindows && !isLinux && !isMac)){
             isIos = true;
             isAndroid = false;
@@ -34,7 +35,6 @@ public class OS{
             is64Bit = false;
         }
     }
-    
 
     public static String getAppDataDirectoryString(String appname){
         if(OS.isWindows){
