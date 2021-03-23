@@ -3,6 +3,7 @@ package arc.maps.loaders;
 import arc.assets.AssetLoaderParameters;
 import arc.assets.loaders.AsynchronousAssetLoader;
 import arc.assets.loaders.FileHandleResolver;
+import arc.maps.loaders.XmlReader.*;
 import arc.struct.Seq;
 import arc.files.Fi;
 import arc.graphics.Color;
@@ -16,8 +17,6 @@ import arc.math.geom.Polyline;
 import arc.util.ArcRuntimeException;
 import arc.util.io.Streams;
 import arc.util.serialization.Base64Coder;
-import arc.util.serialization.XmlReader;
-import arc.util.serialization.XmlReader.Element;
 
 import java.io.*;
 import java.util.StringTokenizer;
@@ -30,7 +29,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
     protected static final int FLAG_FLIP_DIAGONALLY = 0x20000000;
     protected static final int MASK_CLEAR = 0xE0000000;
     protected XmlReader xml = new XmlReader();
-    protected Element root;
+    protected Xml root;
     protected boolean convertObjectToTileSpace;
     protected boolean flipY = true;
     protected int mapTileWidth;
@@ -43,8 +42,8 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         super(resolver);
     }
 
-    public static int[] getTileIds(Element element, int width, int height){
-        Element data = element.getChildByName("data");
+    public static int[] getTileIds(Xml element, int width, int height){
+        Xml data = element.getChildByName("data");
         String encoding = data.getAttribute("encoding", null);
         if(encoding == null){ // no 'encoding' attribute means that the encoding is XML
             throw new ArcRuntimeException("Unsupported encoding (XML) for TMX Layer Data");
@@ -116,18 +115,18 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         return result;
     }
 
-    protected void loadTileGroup(TiledMap map, Seq<MapLayer> parentLayers, Element element, Fi tmxFile, ImageResolver imageResolver){
+    protected void loadTileGroup(TiledMap map, Seq<MapLayer> parentLayers, Xml element, Fi tmxFile, ImageResolver imageResolver){
         if(element.getName().equals("group")){
             MapGroupLayer groupLayer = new MapGroupLayer();
             loadBasicLayerInfo(groupLayer, element);
 
-            Element properties = element.getChildByName("properties");
+            Xml properties = element.getChildByName("properties");
             if(properties != null){
                 loadProperties(groupLayer.properties, properties);
             }
 
             for(int i = 0, j = element.getChildCount(); i < j; i++){
-                Element child = element.getChild(i);
+                Xml child = element.getChild(i);
                 loadLayer(map, groupLayer.layers, child, tmxFile, imageResolver);
             }
 
@@ -139,7 +138,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         }
     }
 
-    protected void loadLayer(TiledMap map, Seq<MapLayer> parentLayers, Element element, Fi tmxFile, ImageResolver imageResolver){
+    protected void loadLayer(TiledMap map, Seq<MapLayer> parentLayers, Xml element, Fi tmxFile, ImageResolver imageResolver){
         String name = element.getName();
         if(name.equals("group")){
             loadTileGroup(map, parentLayers, element, tmxFile, imageResolver);
@@ -152,7 +151,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         }
     }
 
-    protected void loadTileLayer(TiledMap map, Seq<MapLayer> parentLayers, Element element){
+    protected void loadTileLayer(TiledMap map, Seq<MapLayer> parentLayers, Xml element){
         if(element.getName().equals("layer")){
             int width = element.getIntAttribute("width", 0);
             int height = element.getIntAttribute("height", 0);
@@ -180,7 +179,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
                 }
             }
 
-            Element properties = element.getChildByName("properties");
+            Xml properties = element.getChildByName("properties");
             if(properties != null){
                 loadProperties(layer.properties, properties);
             }
@@ -188,16 +187,16 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         }
     }
 
-    protected void loadObjectGroup(TiledMap map, Seq<MapLayer> parentLayers, Element element){
+    protected void loadObjectGroup(TiledMap map, Seq<MapLayer> parentLayers, Xml element){
         if(element.getName().equals("objectgroup")){
             MapLayer layer = new MapLayer();
             loadBasicLayerInfo(layer, element);
-            Element properties = element.getChildByName("properties");
+            Xml properties = element.getChildByName("properties");
             if(properties != null){
                 loadProperties(layer.properties, properties);
             }
 
-            for(Element objectElement : element.getChildrenByName("object")){
+            for(Xml objectElement : element.getChildrenByName("object")){
                 loadObject(map, layer, objectElement);
             }
 
@@ -205,7 +204,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         }
     }
 
-    protected void loadImageLayer(TiledMap map, Seq<MapLayer> parentLayers, Element element, Fi tmxFile, ImageResolver imageResolver){
+    protected void loadImageLayer(TiledMap map, Seq<MapLayer> parentLayers, Xml element, Fi tmxFile, ImageResolver imageResolver){
         if(element.getName().equals("imagelayer")){
             int x = 0;
             int y = 0;
@@ -223,7 +222,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 
             TextureRegion texture = null;
 
-            Element image = element.getChildByName("image");
+            Xml image = element.getChildByName("image");
 
             if(image != null){
                 String source = image.getAttribute("source");
@@ -236,7 +235,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 
             loadBasicLayerInfo(layer, element);
 
-            Element properties = element.getChildByName("properties");
+            Xml properties = element.getChildByName("properties");
             if(properties != null){
                 loadProperties(layer.properties, properties);
             }
@@ -245,7 +244,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         }
     }
 
-    protected void loadBasicLayerInfo(MapLayer layer, Element element){
+    protected void loadBasicLayerInfo(MapLayer layer, Xml element){
         String name = element.getAttribute("name", null);
         float opacity = Float.parseFloat(element.getAttribute("opacity", "1.0"));
         boolean visible = element.getIntAttribute("visible", 1) == 1;
@@ -259,15 +258,15 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         layer.setOffsetY(offsetY);
     }
 
-    protected void loadObject(TiledMap map, MapLayer layer, Element element){
+    protected void loadObject(TiledMap map, MapLayer layer, Xml element){
         loadObject(map, layer.objects, element, mapHeightInPixels);
     }
 
-    protected void loadObject(TiledMap map, MapTile tile, Element element){
+    protected void loadObject(TiledMap map, MapTile tile, Xml element){
         loadObject(map, tile.getObjects(), element, tile.region.height);
     }
 
-    protected void loadObject(TiledMap map, Seq<MapObject> objects, Element element, float heightInPixels){
+    protected void loadObject(TiledMap map, Seq<MapObject> objects, Xml element, float heightInPixels){
         if(element.getName().equals("object")){
             MapObject object = null;
 
@@ -281,7 +280,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
             float height = element.getFloatAttribute("height", 0) * scaleY;
 
             if(element.getChildCount() > 0){
-                Element child = null;
+                Xml child = null;
                 if((child = element.getChildByName("polygon")) != null){
                     String[] points = child.getAttribute("points").split(" ");
                     float[] vertices = new float[points.length * 2];
@@ -355,7 +354,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
             object.properties.put("width", width);
             object.properties.put("height", height);
             object.visible = element.getIntAttribute("visible", 1) == 1;
-            Element properties = element.getChildByName("properties");
+            Xml properties = element.getChildByName("properties");
             if(properties != null){
                 loadProperties(object.properties, properties);
             }
@@ -363,10 +362,10 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
         }
     }
 
-    protected void loadProperties(MapProperties properties, Element element){
+    protected void loadProperties(MapProperties properties, Xml element){
         if(element == null) return;
         if(element.getName().equals("properties")){
-            for(Element property : element.getChildrenByName("property")){
+            for(Xml property : element.getChildrenByName("property")){
                 String name = property.getAttribute("name", null);
                 String value = property.getAttribute("value", null);
                 String type = property.getAttribute("type", null);

@@ -4,6 +4,7 @@ import arc.assets.AssetDescriptor;
 import arc.assets.AssetManager;
 import arc.assets.loaders.FileHandleResolver;
 import arc.assets.loaders.resolvers.InternalFileHandleResolver;
+import arc.maps.loaders.XmlReader.*;
 import arc.struct.Seq;
 import arc.struct.ObjectMap;
 import arc.files.Fi;
@@ -14,7 +15,6 @@ import arc.graphics.g2d.TextureAtlas.AtlasRegion;
 import arc.maps.*;
 import arc.util.ArcRuntimeException;
 import arc.util.serialization.SerializationException;
-import arc.util.serialization.XmlReader.Element;
 
 import java.io.IOException;
 
@@ -48,9 +48,9 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
         try{
             root = xml.parse(tmxFile);
 
-            Element properties = root.getChildByName("properties");
+            Xml properties = root.getChildByName("properties");
             if(properties != null){
-                for(Element property : properties.getChildrenByName("property")){
+                for(Xml property : properties.getChildrenByName("property")){
                     String name = property.getAttribute("name");
                     String value = property.getAttribute("value");
                     if(name.startsWith("atlas")){
@@ -97,11 +97,11 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
     }
 
     /** May return null. */
-    protected Fi loadAtlas(Element root, Fi tmxFile) throws IOException{
-        Element e = root.getChildByName("properties");
+    protected Fi loadAtlas(Xml root, Fi tmxFile) throws IOException{
+        Xml e = root.getChildByName("properties");
 
         if(e != null){
-            for(Element property : e.getChildrenByName("property")){
+            for(Xml property : e.getChildrenByName("property")){
                 String name = property.getAttribute("name", null);
                 String value = property.getAttribute("value", null);
                 if(name.equals("atlas")){
@@ -157,7 +157,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
         return map;
     }
 
-    protected TiledMap loadMap(Element root, Fi tmxFile, AtlasResolver resolver){
+    protected TiledMap loadMap(Xml root, Fi tmxFile, AtlasResolver resolver){
         TiledMap map = new TiledMap();
 
         String mapOrientation = root.getAttribute("orientation", null);
@@ -194,7 +194,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
         }
 
         for(int i = 0, j = root.getChildCount(); i < j; i++){
-            Element element = root.getChild(i);
+            Xml element = root.getChild(i);
             String elementName = element.getName();
             if(elementName.equals("properties")){
                 loadProperties(map.properties, element);
@@ -209,7 +209,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
         return map;
     }
 
-    protected void loadTileset(TiledMap map, Element element, Fi tmxFile, AtlasResolver resolver){
+    protected void loadTileset(TiledMap map, Xml element, Fi tmxFile, AtlasResolver resolver){
         if(element.getName().equals("tileset")){
             String name = element.get("name", null);
             int firstgid = element.getIntAttribute("firstgid", 1);
@@ -235,12 +235,12 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
                     tileheight = element.getIntAttribute("tileheight", 0);
                     spacing = element.getIntAttribute("spacing", 0);
                     margin = element.getIntAttribute("margin", 0);
-                    Element offset = element.getChildByName("tileoffset");
+                    Xml offset = element.getChildByName("tileoffset");
                     if(offset != null){
                         offsetX = offset.getIntAttribute("x", 0);
                         offsetY = offset.getIntAttribute("y", 0);
                     }
-                    Element imageElement = element.getChildByName("image");
+                    Xml imageElement = element.getChildByName("image");
                     if(imageElement != null){
                         imageSource = imageElement.getAttribute("source");
                         imageWidth = imageElement.getIntAttribute("width", 0);
@@ -251,12 +251,12 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
                     throw new ArcRuntimeException("Error parsing external tileset.");
                 }
             }else{
-                Element offset = element.getChildByName("tileoffset");
+                Xml offset = element.getChildByName("tileoffset");
                 if(offset != null){
                     offsetX = offset.getIntAttribute("x", 0);
                     offsetY = offset.getIntAttribute("y", 0);
                 }
-                Element imageElement = element.getChildByName("image");
+                Xml imageElement = element.getChildByName("image");
                 if(imageElement != null){
                     imageSource = imageElement.getAttribute("source");
                     imageWidth = imageElement.getIntAttribute("width", 0);
@@ -314,11 +314,11 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
                 }
             }
 
-            for(Element tileElement : element.getChildrenByName("tile")){
+            for(Xml tileElement : element.getChildrenByName("tile")){
                 int tileid = firstgid + tileElement.getIntAttribute("id", 0);
                 MapTile tile = tileset.get(tileid);
                 if(tile == null){
-                    Element imageElement = tileElement.getChildByName("image");
+                    Xml imageElement = tileElement.getChildByName("image");
                     if(imageElement != null){
                         // Is a tilemap with individual images.
                         String regionName = imageElement.getAttribute("source");
@@ -341,23 +341,23 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
                     if(probability != null){
                         tile.getProperties().put("probability", probability);
                     }
-                    Element properties = tileElement.getChildByName("properties");
+                    Xml properties = tileElement.getChildByName("properties");
                     if(properties != null){
                         loadProperties(tile.getProperties(), properties);
                     }
                 }
             }
 
-            Seq<Element> tileElements = element.getChildrenByName("tile");
+            Seq<Xml> tileElements = element.getChildrenByName("tile");
 
-            for(Element tileElement : tileElements){
+            for(Xml tileElement : tileElements){
                 int localtid = tileElement.getIntAttribute("id", 0);
                 MapTile tile = tileset.get(firstgid + localtid);
                 if(tile != null){
-                    Element objectgroupElement = tileElement.getChildByName("objectgroup");
+                    Xml objectgroupElement = tileElement.getChildByName("objectgroup");
                     if(objectgroupElement != null){
 
-                        for(Element objectElement : objectgroupElement.getChildrenByName("object")){
+                        for(Xml objectElement : objectgroupElement.getChildrenByName("object")){
                             loadObject(map, tile, objectElement);
                         }
                     }
@@ -370,14 +370,14 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
                     if(probability != null){
                         tile.getProperties().put("probability", probability);
                     }
-                    Element properties = tileElement.getChildByName("properties");
+                    Xml properties = tileElement.getChildByName("properties");
                     if(properties != null){
                         loadProperties(tile.getProperties(), properties);
                     }
                 }
             }
 
-            Element properties = element.getChildByName("properties");
+            Xml properties = element.getChildByName("properties");
             if(properties != null){
                 loadProperties(tileset.getProperties(), properties);
             }

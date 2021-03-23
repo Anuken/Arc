@@ -9,6 +9,7 @@ include ":extensions:flabel"
 include ":extensions:packer"
 include ":extensions:g3d"
 include ":extensions:box2d"
+include ":extensions:tiled"
 
 include ":backends"
 include ":backends:backend-android"
