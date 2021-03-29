@@ -52,7 +52,7 @@ public interface ApplicationListener{
     }
 
     /**
-     * Called when the applications exits graacefully, either through `Core.app.exit()` or through a window closing.
+     * Called when the applications exits gracefully, either through `Core.app.exit()` or through a window closing.
      * Never called after a crash, unlike dispose().
      * */
     default void exit(){
