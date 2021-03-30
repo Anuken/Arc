@@ -6,6 +6,7 @@ public abstract class ApplicationCore implements ApplicationListener{
     protected ApplicationListener[] modules = {};
 
     public void add(ApplicationListener module){
+        //use an array instead of a seq/list, for faster iteration; modules do not get added often, so a resize each time is acceptable
         ApplicationListener[] news = new ApplicationListener[modules.length + 1];
         news[news.length - 1] = module;
         System.arraycopy(modules, 0, news, 0, modules.length);
