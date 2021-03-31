@@ -187,8 +187,6 @@ public class IOSApplication implements Application{
             for(ApplicationListener listener : listeners){
                 listener.pause();
             }
-        }
-        synchronized(listeners){
             for(ApplicationListener listener : listeners){
                 listener.exit();
             }
