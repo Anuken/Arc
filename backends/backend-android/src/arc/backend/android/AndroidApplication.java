@@ -16,8 +16,6 @@ import arc.func.*;
 import arc.struct.*;
 import arc.util.*;
 
-import java.util.concurrent.*;
-
 /**
  * An implementation of the {@link Application} interface for Android. Create an {@link Activity} that derives from this class. In
  * the {@link Activity#onCreate(Bundle)} method call the {@link #initialize(ApplicationListener)} method specifying the
@@ -30,7 +28,6 @@ public class AndroidApplication extends Activity implements Application{
     protected final Seq<ApplicationListener> listeners = new Seq<>();
     protected final Seq<Runnable> runnables = new Seq<>();
     protected final Seq<Runnable> executedRunnables = new Seq<>();
-    private final ExecutorService exec = Executors.newSingleThreadExecutor();
     private final IntMap<AndroidEventListener> eventListeners = new IntMap<>();
     private int lastEventNumber = 43;
     public Handler handler;
@@ -41,7 +38,6 @@ public class AndroidApplication extends Activity implements Application{
     protected Net net;
     protected Settings settings;
     protected ClipboardManager honeycombClipboard;
-    protected boolean firstResume = true;
     protected boolean useImmersiveMode = false;
     protected boolean hideStatusBar = false;
 
@@ -191,36 +187,13 @@ public class AndroidApplication extends Activity implements Application{
 
     @Override
     protected void onPause(){
-        //fixes obscure destruction bug
-        if(useImmersiveMode){
-            exec.submit(() -> {
-                try{
-                    Thread.sleep(100);
-                }catch(InterruptedException ignored){
-                }
-                graphics.onDrawFrame(null);
-            });
-        }
-
-        boolean isContinuous = graphics.isContinuousRendering();
-        boolean isContinuousEnforced = AndroidGraphics.enforceContinuousRendering;
-
-        // from here we don't want non continuous rendering
-        AndroidGraphics.enforceContinuousRendering = true;
-        graphics.setContinuousRendering(true);
-        // calls to setContinuousRendering(false) from other thread (ex: GLThread)
-        // will be ignored at this point...
-        graphics.pause();
-
         input.onPause();
 
         if(isFinishing()){
             graphics.destroy();
+        }else{
+            graphics.pause();
         }
-
-        AndroidGraphics.enforceContinuousRendering = isContinuousEnforced;
-        graphics.setContinuousRendering(isContinuous);
-        graphics.onPauseGLSurfaceView();
 
         super.onPause();
     }
@@ -236,16 +209,7 @@ public class AndroidApplication extends Activity implements Application{
         Core.net = net;
 
         input.onResume();
-
-        if(graphics != null){
-            graphics.onResumeGLSurfaceView();
-        }
-
-        if(!firstResume){
-            graphics.resume();
-        }else{
-            firstResume = false;
-        }
+        graphics.resume();
 
         super.onResume();
     }

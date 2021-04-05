@@ -26,7 +26,7 @@ import javax.microedition.khronos.opengles.*;
  */
 @SuppressWarnings("deprecation")
 public class AndroidGraphics extends Graphics implements Renderer{
-    private static final String LOG_TAG = "AndroidGraphics";
+    private static final String logTag = "AndroidGraphics";
 
     /**
      * When {@link AndroidApplication#onPause()} call
@@ -35,7 +35,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
      * {@link AndroidGraphics#pause} variable never be set to false. As a result, the {@link AndroidGraphics#pause()} method will
      * kill the current process to avoid ANR
      */
-    static volatile boolean enforceContinuousRendering = false;
     protected final AndroidApplicationConfiguration config;
     final GLSurfaceView20 view;
     protected long lastFrameTime = System.nanoTime();
@@ -44,7 +43,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
     protected long frameId = -1;
     protected int frames = 0;
     protected int fps;
-    protected WindowedMean mean = new WindowedMean(5);
     int width;
     int height;
     AndroidApplication app;
@@ -53,13 +51,9 @@ public class AndroidGraphics extends Graphics implements Renderer{
     EGLContext eglContext;
     GLVersion glVersion;
     String extensions;
-    volatile boolean created = false;
-    volatile boolean running = false;
-    volatile boolean pause = false;
-    volatile boolean resume = false;
-    volatile boolean destroy = false;
+    boolean created = false, resumed = false, running = false;
+    boolean firstResume = true;
     int[] value = new int[1];
-    Object synch = new Object();
     private float ppiX = 0;
     private float ppiY = 0;
     private float ppcX = 0;
@@ -97,18 +91,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
             view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
         view.setRenderer(this);
         return view;
-    }
-
-    public void onPauseGLSurfaceView(){
-        if(view != null){
-            view.onPause();
-        }
-    }
-
-    public void onResumeGLSurfaceView(){
-        if(view != null){
-            view.onResume();
-        }
     }
 
     protected EGLConfigChooser getEglConfigChooser(){
@@ -222,10 +204,10 @@ public class AndroidGraphics extends Graphics implements Renderer{
             Core.gl20 = gl20;
         }
 
-        Log.infoTag(LOG_TAG, "OGL renderer: " + gl.glGetString(GL10.GL_RENDERER));
-        Log.infoTag(LOG_TAG, "OGL vendor: " + gl.glGetString(GL10.GL_VENDOR));
-        Log.infoTag(LOG_TAG, "OGL version: " + gl.glGetString(GL10.GL_VERSION));
-        Log.infoTag(LOG_TAG, "OGL extensions: " + gl.glGetString(GL10.GL_EXTENSIONS));
+        Log.infoTag(logTag, "OGL renderer: " + gl.glGetString(GL10.GL_RENDERER));
+        Log.infoTag(logTag, "OGL vendor: " + gl.glGetString(GL10.GL_VENDOR));
+        Log.infoTag(logTag, "OGL version: " + gl.glGetString(GL10.GL_VERSION));
+        Log.infoTag(logTag, "OGL extensions: " + gl.glGetString(GL10.GL_EXTENSIONS));
     }
 
     @Override
@@ -259,7 +241,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
         Display display = app.getWindowManager().getDefaultDisplay();
         this.width = display.getWidth();
         this.height = display.getHeight();
-        this.mean = new WindowedMean(5);
         this.lastFrameTime = System.nanoTime();
 
         gl.glViewport(0, 0, this.width, this.height);
@@ -278,11 +259,11 @@ public class AndroidGraphics extends Graphics implements Renderer{
         getAttrib(egl, display, config, ArcEglConfigChooser.EGL_COVERAGE_SAMPLES_NV, 0));
         boolean coverageSample = getAttrib(egl, display, config, ArcEglConfigChooser.EGL_COVERAGE_SAMPLES_NV, 0) != 0;
 
-        Log.infoTag(LOG_TAG, "framebuffer: (" + r + ", " + g + ", " + b + ", " + a + ")");
-        Log.infoTag(LOG_TAG, "depthbuffer: (" + d + ")");
-        Log.infoTag(LOG_TAG, "stencilbuffer: (" + s + ")");
-        Log.infoTag(LOG_TAG, "samples: (" + samples + ")");
-        Log.infoTag(LOG_TAG, "coverage sampling: (" + coverageSample + ")");
+        Log.infoTag(logTag, "framebuffer: (" + r + ", " + g + ", " + b + ", " + a + ")");
+        Log.infoTag(logTag, "depthbuffer: (" + d + ")");
+        Log.infoTag(logTag, "stencilbuffer: (" + s + ")");
+        Log.infoTag(logTag, "samples: (" + samples + ")");
+        Log.infoTag(logTag, "coverage sampling: (" + coverageSample + ")");
 
         bufferFormat = new BufferFormat(r, g, b, a, d, s, samples, coverageSample);
     }
@@ -295,52 +276,67 @@ public class AndroidGraphics extends Graphics implements Renderer{
     }
 
     void resume(){
-        synchronized(synch){
-            running = true;
-            resume = true;
+        //do not call resume() on the first resume, which is called on application start
+        if(!firstResume){
+            view.onResume();
+            view.queueEvent(() -> {
+                running = true;
+                resumed = true;
+                Gl.reset();
+                Seq<ApplicationListener> listeners = app.getListeners();
+                synchronized(listeners){
+                    for(int i = 0, n = listeners.size; i < n; ++i){
+                        listeners.get(i).resume();
+                    }
+                }
+                Log.infoTag(logTag, "[resume]");
+            });
+        }else{
+            firstResume = false;
         }
     }
 
     void pause(){
-        synchronized(synch){
-            if(!running) return;
-            running = false;
-            pause = true;
-            while(pause){
-                try{
-                    // TODO: fix deadlock race condition with quick resume/pause.
-                    // Temporary workaround:
-                    // Android ANR time is 5 seconds, so wait up to 4 seconds before assuming
-                    // deadlock and killing process. This can easily be triggered by opening the
-                    // Recent Apps list and then double-tapping the Recent Apps button with
-                    // ~500ms between taps.
-                    synch.wait(4000);
-                    if(pause){
-                        // pause will never go false if onDrawFrame is never called by the GLThread
-                        // when entering this method, we MUST enforce continuous rendering
-                        Log.errTag(LOG_TAG, "waiting for pause synchronization took too long; assuming deadlock and killing");
-                        android.os.Process.killProcess(android.os.Process.myPid());
-                    }
-                }catch(InterruptedException ignored){
-                    Log.infoTag(LOG_TAG, "waiting for pause synchronization failed!");
+        view.queueEvent(() -> {
+            Seq<ApplicationListener> listeners = app.getListeners();
+            synchronized(listeners){
+                for(int i = 0, n = listeners.size; i < n; ++i){
+                    listeners.get(i).pause();
                 }
             }
-        }
+            Log.infoTag(logTag, "[pause]");
+
+            running = false;
+        });
+        view.onPause();
     }
 
     void destroy(){
-        synchronized(synch){
+        view.queueEvent(() -> {
             running = false;
-            destroy = true;
 
-            while(destroy){
-                try{
-                    synch.wait();
-                }catch(InterruptedException ex){
-                    Log.infoTag(LOG_TAG, "waiting for destroy synchronization failed!");
+            Seq<ApplicationListener> listeners = app.getListeners();
+            synchronized(listeners){
+                //call pause first
+                for(int i = 0, n = listeners.size; i < n; ++i){
+                    listeners.get(i).pause();
+                }
+                for(int i = 0, n = listeners.size; i < n; ++i){
+                    try{
+                        listeners.get(i).exit();
+                        listeners.get(i).dispose();
+                    }catch(Exception e){
+                        //suppress dispose errors
+                        Log.err(e);
+                    }
                 }
             }
-        }
+
+            app.dispose();
+            Log.infoTag(logTag, "[destroy]");
+            //force exit to reset statics and free resources
+            System.exit(0);
+        });
     }
 
     @Override
@@ -349,54 +345,15 @@ public class AndroidGraphics extends Graphics implements Renderer{
         deltaTime = (time - lastFrameTime) / 1000000000.0f;
         lastFrameTime = time;
 
-        // After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
-        if(!resume){
-            mean.add(deltaTime);
-        }else{
+        //After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
+        if(resumed){
             deltaTime = 0;
+            resumed = false;
         }
 
         if(Mathf.equal(deltaTime, 0f)) deltaTime = 1f / 60f;
 
-        boolean lrunning;
-        boolean lpause;
-        boolean ldestroy;
-        boolean lresume;
-
-        synchronized(synch){
-            lrunning = running;
-            lpause = pause;
-            ldestroy = destroy;
-            lresume = resume;
-
-            if(resume){
-                resume = false;
-            }
-
-            if(pause){
-                pause = false;
-                synch.notifyAll();
-            }
-
-            if(destroy){
-                destroy = false;
-                synch.notifyAll();
-            }
-        }
-
-        if(lresume){
-            Gl.reset();
-            Seq<ApplicationListener> listeners = app.getListeners();
-            synchronized(listeners){
-                for(int i = 0, n = listeners.size; i < n; ++i){
-                    listeners.get(i).resume();
-                }
-            }
-            Log.infoTag(LOG_TAG, "resumed");
-        }
-
-        if(lrunning){
-
+        if(running){
             synchronized(app.getRunnables()){
                 app.getExecutedRunnables().clear();
                 app.getExecutedRunnables().addAll(app.getRunnables());
@@ -419,34 +376,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
             }
 
             ((AndroidInput)Core.input).processDevices();
-        }
-
-        if(lpause){
-            Seq<ApplicationListener> listeners = app.getListeners();
-            synchronized(listeners){
-                for(int i = 0, n = listeners.size; i < n; ++i){
-                    listeners.get(i).pause();
-                }
-            }
-            Log.infoTag(LOG_TAG, "paused");
-        }
-
-        if(ldestroy){
-            Seq<ApplicationListener> listeners = app.getListeners();
-            synchronized(listeners){
-                for(int i = 0, n = listeners.size; i < n; ++i){
-                    try{
-                        listeners.get(i).exit();
-                        listeners.get(i).dispose();
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }
-            app.dispose();
-            Log.infoTag(LOG_TAG, "destroyed");
-            //force exit to reset statics and free resources
-            System.exit(0);
         }
 
         if(time - frameStart > 1000000000){
@@ -598,9 +527,8 @@ public class AndroidGraphics extends Graphics implements Renderer{
     public void setContinuousRendering(boolean isContinuous){
         if(view != null){
             // ignore setContinuousRendering(false) while pausing
-            this.isContinuous = enforceContinuousRendering || isContinuous;
+            this.isContinuous = isContinuous;
             view.setRenderMode(this.isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-            mean.clear();
         }
     }
 
