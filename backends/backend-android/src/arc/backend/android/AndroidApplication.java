@@ -44,8 +44,6 @@ public class AndroidApplication extends Activity implements Application{
     protected boolean firstResume = true;
     protected boolean useImmersiveMode = false;
     protected boolean hideStatusBar = false;
-    private int wasFocusChanged = -1;
-    private boolean isWaitingForAudio = false;
 
     static{
         ArcNativesLoader.load();
@@ -180,14 +178,6 @@ public class AndroidApplication extends Activity implements Application{
         super.onWindowFocusChanged(hasFocus);
         useImmersiveMode(this.useImmersiveMode);
         hideStatusBar(this.hideStatusBar);
-        if(hasFocus){
-            this.wasFocusChanged = 1;
-            if(this.isWaitingForAudio){
-                this.isWaitingForAudio = false;
-            }
-        }else{
-            this.wasFocusChanged = 0;
-        }
     }
 
     @TargetApi(19)
@@ -230,7 +220,6 @@ public class AndroidApplication extends Activity implements Application{
 
         AndroidGraphics.enforceContinuousRendering = isContinuousEnforced;
         graphics.setContinuousRendering(isContinuous);
-
         graphics.onPauseGLSurfaceView();
 
         super.onPause();
@@ -258,10 +247,6 @@ public class AndroidApplication extends Activity implements Application{
             firstResume = false;
         }
 
-        this.isWaitingForAudio = true;
-        if(this.wasFocusChanged == 1 || this.wasFocusChanged == -1){
-            this.isWaitingForAudio = false;
-        }
         super.onResume();
     }
 
