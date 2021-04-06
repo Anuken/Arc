@@ -380,7 +380,7 @@ public class Settings{
             values.put(name, object);
             modified = true;
         }else{
-            throw new IllegalArgumentException("Invalid object stored: " + (object == null ? null : object.getClass()) + ". Use putObject() for serialization.");
+            throw new IllegalArgumentException("Invalid object stored: " + (object == null ? null : object.getClass()) + ".");
         }
     }
 
