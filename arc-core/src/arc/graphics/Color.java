@@ -964,7 +964,7 @@ public class Color{
 
     public Color lerp(Color[] colors, float s){
         int l = colors.length;
-        Color a = colors[(int)(s * (l - 1))];
+        Color a = colors[Mathf.clamp((int)(s * (l - 1)), 0, colors.length - 1)];
         Color b = colors[Mathf.clamp((int)(s * (l - 1) + 1), 0, l - 1)];
 
         float n = s * (l - 1) - (int)(s * (l - 1));
