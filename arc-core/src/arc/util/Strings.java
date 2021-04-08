@@ -461,6 +461,7 @@ public class Strings{
         int len = value.length();
         if(len == 0) return defaultValue;
 
+        int sign = 1;
         int start = 0, end = len;
         char last = value.charAt(len - 1), first = value.charAt(0);
         if(last == 'F' || last == 'f' || last == '.'){
@@ -468,6 +469,10 @@ public class Strings{
         }
         if(first == '+'){
             start = 1;
+        }
+        if(first == '-'){
+            start = 1;
+            sign = -1;
         }
 
         int dot = -1, e = -1;
@@ -479,16 +484,11 @@ public class Strings{
 
         if(dot != -1 && dot < end){
             //negation as first character
-            if(dot == 1 && first == '-'){
-                long dec = parseLong(value, 10, dot + 1, end, Long.MIN_VALUE);
-                if(dec < 0) return defaultValue;
-                return -dec / Math.pow(10, (end - dot - 1));
-            }
             long whole = start == dot ? 0 : parseLong(value, 10, start, dot, Long.MIN_VALUE);
             if(whole == Long.MIN_VALUE) return defaultValue;
             long dec = parseLong(value, 10, dot + 1, end, Long.MIN_VALUE);
             if(dec < 0) return defaultValue;
-            return whole + Math.copySign(dec / Math.pow(10, (end - dot - 1)), whole);
+            return (whole + Math.copySign(dec / Math.pow(10, (end - dot - 1)), whole)) * sign;
         }
 
         //check scientific notation
@@ -497,12 +497,12 @@ public class Strings{
             if(whole == Long.MIN_VALUE) return defaultValue;
             long power = parseLong(value, 10, e + 1, end, Long.MIN_VALUE);
             if(power == Long.MIN_VALUE) return defaultValue;
-            return whole * Mathf.pow(10, power);
+            return whole * Mathf.pow(10, power) * sign;
         }
 
         //parse as standard integer
         long out = parseLong(value, 10, start, end, Long.MIN_VALUE);
-        return out == Long.MIN_VALUE ? defaultValue : out;
+        return out == Long.MIN_VALUE ? defaultValue : out*sign;
     }
 
     /** Returns Integer.MIN_VALUE if parsing failed. */

@@ -222,10 +222,18 @@ public class Queue<T> implements Iterable<T>, Eachable<T>{
         return -1;
     }
 
+    public boolean remove(Boolf<T> value){
+        int i = indexOf(value);
+        if(i != -1){
+            removeIndex(i);
+            return true;
+        }
+        return false;
+    }
+
     public boolean remove(T value){
         return remove(value, false);
     }
-
 
     /**
      * Removes the first instance of the specified value in the queue.
