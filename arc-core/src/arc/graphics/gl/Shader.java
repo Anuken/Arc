@@ -47,12 +47,6 @@ public class Shader implements Disposable{
     public static final String mixColorAttribute = "a_mix_color";
     /** default name for texcoords attributes, append texture unit number **/
     public static final String texcoordAttribute = "a_texCoord";
-    /** default name for tangent attribute **/
-    public static final String tangentAttribute = "a_tangent";
-    /** default name for binormal attribute **/
-    public static final String binormalAttribute = "a_binormal";
-    /** default name for boneweight attribute **/
-    public static final String boneweightAttribute = "a_boneWeight";
     /** flag indicating whether attributes & uniforms must be present at all times **/
     public static boolean pedantic = false;
     /**
@@ -134,7 +128,7 @@ public class Shader implements Disposable{
         }
     }
 
-    /**Applies all relevant uniforms, if applicable. Should be overriden.*/
+    /**Applies all relevant uniforms, if applicable. Should be overridden.*/
     public void apply(){}
 
     protected String preprocess(String source, boolean fragment){
