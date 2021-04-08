@@ -733,8 +733,7 @@ public class AssetManager implements Disposable{
     /** Clears and disposes all assets and the preloading queue. */
     public synchronized void clear(){
         loadQueue.clear();
-        while(!update())
-            ;
+        while(!update());
 
         ObjectIntMap<String> dependencyCount = new ObjectIntMap<>();
         while(assetTypes.size > 0){
