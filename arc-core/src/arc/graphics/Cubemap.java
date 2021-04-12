@@ -99,17 +99,6 @@ public class Cubemap extends GLTexture{
         return 0;
     }
 
-    /** Disposes all resources associated with the cubemap */
-    @Override
-    public void dispose(){
-        // this is a hack. reason: we have to set the glHandle to 0 for textures that are
-        // reloaded through the asset manager as we first remove (and thus dispose) the texture
-        // and then reload it. the glHandle is set to 0 in invalidateAllTextures prior to
-        // removal from the asset manager.
-        if(glHandle == 0) return;
-        delete();
-    }
-
     /** Enum to identify each side of a Cubemap */
     public enum CubemapSide{
         /** The positive X and first side of the cubemap */

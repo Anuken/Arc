@@ -203,16 +203,11 @@ public abstract class GLTexture implements Disposable{
         Gl.texParameteri(glTarget, GL20.GL_TEXTURE_MAG_FILTER, magFilter.glEnum);
     }
 
-    /** Destroys the OpenGL Texture as specified by the glHandle. */
-    protected void delete(){
+    @Override
+    public void dispose(){
         if(glHandle != 0){
             Gl.deleteTexture(glHandle);
             glHandle = 0;
         }
-    }
-
-    @Override
-    public void dispose(){
-        delete();
     }
 }

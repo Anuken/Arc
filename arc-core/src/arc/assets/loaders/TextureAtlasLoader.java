@@ -27,7 +27,7 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
     @Override
     public TextureAtlas load(AssetManager assetManager, String fileName, Fi file, TextureAtlasParameter parameter){
         for(AtlasPage page : data.getPages()){
-            page.texture = assetManager.get(page.textureFile.path().replaceAll("\\\\", "/"), Texture.class);
+            page.texture = assetManager.get(page.textureFile.path(), Texture.class);
         }
 
         TextureAtlas atlas = new TextureAtlas(data);

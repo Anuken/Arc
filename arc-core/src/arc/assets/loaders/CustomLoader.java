@@ -1,15 +1,15 @@
 package arc.assets.loaders;
 
+import arc.*;
 import arc.assets.*;
-import arc.assets.loaders.resolvers.*;
-import arc.struct.*;
 import arc.files.*;
+import arc.struct.*;
 
 public abstract class CustomLoader extends AsynchronousAssetLoader{
     public Runnable loaded = () -> {};
 
     public CustomLoader(){
-        super(new InternalFileHandleResolver());
+        super(Core.files::internal);
     }
 
     @Override

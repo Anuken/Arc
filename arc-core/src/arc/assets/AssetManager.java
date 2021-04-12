@@ -1,13 +1,13 @@
 package arc.assets;
 
+import arc.*;
 import arc.assets.loaders.*;
-import arc.assets.loaders.resolvers.*;
 import arc.audio.*;
-import arc.struct.*;
 import arc.files.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.async.*;
 
@@ -37,7 +37,7 @@ public class AssetManager implements Disposable{
 
     /** Creates a new AssetManager with all default loaders. */
     public AssetManager(){
-        this(new InternalFileHandleResolver());
+        this(Core.files::internal);
     }
 
     /** Creates a new AssetManager with all default loaders. */
@@ -85,7 +85,7 @@ public class AssetManager implements Disposable{
         if(assetsByType == null) throw new ArcRuntimeException("Asset not loaded: " + fileName);
         RefCountedContainer assetContainer = assetsByType.get(fileName);
         if(assetContainer == null) throw new ArcRuntimeException("Asset not loaded: " + fileName);
-        T asset = assetContainer.getObject(type);
+        T asset = (T)assetContainer.object;
         if(asset == null) throw new ArcRuntimeException("Asset not loaded: " + fileName);
         return asset;
     }
@@ -100,7 +100,7 @@ public class AssetManager implements Disposable{
         if(assetsByType == null) throw new ArcRuntimeException("Asset not loaded: " + fileName);
         RefCountedContainer assetContainer = assetsByType.get(fileName);
         if(assetContainer == null) throw new ArcRuntimeException("Asset not loaded: " + fileName);
-        T asset = assetContainer.getObject(type);
+        T asset = (T)assetContainer.object;
         if(asset == null) throw new ArcRuntimeException("Asset not loaded: " + fileName);
         return asset;
     }
@@ -113,7 +113,7 @@ public class AssetManager implements Disposable{
         ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
         if(assetsByType != null){
             for(ObjectMap.Entry<String, RefCountedContainer> asset : assetsByType.entries()){
-                out.add(asset.value.getObject(type));
+                out.add((T)asset.value.object);
             }
         }
         return out;
@@ -188,12 +188,12 @@ public class AssetManager implements Disposable{
         RefCountedContainer assetRef = assets.get(type).get(fileName);
 
         // if it is reference counted, decrement ref count and check if we can really get rid of it.
-        assetRef.decRefCount();
-        if(assetRef.getRefCount() <= 0){
+        assetRef.count--;
+        if(assetRef.count <= 0){
 
             // if it is disposable dispose it
-            if(assetRef.getObject(Object.class) instanceof Disposable)
-                ((Disposable)assetRef.getObject(Object.class)).dispose();
+            if((Object)assetRef.object instanceof Disposable)
+                ((Disposable)(Object)assetRef.object).dispose();
 
             // remove the asset from the manager.
             assetTypes.remove(fileName);
@@ -208,7 +208,7 @@ public class AssetManager implements Disposable{
             }
         }
         // remove dependencies if ref count < 0
-        if(assetRef.getRefCount() <= 0){
+        if(assetRef.count <= 0){
             assetDependencies.remove(fileName);
         }
     }
@@ -221,7 +221,7 @@ public class AssetManager implements Disposable{
         ObjectMap<String, RefCountedContainer> assetsByType = assets.get(asset.getClass());
         if(assetsByType == null) return false;
         for(String fileName : assetsByType.keys()){
-            T otherAsset = (T)assetsByType.get(fileName).getObject(Object.class);
+            T otherAsset = (T)(Object)assetsByType.get(fileName).object;
             if(otherAsset == asset || asset.equals(otherAsset)) return true;
         }
         return false;
@@ -235,7 +235,7 @@ public class AssetManager implements Disposable{
         for(Class assetType : assets.keys()){
             ObjectMap<String, RefCountedContainer> assetsByType = assets.get(assetType);
             for(String fileName : assetsByType.keys()){
-                T otherAsset = (T)assetsByType.get(fileName).getObject(Object.class);
+                T otherAsset = (T)(Object)assetsByType.get(fileName).object;
                 if(otherAsset == asset || asset.equals(otherAsset)) return fileName;
             }
         }
@@ -268,7 +268,7 @@ public class AssetManager implements Disposable{
         if(assetsByType == null) return false;
         RefCountedContainer assetContainer = assetsByType.get(fileName);
         if(assetContainer == null) return false;
-        return assetContainer.getObject(type) != null;
+        return (Object)assetContainer.object != null;
     }
 
     /**
@@ -347,7 +347,7 @@ public class AssetManager implements Disposable{
      */
     public synchronized AssetDescriptor load(Loadable load){
         if(getLoader(load.getClass()) == null){
-            setLoader(load.getClass(), new AsynchronousAssetLoader(new InternalFileHandleResolver()){
+            setLoader(load.getClass(), new AsynchronousAssetLoader(Core.files::internal){
                 @Override
                 public void loadAsync(AssetManager manager, String fileName, Fi file, AssetLoaderParameters parameter){
                     load.loadAsync();
@@ -521,7 +521,7 @@ public class AssetManager implements Disposable{
         if(isLoaded(dependendAssetDesc.fileName)){
             Class type = assetTypes.get(dependendAssetDesc.fileName);
             RefCountedContainer assetRef = assets.get(type).get(dependendAssetDesc.fileName);
-            assetRef.incRefCount();
+            assetRef.count++;
             incrementRefCountedDependencies(dependendAssetDesc.fileName);
         }
         // else add a new task for the asset.
@@ -542,7 +542,7 @@ public class AssetManager implements Disposable{
         if(isLoaded(assetDesc.fileName)){
             Class type = assetTypes.get(assetDesc.fileName);
             RefCountedContainer assetRef = assets.get(type).get(assetDesc.fileName);
-            assetRef.incRefCount();
+            assetRef.count++;
             incrementRefCountedDependencies(assetDesc.fileName);
             if(assetDesc.params != null && assetDesc.params.loadedCallback != null){
                 assetDesc.params.loadedCallback.finishedLoading(this, assetDesc.fileName, assetDesc.type);
@@ -634,7 +634,7 @@ public class AssetManager implements Disposable{
         for(String dependency : dependencies){
             Class type = assetTypes.get(dependency);
             RefCountedContainer assetRef = assets.get(type).get(dependency);
-            assetRef.incRefCount();
+            assetRef.count++;
             incrementRefCountedDependencies(dependency);
         }
     }
@@ -778,7 +778,7 @@ public class AssetManager implements Disposable{
     public synchronized int getReferenceCount(String fileName){
         Class type = assetTypes.get(fileName);
         if(type == null) throw new ArcRuntimeException("Asset not loaded: " + fileName);
-        return assets.get(type).get(fileName).getRefCount();
+        return assets.get(type).get(fileName).count;
     }
 
     /**
@@ -787,7 +787,7 @@ public class AssetManager implements Disposable{
     public synchronized void setReferenceCount(String fileName, int refCount){
         Class type = assetTypes.get(fileName);
         if(type == null) throw new ArcRuntimeException("Asset not loaded: " + fileName);
-        assets.get(type).get(fileName).setRefCount(refCount);
+        assets.get(type).get(fileName).count = refCount;
     }
 
     /** @return a string containing ref count and dependency information for all assets. */
@@ -804,7 +804,7 @@ public class AssetManager implements Disposable{
             sb.append(type.getSimpleName());
 
             sb.append(", refs: ");
-            sb.append(assetRef.getRefCount());
+            sb.append(assetRef.count);
 
             if(dependencies != null){
                 sb.append(", deps: [");
@@ -834,4 +834,13 @@ public class AssetManager implements Disposable{
         return assetTypes.get(fileName);
     }
 
+    static class RefCountedContainer{
+        Object object;
+        int count = 1;
+
+        public RefCountedContainer(Object object){
+            if(object == null) throw new IllegalArgumentException("Object must not be null");
+            this.object = object;
+        }
+    }
 }

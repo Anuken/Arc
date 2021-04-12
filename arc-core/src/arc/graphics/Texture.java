@@ -115,13 +115,6 @@ public class Texture extends GLTexture{
         return data;
     }
 
-    /** Disposes all resources associated with the texture */
-    @Override
-    public void dispose(){
-        if(glHandle == 0) return;
-        delete();
-    }
-
     @Override
     public boolean isDisposed(){
         return glHandle == 0;

@@ -1,7 +1,6 @@
 package arc.assets.loaders;
 
 import arc.assets.*;
-import arc.graphics.TextureData.*;
 import arc.struct.*;
 import arc.files.*;
 import arc.graphics.Pixmap.*;
