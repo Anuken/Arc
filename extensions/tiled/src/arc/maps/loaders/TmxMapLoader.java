@@ -1,11 +1,11 @@
 package arc.maps.loaders;
 
+import arc.*;
 import arc.assets.AssetDescriptor;
 import arc.assets.AssetManager;
 import arc.assets.loaders.FileHandleResolver;
 import arc.assets.loaders.TextureLoader;
 import arc.assets.loaders.TextureLoader.TextureParameter;
-import arc.assets.loaders.resolvers.InternalFileHandleResolver;
 import arc.maps.loaders.XmlReader.*;
 import arc.struct.Seq;
 import arc.struct.ObjectMap;
@@ -24,7 +24,7 @@ import java.io.IOException;
 public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters>{
 
     public TmxMapLoader(){
-        super(new InternalFileHandleResolver());
+        super(Core.files::internal);
     }
 
     /**

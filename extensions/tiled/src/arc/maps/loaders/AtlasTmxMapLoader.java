@@ -1,9 +1,9 @@
 package arc.maps.loaders;
 
+import arc.*;
 import arc.assets.AssetDescriptor;
 import arc.assets.AssetManager;
 import arc.assets.loaders.FileHandleResolver;
-import arc.assets.loaders.resolvers.InternalFileHandleResolver;
 import arc.maps.loaders.XmlReader.*;
 import arc.struct.Seq;
 import arc.struct.ObjectMap;
@@ -31,7 +31,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
     protected Seq<Texture> trackedTextures = new Seq<>();
 
     public AtlasTmxMapLoader(){
-        super(new InternalFileHandleResolver());
+        super(Core.files::internal);
     }
 
     public AtlasTmxMapLoader(FileHandleResolver resolver){
