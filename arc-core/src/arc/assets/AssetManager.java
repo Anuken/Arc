@@ -192,8 +192,8 @@ public class AssetManager implements Disposable{
         if(assetRef.count <= 0){
 
             // if it is disposable dispose it
-            if((Object)assetRef.object instanceof Disposable)
-                ((Disposable)(Object)assetRef.object).dispose();
+            if(assetRef.object instanceof Disposable)
+                ((Disposable)assetRef.object).dispose();
 
             // remove the asset from the manager.
             assetTypes.remove(fileName);
@@ -221,7 +221,7 @@ public class AssetManager implements Disposable{
         ObjectMap<String, RefCountedContainer> assetsByType = assets.get(asset.getClass());
         if(assetsByType == null) return false;
         for(String fileName : assetsByType.keys()){
-            T otherAsset = (T)(Object)assetsByType.get(fileName).object;
+            T otherAsset = (T)assetsByType.get(fileName).object;
             if(otherAsset == asset || asset.equals(otherAsset)) return true;
         }
         return false;
@@ -235,7 +235,7 @@ public class AssetManager implements Disposable{
         for(Class assetType : assets.keys()){
             ObjectMap<String, RefCountedContainer> assetsByType = assets.get(assetType);
             for(String fileName : assetsByType.keys()){
-                T otherAsset = (T)(Object)assetsByType.get(fileName).object;
+                T otherAsset = (T)assetsByType.get(fileName).object;
                 if(otherAsset == asset || asset.equals(otherAsset)) return fileName;
             }
         }
@@ -268,7 +268,7 @@ public class AssetManager implements Disposable{
         if(assetsByType == null) return false;
         RefCountedContainer assetContainer = assetsByType.get(fileName);
         if(assetContainer == null) return false;
-        return (Object)assetContainer.object != null;
+        return assetContainer.object != null;
     }
 
     /**
