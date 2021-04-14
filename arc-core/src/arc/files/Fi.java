@@ -88,13 +88,13 @@ public class Fi{
         if(file.exists()){
             File[] files = file.listFiles();
             if(files != null){
-                for(int i = 0, n = files.length; i < n; i++){
-                    if(!files[i].isDirectory())
-                        files[i].delete();
+                for(File value : files){
+                    if(!value.isDirectory())
+                        value.delete();
                     else if(preserveTree)
-                        emptyDirectory(files[i], true);
+                        emptyDirectory(value, true);
                     else
-                        deleteDirectory(files[i]);
+                        deleteDirectory(value);
                 }
             }
         }
@@ -611,8 +611,7 @@ public class Fi{
         if(relativePaths == null) return new Fi[0];
         Fi[] handles = new Fi[relativePaths.length];
         int count = 0;
-        for(int i = 0, n = relativePaths.length; i < n; i++){
-            String path = relativePaths[i];
+        for(String path : relativePaths){
             Fi child = child(path);
             if(!filter.accept(child.file())) continue;
             handles[count] = child;
@@ -640,8 +639,7 @@ public class Fi{
         if(relativePaths == null) return new Fi[0];
         Fi[] handles = new Fi[relativePaths.length];
         int count = 0;
-        for(int i = 0, n = relativePaths.length; i < n; i++){
-            String path = relativePaths[i];
+        for(String path : relativePaths){
             if(!filter.accept(file, path)) continue;
             handles[count] = child(path);
             count++;
@@ -666,8 +664,7 @@ public class Fi{
         if(relativePaths == null) return new Fi[0];
         Fi[] handles = new Fi[relativePaths.length];
         int count = 0;
-        for(int i = 0, n = relativePaths.length; i < n; i++){
-            String path = relativePaths[i];
+        for(String path : relativePaths){
             if(!path.endsWith(suffix)) continue;
             handles[count] = child(path);
             count++;

@@ -31,18 +31,21 @@ public class AndroidFi extends Fi{
         this.assets = assets;
     }
 
+    @Override
     public Fi child(String name){
         name = name.replace('\\', '/');
         if(file.getPath().length() == 0) return new AndroidFi(assets, new File(name), type);
         return new AndroidFi(assets, new File(file, name), type);
     }
 
+    @Override
     public Fi sibling(String name){
         name = name.replace('\\', '/');
         if(file.getPath().length() == 0) throw new ArcRuntimeException("Cannot get the sibling of the root.");
         return Core.files.get(new File(file.getParent(), name).getPath(), type); //this way we can find the sibling even if it's inside the obb
     }
 
+    @Override
     public Fi parent(){
         File parent = file.getParentFile();
         if(parent == null){
@@ -54,6 +57,7 @@ public class AndroidFi extends Fi{
         return new AndroidFi(assets, parent, type);
     }
 
+    @Override
     public InputStream read(){
         if(type == FileType.internal){
             try{
@@ -65,6 +69,7 @@ public class AndroidFi extends Fi{
         return super.read();
     }
 
+    @Override
     public ByteBuffer map(FileChannel.MapMode mode){
         if(type == FileType.internal){
             FileInputStream input = null;
@@ -85,6 +90,7 @@ public class AndroidFi extends Fi{
         return super.map(mode);
     }
 
+    @Override
     public Fi[] list(){
         if(type == FileType.internal){
             try{
@@ -100,6 +106,7 @@ public class AndroidFi extends Fi{
         return super.list();
     }
 
+    @Override
     public Fi[] list(FileFilter filter){
         if(type == FileType.internal){
             try{
@@ -126,6 +133,7 @@ public class AndroidFi extends Fi{
         return super.list(filter);
     }
 
+    @Override
     public Fi[] list(FilenameFilter filter){
         if(type == FileType.internal){
             try{
@@ -151,6 +159,7 @@ public class AndroidFi extends Fi{
         return super.list(filter);
     }
 
+    @Override
     public Fi[] list(String suffix){
         if(type == FileType.internal){
             try{
@@ -176,6 +185,7 @@ public class AndroidFi extends Fi{
         return super.list(suffix);
     }
 
+    @Override
     public boolean isDirectory(){
         if(type == FileType.internal){
             try{
@@ -187,6 +197,7 @@ public class AndroidFi extends Fi{
         return super.isDirectory();
     }
 
+    @Override
     public boolean exists(){
         if(type == FileType.internal){
             String fileName = file.getPath();
@@ -205,6 +216,7 @@ public class AndroidFi extends Fi{
         return super.exists();
     }
 
+    @Override
     public long length(){
         if(type == FileType.internal){
             try(AssetFileDescriptor fileDescriptor = assets.openFd(file.getPath())){
@@ -215,10 +227,7 @@ public class AndroidFi extends Fi{
         return super.length();
     }
 
-    public long lastModified(){
-        return super.lastModified();
-    }
-
+    @Override
     public File file(){
         if(type == FileType.local) return new File(Core.files.getLocalStoragePath(), file.getPath());
         return super.file();
