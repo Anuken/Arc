@@ -173,6 +173,14 @@ public class Queue<T> implements Iterable<T>, Eachable<T>{
         return result;
     }
 
+    public boolean contains(T value){
+        return contains(value, true);
+    }
+
+    public boolean contains(T value, boolean identity){
+        return indexOf(value, identity) != -1;
+    }
+
     /**
      * Returns the index of first occurrence of value in the queue, or -1 if no such value exists.
      * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
