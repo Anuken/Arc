@@ -33,12 +33,9 @@ public final class DiscordRPC{
         DiscordRPC.clientId = clientId;
         String version = System.getProperty("java.version");
 
-        int major;
-        if(version.contains(".")){
-            major = Strings.parseInt(version.substring(0, version.indexOf('.')));
-        }else{
-            major = Strings.parseInt(version);
-        }
+        int major = version.contains(".") ?
+            Strings.parseInt(version.substring(0, version.indexOf('.'))) :
+            Strings.parseInt(version);
 
         //on unix, this is supported on java >= 16 (unix sockets)
         //on windows, this is supported on java >= 9 (ProcessHandle#pid())
