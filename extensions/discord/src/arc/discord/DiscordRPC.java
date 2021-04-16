@@ -11,10 +11,15 @@ import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
 
+/**
+ * Simple class for handling Discord Rich Presence.
+ * Implementation based on https://github.com/jagrosh/DiscordIPC
+ * This the only know implementation that is pure Java; on Linux/Mac, this uses Java 16's new Unix sockets.
+ * */
 public final class DiscordRPC{
     private static int pid;
     private static long clientId;
-    private static volatile Pipe pipe;
+    private static Pipe pipe;
 
     public static Cons<String> onActivityJoin = secret -> {};
     public static Cons<String> onActivitySpectate = secret -> {};
@@ -23,12 +28,7 @@ public final class DiscordRPC{
     public static Cons<Throwable> onDisconnected = error -> {};
     public static Cons<Jval> onClose = json -> {};
 
-    /**
-     * Opens the connection between the IPCClient and Discord.<p>
-     *
-     * <b>This must be called before any data is exchanged between the IPCClient and Discord.</b>
-     * @throws IllegalStateException There is an open connection on this IPCClient.
-     */
+    /** Call before sending any presence updates. */
     public static void connect(long clientId) throws Exception{
         DiscordRPC.clientId = clientId;
         String version = System.getProperty("java.version");
@@ -95,6 +95,7 @@ public final class DiscordRPC{
         t.start();
     }
 
+    /** Updates the displayed rich presence. */
     public static void send(RichPresence presence){
         checkConnected(true);
         pipe.send(PacketOp.frame,
@@ -199,8 +200,8 @@ public final class DiscordRPC{
                     pipe.send(PacketOp.handshake, Jval.newObject().put("v", version).put("client_id", Long.toString(clientId)));
                     pipe.status = PipeStatus.connected;
 
-                    //TODO log data
-                    Packet p = pipe.read();
+                    //discard read packet
+                    pipe.read();
 
                     return pipe;
                 }catch(IOException ignored){
@@ -351,12 +352,8 @@ public final class DiscordRPC{
     public static class WindowsPipe extends Pipe{
         private final RandomAccessFile file;
 
-        WindowsPipe(String location){
-            try{
-                this.file = new RandomAccessFile(location, "rw");
-            }catch(FileNotFoundException e){
-                throw new RuntimeException(e);
-            }
+        WindowsPipe(String location) throws Exception{
+            this.file = new RandomAccessFile(location, "rw");
         }
 
         @Override
