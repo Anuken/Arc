@@ -1,7 +1,5 @@
 package arc.discord;
 
-import arc.discord.IPCClient.Packet.*;
-import arc.discord.IPCClient.Pipe.*;
 import arc.func.*;
 import arc.util.*;
 import arc.util.serialization.*;
@@ -13,11 +11,10 @@ import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
 
-public final class IPCClient{
+public final class DiscordRPC{
     private static int pid;
     private static long clientId;
     private static volatile Pipe pipe;
-    private static Thread readThread = null;
 
     public static Cons<String> onActivityJoin = secret -> {};
     public static Cons<String> onActivitySpectate = secret -> {};
@@ -29,12 +26,11 @@ public final class IPCClient{
     /**
      * Opens the connection between the IPCClient and Discord.<p>
      *
-     * <b>This must be called before any data is exchanged between the
-     * IPCClient and Discord.</b>
+     * <b>This must be called before any data is exchanged between the IPCClient and Discord.</b>
      * @throws IllegalStateException There is an open connection on this IPCClient.
      */
     public static void connect(long clientId) throws Exception{
-        IPCClient.clientId = clientId;
+        DiscordRPC.clientId = clientId;
         String version = System.getProperty("java.version");
 
         int major;
@@ -58,93 +54,12 @@ public final class IPCClient{
         pipe = Pipe.openPipe(clientId);
 
         onReady.run();
-        startReading();
-    }
 
-    /**
-     * Sends a {@link RichPresence} to the Discord client.<p>
-     * <p>
-     * This is where the IPCClient will officially display
-     * a Rich Presence in the Discord client.<p>
-     * <p>
-     * Sending this again will overwrite the last provided
-     * {@link RichPresence}.
-     * @param presence The {@link RichPresence} to send.
-     * @throws IllegalStateException If a connection was not made prior to invoking
-     * this method.
-     * @see RichPresence
-     */
-    public static void send(RichPresence presence){
-        checkConnected(true);
-        pipe.send(OpCode.frame,
-        Jval.newObject()
-        .put("cmd", "SET_ACTIVITY")
-        .put("args", Jval.newObject()
-        .put("pid", pid)
-        .put("activity", presence == null ? null : presence.toJson())));
-    }
-
-    /**
-     * Adds an event {@link Event} to this IPCClient.<br>
-     * If the provided {@link Event} is added more than once,
-     * it does nothing.
-     * Once added, there is no way to remove the subscription
-     * other than {@link #close() closing} the connection
-     * and creating a new one.
-     * @param sub The event {@link Event} to add.
-     * @throws IllegalStateException If a connection was not made prior to invoking
-     * this method.
-     */
-    public static void subscribe(Event sub){
-        checkConnected(true);
-        if(!sub.subscribable)
-            throw new IllegalStateException("Cannot subscribe to " + sub + " event!");
-        pipe.send(OpCode.frame,
-        Jval.newObject()
-        .put("cmd", "SUBSCRIBE")
-        .put("evt", sub.value));
-    }
-
-    public static PipeStatus getStatus(){
-        return pipe == null ? PipeStatus.unitialized : pipe.status;
-    }
-
-    /**
-     * Attempts to close an open connection to Discord.<br>
-     * @throws IllegalStateException If a connection was not made prior to invoking
-     * this method.
-     */
-    public static void close(){
-        checkConnected(true);
-
-        try{
-            pipe.close();
-        }catch(IOException ignored){
-        }
-    }
-
-    /**
-     * Makes sure that the client is connected (or not) depending on if it should
-     * for the current state.
-     * @param connected Whether to check in the context of the IPCClient being
-     * connected or not.
-     */
-    private static void checkConnected(boolean connected){
-        if(connected && getStatus() != Pipe.PipeStatus.connected)
-            throw new IllegalStateException(String.format("IPCClient (ID: %d) is not connected!", clientId));
-        if(!connected && getStatus() == Pipe.PipeStatus.connected)
-            throw new IllegalStateException(String.format("IPCClient (ID: %d) is already connected!", clientId));
-    }
-
-    /**
-     * Initializes this IPCClient's {@link IPCClient#readThread readThread}
-     * and calls the first {@link Pipe#read()}.
-     */
-    private static void startReading(){
-        readThread = new Thread(() -> {
+        //start reading incoming events
+        new Thread(() -> {
             try{
                 Packet p;
-                while((p = pipe.read()).op != OpCode.close){
+                while((p = pipe.read()).op != PacketOp.close){
                     Jval json = p.data;
                     if(json.has("cmd") && json.getString("cmd").equals("DISPATCH")){
                         try{
@@ -175,28 +90,67 @@ public final class IPCClient{
                 pipe.status = PipeStatus.disconnected;
                 onDisconnected.get(ex);
             }
-        });
-
-        readThread.start();
+        }).start();
     }
 
-    public enum Event{
-        activityJoin("ACTIVITY_JOIN"),
-        activitySpectate("ACTIVITY_SPECTATE"),
-        activityJoinRequest("ACTIVITY_JOIN_REQUEST");
+    public static void send(RichPresence presence){
+        checkConnected(true);
+        pipe.send(PacketOp.frame,
+        Jval.newObject()
+        .put("cmd", "SET_ACTIVITY")
+        .put("args", Jval.newObject()
+        .put("pid", pid)
+        .put("activity", presence == null ? null : presence.toJson())));
+    }
 
-        public final String value;
+    /** Subscribes to all activity events. */
+    public static void subscribe(){
+        checkConnected(true);
 
-        Event(String value){
-            this.value = value;
+        for(String value : new String[]{"ACTIVITY_JOIN", "ACTIVITY_SPECTATE", "ACTIVITY_JOIN_REQUEST"}){
+            pipe.send(PacketOp.frame,
+            Jval.newObject()
+            .put("cmd", "SUBSCRIBE")
+            .put("evt", value));
         }
     }
 
+    public static PipeStatus getStatus(){
+        return pipe == null ? PipeStatus.unitialized : pipe.status;
+    }
+
+    /**
+     * Attempts to close an open connection to Discord.<br>
+     * @throws IllegalStateException If a connection was not made prior to invoking
+     * this method.
+     */
+    public static void close(){
+        checkConnected(true);
+
+        try{
+            pipe.close();
+        }catch(IOException ignored){
+        }
+    }
+
+    /**
+     * Makes sure that the client is connected (or not) depending on if it should
+     * for the current state.
+     * @param connected Whether to check in the context of the IPCClient being
+     * connected or not.
+     */
+    private static void checkConnected(boolean connected){
+        if(connected && getStatus() != PipeStatus.connected)
+            throw new IllegalStateException(String.format("IPCClient (ID: %d) is not connected!", clientId));
+        if(!connected && getStatus() == PipeStatus.connected)
+            throw new IllegalStateException(String.format("IPCClient (ID: %d) is already connected!", clientId));
+    }
+
     public static class Packet{
-        public final OpCode op;
+        public final PacketOp op;
         public final Jval data;
 
-        public Packet(OpCode op, Jval data){
+        public Packet(PacketOp op, Jval data){
             this.op = op;
             this.data = data;
         }
@@ -214,10 +168,10 @@ public final class IPCClient{
         public String toString(){
             return "Pkt:" + op + data.toString();
         }
+    }
 
-        public enum OpCode{
-            handshake, frame, close, ping, pong
-        }
+    public enum PacketOp{
+        handshake, frame, close, ping, pong
     }
 
     public abstract static class Pipe{
@@ -240,7 +194,7 @@ public final class IPCClient{
                     }else{
                         throw new RuntimeException("Unsupported OS: " + OS.name);
                     }
-                    pipe.send(OpCode.handshake, Jval.newObject().put("v", version).put("client_id", Long.toString(clientId)));
+                    pipe.send(PacketOp.handshake, Jval.newObject().put("v", version).put("client_id", Long.toString(clientId)));
                     pipe.status = PipeStatus.connected;
 
                     //TODO log data
@@ -255,11 +209,6 @@ public final class IPCClient{
             throw new Exception("No Discord client found.");
         }
 
-        /**
-         * Finds the IPC location in the current system.
-         * @param i Index to try getting the IPC at.
-         * @return The IPC location.
-         */
         private static String getPipeLocation(int i){
             if(System.getProperty("os.name").contains("Win"))
                 return "\\\\?\\pipe\\discord-ipc-" + i;
@@ -274,12 +223,7 @@ public final class IPCClient{
             return tmppath + "/discord-ipc-" + i;
         }
 
-        /**
-         * Sends json with the given {@link OpCode}.
-         * @param op The {@link OpCode} to send data with.
-         * @param data The data to send.
-         */
-        public void send(OpCode op, Jval data){
+        public void send(PacketOp op, Jval data){
             try{
                 write(new Packet(op, data.put("nonce", UUID.randomUUID().toString())).toBytes());
             }catch(IOException ex){
@@ -287,20 +231,15 @@ public final class IPCClient{
             }
         }
 
-        /**
-         * Blocks until reading a {@link Packet} or until the
-         * read thread encounters bad data.
-         * @return A valid {@link Packet}.
-         */
         public abstract Packet read() throws Exception;
 
         public abstract void write(byte[] b) throws IOException;
 
         public abstract void close() throws IOException;
+    }
 
-        public enum PipeStatus{
-            unitialized, connecting, connected, closed, disconnected
-        }
+    public enum PipeStatus{
+        unitialized, connecting, connected, closed, disconnected
     }
 
     public static class RichPresence{
@@ -371,14 +310,13 @@ public final class IPCClient{
             buffer.position(0);
 
             if(status == PipeStatus.disconnected) throw new IOException("Disconnected!");
-            if(status == PipeStatus.closed) return new Packet(OpCode.close, null);
+            if(status == PipeStatus.closed) return new Packet(PacketOp.close, null);
 
-            OpCode op = OpCode.values()[Integer.reverseBytes(buffer.getInt())];
+            PacketOp op = PacketOp.values()[Integer.reverseBytes(buffer.getInt())];
             byte[] data = new byte[Integer.reverseBytes(buffer.getInt())];
             buffer.get(data);
 
-            Packet p = new Packet(op, Jval.read(data));
-            return p;
+            return new Packet(op, Jval.read(data));
         }
 
         @Override
@@ -388,7 +326,7 @@ public final class IPCClient{
 
         @Override
         public void close() throws IOException{
-            send(OpCode.close, Jval.newObject());
+            send(PacketOp.close, Jval.newObject());
             status = PipeStatus.closed;
             socket.close();
         }
@@ -434,27 +372,22 @@ public final class IPCClient{
                 }
             }
 
-            if(status == PipeStatus.disconnected)
-                throw new IOException("Disconnected!");
+            if(status == PipeStatus.disconnected) throw new IOException("Disconnected!");
+            if(status == PipeStatus.closed) return new Packet(PacketOp.close, null);
 
-            if(status == PipeStatus.closed)
-                return new Packet(OpCode.close, null);
-
-            OpCode op = OpCode.values()[Integer.reverseBytes(file.readInt())];
+            PacketOp op = PacketOp.values()[Integer.reverseBytes(file.readInt())];
             int len = Integer.reverseBytes(file.readInt());
             byte[] d = new byte[len];
 
             file.readFully(d);
-            Packet p = new Packet(op, Jval.read(d));
-            return p;
+            return new Packet(op, Jval.read(d));
         }
 
         @Override
         public void close() throws IOException{
-            send(OpCode.close, Jval.newObject());
+            send(PacketOp.close, Jval.newObject());
             status = PipeStatus.closed;
             file.close();
         }
-
     }
 }
