@@ -40,9 +40,10 @@ public final class DiscordRPC{
             major = Strings.parseInt(version);
         }
 
-        //this is only supported on Java >= 16, since that's where Unix sockets were added
-        if(major < 16){
-            throw new Exception("Discord RPC is not supported on < Java 16. Your version: " + version);
+        //on unix, this is supported on java >= 16 (unix sockets)
+        //on windows, this is supported on java >= 9 (ProcessHandle#pid())
+        if(!(major >= 16 || (OS.isWindows && major >= 9))){
+            throw new Exception("Discord RPC is not supported on < Java " + (OS.isWindows ? "9" : "16") + ". Your version: " + version);
         }
 
         //use reflection to call Java 9 API
