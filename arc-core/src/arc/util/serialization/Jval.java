@@ -115,7 +115,7 @@ public class Jval{
 
     public void add(String name, Jval val){
         if(name == null) throw new NullPointerException("name is null");
-        asObject().put(name, val);
+        asObject().put(name, val == null ? NULL : val);
     }
 
     public void add(String name, String val){
@@ -143,17 +143,17 @@ public class Jval{
     }
 
     public Jval put(String name, Jval val){
-        add(name, val);
+        if(val != null) add(name, val);
         return this;
     }
 
     public Jval put(String name, String val){
-        add(name, val);
+        if(val != null) add(name, val);
         return this;
     }
 
     public Jval put(String name, Number val){
-        add(name, new Jval(val));
+        if(val != null) add(name, new Jval(val));
         return this;
     }
 
@@ -1085,7 +1085,6 @@ public class Jval{
                         tw.write('\"');
                         tw.write(escapeString(pair.key));
                         tw.write("\":");
-                        //save(, tw, level+1, " ", false);
                         Jval v = pair.value;
                         Jtype vType = v.getType();
                         if(format && vType != Jtype.array && vType != Jtype.object) tw.write(" ");

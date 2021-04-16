@@ -56,7 +56,7 @@ public final class DiscordRPC{
         onReady.run();
 
         //start reading incoming events
-        new Thread(() -> {
+        Thread t = new Thread(() -> {
             try{
                 Packet p;
                 while((p = pipe.read()).op != PacketOp.close){
@@ -79,8 +79,7 @@ public final class DiscordRPC{
                                     );
                                     break;
                             }
-                        }catch(Exception e){
-                            Log.err(e);
+                        }catch(Exception ignored){
                         }
                     }
                 }
@@ -90,7 +89,10 @@ public final class DiscordRPC{
                 pipe.status = PipeStatus.disconnected;
                 onDisconnected.get(ex);
             }
-        }).start();
+        });
+
+        t.setDaemon(true);
+        t.start();
     }
 
     public static void send(RichPresence presence){
@@ -116,7 +118,7 @@ public final class DiscordRPC{
     }
 
     public static PipeStatus getStatus(){
-        return pipe == null ? PipeStatus.unitialized : pipe.status;
+        return pipe == null ? PipeStatus.uninitialized : pipe.status;
     }
 
     /**
@@ -199,7 +201,6 @@ public final class DiscordRPC{
 
                     //TODO log data
                     Packet p = pipe.read();
-                    Log.debug(p.data);
 
                     return pipe;
                 }catch(IOException ignored){
@@ -239,7 +240,7 @@ public final class DiscordRPC{
     }
 
     public enum PipeStatus{
-        unitialized, connecting, connected, closed, disconnected
+        uninitialized, connecting, connected, closed, disconnected
     }
 
     public static class RichPresence{
@@ -264,20 +265,20 @@ public final class DiscordRPC{
             .put("state", state)
             .put("details", details)
             .put("timestamps", Jval.newObject()
-            .put("start", startTimestamp)
-            .put("end", endTimestamp)
-            .put("assets", Jval.newObject())
-            .put("large_image", largeImageKey)
-            .put("large_text", largeImageText)
-            .put("small_image", smallImageKey)
-            .put("small_text", smallImageText))
+                .put("start", startTimestamp == 0 ? null : startTimestamp)
+                .put("end", endTimestamp == 0 ? null : endTimestamp))
+            .put("assets", Jval.newObject()
+                .put("large_image", largeImageKey)
+                .put("large_text", largeImageText)
+                .put("small_image", smallImageKey)
+                .put("small_text", smallImageText))
             .put("party", partyId == null ? null : Jval.newObject()
             .put("id", partyId)
             .put("size", Jval.newArray().add(partySize).add(partyMax)))
             .put("secrets", Jval.newObject()
-            .put("join", joinSecret)
-            .put("spectate", spectateSecret)
-            .put("match", matchSecret))
+                .put("join", joinSecret)
+                .put("spectate", spectateSecret)
+                .put("match", matchSecret))
             .put("instance", instance);
         }
     }
