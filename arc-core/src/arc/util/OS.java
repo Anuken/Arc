@@ -7,7 +7,7 @@ import java.io.*;
 
 public class OS{
     public static final int cores = Runtime.getRuntime().availableProcessors();
-    public static final String username = prop("user.name"), userhome = prop("user.home");
+    public static final String username = prop("user.name"), userhome = prop("user.home"), name = prop("os.name");
 
     public static boolean isWindows = propNoNull("os.name").contains("Windows");
     public static boolean isLinux = propNoNull("os.name").contains("Linux") || propNoNull("os.name").contains("BSD");

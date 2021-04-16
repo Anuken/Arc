@@ -24,6 +24,14 @@ public class Jval{
         if(getType() == null) throw new IllegalArgumentException("Invalid JSON value: " + value);
     }
 
+    public static Jval newObject(){
+        return new Jval(new JsonMap());
+    }
+
+    public static Jval newArray(){
+        return new Jval(new JsonArray());
+    }
+
     /**
      * Reads a Hjson value from the given reader.
      * <p>
@@ -112,6 +120,46 @@ public class Jval{
 
     public void add(String name, String val){
         add(name, valueOf(val));
+    }
+
+    public Jval add(Jval value){
+        asArray().add(value);
+        return this;
+    }
+
+    public Jval add(String value){
+        asArray().add(new Jval(value));
+        return this;
+    }
+
+    public Jval add(Number value){
+        asArray().add(new Jval(value));
+        return this;
+    }
+
+    public Jval add(boolean value){
+        asArray().add(new Jval(value));
+        return this;
+    }
+
+    public Jval put(String name, Jval val){
+        add(name, val);
+        return this;
+    }
+
+    public Jval put(String name, String val){
+        add(name, val);
+        return this;
+    }
+
+    public Jval put(String name, Number val){
+        add(name, new Jval(val));
+        return this;
+    }
+
+    public Jval put(String name, boolean val){
+        add(name, new Jval(val));
+        return this;
     }
 
     public Jval remove(String name){

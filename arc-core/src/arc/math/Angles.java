@@ -5,7 +5,7 @@ import arc.func.*;
 import arc.math.geom.*;
 
 public class Angles{
-    private static final Rand random = new Rand();
+    private static final Rand rand = new Rand();
     private static final Vec2 rv = new Vec2();
 
     public static float forwardDistance(float angle1, float angle2){
@@ -112,50 +112,60 @@ public class Angles{
     }
 
     public static void randVectors(long seed, int amount, float length, Floatc2 cons){
-        random.setSeed(seed);
+        rand.setSeed(seed);
         for(int i = 0; i < amount; i++){
-            float vang = random.nextFloat() * 360f;
+            float vang = rand.nextFloat() * 360f;
             rv.set(length, 0).rotate(vang);
             cons.get(rv.x, rv.y);
         }
     }
 
     public static void randLenVectors(long seed, int amount, float length, Floatc2 cons){
-        random.setSeed(seed);
+        rand.setSeed(seed);
         for(int i = 0; i < amount; i++){
-            float scl = length * random.nextFloat();
-            float vang = random.nextFloat() * 360f;
+            float scl = length * rand.nextFloat();
+            float vang = rand.nextFloat() * 360f;
             rv.set(scl, 0).rotate(vang);
             cons.get(rv.x, rv.y);
         }
     }
 
     public static void randLenVectors(long seed, int amount, float minLength, float length, Floatc2 cons){
-        random.setSeed(seed);
+        rand.setSeed(seed);
         for(int i = 0; i < amount; i++){
-            float scl = minLength + length * random.nextFloat();
-            float vang = random.nextFloat() * 360f;
+            float scl = minLength + length * rand.nextFloat();
+            float vang = rand.nextFloat() * 360f;
             rv.set(scl, 0).rotate(vang);
             cons.get(rv.x, rv.y);
         }
     }
 
     public static void randLenVectors(long seed, int amount, float length, float angle, float range, Floatc2 cons){
-        random.setSeed(seed);
+        rand.setSeed(seed);
         for(int i = 0; i < amount; i++){
-            float scl = length * random.nextFloat();
-            float vang = angle + random.nextFloat() * range * 2 - range;
+            float scl = length * rand.nextFloat();
+            float vang = angle + rand.nextFloat() * range * 2 - range;
             rv.set(scl, 0).rotate(vang);
             cons.get(rv.x, rv.y);
         }
     }
 
-    public static void randLenVectors(long seed, float fin, int amount, float length, ParticleConsumer cons){
-        random.setSeed(seed);
+    public static void randLenVectors(long seed, int amount, float length, float angle, float range, float spread, Floatc2 cons){
+        rand.setSeed(seed);
         for(int i = 0; i < amount; i++){
-            float l = random.nextFloat();
+            float scl = length * rand.nextFloat();
+            float vang = angle + rand.nextFloat() * range * 2 - range;
+            rv.set(scl, 0).rotate(vang);
+            cons.get(rv.x + rand.range(spread), rv.y + rand.range(spread));
+        }
+    }
+
+    public static void randLenVectors(long seed, float fin, int amount, float length, ParticleConsumer cons){
+        rand.setSeed(seed);
+        for(int i = 0; i < amount; i++){
+            float l = rand.nextFloat();
             float scl = length * l * fin;
-            float vang = random.nextFloat() * 360f;
+            float vang = rand.nextFloat() * 360f;
             rv.set(scl, 0).rotate(vang);
             cons.accept(rv.x, rv.y, fin * l, (1f - fin) * l);
         }
@@ -163,12 +173,12 @@ public class Angles{
 
     public static void randLenVectors(long seed, float fin, int amount, float length,
                                       float angle, float range, ParticleConsumer cons){
-        random.setSeed(seed);
+        rand.setSeed(seed);
         for(int i = 0; i < amount; i++){
-            float scl = length * random.nextFloat() * fin;
-            float vang = angle + random.nextFloat() * range * 2 - range;
+            float scl = length * rand.nextFloat() * fin;
+            float vang = angle + rand.nextFloat() * range * 2 - range;
             rv.set(scl, 0).rotate(vang);
-            cons.accept(rv.x, rv.y, fin * (random.nextFloat()), 0f);
+            cons.accept(rv.x, rv.y, fin * (rand.nextFloat()), 0f);
         }
     }
 
