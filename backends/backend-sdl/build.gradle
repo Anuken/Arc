@@ -47,8 +47,13 @@ PACKAGES: Mac
 
 jnigen{
     def execCmd = { cmd ->
-        Scanner s = new Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A")
-        return s.hasNext() ? s.next().trim() : ""
+        try{
+            Scanner s = new Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A")
+            return s.hasNext() ? s.next().trim() : ""
+        }catch(Exception ignored){
+            //fail silently, because this is run during standard arc builds and it shouldn't fail
+            //TODO don't do anything at all in certain situations?
+        }
     }
 
     copy{
