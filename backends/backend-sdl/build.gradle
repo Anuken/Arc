@@ -93,3 +93,7 @@ jnigen{
         libraries = execCmd("sdl2-config --static-libs") + " -Wl,-framework,OpenGL"
     }
 }
+
+getTasksByName("jnigen", true).each{
+    it.dependsOn classes
+}
