@@ -100,10 +100,10 @@ public class SdlApplication implements Application{
         if(config.maximized) flags |= SDL_WINDOW_MAXIMIZED;
 
         window = SDL_CreateWindow(config.title, config.width, config.height, flags);
-        if(window == 0) throw new SDLError();
+        if(window == 0) throw new SdlError();
 
         context = SDL_GL_CreateContext(window);
-        if(context == 0) throw new SDLError();
+        if(context == 0) throw new SdlError();
 
         if(config.vSyncEnabled){
             SDL_GL_SetSwapInterval(1);
@@ -111,6 +111,10 @@ public class SdlApplication implements Application{
 
         //always have text input on
         SDL_StartTextInput();
+
+        int[] ver = new int[3];
+        SDL_GetVersion(ver);
+        Log.info("[Core] Initialized SDL v@.@.@", ver[0], ver[1], ver[2]);
     }
 
     private void loop(){
@@ -179,7 +183,7 @@ public class SdlApplication implements Application{
 
     private void check(Intp run){
         if(run.get() != 0){
-            throw new SDLError();
+            throw new SdlError();
         }
     }
 
@@ -243,5 +247,11 @@ public class SdlApplication implements Application{
     @Override
     public void exit(){
         running = false;
+    }
+
+    public static class SdlError extends RuntimeException{
+        public SdlError() {
+            super(SDL_GetError());
+        }
     }
 }

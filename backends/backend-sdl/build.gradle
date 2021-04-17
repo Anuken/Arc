@@ -1,4 +1,4 @@
-sourceSets.main.java.srcDirs = ["src/main/java"]
+sourceSets.main.java.srcDirs = ["src"]
 sourceSets.main.resources.srcDirs = ["libs/linux64", "libs/macosx64","libs/windows32", "libs/windows64", "libs/openal"]
 
 dependencies {
@@ -6,23 +6,90 @@ dependencies {
     testImplementation aproj(":arc-core")
 }
 
-task deleteJniFolder(type: Delete) {
-    delete "jni"
-    delete "docs"
+apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
+
+file("jni").mkdir()
+
+task preJni{
+    if(!file("jni/glew.zip").exists()){
+        println "Fetching GLEW source..."
+        "curl -o $rootDir/backends/backend-sdl/jni/glew.zip -L https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.zip".execute().waitFor()
+        "unzip -qq -d $rootDir/backends/backend-sdl/jni $rootDir/backends/backend-sdl/jni/glew.zip".execute().waitFor()
+    }
+
+    if(!file("jni/sdlmingw.tar.gz").exists()){
+        println "Fetching SDL-mingw builds..."
+        "curl -o $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -L https://www.libsdl.org/release/SDL2-devel-2.0.14-mingw.tar.gz".execute().waitFor()
+        "tar -xvzf $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -C $rootDir/backends/backend-sdl/jni".execute().waitFor()
+    }
 }
 
-clean.dependsOn(deleteJniFolder)
+/*
 
-task sdlnatives(dependsOn: classes, type: JavaExec){
-    main = 'NativesBuild'
-    classpath = sourceSets.test.runtimeClasspath
-    if(project.hasProperty("linux")) systemProperties.put("linux", "true")
-    if(project.hasProperty("dynamic")) systemProperties.put("dynamic", "true")
-    if(project.hasProperty("windows")) systemProperties.put("windows", "true")
-    if(project.hasProperty("mac")) systemProperties.put("mac", "true")
-}
+PACKAGES: Linux (Ubuntu)
 
-task glclassgen(dependsOn: classes, type: JavaExec){
-    main = 'GlClassgen'
-    classpath = sourceSets.test.runtimeClasspath
+- libdrm-dev
+- libsdl2-dev
+- libgbm-dev
+
+PACKAGES: Linux -> Windows Cross
+
+- mingw32
+
+PACKAGES: Mac
+
+- sdl2 (brew)
+
+ */
+
+jnigen{
+    def execCmd = { cmd ->
+        Scanner s = new Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A")
+        return s.hasNext() ? s.next().trim() : ""
+    }
+
+    copy{
+        from "$rootDir/arc-core/build/classes/java/main"
+        into "$rootDir/backends/backend-sdl/build/classes/java/main"
+        include "**"
+    }
+
+    sharedLibName = "sdl-arc"
+    temporaryDir = file("build/target/native").absolutePath
+    libsDir = file("libs").absolutePath
+
+    all{
+        cppIncludes = ["*.cpp"]
+        cIncludes = ["*.c", "glew-2.2.0/src/glew.c"]
+        headerDirs += ["glew-2.2.0/include"]
+    }
+    add(Linux, x64){
+        cppFlags += " " + execCmd("sdl2-config --cflags")
+        cFlags = cppFlags
+        libraries = execCmd("sdl2-config --static-libs") + " -Wl,-Bdynamic -lGL "
+        linkerFlags = "-shared -m64"
+    }
+    add(Windows, x64){
+        def path = "SDL2-2.0.14/x86_64-w64-mingw32"
+        def root = "$rootDir/backends/backend-sdl/jni"
+        headerDirs += ["$path/include/SDL2"]
+        cppFlags += " " + execCmd("sh $root/$path/bin/sdl2-config --cflags")
+        cFlags = cppFlags
+        libraries = execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32"
+        linkerFlags += " -L $root/$path/lib"
+    }
+    add(Windows, x32){
+        def path = "SDL2-2.0.14/i686-w64-mingw32"
+        def root = "$rootDir/backends/backend-sdl/jni"
+        headerDirs += ["$path/include/SDL2"]
+        cppFlags += " " + execCmd("sh $root/$path/bin/sdl2-config --cflags")
+        cFlags = cppFlags
+        libraries = execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32"
+        linkerFlags += " -L $root/$path/lib"
+    }
+    add(MacOsX, x64){
+        cppFlags += " " + execCmd("sdl2-config --cflags")
+        cFlags = cppFlags
+        libraries = execCmd("sdl2-config --static-libs") + " -Wl,-framework,OpenGL"
+    }
 }
