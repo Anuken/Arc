@@ -16,7 +16,6 @@ classes/
 war/
 gen/
 gen-external-apklibs/
-jni/
 Debug/
 Release/
 robovm-build/
