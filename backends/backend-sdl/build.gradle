@@ -8,16 +8,16 @@ dependencies {
 
 apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 
-file("$rootDir/backends/backend-sdl/jni").mkdir()
+file("jni").mkdir()
 
 task preJni{
-    if(!file("$rootDir/backends/backend-sdl/jni/glew.zip").exists()){
+    if(!file("jni/glew.zip").exists()){
         println "Fetching GLEW source..."
         "curl -o $rootDir/backends/backend-sdl/jni/glew.zip -L https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.zip".execute().waitFor()
         "unzip -qq -d $rootDir/backends/backend-sdl/jni $rootDir/backends/backend-sdl/jni/glew.zip".execute().waitFor()
     }
 
-    if(!file("$rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz").exists()){
+    if(!file("jni/sdlmingw.tar.gz").exists()){
         println "Fetching SDL-mingw builds..."
         "curl -o $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -L https://www.libsdl.org/release/SDL2-devel-2.0.14-mingw.tar.gz".execute().waitFor()
         "tar -xvzf $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -C $rootDir/backends/backend-sdl/jni".execute().waitFor()
@@ -31,14 +31,17 @@ PACKAGES: Linux (Ubuntu)
 - libdrm-dev
 - libsdl2-dev
 - libgbm-dev
+- ant
 
 PACKAGES: Linux -> Windows Cross
 
 - mingw32
+- ant
 
 PACKAGES: Mac
 
 - sdl2 (brew)
+- ant
 
  */
 
@@ -55,8 +58,8 @@ jnigen{
     }
 
     sharedLibName = "sdl-arc"
-    temporaryDir = file("$rootDir/backends/backend-sdl/build/target/native").absolutePath
-    libsDir = file("$rootDir/backends/backend-sdl/libs").absolutePath
+    temporaryDir = file("build/target/native").absolutePath
+    libsDir = file("libs").absolutePath
 
     all{
         cppIncludes = ["*.cpp"]
