@@ -49,7 +49,11 @@ public final class DiscordRPC{
         pid = ((Long)c.getMethod("pid").invoke(current)).intValue();
 
         checkConnected(false);
-        pipe = Pipe.openPipe(clientId);
+        try{
+            pipe = Pipe.openPipe(clientId);
+        }catch(Exception e){
+            throw new NoDiscordClientException();
+        }
 
         onReady.run();
 
@@ -175,6 +179,69 @@ public final class DiscordRPC{
         handshake, frame, close, ping, pong
     }
 
+    public static class NoDiscordClientException extends RuntimeException{
+
+    }
+
+    public static class User{
+        public final String name;
+        public final String discriminator;
+        public final long id;
+        @Nullable
+        public final String avatar;
+
+        public User(String name, String discriminator, long id, String avatar){
+            this.name = name;
+            this.discriminator = discriminator;
+            this.id = id;
+            this.avatar = avatar;
+        }
+    }
+
+    public static class RichPresence{
+        public String state;
+        public String details;
+        public long startTimestamp;
+        public long endTimestamp;
+        public String largeImageKey;
+        public String largeImageText;
+        public String smallImageKey;
+        public String smallImageText;
+        public String partyId;
+        public int partySize;
+        public int partyMax;
+        public String matchSecret;
+        public String joinSecret;
+        public String spectateSecret;
+        public boolean instance;
+
+        public Jval toJson(){
+            return Jval.newObject()
+            .put("state", state)
+            .put("details", details)
+            .put("timestamps", Jval.newObject()
+                .put("start", startTimestamp == 0 ? null : startTimestamp)
+                .put("end", endTimestamp == 0 ? null : endTimestamp))
+            .put("assets", Jval.newObject()
+                .put("large_image", largeImageKey)
+                .put("large_text", largeImageText)
+                .put("small_image", smallImageKey)
+                .put("small_text", smallImageText))
+            .put("party", partyId == null ? null : Jval.newObject()
+            .put("id", partyId)
+            .put("size", Jval.newArray().add(partySize).add(partyMax)))
+            .put("secrets", Jval.newObject()
+                .put("join", joinSecret)
+                .put("spectate", spectateSecret)
+                .put("match", matchSecret))
+            .put("instance", instance);
+        }
+    }
+
+    public enum PipeStatus{
+        uninitialized, connecting, connected, closed, disconnected
+    }
+
     public abstract static class Pipe{
         private static final int version = 1;
         // a list of system property keys to get IPC file from different unix systems.
@@ -238,50 +305,6 @@ public final class DiscordRPC{
         public abstract void close() throws IOException;
     }
 
-    public enum PipeStatus{
-        uninitialized, connecting, connected, closed, disconnected
-    }
-
-    public static class RichPresence{
-        public String state;
-        public String details;
-        public long startTimestamp;
-        public long endTimestamp;
-        public String largeImageKey;
-        public String largeImageText;
-        public String smallImageKey;
-        public String smallImageText;
-        public String partyId;
-        public int partySize;
-        public int partyMax;
-        public String matchSecret;
-        public String joinSecret;
-        public String spectateSecret;
-        public boolean instance;
-
-        public Jval toJson(){
-            return Jval.newObject()
-            .put("state", state)
-            .put("details", details)
-            .put("timestamps", Jval.newObject()
-                .put("start", startTimestamp == 0 ? null : startTimestamp)
-                .put("end", endTimestamp == 0 ? null : endTimestamp))
-            .put("assets", Jval.newObject()
-                .put("large_image", largeImageKey)
-                .put("large_text", largeImageText)
-                .put("small_image", smallImageKey)
-                .put("small_text", smallImageText))
-            .put("party", partyId == null ? null : Jval.newObject()
-            .put("id", partyId)
-            .put("size", Jval.newArray().add(partySize).add(partyMax)))
-            .put("secrets", Jval.newObject()
-                .put("join", joinSecret)
-                .put("spectate", spectateSecret)
-                .put("match", matchSecret))
-            .put("instance", instance);
-        }
-    }
-
     public static class UnixPipe extends Pipe{
         private final SocketChannel socket;
         private final ByteBuffer buffer = ByteBuffer.allocate(1024 * 32);
@@ -329,21 +352,6 @@ public final class DiscordRPC{
             send(PacketOp.close, Jval.newObject());
             status = PipeStatus.closed;
             socket.close();
-        }
-    }
-
-    public static class User{
-        public final String name;
-        public final String discriminator;
-        public final long id;
-        @Nullable
-        public final String avatar;
-
-        public User(String name, String discriminator, long id, String avatar){
-            this.name = name;
-            this.discriminator = discriminator;
-            this.id = id;
-            this.avatar = avatar;
         }
     }
 
