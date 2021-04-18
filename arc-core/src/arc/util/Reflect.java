@@ -75,6 +75,32 @@ public class Reflect{
         set(type, null, name, value);
     }
 
+    public static <T> T invoke(Class<?> type, Object object, String name, Object[] args, Class<?>... parameterTypes){
+        try{
+            Method method = type.getDeclaredMethod(name, parameterTypes);
+            method.setAccessible(true);
+            return (T)method.invoke(object, args);
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <T> T invoke(Class<?> type, String name, Object[] args, Class<?>... parameterTypes){
+        return invoke(type, null, name, args, parameterTypes);
+    }
+
+    public static <T> T invoke(Class<?> type, String name){
+        return invoke(type, name, null);
+    }
+
+    public static <T> T invoke(Object object, String name, Object[] args, Class<?>... parameterTypes){
+        return invoke(object.getClass(), object, name, args, parameterTypes);
+    }
+
+    public static <T> T invoke(Object object, String name){
+        return invoke(object, name, null);
+    }
+
     public static <T> T make(String type){
         try{
             Class<T> c = (Class<T>)Class.forName(type);
