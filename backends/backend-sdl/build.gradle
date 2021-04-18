@@ -33,7 +33,7 @@ PACKAGES: Linux (Ubuntu)
 - libgbm-dev
 - ant
 
-PACKAGES: Linux -> Windows Cross
+PACKAGES: Linux -> Windows Cross-Compilation
 
 - mingw32
 - ant
