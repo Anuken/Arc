@@ -8,6 +8,7 @@ import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.util.Iterator;
 
+/**  @author Elliot Kroo (elliot@kroo.net) */
 public class GifSequenceWriter{
 	protected ImageWriter gifWriter;
 	protected ImageWriteParam imageWriteParam;
@@ -22,7 +23,6 @@ public class GifSequenceWriter{
 	 * @param loopContinuously whether the gif should loop repeatedly
 	 * @throws IIOException if no gif ImageWriters are found
 	 *
-	 * @author Elliot Kroo (elliot@kroo.net)
 	 */
 	public GifSequenceWriter(ImageOutputStream outputStream, int imageType, int timeBetweenFramesMS, boolean loopContinuously)
 			throws IOException{
