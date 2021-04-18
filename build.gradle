@@ -34,6 +34,7 @@ libraries.jnigen = [
 ]
 
 allprojects{
+    apply plugin: 'maven-publish'
     group = 'com.github.Anuken'
     version = '1.0'
 
@@ -79,5 +80,18 @@ subprojects{
     compileJava{
         options.fork = true
         options.incremental = true
+    }
+
+    java{
+        withJavadocJar()
+        withSourcesJar()
+    }
+
+    publishing{
+        publications{
+            maven(MavenPublication){
+                from components.java
+            }
+        }
     }
 }
