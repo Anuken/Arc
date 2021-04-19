@@ -245,8 +245,7 @@ public class GifRecorder{
                     public Object getTransferData(DataFlavor flavor){
                         return Collections.singletonList(f);
                     }
-                }, (clipboard, contents) -> {
-                });
+                }, (clipboard, contents) -> {});
             }
 
             saving = false;
@@ -261,7 +260,6 @@ public class GifRecorder{
         try{
             String time = "" + new SimpleDateFormat("yyyy-MM-dd HH-mm-ss", Locale.getDefault()).format(new Date());
             new File(directory.absolutePath()).mkdir();
-            BufferedImage firstImage = toImage(pixmaps.first(), width, height);
 
             File file = new File(directory.absolutePath() + "/" + time + ".gif");
 
@@ -278,12 +276,10 @@ public class GifRecorder{
                 }
             }else{
                 ImageOutputStream output = new FileImageOutputStream(file);
-                GifSequenceWriter writer = new GifSequenceWriter(output, firstImage.getType(), (int)(1f / recordfps * 1000f), true);
+                GifSequenceWriter writer = new GifSequenceWriter(output, BufferedImage.TYPE_INT_ARGB, (int)(1f / recordfps * 1000f), true);
 
-                writer.writeToSequence(firstImage);
-
-                for(int i = 1; i < pixmaps.size; i++){
-                    writer.writeToSequence(toImage(pixmaps.get(i), width, height));
+                for(int i = 0; i < pixmaps.size; i++){
+                    writer.write(toImage(pixmaps.get(i), width, height));
                     saveprogress += (1f / frames.size);
                 }
                 writer.close();
