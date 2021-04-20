@@ -162,6 +162,11 @@ public class PixmapPacker implements Disposable{
      * name.
      */
     public synchronized Rect pack(String name, PixmapRegion image){
+        return pack(name, image, null, null);
+    }
+
+
+    public synchronized Rect pack(String name, PixmapRegion image, int[] splits, int[] pads){
         if(disposed) return null;
         //TODO should duplicates be allowed?
         //if(name != null && getRect(name) != null)
@@ -169,18 +174,21 @@ public class PixmapPacker implements Disposable{
 
         boolean isPatch = name != null && name.endsWith(".9");
 
-        PixmapPackerRect rect;
+        PixmapPackerRect rect = new PixmapPackerRect(0, 0, image.width, image.height);;
         Pixmap pixmapToDispose = null;
-        if(isPatch){
-            rect = new PixmapPackerRect(0, 0, image.width, image.height);
+        if(isPatch && splits == null){
             pixmapToDispose = new Pixmap(image.width, image.height, image.pixmap.getFormat());
             rect.splits = getSplits(image);
             rect.pads = getPads(image, rect.splits);
             pixmapToDispose.draw(image, 0, 0, 0, 0, image.width, image.height);
             image = new PixmapRegion(pixmapToDispose);
-            name = name.split("\\.")[0];
         }else{
-            rect = new PixmapPackerRect(0, 0, image.width, image.height);
+            rect.splits = splits;
+            rect.pads = pads;
+        }
+
+        if(isPatch){
+            name = name.split("\\.")[0];
         }
 
         if(rect.width > pageWidth || rect.height > pageHeight){
@@ -245,6 +253,15 @@ public class PixmapPacker implements Disposable{
         for(Page page : pages){
             Rect rect = page.rects.get(name);
             if(rect != null) return rect;
+        }
+        return null;
+    }
+
+    /** @return the newly allocated region for this name, or null. */
+    public synchronized PixmapRegion getRegion(String name){
+        for(Page page : pages){
+            Rect rect = page.rects.get(name);
+            if(rect != null) return new PixmapRegion(page.getPixmap(), (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
         }
         return null;
     }
@@ -320,7 +337,6 @@ public class PixmapPacker implements Disposable{
                     if(rect.splits != null){
                         region.splits = rect.splits;
                         region.pads = rect.pads;
-
                     }
 
                     region.name = name;

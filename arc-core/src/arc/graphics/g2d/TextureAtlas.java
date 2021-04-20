@@ -165,11 +165,15 @@ public class TextureAtlas implements Disposable{
         return region.pixmapRegion;
     }
 
+    public ObjectMap<Texture, Pixmap> getPixmaps(){
+        return pixmaps;
+    }
+
     public void disposePixmap(Texture texture){
-        if(pixmaps.containsKey(texture)){
+        if(pixmaps.containsKey(texture) && !pixmaps.get(texture).isDisposed()){
             pixmaps.get(texture).dispose();
-            pixmaps.remove(texture);
         }
+        pixmaps.remove(texture);
     }
 
     public PixmapRegion getPixmap(TextureRegion region){
@@ -493,7 +497,7 @@ public class TextureAtlas implements Disposable{
 
     /** Describes the region of a packed image and provides information about the original image before it was packed. */
     public static class AtlasRegion extends TextureRegion{
-        PixmapRegion pixmapRegion;
+        public PixmapRegion pixmapRegion;
 
         /**
          * The number at the end of the original image file name, or -1 if none.<br>

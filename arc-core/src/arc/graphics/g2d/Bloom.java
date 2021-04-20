@@ -11,15 +11,6 @@ import arc.graphics.gl.*;
  * Requires bloom shaders in 'bloomshaders' folder.
  * */
 public class Bloom{
-    /**
-     * To use implement bloom more like a glow. Texture alpha channel can be
-     * used as mask which parts are glowing and which are not. see more info at:
-     * http://www.gamasutra.com/view/feature/2107/realtime_glow.php
-     * <p>
-     * NOTE: needs to be set before the bloom instance is created.
-     */
-    public static boolean useAlphaChannelAsMask = false;
-
     public int blurPasses = 1;
 
     private Shader thresholdShader, bloomShader, blurShader;
@@ -84,12 +75,7 @@ public class Bloom{
         final String alpha = useBlending ? "alpha_" : "";
 
         bloomShader = createShader("screenspace", alpha + "bloom");
-
-        if(useAlphaChannelAsMask){
-            thresholdShader = createShader("screenspace", "maskedthreshold");
-        }else{
-            thresholdShader = createShader("screenspace", alpha + "threshold");
-        }
+        thresholdShader = createShader("screenspace", alpha + "threshold");
 
         blurShader = createShader("blurspace", alpha + "gaussian");
 

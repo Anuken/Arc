@@ -29,6 +29,9 @@ import java.nio.*;
  * @author mzechner, Dave Clayton <contact@redskyforge.com>, Xoppa
  */
 public class Mesh implements Disposable{
+    /** If true, VAOs will be used on OpenGL 3.0+. This may improve performance. */
+    public static boolean useVAO = true;
+
     /** The size of one vertex, in bytes. */
     public final int vertexSize;
     /** Do not modify. */
@@ -70,7 +73,7 @@ public class Mesh implements Disposable{
         if(useVertexArray && Core.gl30 == null){
             vertices = new VertexArray(maxVertices, this);
             indices = new IndexArray(maxIndices);
-        }else if(Core.gl30 != null){
+        }else if(Core.gl30 != null && useVAO){
             vertices = new VertexBufferObjectWithVAO(isStatic, maxVertices, this);
             indices = new IndexBufferObjectSubData(isStatic, maxIndices);
         }else{

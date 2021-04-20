@@ -162,6 +162,7 @@ public class Pixmaps{
     }
 
     public static Pixmap crop(Pixmap input, int x, int y, int width, int height){
+        if(input.isDisposed()) throw new IllegalStateException("input is disposed.");
         Pixmap pixmap = new Pixmap(width, height, Format.rgba8888);
         pixmap.drawPixmap(input, 0, 0, x, y, width, height);
         return pixmap;
