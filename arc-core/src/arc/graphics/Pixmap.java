@@ -412,6 +412,8 @@ public class Pixmap implements Disposable{
     public enum Format{
         alpha, intensity, luminanceAlpha, rgb565, rgba4444, rgb888, rgba8888;
 
+        public static final Format[] all = values();
+
         public int toPixmapFormat(){
             switch(this){
                 case alpha:

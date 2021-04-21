@@ -1,15 +1,13 @@
 package arc.assets.loaders;
 
-import arc.assets.AssetDescriptor;
-import arc.assets.AssetLoaderParameters;
-import arc.assets.AssetManager;
-import arc.assets.loaders.TextureLoader.TextureParameter;
-import arc.struct.Seq;
-import arc.files.Fi;
-import arc.graphics.Texture;
-import arc.graphics.g2d.TextureAtlas;
-import arc.graphics.g2d.TextureAtlas.TextureAtlasData;
-import arc.graphics.g2d.TextureAtlas.TextureAtlasData.AtlasPage;
+import arc.assets.*;
+import arc.assets.loaders.TextureLoader.*;
+import arc.files.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.graphics.g2d.TextureAtlas.*;
+import arc.graphics.g2d.TextureAtlas.TextureAtlasData.*;
+import arc.struct.*;
 
 /**
  * {@link AssetLoader} to load {@link TextureAtlas} instances. Passing a {@link TextureAtlasParameter} to
@@ -39,9 +37,9 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
     public Seq<AssetDescriptor> getDependencies(String fileName, Fi atlasFile, TextureAtlasParameter parameter){
         Fi imgDir = atlasFile.parent();
 
-        if(parameter != null)
+        if(parameter != null){
             data = new TextureAtlasData(atlasFile, imgDir, parameter.flip);
-        else{
+        }else{
             data = new TextureAtlasData(atlasFile, imgDir, false);
         }
 

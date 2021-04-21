@@ -8,6 +8,7 @@ import arc.graphics.g2d.TextureAtlas.TextureAtlasData.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.io.*;
 import arc.util.serialization.*;
 
 import javax.imageio.*;
@@ -15,7 +16,6 @@ import javax.imageio.stream.*;
 import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
-import java.nio.charset.*;
 import java.util.*;
 
 /** @author Nathan Sweet */
@@ -323,13 +323,13 @@ public class TexturePacker{
     }
 
     private void writePackFile(File outputDir, String scaledPackFileName, Seq<Page> pages) throws IOException{
-        File packFile = new File(outputDir, scaledPackFileName + settings.atlasExtension);
-        File packDir = packFile.getParentFile();
+        Fi packFile = new Fi(outputDir).child(scaledPackFileName + settings.atlasExtension);
+        Fi packDir = packFile.parent();
         packDir.mkdirs();
 
         if(packFile.exists()){
             // Make sure there aren't duplicate names.
-            TextureAtlasData textureAtlasData = new TextureAtlasData(new Fi(packFile), new Fi(packFile), false);
+            TextureAtlasData textureAtlasData = new TextureAtlasData(packFile, packFile, false);
             for(Page page : pages){
                 for(Rect rect : page.outputRects){
                     String rectName = Rect.getAtlasName(rect.name, settings.flattenPaths);
@@ -342,55 +342,76 @@ public class TexturePacker{
             }
         }
 
-        Writer writer = new OutputStreamWriter(new FileOutputStream(packFile, true), StandardCharsets.UTF_8);
-        for(Page page : pages){
-            writer.write("\n" + page.imageName + "\n");
-            writer.write("size: " + page.imageWidth + "," + page.imageHeight + "\n");
-            writer.write("format: " + settings.format + "\n");
-            writer.write("filter: " + settings.filterMin + "," + settings.filterMag + "\n");
-            writer.write("repeat: " + getRepeatValue() + "\n");
+        try(Writes write = packFile.writes()){
+            //meta
+            write.b(TextureAtlasData.formatHeader);
+            write.b(TextureAtlasData.formatVersion);
 
-            page.outputRects.sort();
-            for(Rect rect : page.outputRects){
-                writeRect(writer, page, rect, rect.name);
-                Seq<Alias> aliases = new Seq<>(rect.aliases.toArray(new Alias[0]));
-                aliases.sort();
-                for(Alias alias : aliases){
-                    Rect aliasRect = new Rect();
-                    aliasRect.set(rect);
-                    alias.apply(aliasRect);
-                    writeRect(writer, page, aliasRect, alias.name);
+            //write each page, specifying the # beforehand
+            write.i(pages.size);
+
+            for(Page page : pages){
+                write.str(page.imageName);
+                //size
+                write.s(page.imageWidth);
+                write.s(page.imageHeight);
+                //format, filters, wrapping
+                write.b(settings.format.ordinal());
+                write.b(settings.filterMin.ordinal());
+                write.b(settings.filterMag.ordinal());
+                write.b(settings.wrapX.ordinal());
+                write.b(settings.wrapY.ordinal());
+
+                //write total rects
+                write.i(page.outputRects.sum(i -> 1 + i.aliases.size()));
+
+                page.outputRects.sort();
+                for(Rect rect : page.outputRects){
+                    writeRect(write, page, rect, rect.name);
+                    Seq<Alias> aliases = new Seq<>(rect.aliases.toArray(new Alias[0]));
+                    aliases.sort();
+                    for(Alias alias : aliases){
+                        Rect aliasRect = new Rect();
+                        aliasRect.set(rect);
+                        alias.apply(aliasRect);
+                        writeRect(write, page, aliasRect, alias.name);
+                    }
                 }
             }
         }
-        writer.close();
     }
 
-    private void writeRect(Writer writer, Page page, Rect rect, String name) throws IOException{
-        writer.write(Rect.getAtlasName(name, settings.flattenPaths) + "\n");
-        writer.write("  rotate: " + rect.rotated + "\n");
-        writer
-        .write("  xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.y - (rect.height - settings.paddingY)) + "\n");
-
-        writer.write("  size: " + rect.regionWidth + ", " + rect.regionHeight + "\n");
+    private void writeRect(Writes write, Page page, Rect rect, String name) throws IOException{
+        //name
+        write.str(Rect.getAtlasName(name, settings.flattenPaths));
+        //rotation
+        write.bool(rect.rotated);
+        //xy
+        write.s(page.x + rect.x);
+        write.s((page.y + page.height - rect.y - (rect.height - settings.paddingY)));
+        //offset xy
+        write.s(rect.offsetX);
+        write.s((rect.originalHeight - rect.regionHeight - rect.offsetY));
+        //size
+        write.s(rect.regionWidth);
+        write.s(rect.regionHeight);
+        //original size
+        write.s(rect.originalWidth);
+        write.s(rect.originalHeight);
+        //optional splits
+        write.bool(rect.splits == null);
         if(rect.splits != null){
-            writer.write("  split: " //
-            + rect.splits[0] + ", " + rect.splits[1] + ", " + rect.splits[2] + ", " + rect.splits[3] + "\n");
+            for(int i = 0; i < 4; i++){
+                write.s(rect.splits[i]);
+            }
         }
+        //optional pads
+        write.bool(rect.pads == null);
         if(rect.pads != null){
-            if(rect.splits == null) writer.write("  split: 0, 0, 0, 0\n");
-            writer.write("  pad: " + rect.pads[0] + ", " + rect.pads[1] + ", " + rect.pads[2] + ", " + rect.pads[3] + "\n");
+            for(int i = 0; i < 4; i++){
+                write.s(rect.pads[i]);
+            }
         }
-        writer.write("  orig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
-        writer.write("  offset: " + rect.offsetX + ", " + (rect.originalHeight - rect.regionHeight - rect.offsetY) + "\n");
-        writer.write("  index: " + rect.index + "\n");
-    }
-
-    private String getRepeatValue(){
-        if(settings.wrapX == TextureWrap.repeat && settings.wrapY == TextureWrap.repeat) return "xy";
-        if(settings.wrapX == TextureWrap.repeat && settings.wrapY == TextureWrap.clampToEdge) return "x";
-        if(settings.wrapX == TextureWrap.clampToEdge && settings.wrapY == TextureWrap.repeat) return "y";
-        return "none";
     }
 
     private int getBufferedImageType(Format format){
@@ -468,7 +489,7 @@ public class TexturePacker{
         public int width, height; // Portion of page taken by this region, including padding.
         public int index;
         public boolean rotated;
-        public Set<Alias> aliases = new HashSet<Alias>();
+        public Set<Alias> aliases = new HashSet<>();
         public int[] splits;
         public int[] pads;
         public boolean canRotate = true;
@@ -800,7 +821,7 @@ public class TexturePacker{
         public float[] scale = {1};
         public String[] scaleSuffix = {""};
         public Resampling[] scaleResampling = {Resampling.bicubic};
-        public String atlasExtension = ".atlas";
+        public String atlasExtension = ".aatls";
 
         public Settings(){
         }
@@ -872,7 +893,7 @@ public class TexturePacker{
 
     public static void main(String[] args) throws Exception{
         Settings settings = null;
-        String input = null, output = null, packFileName = "pack.atlas";
+        String input = null, output = null, packFileName = "pack.aatls";
 
         switch(args.length){
             case 4:

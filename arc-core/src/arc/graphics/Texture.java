@@ -159,6 +159,8 @@ public class Texture extends GLTexture{
          */
         mipMapLinearLinear(GL20.GL_LINEAR_MIPMAP_LINEAR);
 
+        public static final TextureFilter[] all = values();
+
         public final int glEnum;
 
         TextureFilter(int glEnum){
@@ -172,6 +174,8 @@ public class Texture extends GLTexture{
 
     public enum TextureWrap{
         mirroredRepeat(GL20.GL_MIRRORED_REPEAT), clampToEdge(GL20.GL_CLAMP_TO_EDGE), repeat(GL20.GL_REPEAT);
+
+        public static final TextureWrap[] all = values();
 
         final int glEnum;
 

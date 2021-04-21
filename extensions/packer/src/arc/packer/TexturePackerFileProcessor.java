@@ -22,7 +22,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
     int packCount;
 
     public TexturePackerFileProcessor(){
-        this(new Settings(), "pack.atlas", null);
+        this(new Settings(), "pack.aatls", null);
     }
 
     /** @param progress May be null. */
@@ -38,12 +38,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
         addInputSuffix(".png", ".jpg", ".jpeg");
 
         // Sort input files by name to avoid platform-dependent atlas output changes.
-        setComparator(new Comparator<File>(){
-            @Override
-            public int compare(File file1, File file2){
-                return file1.getName().compareTo(file2.getName());
-            }
-        });
+        setComparator((file1, file2) -> file1.getName().compareTo(file2.getName()));
     }
 
     @Override

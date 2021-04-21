@@ -20,7 +20,7 @@ public class TextureUnpacker{
     private static final int NINEPATCH_PADDING = 1;
     private static final String OUTPUT_TYPE = "png";
     private static final String HELP = "Usage: atlasFile [imageDir] [outputDir]";
-    private static final String ATLAS_FILE_EXTENSION = ".atlas";
+    private static final String ATLAS_FILE_EXTENSION = ".aatls";
 
     private boolean quiet;
 
@@ -99,7 +99,7 @@ public class TextureUnpacker{
 
                     // check if the parent directories of this image file exist and create them if not
                     File imgOutput = new File(outputDirFile,
-                    String.format("%s.%s", region.index == -1 ? region.name : region.name + "_" + region.index, extension));
+                    String.format("%s.%s",  region.name));
                     File imgDir = imgOutput.getParentFile();
                     if(!imgDir.exists()){
                         if(!quiet) System.out.println(String.format("Creating directory: %s", imgDir.getPath()));

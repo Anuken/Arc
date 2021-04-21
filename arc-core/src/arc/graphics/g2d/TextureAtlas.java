@@ -13,9 +13,6 @@ import arc.util.*;
 import arc.util.io.*;
 
 import java.io.*;
-import java.util.*;
-
-import static arc.graphics.Texture.TextureWrap.*;
 
 /**
  * Loads images from texture atlases created by TexturePacker.<br>
@@ -24,14 +21,6 @@ import static arc.graphics.Texture.TextureWrap.*;
  * @author Nathan Sweet
  */
 public class TextureAtlas implements Disposable{
-    static final String[] tuple = new String[4];
-    static final Comparator<Region> indexComparator = (region1, region2) -> {
-        int i1 = region1.index;
-        if(i1 == -1) i1 = Integer.MAX_VALUE;
-        int i2 = region2.index;
-        if(i2 == -1) i2 = Integer.MAX_VALUE;
-        return i1 - i2;
-    };
     private final ObjectSet<Texture> textures = new ObjectSet<>(4);
     private final Seq<AtlasRegion> regions = new Seq<>();
     private final ObjectMap<String, Drawable> drawables = new ObjectMap<>();
@@ -90,29 +79,6 @@ public class TextureAtlas implements Disposable{
         this.drawableScale = scale;
     }
 
-    static String readValue(BufferedReader reader) throws IOException{
-        String line = reader.readLine();
-        int colon = line.indexOf(':');
-        if(colon == -1) throw new ArcRuntimeException("Invalid line: " + line);
-        return line.substring(colon + 1).trim();
-    }
-
-    /** Returns the number of tuple values read (1, 2 or 4). */
-    static int readTuple(BufferedReader reader) throws IOException{
-        String line = reader.readLine();
-        int colon = line.indexOf(':');
-        if(colon == -1) throw new ArcRuntimeException("Invalid line: " + line);
-        int i = 0, lastMatch = colon + 1;
-        for(i = 0; i < 3; i++){
-            int comma = line.indexOf(',', lastMatch);
-            if(comma == -1) break;
-            tuple[i] = line.substring(lastMatch, comma).trim();
-            lastMatch = comma + 1;
-        }
-        tuple[i] = line.substring(lastMatch).trim();
-        return i + 1;
-    }
-
     private void load(TextureAtlasData data){
         ObjectMap<AtlasPage, Texture> pageToTexture = new ObjectMap<>();
         for(AtlasPage page : data.pages){
@@ -135,7 +101,6 @@ public class TextureAtlas implements Disposable{
             int height = region.height;
             AtlasRegion atlasRegion = new AtlasRegion(pageToTexture.get(region.page), region.left, region.top,
             region.rotate ? height : width, region.rotate ? width : height);
-            atlasRegion.index = region.index;
             atlasRegion.name = region.name;
             atlasRegion.offsetX = region.offsetX;
             atlasRegion.offsetY = region.offsetY;
@@ -187,7 +152,6 @@ public class TextureAtlas implements Disposable{
         region.name = name;
         region.originalWidth = width;
         region.originalHeight = height;
-        region.index = -1;
         regions.add(region);
         regionmap.put(name, region);
         return region;
@@ -289,19 +253,6 @@ public class TextureAtlas implements Disposable{
     }
 
     /**
-     * Returns all regions with the specified name, ordered by smallest to largest {@link AtlasRegion#index index}. This method
-     * uses string comparison to find the regions, so the result should be cached rather than calling this method multiple times.
-     */
-    public Seq<AtlasRegion> findRegions(String name){
-        Seq<AtlasRegion> matched = new Seq<>(AtlasRegion.class);
-        for(int i = 0, n = regions.size; i < n; i++){
-            AtlasRegion region = regions.get(i);
-            if(region.name.equals(name)) matched.add(new AtlasRegion(region));
-        }
-        return matched;
-    }
-
-    /**
      * Returns the first region found with the specified name as a {@link NinePatch}. The region must have been packed with
      * ninepatch splits. This method uses string comparison to find the region and constructs a new ninepatch, so the result should
      * be cached rather than calling this method multiple times.
@@ -347,100 +298,67 @@ public class TextureAtlas implements Disposable{
     }
 
     public static class TextureAtlasData{
+        public static final byte formatVersion = 0;
+        public static final byte[] formatHeader = new byte[]{'A', 'A', 'T', 'L', 'S'};
+
         final Seq<AtlasPage> pages = new Seq<>();
         final Seq<Region> regions = new Seq<>();
 
         public TextureAtlasData(Fi packFile, Fi imagesDir, boolean flip){
-            BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 64);
-            try{
-                AtlasPage pageImage = null;
-                while(true){
-                    String line = reader.readLine();
-                    if(line == null) break;
-                    if(line.trim().length() == 0)
-                        pageImage = null;
-                    else if(pageImage == null){
-                        Fi file = imagesDir.child(line);
-
-                        float width = 0, height = 0;
-                        if(readTuple(reader) == 2){ // size is only optional for an atlas packed with an old TexturePacker.
-                            width = Integer.parseInt(tuple[0]);
-                            height = Integer.parseInt(tuple[1]);
-                            readTuple(reader);
-                        }
-                        Format format = Format.valueOf(tuple[0]);
-
-                        readTuple(reader);
-                        TextureFilter min = TextureFilter.valueOf(tuple[0]);
-                        TextureFilter max = TextureFilter.valueOf(tuple[1]);
-
-                        String direction = readValue(reader);
-                        TextureWrap repeatX = clampToEdge;
-                        TextureWrap repeatY = clampToEdge;
-                        if(direction.equals("x"))
-                            repeatX = repeat;
-                        else if(direction.equals("y"))
-                            repeatY = repeat;
-                        else if(direction.equals("xy")){
-                            repeatX = repeat;
-                            repeatY = repeat;
-                        }
-
-                        pageImage = new AtlasPage(file, width, height, min.isMipMap(), format, min, max, repeatX, repeatY);
-                        pages.add(pageImage);
-                    }else{
-                        boolean rotate = Boolean.parseBoolean(readValue(reader));
-
-                        readTuple(reader);
-                        int left = Integer.parseInt(tuple[0]);
-                        int top = Integer.parseInt(tuple[1]);
-
-                        readTuple(reader);
-                        int width = Integer.parseInt(tuple[0]);
-                        int height = Integer.parseInt(tuple[1]);
-
-                        Region region = new Region();
-                        region.page = pageImage;
-                        region.left = left;
-                        region.top = top;
-                        region.width = width;
-                        region.height = height;
-                        region.name = line;
-                        region.rotate = rotate;
-
-                        if(readTuple(reader) == 4){ // split is optional
-                            region.splits = new int[]{Integer.parseInt(tuple[0]), Integer.parseInt(tuple[1]),
-                            Integer.parseInt(tuple[2]), Integer.parseInt(tuple[3])};
-
-                            if(readTuple(reader) == 4){ // pad is optional, but only present with splits
-                                region.pads = new int[]{Integer.parseInt(tuple[0]), Integer.parseInt(tuple[1]),
-                                Integer.parseInt(tuple[2]), Integer.parseInt(tuple[3])};
-
-                                readTuple(reader);
-                            }
-                        }
-
-                        region.originalWidth = Integer.parseInt(tuple[0]);
-                        region.originalHeight = Integer.parseInt(tuple[1]);
-
-                        readTuple(reader);
-                        region.offsetX = Integer.parseInt(tuple[0]);
-                        region.offsetY = Integer.parseInt(tuple[1]);
-
-                        region.index = Integer.parseInt(readValue(reader));
-
-                        if(flip) region.flip = true;
-
-                        regions.add(region);
+            try(Reads read = packFile.reads()){
+                for(byte b : formatHeader){
+                    if(read.b() != b){
+                        throw new IOException("Invalid binary header. Have you re-packed sprites?");
                     }
                 }
-            }catch(Exception ex){
-                throw new ArcRuntimeException("Error reading pack file: " + packFile, ex);
-            }finally{
-                Streams.close(reader);
-            }
+                //discard version
+                read.b();
 
-            regions.sort(indexComparator);
+                int pageNum = read.i();
+
+                for(int i = 0; i < pageNum; i++){
+                    String image = read.str();
+                    Fi file = imagesDir.child(image);
+
+                    short pageWidth = read.s(), pageHeight = read.s();
+
+                    Format format = Format.all[read.b()];
+                    TextureFilter min = TextureFilter.all[read.b()], mag = TextureFilter.all[read.b()];
+                    TextureWrap wrapX = TextureWrap.all[read.b()], wrapY = TextureWrap.all[read.b()];
+
+                    int rects = read.i();
+
+                    AtlasPage page = new AtlasPage(file, pageWidth, pageHeight, min.isMipMap(), format, min, mag, wrapX, wrapY);
+                    pages.add(page);
+
+                    for(int j = 0; j < rects; j++){
+                        Region region = new Region();
+                        region.flip = flip;
+                        region.page = page;
+                        region.name = read.str();
+                        region.rotate = read.bool();
+                        region.left = read.s();
+                        region.top = read.s();
+                        region.offsetX = read.s();
+                        region.offsetY = read.s();
+                        region.width = read.s();
+                        region.height = read.s();
+                        region.originalWidth = read.s();
+                        region.originalHeight = read.s();
+
+                        //splits
+                        if(read.bool()){
+                            region.splits = new int[]{read.s(), read.s(), read.s(), read.s()};
+                        }
+                        //pads
+                        if(read.bool()){
+                            region.pads = new int[]{read.s(), read.s(), read.s(), read.s()};
+                        }
+                    }
+                }
+            }catch(Exception e){
+                throw new ArcRuntimeException("Error reading pack file: " + packFile, e);
+            }
         }
 
         public Seq<AtlasPage> getPages(){
@@ -478,7 +396,6 @@ public class TextureAtlas implements Disposable{
 
         public static class Region{
             public AtlasPage page;
-            public int index;
             public String name;
             public float offsetX;
             public float offsetY;
@@ -498,15 +415,6 @@ public class TextureAtlas implements Disposable{
     /** Describes the region of a packed image and provides information about the original image before it was packed. */
     public static class AtlasRegion extends TextureRegion{
         public PixmapRegion pixmapRegion;
-
-        /**
-         * The number at the end of the original image file name, or -1 if none.<br>
-         * <br>
-         * When sprites are packed, if the original file name ends with a number, it is stored as the index and is not considered as
-         * part of the sprite's name. This is useful for keeping animation frames in order.
-         * @see TextureAtlas#findRegions(String)
-         */
-        public int index;
 
         /**
          * The name of the original image file, up to the first underscore. Underscores denote special instructions to the texture
@@ -558,7 +466,6 @@ public class TextureAtlas implements Disposable{
 
         public AtlasRegion(AtlasRegion region){
             set(region);
-            index = region.index;
             name = region.name;
             offsetX = region.offsetX;
             offsetY = region.offsetY;

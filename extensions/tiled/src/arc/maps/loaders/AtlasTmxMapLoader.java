@@ -118,7 +118,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
                 }
             }
         }
-        Fi atlasFile = tmxFile.sibling(tmxFile.nameWithoutExtension() + ".atlas");
+        Fi atlasFile = tmxFile.sibling(tmxFile.nameWithoutExtension() + ".aatls");
         return atlasFile.exists() ? atlasFile : null;
     }
 
@@ -267,7 +267,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
             String atlasFilePath = map.properties.get("atlas");
             if(atlasFilePath == null){
-                Fi atlasFile = tmxFile.sibling(tmxFile.nameWithoutExtension() + ".atlas");
+                Fi atlasFile = tmxFile.sibling(tmxFile.nameWithoutExtension() + ".aatls");
                 if(atlasFile.exists()) atlasFilePath = atlasFile.name();
             }
             if(atlasFilePath == null){

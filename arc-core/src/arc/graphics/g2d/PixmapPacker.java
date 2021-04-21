@@ -340,7 +340,6 @@ public class PixmapPacker implements Disposable{
                     }
 
                     region.name = name;
-                    region.index = -1;
                     region.offsetX = rect.offsetX;
                     region.offsetY = (int)(rect.originalHeight - rect.height - rect.offsetY);
                     region.originalWidth = rect.originalWidth;
