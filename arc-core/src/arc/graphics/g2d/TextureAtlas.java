@@ -389,7 +389,7 @@ public class TextureAtlas implements Disposable{
                         pageImage = new AtlasPage(file, width, height, min.isMipMap(), format, min, max, repeatX, repeatY);
                         pages.add(pageImage);
                     }else{
-                        boolean rotate = Boolean.valueOf(readValue(reader));
+                        boolean rotate = Boolean.parseBoolean(readValue(reader));
 
                         readTuple(reader);
                         int left = Integer.parseInt(tuple[0]);
