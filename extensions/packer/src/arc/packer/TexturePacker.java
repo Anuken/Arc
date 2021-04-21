@@ -371,7 +371,7 @@ public class TexturePacker{
     }
 
     private void writeRect(Writes write, Page page, Rect rect, String name) throws IOException{
-        boolean offsets = rect.originalWidth != rect.width || rect.originalHeight != rect.height;
+        boolean offsets = rect.originalWidth != rect.regionWidth || rect.originalHeight != rect.regionHeight;
 
         //name
         write.str(Rect.getAtlasName(name, settings.flattenPaths));
