@@ -38,7 +38,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
         addInputSuffix(".png", ".jpg", ".jpeg");
 
         // Sort input files by name to avoid platform-dependent atlas output changes.
-        setComparator((file1, file2) -> file1.getName().compareTo(file2.getName()));
+        setComparator(Structs.comparing(File::getName));
     }
 
     @Override
@@ -46,7 +46,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
         root = inputFile;
 
         // Collect pack.json setting files.
-        final ArrayList<File> settingsFiles = new ArrayList();
+        final Seq<File> settingsFiles = new Seq<>();
         FileProcessor settingsProcessor = new FileProcessor(){
             @Override
             protected void processFile(Entry inputFile) throws Exception{
@@ -56,12 +56,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
         settingsProcessor.addInputRegex("pack\\.json");
         settingsProcessor.process(inputFile, null);
         // Sort parent first.
-        Collections.sort(settingsFiles, new Comparator<File>(){
-            @Override
-            public int compare(File file1, File file2){
-                return file1.toString().length() - file2.toString().length();
-            }
-        });
+        settingsFiles.sort(Structs.comparingInt(file -> file.toString().length()));
         for(File settingsFile : settingsFiles){
             // Find first parent with settings, or use defaults.
             Settings settings = null;
@@ -189,43 +184,40 @@ public class TexturePackerFileProcessor extends FileProcessor{
             return;
         }
 
+        final Pattern digitSuffix = Pattern.compile("(.*?)(\\d+)$");
+
         // Sort by name using numeric suffix, then alpha.
-        Collections.sort(files, new Comparator<Entry>(){
-            final Pattern digitSuffix = Pattern.compile("(.*?)(\\d+)$");
+        Collections.sort(files, (entry1, entry2) -> {
+            String full1 = entry1.inputFile.getName();
+            int dotIndex = full1.lastIndexOf('.');
+            if(dotIndex != -1) full1 = full1.substring(0, dotIndex);
 
-            @Override
-            public int compare(Entry entry1, Entry entry2){
-                String full1 = entry1.inputFile.getName();
-                int dotIndex = full1.lastIndexOf('.');
-                if(dotIndex != -1) full1 = full1.substring(0, dotIndex);
+            String full2 = entry2.inputFile.getName();
+            dotIndex = full2.lastIndexOf('.');
+            if(dotIndex != -1) full2 = full2.substring(0, dotIndex);
 
-                String full2 = entry2.inputFile.getName();
-                dotIndex = full2.lastIndexOf('.');
-                if(dotIndex != -1) full2 = full2.substring(0, dotIndex);
+            String name1 = full1, name2 = full2;
+            int num1 = 0, num2 = 0;
 
-                String name1 = full1, name2 = full2;
-                int num1 = 0, num2 = 0;
-
-                Matcher matcher = digitSuffix.matcher(full1);
-                if(matcher.matches()){
-                    try{
-                        num1 = Integer.parseInt(matcher.group(2));
-                        name1 = matcher.group(1);
-                    }catch(Exception ignored){
-                    }
+            Matcher matcher = digitSuffix.matcher(full1);
+            if(matcher.matches()){
+                try{
+                    num1 = Integer.parseInt(matcher.group(2));
+                    name1 = matcher.group(1);
+                }catch(Exception ignored){
                 }
-                matcher = digitSuffix.matcher(full2);
-                if(matcher.matches()){
-                    try{
-                        num2 = Integer.parseInt(matcher.group(2));
-                        name2 = matcher.group(1);
-                    }catch(Exception ignored){
-                    }
-                }
-                int compare = name1.compareTo(name2);
-                if(compare != 0 || num1 == num2) return compare;
-                return num1 - num2;
             }
+            matcher = digitSuffix.matcher(full2);
+            if(matcher.matches()){
+                try{
+                    num2 = Integer.parseInt(matcher.group(2));
+                    name2 = matcher.group(1);
+                }catch(Exception ignored){
+                }
+            }
+            int compare = name1.compareTo(name2);
+            if(compare != 0 || num1 == num2) return compare;
+            return num1 - num2;
         });
 
         // Pack.

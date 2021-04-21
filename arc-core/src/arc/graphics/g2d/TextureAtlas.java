@@ -314,9 +314,7 @@ public class TextureAtlas implements Disposable{
                 //discard version
                 read.b();
 
-                int pageNum = read.i();
-
-                for(int i = 0; i < pageNum; i++){
+                while(read.checkEOF() != -1){
                     String image = read.str();
                     Fi file = imagesDir.child(image);
 

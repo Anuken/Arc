@@ -365,8 +365,12 @@ public class Fi{
         }
     }
 
+    public Writes writes(boolean append){
+        return new Writes(new DataOutputStream(write(append, Streams.DEFAULT_BUFFER_SIZE)));
+    }
+
     public Writes writes(){
-        return new Writes(new DataOutputStream(write(false, Streams.DEFAULT_BUFFER_SIZE)));
+        return writes(false);
     }
 
     public Reads reads(){

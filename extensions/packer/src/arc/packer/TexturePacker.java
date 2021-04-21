@@ -4,7 +4,6 @@ import arc.files.*;
 import arc.graphics.Pixmap.*;
 import arc.graphics.Texture.*;
 import arc.graphics.g2d.TextureAtlas.*;
-import arc.graphics.g2d.TextureAtlas.TextureAtlasData.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
@@ -26,6 +25,7 @@ public class TexturePacker{
     private final ImageProcessor imageProcessor;
     private final Seq<InputImage> inputImages = new Seq<>();
     private ProgressListener progress;
+    private Seq<Page> allPages = new Seq<>();
 
     /** @param rootDir See {@link #setRootDir(File)}. */
     public TexturePacker(File rootDir, Settings settings){
@@ -327,30 +327,19 @@ public class TexturePacker{
         Fi packDir = packFile.parent();
         packDir.mkdirs();
 
-        if(packFile.exists()){
-            // Make sure there aren't duplicate names.
-            TextureAtlasData textureAtlasData = new TextureAtlasData(packFile, packFile, false);
-            for(Page page : pages){
-                for(Rect rect : page.outputRects){
-                    String rectName = Rect.getAtlasName(rect.name, settings.flattenPaths);
-                    for(Region region : textureAtlasData.getRegions()){
-                        if(region.name.equals(rectName)){
-                            throw new ArcRuntimeException("A region with the name \"" + rectName + "\" has already been packed: " + rect.name);
-                        }
-                    }
-                }
+        boolean existed = packFile.exists() && packFile.length() > 0;
+
+        try(Writes write = packFile.writes(true)){
+            //write meta to start of file
+            if(!existed){
+                write.b(TextureAtlasData.formatHeader);
+                write.b(TextureAtlasData.formatVersion);
             }
-        }
 
-        try(Writes write = packFile.writes()){
-            //meta
-            write.b(TextureAtlasData.formatHeader);
-            write.b(TextureAtlasData.formatVersion);
-
-            //write each page, specifying the # beforehand
-            write.i(pages.size);
-
+            //write every page; reader is expected to read until EOF
             for(Page page : pages){
+                //write a single byte to check for EOF
+                write.b(1);
                 write.str(page.imageName);
                 //size
                 write.s(page.imageWidth);
@@ -631,6 +620,7 @@ public class TexturePacker{
         try{
             TexturePackerFileProcessor processor = new TexturePackerFileProcessor(settings, packFileName, progress);
             processor.process(new File(input), new File(output));
+
         }catch(Exception ex){
             throw new RuntimeException("Error packing images: " + Strings.getFinalMessage(ex), ex);
         }
@@ -696,7 +686,6 @@ public class TexturePacker{
 
     public interface Packer{
         Seq<Page> pack(Seq<Rect> inputRects);
-
         Seq<Page> pack(ProgressListener progress, Seq<Rect> inputRects);
     }
 

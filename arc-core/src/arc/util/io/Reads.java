@@ -17,6 +17,18 @@ public class Reads implements Closeable{
         return instance;
     }
 
+    /** @return -1 if EOF or unsupported, or the next byte. */
+    public int checkEOF(){
+        try{
+            if(input instanceof InputStream){
+                return ((InputStream)input).read();
+            }
+            return -1;
+        }catch(IOException e){
+            throw new RuntimeException(e);
+        }
+    }
+
     /** read long */
     public long l(){
         try{
