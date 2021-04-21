@@ -103,7 +103,7 @@ public class Pixmaps{
                         outer:
                         for(int dx = -thickness; dx <= thickness; dx++){
                             for(int dy = -thickness; dy <= thickness; dy++){
-                                if(Mathf.dst2(dx, dy) <= thickness * thickness && !empty(input.getPixel(x + dx, y + dy))){
+                                if(Mathf.within(dx, dy, thickness) && !empty(input.getPixel(x + dx, y + dy))){
                                     found = true;
                                     break outer;
                                 }
@@ -119,6 +119,32 @@ public class Pixmaps{
             }
             return pixmap;
         }
+    }
+
+    public static Pixmap outline(PixmapRegion region, Color color, int radius){
+        int outlineColor = color.rgba8888();
+        Pixmap out = region.crop();
+        for(int x = 0; x < region.width; x++){
+            for(int y = 0; y < region.height; y++){
+
+                if((region.getPixel(x, y) & 0x000000ff) < 255){
+                    boolean found = false;
+                    outer:
+                    for(int rx = -radius; rx <= radius; rx++){
+                        for(int ry = -radius; ry <= radius; ry++){
+                            if(Structs.inBounds(rx + x, ry + y, region.width, region.height) && Mathf.within(rx, ry, radius) && !empty(region.getPixel(rx + x, ry + y))){
+                                found = true;
+                                break outer;
+                            }
+                        }
+                    }
+                    if(found){
+                        out.draw(x, y, outlineColor);
+                    }
+                }
+            }
+        }
+        return out;
     }
 
     public static Pixmap outline(Pixmap input, Color color){

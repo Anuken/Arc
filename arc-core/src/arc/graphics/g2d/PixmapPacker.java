@@ -174,7 +174,7 @@ public class PixmapPacker implements Disposable{
 
         boolean isPatch = name != null && name.endsWith(".9");
 
-        PixmapPackerRect rect = new PixmapPackerRect(0, 0, image.width, image.height);;
+        PixmapPackerRect rect = new PixmapPackerRect(0, 0, image.width, image.height);
         Pixmap pixmapToDispose = null;
         if(isPatch && splits == null){
             pixmapToDispose = new Pixmap(image.width, image.height, image.pixmap.getFormat());
