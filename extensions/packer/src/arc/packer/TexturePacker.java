@@ -399,14 +399,14 @@ public class TexturePacker{
         write.s(rect.originalWidth);
         write.s(rect.originalHeight);
         //optional splits
-        write.bool(rect.splits == null);
+        write.bool(rect.splits != null);
         if(rect.splits != null){
             for(int i = 0; i < 4; i++){
                 write.s(rect.splits[i]);
             }
         }
         //optional pads
-        write.bool(rect.pads == null);
+        write.bool(rect.pads != null);
         if(rect.pads != null){
             for(int i = 0; i < 4; i++){
                 write.s(rect.pads[i]);
