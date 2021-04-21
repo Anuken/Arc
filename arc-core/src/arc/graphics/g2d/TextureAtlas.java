@@ -334,20 +334,24 @@ public class TextureAtlas implements Disposable{
                         region.flip = flip;
                         region.page = page;
                         region.name = read.str();
-                        region.rotate = read.bool();
                         region.left = read.s();
                         region.top = read.s();
-                        region.offsetX = read.s();
-                        region.offsetY = read.s();
                         region.width = read.s();
                         region.height = read.s();
-                        region.originalWidth = read.s();
-                        region.originalHeight = read.s();
+
+                        //offsets
+                        if(read.bool()){
+                            region.offsetX = read.s();
+                            region.offsetY = read.s();
+                            region.originalWidth = read.s();
+                            region.originalHeight = read.s();
+                        }
 
                         //splits
                         if(read.bool()){
                             region.splits = new int[]{read.s(), read.s(), read.s(), read.s()};
                         }
+
                         //pads
                         if(read.bool()){
                             region.pads = new int[]{read.s(), read.s(), read.s(), read.s()};
