@@ -352,6 +352,8 @@ public class TextureAtlas implements Disposable{
                         if(read.bool()){
                             region.pads = new int[]{read.s(), read.s(), read.s(), read.s()};
                         }
+
+                        regions.add(region);
                     }
                 }
             }catch(Exception e){
