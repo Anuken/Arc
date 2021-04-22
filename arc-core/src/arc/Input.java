@@ -26,18 +26,18 @@ import static arc.Core.keybinds;
  * @author mzechner
  */
 public abstract class Input{
-    /** Controller stick deadzone. */
-    protected final static float deadzone = 0.3f;
     /** The default input device (keyboard) */
     protected KeyboardDevice keyboard = new KeyboardDevice();
-    /** All available input devices, including controllers and keybowards. */
+    /** All available input devices, including controllers and keyboards. */
     protected Seq<InputDevice> devices = Seq.with(keyboard);
     /** An input multiplexer to handle events. */
     protected InputMultiplexer inputMultiplexer = new InputMultiplexer(keyboard);
     /** List of caught keys for Android. */
     protected IntSet caughtKeys = new IntSet();
-    /**Return Vec2 value for various functions.*/
+    /** Return Vec2 value for various functions. */
     protected Vec2 mouseReturn = new Vec2();
+    /** Whether to use keyboard controls on Android. */
+    protected boolean useKeyboard;
 
     /**Returns the unprojected mouse position (screen -> world).*/
     public Vec2 mouseWorld(float x, float y){
@@ -67,6 +67,15 @@ public abstract class Input{
     /**Returns the mouse position as a Vec2.*/
     public Vec2 mouse(){
         return mouseReturn.set(mouseX(), mouseY());
+    }
+
+    public void setUseKeyboard(boolean useKeyboard){
+        this.useKeyboard = useKeyboard;
+    }
+
+    /** @return whether the keyboard should be preferred for mobile devices - used in text fields. */
+    public boolean useKeyboard(){
+        return useKeyboard;
     }
 
     /**

@@ -165,6 +165,8 @@ public class TextField extends Element implements Disableable{
         if(!app.isMobile()) return;
 
         tapped(() -> {
+            if(input.useKeyboard()) return;
+
             TextInput input = new TextInput();
             input.text = getText();
             if(maxLength > 0) input.maxLength = maxLength;
