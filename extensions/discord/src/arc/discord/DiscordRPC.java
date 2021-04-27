@@ -213,9 +213,15 @@ public final class DiscordRPC{
         public String matchSecret;
         public String joinSecret;
         public String spectateSecret;
+        public String label1;
+        public String url1;
+        public String label2;
+        public String url2;
         public boolean instance;
 
         public Jval toJson(){
+            boolean useButtons = joinSecret == null && matchSecret == null && spectateSecret == null;
+
             return Jval.newObject()
             .put("state", state)
             .put("details", details)
@@ -230,12 +236,22 @@ public final class DiscordRPC{
             .put("party", partyId == null ? null : Jval.newObject()
             .put("id", partyId)
             .put("size", Jval.newArray().add(partySize).add(partyMax)))
-            .put("secrets", Jval.newObject()
+            .put("secrets", useButtons ? null : Jval.newObject()
                 .put("join", joinSecret)
                 .put("spectate", spectateSecret)
                 .put("match", matchSecret))
+            .put("buttons", useButtons ? buttons() : null)
             .put("instance", instance);
         }
+
+        Jval buttons(){
+            Jval buttons = Jval.newArray();
+            if (label1 != null && url1 != null) buttons.add(Jval.newObject().put("label", label1).put("url", url1));
+            if (label2 != null && url2 != null) buttons.add(Jval.newObject().put("label", label2).put("url", url2));
+            return buttons;
+        }
+        
+        
     }
 
     public enum PipeStatus{
