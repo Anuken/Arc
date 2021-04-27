@@ -246,12 +246,10 @@ public final class DiscordRPC{
 
         Jval buttons(){
             Jval buttons = Jval.newArray();
-            if (label1 != null && url1 != null) buttons.add(Jval.newObject().put("label", label1).put("url", url1));
-            if (label2 != null && url2 != null) buttons.add(Jval.newObject().put("label", label2).put("url", url2));
+            if(label1 != null && url1 != null) buttons.add(Jval.newObject().put("label", label1).put("url", url1));
+            if(label2 != null && url2 != null) buttons.add(Jval.newObject().put("label", label2).put("url", url2));
             return buttons;
         }
-        
-        
     }
 
     public enum PipeStatus{
