@@ -143,6 +143,11 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
+    public Cell<T> tooltip(Cons<Table> builder){
+        element.addListener(new Tooltip(builder));
+        return this;
+    }
+
     /** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified value. */
     public Cell<T> size(float size){
         minWidth = minHeight = maxWidth = maxHeight = scl(size);

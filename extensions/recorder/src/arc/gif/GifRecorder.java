@@ -38,7 +38,7 @@ public class GifRecorder{
     public float speedMultiplier = 1f;
     public int recordfps = 30;
     public float driftSpeed = 1f;
-    public float gifx, gify, gifwidth, gifheight, giftime;
+    public float gifx, gify, gifwidth, gifheight;
 
     private float offsetx, offsety;
     private Seq<byte[]> frames = new Seq<>();
@@ -150,12 +150,12 @@ public class GifRecorder{
         }
 
         if(recording){
-            giftime += delta;
             frametime += delta * 61f * speedMultiplier;
             if(frametime >= (60f / recordfps)){
-                byte[] pix = ScreenUtils.getFrameBufferPixels((int)(gifx + offsetx) + 1 + Core.graphics.getWidth() / 2,
-                (int)(gify + offsety) + 1 + Core.graphics.getHeight() / 2,
-                (int)(gifwidth) - 2, (int)(gifheight) - 2, false);
+                byte[] pix = ScreenUtils.getFrameBufferPixels(
+                    (int)(gifx + offsetx) + 1 + Core.graphics.getWidth() / 2,
+                    (int)(gify + offsety) + 1 + Core.graphics.getHeight() / 2,
+                    (int)(gifwidth) - 2, (int)(gifheight) - 2, false);
                 frames.add(pix);
                 frametime = 0;
             }
@@ -191,18 +191,12 @@ public class GifRecorder{
         recording = true;
     }
 
-    public float getTime(){
-        return giftime;
-    }
-
     public void finishRecording(){
         recording = false;
-        giftime = 0;
     }
 
     public void clearFrames(){
         frames.clear();
-        giftime = 0;
         recording = false;
     }
 
