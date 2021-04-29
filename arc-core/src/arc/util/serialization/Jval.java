@@ -92,7 +92,7 @@ public class Jval{
     public boolean isObject(){ return value instanceof JsonMap; }
     public boolean isArray(){ return value instanceof JsonArray; }
     public boolean isNumber(){ return value instanceof Number; }
-    public boolean isString(){ return value instanceof Structs; }
+    public boolean isString(){ return value instanceof String; }
     public boolean isBoolean(){ return value instanceof Boolean; }
     public boolean isTrue(){ return value == Boolean.TRUE; }
     public boolean isFalse(){ return value == Boolean.FALSE; }
