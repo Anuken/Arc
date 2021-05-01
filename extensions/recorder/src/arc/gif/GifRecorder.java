@@ -279,6 +279,7 @@ public class GifRecorder{
                 writer.close();
                 output.close();
             }
+            pixmaps.clear();
 
             return file;
         }catch(Exception e){
