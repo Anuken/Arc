@@ -4,6 +4,8 @@ import arc.math.geom.*;
 import arc.util.*;
 
 public final class Mathf{
+
+
     public static final int[] signs = {-1, 1};
     public static final int[] one = {1}; //trust me, this is useful
     public static final boolean[] booleans = {true, false};
@@ -19,13 +21,15 @@ public final class Mathf{
     /** multiply by this to convert from degrees to radians */
     public static final float degreesToRadians = PI / 180;
     public static final float degRad = degreesToRadians;
-    private static final int SIN_BITS = 14; // 16KB. Adjust for accuracy.
-    private static final int SIN_MASK = ~(-1 << SIN_BITS);
-    private static final int SIN_COUNT = SIN_MASK + 1;
+
+    private static final int sinBits = 14; // 16KB. Adjust for accuracy.
+    private static final int sinMask = ~(-1 << sinBits);
+    private static final int sinCount = sinMask + 1;
+    private static final float[] sinTable = new float[sinCount];
     private static final float radFull = PI * 2;
     private static final float degFull = 360;
-    private static final float radToIndex = SIN_COUNT / radFull;
-    private static final float degToIndex = SIN_COUNT / degFull;
+    private static final float radToIndex = sinCount / radFull;
+    private static final float degToIndex = sinCount / degFull;
     private static final int BIG_ENOUGH_INT = 16 * 1024;
     private static final double BIG_ENOUGH_FLOOR = BIG_ENOUGH_INT;
     private static final double CEIL = 0.9999999;
@@ -33,26 +37,38 @@ public final class Mathf{
     private static final Rand seedr = new Rand();
     private static final Vec2 v1 = new Vec2(), v2 = new Vec2(), v3 = new Vec2();
 
+    static{
+        for(int i = 0; i < sinCount; i++)
+            sinTable[i] = (float)Math.sin((i + 0.5f) / sinCount * radFull);
+        for(int i = 0; i < 360; i += 90)
+            sinTable[(int)(i * degToIndex) & sinMask] = (float)Math.sin(i * degreesToRadians);
+
+        sinTable[0] = 0f;
+        sinTable[(int)(90 * degToIndex) & sinMask] = 1f;
+        sinTable[(int)(180 * degToIndex) & sinMask] = 0f;
+        sinTable[(int)(270 * degToIndex) & sinMask] = -1f;
+    }
+
     public static Rand rand = new Rand();
 
     /** Returns the sine in radians from a lookup table. */
     public static float sin(float radians){
-        return Sin.table[(int)(radians * radToIndex) & SIN_MASK];
+        return sinTable[(int)(radians * radToIndex) & sinMask];
     }
 
     /** Returns the cosine in radians from a lookup table. */
     public static float cos(float radians){
-        return Sin.table[(int)((radians + PI / 2) * radToIndex) & SIN_MASK];
+        return sinTable[(int)((radians + PI / 2) * radToIndex) & sinMask];
     }
 
     /** Returns the sine in radians from a lookup table. */
     public static float sinDeg(float degrees){
-        return Sin.table[(int)(degrees * degToIndex) & SIN_MASK];
+        return sinTable[(int)(degrees * degToIndex) & sinMask];
     }
 
     /** Returns the cosine in radians from a lookup table. */
     public static float cosDeg(float degrees){
-        return Sin.table[(int)((degrees + 90) * degToIndex) & SIN_MASK];
+        return sinTable[(int)((degrees + 90) * degToIndex) & sinMask];
     }
 
     public static float absin(float scl, float mag){
@@ -643,16 +659,5 @@ public final class Mathf{
     /** @return whether dst(x, y, 0, 0) < dst */
     public static boolean within(float x1, float y1, float dst){
         return (x1 * x1 + y1*y1) < dst*dst;
-    }
-
-    private static class Sin{
-        static final float[] table = new float[SIN_COUNT];
-
-        static{
-            for(int i = 0; i < SIN_COUNT; i++)
-                table[i] = (float)Math.sin((i + 0.5f) / SIN_COUNT * radFull);
-            for(int i = 0; i < 360; i += 90)
-                table[(int)(i * degToIndex) & SIN_MASK] = (float)Math.sin(i * degreesToRadians);
-        }
     }
 }
