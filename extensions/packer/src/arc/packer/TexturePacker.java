@@ -293,12 +293,7 @@ public class TexturePacker{
             }catch(IOException ex){
                 throw new RuntimeException("Error writing file: " + outputFile, ex);
             }finally{
-                if(ios != null){
-                    try{
-                        ios.close();
-                    }catch(Exception ignored){
-                    }
-                }
+                Streams.close(ios);
             }
 
             if(progress.update(p + 1, pn)) return;

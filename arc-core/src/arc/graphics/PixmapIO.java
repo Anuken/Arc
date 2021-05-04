@@ -1,14 +1,14 @@
 package arc.graphics;
 
-import arc.struct.ByteSeq;
-import arc.files.Fi;
-import arc.graphics.Pixmap.Format;
-import arc.util.ArcRuntimeException;
-import arc.util.Disposable;
-import arc.util.io.Streams;
+import arc.files.*;
+import arc.graphics.Pixmap.*;
+import arc.struct.*;
+import arc.util.*;
+import arc.util.io.*;
 
 import java.io.*;
-import java.nio.ByteBuffer;
+import java.nio.*;
+import java.nio.channels.*;
 import java.util.zip.*;
 
 /**
@@ -17,6 +17,42 @@ import java.util.zip.*;
  * @author Nathan Sweet
  */
 public class PixmapIO{
+
+    /**
+     * Arc PIXmap: Similar to to the libGDX CIM format. Writes deflation-compressed pixmap RGBA data to a file.
+     * Faster and smaller than RGBA PNG.
+     * */
+    public static void writeApix(Fi file, Pixmap pixmap) {
+        try(DataOutputStream out = new DataOutputStream(new DeflaterOutputStream(file.write(false))); WritableByteChannel channel = Channels.newChannel(out)){
+            out.writeInt(pixmap.getWidth());
+            out.writeInt(pixmap.getHeight());
+            out.writeInt(pixmap.getFormat().ordinal());
+
+            ByteBuffer buf = pixmap.getPixels();
+            buf.position(0);
+            buf.limit(buf.capacity());
+            channel.write(buf);
+        }catch(Exception e){
+            throw new ArcRuntimeException("Couldn't write Pixmap to file '" + file + "'", e);
+        }
+    }
+
+    /** Reads deflation-compressed pixmap RGBA data from a file. */
+    public static Pixmap readApix(Fi file) {
+        try(DataInputStream in = new DataInputStream(new InflaterInputStream(new BufferedInputStream(file.read()))); ReadableByteChannel channel = Channels.newChannel(in)){
+            Pixmap pixmap = new Pixmap(in.readInt(), in.readInt(), Format.all[in.readInt()]);
+
+            ByteBuffer pixelBuf = pixmap.getPixels();
+            pixelBuf.position(0);
+            pixelBuf.limit(pixelBuf.capacity());
+            channel.read(pixelBuf);
+            pixelBuf.position(0);
+            pixelBuf.limit(pixelBuf.capacity());
+            return pixmap;
+        }catch(Exception e){
+            throw new ArcRuntimeException("Couldn't read Pixmap from file '" + file + "'", e);
+        }
+    }
 
     /**
      * Writes the pixmap as a PNG with compression. See {@link PNG} to configure the compression level, more efficiently flip the

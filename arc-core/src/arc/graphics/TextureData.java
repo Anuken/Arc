@@ -75,8 +75,10 @@ public interface TextureData{
     }
 
     static TextureData load(Fi file, Format format, boolean useMipMaps){
-        if(file == null) return null;
-        return new FileTextureData(file, new Pixmap(file), format, useMipMaps);
+        return new FileTextureData(file,
+            file.extEquals("apix") ? PixmapIO.readApix(file) :
+            new Pixmap(file),
+        format, useMipMaps);
     }
 
 }

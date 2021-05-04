@@ -6,7 +6,7 @@ import arc.graphics.gl.*;
 import arc.util.*;
 
 /**
- * Open GLES wrapper for TextureArray
+ * OpenGL ES wrapper for TextureArray
  * @author Tomski
  */
 public class TextureArray extends GLTexture{
