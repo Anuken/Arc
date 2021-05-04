@@ -43,6 +43,12 @@ public class Lines{
         line(x, y, x + vector.x, y + vector.y);
     }
 
+    public static void lineAngleCenter(float x, float y, float angle, float length, boolean cap){
+        vector.trns(angle, length);
+
+        line(x - vector.x / 2, y - vector.y / 2, x + vector.x / 2, y + vector.y / 2, cap);
+    }
+
     public static void lineAngleCenter(float x, float y, float angle, float length){
         vector.trns(angle, length);
 
