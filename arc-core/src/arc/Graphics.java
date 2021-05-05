@@ -2,7 +2,6 @@ package arc;
 
 import arc.Graphics.Cursor.*;
 import arc.graphics.*;
-import arc.graphics.Pixmap.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.math.*;
@@ -267,19 +266,18 @@ public abstract class Graphics implements Disposable{
      */
     public Cursor newCursor(Pixmap pixmap, int scaling, Color outlineColor){
         Pixmap out = Pixmaps.outline(pixmap, outlineColor);
-        out.setColor(Color.white);
         Pixmap out2 = Pixmaps.scale(out, scaling);
 
-        if(!Mathf.isPowerOfTwo(out2.getWidth())){
+        if(!Mathf.isPowerOfTwo(out2.width)){
             Pixmap old = out2;
-            out2 = Pixmaps.resize(out2, Mathf.nextPowerOfTwo(out2.getWidth()), Mathf.nextPowerOfTwo(out2.getWidth()));
+            out2 = Pixmaps.resize(out2, Mathf.nextPowerOfTwo(out2.width), Mathf.nextPowerOfTwo(out2.width));
             old.dispose();
         }
 
         out.dispose();
         pixmap.dispose();
 
-        return newCursor(out2, out2.getWidth() / 2, out2.getHeight() / 2);
+        return newCursor(out2, out2.width / 2, out2.height / 2);
     }
 
     /**
@@ -290,19 +288,18 @@ public abstract class Graphics implements Disposable{
      */
     public Cursor newCursor(Pixmap pixmap, int scaling, Color outlineColor, int outlineThickness){
         Pixmap out = Pixmaps.outline(pixmap, outlineColor, outlineThickness);
-        out.setColor(Color.white);
         Pixmap out2 = Pixmaps.scale(out, scaling);
 
-        if(!Mathf.isPowerOfTwo(out2.getWidth())){
+        if(!Mathf.isPowerOfTwo(out2.width)){
             Pixmap old = out2;
-            out2 = Pixmaps.resize(out2, Mathf.nextPowerOfTwo(out2.getWidth()), Mathf.nextPowerOfTwo(out2.getWidth()));
+            out2 = Pixmaps.resize(out2, Mathf.nextPowerOfTwo(out2.width), Mathf.nextPowerOfTwo(out2.width));
             old.dispose();
         }
 
         out.dispose();
         pixmap.dispose();
 
-        return newCursor(out2, out2.getWidth() / 2, out2.getHeight() / 2);
+        return newCursor(out2, out2.width / 2, out2.height / 2);
     }
 
     /**
@@ -312,9 +309,9 @@ public abstract class Graphics implements Disposable{
     public Cursor newCursor(String filename, int scale){
         if(scale == 1 || OS.isAndroid || OS.isIos) return newCursor(filename);
         Pixmap base = new Pixmap(Core.files.internal("cursors/" + filename + ".png"));
-        Pixmap result = Pixmaps.scale(base, base.getWidth() * scale, base.getHeight() * scale, PixmapFilter.nearestNeighbour);
+        Pixmap result = Pixmaps.scale(base, base.width * scale, base.height * scale);
         base.dispose();
-        return newCursor(result, result.getWidth()/2, result.getHeight()/2);
+        return newCursor(result, result.width /2, result.height /2);
     }
 
     /**
@@ -323,7 +320,7 @@ public abstract class Graphics implements Disposable{
      */
     public Cursor newCursor(String filename){
         Pixmap p = new Pixmap(Core.files.internal("cursors/" + filename + ".png"));
-        return newCursor(p, p.getWidth()/2, p.getHeight()/2);
+        return newCursor(p, p.width /2, p.height /2);
     }
 
     /**

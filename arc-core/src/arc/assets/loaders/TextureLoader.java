@@ -25,17 +25,15 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
     public void loadAsync(AssetManager manager, String fileName, Fi file, TextureParameter parameter){
         info.filename = fileName;
         if(parameter == null || parameter.textureData == null){
-            Format format = null;
             boolean genMipMaps = false;
             info.texture = null;
 
             if(parameter != null){
-                format = parameter.format;
                 genMipMaps = parameter.genMipMaps;
                 info.texture = parameter.texture;
             }
 
-            info.data = TextureData.load(file, format, genMipMaps);
+            info.data = TextureData.load(file, genMipMaps);
         }else{
             info.data = parameter.textureData;
             info.texture = parameter.texture;

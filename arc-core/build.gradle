@@ -7,6 +7,13 @@ dependencies{
     testImplementation aproj(":natives:natives-desktop")
 }
 
+test{
+    testLogging{
+        exceptionFormat = 'full'
+        showStandardStreams = true
+    }
+}
+
 apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 
 file("jni").mkdir()

@@ -21,6 +21,10 @@ public class Color{
     public static final float clearFloatBits = clear.toFloatBits();
     public static final float blackFloatBits = black.toFloatBits();
 
+    public static final int whiteRgba = white.rgba();
+    public static final int clearRgba = clear.rgba();
+    public static final int blackRgba = black.rgba();
+
     public static final Color blue = new Color(0, 0, 1, 1);
     public static final Color navy = new Color(0, 0, 0.5f, 1);
     public static final Color royal = new Color(0x4169e1ff);

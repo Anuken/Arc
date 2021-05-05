@@ -2,13 +2,12 @@ package arc.util;
 
 public class ArcNativesLoader{
     public static boolean disableNativesLoading = false;
-
-    private static boolean nativesLoaded;
+    public static boolean loaded;
 
     /** Loads the arc native libraries if they have not already been loaded. */
     public static synchronized void load(){
-        if(nativesLoaded) return;
-        nativesLoaded = true;
+        if(loaded) return;
+        loaded = true;
 
         if(disableNativesLoading) return;
 

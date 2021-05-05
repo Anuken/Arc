@@ -11,11 +11,11 @@ public class PixmapTest{
         ArcNativesLoader.load();
 
         Pixmap pix = new Pixmap(100, 100);
-        pix.setColor(Color.red);
-        pix.fillCircle(50, 50, 30);
+        pix.fillCircle(50, 50, 30, Color.red.rgba());
 
         assertEquals(Color.red.rgba(), pix.getPixel(50, 50));
         assertEquals(Color.red.rgba(), pix.getPixel(54, 54));
         assertEquals(0, pix.getPixel(0, 0));
     }
+
 }

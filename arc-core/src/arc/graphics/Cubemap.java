@@ -28,7 +28,6 @@ public class Cubemap extends GLTexture{
             Core.files.internal(base + "bottom.png"),
             Core.files.internal(base + "front.png"),
             Core.files.internal(base + "back.png")
-
         );
     }
 
@@ -51,19 +50,26 @@ public class Cubemap extends GLTexture{
 
     /** Construct a Cubemap with the specified {@link Pixmap}s for the sides, optionally generating mipmaps. */
     public Cubemap(Pixmap positiveX, Pixmap negativeX, Pixmap positiveY, Pixmap negativeY, Pixmap positiveZ, Pixmap negativeZ, boolean useMipMaps){
-        this(positiveX == null ? null : new PixmapTextureData(positiveX, null, useMipMaps, false), negativeX == null ? null
-        : new PixmapTextureData(negativeX, null, useMipMaps, false), positiveY == null ? null : new PixmapTextureData(positiveY,
-        null, useMipMaps, false), negativeY == null ? null : new PixmapTextureData(negativeY, null, useMipMaps, false),
-        positiveZ == null ? null : new PixmapTextureData(positiveZ, null, useMipMaps, false), negativeZ == null ? null
-        : new PixmapTextureData(negativeZ, null, useMipMaps, false));
+        this(
+        positiveX == null ? null : new PixmapTextureData(positiveX, useMipMaps, false),
+        negativeX == null ? null : new PixmapTextureData(negativeX, useMipMaps, false),
+        positiveY == null ? null : new PixmapTextureData(positiveY, useMipMaps, false),
+        negativeY == null ? null : new PixmapTextureData(negativeY, useMipMaps, false),
+        positiveZ == null ? null : new PixmapTextureData(positiveZ, useMipMaps, false),
+        negativeZ == null ? null : new PixmapTextureData(negativeZ, useMipMaps, false)
+        );
     }
 
     /** Construct a Cubemap with {@link Pixmap}s for each side of the specified size. */
     public Cubemap(int width, int height, int depth, Format format){
-        this(new PixmapTextureData(new Pixmap(depth, height, format), null, false, true), new PixmapTextureData(new Pixmap(depth,
-        height, format), null, false, true), new PixmapTextureData(new Pixmap(width, depth, format), null, false, true),
-        new PixmapTextureData(new Pixmap(width, depth, format), null, false, true), new PixmapTextureData(new Pixmap(width,
-        height, format), null, false, true), new PixmapTextureData(new Pixmap(width, height, format), null, false, true));
+        this(
+        new PixmapTextureData(new Pixmap(depth, height), false, true),
+        new PixmapTextureData(new Pixmap(depth, height), false, true),
+        new PixmapTextureData(new Pixmap(width, depth), false, true),
+        new PixmapTextureData(new Pixmap(width, depth), false, true),
+        new PixmapTextureData(new Pixmap(width, height), false, true),
+        new PixmapTextureData(new Pixmap(width, height), false, true)
+        );
     }
 
     /** Construct a Cubemap with the specified {@link TextureData}'s for the sides */

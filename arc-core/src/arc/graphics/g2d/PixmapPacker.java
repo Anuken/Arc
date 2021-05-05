@@ -177,7 +177,7 @@ public class PixmapPacker implements Disposable{
         PixmapPackerRect rect = new PixmapPackerRect(0, 0, image.width, image.height);
         Pixmap pixmapToDispose = null;
         if(isPatch && splits == null){
-            pixmapToDispose = new Pixmap(image.width, image.height, image.pixmap.getFormat());
+            pixmapToDispose = new Pixmap(image.width, image.height);
             rect.splits = getSplits(image);
             rect.pads = getPads(image, rect.splits);
             pixmapToDispose.draw(image, 0, 0, 0, 0, image.width, image.height);
@@ -211,8 +211,6 @@ public class PixmapPacker implements Disposable{
                 image.pixmap.getGLType(), image.pixmap.getPixels());
         }else
             page.dirty = true;
-
-        page.image.setBlending(Pixmap.Blending.none);
 
         page.image.draw(image, rectX, rectY);
 
@@ -584,7 +582,7 @@ public class PixmapPacker implements Disposable{
 
                 writer.write("\n");
                 writer.write(pageFile.name() + "\n");
-                writer.write("size: " + page.image.getWidth() + "," + page.image.getHeight() + "\n");
+                writer.write("size: " + page.image.width + "," + page.image.height + "\n");
                 writer.write("format: " + pageFormat.name() + "\n");
                 writer.write("filter: " + minFilter.name() + "," + maxFilter.name() + "\n");
                 writer.write("repeat: none" + "\n");
@@ -634,10 +632,9 @@ public class PixmapPacker implements Disposable{
 
         /** Creates a new page filled with the color provided by the {@link PixmapPacker#getTransparentColor()} */
         public Page(PixmapPacker packer){
-            image = new Pixmap(packer.pageWidth, packer.pageHeight, packer.pageFormat);
+            image = new Pixmap(packer.pageWidth, packer.pageHeight);
             final Color transparentColor = packer.getTransparentColor();
-            this.image.setColor(transparentColor);
-            this.image.fill();
+            this.image.fill(transparentColor);
         }
 
         public Page(Pixmap pixmap){
@@ -674,7 +671,7 @@ public class PixmapPacker implements Disposable{
                 if(!dirty) return false;
                 texture.load(texture.getTextureData());
             }else{
-                texture = new Texture(new PixmapTextureData(image, image.getFormat(), useMipMaps, false)){
+                texture = new Texture(new PixmapTextureData(image, useMipMaps, false)){
                     @Override
                     public void dispose(){
                         super.dispose();
@@ -703,7 +700,7 @@ public class PixmapPacker implements Disposable{
         @Override
         public void sort(Seq<Pixmap> pixmaps){
             if(comparator == null){
-                comparator = Structs.comparingInt(o -> Math.max(o.getWidth(), o.getHeight()));
+                comparator = Structs.comparingInt(o -> Math.max(o.width, o.height));
             }
             pixmaps.sort(comparator);
         }
@@ -815,7 +812,7 @@ public class PixmapPacker implements Disposable{
 
         public void sort(Seq<Pixmap> images){
             if(comparator == null){
-                comparator = (o1, o2) -> o1.getHeight() - o2.getHeight();
+                comparator = (o1, o2) -> o1.height - o2.height;
             }
             images.sort(comparator);
         }

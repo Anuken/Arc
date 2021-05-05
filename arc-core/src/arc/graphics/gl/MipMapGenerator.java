@@ -2,7 +2,6 @@ package arc.graphics.gl;
 
 import arc.*;
 import arc.graphics.*;
-import arc.graphics.Pixmap.Blending;
 import arc.util.*;
 
 public class MipMapGenerator{
@@ -44,7 +43,7 @@ public class MipMapGenerator{
     }
 
     private static void generateMipMapGLES20(int target, Pixmap pixmap){
-        Gl.texImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+        Gl.texImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.width, pixmap.height, 0,
         pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
         Gl.generateMipmap(target);
     }
@@ -52,7 +51,7 @@ public class MipMapGenerator{
     private static void generateMipMapDesktop(int target, Pixmap pixmap, int textureWidth, int textureHeight){
         if(Core.graphics.supportsExtension("GL_ARB_framebuffer_object")
         || Core.graphics.supportsExtension("GL_EXT_framebuffer_object") || Core.gl30 != null){
-            Gl.texImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+            Gl.texImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.width, pixmap.height, 0,
             pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
             Gl.generateMipmap(target);
         }else{
@@ -61,25 +60,24 @@ public class MipMapGenerator{
     }
 
     private static void generateMipMapCPU(int target, Pixmap pixmap, int textureWidth, int textureHeight){
-        Gl.texImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+        Gl.texImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.width, pixmap.height, 0,
         pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
         if((Core.gl20 == null) && textureWidth != textureHeight)
             throw new ArcRuntimeException("texture width and height must be square when using mipmapping.");
-        int width = pixmap.getWidth() / 2;
-        int height = pixmap.getHeight() / 2;
+        int width = pixmap.width / 2;
+        int height = pixmap.height / 2;
         int level = 1;
         while(width > 0 && height > 0){
-            Pixmap tmp = new Pixmap(width, height, pixmap.getFormat());
-            tmp.setBlending(Blending.none);
-            tmp.drawPixmap(pixmap, 0, 0, pixmap.getWidth(), pixmap.getHeight(), 0, 0, width, height);
+            Pixmap tmp = new Pixmap(width, height);
+            tmp.drawPixmap(pixmap, 0, 0, pixmap.width, pixmap.height, 0, 0, width, height);
             if(level > 1) pixmap.dispose();
             pixmap = tmp;
 
-            Gl.texImage2D(target, level, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+            Gl.texImage2D(target, level, pixmap.getGLInternalFormat(), pixmap.width, pixmap.height, 0,
             pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
 
-            width = pixmap.getWidth() / 2;
-            height = pixmap.getHeight() / 2;
+            width = pixmap.width / 2;
+            height = pixmap.height / 2;
             level++;
         }
     }

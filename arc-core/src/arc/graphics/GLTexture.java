@@ -1,6 +1,5 @@
 package arc.graphics;
 
-import arc.graphics.Pixmap.Blending;
 import arc.graphics.Texture.*;
 import arc.graphics.gl.*;
 import arc.util.*;
@@ -51,22 +50,12 @@ public abstract class GLTexture implements Disposable{
 
         Pixmap pixmap = data.consumePixmap();
         boolean disposePixmap = data.disposePixmap();
-        if(data.getFormat() != pixmap.getFormat()){
-            Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), data.getFormat());
-            tmp.setBlending(Blending.none);
-            tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
-            if(data.disposePixmap()){
-                pixmap.dispose();
-            }
-            pixmap = tmp;
-            disposePixmap = true;
-        }
 
         Gl.pixelStorei(GL20.GL_UNPACK_ALIGNMENT, 1);
         if(data.useMipMaps()){
-            MipMapGenerator.generateMipMap(target, pixmap, pixmap.getWidth(), pixmap.getHeight());
+            MipMapGenerator.generateMipMap(target, pixmap, pixmap.width, pixmap.height);
         }else{
-            Gl.texImage2D(target, miplevel, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+            Gl.texImage2D(target, miplevel, pixmap.getGLInternalFormat(), pixmap.width, pixmap.height, 0,
             pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
         }
         if(disposePixmap) pixmap.dispose();

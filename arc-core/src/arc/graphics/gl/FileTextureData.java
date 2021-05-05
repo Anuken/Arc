@@ -9,20 +9,17 @@ public class FileTextureData implements TextureData{
     final Fi file;
     int width = 0;
     int height = 0;
-    Format format;
     Pixmap pixmap;
     boolean useMipMaps;
     boolean isPrepared = false;
 
-    public FileTextureData(Fi file, Pixmap preloadedPixmap, Format format, boolean useMipMaps){
+    public FileTextureData(Fi file, Pixmap preloadedPixmap, boolean useMipMaps){
         this.file = file;
         this.pixmap = preloadedPixmap;
-        this.format = format;
         this.useMipMaps = useMipMaps;
         if(pixmap != null){
-            width = pixmap.getWidth();
-            height = pixmap.getHeight();
-            if(format == null) this.format = pixmap.getFormat();
+            width = pixmap.width;
+            height = pixmap.height;
         }
     }
 
@@ -36,9 +33,8 @@ public class FileTextureData implements TextureData{
         if(isPrepared) throw new ArcRuntimeException("Already prepared");
         if(pixmap == null){
             pixmap = new Pixmap(file);
-            width = pixmap.getWidth();
-            height = pixmap.getHeight();
-            if(format == null) format = pixmap.getFormat();
+            width = pixmap.width;
+            height = pixmap.height;
         }
         isPrepared = true;
     }
@@ -69,7 +65,7 @@ public class FileTextureData implements TextureData{
 
     @Override
     public Format getFormat(){
-        return format;
+        return Format.rgba8888;
     }
 
     @Override

@@ -54,7 +54,7 @@ public final class ScreenUtils{
         final int potH = Mathf.nextPowerOfTwo(h);
 
         final Pixmap pixmap = getFrameBufferPixmap(x, y, w, h);
-        final Pixmap potPixmap = new Pixmap(potW, potH, Format.rgba8888);
+        final Pixmap potPixmap = new Pixmap(potW, potH);
         potPixmap.drawPixmap(pixmap, 0, 0);
         Texture texture = new Texture(potPixmap);
         TextureRegion textureRegion = new TextureRegion(texture, 0, h, w, -h);
@@ -65,18 +65,18 @@ public final class ScreenUtils{
     }
 
     public static Pixmap getFrameBufferPixmap(int x, int y, int w, int h){
-        Gl.pixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
+        Gl.pixelStorei(Gl.packAlignment, 1);
 
-        final Pixmap pixmap = new Pixmap(w, h, Format.rgba8888);
+        final Pixmap pixmap = new Pixmap(w, h);
         ByteBuffer pixels = pixmap.getPixels();
-        Gl.readPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
+        Gl.readPixels(x, y, w, h, Gl.rgba, Gl.unsignedByte, pixels);
 
         return pixmap;
     }
 
     public static Pixmap getFrameBufferPixmap(int x, int y, int w, int h, boolean flip){
         byte[] lines = getFrameBufferPixels(x, y, w, h, flip);
-        Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.rgba8888);
+        Pixmap pixmap = new Pixmap(w, h);
         Buffers.copy(lines, 0, pixmap.getPixels(), lines.length);
         return pixmap;
     }
@@ -104,9 +104,9 @@ public final class ScreenUtils{
      * @param flipY whether to flip pixels along Y axis
      */
     public static byte[] getFrameBufferPixels(int x, int y, int w, int h, boolean flipY){
-        Gl.pixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
+        Gl.pixelStorei(Gl.packAlignment, 1);
         final ByteBuffer pixels = Buffers.newByteBuffer(w * h * 4);
-        Gl.readPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
+        Gl.readPixels(x, y, w, h, Gl.rgba, Gl.unsignedByte, pixels);
         final int numBytes = w * h * 4;
         byte[] lines = new byte[numBytes];
         if(flipY){

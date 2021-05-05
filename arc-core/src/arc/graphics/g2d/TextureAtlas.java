@@ -82,9 +82,9 @@ public class TextureAtlas implements Disposable{
     private void load(TextureAtlasData data){
         ObjectMap<AtlasPage, Texture> pageToTexture = new ObjectMap<>();
         for(AtlasPage page : data.pages){
-            Texture texture = null;
+            Texture texture;
             if(page.texture == null){
-                texture = new Texture(page.textureFile, page.format, page.useMipMaps);
+                texture = new Texture(page.textureFile, page.useMipMaps);
                 texture.setFilter(page.minFilter, page.magFilter);
                 texture.setWrap(page.uWrap, page.vWrap);
             }else{

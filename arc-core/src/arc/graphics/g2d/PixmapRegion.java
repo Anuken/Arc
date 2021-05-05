@@ -26,7 +26,7 @@ public class PixmapRegion{
     }
 
     public PixmapRegion set(Pixmap pixmap){
-        return set(pixmap, 0, 0, pixmap.getWidth(), pixmap.getHeight());
+        return set(pixmap, 0, 0, pixmap.width, pixmap.height);
     }
 
     public PixmapRegion set(Pixmap pixmap, int x, int y, int width, int height){

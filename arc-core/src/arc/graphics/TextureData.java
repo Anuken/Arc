@@ -71,14 +71,10 @@ public interface TextureData{
     boolean useMipMaps();
 
     static TextureData load(Fi file, boolean useMipMaps){
-        return load(file, null, useMipMaps);
-    }
-
-    static TextureData load(Fi file, Format format, boolean useMipMaps){
         return new FileTextureData(file,
             file.extEquals("apix") ? PixmapIO.readApix(file) :
             new Pixmap(file),
-        format, useMipMaps);
+        useMipMaps);
     }
 
 }

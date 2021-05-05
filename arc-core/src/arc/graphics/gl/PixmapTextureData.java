@@ -7,13 +7,11 @@ import arc.util.ArcRuntimeException;
 
 public class PixmapTextureData implements TextureData{
     final Pixmap pixmap;
-    final Format format;
     final boolean useMipMaps;
     final boolean disposePixmap;
 
-    public PixmapTextureData(Pixmap pixmap, Format format, boolean useMipMaps, boolean disposePixmap){
+    public PixmapTextureData(Pixmap pixmap, boolean useMipMaps, boolean disposePixmap){
         this.pixmap = pixmap;
-        this.format = format == null ? pixmap.getFormat() : format;
         this.useMipMaps = useMipMaps;
         this.disposePixmap = disposePixmap;
     }
@@ -30,17 +28,17 @@ public class PixmapTextureData implements TextureData{
 
     @Override
     public int getWidth(){
-        return pixmap.getWidth();
+        return pixmap.width;
     }
 
     @Override
     public int getHeight(){
-        return pixmap.getHeight();
+        return pixmap.height;
     }
 
     @Override
     public Format getFormat(){
-        return format;
+        return Format.rgba8888;
     }
 
     @Override

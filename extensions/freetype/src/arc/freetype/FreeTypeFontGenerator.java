@@ -568,10 +568,10 @@ public class FreeTypeFontGenerator implements Disposable{
             }
 
             if(parameter.shadowOffsetX != 0 || parameter.shadowOffsetY != 0){
-                int mainW = mainPixmap.getWidth(), mainH = mainPixmap.getHeight();
+                int mainW = mainPixmap.width, mainH = mainPixmap.height;
                 int shadowOffsetX = Math.max(parameter.shadowOffsetX, 0), shadowOffsetY = Math.max(parameter.shadowOffsetY, 0);
                 int shadowW = mainW + Math.abs(parameter.shadowOffsetX), shadowH = mainH + Math.abs(parameter.shadowOffsetY);
-                Pixmap shadowPixmap = new Pixmap(shadowW, shadowH, mainPixmap.getFormat());
+                Pixmap shadowPixmap = new Pixmap(shadowW, shadowH);
 
                 Color shadowColor = parameter.shadowColor;
                 float a = shadowColor.a;
@@ -606,8 +606,8 @@ public class FreeTypeFontGenerator implements Disposable{
             }
 
             if(parameter.padTop > 0 || parameter.padLeft > 0 || parameter.padBottom > 0 || parameter.padRight > 0){
-                Pixmap padPixmap = new Pixmap(mainPixmap.getWidth() + parameter.padLeft + parameter.padRight,
-                mainPixmap.getHeight() + parameter.padTop + parameter.padBottom, mainPixmap.getFormat());
+                Pixmap padPixmap = new Pixmap(mainPixmap.width + parameter.padLeft + parameter.padRight,
+                mainPixmap.height + parameter.padTop + parameter.padBottom);
                 padPixmap.drawPixmap(mainPixmap, parameter.padLeft, parameter.padTop);
                 mainPixmap.dispose();
                 mainPixmap = padPixmap;
@@ -617,8 +617,8 @@ public class FreeTypeFontGenerator implements Disposable{
         GlyphMetrics metrics = slot.getMetrics();
         Glyph glyph = new Glyph();
         glyph.id = c;
-        glyph.width = mainPixmap.getWidth();
-        glyph.height = mainPixmap.getHeight();
+        glyph.width = mainPixmap.width;
+        glyph.height = mainPixmap.height;
         glyph.xoffset = mainGlyph.getLeft();
         if(parameter.flip)
             glyph.yoffset = -mainGlyph.getTop() + (int)baseLine;
@@ -627,8 +627,7 @@ public class FreeTypeFontGenerator implements Disposable{
         glyph.xadvance = FreeType.toInt(metrics.getHoriAdvance()) + (int)parameter.borderWidth + parameter.spaceX;
 
         if(bitmapped){
-            mainPixmap.setColor(Color.clear);
-            mainPixmap.fill();
+            mainPixmap.fill(Color.clearRgba);
             ByteBuffer buf = mainBitmap.getBuffer();
             int whiteIntBits = Color.white.toIntBits();
             int clearIntBits = Color.clear.toIntBits();

@@ -2,7 +2,6 @@ package arc.graphics;
 
 import arc.*;
 import arc.files.*;
-import arc.graphics.Pixmap.*;
 import arc.graphics.gl.*;
 
 /**
@@ -28,31 +27,23 @@ public class Texture extends GLTexture{
     }
 
     public Texture(Fi file){
-        this(file, null, false);
+        this(file, false);
     }
 
     public Texture(Fi file, boolean useMipMaps){
-        this(file, null, useMipMaps);
-    }
-
-    public Texture(Fi file, Format format, boolean useMipMaps){
-        this(TextureData.load(file, format, useMipMaps));
+        this(TextureData.load(file, useMipMaps));
     }
 
     public Texture(Pixmap pixmap){
-        this(new PixmapTextureData(pixmap, null, false, false));
+        this(new PixmapTextureData(pixmap, false, false));
     }
 
     public Texture(Pixmap pixmap, boolean useMipMaps){
-        this(new PixmapTextureData(pixmap, null, useMipMaps, false));
+        this(new PixmapTextureData(pixmap, useMipMaps, false));
     }
 
-    public Texture(Pixmap pixmap, Format format, boolean useMipMaps){
-        this(new PixmapTextureData(pixmap, format, useMipMaps, false));
-    }
-
-    public Texture(int width, int height, Format format){
-        this(new PixmapTextureData(new Pixmap(width, height, format), null, false, true));
+    public Texture(int width, int height){
+        this(new PixmapTextureData(new Pixmap(width, height), false, true));
     }
 
     public Texture(TextureData data){
@@ -103,7 +94,7 @@ public class Texture extends GLTexture{
      */
     public void draw(Pixmap pixmap, int x, int y){
         bind();
-        Gl.texSubImage2D(glTarget, 0, x, y, pixmap.getWidth(), pixmap.getHeight(), pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
+        Gl.texSubImage2D(glTarget, 0, x, y, pixmap.width, pixmap.height, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
     }
 
     @Override

@@ -3,7 +3,6 @@ package arc.graphics.gl;
 import arc.*;
 import arc.files.*;
 import arc.graphics.*;
-import arc.graphics.Pixmap.Blending;
 import arc.util.*;
 
 /** @author Tomski **/
@@ -12,16 +11,14 @@ public class FileTextureArrayData implements TextureArrayData{
     boolean useMipMaps;
     private TextureData[] textureDatas;
     private boolean prepared;
-    private Pixmap.Format format;
     private int depth;
 
-    public FileTextureArrayData(Pixmap.Format format, boolean useMipMaps, Fi[] files){
-        this.format = format;
+    public FileTextureArrayData(boolean useMipMaps, Fi[] files){
         this.useMipMaps = useMipMaps;
         this.depth = files.length;
         textureDatas = new TextureData[files.length];
         for(int i = 0; i < files.length; i++){
-            textureDatas[i] = TextureData.load(files[i], format, useMipMaps);
+            textureDatas[i] = TextureData.load(files[i], useMipMaps);
         }
     }
 
@@ -57,17 +54,7 @@ public class FileTextureArrayData implements TextureArrayData{
                 TextureData texData = textureDatas[i];
                 Pixmap pixmap = texData.consumePixmap();
                 boolean disposePixmap = texData.disposePixmap();
-                if(texData.getFormat() != pixmap.getFormat()){
-                    Pixmap temp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), texData.getFormat());
-                    temp.setBlending(Blending.none);
-                    temp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
-                    if(texData.disposePixmap()){
-                        pixmap.dispose();
-                    }
-                    pixmap = temp;
-                    disposePixmap = true;
-                }
-                Core.gl30.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, pixmap.getWidth(), pixmap.getHeight(), 1, pixmap.getGLInternalFormat(), pixmap.getGLType(), pixmap.getPixels());
+                Core.gl30.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, pixmap.width, pixmap.height, 1, pixmap.getGLInternalFormat(), pixmap.getGLType(), pixmap.getPixels());
                 if(disposePixmap) pixmap.dispose();
             }
         }
@@ -90,12 +77,12 @@ public class FileTextureArrayData implements TextureArrayData{
 
     @Override
     public int getInternalFormat(){
-        return format.toGlFormat();
+        return Gl.unsignedByte;
     }
 
     @Override
     public int getGLType(){
-        return format.toGlType();
+        return Gl.rgba;
     }
 
 }

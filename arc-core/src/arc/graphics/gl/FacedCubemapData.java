@@ -3,7 +3,6 @@ package arc.graphics.gl;
 import arc.files.*;
 import arc.graphics.*;
 import arc.graphics.Cubemap.*;
-import arc.graphics.Pixmap.Blending;
 import arc.graphics.Pixmap.*;
 import arc.util.*;
 
@@ -45,24 +44,30 @@ public class FacedCubemapData implements CubemapData{
 
     /** Construct a Cubemap with the specified {@link Pixmap}s for the sides, optionally generating mipmaps. */
     public FacedCubemapData(Pixmap positiveX, Pixmap negativeX, Pixmap positiveY, Pixmap negativeY, Pixmap positiveZ, Pixmap negativeZ, boolean useMipMaps){
-        this(positiveX == null ? null : new PixmapTextureData(positiveX, null, useMipMaps, false), negativeX == null ? null
-        : new PixmapTextureData(negativeX, null, useMipMaps, false), positiveY == null ? null : new PixmapTextureData(positiveY,
-        null, useMipMaps, false), negativeY == null ? null : new PixmapTextureData(negativeY, null, useMipMaps, false),
-        positiveZ == null ? null : new PixmapTextureData(positiveZ, null, useMipMaps, false), negativeZ == null ? null
-        : new PixmapTextureData(negativeZ, null, useMipMaps, false));
+        this(
+        positiveX == null ? null : new PixmapTextureData(positiveX, useMipMaps, false),
+        negativeX == null ? null : new PixmapTextureData(negativeX, useMipMaps, false),
+        positiveY == null ? null : new PixmapTextureData(positiveY, useMipMaps, false),
+        negativeY == null ? null : new PixmapTextureData(negativeY, useMipMaps, false),
+        positiveZ == null ? null : new PixmapTextureData(positiveZ, useMipMaps, false),
+        negativeZ == null ? null : new PixmapTextureData(negativeZ, useMipMaps, false)
+        );
     }
 
     /** Construct a Cubemap with {@link Pixmap}s for each side of the specified size. */
     public FacedCubemapData(int width, int height, int depth, Format format){
-        this(new PixmapTextureData(new Pixmap(depth, height, format), null, false, true), new PixmapTextureData(new Pixmap(depth,
-        height, format), null, false, true), new PixmapTextureData(new Pixmap(width, depth, format), null, false, true),
-        new PixmapTextureData(new Pixmap(width, depth, format), null, false, true), new PixmapTextureData(new Pixmap(width,
-        height, format), null, false, true), new PixmapTextureData(new Pixmap(width, height, format), null, false, true));
+        this(
+        new PixmapTextureData(new Pixmap(depth, height), false, true),
+        new PixmapTextureData(new Pixmap(depth, height), false, true),
+        new PixmapTextureData(new Pixmap(width, depth), false, true),
+        new PixmapTextureData(new Pixmap(width, depth), false, true),
+        new PixmapTextureData(new Pixmap(width, height), false, true),
+        new PixmapTextureData(new Pixmap(width, height), false, true)
+        );
     }
 
     /** Construct a Cubemap with the specified {@link TextureData}'s for the sides */
-    public FacedCubemapData(TextureData positiveX, TextureData negativeX, TextureData positiveY, TextureData negativeY,
-                            TextureData positiveZ, TextureData negativeZ){
+    public FacedCubemapData(TextureData positiveX, TextureData negativeX, TextureData positiveY, TextureData negativeY, TextureData positiveZ, TextureData negativeZ){
         data[0] = positiveX;
         data[1] = negativeX;
         data[2] = positiveY;
@@ -90,7 +95,7 @@ public class FacedCubemapData implements CubemapData{
      * @param pixmap The {@link Pixmap}
      */
     public void load(CubemapSide side, Pixmap pixmap){
-        data[side.index] = pixmap == null ? null : new PixmapTextureData(pixmap, null, false, false);
+        data[side.index] = pixmap == null ? null : new PixmapTextureData(pixmap, false, false);
     }
 
     /** @return True if all sides of this cubemap are set, false otherwise. */
@@ -152,17 +157,9 @@ public class FacedCubemapData implements CubemapData{
             }else{
                 Pixmap pixmap = data[i].consumePixmap();
                 boolean disposePixmap = data[i].disposePixmap();
-                if(data[i].getFormat() != pixmap.getFormat()){
-                    Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), data[i].getFormat());
-                    tmp.setBlending(Blending.none);
-                    tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
-                    if(data[i].disposePixmap()) pixmap.dispose();
-                    pixmap = tmp;
-                    disposePixmap = true;
-                }
                 Gl.pixelStorei(GL20.GL_UNPACK_ALIGNMENT, 1);
-                Gl.texImage2D(GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(),
-                pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
+                Gl.texImage2D(GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, pixmap.getGLInternalFormat(), pixmap.width,
+                pixmap.height, 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
                 if(disposePixmap) pixmap.dispose();
             }
         }

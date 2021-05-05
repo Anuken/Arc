@@ -3,6 +3,7 @@ package arc.graphics;
 import arc.*;
 import arc.files.*;
 import arc.func.*;
+import arc.graphics.PixmapIO.*;
 import arc.graphics.g2d.*;
 import arc.util.*;
 
@@ -17,63 +18,47 @@ import java.nio.*;
  * </p>
  *
  * <p>
- * By default all methods use blending. You can disable blending with {@link Pixmap#setBlending(Blending)}. The
- * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)} method will scale and stretch the source image to a
+ * The {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)} method will scale and stretch the source image to a
  * target image. There either nearest neighbour or bilinear filtering can be used.
  * </p>
  *
  * <p>
  * A Pixmap stores its data in native heap memory. It is mandatory to call {@link Pixmap#dispose()} when the pixmap is no longer
- * needed, otherwise memory leaks will result
+ * needed, otherwise memory leaks will result.
  * </p>
  * @author badlogicgames@gmail.com
  */
 public class Pixmap implements Disposable{
-    static final int pixmapFormatAlpha = 1, pixmapFormatLuminanceAlpha = 2, pixmapFormatRGB888 = 3, pixmapFormatRGBA8888 = 4, pixmapFormatRGB565 = 5, pixmapFormatRGBA4444 = 6;
-    static final int pixmapScaleNearest = 0, pixmapScaleLinear = 1;
-    
-    final NativePixmap pixmap;
-    int color = 0;
-    private Blending blending = Blending.sourceOver;
-    private PixmapFilter filter = PixmapFilter.bilinear;
-    private boolean disposed;
 
-    /** Uses RGBA8888.*/
+    /** Size of the pixmap. Do not modify unless you know what you are doing. */
+    public int width, height;
+
+    /** Internal data, arranged as RGBA with 1 byte per component. This buffer must be direct or natively-allocated. */
+    ByteBuffer pixels;
+
+    /**
+     * When natives are present, this handle is the address of the memory region.
+     * When this pixmap is disposed/uninitialized, this value is 0.
+     * When natives are not present, this value is -1.
+     * */
+    long handle;
+
+    /** Creates a new Pixmap instance with the given width and height.*/
     public Pixmap(int width, int height){
-        this(width, height, Format.rgba8888);
+        load(width, height);
     }
 
-    /**
-     * Creates a new Pixmap instance with the given width, height and format.
-     * @param width the width in pixels
-     * @param height the height in pixels
-     * @param format the {@link Format}
-     */
-    public Pixmap(int width, int height, Format format){
-        pixmap = new NativePixmap(width, height, format.toPixmapFormat());
-        setColor(0, 0, 0, 0);
-        fill();
-    }
-
-    /**
-     * @see #Pixmap(byte[], int, int)
-     */
+    /** @see #Pixmap(byte[], int, int) */
     public Pixmap(byte[] encodedData){
         this(encodedData, 0, encodedData.length);
     }
 
     /**
      * Creates a new Pixmap instance from the given encoded image data. The image can be encoded as JPEG, PNG or BMP.
-     * @param encodedData the encoded image data
-     * @param offset the offset
-     * @param len the length
+     * @param encodedData the image data to load, typically read from a PNG file
      */
     public Pixmap(byte[] encodedData, int offset, int len){
-        try{
-            pixmap = new NativePixmap(encodedData, offset, len, 0);
-        }catch(IOException e){
-            throw new ArcRuntimeException("Couldn't load pixmap from image data", e);
-        }
+        load(encodedData, offset, len, null);
     }
 
     public Pixmap(String file){
@@ -86,82 +71,112 @@ public class Pixmap implements Disposable{
      * @param file the {@link Fi}
      */
     public Pixmap(Fi file){
-        try{
-            byte[] bytes = file.readBytes();
-            pixmap = new NativePixmap(bytes, 0, bytes.length, 0);
-        }catch(Exception e){
-            throw new ArcRuntimeException("Couldn't load file: " + file, e);
-        }
+        byte[] bytes = file.readBytes();
+        load(bytes, 0, bytes.length, file.toString());
     }
 
-    /**
-     * Constructs a new Pixmap from a {@link NativePixmap}.
-     */
-    public Pixmap(NativePixmap pixmap){
-        this.pixmap = pixmap;
+    /** Creates a pixmap from a direct ByteBuffer. */
+    public Pixmap(ByteBuffer buffer, int width, int height){
+        if(!buffer.isDirect()) throw new ArcRuntimeException("Pixmaps may only use direct/native ByteBuffers!");
+
+        this.width = width;
+        this.height = height;
+        this.pixels = buffer;
+        this.handle = -1;
+
+        buffer.position(0).limit(buffer.capacity());
     }
 
+    /** @return a newly allocated copy with the same pixels. */
+    public Pixmap copy(){
+        Pixmap out = new Pixmap(width, height);
+        pixels.position(0);
+        out.pixels.position(0);
+        out.pixels.put(pixels);
+        return out;
+    }
+
+    /** Iterates through every position in this Pixmap. */
     public void each(Intc2 cons){
-        for(int x = 0; x < getWidth(); x++){
-            for(int y = 0; y < getHeight(); y++){
+        for(int x = 0; x < width; x++){
+            for(int y = 0; y < height; y++){
                 cons.get(x, y);
             }
         }
     }
 
-    /**
-     * Sets the color for the following drawing operations
-     * @param color the color, encoded as RGBA8888
-     */
-    public void setColor(int color){
-        this.color = color;
+    /** Fills the complete bitmap with the specified color. */
+    public void fill(int color){
+        int len = width * height * 4;
+        for(int i = 0; i < len; i += 4){
+            pixels.putInt(i, color);
+        }
     }
 
-    /**
-     * Sets the color for the following drawing operations.
-     * @param r The red component.
-     * @param g The green component.
-     * @param b The blue component.
-     * @param a The alpha component.
-     */
-    public void setColor(float r, float g, float b, float a){
-        color = Color.rgba8888(r, g, b, a);
+    /** Fills the complete bitmap with the specified color. */
+    public void fill(Color color){
+        fill(color.rgba());
     }
 
-    /**
-     * Sets the color for the following drawing operations.
-     * @param color The color.
-     */
-    public void setColor(Color color){
-        this.color = Color.rgba8888(color.r, color.g, color.b, color.a);
+    /** @return whether this point is in the pixmap. */
+    public boolean in(int x, int y){
+        return x >= 0 && y >= 0 && x < width && y < height;
     }
 
-    /** Fills the complete bitmap with the currently set color. */
-    public void fill(){
-        clear(pixmap.basePtr, color);
+    /** Draws a line between the given coordinates using the provided RGBA color. */
+    public void drawLine(int x, int y, int x2, int y2, int color){
+        int dy = y - y2;
+        int dx = x - x2;
+        int fraction, stepx, stepy;
+
+        if(dy < 0){
+            dy = -dy;
+            stepy = -1;
+        }else{
+            stepy = 1;
+        }
+        if(dx < 0){
+            dx = -dx;
+            stepx = -1;
+        }else{
+            stepx = 1;
+        }
+        dy <<= 1;
+        dx <<= 1;
+
+        draw(x, y, color);
+
+        if(dx > dy){
+            fraction = dy - (dx >> 1);
+            while(x != x2){
+                if(fraction >= 0){
+                    y += stepy;
+                    fraction -= dx;
+                }
+                x += stepx;
+                fraction += dy;
+                draw(x, y, color);
+            }
+        }else{
+            fraction = dx - (dy >> 1);
+            while(y != y2){
+                if(fraction >= 0){
+                    x += stepx;
+                    fraction -= dy;
+                }
+                y += stepy;
+                fraction += dx;
+                draw(x, y, color);
+            }
+        }
     }
 
-    /**
-     * Draws a line between the given coordinates using the currently set color.
-     * @param x The x-coodinate of the first point
-     * @param y The y-coordinate of the first point
-     * @param x2 The x-coordinate of the first point
-     * @param y2 The y-coordinate of the first point
-     */
-    public void drawLine(int x, int y, int x2, int y2){
-        drawLine(pixmap.basePtr, x, y, x2, y2, color);
-    }
-
-    /**
-     * Draws a rectangle outline starting at x, y extending by width to the right and by height downwards (y-axis points downwards)
-     * using the current color.
-     * @param x The x coordinate
-     * @param y The y coordinate
-     * @param width The width in pixels
-     * @param height The height in pixels
-     */
-    public void drawRectangle(int x, int y, int width, int height){
-        drawRect(pixmap.basePtr, x, y, width, height, color);
+    /** Draws a rectangle outline starting at x, y extending by width to the right and by height downwards (y-axis points downwards) using the provided color. */
+    public void drawRect(int x, int y, int width, int height, int color){
+        hline(x, x + width - 1, y, color);
+        hline(x, x + width - 1, y + height - 1, color);
+        vline(y, y + height - 1, x, color);
+        vline(y, y + height - 1, x + width - 1, color);
     }
 
     public void draw(PixmapRegion region){
@@ -195,7 +210,7 @@ public class Pixmap implements Disposable{
      * @param y The target y-coordinate (top left corner)
      */
     public void drawPixmap(Pixmap pixmap, int x, int y){
-        drawPixmap(pixmap, x, y, 0, 0, pixmap.getWidth(), pixmap.getHeight());
+        drawPixmap(pixmap, x, y, 0, 0, pixmap.width, pixmap.height);
     }
 
     /**
@@ -209,13 +224,12 @@ public class Pixmap implements Disposable{
      * @param srcHeight The height of the area from the other Pixmap in pixels
      */
     public void drawPixmap(Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight){
-        drawPixmap(pixmap.pixmap.basePtr, this.pixmap.basePtr, srcx, srcy, srcWidth, srcHeight, x, y, srcWidth, srcHeight);
+        drawPixmap(pixmap, srcx, srcy, srcWidth, srcHeight, x, y, srcWidth, srcHeight);
     }
 
     /**
      * Draws an area from another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
-     * specified target rectangle. Use {@link Pixmap#setFilter(PixmapFilter)} to specify the type of filtering to be used (nearest
-     * neighbour or bilinear).
+     * specified target rectangle.
      * @param pixmap The other Pixmap
      * @param srcx The source x-coordinate (top left corner)
      * @param srcy The source y-coordinate (top left corner);
@@ -227,7 +241,116 @@ public class Pixmap implements Disposable{
      * @param dstHeight the target height
      */
     public void drawPixmap(Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight){
-        drawPixmap(pixmap.pixmap.basePtr, this.pixmap.basePtr, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight);
+        drawPixmap(pixmap, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight, false);
+    }
+
+    /**
+     * Draws an area from another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
+     * specified target rectangle.
+     * @param pixmap The other Pixmap
+     * @param srcx The source x-coordinate (top left corner)
+     * @param srcy The source y-coordinate (top left corner);
+     * @param srcWidth The width of the area from the other Pixmap in pixels
+     * @param srcHeight The height of the area from the other Pixmap in pixels
+     * @param dstx The target x-coordinate (top left corner)
+     * @param dsty The target y-coordinate (top left corner)
+     * @param dstWidth The target width
+     * @param dstHeight the target height
+     */
+    public void drawPixmap(Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight, boolean filtering){
+        int width = this.width, height = this.height, owidth = pixmap.width, oheight = pixmap.height;
+
+        //don't bother drawing invalid regions
+        if(srcWidth == 0 || srcHeight == 0 || dstWidth == 0 || dstHeight == 0){
+            return;
+        }
+
+        if(srcWidth == dstWidth && srcHeight == dstHeight){
+
+            //same-size blit, no filtering
+            int sx, dx;
+            int sy = srcy, dy = dsty;
+
+            //TODO this can be optimized with scanlines, potentially
+            for(; sy < srcy + srcHeight; sy++, dy++){
+                if(sy < 0 || dy < 0) continue;
+                if(sy >= oheight || dy >= height) break;
+
+                for(sx = srcx, dx = dstx; sx < srcx + srcWidth; sx++, dx++){
+                    if(sx < 0 || dx < 0) continue;
+                    if(sx >= owidth || dx >= width) break;
+                    drawRaw(dx, dy, pixmap.getPixelRaw(sx, sy));
+                }
+            }
+
+        }else{
+            if(filtering){
+                //blit with bilinear filtering
+                float x_ratio = ((float)srcWidth - 1) / dstWidth;
+                float y_ratio = ((float)srcHeight - 1) / dstHeight;
+                float xdiff, ydiff;
+                int spitch = 4 * owidth;
+                int dx, dy, sx, sy, i = 0, j;
+                ByteBuffer spixels = pixmap.pixels;
+
+                for(; i < dstHeight; i++){
+                    sy = (int)(i * y_ratio) + srcy;
+                    dy = i + dsty;
+                    ydiff = (y_ratio * i + srcy) - sy;
+                    if(sy < 0 || dy < 0) continue;
+                    if(sy >= oheight || dy >= height) break;
+
+                    for(j = 0; j < dstWidth; j++){
+                        sx = (int)(j * x_ratio) + srcx;
+                        dx = j + dstx;
+                        xdiff = (x_ratio * j + srcx) - sx;
+                        if(sx < 0 || dx < 0) continue;
+                        if(sx >= owidth || dx >= width) break;
+
+                        int
+                        srcp = (sx + sy * owidth) * 4,
+                        c1 = spixels.getInt(srcp),
+                        c2 = sx + 1 < srcWidth ? spixels.getInt(srcp + 4) : c1,
+                        c3 = sy + 1 < srcHeight ? spixels.getInt(srcp + spitch) : c1,
+                        c4 = sx + 1 < srcWidth && sy + 1 < srcHeight ? spixels.getInt(srcp + 4 + spitch) : c1;
+
+                        float ta = (1 - xdiff) * (1 - ydiff);
+                        float tb = (xdiff) * (1 - ydiff);
+                        float tc = (1 - xdiff) * (ydiff);
+                        float td = (xdiff) * (ydiff);
+
+                        int r = (int)(((c1 & 0xff000000) >>> 24) * ta + ((c2 & 0xff000000) >>> 24) * tb + ((c3 & 0xff000000) >>> 24) * tc + ((c4 & 0xff000000) >>> 24) * td) & 0xff;
+                        int g = (int)(((c1 & 0xff0000) >>> 16) * ta + ((c2 & 0xff0000) >>> 16) * tb + ((c3 & 0xff0000) >>> 16) * tc + ((c4 & 0xff0000) >>> 16) * td) & 0xff;
+                        int b = (int)(((c1 & 0xff00) >>> 8) * ta + ((c2 & 0xff00) >>> 8) * tb + ((c3 & 0xff00) >>> 8) * tc + ((c4 & 0xff00) >>> 8) * td) & 0xff;
+                        int a = (int)((c1 & 0xff) * ta + (c2 & 0xff) * tb + (c3 & 0xff) * tc + (c4 & 0xff) * td) & 0xff;
+                        int srccol = (r << 24) | (g << 16) | (b << 8) | a;
+
+                        drawRaw(dx, dy, srccol);
+                    }
+                }
+            }else{
+                //blit with nearest neighbor filtering
+                int xratio = (srcWidth << 16) / dstWidth + 1;
+                int yratio = (srcHeight << 16) / dstHeight + 1;
+                int dx, dy, sx, sy;
+
+                for(int i = 0; i < dstHeight; i++){
+                    sy = ((i * yratio) >> 16) + srcy;
+                    dy = i + dsty;
+                    if(sy < 0 || dy < 0) continue;
+                    if(sy >= oheight || dy >= height) break;
+
+                    for(int j = 0; j < dstWidth; j++){
+                        sx = ((j * xratio) >> 16) + srcx;
+                        dx = j + dstx;
+                        if(sx < 0 || dx < 0) continue;
+                        if(sx >= owidth || dx >= width) break;
+
+                        drawRaw(dx, dy, pixmap.getPixelRaw(sx, sy));
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -238,86 +361,98 @@ public class Pixmap implements Disposable{
      * @param width The width in pixels
      * @param height The height in pixels
      */
-    public void fillRectangle(int x, int y, int width, int height){
-        fillRect(pixmap.basePtr, x, y, width, height, color);
-    }
+    public void fillRect(int x, int y, int width, int height, int color){
+        int x2 = x + width - 1;
+        int y2 = y + height - 1;
 
-    /**
-     * Draws a circle outline with the center at x,y and a radius using the current color and stroke width.
-     * @param x The x-coordinate of the center
-     * @param y The y-coordinate of the center
-     * @param radius The radius in pixels
-     */
-    public void drawCircle(int x, int y, int radius){
-        drawCircle(pixmap.basePtr, x, y, radius, color);
+        if(x >= width) return;
+        if(y >= height) return;
+        if(x2 < 0) return;
+        if(y2 < 0) return;
+        if(x < 0) x = 0;
+        if(y < 0) y = 0;
+        if(x2 >= width) x2 = width - 1;
+        if(y2 >= height) y2 = height - 1;
+
+        y2++;
+        while(y != y2){
+            hline(x, x2, y, color);
+            y++;
+        }
     }
 
     /**
      * Fills a circle with the center at x,y and a radius using the current color.
-     * @param x The x-coordinate of the center
-     * @param y The y-coordinate of the center
      * @param radius The radius in pixels
      */
-    public void fillCircle(int x, int y, int radius){
-        fillCircle(pixmap.basePtr, x, y, radius, color);
+    public void fillCircle(int x, int y, int radius, int color){
+        int f = 1 - radius;
+        int ddF_x = 1;
+        int ddF_y = -2 * radius;
+        int px = 0;
+        int py = radius;
+
+        hline(x, x, y + radius, color);
+        hline(x, x, y - radius, color);
+        hline(x - radius, x + radius, y, color);
+
+        while(px < py){
+            if(f >= 0){
+                py--;
+                ddF_y += 2;
+                f += ddF_y;
+            }
+            px++;
+            ddF_x += 2;
+            f += ddF_x;
+            hline(x - px, x + px, y + py, color);
+            hline(x - px, x + px, y - py, color);
+            hline(x - py, x + py, y + px, color);
+            hline(x - py, x + py, y - px, color);
+        }
     }
 
     /**
-     * Fills a triangle with vertices at x1,y1 and x2,y2 and x3,y3 using the current color.
-     * @param x1 The x-coordinate of vertex 1
-     * @param y1 The y-coordinate of vertex 1
-     * @param x2 The x-coordinate of vertex 2
-     * @param y2 The y-coordinate of vertex 2
-     * @param x3 The x-coordinate of vertex 3
-     * @param y3 The y-coordinate of vertex 3
-     */
-    public void fillTriangle(int x1, int y1, int x2, int y2, int x3, int y3){
-        fillTriangle(pixmap.basePtr, x1, y1, x2, y2, x3, y3, color);
-    }
-
-    /**
-     * Returns the 32-bit RGBA8888 value of the pixel at x, y. For Alpha formats the RGB components will be one.
-     * @param x The x-coordinate
-     * @param y The y-coordinate
+     * Returns the 32-bit RGBA8888 value of the pixel at x, y, or 0 if out of bounds.
      * @return The pixel color in RGBA8888 format.
      */
     public int getPixel(int x, int y){
-        return getPixel(pixmap.basePtr, x, y);
+        return in(x, y) ? pixels.getInt((x + y * width) * 4) : 0;
+    }
+
+    /**
+     * Returns the 32-bit RGBA8888 value of the pixel at x, y. For Alpha formats the RGB components will be one. No bounds checks are done!
+     * @return The pixel color in RGBA8888 format.
+     */
+    public int getPixelRaw(int x, int y){
+        return pixels.getInt((x + y * width) * 4);
     }
 
     /** @return The width of the Pixmap in pixels. */
     public int getWidth(){
-        return pixmap.width;
+        return width;
     }
 
     /** @return The height of the Pixmap in pixels. */
     public int getHeight(){
-        return pixmap.height;
+        return height;
     }
 
     /** Releases all resources associated with this Pixmap. */
+    @Override
     public void dispose(){
-        if(disposed) throw new ArcRuntimeException("Pixmap already disposed!");
-        free(pixmap.basePtr);
-        disposed = true;
+        if(handle <= 0) return;
+        free(handle);
+        handle = 0;
     }
 
     @Override
     public boolean isDisposed(){
-        return disposed;
+        return handle == 0;
     }
 
     public void draw(int x, int y, Color color){
         draw(x, y, color.rgba());
-    }
-
-    /**
-     * Draws a pixel at the given location with the current color.
-     * @param x the x-coordinate
-     * @param y the y-coordinate
-     */
-    public void draw(int x, int y){
-        setPixel(pixmap.basePtr, x, y, color);
     }
 
     /**
@@ -327,7 +462,63 @@ public class Pixmap implements Disposable{
      * @param color the color in RGBA8888 format.
      */
     public void draw(int x, int y, int color){
-        setPixel(pixmap.basePtr, x, y, color);
+        if(in(x, y)){
+            pixels.putInt((x + y * width) * 4, color);
+        }
+    }
+
+    /**
+     * Draws a pixel at the given location with the given color. No bounds checks are done!
+     * @param x the x-coordinate
+     * @param y the y-coordinate
+     * @param color the color in RGBA8888 format.
+     */
+    public void drawRaw(int x, int y, int color){
+        pixels.putInt((x + y * width) * 4, color);
+    }
+
+    void hline(int x1, int x2, int y, int color){
+        if(y < 0 || y >= height) return;
+        int tmp;
+
+        if(x1 > x2){
+            tmp = x1;
+            x1 = x2;
+            x2 = tmp;
+        }
+
+        if(x1 >= width) return;
+        if(x2 < 0) return;
+
+        if(x1 < 0) x1 = 0;
+        if(x2 >= width) x2 = width - 1;
+        x2++;
+
+        while(x1 != x2){
+            drawRaw(x1++, y, color);
+        }
+    }
+
+    void vline(int y1, int y2, int x, int color){
+        if(x < 0 || x >= width) return;
+        int tmp;
+
+        if(y1 > y2){
+            tmp = y1;
+            y1 = y2;
+            y2 = tmp;
+        }
+
+        if(y1 >= height) return;
+        if(y2 < 0) return;
+
+        if(y1 < 0) y1 = 0;
+        if(y2 >= height) y2 = height - 1;
+        y2++;
+
+        while(y1 != y2){
+            drawRaw(x, y1++, color);
+        }
     }
 
     /**
@@ -336,7 +527,7 @@ public class Pixmap implements Disposable{
      * @return one of GL_ALPHA, GL_RGB, GL_RGBA, GL_LUMINANCE, or GL_LUMINANCE_ALPHA.
      */
     public int getGLFormat(){
-        return toGlFormat(pixmap.format);
+        return Gl.rgba;
     }
 
     /**
@@ -345,7 +536,7 @@ public class Pixmap implements Disposable{
      * @return one of GL_ALPHA, GL_RGB, GL_RGBA, GL_LUMINANCE, or GL_LUMINANCE_ALPHA.
      */
     public int getGLInternalFormat(){
-        return toGlFormat(pixmap.format);
+        return Gl.rgba;
     }
 
     /**
@@ -354,7 +545,7 @@ public class Pixmap implements Disposable{
      * @return one of GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT_5_6_5, GL_UNSIGNED_SHORT_4_4_4_4
      */
     public int getGLType(){
-        return toGlType(pixmap.format);
+        return Gl.unsignedByte;
     }
 
     /**
@@ -365,44 +556,55 @@ public class Pixmap implements Disposable{
      * @return the direct {@link ByteBuffer} holding the pixel data.
      */
     public ByteBuffer getPixels(){
-        if(disposed) throw new ArcRuntimeException("Pixmap already disposed");
-        return pixmap.pixelPtr;
+        if(handle == 0) throw new ArcRuntimeException("Pixmap already disposed");
+        return pixels;
     }
 
-    /** @return the {@link Format} of this Pixmap. */
-    public Format getFormat(){
-        return Format.fromPixmapFormat(pixmap.format);
+    private void load(byte[] encodedData, int offset, int len, String file){
+        //use native implementation when possible
+        if(ArcNativesLoader.loaded){
+            //read with stb_image, which is slightly faster for large images and supports more formats
+            long[] nativeData = new long[3];
+            pixels = loadJni(nativeData, encodedData, offset, len);
+            if(pixels == null) throw new ArcRuntimeException("Error loading pixmap from image data: " + getFailureReason() + (file == null ? "" : " (" + file + ")"));
+
+            handle = nativeData[0];
+            width = (int)nativeData[1];
+            height = (int)nativeData[2];
+            pixels.position(0).limit(pixels.capacity());
+        }else{
+            //read with the pure java implementation
+            try{
+                PngReader reader = new PngReader();
+                pixels = reader.read(new ByteArrayInputStream(encodedData, offset, len));
+                width = reader.width;
+                height = reader.height;
+                handle = -1;
+                pixels.position(0).limit(pixels.capacity());
+            }catch(Exception e){
+                throw new ArcRuntimeException("Failed to load PNG data"  + (file == null ? "" : " (" + file + ")"), e);
+            }
+        }
     }
 
-    /** @return the currently set {@link Blending} */
-    public Blending getBlending(){
-        return blending;
-    }
+    private void load(int width, int height){
+        //use native implementation when possible
+        if(ArcNativesLoader.loaded){
+            long[] nativeData = new long[3];
+            pixels = createJni(nativeData, width, height);
+            if(pixels == null) throw new ArcRuntimeException("Error loading pixmap.");
+            pixels.limit(pixels.capacity());
 
-    /**
-     * Sets the type of {@link Blending} to be used for all operations. Default is {@link Blending#sourceOver}.
-     * @param blending the blending type
-     */
-    public void setBlending(Blending blending){
-        this.blending = blending;
-        int blend = blending == Blending.none ? 0 : 1;
-        setBlend(pixmap.basePtr, blend);
-    }
-
-    /** @return the currently set {@link PixmapFilter} */
-    public PixmapFilter getFilter(){
-        return filter;
-    }
-
-    /**
-     * Sets the type of interpolation {@link PixmapFilter} to be used in conjunction with
-     * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
-     * @param filter the filter.
-     */
-    public void setFilter(PixmapFilter filter){
-        this.filter = filter;
-        int scale = filter == PixmapFilter.nearestNeighbour ? pixmapScaleNearest : pixmapScaleLinear;
-        setScale(pixmap.basePtr, scale);
+            this.handle = nativeData[0];
+            this.width = (int)nativeData[1];
+            this.height = (int)nativeData[2];
+        }else{
+            //use DirectByteBuffer instead
+            this.handle = -1; //handle -1 means non-native buffer
+            this.width = width;
+            this.height = height;
+            this.pixels = ByteBuffer.allocateDirect(width * height * 4);
+        }
     }
 
     /**
@@ -410,225 +612,88 @@ public class Pixmap implements Disposable{
      * @author mzechner
      */
     public enum Format{
-        alpha, intensity, luminanceAlpha, rgb565, rgba4444, rgb888, rgba8888;
+        alpha(Gl.unsignedByte, Gl.alpha),
+        intensity(Gl.unsignedByte, Gl.alpha),
+        luminanceAlpha(Gl.unsignedByte, Gl.luminanceAlpha),
+        rgb565(Gl.unsignedShort565, Gl.rgb),
+        rgba4444(Gl.unsignedShort4444, Gl.rgba),
+        rgb888(Gl.unsignedByte, Gl.rgb),
+        rgba8888(Gl.unsignedByte, Gl.rgba);
 
         public static final Format[] all = values();
+        public final int glFormat, glType;
 
-        public int toPixmapFormat(){
-            switch(this){
-                case alpha:
-                case intensity: return pixmapFormatAlpha;
-                case luminanceAlpha: return pixmapFormatLuminanceAlpha;
-                case rgb565: return pixmapFormatRGB565;
-                case rgba4444: return pixmapFormatRGBA4444;
-                case rgb888: return pixmapFormatRGB888;
-                case rgba8888: return pixmapFormatRGBA8888;
-                default: throw new ArcRuntimeException("Unknown Format: " + this);
-            }
+        Format(int glType, int glFormat){
+            this.glFormat = glFormat;
+            this.glType = glType;
         }
-
-        public static Format fromPixmapFormat(int format){
-            switch(format){
-                case pixmapFormatAlpha: return alpha;
-                case pixmapFormatLuminanceAlpha: return luminanceAlpha;
-                case pixmapFormatRGB565: return rgb565;
-                case pixmapFormatRGBA4444: return rgba4444;
-                case pixmapFormatRGB888: return rgb888;
-                case pixmapFormatRGBA8888: return rgba8888;
-                default: throw new ArcRuntimeException("Unknown Pixmap Format: " + format);
-            }
-        }
-
-        public int toGlFormat(){
-            return Pixmap.toGlFormat(toPixmapFormat());
-        }
-
-        public int toGlType(){
-            return Pixmap.toGlType(toPixmapFormat());
-        }
-    }
-
-    public static int toGlFormat(int format){
-        switch(format){
-            case pixmapFormatAlpha: return GL20.GL_ALPHA;
-            case pixmapFormatLuminanceAlpha: return GL20.GL_LUMINANCE_ALPHA;
-            case pixmapFormatRGB888:
-            case pixmapFormatRGB565: return GL20.GL_RGB;
-            case pixmapFormatRGBA8888:
-            case pixmapFormatRGBA4444: return GL20.GL_RGBA;
-            default: throw new ArcRuntimeException("unknown format: " + format);
-        }
-    }
-
-    public static int toGlType(int format){
-        switch(format){
-            case pixmapFormatAlpha:
-            case pixmapFormatLuminanceAlpha:
-            case pixmapFormatRGB888:
-            case pixmapFormatRGBA8888: return GL20.GL_UNSIGNED_BYTE;
-            case pixmapFormatRGB565: return GL20.GL_UNSIGNED_SHORT_5_6_5;
-            case pixmapFormatRGBA4444: return GL20.GL_UNSIGNED_SHORT_4_4_4_4;
-            default: throw new ArcRuntimeException("unknown format: " + format);
-        }
-    }
-
-    /**
-     * Blending functions to be set with {@link Pixmap#setBlending}.
-     * @author mzechner
-     */
-    public enum Blending{
-        none, sourceOver
-    }
-
-    /**
-     * Filters to be used with {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
-     * @author mzechner
-     */
-    public enum PixmapFilter{
-        nearestNeighbour, bilinear
     }
 
     /*JNI
-    #include <pix.h>
-    #include <stdlib.h>
-     */
 
-    static native ByteBuffer load(long[] nativeData, byte[] buffer, int offset, int len); /*MANUAL
+    #include <stdlib.h>
+    #include <stdint.h>
+
+    #include <stdlib.h>
+    #define STB_IMAGE_IMPLEMENTATION
+    #define STBI_FAILURE_USERMSG
+    #define STBI_NO_STDIO
+    #ifdef __APPLE__
+    #define STBI_NO_THREAD_LOCALS
+    #endif
+    #include "stb_image.h"
+
+    */
+
+    /** Loads a pixmap from bytes and returns [address, width, height] in nativeData. */
+    static native ByteBuffer loadJni(long[] nativeData, byte[] buffer, int offset, int len); /*MANUAL
         const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);
-        pix_handle* pixmap = pix_load(p_buffer + offset, len);
+
+        int32_t width, height, format;
+
+        //always use STBI_rgb_alpha (4) as the format, since that's the only thing pixmaps support
+        //RGB images are generally uncommon and the memory savings don't really matter; formats have to be converted to RGBA for drawing anyway
+        const unsigned char* pixels = stbi_load_from_memory(p_buffer + offset, len, &width, &height, &format, STBI_rgb_alpha);
+
+        if(pixels == NULL) return NULL;
+
         env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
 
-        if(pixmap==0)
-            return 0;
-
-        jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * pix_bytes_per_pixel(pixmap->format));
+        jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixels, width * height * 4);
         jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
-        p_native_data[0] = (jlong)pixmap;
-        p_native_data[1] = pixmap->width;
-        p_native_data[2] = pixmap->height;
-        p_native_data[3] = pixmap->format;
+        p_native_data[0] = (jlong)pixels;
+        p_native_data[1] = width;
+        p_native_data[2] = height;
         env->ReleasePrimitiveArrayCritical(nativeData, p_native_data, 0);
 
         return pixel_buffer;
      */
 
-    static native ByteBuffer newPixmap(long[] nativeData, int width, int height, int format); /*MANUAL
-        pix_handle* pixmap = pix_new(width, height, format);
-        if(pixmap==0)
-            return 0;
+    /** Creates a new pixmap and returns [address, width, height] in nativeData. */
+    static native ByteBuffer createJni(long[] nativeData, int width, int height); /*MANUAL
+        const unsigned char* pixels = (unsigned char*)malloc(width * height * 4);
 
-        jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * pix_bytes_per_pixel(pixmap->format));
+        if(!pixels) return 0;
+
+        //fill pixel array with 0s
+        //TODO use calloc insted?
+        memset((void*)pixels, 0, width * height * 4);
+
+        jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixels, width * height * 4);
         jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
-        p_native_data[0] = (jlong)pixmap;
-        p_native_data[1] = pixmap->width;
-        p_native_data[2] = pixmap->height;
-        p_native_data[3] = pixmap->format;
+        p_native_data[0] = (jlong)pixels;
+        p_native_data[1] = width;
+        p_native_data[2] = height;
         env->ReleasePrimitiveArrayCritical(nativeData, p_native_data, 0);
 
         return pixel_buffer;
      */
 
-    static native void free(long pixmap); /*
-        pix_free((pix_handle*)pixmap);
-     */
-
-    private static native void clear(long pixmap, int color); /*
-        pix_clear((pix_handle*)pixmap, color);
-     */
-
-    private static native void setPixel(long pixmap, int x, int y, int color); /*
-        pix_set_pixel((pix_handle*)pixmap, x, y, color);
-     */
-
-    private static native int getPixel(long pixmap, int x, int y); /*
-        return pix_get_pixel((pix_handle*)pixmap, x, y);
-     */
-
-    private static native void drawLine(long pixmap, int x, int y, int x2, int y2, int color); /*
-        pix_draw_line((pix_handle*)pixmap, x, y, x2, y2, color);
-     */
-
-    private static native void drawRect(long pixmap, int x, int y, int width, int height, int color); /*
-        pix_draw_rect((pix_handle*)pixmap, x, y, width, height, color);
-     */
-
-    private static native void drawCircle(long pixmap, int x, int y, int radius, int color); /*
-        pix_draw_circle((pix_handle*)pixmap, x, y, radius, color);
-     */
-
-    private static native void fillRect(long pixmap, int x, int y, int width, int height, int color); /*
-        pix_fill_rect((pix_handle*)pixmap, x, y, width, height, color);
-     */
-
-    private static native void fillCircle(long pixmap, int x, int y, int radius, int color); /*
-        pix_fill_circle((pix_handle*)pixmap, x, y, radius, color);
-     */
-
-    private static native void fillTriangle(long pixmap, int x1, int y1, int x2, int y2, int x3, int y3, int color); /*
-        pix_fill_triangle((pix_handle*)pixmap, x1, y1, x2, y2, x3, y3, color);
-     */
-
-    static native void drawPixmap(long src, long dst, int srcX, int srcY, int srcWidth, int srcHeight, int dstX,
-                                  int dstY, int dstWidth, int dstHeight); /*
-        pix_draw_pixmap((pix_handle*)src, (pix_handle*)dst, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
-     */
-
-    private static native void setBlend(long src, int blend); /*
-        pix_set_blend((pix_handle*)src, blend);
-     */
-
-    private static native void setScale(long src, int scale); /*
-        pix_set_scale((pix_handle*)src, scale);
+    static native void free(long buffer); /*
+        free((void*)buffer);
      */
 
     public static native String getFailureReason(); /*
-        return env->NewStringUTF(pix_get_failure_reason());
+        return env->NewStringUTF(stbi_failure_reason());
      */
-
-    private static class NativePixmap{
-        long basePtr;
-        int width;
-        int height;
-        int format;
-        ByteBuffer pixelPtr;
-        long[] nativeData = new long[4];
-
-        public NativePixmap(byte[] encodedData, int offset, int len, int requestedFormat) throws IOException{
-            pixelPtr = load(nativeData, encodedData, offset, len);
-            if(pixelPtr == null) throw new IOException("Error loading pixmap: " + getFailureReason());
-
-            basePtr = nativeData[0];
-            width = (int)nativeData[1];
-            height = (int)nativeData[2];
-            format = (int)nativeData[3];
-
-            if(requestedFormat != 0 && requestedFormat != format){
-                convert(requestedFormat);
-            }
-        }
-
-        /** @throws ArcRuntimeException if allocation failed. */
-        public NativePixmap(int width, int height, int format) throws ArcRuntimeException{
-            pixelPtr = newPixmap(nativeData, width, height, format);
-            if(pixelPtr == null) throw new ArcRuntimeException("Error loading pixmap.");
-
-            this.basePtr = nativeData[0];
-            this.width = (int)nativeData[1];
-            this.height = (int)nativeData[2];
-            this.format = (int)nativeData[3];
-        }
-
-        private void convert(int requestedFormat){
-            NativePixmap pixmap = new NativePixmap(width, height, requestedFormat);
-            drawPixmap(basePtr, pixmap.basePtr, 0, 0, width, height, 0, 0, width, height);
-            free(basePtr);
-            this.basePtr = pixmap.basePtr;
-            this.format = pixmap.format;
-            this.height = pixmap.height;
-            this.nativeData = pixmap.nativeData;
-            this.pixelPtr = pixmap.pixelPtr;
-            this.width = pixmap.width;
-        }
-
-    }
 }
