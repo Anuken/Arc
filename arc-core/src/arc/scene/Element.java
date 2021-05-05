@@ -976,6 +976,11 @@ public class Element{
         return this;
     }
 
+    public Element setVisible(Boolp vis){
+        visibility = vis;
+        return this;
+    }
+
     public void touchable(Prov<Touchable> touch){
         this.touchablility = touch;
     }
