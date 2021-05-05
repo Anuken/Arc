@@ -40,10 +40,10 @@ public class Pixmap implements Disposable{
      * When natives are present, this handle is the address of the memory region.
      * When this pixmap is disposed/uninitialized, this value is 0.
      * When natives are not present, this value is -1.
-     * */
+     */
     long handle;
 
-    /** Creates a new Pixmap instance with the given width and height.*/
+    /** Creates a new Pixmap instance with the given width and height. */
     public Pixmap(int width, int height){
         load(width, height);
     }
@@ -85,6 +85,79 @@ public class Pixmap implements Disposable{
         this.handle = -1;
 
         buffer.position(0).limit(buffer.capacity());
+    }
+
+    /** Loads a pixmap from bytes and returns [address, width, height] in nativeData. */
+    static native ByteBuffer loadJni(long[] nativeData, byte[] buffer, int offset, int len); /*MANUAL
+        const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);
+
+        int32_t width, height, format;
+
+        //always use STBI_rgb_alpha (4) as the format, since that's the only thing pixmaps support
+        //RGB images are generally uncommon and the memory savings don't really matter; formats have to be converted to RGBA for drawing anyway
+        const unsigned char* pixels = stbi_load_from_memory(p_buffer + offset, len, &width, &height, &format, STBI_rgb_alpha);
+
+        if(pixels == NULL) return NULL;
+
+        env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
+
+        jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixels, width * height * 4);
+        jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
+        p_native_data[0] = (jlong)pixels;
+        p_native_data[1] = width;
+        p_native_data[2] = height;
+        env->ReleasePrimitiveArrayCritical(nativeData, p_native_data, 0);
+
+        return pixel_buffer;
+     */
+
+    /** Creates a new pixmap and returns [address, width, height] in nativeData. */
+    static native ByteBuffer createJni(long[] nativeData, int width, int height); /*MANUAL
+        const unsigned char* pixels = (unsigned char*)malloc(width * height * 4);
+
+        if(!pixels) return 0;
+
+        //fill pixel array with 0s
+        //TODO use calloc insted?
+        memset((void*)pixels, 0, width * height * 4);
+
+        jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixels, width * height * 4);
+        jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
+        p_native_data[0] = (jlong)pixels;
+        p_native_data[1] = width;
+        p_native_data[2] = height;
+        env->ReleasePrimitiveArrayCritical(nativeData, p_native_data, 0);
+
+        return pixel_buffer;
+     */
+
+    static native void free(long buffer); /*
+        free((void*)buffer);
+     */
+
+    static native String getFailureReason(); /*
+        return env->NewStringUTF(stbi_failure_reason());
+     */
+
+    /** Blends two pixels. */
+    static int blend(int src, int dst){
+        int src_a = src & 0xff;
+        if(src_a == 0) return dst;
+        int src_b = (src >>> 8) & 0xff;
+        int src_g = (src >>> 16) & 0xff;
+        int src_r = (src >>> 24) & 0xff;
+
+        int dst_a = dst & 0xff;
+        int dst_b = (dst >>> 8) & 0xff;
+        int dst_g = (dst >>> 16) & 0xff;
+        int dst_r = (dst >>> 24) & 0xff;
+
+        dst_a -= (dst_a * src_a) / 255;
+        int a = dst_a + src_a;
+        dst_r = (dst_r * dst_a + src_r * src_a) / a;
+        dst_g = (dst_g * dst_a + src_g * src_a) / a;
+        dst_b = (dst_b * dst_a + src_b * src_a) / a;
+        return ((dst_r << 24) | (dst_g << 16) | (dst_b << 8) | a);
     }
 
     /** @return a newly allocated copy with the same pixels. */
@@ -183,6 +256,10 @@ public class Pixmap implements Disposable{
         drawPixmap(region.pixmap, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height);
     }
 
+    public void draw(PixmapRegion region, boolean blend){
+        drawPixmap(region.pixmap, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height, false, blend);
+    }
+
     public void draw(PixmapRegion region, int x, int y){
         drawPixmap(region.pixmap, region.x, region.y, region.width, region.height, x, y, region.width, region.height);
     }
@@ -218,10 +295,13 @@ public class Pixmap implements Disposable{
      * @param pixmap The other Pixmap
      * @param x The target x-coordinate (top left corner)
      * @param y The target y-coordinate (top left corner)
-     * @param srcx The source x-coordinate (top left corner)
-     * @param srcy The source y-coordinate (top left corner);
-     * @param srcWidth The width of the area from the other Pixmap in pixels
-     * @param srcHeight The height of the area from the other Pixmap in pixels
+     */
+    public void drawPixmap(Pixmap pixmap, int x, int y, boolean blending){
+        drawPixmap(pixmap, 0, 0, pixmap.width, pixmap.height, x, y, pixmap.width, pixmap.height, false, blending);
+    }
+
+    /**
+     * Draws an area from another Pixmap to this Pixmap.
      */
     public void drawPixmap(Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight){
         drawPixmap(pixmap, srcx, srcy, srcWidth, srcHeight, x, y, srcWidth, srcHeight);
@@ -230,15 +310,6 @@ public class Pixmap implements Disposable{
     /**
      * Draws an area from another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
      * specified target rectangle.
-     * @param pixmap The other Pixmap
-     * @param srcx The source x-coordinate (top left corner)
-     * @param srcy The source y-coordinate (top left corner);
-     * @param srcWidth The width of the area from the other Pixmap in pixels
-     * @param srcHeight The height of the area from the other Pixmap in pixels
-     * @param dstx The target x-coordinate (top left corner)
-     * @param dsty The target y-coordinate (top left corner)
-     * @param dstWidth The target width
-     * @param dstHeight the target height
      */
     public void drawPixmap(Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight){
         drawPixmap(pixmap, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight, false);
@@ -247,6 +318,14 @@ public class Pixmap implements Disposable{
     /**
      * Draws an area from another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
      * specified target rectangle.
+     */
+    public void drawPixmap(Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight, boolean filtering){
+        drawPixmap(pixmap, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight, filtering, false);
+    }
+
+    /**
+     * Draws an area from another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
+     * specified target rectangle. Blending is currently unsupported for stretched/scaled pixmaps.
      * @param pixmap The other Pixmap
      * @param srcx The source x-coordinate (top left corner)
      * @param srcy The source y-coordinate (top left corner);
@@ -257,7 +336,7 @@ public class Pixmap implements Disposable{
      * @param dstWidth The target width
      * @param dstHeight the target height
      */
-    public void drawPixmap(Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight, boolean filtering){
+    public void drawPixmap(Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight, boolean filtering, boolean blending){
         int width = this.width, height = this.height, owidth = pixmap.width, oheight = pixmap.height;
 
         //don't bother drawing invalid regions
@@ -271,18 +350,30 @@ public class Pixmap implements Disposable{
             int sx, dx;
             int sy = srcy, dy = dsty;
 
-            //TODO this can be optimized with scanlines, potentially
-            for(; sy < srcy + srcHeight; sy++, dy++){
-                if(sy < 0 || dy < 0) continue;
-                if(sy >= oheight || dy >= height) break;
+            if(blending){
+                for(; sy < srcy + srcHeight; sy++, dy++){
+                    if(sy < 0 || dy < 0) continue;
+                    if(sy >= oheight || dy >= height) break;
 
-                for(sx = srcx, dx = dstx; sx < srcx + srcWidth; sx++, dx++){
-                    if(sx < 0 || dx < 0) continue;
-                    if(sx >= owidth || dx >= width) break;
-                    drawRaw(dx, dy, pixmap.getPixelRaw(sx, sy));
+                    for(sx = srcx, dx = dstx; sx < srcx + srcWidth; sx++, dx++){
+                        if(sx < 0 || dx < 0) continue;
+                        if(sx >= owidth || dx >= width) break;
+                        drawRaw(dx, dy, blend(pixmap.getPixelRaw(sx, sy), getPixelRaw(dx, dy)));
+                    }
+                }
+            }else{
+                //TODO this can be optimized with scanlines, potentially
+                for(; sy < srcy + srcHeight; sy++, dy++){
+                    if(sy < 0 || dy < 0) continue;
+                    if(sy >= oheight || dy >= height) break;
+
+                    for(sx = srcx, dx = dstx; sx < srcx + srcWidth; sx++, dx++){
+                        if(sx < 0 || dx < 0) continue;
+                        if(sx >= owidth || dx >= width) break;
+                        drawRaw(dx, dy, pixmap.getPixelRaw(sx, sy));
+                    }
                 }
             }
-
         }else{
             if(filtering){
                 //blit with bilinear filtering
@@ -548,6 +639,22 @@ public class Pixmap implements Disposable{
         return Gl.unsignedByte;
     }
 
+    /*JNI
+
+    #include <stdlib.h>
+    #include <stdint.h>
+
+    #include <stdlib.h>
+    #define STB_IMAGE_IMPLEMENTATION
+    #define STBI_FAILURE_USERMSG
+    #define STBI_NO_STDIO
+    #ifdef __APPLE__
+    #define STBI_NO_THREAD_LOCALS
+    #endif
+    #include "stb_image.h"
+
+    */
+
     /**
      * Returns the direct ByteBuffer holding the pixel data. For the format Alpha each value is encoded as a byte. For the format
      * LuminanceAlpha the luminance is the first byte and the alpha is the second byte of the pixel. For the formats RGB888 and
@@ -582,7 +689,7 @@ public class Pixmap implements Disposable{
                 handle = -1;
                 pixels.position(0).limit(pixels.capacity());
             }catch(Exception e){
-                throw new ArcRuntimeException("Failed to load PNG data"  + (file == null ? "" : " (" + file + ")"), e);
+                throw new ArcRuntimeException("Failed to load PNG data" + (file == null ? "" : " (" + file + ")"), e);
             }
         }
     }
@@ -628,72 +735,4 @@ public class Pixmap implements Disposable{
             this.glType = glType;
         }
     }
-
-    /*JNI
-
-    #include <stdlib.h>
-    #include <stdint.h>
-
-    #include <stdlib.h>
-    #define STB_IMAGE_IMPLEMENTATION
-    #define STBI_FAILURE_USERMSG
-    #define STBI_NO_STDIO
-    #ifdef __APPLE__
-    #define STBI_NO_THREAD_LOCALS
-    #endif
-    #include "stb_image.h"
-
-    */
-
-    /** Loads a pixmap from bytes and returns [address, width, height] in nativeData. */
-    static native ByteBuffer loadJni(long[] nativeData, byte[] buffer, int offset, int len); /*MANUAL
-        const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);
-
-        int32_t width, height, format;
-
-        //always use STBI_rgb_alpha (4) as the format, since that's the only thing pixmaps support
-        //RGB images are generally uncommon and the memory savings don't really matter; formats have to be converted to RGBA for drawing anyway
-        const unsigned char* pixels = stbi_load_from_memory(p_buffer + offset, len, &width, &height, &format, STBI_rgb_alpha);
-
-        if(pixels == NULL) return NULL;
-
-        env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
-
-        jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixels, width * height * 4);
-        jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
-        p_native_data[0] = (jlong)pixels;
-        p_native_data[1] = width;
-        p_native_data[2] = height;
-        env->ReleasePrimitiveArrayCritical(nativeData, p_native_data, 0);
-
-        return pixel_buffer;
-     */
-
-    /** Creates a new pixmap and returns [address, width, height] in nativeData. */
-    static native ByteBuffer createJni(long[] nativeData, int width, int height); /*MANUAL
-        const unsigned char* pixels = (unsigned char*)malloc(width * height * 4);
-
-        if(!pixels) return 0;
-
-        //fill pixel array with 0s
-        //TODO use calloc insted?
-        memset((void*)pixels, 0, width * height * 4);
-
-        jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixels, width * height * 4);
-        jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
-        p_native_data[0] = (jlong)pixels;
-        p_native_data[1] = width;
-        p_native_data[2] = height;
-        env->ReleasePrimitiveArrayCritical(nativeData, p_native_data, 0);
-
-        return pixel_buffer;
-     */
-
-    static native void free(long buffer); /*
-        free((void*)buffer);
-     */
-
-    public static native String getFailureReason(); /*
-        return env->NewStringUTF(stbi_failure_reason());
-     */
 }

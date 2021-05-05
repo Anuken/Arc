@@ -559,7 +559,7 @@ public class FreeTypeFontGenerator implements Disposable{
 
                 // Draw main glyph on top of border.
                 for(int i = 0, n = parameter.renderCount; i < n; i++)
-                    borderPixmap.drawPixmap(mainPixmap, offsetX, offsetY);
+                    borderPixmap.drawPixmap(mainPixmap, offsetX, offsetY, true);
 
                 mainPixmap.dispose();
                 mainGlyph.dispose();
@@ -596,19 +596,19 @@ public class FreeTypeFontGenerator implements Disposable{
 
                 // Draw main glyph (with any border) on top of shadow.
                 for(int i = 0, n = parameter.renderCount; i < n; i++)
-                    shadowPixmap.drawPixmap(mainPixmap, Math.max(-parameter.shadowOffsetX, 0), Math.max(-parameter.shadowOffsetY, 0));
+                    shadowPixmap.drawPixmap(mainPixmap, Math.max(-parameter.shadowOffsetX, 0), Math.max(-parameter.shadowOffsetY, 0), true);
                 mainPixmap.dispose();
                 mainPixmap = shadowPixmap;
             }else if(parameter.borderWidth == 0){
                 // No shadow and no border, draw glyph additional times.
                 for(int i = 0, n = parameter.renderCount - 1; i < n; i++)
-                    mainPixmap.drawPixmap(mainPixmap, 0, 0);
+                    mainPixmap.drawPixmap(mainPixmap, 0, 0, true);
             }
 
             if(parameter.padTop > 0 || parameter.padLeft > 0 || parameter.padBottom > 0 || parameter.padRight > 0){
                 Pixmap padPixmap = new Pixmap(mainPixmap.width + parameter.padLeft + parameter.padRight,
                 mainPixmap.height + parameter.padTop + parameter.padBottom);
-                padPixmap.drawPixmap(mainPixmap, parameter.padLeft, parameter.padTop);
+                padPixmap.drawPixmap(mainPixmap, parameter.padLeft, parameter.padTop, true);
                 mainPixmap.dispose();
                 mainPixmap = padPixmap;
             }
