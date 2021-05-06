@@ -24,30 +24,18 @@ public class GifRecorder{
         recordKey = KeyCode.t,
         shiftKey = KeyCode.shiftLeft;
 
-    public Fi exportDirectory;
+    public Fi exportDirectory = Core.files == null ? Fi.get("gifs") : Core.files.local("gifs");
     public boolean disableGUI;
     public float speedMultiplier = 1f;
     public int recordfps = 30;
     public float driftSpeed = 1f;
-    public float gifx, gify, gifwidth, gifheight;
+    public float gifx = -defaultSize / 2, gify = -defaultSize / 2, gifwidth = defaultSize, gifheight = defaultSize;
     public boolean recording, open, saving;
 
     private float offsetx, offsety;
     private Seq<byte[]> frames = new Seq<>();
     private float frametime;
     private float saveprogress;
-
-    public GifRecorder(){
-        this(Core.files.local("gifs"));
-    }
-
-    public GifRecorder(Fi exportDirectory){
-        gifx = -defaultSize / 2;
-        gify = -defaultSize / 2;
-        gifwidth = defaultSize;
-        gifheight = defaultSize;
-        this.exportDirectory = exportDirectory;
-    }
 
     protected void doInput(){
         if(Core.input.keyTap(openKey) && !saving){
