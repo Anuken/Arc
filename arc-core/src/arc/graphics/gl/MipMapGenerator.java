@@ -69,7 +69,7 @@ public class MipMapGenerator{
         int level = 1;
         while(width > 0 && height > 0){
             Pixmap tmp = new Pixmap(width, height);
-            tmp.drawPixmap(pixmap, 0, 0, pixmap.width, pixmap.height, 0, 0, width, height);
+            tmp.draw(pixmap, 0, 0, pixmap.width, pixmap.height, 0, 0, width, height);
             if(level > 1) pixmap.dispose();
             pixmap = tmp;
 

@@ -5,6 +5,7 @@ import arc.files.*;
 import arc.func.*;
 import arc.graphics.PixmapIO.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.util.*;
 
 import java.io.*;
@@ -18,7 +19,7 @@ import java.nio.*;
  * </p>
  *
  * <p>
- * The {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)} method will scale and stretch the source image to a
+ * The {@link Pixmap#draw(Pixmap, int, int, int, int, int, int, int, int)} method will scale and stretch the source image to a
  * target image. There either nearest neighbour or bilinear filtering can be used.
  * </p>
  *
@@ -123,8 +124,8 @@ public class Pixmap implements Disposable{
         return x >= 0 && y >= 0 && x < width && y < height;
     }
 
-    /** @return a newly allocated pixmap, flipped horizontally. */
-    public Pixmap flipX(){
+    /** @return a newly allocated pixmap, flipped vertically. */
+    public Pixmap flipY(){
         Pixmap copy = new Pixmap(width, height);
 
         for(int x = 0; x < width; x++){
@@ -136,8 +137,8 @@ public class Pixmap implements Disposable{
         return copy;
     }
 
-    /** @return a newly allocated pixmap, flipped vertically. */
-    public Pixmap flipY(){
+    /** @return a newly allocated pixmap, flipped horizontally. */
+    public Pixmap flipX(){
         Pixmap copy = new Pixmap(width, height);
 
         for(int x = 0; x < width; x++){
@@ -147,6 +148,37 @@ public class Pixmap implements Disposable{
         }
 
         return copy;
+    }
+
+    /** @return a newly allocated pixmap with the specified outline. */
+    public Pixmap outline(Color color, int thickness){
+        return outline(color.rgba(), thickness);
+    }
+
+    /** @return a newly allocated pixmap with the specified outline. */
+    public Pixmap outline(int color, int thickness){
+        Pixmap pixmap = copy();
+
+        for(int x = 0; x < width; x++){
+            for(int y = 0; y < height; y++){
+                if(empty(getPixelRaw(x, y))){
+                    boolean found = false;
+                    outer:
+                    for(int dx = -thickness; dx <= thickness; dx++){
+                        for(int dy = -thickness; dy <= thickness; dy++){
+                            if(Mathf.within(dx, dy, thickness) && !empty(getPixel(x + dx, y + dy))){
+                                found = true;
+                                break outer;
+                            }
+                        }
+                    }
+                    if(found){
+                        pixmap.drawRaw(x, y, color);
+                    }
+                }
+            }
+        }
+        return pixmap;
     }
 
     /** Draws a line between the given coordinates using the provided RGBA color. */
@@ -206,41 +238,35 @@ public class Pixmap implements Disposable{
     }
 
     public void draw(PixmapRegion region){
-        drawPixmap(region.pixmap, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height);
+        draw(region.pixmap, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height);
     }
 
     public void draw(PixmapRegion region, boolean blend){
-        drawPixmap(region.pixmap, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height, false, blend);
+        draw(region.pixmap, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height, false, blend);
     }
 
     public void draw(PixmapRegion region, int x, int y){
-        drawPixmap(region.pixmap, region.x, region.y, region.width, region.height, x, y, region.width, region.height);
+        draw(region.pixmap, region.x, region.y, region.width, region.height, x, y, region.width, region.height);
     }
 
     public void draw(PixmapRegion region, int x, int y, int width, int height){
-        drawPixmap(region.pixmap, region.x, region.y, region.width, region.height, x, y, width, height);
+        draw(region.pixmap, region.x, region.y, region.width, region.height, x, y, width, height);
     }
 
     public void draw(PixmapRegion region, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight){
-        drawPixmap(region.pixmap, x, y, region.x + srcx, region.y + srcy, srcWidth, srcHeight);
+        draw(region.pixmap, x, y, region.x + srcx, region.y + srcy, srcWidth, srcHeight);
     }
 
     public void draw(PixmapRegion region, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight){
-        drawPixmap(region.pixmap, region.x + srcx, region.y + srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight);
+        draw(region.pixmap, region.x + srcx, region.y + srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight);
     }
 
-    public void drawPixmap(Pixmap pixmap){
-        drawPixmap(pixmap, 0, 0);
+    public void draw(Pixmap pixmap, boolean blend){
+        draw(pixmap, 0, 0, pixmap.width, pixmap.height, 0, 0, pixmap.width, pixmap.height, false, blend);
     }
 
-    /**
-     * Draws an area from another Pixmap to this Pixmap.
-     * @param pixmap The other Pixmap
-     * @param x The target x-coordinate (top left corner)
-     * @param y The target y-coordinate (top left corner)
-     */
-    public void drawPixmap(Pixmap pixmap, int x, int y){
-        drawPixmap(pixmap, x, y, 0, 0, pixmap.width, pixmap.height);
+    public void draw(Pixmap pixmap){
+        draw(pixmap, 0, 0);
     }
 
     /**
@@ -249,31 +275,41 @@ public class Pixmap implements Disposable{
      * @param x The target x-coordinate (top left corner)
      * @param y The target y-coordinate (top left corner)
      */
-    public void drawPixmap(Pixmap pixmap, int x, int y, boolean blending){
-        drawPixmap(pixmap, 0, 0, pixmap.width, pixmap.height, x, y, pixmap.width, pixmap.height, false, blending);
+    public void draw(Pixmap pixmap, int x, int y){
+        draw(pixmap, x, y, 0, 0, pixmap.width, pixmap.height);
+    }
+
+    /**
+     * Draws an area from another Pixmap to this Pixmap.
+     * @param pixmap The other Pixmap
+     * @param x The target x-coordinate (top left corner)
+     * @param y The target y-coordinate (top left corner)
+     */
+    public void draw(Pixmap pixmap, int x, int y, boolean blending){
+        draw(pixmap, 0, 0, pixmap.width, pixmap.height, x, y, pixmap.width, pixmap.height, false, blending);
     }
 
     /**
      * Draws an area from another Pixmap to this Pixmap.
      */
-    public void drawPixmap(Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight){
-        drawPixmap(pixmap, srcx, srcy, srcWidth, srcHeight, x, y, srcWidth, srcHeight);
+    public void draw(Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight){
+        draw(pixmap, srcx, srcy, srcWidth, srcHeight, x, y, srcWidth, srcHeight);
     }
 
     /**
      * Draws an area from another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
      * specified target rectangle.
      */
-    public void drawPixmap(Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight){
-        drawPixmap(pixmap, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight, false);
+    public void draw(Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight){
+        draw(pixmap, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight, false);
     }
 
     /**
      * Draws an area from another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
      * specified target rectangle.
      */
-    public void drawPixmap(Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight, boolean filtering){
-        drawPixmap(pixmap, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight, filtering, false);
+    public void draw(Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight, boolean filtering){
+        draw(pixmap, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight, filtering, false);
     }
 
     /**
@@ -289,7 +325,7 @@ public class Pixmap implements Disposable{
      * @param dstWidth The target width
      * @param dstHeight the target height
      */
-    public void drawPixmap(Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight, boolean filtering, boolean blending){
+    public void draw(Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight, boolean filtering, boolean blending){
         int width = this.width, height = this.height, owidth = pixmap.width, oheight = pixmap.height;
 
         //don't bother drawing invalid regions
@@ -456,18 +492,12 @@ public class Pixmap implements Disposable{
         }
     }
 
-    /**
-     * Returns the 32-bit RGBA8888 value of the pixel at x, y, or 0 if out of bounds.
-     * @return The pixel color in RGBA8888 format.
-     */
+    /** @return The pixel color in RGBA8888 format, or 0 if out of bounds. */
     public int getPixel(int x, int y){
         return in(x, y) ? pixels.getInt((x + y * width) * 4) : 0;
     }
 
-    /**
-     * Returns the 32-bit RGBA8888 value of the pixel at x, y. For Alpha formats the RGB components will be one. No bounds checks are done!
-     * @return The pixel color in RGBA8888 format.
-     */
+    /** @return The pixel color in RGBA8888 format. No bounds checks are done! */
     public int getPixelRaw(int x, int y){
         return pixels.getInt((x + y * width) * 4);
     }
@@ -624,6 +654,10 @@ public class Pixmap implements Disposable{
         dst_g = (dst_g * dst_a + src_g * src_a) / a;
         dst_b = (dst_b * dst_a + src_b * src_a) / a;
         return ((dst_r << 24) | (dst_g << 16) | (dst_b << 8) | a);
+    }
+
+    public static boolean empty(int i){
+        return (i & 0x000000ff) == 0;
     }
 
     private void load(byte[] encodedData, int offset, int len, String file){

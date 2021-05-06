@@ -264,30 +264,8 @@ public abstract class Graphics implements Disposable{
      * @param scaling The factor by which to scale the base pixmap.
      * @param outlineColor The color of the cursor's outline.
      */
-    public Cursor newCursor(Pixmap pixmap, int scaling, Color outlineColor){
-        Pixmap out = Pixmaps.outline(pixmap, outlineColor);
-        Pixmap out2 = Pixmaps.scale(out, scaling);
-
-        if(!Mathf.isPowerOfTwo(out2.width)){
-            Pixmap old = out2;
-            out2 = Pixmaps.resize(out2, Mathf.nextPowerOfTwo(out2.width), Mathf.nextPowerOfTwo(out2.width));
-            old.dispose();
-        }
-
-        out.dispose();
-        pixmap.dispose();
-
-        return newCursor(out2, out2.width / 2, out2.height / 2);
-    }
-
-    /**
-     * Creates a new cursor by scaling a pixmap and adding an outline.
-     * @param pixmap The base pixmap. Unscaled.
-     * @param scaling The factor by which to scale the base pixmap.
-     * @param outlineColor The color of the cursor's outline.
-     */
     public Cursor newCursor(Pixmap pixmap, int scaling, Color outlineColor, int outlineThickness){
-        Pixmap out = Pixmaps.outline(pixmap, outlineColor, outlineThickness);
+        Pixmap out = pixmap.outline(outlineColor, outlineThickness);
         Pixmap out2 = Pixmaps.scale(out, scaling);
 
         if(!Mathf.isPowerOfTwo(out2.width)){
@@ -321,14 +299,6 @@ public abstract class Graphics implements Disposable{
     public Cursor newCursor(String filename){
         Pixmap p = new Pixmap(Core.files.internal("cursors/" + filename + ".png"));
         return newCursor(p, p.width /2, p.height /2);
-    }
-
-    /**
-     * Creates a new cursor by file name.
-     * @param filename the name of the cursor .png file, found in the internal file "cursors/{name}.png"
-     */
-    public Cursor newCursor(String filename, int scaling, Color outlineColor){
-        return newCursor(new Pixmap(Core.files.internal("cursors/" + filename + ".png")), scaling, outlineColor);
     }
 
     /**

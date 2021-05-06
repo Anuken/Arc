@@ -172,7 +172,7 @@ public class Color{
      * @param a the alpha component, 0 - 255
      * @return the packed color as a 32-bit int
      */
-    public static int toIntBits(int r, int g, int b, int a){
+    public static int abgr(int r, int g, int b, int a){
         return (a << 24) | (b << 16) | (g << 8) | r;
     }
 
@@ -683,7 +683,7 @@ public class Color{
         if(this == o) return true;
         if(o == null || getClass() != o.getClass()) return false;
         Color color = (Color)o;
-        return toIntBits() == color.toIntBits();
+        return abgr() == color.abgr();
     }
 
     @Override
@@ -709,7 +709,7 @@ public class Color{
      * Packs the color components into a 32-bit integer with the format ABGR.
      * @return the packed color as a 32-bit int.
      */
-    public int toIntBits(){
+    public int abgr(){
         return ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
     }
 
@@ -974,5 +974,33 @@ public class Color{
         float n = s * (l - 1) - (int)(s * (l - 1));
         float i = 1f - n;
         return set(a.r * i + b.r * n, a.g * i + b.g * n, a.b * i + b.b * n, 1f);
+    }
+
+    private static int clampf(float value){
+        return Math.min(Math.max((int)value, 0), 255);
+    }
+
+    /** Multiplies 2 RGBA colors together. */
+    public static int muli(int ca, int cb){
+        int
+        r = ((ca & 0xff000000) >>> 24),
+        g = ((ca & 0x00ff0000) >>> 16),
+        b = ((ca & 0x0000ff00) >>> 8),
+        a = ((ca & 0x000000ff)),
+        r2 = ((cb & 0xff000000) >>> 24),
+        g2 = ((cb & 0x00ff0000) >>> 16),
+        b2 = ((cb & 0x0000ff00) >>> 8),
+        a2 = ((cb & 0x000000ff));
+        return (clampf(r * r2 / 255f) << 24) | (clampf(g * g2 / 255f) << 16) | (clampf(b * b2 / 255f) << 8) | (clampf(a * a2 / 255f));
+    }
+
+    /** Multiplies a RGBA color by a float. Alpha channels are not multiplied. */
+    public static int muli(int rgba, float value){
+        int
+        r = ((rgba & 0xff000000) >>> 24),
+        g = ((rgba & 0x00ff0000) >>> 16),
+        b = ((rgba & 0x0000ff00) >>> 8),
+        a = ((rgba & 0x000000ff));
+        return (clampf(r * value) << 24) | (clampf(g * value) << 16) | (clampf(b * value) << 8) | (a);
     }
 }

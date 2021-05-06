@@ -63,7 +63,7 @@ public class Pixmaps{
 
     public static Pixmap scale(Pixmap pixmap, int width, int height, boolean filter){
         Pixmap dest = new Pixmap(width, height);
-        dest.drawPixmap(pixmap, 0, 0, pixmap.width, pixmap.height, 0, 0, width, height, filter);
+        dest.draw(pixmap, 0, 0, pixmap.width, pixmap.height, 0, 0, width, height, filter);
         return dest;
     }
 
@@ -79,38 +79,6 @@ public class Pixmaps{
             }
         }
         return pixmap;
-    }
-
-    public static Pixmap outline(Pixmap input, Color color, int thickness){
-        if(thickness == 1){
-            return outline(input, color);
-        }else{
-            Pixmap pixmap = input.copy();
-            int col = color.rgba();
-
-            for(int x = 0; x < pixmap.width; x++){
-                for(int y = 0; y < pixmap.height; y++){
-                    if(empty(input.getPixel(x, y))){
-                        boolean found = false;
-                        outer:
-                        for(int dx = -thickness; dx <= thickness; dx++){
-                            for(int dy = -thickness; dy <= thickness; dy++){
-                                if(Mathf.within(dx, dy, thickness) && !empty(input.getPixel(x + dx, y + dy))){
-                                    found = true;
-                                    break outer;
-                                }
-                            }
-                        }
-                        if(found){
-                            pixmap.draw(x, y, col);
-                        }
-                    }
-
-
-                }
-            }
-            return pixmap;
-        }
     }
 
     public static Pixmap outline(PixmapRegion region, Color color, int radius){
@@ -139,13 +107,14 @@ public class Pixmaps{
         return out;
     }
 
+    /** Outlines the input pixmap by 1 pixel. */
     public static Pixmap outline(Pixmap input, Color color){
         Pixmap pixmap = input.copy();
         int col = color.rgba();
 
         for(int x = 0; x < pixmap.width; x++){
             for(int y = 0; y < pixmap.height; y++){
-                if(empty(input.getPixel(x, y)) &&
+                if(empty(input.getPixelRaw(x, y)) &&
                 (!empty(input.getPixel(x, y + 1)) || !empty(input.getPixel(x, y - 1)) || !empty(input.getPixel(x - 1, y)) || !empty(input.getPixel(x + 1, y))))
                     pixmap.draw(x, y, col);
             }
@@ -165,7 +134,7 @@ public class Pixmaps{
 
     public static Pixmap resize(Pixmap input, int width, int height){
         Pixmap pixmap = new Pixmap(width, height);
-        pixmap.drawPixmap(input, width / 2 - input.width / 2, height / 2 - input.height / 2);
+        pixmap.draw(input, width / 2 - input.width / 2, height / 2 - input.height / 2);
 
         return pixmap;
     }
@@ -173,7 +142,7 @@ public class Pixmaps{
     public static Pixmap resize(Pixmap input, int width, int height, int backgroundColor){
         Pixmap pixmap = new Pixmap(width, height);
         pixmap.fill(backgroundColor);
-        pixmap.drawPixmap(input, width / 2 - input.width / 2, height / 2 - input.height / 2);
+        pixmap.draw(input, width / 2 - input.width / 2, height / 2 - input.height / 2);
 
         return pixmap;
     }
@@ -181,7 +150,7 @@ public class Pixmaps{
     public static Pixmap crop(Pixmap input, int x, int y, int width, int height){
         if(input.isDisposed()) throw new IllegalStateException("input is disposed.");
         Pixmap pixmap = new Pixmap(width, height);
-        pixmap.drawPixmap(input, 0, 0, x, y, width, height);
+        pixmap.draw(input, 0, 0, x, y, width, height);
         return pixmap;
     }
 

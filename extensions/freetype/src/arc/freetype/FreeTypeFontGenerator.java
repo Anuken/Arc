@@ -559,7 +559,7 @@ public class FreeTypeFontGenerator implements Disposable{
 
                 // Draw main glyph on top of border.
                 for(int i = 0, n = parameter.renderCount; i < n; i++)
-                    borderPixmap.drawPixmap(mainPixmap, offsetX, offsetY, true);
+                    borderPixmap.draw(mainPixmap, offsetX, offsetY, true);
 
                 mainPixmap.dispose();
                 mainGlyph.dispose();
@@ -596,19 +596,19 @@ public class FreeTypeFontGenerator implements Disposable{
 
                 // Draw main glyph (with any border) on top of shadow.
                 for(int i = 0, n = parameter.renderCount; i < n; i++)
-                    shadowPixmap.drawPixmap(mainPixmap, Math.max(-parameter.shadowOffsetX, 0), Math.max(-parameter.shadowOffsetY, 0), true);
+                    shadowPixmap.draw(mainPixmap, Math.max(-parameter.shadowOffsetX, 0), Math.max(-parameter.shadowOffsetY, 0), true);
                 mainPixmap.dispose();
                 mainPixmap = shadowPixmap;
             }else if(parameter.borderWidth == 0){
                 // No shadow and no border, draw glyph additional times.
                 for(int i = 0, n = parameter.renderCount - 1; i < n; i++)
-                    mainPixmap.drawPixmap(mainPixmap, 0, 0, true);
+                    mainPixmap.draw(mainPixmap, 0, 0, true);
             }
 
             if(parameter.padTop > 0 || parameter.padLeft > 0 || parameter.padBottom > 0 || parameter.padRight > 0){
                 Pixmap padPixmap = new Pixmap(mainPixmap.width + parameter.padLeft + parameter.padRight,
                 mainPixmap.height + parameter.padTop + parameter.padBottom);
-                padPixmap.drawPixmap(mainPixmap, parameter.padLeft, parameter.padTop, true);
+                padPixmap.draw(mainPixmap, parameter.padLeft, parameter.padTop, true);
                 mainPixmap.dispose();
                 mainPixmap = padPixmap;
             }
@@ -629,8 +629,8 @@ public class FreeTypeFontGenerator implements Disposable{
         if(bitmapped){
             mainPixmap.fill(Color.clearRgba);
             ByteBuffer buf = mainBitmap.getBuffer();
-            int whiteIntBits = Color.white.toIntBits();
-            int clearIntBits = Color.clear.toIntBits();
+            int whiteIntBits = Color.white.abgr();
+            int clearIntBits = Color.clear.abgr();
             for(int h = 0; h < glyph.height; h++){
                 int idx = h * mainBitmap.getPitch();
                 for(int w = 0; w < (glyph.width + glyph.xoffset); w++){
