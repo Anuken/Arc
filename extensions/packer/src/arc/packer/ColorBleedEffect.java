@@ -12,7 +12,6 @@ import java.util.*;
  * @author Nathan Sweet
  * @author Anuke
  */
-//TODO optimize if slow
 public class ColorBleedEffect{
     static int TO_PROCESS = 0;
     static int IN_PROCESS = 1;
