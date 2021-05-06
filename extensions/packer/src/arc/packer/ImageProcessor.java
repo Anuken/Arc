@@ -114,7 +114,7 @@ public class ImageProcessor{
             width -= 2;
             height -= 2;
             Pixmap newImage = new Pixmap(width, height);
-            newImage.draw(image, 0, 0, width, height, 1, 1, width + 1, height + 1);
+            newImage.draw(image, 1, 1, width + 1, height + 1, 0, 0, width, height);
             image = newImage;
         }
 

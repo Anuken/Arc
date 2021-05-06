@@ -93,7 +93,6 @@ public class PixmapIO{
         private static final byte COMPRESSION_DEFLATE = 0;
         private static final byte FILTER_NONE = 0;
         private static final byte INTERLACE_NONE = 0;
-        private static final byte PAETH = 4;
 
         private final ChunkBuffer buffer;
         private final Deflater deflater;
@@ -149,56 +148,17 @@ public class PixmapIO{
             deflater.reset();
 
             int lineLen = pixmap.width * 4;
-            byte[] lineOut, curLine, prevLine;
-            if(lineOutBytes == null){
-                lineOut = (lineOutBytes = new ByteSeq(lineLen)).items;
-                curLine = (curLineBytes = new ByteSeq(lineLen)).items;
-                prevLine = (prevLineBytes = new ByteSeq(lineLen)).items;
-            }else{
-                lineOut = lineOutBytes.ensureCapacity(lineLen);
-                curLine = curLineBytes.ensureCapacity(lineLen);
-                prevLine = prevLineBytes.ensureCapacity(lineLen);
-                for(int i = 0, n = lastLineLen; i < n; i++)
-                    prevLine[i] = 0;
-            }
-            lastLineLen = lineLen;
+            //1 extra byte for filter 0
+            byte[] curLine = new byte[lineLen + 1];
 
             ByteBuffer pixels = pixmap.getPixels();
             int oldPosition = pixels.position();
             for(int y = 0, h = pixmap.height; y < h; y++){
                 int py = flipY ? (h - y - 1) : y;
                 pixels.position(py * lineLen);
-                pixels.get(curLine, 0, lineLen);
+                pixels.get(curLine, 1, lineLen);
 
-                lineOut[0] = (byte)(curLine[0] - prevLine[0]);
-                lineOut[1] = (byte)(curLine[1] - prevLine[1]);
-                lineOut[2] = (byte)(curLine[2] - prevLine[2]);
-                lineOut[3] = (byte)(curLine[3] - prevLine[3]);
-
-                for(int x = 4; x < lineLen; x++){
-                    int a = curLine[x - 4] & 0xff;
-                    int b = prevLine[x] & 0xff;
-                    int c = prevLine[x - 4] & 0xff;
-                    int p = a + b - c;
-                    int pa = p - a;
-                    if(pa < 0) pa = -pa;
-                    int pb = p - b;
-                    if(pb < 0) pb = -pb;
-                    int pc = p - c;
-                    if(pc < 0) pc = -pc;
-                    if(pa <= pb && pa <= pc)
-                        c = a;
-                    else if(pb <= pc) //
-                        c = b;
-                    lineOut[x] = (byte)(curLine[x] - c);
-                }
-
-                deflaterOutput.write(PAETH);
-                deflaterOutput.write(lineOut, 0, lineLen);
-
-                byte[] temp = curLine;
-                curLine = prevLine;
-                prevLine = temp;
+                deflaterOutput.write(curLine, 0, lineLen + 1);
             }
             pixels.position(oldPosition);
             deflaterOutput.finish();
