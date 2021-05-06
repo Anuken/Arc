@@ -204,6 +204,11 @@ public class Color{
         return ((int)(a * 255) << 24) | ((int)(r * 255) << 16) | ((int)(g * 255) << 8) | (int)(b * 255);
     }
 
+    /** @return 4 0-255 RGBA components packed into an int. */
+    public static int packRgba(int r, int g, int b, int a){
+        return ((r) << 24) | ((g) << 16) | ((b) << 8) | (a);
+    }
+
     public int rgb565(){
         return ((int)(r * 31) << 11) | ((int)(g * 63) << 5) | (int)(b * 31);
     }
@@ -978,6 +983,26 @@ public class Color{
 
     private static int clampf(float value){
         return Math.min(Math.max((int)value, 0), 255);
+    }
+
+    /** @return R value of a RGBA packed color. */
+    public static int ri(int rgba){
+        return (rgba & 0xff000000) >>> 24;
+    }
+
+    /** @return G value of a RGBA packed color. */
+    public static int gi(int rgba){
+        return (rgba & 0x00ff0000) >>> 16;
+    }
+
+    /** @return B value of a RGBA packed color. */
+    public static int bi(int rgba){
+        return (rgba & 0x0000ff00) >>> 8;
+    }
+
+    /** @return A value of a RGBA packed color. */
+    public static int ai(int rgba){
+        return (rgba & 0x000000ff);
     }
 
     /** Multiplies 2 RGBA colors together. */

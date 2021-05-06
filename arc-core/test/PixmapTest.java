@@ -13,9 +13,9 @@ public class PixmapTest{
         Pixmap pix = new Pixmap(100, 100);
         pix.fillCircle(50, 50, 30, Color.red.rgba());
 
-        assertEquals(Color.red.rgba(), pix.getPixel(50, 50));
-        assertEquals(Color.red.rgba(), pix.getPixel(54, 54));
-        assertEquals(0, pix.getPixel(0, 0));
+        assertEquals(Color.red.rgba(), pix.get(50, 50));
+        assertEquals(Color.red.rgba(), pix.get(54, 54));
+        assertEquals(0, pix.get(0, 0));
     }
 
     void bench(Runnable a, Runnable b, int amount){

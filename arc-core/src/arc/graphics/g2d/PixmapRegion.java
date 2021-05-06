@@ -16,7 +16,7 @@ public class PixmapRegion{
     }
 
     public int getPixel(int x, int y){
-        return pixmap.getPixel(this.x + x, this.y +y);
+        return pixmap.get(this.x + x, this.y +y);
     }
 
     public int getPixel(int x, int y, Color color){

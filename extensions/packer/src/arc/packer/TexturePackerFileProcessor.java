@@ -6,7 +6,6 @@ import arc.util.*;
 import arc.util.serialization.*;
 
 import java.io.*;
-import java.util.*;
 import java.util.regex.*;
 
 /** @author Nathan Sweet */
@@ -17,7 +16,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
     private Json json = new Json();
     private String packFileName;
     private File root;
-    ArrayList<File> ignoreDirs = new ArrayList();
+    Seq<File> ignoreDirs = new Seq();
     boolean countOnly;
     int packCount;
 
@@ -42,7 +41,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
     }
 
     @Override
-    public ArrayList<Entry> process(File inputFile, File outputRoot) throws Exception{
+    public Seq<Entry> process(File inputFile, File outputRoot) throws Exception{
         root = inputFile;
 
         // Collect pack.json setting files.
@@ -66,11 +65,11 @@ public class TexturePackerFileProcessor extends FileProcessor{
                 parent = parent.getParentFile();
                 settings = dirToSettings.get(parent);
                 if(settings != null){
-                    settings = new Settings(settings);
+                    settings = settings.copy();
                     break;
                 }
             }
-            if(settings == null) settings = new Settings(defaultSettings);
+            if(settings == null) settings = defaultSettings.copy();
             // Merge settings from current directory.
             merge(settings, settingsFile);
             dirToSettings.put(settingsFile.getParentFile(), settings);
@@ -83,7 +82,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
 
         // Do actual processing.
         if(progress != null) progress.start(1);
-        ArrayList<Entry> result = super.process(inputFile, outputRoot);
+        Seq<Entry> result = super.process(inputFile, outputRoot);
         if(progress != null) progress.end();
         return result;
     }
@@ -97,7 +96,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
     }
 
     @Override
-    public ArrayList<Entry> process(File[] files, File outputRoot) throws Exception{
+    public Seq<Entry> process(File[] files, File outputRoot) throws Exception{
         // Delete pack file and images.
         if(countOnly && outputRoot.exists()) deleteOutput(outputRoot);
         return super.process(files, outputRoot);
@@ -108,7 +107,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
         File settingsFile = new File(root, "pack.json");
         Settings rootSettings = defaultSettings;
         if(settingsFile.exists()){
-            rootSettings = new Settings(rootSettings);
+            rootSettings = rootSettings.copy();
             merge(rootSettings, settingsFile);
         }
 
@@ -142,7 +141,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
     }
 
     @Override
-    protected void processDir(final Entry inputDir, ArrayList<Entry> files) throws Exception{
+    protected void processDir(final Entry inputDir, Seq<Entry> files) throws Exception{
         if(ignoreDirs.contains(inputDir.inputFile)) return;
 
         // Find first parent with settings, or use defaults.
@@ -162,7 +161,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
             // Collect all files under subdirectories and ignore subdirectories without pack.json files.
             files = new FileProcessor(this){
                 @Override
-                protected void processDir(Entry entryDir, ArrayList<Entry> files){
+                protected void processDir(Entry entryDir, Seq<Entry> files){
                     if(!entryDir.inputFile.equals(inputDir.inputFile) && new File(entryDir.inputFile, "pack.json").exists()){
                         files.clear();
                         return;
@@ -187,7 +186,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
         final Pattern digitSuffix = Pattern.compile("(.*?)(\\d+)$");
 
         // Sort by name using numeric suffix, then alpha.
-        Collections.sort(files, (entry1, entry2) -> {
+        files.sort((entry1, entry2) -> {
             String full1 = entry1.inputFile.getName();
             int dotIndex = full1.lastIndexOf('.');
             if(dotIndex != -1) full1 = full1.substring(0, dotIndex);

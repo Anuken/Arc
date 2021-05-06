@@ -54,7 +54,7 @@ public class Pixmaps{
         Pixmap pixmap = new Pixmap(input.width, input.height);
         input.each((x, y) -> {
             tmp.clear();
-            Geometry.circle(x, y, pixmap.width, pixmap.height, radius, (cx, cy) -> tmp.add(input.getPixel(cx, cy)));
+            Geometry.circle(x, y, pixmap.width, pixmap.height, radius, (cx, cy) -> tmp.add(input.get(cx, cy)));
             tmp.sort();
             pixmap.drawRaw(x, y, tmp.get(Mathf.clamp((int)(tmp.size * percentile), 0, tmp.size - 1)));
         });
@@ -75,7 +75,7 @@ public class Pixmaps{
         Pixmap pixmap = new Pixmap((int)(input.width * scalex), (int)(input.height * scaley));
         for(int x = 0; x < pixmap.width; x++){
             for(int y = 0; y < pixmap.height; y++){
-                pixmap.draw(x, y, input.getPixel((int)(x / scalex), (int)(y / scaley)));
+                pixmap.draw(x, y, input.get((int)(x / scalex), (int)(y / scaley)));
             }
         }
         return pixmap;
@@ -114,8 +114,8 @@ public class Pixmaps{
 
         for(int x = 0; x < pixmap.width; x++){
             for(int y = 0; y < pixmap.height; y++){
-                if(empty(input.getPixelRaw(x, y)) &&
-                (!empty(input.getPixel(x, y + 1)) || !empty(input.getPixel(x, y - 1)) || !empty(input.getPixel(x - 1, y)) || !empty(input.getPixel(x + 1, y))))
+                if(empty(input.getRaw(x, y)) &&
+                (!empty(input.get(x, y + 1)) || !empty(input.get(x, y - 1)) || !empty(input.get(x - 1, y)) || !empty(input.get(x + 1, y))))
                     pixmap.draw(x, y, col);
             }
         }
@@ -126,7 +126,7 @@ public class Pixmaps{
         Pixmap pixmap = new Pixmap(input.width, input.height);
         for(int x = 0; x < pixmap.width; x++){
             for(int y = 0; y < pixmap.height; y++){
-                pixmap.draw(x, y, input.getPixel(x / scale + pixmap.width / 2 / scale, y / scale + pixmap.height / 2 / scale));
+                pixmap.draw(x, y, input.get(x / scale + pixmap.width / 2 / scale, y / scale + pixmap.height / 2 / scale));
             }
         }
         return pixmap;
@@ -164,7 +164,7 @@ public class Pixmaps{
                 vector.rotate(-angle);
                 int px = (int)(vector.x + input.width / 2f + 0.01f);
                 int py = (int)(vector.y + input.height / 2f + 0.01f);
-                pixmap.draw(px - input.width / 2 + pixmap.width / 2, py - input.height / 2 + pixmap.height / 2, input.getPixel(x, y));
+                pixmap.draw(px - input.width / 2 + pixmap.width / 2, py - input.height / 2 + pixmap.height / 2, input.get(x, y));
             }
         }
 

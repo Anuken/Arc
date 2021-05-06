@@ -1,41 +1,45 @@
 package arc.packer;
 
+import arc.graphics.*;
 import arc.packer.ColorBleedEffect.Mask.*;
 
-import java.awt.image.*;
+import java.nio.*;
 import java.util.*;
 
 /**
  * @author Ruben Garat
  * @author Ariel Coppes
  * @author Nathan Sweet
+ * @author Anuke
  */
+//TODO optimize if slow
 public class ColorBleedEffect{
     static int TO_PROCESS = 0;
     static int IN_PROCESS = 1;
     static int REALDATA = 2;
     static int[][] offsets = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
 
-    ARGBColor color = new ARGBColor();
+    public Pixmap processImage(Pixmap image, int maxIterations){
+        int[] pixels = new int[image.width * image.height];
+        IntBuffer buffer = image.getPixels().asIntBuffer();
+        buffer.position(0);
+        buffer.get(pixels);
 
-    public BufferedImage processImage(BufferedImage image, int maxIterations){
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        BufferedImage processedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        int[] rgb = image.getRGB(0, 0, width, height, null, 0, width);
-        Mask mask = new Mask(rgb);
+        Pixmap out = new Pixmap(image.width, image.height);
+        Mask mask = new Mask(pixels);
 
         int iterations = 0;
         int lastPending = -1;
         while(mask.pendingSize > 0 && mask.pendingSize != lastPending && iterations < maxIterations){
             lastPending = mask.pendingSize;
-            executeIteration(rgb, mask, width, height);
+            executeIteration(pixels, mask, image.width, image.height);
             iterations++;
         }
 
-        processedImage.setRGB(0, 0, width, height, rgb, 0, width);
-        return processedImage;
+        IntBuffer outBuffer = out.getPixels().asIntBuffer();
+        outBuffer.position(0);
+        outBuffer.put(pixels);
+        return out;
     }
 
     private void executeIteration(int[] rgb, Mask mask, int width, int height){
@@ -56,17 +60,16 @@ public class ColorBleedEffect{
 
                 int currentPixelIndex = getPixelIndex(width, column, row);
                 if(mask.getMask(currentPixelIndex) == REALDATA){
-                    color.argb = rgb[currentPixelIndex];
-                    r += color.red();
-                    g += color.green();
-                    b += color.blue();
+                    int rgba = rgb[currentPixelIndex];
+                    r += Color.ri(rgba);
+                    g += Color.gi(rgba);
+                    b += Color.bi(rgba);
                     count++;
                 }
             }
 
             if(count != 0){
-                color.setARGBA(0, r / count, g / count, b / count);
-                rgb[pixelIndex] = color.argb;
+                rgb[pixelIndex] = Color.packRgba(r / count, g / count, b / count, 0);
                 iterator.markAsInProgress();
             }
         }
@@ -86,10 +89,8 @@ public class ColorBleedEffect{
             data = new int[rgb.length];
             pending = new int[rgb.length];
             changing = new int[rgb.length];
-            ARGBColor color = new ARGBColor();
             for(int i = 0; i < rgb.length; i++){
-                color.argb = rgb[i];
-                if(color.alpha() == 0){
+                if(Color.ai(rgb[i]) == 0){
                     data[i] = TO_PROCESS;
                     pending[pendingSize] = i;
                     pendingSize++;
@@ -139,29 +140,4 @@ public class ColorBleedEffect{
         }
     }
 
-    static class ARGBColor{
-        int argb = 0xff000000;
-
-        public int red(){
-            return (argb >> 16) & 0xFF;
-        }
-
-        public int green(){
-            return (argb >> 8) & 0xFF;
-        }
-
-        public int blue(){
-            return (argb >> 0) & 0xFF;
-        }
-
-        public int alpha(){
-            return (argb >> 24) & 0xff;
-        }
-
-        public void setARGBA(int a, int r, int g, int b){
-            if(a < 0 || a > 255 || r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
-                throw new IllegalArgumentException("Invalid RGBA: " + r + ", " + g + "," + b + "," + a);
-            argb = ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | ((b & 0xFF) << 0);
-        }
-    }
 }

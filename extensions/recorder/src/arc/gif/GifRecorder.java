@@ -69,6 +69,7 @@ public class GifRecorder{
                             String time = "" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()).format(new Date());
                             exportDirectory.mkdirs();
 
+                            //linux-only
                             String args = Strings.format(
                             "/usr/bin/ffmpeg -r @ -s @x@ -f rawvideo -pix_fmt rgba -i - -frames:v @ -filter:v vflip,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse @/@.gif",
                             recordfps, (int)gifwidth, (int)gifheight, frames.size, exportDirectory.absolutePath(), time

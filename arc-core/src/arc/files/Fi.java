@@ -475,8 +475,8 @@ public class Fi{
     }
 
     /** {@see PixmapIO#writePNG(FileHandle, Pixmap)}*/
-    public void writePNG(Pixmap pixmap){
-        PixmapIO.writePNG(this, pixmap);
+    public void writePng(Pixmap pixmap){
+        PixmapIO.writePng(this, pixmap);
     }
 
     /**

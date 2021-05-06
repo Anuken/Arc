@@ -1,12 +1,10 @@
 package arc.packer;
 
 import arc.files.*;
+import arc.graphics.*;
 import arc.graphics.g2d.TextureAtlas.*;
 import arc.graphics.g2d.TextureAtlas.TextureAtlasData.*;
 
-import javax.imageio.*;
-import java.awt.geom.*;
-import java.awt.image.*;
 import java.io.*;
 
 /**
@@ -18,7 +16,6 @@ import java.io.*;
 public class TextureUnpacker{
     private static final String DEFAULT_OUTPUT_PATH = "output";
     private static final int NINEPATCH_PADDING = 1;
-    private static final String OUTPUT_TYPE = "png";
     private static final String HELP = "Usage: atlasFile [imageDir] [outputDir]";
     private static final String ATLAS_FILE_EXTENSION = ".aatls";
 
@@ -66,52 +63,40 @@ public class TextureUnpacker{
             // load the image file belonging to this page as a Buffered Image
             File file = page.textureFile.file();
             if(!file.exists()) throw new RuntimeException("Unable to find atlas image: " + file.getAbsolutePath());
-            BufferedImage img = null;
-            try{
-                img = ImageIO.read(file);
-            }catch(IOException e){
-                printExceptionAndExit(e);
-            }
+            Pixmap img = new Pixmap(new Fi(file));
             for(Region region : atlas.getRegions()){
                 if(!quiet) System.out.println(String.format("Processing image for %s: x[%s] y[%s] w[%s] h[%s], rotate[%s]",
                 region.name, region.left, region.top, region.width, region.height, region.rotate));
 
                 // check if the page this region is in is currently loaded in a Buffered Image
                 if(region.page == page){
-                    BufferedImage splitImage = null;
+                    Pixmap splitImage = null;
                     String extension = null;
 
                     // check if the region is a ninepatch or a normal image and delegate accordingly
                     if(region.splits == null){
                         splitImage = extractImage(img, region, outputDirFile, 0);
                         if(region.width != region.originalWidth || region.height != region.originalHeight){
-                            BufferedImage originalImg = new BufferedImage(region.originalWidth, region.originalHeight, img.getType());
-                            java.awt.Graphics2D g2 = originalImg.createGraphics();
-                            g2.drawImage(splitImage, (int)region.offsetX, (int)(region.originalHeight - region.height - region.offsetY), null);
-                            g2.dispose();
+                            Pixmap originalImg = new Pixmap(region.originalWidth, region.originalHeight);
+                            originalImg.draw(splitImage, (int)region.offsetX, (int)(region.originalHeight - region.height - region.offsetY));
                             splitImage = originalImg;
                         }
-                        extension = OUTPUT_TYPE;
+                        extension = ".png";
                     }else{
                         splitImage = extractNinePatch(img, region, outputDirFile);
-                        extension = String.format("9.%s", OUTPUT_TYPE);
+                        extension = "9.png";
                     }
 
                     // check if the parent directories of this image file exist and create them if not
                     File imgOutput = new File(outputDirFile,
-                    String.format("%s.%s",  region.name));
+                    region.name + extension);
                     File imgDir = imgOutput.getParentFile();
                     if(!imgDir.exists()){
                         if(!quiet) System.out.println(String.format("Creating directory: %s", imgDir.getPath()));
                         imgDir.mkdirs();
                     }
 
-                    // save the image
-                    try{
-                        ImageIO.write(splitImage, OUTPUT_TYPE, imgOutput);
-                    }catch(Exception e){
-                        printExceptionAndExit(e);
-                    }
+                    new Fi(imgOutput).writePng(splitImage);
                 }
             }
         }
@@ -125,30 +110,16 @@ public class TextureUnpacker{
      * @param padding padding (in pixels) to apply to the image
      * @return The extracted image
      */
-    private BufferedImage extractImage(BufferedImage page, Region region, File outputDirFile, int padding){
-        BufferedImage splitImage = null;
+    private Pixmap extractImage(Pixmap page, Region region, File outputDirFile, int padding){
+        Pixmap splitImage = null;
 
         // get the needed part of the page and rotate if needed
-        if(region.rotate){
-            BufferedImage srcImage = page.getSubimage(region.left, region.top, region.height, region.width);
-            splitImage = new BufferedImage(region.width, region.height, page.getType());
-
-            AffineTransform transform = new AffineTransform();
-            transform.rotate(Math.toRadians(90.0));
-            transform.translate(0, -region.width);
-            AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
-            op.filter(srcImage, splitImage);
-        }else{
-            splitImage = page.getSubimage(region.left, region.top, region.width, region.height);
-        }
+        splitImage = page.crop(region.left, region.top, region.width, region.height);
 
         // draw the image to a bigger one if padding is needed
         if(padding > 0){
-            BufferedImage paddedImage = new BufferedImage(splitImage.getWidth() + padding * 2, splitImage.getHeight() + padding * 2,
-            page.getType());
-            java.awt.Graphics2D g2 = paddedImage.createGraphics();
-            g2.drawImage(splitImage, padding, padding, null);
-            g2.dispose();
+            Pixmap paddedImage = new Pixmap(splitImage.getWidth() + padding * 2, splitImage.getHeight() + padding * 2);
+            paddedImage.draw(splitImage, padding, padding);
             return paddedImage;
         }else{
             return splitImage;
@@ -161,27 +132,24 @@ public class TextureUnpacker{
      * @param region The region to extract
      * @see <a href="http://developer.android.com/guide/topics/graphics/2d-graphics.html#nine-patch">ninepatch specification</a>
      */
-    private BufferedImage extractNinePatch(BufferedImage page, Region region, File outputDirFile){
-        BufferedImage splitImage = extractImage(page, region, outputDirFile, NINEPATCH_PADDING);
-        java.awt.Graphics2D g2 = splitImage.createGraphics();
-        g2.setColor(java.awt.Color.black);
+    private Pixmap extractNinePatch(Pixmap page, Region region, File outputDirFile){
+        Pixmap splitImage = extractImage(page, region, outputDirFile, NINEPATCH_PADDING);
 
         // Draw the four lines to save the ninepatch's padding and splits
         int startX = region.splits[0] + NINEPATCH_PADDING;
         int endX = region.width - region.splits[1] + NINEPATCH_PADDING - 1;
         int startY = region.splits[2] + NINEPATCH_PADDING;
         int endY = region.height - region.splits[3] + NINEPATCH_PADDING - 1;
-        if(endX >= startX) g2.drawLine(startX, 0, endX, 0);
-        if(endY >= startY) g2.drawLine(0, startY, 0, endY);
+        if(endX >= startX) splitImage.drawLine(startX, 0, endX, 0, Color.blackRgba);
+        if(endY >= startY) splitImage.drawLine(0, startY, 0, endY, Color.blackRgba);
         if(region.pads != null){
             int padStartX = region.pads[0] + NINEPATCH_PADDING;
             int padEndX = region.width - region.pads[1] + NINEPATCH_PADDING - 1;
             int padStartY = region.pads[2] + NINEPATCH_PADDING;
             int padEndY = region.height - region.pads[3] + NINEPATCH_PADDING - 1;
-            g2.drawLine(padStartX, splitImage.getHeight() - 1, padEndX, splitImage.getHeight() - 1);
-            g2.drawLine(splitImage.getWidth() - 1, padStartY, splitImage.getWidth() - 1, padEndY);
+            splitImage.drawLine(padStartX, splitImage.getHeight() - 1, padEndX, splitImage.getHeight() - 1, Color.blackRgba);
+            splitImage.drawLine(splitImage.getWidth() - 1, padStartY, splitImage.getWidth() - 1, padEndY, Color.blackRgba);
         }
-        g2.dispose();
 
         return splitImage;
     }

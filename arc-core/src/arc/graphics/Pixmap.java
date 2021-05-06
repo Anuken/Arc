@@ -124,13 +124,20 @@ public class Pixmap implements Disposable{
         return x >= 0 && y >= 0 && x < width && y < height;
     }
 
+    public Pixmap crop(int x, int y, int width, int height){
+        if(isDisposed()) throw new IllegalStateException("input is disposed.");
+        Pixmap pixmap = new Pixmap(width, height);
+        pixmap.draw(this, 0, 0, x, y, width, height);
+        return pixmap;
+    }
+
     /** @return a newly allocated pixmap, flipped vertically. */
     public Pixmap flipY(){
         Pixmap copy = new Pixmap(width, height);
 
         for(int x = 0; x < width; x++){
             for(int y = 0; y < height; y++){
-                copy.draw(x, height - 1 - y, getPixelRaw(x, y));
+                copy.draw(x, height - 1 - y, getRaw(x, y));
             }
         }
 
@@ -143,7 +150,7 @@ public class Pixmap implements Disposable{
 
         for(int x = 0; x < width; x++){
             for(int y = 0; y < height; y++){
-                copy.draw(width - 1 - x, y, getPixelRaw(x, y));
+                copy.draw(width - 1 - x, y, getRaw(x, y));
             }
         }
 
@@ -161,12 +168,12 @@ public class Pixmap implements Disposable{
 
         for(int x = 0; x < width; x++){
             for(int y = 0; y < height; y++){
-                if(empty(getPixelRaw(x, y))){
+                if(empty(getRaw(x, y))){
                     boolean found = false;
                     outer:
                     for(int dx = -thickness; dx <= thickness; dx++){
                         for(int dy = -thickness; dy <= thickness; dy++){
-                            if(Mathf.within(dx, dy, thickness) && !empty(getPixel(x + dx, y + dy))){
+                            if(Mathf.within(dx, dy, thickness) && !empty(get(x + dx, y + dy))){
                                 found = true;
                                 break outer;
                             }
@@ -289,9 +296,18 @@ public class Pixmap implements Disposable{
         draw(pixmap, 0, 0, pixmap.width, pixmap.height, x, y, pixmap.width, pixmap.height, false, blending);
     }
 
-    /**
-     * Draws an area from another Pixmap to this Pixmap.
-     */
+
+    /** Draws an area from another Pixmap to this Pixmap. */
+    public void draw(Pixmap pixmap, int x, int y, int width, int height){
+        draw(pixmap, x, y, width, height, false);
+    }
+
+    /** Draws an area from another Pixmap to this Pixmap. */
+    public void draw(Pixmap pixmap, int x, int y, int width, int height, boolean filter){
+        draw(pixmap, 0, 0, pixmap.width, pixmap.height, x, y, width, height, filter);
+    }
+
+    /** Draws an area from another Pixmap to this Pixmap. */
     public void draw(Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight){
         draw(pixmap, srcx, srcy, srcWidth, srcHeight, x, y, srcWidth, srcHeight);
     }
@@ -347,7 +363,7 @@ public class Pixmap implements Disposable{
                     for(sx = srcx, dx = dstx; sx < srcx + srcWidth; sx++, dx++){
                         if(sx < 0 || dx < 0) continue;
                         if(sx >= owidth || dx >= width) break;
-                        drawRaw(dx, dy, blend(pixmap.getPixelRaw(sx, sy), getPixelRaw(dx, dy)));
+                        drawRaw(dx, dy, blend(pixmap.getRaw(sx, sy), getRaw(dx, dy)));
                     }
                 }
             }else{
@@ -359,7 +375,7 @@ public class Pixmap implements Disposable{
                     for(sx = srcx, dx = dstx; sx < srcx + srcWidth; sx++, dx++){
                         if(sx < 0 || dx < 0) continue;
                         if(sx >= owidth || dx >= width) break;
-                        drawRaw(dx, dy, pixmap.getPixelRaw(sx, sy));
+                        drawRaw(dx, dy, pixmap.getRaw(sx, sy));
                     }
                 }
             }
@@ -426,7 +442,7 @@ public class Pixmap implements Disposable{
                         if(sx < 0 || dx < 0) continue;
                         if(sx >= owidth || dx >= width) break;
 
-                        drawRaw(dx, dy, pixmap.getPixelRaw(sx, sy));
+                        drawRaw(dx, dy, pixmap.getRaw(sx, sy));
                     }
                 }
             }
@@ -493,13 +509,18 @@ public class Pixmap implements Disposable{
     }
 
     /** @return The pixel color in RGBA8888 format, or 0 if out of bounds. */
-    public int getPixel(int x, int y){
+    public int get(int x, int y){
         return in(x, y) ? pixels.getInt((x + y * width) * 4) : 0;
     }
 
     /** @return The pixel color in RGBA8888 format. No bounds checks are done! */
-    public int getPixelRaw(int x, int y){
+    public int getRaw(int x, int y){
         return pixels.getInt((x + y * width) * 4);
+    }
+
+    /** @return The pixel alpha as a byte. No bounds checks are done! */
+    public int getA(int x, int y){
+        return pixels.get((x + y * width) * 4 + 3);
     }
 
     /** @return The width of the Pixmap in pixels. */

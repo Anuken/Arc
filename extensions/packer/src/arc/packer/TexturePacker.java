@@ -1,6 +1,7 @@
 package arc.packer;
 
 import arc.files.*;
+import arc.graphics.*;
 import arc.graphics.Pixmap.*;
 import arc.graphics.Texture.*;
 import arc.graphics.g2d.TextureAtlas.*;
@@ -10,10 +11,6 @@ import arc.util.*;
 import arc.util.io.*;
 import arc.util.serialization.*;
 
-import javax.imageio.*;
-import javax.imageio.stream.*;
-import java.awt.*;
-import java.awt.image.*;
 import java.io.*;
 import java.util.*;
 
@@ -25,10 +22,11 @@ public class TexturePacker{
     private final ImageProcessor imageProcessor;
     private final Seq<InputImage> inputImages = new Seq<>();
     private ProgressListener progress;
-    private Seq<Page> allPages = new Seq<>();
 
     /** @param rootDir See {@link #setRootDir(File)}. */
     public TexturePacker(File rootDir, Settings settings){
+        //TODO don't use this once the PNG loader is fixed
+        //ArcNativesLoader.load();
         this.settings = settings;
 
         if(settings.pot){
@@ -75,7 +73,7 @@ public class TexturePacker{
         inputImages.add(inputImage);
     }
 
-    public void addImage(BufferedImage image, String name){
+    public void addImage(Pixmap image, String name){
         InputImage inputImage = new InputImage();
         inputImage.image = image;
         inputImage.name = name;
@@ -101,9 +99,7 @@ public class TexturePacker{
             progress.start(1f / n);
 
             imageProcessor.setScale(settings.scale[i]);
-
-            if(settings.scaleResampling != null && settings.scaleResampling.length > i && settings.scaleResampling[i] != null)
-                imageProcessor.setResampling(settings.scaleResampling[i]);
+            imageProcessor.setResampling(settings.scaleResampling);
 
             progress.start(0.35f);
             progress.count = 0;
@@ -191,17 +187,16 @@ public class TexturePacker{
             new Fi(outputFile).parent().mkdirs();
             page.imageName = outputFile.getName();
 
-            BufferedImage canvas = new BufferedImage(width, height, getBufferedImageType(settings.format));
-            Graphics2D g = (Graphics2D)canvas.getGraphics();
+            Pixmap canvas = new Pixmap(width, height);
 
-            if(!settings.silent) System.out.println("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + outputFile);
+            if(!settings.silent) System.out.println("Writing " + canvas.width + "x" + canvas.height + ": " + outputFile);
 
             progress.start(1 / (float)pn);
             for(int r = 0, rn = page.outputRects.size; r < rn; r++){
                 Rect rect = page.outputRects.get(r);
-                BufferedImage image = rect.getImage(imageProcessor);
-                int iw = image.getWidth();
-                int ih = image.getHeight();
+                Pixmap image = rect.getImage(imageProcessor);
+                int iw = image.width;
+                int ih = image.height;
                 int rectX = page.x + rect.x, rectY = page.y + page.height - rect.y - (rect.height - settings.paddingY);
                 if(settings.duplicatePadding){
                     int amountX = settings.paddingX / 2;
@@ -210,33 +205,33 @@ public class TexturePacker{
                         // Copy corner pixels to fill corners of the padding.
                         for(int i = 1; i <= amountX; i++){
                             for(int j = 1; j <= amountY; j++){
-                                plot(canvas, rectX - j, rectY + iw - 1 + i, image.getRGB(0, 0));
-                                plot(canvas, rectX + ih - 1 + j, rectY + iw - 1 + i, image.getRGB(0, ih - 1));
-                                plot(canvas, rectX - j, rectY - i, image.getRGB(iw - 1, 0));
-                                plot(canvas, rectX + ih - 1 + j, rectY - i, image.getRGB(iw - 1, ih - 1));
+                                canvas.draw(rectX - j, rectY + iw - 1 + i, image.getRaw(0, 0));
+                                canvas.draw(rectX + ih - 1 + j, rectY + iw - 1 + i, image.getRaw(0, ih - 1));
+                                canvas.draw(rectX - j, rectY - i, image.getRaw(iw - 1, 0));
+                                canvas.draw(rectX + ih - 1 + j, rectY - i, image.getRaw(iw - 1, ih - 1));
                             }
                         }
                         // Copy edge pixels into padding.
                         for(int i = 1; i <= amountY; i++){
                             for(int j = 0; j < iw; j++){
-                                plot(canvas, rectX - i, rectY + iw - 1 - j, image.getRGB(j, 0));
-                                plot(canvas, rectX + ih - 1 + i, rectY + iw - 1 - j, image.getRGB(j, ih - 1));
+                                canvas.draw(rectX - i, rectY + iw - 1 - j, image.getRaw(j, 0));
+                                canvas.draw(rectX + ih - 1 + i, rectY + iw - 1 - j, image.getRaw(j, ih - 1));
                             }
                         }
                         for(int i = 1; i <= amountX; i++){
                             for(int j = 0; j < ih; j++){
-                                plot(canvas, rectX + j, rectY - i, image.getRGB(iw - 1, j));
-                                plot(canvas, rectX + j, rectY + iw - 1 + i, image.getRGB(0, j));
+                                canvas.draw(rectX + j, rectY - i, image.getRaw(iw - 1, j));
+                                canvas.draw(rectX + j, rectY + iw - 1 + i, image.getRaw(0, j));
                             }
                         }
                     }else{
                         // Copy corner pixels to fill corners of the padding.
                         for(int i = 1; i <= amountX; i++){
                             for(int j = 1; j <= amountY; j++){
-                                plot(canvas, rectX - i, rectY - j, image.getRGB(0, 0));
-                                plot(canvas, rectX - i, rectY + ih - 1 + j, image.getRGB(0, ih - 1));
-                                plot(canvas, rectX + iw - 1 + i, rectY - j, image.getRGB(iw - 1, 0));
-                                plot(canvas, rectX + iw - 1 + i, rectY + ih - 1 + j, image.getRGB(iw - 1, ih - 1));
+                                canvas.draw(rectX - i, rectY - j, image.getRaw(0, 0));
+                                canvas.draw(rectX - i, rectY + ih - 1 + j, image.getRaw(0, ih - 1));
+                                canvas.draw(rectX + iw - 1 + i, rectY - j, image.getRaw(iw - 1, 0));
+                                canvas.draw(rectX + iw - 1 + i, rectY + ih - 1 + j, image.getRaw(iw - 1, ih - 1));
                             }
                         }
                         // Copy edge pixels into padding.
@@ -252,48 +247,27 @@ public class TexturePacker{
                 }
                 copy(image, 0, 0, iw, ih, canvas, rectX, rectY, rect.rotated);
                 if(settings.debug){
-                    g.setColor(Color.magenta);
-                    g.drawRect(rectX, rectY, rect.width - settings.paddingX - 1, rect.height - settings.paddingY - 1);
+                    canvas.fillRect(rectX, rectY, rect.width - settings.paddingX - 1, rect.height - settings.paddingY - 1, Color.magenta.rgba());
                 }
 
                 if(progress.update(r + 1, rn)) return;
             }
             progress.end();
 
-            if(settings.bleed && !settings.premultiplyAlpha
-            && !(settings.outputFormat.equalsIgnoreCase("jpg") || settings.outputFormat.equalsIgnoreCase("jpeg"))){
+            if(settings.bleed){
                 canvas = new ColorBleedEffect().processImage(canvas, settings.bleedIterations);
-                g = (Graphics2D)canvas.getGraphics();
             }
 
             if(settings.debug){
-                g.setColor(Color.magenta);
-                g.drawRect(0, 0, width - 1, height - 1);
+                canvas.fillRect(0, 0, width - 1, height - 1, Color.magenta.rgba());
             }
 
-            ImageOutputStream ios = null;
-            try{
-                if(settings.outputFormat.equalsIgnoreCase("jpg") || settings.outputFormat.equalsIgnoreCase("jpeg")){
-                    BufferedImage newImage = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
-                    newImage.getGraphics().drawImage(canvas, 0, 0, null);
-                    canvas = newImage;
-
-                    Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
-                    ImageWriter writer = writers.next();
-                    ImageWriteParam param = writer.getDefaultWriteParam();
-                    param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-                    param.setCompressionQuality(settings.jpegQuality);
-                    ios = ImageIO.createImageOutputStream(outputFile);
-                    writer.setOutput(ios);
-                    writer.write(null, new IIOImage(canvas, null, null), param);
-                }else{
-                    if(settings.premultiplyAlpha) canvas.getColorModel().coerceData(canvas.getRaster(), true);
-                    ImageIO.write(canvas, "png", outputFile);
-                }
-            }catch(IOException ex){
-                throw new RuntimeException("Error writing file: " + outputFile, ex);
-            }finally{
-                Streams.close(ios);
+            if(settings.outputFormat.equalsIgnoreCase("apix")){
+                PixmapIO.writeApix(new Fi(outputFile), canvas);
+            }else if(settings.outputFormat.equalsIgnoreCase("png")){
+                PixmapIO.writePng(new Fi(outputFile), canvas);
+            }else{
+                throw new ArcRuntimeException("Unsupported image format: '" + settings.outputFormat + "'. Must be one of: apix, png");
             }
 
             if(progress.update(p + 1, pn)) return;
@@ -301,19 +275,15 @@ public class TexturePacker{
         }
     }
 
-    private static void plot(BufferedImage dst, int x, int y, int argb){
-        if(0 <= x && x < dst.getWidth() && 0 <= y && y < dst.getHeight()) dst.setRGB(x, y, argb);
-    }
-
-    private static void copy(BufferedImage src, int x, int y, int w, int h, BufferedImage dst, int dx, int dy, boolean rotated){
+    private static void copy(Pixmap src, int x, int y, int w, int h, Pixmap dst, int dx, int dy, boolean rotated){
         if(rotated){
             for(int i = 0; i < w; i++)
                 for(int j = 0; j < h; j++)
-                    plot(dst, dx + j, dy + w - i - 1, src.getRGB(x + i, y + j));
+                    dst.draw(dx + j, dy + w - i - 1, src.getRaw(x + i, y + j));
         }else{
             for(int i = 0; i < w; i++)
                 for(int j = 0; j < h; j++)
-                    plot(dst, dx + i, dy + j, src.getRGB(x + i, y + j));
+                    dst.draw(dx + i, dy + j, src.getRaw(x + i, y + j));
         }
     }
 
@@ -404,21 +374,6 @@ public class TexturePacker{
         }
     }
 
-    private int getBufferedImageType(Format format){
-        switch(settings.format){
-            case rgba8888:
-            case rgba4444:
-                return BufferedImage.TYPE_INT_ARGB;
-            case rgb565:
-            case rgb888:
-                return BufferedImage.TYPE_INT_RGB;
-            case alpha:
-                return BufferedImage.TYPE_BYTE_GRAY;
-            default:
-                throw new RuntimeException("Unsupported format: " + settings.format);
-        }
-    }
-
     /** @param progressListener May be null. */
     public void setProgressListener(ProgressListener progressListener){
         this.progress = progressListener;
@@ -485,41 +440,33 @@ public class TexturePacker{
         public boolean canRotate = true;
 
         private boolean isPatch;
-        private BufferedImage image;
-        private File file;
+        private Pixmap pixmap;
+        private Fi file;
         int score1, score2;
 
-        Rect(BufferedImage source, int left, int top, int newWidth, int newHeight, boolean isPatch){
-            image = new BufferedImage(source.getColorModel(),
-            source.getRaster().createWritableChild(left, top, newWidth, newHeight, 0, 0, null),
-            source.getColorModel().isAlphaPremultiplied(), null);
+        Rect(Pixmap source, int left, int top, int newWidth, int newHeight, boolean isPatch){
+            this.pixmap = source.crop(left, top, newWidth, newHeight);
             offsetX = left;
             offsetY = top;
             regionWidth = newWidth;
             regionHeight = newHeight;
-            originalWidth = source.getWidth();
-            originalHeight = source.getHeight();
+            originalWidth = source.width;
+            originalHeight = source.height;
             width = newWidth;
             height = newHeight;
             this.isPatch = isPatch;
         }
 
         /** Clears the image for this rect, which will be loaded from the specified file by {@link #getImage(ImageProcessor)}. */
-        public void unloadImage(File file){
+        public void unloadImage(Fi file){
             this.file = file;
-            image = null;
+            pixmap = null;
         }
 
-        public BufferedImage getImage(ImageProcessor imageProcessor){
-            if(image != null) return image;
+        public Pixmap getImage(ImageProcessor imageProcessor){
+            if(pixmap != null) return pixmap;
 
-            BufferedImage image;
-            try{
-                image = ImageIO.read(file);
-            }catch(IOException ex){
-                throw new RuntimeException("Error reading image: " + file, ex);
-            }
-            if(image == null) throw new RuntimeException("Unable to read image: " + file);
+            Pixmap image = new Pixmap(file);
             String name = this.name;
             if(isPatch) name += ".9";
             return imageProcessor.processImage(image, name).getImage(null);
@@ -537,7 +484,7 @@ public class TexturePacker{
 
         void set(Rect rect){
             name = rect.name;
-            image = rect.image;
+            pixmap = rect.pixmap;
             offsetX = rect.offsetX;
             offsetY = rect.offsetY;
             regionWidth = rect.regionWidth;
@@ -583,18 +530,6 @@ public class TexturePacker{
 
         public static String getAtlasName(String name, boolean flattenPaths){
             return flattenPaths ? new Fi(name).name() : name;
-        }
-    }
-
-    public enum Resampling{
-        nearest(RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR),
-        bilinear(RenderingHints.VALUE_INTERPOLATION_BILINEAR),
-        bicubic(RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-
-        final Object value;
-
-        Resampling(Object value){
-            this.value = value;
         }
     }
 
@@ -693,7 +628,7 @@ public class TexturePacker{
     static final class InputImage{
         File file;
         String rootPath, name;
-        BufferedImage image;
+        Pixmap image;
     }
 
     public static abstract class ProgressListener{
@@ -777,7 +712,7 @@ public class TexturePacker{
     }
 
     /** @author Nathan Sweet */
-    public static class Settings{
+    public static class Settings implements Cloneable{
         public boolean pot = true;
         public boolean multipleOfFour;
         public int paddingX = 2, paddingY = 2;
@@ -794,7 +729,6 @@ public class TexturePacker{
         public Format format = Format.rgba8888;
         public boolean alias = true;
         public String outputFormat = "png";
-        public float jpegQuality = 0.9f;
         public boolean ignoreBlankImages = true;
         public boolean fast;
         public boolean debug;
@@ -802,7 +736,6 @@ public class TexturePacker{
         public boolean combineSubdirectories;
         public boolean ignore;
         public boolean flattenPaths;
-        public boolean premultiplyAlpha;
         public boolean useIndexes = true;
         public boolean bleed = true;
         public int bleedIterations = 2;
@@ -810,59 +743,15 @@ public class TexturePacker{
         public boolean grid;
         public float[] scale = {1};
         public String[] scaleSuffix = {""};
-        public Resampling[] scaleResampling = {Resampling.bicubic};
+        public boolean scaleResampling = true;
         public String atlasExtension = ".aatls";
 
-        public Settings(){
-        }
-
-        /** @see #set(Settings) */
-        public Settings(Settings settings){
-            set(settings);
-        }
-
-        /** Copies values from another instance to the current one */
-        public void set(Settings settings){
-            fast = settings.fast;
-            rotation = settings.rotation;
-            pot = settings.pot;
-            multipleOfFour = settings.multipleOfFour;
-            minWidth = settings.minWidth;
-            minHeight = settings.minHeight;
-            maxWidth = settings.maxWidth;
-            maxHeight = settings.maxHeight;
-            paddingX = settings.paddingX;
-            paddingY = settings.paddingY;
-            edgePadding = settings.edgePadding;
-            duplicatePadding = settings.duplicatePadding;
-            alphaThreshold = settings.alphaThreshold;
-            ignoreBlankImages = settings.ignoreBlankImages;
-            stripWhitespaceX = settings.stripWhitespaceX;
-            stripWhitespaceY = settings.stripWhitespaceY;
-            alias = settings.alias;
-            format = settings.format;
-            jpegQuality = settings.jpegQuality;
-            outputFormat = settings.outputFormat;
-            filterMin = settings.filterMin;
-            filterMag = settings.filterMag;
-            wrapX = settings.wrapX;
-            wrapY = settings.wrapY;
-            debug = settings.debug;
-            silent = settings.silent;
-            combineSubdirectories = settings.combineSubdirectories;
-            ignore = settings.ignore;
-            flattenPaths = settings.flattenPaths;
-            premultiplyAlpha = settings.premultiplyAlpha;
-            square = settings.square;
-            useIndexes = settings.useIndexes;
-            bleed = settings.bleed;
-            bleedIterations = settings.bleedIterations;
-            limitMemory = settings.limitMemory;
-            grid = settings.grid;
-            scale = Arrays.copyOf(settings.scale, settings.scale.length);
-            scaleSuffix = Arrays.copyOf(settings.scaleSuffix, settings.scaleSuffix.length);
-            scaleResampling = Arrays.copyOf(settings.scaleResampling, settings.scaleResampling.length);
-            atlasExtension = settings.atlasExtension;
+        public Settings copy(){
+            try{
+                return (Settings)clone();
+            }catch(Exception e){
+                throw new RuntimeException("java is a disaster", e);
+            }
         }
 
         public String getScaledPackFileName(String packFileName, int scaleIndex){

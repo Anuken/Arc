@@ -56,7 +56,7 @@ public class PixmapIO{
      * Writes the pixmap as a PNG with compression. See {@link PngWriter} to configure the compression level, more efficiently flip the
      * pixmap vertically, and to write out multiple PNGs with minimal allocation.
      */
-    public static void writePNG(Fi file, Pixmap pixmap){
+    public static void writePng(Fi file, Pixmap pixmap){
         try{
             PngWriter writer = new PngWriter((int)(pixmap.width * pixmap.height * 1.5f)); // Guess at deflated size.
             try{

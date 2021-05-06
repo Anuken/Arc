@@ -578,7 +578,7 @@ public class PixmapPacker implements Disposable{
         for(Page page : pages){
             if(page.rects.size > 0){
                 Fi pageFile = file.sibling(file.nameWithoutExtension() + "_" + (++index) + ".PNG");
-                PixmapIO.writePNG(pageFile, page.image);
+                PixmapIO.writePng(pageFile, page.image);
 
                 writer.write("\n");
                 writer.write(pageFile.name() + "\n");

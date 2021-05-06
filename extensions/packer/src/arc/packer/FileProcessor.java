@@ -9,7 +9,7 @@ import java.util.regex.*;
 
 /**
  * Collects files recursively, filtering by file name. Callbacks are provided to process files and the results are collected,
- * either {@link #processFile(Entry)} or {@link #processDir(Entry, ArrayList)} can be overridden, or both. The entries provided to
+ * either {@link #processFile(Entry)} or {@link #processDir(Entry, Seq)} can be overridden, or both. The entries provided to
  * the callbacks have the original file, the output directory, and the output file. If {@link #setFlattenOutput(boolean)} is
  * false, the output will match the directory structure of the input.
  * @author Nathan Sweet
@@ -19,7 +19,7 @@ public class FileProcessor{
     Comparator<File> comparator = Structs.comparing(File::getName);
     Seq<Pattern> inputRegex = new Seq<>();
     String outputSuffix;
-    ArrayList<Entry> outputFiles = new ArrayList<>();
+    Seq<Entry> outputFiles = new Seq<>();
     boolean recursive = true;
     boolean flattenOutput;
 
@@ -43,7 +43,7 @@ public class FileProcessor{
         return this;
     }
 
-    /** Sets the comparator for {@link #processDir(Entry, ArrayList)}. By default the files are sorted by alpha. */
+    /** Sets the comparator for {@link #processDir(Entry, Seq)}. By default the files are sorted by alpha. */
     public FileProcessor setComparator(Comparator<File> comparator){
         this.comparator = comparator;
         return this;
@@ -83,7 +83,7 @@ public class FileProcessor{
      * @param outputRoot May be null.
      * @see #process(File, File)
      */
-    public ArrayList<Entry> process(String inputFileOrDir, String outputRoot) throws Exception{
+    public Seq<Entry> process(String inputFileOrDir, String outputRoot) throws Exception{
         return process(new File(inputFileOrDir), outputRoot == null ? null : new File(outputRoot));
     }
 
@@ -92,7 +92,7 @@ public class FileProcessor{
      * @param outputRoot May be null if there is no output from processing the files.
      * @return the processed files added with {@link #addProcessedFile(Entry)}.
      */
-    public ArrayList<Entry> process(File inputFileOrDir, File outputRoot) throws Exception{
+    public Seq<Entry> process(File inputFileOrDir, File outputRoot) throws Exception{
         if(!inputFileOrDir.exists())
             throw new IllegalArgumentException("Input file does not exist: " + inputFileOrDir.getAbsolutePath());
         if(inputFileOrDir.isFile())
@@ -106,17 +106,17 @@ public class FileProcessor{
      * @param outputRoot May be null if there is no output from processing the files.
      * @return the processed files added with {@link #addProcessedFile(Entry)}.
      */
-    public ArrayList<Entry> process(File[] files, File outputRoot) throws Exception{
+    public Seq<Entry> process(File[] files, File outputRoot) throws Exception{
         if(outputRoot == null) outputRoot = new File("");
         outputFiles.clear();
 
-        LinkedHashMap<File, ArrayList<Entry>> dirToEntries = new LinkedHashMap();
+        LinkedHashMap<File, Seq<Entry>> dirToEntries = new LinkedHashMap();
         process(files, outputRoot, outputRoot, dirToEntries, 0);
 
-        ArrayList<Entry> allEntries = new ArrayList();
-        for(java.util.Map.Entry<File, ArrayList<Entry>> mapEntry : dirToEntries.entrySet()){
-            ArrayList<Entry> dirEntries = mapEntry.getValue();
-            if(comparator != null) Collections.sort(dirEntries, entryComparator);
+        Seq<Entry> allEntries = new Seq();
+        for(java.util.Map.Entry<File, Seq<Entry>> mapEntry : dirToEntries.entrySet()){
+            Seq<Entry> dirEntries = mapEntry.getValue();
+            if(comparator != null) dirEntries.sort(entryComparator);
 
             File inputDir = mapEntry.getKey();
             File newOutputDir = null;
@@ -141,7 +141,7 @@ public class FileProcessor{
             allEntries.addAll(dirEntries);
         }
 
-        if(comparator != null) Collections.sort(allEntries, entryComparator);
+        if(comparator != null) allEntries.sort(entryComparator);
         for(Entry entry : allEntries){
             try{
                 processFile(entry);
@@ -153,14 +153,14 @@ public class FileProcessor{
         return outputFiles;
     }
 
-    private void process(File[] files, File outputRoot, File outputDir, LinkedHashMap<File, ArrayList<Entry>> dirToEntries,
+    private void process(File[] files, File outputRoot, File outputDir, LinkedHashMap<File, Seq<Entry>> dirToEntries,
                          int depth){
         // Store empty entries for every directory.
         for(File file : files){
             File dir = file.getParentFile();
-            ArrayList<Entry> entries = dirToEntries.get(dir);
+            Seq<Entry> entries = dirToEntries.get(dir);
             if(entries == null){
-                entries = new ArrayList();
+                entries = new Seq<>();
                 dirToEntries.put(dir, entries);
             }
         }
@@ -212,11 +212,11 @@ public class FileProcessor{
      * Called for each input directory. The files will be {@link #setComparator(Comparator) sorted}. The specified files list can
      * be modified to change which files are processed.
      */
-    protected void processDir(Entry entryDir, ArrayList<Entry> files) throws Exception{
+    protected void processDir(Entry entryDir, Seq<Entry> files) throws Exception{
     }
 
     /**
-     * This method should be called by {@link #processFile(Entry)} or {@link #processDir(Entry, ArrayList)} if the return value of
+     * This method should be called by {@link #processFile(Entry)} or {@link #processDir(Entry, Seq)} if the return value of
      * {@link #process(File, File)} or {@link #process(File[], File)} should return all the processed files.
      */
     protected void addProcessedFile(Entry entry){

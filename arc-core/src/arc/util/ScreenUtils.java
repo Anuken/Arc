@@ -22,7 +22,7 @@ public final class ScreenUtils{
 
     public static void saveScreenshot(Fi file, int x, int y, int width, int height){
         Pixmap pixmap = getFrameBufferPixmap(x, y, width, height, true);
-        PixmapIO.writePNG(file, pixmap);
+        PixmapIO.writePng(file, pixmap);
         pixmap.dispose();
     }
 

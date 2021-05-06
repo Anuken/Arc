@@ -1,11 +1,10 @@
 package arc.packer;
 
+import arc.files.*;
+import arc.graphics.*;
 import arc.packer.TexturePacker.*;
 import arc.struct.*;
 
-import javax.imageio.*;
-import java.awt.*;
-import java.awt.image.*;
 import java.io.*;
 import java.math.*;
 import java.security.*;
@@ -13,14 +12,14 @@ import java.util.*;
 import java.util.regex.*;
 
 public class ImageProcessor{
-    private static final BufferedImage emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
+    private static final Pixmap emptyImage = new Pixmap(1, 1);
     private static Pattern indexPattern = Pattern.compile("(.+)_(\\d+)$");
 
     private final Settings settings;
     private final HashMap<String, Rect> crcs = new HashMap<>();
     private final Seq<Rect> rects = new Seq<>();
     private float scale = 1;
-    private Resampling resampling = Resampling.bicubic;
+    private boolean resampling;
 
     public ImageProcessor(Settings settings){
         this.settings = settings;
@@ -31,13 +30,7 @@ public class ImageProcessor{
      * @param rootPath Used to strip the root directory prefix from image file names, can be null.
      */
     public void addImage(File file, String rootPath){
-        BufferedImage image;
-        try{
-            image = ImageIO.read(file);
-        }catch(IOException ex){
-            throw new RuntimeException("Error reading image: " + file, ex);
-        }
-        if(image == null) throw new RuntimeException("Unable to read image: " + file);
+        Pixmap image = new Pixmap(new Fi(file));
 
         String name = file.getAbsolutePath().replace('\\', '/');
 
@@ -52,14 +45,14 @@ public class ImageProcessor{
         if(dotIndex != -1) name = name.substring(0, dotIndex);
 
         Rect rect = addImage(image, name);
-        if(rect != null && settings.limitMemory) rect.unloadImage(file);
+        if(rect != null && settings.limitMemory) rect.unloadImage(new Fi(file));
     }
 
     /**
      * The image will be kept in-memory during packing.
      * @see #addImage(File, String)
      */
-    public Rect addImage(BufferedImage image, String name){
+    public Rect addImage(Pixmap image, String name){
         Rect rect = processImage(image, name);
 
         if(rect == null){
@@ -90,7 +83,7 @@ public class ImageProcessor{
         this.scale = scale;
     }
 
-    public void setResampling(Resampling resampling){
+    public void setResampling(boolean resampling){
         this.resampling = resampling;
     }
 
@@ -104,20 +97,14 @@ public class ImageProcessor{
     }
 
     /** Returns a rect for the image describing the texture region to be packed, or null if the image should not be packed. */
-    Rect processImage(BufferedImage image, String name){
+    Rect processImage(Pixmap image, String name){
         if(scale <= 0) throw new IllegalArgumentException("scale cannot be <= 0: " + scale);
 
-        int width = image.getWidth(), height = image.getHeight();
-
-        if(image.getType() != BufferedImage.TYPE_4BYTE_ABGR){
-            BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-            newImage.getGraphics().drawImage(image, 0, 0, null);
-            image = newImage;
-        }
+        int width = image.width, height = image.height;
 
         boolean isPatch = name.endsWith(".9");
         int[] splits = null, pads = null;
-        Rect rect = null;
+        Rect rect;
         if(isPatch){
             // Strip ".9" from file name, read ninepatch split pixels, and strip ninepatch split pixels.
             name = name.substring(0, name.length() - 2);
@@ -126,25 +113,17 @@ public class ImageProcessor{
             // Strip split pixels.
             width -= 2;
             height -= 2;
-            BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-            newImage.getGraphics().drawImage(image, 0, 0, width, height, 1, 1, width + 1, height + 1, null);
+            Pixmap newImage = new Pixmap(width, height);
+            newImage.draw(image, 0, 0, width, height, 1, 1, width + 1, height + 1);
             image = newImage;
         }
 
         // Scale image.
         if(scale != 1){
-            int originalWidth = width, originalHeight = height;
             width = Math.max(1, Math.round(width * scale));
             height = Math.max(1, Math.round(height * scale));
-            BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-            if(scale < 1){
-                newImage.getGraphics().drawImage(image.getScaledInstance(width, height, Image.SCALE_AREA_AVERAGING), 0, 0, null);
-            }else{
-                Graphics2D g = (Graphics2D)newImage.getGraphics();
-                g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-                g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, resampling.value);
-                g.drawImage(image, 0, 0, width, height, null);
-            }
+            Pixmap newImage = new Pixmap(width, height);
+            newImage.draw(image, 0, 0, width, height, resampling);
             image = newImage;
         }
 
@@ -175,29 +154,26 @@ public class ImageProcessor{
     }
 
     /** Strips whitespace and returns the rect, or null if the image should be ignored. */
-    private Rect stripWhitespace(BufferedImage source){
-        WritableRaster alphaRaster = source.getAlphaRaster();
-        if(alphaRaster == null || (!settings.stripWhitespaceX && !settings.stripWhitespaceY))
-            return new Rect(source, 0, 0, source.getWidth(), source.getHeight(), false);
-        final byte[] a = new byte[1];
+    private Rect stripWhitespace(Pixmap source){
+        if((!settings.stripWhitespaceX && !settings.stripWhitespaceY))
+            return new Rect(source, 0, 0, source.width, source.height, false);
+
         int top = 0;
-        int bottom = source.getHeight();
+        int bottom = source.height;
         if(settings.stripWhitespaceY){
             outer:
-            for(int y = 0; y < source.getHeight(); y++){
-                for(int x = 0; x < source.getWidth(); x++){
-                    alphaRaster.getDataElements(x, y, a);
-                    int alpha = a[0];
+            for(int y = 0; y < source.height; y++){
+                for(int x = 0; x < source.width; x++){
+                    int alpha = source.getA(x, y);
                     if(alpha < 0) alpha += 256;
                     if(alpha > settings.alphaThreshold) break outer;
                 }
                 top++;
             }
             outer:
-            for(int y = source.getHeight(); --y >= top; ){
-                for(int x = 0; x < source.getWidth(); x++){
-                    alphaRaster.getDataElements(x, y, a);
-                    int alpha = a[0];
+            for(int y = source.height; --y >= top; ){
+                for(int x = 0; x < source.width; x++){
+                    int alpha = source.getA(x, y);
                     if(alpha < 0) alpha += 256;
                     if(alpha > settings.alphaThreshold) break outer;
                 }
@@ -206,27 +182,25 @@ public class ImageProcessor{
             // Leave 1px so nothing is copied into padding.
             if(settings.duplicatePadding){
                 if(top > 0) top--;
-                if(bottom < source.getHeight()) bottom++;
+                if(bottom < source.height) bottom++;
             }
         }
         int left = 0;
-        int right = source.getWidth();
+        int right = source.width;
         if(settings.stripWhitespaceX){
             outer:
-            for(int x = 0; x < source.getWidth(); x++){
+            for(int x = 0; x < source.width; x++){
                 for(int y = top; y < bottom; y++){
-                    alphaRaster.getDataElements(x, y, a);
-                    int alpha = a[0];
+                    int alpha = source.getA(x, y);
                     if(alpha < 0) alpha += 256;
                     if(alpha > settings.alphaThreshold) break outer;
                 }
                 left++;
             }
             outer:
-            for(int x = source.getWidth(); --x >= left; ){
+            for(int x = source.width; --x >= left; ){
                 for(int y = top; y < bottom; y++){
-                    alphaRaster.getDataElements(x, y, a);
-                    int alpha = a[0];
+                    int alpha = source.getA(x, y);
                     if(alpha < 0) alpha += 256;
                     if(alpha > settings.alphaThreshold) break outer;
                 }
@@ -235,7 +209,7 @@ public class ImageProcessor{
             // Leave 1px so nothing is copied into padding.
             if(settings.duplicatePadding){
                 if(left > 0) left--;
-                if(right < source.getWidth()) right++;
+                if(right < source.width) right++;
             }
         }
         int newWidth = right - left;
@@ -249,26 +223,19 @@ public class ImageProcessor{
         return new Rect(source, left, top, newWidth, newHeight, false);
     }
 
-    private static String splitError(int x, int y, int[] rgba, String name){
-        throw new RuntimeException("Invalid " + name + " ninepatch split pixel at " + x + ", " + y + ", rgba: " + rgba[0] + ", "
-        + rgba[1] + ", " + rgba[2] + ", " + rgba[3]);
-    }
-
     /**
      * Returns the splits, or null if the image had no splits or the splits were only a single region. Splits are an int[4] that
      * has left, right, top, bottom.
      */
-    private int[] getSplits(BufferedImage image, String name){
-        WritableRaster raster = image.getRaster();
-
-        int startX = getSplitPoint(raster, name, 1, 0, true, true);
-        int endX = getSplitPoint(raster, name, startX, 0, false, true);
-        int startY = getSplitPoint(raster, name, 0, 1, true, false);
-        int endY = getSplitPoint(raster, name, 0, startY, false, false);
+    private int[] getSplits(Pixmap image, String name){
+        int startX = getSplitPoint(image, name, 1, 0, true, true);
+        int endX = getSplitPoint(image, name, startX, 0, false, true);
+        int startY = getSplitPoint(image, name, 0, 1, true, false);
+        int endY = getSplitPoint(image, name, 0, startY, false, false);
 
         // Ensure pixels after the end are not invalid.
-        getSplitPoint(raster, name, endX + 1, 0, true, true);
-        getSplitPoint(raster, name, 0, endY + 1, true, false);
+        getSplitPoint(image, name, endX + 1, 0, true, true);
+        getSplitPoint(image, name, 0, endY + 1, true, false);
 
         // No splits, or all splits.
         if(startX == 0 && endX == 0 && startY == 0 && endY == 0) return null;
@@ -276,17 +243,17 @@ public class ImageProcessor{
         // Subtraction here is because the coordinates were computed before the 1px border was stripped.
         if(startX != 0){
             startX--;
-            endX = raster.getWidth() - 2 - (endX - 1);
+            endX = image.getWidth() - 2 - (endX - 1);
         }else{
             // If no start point was ever found, we assume full stretch.
-            endX = raster.getWidth() - 2;
+            endX = image.getWidth() - 2;
         }
         if(startY != 0){
             startY--;
-            endY = raster.getHeight() - 2 - (endY - 1);
+            endY = image.getHeight() - 2 - (endY - 1);
         }else{
             // If no start point was ever found, we assume full stretch.
-            endY = raster.getHeight() - 2;
+            endY = image.getHeight() - 2;
         }
 
         if(scale != 1){
@@ -303,24 +270,22 @@ public class ImageProcessor{
      * Returns the pads, or null if the image had no pads or the pads match the splits. Pads are an int[4] that has left, right,
      * top, bottom.
      */
-    private int[] getPads(BufferedImage image, String name, int[] splits){
-        WritableRaster raster = image.getRaster();
+    private int[] getPads(Pixmap image, String name, int[] splits){
+        int bottom = image.height - 1;
+        int right = image.width - 1;
 
-        int bottom = raster.getHeight() - 1;
-        int right = raster.getWidth() - 1;
-
-        int startX = getSplitPoint(raster, name, 1, bottom, true, true);
-        int startY = getSplitPoint(raster, name, right, 1, true, false);
+        int startX = getSplitPoint(image, name, 1, bottom, true, true);
+        int startY = getSplitPoint(image, name, right, 1, true, false);
 
         // No need to hunt for the end if a start was never found.
         int endX = 0;
         int endY = 0;
-        if(startX != 0) endX = getSplitPoint(raster, name, startX + 1, bottom, false, true);
-        if(startY != 0) endY = getSplitPoint(raster, name, right, startY + 1, false, false);
+        if(startX != 0) endX = getSplitPoint(image, name, startX + 1, bottom, false, true);
+        if(startY != 0) endY = getSplitPoint(image, name, right, startY + 1, false, false);
 
         // Ensure pixels after the end are not invalid.
-        getSplitPoint(raster, name, endX + 1, bottom, true, true);
-        getSplitPoint(raster, name, right, endY + 1, true, false);
+        getSplitPoint(image, name, endX + 1, bottom, true, true);
+        getSplitPoint(image, name, right, endY + 1, true, false);
 
         // No pads.
         if(startX == 0 && endX == 0 && startY == 0 && endY == 0){
@@ -334,10 +299,10 @@ public class ImageProcessor{
         }else{
             if(startX > 0){
                 startX--;
-                endX = raster.getWidth() - 2 - (endX - 1);
+                endX = image.getWidth() - 2 - (endX - 1);
             }else{
                 // If no start point was ever found, we assume full stretch.
-                endX = raster.getWidth() - 2;
+                endX = image.getWidth() - 2;
             }
         }
         if(startY == 0 && endY == 0){
@@ -346,10 +311,10 @@ public class ImageProcessor{
         }else{
             if(startY > 0){
                 startY--;
-                endY = raster.getHeight() - 2 - (endY - 1);
+                endY = image.getHeight() - 2 - (endY - 1);
             }else{
                 // If no start point was ever found, we assume full stretch.
-                endY = raster.getHeight() - 2;
+                endY = image.getHeight() - 2;
             }
         }
 
@@ -375,12 +340,9 @@ public class ImageProcessor{
      * pixel if startPoint is false. Returns 0 if none found, as 0 is considered an invalid split point being in the outer border
      * which will be stripped.
      */
-    private static int getSplitPoint(WritableRaster raster, String name, int startX, int startY, boolean startPoint,
-                                     boolean xAxis){
-        int[] rgba = new int[4];
-
+    private static int getSplitPoint(Pixmap image, String name, int startX, int startY, boolean startPoint, boolean xAxis){
         int next = xAxis ? startX : startY;
-        int end = xAxis ? raster.getWidth() : raster.getHeight();
+        int end = xAxis ? image.width : image.height;
         int breakA = startPoint ? 255 : 0;
 
         int x = startX;
@@ -391,10 +353,12 @@ public class ImageProcessor{
             else
                 y = next;
 
-            raster.getPixel(x, y, rgba);
-            if(rgba[3] == breakA) return next;
+            int rgba = image.get(x, y), r = Color.ri(rgba), g = Color.gi(rgba), b = Color.bi(rgba), a = Color.ai(rgba);
+            if(a == breakA) return next;
 
-            if(!startPoint && (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255)) splitError(x, y, rgba, name);
+            if(!startPoint && (r != 0 || g != 0 || b != 0 || a != 255)){
+                throw new RuntimeException("Invalid " + name + " ninepatch split pixel at " + x + ", " + y + ", rgba: " + r + ", " + g + ", " + b +  ", " + a);
+            }
 
             next++;
         }
@@ -402,26 +366,17 @@ public class ImageProcessor{
         return 0;
     }
 
-    private static String hash(BufferedImage image){
+    private static String hash(Pixmap image){
         try{
             MessageDigest digest = MessageDigest.getInstance("SHA1");
 
-            // Ensure image is the correct format.
-            int width = image.getWidth();
-            int height = image.getHeight();
-            if(image.getType() != BufferedImage.TYPE_INT_ARGB){
-                BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-                newImage.getGraphics().drawImage(image, 0, 0, null);
-                image = newImage;
-            }
+            int width = image.width;
+            int height = image.height;
 
-            WritableRaster raster = image.getRaster();
-            int[] pixels = new int[width];
-            for(int y = 0; y < height; y++){
-                raster.getDataElements(0, y, width, 1, pixels);
-                for(int x = 0; x < width; x++)
-                    hash(digest, pixels[x]);
-            }
+            byte[] bytes = new byte[image.getPixels().capacity()];
+            image.getPixels().position(0);
+            image.getPixels().get(bytes);
+            digest.update(bytes);
 
             hash(digest, width);
             hash(digest, height);
