@@ -56,7 +56,7 @@ public class Pixmaps{
             tmp.clear();
             Geometry.circle(x, y, pixmap.width, pixmap.height, radius, (cx, cy) -> tmp.add(input.getPixel(cx, cy)));
             tmp.sort();
-            pixmap.draw(x, y, tmp.get(Mathf.clamp((int)(tmp.size * percentile), 0, tmp.size - 1)));
+            pixmap.drawRaw(x, y, tmp.get(Mathf.clamp((int)(tmp.size * percentile), 0, tmp.size - 1)));
         });
         return pixmap;
     }

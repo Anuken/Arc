@@ -62,7 +62,7 @@ public class Pixmap implements Disposable{
     }
 
     public Pixmap(String file){
-        this(Core.files.internal(file));
+        this(Core.files == null ? Fi.get(file) : Core.files.internal(file));
     }
 
     /**
@@ -85,79 +85,6 @@ public class Pixmap implements Disposable{
         this.handle = -1;
 
         buffer.position(0).limit(buffer.capacity());
-    }
-
-    /** Loads a pixmap from bytes and returns [address, width, height] in nativeData. */
-    static native ByteBuffer loadJni(long[] nativeData, byte[] buffer, int offset, int len); /*MANUAL
-        const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);
-
-        int32_t width, height, format;
-
-        //always use STBI_rgb_alpha (4) as the format, since that's the only thing pixmaps support
-        //RGB images are generally uncommon and the memory savings don't really matter; formats have to be converted to RGBA for drawing anyway
-        const unsigned char* pixels = stbi_load_from_memory(p_buffer + offset, len, &width, &height, &format, STBI_rgb_alpha);
-
-        if(pixels == NULL) return NULL;
-
-        env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
-
-        jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixels, width * height * 4);
-        jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
-        p_native_data[0] = (jlong)pixels;
-        p_native_data[1] = width;
-        p_native_data[2] = height;
-        env->ReleasePrimitiveArrayCritical(nativeData, p_native_data, 0);
-
-        return pixel_buffer;
-     */
-
-    /** Creates a new pixmap and returns [address, width, height] in nativeData. */
-    static native ByteBuffer createJni(long[] nativeData, int width, int height); /*MANUAL
-        const unsigned char* pixels = (unsigned char*)malloc(width * height * 4);
-
-        if(!pixels) return 0;
-
-        //fill pixel array with 0s
-        //TODO use calloc insted?
-        memset((void*)pixels, 0, width * height * 4);
-
-        jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixels, width * height * 4);
-        jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
-        p_native_data[0] = (jlong)pixels;
-        p_native_data[1] = width;
-        p_native_data[2] = height;
-        env->ReleasePrimitiveArrayCritical(nativeData, p_native_data, 0);
-
-        return pixel_buffer;
-     */
-
-    static native void free(long buffer); /*
-        free((void*)buffer);
-     */
-
-    static native String getFailureReason(); /*
-        return env->NewStringUTF(stbi_failure_reason());
-     */
-
-    /** Blends two pixels. */
-    static int blend(int src, int dst){
-        int src_a = src & 0xff;
-        if(src_a == 0) return dst;
-        int src_b = (src >>> 8) & 0xff;
-        int src_g = (src >>> 16) & 0xff;
-        int src_r = (src >>> 24) & 0xff;
-
-        int dst_a = dst & 0xff;
-        int dst_b = (dst >>> 8) & 0xff;
-        int dst_g = (dst >>> 16) & 0xff;
-        int dst_r = (dst >>> 24) & 0xff;
-
-        dst_a -= (dst_a * src_a) / 255;
-        int a = dst_a + src_a;
-        dst_r = (dst_r * dst_a + src_r * src_a) / a;
-        dst_g = (dst_g * dst_a + src_g * src_a) / a;
-        dst_b = (dst_b * dst_a + src_b * src_a) / a;
-        return ((dst_r << 24) | (dst_g << 16) | (dst_b << 8) | a);
     }
 
     /** @return a newly allocated copy with the same pixels. */
@@ -194,6 +121,32 @@ public class Pixmap implements Disposable{
     /** @return whether this point is in the pixmap. */
     public boolean in(int x, int y){
         return x >= 0 && y >= 0 && x < width && y < height;
+    }
+
+    /** @return a newly allocated pixmap, flipped horizontally. */
+    public Pixmap flipX(){
+        Pixmap copy = new Pixmap(width, height);
+
+        for(int x = 0; x < width; x++){
+            for(int y = 0; y < height; y++){
+                copy.draw(x, height - 1 - y, getPixelRaw(x, y));
+            }
+        }
+
+        return copy;
+    }
+
+    /** @return a newly allocated pixmap, flipped vertically. */
+    public Pixmap flipY(){
+        Pixmap copy = new Pixmap(width, height);
+
+        for(int x = 0; x < width; x++){
+            for(int y = 0; y < height; y++){
+                copy.draw(width - 1 - x, y, getPixelRaw(x, y));
+            }
+        }
+
+        return copy;
     }
 
     /** Draws a line between the given coordinates using the provided RGBA color. */
@@ -568,6 +521,45 @@ public class Pixmap implements Disposable{
         pixels.putInt((x + y * width) * 4, color);
     }
 
+    /**
+     * Returns the OpenGL ES format of this Pixmap. Used as the seventh parameter to
+     * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
+     * @return one of GL_ALPHA, GL_RGB, GL_RGBA, GL_LUMINANCE, or GL_LUMINANCE_ALPHA.
+     */
+    public int getGLFormat(){
+        return Gl.rgba;
+    }
+
+    /**
+     * Returns the OpenGL ES format of this Pixmap. Used as the third parameter to
+     * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
+     * @return one of GL_ALPHA, GL_RGB, GL_RGBA, GL_LUMINANCE, or GL_LUMINANCE_ALPHA.
+     */
+    public int getGLInternalFormat(){
+        return Gl.rgba;
+    }
+
+    /**
+     * Returns the OpenGL ES type of this Pixmap. Used as the eighth parameter to
+     * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
+     * @return one of GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT_5_6_5, GL_UNSIGNED_SHORT_4_4_4_4
+     */
+    public int getGLType(){
+        return Gl.unsignedByte;
+    }
+
+    /**
+     * Returns the direct ByteBuffer holding the pixel data. For the format Alpha each value is encoded as a byte. For the format
+     * LuminanceAlpha the luminance is the first byte and the alpha is the second byte of the pixel. For the formats RGB888 and
+     * RGBA8888 the color components are stored in a single byte each in the order red, green, blue (alpha). For the formats RGB565
+     * and RGBA4444 the pixel colors are stored in shorts in machine dependent order.
+     * @return the direct {@link ByteBuffer} holding the pixel data.
+     */
+    public ByteBuffer getPixels(){
+        if(handle == 0) throw new ArcRuntimeException("Pixmap already disposed");
+        return pixels;
+    }
+
     void hline(int x1, int x2, int y, int color){
         if(y < 0 || y >= height) return;
         int tmp;
@@ -612,59 +604,26 @@ public class Pixmap implements Disposable{
         }
     }
 
-    /**
-     * Returns the OpenGL ES format of this Pixmap. Used as the seventh parameter to
-     * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
-     * @return one of GL_ALPHA, GL_RGB, GL_RGBA, GL_LUMINANCE, or GL_LUMINANCE_ALPHA.
-     */
-    public int getGLFormat(){
-        return Gl.rgba;
-    }
+    /** @return the blended result of the input colors */
+    public static int blend(int src, int dst){
+        int src_a = src & 0xff;
+        if(src_a == 0) return dst;
+        int src_b = (src >>> 8) & 0xff;
+        int src_g = (src >>> 16) & 0xff;
+        int src_r = (src >>> 24) & 0xff;
 
-    /**
-     * Returns the OpenGL ES format of this Pixmap. Used as the third parameter to
-     * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
-     * @return one of GL_ALPHA, GL_RGB, GL_RGBA, GL_LUMINANCE, or GL_LUMINANCE_ALPHA.
-     */
-    public int getGLInternalFormat(){
-        return Gl.rgba;
-    }
+        int dst_a = dst & 0xff;
+        if(dst_a == 0) return src;
+        int dst_b = (dst >>> 8) & 0xff;
+        int dst_g = (dst >>> 16) & 0xff;
+        int dst_r = (dst >>> 24) & 0xff;
 
-    /**
-     * Returns the OpenGL ES type of this Pixmap. Used as the eighth parameter to
-     * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
-     * @return one of GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT_5_6_5, GL_UNSIGNED_SHORT_4_4_4_4
-     */
-    public int getGLType(){
-        return Gl.unsignedByte;
-    }
-
-    /*JNI
-
-    #include <stdlib.h>
-    #include <stdint.h>
-
-    #include <stdlib.h>
-    #define STB_IMAGE_IMPLEMENTATION
-    #define STBI_FAILURE_USERMSG
-    #define STBI_NO_STDIO
-    #ifdef __APPLE__
-    #define STBI_NO_THREAD_LOCALS
-    #endif
-    #include "stb_image.h"
-
-    */
-
-    /**
-     * Returns the direct ByteBuffer holding the pixel data. For the format Alpha each value is encoded as a byte. For the format
-     * LuminanceAlpha the luminance is the first byte and the alpha is the second byte of the pixel. For the formats RGB888 and
-     * RGBA8888 the color components are stored in a single byte each in the order red, green, blue (alpha). For the formats RGB565
-     * and RGBA4444 the pixel colors are stored in shorts in machine dependent order.
-     * @return the direct {@link ByteBuffer} holding the pixel data.
-     */
-    public ByteBuffer getPixels(){
-        if(handle == 0) throw new ArcRuntimeException("Pixmap already disposed");
-        return pixels;
+        dst_a -= (dst_a * src_a) / 255;
+        int a = dst_a + src_a;
+        dst_r = (dst_r * dst_a + src_r * src_a) / a;
+        dst_g = (dst_g * dst_a + src_g * src_a) / a;
+        dst_b = (dst_b * dst_a + src_b * src_a) / a;
+        return ((dst_r << 24) | (dst_g << 16) | (dst_b << 8) | a);
     }
 
     private void load(byte[] encodedData, int offset, int len, String file){
@@ -735,4 +694,73 @@ public class Pixmap implements Disposable{
             this.glType = glType;
         }
     }
+
+    /*JNI
+
+    #include <stdlib.h>
+    #include <stdint.h>
+
+    #include <stdlib.h>
+    #define STB_IMAGE_IMPLEMENTATION
+    #define STBI_FAILURE_USERMSG
+    #define STBI_NO_STDIO
+    #ifdef __APPLE__
+    #define STBI_NO_THREAD_LOCALS
+    #endif
+    #include "stb_image.h"
+
+    */
+
+
+    /** Loads a pixmap from bytes and returns [address, width, height] in nativeData. */
+    static native ByteBuffer loadJni(long[] nativeData, byte[] buffer, int offset, int len); /*MANUAL
+        const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);
+
+        int32_t width, height, format;
+
+        //always use STBI_rgb_alpha (4) as the format, since that's the only thing pixmaps support
+        //RGB images are generally uncommon and the memory savings don't really matter; formats have to be converted to RGBA for drawing anyway
+        const unsigned char* pixels = stbi_load_from_memory(p_buffer + offset, len, &width, &height, &format, STBI_rgb_alpha);
+
+        if(pixels == NULL) return NULL;
+
+        env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
+
+        jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixels, width * height * 4);
+        jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
+        p_native_data[0] = (jlong)pixels;
+        p_native_data[1] = width;
+        p_native_data[2] = height;
+        env->ReleasePrimitiveArrayCritical(nativeData, p_native_data, 0);
+
+        return pixel_buffer;
+     */
+
+    /** Creates a new pixmap and returns [address, width, height] in nativeData. */
+    static native ByteBuffer createJni(long[] nativeData, int width, int height); /*MANUAL
+        const unsigned char* pixels = (unsigned char*)malloc(width * height * 4);
+
+        if(!pixels) return 0;
+
+        //fill pixel array with 0s
+        //TODO use calloc insted?
+        memset((void*)pixels, 0, width * height * 4);
+
+        jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixels, width * height * 4);
+        jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
+        p_native_data[0] = (jlong)pixels;
+        p_native_data[1] = width;
+        p_native_data[2] = height;
+        env->ReleasePrimitiveArrayCritical(nativeData, p_native_data, 0);
+
+        return pixel_buffer;
+     */
+
+    static native void free(long buffer); /*
+        free((void*)buffer);
+     */
+
+    static native String getFailureReason(); /*
+        return env->NewStringUTF(stbi_failure_reason());
+     */
 }
