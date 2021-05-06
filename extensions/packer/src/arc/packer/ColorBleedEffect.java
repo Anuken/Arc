@@ -13,10 +13,8 @@ import java.util.*;
  * @author Anuke
  */
 public class ColorBleedEffect{
-    static int TO_PROCESS = 0;
-    static int IN_PROCESS = 1;
-    static int REALDATA = 2;
-    static int[][] offsets = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
+    private static final int toProcess = 0, realData = 2;
+    private static final int[][] offsets = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
 
     public Pixmap processImage(Pixmap image, int maxIterations){
         int[] pixels = new int[image.width * image.height];
@@ -50,15 +48,14 @@ public class ColorBleedEffect{
             int r = 0, g = 0, b = 0;
             int count = 0;
 
-            for(int i = 0, n = offsets.length; i < n; i++){
-                int[] offset = offsets[i];
+            for(int[] offset : offsets){
                 int column = x + offset[0];
                 int row = y + offset[1];
 
                 if(column < 0 || column >= width || row < 0 || row >= height) continue;
 
                 int currentPixelIndex = getPixelIndex(width, column, row);
-                if(mask.getMask(currentPixelIndex) == REALDATA){
+                if(mask.getMask(currentPixelIndex) == realData){
                     int rgba = rgb[currentPixelIndex];
                     r += Color.ri(rgba);
                     g += Color.gi(rgba);
@@ -90,11 +87,11 @@ public class ColorBleedEffect{
             changing = new int[rgb.length];
             for(int i = 0; i < rgb.length; i++){
                 if(Color.ai(rgb[i]) == 0){
-                    data[i] = TO_PROCESS;
+                    data[i] = toProcess;
                     pending[pendingSize] = i;
                     pendingSize++;
                 }else
-                    data[i] = REALDATA;
+                    data[i] = realData;
             }
         }
 
@@ -132,7 +129,7 @@ public class ColorBleedEffect{
                 index = 0;
                 for(int i = 0; i < changingSize; i++){
                     int index = changing[i];
-                    data[index] = REALDATA;
+                    data[index] = realData;
                 }
                 changingSize = 0;
             }

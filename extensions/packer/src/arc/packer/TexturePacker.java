@@ -25,8 +25,6 @@ public class TexturePacker{
 
     /** @param rootDir See {@link #setRootDir(File)}. */
     public TexturePacker(File rootDir, Settings settings){
-        //TODO don't use this once the PNG loader is fixed
-        ArcNativesLoader.load();
         this.settings = settings;
 
         if(settings.pot){

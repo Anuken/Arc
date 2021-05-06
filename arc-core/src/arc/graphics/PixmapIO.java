@@ -242,27 +242,39 @@ public class PixmapIO{
 
     /** Class based on https://github.com/Mike-C/lwjPNG */
     public static class PngReader{
+        private static final int
+        ctypeRgba = 6,
+        ctypePalette = 3,
+        ctypeRgb = 2;
+
         /** Size fields are set after reading. */
         public int width, height;
 
+        public byte bitDepth, colorType, compression, filter, interlace;
+
         private int dataLen, cs;
-        private byte[] imgData = null, header = new byte[5];
+        private byte[] imgData = null;
         private ByteBuffer buf = null;
+        private int[] palette;
 
         public ByteBuffer read(InputStream in) throws IOException{
             readChunks(new DataInputStream(in));
 
             if(buf != null) buf.clear();
             buf = ByteBuffer.allocateDirect(cs);
-            getImage(buf);
+            try{
+                getImage(buf);
+            }catch(DataFormatException e){
+                throw new IOException(e);
+            }
             buf.flip();
             return buf;
         }
 
         private void readChunks(DataInputStream in) throws IOException{
-            if(imgData == null && in.available() > 4)
+            if(imgData == null && in.available() > 4){
                 in.readLong(); // PNG signature
-            else if(imgData == null){
+            }else if(imgData == null){
                 width = 0;
                 return;
             }
@@ -270,129 +282,119 @@ public class PixmapIO{
             int chunkType;
             do{
                 int chunkLen = in.readInt(); // Read the chunk length.
-                if(chunkLen <= 0 || chunkLen > 99998192)
-                    break;
+                if(chunkLen <= 0 || chunkLen > 99998192) break;
+
                 chunkType = in.readInt();
-                if(chunkType == 0x49454e44) // IEND
+                if(chunkType == 0x49454e44) //IEND
                     break; // last chunk reached..
-                if(chunkType != 0x49444154){ // IDAT
-                    if(chunkType == 0x49484452){ // IHDR
-                        width = in.readInt();
-                        height = in.readInt();
-                        cs = 4 * width * height;
-                        imgData = new byte[in.available()]; // initialize image array
-                        in.readFully(header);
-                    }else{
-                        byte[] chunkData = new byte[chunkLen];
-                        in.readFully(chunkData);
-                    }
-                }else{
+                if(chunkType == 0x49444154){ //IDAT
                     in.readFully(imgData, dataLen, chunkLen);
                     dataLen += chunkLen;
+                }else if(chunkType == 0x49484452){ //IHDR
+                    width = in.readInt();
+                    height = in.readInt();
+                    bitDepth = in.readByte();
+                    colorType = in.readByte();
+                    compression = in.readByte();
+                    filter = in.readByte();
+                    interlace = in.readByte();
+
+                    cs = 4 * width * height;
+                    imgData = new byte[in.available()]; //initialize image array
+
+                    //validation
+                    if(bitDepth == 16) throw new IOException("16-bit depth is not supported.");
+                    if(colorType == ctypePalette && bitDepth < 4) throw new IOException("Only PNG palettes with 4 or 8-bit depth are supported. Depth given: " + bitDepth);
+                    if(colorType != ctypePalette && colorType != ctypeRgb && colorType != ctypeRgba) throw new IOException("Unsupported color type: " + colorType + " (Note that grayscale is not supported)");
+                    if(interlace != 0) throw new IOException("PNG interlacing is not supported.");
+
+                }else if(colorType == ctypePalette && chunkType == 0x504c5445){ //PLTE
+                    int colors = chunkLen/3;
+                    palette = new int[colors];
+                    for(int i = 0; i < colors; i++){
+                        palette[i] = Color.packRgba(in.readUnsignedByte(), in.readUnsignedByte(), in.readUnsignedByte(), 255);
+                    }
+                }else if(colorType == ctypePalette && chunkType == 0x74524e53){ //tRNS
+                    for(int i = 0; i < chunkLen; i++){
+                        palette[i] = (palette[i] & 0xffffff00) | in.readUnsignedByte();
+                    }
+                }else{
+                    byte[] chunkData = new byte[chunkLen];
+                    in.readFully(chunkData);
                 }
                 in.readInt(); // checksum skip
             }while(true);
         }
 
-        public short getBitsPerPixel(){
-            return (short)(header[0] & 0xFF);
-        }
-
-        public short getColorType(){
-            return (short)(header[1] & 0xFF);
-        }
-
-        public short getCompression(){
-            return (short)(header[2] & 0xFF);
-        }
-
-        public short getFilter(){
-            return (short)(header[3] & 0xFF);
-        }
-
-        public short getInterlace(){
-            return (short)(header[4] & 0xFF);
-        }
-
-        private void getImage(ByteBuffer bb){
-            // bPx bytes per pixel, in interlace, wT total output width, v scanline width
-            // oH - output offset start horizontal; oV - output offset start vertical
-            // rH - repetitions horizontal (rH[p]-1) << 2; rV - repetitions vertical
-            // sw - scanline width per pass; sp - scanlines/rows per pass;
-
-            int bPx = getColorType() == 2 ? 3 : 4, in = getInterlace() == 1 ? 7 : 1, wT = width * 4, v = width * bPx;
-            int[] sw = {in == 7 ? ((width & 7) != 0 ? ((width / 8) + 1) * bPx : v / 8) : v,
-            (width & 7) != 0 ? (width + 3) / 8 * bPx : v / 8, (width & 3) != 0 ? ((width / 4) + 1) * bPx : v / 4,
-            (width & 3) != 0 ? (width + 1) / 4 * bPx : v / 4, (width & 1) != 0 ? ((width / 2) + 1) * bPx : v / 2, width / 2 * bPx, v};
-            int[] sp = {in == 7 ? ((height & 7) != 0 ? (height / 8) + 1 : height / 8) : height, (height & 7) != 0 ? (height / 8) + 1 : height / 8,
-            (height & 7) != 0 ? (height + 3) / 8 : height / 8, (height & 3) != 0 ? (height / 4) + 1 : height / 4,
-            (height & 3) != 0 ? (height + 1) / 4 : height / 4, (height & 1) != 0 ? (height / 2) + 1 : height / 2, height / 2};
-            int[] oH = {0, 16, 0, 8, 0, 4, 0}, oV = {0, 0, 4, 0, 2, 0, 1};
-            int[] rH = {in == 7 ? 28 : 0, 28, 12, 12, 4, 4, 0}, rV = {in == 7 ? 8 : 1, 8, 8, 4, 4, 2, 2};
-            int oI = 0; // oI output offset/index
+        private void getImage(ByteBuffer bb) throws DataFormatException{
+            //bpx bytes per pixel, wT total output width, v scanline width
+            int
+            bpx = colorType == ctypePalette ? 1 : colorType == ctypeRgb ? 3 : 4,
+            wT = width * 4,
+            v = (bitDepth == 4 ? width / 2 : width) * bpx + 1; // scanLine width
 
             Inflater inflater = new Inflater();
             inflater.setInput(imgData, 0, dataLen);
 
-            for(int p = 0; p < in; p++){ // interlace passes..
-                v = sw[p] + 1; // scanLine width
-                byte[] row0 = new byte[wT + 1], row = new byte[wT + 1]; // every row contains filter byte!!!!
-                oI = oH[p] + (oV[p] * wT); // start oI position
-                for(int i = 1, s = 0; s < sp[p]; i = 1, s++){ // scanLine
-                    try{
-                        inflater.inflate(row, 0, v);
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                    if(row[0] != 0){ // apply filters
-                        if(row[0] == 1){
-                            for(i += bPx; i < v; i++){
-                                row[i] += row[i - bPx];
-                            }
-                        }else if(row[0] == 2){
-                            for(; i < v; i++){
-                                row[i] += row0[i];
-                            }
-                        }else if(row[0] == 3){
-                            for(; i < bPx + 1; i++){
-                                row[i] += (row0[i] & 0xFF) >>> 1;
-                            }
-                            for(; i < v; i++){
-                                row[i] += ((row0[i] & 0xFF) + (row[i - bPx] & 0xFF)) >>> 1;
-                            }
-                        }else{
-                            for(; i < bPx + 1; i++){
-                                row[i] += row0[i];
-                            }
-                            for(; i < v; i++){
-                                row[i] += paethP(row[i - bPx] & 0xFF, row0[i] & 0xFF, row0[i - bPx] & 0xFF);
-                            }
+            byte[] row0 = new byte[wT + 1], row = new byte[wT + 1]; // every row contains filter byte
+
+            for(int i = 1, s = 0; s < height; i = 1, s++){ // scanLine
+                //inflating each line is the bottleneck here, but unfortunately there's nothing I can do about it
+                inflater.inflate(row, 0, v);
+                byte first = row[0];
+
+                if(first != 0){ //apply filters
+
+                    if(first == 1){
+                        for(i += bpx; i < v; i++){
+                            row[i] += row[i - bpx];
+                        }
+                    }else if(first == 2){
+                        for(; i < v; i++){
+                            row[i] += row0[i];
+                        }
+                    }else if(first == 3){
+                        for(; i < bpx + 1; i++){
+                            row[i] += (row0[i] & 0xFF) >>> 1;
+                        }
+                        for(; i < v; i++){
+                            row[i] += ((row0[i] & 0xFF) + (row[i - bpx] & 0xFF)) >>> 1;
+                        }
+                    }else{
+                        for(; i < bpx + 1; i++){
+                            row[i] += row0[i];
+                        }
+                        for(; i < v; i++){
+                            row[i] += paeth(row[i - bpx] & 0xFF, row0[i] & 0xFF, row0[i - bpx] & 0xFF);
                         }
                     }
-                    ByteBuffer wRow = ByteBuffer.wrap(row);
-                    if(in == 1){ // format output, normal mode
-                        if(bPx == 3){
-                            for(i = 1; i < v; i += bPx){
-                                bb.putInt((wRow.getInt(i) & 0xFFFFFF00) + 0xFF);
-                            }
-                        }else
-                            bb.put(row, 1, v - 1);
-                    }else{ // interlaced mode, or normal mode
-                        if(bPx == 3)
-                            for(i = 1; i < v; i += bPx, oI += rH[p] + 4){
-                                bb.putInt(oI, (wRow.getInt(i) & 0xFFFFFF00) + 0xFF);
-                            }
-                        else
-                            for(i = 1; i < v; i += bPx, oI += rH[p] + 4){
-                                bb.putInt(oI, wRow.getInt(i));
-                            }
+                }
+
+                ByteBuffer wRow = ByteBuffer.wrap(row);
+
+                //format output, normal mode
+                if(bpx == 3){
+                    for(i = 1; i < v; i += bpx){
+                        bb.putInt((wRow.getInt(i) & 0xFFFFFF00) + 0xFF);
                     }
-                    byte[] swap = row0;
-                    row0 = row;
-                    row = swap;
-                    // start oI position, increased by current scanline's iteration offset
-                    oI = oH[p] + (oV[p] * wT) + ((rV[p] * wT) * (s + 1));
-                } // for scanLine
+                }else if(bpx == 1){ //palette
+                    //when bitDepth is 4, split every byte in two
+                    if(bitDepth == 4){
+                        for(i = 1; i < v; i += bpx){
+                            bb.putInt(palette[Pack.leftByte(wRow.get(i))]);
+                            bb.putInt(palette[Pack.rightByte(wRow.get(i))]);
+                        }
+                    }else{
+                        for(i = 1; i < v; i += bpx){
+                            bb.putInt(palette[wRow.get(i)]);
+                        }
+                    }
+                }else{
+                    bb.put(row, 1, v - 1);
+                }
+                byte[] swap = row0;
+                row0 = row;
+                row = swap;
             }
             bb.position(bb.capacity());
             imgData = null;
@@ -403,7 +405,7 @@ public class PixmapIO{
             return (a ^ b) - b;
         }
 
-        private static int paethP(int a, int b, int c){
+        private static int paeth(int a, int b, int c){
             int pa = b - c, pb = a - c, pc = ab(pa + pb);
             pa = ab(pa);
             pb = ab(pb);

@@ -12,11 +12,11 @@ import java.util.regex.*;
 public class TexturePackerFileProcessor extends FileProcessor{
     private final Settings defaultSettings;
     private final ProgressListener progress;
-    private ObjectMap<File, Settings> dirToSettings = new ObjectMap();
+    private ObjectMap<File, Settings> dirToSettings = new ObjectMap<>();
     private Json json = new Json();
     private String packFileName;
     private File root;
-    Seq<File> ignoreDirs = new Seq();
+    Seq<File> ignoreDirs = new Seq<>();
     boolean countOnly;
     int packCount;
 
@@ -48,7 +48,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
         final Seq<File> settingsFiles = new Seq<>();
         FileProcessor settingsProcessor = new FileProcessor(){
             @Override
-            protected void processFile(Entry inputFile) throws Exception{
+            protected void processFile(Entry inputFile){
                 settingsFiles.add(inputFile.inputFile);
             }
         };
