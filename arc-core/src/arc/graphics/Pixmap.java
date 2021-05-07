@@ -158,12 +158,12 @@ public class Pixmap implements Disposable{
     }
 
     /** @return a newly allocated pixmap with the specified outline. */
-    public Pixmap outline(Color color, int thickness){
-        return outline(color.rgba(), thickness);
+    public Pixmap outline(Color color, int radius){
+        return outline(color.rgba(), radius);
     }
 
     /** @return a newly allocated pixmap with the specified outline. */
-    public Pixmap outline(int color, int thickness){
+    public Pixmap outline(int color, int radius){
         Pixmap pixmap = copy();
 
         for(int x = 0; x < width; x++){
@@ -171,9 +171,9 @@ public class Pixmap implements Disposable{
                 if(empty(getRaw(x, y))){
                     boolean found = false;
                     outer:
-                    for(int dx = -thickness; dx <= thickness; dx++){
-                        for(int dy = -thickness; dy <= thickness; dy++){
-                            if(Mathf.within(dx, dy, thickness) && !empty(get(x + dx, y + dy))){
+                    for(int dx = -radius; dx <= radius; dx++){
+                        for(int dy = -radius; dy <= radius; dy++){
+                            if((dx*dx + dy*dy <= radius*radius) && !empty(get(x + dx, y + dy))){
                                 found = true;
                                 break outer;
                             }
@@ -384,6 +384,7 @@ public class Pixmap implements Disposable{
                 //blit with bilinear filtering
                 float x_ratio = ((float)srcWidth - 1) / dstWidth;
                 float y_ratio = ((float)srcHeight - 1) / dstHeight;
+                int rX = Math.max(Mathf.round(x_ratio), 1), rY = Math.max(Mathf.round(y_ratio), 1);
                 float xdiff, ydiff;
                 int spitch = 4 * owidth;
                 int dx, dy, sx, sy, i = 0, j;
@@ -406,9 +407,9 @@ public class Pixmap implements Disposable{
                         int
                         srcp = (sx + sy * owidth) * 4,
                         c1 = spixels.getInt(srcp),
-                        c2 = sx + 1 < srcWidth ? spixels.getInt(srcp + 4) : c1,
-                        c3 = sy + 1 < srcHeight ? spixels.getInt(srcp + spitch) : c1,
-                        c4 = sx + 1 < srcWidth && sy + 1 < srcHeight ? spixels.getInt(srcp + 4 + spitch) : c1;
+                        c2 = sx + rX < srcWidth ? spixels.getInt(srcp + 4 *rX) : c1,
+                        c3 = sy + rY < srcHeight ? spixels.getInt(srcp + spitch * rY) : c1,
+                        c4 = sx + rX < srcWidth && sy + rY < srcHeight ? spixels.getInt(srcp + 4 * rX + spitch * rY) : c1;
 
                         float ta = (1 - xdiff) * (1 - ydiff);
                         float tb = (xdiff) * (1 - ydiff);

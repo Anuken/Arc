@@ -1,3 +1,4 @@
+import arc.files.*;
 import arc.graphics.*;
 import arc.util.*;
 import org.junit.*;
@@ -16,6 +17,14 @@ public class PixmapTest{
         assertEquals(Color.red.rgba(), pix.get(50, 50));
         assertEquals(Color.red.rgba(), pix.get(54, 54));
         assertEquals(0, pix.get(0, 0));
+    }
+
+    //@Test
+    public void testScaling(){
+        Pixmap base = new Pixmap(new Fi("/home/anuke/soup.png"));
+        Pixmap result = new Pixmap(50, 50);
+        result.draw(base, 0, 0, base.width, base.height, 0, 0, result.width, result.height, true, false);
+        Fi.get("/home/anuke/soup_scaled.png").writePng(result);
     }
 
     void bench(Runnable a, Runnable b, int amount){

@@ -200,7 +200,7 @@ public class PixmapIO{
         }
     }
 
-    /** Class based on https://github.com/Mike-C/lwjPNG */
+    /** Class based on https://github.com/Mike-C/lwjPNG, with many modifications */
     public static class PngReader{
         private static final int
         ctypeRgba = 6,
@@ -240,7 +240,7 @@ public class PixmapIO{
             }
             dataLen = 0;
             int chunkType;
-            do{
+            while(true){
                 int chunkLen = in.readInt(); // Read the chunk length.
                 if(chunkLen <= 0 || chunkLen > 99998192) break;
 
@@ -283,7 +283,7 @@ public class PixmapIO{
                     in.readFully(chunkData);
                 }
                 in.readInt(); // checksum skip
-            }while(true);
+            }
         }
 
         private void getImage(ByteBuffer bb) throws DataFormatException{

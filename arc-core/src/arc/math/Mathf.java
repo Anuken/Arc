@@ -658,6 +658,6 @@ public final class Mathf{
 
     /** @return whether dst(x, y, 0, 0) < dst */
     public static boolean within(float x1, float y1, float dst){
-        return (x1 * x1 + y1*y1) < dst*dst;
+        return (x1 * x1 + y1 * y1) < dst*dst;
     }
 }
