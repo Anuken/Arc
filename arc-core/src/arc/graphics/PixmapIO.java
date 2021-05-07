@@ -233,7 +233,10 @@ public class PixmapIO{
 
         private void readChunks(DataInputStream in) throws IOException{
             if(imgData == null && in.available() > 4){
-                in.readLong(); // PNG signature
+                long header = in.readLong(); //PNG signature
+                if(header != 0x89504e470d0a1a0aL){
+                    throw new IOException("This isn't a PNG. Header: 0x" + Long.toHexString(header));
+                }
             }else if(imgData == null){
                 width = 0;
                 return;

@@ -1,3 +1,4 @@
+import arc.files.*;
 import arc.graphics.*;
 import arc.util.*;
 import org.junit.*;
@@ -8,14 +9,32 @@ public class PixmapTest{
 
     @Test
     public void pixmapCreate(){
-        ArcNativesLoader.load();
 
+        //test with no natives
         Pixmap pix = new Pixmap(100, 100);
         pix.fillCircle(50, 50, 30, Color.red.rgba());
 
         assertEquals(Color.red.rgba(), pix.get(50, 50));
         assertEquals(Color.red.rgba(), pix.get(54, 54));
         assertEquals(0, pix.get(0, 0));
+
+        ArcNativesLoader.load();
+
+        pix = new Pixmap(100, 100);
+        pix.fillCircle(50, 50, 30, Color.red.rgba());
+
+        assertEquals(Color.red.rgba(), pix.get(50, 50));
+        assertEquals(Color.red.rgba(), pix.get(54, 54));
+        assertEquals(0, pix.get(0, 0));
+    }
+
+    //@Test
+    public void convert(){
+        Fi.get("/home/anuke/Projects/Mindustry/core/assets-raw/spritescopy").walk(f -> {
+            if(f.extEquals("png")){
+                f.writePng(new Pixmap(f));
+            }
+        });
     }
 
     void bench(Runnable a, Runnable b, int amount){
