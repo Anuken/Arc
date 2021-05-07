@@ -236,7 +236,6 @@ public class PixmapIO{
                 long header = in.readLong(); //PNG signature
                 if(header != 0x89504e470d0a1a0aL){
                     String headerString = Long.toHexString(header);
-                    //FF D8 FF
                     throw new IOException(headerString.startsWith("ffd8ff") ? "This is a JPEG, not a PNG." : "This isn't a PNG. Header: 0x" + headerString);
                 }
             }else if(imgData == null){
