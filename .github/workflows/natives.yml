@@ -12,8 +12,7 @@ jobs:
       with:
         java-version: 1.8
     - name: Install dependencies
-      run: |
-        apt install g++-mingw-w64 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-mingw-w64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64
+      run: sudo apt install g++-mingw-w64 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-mingw-w64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64
     - name: Build natives
       run: ./gradlew jnigenBuild
     - name: Upload natives
