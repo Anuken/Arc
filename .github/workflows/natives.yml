@@ -21,8 +21,14 @@ jobs:
     - name: Upload natives
       uses: actions/upload-artifact@v2
       with:
-        name: Arc-core natives
+        name: Arc-core desktop natives
         path: |
           natives/natives-desktop/libs/libarc64.so
           natives/natives-desktop/libs/arc.dll
           natives/natives-desktop/libs/arc64.dll
+    - name: Upload Android natives
+      uses: actions/upload-artifact@v2
+      with:
+        name: Arc-core android natives
+        path: |
+          natives/natives-android
