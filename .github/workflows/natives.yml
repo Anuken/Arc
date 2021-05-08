@@ -31,4 +31,4 @@ jobs:
       with:
         name: Arc-core android natives
         path: |
-          natives/natives-android
+          natives/natives-android/libs
