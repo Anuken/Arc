@@ -15,12 +15,13 @@ jobs:
       run: sudo apt install g++-mingw-w64 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-mingw-w64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 libasound2-dev
     - name: Build natives
       run: |
+        echo "NDK_HOME=$ANDROID_NDK_HOME" >> $GITHUB_ENV
         ./gradlew arc-core:jar
         ./gradlew arc-core:jnigenBuild
     - name: Upload natives
       uses: actions/upload-artifact@v2
       with:
-        name: Linux64 natives
+        name: Arc-core natives
         path: |
           natives/natives-desktop/libs/libarc64.so
           natives/natives-desktop/libs/arc.dll

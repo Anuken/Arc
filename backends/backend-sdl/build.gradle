@@ -56,7 +56,7 @@ jnigen{
         }
     }
 
-    println(" CLASSES EXIST? " + new File("$rootDir/arc-core/build/classes/java/main").exists())
+    println(" CLASSES EXIST? " + new File("$rootDir/arc-core/build/").exists())
 
     copy{
         from "$rootDir/arc-core/build/classes/java/main"
