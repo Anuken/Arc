@@ -14,7 +14,9 @@ jobs:
     - name: Install dependencies
       run: sudo apt install g++-mingw-w64 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-mingw-w64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 libasound2-dev
     - name: Build natives
-      run: ./gradlew jnigenBuild
+      run: |
+        ./gradlew arc-core:compileJava
+        ./gradlew jnigenBuild
     - name: Upload natives
       uses: actions/upload-artifact@v2
       with:
