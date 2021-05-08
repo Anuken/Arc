@@ -39,6 +39,7 @@ public interface Interp{
     Pow pow5 = new Pow(5);
     PowIn pow5In = new PowIn(5);
     PowIn pow10In = new PowIn(10);
+    PowOut pow10Out = new PowOut(10);
     PowOut pow5Out = new PowOut(5);
     Interp sine = a -> (1 - Mathf.cos(a * Mathf.PI)) / 2;
     Interp sineIn = a -> 1 - Mathf.cos(a * Mathf.PI / 2);
