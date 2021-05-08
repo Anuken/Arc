@@ -13,9 +13,12 @@ jobs:
         java-version: 1.8
     - name: Install dependencies
       run: sudo apt install g++-mingw-w64 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-mingw-w64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 libasound2-dev
+    - name: Set env
+      run: echo "NDK_HOME=$ANDROID_NDK_HOME" >> $GITHUB_ENV
+    - name: Print NDK_HOME
+      run: echo $NDK_home
     - name: Build natives
       run: |
-        echo "NDK_HOME=$ANDROID_NDK_HOME" >> $GITHUB_ENV
         ./gradlew arc-core:jar
         ./gradlew arc-core:jnigenBuild
     - name: Upload natives
