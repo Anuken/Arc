@@ -131,7 +131,7 @@ public class Strings{
         for(int i = 0; i < str.length(); i++){
             int c = str.charAt(i);
             if(c >= 0xE000 && c <= 0xF8FF) continue;
-            out.append(c);
+            out.append((char)c);
         }
 
         return out.toString();
