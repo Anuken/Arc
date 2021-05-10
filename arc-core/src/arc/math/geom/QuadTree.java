@@ -60,6 +60,10 @@ public class QuadTree<T extends QuadTreeObject>{
         objects.addAll(botRight.objects);
         objects.addAll(topLeft.objects);
         objects.addAll(topRight.objects);
+        botLeft.clear();
+        botRight.clear();
+        topLeft.clear();
+        topRight.clear();
         leaf = true;
     }
 
