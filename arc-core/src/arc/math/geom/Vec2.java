@@ -583,6 +583,11 @@ public class Vec2 implements Vector<Vec2>, Position{
         return this.set(Mathf.cos(theta), Mathf.sin(theta));
     }
 
+    public Vec2 setToRandomDirection(Rand rand){
+        float theta = rand.random(0f, Mathf.PI2);
+        return this.set(Mathf.cos(theta), Mathf.sin(theta));
+    }
+
     @Override
     public int hashCode(){
         final int prime = 31;
