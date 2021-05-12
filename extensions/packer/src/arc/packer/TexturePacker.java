@@ -396,7 +396,6 @@ public class TexturePacker{
 
         public Alias(Rect rect){
             name = rect.name;
-            index = rect.index;
             splits = rect.splits;
             pads = rect.pads;
             offsetX = rect.offsetX;
@@ -407,7 +406,6 @@ public class TexturePacker{
 
         public void apply(Rect rect){
             rect.name = name;
-            rect.index = index;
             rect.splits = splits;
             rect.pads = pads;
             rect.offsetX = offsetX;
@@ -428,7 +426,6 @@ public class TexturePacker{
         public int offsetX, offsetY, regionWidth, regionHeight, originalWidth, originalHeight;
         public int x, y;
         public int width, height; // Portion of page taken by this region, including padding.
-        public int index;
         public boolean rotated;
         public Set<Alias> aliases = new HashSet<>();
         public int[] splits;
@@ -491,7 +488,6 @@ public class TexturePacker{
             y = rect.y;
             width = rect.width;
             height = rect.height;
-            index = rect.index;
             rotated = rect.rotated;
             aliases = rect.aliases;
             splits = rect.splits;
@@ -521,7 +517,7 @@ public class TexturePacker{
 
         @Override
         public String toString(){
-            return name + (index != -1 ? "_" + index : "") + "[" + x + "," + y + " " + width + "x" + height + "]";
+            return name + "[" + x + "," + y + " " + width + "x" + height + "]";
         }
 
         public static String getAtlasName(String name, boolean flattenPaths){
@@ -552,7 +548,6 @@ public class TexturePacker{
         try{
             TexturePackerFileProcessor processor = new TexturePackerFileProcessor(settings, packFileName, progress);
             processor.process(new File(input), new File(output));
-
         }catch(Exception ex){
             throw new RuntimeException("Error packing images: " + Strings.getFinalMessage(ex), ex);
         }
@@ -728,7 +723,6 @@ public class TexturePacker{
         public boolean combineSubdirectories;
         public boolean ignore;
         public boolean flattenPaths;
-        public boolean useIndexes = true;
         public boolean bleed = true;
         public int bleedIterations = 2;
         public boolean limitMemory = true;

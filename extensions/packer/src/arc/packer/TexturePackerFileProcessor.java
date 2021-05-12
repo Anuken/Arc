@@ -124,7 +124,6 @@ public class TexturePackerFileProcessor extends FileProcessor{
             deleteProcessor.setRecursive(false);
 
             File packFile = new File(rootSettings.getScaledPackFileName(packFileName, i));
-            String scaledPackFileName = packFile.getName();
 
             String prefix = packFile.getName();
             int dotIndex = prefix.lastIndexOf('.');

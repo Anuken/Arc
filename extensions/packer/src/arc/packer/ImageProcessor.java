@@ -9,11 +9,9 @@ import java.io.*;
 import java.math.*;
 import java.security.*;
 import java.util.*;
-import java.util.regex.*;
 
 public class ImageProcessor{
     private static final Pixmap emptyImage = new Pixmap(1, 1);
-    private static Pattern indexPattern = Pattern.compile("(.+)_(\\d+)$");
 
     private final Settings settings;
     private final HashMap<String, Rect> crcs = new HashMap<>();
@@ -65,9 +63,7 @@ public class ImageProcessor{
             Rect existing = crcs.get(crc);
             if(existing != null){
                 if(!settings.silent){
-                    String rectName = rect.name + (rect.index != -1 ? "_" + rect.index : "");
-                    String existingName = existing.name + (existing.index != -1 ? "_" + existing.index : "");
-                    System.out.println(rectName + " (alias of " + existingName + ")");
+                    System.out.println(rect.name + " (alias of " + existing.name + ")");
                 }
                 existing.aliases.add(new Alias(rect));
                 return null;
@@ -138,18 +134,7 @@ public class ImageProcessor{
             if(rect == null) return null;
         }
 
-        // Strip digits off end of name and use as index.
-        int index = -1;
-        if(settings.useIndexes){
-            Matcher matcher = indexPattern.matcher(name);
-            if(matcher.matches()){
-                name = matcher.group(1);
-                index = Integer.parseInt(matcher.group(2));
-            }
-        }
-
         rect.name = name;
-        rect.index = index;
         return rect;
     }
 
