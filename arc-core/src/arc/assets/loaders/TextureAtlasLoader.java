@@ -46,7 +46,6 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
         Seq<AssetDescriptor> dependencies = new Seq<>();
         for(AtlasPage page : data.getPages()){
             TextureParameter params = new TextureParameter();
-            params.format = page.format;
             params.genMipMaps = page.useMipMaps;
             params.minFilter = page.minFilter;
             params.magFilter = page.magFilter;

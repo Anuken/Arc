@@ -2,7 +2,6 @@ package arc.packer;
 
 import arc.files.*;
 import arc.graphics.*;
-import arc.graphics.Pixmap.*;
 import arc.graphics.Texture.*;
 import arc.graphics.g2d.TextureAtlas.*;
 import arc.math.*;
@@ -307,8 +306,7 @@ public class TexturePacker{
                 //size
                 write.s(page.imageWidth);
                 write.s(page.imageHeight);
-                //format, filters, wrapping
-                write.b(settings.format.ordinal());
+                //filters, wrapping
                 write.b(settings.filterMin.ordinal());
                 write.b(settings.filterMag.ordinal());
                 write.b(settings.wrapX.ordinal());
@@ -644,9 +642,6 @@ public class TexturePacker{
             progress(0);
         }
 
-        public void set(String message){
-        }
-
         public void start(float portion){
             if(portion == 0) throw new IllegalArgumentException("portion cannot be 0.");
             portions.add(lastUpdate);
@@ -724,7 +719,6 @@ public class TexturePacker{
         public int alphaThreshold;
         public TextureFilter filterMin = TextureFilter.nearest, filterMag = TextureFilter.nearest;
         public TextureWrap wrapX = TextureWrap.clampToEdge, wrapY = TextureWrap.clampToEdge;
-        public Format format = Format.rgba8888;
         public boolean alias = true;
         public String outputFormat = "png";
         public boolean ignoreBlankImages = true;

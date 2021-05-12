@@ -49,8 +49,8 @@ public class MaxRectsPacker implements Packer{
             if(settings.rotation){
                 // Sort by longest side if rotation is enabled.
                 sort.sort(inputRects, (o1, o2) -> {
-                    int n1 = o1.width > o1.height ? o1.width : o1.height;
-                    int n2 = o2.width > o2.height ? o2.width : o2.height;
+                    int n1 = Math.max(o1.width, o1.height);
+                    int n2 = Math.max(o2.width, o2.height);
                     return n2 - n1;
                 });
             }else{

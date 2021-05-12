@@ -4,7 +4,6 @@ import arc.*;
 import arc.Files.*;
 import arc.files.*;
 import arc.graphics.*;
-import arc.graphics.Pixmap.*;
 import arc.graphics.Texture.*;
 import arc.graphics.g2d.TextureAtlas.TextureAtlasData.*;
 import arc.scene.style.*;
@@ -320,13 +319,12 @@ public class TextureAtlas implements Disposable{
 
                     short pageWidth = read.s(), pageHeight = read.s();
 
-                    Format format = Format.all[read.b()];
                     TextureFilter min = TextureFilter.all[read.b()], mag = TextureFilter.all[read.b()];
                     TextureWrap wrapX = TextureWrap.all[read.b()], wrapY = TextureWrap.all[read.b()];
 
                     int rects = read.i();
 
-                    AtlasPage page = new AtlasPage(file, pageWidth, pageHeight, min.isMipMap(), format, min, mag, wrapX, wrapY);
+                    AtlasPage page = new AtlasPage(file, pageWidth, pageHeight, min.isMipMap(), min, mag, wrapX, wrapY);
                     pages.add(page);
 
                     for(int j = 0; j < rects; j++){
@@ -377,20 +375,18 @@ public class TextureAtlas implements Disposable{
             public final Fi textureFile;
             public final int width, height;
             public final boolean useMipMaps;
-            public final Format format;
             public final TextureFilter minFilter;
             public final TextureFilter magFilter;
             public final TextureWrap uWrap;
             public final TextureWrap vWrap;
             public Texture texture;
 
-            public AtlasPage(Fi handle, int width, int height, boolean useMipMaps, Format format, TextureFilter minFilter,
+            public AtlasPage(Fi handle, int width, int height, boolean useMipMaps, TextureFilter minFilter,
                              TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap){
                 this.width = width;
                 this.height = height;
                 this.textureFile = handle;
                 this.useMipMaps = useMipMaps;
-                this.format = format;
                 this.minFilter = minFilter;
                 this.magFilter = magFilter;
                 this.uWrap = uWrap;

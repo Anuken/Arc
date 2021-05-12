@@ -1,11 +1,10 @@
 package arc.assets.loaders;
 
 import arc.assets.*;
-import arc.struct.*;
 import arc.files.*;
-import arc.graphics.Pixmap.*;
 import arc.graphics.*;
 import arc.graphics.Texture.*;
+import arc.struct.*;
 
 /**
  * {@link AssetLoader} for {@link Texture} instances. The pixel data is loaded asynchronously. The texture is then created on the
@@ -69,8 +68,6 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
     }
 
     public static class TextureParameter extends AssetLoaderParameters<Texture>{
-        /** the format of the final Texture. Uses the source images format if null **/
-        public Format format = null;
         /** whether to generate mipmaps **/
         public boolean genMipMaps = false;
         /** The texture to put the {@link TextureData} in, optional. **/
