@@ -375,7 +375,7 @@ public class TextureAtlas implements Disposable{
 
         public static class AtlasPage{
             public final Fi textureFile;
-            public final float width, height;
+            public final int width, height;
             public final boolean useMipMaps;
             public final Format format;
             public final TextureFilter minFilter;
@@ -384,7 +384,7 @@ public class TextureAtlas implements Disposable{
             public final TextureWrap vWrap;
             public Texture texture;
 
-            public AtlasPage(Fi handle, float width, float height, boolean useMipMaps, Format format, TextureFilter minFilter,
+            public AtlasPage(Fi handle, int width, int height, boolean useMipMaps, Format format, TextureFilter minFilter,
                              TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap){
                 this.width = width;
                 this.height = height;
