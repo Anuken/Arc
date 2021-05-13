@@ -24,7 +24,19 @@ public class ColorBleedEffect{
         buffer.get(pixels);
 
         Pixmap out = new Pixmap(image.width, image.height);
-        initMask(pixels);
+
+        data = new int[pixels.length];
+        pending = new int[pixels.length];
+        changing = new int[pixels.length];
+        for(int i = 0; i < pixels.length; i++){
+            if(Color.ai(pixels[i]) == 0){
+                data[i] = toProcess;
+                pending[pendingSize] = i;
+                pendingSize++;
+            }else{
+                data[i] = realData;
+            }
+        }
 
         int iterations = 0;
         int lastPending = -1;
@@ -70,7 +82,10 @@ public class ColorBleedEffect{
                 rgb[pixelIndex] = Color.packRgba(r / count, g / count, b / count, 0);
 
                 index--;
-                changing[changingSize] = removeIndex(index);
+                int value = pending[index];
+                pendingSize--;
+                pending[index] = pending[pendingSize];
+                changing[changingSize] = value;
                 changingSize++;
             }
         }
@@ -79,29 +94,6 @@ public class ColorBleedEffect{
             data[changing[i]] = realData;
         }
         changingSize = 0;
-    }
-
-    void initMask(int[] rgb){
-        data = new int[rgb.length];
-        pending = new int[rgb.length];
-        changing = new int[rgb.length];
-        for(int i = 0; i < rgb.length; i++){
-            if(Color.ai(rgb[i]) == 0){
-                data[i] = toProcess;
-                pending[pendingSize] = i;
-                pendingSize++;
-            }else{
-                data[i] = realData;
-            }
-        }
-    }
-
-    int removeIndex(int index){
-        if(index >= pendingSize) throw new IndexOutOfBoundsException(String.valueOf(index));
-        int value = pending[index];
-        pendingSize--;
-        pending[index] = pending[pendingSize];
-        return value;
     }
 
 }

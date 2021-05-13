@@ -407,7 +407,7 @@ public class FreeTypeFontGenerator implements Disposable{
                 packStrategy = new SkylineStrategy();
             }
             ownsAtlas = true;
-            packer = new PixmapPacker(size, size, Format.rgba8888, 1, false, packStrategy);
+            packer = new PixmapPacker(size, size, 1, false, packStrategy);
             packer.setTransparentColor(parameter.color);
             packer.getTransparentColor().a = 0;
             if(parameter.borderWidth > 0){
