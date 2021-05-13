@@ -15,12 +15,18 @@ public class PixmapRegion{
         set(pixmap);
     }
 
-    public int getPixel(int x, int y){
+    /** @return the RGBA value at a region position. */
+    public int get(int x, int y){
         return pixmap.get(this.x + x, this.y +y);
     }
 
-    public int getPixel(int x, int y, Color color){
-        int c = getPixel(x, y);
+    /** @return the alpha value at a region position, 0 - 255. */
+    public int getA(int x, int y){
+        return pixmap.getA(this.x + x, this.y +y);
+    }
+
+    public int get(int x, int y, Color color){
+        int c = get(x, y);
         color.set(c);
         return c;
     }
@@ -38,6 +44,7 @@ public class PixmapRegion{
         return this;
     }
 
+    /** Allocates a new pixmap based on this region data. */
     public Pixmap crop(){
         return Pixmaps.crop(pixmap, x, y, width, height);
     }

@@ -524,6 +524,11 @@ public class Pixmap implements Disposable{
         return pixels.get((x + y * width) * 4 + 3);
     }
 
+    /** @return whether the alpha at a position is 0. */
+    public boolean empty(int x, int y){
+        return pixels.get((x + y * width) * 4 + 3) == 0;
+    }
+
     /** @return The width of the Pixmap in pixels. */
     public int getWidth(){
         return width;

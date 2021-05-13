@@ -1,6 +1,5 @@
 package arc.graphics;
 
-import arc.func.*;
 import arc.graphics.Texture.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -87,12 +86,12 @@ public class Pixmaps{
         for(int x = 0; x < region.width; x++){
             for(int y = 0; y < region.height; y++){
 
-                if((region.getPixel(x, y) & 0x000000ff) < 255){
+                if(region.getA(x, y) < 255){
                     boolean found = false;
                     outer:
                     for(int rx = -radius; rx <= radius; rx++){
                         for(int ry = -radius; ry <= radius; ry++){
-                            if(Structs.inBounds(rx + x, ry + y, region.width, region.height) && Mathf.within(rx, ry, radius) && !empty(region.getPixel(rx + x, ry + y))){
+                            if(Structs.inBounds(rx + x, ry + y, region.width, region.height) && Mathf.within(rx, ry, radius) && !empty(region.get(rx + x, ry + y))){
                                 found = true;
                                 break outer;
                             }
@@ -114,8 +113,8 @@ public class Pixmaps{
 
         for(int x = 0; x < pixmap.width; x++){
             for(int y = 0; y < pixmap.height; y++){
-                if(empty(input.getRaw(x, y)) &&
-                (!empty(input.get(x, y + 1)) || !empty(input.get(x, y - 1)) || !empty(input.get(x - 1, y)) || !empty(input.get(x + 1, y))))
+                if(input.empty(x, y) &&
+                (!input.empty(x, y + 1) || !input.empty(x, y - 1) || !input.empty(x - 1, y) || !input.empty(x + 1, y)))
                     pixmap.draw(x, y, col);
             }
         }
@@ -173,14 +172,6 @@ public class Pixmaps{
 
     public static boolean empty(int i){
         return (i & 0x000000ff) == 0;
-    }
-
-    public static void traverse(Pixmap input, Intc2 t){
-        for(int x = 0; x < input.width; x++){
-            for(int y = 0; y < input.height; y++){
-                t.get(x, y);
-            }
-        }
     }
 
     public static Pixmap huePixmap(int width, int height){

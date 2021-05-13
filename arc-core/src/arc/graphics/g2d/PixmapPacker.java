@@ -542,7 +542,7 @@ public class PixmapPacker implements Disposable{
             else
                 y = next;
 
-            int colint = raster.getPixel(x, y);
+            int colint = raster.get(x, y);
             c.set(colint);
             rgba[0] = (int)(c.r * 255);
             rgba[1] = (int)(c.g * 255);
