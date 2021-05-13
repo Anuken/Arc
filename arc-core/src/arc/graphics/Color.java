@@ -206,7 +206,7 @@ public class Color{
 
     /** @return 4 0-255 RGBA components packed into an int. */
     public static int packRgba(int r, int g, int b, int a){
-        return ((r) << 24) | ((g) << 16) | ((b) << 8) | (a);
+        return (r << 24) | (g << 16) | (b << 8) | (a);
     }
 
     public int rgb565(){

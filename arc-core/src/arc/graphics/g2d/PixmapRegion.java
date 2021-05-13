@@ -17,12 +17,12 @@ public class PixmapRegion{
 
     /** @return the RGBA value at a region position. */
     public int get(int x, int y){
-        return pixmap.get(this.x + x, this.y +y);
+        return pixmap.get(this.x + x, this.y + y);
     }
 
     /** @return the alpha value at a region position, 0 - 255. */
     public int getA(int x, int y){
-        return pixmap.getA(this.x + x, this.y +y);
+        return pixmap.getA(this.x + x, this.y + y);
     }
 
     public int get(int x, int y, Color color){

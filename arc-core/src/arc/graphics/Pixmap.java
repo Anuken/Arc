@@ -94,6 +94,7 @@ public class Pixmap implements Disposable{
         pixels.position(0);
         out.pixels.position(0);
         out.pixels.put(pixels);
+        out.pixels.position(0);
         return out;
     }
 
@@ -166,9 +167,10 @@ public class Pixmap implements Disposable{
     public Pixmap outline(int color, int radius){
         Pixmap pixmap = copy();
 
+        //TODO this messes with antialiasing?
         for(int x = 0; x < width; x++){
             for(int y = 0; y < height; y++){
-                if(empty(getRaw(x, y))){
+                if(getA(x, y) == 0){
                     boolean found = false;
                     outer:
                     for(int dx = -radius; dx <= radius; dx++){
@@ -519,9 +521,9 @@ public class Pixmap implements Disposable{
         return pixels.getInt((x + y * width) * 4);
     }
 
-    /** @return The pixel alpha as a byte. No bounds checks are done! */
+    /** @return The pixel alpha as a byte, 0-255. No bounds checks are done! */
     public int getA(int x, int y){
-        return pixels.get((x + y * width) * 4 + 3);
+        return pixels.get((x + y * width) * 4 + 3) & 0xff;
     }
 
     /** @return whether the alpha at a position is 0. No bounds checks are done. */

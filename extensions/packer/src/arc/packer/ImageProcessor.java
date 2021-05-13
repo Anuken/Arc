@@ -150,7 +150,6 @@ public class ImageProcessor{
             for(int y = 0; y < source.height; y++){
                 for(int x = 0; x < source.width; x++){
                     int alpha = source.getA(x, y);
-                    if(alpha < 0) alpha += 256;
                     if(alpha > settings.alphaThreshold) break outer;
                 }
                 top++;
@@ -159,7 +158,6 @@ public class ImageProcessor{
             for(int y = source.height; --y >= top; ){
                 for(int x = 0; x < source.width; x++){
                     int alpha = source.getA(x, y);
-                    if(alpha < 0) alpha += 256;
                     if(alpha > settings.alphaThreshold) break outer;
                 }
                 bottom--;
@@ -177,7 +175,6 @@ public class ImageProcessor{
             for(int x = 0; x < source.width; x++){
                 for(int y = top; y < bottom; y++){
                     int alpha = source.getA(x, y);
-                    if(alpha < 0) alpha += 256;
                     if(alpha > settings.alphaThreshold) break outer;
                 }
                 left++;
@@ -186,7 +183,6 @@ public class ImageProcessor{
             for(int x = source.width; --x >= left; ){
                 for(int y = top; y < bottom; y++){
                     int alpha = source.getA(x, y);
-                    if(alpha < 0) alpha += 256;
                     if(alpha > settings.alphaThreshold) break outer;
                 }
                 right--;

@@ -6,7 +6,7 @@ import arc.util.Disposable;
 import java.util.concurrent.*;
 
 /**
- * Allows asnynchronous execution of {@link AsyncTask} instances on a separate thread. Needs to be disposed via a call to
+ * Allows asynchronous execution of {@link AsyncTask} instances on a separate thread. Needs to be disposed via a call to
  * {@link #dispose()} when no longer used, in which case the executor waits for running tasks to finish. Scheduled but not yet
  * running tasks will not be executed.
  * @author badlogic
@@ -15,9 +15,12 @@ import java.util.concurrent.*;
 public class AsyncExecutor implements Disposable{
     private final ExecutorService executor;
 
-    /**
-     * Creates a new AsynchExecutor that allows maxConcurrent {@link Runnable} instances to run in parallel.
-     */
+    /** Creates an AsyncExecutor that allows one thread per core. */
+    public AsyncExecutor(){
+        this(Runtime.getRuntime().availableProcessors());
+    }
+
+    /** Creates a new AsyncExecutor that allows maxConcurrent {@link Runnable} instances to run in parallel. */
     public AsyncExecutor(int maxConcurrent){
         executor = Executors.newFixedThreadPool(maxConcurrent, r -> {
             Thread thread = new Thread(r, "AsynchExecutor-Thread");

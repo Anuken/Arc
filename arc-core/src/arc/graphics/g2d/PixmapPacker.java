@@ -158,7 +158,6 @@ public class PixmapPacker implements Disposable{
         return pack(name, image, null, null);
     }
 
-
     public synchronized Rect pack(String name, PixmapRegion image, int[] splits, int[] pads){
         if(disposed) return null;
         //TODO should duplicates be allowed?

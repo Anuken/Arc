@@ -91,7 +91,7 @@ public class Pixmaps{
                     outer:
                     for(int rx = -radius; rx <= radius; rx++){
                         for(int ry = -radius; ry <= radius; ry++){
-                            if(Structs.inBounds(rx + x, ry + y, region.width, region.height) && Mathf.within(rx, ry, radius) && !empty(region.get(rx + x, ry + y))){
+                            if(Structs.inBounds(rx + x, ry + y, region.width, region.height) && Mathf.within(rx, ry, radius) && region.getA(rx + x, ry + y) != 0){
                                 found = true;
                                 break outer;
                             }
@@ -216,4 +216,134 @@ public class Pixmaps{
         drawPixmap.fill(color);
         texture.draw(drawPixmap, x, y);
     }
+
+    /**
+     * Applies alpha bleeding to the target pixmap, but with only one iteration.
+     * This is faster than standard iterative bleeding.
+     * @return the input pixmap with its pixels modified.
+     * */
+    public static Pixmap bleed(Pixmap image){
+        int w = image.width, h = image.height;
+        ByteBuffer pixels = image.getPixels();
+        int[] offsets = {1, 0, 1, 1, 0, 1, -1, 1, -1, 0, -1, -1, 0, -1, 1, -1};
+
+        for(int x = 0; x < w; x++){
+            for(int y = 0; y < h; y++){
+                if(image.empty(x, y)){
+                    int r = 0, g = 0, b = 0, count = 0;
+                    int pi = (x + y*w)*4;
+
+                    //grab for each direction
+                    for(int i = 0; i < 16; i += 2){
+                        int nx = x + offsets[i];
+                        int ny = y + offsets[i + 1];
+                        int index = (ny*w + nx)*4;
+                        if(nx >= 0 && ny >= 0 && nx < w && ny < h && pixels.get(index + 3) != 0){
+                            r += pixels.get(index) & 0xff;
+                            g += pixels.get(index + 1) & 0xff;
+                            b += pixels.get(index + 2) & 0xff;
+                            count ++;
+                        }
+                    }
+
+                    if(count > 0){
+                        pixels.put(pi, (byte)(r / count));
+                        pixels.put(pi + 1, (byte)(g / count));
+                        pixels.put(pi + 2, (byte)(b / count));
+                    }
+                }
+            }
+        }
+        return image;
+    }
+
+    /**
+     * Applies alpha bleeding to the target pixmap.
+     * @return the input pixmap with its pixels modified.
+     * */
+    public static Pixmap bleed(Pixmap image, int maxIterations){
+        int total = image.width * image.height;
+        ByteBuffer pixels = image.getPixels();
+
+        boolean any = false;
+
+        for(int i = 0; i < total; i++){
+            if(pixels.get(i * 4 + 3) == 0){
+                any = true;
+                break;
+            }
+        }
+
+        //do not waste time with full images, which can be fairly common
+        if(!any) return image;
+
+        int[] offsets = {1, 0, 1, 1, 0, 1, -1, 1, -1, 0, -1, -1, 0, -1, 1, -1};
+
+        boolean[] data = new boolean[total];
+        int[] pending = new int[total];
+        int[] changing = new int[total];
+        int pendingSize = 0, changingSize = 0;
+
+        for(int i = 0; i < total; i++){
+            if(pixels.get(i * 4 + 3) == 0){
+                pending[pendingSize++] = i;
+            }else{
+                data[i] = true;
+            }
+        }
+
+        int iterations = 0;
+        int lastPending = -1;
+        while(pendingSize > 0 && pendingSize != lastPending && iterations < maxIterations){
+            lastPending = pendingSize;
+            int index = 0;
+
+            while(index < pendingSize){
+                int pixelIndex = pending[index++];
+                int x = pixelIndex % image.width;
+                int y = pixelIndex / image.width;
+                int r = 0, g = 0, b = 0;
+                int count = 0;
+
+                for(int i = 0; i < 16; i += 2){
+                    int nx = x + offsets[i];
+                    int ny = y + offsets[i + 1];
+
+                    if(nx < 0 || nx >= image.width || ny < 0 || ny >= image.height) continue;
+
+                    int currentPixelIndex = ny * image.width + nx;
+                    if(data[currentPixelIndex]){
+                        int si = currentPixelIndex * 4;
+                        r += pixels.get(si) & 0xff;
+                        g += pixels.get(si + 1) & 0xff;
+                        b += pixels.get(si + 2) & 0xff;
+                        count++;
+                    }
+                }
+
+                if(count != 0){
+                    int idx = pixelIndex * 4;
+                    pixels.put(idx, (byte)(r / count));
+                    pixels.put(idx + 1, (byte)(g / count));
+                    pixels.put(idx + 2, (byte)(b / count));
+
+                    index--;
+                    int value = pending[index];
+                    pendingSize--;
+                    pending[index] = pending[pendingSize];
+                    changing[changingSize] = value;
+                    changingSize++;
+                }
+            }
+
+            for(int i = 0; i < changingSize; i++){
+                data[changing[i]] = true;
+            }
+            changingSize = 0;
+            iterations++;
+        }
+
+        return image;
+    }
+
 }

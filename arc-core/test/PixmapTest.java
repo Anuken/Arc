@@ -1,4 +1,3 @@
-import arc.files.*;
 import arc.graphics.*;
 import arc.util.*;
 import org.junit.*;
@@ -28,17 +27,8 @@ public class PixmapTest{
         assertEquals(0, pix.get(0, 0));
     }
 
-    //@Test
-    public void convert(){
-        Fi.get("/home/anuke/Projects/Mindustry/core/assets-raw/spritescopy").walk(f -> {
-            if(f.extEquals("png")){
-                f.writePng(new Pixmap(f));
-            }
-        });
-    }
-
     void bench(Runnable a, Runnable b, int amount){
-        for(int i = 0; i < amount/2; i++){
+        for(int i = 0; i < amount/3; i++){
             a.run();
             b.run();
         }

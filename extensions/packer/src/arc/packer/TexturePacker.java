@@ -252,7 +252,7 @@ public class TexturePacker{
             progress.end();
 
             if(settings.bleed){
-                canvas = new ColorBleedEffect().processImage(canvas, settings.bleedIterations);
+                canvas = Pixmaps.bleed(canvas, settings.bleedIterations);
             }
 
             if(settings.debug){
