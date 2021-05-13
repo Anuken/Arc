@@ -1,8 +1,6 @@
 package arc.graphics.g2d;
 
-import arc.files.*;
 import arc.graphics.*;
-import arc.graphics.Pixmap.*;
 import arc.graphics.Texture.*;
 import arc.graphics.g2d.PixmapPacker.SkylineStrategy.SkylinePage.*;
 import arc.graphics.gl.*;
@@ -10,7 +8,6 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 
-import java.io.*;
 import java.util.*;
 
 /**
@@ -80,28 +77,26 @@ public class PixmapPacker implements Disposable{
     boolean packToTexture;
     boolean disposed;
     int pageWidth, pageHeight;
-    Format pageFormat;
     int padding;
     boolean duplicateBorder;
     boolean stripWhitespaceX, stripWhitespaceY;
     Color transparentColor = new Color(0f, 0f, 0f, 0f);
     PackStrategy packStrategy;
-    private Color c = new Color();
 
     /**
      * Uses {@link GuillotineStrategy}.
-     * @see PixmapPacker#PixmapPacker(int, int, Format, int, boolean, boolean, boolean, PackStrategy)
+     * @see PixmapPacker#PixmapPacker(int, int, int, boolean, boolean, boolean, PackStrategy)
      */
-    public PixmapPacker(int pageWidth, int pageHeight, Format pageFormat, int padding, boolean duplicateBorder){
-        this(pageWidth, pageHeight, pageFormat, padding, duplicateBorder, false, false, new GuillotineStrategy());
+    public PixmapPacker(int pageWidth, int pageHeight, int padding, boolean duplicateBorder){
+        this(pageWidth, pageHeight, padding, duplicateBorder, false, false, new GuillotineStrategy());
     }
 
     /**
      * Uses {@link GuillotineStrategy}.
-     * @see PixmapPacker#PixmapPacker(int, int, Format, int, boolean, boolean, boolean, PackStrategy)
+     * @see PixmapPacker#PixmapPacker(int, int, int, boolean, boolean, boolean, PackStrategy)
      */
-    public PixmapPacker(int pageWidth, int pageHeight, Format pageFormat, int padding, boolean duplicateBorder, PackStrategy packStrategy){
-        this(pageWidth, pageHeight, pageFormat, padding, duplicateBorder, false, false, packStrategy);
+    public PixmapPacker(int pageWidth, int pageHeight, int padding, boolean duplicateBorder, PackStrategy packStrategy){
+        this(pageWidth, pageHeight, padding, duplicateBorder, false, false, packStrategy);
     }
 
     /**
@@ -113,11 +108,9 @@ public class PixmapPacker implements Disposable{
      * @param stripWhitespaceX strip whitespace in x axis
      * @param stripWhitespaceY strip whitespace in y axis
      */
-    public PixmapPacker(int pageWidth, int pageHeight, Format pageFormat, int padding, boolean duplicateBorder, boolean stripWhitespaceX,
-                        boolean stripWhitespaceY, PackStrategy packStrategy){
+    public PixmapPacker(int pageWidth, int pageHeight, int padding, boolean duplicateBorder, boolean stripWhitespaceX, boolean stripWhitespaceY, PackStrategy packStrategy){
         this.pageWidth = pageWidth;
         this.pageHeight = pageHeight;
-        this.pageFormat = pageFormat;
         this.padding = padding;
         this.duplicateBorder = duplicateBorder;
         this.stripWhitespaceX = stripWhitespaceX;
@@ -385,14 +378,6 @@ public class PixmapPacker implements Disposable{
         this.pageHeight = pageHeight;
     }
 
-    public Format getPageFormat(){
-        return pageFormat;
-    }
-
-    public void setPageFormat(Format pageFormat){
-        this.pageFormat = pageFormat;
-    }
-
     public int getPadding(){
         return padding;
     }
@@ -528,8 +513,6 @@ public class PixmapPacker implements Disposable{
     }
 
     private int getSplitPoint(PixmapRegion raster, int startX, int startY, boolean startPoint, boolean xAxis){
-        int[] rgba = new int[4];
-
         int next = xAxis ? startX : startY;
         int end = xAxis ? raster.width : raster.height;
         int breakA = startPoint ? 255 : 0;
@@ -542,69 +525,13 @@ public class PixmapPacker implements Disposable{
             else
                 y = next;
 
-            int colint = raster.get(x, y);
-            c.set(colint);
-            rgba[0] = (int)(c.r * 255);
-            rgba[1] = (int)(c.g * 255);
-            rgba[2] = (int)(c.b * 255);
-            rgba[3] = (int)(c.a * 255);
-            if(rgba[3] == breakA) return next;
+            int a = raster.getA(x, y);
+            if(a == breakA) return next;
 
             next++;
         }
 
         return 0;
-    }
-
-    /**
-     * Saves the provided PixmapPacker to the provided file. The resulting file will use the standard TextureAtlas file format and
-     * can be loaded by TextureAtlas as if it had been created using TexturePacker.
-     * @param file the file to which the atlas descriptor will be written, images will be written as siblings
-     * @throws IOException if the atlas file can not be written
-     */
-    public void save(Fi file) throws IOException{
-        save(file, TextureFilter.nearest, TextureFilter.nearest);
-    }
-
-    /**
-     * Saves the provided PixmapPacker to the provided file. The resulting file will use the standard TextureAtlas file format and
-     * can be loaded by TextureAtlas as if it had been created using TexturePacker.
-     * @param file the file to which the atlas descriptor will be written, images will be written as siblings
-     * @throws IOException if the atlas file can not be written
-     */
-    public void save(Fi file, TextureFilter minFilter, TextureFilter maxFilter) throws IOException{
-        Writer writer = file.writer(false);
-        int index = 0;
-        for(Page page : pages){
-            if(page.rects.size > 0){
-                Fi pageFile = file.sibling(file.nameWithoutExtension() + "_" + (++index) + ".PNG");
-                PixmapIO.writePng(pageFile, page.image);
-
-                writer.write("\n");
-                writer.write(pageFile.name() + "\n");
-                writer.write("size: " + page.image.width + "," + page.image.height + "\n");
-                writer.write("format: " + pageFormat.name() + "\n");
-                writer.write("filter: " + minFilter.name() + "," + maxFilter.name() + "\n");
-                writer.write("repeat: none" + "\n");
-                for(String name : page.rects.keys()){
-                    writer.write(name + "\n");
-                    PixmapPackerRect rect = page.rects.get(name);
-                    writer.write("  rotate: false" + "\n");
-                    writer.write("  xy: " + (int)rect.x + "," + (int)rect.y + "\n");
-                    writer.write("  size: " + (int)rect.width + "," + (int)rect.height + "\n");
-                    if(rect.splits != null){
-                        writer.write("  split: " + rect.splits[0] + ", " + rect.splits[1] + ", " + rect.splits[2] + ", " + rect.splits[3] + "\n");
-                        if(rect.pads != null){
-                            writer.write("  pad: " + rect.pads[0] + ", " + rect.pads[1] + ", " + rect.pads[2] + ", " + rect.pads[3] + "\n");
-                        }
-                    }
-                    writer.write("  orig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
-                    writer.write("  offset: " + rect.offsetX + ", " + (int)(rect.originalHeight - rect.height - rect.offsetY) + "\n");
-                    writer.write("  index: -1" + "\n");
-                }
-            }
-        }
-        writer.close();
     }
 
     /**

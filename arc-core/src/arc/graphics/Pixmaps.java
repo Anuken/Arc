@@ -114,7 +114,7 @@ public class Pixmaps{
         for(int x = 0; x < pixmap.width; x++){
             for(int y = 0; y < pixmap.height; y++){
                 if(input.empty(x, y) &&
-                (!input.empty(x, y + 1) || !input.empty(x, y - 1) || !input.empty(x - 1, y) || !input.empty(x + 1, y)))
+                ((!input.empty(x, y + 1) && y < pixmap.height - 1) || (!input.empty(x, y - 1) && y > 0) || (!input.empty(x - 1, y) && x > 0) || (!input.empty(x + 1, y) && x < pixmap.width - 1)))
                     pixmap.draw(x, y, col);
             }
         }
