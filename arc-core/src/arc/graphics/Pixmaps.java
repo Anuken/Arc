@@ -265,18 +265,6 @@ public class Pixmaps{
         int total = image.width * image.height;
         ByteBuffer pixels = image.getPixels();
 
-        boolean any = false;
-
-        for(int i = 0; i < total; i++){
-            if(pixels.get(i * 4 + 3) == 0){
-                any = true;
-                break;
-            }
-        }
-
-        //do not waste time with full images, which can be fairly common
-        if(!any) return image;
-
         int[] offsets = {1, 0, 1, 1, 0, 1, -1, 1, -1, 0, -1, -1, 0, -1, 1, -1};
 
         boolean[] data = new boolean[total];
