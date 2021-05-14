@@ -24,7 +24,6 @@ public class ImageProcessor{
     }
 
     /**
-     * The image won't be kept in-memory during packing if {@link Settings#limitMemory} is true.
      * @param rootPath Used to strip the root directory prefix from image file names, can be null.
      */
     public void addImage(File file, String rootPath){
@@ -42,8 +41,7 @@ public class ImageProcessor{
         int dotIndex = name.lastIndexOf('.');
         if(dotIndex != -1) name = name.substring(0, dotIndex);
 
-        Rect rect = addImage(image, name);
-        if(rect != null && settings.limitMemory) rect.unloadImage(new Fi(file));
+        addImage(image, name);
     }
 
     /**
@@ -62,7 +60,7 @@ public class ImageProcessor{
             String crc = hash(rect.getImage(this));
             Rect existing = crcs.get(crc);
             if(existing != null){
-                if(!settings.silent){
+                if(!settings.silent && settings.printAliases){
                     System.out.println(rect.name + " (alias of " + existing.name + ")");
                 }
                 existing.aliases.add(new Alias(rect));

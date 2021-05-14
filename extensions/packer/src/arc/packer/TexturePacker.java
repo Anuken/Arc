@@ -450,12 +450,6 @@ public class TexturePacker{
             this.isPatch = isPatch;
         }
 
-        /** Clears the image for this rect, which will be loaded from the specified file by {@link #getImage(ImageProcessor)}. */
-        public void unloadImage(Fi file){
-            this.file = file;
-            pixmap = null;
-        }
-
         public Pixmap getImage(ImageProcessor imageProcessor){
             if(pixmap != null) return pixmap;
 
@@ -720,12 +714,12 @@ public class TexturePacker{
         public boolean fast;
         public boolean debug;
         public boolean silent;
+        public boolean printAliases;
         public boolean combineSubdirectories;
         public boolean ignore;
         public boolean flattenPaths;
         public boolean bleed = true;
         public int bleedIterations = 2;
-        public boolean limitMemory = true;
         public boolean grid;
         public float[] scale = {1};
         public String[] scaleSuffix = {""};

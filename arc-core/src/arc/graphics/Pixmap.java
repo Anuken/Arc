@@ -667,9 +667,6 @@ public class Pixmap implements Disposable{
     public static int blend(int src, int dst){
         int src_a = src & 0xff;
         if(src_a == 0) return dst;
-        int src_b = (src >>> 8) & 0xff;
-        int src_g = (src >>> 16) & 0xff;
-        int src_r = (src >>> 24) & 0xff;
 
         int dst_a = dst & 0xff;
         if(dst_a == 0) return src;
@@ -679,9 +676,9 @@ public class Pixmap implements Disposable{
 
         dst_a -= (dst_a * src_a) / 255;
         int a = dst_a + src_a;
-        dst_r = (dst_r * dst_a + src_r * src_a) / a;
-        dst_g = (dst_g * dst_a + src_g * src_a) / a;
-        dst_b = (dst_b * dst_a + src_b * src_a) / a;
+        dst_r = (dst_r * dst_a + ((src >>> 24) & 0xff) * src_a) / a;
+        dst_g = (dst_g * dst_a + ((src >>> 16) & 0xff) * src_a) / a;
+        dst_b = (dst_b * dst_a + ((src >>> 8) & 0xff) * src_a) / a;
         return ((dst_r << 24) | (dst_g << 16) | (dst_b << 8) | a);
     }
 
