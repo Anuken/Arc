@@ -300,7 +300,7 @@ public class PixmapIO{
             Inflater inflater = new Inflater();
             inflater.setInput(imgData, 0, dataLen);
 
-            byte[] row0 = new byte[wT + 1], row = new byte[wT + 1]; // every row contains filter byte
+            byte[] prev = new byte[wT + 1], row = new byte[wT + 1]; // every row contains filter byte
 
             for(int i = 1, s = 0; s < height; i = 1, s++){ // scanLine
                 //inflating each line is the bottleneck here, but unfortunately there's nothing I can do about it
@@ -315,29 +315,29 @@ public class PixmapIO{
                         }
                     }else if(first == 2){
                         for(; i < v; i++){
-                            row[i] += row0[i];
+                            row[i] += prev[i];
                         }
                     }else if(first == 3){
                         for(; i < bpx + 1; i++){
-                            row[i] += (row0[i] & 0xFF) >>> 1;
+                            row[i] += (prev[i] & 0xFF) >>> 1;
                         }
                         for(; i < v; i++){
-                            row[i] += ((row0[i] & 0xFF) + (row[i - bpx] & 0xFF)) >>> 1;
+                            row[i] += ((prev[i] & 0xFF) + (row[i - bpx] & 0xFF)) >>> 1;
                         }
                     }else{
                         for(; i < bpx + 1; i++){
-                            row[i] += row0[i];
+                            row[i] += prev[i];
                         }
                         for(; i < v; i++){
-                            row[i] += paeth(row[i - bpx] & 0xFF, row0[i] & 0xFF, row0[i - bpx] & 0xFF);
+                            row[i] += paeth(row[i - bpx] & 0xFF, prev[i] & 0xFF, prev[i - bpx] & 0xFF);
                         }
                     }
                 }
 
-                ByteBuffer wRow = ByteBuffer.wrap(row);
-
                 //format output, normal mode
                 if(bpx == 3){
+                    //this could probably made faster, but ehhh
+                    ByteBuffer wRow = ByteBuffer.wrap(row);
                     for(i = 1; i < v; i += bpx){
                         bb.putInt((wRow.getInt(i) & 0xFFFFFF00) + 0xFF);
                     }
@@ -345,19 +345,19 @@ public class PixmapIO{
                     //when bitDepth is 4, split every byte in two
                     if(bitDepth == 4){
                         for(i = 1; i < v; i += bpx){
-                            bb.putInt(palette[Pack.leftByte(wRow.get(i))]);
-                            bb.putInt(palette[Pack.rightByte(wRow.get(i))]);
+                            bb.putInt(palette[Pack.leftByte(row[i])]);
+                            bb.putInt(palette[Pack.rightByte(row[i])]);
                         }
                     }else{
                         for(i = 1; i < v; i += bpx){
-                            bb.putInt(palette[wRow.get(i)]);
+                            bb.putInt(palette[row[i & 0xff]]);
                         }
                     }
                 }else{
                     bb.put(row, 1, v - 1);
                 }
-                byte[] swap = row0;
-                row0 = row;
+                byte[] swap = prev;
+                prev = row;
                 row = swap;
             }
             bb.position(bb.capacity());
