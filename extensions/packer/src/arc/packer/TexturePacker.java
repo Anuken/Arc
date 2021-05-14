@@ -20,7 +20,6 @@ public class TexturePacker{
     private final Packer packer;
     private final ImageProcessor imageProcessor;
     private final Seq<InputImage> inputImages = new Seq<>();
-    private ProgressListener progress;
 
     /** @param rootDir See {@link #setRootDir(File)}. */
     public TexturePacker(File rootDir, Settings settings){
@@ -82,62 +81,30 @@ public class TexturePacker{
             packFileName = packFileName.substring(0, packFileName.length() - settings.atlasExtension.length());
         outputDir.mkdirs();
 
-        if(progress == null){
-            progress = new ProgressListener(){
-                @Override
-                public void progress(float progress){
-                }
-            };
-        }
-
-        progress.start(1);
         int n = settings.scale.length;
         for(int i = 0; i < n; i++){
-            progress.start(1f / n);
 
             imageProcessor.setScale(settings.scale[i]);
             imageProcessor.setResampling(settings.scaleResampling);
 
-            progress.start(0.35f);
-            progress.count = 0;
-            progress.total = inputImages.size;
-            for(int ii = 0, nn = inputImages.size; ii < nn; ii++, progress.count++){
+            for(int ii = 0, nn = inputImages.size; ii < nn; ii++){
                 InputImage inputImage = inputImages.get(ii);
                 if(inputImage.file != null)
                     imageProcessor.addImage(inputImage.file, inputImage.rootPath);
                 else
                     imageProcessor.addImage(inputImage.image, inputImage.name);
-                if(progress.update(ii + 1, nn)) return;
             }
-            progress.end();
+            Seq<Page> pages = packer.pack(imageProcessor.getImages());
 
-            progress.start(0.19f);
-            progress.count = 0;
-            progress.total = imageProcessor.getImages().size;
-            Seq<Page> pages = packer.pack(progress, imageProcessor.getImages());
-            progress.end();
-
-            progress.start(0.45f);
-            progress.count = 0;
-            progress.total = pages.size;
             String scaledPackFileName = settings.getScaledPackFileName(packFileName, i);
             writeImages(outputDir, scaledPackFileName, pages);
-            progress.end();
-
-            progress.start(0.01f);
             try{
                 writePackFile(outputDir, scaledPackFileName, pages);
             }catch(IOException ex){
                 throw new RuntimeException("Error writing pack file.", ex);
             }
             imageProcessor.clear();
-            progress.end();
-
-            progress.end();
-
-            if(progress.update(i + 1, n)) return;
         }
-        progress.end();
     }
 
     private void writeImages(File outputDir, String scaledPackFileName, Seq<Page> pages){
@@ -186,9 +153,8 @@ public class TexturePacker{
 
             Pixmap canvas = new Pixmap(width, height);
 
-            if(!settings.silent) System.out.println("Writing " + canvas.width + "x" + canvas.height + ": " + outputFile);
+            if(!settings.silent) System.out.println("| Writing " + canvas.width + "x" + canvas.height + ": " + outputFile);
 
-            progress.start(1 / (float)pn);
             for(int r = 0, rn = page.outputRects.size; r < rn; r++){
                 Rect rect = page.outputRects.get(r);
                 Pixmap image = rect.getImage(imageProcessor);
@@ -246,10 +212,7 @@ public class TexturePacker{
                 if(settings.debug){
                     canvas.fillRect(rectX, rectY, rect.width - settings.paddingX - 1, rect.height - settings.paddingY - 1, Color.magenta.rgba());
                 }
-
-                if(progress.update(r + 1, rn)) return;
             }
-            progress.end();
 
             if(settings.bleed){
                 Pixmaps.bleed(canvas, settings.bleedIterations);
@@ -266,9 +229,6 @@ public class TexturePacker{
             }else{
                 throw new ArcRuntimeException("Unsupported image format: '" + settings.outputFormat + "'. Must be one of: apix, png");
             }
-
-            if(progress.update(p + 1, pn)) return;
-            progress.count++;
         }
     }
 
@@ -368,11 +328,6 @@ public class TexturePacker{
                 write.s(rect.pads[i]);
             }
         }
-    }
-
-    /** @param progressListener May be null. */
-    public void setProgressListener(ProgressListener progressListener){
-        this.progress = progressListener;
     }
 
     /** @author Nathan Sweet */
@@ -527,20 +482,14 @@ public class TexturePacker{
         process(new Settings(), input, output, packFileName);
     }
 
-    public static void process(Settings settings, String input, String output, String packFileName){
-        process(settings, input, output, packFileName, null);
-    }
-
     /**
      * @param input Directory containing individual images to be packed.
      * @param output Directory where the pack file and page images will be written.
      * @param packFileName The name of the pack file. Also used to name the page images.
-     * @param progress May be null.
      */
-    public static void process(Settings settings, String input, String output, String packFileName,
-                               final ProgressListener progress){
+    public static void process(Settings settings, String input, String output, String packFileName){
         try{
-            TexturePackerFileProcessor processor = new TexturePackerFileProcessor(settings, packFileName, progress);
+            TexturePackerFileProcessor processor = new TexturePackerFileProcessor(settings, packFileName);
             processor.process(new File(input), new File(output));
         }catch(Exception ex){
             throw new RuntimeException("Error packing images: " + Strings.getFinalMessage(ex), ex);
@@ -607,90 +556,12 @@ public class TexturePacker{
 
     public interface Packer{
         Seq<Page> pack(Seq<Rect> inputRects);
-        Seq<Page> pack(ProgressListener progress, Seq<Rect> inputRects);
     }
 
     static final class InputImage{
         File file;
         String rootPath, name;
         Pixmap image;
-    }
-
-    public static abstract class ProgressListener{
-        private float scale = 1, lastUpdate;
-        private final FloatSeq portions = new FloatSeq(8);
-        volatile boolean cancel;
-        private String message = "";
-        int count, total;
-
-        public void reset(){
-            scale = 1;
-            message = "";
-            count = 0;
-            total = 0;
-            progress(0);
-        }
-
-        public void start(float portion){
-            if(portion == 0) throw new IllegalArgumentException("portion cannot be 0.");
-            portions.add(lastUpdate);
-            portions.add(scale * portion);
-            portions.add(scale);
-            scale *= portion;
-        }
-
-        /** Returns true if cancelled. */
-        public boolean update(int count, int total){
-            update(total == 0 ? 0 : count / (float)total);
-            return isCancelled();
-        }
-
-        public void update(float percent){
-            lastUpdate = portions.get(portions.size - 3) + portions.get(portions.size - 2) * percent;
-            progress(lastUpdate);
-        }
-
-        public void end(){
-            scale = portions.pop();
-            float portion = portions.pop();
-            lastUpdate = portions.pop() + portion;
-            progress(lastUpdate);
-        }
-
-        public void cancel(){
-            cancel = true;
-        }
-
-        public boolean isCancelled(){
-            return cancel;
-        }
-
-        public void setMessage(String message){
-            this.message = message;
-            progress(lastUpdate);
-        }
-
-        public String getMessage(){
-            return message;
-        }
-
-        public void setCount(int count){
-            this.count = count;
-        }
-
-        public int getCount(){
-            return count;
-        }
-
-        public void setTotal(int total){
-            this.total = total;
-        }
-
-        public int getTotal(){
-            return total;
-        }
-
-        abstract public void progress(float progress);
     }
 
     /** @author Nathan Sweet */

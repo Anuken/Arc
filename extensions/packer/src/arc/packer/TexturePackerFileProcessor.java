@@ -11,7 +11,6 @@ import java.util.regex.*;
 /** @author Nathan Sweet */
 public class TexturePackerFileProcessor extends FileProcessor{
     private final Settings defaultSettings;
-    private final ProgressListener progress;
     private ObjectMap<File, Settings> dirToSettings = new ObjectMap<>();
     private Json json = new Json();
     private String packFileName;
@@ -21,13 +20,11 @@ public class TexturePackerFileProcessor extends FileProcessor{
     int packCount;
 
     public TexturePackerFileProcessor(){
-        this(new Settings(), "pack.aatls", null);
+        this(new Settings(), "pack.aatls");
     }
 
-    /** @param progress May be null. */
-    public TexturePackerFileProcessor(Settings defaultSettings, String packFileName, ProgressListener progress){
+    public TexturePackerFileProcessor(Settings defaultSettings, String packFileName){
         this.defaultSettings = defaultSettings;
-        this.progress = progress;
 
         if(packFileName.toLowerCase().endsWith(defaultSettings.atlasExtension.toLowerCase()))
             packFileName = packFileName.substring(0, packFileName.length() - defaultSettings.atlasExtension.length());
@@ -81,10 +78,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
         countOnly = false;
 
         // Do actual processing.
-        if(progress != null) progress.start(1);
-        Seq<Entry> result = super.process(inputFile, outputRoot);
-        if(progress != null) progress.end();
-        return result;
+        return super.process(inputFile, outputRoot);
     }
 
     void merge(Settings settings, File settingsFile){
@@ -226,27 +220,11 @@ public class TexturePackerFileProcessor extends FileProcessor{
                 System.out.println(inputDir.inputFile.getAbsolutePath());
             }
         }
-        if(progress != null){
-            progress.start(1f / packCount);
-            String inputPath = null;
-            try{
-                String rootPath = root.getCanonicalPath();
-                inputPath = inputDir.inputFile.getCanonicalPath();
-                if(inputPath.startsWith(rootPath)){
-                    rootPath = rootPath.replace('\\', '/');
-                    inputPath = inputPath.substring(rootPath.length()).replace('\\', '/');
-                    if(inputPath.startsWith("/")) inputPath = inputPath.substring(1);
-                }
-            }catch(IOException ignored){
-            }
-            if(inputPath == null || inputPath.length() == 0) inputPath = inputDir.inputFile.getName();
-            progress.setMessage(inputPath);
-        }
+
         TexturePacker packer = newTexturePacker(root, settings);
         for(Entry file : files)
             packer.addImage(file.inputFile);
         pack(packer, inputDir);
-        if(progress != null) progress.end();
     }
 
     protected void pack(TexturePacker packer, Entry inputDir){
@@ -254,8 +232,6 @@ public class TexturePackerFileProcessor extends FileProcessor{
     }
 
     protected TexturePacker newTexturePacker(File root, Settings settings){
-        TexturePacker packer = new TexturePacker(root, settings);
-        packer.setProgressListener(progress);
-        return packer;
+        return new TexturePacker(root, settings);
     }
 }

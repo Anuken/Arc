@@ -33,11 +33,6 @@ public class MaxRectsPacker implements Packer{
 
     @Override
     public Seq<Page> pack(Seq<Rect> inputRects){
-        return pack(null, inputRects);
-    }
-
-    @Override
-    public Seq<Page> pack(ProgressListener progress, Seq<Rect> inputRects){
         int n = inputRects.size;
         for(int i = 0; i < n; i++){
             Rect rect = inputRects.get(i);
@@ -61,9 +56,6 @@ public class MaxRectsPacker implements Packer{
 
         Seq<Page> pages = new Seq<>();
         while(inputRects.size > 0){
-            progress.count = n - inputRects.size + 1;
-            if(progress.update(progress.count, n)) break;
-
             Page result = packPage(inputRects);
             pages.add(result);
             inputRects = result.remainingRects;
@@ -130,7 +122,7 @@ public class MaxRectsPacker implements Packer{
             }
         }
 
-        if(!settings.silent) System.out.print("Packing");
+        if(!settings.silent) System.out.print("| Packing");
 
         // Find the minimal page size that fits all rects.
         Page bestResult = null;
