@@ -168,33 +168,33 @@ public class TexturePacker{
                         // Copy corner pixels to fill corners of the padding.
                         for(int i = 1; i <= amountX; i++){
                             for(int j = 1; j <= amountY; j++){
-                                canvas.draw(rectX - j, rectY + iw - 1 + i, image.getRaw(0, 0));
-                                canvas.draw(rectX + ih - 1 + j, rectY + iw - 1 + i, image.getRaw(0, ih - 1));
-                                canvas.draw(rectX - j, rectY - i, image.getRaw(iw - 1, 0));
-                                canvas.draw(rectX + ih - 1 + j, rectY - i, image.getRaw(iw - 1, ih - 1));
+                                canvas.set(rectX - j, rectY + iw - 1 + i, image.getRaw(0, 0));
+                                canvas.set(rectX + ih - 1 + j, rectY + iw - 1 + i, image.getRaw(0, ih - 1));
+                                canvas.set(rectX - j, rectY - i, image.getRaw(iw - 1, 0));
+                                canvas.set(rectX + ih - 1 + j, rectY - i, image.getRaw(iw - 1, ih - 1));
                             }
                         }
                         // Copy edge pixels into padding.
                         for(int i = 1; i <= amountY; i++){
                             for(int j = 0; j < iw; j++){
-                                canvas.draw(rectX - i, rectY + iw - 1 - j, image.getRaw(j, 0));
-                                canvas.draw(rectX + ih - 1 + i, rectY + iw - 1 - j, image.getRaw(j, ih - 1));
+                                canvas.set(rectX - i, rectY + iw - 1 - j, image.getRaw(j, 0));
+                                canvas.set(rectX + ih - 1 + i, rectY + iw - 1 - j, image.getRaw(j, ih - 1));
                             }
                         }
                         for(int i = 1; i <= amountX; i++){
                             for(int j = 0; j < ih; j++){
-                                canvas.draw(rectX + j, rectY - i, image.getRaw(iw - 1, j));
-                                canvas.draw(rectX + j, rectY + iw - 1 + i, image.getRaw(0, j));
+                                canvas.set(rectX + j, rectY - i, image.getRaw(iw - 1, j));
+                                canvas.set(rectX + j, rectY + iw - 1 + i, image.getRaw(0, j));
                             }
                         }
                     }else{
                         // Copy corner pixels to fill corners of the padding.
                         for(int i = 1; i <= amountX; i++){
                             for(int j = 1; j <= amountY; j++){
-                                canvas.draw(rectX - i, rectY - j, image.getRaw(0, 0));
-                                canvas.draw(rectX - i, rectY + ih - 1 + j, image.getRaw(0, ih - 1));
-                                canvas.draw(rectX + iw - 1 + i, rectY - j, image.getRaw(iw - 1, 0));
-                                canvas.draw(rectX + iw - 1 + i, rectY + ih - 1 + j, image.getRaw(iw - 1, ih - 1));
+                                canvas.set(rectX - i, rectY - j, image.getRaw(0, 0));
+                                canvas.set(rectX - i, rectY + ih - 1 + j, image.getRaw(0, ih - 1));
+                                canvas.set(rectX + iw - 1 + i, rectY - j, image.getRaw(iw - 1, 0));
+                                canvas.set(rectX + iw - 1 + i, rectY + ih - 1 + j, image.getRaw(iw - 1, ih - 1));
                             }
                         }
                         // Copy edge pixels into padding.
@@ -236,11 +236,11 @@ public class TexturePacker{
         if(rotated){
             for(int i = 0; i < w; i++)
                 for(int j = 0; j < h; j++)
-                    dst.draw(dx + j, dy + w - i - 1, src.getRaw(x + i, y + j));
+                    dst.set(dx + j, dy + w - i - 1, src.getRaw(x + i, y + j));
         }else{
             for(int i = 0; i < w; i++)
                 for(int j = 0; j < h; j++)
-                    dst.draw(dx + i, dy + j, src.getRaw(x + i, y + j));
+                    dst.set(dx + i, dy + j, src.getRaw(x + i, y + j));
         }
     }
 

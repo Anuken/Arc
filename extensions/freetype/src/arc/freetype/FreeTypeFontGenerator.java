@@ -635,7 +635,7 @@ public class FreeTypeFontGenerator implements Disposable{
                 int idx = h * mainBitmap.getPitch();
                 for(int w = 0; w < (glyph.width + glyph.xoffset); w++){
                     int bit = (buf.get(idx + (w / 8)) >>> (7 - (w % 8))) & 1;
-                    mainPixmap.draw(w, h, ((bit == 1) ? whiteIntBits : clearIntBits));
+                    mainPixmap.set(w, h, ((bit == 1) ? whiteIntBits : clearIntBits));
                 }
             }
         }

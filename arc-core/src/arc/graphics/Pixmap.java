@@ -138,7 +138,7 @@ public class Pixmap implements Disposable{
 
         for(int x = 0; x < width; x++){
             for(int y = 0; y < height; y++){
-                copy.draw(x, height - 1 - y, getRaw(x, y));
+                copy.set(x, height - 1 - y, getRaw(x, y));
             }
         }
 
@@ -151,7 +151,7 @@ public class Pixmap implements Disposable{
 
         for(int x = 0; x < width; x++){
             for(int y = 0; y < height; y++){
-                copy.draw(width - 1 - x, y, getRaw(x, y));
+                copy.set(width - 1 - x, y, getRaw(x, y));
             }
         }
 
@@ -182,7 +182,7 @@ public class Pixmap implements Disposable{
                         }
                     }
                     if(found){
-                        pixmap.drawRaw(x, y, color);
+                        pixmap.setRaw(x, y, color);
                     }
                 }
             }
@@ -211,7 +211,7 @@ public class Pixmap implements Disposable{
         dy <<= 1;
         dx <<= 1;
 
-        draw(x, y, color);
+        set(x, y, color);
 
         if(dx > dy){
             fraction = dy - (dx >> 1);
@@ -222,7 +222,7 @@ public class Pixmap implements Disposable{
                 }
                 x += stepx;
                 fraction += dy;
-                draw(x, y, color);
+                set(x, y, color);
             }
         }else{
             fraction = dx - (dy >> 1);
@@ -233,7 +233,7 @@ public class Pixmap implements Disposable{
                 }
                 y += stepy;
                 fraction += dx;
-                draw(x, y, color);
+                set(x, y, color);
             }
         }
     }
@@ -365,7 +365,7 @@ public class Pixmap implements Disposable{
                     for(sx = srcx, dx = dstx; sx < srcx + srcWidth; sx++, dx++){
                         if(sx < 0 || dx < 0) continue;
                         if(sx >= owidth || dx >= width) break;
-                        drawRaw(dx, dy, blend(pixmap.getRaw(sx, sy), getRaw(dx, dy)));
+                        setRaw(dx, dy, blend(pixmap.getRaw(sx, sy), getRaw(dx, dy)));
                     }
                 }
             }else{
@@ -377,7 +377,7 @@ public class Pixmap implements Disposable{
                     for(sx = srcx, dx = dstx; sx < srcx + srcWidth; sx++, dx++){
                         if(sx < 0 || dx < 0) continue;
                         if(sx >= owidth || dx >= width) break;
-                        drawRaw(dx, dy, pixmap.getRaw(sx, sy));
+                        setRaw(dx, dy, pixmap.getRaw(sx, sy));
                     }
                 }
             }
@@ -424,7 +424,7 @@ public class Pixmap implements Disposable{
                         int a = (int)((c1 & 0xff) * ta + (c2 & 0xff) * tb + (c3 & 0xff) * tc + (c4 & 0xff) * td) & 0xff;
                         int srccol = (r << 24) | (g << 16) | (b << 8) | a;
 
-                        drawRaw(dx, dy, srccol);
+                        setRaw(dx, dy, srccol);
                     }
                 }
             }else{
@@ -445,7 +445,7 @@ public class Pixmap implements Disposable{
                         if(sx < 0 || dx < 0) continue;
                         if(sx >= owidth || dx >= width) break;
 
-                        drawRaw(dx, dy, pixmap.getRaw(sx, sy));
+                        setRaw(dx, dy, pixmap.getRaw(sx, sy));
                     }
                 }
             }
@@ -554,29 +554,25 @@ public class Pixmap implements Disposable{
         return handle == 0;
     }
 
-    public void draw(int x, int y, Color color){
-        draw(x, y, color.rgba());
+    public void set(int x, int y, Color color){
+        set(x, y, color.rgba());
     }
 
     /**
-     * Draws a pixel at the given location with the given color.
-     * @param x the x-coordinate
-     * @param y the y-coordinate
+     * Sets a pixel at the given location with the given color.
      * @param color the color in RGBA8888 format.
      */
-    public void draw(int x, int y, int color){
+    public void set(int x, int y, int color){
         if(in(x, y)){
             pixels.putInt((x + y * width) * 4, color);
         }
     }
 
     /**
-     * Draws a pixel at the given location with the given color. No bounds checks are done!
-     * @param x the x-coordinate
-     * @param y the y-coordinate
+     * Sets a pixel at the given location with the given color. No bounds checks are done!
      * @param color the color in RGBA8888 format.
      */
-    public void drawRaw(int x, int y, int color){
+    public void setRaw(int x, int y, int color){
         pixels.putInt((x + y * width) * 4, color);
     }
 
@@ -607,13 +603,7 @@ public class Pixmap implements Disposable{
         return Gl.unsignedByte;
     }
 
-    /**
-     * Returns the direct ByteBuffer holding the pixel data. For the format Alpha each value is encoded as a byte. For the format
-     * LuminanceAlpha the luminance is the first byte and the alpha is the second byte of the pixel. For the formats RGB888 and
-     * RGBA8888 the color components are stored in a single byte each in the order red, green, blue (alpha). For the formats RGB565
-     * and RGBA4444 the pixel colors are stored in shorts in machine dependent order.
-     * @return the direct {@link ByteBuffer} holding the pixel data.
-     */
+    /** @return the direct {@link ByteBuffer} holding the pixel data. */
     public ByteBuffer getPixels(){
         if(handle == 0) throw new ArcRuntimeException("Pixmap already disposed");
         return pixels;
@@ -637,7 +627,7 @@ public class Pixmap implements Disposable{
         x2++;
 
         while(x1 != x2){
-            drawRaw(x1++, y, color);
+            setRaw(x1++, y, color);
         }
     }
 
@@ -659,7 +649,7 @@ public class Pixmap implements Disposable{
         y2++;
 
         while(y1 != y2){
-            drawRaw(x, y1++, color);
+            setRaw(x, y1++, color);
         }
     }
 
