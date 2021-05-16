@@ -1,4 +1,4 @@
-package arc.graphics.profiling;
+package arc.profiling;
 
 import arc.Graphics;
 import arc.graphics.GL30;

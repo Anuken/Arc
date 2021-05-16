@@ -1,8 +1,8 @@
-package arc.graphics.profiling;
+package arc.profiling;
 
 import arc.util.*;
 
-import static arc.graphics.profiling.GLInterceptor.resolveErrorNumber;
+import static arc.profiling.GLInterceptor.resolveErrorNumber;
 
 /**
  * Listener for GL errors detected by {@link GLProfiler}.
