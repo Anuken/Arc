@@ -5,7 +5,8 @@ package arc.net;
  * @author Nathan Sweet <misc@n4te.com>
  */
 public interface FrameworkMessage{
-    FrameworkMessage.KeepAlive keepAlive = new KeepAlive();
+    KeepAlive keepAlive = new KeepAlive();
+    DiscoverHost discoverHost = new DiscoverHost();
 
     /**
      * Internal message to give the client the server assigned connection ID.

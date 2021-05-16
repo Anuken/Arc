@@ -74,9 +74,25 @@ public class Reads implements Closeable{
         }
     }
 
+    /** allocate & read byte array */
+    public byte[] b(int length){
+        try{
+            byte[] array = new byte[length];
+            input.readFully(array);
+            return array;
+        }catch(IOException e){
+            throw new RuntimeException(e);
+        }
+    }
+
     /** read byte array */
     public byte[] b(byte[] array){
-        return b(array, 0, array.length);
+        try{
+            input.readFully(array);
+            return array;
+        }catch(IOException e){
+            throw new RuntimeException(e);
+        }
     }
 
     /** read byte array w/ offset */

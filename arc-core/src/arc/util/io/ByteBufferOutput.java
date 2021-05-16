@@ -13,12 +13,8 @@ public class ByteBufferOutput implements DataOutput{
         this.buffer = buffer;
     }
 
-    /** {@link #setBuffer} must be called before this object can be used. */
+    /** buffer must be set before this object can be used. */
     public ByteBufferOutput(){
-    }
-
-    public void setBuffer(ByteBuffer buffer){
-        this.buffer = buffer;
     }
 
     @Override

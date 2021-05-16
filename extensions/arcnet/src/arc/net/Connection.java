@@ -212,20 +212,22 @@ public class Connection{
 
     void notifyConnected(){
         NetListener[] listeners = this.listeners;
-        for(int i = 0, n = listeners.length; i < n; i++)
-            listeners[i].connected(this);
+        for(NetListener listener : listeners){
+            listener.connected(this);
+        }
     }
 
     void notifyDisconnected(DcReason reason){
         NetListener[] listeners = this.listeners;
-        for(int i = 0, n = listeners.length; i < n; i++)
-            listeners[i].disconnected(this, reason);
+        for(NetListener listener : listeners){
+            listener.disconnected(this, reason);
+        }
     }
 
     void notifyIdle(){
         NetListener[] listeners = this.listeners;
-        for(int i = 0, n = listeners.length; i < n; i++){
-            listeners[i].idle(this);
+        for(NetListener listener : listeners){
+            listener.idle(this);
             if(!isIdle())
                 break;
         }
@@ -244,9 +246,11 @@ public class Connection{
                 sendTCP(ping);
             }
         }
+
         NetListener[] listeners = this.listeners;
-        for(int i = 0, n = listeners.length; i < n; i++)
-            listeners[i].received(this, object);
+        for(NetListener listener : listeners){
+            listener.received(this, object);
+        }
     }
 
     /**
@@ -277,22 +281,7 @@ public class Connection{
      * or null if this connection is not connected.
      */
     public InetSocketAddress getRemoteAddressUDP(){
-        InetSocketAddress connectedAddress = udp.connectedAddress;
-        if(connectedAddress != null)
-            return connectedAddress;
-        return udpRemoteAddress;
-    }
-
-    /**
-     * Workaround for broken NIO networking on Android 1.6. If true, the
-     * underlying NIO buffer is always copied to the beginning of the buffer
-     * before being given to the SocketChannel for sending. The Harmony
-     * SocketChannel implementation in Android 1.6 ignores the buffer position,
-     * always copying from the beginning of the buffer. This is fixed in Android
-     * 2.0+.
-     */
-    public void setBufferPositionFix(boolean bufferPositionFix){
-        tcp.bufferPositionFix = bufferPositionFix;
+        return udp.connectedAddress != null ? udp.connectedAddress : udpRemoteAddress;
     }
 
     /**
@@ -317,8 +306,7 @@ public class Connection{
      * @see #setIdleThreshold(float)
      */
     public boolean isIdle(){
-        return tcp.writeBuffer.position()
-        / (float)tcp.writeBuffer.capacity() < tcp.idleThreshold;
+        return tcp.writeBuffer.position() / (float)tcp.writeBuffer.capacity() < tcp.idleThreshold;
     }
 
     /**

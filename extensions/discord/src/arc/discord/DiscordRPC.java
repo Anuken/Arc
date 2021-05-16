@@ -151,7 +151,7 @@ public final class DiscordRPC{
             throw new IllegalStateException(String.format("IPCClient (ID: %d) is already connected!", clientId));
     }
 
-    public static class Packet{
+    static class Packet{
         public final PacketOp op;
         public final Jval data;
 
@@ -175,7 +175,7 @@ public final class DiscordRPC{
         }
     }
 
-    public enum PacketOp{
+    enum PacketOp{
         handshake, frame, close, ping, pong
     }
 
@@ -256,7 +256,7 @@ public final class DiscordRPC{
         uninitialized, connecting, connected, closed, disconnected
     }
 
-    public abstract static class Pipe{
+    abstract static class Pipe{
         private static final int version = 1;
         // a list of system property keys to get IPC file from different unix systems.
         private final static String[] unixPaths = {"XDG_RUNTIME_DIR", "TMPDIR", "TMP", "TEMP"};
@@ -319,7 +319,7 @@ public final class DiscordRPC{
         public abstract void close() throws IOException;
     }
 
-    public static class UnixPipe extends Pipe{
+    static class UnixPipe extends Pipe{
         private final SocketChannel socket;
         private final ByteBuffer buffer = ByteBuffer.allocate(1024 * 32);
 
@@ -369,7 +369,7 @@ public final class DiscordRPC{
         }
     }
 
-    public static class WindowsPipe extends Pipe{
+    static class WindowsPipe extends Pipe{
         private final RandomAccessFile file;
 
         WindowsPipe(String location) throws Exception{

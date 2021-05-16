@@ -15,7 +15,6 @@ class TcpConnection{
     SocketChannel socketChannel;
     int keepAliveMillis = 8000;
     final ByteBuffer readBuffer, writeBuffer;
-    boolean bufferPositionFix;
     int timeoutMillis = 12000;
     float idleThreshold = 0.1f;
 
@@ -164,10 +163,6 @@ class TcpConnection{
         ByteBuffer buffer = writeBuffer;
         buffer.flip();
         while(buffer.hasRemaining()){
-            if(bufferPositionFix){
-                buffer.compact();
-                buffer.flip();
-            }
             if(socketChannel.write(buffer) == 0)
                 break;
         }
@@ -195,8 +190,7 @@ class TcpConnection{
                 // Write data.
                 serialization.write(writeBuffer, object);
             }catch(Throwable ex){
-                throw new ArcNetException("Error serializing object of type: "
-                + object.getClass().getName(), ex);
+                throw new ArcNetException("Error serializing object of type: " + object.getClass().getName(), ex);
             }
             int end = writeBuffer.position();
 
