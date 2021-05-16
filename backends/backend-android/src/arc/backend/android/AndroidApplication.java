@@ -138,8 +138,8 @@ public class AndroidApplication extends Activity implements Application{
         useImmersiveMode(this.useImmersiveMode);
         if(this.useImmersiveMode && getVersion() >= Build.VERSION_CODES.KITKAT){
             try{
-                View rootView = getApplicationWindow().getDecorView();
-                rootView.setOnSystemUiVisibilityChangeListener(arg0 -> getHandler().post(() -> useImmersiveMode(true)));
+                View rootView = this.getWindow().getDecorView();
+                rootView.setOnSystemUiVisibilityChangeListener(arg0 -> this.handler.post(() -> useImmersiveMode(true)));
             }catch(Throwable e){
                 Log.err("[AndroidApplication] Failed to create AndroidVisibilityListener", e);
             }
@@ -233,8 +233,7 @@ public class AndroidApplication extends Activity implements Application{
             return true;
         }else{
             runOnUiThread(() -> {
-                Toast toast = Toast.makeText(getContext(), "Unable to open folder (missing valid file manager?)\n" + file, Toast.LENGTH_LONG);
-                toast.show();
+                Toast.makeText(this, "Unable to open folder (missing valid file manager?)\n" + file, Toast.LENGTH_LONG).show();
             });
             return false;
         }
@@ -337,26 +336,6 @@ public class AndroidApplication extends Activity implements Application{
     @Override
     public Seq<ApplicationListener> getListeners(){
         return listeners;
-    }
-
-    public Context getContext(){
-        return this;
-    }
-
-    public Seq<Runnable> getRunnables(){
-        return runnables;
-    }
-
-    public Seq<Runnable> getExecutedRunnables(){
-        return executedRunnables;
-    }
-
-    public Window getApplicationWindow(){
-        return this.getWindow();
-    }
-
-    public Handler getHandler(){
-        return this.handler;
     }
 
     /**

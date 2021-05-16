@@ -84,7 +84,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
 
         Gl.reset();
         EGLConfigChooser configChooser = getEglConfigChooser();
-        GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy, config.useGL30 ? 3 : 2);
+        GLSurfaceView20 view = new GLSurfaceView20(application, resolutionStrategy, config.useGL30 ? 3 : 2);
         if(configChooser != null)
             view.setEGLConfigChooser(configChooser);
         else
@@ -354,14 +354,14 @@ public class AndroidGraphics extends Graphics implements Renderer{
         if(Mathf.equal(deltaTime, 0f)) deltaTime = 1f / 60f;
 
         if(running){
-            synchronized(app.getRunnables()){
-                app.getExecutedRunnables().clear();
-                app.getExecutedRunnables().addAll(app.getRunnables());
-                app.getRunnables().clear();
+            synchronized(app.runnables){
+                app.executedRunnables.clear();
+                app.executedRunnables.addAll(app.runnables);
+                app.runnables.clear();
             }
 
-            for(int i = 0; i < app.getExecutedRunnables().size; i++){
-                app.getExecutedRunnables().get(i).run();
+            for(int i = 0; i < app.executedRunnables.size; i++){
+                app.executedRunnables.get(i).run();
             }
 
             ((AndroidInput)Core.input).processEvents();
