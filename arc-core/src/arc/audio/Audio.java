@@ -18,9 +18,16 @@ public class Audio implements Disposable{
     /** Global bus for all music. */
     public AudioBus musicBus = new AudioBus();
 
-    /** Intializes Soloud audio by default. May throw an exception if initialization fails. */
+    /** Initializes Soloud audio by default. May throw an exception if initialization fails. */
     public Audio(){
         initialize();
+    }
+
+    /** Conditionally initializes audio. If enabled is false, does nothing. */
+    public Audio(boolean enabled){
+        if(enabled){
+            initialize();
+        }
     }
 
     public boolean initialized(){
@@ -61,6 +68,7 @@ public class Audio implements Disposable{
 
     /** Loads a sound, logging an error and returning a dummy track upon failure. */
     public Sound newSound(Fi file){
+        if(!initialized) return new Sound();
         try{
             return new Sound(file);
         }catch(Throwable t){
@@ -71,6 +79,7 @@ public class Audio implements Disposable{
 
     /** Loads music, logging an error and returning a dummy track upon failure. */
     public Music newMusic(Fi file){
+        if(!initialized) return new Music();
         try{
             return new Music(file);
         }catch(Throwable t){

@@ -115,7 +115,7 @@ public class AndroidApplication extends Activity implements Application{
         this.honeycombClipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
 
         Core.app = this;
-        Core.audio = audio = new Audio();
+        Core.audio = audio = new Audio(!config.disableAudio);
         Core.settings = settings;
         Core.input = input;
         Core.files = files;

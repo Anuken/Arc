@@ -1,9 +1,7 @@
 package arc.backend.android;
 
 import android.hardware.*;
-import android.media.*;
 import arc.*;
-import arc.audio.*;
 import arc.backend.android.surfaceview.*;
 
 /**
@@ -72,12 +70,6 @@ public class AndroidApplicationConfiguration{
 
     /** whether to disable Android audio support. default: false */
     public boolean disableAudio = false;
-
-    /**
-     * the maximum number of {@link Sound} instances that can be played simultaneously, sets the corresponding {@link SoundPool}
-     * constructor argument.
-     */
-    public int maxSimultaneousSounds = 16;
 
     /** the {@link ResolutionStrategy}. default: {@link FillResolutionStrategy} **/
     public ResolutionStrategy resolutionStrategy = new FillResolutionStrategy();
