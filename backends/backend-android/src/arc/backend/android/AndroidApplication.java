@@ -37,7 +37,7 @@ public class AndroidApplication extends Activity implements Application{
     protected AndroidFiles files;
     protected Net net;
     protected Settings settings;
-    protected ClipboardManager honeycombClipboard;
+    protected ClipboardManager clipboard;
     protected boolean useImmersiveMode = false;
     protected boolean hideStatusBar = false;
 
@@ -112,7 +112,7 @@ public class AndroidApplication extends Activity implements Application{
         this.handler = new Handler();
         this.useImmersiveMode = config.useImmersiveMode;
         this.hideStatusBar = config.hideStatusBar;
-        this.honeycombClipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+        this.clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
 
         Core.app = this;
         Core.audio = audio = new Audio(!config.disableAudio);
@@ -266,7 +266,7 @@ public class AndroidApplication extends Activity implements Application{
 
     @Override
     public String getClipboardText(){
-        ClipData clip = honeycombClipboard.getPrimaryClip();
+        ClipData clip = clipboard.getPrimaryClip();
         if(clip == null) return null;
         CharSequence text = clip.getItemAt(0).getText();
         if(text == null) return null;
@@ -276,7 +276,7 @@ public class AndroidApplication extends Activity implements Application{
     @Override
     public void setClipboardText(String contents){
         ClipData data = ClipData.newPlainText(contents, contents);
-        honeycombClipboard.setPrimaryClip(data);
+        clipboard.setPrimaryClip(data);
     }
 
     @Override

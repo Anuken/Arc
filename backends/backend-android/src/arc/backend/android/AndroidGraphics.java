@@ -450,7 +450,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
 
     @Override
     public Monitor getPrimaryMonitor(){
-        return new AndroidMonitor(0, 0, "Primary Monitor");
+        return new Monitor(0, 0, "Primary Monitor");
     }
 
     @Override
@@ -500,7 +500,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
     public DisplayMode getDisplayMode(){
         DisplayMetrics metrics = new DisplayMetrics();
         app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        return new AndroidDisplayMode(metrics.widthPixels, metrics.heightPixels, 0, 0);
+        return new DisplayMode(metrics.widthPixels, metrics.heightPixels, 0, 0);
     }
 
     @Override
@@ -544,7 +544,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
         return true;
     }
 
-
     @Override
     public Cursor newCursor(Pixmap pixmap, int xHotspot, int yHotspot){
         return null;
@@ -556,17 +555,5 @@ public class AndroidGraphics extends Graphics implements Renderer{
 
     @Override
     public void setSystemCursor(SystemCursor systemCursor){
-    }
-
-    private class AndroidDisplayMode extends DisplayMode{
-        protected AndroidDisplayMode(int width, int height, int refreshRate, int bitsPerPixel){
-            super(width, height, refreshRate, bitsPerPixel);
-        }
-    }
-
-    private class AndroidMonitor extends Monitor{
-        public AndroidMonitor(int virtualX, int virtualY, String name){
-            super(virtualX, virtualY, name);
-        }
     }
 }
