@@ -21,7 +21,6 @@ import arc.util.Log;
  * @author cypherdare
  */
 public class ShaderProgramLoader extends AsynchronousAssetLoader<Shader, ShaderProgramLoader.ShaderProgramParameter>{
-
     private String vertexFileSuffix = ".vert";
     private String fragmentFileSuffix = ".frag";
 
