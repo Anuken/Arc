@@ -155,9 +155,17 @@ public class Music extends AudioSource{
     protected static Fi[] caches(String name) throws IOException{
         String dir = System.getProperty("java.io.tmpdir");
 
-        return new Fi[]{
-        Core.settings.getDataDirectory().child("cache").child(name), Core.files.cache(name),
-        dir == null ? Core.files.absolute(File.createTempFile(name, "mind").getAbsolutePath()) : Core.files.absolute(dir).child(name)
-        };
+        //prefer cache dir on android
+        if(Core.app.isAndroid()){
+            return new Fi[]{
+            Core.files.cache(name), Core.settings.getDataDirectory().child("cache").child(name),
+            dir == null ? Core.files.absolute(File.createTempFile(name, "mind").getAbsolutePath()) : Core.files.absolute(dir).child(name)
+            };
+        }else{
+            return new Fi[]{
+            Core.settings.getDataDirectory().child("cache").child(name), Core.files.cache(name),
+            dir == null ? Core.files.absolute(File.createTempFile(name, "mind").getAbsolutePath()) : Core.files.absolute(dir).child(name)
+            };
+        }
     }
 }
