@@ -754,7 +754,6 @@ public class Pixmap implements Disposable{
     #define STB_IMAGE_IMPLEMENTATION
     #define STBI_FAILURE_USERMSG
     #define STBI_NO_STDIO
-    #define STBI_ONLY_PNG
     #ifdef __APPLE__
     #define STBI_NO_THREAD_LOCALS
     #endif
