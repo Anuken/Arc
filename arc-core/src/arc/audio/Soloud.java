@@ -8,7 +8,6 @@ public class Soloud{
     #include "soloud_file.h"
     #include "soloud_wav.h"
     #include "soloud_wavstream.h"
-    #include "soloud_speech.h"
     #include "soloud_bus.h"
     #include "soloud_thread.h"
     #include "soloud_filter.h"
@@ -126,20 +125,6 @@ public class Soloud{
 
     static native void filterSet(int voice, int filter, int attribute, float value); /*
         soloud.setFilterParameter(voice, filter, attribute, value);
-    */
-
-    static native long speechNew(); /*
-        return (jlong)(new Speech());
-    */
-
-    static native void speechText(long handle, String text); /*
-        Speech* source = (Speech*)handle;
-        source->setText(text);
-    */
-
-    static native void speechParams(long handle, int freq, float speed, float declination, int waveform); /*
-        Speech* source = (Speech*)handle;
-        source->setParams(freq, speed, declination, waveform);
     */
 
     static native long busNew(); /*
