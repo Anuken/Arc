@@ -24,20 +24,9 @@ jnigen{
     libsDir = file("libs").absolutePath
 
     all{
-
-        //exclude everything except the most basic audio sources
-        cppExcludes = ["iosgl/**",
-           "soloud/src/audiosource/ay/**", "soloud/src/audiosource/monotone/**",
-           "soloud/src/audiosource/noise/**", "soloud/src/audiosource/openmpt/**",
-           "soloud/src/audiosource/sfxr/**", "soloud/src/audiosource/tedsid/**",
-           "soloud/src/audiosource/vic/**", "soloud/src/audiosource/vizsn/**",
-           "soloud/src/audiosource/speech/**"
-        ]
-        cppIncludes = ["*.cpp"]
-        cIncludes = ["*.c"]
         headerDirs += ["soloud/include"]
-        cppIncludes += ["soloud/src/core/**", "soloud/src/audiosource/**", "soloud/src/filter/**"]
-        cIncludes += ["soloud/src/core/**", "soloud/src/audiosource/**", "soloud/src/filter/**"]
+        cppIncludes = ["*.cpp", "soloud/src/core/**", "soloud/src/audiosource/wav/**", "soloud/src/filter/**"]
+        cIncludes = ["*.c", "soloud/src/core/**", "soloud/src/audiosource/wav/**", "soloud/src/filter/**"]
     }
     add(Linux, x64){
         cppIncludes += ["soloud/src/backend/miniaudio/*.cpp", "soloud/src/backend/alsa/*.cpp"]
@@ -64,7 +53,6 @@ jnigen{
     }
     add(IOS){
         headerDirs += ["iosgl"]
-        cppExcludes = cppExcludes.collect{it != "iosgl/**"}
         cppIncludes += ["soloud/src/backend/coreaudio/*.cpp", "iosgl/**"]
         cppFlags = "-stdlib=libc++ -std=c++11 -DWITH_COREAUDIO " + cppFlags
     }
