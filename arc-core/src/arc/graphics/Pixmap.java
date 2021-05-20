@@ -761,7 +761,6 @@ public class Pixmap implements Disposable{
 
     */
 
-
     /** Loads a pixmap from bytes and returns [address, width, height] in nativeData. */
     static native ByteBuffer loadJni(long[] nativeData, byte[] buffer, int offset, int len); /*MANUAL
         const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);

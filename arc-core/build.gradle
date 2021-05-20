@@ -90,7 +90,8 @@ task preJni{
 
     if(!file("csrc/stb_image.h").exists()){
         println "Fetching stb_image source..."
-        "curl -o $rootDir/arc-core/csrc/stb_image.h https://raw.githubusercontent.com/nothings/stb/master/stb_image.h".execute().waitFor()
+        //currently locked to a specific commit
+        "curl -o $rootDir/arc-core/csrc/stb_image.h https://raw.githubusercontent.com/nothings/stb/e140649ccf40818781b7e408f6228a486f6d254b/stb_image.h".execute().waitFor()
     }
 
     if(!file("csrc/soloud").exists()){
