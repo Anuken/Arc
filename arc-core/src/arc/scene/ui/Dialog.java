@@ -397,9 +397,14 @@ public class Dialog extends Table{
 
     /** Adds a listener for back/escape keys to hide this dialog. */
     public void closeOnBack(){
+        closeOnBack(() -> {});
+    }
+
+    public void closeOnBack(Runnable callback){
         keyDown(key -> {
             if(key == KeyCode.escape || key == KeyCode.back){
                 Core.app.post(this::hide);
+                callback.run();
             }
         });
     }
