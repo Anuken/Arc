@@ -88,6 +88,51 @@ public class Pixmap implements Disposable{
         buffer.position(0).limit(buffer.capacity());
     }
 
+    //region deprecated code kept for compatibility
+
+    /** @deprecated the pixmap format parameter is redundant, don't use it. */
+    @Deprecated
+    public Pixmap(int width, int height, Format format){
+        this(width, height);
+    }
+
+    /** @deprecated always returns rgba8888 */
+    @Deprecated
+    public Format getFormat(){
+        return Format.rgba8888;
+    }
+
+    @Deprecated
+    public enum Blending{
+        none, sourceOver
+    }
+
+    /** @deprecated does nothing */
+    @Deprecated
+    public void setBlending(Blending blend){
+
+    }
+
+    /** @deprecated use get instead */
+    @Deprecated
+    public int getPixel(int x, int y){
+        return get(x, y);
+    }
+
+    /** @deprecated use set instead */
+    @Deprecated
+    public void draw(int x, int y, int color){
+        set(x, y, color);
+    }
+
+    /** @deprecated use set instead */
+    @Deprecated
+    public void draw(int x, int y, Color color){
+        set(x, y, color);
+    }
+
+    //endregion
+
     /** @return a newly allocated copy with the same pixels. */
     public Pixmap copy(){
         Pixmap out = new Pixmap(width, height);
