@@ -91,7 +91,7 @@ public class Pixmaps{
                     outer:
                     for(int rx = -radius; rx <= radius; rx++){
                         for(int ry = -radius; ry <= radius; ry++){
-                            if(Structs.inBounds(rx + x, ry + y, region.width, region.height) && Mathf.within(rx, ry, radius) && region.getA(rx + x, ry + y) != 0){
+                            if(Structs.inBounds(rx + x, ry + y, region.width, region.height) && (rx*rx + ry*ry <= radius*radius) && region.getA(rx + x, ry + y) != 0){
                                 found = true;
                                 break outer;
                             }
