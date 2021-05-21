@@ -136,9 +136,10 @@ public class Pixmap implements Disposable{
     public Pixmap flipY(){
         Pixmap copy = new Pixmap(width, height);
 
+        //TODO this can be optimized significantly by putting each line
         for(int x = 0; x < width; x++){
             for(int y = 0; y < height; y++){
-                copy.set(x, height - 1 - y, getRaw(x, y));
+                copy.setRaw(x, height - 1 - y, getRaw(x, y));
             }
         }
 

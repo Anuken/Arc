@@ -136,7 +136,7 @@ public class PixmapPacker implements Disposable{
 
     /**
      * Inserts the pixmap. If name was not null, you can later retrieve the image's position in the output image via
-     * {@link #getRect(String)}.
+     * {@link #getRect(String)}. Duplicate names will replace older rects.
      * @param name If null, the image cannot be looked up by name.
      * @return Rectangle describing the area the pixmap was rendered to.
      * @throws ArcRuntimeException in case the image did not fit due to the page size being too small or providing a duplicate
@@ -148,11 +148,10 @@ public class PixmapPacker implements Disposable{
 
     /**
      * Inserts the pixmap. If name was not null, you can later retrieve the image's position in the output image via
-     * {@link #getRect(String)}.
+     * {@link #getRect(String)}. Duplicate names will replace older rects.
      * @param name If null, the image cannot be looked up by name.
      * @return Rectangle describing the area the pixmap was rendered to.
-     * @throws ArcRuntimeException in case the image did not fit due to the page size being too small or providing a duplicate
-     * name.
+     * @throws ArcRuntimeException in case the image did not fit due to the page size being too small.
      */
     public synchronized Rect pack(String name, PixmapRegion image){
         return pack(name, image, null, null);
@@ -160,9 +159,18 @@ public class PixmapPacker implements Disposable{
 
     public synchronized Rect pack(String name, PixmapRegion image, int[] splits, int[] pads){
         if(disposed) return null;
-        //TODO should duplicates be allowed?
-        //if(name != null && getRect(name) != null)
-        //    throw new ArcRuntimeException("Pixmap has already been packed with name: " + name);
+
+        //store previous rect to replace it; this saves space
+        PixmapPackerRect prev = null;
+        Page prevPage = null;
+
+        if(name != null){
+            PixmapPackerRect next = (PixmapPackerRect)getRect(name);
+            if(next != null && (int)next.width == image.width && (int)next.height == image.height){
+                prev = next;
+                prevPage = getPage(name);
+            }
+        }
 
         boolean isPatch = name != null && name.endsWith(".9");
 
@@ -188,10 +196,18 @@ public class PixmapPacker implements Disposable{
             throw new ArcRuntimeException("Page size too small for pixmap: " + name);
         }
 
-        Page page = packStrategy.pack(this, name, rect);
-        if(name != null){
-            page.rects.put(name, rect);
-            page.addedRects.add(name);
+        Page page;
+
+        //try to use the old rect if possible
+        if(prev != null && prevPage != null && !isPatch){
+            page = prevPage;
+            rect = prev;
+        }else{
+            page = packStrategy.pack(this, name, rect);
+            if(name != null){
+                page.rects.put(name, rect);
+                page.addedRects.add(name);
+            }
         }
 
         int rectX = (int)rect.x, rectY = (int)rect.y, rectWidth = (int)rect.width, rectHeight = (int)rect.height;
