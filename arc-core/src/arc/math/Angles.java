@@ -52,6 +52,10 @@ public class Angles{
         return ang;
     }
 
+    public static float angleRad(float x, float y, float x2, float y2){
+        return Mathf.atan2(x2 - x, y2 - y);
+    }
+
     public static float trnsx(float angle, float len){
         return len * Mathf.cosDeg(angle);
     }

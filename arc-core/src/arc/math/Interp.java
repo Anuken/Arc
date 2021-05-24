@@ -15,6 +15,9 @@ public interface Interp{
         return a * a * (3 - 2 * a);
     };
 
+    Interp one = a -> 1f;
+    Interp slope = Mathf::slope;
+
     //
     /** By Ken Perlin. */
     Interp smoother = a -> a * a * a * (a * (a * 6 - 15) + 10);
