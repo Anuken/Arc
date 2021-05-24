@@ -6,6 +6,7 @@ package arc.math;
  */
 public interface Interp{
     Interp linear = a -> a;
+    Interp reverse = a -> 1f - a;
     /** Aka "smoothstep". */
     Interp smooth = a -> a * a * (3 - 2 * a);
 
