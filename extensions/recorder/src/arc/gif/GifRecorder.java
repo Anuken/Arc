@@ -103,7 +103,9 @@ public class GifRecorder{
     public void update(){
         Draw.flush();
 
-        doInput();
+        if(Core.scene == null || !Core.scene.hasField()){
+            doInput();
+        }
         float delta = Core.graphics.getDeltaTime();
 
         if(!open) return;

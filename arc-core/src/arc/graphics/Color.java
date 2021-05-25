@@ -662,6 +662,27 @@ public class Color{
         return tmpHSV[2];
     }
 
+    public Color hue(float amount){
+        toHsv(tmpHSV);
+        tmpHSV[0] = amount;
+        fromHsv(tmpHSV);
+        return this;
+    }
+
+    public Color saturation(float amount){
+        toHsv(tmpHSV);
+        tmpHSV[1] = amount;
+        fromHsv(tmpHSV);
+        return this;
+    }
+
+    public Color value(float amount){
+        toHsv(tmpHSV);
+        tmpHSV[2] = amount;
+        fromHsv(tmpHSV);
+        return this;
+    }
+
     public Color shiftHue(float amount){
         toHsv(tmpHSV);
         tmpHSV[0] += amount;
