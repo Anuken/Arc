@@ -1,19 +1,19 @@
 package arc.scene.ui;
 
-import arc.Core;
-import arc.struct.Seq;
-import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.scene.Element;
-import arc.scene.Group;
-import arc.scene.event.ChangeListener.ChangeEvent;
-import arc.scene.event.ClickListener;
-import arc.scene.event.InputEvent;
-import arc.scene.style.Drawable;
-import arc.scene.ui.layout.WidgetGroup;
-import arc.scene.utils.Selection;
+import arc.*;
+import arc.func.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.scene.*;
+import arc.scene.event.ChangeListener.*;
+import arc.scene.event.*;
+import arc.scene.style.*;
+import arc.scene.ui.layout.*;
+import arc.scene.utils.*;
+import arc.struct.*;
+import arc.util.*;
 
-import static arc.Core.scene;
+import static arc.Core.*;
 
 /**
  * A tree widget where each node has an icon, element, and child nodes.
@@ -94,7 +94,7 @@ public class TreeElement extends WidgetGroup{
     }
 
     private void initialize(){
-        addListener(clickListener = new arc.scene.event.ClickListener(){
+        addListener(clickListener = new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
                 TreeElementNode node = getNodeAt(y);
@@ -117,7 +117,7 @@ public class TreeElement extends WidgetGroup{
                     TreeElement.this.rangeStart = rangeStart;
                     return;
                 }
-                if(node.children.size > 0 && (!selection.getMultiple() || !Core.input.ctrl())){
+                if(node.hasChildren() && (!selection.getMultiple() || !Core.input.ctrl())){
                     // Toggle expanded.
                     float rowX = node.element.x;
                     if(node.icon != null) rowX -= iconSpacingRight + node.icon.getMinWidth();
@@ -271,7 +271,7 @@ public class TreeElement extends WidgetGroup{
 
             if(selection.contains(node) && style.selection != null){
                 style.selection.draw(x, y + element.y - ySpacing / 2, getWidth(), node.height + ySpacing);
-            }else if(node == overNode && style.over != null){
+            }else if(node == overNode && style.over != null && node.hoverable){
                 style.over.draw(x, y + element.y - ySpacing / 2, getWidth(), node.height + ySpacing);
             }
 
@@ -283,8 +283,9 @@ public class TreeElement extends WidgetGroup{
                 Draw.color(Color.white);
             }
 
-            if(node.children.size == 0) continue;
+            if(!node.hasChildren()) continue;
 
+            Draw.color(color);
             Drawable expandIcon = node.expanded ? minus : plus;
             float iconY = element.y + Math.round((node.height - expandIcon.getMinHeight()) / 2);
             expandIcon.draw(x + indent - iconSpacingLeft, y + iconY, expandIcon.getMinWidth(), expandIcon.getMinHeight());
@@ -431,10 +432,11 @@ public class TreeElement extends WidgetGroup{
     }
 
     public static class TreeElementNode{
-        final Element element;
         final Seq<TreeElementNode> children = new Seq<>(0);
+        @Nullable Cons<Cons<TreeElementNode>> childProvider;
+        Element element;
         TreeElementNode parent;
-        boolean selectable = true;
+        boolean selectable = true, hoverable = true;
         boolean expanded;
         Drawable icon;
         float height;
@@ -445,12 +447,37 @@ public class TreeElement extends WidgetGroup{
             this.element = element;
         }
 
+        /**
+         * Adds a child node provider that only gets called on-demand.
+         * @return this
+         * */
+        public TreeElementNode children(Cons<Cons<TreeElementNode>> provider){
+            childProvider = provider;
+            return this;
+        }
+
+        public TreeElementNode hoverable(boolean hover){
+            this.hoverable = hover;
+            return this;
+        }
+
+        public boolean hasChildren(){
+            return childProvider != null || children.size > 0;
+        }
+
         /** Called to add the element to the tree when the node's parent is expanded. */
         protected void addToTree(TreeElement tree){
             tree.addChild(element);
             if(!expanded) return;
-            for(int i = 0, n = children.size; i < n; i++)
+
+            if(childProvider != null){
+                childProvider.get(this::add);
+                childProvider = null;
+            }
+
+            for(int i = 0, n = children.size; i < n; i++){
                 children.get(i).addToTree(tree);
+            }
         }
 
         /** Called to remove the element from the tree when the node's parent is collapsed. */
@@ -462,13 +489,15 @@ public class TreeElement extends WidgetGroup{
                 ((TreeElementNode)children[i]).removeFromTree(tree);
         }
 
-        public void add(TreeElementNode node){
+        public TreeElementNode add(TreeElementNode node){
             insert(children.size, node);
+            return this;
         }
 
-        public void addAll(Seq<TreeElementNode> nodes){
+        public TreeElementNode addAll(Seq<TreeElementNode> nodes){
             for(int i = 0, n = nodes.size; i < n; i++)
                 insert(children.size, nodes.get(i));
+            return this;
         }
 
         public void insert(int index, TreeElementNode node){
@@ -479,10 +508,11 @@ public class TreeElement extends WidgetGroup{
 
         public void remove(){
             TreeElement tree = getTree();
-            if(tree != null)
+            if(tree != null){
                 tree.remove(this);
-            else if(parent != null) //
+            }else if(parent != null){
                 parent.remove(this);
+            }
         }
 
         public void remove(TreeElementNode node){
@@ -510,16 +540,16 @@ public class TreeElement extends WidgetGroup{
             return (TreeElement)parent;
         }
 
-        public Element getActor(){
-            return element;
-        }
-
         public boolean isExpanded(){
             return expanded;
         }
 
         public void setExpanded(boolean expanded){
             if(expanded == this.expanded) return;
+            if(expanded && childProvider != null){
+                childProvider.get(this::add);
+                childProvider = null;
+            }
             this.expanded = expanded;
             if(children.size == 0) return;
             TreeElement tree = getTree();

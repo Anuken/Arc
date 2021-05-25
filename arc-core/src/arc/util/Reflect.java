@@ -67,6 +67,14 @@ public class Reflect{
         }
     }
 
+    public static void set(Object object, Field field, Object value){
+        try{
+            field.set(object, value);
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void set(Object object, String name, Object value){
         set(object.getClass(), object, name, value);
     }

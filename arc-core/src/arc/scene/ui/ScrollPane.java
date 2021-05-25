@@ -211,7 +211,7 @@ public class ScrollPane extends WidgetGroup{
             public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
                 Element actor = ScrollPane.this.hit(x, y, true);
                 on = flickScroll;
-                if(actor instanceof Slider && on){
+                if((actor instanceof Slider || actor instanceof TextField) && on){
                     ScrollPane.this.setFlickScroll(false);
                     return true;
                 }
