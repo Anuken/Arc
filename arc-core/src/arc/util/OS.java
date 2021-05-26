@@ -88,6 +88,19 @@ public class OS{
         }
     }
 
+    public static boolean execSafe(String... command){
+        try{
+            BufferedReader in = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(command).getInputStream()));
+            String line;
+            while((line = in.readLine()) != null){
+                System.out.println(line);
+            }
+            return true;
+        }catch(Throwable t){
+            return false;
+        }
+    }
+
     public static Fi getAppDataDirectory(String appname){
         return Core.files.absolute(getAppDataDirectoryString(appname));
     }

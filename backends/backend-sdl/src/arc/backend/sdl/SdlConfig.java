@@ -23,8 +23,8 @@ public class SdlConfig{
     public boolean initialVisible = true;
     public boolean vSyncEnabled = true;
 
-    FileType windowIconFileType;
-    String[] windowIconPaths;
+    public FileType windowIconFileType;
+    public String[] windowIconPaths;
 
     public void setWindowIcon(FileType fileType, String... filePaths){
         windowIconFileType = fileType;

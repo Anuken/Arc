@@ -193,9 +193,9 @@ public class SdlApplication implements Application{
             if(OS.isWindows){
                 OS.execSafe("explorer.exe /select," + file.replace("/", "\\"));
             }else if(OS.isLinux){
-                OS.execSafe("xdg-open " + file);
+                OS.execSafe("xdg-open", file);
             }else if(OS.isMac){
-                OS.execSafe("open " + file);
+                OS.execSafe("open", file);
             }
         });
         return true;
@@ -203,20 +203,16 @@ public class SdlApplication implements Application{
 
     @Override
     public boolean openURI(String url){
-        try{
+        Threads.daemon(() -> {
             if(OS.isMac){
-                Class.forName("com.apple.eio.FileManager").getMethod("openURL", String.class).invoke(null, url);
-                return true;
+                OS.execSafe("open", url);
             }else if(OS.isLinux){
-                return OS.execSafe("xdg-open " + url);
+                OS.execSafe("xdg-open", url);
             }else if(OS.isWindows){
-                return OS.execSafe("rundll32 url.dll,FileProtocolHandler " + url);
+                OS.execSafe("rundll32", "url.dll,FileProtocolHandler", url);
             }
-            return false;
-        }catch(Throwable e){
-            e.printStackTrace();
-            return false;
-        }
+        });
+        return true;
     }
 
     @Override

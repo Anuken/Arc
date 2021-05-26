@@ -285,12 +285,12 @@ public class NinePatch{
         // of the texel where the neighboring pixel has 0% contribution in Linear blending mode.
         if(texture.getMagFilter() == TextureFilter.linear || texture.getMinFilter() == TextureFilter.linear){
             if(isStretchW){
-                float halfTexelWidth = 0.5f * 1.0f / texture.width;
+                float halfTexelWidth = 0.5f / texture.width;
                 u += halfTexelWidth;
                 u2 -= halfTexelWidth;
             }
             if(isStretchH){
-                float halfTexelHeight = 0.5f * 1.0f / texture.height;
+                float halfTexelHeight = 0.5f / texture.height;
                 v -= halfTexelHeight;
                 v2 += halfTexelHeight;
             }
@@ -361,13 +361,10 @@ public class NinePatch{
         if(bottomCenter != -1) set(bottomCenter, centerColumnX, y, rightColumnX - centerColumnX, middleRowY - y, c);
         if(bottomRight != -1) set(bottomRight, rightColumnX, y, x + width - rightColumnX, middleRowY - y, c);
         if(middleLeft != -1) set(middleLeft, x, middleRowY, centerColumnX - x, topRowY - middleRowY, c);
-        if(middleCenter != -1)
-            set(middleCenter, centerColumnX, middleRowY, rightColumnX - centerColumnX, topRowY - middleRowY, c);
-        if(middleRight != -1)
-            set(middleRight, rightColumnX, middleRowY, x + width - rightColumnX, topRowY - middleRowY, c);
+        if(middleCenter != -1) set(middleCenter, centerColumnX, middleRowY, rightColumnX - centerColumnX, topRowY - middleRowY, c);
+        if(middleRight != -1) set(middleRight, rightColumnX, middleRowY, x + width - rightColumnX, topRowY - middleRowY, c);
         if(topLeft != -1) set(topLeft, x, topRowY, centerColumnX - x, y + height - topRowY, c);
-        if(topCenter != -1)
-            set(topCenter, centerColumnX, topRowY, rightColumnX - centerColumnX, y + height - topRowY, c);
+        if(topCenter != -1) set(topCenter, centerColumnX, topRowY, rightColumnX - centerColumnX, y + height - topRowY, c);
         if(topRight != -1) set(topRight, rightColumnX, topRowY, x + width - rightColumnX, y + height - topRowY, c);
     }
 
@@ -403,8 +400,8 @@ public class NinePatch{
     }
 
     /**
-     * Copy given color. The color will be blended with the batch color, then combined with the texture colors at
-     * {@link NinePatch#draw(Batch, float, float, float, float) draw} time. Default is {@link Color#white}.
+     * Copy given color. The color will be blended with the batch color, then combined with the texture colors at draw time.
+     * Default is {@link Color#white}.
      */
     public void setColor(Color color){
         this.color.set(color);

@@ -1,9 +1,8 @@
 package arc.backend.android;
 
-import android.view.InputDevice;
-import android.view.MotionEvent;
-import arc.Core;
-import arc.backend.android.AndroidInput.TouchEvent;
+import android.view.*;
+import arc.*;
+import arc.backend.android.AndroidInput.*;
 
 /**
  * Mouse handler for devices running Android >= 3.1.
@@ -18,9 +17,7 @@ public class AndroidMouseHandler{
 
         final int action = event.getAction() & MotionEvent.ACTION_MASK;
 
-        int x = 0, y = 0;
-        int scrollAmountX = 0;
-        int scrollAmountY = 0;
+        int x, y, scrollAmountX, scrollAmountY;
 
         long timeStamp = System.nanoTime();
         synchronized(input){
