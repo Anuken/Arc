@@ -8,6 +8,8 @@ import arc.struct.*;
 import arc.util.*;
 import arc.util.async.*;
 
+import java.net.*;
+
 import static arc.backend.sdl.jni.SDL.*;
 
 public class SdlApplication implements Application{
@@ -203,6 +205,14 @@ public class SdlApplication implements Application{
 
     @Override
     public boolean openURI(String url){
+
+        //make sure it's a valid URI
+        try{
+            URI.create(url);
+        }catch(Exception wrong){
+            return false;
+        }
+
         Threads.daemon(() -> {
             if(OS.isMac){
                 OS.execSafe("open", url);
