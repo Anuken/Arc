@@ -464,7 +464,7 @@ public class AssetManager implements Disposable{
         while(true){
             boolean done = update();
             if(done || Time.millis() > endTime) return done;
-            Threads.yield();
+            Thread.yield();
         }
     }
 
@@ -476,7 +476,7 @@ public class AssetManager implements Disposable{
     /** Blocks until all assets are loaded. */
     public void finishLoading(){
         while(!update())
-            Threads.yield();
+            Thread.yield();
     }
 
     /**
@@ -494,7 +494,7 @@ public class AssetManager implements Disposable{
     public void finishLoadingAsset(String fileName){
         while(!isLoaded(fileName)){
             update();
-            Threads.yield();
+            Thread.yield();
         }
     }
 

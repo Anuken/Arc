@@ -4,13 +4,8 @@ import arc.util.*;
 
 /**
  * Utilities for threaded programming.
- * @author badlogic
  */
 public class Threads{
-
-    public static void yield(){
-        Thread.yield();
-    }
 
     public static void sleep(long ms){
         try{
