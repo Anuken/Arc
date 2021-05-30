@@ -725,27 +725,43 @@ public class Pixmap implements Disposable{
     private void load(byte[] encodedData, int offset, int len, String file){
         //use native implementation when possible
         if(ArcNativesLoader.loaded){
-            //read with stb_image, which is slightly faster for large images and supports more formats
-            long[] nativeData = new long[3];
-            pixels = loadJni(nativeData, encodedData, offset, len);
-            if(pixels == null) throw new ArcRuntimeException("Error loading pixmap from image data: " + getFailureReason() + (file == null ? "" : " (" + file + ")"));
-
-            handle = nativeData[0];
-            width = (int)nativeData[1];
-            height = (int)nativeData[2];
-            pixels.position(0).limit(pixels.capacity());
-        }else{
-            //read with the pure java implementation
             try{
-                PngReader reader = new PngReader();
-                pixels = reader.read(new ByteArrayInputStream(encodedData, offset, len));
-                width = reader.width;
-                height = reader.height;
-                handle = -1;
+                //read with stb_image, which is slightly faster for large images and supports more formats
+                long[] nativeData = new long[3];
+                pixels = loadJni(nativeData, encodedData, offset, len);
+                if(pixels == null) throw new ArcRuntimeException("Error loading pixmap from image data: " + getFailureReason() + (file == null ? "" : " (" + file + ")"));
+
+                handle = nativeData[0];
+                width = (int)nativeData[1];
+                height = (int)nativeData[2];
                 pixels.position(0).limit(pixels.capacity());
-            }catch(Exception e){
-                throw new ArcRuntimeException("Failed to load PNG data" + (file == null ? "" : " (" + file + ")"), e);
+            }catch(ArcRuntimeException e){
+                //stb_image bug? some PNGs fail with "corrupt JPEG" as the error, try the Java implementation if so
+                if(e.getMessage() != null && e.getMessage().contains("Corrupt JPEG")){
+                    try{
+                        loadJava(encodedData, offset, len, file);
+                    }catch(Exception ignored){
+                        //I did my best, fall through and throw the original exception
+                    }
+                }
+                throw e;
             }
+        }else{
+            loadJava(encodedData, offset, len, file);
+        }
+    }
+
+    private void loadJava(byte[] encodedData, int offset, int len, String file){
+        //read with the pure java implementation
+        try{
+            PngReader reader = new PngReader();
+            pixels = reader.read(new ByteArrayInputStream(encodedData, offset, len));
+            width = reader.width;
+            height = reader.height;
+            handle = -1;
+            pixels.position(0).limit(pixels.capacity());
+        }catch(Exception e){
+            throw new ArcRuntimeException("Failed to load PNG data" + (file == null ? "" : " (" + file + ")"), e);
         }
     }
 
