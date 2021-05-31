@@ -116,6 +116,8 @@ public class ImageButton extends Button{
             color = style.imageDownColor;
         else if(isChecked() && style.imageCheckedColor != null)
             color = style.imageCheckedColor;
+        else if(isOver() && style.imageOverColor != null)
+            color = style.imageOverColor;
         else if(style.imageUpColor != null)
             color = style.imageUpColor;
 
@@ -148,7 +150,7 @@ public class ImageButton extends Button{
     public static class ImageButtonStyle extends ButtonStyle{
         /** Optional. */
         public Drawable imageUp, imageDown, imageOver, imageChecked, imageCheckedOver, imageDisabled;
-        public Color imageUpColor, imageCheckedColor, imageDownColor, imageDisabledColor;
+        public Color imageUpColor, imageCheckedColor, imageDownColor, imageOverColor, imageDisabledColor;
 
         public ImageButtonStyle(){
         }
@@ -171,6 +173,7 @@ public class ImageButton extends Button{
             this.imageDisabled = style.imageDisabled;
             this.imageUpColor = style.imageUpColor;
             this.imageDownColor = style.imageDownColor;
+            this.imageOverColor = style.imageOverColor;
             this.imageCheckedColor = style.imageCheckedColor;
             this.imageDisabledColor = style.imageDisabledColor;
         }
