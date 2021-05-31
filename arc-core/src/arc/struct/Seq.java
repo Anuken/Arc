@@ -477,6 +477,23 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         items[second] = firstValue;
     }
 
+    /** @return whether this sequence contains every other element in the other sequence. */
+    public boolean containsAll(Seq<T> seq){
+        return containsAll(seq, false);
+    }
+
+    /** @return whether this sequence contains every other element in the other sequence. */
+    public boolean containsAll(Seq<T> seq, boolean identity){
+        T[] others = seq.items;
+
+        for(int i = 0; i < seq.size; i++){
+            if(!contains(others[i], identity)){
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean contains(T value){
         return contains(value, false);
     }

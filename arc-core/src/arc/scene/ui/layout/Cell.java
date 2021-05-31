@@ -276,6 +276,13 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
+    public Cell<T> wrapLabel(boolean toggle){
+        if(get() instanceof TextButton){
+            ((TextButton)(get())).getLabel().setWrap(toggle);
+        }
+        return this;
+    }
+
     public Cell<T> checked(boolean toggle){
         if(get() instanceof Button){
             ((Button)(get())).setChecked(toggle);
