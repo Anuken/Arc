@@ -64,6 +64,7 @@ task preJni{
         def script = "wget -c https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz -O $root/jni/freetype.tar.gz\n" +
                 "tar -xf $root/jni/freetype.tar.gz -C $root/jni"
         def scriptFile = new File("$buildDir/getfreetype")
+        scriptFile.parentFile.mkdirs()
         scriptFile.text = script
         "bash $scriptFile.absolutePath".execute().waitFor()
     }
