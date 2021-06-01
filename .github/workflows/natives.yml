@@ -36,7 +36,7 @@ jobs:
         name: Arc-core android natives
         path: |
           natives/natives-android/libs
-          naitves/natives-freetype-android/libs
+          natives/natives-freetype-android/libs
   buildMac:
     runs-on: macos-10.15
     steps:

@@ -34,6 +34,7 @@ jnigen{
     add(Windows, x32)
     add(Windows, x64)
     add(Linux, x64)
+    add(MacOsX, x64)
     add(Android)
     add(IOS)
 }
@@ -91,7 +92,7 @@ task postJni{
         }
 
         copy{
-            from "libs/ios32/libarc.a"
+            from "libs/ios32/libarc-freetype.a"
             into "../../natives/natives-freetype-ios/libs/"
             include "**"
         }
