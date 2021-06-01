@@ -3,11 +3,6 @@ apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 file("jni").mkdir()
 
 jnigen{
-    copy{
-        from "$rootDir/arc-core/build/classes/java/main"
-        into "$rootDir/extensions/freetype/build/classes/java/main"
-        include "**"
-    }
 
     def fdir = "freetype-2.10.4"
 
@@ -54,6 +49,8 @@ jnigen{
 }
 
 task preJni{
+    outputs.upToDateWhen{ false }
+
     copy{
         from "$rootDir/arc-core/build/classes/java/main"
         into "$rootDir/extensions/freetype/build/classes/java/main"
