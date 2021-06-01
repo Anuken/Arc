@@ -10,6 +10,14 @@ jnigen{
     temporaryDir = file("build/target/native").absolutePath
     libsDir = file("libs").absolutePath
 
+    copy{
+        println "COPYING FROM $rootDir/arc-core/build/classes/java/main : exists?: ${new File("$rootDir/arc-core/build/classes/java/main").exists()}"
+        from "$rootDir/arc-core/build/classes/java/main"
+        into "$rootDir/extensions/freetype/build/classes/java/main"
+        println("INTO $rootDir/extensions/freetype/build/classes/java/main : exists?: ${new File( "$rootDir/extensions/freetype/build/classes/java/main").exists()}")
+        include "**"
+    }
+
     all{
         headerDirs += ["$fdir/include"]
         cIncludes = [
@@ -50,6 +58,7 @@ jnigen{
 
 task preJni{
     outputs.upToDateWhen{ false }
+    println "CONFIGURING PREJNI"
 
     copy{
         println "COPYING FROM $rootDir/arc-core/build/classes/java/main : exists?: ${new File("$rootDir/arc-core/build/classes/java/main").exists()}"
