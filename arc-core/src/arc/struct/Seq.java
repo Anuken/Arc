@@ -477,6 +477,19 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         items[second] = firstValue;
     }
 
+    /**
+     * Replaces the first occurrence of 'from' with 'to'.
+     * @return whether anything was replaced.
+     * */
+    public boolean replace(T from, T to){
+        int idx = indexOf(from);
+        if(idx != -1){
+            items[idx] = to;
+            return true;
+        }
+        return false;
+    }
+
     /** @return whether this sequence contains every other element in the other sequence. */
     public boolean containsAll(Seq<T> seq){
         return containsAll(seq, false);

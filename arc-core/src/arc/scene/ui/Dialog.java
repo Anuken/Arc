@@ -14,8 +14,9 @@ import arc.scene.style.*;
 import arc.scene.ui.Label.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import arc.util.pooling.*;
 
-import static arc.Core.scene;
+import static arc.Core.*;
 
 /**
  * A table that can be dragged and act as a modal window. The top padding is used as the window's title height.
@@ -39,12 +40,15 @@ public class Dialog extends Table{
     private static final Vec2 tmpPosition = new Vec2();
     private static final Vec2 tmpSize = new Vec2();
     private static final int MOVE = 1 << 5;
+
     protected int edge;
     protected boolean dragging;
     boolean isMovable = false, isModal = true, isResizable = false, center = true;
     int resizeBorder = 8;
     boolean keepWithinStage = true;
+
     private DialogStyle style;
+    private float lastWidth = -1f, lastHeight = -1f;
 
     Element previousKeyboardFocus, previousScrollFocus;
     FocusListener focusListener;
@@ -52,6 +56,10 @@ public class Dialog extends Table{
     public final Table cont, buttons;
     public final Label title;
     public final Table titleTable;
+
+    public Dialog(){
+        this("");
+    }
 
     public Dialog(String title){
         this(title, scene.getStyle(DialogStyle.class));
@@ -260,6 +268,18 @@ public class Dialog extends Table{
             if(center && !isMovable && this.getActions().size == 0){
                 centerWindow();
             }
+
+            //fire resize events.
+            if(lastWidth >= 0 && lastHeight >= 0){
+                if(!Mathf.equal(lastWidth, scene.root.getWidth()) || !Mathf.equal(lastHeight, scene.root.getHeight())){
+                    SceneResizeEvent e = Pools.obtain(SceneResizeEvent.class, SceneResizeEvent::new);
+                    fire(e);
+                    Pools.free(e);
+                }
+            }
+
+            lastWidth = scene.root.getWidth();
+            lastHeight = scene.root.getHeight();
         }
     }
 
@@ -391,6 +411,32 @@ public class Dialog extends Table{
         });
     }
 
+    /** Runs the callback when this dialog is resized or hidden. */
+    public void resizedShown(Runnable run){
+        resized(run);
+        shown(run);
+    }
+
+    /** Adds a scene resize listener. */
+    public void resized(Runnable run){
+        resized(false, run);
+    }
+
+    /** Adds a scene resize listener, optionally invoking it immediately. */
+    public void resized(boolean invoke, Runnable run){
+        if(invoke){
+            run.run();
+        }
+        addListener(new ResizeListener(){
+            @Override
+            public void resized(){
+                run.run();
+                //refocus scrollpanes automatically after a rebuild
+                updateScrollFocus();
+            }
+        });
+    }
+
     public void addCloseButton(){
         //no default implementation; should be implemented by subclasses
     }
@@ -498,7 +544,6 @@ public class Dialog extends Table{
 
         hide(defaultHideAction.get());
     }
-
 
     public static class DialogStyle extends Style{
         /** Optional. */

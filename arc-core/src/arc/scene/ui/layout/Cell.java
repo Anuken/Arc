@@ -354,12 +354,13 @@ public class Cell<T extends Element> implements Poolable{
     /** Sets the button or label style.*/
     public Cell<T> style(Style style){
         if(style == null) return this;
+        //copy styles to prevent extra mutation
         if(element instanceof Label){
-            ((Label)element).setStyle((LabelStyle)style);
+            ((Label)element).setStyle(new LabelStyle((LabelStyle)style));
         }else if(element instanceof Button){
-            ((Button)element).setStyle((ButtonStyle)style);
+            ((Button)element).setStyle(new ButtonStyle((ButtonStyle)style));
         }else if(element instanceof ScrollPane){
-            ((ScrollPane)element).setStyle((ScrollPaneStyle)style);
+            ((ScrollPane)element).setStyle(new ScrollPaneStyle((ScrollPaneStyle)style));
         }
         return this;
     }
