@@ -3,20 +3,11 @@ apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 file("jni").mkdir()
 
 jnigen{
-
     def fdir = "freetype-2.10.4"
 
     sharedLibName = "arc-freetype"
     temporaryDir = file("build/target/native").absolutePath
     libsDir = file("libs").absolutePath
-
-    copy{
-        println "COPYING FROM $rootDir/arc-core/build/classes/java/main : exists?: ${new File("$rootDir/arc-core/build/classes/java/main").exists()}"
-        from "$rootDir/arc-core/build/classes/java/main"
-        into "$rootDir/extensions/freetype/build/classes/java/main"
-        println("INTO $rootDir/extensions/freetype/build/classes/java/main : exists?: ${new File( "$rootDir/extensions/freetype/build/classes/java/main").exists()}")
-        include "**"
-    }
 
     all{
         headerDirs += ["$fdir/include"]
@@ -31,10 +22,9 @@ jnigen{
             "$fdir/src/base/fttype1.c", "$fdir/src/base/ftwinfnt.c", "$fdir/src/base/ftxf86.c",
 
             //DRIVERS
-            "$fdir/src/bdf/bdf.c", "$fdir/src/cff/cff.c", "$fdir/src/cid/type1cid.c",
-            "$fdir/src/pcf/pcf.c", "$fdir/src/pfr/pfr.c", "$fdir/src/sfnt/sfnt.c",
-            "$fdir/src/truetype/truetype.c", "$fdir/src/type1/type1.c", "$fdir/src/type42/type42.c",
-            "$fdir/src/winfonts/winfnt.c",
+            "$fdir/src/truetype/truetype.c",
+
+            //what I actually need: "$fdir/src/truetype/truetype.c",
 
             //RASTERIZERS
             "$fdir/src/raster/raster.c", "$fdir/src/smooth/smooth.c",
@@ -57,29 +47,47 @@ jnigen{
 }
 
 task preJni{
-    outputs.upToDateWhen{ false }
     println "CONFIGURING PREJNI"
 
-    copy{
-        println "COPYING FROM $rootDir/arc-core/build/classes/java/main : exists?: ${new File("$rootDir/arc-core/build/classes/java/main").exists()}"
-        from "$rootDir/arc-core/build/classes/java/main"
-        into "$rootDir/extensions/freetype/build/classes/java/main"
-        println("INTO $rootDir/extensions/freetype/build/classes/java/main : exists?: ${new File( "$rootDir/extensions/freetype/build/classes/java/main").exists()}")
-        include "**"
-    }
+    doFirst{
+        copy{
+            println "COPYING FROM $rootDir/arc-core/build/classes/java/main : exists?: ${new File("$rootDir/arc-core/build/classes/java/main").exists()}"
+            println new File("$rootDir/arc-core/build/classes/java/main").list()
+            from "$rootDir/arc-core/build/classes/java/main"
+            into "$rootDir/extensions/freetype/build/classes/java/main"
+            println("INTO $rootDir/extensions/freetype/build/classes/java/main : exists?: ${new File( "$rootDir/extensions/freetype/build/classes/java/main").exists()}")
+            include "**"
+        }
 
-    if(!file("$project.rootDir/extensions/freetype/jni/freetype-2.10.4").exists()){
-        println "Fetching freetype source..."
+        if(!file("$project.rootDir/extensions/freetype/jni/freetype-2.10.4").exists()){
+            println "Fetching freetype source..."
 
-        def root = "$project.rootDir/extensions/freetype"
-        new File("$root/jni").mkdir()
-        //| tar -xf -C $project.rootDir/extensions/freetype/jni
-        def script = "wget -c https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz -O $root/jni/freetype.tar.gz\n" +
-                "tar -xf $root/jni/freetype.tar.gz -C $root/jni"
-        def scriptFile = new File("$buildDir/getfreetype")
-        scriptFile.parentFile.mkdirs()
-        scriptFile.text = script
-        "bash $scriptFile.absolutePath".execute().waitFor()
+            def root = "$project.rootDir/extensions/freetype"
+            new File("$root/jni").mkdir()
+            //| tar -xf -C $project.rootDir/extensions/freetype/jni
+            def script = "wget -c https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz -O $root/jni/freetype.tar.gz\n" +
+                    "tar -xf $root/jni/freetype.tar.gz -C $root/jni"
+            def scriptFile = new File("$buildDir/getfreetype")
+            scriptFile.parentFile.mkdirs()
+            scriptFile.text = script
+            "bash $scriptFile.absolutePath".execute().waitFor()
+
+            //overwrite config to use only certain modules.
+            file("$root/jni/freetype-2.10.4/include/freetype/ftconfig.h").text = """
+
+        FT_USE_MODULE( FT_Module_Class, autofit_module_class )
+        
+        FT_USE_MODULE( FT_Driver_ClassRec, tt_driver_class )
+        
+        FT_USE_MODULE( FT_Module_Class, psaux_module_class )
+        FT_USE_MODULE( FT_Module_Class, psnames_module_class )
+        FT_USE_MODULE( FT_Module_Class, pshinter_module_class )
+        FT_USE_MODULE( FT_Renderer_Class, ft_raster1_renderer_class )
+        FT_USE_MODULE( FT_Module_Class, sfnt_module_class )
+        FT_USE_MODULE( FT_Renderer_Class, ft_smooth_renderer_class )
+        
+        """
+        }
     }
 }
 
@@ -108,5 +116,6 @@ task postJni{
     }
 }
 
-jnigenBuild.dependsOn preJni
+preJni.dependsOn "compileJava"
+getTasksByName("jnigen", true).first().dependsOn preJni
 jnigenBuild.finalizedBy postJni
