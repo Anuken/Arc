@@ -15,24 +15,16 @@ jnigen{
             //BASE
             "$fdir/src/base/ftsystem.c", "$fdir/src/base/ftinit.c", "$fdir/src/base/ftdebug.c",
             "$fdir/src/base/ftbase.c", "$fdir/src/base/ftbbox.c", "$fdir/src/base/ftglyph.c",
-            "$fdir/src/base/ftbdf.c", "$fdir/src/base/ftbitmap.c", "$fdir/src/base/ftcid.c",
-            "$fdir/src/base/ftfstype.c", "$fdir/src/base/ftgasp.c", "$fdir/src/base/ftgxval.c",
-            "$fdir/src/base/ftmm.c", "$fdir/src/base/ftotval.c", "$fdir/src/base/ftpatent.c",
-            "$fdir/src/base/ftpfr.c", "$fdir/src/base/ftstroke.c", "$fdir/src/base/ftsynth.c",
-            "$fdir/src/base/fttype1.c", "$fdir/src/base/ftwinfnt.c", "$fdir/src/base/ftxf86.c",
+            "$fdir/src/base/ftbitmap.c", "$fdir/src/base/ftstroke.c", "$fdir/src/base/fttype1.c",
 
             //DRIVERS
-            "$fdir/src/truetype/truetype.c",
-
-            //what I actually need: "$fdir/src/truetype/truetype.c",
+            "$fdir/src/truetype/truetype.c", "$fdir/src/sfnt/sfnt.c",
 
             //RASTERIZERS
             "$fdir/src/raster/raster.c", "$fdir/src/smooth/smooth.c",
 
             //AUX
-            "$fdir/src/autofit/autofit.c", "$fdir/src/cache/ftcache.c", "$fdir/src/gzip/ftgzip.c",
-            "$fdir/src/lzw/ftlzw.c", "$fdir/src/bzip2/ftbzip2.c", "$fdir/src/gxvalid/gxvalid.c",
-            "$fdir/src/otvalid/otvalid.c", "$fdir/src/psaux/psaux.c", "$fdir/src/pshinter/pshinter.c",
+            "$fdir/src/autofit/autofit.c", "$fdir/src/gzip/ftgzip.c",
             "$fdir/src/psnames/psnames.c"
         ]
 
@@ -47,15 +39,11 @@ jnigen{
 }
 
 task preJni{
-    println "CONFIGURING PREJNI"
 
     doFirst{
         copy{
-            println "COPYING FROM $rootDir/arc-core/build/classes/java/main : exists?: ${new File("$rootDir/arc-core/build/classes/java/main").exists()}"
-            println new File("$rootDir/arc-core/build/classes/java/main").list()
             from "$rootDir/arc-core/build/classes/java/main"
             into "$rootDir/extensions/freetype/build/classes/java/main"
-            println("INTO $rootDir/extensions/freetype/build/classes/java/main : exists?: ${new File( "$rootDir/extensions/freetype/build/classes/java/main").exists()}")
             include "**"
         }
 
@@ -73,20 +61,19 @@ task preJni{
             "bash $scriptFile.absolutePath".execute().waitFor()
 
             //overwrite config to use only certain modules.
-            file("$root/jni/freetype-2.10.4/include/freetype/ftconfig.h").text = """
-
-        FT_USE_MODULE( FT_Module_Class, autofit_module_class )
-        
-        FT_USE_MODULE( FT_Driver_ClassRec, tt_driver_class )
-        
-        FT_USE_MODULE( FT_Module_Class, psaux_module_class )
-        FT_USE_MODULE( FT_Module_Class, psnames_module_class )
-        FT_USE_MODULE( FT_Module_Class, pshinter_module_class )
-        FT_USE_MODULE( FT_Renderer_Class, ft_raster1_renderer_class )
-        FT_USE_MODULE( FT_Module_Class, sfnt_module_class )
-        FT_USE_MODULE( FT_Renderer_Class, ft_smooth_renderer_class )
-        
-        """
+            file("$root/jni/freetype-2.10.4/include/freetype/config/ftmodule.h").text =
+            """
+            
+            FT_USE_MODULE( FT_Module_Class, autofit_module_class )
+            
+            FT_USE_MODULE( FT_Driver_ClassRec, tt_driver_class )
+            
+            FT_USE_MODULE( FT_Module_Class, psnames_module_class )
+            FT_USE_MODULE( FT_Renderer_Class, ft_raster1_renderer_class )
+            FT_USE_MODULE( FT_Module_Class, sfnt_module_class )
+            FT_USE_MODULE( FT_Renderer_Class, ft_smooth_renderer_class )
+            
+            """
         }
     }
 }
