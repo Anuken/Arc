@@ -54,6 +54,11 @@ jnigen{
 }
 
 task preJni{
+    copy{
+        from "$rootDir/arc-core/build/classes/java/main"
+        into "$rootDir/extensions/freetype/build/classes/java/main"
+        include "**"
+    }
 
     if(!file("$project.rootDir/extensions/freetype/jni/freetype-2.10.4").exists()){
         println "Fetching freetype source..."
