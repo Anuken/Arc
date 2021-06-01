@@ -21,7 +21,7 @@ jnigen{
             "$fdir/src/truetype/truetype.c", "$fdir/src/sfnt/sfnt.c",
 
             //RASTERIZERS
-            "$fdir/src/raster/raster.c", "$fdir/src/smooth/smooth.c",
+            "$fdir/src/smooth/smooth.c",
 
             //AUX
             "$fdir/src/autofit/autofit.c", "$fdir/src/gzip/ftgzip.c",
@@ -63,16 +63,11 @@ task preJni{
             //overwrite config to use only certain modules.
             file("$root/jni/freetype-2.10.4/include/freetype/config/ftmodule.h").text =
             """
-            
             FT_USE_MODULE( FT_Module_Class, autofit_module_class )
-            
             FT_USE_MODULE( FT_Driver_ClassRec, tt_driver_class )
-            
             FT_USE_MODULE( FT_Module_Class, psnames_module_class )
-            FT_USE_MODULE( FT_Renderer_Class, ft_raster1_renderer_class )
             FT_USE_MODULE( FT_Module_Class, sfnt_module_class )
             FT_USE_MODULE( FT_Renderer_Class, ft_smooth_renderer_class )
-            
             """
         }
     }

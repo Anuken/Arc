@@ -2,7 +2,6 @@ package arc.freetype;
 
 import arc.files.*;
 import arc.graphics.*;
-import arc.graphics.Pixmap.*;
 import arc.struct.*;
 import arc.util.*;
 
@@ -714,7 +713,7 @@ public class FreeType{
         }
 
         // @on
-        public Pixmap getPixmap(Format format, Color color, float gamma){
+        public Pixmap getPixmap(Color color, float gamma){
             int width = getWidth(), rows = getRows();
             ByteBuffer src = getBuffer();
             Pixmap pixmap;

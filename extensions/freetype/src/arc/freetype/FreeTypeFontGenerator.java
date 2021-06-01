@@ -5,7 +5,6 @@ import arc.struct.Seq;
 import arc.files.Fi;
 import arc.graphics.Color;
 import arc.graphics.Pixmap;
-import arc.graphics.Pixmap.Format;
 import arc.graphics.Texture.TextureFilter;
 import arc.graphics.g2d.Font;
 import arc.graphics.g2d.Font.FontData;
@@ -540,7 +539,7 @@ public class FreeTypeFontGenerator implements Disposable{
             return null;
         }
         Bitmap mainBitmap = mainGlyph.getBitmap();
-        Pixmap mainPixmap = mainBitmap.getPixmap(Format.rgba8888, parameter.color, parameter.gamma);
+        Pixmap mainPixmap = mainBitmap.getPixmap(parameter.color, parameter.gamma);
 
         if(mainBitmap.getWidth() != 0 && mainBitmap.getRows() != 0){
             int offsetX = 0, offsetY = 0;
@@ -555,7 +554,7 @@ public class FreeTypeFontGenerator implements Disposable{
 
                 // Render border (pixmap is bigger than main).
                 Bitmap borderBitmap = borderGlyph.getBitmap();
-                Pixmap borderPixmap = borderBitmap.getPixmap(Format.rgba8888, parameter.borderColor, parameter.borderGamma);
+                Pixmap borderPixmap = borderBitmap.getPixmap(parameter.borderColor, parameter.borderGamma);
 
                 // Draw main glyph on top of border.
                 for(int i = 0, n = parameter.renderCount; i < n; i++)
