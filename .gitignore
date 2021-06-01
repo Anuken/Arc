@@ -43,7 +43,8 @@ arc-*.zip.MD5
 
 #core & extension libs/ folders that have no 3rd party dependencies in them
 /backends/arc-backend-robovm/libs/
-/extensions/arc-freetype/libs/
+/extensions/freetype/libs/
+/extensions/freetype/jni/
 /backends/backend-sdl/jni
 /arc-core/jni/
 /arc-core/obj/

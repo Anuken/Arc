@@ -1,28 +1,23 @@
-import com.badlogic.gdx.jnigen.*
+apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 
-buildscript{
-    dependencies{
-        classpath libraries.jnigen
+file("jni").mkdir()
+
+jnigen{
+    copy{
+        from "$rootDir/arc-core/build/classes/java/main"
+        into "$rootDir/extensions/freetype/build/classes/java/main"
+        include "**"
     }
-}
 
-task deleteJniFolder(type: Delete) {
-    delete "jni"
-    delete "docs"
-}
+    def fdir = "freetype-2.10.4"
 
-clean.dependsOn(deleteJniFolder)
+    sharedLibName = "arc-freetype"
+    temporaryDir = file("build/target/native").absolutePath
+    libsDir = file("libs").absolutePath
 
-task freetypeNatives(dependsOn: [classes, deleteJniFolder]){
-    doLast{
-        def root = "$project.rootDir/extensions/freetype"
-        def jnidir = "$root/jni"
-        def libdir = "$root/libs"
-
-        String fdir = "freetype-2.10.0"
-
-        String[] headers = ["$fdir/include"]
-        String[] sources = [
+    all{
+        headerDirs += ["$fdir/include"]
+        cIncludes = [
             //BASE
             "$fdir/src/base/ftsystem.c", "$fdir/src/base/ftinit.c", "$fdir/src/base/ftdebug.c",
             "$fdir/src/base/ftbase.c", "$fdir/src/base/ftbbox.c", "$fdir/src/base/ftglyph.c",
@@ -48,92 +43,56 @@ task freetypeNatives(dependsOn: [classes, deleteJniFolder]){
             "$fdir/src/psnames/psnames.c"
         ]
 
-        //copy files manually because javah and/or jnigen is braindead
-        copy{
-            from "$rootDir/arc-core/build/classes/java/main"
-            into "$root/build/classes/java/main"
-            include "**"
-        }
+        cFlags += " -DFT2_BUILD_LIBRARY"
+        cppFlags += " -DFT2_BUILD_LIBRARY"
+    }
+    add(Windows, x32)
+    add(Windows, x64)
+    add(Linux, x64)
+    add(Android)
+    add(IOS)
+}
 
-        new NativeCodeGenerator().generate("$root/src", "$root/build/classes/java/main", jnidir, null, null)
+task preJni{
 
-        //download freetype
-        def script = "wget -c https://download.savannah.gnu.org/releases/freetype/freetype-2.10.0.tar.bz2 -O - | tar -jx -C $jnidir"
+    if(!file("$project.rootDir/extensions/freetype/jni/freetype-2.10.4").exists()){
+        println "Fetching freetype source..."
+
+        def root = "$project.rootDir/extensions/freetype"
+        new File("$root/jni").mkdir()
+        //| tar -xf -C $project.rootDir/extensions/freetype/jni
+        def script = "wget -c https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz -O $root/jni/freetype.tar.gz\n" +
+                "tar -xf $root/jni/freetype.tar.gz -C $root/jni"
         def scriptFile = new File("$buildDir/getfreetype")
         scriptFile.text = script
         "bash $scriptFile.absolutePath".execute().waitFor()
+    }
+}
 
-        BuildTarget[] targets = [
-            BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Windows, false),
-            BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Windows, true),
-            BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Linux, true),
-            BuildTarget.newDefaultTarget(BuildTarget.TargetOs.Android, false),
-            BuildTarget.newDefaultTarget(BuildTarget.TargetOs.MacOsX, true),
-            BuildTarget.newDefaultTarget(BuildTarget.TargetOs.IOS, false)
-        ] as BuildTarget[]
-
-        targets.each{
-            it.headerDirs = headers
-            it.cIncludes = sources
-
-            if(it.os == BuildTarget.TargetOs.MacOsX){
-                it.cppFlags = "-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.7 -stdlib=libc++"
-                it.linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.7 -stdlib=libc++ -framework CoreServices -framework Carbon"
-            }
-
-            it.cFlags += "  -DFT2_BUILD_LIBRARY"
-            it.cppFlags += "  -DFT2_BUILD_LIBRARY"
+//copies files into the right locations
+task postJni{
+    doLast{
+        copy{
+            from "libs/linux64", "libs/windows32", "libs/windows64", "libs/macosx64"
+            into "../../natives/natives-freetype-desktop/libs"
+            include "**"
         }
 
-        def matches = { String path, List<String> pattern ->
-            return pattern.find{ path.contains(it) } != null
-        }
-
-        new AntScriptGenerator().generate(new BuildConfig("arc-freetype", "$root/build", "libs/", jnidir), targets)
-
-        //overwrite incorrect application mkfile
-        new File("$jnidir/Application.mk").text = "APP_ABI := all\nAPP_PLATFORM := android-16"
-
-        for(BuildTarget target : targets){
-            if((target.os == BuildTarget.TargetOs.IOS || target.os == BuildTarget.TargetOs.MacOsX) != System.getProperty("os.name").toLowerCase().contains("mac")) continue
-
-            String buildFileName = "build-" + target.os.toString().toLowerCase() + (target.is64Bit ? "64" : "32") + ".xml"
-            BuildExecutor.executeAnt("$jnidir/" + buildFileName, "-Dhas-compiler=true -Drelease=true clean postcompile")
-        }
-
-        new File(libdir).eachFileRecurse{ file ->
-            if(!file.path.contains("ios") && !file.path.contains("mac")){
-                "strip ${file.absolutePath}".execute().waitFor()
-            }
-        }
-
-        new File(libdir).eachFileRecurse{ target ->
-            if(!target.isDirectory() && matches(target.path, ["windows", "mac", "linux"])){
-                file("../../natives/natives-freetype-desktop/libs").mkdirs()
-                file("../../natives/natives-freetype-desktop/libs/$target.name").bytes = target.bytes
-            }else if(!target.isDirectory() && target.path.contains("ios")){
-                file("../../natives/natives-freetype-ios/libs").mkdirs()
-                file("../../natives/natives-freetype-ios/libs/$target.name").bytes = target.bytes
+        ["arm64-v8a", "x86", "x86_64", "armeabi-v7a"].each{ p ->
+            copy{
+                from "libs/$p"
+                into "../../natives/natives-freetype-android/libs/$p/"
+                include "**"
             }
         }
 
         copy{
-            include{ file -> matches(file.path, ["arm", "x86"]) && !file.path.contains("ios") }
-            from "libs/"
-            into "../../natives/natives-freetype-android/libs/"
-        }
-
-        //cleanup
-        delete{ delete "libs" }
-        delete{ delete "obj" }
-        delete{ delete "out" }
-        delete{ delete "jni" }
-
-        //delete extra garbage, not sure why it even exists
-        delete{
-            delete "../../libs"
+            from "libs/ios32/libarc.a"
+            into "../../natives/natives-freetype-ios/libs/"
+            include "**"
         }
     }
 }
 
-
+jnigenBuild.dependsOn preJni
+jnigenBuild.finalizedBy postJni

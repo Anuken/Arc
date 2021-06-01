@@ -18,6 +18,7 @@ jobs:
     - name: Build natives
       run: |
         ./gradlew arc-core:jnigenBuild
+        ./gradlew extensions:freetype:jnigenBuild
     - name: Upload natives
       uses: actions/upload-artifact@v2
       with:
@@ -26,12 +27,16 @@ jobs:
           natives/natives-desktop/libs/libarc64.so
           natives/natives-desktop/libs/arc.dll
           natives/natives-desktop/libs/arc64.dll
+          natives/natives-freetype-desktop/libs/libarc-freetype64.so
+          natives/natives-freetype-desktop/libs/arc-freetype.dll
+          natives/natives-freetype-desktop/libs/arc-freetype64.dll
     - name: Upload Android natives
       uses: actions/upload-artifact@v2
       with:
         name: Arc-core android natives
         path: |
           natives/natives-android/libs
+          naitves/natives-freetype-android/libs
   buildMac:
     runs-on: macos-10.15
     steps:
@@ -43,15 +48,18 @@ jobs:
     - name: Build natives
       run: |
         ./gradlew arc-core:jnigenBuild
+        ./gradlew extensions:freetype:jnigenBuild
     - name: Upload natives
       uses: actions/upload-artifact@v2
       with:
         name: Arc-core MacOS natives
         path: |
           natives/natives-desktop/libs/libarc64.dylib
+          natives/natives-freetype-desktop/libs/libarc-freetype64.dylib
     - name: Upload iOS natives
       uses: actions/upload-artifact@v2
       with:
         name: Arc-core iOS natives
         path: |
           natives/natives-ios/libs/libarc.a
+          natives/natives-freetype-ios/libs/libarc-freetype.a
