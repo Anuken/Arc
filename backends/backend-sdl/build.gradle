@@ -11,16 +11,24 @@ apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 file("jni").mkdir()
 
 task preJni{
-    if(!file("jni/glew.zip").exists()){
-        println "Fetching GLEW source..."
-        "curl -o $rootDir/backends/backend-sdl/jni/glew.zip -L https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.zip".execute().waitFor()
-        "unzip -qq -d $rootDir/backends/backend-sdl/jni $rootDir/backends/backend-sdl/jni/glew.zip".execute().waitFor()
-    }
+    doFirst{
+        if(!file("jni/glew.zip").exists()){
+            println "Fetching GLEW source..."
+            "curl -o $rootDir/backends/backend-sdl/jni/glew.zip -L https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.zip".execute().waitFor()
+            "unzip -qq -d $rootDir/backends/backend-sdl/jni $rootDir/backends/backend-sdl/jni/glew.zip".execute().waitFor()
+        }
 
-    if(!file("jni/sdlmingw.tar.gz").exists()){
-        println "Fetching SDL-mingw builds..."
-        "curl -o $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -L https://www.libsdl.org/release/SDL2-devel-2.0.14-mingw.tar.gz".execute().waitFor()
-        "tar -xvzf $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -C $rootDir/backends/backend-sdl/jni".execute().waitFor()
+        if(!file("jni/sdlmingw.tar.gz").exists()){
+            println "Fetching SDL-mingw builds..."
+            "curl -o $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -L https://www.libsdl.org/release/SDL2-devel-2.0.14-mingw.tar.gz".execute().waitFor()
+            "tar -xvzf $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -C $rootDir/backends/backend-sdl/jni".execute().waitFor()
+        }
+
+        copy{
+            from "$rootDir/arc-core/build/classes/java/main"
+            into "$rootDir/backends/backend-sdl/build/classes/java/main"
+            include "**"
+        }
     }
 }
 
@@ -54,12 +62,6 @@ jnigen{
             //fail silently, because this is run during standard arc builds and it shouldn't fail
             //TODO don't do anything at all in certain situations?
         }
-    }
-
-    copy{
-        from "$rootDir/arc-core/build/classes/java/main"
-        into "$rootDir/backends/backend-sdl/build/classes/java/main"
-        include "**"
     }
 
     sharedLibName = "sdl-arc"
@@ -103,6 +105,7 @@ jnigen{
 }
 
 getTasksByName("jnigen", true).each{
+    it.dependsOn preJni
     it.dependsOn classes
     it.dependsOn aproj(":arc-core").getTasksByName("compileJava", true)
 }
