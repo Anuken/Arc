@@ -99,5 +99,8 @@ task postJni{
 }
 
 preJni.dependsOn "compileJava"
-getTasksByName("jnigen", true).first().dependsOn preJni
 jnigenBuild.finalizedBy postJni
+
+getTasksByName("jnigen", true).each{
+    it.dependsOn preJni
+}

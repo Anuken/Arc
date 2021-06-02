@@ -98,12 +98,12 @@ task preJni{
             println "Fetching soloud source..."
             "git clone https://github.com/Anuken/soloud.git $rootDir/arc-core/csrc/soloud --depth 1".execute().waitFor()
         }
+    }
 
-        copy{
-            from "csrc/"
-            into "jni/"
-            include "**"
-        }
+    copy{
+        from "csrc/"
+        into "jni/"
+        include "**"
     }
 }
 
@@ -134,5 +134,8 @@ task postJni{
     }
 }
 
-jnigenBuild.dependsOn preJni
 jnigenBuild.finalizedBy postJni
+
+getTasksByName("jnigen", true).each{
+    it.dependsOn preJni
+}
