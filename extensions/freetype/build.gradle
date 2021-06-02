@@ -15,7 +15,7 @@ jnigen{
             //BASE
             "$fdir/src/base/ftsystem.c", "$fdir/src/base/ftinit.c", "$fdir/src/base/ftdebug.c",
             "$fdir/src/base/ftbase.c", "$fdir/src/base/ftbbox.c", "$fdir/src/base/ftglyph.c",
-            "$fdir/src/base/ftbitmap.c", "$fdir/src/base/ftstroke.c", "$fdir/src/base/fttype1.c",
+            "$fdir/src/base/ftbitmap.c", "$fdir/src/base/ftstroke.c",
 
             //DRIVERS
             "$fdir/src/truetype/truetype.c", "$fdir/src/sfnt/sfnt.c",
