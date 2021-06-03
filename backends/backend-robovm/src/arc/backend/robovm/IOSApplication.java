@@ -28,7 +28,6 @@ public class IOSApplication implements Application{
     Seq<Runnable> executedRunnables = new Seq<>();
     private CGRect lastScreenBounds = null;
 
-
     public IOSApplication(ApplicationListener listener, IOSApplicationConfiguration config){
         addListener(listener);
         this.config = config;
