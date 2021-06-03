@@ -35,7 +35,7 @@ public class Pixmap implements Disposable{
     public int width, height;
 
     /** Internal data, arranged as RGBA with 1 byte per component. This buffer must be direct or natively-allocated. */
-    ByteBuffer pixels;
+    public ByteBuffer pixels;
 
     /**
      * When natives are present, this handle is the address of the memory region.

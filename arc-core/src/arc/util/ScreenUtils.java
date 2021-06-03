@@ -68,7 +68,7 @@ public final class ScreenUtils{
         Gl.pixelStorei(Gl.packAlignment, 1);
 
         final Pixmap pixmap = new Pixmap(w, h);
-        ByteBuffer pixels = pixmap.getPixels();
+        ByteBuffer pixels = pixmap.pixels;
         Gl.readPixels(x, y, w, h, Gl.rgba, Gl.unsignedByte, pixels);
 
         return pixmap;
@@ -77,7 +77,7 @@ public final class ScreenUtils{
     public static Pixmap getFrameBufferPixmap(int x, int y, int w, int h, boolean flip){
         byte[] lines = getFrameBufferPixels(x, y, w, h, flip);
         Pixmap pixmap = new Pixmap(w, h);
-        Buffers.copy(lines, 0, pixmap.getPixels(), lines.length);
+        Buffers.copy(lines, 0, pixmap.pixels, lines.length);
         return pixmap;
     }
 

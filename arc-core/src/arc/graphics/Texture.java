@@ -94,7 +94,7 @@ public class Texture extends GLTexture{
      */
     public void draw(Pixmap pixmap, int x, int y){
         bind();
-        Gl.texSubImage2D(glTarget, 0, x, y, pixmap.width, pixmap.height, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
+        Gl.texSubImage2D(glTarget, 0, x, y, pixmap.width, pixmap.height, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.pixels);
     }
 
     @Override

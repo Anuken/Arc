@@ -299,7 +299,7 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public Cursor newCursor(Pixmap pixmap, int xHotspot, int yHotspot){
-        long surface = SDL_CreateRGBSurfaceFrom(pixmap.getPixels(), pixmap.width, pixmap.height);
+        long surface = SDL_CreateRGBSurfaceFrom(pixmap.pixels, pixmap.width, pixmap.height);
         long cursor = SDL_CreateColorCursor(surface, xHotspot, yHotspot);
         return new SdlCursor(surface, cursor);
     }

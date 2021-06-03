@@ -44,7 +44,7 @@ public class MipMapGenerator{
 
     private static void generateMipMapGLES20(int target, Pixmap pixmap){
         Gl.texImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.width, pixmap.height, 0,
-        pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
+        pixmap.getGLFormat(), pixmap.getGLType(), pixmap.pixels);
         Gl.generateMipmap(target);
     }
 
@@ -52,7 +52,7 @@ public class MipMapGenerator{
         if(Core.graphics.supportsExtension("GL_ARB_framebuffer_object")
         || Core.graphics.supportsExtension("GL_EXT_framebuffer_object") || Core.gl30 != null){
             Gl.texImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.width, pixmap.height, 0,
-            pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
+            pixmap.getGLFormat(), pixmap.getGLType(), pixmap.pixels);
             Gl.generateMipmap(target);
         }else{
             generateMipMapCPU(target, pixmap, textureWidth, textureHeight);
@@ -61,7 +61,7 @@ public class MipMapGenerator{
 
     private static void generateMipMapCPU(int target, Pixmap pixmap, int textureWidth, int textureHeight){
         Gl.texImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.width, pixmap.height, 0,
-        pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
+        pixmap.getGLFormat(), pixmap.getGLType(), pixmap.pixels);
         if((Core.gl20 == null) && textureWidth != textureHeight)
             throw new ArcRuntimeException("texture width and height must be square when using mipmapping.");
         int width = pixmap.width / 2;
@@ -74,7 +74,7 @@ public class MipMapGenerator{
             pixmap = tmp;
 
             Gl.texImage2D(target, level, pixmap.getGLInternalFormat(), pixmap.width, pixmap.height, 0,
-            pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
+            pixmap.getGLFormat(), pixmap.getGLType(), pixmap.pixels);
 
             width = pixmap.width / 2;
             height = pixmap.height / 2;

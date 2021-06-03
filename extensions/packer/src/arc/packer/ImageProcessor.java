@@ -352,10 +352,11 @@ public class ImageProcessor{
             int width = image.width;
             int height = image.height;
 
-            byte[] bytes = new byte[image.getPixels().capacity()];
-            image.getPixels().position(0);
-            image.getPixels().get(bytes);
+            byte[] bytes = new byte[image.pixels.capacity()];
+            image.pixels.position(0);
+            image.pixels.get(bytes);
             digest.update(bytes);
+            image.pixels.position(0);
 
             hash(digest, width);
             hash(digest, height);

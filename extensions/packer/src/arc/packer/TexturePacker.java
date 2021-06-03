@@ -89,10 +89,11 @@ public class TexturePacker{
 
             for(int ii = 0, nn = inputImages.size; ii < nn; ii++){
                 InputImage inputImage = inputImages.get(ii);
-                if(inputImage.file != null)
+                if(inputImage.file != null){
                     imageProcessor.addImage(inputImage.file, inputImage.rootPath);
-                else
+                }else{
                     imageProcessor.addImage(inputImage.image, inputImage.name);
+                }
             }
             Seq<Page> pages = packer.pack(imageProcessor.getImages());
 
@@ -240,7 +241,7 @@ public class TexturePacker{
         }else{
             for(int i = 0; i < w; i++)
                 for(int j = 0; j < h; j++)
-                    dst.set(dx + i, dy + j, src.getRaw(x + i, y + j));
+                    dst.setRaw(dx + i, dy + j, src.getRaw(x + i, y + j));
         }
     }
 
@@ -387,13 +388,17 @@ public class TexturePacker{
         public int[] pads;
         public boolean canRotate = true;
 
-        private boolean isPatch;
-        private Pixmap pixmap;
-        private Fi file;
+        boolean isPatch;
+        Pixmap pixmap;
+        Fi file;
         int score1, score2;
 
         Rect(Pixmap source, int left, int top, int newWidth, int newHeight, boolean isPatch){
-            this.pixmap = source.crop(left, top, newWidth, newHeight);
+            if(source.width ==  newWidth && source.height == newHeight && left == 0 && top == 0){
+                this.pixmap = source;
+            }else{
+                this.pixmap = source.crop(left, top, newWidth, newHeight);
+            }
             offsetX = left;
             offsetY = top;
             regionWidth = newWidth;
@@ -582,7 +587,7 @@ public class TexturePacker{
         public boolean alias = true;
         public String outputFormat = "png";
         public boolean ignoreBlankImages = true;
-        public boolean fast;
+        public boolean fast = true; //with fast = false packing takes an eternity, I have no idea why that wasn't the deafult before
         public boolean debug;
         public boolean silent;
         public boolean printAliases;

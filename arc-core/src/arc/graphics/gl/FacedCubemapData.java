@@ -159,7 +159,7 @@ public class FacedCubemapData implements CubemapData{
                 boolean disposePixmap = data[i].disposePixmap();
                 Gl.pixelStorei(GL20.GL_UNPACK_ALIGNMENT, 1);
                 Gl.texImage2D(GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, pixmap.getGLInternalFormat(), pixmap.width,
-                pixmap.height, 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
+                pixmap.height, 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.pixels);
                 if(disposePixmap) pixmap.dispose();
             }
         }

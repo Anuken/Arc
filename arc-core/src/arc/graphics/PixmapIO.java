@@ -26,7 +26,7 @@ public class PixmapIO{
             out.writeInt(pixmap.width);
             out.writeInt(pixmap.height);
 
-            ByteBuffer buf = pixmap.getPixels();
+            ByteBuffer buf = pixmap.pixels;
             buf.position(0);
             buf.limit(buf.capacity());
             channel.write(buf);
@@ -40,7 +40,7 @@ public class PixmapIO{
         try(DataInputStream in = new DataInputStream(new InflaterInputStream(new BufferedInputStream(file.read()))); ReadableByteChannel channel = Channels.newChannel(in)){
             Pixmap pixmap = new Pixmap(in.readInt(), in.readInt());
 
-            ByteBuffer pixelBuf = pixmap.getPixels();
+            ByteBuffer pixelBuf = pixmap.pixels;
             pixelBuf.position(0);
             pixelBuf.limit(pixelBuf.capacity());
             channel.read(pixelBuf);
@@ -151,7 +151,7 @@ public class PixmapIO{
             //1 extra byte for filter 0
             byte[] curLine = new byte[lineLen + 1];
 
-            ByteBuffer pixels = pixmap.getPixels();
+            ByteBuffer pixels = pixmap.pixels;
             int oldPosition = pixels.position();
             for(int y = 0, h = pixmap.height; y < h; y++){
                 int py = flipY ? (h - y - 1) : y;
@@ -350,7 +350,7 @@ public class PixmapIO{
                         }
                     }else{
                         for(i = 1; i < v; i += bpx){
-                            bb.putInt(palette[row[i & 0xff]]);
+                            bb.putInt(palette[row[i]]);
                         }
                     }
                 }else{

@@ -54,7 +54,7 @@ public class FileTextureArrayData implements TextureArrayData{
                 TextureData texData = textureDatas[i];
                 Pixmap pixmap = texData.consumePixmap();
                 boolean disposePixmap = texData.disposePixmap();
-                Core.gl30.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, pixmap.width, pixmap.height, 1, pixmap.getGLInternalFormat(), pixmap.getGLType(), pixmap.getPixels());
+                Core.gl30.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, pixmap.width, pixmap.height, 1, pixmap.getGLInternalFormat(), pixmap.getGLType(), pixmap.pixels);
                 if(disposePixmap) pixmap.dispose();
             }
         }

@@ -216,7 +216,7 @@ public class PixmapPacker implements Disposable{
             //TODO this will not work correctly since the pixmap is only a region!
             page.texture.bind();
             Gl.texSubImage2D(page.texture.glTarget, 0, rectX, rectY, rectWidth, rectHeight, image.pixmap.getGLFormat(),
-                image.pixmap.getGLType(), image.pixmap.getPixels());
+                image.pixmap.getGLType(), image.pixmap.pixels);
         }else
             page.dirty = true;
 

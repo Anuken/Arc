@@ -33,7 +33,7 @@ public class Pixmaps{
     }
 
     public static void flip(Pixmap pixmap){
-        ByteBuffer pixels = pixmap.getPixels();
+        ByteBuffer pixels = pixmap.pixels;
         int numBytes = pixmap.width * pixmap.height * 4;
         byte[] lines = new byte[numBytes];
         int numBytesPerLine = pixmap.width * 4;
@@ -224,7 +224,7 @@ public class Pixmaps{
      * */
     public static Pixmap bleed(Pixmap image){
         int w = image.width, h = image.height;
-        ByteBuffer pixels = image.getPixels();
+        ByteBuffer pixels = image.pixels;
         int[] offsets = {1, 0, 1, 1, 0, 1, -1, 1, -1, 0, -1, -1, 0, -1, 1, -1};
 
         for(int x = 0; x < w; x++){
@@ -263,7 +263,7 @@ public class Pixmaps{
      * */
     public static Pixmap bleed(Pixmap image, int maxIterations){
         int total = image.width * image.height;
-        ByteBuffer pixels = image.getPixels();
+        ByteBuffer pixels = image.pixels;
 
         int[] offsets = {1, 0, 1, 1, 0, 1, -1, 1, -1, 0, -1, -1, 0, -1, 1, -1};
 

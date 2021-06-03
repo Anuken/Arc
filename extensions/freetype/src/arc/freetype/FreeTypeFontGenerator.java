@@ -576,8 +576,8 @@ public class FreeTypeFontGenerator implements Disposable{
                 float a = shadowColor.a;
                 if(a != 0){
                     byte r = (byte)(shadowColor.r * 255), g = (byte)(shadowColor.g * 255), b = (byte)(shadowColor.b * 255);
-                    ByteBuffer mainPixels = mainPixmap.getPixels();
-                    ByteBuffer shadowPixels = shadowPixmap.getPixels();
+                    ByteBuffer mainPixels = mainPixmap.pixels;
+                    ByteBuffer shadowPixels = shadowPixmap.pixels;
                     for(int y = 0; y < mainH; y++){
                         int shadowRow = shadowW * (y + shadowOffsetY) + shadowOffsetX;
                         for(int x = 0; x < mainW; x++){

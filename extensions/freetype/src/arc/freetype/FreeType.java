@@ -724,7 +724,7 @@ public class FreeType{
             int rgba = color.rgba8888();
             byte[] srcRow = new byte[rowBytes];
             int[] dstRow = new int[width];
-            IntBuffer dst = pixmap.getPixels().asIntBuffer();
+            IntBuffer dst = pixmap.pixels.asIntBuffer();
             if(pixelMode == FT_PIXEL_MODE_MONO){
                 // Use the specified color for each set bit.
                 for(int y = 0; y < rows; y++){
