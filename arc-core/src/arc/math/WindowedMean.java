@@ -85,15 +85,17 @@ public final class WindowedMean{
 
     /** @return raw mean; can be used before this window has enough data. */
     public float rawMean(){
-        if(dirty){
-            float mean = 0;
-            for(int i = 0; i < values.length; i++)
-                mean += values[i];
-
-            this.mean = mean / values.length;
-            dirty = false;
+        if(hasEnoughData()){
+            return mean();
+        }else if(addedValues == 0){
+            return 0;
+        }else{
+            float sum = 0f;
+            for(int i = 0; i < lastValue; i++){
+                sum += values[i];
+            }
+            return sum / addedValues;
         }
-        return this.mean;
     }
 
     /** @return the oldest value in the window */
