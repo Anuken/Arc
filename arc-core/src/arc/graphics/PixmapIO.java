@@ -350,7 +350,7 @@ public class PixmapIO{
                         }
                     }else{
                         for(i = 1; i < v; i += bpx){
-                            bb.putInt(palette[row[i]]);
+                            bb.putInt(palette[row[i] & 0xFF]);
                         }
                     }
                 }else{
