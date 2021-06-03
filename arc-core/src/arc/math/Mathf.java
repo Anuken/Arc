@@ -19,6 +19,8 @@ public final class Mathf{
     /** multiply by this to convert from degrees to radians */
     public static final float degreesToRadians = PI / 180;
     public static final float degRad = degreesToRadians;
+    public static final double doubleDegRad = 0.017453292519943295;
+    public static final double doubleRadDeg = 57.29577951308232;
 
     private static final int sinBits = 14; // 16KB. Adjust for accuracy.
     private static final int sinMask = ~(-1 << sinBits);
