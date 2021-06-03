@@ -26,10 +26,12 @@ task preJni{
         }
     }catch(Exception youAreProbablyOnWindowsOrDontHaveUnzip){}
 
-    copy{
-        from "$rootDir/arc-core/build/classes/java/main"
-        into "$rootDir/backends/backend-sdl/build/classes/java/main"
-        include "**"
+    doFirst{
+        copy{
+            from "$rootDir/arc-core/build/classes/java/main"
+            into "$rootDir/backends/backend-sdl/build/classes/java/main"
+            include "**"
+        }
     }
 }
 
@@ -96,8 +98,6 @@ jnigen{
         cppFlags += " " + execCmd("sh $root/$path/bin/sdl2-config --cflags")
         cFlags = cppFlags
         libraries = execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32"
-        println "AAAAAAAAAAAAAAAAAAAaa"
-        println execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32"
         linkerFlags += " -L $root/$path/lib"
     }
     add(MacOsX, x64){
