@@ -582,8 +582,8 @@ public class TexturePacker{
         public boolean alias = true;
         public String outputFormat = "png";
         public boolean ignoreBlankImages = true;
-        public boolean fast;
-        public boolean debug;
+        public boolean fast = true;
+        public boolean debug = true;
         public boolean silent;
         public boolean printAliases;
         public boolean combineSubdirectories;
