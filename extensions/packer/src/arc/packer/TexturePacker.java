@@ -210,17 +210,10 @@ public class TexturePacker{
                     }
                 }
                 copy(image, 0, 0, iw, ih, canvas, rectX, rectY, rect.rotated);
-                if(settings.debug){
-                    canvas.fillRect(rectX, rectY, rect.width - settings.paddingX - 1, rect.height - settings.paddingY - 1, Color.magenta.rgba());
-                }
             }
 
             if(settings.bleed){
                 Pixmaps.bleed(canvas, settings.bleedIterations);
-            }
-
-            if(settings.debug){
-                canvas.fillRect(0, 0, width - 1, height - 1, Color.magenta.rgba());
             }
 
             if(settings.outputFormat.equalsIgnoreCase("apix")){
@@ -588,7 +581,6 @@ public class TexturePacker{
         public String outputFormat = "png";
         public boolean ignoreBlankImages = true;
         public boolean fast = true; //with fast = false packing takes an eternity, I have no idea why that wasn't the deafult before
-        public boolean debug;
         public boolean silent;
         public boolean printAliases;
         public boolean combineSubdirectories;

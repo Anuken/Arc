@@ -157,7 +157,7 @@ public class PixmapPacker implements Disposable{
         return pack(name, image, null, null);
     }
 
-    public synchronized Rect pack(String name, PixmapRegion image, int[] splits, int[] pads){
+    public synchronized Rect pack(@Nullable String name, PixmapRegion image, int[] splits, int[] pads){
         if(disposed) return null;
 
         //store previous rect to replace it; this saves space
@@ -174,15 +174,17 @@ public class PixmapPacker implements Disposable{
 
         boolean isPatch = name != null && name.endsWith(".9");
 
-        PixmapPackerRect rect = new PixmapPackerRect(0, 0, image.width, image.height);
+        PixmapPackerRect rect;
         Pixmap pixmapToDispose = null;
         if(isPatch && splits == null){
-            pixmapToDispose = new Pixmap(image.width, image.height);
+            rect = new PixmapPackerRect(0, 0, image.width - 2, image.height - 2);
+            pixmapToDispose = new Pixmap(image.width - 2, image.height - 2);
             rect.splits = getSplits(image);
             rect.pads = getPads(image, rect.splits);
-            pixmapToDispose.draw(image, 0, 0, 0, 0, image.width, image.height);
+            pixmapToDispose.draw(image, 0, 0, 1, 1, image.width - 1, image.height - 1);
             image = new PixmapRegion(pixmapToDispose);
         }else{
+            rect = new PixmapPackerRect(0, 0, image.width, image.height);
             rect.splits = splits;
             rect.pads = pads;
         }
