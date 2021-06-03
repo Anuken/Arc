@@ -213,7 +213,7 @@ public class Pixmaps{
             drawPixmap = new Pixmap(1, 1);
         }
 
-        drawPixmap.fill(color);
+        drawPixmap.setRaw(0, 0, color);
         texture.draw(drawPixmap, x, y);
     }
 

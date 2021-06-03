@@ -11,7 +11,8 @@ apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 file("jni").mkdir()
 
 task preJni{
-    doFirst{
+    //this absolutely needs to run during configuration so jnigen can run downloaded sdl-config scripts for configuration of library flags
+    try{
         if(!file("jni/glew.zip").exists()){
             println "Fetching GLEW source..."
             "curl -o $rootDir/backends/backend-sdl/jni/glew.zip -L https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.zip".execute().waitFor()
@@ -23,12 +24,12 @@ task preJni{
             "curl -o $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -L https://www.libsdl.org/release/SDL2-devel-2.0.14-mingw.tar.gz".execute().waitFor()
             "tar -xvzf $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -C $rootDir/backends/backend-sdl/jni".execute().waitFor()
         }
+    }catch(Exception youAreProbablyOnWindowsOrDontHaveUnzip){}
 
-        copy{
-            from "$rootDir/arc-core/build/classes/java/main"
-            into "$rootDir/backends/backend-sdl/build/classes/java/main"
-            include "**"
-        }
+    copy{
+        from "$rootDir/arc-core/build/classes/java/main"
+        into "$rootDir/backends/backend-sdl/build/classes/java/main"
+        include "**"
     }
 }
 
@@ -95,6 +96,8 @@ jnigen{
         cppFlags += " " + execCmd("sh $root/$path/bin/sdl2-config --cflags")
         cFlags = cppFlags
         libraries = execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32"
+        println "AAAAAAAAAAAAAAAAAAAaa"
+        println execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32"
         linkerFlags += " -L $root/$path/lib"
     }
     add(MacOsX, x64){
