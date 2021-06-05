@@ -2,10 +2,21 @@ package arc.util.async;
 
 import arc.util.*;
 
+import java.util.concurrent.*;
+
 /**
  * Utilities for threaded programming.
  */
 public class Threads{
+
+    public static void await(ExecutorService exec){
+        try{
+            exec.shutdown();
+            exec.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+        }catch(InterruptedException e){
+            throw new RuntimeException(e);
+        }
+    }
 
     public static void sleep(long ms){
         try{

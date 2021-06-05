@@ -118,7 +118,7 @@ public class TexturePacker{
             Page page = pages.get(p);
 
             int width = page.width, height = page.height;
-            int edgePadX = 0, edgePadY = 0;
+            int edgePadX, edgePadY;
             if(settings.edgePadding){
                 edgePadX = settings.paddingX;
                 edgePadY = settings.paddingY;
@@ -144,6 +144,7 @@ public class TexturePacker{
             page.imageWidth = width;
             page.imageHeight = height;
 
+            //sync point (touch file here)
             File outputFile;
             while(true){
                 outputFile = new File(packDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + "." + settings.outputFormat);
@@ -243,6 +244,7 @@ public class TexturePacker{
         Fi packDir = packFile.parent();
         packDir.mkdirs();
 
+        //sync point
         boolean existed = packFile.exists() && packFile.length() > 0;
 
         try(Writes write = packFile.writes(true)){
@@ -619,6 +621,15 @@ public class TexturePacker{
     }
 
     public static void main(String[] args) throws Exception{
+        /*
+        //for testing locally
+        if(true){
+            File rootDir = new File("/home/anuke/Projects/Mindustry");
+            process(new File(rootDir, "core/assets-raw/sprites_out/").getAbsolutePath(), new File(rootDir, "core/assets/sprites/").getAbsolutePath(), "sprites.aatls");
+
+            return;
+        }*/
+
         Settings settings = null;
         String input = null, output = null, packFileName = "pack.aatls";
 

@@ -221,17 +221,13 @@ public class TexturePackerFileProcessor extends FileProcessor{
             }
         }
 
-        TexturePacker packer = newTexturePacker(root, settings);
-        for(Entry file : files)
+        TexturePacker packer = new TexturePacker(root, settings);
+        for(Entry file : files){
             packer.addImage(file.inputFile);
-        pack(packer, inputDir);
-    }
+        }
 
-    protected void pack(TexturePacker packer, Entry inputDir){
+        //this part can be multithreaded
         packer.pack(inputDir.outputDir, packFileName);
     }
 
-    protected TexturePacker newTexturePacker(File root, Settings settings){
-        return new TexturePacker(root, settings);
-    }
 }

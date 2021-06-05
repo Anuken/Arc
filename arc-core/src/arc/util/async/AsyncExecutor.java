@@ -55,11 +55,6 @@ public class AsyncExecutor implements Disposable{
      */
     @Override
     public void dispose(){
-        executor.shutdown();
-        try{
-            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-        }catch(InterruptedException e){
-            throw new ArcRuntimeException("Couldn't shutdown loading thread", e);
-        }
+        Threads.await(executor);
     }
 }
