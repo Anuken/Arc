@@ -9,6 +9,7 @@ import java.util.concurrent.*;
  */
 public class Threads{
 
+    /** Shuts down the executor and waits for its termination indefinitely. */
     public static void await(ExecutorService exec){
         try{
             exec.shutdown();
