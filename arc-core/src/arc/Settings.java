@@ -5,12 +5,14 @@ import arc.func.*;
 import arc.struct.*;
 import arc.struct.ObjectMap.*;
 import arc.util.*;
+import arc.util.async.*;
 import arc.util.io.*;
 import arc.util.serialization.*;
 
 import java.io.*;
 import java.text.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 import static arc.Core.*;
 
@@ -27,6 +29,7 @@ public class Settings{
     protected boolean hasErrored;
     protected boolean shouldAutosave = true;
     protected boolean loaded = false;
+    protected ExecutorService executor = Threads.executor(1);
 
     //IO utility objects
     protected ByteArrayOutputStream byteStream = new ByteArrayOutputStream(32);
@@ -133,16 +136,29 @@ public class Settings{
         }catch(Throwable e){
             Log.err("Failed to load base settings file, attempting to load backup.", e);
             writeLog("Failed to load base file " + getSettingsFile() + ":\n" + Strings.getStackTrace(e));
+
             try{
-                //attempt to load backup
-                loadValues(getBackupSettingsFile());
+                //attempt to load *latest* backup, which is updated more regularly but likely to be corrupt
+                loadValues(getLatestBackupSettingsFile());
                 //copy to normal settings file for future use
-                getBackupSettingsFile().copyTo(getSettingsFile());
-                Log.info("Loaded backup settings file.");
-                writeLog("Loaded backup settings file after load failure. Length: " + getBackupSettingsFile().length());
+                getLatestBackupSettingsFile().copyTo(getSettingsFile());
+                Log.info("Loaded latest backup settings file.");
+                writeLog("Loaded latest backup settings file after load failure. Length: " + getLatestBackupSettingsFile().length());
             }catch(Throwable e2){
-                writeLog("Failed to load backup file " + getSettingsFile() + ":\n" + Strings.getStackTrace(e2));
-                Log.err("Failed to load backup settings file.", e2);
+                writeLog("Failed to load latest backup file " + getLatestBackupSettingsFile() + ":\n" + Strings.getStackTrace(e2));
+                Log.err("Failed to load latest backup settings file.", e2);
+
+                try{
+                    //attempt to load the old, reliable backup
+                    loadValues(getBackupSettingsFile());
+                    //copy to normal settings file for future use
+                    getBackupSettingsFile().copyTo(getSettingsFile());
+                    Log.info("Loaded backup settings file.");
+                    writeLog("Loaded backup settings file after load failure. Length: " + getBackupSettingsFile().length());
+                }catch(Throwable e3){
+                    writeLog("Failed to load backup file " + getSettingsFile() + ":\n" + Strings.getStackTrace(e3));
+                    Log.err("Failed to load backup settings file.", e3);
+                }
             }
         }
     }
@@ -230,6 +246,11 @@ public class Settings{
         }
 
         writeLog("Saving " + values.size() + " values; " + file.length() + " bytes");
+
+        executor.submit(() -> {
+            //back up to latest file in another thread
+            file.copyTo(getLatestBackupSettingsFile());
+        });
     }
 
     /** Returns the file used for writing settings to. Not available on all platforms! */
@@ -239,6 +260,10 @@ public class Settings{
 
     public Fi getBackupSettingsFile(){
         return getDataDirectory().child("settings_backup.bin");
+    }
+
+    public Fi getLatestBackupSettingsFile(){
+        return getDataDirectory().child("settings_backup_latest.bin");
     }
 
     /** Returns the directory where all settings and data is placed. */

@@ -17,7 +17,7 @@ public class Threads{
         }
     }
 
-    public static Executor executor(int threads, boolean daemon){
+    public static ExecutorService executor(int threads, boolean daemon){
         return Executors.newFixedThreadPool(threads, r -> {
             Thread thread = new Thread(r, "AsyncExecutor-Thread");
             thread.setDaemon(daemon);
@@ -26,7 +26,7 @@ public class Threads{
         });
     }
 
-    public static Executor executor(int threads){
+    public static ExecutorService executor(int threads){
         return executor(threads, true);
     }
 
