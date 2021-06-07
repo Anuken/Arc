@@ -11,8 +11,8 @@ import arc.scene.Scene;
 import arc.util.I18NBundle;
 
 /**
- * Note that all resources are automatically disposed of in {@link Application#dispose()}.
- * There is no need to dispose of them manually.*/
+ * Global references to all of Arc's core modules.
+ * */
 public class Core{
     public static Application app;
     public static Graphics graphics;

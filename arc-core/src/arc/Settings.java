@@ -150,6 +150,9 @@ public class Settings{
     public synchronized void loadValues(Fi file) throws IOException{
         try(DataInputStream stream = new DataInputStream(file.read(8192))){
             int amount = stream.readInt();
+            //current theory: when corruptions happen, the only things written to the stream are a bunch of zeroes
+            //try to anticipate this case and throw an exception when 0 values are written
+            if(amount <= 0) throw new IOException("0 values are not allowed.");
             for(int i = 0; i < amount; i++){
                 String key = stream.readUTF();
                 byte type = stream.readByte();
@@ -177,6 +180,11 @@ public class Settings{
                         values.put(key, bytes);
                         break;
                 }
+            }
+            //make sure all data was read - this helps with potential corruption
+            int end = stream.read();
+            if(end != -1){
+                throw new IOException("Trailing settings data; expected EOF, but got: " + end);
             }
         }
     }

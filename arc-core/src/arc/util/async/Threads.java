@@ -9,6 +9,27 @@ import java.util.concurrent.*;
  */
 public class Threads{
 
+    public static <T> T await(Future<T> future){
+        try{
+            return future.get();
+        }catch(ExecutionException | InterruptedException ex){
+            throw new ArcRuntimeException(ex.getCause());
+        }
+    }
+
+    public static Executor executor(int threads, boolean daemon){
+        return Executors.newFixedThreadPool(threads, r -> {
+            Thread thread = new Thread(r, "AsyncExecutor-Thread");
+            thread.setDaemon(daemon);
+            thread.setUncaughtExceptionHandler((t, e) -> e.printStackTrace());
+            return thread;
+        });
+    }
+
+    public static Executor executor(int threads){
+        return executor(threads, true);
+    }
+
     /** Shuts down the executor and waits for its termination indefinitely. */
     public static void await(ExecutorService exec){
         try{

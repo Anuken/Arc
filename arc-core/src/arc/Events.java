@@ -5,6 +5,7 @@ import arc.struct.Seq;
 import arc.struct.ObjectMap;
 import arc.func.Cons;
 
+/** Simple global event listener system. */
 @SuppressWarnings("unchecked")
 public class Events{
     private static final ObjectMap<Object, Seq<Cons<?>>> events = new ObjectMap<>();
