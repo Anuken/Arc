@@ -19,8 +19,6 @@ public class TextureUnpacker{
     private static final String HELP = "Usage: atlasFile [imageDir] [outputDir]";
     private static final String ATLAS_FILE_EXTENSION = ".aatls";
 
-    private boolean quiet;
-
     /**
      * Checks the command line arguments for correctness.
      * @return 0 If arguments are invalid, Number of arguments otherwise.
@@ -51,12 +49,12 @@ public class TextureUnpacker{
     }
 
     /** Splits an atlas into seperate image and ninepatch files. */
-    public void splitAtlas(TextureAtlasData atlas, String outputDir){
+    public void splitAtlas(TextureAtlasData atlas, String outputDir, boolean quiet){
         // create the output directory if it did not exist yet
         File outputDirFile = new File(outputDir);
         if(!outputDirFile.exists()){
             outputDirFile.mkdirs();
-            if(!quiet) System.out.println(String.format("Creating directory: %s", outputDirFile.getPath()));
+            if(!quiet) System.out.printf("Creating directory: %s%n", outputDirFile.getPath());
         }
 
         for(AtlasPage page : atlas.getPages()){
@@ -65,8 +63,8 @@ public class TextureUnpacker{
             if(!file.exists()) throw new RuntimeException("Unable to find atlas image: " + file.getAbsolutePath());
             Pixmap img = new Pixmap(new Fi(file));
             for(Region region : atlas.getRegions()){
-                if(!quiet) System.out.println(String.format("Processing image for %s: x[%s] y[%s] w[%s] h[%s], rotate[%s]",
-                region.name, region.left, region.top, region.width, region.height, region.rotate));
+                if(!quiet) System.out.printf("Processing image for %s: x[%s] y[%s] w[%s] h[%s], rotate[%s]%n",
+                region.name, region.left, region.top, region.width, region.height, region.rotate);
 
                 // check if the page this region is in is currently loaded in a Buffered Image
                 if(region.page == page){
@@ -75,7 +73,7 @@ public class TextureUnpacker{
 
                     // check if the region is a ninepatch or a normal image and delegate accordingly
                     if(region.splits == null){
-                        splitImage = extractImage(img, region, outputDirFile, 0);
+                        splitImage = extractImage(img, region, 0);
                         if(region.width != region.originalWidth || region.height != region.originalHeight){
                             Pixmap originalImg = new Pixmap(region.originalWidth, region.originalHeight);
                             originalImg.draw(splitImage, (int)region.offsetX, (int)(region.originalHeight - region.height - region.offsetY));
@@ -83,7 +81,7 @@ public class TextureUnpacker{
                         }
                         extension = ".png";
                     }else{
-                        splitImage = extractNinePatch(img, region, outputDirFile);
+                        splitImage = extractNinePatch(img, region);
                         extension = "9.png";
                     }
 
@@ -92,7 +90,7 @@ public class TextureUnpacker{
                     region.name + extension);
                     File imgDir = imgOutput.getParentFile();
                     if(!imgDir.exists()){
-                        if(!quiet) System.out.println(String.format("Creating directory: %s", imgDir.getPath()));
+                        if(!quiet) System.out.printf("Creating directory: %s%n", imgDir.getPath());
                         imgDir.mkdirs();
                     }
 
@@ -106,12 +104,11 @@ public class TextureUnpacker{
      * Extract an image from a texture atlas.
      * @param page The image file related to the page the region is in
      * @param region The region to extract
-     * @param outputDirFile The output directory
      * @param padding padding (in pixels) to apply to the image
      * @return The extracted image
      */
-    private Pixmap extractImage(Pixmap page, Region region, File outputDirFile, int padding){
-        Pixmap splitImage = null;
+    private Pixmap extractImage(Pixmap page, Region region, int padding){
+        Pixmap splitImage;
 
         // get the needed part of the page and rotate if needed
         splitImage = page.crop(region.left, region.top, region.width, region.height);
@@ -132,8 +129,8 @@ public class TextureUnpacker{
      * @param region The region to extract
      * @see <a href="http://developer.android.com/guide/topics/graphics/2d-graphics.html#nine-patch">ninepatch specification</a>
      */
-    private Pixmap extractNinePatch(Pixmap page, Region region, File outputDirFile){
-        Pixmap splitImage = extractImage(page, region, outputDirFile, NINEPATCH_PADDING);
+    private Pixmap extractNinePatch(Pixmap page, Region region){
+        Pixmap splitImage = extractImage(page, region, NINEPATCH_PADDING);
 
         // Draw the four lines to save the ninepatch's padding and splits
         int startX = region.splits[0] + NINEPATCH_PADDING;
@@ -152,15 +149,6 @@ public class TextureUnpacker{
         }
 
         return splitImage;
-    }
-
-    private void printExceptionAndExit(Exception e){
-        e.printStackTrace();
-        System.exit(1);
-    }
-
-    public void setQuiet(boolean quiet){
-        this.quiet = quiet;
     }
 
     public static void main(String[] args){
@@ -191,6 +179,6 @@ public class TextureUnpacker{
 
         // Opens the atlas file from the specified filename
         TextureAtlasData atlas = new TextureAtlasData(new Fi(atlasFile), new Fi(imageDir), false);
-        unpacker.splitAtlas(atlas, outputDir);
+        unpacker.splitAtlas(atlas, outputDir, false);
     }
 }
