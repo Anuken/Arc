@@ -264,6 +264,8 @@ public final class Mathf{
         return 1 | (rand.nextInt() >> 31);
     }
 
+    //TODO these can be optimized to a single function, setting the seed and getting a result may be expensive
+
     /** Inclusive. */
     public static int randomSeed(long seed, int min, int max){
         seedr.setSeed(seed);
