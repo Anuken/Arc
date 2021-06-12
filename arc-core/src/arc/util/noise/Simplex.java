@@ -1,6 +1,6 @@
 package arc.util.noise;
 
-import java.util.Random;
+import java.util.*;
 
 //TODO this class a disaster:
 //- nobody knows what range functions return
@@ -25,7 +25,7 @@ public class Simplex{
     {1, 1, 1, 0}, {1, 1, -1, 0}, {1, -1, 1, 0}, {1, -1, -1, 0},
     {-1, 1, 1, 0}, {-1, 1, -1, 0}, {-1, -1, 1, 0}, {-1, -1, -1, 0}
     };
-    static int[][] simplex = {
+    static final int[][] simplex = {
     {0, 1, 2, 3}, {0, 1, 3, 2}, {0, 0, 0, 0}, {0, 2, 3, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {1, 2, 3, 0},
     {0, 2, 1, 3}, {0, 0, 0, 0}, {0, 3, 1, 2}, {0, 3, 2, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {1, 3, 2, 0},
     {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0},
@@ -63,7 +63,6 @@ public class Simplex{
     };
 
     public Simplex(){
-
     }
 
     public Simplex(long seed){
@@ -274,7 +273,6 @@ public class Simplex{
         // The result is scaled to return values in the interval [-1,1].
         return 70.0 * (n0 + n1 + n2);
     }
-
 
     // 3D raw Simplex noise
     public double rawNoise3D(double x, double y, double z){

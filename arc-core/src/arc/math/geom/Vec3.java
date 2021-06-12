@@ -163,8 +163,12 @@ public class Vec3 implements Vector<Vec3>{
 
     @Override
     public Vec3 setToRandomDirection(){
-        float u = Mathf.random();
-        float v = Mathf.random();
+        return setToRandomDirection(Mathf.rand);
+    }
+
+    public Vec3 setToRandomDirection(Rand rand){
+        float u = rand.random(1f);
+        float v = rand.random(1f);
 
         float theta = Mathf.PI2 * u; // azimuthal angle
         float phi = (float)Math.acos(2f * v - 1f); // polar angle
