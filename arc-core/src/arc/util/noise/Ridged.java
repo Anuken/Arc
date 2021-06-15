@@ -2,7 +2,7 @@ package arc.util.noise;
 
 //horribly butchered from libnoiseforjava, please ignore
 //TODO this is a mess - uses doubles instead of floats, but only sometimes
-public class RidgedPerlin{
+public class Ridged{
     static final int X_NOISE_GEN = 1619;
     static final int Y_NOISE_GEN = 31337;
     static final int Z_NOISE_GEN = 6971;
@@ -10,7 +10,7 @@ public class RidgedPerlin{
     static final int SHIFT_NOISE_GEN = 8;
     static final int quality = 2;
 
-    private RidgedPerlin(){}
+    private Ridged(){}
 
     public static float noise2d(int seed, double x, double y, double frequency){
         return noise2d(seed, x, y, 1, frequency);

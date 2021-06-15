@@ -7,7 +7,6 @@ import arc.util.noise.Simplex;
 public class WindEffect extends FEffect{
     private static final float defaultSpacing = 10f, defaultDistance = 0.33f, defaultIntensity = 0.375f, distanceXRatio = 1.5f, distanceYRatio = 1.0f;
 
-    private Simplex noise = new Simplex(1);
     private float noiseCursorX = 0;
     private float noiseCursorY = 0;
 
@@ -35,8 +34,8 @@ public class WindEffect extends FEffect{
 
         // Calculate noise
         float indexOffset = localIndex * 0.05f * spacing;
-        float noiseX = (float) noise.octaveNoise2D(6, 0, 1f, noiseCursorX + indexOffset, 0);
-        float noiseY = (float) noise.octaveNoise2D(6, 0, 1f, noiseCursorY + indexOffset, 0);
+        float noiseX = (float) Simplex.noise2d(1, 6, 0, 1f, noiseCursorX + indexOffset, 0);
+        float noiseY = (float) Simplex.noise2d(1, 6, 0, 1f, noiseCursorY + indexOffset, 0);
 
         // Calculate offset
         float lineHeight = getLineHeight(label);

@@ -8,12 +8,11 @@ public class NoiseTest{
 
     @Test
     public void perfcomp(){
-        Simplex sim = new Simplex(1);
 
         int iterations = 1000000;
 
         for(int i = 0; i < iterations; i++){
-            sim.rawNoise2D(Math.random(), Math.random());
+            Simplex.raw2d(1, Math.random(), Math.random());
             Noise.rawNoise(Math.random(), Math.random());
         }
 
@@ -28,7 +27,7 @@ public class NoiseTest{
         Time.mark();
 
         for(int i = 0; i < iterations; i++){
-            sim.rawNoise2D(Math.random(), Math.random());
+            Simplex.raw2d(1, Math.random(), Math.random());
         }
 
         Log.info("Simplex: @", Time.elapsed());
