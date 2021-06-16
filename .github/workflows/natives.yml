@@ -50,7 +50,9 @@ jobs:
       with:
         java-version: 1.8
     - name: Install dependencies
-      run: brew install sdl2
+      run: |
+        brew install sdl2
+        brew install glew
     - name: Build natives
       run: |
         ./gradlew arc-core:jnigenBuild
