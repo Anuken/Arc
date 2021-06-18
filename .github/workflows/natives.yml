@@ -3,44 +3,6 @@ name: Build Natives
 on: [workflow_dispatch]
 
 jobs:
-  buildLinux:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: 1.8
-    - name: Install dependencies
-      run: sudo apt install g++-mingw-w64 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-mingw-w64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 libasound2-dev libdrm-dev libsdl2-dev libgbm-dev
-    - name: Set env
-      run: echo "NDK_HOME=$ANDROID_NDK_HOME" >> $GITHUB_ENV
-    - name: Build natives
-      run: |
-        ./gradlew arc-core:jnigenBuild
-        ./gradlew extensions:freetype:jnigenBuild
-        ./gradlew backends:backend-sdl:jnigenBuild
-    - name: Upload natives
-      uses: actions/upload-artifact@v2
-      with:
-        name: Arc-core desktop natives
-        path: |
-          natives/natives-desktop/libs/libarc64.so
-          natives/natives-desktop/libs/arc.dll
-          natives/natives-desktop/libs/arc64.dll
-          backends/backend-sdl/libs/linux64/libsdl-arc64.so
-          backends/backend-sdl/libs/windows32/sdl-arc.dll
-          backends/backend-sdl/libs/windows64/sdl-arc64.dll
-          natives/natives-freetype-desktop/libs/libarc-freetype64.so
-          natives/natives-freetype-desktop/libs/arc-freetype.dll
-          natives/natives-freetype-desktop/libs/arc-freetype64.dll
-    - name: Upload Android natives
-      uses: actions/upload-artifact@v2
-      with:
-        name: Arc-core android natives
-        path: |
-          natives/natives-android/libs
-          natives/natives-freetype-android/libs
   buildMac:
     runs-on: macos-10.15
     steps:
