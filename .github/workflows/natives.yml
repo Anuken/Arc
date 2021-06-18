@@ -13,7 +13,7 @@ jobs:
           java-version: 1.8
       - name: Install dependencies
         run: |
-          brew install sdl2
+          brew install sdl2@2.0.12
           brew install glew
       - name: Build natives
         run: |
