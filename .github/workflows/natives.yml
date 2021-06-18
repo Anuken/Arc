@@ -13,7 +13,7 @@ jobs:
           java-version: 1.8
       - name: Install dependencies
         run: |
-          wget https://github.com/Homebrew/homebrew-core/blob/e35690754001607a7feaf6432d753f184c9e0b16/Formula/sdl2.rb;
+          wget https://raw.githubusercontent.com/Homebrew/homebrew-core/e35690754001607a7feaf6432d753f184c9e0b16/Formula/sdl2.rb
           brew install --HEAD -s sdl2.rb
           brew install glew
       - name: Build natives
