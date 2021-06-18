@@ -8,7 +8,7 @@ versions.junit = "4.11"
 versions.androidPlugin = "3.4.1"
 versions.teavm = '0.7.0-dev-1087'
 versions.reflections = '0.9.11'
-versions.jnigen = "dffc32eecbf77aad264991ea44f1767a58cbee9d"
+versions.jnigen = "28dd11fa4c33a7ae9e58897912b52ba7d53d54fe"
 
 libraries.robovm = [
     "com.mobidevelop.robovm:robovm-rt:${versions.robovm}",
