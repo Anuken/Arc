@@ -103,8 +103,9 @@ jnigen{
     }
     add(MacOsX, x64){
         cppFlags += " " + execCmd("sdl2-config --cflags")
-        cppFlags = cppFlags.replace("10.7", "10.15")
+        cppFlags = cppFlags.replace("10.7", "10.13")
         cFlags = cppFlags
+        linkerFlags = linkerFlags.replace("10.7", "10.13")
         //execCmd("sdl2-config --static-libs") + " -Wl,-framework,OpenGL"
         libraries = "/usr/local/lib/libSDL2.a -lm -liconv -Wl,-framework,CoreAudio -Wl,-weak_framework,GameController -Wl,-framework,OpenGL,-weak_framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal /usr/local/lib/libGLEW.a"
     }
