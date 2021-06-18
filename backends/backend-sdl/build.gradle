@@ -102,8 +102,8 @@ jnigen{
         linkerFlags += " -L $root/$path/lib"
     }
     add(MacOsX, x64){
-        cppFlags = cFlags= execCmd("sdl2-config --cflags") + " -c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.13 -stdlib=libc++"
-        linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.13 -stdlib=libc++"
+        cppFlags = cFlags= execCmd("sdl2-config --cflags") + " -c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.9 -stdlib=libc++"
+        linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.9 -stdlib=libc++"
         //execCmd("sdl2-config --static-libs") + " -Wl,-framework,OpenGL"
         libraries = "/usr/local/lib/libSDL2.a -lm -liconv -Wl,-framework,CoreAudio -Wl,-weak_framework,GameController -Wl,-framework,OpenGL,-weak_framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal /usr/local/lib/libGLEW.a"
     }
