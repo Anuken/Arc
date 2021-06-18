@@ -55,8 +55,8 @@ jobs:
         brew install glew
     - name: Build natives
       run: |
-        ./gradlew arc-core:jnigenBuild
-        ./gradlew extensions:freetype:jnigenBuild
+      #  ./gradlew arc-core:jnigenBuild
+      #  ./gradlew extensions:freetype:jnigenBuild
         ./gradlew backends:backend-sdl:jnigenBuild
     - name: Upload natives
       uses: actions/upload-artifact@v2
