@@ -41,7 +41,7 @@ public class Simplex{
     //
     // For each octave, a higher frequency/lower amplitude function will be added to the original.
     // The higher the persistence [0-1], the more of each succeeding octave will be added.
-    public static double noise2d(int seed, double octaves, double persistence, double scale, double x, double y){
+    public static float noise2d(int seed, double octaves, double persistence, double scale, double x, double y){
         double total = 0;
         double frequency = scale;
         double amplitude = 1;
@@ -58,7 +58,7 @@ public class Simplex{
             amplitude *= persistence;
         }
 
-        return total / maxAmplitude;
+        return (float)(total / maxAmplitude);
     }
 
 
@@ -66,7 +66,7 @@ public class Simplex{
     //
     // For each octave, a higher frequency/lower amplitude function will be added to the original.
     // The higher the persistence [0-1], the more of each succeeding octave will be added.
-    public static double noise3d(int seed, double octaves, double persistence, double scale, double x, double y, double z){
+    public static float noise3d(int seed, double octaves, double persistence, double scale, double x, double y, double z){
         double total = 0;
         double frequency = scale;
         double amplitude = 1;
@@ -83,7 +83,7 @@ public class Simplex{
             amplitude *= persistence;
         }
 
-        return total / maxAmplitude;
+        return (float)(total / maxAmplitude);
     }
 
 
@@ -91,7 +91,7 @@ public class Simplex{
     //
     // For each octave, a higher frequency/lower amplitude function will be added to the original.
     // The higher the persistence [0-1], the more of each succeeding octave will be added.
-    public static double noise4d(double octaves, double persistence, double scale, double x, double y, double z, double w){
+    public static float noise4d(double octaves, double persistence, double scale, double x, double y, double z, double w){
         double total = 0;
         double frequency = scale;
         double amplitude = 1;
@@ -108,7 +108,7 @@ public class Simplex{
             amplitude *= persistence;
         }
 
-        return total / maxAmplitude;
+        return (float)(total / maxAmplitude);
     }
 
     // 2D raw Simplex noise

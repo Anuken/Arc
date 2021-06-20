@@ -1,7 +1,6 @@
 package arc.util.noise;
 
-//horribly butchered from libnoiseforjava, please ignore
-//TODO this is a mess - uses doubles instead of floats, but only sometimes
+/** Ridged perlin noise implementation. */
 public class Ridged{
     static final int X_NOISE_GEN = 1619;
     static final int Y_NOISE_GEN = 31337;
@@ -38,7 +37,45 @@ public class Ridged{
             double ny = range(y1);
 
             // Get the coherent-noise value.
-            signal = gradientCoherentNoise(nx, ny, (seed + curOctave) & 0x7fffffff);
+            // Create a unit-length cube aligned along an integer boundary. This cube surrounds the input point.
+            int x0 = (nx > 0.0 ? (int)nx : (int)nx - 1);
+            int x11 = x0 + 1;
+            int y0 = (ny > 0.0 ? (int)ny : (int)ny - 1);
+            int y11 = y0 + 1;
+
+            // Map the difference between the coordinates of the input value and the
+            // coordinates of the cube's outer-lower-left vertex onto an S-curve.
+            double xs = 0, ys = 0;
+            switch(quality){
+                case 0: // fast
+                    xs = (nx - (double)x0);
+                    ys = (ny - (double)y0);
+                    break;
+                case 1: // STD
+                    xs = scurve3(nx - (double)x0);
+                    ys = scurve3(ny - (double)y0);
+                    break;
+                case 2: // best
+                    xs = scurve5(nx - (double)x0);
+                    ys = scurve5(ny - (double)y0);
+                    break;
+            }
+
+            // Now calculate the noise values at each vertex of the cube. To
+            // generate
+            // the coherent-noise value at the input point, interpolate these eight
+            // noise values using the S-curve value as the interpolant (trilinear
+            // interpolation.)
+            double n0, n1, ix0, ix1, iy0;
+            n0 = gradientNoise(nx, ny, x0, y0, (seed + curOctave) & 0x7fffffff);
+            n1 = gradientNoise(nx, ny, x11, y0, (seed + curOctave) & 0x7fffffff);
+            ix0 = lerp(n0, n1, xs);
+            n0 = gradientNoise(nx, ny, x0, y11, (seed + curOctave) & 0x7fffffff);
+            n1 = gradientNoise(nx, ny, x11, y11, (seed + curOctave) & 0x7fffffff);
+            ix1 = lerp(n0, n1, xs);
+            iy0 = lerp(ix0, ix1, ys);
+
+            signal = iy0;
 
             // Make the ridges.
             signal = Math.abs(signal);
@@ -99,7 +136,57 @@ public class Ridged{
             nz = range(z1);
 
             // Get the coherent-noise value.
-            signal = gradientCoherentNoise3D(nx, ny, nz, (seed + curOctave) & 0x7fffffff);
+            // Create a unit-length cube aligned along an integer boundary. This cube surrounds the input point.
+            int x0 = (nx > 0.0 ? (int)nx : (int)nx - 1);
+            int x11 = x0 + 1;
+            int y0 = (ny > 0.0 ? (int)ny : (int)ny - 1);
+            int y11 = y0 + 1;
+            int z0 = (nz > 0.0 ? (int)nz : (int)nz - 1);
+            int z11 = z0 + 1;
+
+            // Map the difference between the coordinates of the input value and the
+            // coordinates of the cube's outer-lower-left vertex onto an S-curve.
+            double xs = 0, ys = 0, zs = 0;
+            switch(quality){
+                case 0: // fast
+                    xs = (nx - (double)x0);
+                    ys = (ny - (double)y0);
+                    zs = (nz - (double)z0);
+                    break;
+                case 1: // STD
+                    xs = scurve3(nx - (double)x0);
+                    ys = scurve3(ny - (double)y0);
+                    zs = scurve3(nz - (double)z0);
+                    break;
+                case 2: // best
+                    xs = scurve5(nx - (double)x0);
+                    ys = scurve5(ny - (double)y0);
+                    zs = scurve5(nz - (double)z0);
+                    break;
+            }
+
+            // Now calculate the noise values at each vertex of the cube. To
+            // generate
+            // the coherent-noise value at the input point, interpolate these eight
+            // noise values using the S-curve value as the interpolant (trilinear
+            // interpolation.)
+            double n0, n1, ix0, ix1, iy0, iy1;
+            n0 = gradientNoise3D(nx, ny, nz, x0, y0, z0, (seed + curOctave) & 0x7fffffff);
+            n1 = gradientNoise3D(nx, ny, nz, x11, y0, z0, (seed + curOctave) & 0x7fffffff);
+            ix0 = lerp(n0, n1, xs);
+            n0 = gradientNoise3D(nx, ny, nz, x0, y11, z0, (seed + curOctave) & 0x7fffffff);
+            n1 = gradientNoise3D(nx, ny, nz, x11, y11, z0, (seed + curOctave) & 0x7fffffff);
+            ix1 = lerp(n0, n1, xs);
+            iy0 = lerp(ix0, ix1, ys);
+            n0 = gradientNoise3D(nx, ny, nz, x0, y0, z11, (seed + curOctave) & 0x7fffffff);
+            n1 = gradientNoise3D(nx, ny, nz, x11, y0, z11, (seed + curOctave) & 0x7fffffff);
+            ix0 = lerp(n0, n1, xs);
+            n0 = gradientNoise3D(nx, ny, nz, x0, y11, z11, (seed + curOctave) & 0x7fffffff);
+            n1 = gradientNoise3D(nx, ny, nz, x11, y11, z11, (seed + curOctave) & 0x7fffffff);
+            ix1 = lerp(n0, n1, xs);
+            iy1 = lerp(ix0, ix1, ys);
+
+            signal = lerp(iy0, iy1, zs);
 
             // Make the ridges.
             signal = Math.abs(signal);
@@ -142,102 +229,6 @@ public class Ridged{
             return (2.0 * (n % 1073741824.0)) + 1073741824.0;
         else
             return n;
-    }
-
-    static double gradientCoherentNoise3D(double x, double y, double z, int seed){
-        // Create a unit-length cube aligned along an integer boundary. This cube surrounds the input point.
-        int x0 = (x > 0.0 ? (int)x : (int)x - 1);
-        int x1 = x0 + 1;
-        int y0 = (y > 0.0 ? (int)y : (int)y - 1);
-        int y1 = y0 + 1;
-        int z0 = (z > 0.0 ? (int)z : (int)z - 1);
-        int z1 = z0 + 1;
-
-        // Map the difference between the coordinates of the input value and the
-        // coordinates of the cube's outer-lower-left vertex onto an S-curve.
-        double xs = 0, ys = 0, zs = 0;
-        switch(quality){
-            case 0: // fast
-                xs = (x - (double)x0);
-                ys = (y - (double)y0);
-                zs = (z - (double)z0);
-                break;
-            case 1: // STD
-                xs = scurve3(x - (double)x0);
-                ys = scurve3(y - (double)y0);
-                zs = scurve3(z - (double)z0);
-                break;
-            case 2: // best
-                xs = scurve5(x - (double)x0);
-                ys = scurve5(y - (double)y0);
-                zs = scurve5(z - (double)z0);
-                break;
-        }
-
-        // Now calculate the noise values at each vertex of the cube. To
-        // generate
-        // the coherent-noise value at the input point, interpolate these eight
-        // noise values using the S-curve value as the interpolant (trilinear
-        // interpolation.)
-        double n0, n1, ix0, ix1, iy0, iy1;
-        n0 = gradientNoise3D(x, y, z, x0, y0, z0, seed);
-        n1 = gradientNoise3D(x, y, z, x1, y0, z0, seed);
-        ix0 = linearInterp(n0, n1, xs);
-        n0 = gradientNoise3D(x, y, z, x0, y1, z0, seed);
-        n1 = gradientNoise3D(x, y, z, x1, y1, z0, seed);
-        ix1 = linearInterp(n0, n1, xs);
-        iy0 = linearInterp(ix0, ix1, ys);
-        n0 = gradientNoise3D(x, y, z, x0, y0, z1, seed);
-        n1 = gradientNoise3D(x, y, z, x1, y0, z1, seed);
-        ix0 = linearInterp(n0, n1, xs);
-        n0 = gradientNoise3D(x, y, z, x0, y1, z1, seed);
-        n1 = gradientNoise3D(x, y, z, x1, y1, z1, seed);
-        ix1 = linearInterp(n0, n1, xs);
-        iy1 = linearInterp(ix0, ix1, ys);
-
-        return linearInterp(iy0, iy1, zs);
-    }
-
-    static double gradientCoherentNoise(double x, double y, int seed){
-        // Create a unit-length cube aligned along an integer boundary. This cube surrounds the input point.
-        int x0 = (x > 0.0 ? (int)x : (int)x - 1);
-        int x1 = x0 + 1;
-        int y0 = (y > 0.0 ? (int)y : (int)y - 1);
-        int y1 = y0 + 1;
-
-        // Map the difference between the coordinates of the input value and the
-        // coordinates of the cube's outer-lower-left vertex onto an S-curve.
-        double xs = 0, ys = 0;
-        switch(quality){
-            case 0: // fast
-                xs = (x - (double)x0);
-                ys = (y - (double)y0);
-                break;
-            case 1: // STD
-                xs = scurve3(x - (double)x0);
-                ys = scurve3(y - (double)y0);
-                break;
-            case 2: // best
-                xs = scurve5(x - (double)x0);
-                ys = scurve5(y - (double)y0);
-                break;
-        }
-
-        // Now calculate the noise values at each vertex of the cube. To
-        // generate
-        // the coherent-noise value at the input point, interpolate these eight
-        // noise values using the S-curve value as the interpolant (trilinear
-        // interpolation.)
-        double n0, n1, ix0, ix1, iy0;
-        n0 = gradientNoise(x, y, x0, y0,seed);
-        n1 = gradientNoise(x, y, x1, y0, seed);
-        ix0 = linearInterp(n0, n1, xs);
-        n0 = gradientNoise(x, y, x0, y1, seed);
-        n1 = gradientNoise(x, y, x1, y1, seed);
-        ix1 = linearInterp(n0, n1, xs);
-        iy0 = linearInterp(ix0, ix1, ys);
-
-        return iy0;
     }
 
     static double gradientNoise3D(double fx, double fy, double fz, int ix, int iy, int iz, int seed){
@@ -289,14 +280,7 @@ public class Ridged{
         return ((xvGradient * xvPoint) + (yvGradient * yvPoint)) * 2.12;
     }
 
-    static double cubicInterp(double n0, double n1, double n2, double n3, double a){
-        double p = (n3 - n2) - (n0 - n1);
-        double q = (n0 - n1) - p;
-        double r = n2 - n0;
-        return p * a * a * a + q * a * a + r * a + n1;
-    }
-
-    static double linearInterp(double n0, double n1, double a){
+    static double lerp(double n0, double n1, double a){
         return ((1.0 - a) * n0) + (a * n1);
     }
 
