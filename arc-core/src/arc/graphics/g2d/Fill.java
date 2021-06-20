@@ -3,6 +3,7 @@ package arc.graphics.g2d;
 import arc.*;
 import arc.graphics.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.struct.*;
 
 import static arc.Core.atlas;
@@ -181,6 +182,14 @@ public class Fill{
         poly(polyFloats.items, polyFloats.size);
     }
 
+    public static void poly(Polygon p){
+        poly(p.getTransformedVertices(), p.getTransformedVertices().length);
+    }
+
+    public static void poly(FloatSeq vertices){
+        poly(vertices.items, vertices.size);
+    }
+
     public static void poly(float[] vertices, int length){
         if(length < 2*3) return;
 
@@ -193,10 +202,6 @@ public class Fill{
             vertices[i + 4], vertices[i + 5]
             );
         }
-    }
-
-    public static void poly(FloatSeq vertices){
-        poly(vertices.items, vertices.size);
     }
 
     public static void poly(float x, float y, int sides, float radius){
@@ -242,12 +247,20 @@ public class Fill{
         }
     }
 
+    public static void circle(Circle c){
+        circle(c.x, c.y, c.radius);
+    }
+
     public static void circle(float x, float y, float radius){
         if(circleRegion == null || circleRegion.texture.isDisposed()){
             circleRegion = atlas.find("circle");
         }
 
         Draw.rect(circleRegion, x, y, radius * 2, radius * 2);
+    }
+
+    public static void rect(Rect r){
+        rect(r.x, r.y, r.width, r.height);
     }
 
     public static void rect(float x, float y, float w, float h){
