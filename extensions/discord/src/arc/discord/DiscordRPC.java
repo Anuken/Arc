@@ -124,13 +124,9 @@ public final class DiscordRPC{
         return pipe == null ? PipeStatus.uninitialized : pipe.status;
     }
 
-    /**
-     * Attempts to close an open connection to Discord.<br>
-     * @throws IllegalStateException If a connection was not made prior to invoking
-     * this method.
-     */
+    /** Attempts to close an open connection to Discord. Does nothing if not connected. */
     public static void close(){
-        checkConnected(true);
+        if(getStatus() != PipeStatus.connected) return;
 
         try{
             pipe.close();
