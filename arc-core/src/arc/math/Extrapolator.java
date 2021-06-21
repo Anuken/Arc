@@ -1,5 +1,7 @@
 package arc.math;
 
+import java.util.*;
+
 public class Extrapolator{
     private float[] snapPos, snapVel, aimPos, lastPacketPos;
     private float[] tmpArr, tmpArr2;
@@ -221,9 +223,7 @@ public class Extrapolator{
     }
 
     private float[] clear(float[] arr){
-        for(int i = 0; i < arr.length; ++i){
-            arr[i] = 0;
-        }
+        Arrays.fill(arr, 0);
         return arr;
     }
 

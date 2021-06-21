@@ -43,8 +43,7 @@ public final class WindowedMean{
     public void clear(){
         addedValues = 0;
         lastValue = 0;
-        for(int i = 0; i < values.length; i++)
-            values[i] = 0;
+        Arrays.fill(values, 0);
         dirty = true;
     }
 

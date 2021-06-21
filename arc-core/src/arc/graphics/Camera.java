@@ -5,7 +5,6 @@ import arc.Graphics;
 import arc.Input;
 import arc.math.Mat;
 import arc.math.geom.*;
-import arc.math.geom.Vec2;
 
 public class Camera{
     /** temporary vector which is returned. */

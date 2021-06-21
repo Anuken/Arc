@@ -206,10 +206,6 @@ public class Lines{
         }
     }
 
-   // public static void circle(float x, float y, float rad, int vertices){
-    //    poly(x, y, vertices, rad);
-    //}
-
     public static void circle(float x, float y, float rad){
         poly(x, y, circleVertices(rad), rad);
     }

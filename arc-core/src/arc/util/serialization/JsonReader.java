@@ -150,7 +150,7 @@ public class JsonReader implements BaseJsonReader{
     }
 
     public JsonValue parse(char[] data, int offset, int length){
-        int cs, p = offset, top = 0;
+        int cs, p = offset, top;
         int[] stack = new int[4];
 
         int s = 0;
@@ -172,7 +172,7 @@ public class JsonReader implements BaseJsonReader{
             // line 8 "JsonReader.java"
             {
                 int _klen;
-                int _trans = 0;
+                int _trans;
                 int _acts;
                 int _nacts;
                 int _keys;

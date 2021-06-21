@@ -7,7 +7,6 @@ import arc.struct.Seq;
 import arc.struct.IntSet;
 import arc.func.Cons;
 import arc.input.*;
-import arc.math.geom.Vec2;
 import arc.util.*;
 
 import static arc.Core.keybinds;

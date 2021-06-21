@@ -1,17 +1,11 @@
 package arc.assets.loaders;
 
-import arc.assets.AssetDescriptor;
-import arc.assets.AssetLoaderParameters;
-import arc.assets.AssetManager;
-import arc.struct.Seq;
-import arc.files.Fi;
-import arc.graphics.Cubemap;
-import arc.graphics.CubemapData;
-import arc.graphics.Pixmap;
-import arc.graphics.Pixmap.Format;
-import arc.graphics.Texture.TextureFilter;
-import arc.graphics.Texture.TextureWrap;
-import arc.graphics.TextureData;
+import arc.assets.*;
+import arc.files.*;
+import arc.graphics.*;
+import arc.graphics.Pixmap.*;
+import arc.graphics.Texture.*;
+import arc.struct.*;
 
 /**
  * {@link AssetLoader} for {@link Cubemap} instances. The pixel data is loaded asynchronously. The texture is then created on the
@@ -31,13 +25,9 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
     public void loadAsync(AssetManager manager, String fileName, Fi file, CubemapParameter parameter){
         info.filename = fileName;
         if(parameter == null || parameter.cubemapData == null){
-            Pixmap pixmap = null;
-            Format format = null;
-            boolean genMipMaps = false;
             info.cubemap = null;
 
             if(parameter != null){
-                format = parameter.format;
                 info.cubemap = parameter.cubemap;
             }
         }else{

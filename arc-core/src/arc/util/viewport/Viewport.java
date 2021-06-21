@@ -7,7 +7,6 @@ import arc.graphics.g2d.ScissorStack;
 import arc.graphics.gl.HdpiUtils;
 import arc.math.Mat;
 import arc.math.geom.*;
-import arc.math.geom.Vec2;
 
 /**
  * Manages a {@link Camera} and determines how world coordinates are mapped to and from the screen.

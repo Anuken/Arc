@@ -11,12 +11,12 @@ import arc.util.*;
 public class GLOnlyTextureData implements TextureData{
 
     /** width and height */
-    int width = 0;
-    int height = 0;
+    int width;
+    int height;
     boolean isPrepared = false;
 
     /** properties of opengl texture */
-    int mipLevel = 0;
+    int mipLevel;
     int internalFormat;
     int format;
     int type;

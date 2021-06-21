@@ -40,7 +40,7 @@ import arc.scene.event.Touchable;
  * @author Nathan Sweet
  */
 public class Stack extends WidgetGroup{
-    private float prefWidth, prefHeight, minWidth, minHeight, maxWidth, maxHeight;
+    private float prefWidth, prefHeight, minWidth, minHeight;
     private boolean sizeInvalid = true;
 
     public Stack(){
@@ -68,29 +68,20 @@ public class Stack extends WidgetGroup{
         prefHeight = 0;
         minWidth = 0;
         minHeight = 0;
-        maxWidth = 0;
-        maxHeight = 0;
         SnapshotSeq<Element> children = getChildren();
         for(int i = 0, n = children.size; i < n; i++){
             Element child = children.get(i);
-            float childMaxWidth, childMaxHeight;
             if(child != null){
                 prefWidth = Math.max(prefWidth, (child).getPrefWidth());
                 prefHeight = Math.max(prefHeight, (child).getPrefHeight());
                 minWidth = Math.max(minWidth, (child).getMinWidth());
                 minHeight = Math.max(minHeight, (child).getMinHeight());
-                childMaxWidth = (child).getMaxWidth();
-                childMaxHeight = (child).getMaxHeight();
             }else{
                 prefWidth = Math.max(prefWidth, child.getWidth());
                 prefHeight = Math.max(prefHeight, child.getHeight());
                 minWidth = Math.max(minWidth, child.getWidth());
                 minHeight = Math.max(minHeight, child.getHeight());
-                childMaxWidth = 0;
-                childMaxHeight = 0;
             }
-            if(childMaxWidth > 0) maxWidth = maxWidth == 0 ? childMaxWidth : Math.min(maxWidth, childMaxWidth);
-            if(childMaxHeight > 0) maxHeight = maxHeight == 0 ? childMaxHeight : Math.min(maxHeight, childMaxHeight);
         }
     }
 

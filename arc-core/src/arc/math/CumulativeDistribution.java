@@ -68,7 +68,7 @@ public class CumulativeDistribution<T>{
      * @return the value whose interval contains the probability
      */
     public T value(float probability){
-        CumulativeValue value = null;
+        CumulativeValue value;
         int imax = values.size - 1, imin = 0, imid;
         while(imin <= imax){
             imid = imin + ((imax - imin) / 2);
