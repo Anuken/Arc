@@ -4,3 +4,5 @@ sourceSets.main.resources.srcDirs += ['assets/']
 dependencies{
     runtimeOnly fileTree('assets')
 }
+
+sourcesJar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
