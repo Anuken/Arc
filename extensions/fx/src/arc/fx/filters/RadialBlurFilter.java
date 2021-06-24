@@ -13,8 +13,8 @@ public final class RadialBlurFilter extends FxFilter{
 
     public RadialBlurFilter(int passes){
         super(compileShader(
-        Core.files.classpath("shaders/radial-blur.vert"),
-        Core.files.classpath("shaders/radial-blur.frag"),
+        Core.files.classpath("vfxshaders/radial-blur.vert"),
+        Core.files.classpath("vfxshaders/radial-blur.frag"),
         "#define PASSES " + passes));
         this.passes = passes;
         rebind();

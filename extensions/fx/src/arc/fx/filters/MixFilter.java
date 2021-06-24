@@ -11,8 +11,8 @@ public final class MixFilter extends FxFilter{
 
     public MixFilter(){
         super(compileShader(
-        Core.files.classpath("shaders/screenspace.vert"),
-        Core.files.classpath("shaders/mix.frag")));
+        Core.files.classpath("vfxshaders/screenspace.vert"),
+        Core.files.classpath("vfxshaders/mix.frag")));
 
         rebind();
     }

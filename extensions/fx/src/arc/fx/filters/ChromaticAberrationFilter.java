@@ -8,8 +8,8 @@ public class ChromaticAberrationFilter extends FxFilter{
 
     public ChromaticAberrationFilter(int passes){
         super(compileShader(
-        Core.files.classpath("shaders/screenspace.vert"),
-        Core.files.classpath("shaders/chromatic-aberration.frag"),
+        Core.files.classpath("vfxshaders/screenspace.vert"),
+        Core.files.classpath("vfxshaders/chromatic-aberration.frag"),
         "#define PASSES " + passes));
         rebind();
     }

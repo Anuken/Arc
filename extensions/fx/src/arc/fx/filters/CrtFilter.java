@@ -16,8 +16,8 @@ public class CrtFilter extends FxFilter{
     /** Brightness is a value between [0..2] (default is 1.0). */
     public CrtFilter(LineStyle lineStyle, float brightnessMin, float brightnessMax){
         super(compileShader(
-        Core.files.classpath("shaders/screenspace.vert"),
-        Core.files.classpath("shaders/crt.frag"),
+        Core.files.classpath("vfxshaders/screenspace.vert"),
+        Core.files.classpath("vfxshaders/crt.frag"),
         "#define SL_BRIGHTNESS_MIN " + brightnessMin + "\n" +
         "#define SL_BRIGHTNESS_MAX " + brightnessMax + "\n" +
         "#define LINE_TYPE " + lineStyle.ordinal()));

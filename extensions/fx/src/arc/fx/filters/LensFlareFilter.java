@@ -18,8 +18,8 @@ public final class LensFlareFilter extends FxFilter{
 
     public LensFlareFilter(){
         super(compileShader(
-        Core.files.classpath("shaders/screenspace.vert"),
-        Core.files.classpath("shaders/lensflare.frag")));
+        Core.files.classpath("vfxshaders/screenspace.vert"),
+        Core.files.classpath("vfxshaders/lensflare.frag")));
         rebind();
     }
 

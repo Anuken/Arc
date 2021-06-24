@@ -18,8 +18,8 @@ public final class Convolve1dFilter extends FxFilter{
 
     public Convolve1dFilter(int length, float[] weights_data, float[] offsets){
         super(compileShader(
-        Core.files.classpath("shaders/screenspace.vert"),
-        Core.files.classpath("shaders/convolve-1d.frag"),
+        Core.files.classpath("vfxshaders/screenspace.vert"),
+        Core.files.classpath("vfxshaders/convolve-1d.frag"),
         "#define LENGTH " + length));
         setWeights(length, weights_data, offsets);
         rebind();

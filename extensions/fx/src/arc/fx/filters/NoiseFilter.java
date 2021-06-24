@@ -9,8 +9,8 @@ public class NoiseFilter extends FxFilter{
 
     public NoiseFilter(float amount, float speed){
         super(compileShader(
-        Core.files.classpath("shaders/screenspace.vert"),
-        Core.files.classpath("shaders/noise.frag")));
+        Core.files.classpath("vfxshaders/screenspace.vert"),
+        Core.files.classpath("vfxshaders/noise.frag")));
         this.amount = amount;
         this.speed = speed;
         rebind();

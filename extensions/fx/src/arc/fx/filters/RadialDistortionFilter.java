@@ -9,8 +9,8 @@ public final class RadialDistortionFilter extends FxFilter{
 
     public RadialDistortionFilter(){
         super(compileShader(
-        Core.files.classpath("shaders/screenspace.vert"),
-        Core.files.classpath("shaders/radial-distortion.frag")));
+        Core.files.classpath("vfxshaders/screenspace.vert"),
+        Core.files.classpath("vfxshaders/radial-distortion.frag")));
         rebind();
     }
 

@@ -9,8 +9,8 @@ public class OldTvFilter extends FxFilter{
 
     public OldTvFilter(){
         super(compileShader(
-        Core.files.classpath("shaders/screenspace.vert"),
-        Core.files.classpath("shaders/old-tv.frag")));
+        Core.files.classpath("vfxshaders/screenspace.vert"),
+        Core.files.classpath("vfxshaders/old-tv.frag")));
         rebind();
     }
 

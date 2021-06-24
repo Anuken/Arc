@@ -11,7 +11,7 @@ public class FisheyeDistortionFilter extends FxFilter{
 
     public FisheyeDistortionFilter(){
         super(compileShader(
-        Core.files.classpath("shaders/screenspace.vert"),
-        Core.files.classpath("shaders/fisheye.frag")));
+        Core.files.classpath("vfxshaders/screenspace.vert"),
+        Core.files.classpath("vfxshaders/fisheye.frag")));
     }
 }

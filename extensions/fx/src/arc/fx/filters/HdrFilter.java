@@ -17,8 +17,8 @@ public final class HdrFilter extends FxFilter{
 
     public HdrFilter(float exposure, float gamma){
         super(compileShader(
-        Core.files.classpath("shaders/screenspace.vert"),
-        Core.files.classpath("shaders/hdr.frag")));
+        Core.files.classpath("vfxshaders/screenspace.vert"),
+        Core.files.classpath("vfxshaders/hdr.frag")));
         this.exposure = exposure;
         this.gamma = gamma;
     }

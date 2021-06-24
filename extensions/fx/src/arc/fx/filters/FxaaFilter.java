@@ -20,8 +20,8 @@ public final class FxaaFilter extends FxFilter{
 
     public FxaaFilter(float fxaaReduceMin, float fxaaReduceMul, float fxaaSpanMax, boolean supportAlpha){
         super(compileShader(
-        Core.files.classpath("shaders/screenspace.vert"),
-        Core.files.classpath("shaders/fxaa.frag"),
+        Core.files.classpath("vfxshaders/screenspace.vert"),
+        Core.files.classpath("vfxshaders/fxaa.frag"),
         supportAlpha ? "#define SUPPORT_ALPHA" : ""));
         this.fxaaReduceMin = fxaaReduceMin;
         this.fxaaReduceMul = fxaaReduceMul;

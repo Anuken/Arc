@@ -27,8 +27,8 @@ public final class VignettingFilter extends FxFilter{
 
     public VignettingFilter(boolean controlSaturation){
         super(compileShader(
-        Core.files.classpath("shaders/screenspace.vert"),
-        Core.files.classpath("shaders/vignetting.frag"),
+        Core.files.classpath("vfxshaders/screenspace.vert"),
+        Core.files.classpath("vfxshaders/vignetting.frag"),
         (controlSaturation ?
         "#define CONTROL_SATURATION\n#define ENABLE_GRADIENT_MAPPING" :
         "#define ENABLE_GRADIENT_MAPPING")));

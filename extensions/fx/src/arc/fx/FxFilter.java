@@ -29,7 +29,7 @@ public abstract class FxFilter implements Disposable{
     }
 
     public FxFilter(String vert, String frag){
-        this(compileShader(Core.files.classpath("shaders/"+vert+".vert"), Core.files.classpath("shaders/"+frag+".frag")));
+        this(compileShader(Core.files.classpath("vfxshaders/" +vert+".vert"), Core.files.classpath("vfxshaders/" +frag+".frag")));
     }
 
     public FxFilter(Shader shader){

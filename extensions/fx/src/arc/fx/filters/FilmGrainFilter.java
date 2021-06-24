@@ -9,8 +9,8 @@ public class FilmGrainFilter extends FxFilter{
 
     public FilmGrainFilter(){
         super(compileShader(
-        Core.files.classpath("shaders/screenspace.vert"),
-        Core.files.classpath("shaders/film-grain.frag")));
+        Core.files.classpath("vfxshaders/screenspace.vert"),
+        Core.files.classpath("vfxshaders/film-grain.frag")));
         rebind();
     }
 

@@ -8,8 +8,8 @@ public class RippleFilter extends FxFilter{
 
     public RippleFilter(float amount, float speed){
         super(compileShader(
-            Core.files.classpath("shaders/screenspace.vert"),
-            Core.files.classpath("shaders/ripple.frag")));
+            Core.files.classpath("vfxshaders/screenspace.vert"),
+            Core.files.classpath("vfxshaders/ripple.frag")));
         this.amount = amount;
         this.speed = speed;
         rebind();

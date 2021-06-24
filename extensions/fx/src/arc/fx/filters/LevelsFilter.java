@@ -15,7 +15,7 @@ public class LevelsFilter extends FxFilter{
     public float gamma = 1.0f;
 
     public LevelsFilter(){
-        super(compileShader(Core.files.classpath("shaders/screenspace.vert"), Core.files.classpath("shaders/levels.frag")));
+        super(compileShader(Core.files.classpath("vfxshaders/screenspace.vert"), Core.files.classpath("vfxshaders/levels.frag")));
         rebind();
     }
 

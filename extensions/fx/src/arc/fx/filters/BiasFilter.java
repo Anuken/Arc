@@ -12,7 +12,7 @@ public final class BiasFilter extends FxFilter{
 
     public BiasFilter(){
         super(compileShader(
-        Core.files.classpath("shaders/screenspace.vert"),
+        Core.files.classpath("vfxshaders/screenspace.vert"),
         Core.files.classpath("bias")));
         rebind();
     }

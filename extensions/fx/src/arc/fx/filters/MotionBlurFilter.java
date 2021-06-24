@@ -20,8 +20,8 @@ public class MotionBlurFilter extends FxFilter{
 
     public MotionBlurFilter(BlurFunction blurFunction){
         super(compileShader(
-        Core.files.classpath("shaders/screenspace.vert"),
-        Core.files.classpath("shaders/" + blurFunction.fragmentShaderName + ".frag")));
+        Core.files.classpath("vfxshaders/screenspace.vert"),
+        Core.files.classpath("vfxshaders/" + blurFunction.fragmentShaderName + ".frag")));
 
         copyFilter = new CopyFilter();
 
