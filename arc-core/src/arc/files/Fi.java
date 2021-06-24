@@ -308,6 +308,11 @@ public class Fi{
         }
     }
 
+    /** @return a new ByteArrayInputStream containing all the bytes in this file. */
+    public ByteArrayInputStream readByteStream(){
+        return new ByteArrayInputStream(readBytes());
+    }
+
     private int estimateLength(){
         int length = (int)length();
         return length != 0 ? length : 512;
