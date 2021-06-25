@@ -3,7 +3,7 @@ ext{
     libraries = [:]
 }
 
-versions.robovm = "2.3.11"
+versions.robovm = "2.3.13"
 versions.junit = "4.11"
 versions.androidPlugin = "3.4.1"
 versions.teavm = '0.7.0-dev-1087'
