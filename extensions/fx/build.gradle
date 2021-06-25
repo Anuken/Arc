@@ -2,7 +2,8 @@ sourceSets.main.java.srcDirs += ['src/']
 sourceSets.main.resources.srcDirs += ['assets/']
 
 dependencies{
-    runtimeOnly fileTree('assets')
+    //TODO why was this necessary in the first place
+    //runtimeOnly fileTree('assets')
 }
 
 sourcesJar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
