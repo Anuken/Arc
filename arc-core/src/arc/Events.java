@@ -30,4 +30,12 @@ public class Events{
         if(events.get(type) != null) events.get(type).each(e -> ((Cons<T>)e).get(type));
         if(events.get(ctype) != null) events.get(ctype).each(e -> ((Cons<T>)e).get(type));
     }
+
+    public static <T> void fireWrap(Class<?> ctype, T type, Cons<Cons<T>> wrapper){
+        if(events.get(ctype) != null){
+            events.get(ctype).each(e -> {
+                wrapper.get(((Cons<T>)e));
+            });
+        }
+    }
 }
