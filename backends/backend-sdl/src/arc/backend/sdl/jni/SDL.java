@@ -332,4 +332,11 @@ public class SDL{
     public static native void SDL_GL_SwapWindow(long window); /*
         SDL_GL_SwapWindow((SDL_Window*)window);
     */
+
+    public static native void SDL_GL_GetDrawableSize(long window, int[] values); /*
+        int w, h;
+        SDL_GL_GetDrawableSize((SDL_Window*)window, &w, &h);
+        values[0] = w;
+        values[1] = h;
+    */
 }

@@ -24,6 +24,7 @@ public class SdlGraphics extends Graphics{
     private long frameCounterStart = 0;
     private int frames;
     private int fps;
+    private int[] wh = new int[2];
 
     int backBufferWidth;
     int backBufferHeight;
@@ -78,10 +79,17 @@ public class SdlGraphics extends Graphics{
     void updateSize(int width, int height){
         logicalWidth = width;
         logicalHeight = height;
-        backBufferWidth = width;
-        backBufferHeight = height;
 
-        gl20.glViewport(0, 0, width, height);
+        if(OS.isMac){
+            SDL_GL_GetDrawableSize(app.window, wh);
+            backBufferWidth = wh[0];
+            backBufferHeight = wh[1];
+        }else{
+            backBufferWidth = width;
+            backBufferHeight = height;
+        }
+
+        gl20.glViewport(0, 0, backBufferWidth, backBufferHeight);
     }
 
     @Override
