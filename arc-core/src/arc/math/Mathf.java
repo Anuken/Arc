@@ -425,7 +425,7 @@ public final class Mathf{
      * @param fromRadians start angle in radians
      * @param toRadians target angle in radians
      * @param progress interpolation value in the range [0, 1]
-     * @return the interpolated angle in the range [0, PI2[
+     * @return the interpolated angle in the range [0, PI2]
      */
     public static float slerpRad(float fromRadians, float toRadians, float progress){
         float delta = ((toRadians - fromRadians + PI2 + PI) % PI2) - PI;
@@ -438,7 +438,7 @@ public final class Mathf{
      * @param fromDegrees start angle in degrees
      * @param toDegrees target angle in degrees
      * @param progress interpolation value in the range [0, 1]
-     * @return the interpolated angle in the range [0, 360[
+     * @return the interpolated angle in the range [0, 360]
      */
     public static float slerp(float fromDegrees, float toDegrees, float progress){
         float delta = ((toDegrees - fromDegrees + 360 + 180) % 360) - 180;
