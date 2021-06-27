@@ -66,13 +66,12 @@ public class GifRecorder{
                         }
 
                         try{
-                            String time = "" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()).format(new Date());
                             exportDirectory.mkdirs();
 
                             //linux-only
                             String args = Strings.format(
                             "/usr/bin/ffmpeg -r @ -s @x@ -f rawvideo -pix_fmt rgba -i - -frames:v @ -filter:v vflip,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse @/@.gif",
-                            recordfps, (int)gifwidth, (int)gifheight, frames.size, exportDirectory.absolutePath(), time
+                            recordfps, (int)gifwidth, (int)gifheight, frames.size, exportDirectory.absolutePath(), new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()).format(new Date())
                             );
 
                             ProcessBuilder builder = new ProcessBuilder(args.split(" ")).redirectErrorStream(true);
@@ -101,30 +100,24 @@ public class GifRecorder{
 
     /** Updates the recorder and draws the GUI */
     public void update(){
-        Draw.flush();
-
         if(Core.scene == null || !Core.scene.hasField()){
             doInput();
         }
-        float delta = Core.graphics.getDeltaTime();
 
         if(!open) return;
 
         Tmp.m1.set(Draw.proj());
-        Draw.proj().setOrtho(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
+        Draw.proj(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
 
-        float wx = Core.graphics.getWidth() / 2;
-        float wy = Core.graphics.getHeight() / 2;
+        float wx = Core.graphics.getWidth() / 2f, wy = Core.graphics.getHeight() / 2f;
 
         if(!disableGUI) Draw.color(Color.yellow);
 
         if(Core.input.keyDown(resizeKey) && !recording){
+            if(!disableGUI) Draw.color(Color.green);
 
-            if(!disableGUI)
-                Draw.color(Color.green);
-
-            float xs = Math.abs(Core.graphics.getWidth() / 2 + offsetx - Core.input.mouseX());
-            float ys = Math.abs(Core.graphics.getHeight() / 2 + offsety - Core.input.mouseY());
+            float xs = Math.abs(wx + offsetx - Core.input.mouseX());
+            float ys = Math.abs(wy + offsety - Core.input.mouseY());
             gifx = -xs;
             gify = -ys;
             gifwidth = xs * 2;
@@ -134,18 +127,16 @@ public class GifRecorder{
         if(Core.input.keyDown(shiftKey)){
             if(!disableGUI) Draw.color(Color.orange);
 
-            float xs = (Core.graphics.getWidth() / 2 - Core.input.mouseX());
-            float ys = (Core.graphics.getHeight() / 2 - Core.input.mouseY());
-            offsetx = Mathf.lerpDelta(offsetx, -xs, driftSpeed);
-            offsety = Mathf.lerpDelta(offsety, -ys, driftSpeed);
+            offsetx = Mathf.lerpDelta(offsetx, -(wx - Core.input.mouseX()), driftSpeed);
+            offsety = Mathf.lerpDelta(offsety, -(wy - Core.input.mouseY()), driftSpeed);
         }
 
         if(recording){
-            frametime += delta * 61f * speedMultiplier;
+            frametime += Core.graphics.getDeltaTime() * 60.5f * speedMultiplier;
             if(frametime >= (60f / recordfps)){
                 byte[] pix = ScreenUtils.getFrameBufferPixels(
-                (int)(gifx + offsetx + Core.graphics.getWidth() / 2),
-                (int)(gify + offsety + Core.graphics.getHeight() / 2),
+                (int)(gifx + offsetx + wx),
+                (int)(gify + offsety + wy),
                 (int)(gifwidth), (int)(gifheight), false);
                 frames.add(pix);
                 frametime = 0;
@@ -153,38 +144,23 @@ public class GifRecorder{
         }
 
         if(!disableGUI){
-
             if(recording) Draw.color(Color.red);
 
-            Fill.crect(gifx + wx + offsetx, gify + wy + offsety, gifwidth, 1f);
-            Fill.crect(gifx + wx + offsetx, gify + wy + gifheight + offsety, gifwidth, 1f);
-            Fill.crect(gifx + wx + offsetx, gify + wy + offsety, 1f, gifheight);
-            Fill.crect(gifx + wx + offsetx + gifwidth, gify + wy + offsety, 1f, gifheight + 1f);
+            Lines.stroke(1f);
+            Lines.rect(gifx + wx + offsetx, gify + wy + offsety, gifwidth, gifheight);
 
             if(saving){
                 if(!disableGUI) Draw.color(Color.black);
 
                 float w = 200, h = 50;
-                Fill.crect(Core.graphics.getWidth() / 2 - w / 2, Core.graphics.getHeight() / 2 - h / 2, w, h);
-
-                //this just blends red and green
-                Color a = Color.red;
-                Color b = Color.green;
-
-                float s = saveprogress;
-                float i = 1f - saveprogress;
-
-                Draw.color(a.r * i + b.r * s, a.g * i + b.g * s, a.b * i + b.b * s, 1f);
-
-                Fill.crect(Core.graphics.getWidth() / 2 - w / 2, Core.graphics.getHeight() / 2 - h / 2, w * saveprogress, h);
+                Fill.crect(wx - w / 2, wy - h / 2, w, h);
+                Draw.color(Color.red, Color.green, saveprogress);
+                Fill.crect(wx - w / 2, wy - h / 2, w * saveprogress, h);
             }
-
-            Draw.color(Color.white);
         }
 
         Draw.color();
         Draw.flush();
         Draw.proj(Tmp.m1);
     }
-
 }

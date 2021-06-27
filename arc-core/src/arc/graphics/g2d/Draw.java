@@ -15,8 +15,6 @@ public class Draw{
 
     private static final Color[] carr = new Color[3];
     private static final float[] vertices = new float[SpriteBatch.SPRITE_SIZE];
-    private static @Nullable Camera lastProj;
-    private static Rect lastViewport = new Rect();
 
     public static float scl = 1f;
     public static float xscl = 1f, yscl = 1f;
@@ -356,12 +354,7 @@ public class Draw{
 
     public static void proj(float x, float y, float w, float h){
         Draw.flush();
-        lastProj = null;
         batch.getProjection().setOrtho(x, y, w, h);
-    }
-
-    public static Rect lastViewport(){
-        return lastViewport;
     }
 
     public static void proj(Camera proj){
@@ -369,15 +362,10 @@ public class Draw{
     }
 
     public static void proj(Mat proj){
-        lastProj = (Core.camera != null && camera.mat == proj ? camera : null);
-        if(lastProj != null){
-            lastProj.bounds(lastViewport);
-        }
         Core.batch.setProjection(proj);
     }
 
     public static Mat proj(){
-        lastProj = null;
         return Core.batch.getProjection();
     }
 
@@ -387,11 +375,6 @@ public class Draw{
 
     public static Mat trans(){
         return Core.batch.getTransform();
-    }
-
-    /** @return whether the batch's projection is currently the camera. */
-    public static boolean isCamera(){
-        return lastProj == camera;
     }
 
     public static TextureRegion wrap(Texture texture){
