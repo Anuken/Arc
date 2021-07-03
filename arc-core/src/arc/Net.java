@@ -1,10 +1,15 @@
 package arc;
 
+import arc.func.*;
 import arc.struct.*;
-import arc.func.Cons;
 import arc.util.*;
+import arc.util.async.*;
+import arc.util.io.*;
 
-import java.io.InputStream;
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Provides methods to perform networking operations, such as simple HTTP get and post requests, and TCP server/client socket
@@ -20,22 +25,106 @@ import java.io.InputStream;
  * @author arielsan
  */
 public class Net{
-    private NetJavaImpl impl = new NetJavaImpl();
+    private final ExecutorService exec;
 
-    /** Whether to block on HTTP requests. Default is false. */
-    public void setBlock(boolean block){
-        impl.setBlock(block);
+    public Net(int maxConcurrent){
+        exec = Threads.executor(maxConcurrent);
+    }
+
+    public Net(){
+        this(10);
     }
 
     /**
      * Process the specified {@link HttpRequest} and reports the {@link HttpResponse} to the specified listener.
-     * .
-     * @param httpRequest The {@link HttpRequest} to be performed.
+     *
+     * @param request The {@link HttpRequest} to be performed.
      * @param success The listener to call once the HTTP response is ready to be processed.
      * @param failure The listener to call if the request fails.
      */
-    public void http(HttpRequest httpRequest, Cons<HttpResponse> success, Cons<Throwable> failure){
-        impl.http(httpRequest, success, failure);
+    public void http(HttpRequest request, Cons<HttpResponse> success, Cons<Throwable> failure){
+        if(request.url == null){
+            failure.get(new ArcRuntimeException("can't process a HTTP request without URL set"));
+            return;
+        }
+
+        try{
+            HttpMethod method = request.method;
+            URL url;
+
+            if(method == HttpMethod.GET){
+                String queryString = "";
+                String value = request.content;
+                if(value != null && !"".equals(value)) queryString = "?" + value;
+                url = new URL(request.url + queryString);
+            }else{
+                url = new URL(request.url);
+            }
+
+            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            //should be enabled to upload data.
+            boolean doingOutPut = method == HttpMethod.POST || method == HttpMethod.PUT;
+            connection.setDoOutput(doingOutPut);
+            connection.setDoInput(true);
+            connection.setRequestMethod(method.toString());
+            HttpURLConnection.setFollowRedirects(request.followRedirects);
+
+            //set headers
+            request.headers.each(connection::addRequestProperty);
+
+            //timeouts
+            connection.setConnectTimeout(request.timeout);
+            connection.setReadTimeout(request.timeout);
+
+            Runnable run = () -> {
+                try{
+                    // Set the content for POST and PUT (GET has the information embedded in the URL)
+                    if(doingOutPut){
+                        // we probably need to use the content as stream here instead of using it as a string.
+                        String contentAsString = request.content;
+                        if(contentAsString != null){
+                            OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), Strings.utf8);
+                            try{
+                                writer.write(contentAsString);
+                            }finally{
+                                Streams.close(writer);
+                            }
+                        }else{
+                            InputStream contentAsStream = request.contentStream;
+                            if(contentAsStream != null){
+                                OutputStream os = connection.getOutputStream();
+                                try{
+                                    Streams.copy(contentAsStream, os);
+                                }finally{
+                                    Streams.close(os);
+                                }
+                            }
+                        }
+                    }
+
+                    connection.connect();
+
+                    HttpResponse clientResponse = new HttpResponse(connection);
+                    try{
+                        success.get(clientResponse);
+                    }finally{
+                        connection.disconnect();
+                    }
+
+                }catch(Throwable e){
+                    connection.disconnect();
+                    failure.get(e);
+                }
+            };
+
+            if(request.block){
+                run.run();
+            }else{
+                exec.submit(run);
+            }
+        }catch(Throwable e){
+            failure.get(e);
+        }
     }
 
     /** Sends a basic HTTP GET request.*/
@@ -48,8 +137,15 @@ public class Net{
         http(new HttpRequest().method(HttpMethod.POST).content(content).url(url), success, failure);
     }
 
-    /** HTTP response interface with methods to get the response data as a byte[], a {@link String} or an {@link InputStream}. */
-    public interface HttpResponse{
+    public class HttpResponse{
+        private final HttpURLConnection connection;
+        private Net.HttpStatus status;
+
+        protected HttpResponse(HttpURLConnection connection) throws IOException{
+            this.connection = connection;
+            this.status = Net.HttpStatus.byCode(connection.getResponseCode());
+        }
+
         /**
          * Returns the data of the HTTP response as a byte[].
          * <p>
@@ -58,7 +154,22 @@ public class Net{
          * @return the result as a byte[] or null in case of a timeout or if the operation was canceled/terminated abnormally. The
          * timeout is specified when creating the HTTP request, with {@link HttpRequest#timeout(int)}
          */
-        byte[] getResult();
+        public byte[] getResult(){
+            InputStream input = getInputStream();
+
+            // If the response does not contain any content, input will be null.
+            if(input == null){
+                return Streams.EMPTY_BYTES;
+            }
+
+            try{
+                return Streams.copyBytes(input, connection.getContentLength());
+            }catch(IOException e){
+                return Streams.EMPTY_BYTES;
+            }finally{
+                Streams.close(input);
+            }
+        }
 
         /**
          * Returns the data of the HTTP response as a {@link String}.
@@ -68,7 +179,22 @@ public class Net{
          * @return the result as a string or null in case of a timeout or if the operation was canceled/terminated abnormally. The
          * timeout is specified when creating the HTTP request, with {@link HttpRequest#timeout(int)}
          */
-        String getResultAsString();
+        public String getResultAsString(){
+            InputStream input = getInputStream();
+
+            // If the response does not contain any content, input will be null.
+            if(input == null){
+                return "";
+            }
+
+            try{
+                return Streams.copyString(input, connection.getContentLength());
+            }catch(IOException e){
+                return "";
+            }finally{
+                Streams.close(input);
+            }
+        }
 
         /**
          * Returns the data of the HTTP response as an {@link InputStream}. <b><br>
@@ -76,21 +202,43 @@ public class Net{
          * callback finishes executing. Reading from the InputStream after it's connection has been closed will lead to exception.
          * @return An {@link InputStream} with the {@link HttpResponse} data.
          */
-        InputStream getResultAsStream();
+        public InputStream getResultAsStream(){
+            return getInputStream();
+        }
 
-        /** Returns the {@link HttpStatus} containing the statusCode of the HTTP response. */
-        HttpStatus getStatus();
+        /** @return the {@link HttpStatus} containing the statusCode of the HTTP response. */
+        public Net.HttpStatus getStatus(){
+            return status;
+        }
 
-        /**
-         * Returns the value of the header with the given name as a {@link String}, or null if the header is not set.
-         */
-        String getHeader(String name);
+        /** @return the value of the header with the given name as a {@link String}, or null if the header is not set. */
+        public String getHeader(String name){
+            return connection.getHeaderField(name);
+        }
 
         /**
          * Returns a Map of the headers. The keys are Strings that represent the header name. Each values is a List of Strings that
          * represent the corresponding header values.
          */
-        ObjectMap<String, Seq<String>> getHeaders();
+        public ObjectMap<String, Seq<String>> getHeaders(){
+            //convert between the struct types
+            ObjectMap<String, Seq<String>> out = new ObjectMap<>();
+            Map<String, List<String>> fields = connection.getHeaderFields();
+            for(String key : fields.keySet()){
+                if(key != null){
+                    out.put(key, Seq.with(fields.get(key).toArray(new String[0])));
+                }
+            }
+            return out;
+        }
+
+        private InputStream getInputStream(){
+            try{
+                return connection.getInputStream();
+            }catch(IOException e){
+                return connection.getErrorStream();
+            }
+        }
     }
 
     /** Provides all HTTP methods to use when creating a {@link HttpRequest}.*/
@@ -112,6 +260,9 @@ public class Net{
          * HTTP request. For example, in case of HTTP GET, the content is used as the query string of the GET while on a
          * HTTP POST it is used to send the POST data.*/
         public String content;
+
+        /** If true, this HTTP request will block the current thread. */
+        public boolean block;
 
         /**The content as a stream to be used for a POST for example, to transmit custom data.*/
         public InputStream contentStream;
@@ -170,6 +321,11 @@ public class Net{
         public HttpRequest content(InputStream contentStream, long contentLength){
             this.contentStream = contentStream;
             this.contentLength = contentLength;
+            return this;
+        }
+
+        public HttpRequest block(boolean block){
+            this.block = block;
             return this;
         }
     }

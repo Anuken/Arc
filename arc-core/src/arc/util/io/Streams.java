@@ -105,7 +105,7 @@ public final class Streams{
      * @param charset May be null to use the platform's default charset.
      */
     public static String copyString(InputStream input, int estimatedSize, String charset) throws IOException{
-        InputStreamReader reader = charset == null ? new InputStreamReader(input) : new InputStreamReader(input, charset);
+        InputStreamReader reader = charset == null ? new InputStreamReader(input, "UTF-8") : new InputStreamReader(input, charset);
         StringWriter writer = new StringWriter(Math.max(0, estimatedSize));
         char[] buffer = new char[DEFAULT_BUFFER_SIZE];
         int charsRead;
