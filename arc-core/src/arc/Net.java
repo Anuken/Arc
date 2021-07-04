@@ -248,7 +248,7 @@ public class Net{
 
     public static class HttpRequest{
         /** The HTTP method. */
-        public HttpMethod method;
+        public HttpMethod method = HttpMethod.GET;
         /** The URL to send this request to.*/
         public String url;
         public ObjectMap<String, String> headers = new ObjectMap<>();
