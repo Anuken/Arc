@@ -30,6 +30,19 @@ public class Threads{
         return executor(threads, true);
     }
 
+    public static ExecutorService cachedExecutor(){
+        //keep at least 1 thread around at all times.
+        return new ThreadPoolExecutor(1, Integer.MAX_VALUE,
+        60L, TimeUnit.SECONDS,
+        new SynchronousQueue<>(),
+        r -> {
+            Thread thread = new Thread(r);
+            thread.setDaemon(true);
+            thread.setUncaughtExceptionHandler((t, e) -> e.printStackTrace());
+            return thread;
+        });
+    }
+
     /** Shuts down the executor and waits for its termination indefinitely. */
     public static void await(ExecutorService exec){
         try{

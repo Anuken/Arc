@@ -32,7 +32,7 @@ public class Net{
     }
 
     public Net(){
-        this(10);
+        this(6);
     }
 
     /**
@@ -104,9 +104,8 @@ public class Net{
 
                     connection.connect();
 
-                    HttpResponse clientResponse = new HttpResponse(connection);
                     try{
-                        success.get(clientResponse);
+                        success.get(new HttpResponse(connection));
                     }finally{
                         connection.disconnect();
                     }
