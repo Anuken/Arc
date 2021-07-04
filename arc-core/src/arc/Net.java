@@ -158,13 +158,13 @@ public class Net{
 
             // If the response does not contain any content, input will be null.
             if(input == null){
-                return Streams.EMPTY_BYTES;
+                return Streams.emptyBytes;
             }
 
             try{
                 return Streams.copyBytes(input, connection.getContentLength());
             }catch(IOException e){
-                return Streams.EMPTY_BYTES;
+                return Streams.emptyBytes;
             }finally{
                 Streams.close(input);
             }

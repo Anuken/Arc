@@ -371,7 +371,7 @@ public class Fi{
     }
 
     public Writes writes(boolean append){
-        return new Writes(new DataOutputStream(write(append, Streams.DEFAULT_BUFFER_SIZE)));
+        return new Writes(new DataOutputStream(write(append, Streams.defaultBufferSize)));
     }
 
     public Writes writes(){
@@ -379,15 +379,15 @@ public class Fi{
     }
 
     public Reads reads(){
-        return new Reads(new DataInputStream(read(Streams.DEFAULT_BUFFER_SIZE)));
+        return new Reads(new DataInputStream(read(Streams.defaultBufferSize)));
     }
 
     public Writes writesDeflate(){
-        return new Writes(new DataOutputStream(new DeflaterOutputStream(write(false, Streams.DEFAULT_BUFFER_SIZE))));
+        return new Writes(new DataOutputStream(new DeflaterOutputStream(write(false, Streams.defaultBufferSize))));
     }
 
     public Reads readsDeflate(){
-        return new Reads(new DataInputStream(new InflaterInputStream(read(Streams.DEFAULT_BUFFER_SIZE))));
+        return new Reads(new DataInputStream(new InflaterInputStream(read(Streams.defaultBufferSize))));
     }
 
     public OutputStream write(){

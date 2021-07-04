@@ -7,15 +7,15 @@ import java.nio.ByteBuffer;
 
 /** Provides utility methods to copy streams. */
 public final class Streams{
-    public static final int DEFAULT_BUFFER_SIZE = 4096;
-    public static final byte[] EMPTY_BYTES = new byte[0];
+    public static final int defaultBufferSize = 4096;
+    public static final byte[] emptyBytes = new byte[0];
 
     /**
-     * Allocates a {@value #DEFAULT_BUFFER_SIZE} byte[] for use as a temporary buffer and calls
+     * Allocates a {@value #defaultBufferSize} byte[] for use as a temporary buffer and calls
      * {@link #copy(InputStream, OutputStream, byte[])}.
      */
     public static void copy(InputStream input, OutputStream output) throws IOException{
-        copy(input, output, new byte[DEFAULT_BUFFER_SIZE]);
+        copy(input, output, new byte[defaultBufferSize]);
     }
 
     /**
@@ -38,11 +38,11 @@ public final class Streams{
     }
 
     /**
-     * Allocates a {@value #DEFAULT_BUFFER_SIZE} byte[] for use as a temporary buffer and calls
+     * Allocates a {@value #defaultBufferSize} byte[] for use as a temporary buffer and calls
      * {@link #copy(InputStream, OutputStream, byte[])}.
      */
     public static void copy(InputStream input, ByteBuffer output) throws IOException{
-        copy(input, output, new byte[DEFAULT_BUFFER_SIZE]);
+        copy(input, output, new byte[defaultBufferSize]);
     }
 
     /**
@@ -107,7 +107,7 @@ public final class Streams{
     public static String copyString(InputStream input, int estimatedSize, String charset) throws IOException{
         InputStreamReader reader = charset == null ? new InputStreamReader(input, "UTF-8") : new InputStreamReader(input, charset);
         StringWriter writer = new StringWriter(Math.max(0, estimatedSize));
-        char[] buffer = new char[DEFAULT_BUFFER_SIZE];
+        char[] buffer = new char[defaultBufferSize];
         int charsRead;
         while((charsRead = reader.read(buffer)) != -1){
             writer.write(buffer, 0, charsRead);
