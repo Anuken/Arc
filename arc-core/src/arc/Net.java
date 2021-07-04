@@ -272,7 +272,7 @@ public class Net{
         /**Sets whether 301 and 302 redirects are followed. By default true. Can't be changed in the web backend because this uses
          * XmlHttpRequests which always redirect.*/
         public boolean followRedirects = true;
-        /** Whether a cross-origin request will include credentials. By default false. */
+        /** Whether a cross-origin request will include credentials. Default: false */
         public boolean includeCredentials = false;
 
         public HttpRequest(){
