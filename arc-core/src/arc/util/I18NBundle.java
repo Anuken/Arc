@@ -138,7 +138,7 @@ public class I18NBundle{
         Locale targetLocale = locale;
         do{
             // Create the candidate locales
-            List<Locale> candidateLocales = getCandidateLocales(targetLocale);
+            Seq<Locale> candidateLocales = getCandidateLocales(targetLocale);
 
             // Load the bundle and its parents recursively
             bundle = loadBundleChain(baseFileHandle, encoding, candidateLocales, 0, baseBundle);
@@ -152,7 +152,7 @@ public class I18NBundle{
                     // Found the bundle for the requested locale
                     break;
                 }
-                if(candidateLocales.size() == 1 && bundleLocale.equals(candidateLocales.get(0))){
+                if(candidateLocales.size == 1 && bundleLocale.equals(candidateLocales.get(0))){
                     // Found the bundle for the only candidate locale
                     break;
                 }
@@ -229,12 +229,12 @@ public class I18NBundle{
      * @return a <code>List</code> of candidate <code>Locale</code>s for the given <code>locale</code>
      * @throws NullPointerException if <code>locale</code> is <code>null</code>
      */
-    private static List<Locale> getCandidateLocales(Locale locale){
+    private static Seq<Locale> getCandidateLocales(Locale locale){
         String language = locale.getLanguage();
         String country = locale.getCountry();
         String variant = locale.getVariant();
 
-        List<Locale> locales = new ArrayList<>(4);
+        Seq<Locale> locales = new Seq<>(4);
         if(variant.length() > 0){
             locales.add(locale);
         }
@@ -267,11 +267,11 @@ public class I18NBundle{
         return locale.equals(defaultLocale) ? null : defaultLocale;
     }
 
-    private static I18NBundle loadBundleChain(Fi baseFileHandle, String encoding, List<Locale> candidateLocales,
+    private static I18NBundle loadBundleChain(Fi baseFileHandle, String encoding, Seq<Locale> candidateLocales,
                                               int candidateIndex, I18NBundle baseBundle){
         Locale targetLocale = candidateLocales.get(candidateIndex);
         I18NBundle parent = null;
-        if(candidateIndex != candidateLocales.size() - 1){
+        if(candidateIndex != candidateLocales.size - 1){
             // Load recursively the parent having the next candidate locale
             parent = loadBundleChain(baseFileHandle, encoding, candidateLocales, candidateIndex + 1, baseBundle);
         }else if(baseBundle != null && targetLocale.equals(ROOT_LOCALE)){

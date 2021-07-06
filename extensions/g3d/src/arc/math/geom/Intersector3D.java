@@ -1,7 +1,8 @@
 package arc.math.geom;
 
-import arc.math.geom.Plane.*;
 import arc.math.*;
+import arc.math.geom.Plane.*;
+import arc.struct.*;
 
 import java.util.*;
 
@@ -394,13 +395,13 @@ public class Intersector3D{
      * @param intersection The nearest intersection point (optional)
      * @return Whether the ray and the triangles intersect.
      */
-    public static boolean intersectRayTriangles(Ray ray, List<Vec3> triangles, Vec3 intersection){
+    public static boolean intersectRayTriangles(Ray ray, Seq<Vec3> triangles, Vec3 intersection){
         float min_dist = Float.MAX_VALUE;
         boolean hit = false;
 
-        if(triangles.size() % 3 != 0) throw new RuntimeException("triangle list size is not a multiple of 3");
+        if(triangles.size % 3 != 0) throw new RuntimeException("triangle list size is not a multiple of 3");
 
-        for(int i = 0; i < triangles.size() - 2; i += 3){
+        for(int i = 0; i < triangles.size - 2; i += 3){
             boolean result = intersectRayTriangle(ray, triangles.get(i), triangles.get(i + 1), triangles.get(i + 2), tmp);
 
             if(result){
