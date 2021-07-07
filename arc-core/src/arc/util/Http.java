@@ -32,7 +32,12 @@ public class Http{
 
     /** @return a new POST HttpRequest that must be configured & submitted. */
     public static HttpRequest post(String url){
-        return post(url, null);
+        return post(url, (String)null);
+    }
+
+    /** Creates and submits a HTTP POST request. */
+    public static void post(String url, ConsT<HttpResponse, Exception> callback){
+        post(url).submit(callback);
     }
 
     /** @return a new POST HttpRequest that must be configured & submitted. */
