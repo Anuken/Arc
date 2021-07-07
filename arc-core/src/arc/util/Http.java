@@ -292,7 +292,7 @@ public class Http{
                         //4xx or 5xx error
                         if(code >= 400){
                             HttpStatus status = HttpStatus.byCode(code);
-                            errorHandler.get(new HttpStatusException("HTTP request failed with error: " + code + " (" + status + ")", status, new HttpResponse(connection)));
+                            errorHandler.get(new HttpStatusException("HTTP request failed with error: " + code + " (" + status + ", URL = " + url + ")", status, new HttpResponse(connection)));
                         }else{
                             success.get(new HttpResponse(connection));
                         }
@@ -392,7 +392,7 @@ public class Http{
         HTTP_VERSION_NOT_SUPPORTED(505),
         INSUFFICIENT_STORAGE(507);
 
-        private static IntMap<HttpStatus> byCode = new IntMap<>();
+        private static IntMap<HttpStatus> byCode;
 
         public final int code;
 
