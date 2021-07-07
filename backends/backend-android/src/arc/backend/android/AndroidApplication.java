@@ -35,7 +35,6 @@ public class AndroidApplication extends Activity implements Application{
     protected AndroidInput input;
     protected Audio audio;
     protected AndroidFiles files;
-    protected Net net;
     protected Settings settings;
     protected ClipboardManager clipboard;
     protected boolean useImmersiveMode = false;
@@ -106,7 +105,6 @@ public class AndroidApplication extends Activity implements Application{
 
         this.getFilesDir(); // workaround for Android bug #10515463
         files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
-        net = new Net();
         settings = new Settings();
         addListener(listener);
         this.handler = new Handler();
@@ -120,7 +118,6 @@ public class AndroidApplication extends Activity implements Application{
         Core.input = input;
         Core.files = files;
         Core.graphics = graphics;
-        Core.net = net;
 
         if(!isForView){
             try{
@@ -206,7 +203,6 @@ public class AndroidApplication extends Activity implements Application{
         Core.audio = audio;
         Core.files = files;
         Core.graphics = graphics;
-        Core.net = net;
 
         input.onResume();
         graphics.resume();

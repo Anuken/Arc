@@ -49,7 +49,6 @@ public class TeaApplication implements Application{
         Core.gl = graphics.getGL20();
         Core.gl20 = graphics.getGL20();
         Core.files = new TeaFiles();
-        Core.net = new TeaNet();
         Core.audio = new TeaAudio();
         Core.input = input = new TeaInput(canvas);
         Core.settings = new TeaSettings();

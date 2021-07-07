@@ -1,8 +1,7 @@
-package arc;
+package arc.util;
 
 import arc.func.*;
 import arc.struct.*;
-import arc.util.*;
 import arc.util.async.*;
 import arc.util.io.*;
 
@@ -11,138 +10,49 @@ import java.net.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-/**
- * Provides methods to perform networking operations, such as simple HTTP get and post requests, and TCP server/client socket
- * communication.</p>
- * <p>
- * To perform an HTTP request create a {@link HttpRequest} with the HTTP method (see {@link HttpMethod} for common methods) and
- * invoke {@link #httpPost(String, String, Cons, Cons)} with it and a listener. After the HTTP
- * request was processed, the listener is called with a {@link HttpResponse} with the HTTP response values and
- * an status code to determine if the request was successful or not.</p>
- * <p>
- * @author mzechner
- * @author noblemaster
- * @author arielsan
- */
-public class Net{
-    private final ExecutorService exec;
+/** Utility class for making HTTP requests. */
+public class Http{
+    protected static ExecutorService exec = Threads.executor(8);
 
-    public Net(int maxConcurrent){
-        exec = Threads.executor(maxConcurrent);
+    /** @return a new GET HttpRequest that must be configured & submitted. */
+    public static HttpRequest get(String url){
+        if(url == null) throw new NullPointerException("url cannot be null.");
+        return new HttpRequest(HttpMethod.GET).url(url);
     }
 
-    public Net(){
-        this(6);
+    /** Creates and submits a HTTP GET request. */
+    public static void get(String url, ConsT<HttpResponse, Exception> callback){
+        get(url).submit(callback);
     }
 
-    /**
-     * Process the specified {@link HttpRequest} and reports the {@link HttpResponse} to the specified listener.
-     *
-     * @param request The {@link HttpRequest} to be performed.
-     * @param success The listener to call once the HTTP response is ready to be processed.
-     * @param failure The listener to call if the request fails.
-     */
-    public void http(HttpRequest request, Cons<HttpResponse> success, Cons<Throwable> failure){
-        if(request.url == null){
-            failure.get(new ArcRuntimeException("can't process a HTTP request without URL set"));
-            return;
-        }
-
-        try{
-            HttpMethod method = request.method;
-            URL url;
-
-            if(method == HttpMethod.GET){
-                String queryString = "";
-                String value = request.content;
-                if(value != null && !"".equals(value)) queryString = "?" + value;
-                url = new URL(request.url + queryString);
-            }else{
-                url = new URL(request.url);
-            }
-
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            //should be enabled to upload data.
-            boolean doingOutPut = method == HttpMethod.POST || method == HttpMethod.PUT;
-            connection.setDoOutput(doingOutPut);
-            connection.setDoInput(true);
-            connection.setRequestMethod(method.toString());
-            HttpURLConnection.setFollowRedirects(request.followRedirects);
-
-            //set headers
-            request.headers.each(connection::addRequestProperty);
-
-            //timeouts
-            connection.setConnectTimeout(request.timeout);
-            connection.setReadTimeout(request.timeout);
-
-            Runnable run = () -> {
-                try{
-                    // Set the content for POST and PUT (GET has the information embedded in the URL)
-                    if(doingOutPut){
-                        // we probably need to use the content as stream here instead of using it as a string.
-                        String contentAsString = request.content;
-                        if(contentAsString != null){
-                            OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), Strings.utf8);
-                            try{
-                                writer.write(contentAsString);
-                            }finally{
-                                Streams.close(writer);
-                            }
-                        }else{
-                            InputStream contentAsStream = request.contentStream;
-                            if(contentAsStream != null){
-                                OutputStream os = connection.getOutputStream();
-                                try{
-                                    Streams.copy(contentAsStream, os);
-                                }finally{
-                                    Streams.close(os);
-                                }
-                            }
-                        }
-                    }
-
-                    connection.connect();
-
-                    try{
-                        success.get(new HttpResponse(connection));
-                    }finally{
-                        connection.disconnect();
-                    }
-
-                }catch(Throwable e){
-                    connection.disconnect();
-                    failure.get(e);
-                }
-            };
-
-            if(request.block){
-                run.run();
-            }else{
-                exec.submit(run);
-            }
-        }catch(Throwable e){
-            failure.get(e);
-        }
+    /** Creates and submits a HTTP GET request, with an error handler. */
+    public static void get(String url, ConsT<HttpResponse, Exception> callback, Cons<Throwable> error){
+        get(url).error(error).submit(callback);
     }
 
-    /** Sends a basic HTTP GET request.*/
-    public void httpGet(String url, Cons<HttpResponse> success, Cons<Throwable> failure){
-        http(new HttpRequest().method(HttpMethod.GET).url(url), success, failure);
+    /** @return a new POST HttpRequest that must be configured & submitted. */
+    public static HttpRequest post(String url){
+        return post(url, null);
     }
 
-    /** Sends a basic HTTP POST request.*/
-    public void httpPost(String url, String content, Cons<HttpResponse> success, Cons<Throwable> failure){
-        http(new HttpRequest().method(HttpMethod.POST).content(content).url(url), success, failure);
+    /** @return a new POST HttpRequest that must be configured & submitted. */
+    public static HttpRequest post(String url, String content){
+        if(url == null) throw new NullPointerException("url cannot be null.");
+        return new HttpRequest(HttpMethod.POST).url(url).content(content);
     }
 
-    public class HttpResponse{
+    /** Sets the maximum amount of concurrent requests. Default: 8 */
+    public static void setMaxConcurrent(int max){
+        exec = Threads.executor(max);
+    }
+
+    public static class HttpResponse{
         private final HttpURLConnection connection;
-        private Net.HttpStatus status;
+        private HttpStatus status;
 
         protected HttpResponse(HttpURLConnection connection) throws IOException{
             this.connection = connection;
-            this.status = Net.HttpStatus.byCode(connection.getResponseCode());
+            this.status = HttpStatus.byCode(connection.getResponseCode());
         }
 
         /**
@@ -154,7 +64,7 @@ public class Net{
          * timeout is specified when creating the HTTP request, with {@link HttpRequest#timeout(int)}
          */
         public byte[] getResult(){
-            InputStream input = getInputStream();
+            InputStream input = getResultAsStream();
 
             // If the response does not contain any content, input will be null.
             if(input == null){
@@ -179,7 +89,7 @@ public class Net{
          * timeout is specified when creating the HTTP request, with {@link HttpRequest#timeout(int)}
          */
         public String getResultAsString(){
-            InputStream input = getInputStream();
+            InputStream input = getResultAsStream();
 
             // If the response does not contain any content, input will be null.
             if(input == null){
@@ -202,11 +112,15 @@ public class Net{
          * @return An {@link InputStream} with the {@link HttpResponse} data.
          */
         public InputStream getResultAsStream(){
-            return getInputStream();
+            try{
+                return connection.getInputStream();
+            }catch(IOException e){
+                return connection.getErrorStream();
+            }
         }
 
         /** @return the {@link HttpStatus} containing the statusCode of the HTTP response. */
-        public Net.HttpStatus getStatus(){
+        public HttpStatus getStatus(){
             return status;
         }
 
@@ -231,22 +145,9 @@ public class Net{
             return out;
         }
 
-        private InputStream getInputStream(){
-            try{
-                return connection.getInputStream();
-            }catch(IOException e){
-                return connection.getErrorStream();
-            }
-        }
-    }
-
-    /** Provides all HTTP methods to use when creating a {@link HttpRequest}.*/
-    public enum HttpMethod{
-        GET, POST, PUT, DELETE, HEAD, CONNECT, OPTIONS, TRACE
     }
 
     public static class HttpRequest{
-        /** The HTTP method. */
         public HttpMethod method = HttpMethod.GET;
         /** The URL to send this request to.*/
         public String url;
@@ -260,9 +161,6 @@ public class Net{
          * HTTP POST it is used to send the POST data.*/
         public String content;
 
-        /** If true, this HTTP request will block the current thread. */
-        public boolean block;
-
         /**The content as a stream to be used for a POST for example, to transmit custom data.*/
         public InputStream contentStream;
         /**Length of the content stream.*/
@@ -273,13 +171,20 @@ public class Net{
         public boolean followRedirects = true;
         /** Whether a cross-origin request will include credentials. Default: false */
         public boolean includeCredentials = false;
+        /** Handler for 4xx + 5xx errors, as well as exceptions thrown during connection. */
+        public Cons<Throwable> errorHandler = Log::err;
 
-        public HttpRequest(){
+        protected HttpRequest(){
 
         }
 
-        public HttpRequest(HttpMethod method){
+        protected HttpRequest(HttpMethod method){
             this.method = method;
+        }
+
+        public HttpRequest error(Cons<Throwable> failed){
+            errorHandler = failed;
+            return this;
         }
 
         public HttpRequest method(HttpMethod method){
@@ -323,41 +228,140 @@ public class Net{
             return this;
         }
 
-        public HttpRequest block(boolean block){
-            this.block = block;
-            return this;
+        /** Submits this request asynchronously. */
+        public void submit(ConsT<HttpResponse, Exception> success){
+            Http.exec.submit(() -> block(success));
         }
+
+        /** Blocks until this request is done. */
+        public void block(ConsT<HttpResponse, Exception> success){
+            if(url == null){
+                errorHandler.get(new ArcRuntimeException("can't process a HTTP request without URL set"));
+                return;
+            }
+
+            try{
+                URL url;
+
+                if(method == HttpMethod.GET){
+                    String queryString = "";
+                    String value = content;
+                    if(value != null && !"".equals(value)) queryString = "?" + value;
+                    url = new URL(this.url + queryString);
+                }else{
+                    url = new URL(this.url);
+                }
+
+                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+                //should be enabled to upload data.
+                boolean doingOutPut = method == HttpMethod.POST || method == HttpMethod.PUT;
+                connection.setDoOutput(doingOutPut);
+                connection.setDoInput(true);
+                connection.setRequestMethod(method.toString());
+                HttpURLConnection.setFollowRedirects(followRedirects);
+
+                //set headers
+                headers.each(connection::addRequestProperty);
+
+                //timeouts
+                connection.setConnectTimeout(timeout);
+                connection.setReadTimeout(timeout);
+
+                try{
+                    // Set the content for POST and PUT (GET has the information embedded in the URL)
+                    if(doingOutPut){
+                        // we probably need to use the content as stream here instead of using it as a string.
+                        if(content != null){
+                            try(OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), Strings.utf8)){
+                                writer.write(content);
+                            }
+                        }else{
+                            if(contentStream != null){
+                                try(OutputStream os = connection.getOutputStream()){
+                                    Streams.copy(contentStream, os);
+                                }
+                            }
+                        }
+                    }
+
+                    connection.connect();
+
+                    try{
+                        int code = connection.getResponseCode();
+
+                        //4xx or 5xx error
+                        if(code >= 400){
+                            HttpStatus status = HttpStatus.byCode(code);
+                            errorHandler.get(new HttpStatusException("HTTP request failed with error: " + code + " (" + status + ")", status, new HttpResponse(connection)));
+                        }else{
+                            success.get(new HttpResponse(connection));
+                        }
+
+                    }finally{
+                        connection.disconnect();
+                    }
+
+                }catch(Throwable e){
+                    connection.disconnect();
+                    errorHandler.get(e);
+                }
+            }catch(Throwable e){
+                errorHandler.get(e);
+            }
+        }
+    }
+
+    /** Exception returned when a 4xx or 5xx error is encountered. */
+    public static class HttpStatusException extends RuntimeException{
+        /** The 4xx or 5xx error code. */
+        public HttpStatus status;
+        /** The response that was sent along with the status code. */
+        public HttpResponse response;
+
+        public HttpStatusException(String message, HttpStatus status, HttpResponse response){
+            super(message);
+            this.status = status;
+            this.response = response;
+        }
+    }
+
+    /** Provides all HTTP methods to use when creating a {@link HttpRequest}.*/
+    public enum HttpMethod{
+        GET, POST, PUT, DELETE, HEAD, CONNECT, OPTIONS, TRACE
     }
 
     /** Defines the status of an HTTP request.*/
     public enum HttpStatus{
         UNKNOWN_STATUS(-1),
 
+        //1xx - informational
         CONTINUE(100),
         SWITCHING_PROTOCOLS(101),
         PROCESSING(102),
 
+        //2xx - success
         OK(200),
         CREATED(201),
         ACCEPTED(202),
-
         NON_AUTHORITATIVE_INFORMATION(203),
         NO_CONTENT(204),
         RESET_CONTENT(205),
         PARTIAL_CONTENT(206),
         MULTI_STATUS(207),
+
+        //3xx - redirects
         MULTIPLE_CHOICES(300),
         MOVED_PERMANENTLY(301),
         MOVED_TEMPORARILY(302),
-
         SEE_OTHER(303),
         NOT_MODIFIED(304),
         USE_PROXY(305),
         TEMPORARY_REDIRECT(307),
+
+        //4xx - client error
         BAD_REQUEST(400),
         UNAUTHORIZED(401),
         PAYMENT_REQUIRED(402),
-
         FORBIDDEN(403),
         NOT_FOUND(404),
         METHOD_NOT_ALLOWED(405),
@@ -376,19 +380,19 @@ public class Net{
         INSUFFICIENT_SPACE_ON_RESOURCE(419),
         METHOD_FAILURE(420),
         UNPROCESSABLE_ENTITY(422),
-
         LOCKED(423),
         FAILED_DEPENDENCY(424),
+
+        //5xx - server error
         INTERNAL_SERVER_ERROR(500),
         NOT_IMPLEMENTED(501),
         BAD_GATEWAY(502),
-
         SERVICE_UNAVAILABLE(503),
         GATEWAY_TIMEOUT(504),
         HTTP_VERSION_NOT_SUPPORTED(505),
         INSUFFICIENT_STORAGE(507);
 
-        private static IntMap<HttpStatus> byCode;
+        private static IntMap<HttpStatus> byCode = new IntMap<>();
 
         public final int code;
 
@@ -396,8 +400,8 @@ public class Net{
             this.code = code;
         }
 
-        /** Find an HTTP status enum by code.*/
-        public static HttpStatus byCode(int code){
+        /** Find an HTTP status enum by code. */
+        public static synchronized HttpStatus byCode(int code){
             if(byCode == null){
                 byCode = new IntMap<>();
                 for(HttpStatus status : HttpStatus.values()){
@@ -408,3 +412,4 @@ public class Net{
         }
     }
 }
+

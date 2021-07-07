@@ -32,7 +32,6 @@ public class SdlApplication implements Application{
 
         Core.app = this;
         Core.files = new SdlFiles();
-        Core.net = new Net();
         Core.graphics = this.graphics = new SdlGraphics(this);
         Core.input = this.input = new SdlInput();
         Core.settings = new Settings();

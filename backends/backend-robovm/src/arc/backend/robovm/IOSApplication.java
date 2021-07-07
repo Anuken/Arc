@@ -72,7 +72,6 @@ public class IOSApplication implements Application{
         Core.gl30 = graphics.gl30;
         Core.audio = new Audio();
         Core.settings = new Settings();
-        Core.net = new Net();
         Core.files = new IOSFiles();
         Core.graphics = this.graphics;
         Core.input = this.input;

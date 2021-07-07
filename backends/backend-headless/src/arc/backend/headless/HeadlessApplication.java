@@ -36,7 +36,6 @@ public class HeadlessApplication implements Application{
         Core.settings = new Settings();
         Core.app = this;
         Core.files = new MockFiles();
-        Core.net = new Net();
         Core.audio = new MockAudio();
         Core.graphics = this.graphics = new MockGraphics();
         Core.input = new MockInput();

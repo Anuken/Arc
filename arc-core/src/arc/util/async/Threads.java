@@ -31,8 +31,11 @@ public class Threads{
     }
 
     public static ExecutorService cachedExecutor(){
-        //keep at least 1 thread around at all times.
-        return new ThreadPoolExecutor(1, Integer.MAX_VALUE,
+        return cachedExecutor(1);
+    }
+
+    public static ExecutorService cachedExecutor(int min){
+        return new ThreadPoolExecutor(min, Integer.MAX_VALUE,
         60L, TimeUnit.SECONDS,
         new SynchronousQueue<>(),
         r -> {
