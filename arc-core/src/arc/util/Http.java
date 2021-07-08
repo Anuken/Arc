@@ -14,6 +14,12 @@ import java.util.concurrent.*;
 public class Http{
     protected static ExecutorService exec = Threads.executor(8);
 
+    /** @return a new HttpRequest that must be configured & submitted. */
+    public static HttpRequest request(HttpMethod method, String url){
+        if(url == null) throw new NullPointerException("url cannot be null.");
+        return new HttpRequest(method).url(url);
+    }
+
     /** @return a new GET HttpRequest that must be configured & submitted. */
     public static HttpRequest get(String url){
         if(url == null) throw new NullPointerException("url cannot be null.");
