@@ -223,7 +223,7 @@ public class Fill{
 
             float space = 360f / sides;
 
-            for(int i = 0; i < sides; i += 2){
+            for(int i = 0; i < sides - 1; i += 2){
                 float px = Angles.trnsx(space * i + rotation, radius);
                 float py = Angles.trnsy(space * i + rotation, radius);
                 float px2 = Angles.trnsx(space * (i + 1) + rotation, radius);
@@ -237,7 +237,7 @@ public class Fill{
 
             if(mod == 0 || sides < 4) return;
 
-            int i = sides - 2;
+            int i = sides - 1;
 
             float px = Angles.trnsx(space * i + rotation, radius);
             float py = Angles.trnsy(space * i + rotation, radius);
