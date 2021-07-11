@@ -1,7 +1,7 @@
 package arc.util.io;
 
 import java.io.*;
-import java.nio.ByteBuffer;
+import java.nio.*;
 
 /** DataInput wrapper of ByteBuffer. */
 public class ByteBufferInput implements DataInput{
@@ -48,7 +48,7 @@ public class ByteBufferInput implements DataInput{
 
     @Override
     public int readUnsignedByte(){
-        return buffer.get() + 128;
+        return buffer.get() & 0xff;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ByteBufferInput implements DataInput{
 
     @Override
     public int readUnsignedShort(){
-        return buffer.getShort() + -((int)Short.MIN_VALUE);
+        return buffer.getShort() & 0xffff;
     }
 
     @Override

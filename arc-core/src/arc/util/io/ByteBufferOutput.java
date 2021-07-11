@@ -27,8 +27,8 @@ public class ByteBufferOutput implements DataOutput{
     }
 
     @Override
-    public void write(byte[] bytes, int i, int i1){
-        buffer.put(bytes, i, i1);
+    public void write(byte[] bytes, int off, int len){
+        buffer.put(bytes, off, len);
     }
 
     @Override
@@ -95,8 +95,7 @@ public class ByteBufferOutput implements DataOutput{
         if(utflen > 65535 || /* overflow */ utflen < strlen)
             throw new UTFDataFormatException("encoded string too long");
 
-        final byte[] bytearr;
-        bytearr = new byte[utflen + 2];
+        byte[] bytearr = new byte[utflen + 2];
 
         int count = 0;
         bytearr[count++] = (byte)((utflen >>> 8) & 0xFF);
