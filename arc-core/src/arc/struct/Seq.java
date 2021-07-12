@@ -872,7 +872,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
     }
 
     /**
-     * Selects the nth-lowest element from the Array according to Comparator ranking. This might partially sort the Array. The
+     * Selects the nth-lowest element from the Seq according to Comparator ranking. This might partially sort the Array. The
      * array must have a size greater than 0, or a {@link ArcRuntimeException} will be thrown.
      * @param comparator used for comparison
      * @param kthLowest rank of desired object according to comparison, n is based on ordinal numbers, not array indices. for min

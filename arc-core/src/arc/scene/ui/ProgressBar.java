@@ -156,15 +156,11 @@ public class ProgressBar extends Element implements Disableable{
             }
         }else{
             float positionWidth = width;
-
             float bgLeftWidth = 0;
+
             if(bg != null){
-                if(round)
-                    bg.draw(x, Math.round(y + (height - bg.getMinHeight()) * 0.5f), width, Math.round(bg.getMinHeight()));
-                else
-                    bg.draw(x, y + (height - bg.getMinHeight()) * 0.5f, width, bg.getMinHeight());
-                bgLeftWidth = bg.getLeftWidth();
-                positionWidth -= bgLeftWidth + bg.getRightWidth();
+                //currently draws background under *everything*, not limited by bg height
+                bg.draw(x, y, width, height);
             }
 
             float knobWidthHalf = 0;

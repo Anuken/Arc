@@ -560,15 +560,19 @@ public class Strings{
         if(decimalPlaces < 0 || decimalPlaces > 8){
             throw new IllegalArgumentException("Unsupported number of " + "decimal places: " + decimalPlaces);
         }
+        boolean negative = d < 0;
+        d = Math.abs(d);
         StringBuilder dec = tmp2;
-        tmp2.setLength(0);
-        tmp2.append((int)(d * Math.pow(10, decimalPlaces) + 0.000001f));
+        dec.setLength(0);
+        dec.append((int)(d * Math.pow(10, decimalPlaces) + 0.000001f));
 
         int len = dec.length();
         int decimalPosition = len - decimalPlaces;
         StringBuilder result = tmp1;
-        tmp1.setLength(0);
+        result.setLength(0);
+        if(negative) result.append('-');
         if(decimalPlaces == 0){
+            if(negative) dec.insert(0, '-');
             return dec;
         }else if(decimalPosition > 0){
             // Insert a dot in the right place
