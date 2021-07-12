@@ -1,6 +1,5 @@
 package arc.scene.ui.layout;
 
-import arc.struct.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -15,11 +14,12 @@ import arc.scene.ui.ScrollPane.*;
 import arc.scene.ui.TextButton.*;
 import arc.scene.ui.TextField.*;
 import arc.scene.utils.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.pooling.*;
 
-import static arc.Core.scene;
-import static arc.scene.ui.layout.Cell.unset;
+import static arc.Core.*;
+import static arc.scene.ui.layout.Cell.*;
 
 /**
  * A group that sizes and positions children using table constraints. By default, touchable is
@@ -509,15 +509,11 @@ public class Table extends WidgetGroup{
     }
 
     public Cell<TextButton> button(String text, Drawable image, Runnable clicked){
-        return button(text, image, image.imageSize(), clicked);
+        return button(text, image, image.imageSize() / Scl.scl(1f), clicked);
     }
 
     public Cell<TextButton> button(String text, Drawable image, float imagesize, Runnable clicked){
-        TextButton button = new TextButton(text);
-        button.add(new Image(image)).size(imagesize);
-        button.getCells().reverse();
-        button.clicked(clicked);
-        return add(button);
+        return button(text, image, scene.getStyle(TextButtonStyle.class), imagesize, clicked);
     }
 
     public Cell<TextButton> button(String text, Drawable image, TextButtonStyle style, float imagesize, Runnable clicked){
@@ -529,29 +525,15 @@ public class Table extends WidgetGroup{
     }
 
     public Cell<TextButton> button(String text, Drawable image, TextButtonStyle style, Runnable clicked){
-        TextButton button = new TextButton(text, style);
-        button.add(new Image(image)).size(image.imageSize());
-        button.getCells().reverse();
-        button.clicked(clicked);
-        return add(button);
+        return button(text, image, style, image.imageSize() / Scl.scl(1f), clicked);
     }
 
     public Cell<TextButton> buttonCenter(String text, Drawable image, float imagesize, Runnable clicked){
-        TextButton button = new TextButton(text);
-        button.add(new Image(image)).size(imagesize);
-        button.getCells().reverse();
-        button.clicked(clicked);
-        button.getLabelCell().padLeft(-imagesize);
-        return add(button);
+        return buttonCenter(text, image, scene.getStyle(TextButtonStyle.class), imagesize, clicked);
     }
 
     public Cell<TextButton> buttonCenter(String text, Drawable image, Runnable clicked){
-        TextButton button = new TextButton(text);
-        button.add(new Image(image));
-        button.getCells().reverse();
-        button.clicked(clicked);
-        button.getLabelCell().padLeft(-image.imageSize());
-        return add(button);
+        return buttonCenter(text, image, scene.getStyle(TextButtonStyle.class), image.imageSize(), clicked);
     }
 
     public Cell<TextButton> buttonCenter(String text, Drawable image, TextButtonStyle style, float imagesize, Runnable clicked){
