@@ -84,6 +84,11 @@ public class Scene implements InputProcessor{
         Seq.with(type.getFields()).each(f -> f.getName().startsWith("default"), f -> addStyle(f.getType(), Reflect.get(f)));
     }
 
+    public void registerStyles(Object obj){
+        Seq.with(obj.getClass().getFields())
+                .each(f -> f.getName().startsWith("default"), f -> addStyle(f.getType(), Reflect.get(obj, f)));
+    }
+
     public boolean hasField(){
         return getKeyboardFocus() instanceof TextField;
     }
