@@ -41,7 +41,6 @@ public class Jval{
      * </p>
      * @param reader the reader to read the Hjson value from
      * @return the Hjson value that has been read
-     * @throws IOException if an I/O error occurs in the reader
      */
     public static Jval read(Reader reader){
         try{
