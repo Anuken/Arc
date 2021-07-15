@@ -9,11 +9,10 @@ import java.util.regex.*;
 /** An hsjon parser. Can be used as a standard json value.
  * Output can be converted to standard JSON. This class is heavily based upon the Hjson Java implementation.*/
 public class Jval{
-    static final String eol = System.getProperty("line.separator");
-
-    public static final Jval TRUE = new Jval(true);
-    public static final Jval FALSE = new Jval(false);
-    public static final Jval NULL = new Jval(null);
+    public static final Jval
+        TRUE = new Jval(true),
+        FALSE = new Jval(false),
+        NULL = new Jval(null);
 
     /** Internal value. May be a string, number, boolean, JsonArray, JsonMap or null. */
     private @Nullable Object value;
@@ -886,7 +885,7 @@ public class Jval{
         static Pattern needsEscapeName = Pattern.compile("[,\\{\\[\\}\\]\\s:#\"']|//|/\\*");
 
         void nl(Writer tw, int level) throws IOException{
-            tw.write(eol);
+            tw.write('\n');
             for(int i = 0; i < level; i++) tw.write("  ");
         }
 
@@ -1067,7 +1066,7 @@ public class Jval{
 
         void nl(Writer tw, int level) throws IOException{
             if(format){
-                tw.write(eol);
+                tw.write('\n');
                 for(int i = 0; i < level; i++) tw.write("  ");
             }
         }

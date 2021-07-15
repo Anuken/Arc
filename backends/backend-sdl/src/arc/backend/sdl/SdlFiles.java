@@ -7,7 +7,7 @@ import arc.util.*;
 import java.io.*;
 
 public final class SdlFiles implements Files{
-    public static final String externalPath = System.getProperty("user.home") + File.separator;
+    public static final String externalPath = OS.userHome + File.separator;
     public static final String localPath = new File("").getAbsolutePath() + File.separator;
 
     @Override

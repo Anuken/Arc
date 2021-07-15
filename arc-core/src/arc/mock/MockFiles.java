@@ -2,6 +2,7 @@ package arc.mock;
 
 import arc.*;
 import arc.files.*;
+import arc.util.*;
 
 import java.io.*;
 
@@ -14,7 +15,7 @@ public class MockFiles implements Files{
 
     @Override
     public String getExternalStoragePath(){
-        return System.getProperty("user.home") + File.separator;
+        return OS.userHome + File.separator;
     }
 
     @Override

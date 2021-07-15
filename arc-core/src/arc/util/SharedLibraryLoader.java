@@ -82,7 +82,7 @@ public class SharedLibraryLoader{
                 setLoaded(libraryName);
             }catch(Throwable ex){
                 throw new ArcRuntimeException("Couldn't load shared library '" + platformName + "' for target: "
-                + System.getProperty("os.name") + (is64Bit ? ", 64-bit" : ", 32-bit"), ex);
+                + osName + (is64Bit ? ", 64-bit" : ", 32-bit"), ex);
             }
         }
     }
@@ -149,7 +149,7 @@ public class SharedLibraryLoader{
     private File getExtractedFile(String dirName, String fileName){
         // Temp directory with username in path.
         File idealFile = new File(
-        System.getProperty("java.io.tmpdir") + "/arc" + System.getProperty("user.name") + "/" + dirName, fileName);
+        System.getProperty("java.io.tmpdir") + "/arc" + username + "/" + dirName, fileName);
         if(canWrite(idealFile)) return idealFile;
 
         // System provided temp directory.
@@ -163,7 +163,7 @@ public class SharedLibraryLoader{
         }
 
         // User home.
-        File file = new File(System.getProperty("user.home") + "/.arc/" + dirName, fileName);
+        File file = new File(userHome + "/.arc/" + dirName, fileName);
         if(canWrite(file)) return file;
 
         // Relative directory.
@@ -267,7 +267,7 @@ public class SharedLibraryLoader{
         }
 
         // User home.
-        file = new File(System.getProperty("user.home") + "/.arc/" + sourceCrc, fileName);
+        file = new File(userHome + "/.arc/" + sourceCrc, fileName);
         if(loadFile(sourcePath, sourceCrc, file) == null) return;
 
         // Relative directory.

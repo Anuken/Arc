@@ -7,7 +7,20 @@ import java.io.*;
 
 public class OS{
     public static final int cores = Runtime.getRuntime().availableProcessors();
-    public static final String username = prop("user.name"), userhome = prop("user.home"), name = prop("os.name");
+    /** User's account name. */
+    public static final String username = prop("user.name");
+    /** User's home directory. */
+    public static final String userHome = prop("user.home");
+    /** Name of the OS being used. */
+    public static final String osName = prop("os.name");
+    /** Version of the OS being used; format varies based on OS. */
+    public static final String osVersion = prop("os.version");
+    /** Operating system architecture, e.g. "amd64" */
+    public static final String osArch = prop("os.arch");
+    /** Either 32 or 64. */
+    public static final String osArchBits = prop("sun.arch.data.model");
+    /** JVM version; may contain underscores. Examples: 1.8.0_211 (Java 8 update 211), 12.0.1 (Java 12)*/
+    public static final String javaVersion = prop("java.version");
 
     public static boolean isWindows = propNoNull("os.name").contains("Windows");
     public static boolean isLinux = propNoNull("os.name").contains("Linux") || propNoNull("os.name").contains("BSD");
@@ -47,11 +60,11 @@ public class OS{
                 if(!dir.endsWith("/")) dir += "/";
                 return dir + appname + "/";
             }
-            return prop("user.home") + "/.local/share/" + appname + "/";
+            return userHome + "/.local/share/" + appname + "/";
         }else if(OS.isMac){
-            return prop("user.home") + "/Library/Application Support/" + appname + "/";
+            return userHome + "/Library/Application Support/" + appname + "/";
         }else{ //else, probably web
-            return null;
+            return "";
         }
     }
 

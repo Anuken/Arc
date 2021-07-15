@@ -31,7 +31,7 @@ public final class DiscordRPC{
     /** Call before sending any presence updates. */
     public static void connect(long clientId) throws Exception{
         DiscordRPC.clientId = clientId;
-        String version = System.getProperty("java.version");
+        String version = OS.javaVersion;
 
         int major = version.contains(".") ?
             Strings.parseInt(version.substring(0, version.indexOf('.'))) :
@@ -270,7 +270,7 @@ public final class DiscordRPC{
                     }else if(OS.isLinux || OS.isMac){
                         pipe = new UnixPipe(location);
                     }else{
-                        throw new RuntimeException("Unsupported OS: " + OS.name);
+                        throw new RuntimeException("Unsupported OS: " + OS.osName);
                     }
                     pipe.send(PacketOp.handshake, Jval.newObject().put("v", version).put("client_id", Long.toString(clientId)));
                     pipe.status = PipeStatus.connected;
@@ -287,8 +287,7 @@ public final class DiscordRPC{
         }
 
         private static String getPipeLocation(int i){
-            if(System.getProperty("os.name").contains("Win"))
-                return "\\\\?\\pipe\\discord-ipc-" + i;
+            if(OS.isWindows) return "\\\\?\\pipe\\discord-ipc-" + i;
             String tmppath = null;
             for(String str : unixPaths){
                 tmppath = System.getenv(str);
