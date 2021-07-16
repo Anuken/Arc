@@ -33,6 +33,21 @@ public interface Scaled{
     default float finpow(){
         return Interp.pow3Out.apply(fin());
     }
+    
+    /** 1 to 0 */
+    default float foutpow(){
+        return 1 - Interp.pow3Out.apply(fin());
+    }
+    
+    /** 0 to 1 */
+    default float finpowdown(){
+        return Interp.pow3In.apply(fin());
+    }
+    
+    /** 1 to 0 */
+    default float foutpowdown(){
+        return 1 - Interp.pow3In.apply(fin());
+    }
 
     /** 0 to 1 to 0 */
     default float fslope(){
