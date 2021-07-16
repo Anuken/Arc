@@ -226,6 +226,18 @@ public class QuadTree<T extends QuadTreeObject>{
         return count;
     }
 
+    /** Adds all quadtree objects to the specified Seq. */
+    public void getObjects(Seq<T> out){
+        out.addAll(objects);
+
+        if(!leaf){
+            topLeft.getObjects(out);
+            topRight.getObjects(out);
+            botLeft.getObjects(out);
+            botRight.getObjects(out);
+        }
+    }
+
     protected QuadTree<T> newChild(Rect rect){
         return new QuadTree<>(rect);
     }
