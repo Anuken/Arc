@@ -486,18 +486,14 @@ public class Json{
                 return;
             }
 
-            if((knownType != null && knownType.isPrimitive()) || knownType == String.class || knownType == Integer.class
-            || knownType == Boolean.class || knownType == Float.class || knownType == Long.class || knownType == Double.class
-            || knownType == Short.class || knownType == Byte.class || knownType == Character.class){
+            if((knownType != null && knownType.isPrimitive()) || knownType == String.class || Reflect.isWrapper(knownType)){
                 writer.value(value);
                 return;
             }
 
             Class actualType = value.getClass().isAnonymousClass() ? value.getClass().getSuperclass() : value.getClass();
 
-            if(actualType.isPrimitive() || actualType == String.class || actualType == Integer.class || actualType == Boolean.class
-            || actualType == Float.class || actualType == Long.class || actualType == Double.class || actualType == Short.class
-            || actualType == Byte.class || actualType == Character.class){
+            if(actualType.isPrimitive() || actualType == String.class || Reflect.isWrapper(actualType)){
                 writeObjectStart(actualType, null);
                 writeValue("value", value);
                 writeObjectEnd();
@@ -1019,9 +1015,7 @@ public class Json{
                 Serializer serializer = classToSerializer.get(type);
                 if(serializer != null) return (T)serializer.read(this, jsonData, type);
 
-                if(type == String.class || type == Integer.class || type == Boolean.class || type == Float.class
-                || type == Long.class || type == Double.class || type == Short.class || type == Byte.class
-                || type == Character.class || Enum.class.isAssignableFrom(type)){
+                if(type == String.class || Reflect.isWrapper(type) || Enum.class.isAssignableFrom(type)){
                     return readValue("value", type, jsonData);
                 }
 
