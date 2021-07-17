@@ -23,10 +23,10 @@ public class IOSApplication implements Application{
 
     /** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
     float displayScaleFactor;
-    Seq<ApplicationListener> listeners = new Seq<>();
-    Seq<Runnable> runnables = new Seq<>();
-    Seq<Runnable> executedRunnables = new Seq<>();
     private CGRect lastScreenBounds = null;
+
+    final Seq<ApplicationListener> listeners = new Seq<>();
+    final Seq<Runnable> runnables = new Seq<>(), executedRunnables = new Seq<>();
 
     public IOSApplication(ApplicationListener listener, IOSApplicationConfiguration config){
         addListener(listener);

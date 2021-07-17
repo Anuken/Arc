@@ -781,6 +781,7 @@ public class Pixmap implements Disposable{
                 if(e.getMessage() != null && e.getMessage().contains("Corrupt JPEG")){
                     try{
                         loadJava(encodedData, offset, len, file);
+                        return;
                     }catch(Exception ignored){
                         //I did my best, fall through and throw the original exception
                     }
