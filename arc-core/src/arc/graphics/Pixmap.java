@@ -292,6 +292,47 @@ public class Pixmap implements Disposable{
         vline(y, y + height - 1, x + width - 1, color);
     }
 
+    void circlePoints(int cx, int cy, int x, int y, int col){
+        if(x == 0){
+            set(cx, cy + y, col);
+            set(cx, cy - y, col);
+            set(cx + y, cy, col);
+            set(cx - y, cy, col);
+        }else if(x == y){
+            set(cx + x, cy + y, col);
+            set(cx - x, cy + y, col);
+            set(cx + x, cy - y, col);
+            set(cx - x, cy - y, col);
+        }else if(x < y){
+            set(cx + x, cy + y, col);
+            set(cx - x, cy + y, col);
+            set(cx + x, cy - y, col);
+            set(cx - x, cy - y, col);
+            set(cx + y, cy + x, col);
+            set(cx - y, cy + x, col);
+            set(cx + y, cy - x, col);
+            set(cx - y, cy - x, col);
+        }
+    }
+
+    public void drawCircle(int x, int y, int radius, int col){
+        int px = 0;
+        int py = radius;
+        int p = (5 - radius * 4) / 4;
+
+        circlePoints(x, y, px, py, col);
+        while(px < py){
+            px++;
+            if(p < 0){
+                p += 2 * px + 1;
+            }else{
+                py--;
+                p += 2 * (px - py) + 1;
+            }
+            circlePoints(x, y, px, py, col);
+        }
+    }
+
     public void draw(PixmapRegion region){
         draw(region.pixmap, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height);
     }
