@@ -197,11 +197,18 @@ public class QuadTree<T extends QuadTreeObject>{
      * This will result in false positives, but never a false negative.
      */
     public void intersect(Rect toCheck, Seq<T> out){
+        intersect(toCheck.x, toCheck.y, toCheck.width, toCheck.height, out);
+    }
+
+    /**
+     * Fills the out parameter with any objects that may intersect the given rectangle.
+     */
+    public void intersect(float x, float y, float width, float height, Seq<T> out){
         if(!leaf){
-            if(topLeft.bounds.overlaps(toCheck)) topLeft.intersect(toCheck, out);
-            if(topRight.bounds.overlaps(toCheck)) topRight.intersect(toCheck, out);
-            if(botLeft.bounds.overlaps(toCheck)) botLeft.intersect(toCheck, out);
-            if(botRight.bounds.overlaps(toCheck)) botRight.intersect(toCheck, out);
+            if(topLeft.bounds.overlaps(x, y, width, height)) topLeft.intersect(x, y, width, height, out);
+            if(topRight.bounds.overlaps(x, y, width, height)) topRight.intersect(x, y, width, height, out);
+            if(botLeft.bounds.overlaps(x, y, width, height)) botLeft.intersect(x, y, width, height, out);
+            if(botRight.bounds.overlaps(x, y, width, height)) botRight.intersect(x, y, width, height, out);
         }
 
         Seq<?> objects = this.objects;
@@ -209,7 +216,7 @@ public class QuadTree<T extends QuadTreeObject>{
         for(int i = 0; i < objects.size; i++){
             T item = (T)objects.items[i];
             hitbox(item);
-            if(tmp.overlaps(toCheck)){
+            if(tmp.overlaps(x, y, width, height)){
                 out.add(item);
             }
         }
