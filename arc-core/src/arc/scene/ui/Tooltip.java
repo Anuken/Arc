@@ -24,10 +24,10 @@ public class Tooltip extends InputListener{
 
     public final Tooltips manager;
     public final Table container;
+    public boolean allowMobile, instant = true, always;
 
-    boolean instant = true, always;
-    Element targetActor;
-    Runnable show;
+    protected Element targetActor;
+    protected Runnable show;
 
     public Tooltip(Cons<Table> contents){
         this(contents, Tooltips.getInstance());
@@ -49,6 +49,9 @@ public class Tooltip extends InputListener{
             }
         };
         contents.get(container);
+        //make scale/alpha small for fade in
+        container.color.a = 0.2f;
+        container.setScale(0.05f);
         container.touchable = Touchable.disabled;
     }
 
@@ -74,10 +77,18 @@ public class Tooltip extends InputListener{
     public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
         if(instant){
             container.toFront();
-            return false;
+            return true;
         }
         manager.touchDown(this);
-        return false;
+        return true;
+    }
+
+    @Override
+    public void touchUp(InputEvent event, float x, float y, int pointer, KeyCode button){
+        //hide tooltip on touch up on mobile, since
+        if(Core.app.isMobile() && allowMobile){
+            hide();
+        }
     }
 
     @Override
@@ -110,8 +121,7 @@ public class Tooltip extends InputListener{
 
     @Override
     public void enter(InputEvent event, float x, float y, int pointer, Element fromActor){
-        if(pointer != -1) return;
-        if(Core.input.isTouched()) return;
+        if((pointer != -1 || Core.input.isTouched()) && !allowMobile) return;
         Element element = event.listenerActor;
         if(fromActor != null && fromActor.isDescendantOf(element)) return;
 
@@ -120,6 +130,8 @@ public class Tooltip extends InputListener{
 
     @Override
     public void exit(InputEvent event, float x, float y, int pointer, Element toActor){
+        //on mobile, tooltips only hide once you stop holding.
+        if(allowMobile && Core.app.isMobile()) return;
         if(toActor != null && toActor.isDescendantOf(event.listenerActor)) return;
         hide();
     }
@@ -246,8 +258,6 @@ public class Tooltip extends InputListener{
         protected void showAction(Tooltip tooltip){
             float actionTime = animations ? (time > 0 ? 0.5f : 0.15f) : 0.1f;
             tooltip.container.setTransform(true);
-            tooltip.container.color.a = 0.2f;
-            tooltip.container.setScale(0.05f);
             tooltip.container.addAction(parallel(fadeIn(actionTime, fade), scaleTo(1, 1, actionTime, Interp.fade)));
         }
 
