@@ -28,8 +28,7 @@ public class AndroidFiles implements Files{
 
     @Override
     public Fi get(String path, FileType type){
-        Fi handle = new AndroidFi(type == FileType.internal ? assets : null, path, type);
-        return handle;
+        return new AndroidFi(type == FileType.internal ? assets : null, path, type);
     }
 
     @Override

@@ -327,7 +327,7 @@ public class Strings{
 
     /** Adds spaces to a camel/pascal case string. */
     public static String insertSpaces(String s){
-        StringBuilder result = new StringBuilder(s.length());
+        StringBuilder result = new StringBuilder(s.length() + 1);
 
         for(int i = 0; i < s.length(); i++){
             char c = s.charAt(i);

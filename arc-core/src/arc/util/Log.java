@@ -69,7 +69,7 @@ public class Log{
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         th.printStackTrace(pw);
-        err(text + ": " + sw.toString());
+        err(text + ": " + sw);
     }
 
     public static String format(String text, Object... args){
