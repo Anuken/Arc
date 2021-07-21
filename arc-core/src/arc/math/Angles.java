@@ -118,7 +118,7 @@ public class Angles{
     public static void randVectors(long seed, int amount, float length, Floatc2 cons){
         rand.setSeed(seed);
         for(int i = 0; i < amount; i++){
-            rv.set(length, 0).rotate(rand.nextFloat() * 360f);
+            rv.trns(rand.random(360f), length);
             cons.get(rv.x, rv.y);
         }
     }
@@ -126,7 +126,7 @@ public class Angles{
     public static void randLenVectors(long seed, int amount, float length, Floatc2 cons){
         rand.setSeed(seed);
         for(int i = 0; i < amount; i++){
-            rv.set(length * rand.nextFloat(), 0).rotate(rand.nextFloat() * 360f);
+            rv.trns(rand.random(360f), rand.random(length));
             cons.get(rv.x, rv.y);
         }
     }
@@ -134,7 +134,7 @@ public class Angles{
     public static void randLenVectors(long seed, int amount, float minLength, float length, Floatc2 cons){
         rand.setSeed(seed);
         for(int i = 0; i < amount; i++){
-            rv.set(minLength + length * rand.nextFloat(), 0).rotate(rand.nextFloat() * 360f);
+            rv.trns(rand.random(360f), minLength + rand.random(length));
             cons.get(rv.x, rv.y);
         }
     }
@@ -142,7 +142,7 @@ public class Angles{
     public static void randLenVectors(long seed, int amount, float length, float angle, float range, Floatc2 cons){
         rand.setSeed(seed);
         for(int i = 0; i < amount; i++){
-            rv.set(length * rand.nextFloat(), 0).rotate(angle + rand.nextFloat() * range * 2 - range);
+            rv.trns(angle + rand.range(range), rand.random(length));
             cons.get(rv.x, rv.y);
         }
     }
@@ -150,7 +150,7 @@ public class Angles{
     public static void randLenVectors(long seed, int amount, float length, float angle, float range, float spread, Floatc2 cons){
         rand.setSeed(seed);
         for(int i = 0; i < amount; i++){
-            rv.set(length * rand.nextFloat(), 0).rotate(angle + rand.nextFloat() * range * 2 - range);
+            rv.trns(angle + rand.range(range), rand.random(length));
             cons.get(rv.x + rand.range(spread), rv.y + rand.range(spread));
         }
     }
@@ -159,7 +159,7 @@ public class Angles{
         rand.setSeed(seed);
         for(int i = 0; i < amount; i++){
             float l = rand.nextFloat();
-            rv.set(length * l * fin, 0).rotate(rand.nextFloat() * 360f);
+            rv.trns(rand.random(360f), length * l * fin);
             cons.accept(rv.x, rv.y, fin * l, (1f - fin) * l);
         }
     }
@@ -168,7 +168,7 @@ public class Angles{
                                       float angle, float range, ParticleConsumer cons){
         rand.setSeed(seed);
         for(int i = 0; i < amount; i++){
-            rv.set(length * rand.nextFloat() * fin, 0).rotate(angle + rand.nextFloat() * range * 2 - range);
+            rv.trns(angle + rand.range(range), rand.random(length * fin));
             cons.accept(rv.x, rv.y, fin * (rand.nextFloat()), 0f);
         }
     }
