@@ -331,10 +331,12 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>>{
         return defaultValue;
     }
 
+    /** @return 0 as default value. */
     public int remove(K key){
         return remove(key, 0);
     }
 
+    /** @return the value that was removed, or defaultValue. */
     public int remove(K key, int defaultValue){
         int hashCode = key.hashCode();
         int index = hashCode & mask;
