@@ -1,5 +1,6 @@
 package arc.struct;
 
+import arc.func.*;
 import arc.math.*;
 
 import java.util.*;
@@ -96,6 +97,14 @@ public class IntSeq{
             }
         }
         return popular;
+    }
+
+    public void each(Intc iterator){
+        int size = this.size;
+        int[] items = this.items;
+        for(int i = 0; i < size; i++){
+            iterator.get(items[i]);
+        }
     }
 
     public int count(int value){

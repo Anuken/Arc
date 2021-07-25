@@ -202,14 +202,14 @@ public class IOSInput extends Input{
         return pressures[0];
     }
 
-    // hack for software keyboard support
-    // uses a hidden textfield to capture input
-    // see: http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
-
     @Override
     public float getPressure(int pointer){
         return pressures[pointer];
     }
+
+    // hack for software keyboard support
+    // uses a hidden textfield to capture input
+    // see: http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
 
     @Override
     public void getTextInput(TextInput input){
@@ -401,7 +401,7 @@ public class IOSInput extends Input{
         for(int i = 0; i < touchDown.length; i++){
             sb.append(i).append(":").append(touchDown[i]).append(" ");
         }
-        Log.errTag("IOSInput", "Pointer ID lookup failed: " + ptr + ", " + sb.toString());
+        Log.errTag("IOSInput", "Pointer ID lookup failed: " + ptr + ", " + sb);
         return POINTER_NOT_FOUND;
     }
 
