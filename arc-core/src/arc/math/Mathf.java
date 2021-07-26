@@ -563,6 +563,16 @@ public final class Mathf{
         return ((x % n) + n) % n;
     }
 
+    /** @return a sampled value based on position in an array of float values. */
+    public static float sample(float[] values, float time){
+        time = Mathf.clamp(time);
+        float pos = time * (values.length - 1);
+        int cur = Math.min((int)(time * (values.length - 1)), values.length - 1);
+        int next = Math.min(cur + 1, values.length - 1);
+        float mod = (pos - cur);
+        return lerp(values[cur], values[next], mod);
+    }
+
     /** @return the input 0-1 value scaled to 0-1-0. */
     public static float slope(float fin){
         return 1f - Math.abs(fin - 0.5f) * 2f;
