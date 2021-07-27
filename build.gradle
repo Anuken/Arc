@@ -5,7 +5,7 @@ ext{
 
 versions.robovm = "2.3.13"
 versions.junit = "4.11"
-versions.teavm = '0.7.0-dev-1087'
+versions.teavm = '0.7.0-dev-1196'
 versions.reflections = '0.9.11'
 versions.jnigen = "28dd11fa4c33a7ae9e58897912b52ba7d53d54fe"
 
@@ -53,7 +53,7 @@ allprojects{
     repositories{
         mavenCentral()
         maven{ url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven{ url "https://dl.bintray.com/konsoletyper/teavm" }
+        maven{ url "https://teavm.org/maven/repository" }
         google()
         maven{ url 'https://jitpack.io' }
     }
