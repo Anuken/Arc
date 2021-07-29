@@ -35,7 +35,7 @@ public class Threads{
     }
 
     public static ExecutorService cachedExecutor(int min){
-        cachedExecutor(min, Integer.MAX_VALUE);
+        return cachedExecutor(min, Integer.MAX_VALUE);
     }
 
     public static ExecutorService cachedExecutor(int min, int max){
