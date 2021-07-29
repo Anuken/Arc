@@ -31,11 +31,11 @@ public class Threads{
     }
 
     public static ExecutorService cachedExecutor(){
-        return cachedExecutor(1, Integer.MAX_VALUE
+        return cachedExecutor(1, Integer.MAX_VALUE);
     }
-    
+
     public static ExecutorService cachedExecutor(int min){
-        cachExecutor(min, Integer.MAX_VALUE);
+        cachedExecutor(min, Integer.MAX_VALUE);
     }
 
     public static ExecutorService cachedExecutor(int min, int max){
