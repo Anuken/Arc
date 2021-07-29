@@ -1,5 +1,6 @@
 package arc.util.async;
 
+import arc.*;
 import arc.util.*;
 
 import java.util.concurrent.*;
@@ -74,8 +75,12 @@ public class Threads{
 
     /** Throws an exception in the main game thread.*/
     public static void throwAppException(Throwable t){
-        Time.runTask(0f, () -> {
-            throw new RuntimeException(t);
+        Core.app.post(() -> {
+            if(t instanceof RuntimeException){
+                throw ((RuntimeException)t);
+            }else{
+                throw new RuntimeException(t);
+            }
         });
     }
 
