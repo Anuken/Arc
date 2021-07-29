@@ -32,11 +32,15 @@ public class Threads{
     }
 
     public static ExecutorService cachedExecutor(){
-        return cachedExecutor(1);
+        return cachedExecutor(1, Integer.MAX_VALUE);
     }
 
     public static ExecutorService cachedExecutor(int min){
-        return new ThreadPoolExecutor(min, Integer.MAX_VALUE,
+        return cachedExecutor(min, Integer.MAX_VALUE);
+    }
+
+    public static ExecutorService cachedExecutor(int min, int max){
+        return new ThreadPoolExecutor(min, max,
         60L, TimeUnit.SECONDS,
         new SynchronousQueue<>(),
         r -> {
