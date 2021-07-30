@@ -206,6 +206,42 @@ public class SDL{
         SDL_SetWindowSize((SDL_Window*)handle, w, h);
     */
 
+    public static native void SDL_SetWindowPosition(long handle, int x, int y); /*
+        SDL_SetWindowPosition((SDL_Window*)handle, x, y);
+    */
+
+    public static native int SDL_GetWindowDisplayIndex(long handle); /*
+        return SDL_GetWindowDisplayIndex((SDL_Window*)handle);
+    */
+
+    public static native int SDL_GetDisplayUsableBounds(int display, int[] xywh); /*
+        SDL_Rect bounds;
+        int result = SDL_GetDisplayUsableBounds(display, &bounds);
+
+        xywh[0] = bounds.x;
+        xywh[1] = bounds.y;
+        xywh[2] = bounds.w;
+        xywh[3] = bounds.h;
+
+        return result;
+    */
+
+    public static native int SDL_GetDisplayBounds(int display, int[] xywh); /*
+        SDL_Rect bounds;
+        int result = SDL_GetDisplayBounds(display, &bounds);
+
+        xywh[0] = bounds.x;
+        xywh[1] = bounds.y;
+        xywh[2] = bounds.w;
+        xywh[3] = bounds.h;
+
+        return result;
+    */
+
+    public static native int SDL_GetNumVideoDisplays(); /*
+        return SDL_GetNumVideoDisplays();
+    */
+
     public static native int SDL_GetWindowFlags(long handle); /*
         return SDL_GetWindowFlags((SDL_Window*)handle);
     */

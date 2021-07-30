@@ -2,10 +2,10 @@ package arc.backend.sdl;
 
 import arc.*;
 import arc.Graphics.Cursor.*;
-import arc.backend.sdl.jni.SDL;
-import arc.struct.*;
+import arc.backend.sdl.jni.*;
 import arc.graphics.*;
 import arc.graphics.gl.*;
+import arc.struct.*;
 import arc.util.*;
 
 import static arc.backend.sdl.jni.SDL.*;
@@ -254,15 +254,26 @@ public class SdlGraphics extends Graphics{
     @Override
     public void setUndecorated(boolean undecorated){
         boolean maximized = (SDL_GetWindowFlags(app.window) & SDL_WINDOW_MAXIMIZED) == SDL_WINDOW_MAXIMIZED;
-        if(maximized){
+        if(maximized && OS.isLinux){
             SDL_RestoreWindow(app.window);
         }
 
+        int index = SDL_GetWindowDisplayIndex(app.window);
+        if(index < 0) return;
+
+        int[] bounds = new int[4];
+
+        int result = SDL_GetDisplayUsableBounds(index, bounds);
+        if(result != 0) return;
+
         SDL_SetWindowBordered(app.window, !undecorated);
 
-        if(maximized){
+        if(maximized && OS.isLinux){
             SDL_MaximizeWindow(app.window);
         }
+
+        SDL_SetWindowPosition(app.window, bounds[0], bounds[1]);
+        SDL_SetWindowSize(app.window, bounds[2], bounds[3]);
     }
 
     @Override
