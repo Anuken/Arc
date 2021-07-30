@@ -252,7 +252,7 @@ public class SdlGraphics extends Graphics{
     }
 
     @Override
-    public void setUndecorated(boolean undecorated){
+    public void setBorderless(boolean borderless){
         boolean maximized = (SDL_GetWindowFlags(app.window) & SDL_WINDOW_MAXIMIZED) == SDL_WINDOW_MAXIMIZED;
         if(maximized && OS.isLinux){
             SDL_RestoreWindow(app.window);
@@ -263,10 +263,10 @@ public class SdlGraphics extends Graphics{
 
         int[] bounds = new int[4];
 
-        int result = SDL_GetDisplayUsableBounds(index, bounds);
+        int result = borderless ? SDL_GetDisplayBounds(index, bounds) : SDL_GetDisplayUsableBounds(index, bounds);
         if(result != 0) return;
 
-        SDL_SetWindowBordered(app.window, !undecorated);
+        SDL_SetWindowBordered(app.window, !borderless);
 
         if(maximized && OS.isLinux){
             SDL_MaximizeWindow(app.window);

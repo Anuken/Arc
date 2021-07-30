@@ -191,7 +191,7 @@ public abstract class Graphics implements Disposable{
      * Supported on all desktop backends and on Android (to disable the menu bar).
      * @param undecorated true if the window border or status bar should be hidden. false otherwise.
      */
-    public abstract void setUndecorated(boolean undecorated);
+    public abstract void setBorderless(boolean undecorated);
 
     /**
      * Sets whether or not the window should be resizable. Ignored on Android.

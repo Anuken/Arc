@@ -229,7 +229,7 @@ public class MockGraphics extends Graphics{
     }
 
     @Override
-    public void setUndecorated(boolean undecorated){
+    public void setBorderless(boolean undecorated){
 
     }
 

@@ -488,7 +488,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
     }
 
     @Override
-    public void setUndecorated(boolean undecorated){
+    public void setBorderless(boolean undecorated){
     }
 
     @Override
