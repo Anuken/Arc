@@ -99,6 +99,7 @@ public class SdlApplication implements Application{
         if(!config.decorated) flags |= SDL_WINDOW_BORDERLESS;
         if(config.resizable) flags |= SDL_WINDOW_RESIZABLE;
         if(config.maximized) flags |= SDL_WINDOW_MAXIMIZED;
+        if(config.fullscreen) flags |= SDL_WINDOW_FULLSCREEN;
 
         window = SDL_CreateWindow(config.title, config.width, config.height, flags);
         if(window == 0) throw new SdlError();
@@ -186,6 +187,10 @@ public class SdlApplication implements Application{
         if(run.get() != 0){
             throw new SdlError();
         }
+    }
+
+    public long getWindow(){
+        return window;
     }
 
     @Override

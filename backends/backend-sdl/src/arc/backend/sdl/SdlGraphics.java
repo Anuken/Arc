@@ -235,7 +235,7 @@ public class SdlGraphics extends Graphics{
     @Override
     public boolean setFullscreenMode(DisplayMode displayMode){
         //TODO ignores display mode
-        SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN);
+        SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
         return true;
     }
 
@@ -253,8 +253,33 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public void setBorderless(boolean borderless){
-        //TODO
-        SDL_SetWindowFullscreen(app.window, borderless ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+        if(!OS.isWindows){
+            //on linux, and possibly mac, the window is shown without any border, but not actually fullscreen.
+            boolean maximized = (SDL_GetWindowFlags(app.window) & SDL_WINDOW_MAXIMIZED) == SDL_WINDOW_MAXIMIZED;
+            if(maximized && OS.isLinux){
+                SDL_RestoreWindow(app.window);
+            }
+
+            int index = SDL_GetWindowDisplayIndex(app.window);
+            if(index < 0) return;
+
+            int[] bounds = new int[4];
+
+            int result = SDL_GetDisplayBounds(index, bounds);
+            if(result != 0) return;
+
+            SDL_SetWindowBordered(app.window, !borderless);
+
+            if(maximized && OS.isLinux){
+                SDL_MaximizeWindow(app.window);
+            }
+
+            SDL_SetWindowPosition(app.window, bounds[0], bounds[1]);
+            SDL_SetWindowSize(app.window, bounds[2], bounds[3]);
+        }else{
+            //on windows, use fullscreen desktop
+            SDL_SetWindowFullscreen(app.window, borderless ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+        }
     }
 
     @Override
