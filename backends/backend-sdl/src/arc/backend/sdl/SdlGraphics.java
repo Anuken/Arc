@@ -235,7 +235,7 @@ public class SdlGraphics extends Graphics{
     @Override
     public boolean setFullscreenMode(DisplayMode displayMode){
         //TODO ignores display mode
-        SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+        SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN);
         return true;
     }
 
