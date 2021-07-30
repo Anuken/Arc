@@ -16,11 +16,6 @@ public class AndroidFiles implements Files{
 
     protected final AssetManager assets;
 
-    public AndroidFiles(AssetManager assets){
-        this.assets = assets;
-        localpath = sdcard;
-    }
-
     public AndroidFiles(AssetManager assets, String localpath){
         this.assets = assets;
         this.localpath = localpath.endsWith("/") ? localpath : localpath + "/";

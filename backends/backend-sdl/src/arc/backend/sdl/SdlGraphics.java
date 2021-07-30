@@ -263,7 +263,7 @@ public class SdlGraphics extends Graphics{
 
         int[] bounds = new int[4];
 
-        int result = SDL_GetDisplayBounds(index, bounds);
+        int result = borderless ? SDL_GetDisplayBounds(index, bounds) : SDL_GetDisplayUsableBounds(index, bounds);
         if(result != 0) return;
 
         SDL_SetWindowBordered(app.window, !borderless);
@@ -274,6 +274,11 @@ public class SdlGraphics extends Graphics{
 
         SDL_SetWindowPosition(app.window, bounds[0], bounds[1]);
         SDL_SetWindowSize(app.window, bounds[2], bounds[3]);
+
+        //hahahahahaha why do I need to do this
+        if(OS.isWindows && borderless){
+            SDL_SetWindowBordered(app.window, false);
+        }
     }
 
     @Override
