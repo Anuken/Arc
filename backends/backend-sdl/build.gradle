@@ -21,7 +21,7 @@ task preJni{
 
         if(!file("jni/sdlmingw.tar.gz").exists()){
             println "Fetching SDL-mingw builds..."
-            "curl -o $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -L https://www.libsdl.org/release/SDL2-devel-2.0.14-mingw.tar.gz".execute().waitFor()
+            "curl -o $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -L https://www.libsdl.org/release/SDL2-devel-2.0.10-mingw.tar.gz".execute().waitFor()
             "tar -xvzf $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -C $rootDir/backends/backend-sdl/jni".execute().waitFor()
         }
     }catch(Exception youAreProbablyOnWindowsOrDontHaveUnzip){}
@@ -84,7 +84,7 @@ jnigen{
         linkerFlags = "-shared -m64"
     }
     add(Windows, x64){
-        def path = "SDL2-2.0.14/x86_64-w64-mingw32"
+        def path = "SDL2-2.0.10/x86_64-w64-mingw32"
         def root = "$rootDir/backends/backend-sdl/jni"
         headerDirs += ["$path/include/SDL2"]
         cppFlags += " " + execCmd("sh $root/$path/bin/sdl2-config --cflags")
@@ -93,7 +93,7 @@ jnigen{
         linkerFlags += " -L $root/$path/lib"
     }
     add(Windows, x32){
-        def path = "SDL2-2.0.14/i686-w64-mingw32"
+        def path = "SDL2-2.0.10/i686-w64-mingw32"
         def root = "$rootDir/backends/backend-sdl/jni"
         headerDirs += ["$path/include/SDL2"]
         cppFlags += " " + execCmd("sh $root/$path/bin/sdl2-config --cflags")
