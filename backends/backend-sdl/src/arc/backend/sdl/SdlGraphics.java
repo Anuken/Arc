@@ -235,7 +235,7 @@ public class SdlGraphics extends Graphics{
     @Override
     public boolean setFullscreenMode(DisplayMode displayMode){
         //TODO ignores display mode
-        SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+        SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN);
         return true;
     }
 
@@ -253,27 +253,8 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public void setBorderless(boolean borderless){
-        boolean maximized = (SDL_GetWindowFlags(app.window) & SDL_WINDOW_MAXIMIZED) == SDL_WINDOW_MAXIMIZED;
-        if(maximized && OS.isLinux){
-            SDL_RestoreWindow(app.window);
-        }
-
-        int index = SDL_GetWindowDisplayIndex(app.window);
-        if(index < 0) return;
-
-        int[] bounds = new int[4];
-
-        int result = borderless ? SDL_GetDisplayBounds(index, bounds) : SDL_GetDisplayUsableBounds(index, bounds);
-        if(result != 0) return;
-
-        SDL_SetWindowBordered(app.window, !borderless);
-
-        if(maximized && OS.isLinux){
-            SDL_MaximizeWindow(app.window);
-        }
-
-        SDL_SetWindowPosition(app.window, bounds[0], bounds[1]);
-        SDL_SetWindowSize(app.window, bounds[2], bounds[3]);
+        //TODO
+        SDL_SetWindowFullscreen(app.window, borderless ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
     }
 
     @Override
