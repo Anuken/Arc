@@ -278,6 +278,10 @@ public class SdlGraphics extends Graphics{
         //hahahahahaha why do I need to do this
         if(OS.isWindows && borderless){
             SDL_SetWindowBordered(app.window, false);
+
+            SDL_GetDisplayBounds(index, bounds);
+            SDL_SetWindowPosition(app.window, bounds[0], bounds[1]);
+            SDL_SetWindowSize(app.window, bounds[2], bounds[3]);
         }
     }
 
