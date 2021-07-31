@@ -1,9 +1,10 @@
 package arc.util.io;
 
-import arc.util.Buffers;
+import arc.func.*;
+import arc.util.*;
 
 import java.io.*;
-import java.nio.ByteBuffer;
+import java.nio.*;
 
 /** Provides utility methods to copy streams. */
 public final class Streams{
@@ -27,12 +28,29 @@ public final class Streams{
     }
 
     /**
-     * Copy the data from an {@link InputStream} to an {@link OutputStream}, using the specified byte[] as a temporary buffer. The
-     * stream is not closed.
+     * Copy the data from an {@link InputStream} to an {@link OutputStream}, using the specified byte[] as a temporary buffer.
+     * The stream is not closed.
      */
     public static void copy(InputStream input, OutputStream output, byte[] buffer) throws IOException{
         int bytesRead;
         while((bytesRead = input.read(buffer)) != -1){
+            output.write(buffer, 0, bytesRead);
+        }
+    }
+
+    /**
+     * Copy the data from an {@link InputStream} to an {@link OutputStream}, using the specified byte[] as a temporary buffer.
+     * The stream is not closed.
+     * Provides progress as a 0-1 value through the specified listener.
+     * @param totalLength the total byte length of the input.
+     */
+    public static void copyProgress(InputStream input, OutputStream output, long totalLength, int bufferSize, Floatc progress) throws IOException{
+        byte[] buffer = new byte[bufferSize];
+        long totalRead = 0;
+        int bytesRead;
+        while((bytesRead = input.read(buffer)) != -1){
+            totalRead += bytesRead;
+            progress.get(totalRead / (float)totalLength);
             output.write(buffer, 0, bytesRead);
         }
     }

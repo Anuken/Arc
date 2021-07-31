@@ -66,6 +66,11 @@ public class Http{
             this.status = HttpStatus.byCode(connection.getResponseCode());
         }
 
+        /** @return the length of received content in bytes as a long. May throw an exception (?) */
+        public long getContentLength(){
+            return connection.getContentLengthLong();
+        }
+
         /**
          * Returns the data of the HTTP response as a byte[].
          * <p>
