@@ -100,6 +100,7 @@ public class SdlApplication implements Application{
         if(config.resizable) flags |= SDL_WINDOW_RESIZABLE;
         if(config.maximized) flags |= SDL_WINDOW_MAXIMIZED;
         if(config.fullscreen) flags |= SDL_WINDOW_FULLSCREEN;
+        if(OS.isMac) flags |= SDL_WINDOW_ALLOW_HIGHDPI;
 
         window = SDL_CreateWindow(config.title, config.width, config.height, flags);
         if(window == 0) throw new SdlError();
