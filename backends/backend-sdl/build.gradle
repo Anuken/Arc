@@ -78,7 +78,7 @@ jnigen{
         headerDirs += ["glew-2.2.0/include"]
     }
     add(Linux, x64){
-        cppFlags += " -fno-plt " + execCmd("sdl2-config --cflags")
+        cppFlags += " " + execCmd("sdl2-config --cflags")
         cFlags = cppFlags
         //NOTE: for this to statically link properly, you need to add -L/path/to/folder/with/custom/libSDL2.a
         //where this folder contains a custom build of SDL2 with the -fPIC flag (added to the makefile in the cflags section after configure)

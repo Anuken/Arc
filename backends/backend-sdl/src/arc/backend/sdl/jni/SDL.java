@@ -2,6 +2,7 @@ package arc.backend.sdl.jni;
 
 import arc.util.*;
 
+import java.io.*;
 import java.nio.*;
 
 public class SDL{
@@ -115,7 +116,22 @@ public class SDL{
     ;
 
     static{
-        new SharedLibraryLoader().load("sdl-arc");
+        new SharedLibraryLoader(){
+            @Override
+            protected Throwable loadFile(String sourcePath, String sourceCrc, File extractedFile){
+                if(OS.isLinux){
+                    //on linux, the SDL shared library isn't statically linked, try to load it first
+                    try{
+                        String name = "libSDL2.so";
+                        File result = new File(extractedFile.getParentFile() == null ? name : (extractedFile.getParentFile() + "/" + name));
+                        extractFile(name, sourceCrc, result);
+                        System.load(result.getAbsolutePath());
+                    }catch(Throwable ignored){
+                    }
+                }
+                return super.loadFile(sourcePath, sourceCrc, extractedFile);
+            }
+        }.load("sdl-arc");
     }
 
     public static native int SDL_Init(int flags); /*
