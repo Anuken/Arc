@@ -12,7 +12,7 @@ jobs:
         with:
           java-version: 1.8
       - name: Install dependencies
-        run: sudo apt install g++-mingw-w64 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-mingw-w64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 libasound2-dev libdrm-dev libsdl2-dev=2.0.9 libgbm-dev
+        run: sudo apt install g++-mingw-w64 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-mingw-w64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 libasound2-dev libdrm-dev libsdl2-dev libgbm-dev
       - name: Set env
         run: echo "NDK_HOME=$ANDROID_NDK_HOME" >> $GITHUB_ENV
       - name: Build natives
