@@ -82,7 +82,8 @@ jnigen{
         cFlags = cppFlags
         //NOTE: for this to statically link properly, you need to add -L/path/to/folder/with/custom/libSDL2.a
         //where this folder contains a custom build of SDL2 with the -fPIC flag (added to the makefile in the cflags section after configure)
-        libraries = execCmd("sdl2-config --static-libs")?.replace("-lSDL2", "-l:libSDL2.a") + " -Wl,-Bdynamic -lGL "
+        //?.replace("-lSDL2", "-l:libSDL2.a")
+        libraries = execCmd("sdl2-config --static-libs") + " -Wl,-Bdynamic -lGL "
         linkerFlags = "-shared -m64"
     }
     add(Windows, x64){
