@@ -1,17 +1,18 @@
 package arc.input;
 
-import arc.struct.IntFloatMap;
-import arc.struct.IntSet;
+import arc.struct.*;
 
 public class KeyboardDevice extends InputDevice implements InputProcessor{
     private final IntSet pressed = new IntSet();
     private final IntSet lastFramePressed = new IntSet();
+    private final IntSet justPressed = new IntSet();
     private final IntFloatMap axes = new IntFloatMap();
 
     @Override
     public void postUpdate(){
         lastFramePressed.clear();
         lastFramePressed.addAll(pressed);
+        justPressed.clear();
         axes.clear();
     }
 
@@ -24,7 +25,7 @@ public class KeyboardDevice extends InputDevice implements InputProcessor{
 
     @Override
     public boolean isTapped(KeyCode key){
-        return isPressed(key) && !lastFramePressed.contains(key.ordinal());
+        return justPressed.contains(key.ordinal());
     }
 
     @Override
@@ -40,6 +41,7 @@ public class KeyboardDevice extends InputDevice implements InputProcessor{
     @Override
     public boolean keyDown(KeyCode key){
         pressed.add(key.ordinal());
+        justPressed.add(key.ordinal());
         return false;
     }
 

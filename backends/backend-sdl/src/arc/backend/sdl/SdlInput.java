@@ -51,11 +51,9 @@ public class SdlInput extends Input{
             if(key != null){
                 if(down){
                     mousePressed ++;
-                    queue.keyDown(key);
                     queue.touchDown(x, y, 0, key);
                 }else{
                     mousePressed = Math.max(0, mousePressed - 1);
-                    queue.keyUp(key);
                     queue.touchUp(x, y, 0, key);
                 }
             }

@@ -1,7 +1,6 @@
 package arc.input;
 
-import arc.struct.Seq;
-import arc.struct.SnapshotSeq;
+import arc.struct.*;
 
 /**
  * An {@link InputProcessor} that delegates to an ordered list of other InputProcessors. Delegation for an event stops if a
