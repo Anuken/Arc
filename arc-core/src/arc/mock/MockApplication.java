@@ -26,7 +26,7 @@ public class MockApplication implements Application{
 
     @Override
     public void post(Runnable runnable){
-
+        runnable.run();
     }
 
     @Override

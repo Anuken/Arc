@@ -304,7 +304,7 @@ public class SDL{
     */
 
     /** Since passing in or returning a class here would be a pain, I have to resort to an int array.
-     * @return whether or not the event was processed.
+     * @return whether the event was processed.
      * If true is returned, the input data array is filled with the event data.*/
     public static native boolean SDL_PollEvent(int[] data); /*
         SDL_Event e;
