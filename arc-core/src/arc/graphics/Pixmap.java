@@ -551,14 +551,14 @@ public class Pixmap implements Disposable{
         int x2 = x + width - 1;
         int y2 = y + height - 1;
 
-        if(x >= width) return;
-        if(y >= height) return;
+        if(x >= this.width) return;
+        if(y >= this.height) return;
         if(x2 < 0) return;
         if(y2 < 0) return;
         if(x < 0) x = 0;
         if(y < 0) y = 0;
-        if(x2 >= width) x2 = width - 1;
-        if(y2 >= height) y2 = height - 1;
+        if(x2 >= this.width) x2 = this.width - 1;
+        if(y2 >= this.height) y2 = this.height - 1;
 
         y2++;
         while(y != y2){
