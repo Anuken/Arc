@@ -154,6 +154,11 @@ public class Audio implements Disposable{
         setGlobalFilter(index, filter == null ? 0 : filter.handle);
     }
 
+    public int countPlaying(AudioSource source){
+        if(!initialized || source.handle <= 0) return 0;
+        return sourceCount(source.handle);
+    }
+
     @Override
     public void dispose(){
         if(!initialized) return;

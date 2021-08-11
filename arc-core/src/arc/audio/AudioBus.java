@@ -36,11 +36,6 @@ public class AudioBus extends AudioSource{
         id = sourcePlay(handle);
     }
 
-    public void replay(){
-        if(handle == 0) return;
-        id = sourcePlay(handle);
-    }
-
     public void stop(){
         Core.audio.stop(id);
         id = 0;

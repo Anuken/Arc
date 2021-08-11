@@ -336,9 +336,11 @@ public abstract class Group extends Element implements Cullable{
 
     /** Removes all actors from this group. */
     public void clearChildren(){
+        Scene stage = getScene();
         Element[] actors = children.begin();
         for(int i = 0, n = children.size; i < n; i++){
             Element child = actors[i];
+            if(stage != null) stage.unfocus(child);
             child.setScene(null);
             child.parent = null;
         }

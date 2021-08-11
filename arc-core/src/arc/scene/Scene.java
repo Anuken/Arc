@@ -179,6 +179,7 @@ public class Scene implements InputProcessor{
 
         if(scrollFocus != null && (!scrollFocus.visible || scrollFocus.getScene() == null)) scrollFocus = null;
         if(keyboardFocus != null && (!keyboardFocus.visible || keyboardFocus.getScene() == null)) keyboardFocus = null;
+
         if(scrollFocus != null){
             Element curr = scrollFocus;
             while(curr.parent != null){
@@ -656,6 +657,9 @@ public class Scene implements InputProcessor{
             event.focused = false;
             event.relatedActor = (actor);
             oldKeyboardFocus.fire(event);
+            if(actor == null){
+                Core.input.setOnscreenKeyboardVisible(false);
+            }
         }
         boolean success = !event.cancelled;
         if(success){
