@@ -169,6 +169,7 @@ public class TextField extends Element implements Disableable{
             TextInput input = new TextInput();
             input.text = getText();
             if(maxLength > 0) input.maxLength = maxLength;
+            input.multiline = this instanceof TextArea;
             input.accepted = text -> {
                 clearText();
                 appendText(text);
