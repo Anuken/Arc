@@ -52,7 +52,7 @@ public class TextField extends Element implements Disableable{
 
     public static float keyRepeatInitialTime = 0.4f;
     public static float keyRepeatTime = 0.1f;
-    protected final GlyphLayout layout = new GlyphLayout();
+    protected final GlyphLayout layout = new GlyphLayout(true);
     protected final FloatSeq glyphPositions = new FloatSeq();
     protected String text;
     protected int cursor, selectionStart;
@@ -340,8 +340,11 @@ public class TextField extends Element implements Disableable{
                     messageFont.setColor(0.7f, 0.7f, 0.7f, color.a * parentAlpha);
                 }
 
+                boolean had = messageFont.getData().markupEnabled;
+                messageFont.getData().markupEnabled = false;
                 messageFont.draw(messageText, x + bgLeftWidth, y + textY + yOffset, 0, messageText.length(),
-                width - bgLeftWidth - bgRightWidth, textHAlign, false, "...");
+                    width - bgLeftWidth - bgRightWidth, textHAlign, false, "...");
+                messageFont.getData().markupEnabled = had;
             }
         }else{
             font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * color.a * parentAlpha);
@@ -378,7 +381,10 @@ public class TextField extends Element implements Disableable{
     }
 
     protected void drawText(Font font, float x, float y){
+        boolean had = font.getData().markupEnabled;
+        font.getData().markupEnabled = false;
         font.draw(displayText, x + textOffset, y, visibleTextStart, visibleTextEnd, 0, Align.left, false);
+        font.getData().markupEnabled = had;
     }
 
     protected void drawCursor(Drawable cursorPatch, Font font, float x, float y){

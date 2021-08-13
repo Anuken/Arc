@@ -20,10 +20,15 @@ import arc.util.pooling.Pools;
 public class GlyphLayout implements Poolable{
     public final Seq<GlyphRun> runs = new Seq<>();
     private final Seq<Color> colorStack = new Seq<>(4);
+    public boolean ignoreMarkup = false;
     public float width, height;
 
     /** Creates an empty GlyphLayout. */
     public GlyphLayout(){
+    }
+
+    public GlyphLayout(boolean ignoreMarkup){
+        this.ignoreMarkup = ignoreMarkup;
     }
 
     public GlyphLayout(Font font, CharSequence str){
@@ -75,7 +80,7 @@ public class GlyphLayout implements Poolable{
         else if(targetWidth <= fontData.spaceXadvance * 3) //
             wrap = false; // Avoid one line per character, which is very inefficient.
 
-        boolean markupEnabled = fontData.markupEnabled;
+        boolean markupEnabled = fontData.markupEnabled && !ignoreMarkup;
 
         Pool<GlyphRun> glyphRunPool = Pools.get(GlyphRun.class, GlyphRun::new);
         Seq<GlyphRun> runs = this.runs;
