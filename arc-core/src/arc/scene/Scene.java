@@ -657,9 +657,6 @@ public class Scene implements InputProcessor{
             event.focused = false;
             event.relatedActor = (actor);
             oldKeyboardFocus.fire(event);
-            if(actor == null){
-                Core.input.setOnscreenKeyboardVisible(false);
-            }
         }
         boolean success = !event.cancelled;
         if(success){
