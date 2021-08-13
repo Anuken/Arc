@@ -404,6 +404,7 @@ public abstract class Input{
     /** Parameters for text input. */
     public static class TextInput{
         public boolean multiline = false;
+        public boolean allowEmpty = true;
         public String title = "";
         public String text = "";
         public boolean numeric;

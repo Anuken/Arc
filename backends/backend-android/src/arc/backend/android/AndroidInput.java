@@ -144,6 +144,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
             AlertDialog.Builder alert = new AlertDialog.Builder(context);
             //alert.setTitle(info.title);
             final EditText input = new EditText(context);
+            input.setImeOptions(EditorInfo.IME_FLAG_NO_FULLSCREEN);
             input.setText(info.text);
             if(info.numeric){
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -175,11 +176,17 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
 
                 @Override
                 public void afterTextChanged(Editable editable){
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(!input.getText().toString().trim().isEmpty());
+                    if(!info.allowEmpty){
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(!input.getText().toString().trim().isEmpty());
+                    }
                 }
             });
 
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(!input.getText().toString().trim().isEmpty());
+            if(!info.allowEmpty){
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(!input.getText().toString().trim().isEmpty());
+            }
+
+            input.requestFocus();
 
             dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
             dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
@@ -457,7 +464,10 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     }
 
     @Override
-    public void setOnscreenKeyboardVisible(final boolean visible){
+    public void setOnscreenKeyboardVisible(boolean visible){
+        //cannot show... for now
+        if(visible) return;
+
         handle.post(() -> {
             InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
             if(visible){
