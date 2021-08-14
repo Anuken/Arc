@@ -30,6 +30,9 @@ public class Camera3D{
     /** the inverse combined projection and view matrix **/
     public final Mat3D invProjectionView = new Mat3D();
 
+    /** the frustum, for clipping operations **/
+    public final Frustum frustum = new Frustum();
+
     private final Vec3 tmpVec = new Vec3();
     private final Ray ray = new Ray(new Vec3(), new Vec3());
 
@@ -43,6 +46,11 @@ public class Camera3D{
         view.setToLookAt(position, tmpVec.set(position).add(direction), up);
         combined.set(projection).mul(view);
         invProjectionView.set(combined).inv();
+
+        //update frustum.
+        invProjectionView.set(combined);
+        Mat3D.inv(invProjectionView.val);
+        frustum.update(invProjectionView);
     }
 
     public void resize(float width, float height){

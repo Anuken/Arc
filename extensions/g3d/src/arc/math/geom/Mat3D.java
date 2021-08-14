@@ -1286,6 +1286,31 @@ public class Mat3D{
         vec[2] = z;
     }
 
+
+    /** Multiplies the vectors with the given matrix, , performing a division by w. The matrix array is assumed to hold a 4x4 column
+     * major matrix as you can get from {@link Mat3D#val}. The vectors array is assumed to hold 3-component vectors. Offset
+     * specifies the offset into the array where the x-component of the first vector is located. The numVecs parameter specifies
+     * the number of vectors stored in the vectors array. The stride parameter specifies the number of floats between subsequent
+     * vectors and must be >= 3.
+     * @param mat the matrix
+     * @param vecs the vectors
+     * @param offset the offset into the vectors array
+     * @param numVecs the number of vectors
+     * @param stride the stride between vectors in floats */
+    public static void prj(float[] mat, float[] vecs, int offset, int numVecs, int stride){
+        int curOffset = offset;
+        for(int i = 0; i < numVecs; i++) {
+            float inv_w = 1.0f / (vecs[curOffset] * mat[M30] + vecs[curOffset + 1] * mat[M31] + vecs[curOffset + 2] * mat[M32] + mat[M33]);
+            float x = (vecs[curOffset] * mat[M00] + vecs[curOffset + 1] * mat[M01] + vecs[curOffset + 2] * mat[M02] + mat[M03]) * inv_w;
+            float y = (vecs[curOffset] * mat[M10] + vecs[curOffset + 1] * mat[M11] + vecs[curOffset + 2] * mat[M12] + mat[M13]) * inv_w;
+            float z = (vecs[curOffset] * mat[M20] + vecs[curOffset + 1] * mat[M21] + vecs[curOffset + 2] * mat[M22] + mat[M23]) * inv_w;
+            vecs[curOffset] = x;
+            vecs[curOffset + 1] = y;
+            vecs[curOffset + 2] = z;
+            curOffset += stride;
+        }
+    }
+
     /**
      * Multiplies the vector with the top most 3x3 sub-matrix of the given matrix. The matrix array is assumed to hold a 4x4 column
      * major matrix as you can get from {@link Mat3D#val}. The vector array is assumed to hold a 3-component vector, with x being

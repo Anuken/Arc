@@ -232,7 +232,8 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
-    /** For text fields. */
+    /** @deprecated text fields have this on by default. */
+    @Deprecated
     public Cell<T> addInputDialog(){
         if(element instanceof TextField){
             ((TextField)element).addInputDialog();
@@ -240,7 +241,8 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
-    /** For text fields. */
+    /** @deprecated text fields have this on by default. */
+    @Deprecated
     public Cell<T> addInputDialog(int maxLength){
         if(element instanceof TextField){
             ((TextField)element).setMaxLength(maxLength);
