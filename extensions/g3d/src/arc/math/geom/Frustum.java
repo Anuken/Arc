@@ -22,7 +22,7 @@ public class Frustum{
     /** the six clipping planes, near, far, left, right, top, bottom **/
     public final Plane[] planes = new Plane[6];
 
-    /** eight points making up the near and far clipping "rectangles". order is counter clockwise, starting at bottom left **/
+    /** eight points making up the near and far clipping "rectangles". order is counterclockwise, starting at bottom left **/
     public final Vec3[] planePoints = {new Vec3(), new Vec3(), new Vec3(), new Vec3(), new Vec3(), new Vec3(), new Vec3(), new Vec3()};
     protected final float[] planePointsArray = new float[8 * 3];
 

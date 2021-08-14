@@ -46,10 +46,6 @@ public class Camera3D{
         view.setToLookAt(position, tmpVec.set(position).add(direction), up);
         combined.set(projection).mul(view);
         invProjectionView.set(combined).inv();
-
-        //update frustum.
-        invProjectionView.set(combined);
-        Mat3D.inv(invProjectionView.val);
         frustum.update(invProjectionView);
     }
 
