@@ -1287,7 +1287,7 @@ public class Mat3D{
     }
 
 
-    /** Multiplies the vectors with the given matrix, , performing a division by w. The matrix array is assumed to hold a 4x4 column
+    /** Multiplies the vectors with the given matrix, performing a division by w. The matrix array is assumed to hold a 4x4 column
      * major matrix as you can get from {@link Mat3D#val}. The vectors array is assumed to hold 3-component vectors. Offset
      * specifies the offset into the array where the x-component of the first vector is located. The numVecs parameter specifies
      * the number of vectors stored in the vectors array. The stride parameter specifies the number of floats between subsequent

@@ -10,7 +10,7 @@ public class Camera3D{
     public float near = 1;
     /** the far clipping plane distance, has to be positive **/
     public float far = 100;
-    /** if set to true, an perspective projection is used. */
+    /** if set to true, a perspective projection is used. */
     public boolean perspective = true;
     /** the viewport width and height **/
     public float width, height;

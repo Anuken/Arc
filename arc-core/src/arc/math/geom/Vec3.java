@@ -42,7 +42,7 @@ public class Vec3 implements Vector<Vec3>{
      * Creates a vector from the given vector
      * @param vector The vector
      */
-    public Vec3(final Vec3 vector){
+    public Vec3(Vec3 vector){
         this.set(vector);
     }
 
@@ -50,7 +50,7 @@ public class Vec3 implements Vector<Vec3>{
      * Creates a vector from the given array. The array must have at least 3 elements.
      * @param values The array
      */
-    public Vec3(final float[] values){
+    public Vec3(float[] values){
         this.set(values[0], values[1], values[2]);
     }
 
@@ -59,12 +59,12 @@ public class Vec3 implements Vector<Vec3>{
      * @param vector The vector
      * @param z The z-component
      */
-    public Vec3(final Vec2 vector, float z){
+    public Vec3(Vec2 vector, float z){
         this.set(vector.x, vector.y, z);
     }
 
     /** @return The euclidean length */
-    public static float len(final float x, final float y, final float z){
+    public static float len(float x, float y, float z){
         return (float)Math.sqrt(x * x + y * y + z * z);
     }
 
