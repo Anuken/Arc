@@ -119,7 +119,8 @@ public class SDL{
         new SharedLibraryLoader(){
             @Override
             protected Throwable loadFile(String sourcePath, String sourceCrc, File extractedFile){
-                if(OS.isLinux){
+                //skip dynamic load for me because it crashes otherwise
+                if(OS.isLinux && !OS.hasProp("SDL2_STATIC") && !OS.username.equals("anuke")){
                     //on linux, the SDL shared library isn't statically linked, try to load it first
                     try{
                         String name = "libSDL2.so";
