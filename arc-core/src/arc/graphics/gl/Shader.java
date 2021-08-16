@@ -147,7 +147,7 @@ public class Shader implements Disposable{
         if(fragment){
             source =
             "#ifdef GL_ES\n" +
-            "precision " + (source.contains("#define HIGHP") ? "highp" : "mediump") + " float;\n" +
+            "precision " + (source.contains("#define HIGHP") && !source.contains("//#define HIGHP") ? "highp" : "mediump") + " float;\n" +
             "precision mediump int;\n" +
             "#else\n" +
             "#define lowp  \n" +
