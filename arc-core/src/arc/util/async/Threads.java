@@ -1,6 +1,7 @@
 package arc.util.async;
 
 import arc.*;
+import arc.func.*;
 import arc.util.*;
 
 import java.util.concurrent.*;
@@ -9,6 +10,15 @@ import java.util.concurrent.*;
  * Utilities for threaded programming.
  */
 public class Threads{
+
+    public static <T> ThreadLocal<T> local(Prov<T> prov){
+        return new ThreadLocal<T>(){
+            @Override
+            protected T initialValue(){
+                return prov.get();
+            }
+        };
+    }
 
     public static <T> T await(Future<T> future){
         try{
