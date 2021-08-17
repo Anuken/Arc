@@ -437,14 +437,10 @@ public class GlyphLayout implements Poolable{
                         color.rgba8888(colorInt);
                         return i - start;
                     }
-                    if(ch >= '0' && ch <= '9')
-                        colorInt = colorInt * 16 + (ch - '0');
-                    else if(ch >= 'a' && ch <= 'f')
-                        colorInt = colorInt * 16 + (ch - ('a' - 10));
-                    else if(ch >= 'A' && ch <= 'F')
-                        colorInt = colorInt * 16 + (ch - ('A' - 10));
-                    else
-                        break; // Unexpected character in hex color.
+                    if(ch >= '0' && ch <= '9') colorInt = colorInt * 16 + (ch - '0');
+                    else if(ch >= 'a' && ch <= 'f') colorInt = colorInt * 16 + (ch - ('a' - 10));
+                    else if(ch >= 'A' && ch <= 'F') colorInt = colorInt * 16 + (ch - ('A' - 10));
+                    else break; // Unexpected character in hex color.
                 }
                 return -1;
             case '[': // "[[" is an escaped left square bracket.
