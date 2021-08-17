@@ -183,6 +183,20 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
+    public Cell<T> scrollX(boolean allowScrollX){
+        if(element instanceof ScrollPane){
+            ((ScrollPane)element).setScrollingDisabledX(!allowScrollX);
+        }
+        return this;
+    }
+
+    public Cell<T> scrollY(boolean allowScrollY){
+        if(element instanceof ScrollPane){
+            ((ScrollPane)element).setScrollingDisabledY(!allowScrollY);
+        }
+        return this;
+    }
+
     public Cell<T> disabled(boolean disabled){
         if(get() instanceof Disableable){
             ((Disableable)get()).setDisabled(disabled);

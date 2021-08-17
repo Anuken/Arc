@@ -13,6 +13,11 @@ public class Strings{
 
     public static final Charset utf8 = Charset.forName("UTF-8");
 
+    /** @return whether the name matches the query; case-insensitive. Always returns true if query is empty. */
+    public static boolean matches(String query, String name){
+        return query == null || query.isEmpty() || (name != null && name.toLowerCase().contains(query.toLowerCase()));
+    }
+
     public static int count(CharSequence s, char c){
         int total = 0;
         for(int i = 0; i < s.length(); i++){
