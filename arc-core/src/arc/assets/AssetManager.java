@@ -307,7 +307,7 @@ public class AssetManager implements Disposable{
      * @param fileName the file name (interpretation depends on {@link AssetLoader})
      * @param type the type of the asset.
      */
-    public synchronized <T> AssetDescriptor load(String fileName, Class<T> type){
+    public synchronized <T> AssetDescriptor<T> load(String fileName, Class<T> type){
         return load(fileName, type, null);
     }
 
@@ -374,7 +374,7 @@ public class AssetManager implements Disposable{
      * @param type the type of the asset.
      * @param parameter parameters for the AssetLoader.
      */
-    public synchronized <T> AssetDescriptor load(String fileName, Class<T> type, AssetLoaderParameters<T> parameter){
+    public synchronized <T> AssetDescriptor<T> load(String fileName, Class<T> type, AssetLoaderParameters<T> parameter){
         AssetLoader loader = getLoader(type, fileName);
         if(loader == null) throw new ArcRuntimeException("No loader for type: " + type.getSimpleName());
 
@@ -419,7 +419,7 @@ public class AssetManager implements Disposable{
      * Adds the given asset to the loading queue of the AssetManager.
      * @param desc the {@link AssetDescriptor}
      */
-    public synchronized AssetDescriptor load(AssetDescriptor desc){
+    public synchronized <T> AssetDescriptor<T> load(AssetDescriptor<T> desc){
         return load(desc.fileName, desc.type, desc.params);
     }
 
