@@ -463,10 +463,12 @@ public class GlyphLayout implements Poolable{
         return -1; // Unclosed color tag.
     }
 
+    @Override
     public void reset(){
         Pools.get(GlyphRun.class, GlyphRun::new).freeAll(runs);
         runs.clear();
 
+        ignoreMarkup = false;
         width = 0;
         height = 0;
     }
