@@ -135,7 +135,11 @@ public class GlyphLayout implements Poolable{
                     // Store the run that has ended.
                     GlyphRun run = glyphRunPool.obtain();
                     run.color.set(color);
+                    boolean had = fontData.markupEnabled;
+                    if(ignoreMarkup) fontData.markupEnabled = false;
                     fontData.getGlyphs(run, str, runStart, runEnd, lastGlyph);
+                    fontData.markupEnabled = had;
+
                     if(run.glyphs.size == 0){
                         glyphRunPool.free(run);
                         break runEnded;
@@ -304,7 +308,10 @@ public class GlyphLayout implements Poolable{
 
         // Determine truncate string size.
         GlyphRun truncateRun = glyphRunPool.obtain();
+        boolean had = fontData.markupEnabled;
+        if(ignoreMarkup) fontData.markupEnabled = false;
         fontData.getGlyphs(truncateRun, truncate, 0, truncate.length(), null);
+        fontData.markupEnabled = had;
         float truncateWidth = 0;
         if(truncateRun.xAdvances.size > 0){
             adjustLastGlyph(fontData, truncateRun);
