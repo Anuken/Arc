@@ -28,6 +28,11 @@ public class Angles{
         return angleDist(a, b) < range;
     }
 
+    public static float clampRange(float angle, float dest, float range){
+        float dst = angleDist(angle, dest);
+        return dst <= range ? angle : moveToward(angle, dest, dst - range);
+    }
+
     public static float moveToward(float angle, float to, float speed){
         if(Math.abs(angleDist(angle, to)) < speed) return to;
         angle = Mathf.mod(angle, 360f);
@@ -164,8 +169,7 @@ public class Angles{
         }
     }
 
-    public static void randLenVectors(long seed, float fin, int amount, float length,
-                                      float angle, float range, ParticleConsumer cons){
+    public static void randLenVectors(long seed, float fin, int amount, float length, float angle, float range, ParticleConsumer cons){
         rand.setSeed(seed);
         for(int i = 0; i < amount; i++){
             rv.trns(angle + rand.range(range), rand.random(length * fin));
