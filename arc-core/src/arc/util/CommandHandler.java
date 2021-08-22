@@ -99,10 +99,7 @@ public class CommandHandler{
 
     /** Register a command which handles a zero-sized list of arguments and one parameter.*/
     public <T> Command register(String text, String description, CommandRunner<T> runner){
-        Command cmd = new Command(text, "", description, runner);
-        commands.put(text.toLowerCase(), cmd);
-        orderedCommands.add(cmd);
-        return cmd;
+        return register(text, "", description, runner);
     }
 
     /** Register a command which handles a list of arguments and one handler-specific parameter. <br>
@@ -114,6 +111,9 @@ public class CommandHandler{
      * There may only be one such argument, and it must be at the end. For example, the syntax
      * &lt;arg1&gt [arg2...] will require a first argument, and then take any text after that and put it in the second argument, optionally.*/
     public <T> Command register(String text, String params, String description, CommandRunner<T> runner){
+        //remove previously registered commands
+        orderedCommands.remove(c -> c.text.equals(text));
+
         Command cmd = new Command(text, params, description, runner);
         commands.put(text.toLowerCase(), cmd);
         orderedCommands.add(cmd);
