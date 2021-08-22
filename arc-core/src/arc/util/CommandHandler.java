@@ -97,14 +97,6 @@ public class CommandHandler{
         orderedCommands.remove(c);
     }
 
-    /** Register a command which handles a zero-sized list of arguments and one parameter.*/
-    public <T> Command register(String text, String description, CommandRunner<T> runner){
-        Command cmd = new Command(text, "", description, runner);
-        commands.put(text.toLowerCase(), cmd);
-        orderedCommands.add(cmd);
-        return cmd;
-    }
-
     /** Register a command which handles a list of arguments and one handler-specific parameter. <br>
      * argeter syntax is as follows: <br>
      * &lt;mandatory-arg-1&gt; &lt;mandatory-arg-2&gt; ... &lt;mandatory-arg-n&gt; [optional-arg-1] [optional-arg-2] <br>
@@ -114,10 +106,18 @@ public class CommandHandler{
      * There may only be one such argument, and it must be at the end. For example, the syntax
      * &lt;arg1&gt [arg2...] will require a first argument, and then take any text after that and put it in the second argument, optionally.*/
     public <T> Command register(String text, String params, String description, CommandRunner<T> runner){
+        /** Check if there is another command. If yes, delete it*/
+        if(orderedCommands.contains(c -> c.text.equals(text))) orderedCommands.remove(c -> c.text.equals(text));
+    
         Command cmd = new Command(text, params, description, runner);
         commands.put(text.toLowerCase(), cmd);
         orderedCommands.add(cmd);
         return cmd;
+    }
+    
+    /** Register a command which handles a zero-sized list of arguments and one parameter.*/
+    public <T> Command register(String text, String description, CommandRunner<T> runner){
+        return register(text, "", description, runner);
     }
 
     public Command register(String text, String description, Cons<String[]> runner){
