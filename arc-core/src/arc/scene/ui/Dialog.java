@@ -498,7 +498,6 @@ public class Dialog extends Table{
         }
     }
 
-    /** Shows using the ModuleController's UI. */
     public Dialog show(){
         return show(Core.scene);
     }
