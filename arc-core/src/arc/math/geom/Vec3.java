@@ -194,7 +194,7 @@ public class Vec3 implements Vector<Vec3>{
         return this.add(vector.x * scale, vector.y * scale, vector.z * scale);
     }
 
-    public Vec3 sun(Vec3 vector, float scale){
+    public Vec3 sub(Vec3 vector, float scale){
         return this.sub(vector.x * scale, vector.y * scale, vector.z * scale);
     }
 
