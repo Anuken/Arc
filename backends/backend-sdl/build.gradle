@@ -108,7 +108,7 @@ jnigen{
     }
 
     add(MacOsX, x64)
-    add(MacOsX, x64, ARM)
+    //add(MacOsX, x64, ARM)
 
     all{
         if(it.os == BuildTarget.TargetOs.MacOsX){
