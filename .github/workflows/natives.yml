@@ -17,6 +17,8 @@ jobs:
         run: echo "NDK_HOME=$ANDROID_NDK_HOME" >> $GITHUB_ENV
       - name: Build natives
         run: |
+          ./gradlew arc-core:jnigenBuild
+          ./gradlew extensions:freetype:jnigenBuild
           ./gradlew backends:backend-sdl:jnigenBuild
       - name: Upload natives
         uses: actions/upload-artifact@v2
