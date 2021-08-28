@@ -107,7 +107,7 @@ jnigen{
         linkerFlags += " -L $root/$path/lib"
     }
 
-    add(MacOsX, x64)
+    //add(MacOsX, x64)
     add(MacOsX, x64, ARM)
 
     all{
