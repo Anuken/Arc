@@ -196,10 +196,9 @@ public class TextureAtlas implements Disposable{
      * @return The region, or the error region (if it is defined), or null.
      */
     public AtlasRegion find(String name){
-        AtlasRegion r = regionmap.get(name);
-        if(r == null && error == null && !(name.equals("error")))
+        AtlasRegion r = regionmap.get(name, error);
+        if(r == null && !name.equals("error"))
             throw new IllegalArgumentException("The region \"" + name + "\" does not exist!");
-        if(r == null) return error;
         return r;
     }
 
