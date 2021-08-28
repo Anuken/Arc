@@ -51,6 +51,11 @@ jnigen{
         cppFlags = "-std=c++11 -DWITH_COREAUDIO " + cppFlags
         libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
     }
+    add(MacOsX, x64, ARM){
+        cppIncludes += ["soloud/src/backend/coreaudio/*.cpp"]
+        cppFlags = "-std=c++11 -DWITH_COREAUDIO " + cppFlags
+        libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
+    }
     add(IOS){
         headerDirs += ["iosgl"]
         cppIncludes += ["soloud/src/backend/coreaudio/*.cpp", "iosgl/**"]
