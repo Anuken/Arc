@@ -1,5 +1,3 @@
-import com.badlogic.gdx.jnigen.BuildTarget
-
 sourceSets.main.java.srcDirs = ["src"]
 sourceSets.main.resources.srcDirs = ["libs/linux64", "libs/macosx64","libs/windows32", "libs/windows64", "libs/openal"]
 
@@ -108,18 +106,12 @@ jnigen{
     }
 
     //add(MacOsX, x64)
-    add(MacOsX, x64, ARM)
-
-    all{
-        if(it.os == BuildTarget.TargetOs.MacOsX){
-            def arch = it.isARM ? "arm64" : "x86_64"
-            cppFlags = cFlags = execCmd("sdl2-config --cflags") + " -c -Wall -O2 -arch ${arch} -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.9 -stdlib=libc++"
-            linkerFlags = "-shared -arch ${arch} -mmacosx-version-min=10.9 -stdlib=libc++"
-            //execCmd("sdl2-config --static-libs") + " -Wl,-framework,OpenGL"
-            libraries = "/usr/local/lib/libSDL2.a -lm -liconv -Wl,-framework,CoreAudio -Wl,-weak_framework,GameController -Wl,-framework,OpenGL,-weak_framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal /usr/local/lib/libGLEW.a"
-        }
+    add(MacOsX, x64, ARM){
+        cppFlags = cFlags = execCmd("sdl2-config --cflags") + " -c -Wall -O2 -arch arm64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.9 -stdlib=libc++"
+        linkerFlags = "-shared -arch arm64 -mmacosx-version-min=10.9 -stdlib=libc++"
+        //execCmd("sdl2-config --static-libs") + " -Wl,-framework,OpenGL"
+        libraries = "/usr/local/lib/libSDL2.a -lm -liconv -Wl,-framework,CoreAudio -Wl,-weak_framework,GameController -Wl,-framework,OpenGL,-weak_framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal /usr/local/lib/libGLEW.a"
     }
-
 
 }
 
