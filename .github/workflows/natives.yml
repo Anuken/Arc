@@ -65,7 +65,9 @@ jobs:
           path: |
             natives/natives-desktop/libs/libarc64.dylib
             natives/natives-desktop/libs/libarcarm64.dylib
+            natives/natives-freetype-desktop/libs/libarc-freetype64.dylib
             natives/natives-freetype-desktop/libs/libarc-freetypearm64.dylib
+            backends/backend-sdl/libs/macosx64/libsdl-arc64.dylib
             backends/backend-sdl/libs/macosx64/libsdl-arcarm64.dylib
       - name: Upload iOS natives
         uses: actions/upload-artifact@v2
