@@ -4,9 +4,10 @@ import arc.math.geom.Plane.*;
 
 /** A truncated rectangular pyramid. Used to define the viewable region and its projection onto the screen. */
 public class Frustum{
-    protected static final Vec3[] clipSpacePlanePoints = {new Vec3(-1, -1, -1), new Vec3(1, -1, -1),
-    new Vec3(1, 1, -1), new Vec3(-1, 1, -1), // near clip
-    new Vec3(-1, -1, 1), new Vec3(1, -1, 1), new Vec3(1, 1, 1), new Vec3(-1, 1, 1)}; // far clip
+    protected static final Vec3[] clipSpacePlanePoints = {
+        new Vec3(-1, -1, -1), new Vec3(1, -1, -1), new Vec3(1, 1, -1), new Vec3(-1, 1, -1), // near clip
+        new Vec3(-1, -1, 1), new Vec3(1, -1, 1), new Vec3(1, 1, 1), new Vec3(-1, 1, 1) // far clip
+    };
     protected static final float[] clipSpacePlanePointsArray = new float[8 * 3];
     private final static Vec3 tmpV = new Vec3();
 
