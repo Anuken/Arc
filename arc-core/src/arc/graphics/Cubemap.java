@@ -2,7 +2,6 @@ package arc.graphics;
 
 import arc.*;
 import arc.files.*;
-import arc.graphics.Pixmap.*;
 import arc.graphics.Texture.*;
 import arc.graphics.gl.*;
 import arc.math.geom.*;
@@ -61,7 +60,7 @@ public class Cubemap extends GLTexture{
     }
 
     /** Construct a Cubemap with {@link Pixmap}s for each side of the specified size. */
-    public Cubemap(int width, int height, int depth, Format format){
+    public Cubemap(int width, int height, int depth){
         this(
         new PixmapTextureData(new Pixmap(depth, height), false, true),
         new PixmapTextureData(new Pixmap(depth, height), false, true),
