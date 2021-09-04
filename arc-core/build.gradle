@@ -56,6 +56,7 @@ jnigen{
         cppIncludes += ["soloud/src/backend/coreaudio/*.cpp"]
         cppFlags = "-std=c++11 -DWITH_COREAUDIO " + cppFlags.replace("x86_64", "arm64")
         libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
+        linkerFlags = linkerFlags.replace("x86_64", "arm64")
     }
     /*
     add(IOS){

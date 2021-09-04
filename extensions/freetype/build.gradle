@@ -37,6 +37,7 @@ jnigen{
     //add(MacOsX, x64)
     add(MacOsX, x64, ARM){
         cFlags = cppFlags = cppFlags.replace("x86_64", "arm64")
+        linkerFlags = linkerFlags.replace("x86_64", "arm64")
     }
     add(Android)
     //add(IOS)
