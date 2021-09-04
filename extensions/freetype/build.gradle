@@ -34,13 +34,13 @@ jnigen{
     add(Windows, x32)
     add(Windows, x64)
     add(Linux, x64)
-    //add(MacOsX, x64)
+    add(MacOsX, x64)
     add(MacOsX, x64, ARM){
         cFlags = cppFlags = cppFlags.replace("x86_64", "arm64")
         linkerFlags = linkerFlags.replace("x86_64", "arm64")
     }
     add(Android)
-    //add(IOS)
+    add(IOS)
 }
 
 task preJni{
