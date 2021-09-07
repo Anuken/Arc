@@ -907,8 +907,10 @@ public class Element{
     }
 
     /** Adds a touch listener. */
-    public void tapped(Runnable r){
-        addListener(new InputListener(){
+    public InputListener tapped(Runnable r){
+        InputListener result;
+
+        addListener(result = new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
                 r.run();
@@ -916,6 +918,8 @@ public class Element{
                 return true;
             }
         });
+
+        return result;
     }
 
     /** Adds a hover/mouse enter listener. */

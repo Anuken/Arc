@@ -56,6 +56,7 @@ public class TextField extends Element implements Disableable{
     protected boolean writeEnters;
     protected CharSequence displayText;
     protected float fontOffset, textHeight, textOffset;
+    InputListener inputDialogListener;
     TextFieldStyle style;
     InputListener inputListener;
     TextFieldListener listener;
@@ -157,13 +158,20 @@ public class TextField extends Element implements Disableable{
         return maxLength <= 0 || size < maxLength;
     }
 
+    public void removeInputDialog(){
+        if(hasInputDialog && inputDialogListener != null){
+            removeListener(inputDialogListener);
+            hasInputDialog = false;
+        }
+    }
+
     public void addInputDialog(){
         //mobile only
         if(!app.isMobile() || hasInputDialog) return;
 
         hasInputDialog = true;
 
-        tapped(() -> {
+        inputDialogListener = tapped(() -> {
             if(input.useKeyboard()) return;
 
             TextInput input = new TextInput();
@@ -902,6 +910,9 @@ public class TextField extends Element implements Disableable{
             selectionStart = cursor;
             Scene stage = getScene();
             if(stage != null) stage.setKeyboardFocus(TextField.this);
+            if(!hasInputDialog){
+                input.setOnscreenKeyboardVisible(true);
+            }
             hasSelection = true;
             return true;
         }

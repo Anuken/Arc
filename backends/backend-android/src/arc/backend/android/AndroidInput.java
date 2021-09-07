@@ -465,8 +465,6 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
 
     @Override
     public void setOnscreenKeyboardVisible(boolean visible){
-        //cannot show... for now
-        if(visible) return;
 
         handle.post(() -> {
             InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
