@@ -6,7 +6,6 @@ import android.content.*;
 import android.content.res.*;
 import android.net.*;
 import android.os.*;
-import android.os.Build.*;
 import android.view.*;
 import android.widget.*;
 import arc.Application;
@@ -259,18 +258,6 @@ public class AndroidApplication extends Activity implements Application{
     @Override
     public long getNativeHeap(){
         return Debug.getNativeHeapAllocatedSize();
-    }
-
-    @Override
-    public long getTotalRam(){
-        if(VERSION.SDK_INT >= 16){
-            ActivityManager actManager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
-            ActivityManager.MemoryInfo memInfo = new ActivityManager.MemoryInfo();
-            actManager.getMemoryInfo(memInfo);
-            return memInfo.totalMem;
-        }else{
-            return 0;
-        }
     }
 
     @Override

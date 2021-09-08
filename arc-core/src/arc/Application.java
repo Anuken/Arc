@@ -70,11 +70,6 @@ public interface Application extends Disposable{
         return 0;
     }
 
-    /** @return the amount of RAM this device has, in bytes, or 0 if this information cannot be fetched. */
-    default long getTotalRam(){
-        return 0;
-    }
-
     @Nullable
     String getClipboardText();
 
