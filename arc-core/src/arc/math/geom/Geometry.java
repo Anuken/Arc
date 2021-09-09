@@ -1,12 +1,8 @@
 package arc.math.geom;
 
-import arc.struct.Seq;
-import arc.struct.FloatSeq;
-import arc.struct.IntSeq;
-import arc.func.Intc2;
-import arc.func.Floatc2;
-import arc.func.Floatc4;
-import arc.math.Mathf;
+import arc.func.*;
+import arc.math.*;
+import arc.struct.*;
 
 public final class Geometry{
     /** Points representing cardinal directions, starting at the left and going counter-clockwise. */
@@ -149,6 +145,16 @@ public final class Geometry{
         }
 
         Seq<Vec2> path = new Seq<>();
+
+        //size = 3 needs special sorting due to conflicts
+        if(size == 3){
+            //int arrays don't support sorting with custom comparators, so box them.
+            Seq<Integer> boxed = new Seq<>();
+            ints.each(boxed::add);
+            boxed.sort(i -> Angles.angle(i % (size + 1), i / (size + 1), index, index));
+            ints.clear();
+            boxed.each(ints::add);
+        }
 
         int cindex = 0;
         while(ints.size > 0){
