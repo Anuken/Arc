@@ -50,6 +50,7 @@ public final class WindowedMean{
     public void fill(float value){
         dirty = true;
         Arrays.fill(values, value);
+        addedValues = values.length;
     }
 
     /**
