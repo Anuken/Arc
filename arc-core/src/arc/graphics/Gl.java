@@ -438,7 +438,7 @@ public class Gl{
 
     public static void depthMask(boolean flag){
         //TODO might be buggy, test it. may not clear the depth buffer?
-        if(flag == wasDepthMask) return;
+        if(optimize && flag == wasDepthMask) return;
         wasDepthMask = flag;
 
         Core.gl.glDepthMask(flag);
