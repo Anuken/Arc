@@ -16,6 +16,7 @@ public class SdlConfig{
     public boolean decorated = true;
     public boolean maximized = false;
     public boolean fullscreen = false;
+    public boolean disableAudio = false;
     public boolean gl30 = false;
     public int gl30Major = 3, gl30Minor = 0;
 

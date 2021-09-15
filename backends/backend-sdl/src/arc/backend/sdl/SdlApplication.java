@@ -35,7 +35,7 @@ public class SdlApplication implements Application{
         Core.graphics = this.graphics = new SdlGraphics(this);
         Core.input = this.input = new SdlInput();
         Core.settings = new Settings();
-        Core.audio = new Audio();
+        Core.audio = new Audio(!config.disableAudio);
 
         initIcon();
 

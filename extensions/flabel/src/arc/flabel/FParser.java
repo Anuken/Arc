@@ -2,6 +2,7 @@ package arc.flabel;
 
 import arc.func.*;
 import arc.struct.*;
+import arc.util.*;
 
 /** Utility class to parse tokens from a {@link FLabel}. */
 class FParser{
@@ -167,6 +168,8 @@ class FParser{
     private static void parseAllTokens(FLabel label, boolean square, Intc2 handler){
         StringBuilder text = label.getText();
 
+        Log.info("doing parse all tokens: " + text);
+
         for(int i = 0; i < text.length(); i++){
             char c = text.charAt(i);
             if(c == '\\'){
@@ -175,7 +178,7 @@ class FParser{
                 continue;
             }
 
-            char end = (/*c == '[' ? ']' : */c == '{' ? '}' : '_');
+            char end = (c == '[' ? ']' : c == '{' ? '}' : '_');
             if(end != '_'){
                 for(int j = i + 1; j < text.length(); j++){
                     //nested tokens, do not parse
@@ -184,6 +187,7 @@ class FParser{
                     }else if(text.charAt(j) == end){
                         //found token end!
                         handler.get(i + 1, j);
+                        i = j;
                         break;
                     }
                 }
