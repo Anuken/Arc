@@ -12,12 +12,13 @@ import arc.graphics.gl.*;
  * */
 public class Bloom{
     public int blurPasses = 1;
+    public boolean blending = false;
 
     private Shader thresholdShader, bloomShader, blurShader;
     private FrameBuffer buffer, pingPong1, pingPong2;
 
     private float bloomIntensity, originalIntensity, threshold;
-    private boolean blending = false, capturing = false;
+    private boolean capturing = false;
     private float r, g, b, a;
 
     /** Rebinds the context. Necessary on Android/IOS. TODO or is it? */
