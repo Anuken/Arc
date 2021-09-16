@@ -168,8 +168,6 @@ class FParser{
     private static void parseAllTokens(FLabel label, boolean square, Intc2 handler){
         StringBuilder text = label.getText();
 
-        Log.info("doing parse all tokens: " + text);
-
         for(int i = 0; i < text.length(); i++){
             char c = text.charAt(i);
             if(c == '\\'){
