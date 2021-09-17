@@ -88,14 +88,17 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
         Draw.blit(this, shader);
     }
 
-    /** Note that this does nothing if the width and height are correct. */
-    public void resize(int width, int height){
+    /**
+     * Note that this does nothing if the width and height are correct.
+     * @return whether the buffer was actually resized.
+     * */
+    public boolean resize(int width, int height){
         //prevent incomplete attachment issues.
         width = Math.max(width, 2);
         height = Math.max(height, 2);
 
         //ignore pointless resizing
-        if(width == getWidth() && height == getHeight()) return;
+        if(width == getWidth() && height == getHeight()) return false;
 
         TextureFilter min = getTexture().getMinFilter(), mag = getTexture().getMagFilter();
         boolean hasDepth = depthbufferHandle != 0, hasStencil = stencilbufferHandle != 0;
@@ -114,6 +117,8 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
         this.hasDepthStencilPackedBuffer = this.isMRT = false;
         build();
         getTexture().setFilter(min, mag);
+
+        return true;
     }
 
     /** See {@link GLFrameBuffer#unbind()} */

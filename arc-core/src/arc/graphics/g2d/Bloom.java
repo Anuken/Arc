@@ -55,13 +55,17 @@ public class Bloom{
     }
 
     public void resize(int width, int height){
-        boolean changed = (pingPong1.getWidth() != width || pingPong1.getHeight() != height);
+        resize(width, height, 4);
+    }
+
+    public void resize(int width, int height, int scaling){
+        boolean changed = (pingPong1.getWidth() != width / scaling || pingPong1.getHeight() != height / scaling);
 
         if(changed){
-            pingPong1.resize(width, height);
-            pingPong2.resize(width, height);
-            buffer.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
-            setSize(width, height);
+            pingPong1.resize(width / scaling, height / scaling);
+            pingPong2.resize(width / scaling, height / scaling);
+            buffer.resize(width, height);
+            setSize(width / scaling, height / scaling);
         }
     }
 
