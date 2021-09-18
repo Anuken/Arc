@@ -209,6 +209,28 @@ public class Lines{
     public static void circle(float x, float y, float rad){
         poly(x, y, circleVertices(rad), rad);
     }
+    
+    public static void ellipse(float x, float y, float rad, float width, float height, float rot){
+        float sides = Lines.circleVertices(rad);
+        float space = 360 / sides;
+        for(int i = 0; i < sides; i++){
+            float a = space * i;
+            u.trns(
+                rot,
+                rad * width * cosDeg(a),
+                rad * height * sinDeg(a)
+            );
+            v.trns(
+                rot,
+                rad * width * cosDeg(a + space),
+                rad * height * sinDeg(a + space)
+            );
+            Lines.line(
+                x + u.x, y + u.y,
+                x + v.x, y + v.y
+            );
+        }
+    }
 
     public static void dashCircle(float x, float y, float radius){
         float scaleFactor = 0.6f;
