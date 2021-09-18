@@ -217,13 +217,13 @@ public class Lines{
             float a = space * i;
             u.trns(
                 rot,
-                rad * width * cosDeg(a),
-                rad * height * sinDeg(a)
+                rad * width * Mathf.cosDeg(a),
+                rad * height * Mathf.sinDeg(a)
             );
             v.trns(
                 rot,
-                rad * width * cosDeg(a + space),
-                rad * height * sinDeg(a + space)
+                rad * width * Mathf.cosDeg(a + space),
+                rad * height * Mathf.sinDeg(a + space)
             );
             Lines.line(
                 x + u.x, y + u.y,
