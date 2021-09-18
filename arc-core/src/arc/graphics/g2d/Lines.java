@@ -215,20 +215,15 @@ public class Lines{
         float space = 360 / sides;
         for(int i = 0; i < sides; i++){
             float a = space * i;
-            u.trns(
-                rot,
+            u.trns(rot,
                 rad * width * Mathf.cosDeg(a),
                 rad * height * Mathf.sinDeg(a)
             );
-            v.trns(
-                rot,
+            v.trns(rot,
                 rad * width * Mathf.cosDeg(a + space),
                 rad * height * Mathf.sinDeg(a + space)
             );
-            Lines.line(
-                x + u.x, y + u.y,
-                x + v.x, y + v.y
-            );
+            line(x + u.x, y + u.y, x + v.x, y + v.y);
         }
     }
 
