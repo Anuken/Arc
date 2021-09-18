@@ -211,7 +211,7 @@ public class Lines{
     }
     
     public static void ellipse(float x, float y, float rad, float width, float height, float rot){
-        float sides = Lines.circleVertices(rad);
+        float sides = circleVertices(rad);
         float space = 360 / sides;
         for(int i = 0; i < sides; i++){
             float a = space * i;
