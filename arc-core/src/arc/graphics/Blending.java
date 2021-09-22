@@ -1,11 +1,10 @@
 package arc.graphics;
 
-/** Specific blending modes. */
-public enum Blending{
-    normal(Gl.srcAlpha, Gl.oneMinusSrcAlpha),
-    additive(Gl.srcAlpha, Gl.one),
-    disabled(Gl.srcAlpha, Gl.oneMinusSrcAlpha){
-
+/** Blending modes, can be instantiated to make custom blending. */
+public class Blending{
+    public static final Blending normal = new Blending(Gl.srcAlpha, Gl.oneMinusSrcAlpha);
+    public static final Blending additive = new Blending(Gl.srcAlpha, Gl.one);
+    public static final Blending disabled = new Blending(Gl.srcAlpha, Gl.oneMinusSrcAlpha){
         @Override
         public void apply(){
             Gl.disable(Gl.blend);
@@ -14,7 +13,7 @@ public enum Blending{
 
     public final int src, dst;
 
-    Blending(int src, int dst){
+    public Blending(int src, int dst){
         this.src = src;
         this.dst = dst;
     }
