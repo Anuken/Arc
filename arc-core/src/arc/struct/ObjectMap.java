@@ -183,6 +183,12 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
             put(entry.key, entry.value);
     }
 
+    public void putAll(Object... values) {
+        for(int i = 0; i < values.length / 2; i++){
+            put((K) values[i * 2], (V) values[i * 2 + 1]);
+        }
+    }
+
     /** Put all the keys of this other map into this map, and return this map for chaining. */
     public ObjectMap<K, V> merge(ObjectMap<? extends K, ? extends V> map){
         putAll(map);
