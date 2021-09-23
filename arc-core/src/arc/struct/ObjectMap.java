@@ -45,7 +45,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
         ObjectMap<K, V> map = new ObjectMap<>();
 
         for(int i = 0; i < values.length / 2; i++){
-            map.put((K) values[i * 2], (V) values[i * 2 + 1]);
+            map.put((K)values[i * 2], (V)values[i * 2 + 1]);
         }
 
         return map;
@@ -183,9 +183,9 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
             put(entry.key, entry.value);
     }
 
-    public void putAll(Object... values) {
+    public void putAll(Object... values){
         for(int i = 0; i < values.length / 2; i++){
-            put((K) values[i * 2], (V) values[i * 2 + 1]);
+            put((K)values[i * 2], (V)values[i * 2 + 1]);
         }
     }
 
