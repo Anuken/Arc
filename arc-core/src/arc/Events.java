@@ -18,8 +18,8 @@ public class Events{
         events.get(type, Seq::new).add(e -> listener.run());
     }
 
-    public static <T> void remove(Class<T> type, Cons<T> listener){
-        events.get(type, Seq::new).remove(listener);
+    public static <T> boolean remove(Class<T> type, Cons<T> listener){
+        return events.get(type, Seq::new).remove(listener);
     }
 
     public static <T> void fire(T type){
