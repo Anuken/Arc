@@ -216,7 +216,8 @@ public final class DiscordRPC{
         public boolean instance;
 
         public Jval toJson(){
-            boolean useButtons = joinSecret == null && matchSecret == null && spectateSecret == null;
+            boolean useButtons = joinSecret == null && matchSecret == null && spectateSecret == null &&
+                (label1 != null && url1 != null || label2 != null && url2 != null);
 
             return Jval.newObject()
             .put("state", state)
