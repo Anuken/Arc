@@ -54,10 +54,12 @@ jobs:
           brew install sdl2
           brew install glew
       - name: Build natives
+        env:
+          MACOSX_DEPLOYMENT_TARGET: '10.9'
         run: |
           ./gradlew arc-core:jnigenBuild
           ./gradlew extensions:freetype:jnigenBuild
-#         ./gradlew backends:backend-sdl:jnigenBuild #does not work/link correctly; requires some objc runtime
+         ./gradlew backends:backend-sdl:jnigenBuild
       - name: Upload natives
         uses: actions/upload-artifact@v2
         with:
