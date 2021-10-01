@@ -40,7 +40,7 @@ public class FloatFrameBuffer extends FrameBuffer{
     }
 
     @Override
-    public boolean resize(int width, int height){
+    public void resize(int width, int height){
         throw new IllegalArgumentException("resize() is currently unsupported here.");
     }
 
