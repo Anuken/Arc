@@ -27,7 +27,6 @@ public class ProgressBar extends Element implements Disableable{
     final boolean vertical;
     float position;
     boolean disabled;
-    boolean clamped = true;
     private ProgressBarStyle style;
     private float min, max, stepSize;
     private float value, animateFromValue;
@@ -235,12 +234,12 @@ public class ProgressBar extends Element implements Disableable{
 
     /**
      * Sets the progress bar position, rounded to the nearest step size and clamped to the minimum and maximum values.
-     * {@link #clamp(float)} can be overridden to allow values outside of the progress bar's min/max range.
      * @return false if the value was not changed because the progress bar already had the value or it was canceled by a
      * listener.
      */
-    public boolean setValue(float value){
-        value = clamp(Math.round(value / stepSize) * stepSize);
+    public boolean setValue(float value, boolean clampValue){
+        float val = Math.round(value / stepSize) * stepSize;
+        value = clampValue ? clamp(val) : val;
         float oldValue = this.value;
         if(value == oldValue) return false;
         float oldVisualValue = getVisualValue();
@@ -256,13 +255,16 @@ public class ProgressBar extends Element implements Disableable{
         Pools.free(changeEvent);
         return !cancelled;
     }
+    
+    public boolean setValue(float value){
+        return setValue(value, true);
+    }
 
     /**
-     * Clamps the value to the progress bar's min/max range. This can be overridden to allow a range different from the progress
-     * bar knob's range.
+     * Clamps the value to the progress bar's min/max range.
      */
     protected float clamp(float value){
-        return clamped ? Mathf.clamp(value, min, max) : value;
+        return Mathf.clamp(value, min, max);
     }
 
     /** Sets the range of this progress bar. The progress bar's current value is clamped to the range. */
@@ -332,11 +334,6 @@ public class ProgressBar extends Element implements Disableable{
     /** If true (the default), inner Drawable positions and sizes are rounded to integers. */
     public void setRound(boolean round){
         this.round = round;
-    }
-    
-    /** If true (the default), the value will be clamped to the range if it somehow ends up out of it. */
-    public void setClamped(boolean clamp){
-        this.clamped = clamp;
     }
 
     @Override
