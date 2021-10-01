@@ -88,6 +88,12 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
         Draw.blit(this, shader);
     }
 
+    public boolean resizeCheck(int width, int height){
+        int lastWidth = getWidth(), lastHeight = getHeight();
+        resize(width, height);
+        return lastWidth != getWidth() || lastHeight != getHeight();
+    }
+
     /**
      * Note that this does nothing if the width and height are the same.
      * */
