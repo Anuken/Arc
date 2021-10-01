@@ -27,6 +27,7 @@ public class ProgressBar extends Element implements Disableable{
     final boolean vertical;
     float position;
     boolean disabled;
+    boolean clamped = true;
     private ProgressBarStyle style;
     private float min, max, stepSize;
     private float value, animateFromValue;
@@ -261,7 +262,7 @@ public class ProgressBar extends Element implements Disableable{
      * bar knob's range.
      */
     protected float clamp(float value){
-        return Mathf.clamp(value, min, max);
+        return clamped ? Mathf.clamp(value, min, max) : value;
     }
 
     /** Sets the range of this progress bar. The progress bar's current value is clamped to the range. */
@@ -331,6 +332,11 @@ public class ProgressBar extends Element implements Disableable{
     /** If true (the default), inner Drawable positions and sizes are rounded to integers. */
     public void setRound(boolean round){
         this.round = round;
+    }
+    
+    /** If true (the default), the value will be clamped to the range if it somehow ends up out of it. */
+    public void setClamped(boolean clamp){
+        this.clamped = clamp;
     }
 
     @Override
