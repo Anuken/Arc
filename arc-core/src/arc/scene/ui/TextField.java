@@ -340,6 +340,7 @@ public class TextField extends Element implements Disableable{
         if(displayText.length() == 0){
             if(!focused && messageText != null){
                 Font messageFont = style.messageFont != null ? style.messageFont : font;
+                messageFont.getColor().write(Tmp.c1);
 
                 if(style.messageFontColor != null){
                     messageFont.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b,
@@ -353,6 +354,7 @@ public class TextField extends Element implements Disableable{
                 messageFont.draw(messageText, x + bgLeftWidth, y + textY + yOffset, 0, messageText.length(),
                     width - bgLeftWidth - bgRightWidth, textHAlign, false, "...");
                 messageFont.getData().markupEnabled = had;
+                messageFont.setColor(Tmp.c1);
             }
         }else{
             font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * color.a * parentAlpha);
