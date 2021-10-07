@@ -40,6 +40,7 @@ public class IntSeq{
      */
     public IntSeq(boolean ordered, int capacity){
         this.ordered = ordered;
+        size = capacity;
         items = new int[capacity];
     }
 
