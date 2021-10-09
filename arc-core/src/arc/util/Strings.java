@@ -514,17 +514,10 @@ public class Strings{
 
     public static boolean canParsePositiveFloat(String s){
         try{
-            return Float.parseFloat(s) > 0;
+            return Float.parseFloat(s) >= 0;
         }catch(Exception e){
             return false;
         }
-    }
-
-    /** Returns Integer.MIN_VALUE if parsing failed. */
-    public static int parsePositiveInt(String s){
-        int value = parseInt(s, Integer.MIN_VALUE);
-
-        return value <= 0 ? Integer.MIN_VALUE : value;
     }
 
     /** Returns Float.NEGATIVE_INFINITY if parsing failed. */
