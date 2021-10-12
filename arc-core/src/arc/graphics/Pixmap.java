@@ -152,6 +152,14 @@ public class Pixmap implements Disposable{
         }
     }
 
+    public void replace(IntIntf func){
+        for(int x = 0; x < width; x++){
+            for(int y = 0; y < height; y++){
+                setRaw(x, y, func.get(getRaw(x, y)));
+            }
+        }
+    }
+
     /** Fills the complete bitmap with the specified color. */
     public void fill(int color){
         int len = width * height * 4;
