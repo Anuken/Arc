@@ -15,6 +15,7 @@ public class Draw{
 
     private static final Color[] carr = new Color[3];
     private static final float[] vertices = new float[SpriteBatch.SPRITE_SIZE];
+    private static @Nullable FloatFloatf zTransformer;
 
     public static float scl = 1f;
     public static float xscl = 1f, yscl = 1f;
@@ -140,13 +141,22 @@ public class Draw{
         batch.setSortAscending(ascend);
     }
 
+    /** Sets a Z-transformer function that will modify subsequent calls to Draw.z. Yep, this is as terrible as it sounds. */
+    public static void zTransform(FloatFloatf f){
+        zTransformer = f;
+    }
+
+    public static void zTransform(){
+        zTransform(null);
+    }
+
     public static float z(){
         return batch.sortAscending ? batch.z : -batch.z;
     }
 
     /** Note that this does nothing on most Batch implementations. */
     public static void z(float z){
-        Core.batch.z(z);
+        Core.batch.z(zTransformer == null ? z : zTransformer.get(z));
     }
 
     public static Color getColor(){
@@ -468,4 +478,5 @@ public class Draw{
 
         Draw.vert(region.texture, vertices, 0, vertices.length);
     }
+
 }
