@@ -238,7 +238,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
             Gl.deleteFramebuffer(framebufferHandle);
 
             if(result == Gl.framebufferIncompleteAttachment)
-                throw new IllegalStateException("Frame buffer couldn't be constructed: incomplete attachment");
+                throw new IllegalStateException("Frame buffer couldn't be constructed: incomplete attachment (" + width + "x" + height + ")");
             if(result == Gl.framebufferIncompleteDimensions)
                 throw new IllegalStateException("Frame buffer couldn't be constructed: incomplete dimensions");
             if(result == Gl.framebufferIncompleteMissingAttachment)
