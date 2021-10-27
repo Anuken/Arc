@@ -201,14 +201,16 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         }
     }
 
-    /**Replaces values without creating a new array.*/
-    public void replace(Func<T, T> mapper){
+    /** Replaces values without creating a new array. */
+    public Seq<T> replace(Func<T, T> mapper){
         for(int i = 0; i < size; i++){
             items[i] = mapper.get(items[i]);
         }
+
+        return this;
     }
 
-    /** Flattens this array of arrays into one array. Allocates a new instance.*/
+    /** Flattens this array of arrays into one array. Allocates a new instance. */
     public <R> Seq<R> flatten(){
         Seq<R> arr = new Seq<>();
         for(int i = 0; i < size; i++){
@@ -217,7 +219,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return arr;
     }
 
-    /**Returns a new array with the mapped values.*/
+    /** Returns a new array with the mapped values. */
     public <R> Seq<R> flatMap(Func<T, Iterable<R>> mapper){
         Seq<R> arr = new Seq<>(size);
         for(int i = 0; i < size; i++){
@@ -845,7 +847,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return (Seq<R>)this;
     }
 
-    /** Allocates a new array with all elements that match the predicate.*/
+    /** Allocates a new array with all elements that match the predicate. */
     public Seq<T> select(Boolf<T> predicate){
         Seq<T> arr = new Seq<>();
         for(int i = 0; i < size; i++){
@@ -901,7 +903,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return Select.instance().selectIndex(items, comparator, kthLowest, size);
     }
 
-    public void reverse(){
+    public Seq<T> reverse(){
         T[] items = this.items;
         for(int i = 0, lastIndex = size - 1, n = size / 2; i < n; i++){
             int ii = lastIndex - i;
@@ -909,9 +911,11 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
             items[i] = items[ii];
             items[ii] = temp;
         }
+
+        return this;
     }
 
-    public void shuffle(){
+    public Seq<T> shuffle(){
         T[] items = this.items;
         for(int i = size - 1; i >= 0; i--){
             int ii = Mathf.random(i);
@@ -919,18 +923,22 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
             items[i] = items[ii];
             items[ii] = temp;
         }
+
+        return this;
     }
 
     /**
      * Reduces the size of the array to the specified size. If the array is already smaller than the specified size, no action is
      * taken.
      */
-    public void truncate(int newSize){
+    public Seq<T> truncate(int newSize){
         if(newSize < 0) throw new IllegalArgumentException("newSize must be >= 0: " + newSize);
         if(size <= newSize) return;
         for(int i = newSize; i < size; i++)
             items[i] = null;
         size = newSize;
+
+        return this;
     }
 
     public T random(Rand rand){
