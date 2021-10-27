@@ -13,7 +13,7 @@ import java.util.*;
  */
 @SuppressWarnings("unchecked")
 public class Seq<T> implements Iterable<T>, Eachable<T>{
-    /** Debugging variable to count total number of iterators allocated.*/
+    /** Debugging variable to count total number of iterators allocated. */
     public static int iteratorsAllocated = 0;
     /**
      * Provides direct access to the underlying array. If the Array's generic type is not Object, this field may only be accessed
@@ -129,7 +129,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
     public static <T> Seq<T> with(Iterable<T> array){
         Seq<T> out = new Seq<>();
         for(T thing : array){
-            out.add((T)thing);
+            out.add(thing);
         }
         return out;
     }
@@ -150,7 +150,6 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         for(int i = 0; i < size; i++){
             map.put(keygen.get(items[i]), valgen.get(items[i]));
         }
-
         return map;
     }
 
@@ -201,14 +200,15 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         }
     }
 
-    /**Replaces values without creating a new array.*/
-    public void replace(Func<T, T> mapper){
+    /** Replaces values without creating a new array. */
+    public Seq<T> replace(Func<T, T> mapper){
         for(int i = 0; i < size; i++){
             items[i] = mapper.get(items[i]);
         }
+        return this;
     }
 
-    /** Flattens this array of arrays into one array. Allocates a new instance.*/
+    /** Flattens this array of arrays into one array. Allocates a new instance. */
     public <R> Seq<R> flatten(){
         Seq<R> arr = new Seq<>();
         for(int i = 0; i < size; i++){
@@ -217,7 +217,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return arr;
     }
 
-    /**Returns a new array with the mapped values.*/
+    /** Returns a new array with the mapped values. */
     public <R> Seq<R> flatMap(Func<T, Iterable<R>> mapper){
         Seq<R> arr = new Seq<>(size);
         for(int i = 0; i < size; i++){
@@ -226,7 +226,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return arr;
     }
 
-    /**Returns a new array with the mapped values.*/
+    /** Returns a new array with the mapped values. */
     public <R> Seq<R> map(Func<T, R> mapper){
         Seq<R> arr = new Seq<>(size);
         for(int i = 0; i < size; i++){
@@ -394,7 +394,6 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
 
     public Seq<T> addAll(Seq<? extends T> array){
         addAll(array.items, 0, array.size);
-
         return this;
     }
 
@@ -402,13 +401,11 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         if(start + count > array.size)
             throw new IllegalArgumentException("start + count must be <= size: " + start + " + " + count + " <= " + array.size);
         addAll(array.items, start, count);
-
         return this;
     }
 
     public Seq<T> addAll(T... array){
         addAll(array, 0, array.length);
-
         return this;
     }
 
@@ -418,7 +415,6 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         if(sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
         System.arraycopy(array, start, items, size, count);
         size += count;
-
         return this;
     }
 
@@ -430,11 +426,10 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
                 add(t);
             }
         }
-
         return this;
     }
 
-    /** Sets this array's contents to the specified array.*/
+    /** Sets this array's contents to the specified array. */
     public void set(Seq<? extends T> array){
         clear();
         addAll(array);
@@ -750,7 +745,6 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         for(int i = 0, n = size; i < n; i++)
             items[i] = null;
         size = 0;
-
         return this;
     }
 
@@ -845,7 +839,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return (Seq<R>)this;
     }
 
-    /** Allocates a new array with all elements that match the predicate.*/
+    /** Allocates a new array with all elements that match the predicate. */
     public Seq<T> select(Boolf<T> predicate){
         Seq<T> arr = new Seq<>();
         for(int i = 0; i < size; i++){
@@ -901,7 +895,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return Select.instance().selectIndex(items, comparator, kthLowest, size);
     }
 
-    public void reverse(){
+    public Seq<T> reverse(){
         T[] items = this.items;
         for(int i = 0, lastIndex = size - 1, n = size / 2; i < n; i++){
             int ii = lastIndex - i;
@@ -909,9 +903,10 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
             items[i] = items[ii];
             items[ii] = temp;
         }
+        return this;
     }
 
-    public void shuffle(){
+    public Seq<T> shuffle(){
         T[] items = this.items;
         for(int i = size - 1; i >= 0; i--){
             int ii = Mathf.random(i);
@@ -919,18 +914,20 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
             items[i] = items[ii];
             items[ii] = temp;
         }
+        return this;
     }
 
     /**
      * Reduces the size of the array to the specified size. If the array is already smaller than the specified size, no action is
      * taken.
      */
-    public void truncate(int newSize){
+    public Seq<T> truncate(int newSize){
         if(newSize < 0) throw new IllegalArgumentException("newSize must be >= 0: " + newSize);
-        if(size <= newSize) return;
+        if(size <= newSize) return this;
         for(int i = newSize; i < size; i++)
             items[i] = null;
         size = newSize;
+        return this;
     }
 
     public T random(Rand rand){
@@ -959,7 +956,6 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         if(index >= eidx){
             index ++;
         }
-
         return items[index];
     }
 
