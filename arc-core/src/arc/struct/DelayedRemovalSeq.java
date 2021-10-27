@@ -15,18 +15,18 @@ import java.util.Comparator;
 @SuppressWarnings("unchecked")
 public class DelayedRemovalSeq<T> extends Seq<T>{
     private int iterating;
-    private IntSeq remove = new IntSeq(0);
+    private final IntSeq remove = new IntSeq(0);
     private int clear;
 
     public DelayedRemovalSeq(){
         super();
     }
 
-    public DelayedRemovalSeq(Seq array){
+    public DelayedRemovalSeq(Seq<? extends T> array){
         super(array);
     }
 
-    public DelayedRemovalSeq(boolean ordered, int capacity, Class arrayType){
+    public DelayedRemovalSeq(boolean ordered, int capacity, Class<?> arrayType){
         super(ordered, capacity, arrayType);
     }
 
@@ -38,7 +38,7 @@ public class DelayedRemovalSeq<T> extends Seq<T>{
         super(ordered, array, startIndex, count);
     }
 
-    public DelayedRemovalSeq(Class arrayType){
+    public DelayedRemovalSeq(Class<?> arrayType){
         super(arrayType);
     }
 
@@ -52,7 +52,7 @@ public class DelayedRemovalSeq<T> extends Seq<T>{
 
     /** @see #DelayedRemovalSeq(Object[]) */
     public static <T> DelayedRemovalSeq<T> with(T... array){
-        return new DelayedRemovalSeq(array);
+        return new DelayedRemovalSeq<>(array);
     }
 
     public void begin(){
@@ -155,19 +155,19 @@ public class DelayedRemovalSeq<T> extends Seq<T>{
         return super.sort(comparator);
     }
 
-    public void reverse(){
+    public Seq<T> reverse(){
         if(iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
-        super.reverse();
+        return super.reverse();
     }
 
-    public void shuffle(){
+    public Seq<T> shuffle(){
         if(iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
-        super.shuffle();
+        return super.shuffle();
     }
 
-    public void truncate(int newSize){
+    public Seq<T> truncate(int newSize){
         if(iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
-        super.truncate(newSize);
+        return super.truncate(newSize);
     }
 
     public T[] setSize(int newSize){

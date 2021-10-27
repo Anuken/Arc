@@ -22,6 +22,7 @@ import java.util.Comparator;
  * </pre>
  * @author Nathan Sweet
  */
+@SuppressWarnings("unchecked")
 public class SnapshotSeq<T> extends Seq<T>{
     private T[] snapshot, recycled;
     private int snapshots;
@@ -34,7 +35,7 @@ public class SnapshotSeq<T> extends Seq<T>{
         super(array);
     }
 
-    public SnapshotSeq(boolean ordered, int capacity, Class arrayType){
+    public SnapshotSeq(boolean ordered, int capacity, Class<?> arrayType){
         super(ordered, capacity, arrayType);
     }
 
@@ -46,7 +47,7 @@ public class SnapshotSeq<T> extends Seq<T>{
         super(ordered, array, startIndex, count);
     }
 
-    public SnapshotSeq(Class arrayType){
+    public SnapshotSeq(Class<?> arrayType){
         super(arrayType);
     }
 
@@ -151,19 +152,19 @@ public class SnapshotSeq<T> extends Seq<T>{
         return super.sort(comparator);
     }
 
-    public void reverse(){
+    public Seq<T> reverse(){
         modified();
-        super.reverse();
+        return super.reverse();
     }
 
-    public void shuffle(){
+    public Seq<T> shuffle(){
         modified();
-        super.shuffle();
+        return super.shuffle();
     }
 
-    public void truncate(int newSize){
+    public Seq<T> truncate(int newSize){
         modified();
-        super.truncate(newSize);
+        return super.truncate(newSize);
     }
 
     public T[] setSize(int newSize){
