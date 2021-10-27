@@ -435,15 +435,6 @@ public class FLabel extends Label{
                 }
             }
 
-            // Notify listener about char progression
-            if(listener != null){
-                if(rawCharIndex > 0){
-                    int nextIndex = Mathf.clamp(rawCharIndex, 0, getText().length() - 1);
-                    char nextChar = getText().charAt(nextIndex);
-                    listener.onChar(nextChar);
-                }
-            }
-
             // Increment char counter
             charCounter++;
 
@@ -688,6 +679,11 @@ public class FLabel extends Label{
                 // Advance glyph count
                 glyphCount++;
                 glyphLeft--;
+
+                // Notify listener about char progression
+                if(listener != null){
+                    listener.onChar((char)glyph.id);
+                }
             }
         }
     }
