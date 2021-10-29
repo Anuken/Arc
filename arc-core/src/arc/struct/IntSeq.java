@@ -125,6 +125,18 @@ public class IntSeq{
         return sum;
     }
 
+    /**
+     * Adds a value if it was already not in this sequence.
+     * @return whether this value was not present in this sequence.
+     * */
+    public boolean addUnique(int value){
+        if(!contains(value)){
+            add(value);
+            return true;
+        }
+        return false;
+    }
+
     public void add(int value){
         int[] items = this.items;
         if(size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));

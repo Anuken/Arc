@@ -37,7 +37,6 @@ public abstract class GLTexture implements Disposable{
 
     public static void uploadImageData(int target, TextureData data, int miplevel){
         if(data == null){
-            // FIXME: remove texture on target?
             return;
         }
 
@@ -51,7 +50,8 @@ public abstract class GLTexture implements Disposable{
         Pixmap pixmap = data.consumePixmap();
         boolean disposePixmap = data.disposePixmap();
 
-        Gl.pixelStorei(GL20.GL_UNPACK_ALIGNMENT, 1);
+        //note that pixmap data is always 4-byte aligned, no padding between rows; GL_UNPACK_ALIGNMENT is unnecessary
+
         if(data.useMipMaps()){
             MipMapGenerator.generateMipMap(target, pixmap, pixmap.width, pixmap.height);
         }else{
@@ -77,7 +77,7 @@ public abstract class GLTexture implements Disposable{
      * @param unit the unit (0 to MAX_TEXTURE_UNITS).
      */
     public void bind(int unit){
-        Gl.activeTexture(GL20.GL_TEXTURE0 + unit);
+        Gl.activeTexture(Gl.texture0 + unit);
         Gl.bindTexture(glTarget, glHandle);
     }
 
