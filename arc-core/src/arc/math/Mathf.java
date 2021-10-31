@@ -408,7 +408,6 @@ public final class Mathf{
         return approach(from, to, Time.delta * speed);
     }
 
-
     /** Linearly interpolates between fromValue to toValue on progress position. */
     public static float lerp(float fromValue, float toValue, float progress){
         return fromValue + (toValue - fromValue) * progress;
@@ -631,15 +630,15 @@ public final class Mathf{
     }
 
     public static float dst(float x1, float y1, float x2, float y2){
-        final float x_d = x2 - x1;
-        final float y_d = y2 - y1;
-        return (float)Math.sqrt(x_d * x_d + y_d * y_d);
+        final float xd = x2 - x1;
+        final float yd = y2 - y1;
+        return (float)Math.sqrt(xd * xd + yd * yd);
     }
 
     public static float dst2(float x1, float y1, float x2, float y2){
-        final float x_d = x2 - x1;
-        final float y_d = y2 - y1;
-        return x_d * x_d + y_d * y_d;
+        final float xd = x2 - x1;
+        final float yd = y2 - y1;
+        return xd * xd + yd * yd;
     }
 
     /** Manhattan distance. */
