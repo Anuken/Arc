@@ -440,6 +440,12 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         clear();
         return addAll(array);
     }
+    
+    /** Sets this array's contents to the specified array. */
+    public Seq<T> set(T... array){
+        clear();
+        return addAll(array);
+    }
 
     @Nullable
     public T getFrac(float index){
