@@ -44,6 +44,14 @@ public class Queue<T> implements Iterable<T>, Eachable<T>{
         this.values = (T[])java.lang.reflect.Array.newInstance(type, initialSize);
     }
 
+    public T[] toArray(Class<T> type){
+        T[] out = (T[])java.lang.reflect.Array.newInstance(type, size);
+        for(int i = 0; i < size; i++){
+            out[i] = get(i);
+        }
+        return out;
+    }
+
     /**
      * Append given object to the tail. (enqueue to tail) Unless backing array needs resizing, operates in O(1) time.
      * @param object can be null
