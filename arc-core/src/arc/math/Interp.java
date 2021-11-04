@@ -17,6 +17,7 @@ public interface Interp{
     };
 
     Interp one = a -> 1f;
+    Interp zero = a -> 0f;
     Interp slope = Mathf::slope;
 
     //
