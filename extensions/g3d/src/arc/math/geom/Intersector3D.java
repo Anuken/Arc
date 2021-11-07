@@ -28,9 +28,9 @@ public class Intersector3D{
      * @return Whether an intersection is present.
      */
     public static boolean intersectRayPlane(Ray ray, Plane plane, Vec3 intersection){
-        float denom = ray.direction.dot(plane.getNormal());
+        float denom = ray.direction.dot(plane.normal);
         if(denom != 0){
-            float t = -(ray.origin.dot(plane.getNormal()) + plane.getD()) / denom;
+            float t = -(ray.origin.dot(plane.normal) + plane.d) / denom;
             if(t < 0) return false;
 
             if(intersection != null) intersection.set(ray.origin).add(v0.set(ray.direction).scl(t));
@@ -51,9 +51,9 @@ public class Intersector3D{
                                            Vec3 intersection){
         Vec3 direction = tmp.set(x2, y2, z2).sub(x, y, z);
         Vec3 origin = tmp2.set(x, y, z);
-        float denom = direction.dot(plane.getNormal());
+        float denom = direction.dot(plane.normal);
         if(denom != 0){
-            float t = -(origin.dot(plane.getNormal()) + plane.getD()) / denom;
+            float t = -(origin.dot(plane.normal) + plane.d) / denom;
             if(intersection != null) intersection.set(origin).add(direction.scl(t));
             return t;
         }else if(plane.testPoint(origin) == Plane.PlaneSide.onPlane){
@@ -300,9 +300,9 @@ public class Intersector3D{
 
     public static boolean intersectSegmentPlane(Vec3 start, Vec3 end, Plane plane, Vec3 intersection){
         Vec3 dir = v0.set(end).sub(start);
-        float denom = dir.dot(plane.getNormal());
+        float denom = dir.dot(plane.normal);
         if(denom == 0f) return false;
-        float t = -(start.dot(plane.getNormal()) + plane.getD()) / denom;
+        float t = -(start.dot(plane.normal) + plane.d) / denom;
         if(t < 0 || t > 1) return false;
 
         intersection.set(start).add(dir.scl(t));
