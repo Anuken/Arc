@@ -8,7 +8,7 @@ public final class Mathf{
     public static final int[] zeroOne = {0, 1};
     public static final boolean[] booleans = {true, false};
     public static final float FLOAT_ROUNDING_ERROR = 0.000001f; // 32 bits
-    public static final float PI = 3.1415927f, pi = PI;
+    public static final float PI = 3.1415927f, pi = PI, halfPi = PI/2;
     public static final float PI2 = PI * 2;
     public static final float E = 2.7182818f;
     public static final float sqrt2 = Mathf.sqrt(2f);
@@ -122,24 +122,51 @@ public final class Mathf{
         }
     }
 
-    /**
-     * Returns atan2 in radians, faster but less accurate than Math.atan2. Average error of 0.00231 radians (0.1323 degrees),
-     * largest error of 0.00488 radians (0.2796 degrees).
-     */
-    public static float atan2(float x, float y){
-        if(Math.abs(x) < 0.0000001f){
-            if(y > 0f) return PI / 2;
-            if(y == 0f) return 0f;
-            return -PI / 2;
+    /** A variant on atan that does not tolerate infinite inputs for speed reasons, and because infinite inputs
+     * should never occur where this is used (only in {@link #atan2(float, float)}).
+     * @param i any finite float
+     * @return an output from the inverse tangent function, from PI/-2.0 to PI/2.0 inclusive */
+    private static float atn(final double i){
+        // We use double precision internally, because some constants need double precision.
+        final double n = Math.abs(i);
+        // c uses the "equally-good" formulation that permits n to be from 0 to almost infinity.
+        final double c = (n - 1.0) / (n + 1.0);
+        // The approximation needs 6 odd powers of c.
+        final double c2 = c * c, c3 = c * c2, c5 = c3 * c2, c7 = c5 * c2, c9 = c7 * c2, c11 = c9 * c2;
+        return (float)Math.copySign((Math.PI * 0.25)
+        + (0.99997726 * c - 0.33262347 * c3 + 0.19354346 * c5 - 0.11643287 * c7 + 0.05265332 * c9 - 0.0117212 * c11), i);
+    }
+
+    /** Close approximation of the frequently-used trigonometric method atan2, with higher precision than libGDX's atan2
+     * approximation. Average error is 1.057E-6 radians; maximum error is 1.922E-6. Takes y and x (in that unusual order) as
+     * floats, and returns the angle from the origin to that point in radians. It is about 4 times faster than
+     * {@link Math#atan2(double, double)} (roughly 15 ns instead of roughly 60 ns for Math, on Java 8 HotSpot). <br>
+     * Credit for this goes to the 1955 research study "Approximations for Digital Computers," by RAND Corporation. This is sheet
+     * 11's algorithm, which is the fourth-fastest and fourth-least precise. The algorithms on sheets 8-10 are faster, but only by
+     * a very small degree, and are considerably less precise. That study provides an atan method, and that cleanly
+     * translates to atan2().
+     * @param y y-component of the point to find the angle towards; note the parameter order is unusual by convention
+     * @param x x-component of the point to find the angle towards; note the parameter order is unusual by convention
+     * @return the angle to the given point, in radians as a float; ranges from -PI to PI */
+    public static float atan2(float x, final float y){
+        float n = y / x;
+        if(n != n){
+            n = (y == x ? 1f : -1f); // if both y and x are infinite, n would be NaN
+        }else if(n - n != n - n){
+            x = 0f; // if n is infinite, y is infinitely larger than x.
         }
-        final float atan, z = y / x;
-        if(Math.abs(z) < 1f){
-            atan = z / (1f + 0.28f * z * z);
-            if(x < 0f) return atan + (y < 0f ? -PI : PI);
-            return atan;
+
+        if(x > 0){
+            return atn(n);
+        }else if(x < 0){
+            return y >= 0 ? atn(n) + PI : atn(n) - PI;
+        }else if(y > 0){
+            return x + halfPi;
+        }else if(y < 0){
+            return x - halfPi;
+        }else{
+            return x + y; // returns 0 for 0,0 or NaN if either y or x is NaN
         }
-        atan = PI / 2 - z / (z * z + 0.28f);
-        return y < 0f ? atan - PI : atan;
     }
 
     public static int digits(int n){
