@@ -110,14 +110,14 @@ public final class Mathf{
     /** Wraps the given angle to the range [-PI, PI]
      * @param a the angle in radians
      * @return the given angle wrapped to the range [-PI, PI] */
-    public static float wrapAngleAroundZero (float a) {
-        if (a >= 0) {
+    public static float wrapAngleAroundZero(float a) {
+        if(a >= 0) {
             float rotation = a % Mathf.PI2;
-            if (rotation > Mathf.PI) rotation -= Mathf.PI2;
+            if(rotation > Mathf.PI) rotation -= Mathf.PI2;
             return rotation;
-        } else {
+        }else{
             float rotation = -a % Mathf.PI2;
-            if (rotation > Mathf.PI) rotation -= Mathf.PI2;
+            if(rotation > Mathf.PI) rotation -= Mathf.PI2;
             return -rotation;
         }
     }
