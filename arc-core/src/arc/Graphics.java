@@ -439,10 +439,10 @@ public abstract class Graphics implements Disposable{
             horizontalResize,
             verticalResize;
 
-            /**The override cursor to use when setting this cursor.*/
-            protected Cursor cursor;
+            /** The override cursor to use when setting this cursor.*/
+            @Nullable Cursor cursor;
 
-            /**Sets the alias for this cursor.*/
+            /** Sets the alias for this cursor. */
             public void set(Cursor cursor){
                 this.cursor = cursor;
             }

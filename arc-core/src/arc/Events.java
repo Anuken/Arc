@@ -38,4 +38,9 @@ public class Events{
             });
         }
     }
+
+    /** Don't do this. */
+    public static void clear(){
+        events.clear();
+    }
 }

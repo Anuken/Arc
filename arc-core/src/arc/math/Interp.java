@@ -90,9 +90,9 @@ public interface Interp{
     //
 
     class Pow implements Interp{
-        final int power;
+        final float power;
 
-        public Pow(int power){
+        public Pow(float power){
             this.power = power;
         }
 
@@ -104,7 +104,7 @@ public interface Interp{
     }
 
     class PowIn extends Pow{
-        public PowIn(int power){
+        public PowIn(float power){
             super(power);
         }
 
