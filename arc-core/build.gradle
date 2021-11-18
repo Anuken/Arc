@@ -29,9 +29,9 @@ jnigen{
         cIncludes = ["*.c", "soloud/src/core/**", "soloud/src/audiosource/wav/**", "soloud/src/filter/**"]
     }
     add(Linux, x64){
-        cppIncludes += ["soloud/src/backend/miniaudio/*.cpp", "soloud/src/backend/alsa/*.cpp"]
-        cppFlags = "-DWITH_MINIAUDIO -DWITH_ALSA -DMA_NO_PULSEAUDIO " + cppFlags
-        libraries += " -lpthread -lrt -lasound -lm -ldl"
+        cppIncludes += ["soloud/src/backend/miniaudio/*.cpp"]
+        cppFlags = "-DWITH_MINIAUDIO " + cppFlags
+        libraries += " -lpthread -lrt -lm -ldl"
     }
     add(Windows, x32){
         cppIncludes += ["soloud/src/backend/miniaudio/*.cpp"]
@@ -103,7 +103,7 @@ task preJni{
 
         if(!file("csrc/soloud").exists()){
             println "Fetching soloud source..."
-            "git clone --depth 1 --branch v0.1 https://github.com/Anuken/soloud.git $rootDir/arc-core/csrc/soloud".execute().waitFor()
+            "git clone --depth 1 --branch v0.3 https://github.com/Anuken/soloud.git $rootDir/arc-core/csrc/soloud".execute().waitFor()
         }
 
         copy{
