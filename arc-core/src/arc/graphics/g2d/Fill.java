@@ -193,8 +193,7 @@ public class Fill{
     public static void poly(float[] vertices, int length){
         if(length < 2*3) return;
 
-        //TODO untested
-        for(int i = 2; i < length - 4; i+= 6){
+        for(int i = 2; i < length - 4; i += 4){
             quad(
             vertices[0], vertices[1],
             vertices[i], vertices[i + 1],
