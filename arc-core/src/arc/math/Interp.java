@@ -87,12 +87,15 @@ public interface Interp{
         return start + (end - start) * apply(a);
     }
 
-    //
-
     class Pow implements Interp{
         final float power;
 
         public Pow(float power){
+            this.power = power;
+        }
+
+
+        public Pow(int power){
             this.power = power;
         }
 
@@ -120,6 +123,10 @@ public interface Interp{
 
     class PowOut extends Pow{
         public PowOut(int power){
+            super(power);
+        }
+
+        public PowOut(float power){
             super(power);
         }
 
