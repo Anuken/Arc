@@ -108,6 +108,10 @@ public interface Interp{
             super(power);
         }
 
+        public PowIn(int power){
+            super(power);
+        }
+
         @Override
         public float apply(float a){
             return (float)Math.pow(a, power);
