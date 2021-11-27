@@ -1,7 +1,10 @@
+import arc.files.*;
 import arc.graphics.*;
 import arc.util.*;
+import arc.util.noise.*;
 import org.junit.*;
 
+import static arc.math.Mathf.*;
 import static org.junit.Assert.*;
 
 public class PixmapTest{
@@ -25,6 +28,38 @@ public class PixmapTest{
         assertEquals(Color.red.rgba(), pix.get(50, 50));
         assertEquals(Color.red.rgba(), pix.get(54, 54));
         assertEquals(0, pix.get(0, 0));
+    }
+
+    @Test
+    public void noise(){
+        int w = 100, h = 100;
+        Pixmap pix = new Pixmap(w * 4, h * 4);
+        pix.each((x, y) -> {
+            double n = (tiledNoise(x % w, y % h, w, h, 20) + tiledNoise(x % w, y % h, w, h, 10) * 0.5) / 1.5;
+            pix.set(x, y, Tmp.c1.set(1f, 1f, 1f, 1f).mul((float)n));
+        });
+        Fi.get("/home/anuke/out.png").writePng(pix);
+    }
+
+    static double tiledNoise(float x, float y, float w, float h, float scl){
+        x /= scl;
+        y /= scl;
+        w /= scl;
+        h /= scl;
+
+        float
+        x1 = 0f, x2 = w - 1f,
+        y1 = 0f, y2 = h - 1f;
+
+        float s = x / w, t = y / h;
+        float dx = x2 - x1, dy = y2 - y1;
+
+        double nx = x1 + Math.cos(s*2*PI)*dx/PI2;
+        double ny = y1 + Math.cos(t*2*PI)*dy/PI2;
+        double nz = x1 + Math.sin(s*2*PI)*dx/PI2;
+        double nw = y1 + Math.sin(t*2*PI)*dy/PI2;
+
+        return Simplex.raw4d(nx, ny, nz, nw);
     }
 
     /*

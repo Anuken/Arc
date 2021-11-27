@@ -1,5 +1,7 @@
 package arc.util.noise;
 
+import static arc.math.Mathf.*;
+
 //TODO this class a disaster:
 //- nobody knows what range functions return
 //- generally bizarre outputs
@@ -452,6 +454,25 @@ public class Simplex{
 
         // Sum up and scale the result to cover the range [-1,1]
         return 27.0 * (n0 + n1 + n2 + n3 + n4);
+    }
+
+    public static double rawTiled(double x, double y, double x1, double y1, double w, double h, double scl){
+        x /= scl;
+        y /= scl;
+        w /= scl;
+        h /= scl;
+
+        double x2 = x1 + w, y2 = y1 + h;
+
+        double s = x / w, t = y / h;
+        double dx = x2 - x1, dy = y2 - y1;
+
+        double nx = x1 + Math.cos(s*2*PI)*dx/PI2;
+        double ny = y1 + Math.cos(t*2*PI)*dy/PI2;
+        double nz = x1 + Math.sin(s*2*PI)*dx/PI2;
+        double nw = y1 + Math.sin(t*2*PI)*dy/PI2;
+
+        return raw4d(nx, ny, nz, nw);
     }
 
     //hash function: seed (any) + x (0-512) -> 0-256
