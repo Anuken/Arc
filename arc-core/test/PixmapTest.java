@@ -1,9 +1,7 @@
 import arc.graphics.*;
 import arc.util.*;
-import arc.util.noise.*;
 import org.junit.*;
 
-import static arc.math.Mathf.*;
 import static org.junit.Assert.*;
 
 public class PixmapTest{
