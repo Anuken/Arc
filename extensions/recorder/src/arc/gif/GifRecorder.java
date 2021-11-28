@@ -113,11 +113,11 @@ public class GifRecorder{
 
                                 out.close();
                                 process.waitFor();
-                                frames.clear();
                             }catch(Exception e){
-                                e.printStackTrace();
+                                Log.err(e);
                             }
 
+                            frames.clear();
                             saving = false;
                         });
                     }
