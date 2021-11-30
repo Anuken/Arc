@@ -25,7 +25,7 @@ public class GifRecorder{
         recordKey = KeyCode.t,
         shiftKey = KeyCode.shiftLeft;
 
-    public boolean outputMp4 = true;
+    public boolean outputMp4 = false;
     public Fi exportDirectory = Core.files == null ? Fi.get("gifs") : Core.files.local("gifs");
     public float speedMultiplier = 1f;
     public int recordfps = 30;
@@ -96,8 +96,9 @@ public class GifRecorder{
 
                                 //linux-only
                                 String args = Strings.format(
-                                "/usr/bin/ffmpeg -r @ -s @x@ -f rawvideo -pix_fmt rgba -i - -frames:v @ -filter:v vflip,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse @/@.@",
-                                recordfps, (int)bounds.width, (int)bounds.height, frames.size, exportDirectory.absolutePath(), new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()).format(new Date()),
+                                "/usr/bin/ffmpeg -r @ -s @x@ -f rawvideo -pix_fmt rgba -i - -frames:v @ -filter:v vflip@ @/@.@",
+                                recordfps, (int)bounds.width, (int)bounds.height, frames.size, outputMp4 ? "" : ",split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse",
+                                exportDirectory.absolutePath(), new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()).format(new Date()),
                                 outputMp4 ? "mp4" : "gif"
                                 );
 
