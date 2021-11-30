@@ -1,50 +1,30 @@
 package arc.struct;
 
-import java.util.*;
+/** Tiny array wrapper with a mask int for fast contains() checks. */
+public class EnumSet<T extends Enum<T>>{
+    private int mask;
 
-public class EnumSet<T extends Enum<T>> implements Iterable<T>{
-    private int i;
-    private EnumSetIterator iterator = new EnumSetIterator();
-    T[] set;
+    /** Array, for iterating over. Do not change. */
+    public T[] array;
+    public int size;
 
     EnumSet(){
     }
 
+    EnumSet(int size){
+        this.size = size;
+    }
+
     public static <T extends Enum<T>> EnumSet<T> of(T... arr){
-        EnumSet<T> set = new EnumSet<>();
-        set.set = arr;
+        EnumSet<T> set = new EnumSet<>(arr.length);
+        set.array = arr;
         for(T t : arr){
-            set.i |= (1 << t.ordinal());
+            set.mask |= (1 << t.ordinal());
         }
         return set;
     }
 
     public boolean contains(T t){
-        return (i & (1 << t.ordinal())) != 0;
-    }
-
-    public int size(){
-        return set.length;
-    }
-
-    @Override
-    public Iterator<T> iterator(){
-        iterator.index = 0;
-        return iterator;
-    }
-
-    class EnumSetIterator implements Iterator<T>{
-        int index = 0;
-
-        @Override
-        public boolean hasNext(){
-            return index < set.length;
-        }
-
-        @Override
-        public T next(){
-            if(index >= set.length) return null;
-            return set[index++];
-        }
+        return (mask & (1 << t.ordinal())) != 0;
     }
 }
