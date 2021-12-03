@@ -37,8 +37,8 @@ public class ColorCodes{
 
     static{
 
-        //disable color codes on windows/android
-        if(OS.isWindows || OS.isAndroid){
+        //disable color codes on windows/android (ignore windows terminal which supports colors)
+        if((OS.isWindows && !OS.hasEnv("WT_SESSION")) || OS.isAndroid){
             flush = reset = bold = underline = black = red = green = yellow = blue = purple = cyan = lightWhite
             = lightBlack = lightRed = lightGreen = lightYellow = lightBlue = lightMagenta = lightCyan
             = white = backDefault = backRed = backYellow = backBlue = backGreen = italic = "";
