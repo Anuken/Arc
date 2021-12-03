@@ -2,12 +2,15 @@ package arc.backend.sdl;
 
 import arc.*;
 import arc.audio.*;
+import arc.files.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.async.*;
 
+import java.io.*;
+import java.lang.management.*;
 import java.net.*;
 
 import static arc.backend.sdl.jni.SDL.*;
@@ -70,6 +73,8 @@ public class SdlApplication implements Application{
 
     private void init(){
         ArcNativesLoader.load();
+
+        if(OS.isMac) restartMac();
 
         check(() -> SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
 
@@ -260,8 +265,33 @@ public class SdlApplication implements Application{
     }
 
     public static class SdlError extends RuntimeException{
-        public SdlError() {
+        public SdlError(){
             super(SDL_GetError());
+        }
+    }
+
+    /** MacOS doesn't work when -XstartOnFirstThread is not passed, this will restart the program with that argument if it isn't already present. */
+    private void restartMac(){
+        String id = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+
+        if(!OS.hasEnv("JAVA_STARTED_ON_FIRST_THREAD_" + id) || OS.env("JAVA_STARTED_ON_FIRST_THREAD_" + id).equals("0")){ //check if equal to 0 just in case
+            Log.warn("Applying -XstartOnFirstThread for macOS support.");
+            String javaPath = //attempt to locate java
+                new Fi(OS.prop("java.home")).child("bin/java").exists() ? new Fi(OS.prop("java.home")).child("bin/java").absolutePath() :
+                Core.files.local("jre/bin/java").exists() ? Core.files.local("jre/bin/java").absolutePath() :
+                "java";
+            try{
+                Fi jar = Fi.get(SdlApplication.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+                Seq<String> launchOptions = Seq.with(javaPath);
+                launchOptions.addAll(ManagementFactory.getRuntimeMXBean().getInputArguments());
+                launchOptions.addAll(System.getProperties().entrySet().stream().map(it -> "-D" + it).toArray(String[]::new));
+                launchOptions.addAll("-XstartOnFirstThread", "-jar", jar.absolutePath(), "-firstThread");
+
+                new ProcessBuilder(launchOptions.toArray(String.class)).inheritIO().start();
+                System.exit(0);
+            }catch(IOException | URISyntaxException e){
+                throw new SdlError(); //some part of this failed, likely failed to find java, fallback to throwing the error
+            }
         }
     }
 }
