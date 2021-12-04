@@ -274,7 +274,7 @@ public class SdlApplication implements Application{
     /** MacOS doesn't work when -XstartOnFirstThread is not passed, this will restart the program with that argument if it isn't already present. */
     @SuppressWarnings("unchecked")
     private void restartMac(){
-        try {
+        try{
             Class<?> mgmt = Class.forName("java.lang.management.ManagementFactory");
             Class<?> beanClass = Class.forName("java.lang.management.RuntimeMXBean");
             Object bean = Reflect.invoke(mgmt, "getRuntimeMXBean");
@@ -300,6 +300,6 @@ public class SdlApplication implements Application{
                     Log.err("Failed to apply the -XstartOnFirstThread argument, it is required in order to work on mac.");
                 }catch(InterruptedException ignored){}
             }
-        }catch(ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored){} //likely using bundled java, do nothing as the arg is already added
+        }catch(Exception ignored){} //likely using bundled java, do nothing as the arg is already added
     }
 }
