@@ -26,21 +26,21 @@ public class Lines{
     }
 
     public static void lineAngle(float x, float y, float angle, float length, boolean cap){
-        vector.set(1, 1).setLength(length).setAngle(angle);
+        vector.trns(angle, length);
 
         line(x, y, x + vector.x, y + vector.y, cap);
     }
 
     public static void lineAngle(float x, float y, float angle, float length){
-        vector.set(1, 1).setLength(length).setAngle(angle);
+        vector.trns(angle, length);
 
         line(x, y, x + vector.x, y + vector.y);
     }
 
-    public static void lineAngle(float x, float y, float offset, float angle, float length){
-        vector.set(1, 1).setLength(length + offset).setAngle(angle);
+    public static void lineAngle(float x, float y, float angle, float length, float offset){
+        vector.trns(angle, 1f);
 
-        line(x, y, x + vector.x, y + vector.y);
+        line(x + vector.x * offset, y + vector.y * offset, x + vector.x * (length + offset), y + vector.y * (length + offset));
     }
 
     public static void lineAngleCenter(float x, float y, float angle, float length, boolean cap){
