@@ -2,13 +2,17 @@ package arc.backend.sdl;
 
 import arc.*;
 import arc.audio.*;
+import arc.files.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.async.*;
 
+import java.io.*;
+import java.lang.reflect.*;
 import java.net.*;
+import java.util.*;
 
 import static arc.backend.sdl.jni.SDL.*;
 
@@ -70,6 +74,8 @@ public class SdlApplication implements Application{
 
     private void init(){
         ArcNativesLoader.load();
+
+        if(OS.isMac) restartMac();
 
         check(() -> SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
 
@@ -260,8 +266,40 @@ public class SdlApplication implements Application{
     }
 
     public static class SdlError extends RuntimeException{
-        public SdlError() {
+        public SdlError(){
             super(SDL_GetError());
         }
+    }
+
+    /** MacOS doesn't work when -XstartOnFirstThread is not passed, this will restart the program with that argument if it isn't already present. */
+    @SuppressWarnings("unchecked")
+    private void restartMac(){
+        try{
+            Class<?> mgmt = Class.forName("java.lang.management.ManagementFactory");
+            Class<?> beanClass = Class.forName("java.lang.management.RuntimeMXBean");
+            Object bean = Reflect.invoke(mgmt, "getRuntimeMXBean");
+            String id = ((String)beanClass.getMethod("getName").invoke(bean)).split("@")[0];
+
+            if(!OS.hasEnv("JAVA_STARTED_ON_FIRST_THREAD_" + id) || OS.env("JAVA_STARTED_ON_FIRST_THREAD_" + id).equals("0")){ //check if equal to 0 just in case
+                Log.warn("Applying -XstartOnFirstThread for macOS support.");
+                String javaPath = //attempt to locate java
+                    new Fi(OS.prop("java.home")).child("bin/java").exists() ? new Fi(OS.prop("java.home")).child("bin/java").absolutePath() :
+                    Core.files.local("jre/bin/java").exists() ? Core.files.local("jre/bin/java").absolutePath() :
+                    "java";
+                try{
+                    Fi jar = Fi.get(SdlApplication.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+                    Seq<String> launchOptions = Seq.with(javaPath);
+                    launchOptions.addAll((List<String>)beanClass.getMethod("getInputArguments").invoke(bean));
+                    launchOptions.addAll(System.getProperties().entrySet().stream().map(it -> "-D" + it).toArray(String[]::new));
+                    launchOptions.addAll("-XstartOnFirstThread", "-jar", jar.absolutePath(), "-firstThread");
+
+                    Process proc = new ProcessBuilder(launchOptions.toArray(String.class)).inheritIO().start();
+                    System.exit(proc.waitFor());
+                }catch(IOException | URISyntaxException e){ //some part of this failed, likely failed to find java
+                    Log.err(e);
+                    Log.err("Failed to apply the -XstartOnFirstThread argument, it is required in order to work on mac.");
+                }catch(InterruptedException ignored){}
+            }
+        }catch(Exception ignored){} //likely using bundled java, do nothing as the arg is already added
     }
 }
