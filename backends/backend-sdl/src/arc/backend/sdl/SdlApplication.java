@@ -11,7 +11,6 @@ import arc.util.*;
 import arc.util.async.*;
 
 import java.io.*;
-import java.lang.management.*;
 import java.lang.reflect.*;
 import java.net.*;
 import java.util.*;
@@ -277,7 +276,6 @@ public class SdlApplication implements Application{
     @SuppressWarnings("unchecked")
     private void restartMac(){
         try {
-            ManagementFactory.getRuntimeMXBean();
             Class<?> mgmt = Class.forName("java.lang.management.ManagementFactory");
             Class<?> beanClass = Class.forName("java.lang.management.RuntimeMXBean");
             Object bean = Reflect.invoke(mgmt, "getRuntimeMXBean");
