@@ -6,7 +6,6 @@ import arc.files.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.struct.*;
-import arc.util.TaskQueue;
 import arc.util.*;
 import arc.util.async.*;
 
