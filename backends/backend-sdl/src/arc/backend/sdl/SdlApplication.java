@@ -293,12 +293,12 @@ public class SdlApplication implements Application{
                     launchOptions.addAll(System.getProperties().entrySet().stream().map(it -> "-D" + it).toArray(String[]::new));
                     launchOptions.addAll("-XstartOnFirstThread", "-jar", jar.absolutePath(), "-firstThread");
 
-                    new ProcessBuilder(launchOptions.toArray(String.class)).inheritIO().start();
-                    System.exit(0);
+                    Process proc = new ProcessBuilder(launchOptions.toArray(String.class)).inheritIO().start();
+                    System.exit(proc.waitFor());
                 }catch(IOException | URISyntaxException e){ //some part of this failed, likely failed to find java
                     Log.err(e);
                     Log.err("Failed to apply the -XstartOnFirstThread argument, it is required in order to work on mac.");
-                }
+                }catch(InterruptedException ignored){}
             }
         }catch(ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored){} //likely using bundled java, do nothing as the arg is already added
     }
