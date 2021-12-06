@@ -34,6 +34,11 @@ public class PixmapRegion{
         return pixmap.get(this.x + x, this.y + y);
     }
 
+    /** @return the RGBA value at a region position without bounds checks. */
+    public int getRaw(int x, int y){
+        return pixmap.getRaw(this.x + x, this.y + y);
+    }
+
     /** @return the alpha value at a region position, 0 - 255. */
     public int getA(int x, int y){
         return pixmap.getA(this.x + x, this.y + y);

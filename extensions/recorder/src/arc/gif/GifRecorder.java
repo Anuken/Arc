@@ -25,7 +25,7 @@ public class GifRecorder{
         recordKey = KeyCode.t,
         shiftKey = KeyCode.shiftLeft;
 
-    public boolean outputMp4 = true;
+    public boolean outputMp4 = false;
     public Fi exportDirectory = Core.files == null ? Fi.get("gifs") : Core.files.local("gifs");
     public float speedMultiplier = 1f;
     public int recordfps = 30;

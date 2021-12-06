@@ -45,6 +45,22 @@ public class Pixmaps{
         pixels.put(lines);
     }
 
+    public static Pixmap blend(PixmapRegion source, PixmapRegion over, float alpha){
+        Pixmap out = new Pixmap(source.width, source.height);
+
+        for(int x = 0; x < source.width; x++){
+            for(int y = 0; y < source.height; y++){
+                int c1 = source.getRaw(x, y);
+                int c2 = over.getRaw(x, y);
+
+                int val = Tmp.c1.set(c1).lerp(Tmp.c2.set(c2), alpha).rgba();
+                out.setRaw(x, y, val);
+            }
+        }
+
+        return out;
+    }
+
     public static Pixmap median(Pixmap input, int radius, double percentile){
         return median(input, radius, percentile, tmpArray);
     }
