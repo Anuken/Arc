@@ -259,7 +259,7 @@ public class Fill{
     }
 
     public static void rect(Rect r){
-        rect(r.x, r.y, r.width, r.height);
+        crect(r.x, r.y, r.width, r.height);
     }
 
     public static void rect(float x, float y, float w, float h){

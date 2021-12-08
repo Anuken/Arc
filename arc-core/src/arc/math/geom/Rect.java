@@ -13,7 +13,6 @@ public class Rect implements Shape2D{
     /** Static temporary rectangle. Use with care! Use only when sure other code will not also use this. */
     public static final Rect tmp2 = new Rect();
 
-    private static final long serialVersionUID = 5733252015138115702L;
     public float x, y;
     public float width, height;
 
@@ -305,6 +304,20 @@ public class Rect implements Shape2D{
         y = minY;
         height = maxY - minY;
 
+        return this;
+    }
+
+    /** "fixes" negative size dimensions. */
+    public Rect normalize(){
+        if(width < 0){
+            x += width;
+            width = -width;
+        }
+
+        if(height < 0){
+            y += height;
+            height = -height;
+        }
         return this;
     }
 
