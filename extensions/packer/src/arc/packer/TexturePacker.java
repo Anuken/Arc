@@ -582,7 +582,7 @@ public class TexturePacker{
         public boolean alias = true;
         public String outputFormat = "png";
         public boolean ignoreBlankImages = true;
-        public boolean fast = true; //with fast = false packing takes an eternity, I have no idea why that wasn't the deafult before
+        public boolean fast = true; //with fast = false packing takes an eternity, I have no idea why that wasn't the default before
         public boolean silent;
         public boolean printAliases;
         public boolean combineSubdirectories;

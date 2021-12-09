@@ -373,6 +373,13 @@ public class Table extends WidgetGroup{
         });
     }
 
+    public Cell<Image> imageDraw(Prov<Drawable> reg){
+        return add(new Image(reg.get())).update(i -> {
+            i.setDrawable(reg.get());
+            i.layout();
+        });
+    }
+
     public Cell<Image> image(){
         return add(new Image());
     }
