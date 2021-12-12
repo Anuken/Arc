@@ -195,6 +195,8 @@ public class Settings{
                         stream.read(bytes);
                         values.put(key, bytes);
                         break;
+                    default:
+                        throw new IOException("Unknown key type: " + type);
                 }
             }
             //make sure all data was read - this helps with potential corruption
