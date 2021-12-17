@@ -152,19 +152,19 @@ public class SnapshotSeq<T> extends Seq<T>{
         return super.sort(comparator);
     }
 
-    public Seq<T> reverse(){
+    public void reverse(){
         modified();
-        return super.reverse();
+        super.reverse();
     }
 
-    public Seq<T> shuffle(){
+    public void shuffle(){
         modified();
-        return super.shuffle();
+        super.shuffle();
     }
 
-    public Seq<T> truncate(int newSize){
+    public void truncate(int newSize){
         modified();
-        return super.truncate(newSize);
+        super.truncate(newSize);
     }
 
     public T[] setSize(int newSize){
