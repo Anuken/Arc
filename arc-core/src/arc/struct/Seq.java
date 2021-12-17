@@ -920,13 +920,13 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         }
     }
 
-    /** Modified this seq, returns self. */
+    /** @return this Seq, reversed. */
     public Seq<T> reversed(){
         reverse();
         return this;
     }
 
-    /** Modified this seq, returns self. */
+    /** @return this Seq, shuffled. */
     public Seq<T> shuffled(){
         shuffle();
         return this;
