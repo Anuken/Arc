@@ -139,9 +139,9 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
     /** @see #Seq(Object[]) */
     public static <T> Seq<T> select(T[] array, Boolf<T> test){
         Seq<T> out = new Seq<>(array.length);
-        for(int i = 0; i < array.length; i++){
-            if(test.get(array[i])){
-                out.add(array[i]);
+        for(T t : array){
+            if(test.get(t)){
+                out.add(t);
             }
         }
         return out;
@@ -343,6 +343,18 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
     public Seq<T> with(Cons<Seq<T>> cons){
         cons.get(this);
         return this;
+    }
+
+    /**
+     * Adds a value if it was already not in this sequence.
+     * @return whether this value was not present in this sequence.
+     * */
+    public boolean addUnique(T value){
+        if(!contains(value)){
+            add(value);
+            return true;
+        }
+        return false;
     }
 
     public Seq<T> and(T value){
