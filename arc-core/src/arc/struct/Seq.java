@@ -346,9 +346,9 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
     }
 
     /**
-     * Adds a value if it was already not in this sequence.
-     * @return whether this value was not present in this sequence.
-     * */
+     * Adds a value if it was not already in this sequence.
+     * @return whether this value was added successfully.
+     */
     public boolean addUnique(T value){
         if(!contains(value)){
             add(value);
