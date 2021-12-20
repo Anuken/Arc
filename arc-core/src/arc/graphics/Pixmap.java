@@ -820,7 +820,7 @@ public class Pixmap implements Disposable{
         if(ArcNativesLoader.loaded){
             long[] nativeData = new long[3];
             pixels = createJni(nativeData, width, height);
-            if(pixels == null) throw new ArcRuntimeException("Error loading pixmap.");
+            if(pixels == null) throw new ArcRuntimeException("Error creating pixmap (out of memory?)");
             pixels.limit(pixels.capacity());
 
             this.handle = nativeData[0];
