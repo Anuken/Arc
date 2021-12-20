@@ -19,8 +19,8 @@ public class AndroidApplicationConfiguration{
     /** number of samples for CSAA/MSAA, 2 is a good value **/
     public int numSamples = 0;
 
-    /** whether to use the accelerometer. default: true **/
-    public boolean useAccelerometer = true;
+    /** whether to use the accelerometer. default: false **/
+    public boolean useAccelerometer = false;
 
     /** whether to use the gyroscope. default: false **/
     public boolean useGyroscope = false;
@@ -30,9 +30,9 @@ public class AndroidApplicationConfiguration{
      * <p>
      * If {@link #useRotationVectorSensor} is true and the rotation vector sensor is available, the compass will not be used.
      * <p>
-     * Default: true
+     * Default: false
      **/
-    public boolean useCompass = true;
+    public boolean useCompass = false;
 
     /**
      * Whether to use Android's rotation vector software sensor, which provides cleaner data than that of {@link #useCompass} for
@@ -53,18 +53,11 @@ public class AndroidApplicationConfiguration{
      */
     public int sensorDelay = SensorManager.SENSOR_DELAY_GAME;
 
-    /**
-     * the time in milliseconds to sleep after each event in the touch handler, set this to 16ms to get rid of touch flooding on
-     * pre Android 2.0 devices. default: 0
-     **/
-    public int touchSleepTime = 0;
-
     /** whether to keep the screen on and at full brightness or not while running the application. default: false. Uses FLAG_KEEP_SCREEN_ON under the hood. */
     public boolean useWakelock = false;
 
     /**
-     * hide status bar buttons on Android 4.x and higher (API 14+). Doesn't work if "android:targetSdkVersion" less 11 or if API
-     * less 14. default: false
+     * hide status bar buttons on Android 4.x and higher (API 14+). default: true
      **/
     public boolean hideStatusBar = true;
 

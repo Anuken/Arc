@@ -73,7 +73,6 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     private Bits justPressedKeys = new Bits(KeyCode.values().length);
     private SensorManager manager;
     private Handler handle;
-    private int sleepTime;
     private boolean compassAvailable = false;
     private boolean rotationVectorAvailable = false;
     private float azimuth = 0;
@@ -102,7 +101,6 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
         handle = new Handler();
         this.app = activity;
         this.context = context;
-        this.sleepTime = config.touchSleepTime;
         touchHandler = new AndroidTouchHandler();
         mouseHandler = new AndroidMouseHandler();
         hasMultitouch = touchHandler.supportsMultitouch(context);
@@ -329,12 +327,6 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
         // synchronized in handler.postTouchEvent()
         touchHandler.onTouch(event, this);
 
-        if(sleepTime != 0){
-            try{
-                Thread.sleep(sleepTime);
-            }catch(InterruptedException e){
-            }
-        }
         return true;
     }
 
