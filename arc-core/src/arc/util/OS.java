@@ -68,6 +68,14 @@ public class OS{
         }
     }
 
+    public static String getWindowsTmpDir(){
+        String temp = env("TEMP");
+        if(temp != null) return temp;
+        String tmp = env("TMP");
+        if(tmp != null) return tmp;
+        return "C:\\Windows\\TEMP";
+    }
+
     public static String exec(String... args){
         try{
             Process process = Runtime.getRuntime().exec(args);

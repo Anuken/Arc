@@ -845,6 +845,19 @@ public class Fi{
     }
 
     /**
+     * Copies the contents of this folder into another folder. Unlike copyTo, this only copies the *contents*, not this folder itself.
+     * @throws ArcRuntimeException if this or {@param dest} is not a valid directory, or copying fails.
+     * */
+    public void copyFilesTo(Fi dest){
+        if(!isDirectory()) throw new ArcRuntimeException("Source folder must be a directory: " + this);
+        if(dest.exists() && !dest.isDirectory()) throw new ArcRuntimeException("Destination folder must be a directory: " + dest);
+
+        dest.mkdirs();
+
+        copyDirectory(this, dest);
+    }
+
+    /**
      * Moves this file to the specified file, overwriting the file if it already exists.
      * @throws ArcRuntimeException if the source or destination file handle is a {@link FileType#classpath} or
      * {@link FileType#internal} file.
