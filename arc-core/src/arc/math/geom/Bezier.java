@@ -130,11 +130,11 @@ public class Bezier<T extends Vector<T>> implements Path<T>{
         return out.set(p1).sub(p0).scl(dt2 * 3).add(tmp.set(p2).sub(p1).scl(dt * t * 6)).add(tmp.set(p3).sub(p2).scl(t2 * 3));
     }
 
-    public Bezier set(final T... points){
+    public Bezier<T> set(final T... points){
         return set(points, 0, points.length);
     }
 
-    public Bezier set(final T[] points, final int offset, final int length){
+    public Bezier<T> set(final T[] points, final int offset, final int length){
         if(length < 2 || length > 4)
             throw new ArcRuntimeException("Only first, second and third degree Bezier curves are supported.");
         if(tmp == null) tmp = points[0].cpy();
@@ -145,11 +145,20 @@ public class Bezier<T extends Vector<T>> implements Path<T>{
         return this;
     }
 
-    public Bezier set(final Seq<T> points){
+    public Bezier<T> set(T p1, T p2, T p3){
+        if(tmp == null) tmp = p1.cpy();
+        if(tmp2 == null) tmp2 = p2.cpy();
+        if(tmp3 == null) tmp3 = p3.cpy();
+        this.points.clear();
+        this.points.add(p1, p2, p3);
+        return this;
+    }
+
+    public Bezier<T> set(final Seq<T> points){
         return set(points, 0, points.size);
     }
 
-    public Bezier set(final Seq<T> points, final int offset, final int length){
+    public Bezier<T> set(final Seq<T> points, final int offset, final int length){
         if(length < 2 || length > 4)
             throw new ArcRuntimeException("Only first, second and third degree Bezier curves are supported.");
         if(tmp == null) tmp = points.get(0).cpy();
