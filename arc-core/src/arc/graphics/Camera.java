@@ -35,8 +35,8 @@ public class Camera{
 
     /**
      * Function to translate a point given in screen coordinates to world space. It's the same as GLU gluUnProject, but does not
-     * rely on OpenGL. The x- and y-coordinate of vec are assumed to be in screen coordinates (origin is the top left corner, y
-     * pointing down, x pointing to the right) as reported by the touch methods in {@link Input}. A z-coordinate of 0 will return a
+     * rely on OpenGL. The x- and y-coordinate of vec are assumed to be in screen coordinates (origin is the bottom left corner, y
+     * pointing up, x pointing to the right) as reported by the touch methods in {@link Input}. A z-coordinate of 0 will return a
      * point on the near plane, a z-coordinate of 1 will return a point on the far plane. This method allows you to specify the
      * viewport position and dimensions in the coordinate system expected by {@link GL20#glViewport(int, int, int, int)}, with the
      * origin in the bottom left corner of the screen.
@@ -48,9 +48,7 @@ public class Camera{
      * @return the mutated and unprojected screenCoords {@link Vec3}
      */
     public Vec2 unproject(Vec2 screenCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight){
-        float x = screenCoords.x, y = screenCoords.y;
-        x = x - viewportX;
-        y = y - viewportY;
+        float x = screenCoords.x - viewportX, y = screenCoords.y - viewportY;
         screenCoords.x = (2 * x) / viewportWidth - 1;
         screenCoords.y = (2 * y) / viewportHeight - 1;
         screenCoords.mul(inv);
@@ -60,8 +58,8 @@ public class Camera{
     /**
      * Function to translate a point given in screen coordinates to world space. It's the same as GLU gluUnProject but does not
      * rely on OpenGL. The viewport is assumed to span the whole screen and is fetched from {@link Graphics#getWidth()} and
-     * {@link Graphics#getHeight()}. The x- and y-coordinate of vec are assumed to be in screen coordinates (origin is the top left
-     * corner, y pointing down, x pointing to the right) as reported by the touch methods in {@link Input}. A z-coordinate of 0
+     * {@link Graphics#getHeight()}. The x- and y-coordinate of vec are assumed to be in screen coordinates (origin is the bottom left
+     * corner, y pointing up, x pointing to the right) as reported by the touch methods in {@link Input}. A z-coordinate of 0
      * will return a point on the near plane, a z-coordinate of 1 will return a point on the far plane.
      * @param screenCoords the point in screen coordinates
      * @return the mutated and unprojected screenCoords {@link Vec3}
@@ -114,7 +112,7 @@ public class Camera{
         return worldCoords;
     }
 
-    /**Sets the specified rectangle to this camera's bounds.*/
+    /** Sets the specified rectangle to this camera's bounds.*/
     public Rect bounds(Rect out){
         return out.setSize(width, height).setCenter(position);
     }
