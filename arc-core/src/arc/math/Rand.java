@@ -195,6 +195,7 @@ public class Rand extends Random{
         return nextFloat() * max;
     }
 
+    /** Inclusive. */
     public int random(int max){
         return nextInt(max + 1);
     }
