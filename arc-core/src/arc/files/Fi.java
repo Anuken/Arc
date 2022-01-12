@@ -590,6 +590,11 @@ public class Fi{
         return out;
     }
 
+    /** Equivalent to {@link #list()}, but returns a Seq. */
+    public Seq<Fi> seq(){
+        return Seq.with(list());
+    }
+
     /**
      * Returns the paths to the children of this directory. Returns an empty list if this file handle represents a file and not a
      * directory. On the desktop, an {@link FileType#internal} handle to a directory on the classpath will return a zero length
