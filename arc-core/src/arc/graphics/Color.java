@@ -586,6 +586,11 @@ public class Color{
         return this;
     }
 
+    public Color mulA(float a){
+        this.a *= a;
+        return this;
+    }
+
     /**
      * Multiplies this Color's color components by the given ones.
      * @param r Red component
