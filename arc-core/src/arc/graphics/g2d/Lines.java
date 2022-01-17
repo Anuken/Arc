@@ -13,6 +13,7 @@ public class Lines{
     private static Vec2 vector = new Vec2(), u = new Vec2(), v = new Vec2(), inner = new Vec2(), outer = new Vec2();
     private static FloatSeq floats = new FloatSeq(20);
     private static FloatSeq floatBuilder = new FloatSeq(20);
+    private static FloatSeq tmpFloats = new FloatSeq(20);
     private static boolean building;
     private static float circlePrecision = 0.4f;
 
@@ -145,54 +146,116 @@ public class Lines{
         polyline(points.items, points.size, wrap);
     }
 
+    private static final Vec2 AB = new Vec2(), BC = new Vec2();
+    private static final Vec2 A = new Vec2(), B = new Vec2(), C = new Vec2(), E = new Vec2(), D = new Vec2();
+    private static final Vec2 vec1 = new Vec2();
+    private static final Vec2 D0 = new Vec2(), E0 = new Vec2();
+    private static final Vec2 q1 = new Vec2(), q2 = new Vec2(), q3 = new Vec2(), q4 = new Vec2();
+
+    //implementation taken from https://github.com/earlygrey/shapedrawer/blob/master/drawer/src/space/earlygrey/shapedrawer/ShapeDrawer.java
     public static void polyline(float[] points, int length, boolean wrap){
         if(length < 4) return;
 
-        if(!wrap){
-            for(int i = 0; i < length-2; i+= 2){
-                float cx = points[i];
-                float cy = points[i + 1];
-                float cx2 = points[i + 2];
-                float cy2 = points[i + 3];
-                line(cx, cy, cx2, cy2);
+        float halfWidth = 0.5f * stroke;
+        boolean open = !wrap;
+
+        for(int i = 2; i < length - 2; i += 2){
+
+            A.set(points[i - 2], points[i - 1]);
+            B.set(points[i], points[i + 1]);
+            C.set(points[i + 2], points[i + 3]);
+
+            preparePointyJoin(A, B, C, D, E, halfWidth);
+
+            float x3 = D.x, y3 = D.y;
+            float x4 = E.x, y4 = E.y;
+
+            q3.set(D);
+            q4.set(E);
+
+            if(i == 2){
+                if(open){
+                    prepareFlatEndpoint(points[2], points[3], points[0], points[1], D, E, halfWidth);
+                    q1.set(E);
+                    q2.set(D);
+                }else{
+                    vec1.set(points[length - 2], points[length - 1]);
+                    preparePointyJoin(vec1, A, B, D0, E0, halfWidth);
+
+                    q1.set(E0);
+                    q2.set(D0);
+                }
             }
-        }else{
-            floats.clear();
 
-            for(int i = 0; i < length; i += 2){
-                float x0 = points[Mathf.mod(i - 2, length)];
-                float y0 = points[Mathf.mod(i - 1, length)];
-                float x1 = points[i];
-                float y1 = points[i + 1];
-                float x2 = points[(i + 2) % length];
-                float y2 = points[(i + 3) % length];
-
-                float ang0 = Angles.angle(x0, y0, x1, y1), ang1 = Angles.angle(x1, y1, x2, y2);
-                float beta = Mathf.sinDeg(ang1 - ang0);
-
-                u.set(x0, y0).sub(x1, y1).scl(1f / Mathf.dst(x0, y0, x1, y1)).scl(stroke / (2f*beta));
-                v.set(x2, y2).sub(x1, y1).scl(1f / Mathf.dst(x2, y2, x1, y1)).scl(stroke / (2f*beta));
-
-                inner.set(x1, y1).add(u).add(v);
-                outer.set(x1, y1).sub(u).sub(v);
-
-                floats.add(inner.x, inner.y, outer.x, outer.y);
-            }
-
-            for(int i = 0; i < floats.size; i += 4){
-                float x1 = floats.items[i];
-                float y1 = floats.items[i + 1];
-                float x2 = floats.items[(i + 2) % floats.size];
-                float y2 = floats.items[(i + 3) % floats.size];
-
-                float x3 = floats.items[(i + 4) % floats.size];
-                float y3 = floats.items[(i + 5) % floats.size];
-                float x4 = floats.items[(i + 6) % floats.size];
-                float y4 = floats.items[(i + 7) % floats.size];
-
-                Fill.quad(x1, y1, x3, y3, x4, y4, x2, y2);
-            }
+            pushQuad();
+            q1.set(x4, y4);
+            q2.set(x3, y3);
         }
+
+        if(open){
+            //draw last link on path
+            prepareFlatEndpoint(B, C, D, E, halfWidth);
+            q3.set(E);
+            q4.set(D);
+            pushQuad();
+        }else{
+            //draw last link on path
+            A.set(points[0], points[1]);
+            preparePointyJoin(B, C, A, D, E, halfWidth);
+            q3.set(D);
+            q4.set(E);
+            pushQuad();
+
+            //draw connection back to first vertex
+            q1.set(D);
+            q2.set(E);
+            q3.set(E0);
+            q4.set(D0);
+            pushQuad();
+        }
+    }
+
+    private static void pushQuad(){
+        Fill.quad(q1.x, q1.y, q2.x, q2.y, q3.x, q3.y, q4.x, q4.y);
+    }
+
+    private static void prepareFlatEndpoint(Vec2 pathPoint, Vec2 endPoint, Vec2 D, Vec2 E, float halfLineWidth){
+        prepareFlatEndpoint(pathPoint.x, pathPoint.y, endPoint.x, endPoint.y, D, E, halfLineWidth);
+    }
+
+    private static void prepareFlatEndpoint(float pathPointX, float pathPointY, float endPointX, float endPointY, Vec2 D, Vec2 E, float halfLineWidth){
+        v.set(endPointX, endPointY).sub(pathPointX, pathPointY).setLength(halfLineWidth);
+        D.set(v.y, -v.x).add(endPointX, endPointY);
+        E.set(-v.y, v.x).add(endPointX, endPointY);
+    }
+
+    private static float preparePointyJoin(Vec2 A, Vec2 B, Vec2 C, Vec2 D, Vec2 E, float halfLineWidth){
+        AB.set(B).sub(A);
+        BC.set(C).sub(B);
+        float angle = angleRad(AB, BC);
+        if(Mathf.equal(angle, 0) || Mathf.equal(angle, Mathf.PI2)){
+            prepareStraightJoin(B, D, E, halfLineWidth);
+            return angle;
+        }
+        float len = (float)(halfLineWidth / Math.sin(angle));
+        boolean bendsLeft = angle < 0;
+        AB.setLength(len);
+        BC.setLength(len);
+        Vector insidePoint = bendsLeft ? D : E;
+        Vector outsidePoint = bendsLeft ? E : D;
+        insidePoint.set(B).sub(AB).add(BC);
+        outsidePoint.set(B).add(AB).sub(BC);
+        return angle;
+    }
+
+    private static float angleRad(Vec2 v, Vec2 reference){
+        return (float)Math.atan2(reference.x * v.y - reference.y * v.x, v.x * reference.x + v.y * reference.y);
+    }
+
+    private static void prepareStraightJoin(Vec2 B, Vec2 D, Vec2 E, float halfLineWidth){
+        AB.setLength(halfLineWidth);
+        D.set(-AB.y, AB.x).add(B);
+        E.set(AB.y, -AB.x).add(B);
     }
 
     public static void dashLine(float x1, float y1, float x2, float y2, int divisions){
@@ -365,7 +428,7 @@ public class Lines{
 
     public static void swirl(float x, float y, float radius, float finion, float angle){
         int sides = 50;
-        int max = (int)(sides * (finion + 0.001f));
+        int max = (int)(sides * (finion + 0.001f)) + 1;
         vector.set(0, 0);
         floats.clear();
 
