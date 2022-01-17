@@ -422,13 +422,15 @@ public class Lines{
         line(fx, fy, x2, y2);
     }
 
-    public static void swirl(float x, float y, float radius, float fraction){
-        swirl(x, y, radius, fraction, 0f);
+    public static void arc(float x, float y, float radius, float fraction){
+        arc(x, y, radius, fraction, 0f);
     }
 
-    //TODO awful name
-    public static void swirl(float x, float y, float radius, float fraction, float rotation){
-        int sides = 50;
+    public static void arc(float x, float y, float radius, float fraction, float rotation){
+        arc(x, y, radius, fraction, rotation, 50);
+    }
+
+    public static void arc(float x, float y, float radius, float fraction, float rotation, int sides){
         int max = (int)(sides * fraction);
         vector.set(0, 0);
         floats.clear();
