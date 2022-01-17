@@ -422,22 +422,23 @@ public class Lines{
         line(fx, fy, x2, y2);
     }
 
-    public static void swirl(float x, float y, float radius, float finion){
-        swirl(x, y, radius, finion, 0f);
+    public static void swirl(float x, float y, float radius, float fraction){
+        swirl(x, y, radius, fraction, 0f);
     }
 
-    public static void swirl(float x, float y, float radius, float finion, float angle){
+    //TODO awful name
+    public static void swirl(float x, float y, float radius, float fraction, float rotation){
         int sides = 50;
-        int max = (int)(sides * (finion + 0.001f)) + 1;
+        int max = (int)(sides * fraction);
         vector.set(0, 0);
         floats.clear();
 
-        for(int i = 0; i < max; i++){
-            vector.set(radius, 0).setAngle(360f / sides * i + angle);
+        for(int i = 0; i <= max; i++){
+            vector.set(radius, 0).setAngle((float)i / max * fraction * 360f + rotation);
             float x1 = vector.x;
             float y1 = vector.y;
 
-            vector.set(radius, 0).setAngle(360f / sides * (i + 1) + angle);
+            vector.set(radius, 0).setAngle((float)(i + 1) / max * fraction * 360f + rotation);
 
             floats.add(x1 + x, y1 + y);
         }
