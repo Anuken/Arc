@@ -274,6 +274,15 @@ public class Cell<T extends Element> implements Poolable{
         return this;
     }
 
+    public Cell<T> ellipsis(boolean ellipsis){
+        if(get() instanceof Label){
+            ((Label)get()).setEllipsis(ellipsis);
+        }else if(get() instanceof TextButton){
+            ((TextButton)get()).getLabel().setEllipsis(ellipsis);
+        }
+        return this;
+    }
+
     public Cell<T> labelAlign(int label, int line){
         if(get() instanceof Label){
             ((Label)get()).setAlignment(label, line);
