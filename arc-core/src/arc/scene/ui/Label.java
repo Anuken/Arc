@@ -43,7 +43,8 @@ public class Label extends Element{
 
     public Label(Prov<CharSequence> sup){
         this("", new LabelStyle(scene.getStyle(LabelStyle.class)));
-        update(() -> setText(sup.get()));
+        setText(sup);
+
         try{
             setText(sup.get());
         }catch(Exception ignored){
@@ -79,6 +80,10 @@ public class Label extends Element{
         this.style = style;
         cache = style.font.newFontCache();
         invalidateHierarchy();
+    }
+
+    public void setText(Prov<CharSequence> sup){
+        update(() -> setText(sup.get()));
     }
 
     private void setTextInternal(CharSequence newText){
