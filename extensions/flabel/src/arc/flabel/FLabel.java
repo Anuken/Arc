@@ -496,7 +496,7 @@ public class FLabel extends Label{
         }
 
         float textWidth, textHeight;
-        // if (wrap || text.indexOf("\n") != -1)
+        // if(wrap || text.indexOf("\n") != -1)
         {
             // If the text can span multiple lines, determine the text's actual size so it can be aligned within the label.
             layout.setText(font, text, 0, text.length(), Color.white, width, lineAlign, wrap, ellipsis);

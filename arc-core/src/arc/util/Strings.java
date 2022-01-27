@@ -607,7 +607,7 @@ public class Strings{
         int index = 0;
         while(true){
             index = builder.indexOf(find, index);
-            if (index == -1) break;
+            if(index == -1) break;
             builder.replace(index, index + findLength, replace);
             index += replaceLength;
         }
@@ -620,8 +620,8 @@ public class Strings{
         int index = 0;
         while(true){
             while(true){
-                if (index == builder.length()) return builder;
-                if (builder.charAt(index) == find) break;
+                if(index == builder.length()) return builder;
+                if(builder.charAt(index) == find) break;
                 index++;
             }
             builder.replace(index, index + 1, replace);

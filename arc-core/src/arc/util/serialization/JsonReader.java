@@ -490,7 +490,7 @@ public class JsonReader implements BaseJsonReader{
                                                     case '"':
                                                         break outer;
                                                 }
-                                                // if (debug) System.out.println("quotedChar: '" + data[p] + "'");
+                                                // if(debug) System.out.println("quotedChar: '" + data[p] + "'");
                                                 p++;
                                                 if(p == length) break;
                                             }

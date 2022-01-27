@@ -367,7 +367,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
         // If the key is held sufficiently long that it repeats, then the initial down is followed
         // additional key events with ACTION_DOWN and a non-zero value for getRepeatCount().
         // We are only interested in the first key down event here and must ignore all others
-        if (e.getAction() == android.view.KeyEvent.ACTION_DOWN && e.getRepeatCount() > 0)
+        if(e.getAction() == android.view.KeyEvent.ACTION_DOWN && e.getRepeatCount() > 0)
             return caughtKeys.contains(keyCode);
 
         synchronized(this){
