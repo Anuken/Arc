@@ -331,7 +331,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return result;
     }
 
-    public T find(Boolf<T> predicate){
+    public @Nullable T find(Boolf<T> predicate){
         for(int i = 0; i < size; i++){
             if(predicate.get(items[i])){
                 return items[i];
