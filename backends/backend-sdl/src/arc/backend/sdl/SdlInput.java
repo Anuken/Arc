@@ -107,11 +107,12 @@ public class SdlInput extends Input{
             for(int i = 0; i < length; i++){
                 strcpy[i] = (byte)input[i + 3];
             }
-            String s = new String(strcpy, 0, length, Strings.utf8);
-            handleFieldCandidate(s, estart, elength);
+
+            handleFieldCandidate(new String(strcpy, 0, length, Strings.utf8), estart, elength);
         }
     }
 
+    //note: start and length parameters seem useless, ignore those
     void handleFieldCandidate(String text, int start, int length){
 
         class ImeData{
@@ -132,17 +133,17 @@ public class SdlInput extends Input{
                 }
             }
 
+            //there seem to be stray IME events with zero length, ignore those?
+            if(text.length() == 0){
+                return;
+            }
+
             //re-initialize when invalidated or just beginning
             if(field.imeData == null){
                 field.imeData = new ImeData(){{
                     cursor = field.getCursorPosition();
                     realText = field.getText();
                 }};
-            }
-
-            //there seem to be stray IME events with zero length, ignore those?
-            if(length == 0){
-                return;
             }
 
             ImeData data = (ImeData)field.imeData;
