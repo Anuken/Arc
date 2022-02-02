@@ -304,6 +304,19 @@ public class SDL{
         SDL_StopTextInput();
     */
 
+    public static native void SDL_SetTextInputRect(int x, int y, int w, int h); /*
+        SDL_Rect rect;
+        rect.x = x;
+        rect.y = y;
+        rect.w = w;
+        rect.h = h;
+        SDL_SetTextInputRect(&rect);
+    */
+
+    private static native boolean SDL_IsTextInputActive(); /*
+        return (jboolean)SDL_IsTextInputActive();
+    */
+
     /** Since passing in or returning a class here would be a pain, I have to resort to an int array.
      * @return whether the event was processed.
      * If true is returned, the input data array is filled with the event data.*/

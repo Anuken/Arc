@@ -5,12 +5,13 @@ import arc.audio.*;
 import arc.files.*;
 import arc.func.*;
 import arc.graphics.*;
+import arc.math.geom.*;
+import arc.scene.ui.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.async.*;
 
 import java.io.*;
-import java.lang.reflect.*;
 import java.net.*;
 import java.util.*;
 
@@ -45,6 +46,11 @@ public class SdlApplication implements Application{
 
         graphics.updateSize(config.width, config.height);
 
+        //can't be bothered to recompile arc for mac
+        if(!OS.isMac){
+            addTextInputListener();
+        }
+
         try{
             loop();
             listen(ApplicationListener::exit);
@@ -55,6 +61,32 @@ public class SdlApplication implements Application{
                 error.printStackTrace();
             }
         }
+    }
+
+    /** Used for Scene text fields. */
+    private void addTextInputListener(){
+        addListener(new ApplicationListener(){
+            TextField lastFocus;
+
+            @Override
+            public void update(){
+                if(Core.scene != null && Core.scene.getKeyboardFocus() instanceof TextField){
+                    TextField next = (TextField)Core.scene.getKeyboardFocus();
+                    if(lastFocus == null){
+                        SDL_StartTextInput();
+                    }
+                    lastFocus = next;
+                }else if(lastFocus != null){
+                    SDL_StopTextInput();
+                    lastFocus = null;
+                }
+
+                if(lastFocus != null){
+                    Vec2 pos = lastFocus.localToStageCoordinates(Tmp.v1.setZero());
+                    SDL_SetTextInputRect((int)pos.x, Core.graphics.getHeight() - 1 - (int)(pos.y + lastFocus.getHeight()), (int)lastFocus.getWidth(), (int)lastFocus.getHeight());
+                }
+            }
+        });
     }
 
     private void initIcon(){
@@ -116,9 +148,6 @@ public class SdlApplication implements Application{
         if(config.vSyncEnabled){
             SDL_GL_SetSwapInterval(1);
         }
-
-        //always have text input on
-        SDL_StartTextInput();
 
         int[] ver = new int[3];
         SDL_GetVersion(ver);
