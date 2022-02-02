@@ -20,7 +20,7 @@ import static arc.backend.sdl.jni.SDL.*;
 public class SdlApplication implements Application{
     private final Seq<ApplicationListener> listeners = new Seq<>();
     private final TaskQueue runnables = new TaskQueue();
-    private final int[] inputs = new int[34];
+    private final int[] inputs = new int[64];
 
     final SdlGraphics graphics;
     final SdlInput input;
@@ -177,7 +177,8 @@ public class SdlApplication implements Application{
                     inputs[0] == SDL_EVENT_MOUSE_BUTTON ||
                     inputs[0] == SDL_EVENT_MOUSE_WHEEL ||
                     inputs[0] == SDL_EVENT_KEYBOARD ||
-                    inputs[0] == SDL_EVENT_TEXT_INPUT){
+                    inputs[0] == SDL_EVENT_TEXT_INPUT ||
+                    inputs[0] == SDL_EVENT_TEXT_EDIT){
                     input.handleInput(inputs);
                 }
             }

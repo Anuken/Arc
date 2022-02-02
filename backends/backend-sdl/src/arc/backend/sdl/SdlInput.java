@@ -3,6 +3,7 @@ package arc.backend.sdl;
 import arc.*;
 import arc.backend.sdl.jni.*;
 import arc.input.*;
+import arc.scene.ui.*;
 import arc.util.*;
 
 import static arc.backend.sdl.jni.SDL.*;
@@ -91,6 +92,67 @@ public class SdlInput extends Input{
             for(int i = 0; i < s.length(); i++){
                 queue.keyTyped(s.charAt(i));
             }
+        }else if(type == SDL.SDL_EVENT_TEXT_EDIT){
+            int estart = input[1];
+            int elength = input[2];
+
+            int length = 0;
+            for(int i = 0; i < 32; i++){
+                char c = (char)input[i + 3];
+                if(c == '\0'){
+                    length = i;
+                    break;
+                }
+            }
+            for(int i = 0; i < length; i++){
+                strcpy[i] = (byte)input[i + 3];
+            }
+            String s = new String(strcpy, 0, length, Strings.utf8);
+            handleFieldCandidate(s, estart, elength);
+        }
+    }
+
+    void handleFieldCandidate(String text, int start, int length){
+
+        class ImeData{
+            String lastSetText;
+            String realText;
+            int cursor;
+        }
+
+        if(Core.scene != null && Core.scene.getKeyboardFocus() instanceof TextField){
+            TextField field = (TextField)Core.scene.getKeyboardFocus();
+
+            if(field.imeData instanceof ImeData){
+                ImeData data = (ImeData)field.imeData;
+
+                //text modified externally, which means this data is invalid, kill it
+                if(data.lastSetText != field.getText()){
+                    field.imeData = null;
+                }
+            }
+
+            //re-initialize when invalidated or just beginning
+            if(field.imeData == null){
+                field.imeData = new ImeData(){{
+                    cursor = field.getCursorPosition();
+                    realText = field.getText();
+                }};
+            }
+
+            //there seem to be stray IME events with zero length, ignore those?
+            if(length == 0){
+                return;
+            }
+
+            ImeData data = (ImeData)field.imeData;
+            String targetText = data.realText;
+            int insertPos = data.cursor;
+
+            field.setText(targetText.substring(0, Math.min(insertPos, targetText.length())) + text + targetText.substring(Math.min(insertPos, targetText.length())));
+            field.setSelection(insertPos, insertPos + text.length());
+
+            data.lastSetText = field.getText();
         }
     }
 

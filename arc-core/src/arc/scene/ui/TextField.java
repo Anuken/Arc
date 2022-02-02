@@ -48,6 +48,10 @@ public class TextField extends Element implements Disableable{
 
     public static float keyRepeatInitialTime = 0.4f;
     public static float keyRepeatTime = 0.1f;
+
+    /** Special field containing implementation-specific data for IME support. */
+    public Object imeData;
+
     protected final GlyphLayout layout = new GlyphLayout(true);
     protected final FloatSeq glyphPositions = new FloatSeq();
     protected String text;
