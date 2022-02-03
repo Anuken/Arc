@@ -4,6 +4,7 @@ import arc.*;
 import arc.backend.sdl.jni.*;
 import arc.input.*;
 import arc.scene.ui.*;
+import arc.struct.*;
 import arc.util.*;
 
 import static arc.backend.sdl.jni.SDL.*;
@@ -14,6 +15,7 @@ public class SdlInput extends Input{
     private int deltaX, deltaY;
     private int mousePressed;
     private byte[] strcpy = new byte[32];
+    private Seq<String> stringEditEvents = new Seq<>();
 
     //handle encoded input data
     void handleInput(int[] input){
@@ -93,8 +95,9 @@ public class SdlInput extends Input{
                 queue.keyTyped(s.charAt(i));
             }
         }else if(type == SDL.SDL_EVENT_TEXT_EDIT){
-            int estart = input[1];
-            int elength = input[2];
+            //TODO start/length unused! why are these even event fields?
+            //int estart = input[1];
+            //int elength = input[2];
 
             int length = 0;
             for(int i = 0; i < 32; i++){
@@ -108,12 +111,13 @@ public class SdlInput extends Input{
                 strcpy[i] = (byte)input[i + 3];
             }
 
-            handleFieldCandidate(new String(strcpy, 0, length, Strings.utf8), estart, elength);
+            //defer string edits after string completions
+            stringEditEvents.add(new String(strcpy, 0, length, Strings.utf8));
         }
     }
 
     //note: start and length parameters seem useless, ignore those
-    void handleFieldCandidate(String text, int start, int length){
+    void handleFieldCandidate(String text){
 
         class ImeData{
             String lastSetText;
@@ -161,6 +165,11 @@ public class SdlInput extends Input{
     void update(){
         queue.setProcessor(inputMultiplexer);
         queue.drain();
+
+        for(String s : stringEditEvents){
+            handleFieldCandidate(s);
+        }
+        stringEditEvents.clear();
 
         for(InputDevice device : devices){
             device.preUpdate();
