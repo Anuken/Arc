@@ -245,6 +245,30 @@ public class Fill{
             tri(x, y, x + px, y + py, x + px2, y + py2);
         }
     }
+    
+    public static void arc(float x, float y, float radius, float fraction){
+        arc(x, y, radius, fraction, 0f);
+    }
+
+    public static void arc(float x, float y, float radius, float fraction, float rotation){
+        arc(x, y, radius, fraction, rotation, 50);
+    }
+
+    public static void arc(float x, float y, float radius, float fraction, float rotation, int sides){
+        int max = (int)(sides * fraction);
+        polyBegin();
+        polyPoint(x, y);
+        
+        for(int i = 0; i <= max; i++){
+            float a = (float)i / max * fraction * 360f + rotation;
+            float x1 = Angles.trnsx(a, radius);
+            float y1 = Angles.trnsy(a, radius);
+
+            polyPoint(x + x1, y + y1);
+        }
+        
+        polyEnd();
+    }
 
     public static void circle(Circle c){
         circle(c.x, c.y, c.radius);
