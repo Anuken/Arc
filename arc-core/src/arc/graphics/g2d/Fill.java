@@ -257,13 +257,14 @@ public class Fill{
     public static void arc(float x, float y, float radius, float fraction, float rotation, int sides){
         int max = (int)(sides * fraction);
         polyBegin();
+        polyPoint(x, y);
         
         for(int i = 0; i <= max; i++){
             float a = (float)i / max * fraction * 360f + rotation;
             float x1 = Angles.trnsx(a, radius);
             float y1 = Angles.trnsy(a, radius);
 
-            polyPoint(x1 + x, y1 + y);
+            polyPoint(x + x1, y + y1);
         }
         
         polyEnd();
