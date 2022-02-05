@@ -7,6 +7,7 @@ import arc.graphics.g2d.*;
 import arc.input.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.ui.Label.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.async.*;
@@ -23,7 +24,8 @@ public class GifRecorder{
         resizeKey = KeyCode.controlLeft,
         openKey = KeyCode.e,
         recordKey = KeyCode.t,
-        shiftKey = KeyCode.shiftLeft;
+        shiftKey = KeyCode.shiftLeft,
+        switchModeKey = KeyCode.f12;
 
     public boolean outputMp4 = false;
     public Fi exportDirectory = Core.files == null ? Fi.get("gifs") : Core.files.local("gifs");
@@ -62,6 +64,10 @@ public class GifRecorder{
                     frames.clear();
                 }
                 open = !open;
+            }
+
+            if(Core.input.keyTap(switchModeKey) && !saving){
+                outputMp4 = !outputMp4;
             }
 
             if(open){
@@ -138,7 +144,7 @@ public class GifRecorder{
             Color.yellow
             );
 
-            Lines.stroke(1f);
+            Lines.stroke(2f);
             Lines.rect(bounds.x + wx + offsetx, bounds.y + wy + offsety, bounds.width, bounds.height);
 
             if(saving){
@@ -147,6 +153,30 @@ public class GifRecorder{
                 Fill.crect(wx - w / 2, wy - h / 2, w, h);
                 Draw.color(Color.red, Color.green, saveprogress);
                 Fill.crect(wx - w / 2, wy - h / 2, w * saveprogress, h);
+            }
+
+            //attempt fetching font from several sources
+            Font font = null;
+
+            if(Core.assets != null && Core.assets.contains("outline", Font.class)){
+                font = Core.assets.get("outline", Font.class);
+            }
+
+            if(font == null && Core.scene != null && Core.scene.hasStyle(LabelStyle.class)){
+                font = Core.scene.getStyle(LabelStyle.class).font;
+            }
+
+            if(font != null){
+                float scl = font.getData().scaleX;
+
+                font.getData().setScale(1f);
+                font.draw(
+                    (int)bounds.width + "x" + (int)bounds.height + " " +
+                    (saving ? "[sky][[saving " + (int)(saveprogress * 100) + "%]" : recording ? "[scarlet][[recording]" : outputMp4 ? "[coral]mp4" : "[royal]gif") +
+                    (!recording && !saving ? " [gray][[" + switchModeKey + "]" : ""),
+                    bounds.x + wx + offsetx + bounds.width/2f, bounds.y + wy + offsety - 4, Align.center
+                );
+                font.getData().setScale(scl);
             }
 
             Draw.color();

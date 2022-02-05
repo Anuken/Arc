@@ -76,6 +76,10 @@ public class Scene implements InputProcessor{
         return (T)styleDefaults.getThrow(type, () -> new IllegalArgumentException("No default style for type: " + type.getSimpleName()));
     }
 
+    public <T> boolean hasStyle(Class<T> type){
+        return styleDefaults.containsKey(type);
+    }
+
     public <T> void addStyle(Class<T> type, T style){
         styleDefaults.put(type, style);
     }
