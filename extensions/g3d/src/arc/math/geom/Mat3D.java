@@ -1523,6 +1523,10 @@ public class Mat3D{
         return rotate(quat.setFromCross(v1, v2));
     }
 
+    public Mat3D scale(Vec3 vec){
+        return scale(vec.x, vec.y, vec.z);
+    }
+
     /**
      * Postmultiplies this matrix with a scale matrix. Postmultiplication is also used by OpenGL ES' 1.x
      * glTranslate/glRotate/glScale.
