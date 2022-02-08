@@ -53,7 +53,7 @@ public class SortedSpriteBatch extends SpriteBatch{
     protected void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
         //0 alpha sprites are skipped
         //this *might* interfere with weird custom blending...
-        if((Float.floatToRawIntBits(colorPacked) & 0xFF000000) == 0){
+        if((Float.floatToRawIntBits(colorPacked) & 0xFF000000) == 0 && customShader == null){
             return;
         }
 
