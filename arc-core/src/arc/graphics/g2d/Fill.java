@@ -266,6 +266,7 @@ public class Fill{
 
             polyPoint(x + x1, y + y1);
         }
+        polyPoint(x, y);
         
         polyEnd();
     }
