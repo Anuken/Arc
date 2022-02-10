@@ -163,6 +163,14 @@ public class Color{
         return intToFloatColor(color);
     }
 
+    public static double toDoubleBits(float r, float g, float b, float a){
+        return Double.longBitsToDouble(Color.rgba8888(r, g, b, a));
+    }
+
+    public static double toDoubleBits(int r, int g, int b, int a){
+        return Double.longBitsToDouble(Color.rgba8888(r, g, b, a));
+    }
+
     /**
      * Packs the color components into a 32-bit integer with the format ABGR. Note that no range checking is performed for higher
      * performance.
@@ -302,6 +310,10 @@ public class Color{
         g = ((c & 0x0000ff00) >>> 8) / 255f;
         r = ((c & 0x000000ff)) / 255f;
         return this;
+    }
+
+    public Color fromDouble(double value){
+        return rgba8888((int)Double.doubleToLongBits(value));
     }
 
     /** Creates a grayscale color. */

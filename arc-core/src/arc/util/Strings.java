@@ -367,12 +367,16 @@ public class Strings{
     }
 
     public static int parseInt(String s, int radix, int defaultValue){
+        return parseInt(s, radix, defaultValue, 0, s.length());
+    }
+
+    public static int parseInt(String s, int radix, int defaultValue, int start, int end){
         boolean negative = false;
-        int i = 0, len = s.length(), limit = -2147483647;
+        int i = start, len = end - start, limit = -2147483647;
         if(len <= 0){
             return defaultValue;
         }else{
-            char firstChar = s.charAt(0);
+            char firstChar = s.charAt(i);
             if(firstChar < '0'){
                 if(firstChar == '-'){
                     negative = true;
@@ -387,7 +391,7 @@ public class Strings{
             }
 
             int digit, result;
-            for(result = 0; i < len; result -= digit){
+            for(result = 0; i < end; result -= digit){
                 digit = Character.digit(s.charAt(i++), radix);
                 if(digit < 0){
                     return defaultValue;
