@@ -1,6 +1,6 @@
 package arc.graphics;
 
-import arc.math.Mathf;
+import arc.math.*;
 import arc.math.geom.*;
 
 /**
@@ -164,11 +164,15 @@ public class Color{
     }
 
     public static double toDoubleBits(float r, float g, float b, float a){
-        return Double.longBitsToDouble(Color.rgba8888(r, g, b, a));
+        return Double.longBitsToDouble(Color.rgba8888(r, g, b, a) & 0x00000000_ffffffffL);
     }
 
     public static double toDoubleBits(int r, int g, int b, int a){
-        return Double.longBitsToDouble(Color.rgba8888(r, g, b, a));
+        return toDoubleBits(r / 255f, g / 255f, b / 255f, a / 255f);
+    }
+
+    public Color fromDouble(double value){
+        return rgba8888((int)(Double.doubleToRawLongBits(value)));
     }
 
     /**
@@ -310,10 +314,6 @@ public class Color{
         g = ((c & 0x0000ff00) >>> 8) / 255f;
         r = ((c & 0x000000ff)) / 255f;
         return this;
-    }
-
-    public Color fromDouble(double value){
-        return rgba8888((int)Double.doubleToLongBits(value));
     }
 
     /** Creates a grayscale color. */
