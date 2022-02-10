@@ -748,6 +748,10 @@ public class Color{
         return intToFloatColor(color);
     }
 
+    public double toDoubleBits(){
+        return toDoubleBits(r, g, b, a);
+    }
+
     /**
      * Packs the color components into a 32-bit integer with the format ABGR.
      * @return the packed color as a 32-bit int.
