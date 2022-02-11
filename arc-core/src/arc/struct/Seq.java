@@ -263,7 +263,12 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
     }
 
     public boolean contains(Boolf<T> predicate){
-        return find(predicate) != null;
+        for(int i = 0; i < size; i++){
+            if(predicate.get(items[i])){
+                return true;
+            }
+        }
+        return false;
     }
 
     public T min(Comparator<T> func){
