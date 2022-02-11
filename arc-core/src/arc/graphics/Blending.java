@@ -2,9 +2,10 @@ package arc.graphics;
 
 /** Blending modes, can be instantiated to make custom blending. */
 public class Blending{
-    public static final Blending normal = new Blending(Gl.srcAlpha, Gl.oneMinusSrcAlpha);
-    public static final Blending additive = new Blending(Gl.srcAlpha, Gl.one);
-    public static final Blending disabled = new Blending(Gl.srcAlpha, Gl.oneMinusSrcAlpha){
+    public static final Blending
+    normal = new Blending(Gl.srcAlpha, Gl.oneMinusSrcAlpha),
+    additive = new Blending(Gl.srcAlpha, Gl.one),
+    disabled = new Blending(Gl.srcAlpha, Gl.oneMinusSrcAlpha){
         @Override
         public void apply(){
             Gl.disable(Gl.blend);
