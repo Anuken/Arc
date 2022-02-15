@@ -99,18 +99,6 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         System.arraycopy(array, start, items, 0, size);
     }
 
-    /** @deprecated why would you use this */
-    @Deprecated
-    public static <T> Seq<T> of(Class<T> arrayType){
-        return new Seq<>(arrayType);
-    }
-
-    /** @deprecated why would you use this */
-    @Deprecated
-    public static <T> Seq<T> of(boolean ordered, int capacity, Class<T> arrayType){
-        return new Seq<>(ordered, capacity, arrayType);
-    }
-
     public static <T> Seq<T> withArrays(Object... arrays){
         Seq<T> result = new Seq<>();
         for(Object a : arrays){

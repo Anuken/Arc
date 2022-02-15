@@ -15,20 +15,6 @@ public class PixmapRegion{
         set(pixmap);
     }
 
-    /** @deprecated use get instead */
-    @Deprecated
-    public int getPixel(int x, int y){
-        return get(x, y);
-    }
-
-    /** @deprecated use get instead */
-    @Deprecated
-    public int getPixel(int x, int y, Color out){
-        int pix = getPixel(x, y);
-        out.set(pix);
-        return pix;
-    }
-
     /** @return the RGBA value at a region position. */
     public int get(int x, int y){
         return pixmap.get(this.x + x, this.y + y);

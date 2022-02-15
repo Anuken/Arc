@@ -102,12 +102,6 @@ public class ObjectSet<T> implements Iterable<T>, Eachable<T>{
         return arr;
     }
 
-    /** @deprecated bad name, use toSeq instead. */
-    @Deprecated
-    public Seq<T> asArray(){
-        return toSeq();
-    }
-
     public Seq<T> toSeq(){
         return iterator().toSeq();
     }
