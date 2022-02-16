@@ -151,7 +151,7 @@ public class Fill{
         x1, y2, center
         );
     }
-    
+
     public static void light(float x, float y, int sides, float radius, Color center, Color edge){
         light(x, y, sides, radius, 0, center, edge);
     }
