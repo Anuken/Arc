@@ -205,6 +205,10 @@ public class Rect implements Shape2D{
     public Vec2 getSize(Vec2 size){
         return size.set(width, height);
     }
+    
+    public static boolean contains(float x, float y, float width, float height, float px, float py){
+        return x <= px && x + width >= px && y <= py && y + height >= py;
+    }
 
     /**
      * @param x point x coordinate
