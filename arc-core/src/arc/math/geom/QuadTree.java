@@ -183,6 +183,30 @@ public class QuadTree<T extends QuadTreeObject>{
     }
 
     /**
+     * @return whether an object overlaps this rectangle.
+     * This will never result in false positives.
+     */
+    public boolean any(float x, float y, float width, float height){
+        if(!leaf){
+            if(topLeft.bounds.overlaps(x, y, width, height) && topLeft.any(x, y, width, height)) return true;
+            if(topRight.bounds.overlaps(x, y, width, height) && topRight.any(x, y, width, height)) return true;
+            if(botLeft.bounds.overlaps(x, y, width, height) && botLeft.any(x, y, width, height)) return true;
+            if(botRight.bounds.overlaps(x, y, width, height) && botRight.any(x, y, width, height))return true;
+        }
+
+        Seq<?> objects = this.objects;
+
+        for(int i = 0; i < objects.size; i++){
+            T item = (T)objects.items[i];
+            hitbox(item);
+            if(tmp.overlaps(x, y, width, height)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Processes objects that may intersect the given rectangle.
      * <p>
      * This will never result in false positives.
