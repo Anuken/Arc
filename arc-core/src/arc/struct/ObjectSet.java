@@ -188,6 +188,15 @@ public class ObjectSet<T> implements Iterable<T>, Eachable<T>{
             add(key);
     }
 
+    public void removeAll(T[] array, int offset, int length){
+        for(int i = offset, n = i + length; i < n; i++)
+            remove(array[i]);
+    }
+
+    public void removeAll(Seq<? extends T> array){
+        removeAll(array.items, 0, array.size);
+    }
+
     /** Skips checks for existing keys. */
     private void addResize(T key){
         // Check for empty buckets.
