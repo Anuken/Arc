@@ -56,13 +56,13 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     int[] realId = new int[NUM_TOUCHES];
     float[] pressure = new float[NUM_TOUCHES];
     boolean keyboardAvailable;
-    Pool<KeyEvent> usedKeyEvents = new Pool<>(16, 1000){
+    Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(16, 1000){
         @Override
         protected KeyEvent newObject(){
             return new KeyEvent();
         }
     };
-    Pool<TouchEvent> usedTouchEvents = new Pool<>(16, 1000){
+    Pool<TouchEvent> usedTouchEvents = new Pool<TouchEvent>(16, 1000){
         @Override
         protected TouchEvent newObject(){
             return new TouchEvent();
