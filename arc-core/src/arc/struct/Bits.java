@@ -33,8 +33,8 @@ public class Bits{
      */
     public boolean get(int index){
         final int word = index >>> 6;
-        if(word >= bits.length) return false;
-        return (bits[word] & (1L << (index & 0x3F))) != 0L;
+        //TODO why does the original source to index & 0x3F, and why doesn't java.util.BitSet?
+        return word < bits.length && (bits[word] & (1L << (index))) != 0L;
     }
 
     /**
@@ -81,6 +81,38 @@ public class Bits{
         final int word = index >>> 6;
         checkCapacity(word);
         bits[word] |= 1L << (index & 0x3F);
+    }
+
+    /**
+     * @param from index to start from, inclusive.
+     * @param to index to end at, exclusive.
+     * */
+    public void set(int from, int to){
+        if(from == to) return;
+
+        int startWordIndex = from >>> 6;
+        int endWordIndex = (to - 1) >>> 6;
+        checkCapacity(endWordIndex);
+
+        long mask = 0xffffffffffffffffL;
+        long firstWordMask = mask << from;
+        long lastWordMask = mask >>> -to;
+
+        if(startWordIndex == endWordIndex){
+            // Case 1: One word
+            bits[startWordIndex] |= (firstWordMask & lastWordMask);
+        }else{
+            // Case 2: Multiple words
+            // Handle first word
+            bits[startWordIndex] |= firstWordMask;
+
+            // Handle intermediate words, if any
+            for(int i = startWordIndex + 1; i < endWordIndex; i++)
+                bits[i] = mask;
+
+            // Handle last word (restores invariants)
+            bits[endWordIndex] |= lastWordMask;
+        }
     }
 
     /** @param index the index of the bit to flip */

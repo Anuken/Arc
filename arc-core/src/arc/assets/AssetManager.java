@@ -9,9 +9,9 @@ import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.struct.*;
 import arc.util.*;
-import arc.util.async.*;
 
 import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Loads and stores assets like textures, bitmapfonts, tile maps, sounds, music and so on.
@@ -26,7 +26,7 @@ public class AssetManager implements Disposable{
 
     final ObjectMap<Class, ObjectMap<String, AssetLoader>> loaders = new ObjectMap<>();
     final Seq<AssetDescriptor> loadQueue = new Seq<>();
-    final AsyncExecutor executor;
+    final ExecutorService executor;
 
     final Stack<AssetLoadingTask> tasks = new Stack<>();
     final FileHandleResolver resolver;
@@ -63,7 +63,7 @@ public class AssetManager implements Disposable{
             setLoader(Shader.class, new ShaderProgramLoader(resolver));
             setLoader(Cubemap.class, new CubemapLoader(resolver));
         }
-        executor = new AsyncExecutor(1);
+        executor = Threads.executor(1);
     }
 
     /**
@@ -727,7 +727,7 @@ public class AssetManager implements Disposable{
     @Override
     public synchronized void dispose(){
         clear();
-        executor.dispose();
+        Threads.await(executor);
     }
 
     /** Clears and disposes all assets and the preloading queue. */

@@ -6,32 +6,31 @@ import arc.assets.loaders.SynchronousAssetLoader;
 import arc.struct.Seq;
 import arc.files.Fi;
 import arc.util.*;
-import arc.util.async.AsyncExecutor;
-import arc.util.async.AsyncResult;
-import arc.util.async.AsyncTask;
+
+import java.util.concurrent.*;
 
 /**
  * Responsible for loading an asset through an {@link AssetLoader} based on an {@link AssetDescriptor}.
  * @author mzechner
  */
 @SuppressWarnings("unchecked")
-class AssetLoadingTask implements AsyncTask<Void>{
+class AssetLoadingTask implements Callable<Void>{
     final AssetDescriptor assetDesc;
     final AssetLoader loader;
-    final AsyncExecutor executor;
+    final ExecutorService executor;
     final long startTime;
     AssetManager manager;
     volatile boolean asyncDone = false;
     volatile boolean dependenciesLoaded = false;
     volatile Seq<AssetDescriptor> dependencies;
-    volatile AsyncResult<Void> depsFuture = null;
-    volatile AsyncResult<Void> loadFuture = null;
+    volatile Future<Void> depsFuture = null;
+    volatile Future<Void> loadFuture = null;
     volatile Object asset = null;
 
     int ticks = 0;
     volatile boolean cancel = false;
 
-    public AssetLoadingTask(AssetManager manager, AssetDescriptor assetDesc, AssetLoader loader, AsyncExecutor threadPool){
+    public AssetLoadingTask(AssetManager manager, AssetDescriptor assetDesc, AssetLoader loader, ExecutorService threadPool){
         this.manager = manager;
         this.assetDesc = assetDesc;
         this.loader = loader;

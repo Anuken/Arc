@@ -5,7 +5,6 @@ import arc.func.*;
 import arc.mock.*;
 import arc.struct.*;
 import arc.util.*;
-import arc.util.async.*;
 
 /**
  * a headless implementation of an application primarily intended to be used in servers

@@ -2,7 +2,6 @@ package arc.util;
 
 import arc.func.*;
 import arc.struct.*;
-import arc.util.async.*;
 import arc.util.io.*;
 
 import java.io.*;

@@ -4,13 +4,14 @@ package arc.net;
 
 import arc.func.*;
 import arc.net.FrameworkMessage.*;
-import arc.util.async.*;
+import arc.util.*;
 
 import java.io.*;
 import java.net.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Represents a TCP and optionally a UDP connection to a {@link Server}.
@@ -31,7 +32,7 @@ public class Client extends Connection implements EndPoint{
     private int connectTcpPort;
     private int connectUdpPort;
     private boolean isClosed;
-    private AsyncExecutor discoverExecutor = new AsyncExecutor(6);
+    private ExecutorService discoverExecutor = Threads.executor(6);
     private Prov<DatagramPacket> discoveryPacket = () -> new DatagramPacket(new byte[256], 256);
 
     /**

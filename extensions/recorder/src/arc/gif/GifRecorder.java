@@ -10,7 +10,6 @@ import arc.math.geom.*;
 import arc.scene.ui.Label.*;
 import arc.struct.*;
 import arc.util.*;
-import arc.util.async.*;
 
 import java.io.*;
 import java.text.*;

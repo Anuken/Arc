@@ -4,7 +4,7 @@ package arc.net;
 
 import arc.net.FrameworkMessage.*;
 import arc.struct.*;
-import arc.util.async.*;
+import arc.util.*;
 
 import java.io.*;
 import java.net.*;

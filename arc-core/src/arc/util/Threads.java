@@ -1,8 +1,7 @@
-package arc.util.async;
+package arc.util;
 
 import arc.*;
 import arc.func.*;
-import arc.util.*;
 
 import java.util.concurrent.*;
 
@@ -39,6 +38,10 @@ public class Threads{
 
     public static ExecutorService executor(int threads){
         return executor(threads, true);
+    }
+
+    public static ExecutorService executor(){
+        return executor(Runtime.getRuntime().availableProcessors(), true);
     }
 
     public static ExecutorService cachedExecutor(){

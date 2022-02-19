@@ -5,7 +5,6 @@ import arc.func.*;
 import arc.struct.*;
 import arc.struct.ObjectMap.*;
 import arc.util.*;
-import arc.util.async.*;
 import arc.util.io.*;
 import arc.util.serialization.*;
 

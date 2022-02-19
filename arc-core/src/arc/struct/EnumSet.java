@@ -24,6 +24,16 @@ public class EnumSet<T extends Enum<T>>{
         return set;
     }
 
+    /** @return a new set with the specified enum, or itself if this flag is already present. */
+    public EnumSet<T> with(T add){
+        if(!contains(add)){
+            T[] copy = (T[])java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), array.length + 1);
+            copy[copy.length - 1] = add;
+            return of(copy);
+        }
+        return this;
+    }
+
     public boolean contains(T t){
         return (mask & (1 << t.ordinal())) != 0;
     }
