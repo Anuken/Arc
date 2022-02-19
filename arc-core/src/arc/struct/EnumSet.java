@@ -28,6 +28,7 @@ public class EnumSet<T extends Enum<T>>{
     public EnumSet<T> with(T add){
         if(!contains(add)){
             T[] copy = (T[])java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), array.length + 1);
+            System.arraycopy(array, 0, copy, 0, array.length);
             copy[copy.length - 1] = add;
             return of(copy);
         }
