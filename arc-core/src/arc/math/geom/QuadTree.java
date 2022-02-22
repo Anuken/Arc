@@ -22,6 +22,7 @@ public class QuadTree<T extends QuadTreeObject>{
     public Rect bounds;
     public Seq<T> objects = new Seq<>(false);
     public QuadTree<T> botLeft, botRight, topLeft, topRight;
+    private final Seq<QuadTree<T>> stack = new Seq<>();
     public boolean leaf = true;
 
     public QuadTree(Rect bounds){
@@ -114,8 +115,22 @@ public class QuadTree<T extends QuadTreeObject>{
                 objects.remove(obj, true);
             }
 
-            if(getTotalObjectCount() <= maxObjectsPerNode) unsplit();
+            if(hasSpace()) unsplit();
         }
+    }
+    
+    private boolean hasSpace(){
+        int count = 0;
+        stack.clear().add(this);
+        while(!stack.isEmpty()){
+            QuadTree<T> current = stack.pop();
+            count += current.objects.size;
+            if(count > maxObjectsPerNode) return false;
+            if(!current.leaf){
+                stack.add(current.botLeft, current.topRight, current.topLeft, current.botRight);
+            }
+        }
+        return true;
     }
 
     /** Removes all objects. */
