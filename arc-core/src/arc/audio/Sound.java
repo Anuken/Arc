@@ -27,6 +27,8 @@ import static arc.audio.Soloud.*;
  * </p>
  */
 public class Sound extends AudioSource{
+    public static float globalPitch = 1f;
+
     public AudioBus bus = Core.audio == null ? null : Core.audio.soundBus;
 
     long framePlayed;
@@ -58,7 +60,7 @@ public class Sound extends AudioSource{
     public int play(float volume, float pitch, float pan, boolean loop){
         if(handle == 0 || framePlayed == Core.graphics.getFrameId() || bus == null || !Core.audio.initialized) return -1;
         framePlayed = Core.graphics.getFrameId();
-        return sourcePlayBus(handle, bus.handle, volume, pitch, pan, loop);
+        return sourcePlayBus(handle, bus.handle, volume, pitch * globalPitch, pan, loop);
     }
 
     /** Sets the bus that will be used for the next play of this SFX. */
