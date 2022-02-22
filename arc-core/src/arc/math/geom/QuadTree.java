@@ -29,7 +29,7 @@ public class QuadTree<T extends QuadTreeObject>{
         this.bounds = bounds;
     }
 
-    private void split(){
+    protected void split(){
         if(!leaf) return;
 
         float subW = bounds.width / 2;
@@ -55,7 +55,7 @@ public class QuadTree<T extends QuadTreeObject>{
         }
     }
 
-    private void unsplit(){
+    protected void unsplit(){
         if(leaf) return;
         objects.addAll(botLeft.objects);
         objects.addAll(botRight.objects);
@@ -139,7 +139,7 @@ public class QuadTree<T extends QuadTreeObject>{
         leaf = true;
     }
 
-    private QuadTree<T> getFittingChild(Rect boundingBox){
+    protected QuadTree<T> getFittingChild(Rect boundingBox){
         float verticalMidpoint = bounds.x + (bounds.width / 2);
         float horizontalMidpoint = bounds.y + (bounds.height / 2);
 
