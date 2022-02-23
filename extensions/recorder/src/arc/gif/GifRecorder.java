@@ -24,11 +24,14 @@ public class GifRecorder{
         openKey = KeyCode.e,
         recordKey = KeyCode.t,
         shiftKey = KeyCode.shiftLeft,
-        switchModeKey = KeyCode.f12;
+        switchModeKey = KeyCode.f12,
+        speedMinusKey = KeyCode.minus,
+        speedPlusKeep = KeyCode.plus;
 
     public boolean outputMp4 = false;
     public Fi exportDirectory = Core.files == null ? Fi.get("gifs") : Core.files.local("gifs");
     public float speedMultiplier = 1f;
+    public float[] speedModes = {0.1f, 0.25f, 0.5f, 1f, 2f, 4f, 8f};
     public int recordfps = 30;
     public float driftSpeed = 1f;
     public Rect bounds = new Rect(-defaultSize / 2, -defaultSize / 2, defaultSize, defaultSize);
@@ -44,7 +47,7 @@ public class GifRecorder{
 
         //save each frame when recording
         if(recording){
-            frametime += Core.graphics.getDeltaTime() * 60.5f * speedMultiplier;
+            frametime += Core.graphics.getDeltaTime() * 60.5f / speedMultiplier;
             if(frametime >= (60f / recordfps)){
                 frames.add(ScreenUtils.getFrameBufferPixels(
                     (int)(bounds.x + offsetx + wx),
@@ -63,6 +66,22 @@ public class GifRecorder{
                     frames.clear();
                 }
                 open = !open;
+            }
+
+            int change = 0;
+            if(Core.input.keyTap(speedMinusKey)) change --;
+            if(Core.input.keyTap(speedPlusKeep)) change ++;
+
+            if(change != 0){
+                int idx = 3;
+                for(int i = 0; i < speedModes.length; i++){
+                    if(speedModes[i] == speedMultiplier){
+                        idx = i;
+                        break;
+                    }
+                }
+
+                speedMultiplier = speedModes[Mathf.clamp(idx + change, 0, speedModes.length - 1)];
             }
 
             if(Core.input.keyTap(switchModeKey) && !saving){
@@ -172,7 +191,8 @@ public class GifRecorder{
                 font.draw(
                     (int)bounds.width + "x" + (int)bounds.height + " " +
                     (saving ? "[sky][[saving " + (int)(saveprogress * 100) + "%]" : recording ? "[scarlet][[recording]" : outputMp4 ? "[coral]mp4" : "[royal]gif") +
-                    (!recording && !saving ? " [gray][[" + switchModeKey + "]" : ""),
+                    (!recording && !saving ? " [gray][[" + switchModeKey + "]" : "") +
+                    (speedMultiplier == 1f ? "" : "\n[white]speed: [royal]" + Strings.autoFixed(speedMultiplier, 2) + "[gray]x"),
                     bounds.x + wx + offsetx + bounds.width/2f, bounds.y + wy + offsety - 4, Align.center
                 );
                 font.getData().setScale(scl);
