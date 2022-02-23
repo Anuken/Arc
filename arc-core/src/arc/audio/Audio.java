@@ -8,6 +8,7 @@ import static arc.audio.Soloud.*;
 
 /** High-level wrapper for the Soloud library. */
 public class Audio implements Disposable{
+    public float globalPitch = 1f;
     /** Falloff when playing audio.*/
     public float falloff = 16000f;
 
