@@ -28,10 +28,10 @@ import java.util.*;
 //uses legacy APIs for vibration and key input that have no good equivalent
 @SuppressWarnings("deprecation")
 public class AndroidInput extends Input implements OnKeyListener, OnTouchListener, OnGenericMotionListener{
-    public static final int NUM_TOUCHES = 20;
+    static final int maxTouches = 20;
+
     protected final float[] accelerometerValues = new float[3];
     protected final float[] gyroscopeValues = new float[3];
-    protected final AndroidTouchHandler touchHandler;
     protected final Vibrator vibrator;
     protected final float[] magneticFieldValues = new float[3];
     protected final float[] rotationVectorValues = new float[3];
@@ -42,19 +42,19 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     final float[] R = new float[9];
     final float[] orientation = new float[3];
     private final AndroidApplicationConfiguration config;
-    public boolean accelerometerAvailable = false;
-    public boolean gyroscopeAvailable = false;
+    boolean accelerometerAvailable = false;
+    boolean gyroscopeAvailable = false;
     ArrayList<OnKeyListener> keyListeners = new ArrayList<>();
     ArrayList<KeyEvent> keyEvents = new ArrayList<>();
     ArrayList<TouchEvent> touchEvents = new ArrayList<>();
-    int[] touchX = new int[NUM_TOUCHES];
-    int[] touchY = new int[NUM_TOUCHES];
-    int[] deltaX = new int[NUM_TOUCHES];
-    int[] deltaY = new int[NUM_TOUCHES];
-    boolean[] touched = new boolean[NUM_TOUCHES];
-    int[] button = new int[NUM_TOUCHES];
-    int[] realId = new int[NUM_TOUCHES];
-    float[] pressure = new float[NUM_TOUCHES];
+    int[] touchX = new int[maxTouches];
+    int[] touchY = new int[maxTouches];
+    int[] deltaX = new int[maxTouches];
+    int[] deltaY = new int[maxTouches];
+    boolean[] touched = new boolean[maxTouches];
+    int[] button = new int[maxTouches];
+    int[] realId = new int[maxTouches];
+    float[] pressure = new float[maxTouches];
     boolean keyboardAvailable;
     Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(16, 1000){
         @Override
@@ -78,6 +78,8 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     private float azimuth = 0;
     private float pitch = 0;
     private float roll = 0;
+    private int mouseLastX = 0;
+    private int mouseLastY = 0;
     private boolean justTouched = false;
     private long currentEventTimeStamp = System.nanoTime();
     private Vec3 accel = new Vec3(), gyro = new Vec3(), orient = new Vec3();
@@ -85,8 +87,6 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     private SensorEventListener gyroscopeListener;
     private SensorEventListener compassListener;
     private SensorEventListener rotationVectorListener;
-    private final AndroidMouseHandler mouseHandler;
-    ArrayList<OnGenericMotionListener> genericMotionListeners = new ArrayList<>();
 
     public AndroidInput(AndroidApplication activity, Context context, View view, AndroidApplicationConfiguration config){
         view.setOnKeyListener(this);
@@ -101,9 +101,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
         handle = new Handler();
         this.app = activity;
         this.context = context;
-        touchHandler = new AndroidTouchHandler();
-        mouseHandler = new AndroidMouseHandler();
-        hasMultitouch = touchHandler.supportsMultitouch(context);
+        hasMultitouch = activity.getPackageManager().hasSystemFeature("android.hardware.touchscreen.multitouch");
 
         vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -240,7 +238,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     public boolean isTouched(){
         synchronized(this){
             if(hasMultitouch){
-                for(int pointer = 0; pointer < NUM_TOUCHES; pointer++){
+                for(int pointer = 0; pointer < maxTouches; pointer++){
                     if(touched[pointer]){
                         return true;
                     }
@@ -325,9 +323,121 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
         }
 
         // synchronized in handler.postTouchEvent()
-        touchHandler.onTouch(event, this);
+        handleTouch(event, this);
 
         return true;
+    }
+
+    public void handleTouch(MotionEvent event, AndroidInput input){
+        final int action = event.getAction() & MotionEvent.ACTION_MASK;
+        int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+        int pointerId = event.getPointerId(pointerIndex);
+
+        int x, y;
+        int realPointerIndex;
+        KeyCode button;
+
+        long timeStamp = System.nanoTime();
+        synchronized(input){
+            switch(action){
+                case MotionEvent.ACTION_DOWN:
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    realPointerIndex = input.getFreePointerIndex(); // get a free pointer index as reported by Input.getX() etc.
+                    if(realPointerIndex >= AndroidInput.maxTouches) break;
+                    input.realId[realPointerIndex] = pointerId;
+                    x = (int)event.getX(pointerIndex);
+                    y = (int)event.getY(pointerIndex);
+                    button = toButton(event.getButtonState());
+                    if(button != KeyCode.unknown)
+                        postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, realPointerIndex, button, timeStamp);
+                    input.touchX[realPointerIndex] = x;
+                    input.touchY[realPointerIndex] = Core.graphics.getHeight() - 1 - y;
+                    input.deltaX[realPointerIndex] = 0;
+                    input.deltaY[realPointerIndex] = 0;
+                    input.touched[realPointerIndex] = (button != KeyCode.unknown);
+                    input.button[realPointerIndex] = button.ordinal();
+                    input.pressure[realPointerIndex] = event.getPressure(pointerIndex);
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_POINTER_UP:
+                case MotionEvent.ACTION_OUTSIDE:
+                    realPointerIndex = input.lookUpPointerIndex(pointerId);
+                    if(realPointerIndex == -1) break;
+                    if(realPointerIndex >= AndroidInput.maxTouches) break;
+                    input.realId[realPointerIndex] = -1;
+                    x = (int)event.getX(pointerIndex);
+                    y = (int)event.getY(pointerIndex);
+                    button = KeyCode.byOrdinal(input.button[realPointerIndex]);
+                    if(button != KeyCode.unknown)
+                        postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, realPointerIndex, button, timeStamp);
+                    input.touchX[realPointerIndex] = x;
+                    input.touchY[realPointerIndex] = Core.graphics.getHeight() - 1 - y;
+                    input.deltaX[realPointerIndex] = 0;
+                    input.deltaY[realPointerIndex] = 0;
+                    input.touched[realPointerIndex] = false;
+                    input.button[realPointerIndex] = 0;
+                    input.pressure[realPointerIndex] = 0;
+                    break;
+
+                case MotionEvent.ACTION_CANCEL:
+                    for(int i = 0; i < input.realId.length; i++){
+                        input.realId[i] = -1;
+                        input.touchX[i] = 0;
+                        input.touchY[i] = 0;
+                        input.deltaX[i] = 0;
+                        input.deltaY[i] = 0;
+                        input.touched[i] = false;
+                        input.button[i] = 0;
+                        input.pressure[i] = 0;
+                    }
+                    break;
+
+                case MotionEvent.ACTION_MOVE:
+                    int pointerCount = event.getPointerCount();
+                    for(int i = 0; i < pointerCount; i++){
+                        pointerIndex = i;
+                        pointerId = event.getPointerId(pointerIndex);
+                        x = (int)event.getX(pointerIndex);
+                        y = (int)event.getY(pointerIndex);
+                        realPointerIndex = input.lookUpPointerIndex(pointerId);
+                        if(realPointerIndex == -1) continue;
+                        if(realPointerIndex >= AndroidInput.maxTouches) break;
+                        button = KeyCode.byOrdinal(input.button[realPointerIndex]);
+                        if(button != KeyCode.unknown)
+                            postTouchEvent(input, TouchEvent.TOUCH_DRAGGED, x, y, realPointerIndex, button, timeStamp);
+                        else
+                            postTouchEvent(input, TouchEvent.TOUCH_MOVED, x, y, realPointerIndex, KeyCode.mouseLeft, timeStamp);
+                        input.deltaX[realPointerIndex] = x - input.touchX[realPointerIndex];
+                        input.deltaY[realPointerIndex] = -(y - input.touchY[realPointerIndex]);
+                        input.touchX[realPointerIndex] = x;
+                        input.touchY[realPointerIndex] = Core.graphics.getHeight() - 1 - y;
+                        input.pressure[realPointerIndex] = event.getPressure(pointerIndex);
+                    }
+                    break;
+            }
+        }
+        Core.graphics.requestRendering();
+    }
+
+    private KeyCode toButton(int button){
+        if(button == 0 || button == 1) return KeyCode.mouseLeft;
+        if(button == 2) return KeyCode.mouseRight;
+        if(button == 4) return KeyCode.mouseMiddle;
+        if(button == 8) return KeyCode.mouseBack;
+        if(button == 16) return KeyCode.mouseForward;
+        return KeyCode.unknown;
+    }
+
+    private void postTouchEvent(AndroidInput input, int type, int x, int y, int pointer, KeyCode button, long timeStamp){
+        TouchEvent event = input.usedTouchEvents.obtain();
+        event.timeStamp = timeStamp;
+        event.pointer = pointer;
+        event.x = x;
+        event.y = Core.graphics.getHeight() - y - 1;
+        event.type = type;
+        event.button = button;
+        input.touchEvents.add(event);
     }
 
     public void onTap(int x, int y){
@@ -668,16 +778,11 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
         }
 
         switch(orientation){
-            case Surface.ROTATION_0:
-                return 0;
-            case Surface.ROTATION_90:
-                return 90;
-            case Surface.ROTATION_180:
-                return 180;
-            case Surface.ROTATION_270:
-                return 270;
-            default:
-                return 0;
+            case Surface.ROTATION_0: return 0;
+            case Surface.ROTATION_90: return 90;
+            case Surface.ROTATION_180: return 180;
+            case Surface.ROTATION_270: return 270;
+            default: return 0;
         }
     }
 
@@ -823,13 +928,55 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
 
     @Override
     public boolean onGenericMotion(View view, MotionEvent event){
-        if(mouseHandler.onGenericMotion(event, this)) return true;
-        for(int i = 0, n = genericMotionListeners.size(); i < n; i++)
-            if(genericMotionListeners.get(i).onGenericMotion(view, event)) return true;
-        return false;
+        return handleGenericMotion(event);
     }
 
-    public void addGenericMotionListener(OnGenericMotionListener listener){
-        genericMotionListeners.add(listener);
+    public boolean handleGenericMotion(MotionEvent event){
+        if((event.getSource() & android.view.InputDevice.SOURCE_CLASS_POINTER) == 0) return false;
+
+        final int action = event.getAction() & MotionEvent.ACTION_MASK;
+
+        int x, y, scrollAmountX, scrollAmountY;
+        int pointer = 0;
+
+        long timeStamp = System.nanoTime();
+        synchronized(this){
+            switch(action){
+                case MotionEvent.ACTION_HOVER_MOVE:
+                    x = (int)event.getX();
+                    y = (int)event.getY();
+                    if((x != mouseLastX) || (y != mouseLastY)){ // Avoid garbage events
+                        postTouchEvent(TouchEvent.TOUCH_MOVED, x, y, 0, 0, timeStamp);
+
+                        touchX[pointer] = x;
+                        touchY[pointer] = Core.graphics.getHeight() - 1 - y;
+                        deltaX[pointer] = x - mouseLastX;
+                        deltaY[pointer] = -(y - mouseLastY);
+
+                        mouseLastX = x;
+                        mouseLastY = y;
+                    }
+                    break;
+
+                case MotionEvent.ACTION_SCROLL:
+                    scrollAmountY = (int)-Math.signum(event.getAxisValue(MotionEvent.AXIS_VSCROLL));
+                    scrollAmountX = (int)-Math.signum(event.getAxisValue(MotionEvent.AXIS_HSCROLL));
+                    postTouchEvent(TouchEvent.TOUCH_SCROLLED, 0, 0, scrollAmountX, scrollAmountY, timeStamp);
+
+            }
+        }
+        Core.graphics.requestRendering();
+        return true;
+    }
+
+    private void postTouchEvent(int type, int x, int y, int scrollAmountX, int scrollAmountY, long timeStamp){
+        TouchEvent event = usedTouchEvents.obtain();
+        event.timeStamp = timeStamp;
+        event.x = x;
+        event.y = Core.graphics.getHeight() - y - 1;
+        event.type = type;
+        event.scrollAmountX = scrollAmountX;
+        event.scrollAmountY = scrollAmountY;
+        touchEvents.add(event);
     }
 }
