@@ -260,6 +260,16 @@ public class Vec2 implements Vector<Vec2>, Position{
         return xd * xd + yd * yd;
     }
 
+    public Vec2 clampLength(float min, float max){
+        float len2 = len2();
+        if(len2 >= max * max){
+            return limit(max);
+        }else if(len2 <= min * min){
+            return setLength(min);
+        }
+        return this;
+    }
+
     @Override
     public Vec2 limit(float limit){
         return limit2(limit * limit);
