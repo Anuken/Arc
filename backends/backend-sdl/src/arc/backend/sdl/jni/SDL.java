@@ -127,7 +127,7 @@ public class SDL{
                     try{
                         String name = "libSDL2.so";
                         File result = new File(extractedFile.getParentFile() == null ? name : (extractedFile.getParentFile() + "/" + name));
-                        extractFile(name, sourceCrc, result);
+                        extractFile(name, crc(readFile(name)), result);
                         System.load(result.getAbsolutePath());
                     }catch(Throwable ignored){
                     }
