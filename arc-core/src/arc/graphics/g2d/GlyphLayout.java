@@ -433,7 +433,7 @@ public class GlyphLayout implements Poolable{
                 for(int i = start + 1; i < end; i++){
                     char ch = str.charAt(i);
                     if(ch == ']'){
-                        if(i < start + 2 || i > start + 9) break; // Illegal number of hex digits.
+                        if(i < start + 2 || i > start + 9 || i == start + 8) break; // Illegal number of hex digits.
                         if(i - start <= 7){ // RRGGBB or fewer chars.
                             for(int ii = 0, nn = 9 - (i - start); ii < nn; ii++)
                                 colorInt = colorInt << 4;
