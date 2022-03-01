@@ -932,10 +932,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     }
 
     public boolean handleGenericMotion(MotionEvent event){
-        if((event.getSource() & android.view.InputDevice.SOURCE_CLASS_POINTER) == 0) return false;
-
-        final int action = event.getAction() & MotionEvent.ACTION_MASK;
-
+        int action = event.getAction() & MotionEvent.ACTION_MASK;
         int x, y, scrollAmountX, scrollAmountY;
         int pointer = 0;
 
