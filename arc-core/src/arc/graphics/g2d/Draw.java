@@ -265,7 +265,7 @@ public class Draw{
     /** Draws a portion of a world-sized texture. */
     public static void fbo(Texture texture, int worldWidth, int worldHeight, int tilesize){
         float ww = worldWidth * tilesize, wh = worldHeight * tilesize;
-        float x = camera.position.x + tilesize / 2f, y = camera.position.y + tilesize / 2f;
+        float x = camera.position.x, y = camera.position.y;
         float u = (x - camera.width / 2f) / ww,
         v = (y - camera.height / 2f) / wh,
         u2 = (x + camera.width / 2f) / ww,
