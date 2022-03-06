@@ -371,27 +371,6 @@ public abstract class Input{
         return Orientation.landscape;
     }
 
-    /** @return whether the mouse cursor is catched. */
-    public boolean isCursorCatched(){
-        return false;
-    }
-
-    /**
-     * Only viable on the desktop. Will confine the mouse cursor location to the window and hide the mouse cursor. X and y
-     * coordinates are still reported as if the mouse was not catched.
-     * @param catched whether to catch or not to catch the mouse cursor
-     */
-    public void setCursorCatched(boolean catched){
-    }
-
-    /**
-     * Only viable on the desktop. Will set the mouse cursor location to the given window coordinates (origin top-left corner).
-     * @param x the x-position
-     * @param y the y-position
-     */
-    public void setCursorPosition(int x, int y){
-    }
-
     public enum Orientation{
         landscape, portrait
     }

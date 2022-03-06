@@ -109,22 +109,7 @@ public class MockGraphics extends Graphics{
     }
 
     @Override
-    public boolean supportsDisplayModeChange(){
-        return false;
-    }
-
-    @Override
-    public DisplayMode[] getDisplayModes(){
-        return new DisplayMode[0];
-    }
-
-    @Override
-    public DisplayMode getDisplayMode(){
-        return null;
-    }
-
-    @Override
-    public boolean setFullscreenMode(DisplayMode displayMode){
+    public boolean setFullscreen(){
         return false;
     }
 
@@ -201,31 +186,6 @@ public class MockGraphics extends Graphics{
 
     @Override
     public void setSystemCursor(SystemCursor systemCursor){
-    }
-
-    @Override
-    public Monitor getPrimaryMonitor(){
-        return null;
-    }
-
-    @Override
-    public Monitor getMonitor(){
-        return null;
-    }
-
-    @Override
-    public Monitor[] getMonitors(){
-        return null;
-    }
-
-    @Override
-    public DisplayMode[] getDisplayModes(Monitor monitor){
-        return null;
-    }
-
-    @Override
-    public DisplayMode getDisplayMode(Monitor monitor){
-        return null;
     }
 
     @Override

@@ -439,46 +439,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
     }
 
     @Override
-    public boolean supportsDisplayModeChange(){
-        return false;
-    }
-
-    @Override
-    public boolean setFullscreenMode(DisplayMode displayMode){
-        return false;
-    }
-
-    @Override
-    public Monitor getPrimaryMonitor(){
-        return new Monitor(0, 0, "Primary Monitor");
-    }
-
-    @Override
-    public Monitor getMonitor(){
-        return getPrimaryMonitor();
-    }
-
-    @Override
-    public Monitor[] getMonitors(){
-        return new Monitor[]{getPrimaryMonitor()};
-    }
-
-    @Override
-    public DisplayMode[] getDisplayModes(Monitor monitor){
-        return getDisplayModes();
-    }
-
-    @Override
-    public DisplayMode getDisplayMode(Monitor monitor){
-        return getDisplayMode();
-    }
-
-    @Override
-    public DisplayMode[] getDisplayModes(){
-        return new DisplayMode[]{getDisplayMode()};
-    }
-
-    @Override
     public boolean setWindowedMode(int width, int height){
         return false;
     }
@@ -494,13 +454,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
     @Override
     public void setResizable(boolean resizable){
 
-    }
-
-    @Override
-    public DisplayMode getDisplayMode(){
-        DisplayMetrics metrics = new DisplayMetrics();
-        app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        return new DisplayMode(metrics.widthPixels, metrics.heightPixels, 0, 0);
     }
 
     @Override

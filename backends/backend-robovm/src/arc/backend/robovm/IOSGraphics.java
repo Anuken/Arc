@@ -1,6 +1,7 @@
 package arc.backend.robovm;
 
 import arc.*;
+import arc.Graphics;
 import arc.Graphics.Cursor.*;
 import arc.func.*;
 import arc.graphics.*;
@@ -18,6 +19,7 @@ import org.robovm.objc.*;
 import org.robovm.objc.annotation.*;
 import org.robovm.rt.bro.annotation.*;
 
+import java.awt.*;
 import java.util.*;
 
 //lots of openGL stuff is deprecated, I don't care about it
@@ -386,52 +388,6 @@ public class IOSGraphics extends Graphics{
     }
 
     @Override
-    public boolean supportsDisplayModeChange(){
-        return false;
-    }
-
-    @Override
-    public DisplayMode[] getDisplayModes(){
-        return new DisplayMode[]{getDisplayMode()};
-    }
-
-    @Override
-    public DisplayMode getDisplayMode(){
-        return new IOSDisplayMode(getWidth(), getHeight(), config.preferredFramesPerSecond, bufferFormat.r + bufferFormat.g
-        + bufferFormat.b + bufferFormat.a);
-    }
-
-    @Override
-    public Monitor getPrimaryMonitor(){
-        return new IOSMonitor(0, 0, "Primary Monitor");
-    }
-
-    @Override
-    public Monitor getMonitor(){
-        return getPrimaryMonitor();
-    }
-
-    @Override
-    public Monitor[] getMonitors(){
-        return new Monitor[]{getPrimaryMonitor()};
-    }
-
-    @Override
-    public DisplayMode[] getDisplayModes(Monitor monitor){
-        return getDisplayModes();
-    }
-
-    @Override
-    public DisplayMode getDisplayMode(Monitor monitor){
-        return getDisplayMode();
-    }
-
-    @Override
-    public boolean setFullscreenMode(DisplayMode displayMode){
-        return false;
-    }
-
-    @Override
     public boolean setWindowedMode(int width, int height){
         return false;
     }
@@ -615,18 +571,6 @@ public class IOSGraphics extends Graphics{
 
         public IOSUIView(CGRect frame, EAGLContext context){
             super(frame, context);
-        }
-    }
-
-    private class IOSDisplayMode extends DisplayMode{
-        protected IOSDisplayMode(int width, int height, int refreshRate, int bitsPerPixel){
-            super(width, height, refreshRate, bitsPerPixel);
-        }
-    }
-
-    private class IOSMonitor extends Monitor{
-        protected IOSMonitor(int virtualX, int virtualY, String name){
-            super(virtualX, virtualY, name);
         }
     }
 }

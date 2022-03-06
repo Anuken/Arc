@@ -133,38 +133,12 @@ public abstract class Graphics implements Disposable{
     public abstract float getDensity();
 
     /**
-     * Whether the given backend supports a display mode change via calling {@link Graphics#setFullscreenMode(DisplayMode)}
-     * @return whether display mode changes are supported or not.
-     */
-    public abstract boolean supportsDisplayModeChange();
-
-    /** @return the primary monitor **/
-    public abstract Monitor getPrimaryMonitor();
-
-    /** @return the monitor the application's window is located on */
-    public abstract Monitor getMonitor();
-
-    /** @return the currently connected {@link Monitor}s */
-    public abstract Monitor[] getMonitors();
-
-    /** @return the supported fullscreen {@link DisplayMode}(s) of the monitor the window is on */
-    public abstract DisplayMode[] getDisplayModes();
-
-    /** @return the supported fullscreen {@link DisplayMode}s of the given {@link Monitor} */
-    public abstract DisplayMode[] getDisplayModes(Monitor monitor);
-
-    /** @return the current {@link DisplayMode} of the monitor the window is on. */
-    public abstract DisplayMode getDisplayMode();
-
-    /** @return the current {@link DisplayMode} of the given {@link Monitor} */
-    public abstract DisplayMode getDisplayMode(Monitor monitor);
-
-    /**
      * Sets the window to full-screen mode.
-     * @param displayMode the display mode.
      * @return whether the operation succeeded.
      */
-    public abstract boolean setFullscreenMode(DisplayMode displayMode);
+    public boolean setFullscreen(){
+        return false;
+    }
 
     /**
      * Sets the window to windowed mode.
@@ -348,48 +322,6 @@ public abstract class Graphics implements Disposable{
     public void dispose(){
         for(SystemCursor cursor : SystemCursor.values()){
             cursor.dispose();
-        }
-    }
-
-    /**
-     * Describe a fullscreen display mode
-     * @author mzechner
-     */
-    public static class DisplayMode{
-        /** the width in physical pixels **/
-        public final int width;
-        /** the height in physical pixles **/
-        public final int height;
-        /** the refresh rate in Hertz **/
-        public final int refreshRate;
-        /** the number of bits per pixel, may exclude alpha **/
-        public final int bitsPerPixel;
-
-        public DisplayMode(int width, int height, int refreshRate, int bitsPerPixel){
-            this.width = width;
-            this.height = height;
-            this.refreshRate = refreshRate;
-            this.bitsPerPixel = bitsPerPixel;
-        }
-
-        public String toString(){
-            return width + "x" + height + ", bpp: " + bitsPerPixel + ", hz: " + refreshRate;
-        }
-    }
-
-    /**
-     * Describes a monitor
-     * @author badlogic
-     */
-    public static class Monitor{
-        public final int virtualX;
-        public final int virtualY;
-        public final String name;
-
-        public Monitor(int virtualX, int virtualY, String name){
-            this.virtualX = virtualX;
-            this.virtualY = virtualY;
-            this.name = name;
         }
     }
 

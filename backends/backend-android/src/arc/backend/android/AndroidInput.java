@@ -6,20 +6,25 @@ import android.hardware.*;
 import android.os.*;
 import android.text.*;
 import android.text.InputFilter.*;
+import android.util.*;
 import android.view.*;
 import android.view.View.*;
 import android.view.inputmethod.*;
 import android.widget.*;
 import arc.*;
+import arc.Graphics;
 import arc.Graphics.*;
 import arc.struct.*;
 import arc.input.InputDevice;
 import arc.input.*;
 import arc.math.geom.*;
 import arc.util.*;
+import arc.util.Log;
 import arc.util.pooling.*;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * An implementation of the {@link Input} interface for Android.
@@ -106,9 +111,11 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
         vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
 
         int rotation = getRotation();
-        DisplayMode mode = activity.graphics.getDisplayMode();
-        if(((rotation == 0 || rotation == 180) && (mode.width >= mode.height))
-        || ((rotation == 90 || rotation == 270) && (mode.width <= mode.height))){
+        DisplayMetrics mode = new DisplayMetrics();
+        app.getWindowManager().getDefaultDisplay().getMetrics(mode);
+
+        if(((rotation == 0 || rotation == 180) && (mode.widthPixels >= mode.heightPixels))
+        || ((rotation == 90 || rotation == 270) && (mode.widthPixels <= mode.heightPixels))){
             nativeOrientation = Orientation.landscape;
         }else{
             nativeOrientation = Orientation.portrait;
@@ -792,15 +799,6 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     }
 
     @Override
-    public boolean isCursorCatched(){
-        return false;
-    }
-
-    @Override
-    public void setCursorCatched(boolean catched){
-    }
-
-    @Override
     public int deltaX(){
         return deltaX[0];
     }
@@ -818,10 +816,6 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     @Override
     public int deltaY(int pointer){
         return deltaY[pointer];
-    }
-
-    @Override
-    public void setCursorPosition(int x, int y){
     }
 
     @Override
