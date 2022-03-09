@@ -2,12 +2,12 @@ package arc.struct;
 
 import java.util.NoSuchElementException;
 
-/**Queue for ints.*/
+/** Queue for ints. */
 public class IntQueue{
     /** Number of elements in the queue. */
     public int size = 0;
     /** Contains the values in the queue. Head and tail indices go in a circle around this array, wrapping at the end. */
-    protected int[] values;
+    public int[] values;
     /** Index of first element. Logically smaller than tail. Unless empty, it points to a valid element inside queue. */
     protected int head = 0;
     /**
@@ -48,7 +48,7 @@ public class IntQueue{
     /**
      * Prepend given object to the head. (enqueue to head) Unless backing array needs resizing, operates in O(1) time.
      * @param object can be null
-     * @see #addLast(Object)
+     * @see #addLast(int)
      */
     public void addFirst(int object){
         int[] values = this.values;
@@ -67,6 +67,16 @@ public class IntQueue{
 
         this.head = head;
         this.size++;
+    }
+
+    /**
+     * Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items
+     * have been removed, or if it is known that more items will not be added.
+     * @return {@link #values}
+     */
+    public int[] shrink(){
+        if(values.length != size) resize(size);
+        return values;
     }
 
     /**
@@ -221,7 +231,7 @@ public class IntQueue{
     /**
      * Returns the first (head) item in the queue (without removing it).
      * @throws NoSuchElementException when queue is empty
-     * @see #addFirst(Object)
+     * @see #addFirst(int)
      * @see #removeFirst()
      */
     public int first(){
@@ -235,7 +245,7 @@ public class IntQueue{
     /**
      * Returns the last (tail) item in the queue (without removing it).
      * @throws NoSuchElementException when queue is empty
-     * @see #addLast(Object)
+     * @see #addLast(int)
      * @see #removeLast()
      */
     public int last(){
