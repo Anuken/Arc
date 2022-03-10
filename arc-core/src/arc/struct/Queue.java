@@ -15,7 +15,7 @@ public class Queue<T> implements Iterable<T>, Eachable<T>{
     /** Number of elements in the queue. */
     public int size = 0;
     /** Contains the values in the queue. Head and tail indices go in a circle around this array, wrapping at the end. */
-    protected T[] values;
+    public T[] values;
     /** Index of first element. Logically smaller than tail. Unless empty, it points to a valid element inside queue. */
     protected int head = 0;
     /**
@@ -23,7 +23,7 @@ public class Queue<T> implements Iterable<T>, Eachable<T>{
      * (size == values.length).
      */
     protected int tail = 0;
-    private QueueIterable iterable;
+    private @Nullable QueueIterable<T> iterable;
 
     /** Creates a new Queue which can hold 16 values without needing to resize backing array. */
     public Queue(){
@@ -101,6 +101,16 @@ public class Queue<T> implements Iterable<T>, Eachable<T>{
     }
 
     /**
+     * Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items
+     * have been removed, or if it is known that more items will not be added.
+     * @return {@link #values}
+     */
+    public T[] shrink(){
+        if(values.length != size) resize(size);
+        return values;
+    }
+
+    /**
      * Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
      * items to avoid multiple backing array resizes.
      */
@@ -117,7 +127,7 @@ public class Queue<T> implements Iterable<T>, Eachable<T>{
         final int head = this.head;
         final int tail = this.tail;
 
-        @SuppressWarnings("unchecked") final T[] newArray = (T[])java.lang.reflect.Array.newInstance(values.getClass().getComponentType(), newSize);
+        final T[] newArray = (T[])java.lang.reflect.Array.newInstance(values.getClass().getComponentType(), newSize);
         if(head < tail){
             // Continuous
             System.arraycopy(values, head, newArray, 0, tail - head);

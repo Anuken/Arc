@@ -7,7 +7,7 @@ public class LongQueue{
     /** Number of elements in the queue. */
     public int size = 0;
     /** Contains the values in the queue. Head and tail indices go in a circle around this array, wrapping at the end. */
-    protected long[] values;
+    public long[] values;
     /** Index of first element. Logically smaller than tail. Unless empty, it points to a valid element inside queue. */
     protected int head = 0;
     /**
@@ -74,6 +74,16 @@ public class LongQueue{
 
         this.head = head;
         this.size++;
+    }
+
+    /**
+     * Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items
+     * have been removed, or if it is known that more items will not be added.
+     * @return {@link #values}
+     */
+    public long[] shrink(){
+        if(values.length != size) resize(size);
+        return values;
     }
 
     /**
@@ -228,7 +238,7 @@ public class LongQueue{
     /**
      * Returns the first (head) item in the queue (without removing it).
      * @throws NoSuchElementException when queue is empty
-     * @see #addFirst(Object)
+     * @see #addFirst(long)
      * @see #removeFirst()
      */
     public long first(){
@@ -242,7 +252,7 @@ public class LongQueue{
     /**
      * Returns the last (tail) item in the queue (without removing it).
      * @throws NoSuchElementException when queue is empty
-     * @see #addLast(Object)
+     * @see #addLast(long)
      * @see #removeLast()
      */
     public long last(){
