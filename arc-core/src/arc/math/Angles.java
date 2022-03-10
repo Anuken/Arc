@@ -21,6 +21,8 @@ public class Angles{
     }
 
     public static float angleDist(float a, float b){
+        a = Mathf.mod(a, 360f);
+        b = Mathf.mod(b, 360f);
         return Math.min((a - b) < 0 ? a - b + 360 : a - b, (b - a) < 0 ? b - a + 360 : b - a);
     }
 
