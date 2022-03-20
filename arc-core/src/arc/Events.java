@@ -16,8 +16,8 @@ public class Events{
     }
 
     /** Handle an event by enum trigger. */
-    public static void run(Object type, Runnable listener){
-        events.get(type, () -> new Seq<>(Cons.class)).add(e -> listener.run());
+    public static <T> void run(Object type, Cons<T> listener){
+        events.get(type, () -> new Seq<>(Cons.class)).add(e -> listener.get(e));
     }
 
     /** Only use this method if you have the reference to the exact listener object that was used. */
