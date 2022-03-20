@@ -20,6 +20,11 @@ public class Events{
         events.get(type, () -> new Seq<>(Cons.class)).add(e -> listener.run());
     }
 
+    /** Handle an event by enum trigger. */
+    public static <T> void run(Object type, Cons<T> listener){
+        events.get(type, () -> new Seq<>(Cons.class)).add(e -> listener.get(e));
+    }
+    
     /** Only use this method if you have the reference to the exact listener object that was used. */
     public static <T> boolean remove(Class<T> type, Cons<T> listener){
         return events.get(type, Seq::new).remove(listener);
