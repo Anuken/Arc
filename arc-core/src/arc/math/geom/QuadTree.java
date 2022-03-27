@@ -1,10 +1,10 @@
 package arc.math.geom;
 
-import arc.struct.Seq;
-import arc.func.Cons;
-import arc.math.geom.QuadTree.QuadTreeObject;
+import arc.func.*;
+import arc.math.geom.QuadTree.*;
+import arc.struct.*;
 
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * A basic quad tree.
