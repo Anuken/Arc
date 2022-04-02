@@ -16,18 +16,18 @@ import arc.util.pooling.Pools;
 public class TextArea extends TextField{
 
     /** Array storing lines breaks positions **/
-    IntSeq linesBreak;
+    protected IntSeq linesBreak;
     /** Current line for the cursor **/
-    int cursorLine;
+    protected int cursorLine;
     /** Index of the first line showed by the text area **/
-    int firstLineShowing;
+    protected int firstLineShowing;
     /** Variable to maintain the x offset of the cursor when moving up and down. If it's set to -1, the offset is reset **/
-    float moveOffset;
+    protected float moveOffset;
     /** Last text processed. This attribute is used to avoid unnecessary computations while calculating offsets **/
-    private String lastText;
+    protected String lastText;
     /** Number of lines showed by the text area **/
-    private int linesShowing;
-    private float prefRows;
+    protected int linesShowing;
+    protected float prefRows;
 
     public TextArea(String text){
         super(text);
