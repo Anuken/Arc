@@ -246,6 +246,10 @@ public class Draw{
         blend(Blending.normal);
     }
 
+    public static Blending getBlend(){
+        return batch.getBlending();
+    }
+
     public static void reset(){
         color();
         mixcol();

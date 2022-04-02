@@ -108,6 +108,10 @@ public abstract class Batch implements Disposable{
         this.blending = blending;
     }
 
+    protected Blending getBlending(){
+        return blending;
+    }
+
     @Override
     public void dispose(){
         if(mesh != null){
