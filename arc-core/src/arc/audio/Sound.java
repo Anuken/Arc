@@ -53,10 +53,11 @@ public class Sound extends AudioSource{
      * @param volume the volume in the range [0,1]
      * @param pitch the pitch multiplier, 1 == default, >1 == faster, <1 == slower, the value has to be between 0.5 and 2.0
      * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
+     * @param checkFrame if true, this sound will not be able to be played twice in the same frame.
      * @return the id of the sound instance if successful, or -1 on failure.
      */
-    public int play(float volume, float pitch, float pan, boolean loop){
-        if(handle == 0 || framePlayed == Core.graphics.getFrameId() || bus == null || !Core.audio.initialized) return -1;
+    public int play(float volume, float pitch, float pan, boolean loop, boolean checkFrame){
+        if(handle == 0 || (checkFrame && framePlayed == Core.graphics.getFrameId()) || bus == null || !Core.audio.initialized) return -1;
         framePlayed = Core.graphics.getFrameId();
         return sourcePlayBus(handle, bus.handle, volume, pitch * Core.audio.globalPitch, pan, loop);
     }
@@ -141,6 +142,10 @@ public class Sound extends AudioSource{
      */
     public int play(float volume){
         return play(volume, 1f, 0f);
+    }
+
+    public int play(float volume, float pitch, float pan, boolean loop){
+        return play(volume, pitch, pan, loop, true);
     }
 
     /**
