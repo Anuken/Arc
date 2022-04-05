@@ -162,7 +162,7 @@ public class SdlApplication implements Application{
         listen(ApplicationListener::init);
 
         while(running){
-            while(SDL_PollEvent(inputs)){
+            while(SDL_PollEvent(inputs, Core.graphics.getWidth(), Core.graphics.getHeight())){
                 if(inputs[0] == SDL_EVENT_QUIT){
                     running = false;
                 }else if(inputs[0] == SDL_EVENT_WINDOW){
@@ -178,6 +178,7 @@ public class SdlApplication implements Application{
                 }else if(inputs[0] == SDL_EVENT_MOUSE_MOTION ||
                     inputs[0] == SDL_EVENT_MOUSE_BUTTON ||
                     inputs[0] == SDL_EVENT_MOUSE_WHEEL ||
+                    inputs[0] == SDL_EVENT_TOUCH ||
                     inputs[0] == SDL_EVENT_KEYBOARD ||
                     inputs[0] == SDL_EVENT_TEXT_INPUT ||
                     inputs[0] == SDL_EVENT_TEXT_EDIT){

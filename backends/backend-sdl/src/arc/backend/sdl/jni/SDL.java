@@ -94,10 +94,11 @@ public class SDL{
     SDL_EVENT_MOUSE_MOTION = 2,
     SDL_EVENT_MOUSE_BUTTON = 3,
     SDL_EVENT_MOUSE_WHEEL = 4,
-    SDL_EVENT_KEYBOARD = 5,
-    SDL_EVENT_TEXT_INPUT = 6,
-    SDL_EVENT_TEXT_EDIT = 8,
-    SDL_EVENT_OTHER = 7,
+    SDL_EVENT_TOUCH = 5,
+    SDL_EVENT_KEYBOARD = 6,
+    SDL_EVENT_TEXT_INPUT = 7,
+    SDL_EVENT_TEXT_EDIT = 9,
+    SDL_EVENT_OTHER = 8,
 
     SDL_GL_RED_SIZE = 0,
     SDL_GL_GREEN_SIZE = 1,
@@ -322,7 +323,7 @@ public class SDL{
     /** Since passing in or returning a class here would be a pain, I have to resort to an int array.
      * @return whether the event was processed.
      * If true is returned, the input data array is filled with the event data.*/
-    public static native boolean SDL_PollEvent(int[] data); /*
+    public static native boolean SDL_PollEvent(int[] data, int width, int height); /*
         SDL_Event e;
         if(SDL_PollEvent(&e)){
             switch(e.type){
@@ -336,26 +337,47 @@ public class SDL{
                     data[3] = e.window.data2;
                     break;
                 case SDL_MOUSEMOTION:
+                    if(e.motion.which == SDL_TOUCH_MOUSEID) break;
                     data[0] = 2;
                     data[1] = e.motion.x;
-                    data[2] = e.motion.y;
+                    data[2] = (height - e.motion.y);
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                 case SDL_MOUSEBUTTONUP:
+                    if(e.button.which == SDL_TOUCH_MOUSEID) break;
                     data[0] = 3;
                     data[1] = (e.type == SDL_MOUSEBUTTONDOWN);
                     data[2] = e.button.x;
-                    data[3] = e.button.y;
+                    data[3] = (height - e.button.y);
                     data[4] = e.button.button;
                     break;
                 case SDL_MOUSEWHEEL:
+                    if(e.wheel.which == SDL_TOUCH_MOUSEID) break;
                     data[0] = 4;
                     data[1] = e.wheel.x;
                     data[2] = e.wheel.y;
                     break;
+                case SDL_FINGERMOTION:
+                case SDL_FINGERDOWN:
+                case SDL_FINGERUP:
+                    data[0] = 5;
+                    // everything relating to touch (sans gestures) in SDL2 are under one data field,
+                    // this mirrors that rather than splitting them apart.
+                    // 0 - finger motion, 1 - finger down, 2 - finger up
+                    if(e.type == SDL_FINGERMOTION){ data[1] = 0; }
+                    else if(e.type == SDL_FINGERDOWN){ data[1] = 1; }
+                    else { data[1] = 2; }
+                    data[2] = e.tfinger.x * width;
+                    data[3] = height - (e.tfinger.y * height);
+                    data[4] = e.tfinger.dx;
+                    data[5] = e.tfinger.dy;
+                    data[6] = e.tfinger.pressure;
+                    data[7] = e.tfinger.touchId;
+                    data[8] = e.tfinger.fingerId;
+                    break;
                 case SDL_KEYDOWN:
                 case SDL_KEYUP:
-                    data[0] = 5;
+                    data[0] = 6;
                     data[1] = (e.type == SDL_KEYDOWN);
                     data[2] = e.key.keysym.sym;
                     data[3] = e.key.repeat;
@@ -364,7 +386,7 @@ public class SDL{
                     data[6] = e.key.timestamp;
                     break;
                 case SDL_TEXTINPUT:
-                    data[0] = 6;
+                    data[0] = 7;
                     for(int i = 0; i < 32; i ++){
                         data[i + 1] = e.text.text[i];
                         if(e.text.text[i] == '\0'){
@@ -373,7 +395,7 @@ public class SDL{
                     }
                     break;
                 case SDL_TEXTEDITING:
-                    data[0] = 8;
+                    data[0] = 9;
                     data[1] = e.edit.start;
                     data[2] = e.edit.length;
                     for(int i = 0; i < 32; i ++){
@@ -385,7 +407,7 @@ public class SDL{
 
                     break;
                 default:
-                    data[0] = 7;
+                    data[0] = 8;
                     break;
             }
             return 1;
