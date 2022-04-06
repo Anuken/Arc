@@ -14,9 +14,14 @@ public class SdlInput extends Input{
         int start, length;
         String text;
     }
+    public static final int NUM_POINTERS = 20;
     private final InputEventQueue queue = new InputEventQueue();
-    private int mouseX, mouseY;
-    private int deltaX, deltaY;
+    private int[] pointerX = new int[NUM_POINTERS];
+    private int[] pointerY = new int[NUM_POINTERS];
+    private int[] deltaX = new int[NUM_POINTERS];
+    private int[] deltaY = new int[NUM_POINTERS];
+    private int[] touchId = new int[NUM_POINTERS];
+    private int[] fingerId = new int[NUM_POINTERS];
     private int mousePressed;
     private byte[] strcpy = new byte[32];
     private Seq<EditEvent> stringEditEvents = new Seq<>();
@@ -45,10 +50,10 @@ public class SdlInput extends Input{
                 if(key == KeyCode.enter) queue.keyTyped((char)13);
                 if(key == KeyCode.forwardDel || key == KeyCode.del) queue.keyTyped((char)127);
             }
-        }else if(type == SDL_EVENT_MOUSE_BUTTON){
+        }else if(type == SDL_EVENT_MOUSE_BUTTON && fingerId[0] == 0){ //ignore mouse events if touch is currently used
             boolean down = input[1] == 1;
             int keycode = input[4];
-            int x = input[2], y = Core.graphics.getHeight() - input[3];
+            int x = input[2], y = input[3];
             KeyCode key =
                 keycode == SDL_BUTTON_LEFT ? KeyCode.mouseLeft :
                 keycode == SDL_BUTTON_RIGHT ? KeyCode.mouseRight :
@@ -64,25 +69,69 @@ public class SdlInput extends Input{
                     queue.touchUp(x, y, 0, key);
                 }
             }
-        }else if(type == SDL_EVENT_MOUSE_MOTION){
+        }else if(type == SDL_EVENT_MOUSE_MOTION && fingerId[0] == 0){
             int x = input[1];
-            int y = Core.graphics.getHeight() - input[2];
+            int y = input[2];
 
-            deltaX = x - mouseX;
-            deltaY = y - mouseY;
-            mouseX = x;
-            mouseY = y;
+            deltaX[0] = x - pointerX[0];
+            deltaY[0] = y - pointerY[0];
+            pointerX[0] = x;
+            pointerY[0] = y;
 
             if(mousePressed > 0){
-                queue.touchDragged(mouseX, mouseY, 0);
+                queue.touchDragged(pointerX[0], pointerY[0], 0);
             }else{
-                queue.mouseMoved(mouseX, mouseY);
+                queue.mouseMoved(pointerX[0], pointerY[0]);
             }
         }else if(type == SDL_EVENT_MOUSE_WHEEL){
             int sx = input[1];
             int sy = input[2];
             queue.scrolled(-sx, -sy);
-        }else if(type == SDL.SDL_EVENT_TEXT_INPUT){
+        }else if(type == SDL_EVENT_TOUCH){
+            int x = input[2];
+            int y = input[3];
+            int dx = input[4];
+            int dy = input[5];
+            int tid = input[7];
+            int fid = input[8];
+
+            boolean motion = input[1] == 0;
+            boolean down = input[1] == 1;
+
+            if(motion){
+                int pointerIndex = getPointerIndexByIds(fid, tid);
+                if(pointerIndex != -1){
+                    pointerX[pointerIndex] = x;
+                    pointerY[pointerIndex] = y;
+                    deltaX[pointerIndex] = dx;
+                    deltaY[pointerIndex] = dy;
+                    queue.touchDragged(x, y, pointerIndex);
+                }
+            }else if(down){
+                int freeIndex = getFreePointerIndex();
+                // skip if no free pointers, ignore double events
+                if(freeIndex != -1 && getPointerIndexByIds(fid, tid) == -1){
+                    pointerX[freeIndex] = x;
+                    pointerY[freeIndex] = y;
+                    deltaX[freeIndex] = dx;
+                    deltaY[freeIndex] = dy;
+                    touchId[freeIndex] = tid;
+                    fingerId[freeIndex] = fid;
+                    queue.touchDown(x, y, freeIndex, KeyCode.mouseLeft);
+                }
+            }else{
+                int pointerIndex = getPointerIndexByIds(fid, tid);
+                if(pointerIndex != -1){
+                    pointerX[pointerIndex] = 0;
+                    pointerY[pointerIndex] = 0;
+                    deltaX[pointerIndex] = 0;
+                    deltaY[pointerIndex] = 0;
+                    touchId[pointerIndex] = 0;
+                    fingerId[pointerIndex] = 0;
+                    queue.touchUp(x, y, pointerIndex, KeyCode.mouseLeft);
+                }
+            }
+        }else if(type == SDL_EVENT_TEXT_INPUT){
             int length = 0;
             for(int i = 0; i < 32; i++){
                 char c = (char)input[i + 1];
@@ -119,6 +168,21 @@ public class SdlInput extends Input{
                 this.text = str;
             }});
         }
+    }
+
+    int getPointerIndexByIds(int fid, int tid) {
+        for(int i = 0; i < NUM_POINTERS; i++) {
+            if(fingerId[i] == fid && touchId[i] == tid) {return i;}
+        }
+        return -1;
+    }
+
+    // gets first pointer id that isn't taken
+    int getFreePointerIndex() {
+        for(int i = 0; i < NUM_POINTERS; i++) {
+            if(fingerId[i] == 0) {return i;}
+        }
+        return -1;
     }
 
     //note: start and length parameters seem useless, ignore those
@@ -199,42 +263,42 @@ public class SdlInput extends Input{
 
     @Override
     public int mouseX(){
-        return mouseX;
+        return pointerX[0];
     }
 
     @Override
     public int mouseX(int pointer){
-        return pointer == 0 ? mouseX : 0;
+        return pointerX[pointer];
     }
 
     @Override
     public int deltaX(){
-        return deltaX;
+        return deltaX[0];
     }
 
     @Override
     public int deltaX(int pointer){
-        return pointer == 0 ? deltaX : 0;
+        return deltaX[pointer];
     }
 
     @Override
     public int mouseY(){
-        return mouseY;
+        return pointerY[0];
     }
 
     @Override
     public int mouseY(int pointer){
-        return pointer == 0 ? mouseY : 0;
+        return pointerY[pointer];
     }
 
     @Override
     public int deltaY(){
-        return deltaY;
+        return deltaY[0];
     }
 
     @Override
     public int deltaY(int pointer){
-        return pointer == 0 ? deltaY : 0;
+        return deltaY[pointer];
     }
 
     @Override
@@ -249,7 +313,11 @@ public class SdlInput extends Input{
 
     @Override
     public boolean isTouched(int pointer){
-        return false;
+        if(pointer == 0){ // mouse
+            return mousePressed > 0 || fingerId[0] != 0;
+        }else{
+            return fingerId[pointer] != 0;
+        }
     }
 
     @Override
