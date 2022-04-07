@@ -369,8 +369,8 @@ public class SDL{
                     else { data[1] = 2; }
                     data[2] = e.tfinger.x * width;
                     data[3] = height - (e.tfinger.y * height);
-                    data[4] = e.tfinger.dx;
-                    data[5] = e.tfinger.dy;
+                    data[4] = e.tfinger.dx * width;
+                    data[5] = -e.tfinger.dy * height;
                     data[6] = e.tfinger.pressure;
                     data[7] = e.tfinger.touchId;
                     data[8] = e.tfinger.fingerId;
