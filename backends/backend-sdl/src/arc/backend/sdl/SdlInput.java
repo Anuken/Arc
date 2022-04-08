@@ -88,6 +88,8 @@ public class SdlInput extends Input{
             int sy = input[2];
             queue.scrolled(-sx, -sy);
         }else if(type == SDL_EVENT_TOUCH){
+            mousePressed = 0;
+
             int x = input[2];
             int y = input[3];
             int dx = input[4];
