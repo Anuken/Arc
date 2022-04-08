@@ -390,17 +390,31 @@ public class Strings{
                 ++i;
             }
 
-            int digit, result;
-            for(result = 0; i < end; result -= digit){
+            int limitForMaxRadix = (-Integer.MAX_VALUE) / 36;
+            int limitBeforeMul = limitForMaxRadix;
+
+            int digit, result = 0;
+            while(i < end){
                 digit = Character.digit(s.charAt(i++), radix);
-                if(digit < 0){
-                    return defaultValue;
+                if(digit < 0) return defaultValue;
+                if(result < limitBeforeMul){
+                    if(limitBeforeMul == limitForMaxRadix){
+                        limitBeforeMul = limit / radix;
+
+                        if(result < limitBeforeMul){
+                            return defaultValue;
+                        }
+                    }else{
+                        return defaultValue;
+                    }
                 }
 
                 result *= radix;
                 if(result < limit + digit){
                     return defaultValue;
                 }
+
+                result -= digit;
             }
 
             return negative ? result : -result;
