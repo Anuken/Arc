@@ -51,7 +51,9 @@ public final class DiscordRPC{
 
         checkConnected(false);
         try{
-            pipe = new FutureTask<>(() -> Pipe.openPipe(clientId)).get(500, TimeUnit.MILLISECONDS);
+            FutureTask<Pipe> task = new FutureTask<>(() -> Pipe.openPipe(clientId));
+            task.run();
+            pipe = task.get(500, TimeUnit.MILLISECONDS);
         }catch(Exception e){
             throw new NoDiscordClientException();
         }
