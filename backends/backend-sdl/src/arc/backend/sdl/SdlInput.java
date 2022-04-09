@@ -111,7 +111,7 @@ public class SdlInput extends Input{
                 }
             }else if(down){
                 int freeIndex = getFreePointerIndex();
-                // skip if no free pointers, ignore double events
+                //skip if no free pointers, ignore double events
                 if(freeIndex != -1 && getPointerIndexByIds(fid, tid) == -1){
                     pointerX[freeIndex] = x;
                     pointerY[freeIndex] = y;
@@ -172,17 +172,21 @@ public class SdlInput extends Input{
         }
     }
 
-    int getPointerIndexByIds(int fid, int tid) {
-        for(int i = 0; i < NUM_POINTERS; i++) {
-            if(fingerId[i] == fid && touchId[i] == tid) {return i;}
+    int getPointerIndexByIds(int fid, int tid){
+        for(int i = 0; i < NUM_POINTERS; i++){
+            if(fingerId[i] == fid && touchId[i] == tid){
+                return i;
+            }
         }
         return -1;
     }
 
-    // gets first pointer id that isn't taken
-    int getFreePointerIndex() {
-        for(int i = 0; i < NUM_POINTERS; i++) {
-            if(fingerId[i] == 0) {return i;}
+    //gets first pointer id that isn't taken
+    int getFreePointerIndex(){
+        for(int i = 0; i < NUM_POINTERS; i++){
+            if(fingerId[i] == 0){
+                return i;
+            }
         }
         return -1;
     }
@@ -315,7 +319,7 @@ public class SdlInput extends Input{
 
     @Override
     public boolean isTouched(int pointer){
-        if(pointer == 0){ // mouse
+        if(pointer == 0){
             return mousePressed > 0 || fingerId[0] != 0;
         }else{
             return fingerId[pointer] != 0;

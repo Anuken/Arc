@@ -337,14 +337,18 @@ public class SDL{
                     data[3] = e.window.data2;
                     break;
                 case SDL_MOUSEMOTION:
-                    if(e.motion.which == SDL_TOUCH_MOUSEID) break;
+                    if(e.motion.which == SDL_TOUCH_MOUSEID){
+                    break;
+                    }
                     data[0] = 2;
                     data[1] = e.motion.x;
                     data[2] = (height - e.motion.y);
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                 case SDL_MOUSEBUTTONUP:
-                    if(e.button.which == SDL_TOUCH_MOUSEID) break;
+                    if(e.button.which == SDL_TOUCH_MOUSEID){
+                    break;
+                    }
                     data[0] = 3;
                     data[1] = (e.type == SDL_MOUSEBUTTONDOWN);
                     data[2] = e.button.x;
@@ -352,7 +356,9 @@ public class SDL{
                     data[4] = e.button.button;
                     break;
                 case SDL_MOUSEWHEEL:
-                    if(e.wheel.which == SDL_TOUCH_MOUSEID) break;
+                    if(e.wheel.which == SDL_TOUCH_MOUSEID){
+                    break;
+                    }
                     data[0] = 4;
                     data[1] = e.wheel.x;
                     data[2] = e.wheel.y;
@@ -361,12 +367,16 @@ public class SDL{
                 case SDL_FINGERDOWN:
                 case SDL_FINGERUP:
                     data[0] = 5;
-                    // everything relating to touch (sans gestures) in SDL2 are under one data field,
-                    // this mirrors that rather than splitting them apart.
-                    // 0 - finger motion, 1 - finger down, 2 - finger up
-                    if(e.type == SDL_FINGERMOTION){ data[1] = 0; }
-                    else if(e.type == SDL_FINGERDOWN){ data[1] = 1; }
-                    else { data[1] = 2; }
+                    //everything relating to touch (sans gestures) in SDL2 are under one data field,
+                    //this mirrors that rather than splitting them apart.
+                    //0 - finger motion, 1 - finger down, 2 - finger up
+                    if(e.type == SDL_FINGERMOTION){
+                        data[1] = 0;
+                    }else if(e.type == SDL_FINGERDOWN){
+                        data[1] = 1;
+                    }else{
+                        data[1] = 2;
+                    }
                     data[2] = e.tfinger.x * width;
                     data[3] = height - (e.tfinger.y * height);
                     data[4] = e.tfinger.dx * width;
