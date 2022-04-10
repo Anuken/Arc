@@ -12,16 +12,25 @@ public class Blending{
         }
     };
 
-    public final int src, dst;
+    public final int src, dst, srcAlpha, dstAlpha;
 
     public Blending(int src, int dst){
         this.src = src;
         this.dst = dst;
+        this.srcAlpha = src;
+        this.dstAlpha = dst;
+    }
+
+    public Blending(int src, int dst, int srcAlpha, int dstAlpha){
+        this.src = src;
+        this.dst = dst;
+        this.srcAlpha = srcAlpha;
+        this.dstAlpha = dstAlpha;
     }
 
     /** Enables/disables blending and sets the correct GL blend function. */
     public void apply(){
         Gl.enable(Gl.blend);
-        Gl.blendFunc(src, dst);
+        Gl.blendFuncSeparate(src, dst, srcAlpha, dstAlpha);
     }
 }
