@@ -79,8 +79,7 @@ public class BloomFilter extends FxFilter{
         buffer.end();
 
         if(blending != Blending.disabled){
-            Gl.enable(Gl.blend);
-            Gl.blendFunc(blending.src, blending.dst);
+            blending.apply();
         }
 
         // Mix original scene and blurred threshold, modulate via set(Base|BloomEffect)(Saturation|Intensity)

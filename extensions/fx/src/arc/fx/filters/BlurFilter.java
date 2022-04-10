@@ -74,8 +74,7 @@ public class BlurFilter extends FxFilter{
         pingPongBuffer.end();
 
         if(blending != Blending.disabled){
-            Gl.enable(Gl.blend);
-            Gl.blendFunc(blending.src, blending.dst);
+            blending.apply();
         }
 
         copy.setInput(pingPongBuffer.getDstTexture())
