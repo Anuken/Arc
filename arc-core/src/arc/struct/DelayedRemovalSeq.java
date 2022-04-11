@@ -155,14 +155,14 @@ public class DelayedRemovalSeq<T> extends Seq<T>{
         return super.sort(comparator);
     }
 
-    public void reverse(){
+    public Seq<T> reverse(){
         if(iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
-        super.reverse();
+        return super.reverse();
     }
 
-    public void shuffle(){
+    public Seq<T> shuffle(){
         if(iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
-        super.shuffle();
+        return super.shuffle();
     }
 
     public void truncate(int newSize){
