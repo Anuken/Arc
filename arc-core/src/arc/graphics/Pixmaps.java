@@ -230,7 +230,7 @@ public class Pixmaps{
         }
 
         drawPixmap.setRaw(0, 0, color);
-        texture.draw(drawPixmap, x, y);
+        texture.draw(drawPixmap, Mathf.clamp(x, 0, texture.width - 1), Mathf.clamp(y, 0, texture.height - 1));
     }
 
     /**

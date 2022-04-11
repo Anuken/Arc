@@ -579,6 +579,11 @@ public final class Mathf{
         return log(2, value);
     }
 
+    /** @return base-2 logarithm of the specified integer */
+    public static int log2(int value){
+        return value == 0 ? 0 : 31 - Integer.numberOfLeadingZeros(value);
+    }
+
     /** Mod function that works properly for negative numbers. */
     public static float mod(float f, float n){
         return ((f % n) + n) % n;
