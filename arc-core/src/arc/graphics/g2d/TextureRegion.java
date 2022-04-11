@@ -98,12 +98,14 @@ public class TextureRegion{
      * @param width The width of the texture region. May be negative to flip the sprite when drawn.
      * @param height The height of the texture region. May be negative to flip the sprite when drawn.
      */
-    public void set(int x, int y, int width, int height){
+    public TextureRegion set(int x, int y, int width, int height){
         float invTexWidth = 1f / texture.width;
         float invTexHeight = 1f / texture.height;
         set(x * invTexWidth, y * invTexHeight, (x + width) * invTexWidth, (y + height) * invTexHeight);
         this.width = Math.abs(width);
         this.height = Math.abs(height);
+
+        return this;
     }
 
     public void set(float u, float v, float u2, float v2){

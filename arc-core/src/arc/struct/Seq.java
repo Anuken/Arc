@@ -907,7 +907,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return Select.instance().selectIndex(items, comparator, kthLowest, size);
     }
 
-    public void reverse(){
+    public Seq<T> reverse(){
         T[] items = this.items;
         for(int i = 0, lastIndex = size - 1, n = size / 2; i < n; i++){
             int ii = lastIndex - i;
@@ -915,9 +915,11 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
             items[i] = items[ii];
             items[ii] = temp;
         }
+
+        return this;
     }
 
-    public void shuffle(){
+    public Seq<T> shuffle(){
         T[] items = this.items;
         for(int i = size - 1; i >= 0; i--){
             int ii = Mathf.random(i);
@@ -925,17 +927,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
             items[i] = items[ii];
             items[ii] = temp;
         }
-    }
 
-    /** @return this Seq, reversed. */
-    public Seq<T> reversed(){
-        reverse();
-        return this;
-    }
-
-    /** @return this Seq, shuffled. */
-    public Seq<T> shuffled(){
-        shuffle();
         return this;
     }
 
