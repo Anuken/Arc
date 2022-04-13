@@ -1,7 +1,6 @@
 package arc.graphics;
 
 import arc.files.*;
-import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 
@@ -96,9 +95,7 @@ public class PixmapIO{
 
         private final ChunkBuffer buffer;
         private final Deflater deflater;
-        private ByteSeq lineOutBytes, curLineBytes, prevLineBytes;
         private boolean flipY = true;
-        private int lastLineLen;
 
         public PngWriter(){
             this(128 * 128);
