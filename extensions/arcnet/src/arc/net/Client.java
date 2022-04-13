@@ -32,7 +32,7 @@ public class Client extends Connection implements EndPoint{
     private int connectTcpPort;
     private int connectUdpPort;
     private boolean isClosed;
-    private ExecutorService discoverExecutor = Threads.executor(6);
+    private ExecutorService discoverExecutor = Threads.cachedExecutor(0, 4, false);
     private Prov<DatagramPacket> discoveryPacket = () -> new DatagramPacket(new byte[256], 256);
 
     /**

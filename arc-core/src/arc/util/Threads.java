@@ -44,18 +44,23 @@ public class Threads{
         return executor(Runtime.getRuntime().availableProcessors(), true);
     }
 
+    /** @return an executor that has no limit on the amount of threads it will create. */
+    public static ExecutorService unboundedExecutor(){
+        return cachedExecutor(1, Integer.MAX_VALUE, false);
+    }
+
     public static ExecutorService cachedExecutor(){
-        return cachedExecutor(1, Integer.MAX_VALUE);
+        return cachedExecutor(1, Integer.MAX_VALUE, true);
     }
 
     public static ExecutorService cachedExecutor(int min){
-        return cachedExecutor(min, Integer.MAX_VALUE);
+        return cachedExecutor(min, Integer.MAX_VALUE, true);
     }
 
-    public static ExecutorService cachedExecutor(int min, int max){
+    public static ExecutorService cachedExecutor(int min, int max, boolean blocking){
         return new ThreadPoolExecutor(min, max,
-        60L, TimeUnit.SECONDS,
-        new SynchronousQueue<>(),
+        30L, TimeUnit.SECONDS,
+        blocking ? new LinkedBlockingQueue<>() : new SynchronousQueue<>(),
         r -> {
             Thread thread = new Thread(r);
             thread.setDaemon(true);

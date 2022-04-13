@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 
 /** Utility class for making HTTP requests. */
 public class Http{
-    protected static ExecutorService exec = Threads.executor(8);
+    protected static ExecutorService exec = Threads.unboundedExecutor();
 
     /** @return a new HttpRequest that must be configured & submitted. */
     public static HttpRequest request(HttpMethod method, String url){
@@ -49,11 +49,6 @@ public class Http{
     public static HttpRequest post(String url, String content){
         if(url == null) throw new NullPointerException("url cannot be null.");
         return new HttpRequest(HttpMethod.POST).url(url).content(content);
-    }
-
-    /** Sets the maximum amount of concurrent requests. Default: 8 */
-    public static void setMaxConcurrent(int max){
-        exec = Threads.executor(max);
     }
 
     public static class HttpResponse{
