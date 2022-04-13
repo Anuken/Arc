@@ -46,6 +46,7 @@ jnigen{
         cppIncludes += ["soloud/src/backend/opensles/*.cpp"]
         cppFlags = "-DWITH_OPENSLES " + cppFlags
     }
+    /*
     add(MacOsX, x64){
         cppIncludes += ["soloud/src/backend/coreaudio/*.cpp"]
         cppFlags = "-std=c++11 -DWITH_COREAUDIO " + cppFlags
@@ -62,7 +63,7 @@ jnigen{
         headerDirs += ["iosgl"]
         cppIncludes += ["soloud/src/backend/coreaudio/*.cpp", "iosgl/**"]
         cppFlags = "-stdlib=libc++ -std=c++11 -DWITH_COREAUDIO " + cppFlags
-    }
+    }*/
 }
 
 task fixWrap{
