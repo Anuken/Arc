@@ -10,10 +10,9 @@ public class Lines{
     public static boolean useLegacyLine = false;
 
     private static float stroke = 1f;
-    private static Vec2 vector = new Vec2(), u = new Vec2(), v = new Vec2(), inner = new Vec2(), outer = new Vec2();
+    private static Vec2 vector = new Vec2(), u = new Vec2(), v = new Vec2();
     private static FloatSeq floats = new FloatSeq(20);
     private static FloatSeq floatBuilder = new FloatSeq(20);
-    private static FloatSeq tmpFloats = new FloatSeq(20);
     private static boolean building;
     private static float circlePrecision = 0.4f;
 
