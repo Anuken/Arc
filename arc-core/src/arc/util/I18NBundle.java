@@ -463,6 +463,10 @@ public class I18NBundle{
         return formatter.format(get(key), args);
     }
 
+    public String formatString(String string, Object... args){
+        return formatter.format(string, args);
+    }
+
     /**Format, but with a number with fixed decimal places.*/
     public String formatFloat(String key, float value, int places){
         return formatter.format(get(key), Strings.fixed(value, places));
