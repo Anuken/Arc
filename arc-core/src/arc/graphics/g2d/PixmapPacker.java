@@ -119,10 +119,10 @@ public class PixmapPacker implements Disposable{
     }
 
     /**
-     * Sorts the images to the optimzal order they should be packed. Some packing strategies rely heavily on the images being
+     * Sorts the images to the optimal order they should be packed. Some packing strategies rely heavily on the images being
      * sorted.
      */
-    public void sort(Seq<Pixmap> images){
+    public void sort(Seq<PixmapRegion> images){
         packStrategy.sort(images);
     }
 
@@ -556,7 +556,7 @@ public class PixmapPacker implements Disposable{
      * @author Nathan Sweet
      */
     public interface PackStrategy{
-        void sort(Seq<Pixmap> images);
+        void sort(Seq<PixmapRegion> images);
 
         /** Returns the page the rectangle should be placed in and modifies the specified rectangle position. */
         Page pack(PixmapPacker packer, String name, Rect rect);
@@ -639,14 +639,10 @@ public class PixmapPacker implements Disposable{
      * @author Rob Rendell
      */
     public static class GuillotineStrategy implements PackStrategy{
-        Comparator<Pixmap> comparator;
 
         @Override
-        public void sort(Seq<Pixmap> pixmaps){
-            if(comparator == null){
-                comparator = Structs.comparingInt(o -> Math.max(o.width, o.height));
-            }
-            pixmaps.sort(comparator);
+        public void sort(Seq<PixmapRegion> pixmaps){
+            pixmaps.sort(Structs.comparingInt(o -> Math.max(o.width, o.height)));
         }
 
         @Override
@@ -752,13 +748,10 @@ public class PixmapPacker implements Disposable{
      * @author Nathan Sweet
      */
     public static class SkylineStrategy implements PackStrategy{
-        Comparator<Pixmap> comparator;
 
-        public void sort(Seq<Pixmap> images){
-            if(comparator == null){
-                comparator = (o1, o2) -> o1.height - o2.height;
-            }
-            images.sort(comparator);
+        @Override
+        public void sort(Seq<PixmapRegion> images){
+            images.sort((o1, o2) -> o1.height - o2.height);
         }
 
         public Page pack(PixmapPacker packer, String name, Rect rect){
