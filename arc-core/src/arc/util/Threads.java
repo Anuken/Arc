@@ -2,6 +2,7 @@ package arc.util;
 
 import arc.*;
 import arc.func.*;
+import arc.struct.*;
 
 import java.util.concurrent.*;
 
@@ -22,6 +23,16 @@ public class Threads{
     public static <T> T await(Future<T> future){
         try{
             return future.get();
+        }catch(ExecutionException | InterruptedException ex){
+            throw new ArcRuntimeException(ex.getCause());
+        }
+    }
+
+    public static void awaitAll(Seq<Future<?>> futures){
+        try{
+            for(Future<?> f : futures){
+                f.get();
+            }
         }catch(ExecutionException | InterruptedException ex){
             throw new ArcRuntimeException(ex.getCause());
         }

@@ -260,11 +260,9 @@ public class Lines{
     public static void dashLine(float x1, float y1, float x2, float y2, int divisions){
         float dx = x2 - x1, dy = y2 - y1;
 
-        for(int i = 0; i < divisions; i++){
-            if(i % 2 == 0){
-                line(x1 + ((float)i / divisions) * dx, y1 + ((float)i / divisions) * dy,
-                x1 + ((i + 1f) / divisions) * dx, y1 + ((i + 1f) / divisions) * dy);
-            }
+        for(int i = 0; i < divisions; i += 2){
+            line(x1 + ((float)i / divisions) * dx, y1 + ((float)i / divisions) * dy,
+            x1 + ((i + 1f) / divisions) * dx, y1 + ((i + 1f) / divisions) * dy);
         }
     }
 
@@ -296,8 +294,7 @@ public class Lines{
 
         vector.set(0, 0);
 
-        for(int i = 0; i < sides; i++){
-            if(i % 2 == 0) continue;
+        for(int i = 0; i < sides; i += 2){
             vector.set(radius, 0).setAngle(360f / sides * i + 90);
             float x1 = vector.x;
             float y1 = vector.y;
