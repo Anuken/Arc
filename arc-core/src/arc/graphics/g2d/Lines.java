@@ -295,11 +295,11 @@ public class Lines{
         vector.set(0, 0);
 
         for(int i = 0; i < sides; i += 2){
-            vector.set(radius, 0).setAngle(360f / sides * i + 90);
+            vector.set(radius, 0).rotate(360f / sides * i + 90);
             float x1 = vector.x;
             float y1 = vector.y;
 
-            vector.set(radius, 0).setAngle(360f / sides * (i + 1) + 90);
+            vector.set(radius, 0).rotate(360f / sides * (i + 1) + 90);
 
             line(x1 + x, y1 + y, vector.x + x, vector.y + y);
         }
@@ -310,8 +310,7 @@ public class Lines{
         float step = 360f / spikes;
 
         for(int i = 0; i < spikes; i++){
-            vector.setAngle(i * step + rot);
-            vector.setLength(radius);
+            vector.trns(i * step + rot, radius);
             float x1 = vector.x, y1 = vector.y;
             vector.setLength(radius + length);
 
@@ -364,11 +363,11 @@ public class Lines{
         vector.set(0, 0);
 
         for(int i = from; i < to; i++){
-            vector.set(radius, 0).setAngle(360f / sides * i + angle + 90);
+            vector.trns(360f / sides * i + angle + 90, radius);
             float x1 = vector.x;
             float y1 = vector.y;
 
-            vector.set(radius, 0).setAngle(360f / sides * (i + 1) + angle + 90);
+            vector.trns(360f / sides * (i + 1) + angle + 90, radius);
 
             line(x1 + x, y1 + y, vector.x + x, vector.y + y);
         }
@@ -428,15 +427,14 @@ public class Lines{
 
     public static void arc(float x, float y, float radius, float fraction, float rotation, int sides){
         int max = (int)(sides * fraction);
-        vector.set(0, 0);
         floats.clear();
 
         for(int i = 0; i <= max; i++){
-            vector.set(radius, 0).setAngle((float)i / max * fraction * 360f + rotation);
+            vector.trns((float)i / max * fraction * 360f + rotation, radius);
             float x1 = vector.x;
             float y1 = vector.y;
 
-            vector.set(radius, 0).setAngle((float)(i + 1) / max * fraction * 360f + rotation);
+            vector.trns((float)(i + 1) / max * fraction * 360f + rotation, radius);
 
             floats.add(x1 + x, y1 + y);
         }

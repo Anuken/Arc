@@ -17,10 +17,6 @@ import java.nio.*;
  * </p>
  *
  * <p>
- * If the OpenGL ES context was lost you can call {@link #invalidate()} to recreate a new OpenGL vertex buffer object.
- * </p>
- *
- * <p>
  * VertexBufferObjectWithVAO objects must be disposed via the {@link #dispose()} method when no longer needed
  * </p>
  * <p>
@@ -35,6 +31,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
     final ByteBuffer byteBuffer;
     final boolean isStatic;
     final int usage;
+    int allocated;
     int bufferHandle;
     boolean isDirty = false;
     boolean isBound = false;
@@ -75,9 +72,18 @@ public class VertexBufferObjectWithVAO implements VertexData{
         return buffer;
     }
 
+    private void upload(){
+        if(byteBuffer.limit() > allocated || allocated == 0){
+            Gl.bufferData(Gl.arrayBuffer, byteBuffer.limit(), byteBuffer, usage);
+            allocated = byteBuffer.limit();
+        }else{
+            Gl.bufferSubData(Gl.arrayBuffer, 0, byteBuffer.limit(), byteBuffer);
+        }
+    }
+
     private void bufferChanged(){
         if(isBound){
-            Gl.bufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+            upload();
             isDirty = false;
         }
     }
@@ -166,7 +172,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
         if(isDirty){
             Core.gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
             byteBuffer.limit(buffer.limit() * 4);
-            Core.gl.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+            upload();
             isDirty = false;
         }
     }

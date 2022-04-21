@@ -18,6 +18,7 @@ import java.nio.*;
 public class VertexBufferObject implements VertexData{
     boolean dirty = false;
     boolean bound = false;
+    private int allocated;
     private Mesh mesh;
     private FloatBuffer buffer;
     private ByteBuffer byteBuffer;
@@ -32,7 +33,6 @@ public class VertexBufferObject implements VertexData{
      */
     public VertexBufferObject(boolean isStatic, int numVertices, Mesh mesh){
         this.mesh = mesh;
-        //to create with subdata support: Gl.bufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.capacity(), null, usage);
         bufferHandle = Gl.genBuffer();
         usage = isStatic ? Gl.staticDraw : Gl.streamDraw;
 
@@ -77,10 +77,18 @@ public class VertexBufferObject implements VertexData{
         buffer.limit(l / 4);
     }
 
+    private void upload(){
+        if(byteBuffer.limit() > allocated || allocated == 0){
+            Gl.bufferData(Gl.arrayBuffer, byteBuffer.limit(), byteBuffer, usage);
+            allocated = byteBuffer.limit();
+        }else{
+            Gl.bufferSubData(Gl.arrayBuffer, 0, byteBuffer.limit(), byteBuffer);
+        }
+    }
+
     private void bufferChanged(){
         if(bound){
-            //possible alternative: Gl.bufferSubData(GL20.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
-            Gl.bufferData(Gl.arrayBuffer, byteBuffer.limit(), byteBuffer, usage);
+            upload();
             dirty = false;
         }
     }
@@ -113,7 +121,7 @@ public class VertexBufferObject implements VertexData{
         Gl.bindBuffer(Gl.arrayBuffer, bufferHandle);
         if(dirty){
             byteBuffer.limit(buffer.limit() * 4);
-            Gl.bufferData(Gl.arrayBuffer, byteBuffer.limit(), byteBuffer, usage);
+            upload();
             dirty = false;
         }
 
