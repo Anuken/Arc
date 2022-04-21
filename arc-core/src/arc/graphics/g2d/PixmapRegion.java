@@ -6,7 +6,6 @@ import arc.graphics.*;
 public class PixmapRegion{
     public Pixmap pixmap;
     public int x, y, width, height;
-    //public float scale = 1.0f;
 
     public PixmapRegion(Pixmap pixmap, int x, int y, int width, int height){
         set(pixmap, x, y, width, height);
