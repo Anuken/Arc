@@ -18,6 +18,8 @@ public class TextureRegion{
     /** Read-only. Use setters to change. */
     public int width, height;
 
+    public float scale = 1.0f;
+
     /** Constructs a region with no texture and no coordinates defined. */
     public TextureRegion(){
     }
@@ -132,12 +134,14 @@ public class TextureRegion{
     /** Sets the texture and coordinates to the specified region. */
     public void set(TextureRegion region){
         texture = region.texture;
+        scale = region.scale;
         set(region.u, region.v, region.u2, region.v2);
     }
 
     /** Sets the texture to that of the specified region and sets the coordinates relative to the specified region. */
     public void set(TextureRegion region, int x, int y, int width, int height){
         texture = region.texture;
+        scale = region.scale;
         set(region.getX() + x, region.getY() + y, width, height);
     }
 
