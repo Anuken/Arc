@@ -29,7 +29,11 @@ public class SortedSpriteBatch extends SpriteBatch{
 
     @Override
     protected void setBlending(Blending blending){
-        this.blending = blending;
+        if(flushing){
+            super.setBlending(blending);
+        }else{
+            this.blending = blending;
+        }
     }
 
     @Override
