@@ -140,24 +140,13 @@ public class Bloom{
         Gl.disable(Gl.depthTest);
         Gl.depthMask(false);
 
-        gaussianBlur();
-
-        if(blending){
-            Gl.enable(Gl.blend);
-            Gl.blendFunc(Gl.srcAlpha, Gl.oneMinusSrcAlpha);
-        }
-
-        pingPong1.getTexture().bind(1);
-        buffer.blit(bloomShader);
-    }
-
-    private void gaussianBlur(){
         //cut bright areas of the picture and blit to smaller fbo
 
         pingPong1.begin();
         buffer.blit(thresholdShader);
         pingPong1.end();
 
+        //blur
         for(int i = 0; i < blurPasses; i++){
 
             // horizontal
@@ -174,6 +163,14 @@ public class Bloom{
             pingPong2.blit(blurShader);
             pingPong1.end();
         }
+
+        if(blending){
+            Gl.enable(Gl.blend);
+            Gl.blendFunc(Gl.srcAlpha, Gl.oneMinusSrcAlpha);
+        }
+
+        pingPong1.getTexture().bind(1);
+        buffer.blit(bloomShader);
     }
 
     /**
