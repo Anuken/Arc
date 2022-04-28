@@ -26,6 +26,14 @@ public class Strings{
         return total;
     }
 
+    public static String truncate(String s, int length){
+        return s.length() <= length ? s : s.substring(0, length);
+    }
+
+    public static String truncate(String s, int length, String ellipsis){
+        return s.length() <= length ? s : s.substring(0, length) + ellipsis;
+    }
+
     public static Seq<Throwable> getCauses(Throwable e){
         Seq<Throwable> arr = new Seq<>();
         while(e != null){
