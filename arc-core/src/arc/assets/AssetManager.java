@@ -10,7 +10,6 @@ import arc.graphics.gl.*;
 import arc.struct.*;
 import arc.util.*;
 
-import java.util.*;
 import java.util.concurrent.*;
 
 /**
@@ -28,7 +27,7 @@ public class AssetManager implements Disposable{
     final Seq<AssetDescriptor> loadQueue = new Seq<>();
     final ExecutorService executor;
 
-    final Stack<AssetLoadingTask> tasks = new Stack<>();
+    final Seq<AssetLoadingTask> tasks = new Seq<>();
     final FileHandleResolver resolver;
     AssetErrorListener listener = null;
     int loaded = 0;
@@ -129,7 +128,7 @@ public class AssetManager implements Disposable{
 
     /** Returns true if an asset with the specified name is loading, queued to be loaded, or has been loaded. */
     public synchronized boolean contains(String fileName){
-        if(tasks.size() > 0 && tasks.firstElement().assetDesc.fileName.equals(fileName)) return true;
+        if(tasks.size > 0 && tasks.first().assetDesc.fileName.equals(fileName)) return true;
 
         for(int i = 0; i < loadQueue.size; i++)
             if(loadQueue.get(i).fileName.equals(fileName)) return true;
@@ -139,8 +138,8 @@ public class AssetManager implements Disposable{
 
     /** Returns true if an asset with the specified name and type is loading, queued to be loaded, or has been loaded. */
     public synchronized boolean contains(String fileName, Class type){
-        if(tasks.size() > 0){
-            AssetDescriptor assetDesc = tasks.firstElement().assetDesc;
+        if(tasks.size > 0){
+            AssetDescriptor assetDesc = tasks.first().assetDesc;
             if(assetDesc.type == type && assetDesc.fileName.equals(fileName)) return true;
         }
 
@@ -159,8 +158,8 @@ public class AssetManager implements Disposable{
     public synchronized void unload(String fileName){
         // check if it's currently processed (and the first element in the stack, thus not a dependency)
         // and cancel if necessary
-        if(tasks.size() > 0){
-            AssetLoadingTask currAsset = tasks.firstElement();
+        if(tasks.size > 0){
+            AssetLoadingTask currAsset = tasks.first();
             if(currAsset.assetDesc.fileName.equals(fileName)){
                 currAsset.cancel = true;
                 return;
@@ -396,7 +395,7 @@ public class AssetManager implements Disposable{
         }
 
         // check task list
-        for(int i = 0; i < tasks.size(); i++){
+        for(int i = 0; i < tasks.size; i++){
             AssetDescriptor desc = tasks.get(i).assetDesc;
             if(desc.fileName.equals(fileName) && !desc.type.equals(type)) throw new ArcRuntimeException(
             "Asset with name '" + fileName + "' already in task list, but has different type (expected: "
@@ -429,15 +428,15 @@ public class AssetManager implements Disposable{
      */
     public synchronized boolean update(){
         try{
-            if(tasks.size() == 0){
+            if(tasks.size == 0){
                 // loop until we have a new task ready to be processed
-                while(loadQueue.size != 0 && tasks.size() == 0){
+                while(loadQueue.size != 0 && tasks.size == 0){
                     nextTask();
                 }
                 // have we not found a task? We are done!
-                if(tasks.size() == 0) return true;
+                if(tasks.size == 0) return true;
             }
-            return updateTask() && loadQueue.size == 0 && tasks.size() == 0;
+            return updateTask() && loadQueue.size == 0 && tasks.size == 0;
         }catch(Throwable t){
             handleTaskError(t);
             return loadQueue.size == 0;
@@ -447,8 +446,8 @@ public class AssetManager implements Disposable{
     /** @return the asset loading task that is currently being processed.
      * May return null if nothing is being loaded. */
     public synchronized AssetDescriptor getCurrentLoading(){
-        if(tasks.size() > 0){
-            return tasks.firstElement().assetDesc;
+        if(tasks.size > 0){
+            return tasks.first().assetDesc;
         }
         return null;
     }
@@ -470,7 +469,7 @@ public class AssetManager implements Disposable{
 
     /** Returns true when all assets are loaded. Can be called from any thread. */
     public synchronized boolean isFinished(){
-        return loadQueue.size == 0 && tasks.size() == 0;
+        return loadQueue.size == 0 && tasks.size == 0;
     }
 
     /** Blocks until all assets are loaded. */
@@ -561,7 +560,7 @@ public class AssetManager implements Disposable{
         AssetLoader loader = getLoader(assetDesc.type, assetDesc.fileName);
         if(loader == null)
             throw new ArcRuntimeException("No loader for type: " + assetDesc.type.getSimpleName());
-        tasks.push(new AssetLoadingTask(this, assetDesc, loader, executor));
+        tasks.add(new AssetLoadingTask(this, assetDesc, loader, executor));
         peakTasks++;
     }
 
@@ -597,7 +596,7 @@ public class AssetManager implements Disposable{
         // if the task has been cancelled or has finished loading
         if(complete){
             // increase the number of loaded assets and pop the task from the stack
-            if(tasks.size() == 1){
+            if(tasks.size == 1){
                 loaded++;
                 peakTasks = 0;
             }
@@ -702,7 +701,7 @@ public class AssetManager implements Disposable{
 
     /** @return the number of currently queued assets */
     public synchronized int getQueuedAssets(){
-        return loadQueue.size + tasks.size();
+        return loadQueue.size + tasks.size;
     }
 
     /** @return the progress in percent of completion. */
@@ -710,7 +709,7 @@ public class AssetManager implements Disposable{
         if(toLoad == 0) return 1;
         float fractionalLoaded = (float)loaded;
         if(peakTasks > 0){
-            fractionalLoaded += ((peakTasks - tasks.size()) / (float)peakTasks);
+            fractionalLoaded += ((peakTasks - tasks.size) / (float)peakTasks);
         }
         return Math.min(1, fractionalLoaded / (float)toLoad);
     }
