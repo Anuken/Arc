@@ -18,6 +18,11 @@ import java.nio.*;
 public class VertexBufferObject implements VertexData{
     boolean dirty = false;
     boolean bound = false;
+
+    protected static int lastAttributeHash;
+    protected static @Nullable VertexBufferObject lastVboAttrs;
+    protected static @Nullable Shader lastVboShader;
+
     private int allocated;
     private Mesh mesh;
     private FloatBuffer buffer;
@@ -128,14 +133,18 @@ public class VertexBufferObject implements VertexData{
         bound = true;
     }
 
-    /**
-     * Binds this VertexBufferObject for rendering via glDrawArrays or glDrawElements
-     * @param shader the shader
-     */
+    /** Binds this VertexBufferObject for rendering via glDrawArrays or glDrawElements */
     @Override
     public void bind(Shader shader){
         bind();
 
+        //if(lastVboAttrs == null || lastAttributeHash != mesh.attributesHash){
+            //if(lastVboAttrs != null){
+            //    lastVboAttrs.unbindAttributes(lastVboShader);
+            //    lastVboAttrs = null;
+            //}
+
+        //TODO why does this not work? why does caching vertex pointer/enable state explode so horribly?
         int offset = 0;
         for(VertexAttribute attribute : mesh.attributes){
             int location = shader.getAttributeLocation(attribute.alias);
@@ -143,17 +152,29 @@ public class VertexBufferObject implements VertexData{
             offset += attribute.size;
             if(location < 0) continue;
 
-            shader.enableVertexAttribute(location);
-            shader.setVertexAttribute(location, attribute.components, attribute.type, attribute.normalized, mesh.vertexSize, aoffset);
+            Gl.enableVertexAttribArray(location);
+            Gl.vertexAttribPointer(location, attribute.components, attribute.type, attribute.normalized, mesh.vertexSize, aoffset);
+        }
+
+        //save for next invocation.
+        lastAttributeHash = mesh.attributesHash;
+        lastVboShader = shader;
+        lastVboAttrs = this;
+        //}
+    }
+
+    public void unbindAttributes(Shader shader){
+        for(VertexAttribute attribute : mesh.attributes){
+            int location = shader.getAttributeLocation(attribute.alias);
+            if(location == -1) continue;
+            Gl.disableVertexAttribArray(location);
         }
     }
 
     @Override
     public void unbind(Shader shader){
-        for(VertexAttribute attribute : mesh.attributes){
-            shader.disableVertexAttribute(attribute.alias);
-        }
-        Gl.bindBuffer(Gl.arrayBuffer, 0);
+        //TODO this should not be necessary
+        unbindAttributes(shader);
         bound = false;
     }
 

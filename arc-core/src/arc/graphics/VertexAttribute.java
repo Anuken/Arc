@@ -72,4 +72,25 @@ public final class VertexAttribute{
         }
         size = realSize;
     }
+
+    @Override
+    public int hashCode(){
+        int result = components;
+        result = 31 * result + (normalized ? 1 : 0);
+        result = 31 * result + type;
+        result = 31 * result + (alias != null ? alias.hashCode() : 0);
+        result = 31 * result + size;
+        return result;
+    }
+
+    @Override
+    public String toString(){
+        return "VertexAttribute{" +
+        "components=" + components +
+        ", normalized=" + normalized +
+        ", type=" + type +
+        ", alias='" + alias + '\'' +
+        ", size=" + size +
+        '}';
+    }
 }

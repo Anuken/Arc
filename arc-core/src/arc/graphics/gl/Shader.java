@@ -577,46 +577,6 @@ public class Shader implements Disposable{
     }
 
     /**
-     * Sets the vertex attribute with the given name. The {@link Shader} must be bound for this to work.
-     * @param name the attribute name
-     * @param size the number of components, must be >= 1 and <= 4
-     * @param type the type, must be one of GL20.GL_BYTE, GL20.GL_UNSIGNED_BYTE, GL20.GL_SHORT,
-     * GL20.GL_UNSIGNED_SHORT,GL20.GL_FIXED, or GL20.GL_FLOAT. GL_FIXED will not work on the desktop
-     * @param normalize whether fixed point data should be normalized. Will not work on the desktop
-     * @param stride the stride in bytes between successive attributes
-     * @param buffer the buffer containing the vertex attributes.
-     */
-    public void setVertexAttribute(String name, int size, int type, boolean normalize, int stride, Buffer buffer){
-        int location = fetchAttributeLocation(name);
-        if(location == -1) return;
-        Gl.vertexAttribPointer(location, size, type, normalize, stride, buffer);
-    }
-
-    public void setVertexAttribute(int location, int size, int type, boolean normalize, int stride, Buffer buffer){
-        Gl.vertexAttribPointer(location, size, type, normalize, stride, buffer);
-    }
-
-    /**
-     * Sets the vertex attribute with the given name. The {@link Shader} must be bound for this to work.
-     * @param name the attribute name
-     * @param size the number of components, must be >= 1 and <= 4
-     * @param type the type, must be one of GL20.GL_BYTE, GL20.GL_UNSIGNED_BYTE, GL20.GL_SHORT,
-     * GL20.GL_UNSIGNED_SHORT,GL20.GL_FIXED, or GL20.GL_FLOAT. GL_FIXED will not work on the desktop
-     * @param normalize whether fixed point data should be normalized. Will not work on the desktop
-     * @param stride the stride in bytes between successive attributes
-     * @param offset byte offset into the vertex buffer object bound to GL20.GL_ARRAY_BUFFER.
-     */
-    public void setVertexAttribute(String name, int size, int type, boolean normalize, int stride, int offset){
-        int location = fetchAttributeLocation(name);
-        if(location == -1) return;
-        Gl.vertexAttribPointer(location, size, type, normalize, stride, offset);
-    }
-
-    public void setVertexAttribute(int location, int size, int type, boolean normalize, int stride, int offset){
-        Gl.vertexAttribPointer(location, size, type, normalize, stride, offset);
-    }
-
-    /**
      * Makes OpenGL ES 2.0 use this vertex and fragment shader pair.
      */
     public void bind(){
@@ -638,47 +598,6 @@ public class Shader implements Disposable{
     @Override
     public boolean isDisposed(){
         return disposed;
-    }
-
-    /**
-     * Disables the vertex attribute with the given name
-     * @param name the vertex attribute name
-     */
-    public void disableVertexAttribute(String name){
-        int location = fetchAttributeLocation(name);
-        if(location == -1) return;
-        Gl.disableVertexAttribArray(location);
-    }
-
-    public void disableVertexAttribute(int location){
-        Gl.disableVertexAttribArray(location);
-    }
-
-    /**
-     * Enables the vertex attribute with the given name
-     * @param name the vertex attribute name
-     */
-    public void enableVertexAttribute(String name){
-        int location = fetchAttributeLocation(name);
-        if(location == -1) return;
-        Gl.enableVertexAttribArray(location);
-    }
-
-    public void enableVertexAttribute(int location){
-        Gl.enableVertexAttribArray(location);
-    }
-
-    /**
-     * Sets the given attribute
-     * @param name the name of the attribute
-     * @param value1 the first value
-     * @param value2 the second value
-     * @param value3 the third value
-     * @param value4 the fourth value
-     */
-    public void setAttributef(String name, float value1, float value2, float value3, float value4){
-        int location = fetchAttributeLocation(name);
-        Gl.vertexAttrib4f(location, value1, value2, value3, value4);
     }
 
     private void fetchUniforms(){
@@ -744,6 +663,7 @@ public class Shader implements Disposable{
     public int getAttributeLocation(String name){
         return attributes.get(name, -1);
     }
+
 
     /**
      * @param name the name of the attribute

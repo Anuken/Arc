@@ -11,7 +11,6 @@ import java.nio.*;
  * @author mzechner
  */
 public interface VertexData extends Disposable{
-
     default void render(IndexData indices, int primitiveType, int offset, int count){
 
         if(indices.size() > 0){
