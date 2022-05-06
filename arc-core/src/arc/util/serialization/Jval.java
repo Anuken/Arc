@@ -716,15 +716,6 @@ public class Jval{
                 while(idx < len && isDigit(value.charAt(idx))) idx++;
             }
 
-            // exp
-            if(idx < len && Character.toLowerCase(value.charAt(idx)) == 'e'){
-                idx++;
-                if(idx < len && (value.charAt(idx) == '+' || value.charAt(idx) == '-')) idx++;
-
-                if(idx >= len || !isDigit(value.charAt(idx++))) return null;
-                while(idx < len && isDigit(value.charAt(idx))) idx++;
-            }
-
             int last = idx;
             while(idx < len && isWhiteSpace(value.charAt(idx))) idx++;
 
