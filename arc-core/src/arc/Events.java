@@ -22,7 +22,7 @@ public class Events{
 
     /** Only use this method if you have the reference to the exact listener object that was used. */
     public static <T> boolean remove(Class<T> type, Cons<T> listener){
-        return events.get(type, Seq::new).remove(listener);
+        return events.get(type, () -> new Seq<>(Cons.class)).remove(listener);
     }
 
     /** Fires an enum trigger. */
