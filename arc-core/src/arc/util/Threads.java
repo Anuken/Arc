@@ -68,12 +68,18 @@ public class Threads{
         return cachedExecutor(min, Integer.MAX_VALUE, true);
     }
 
+    /** @param blocking uses a BlockingQueue rather than a SynchronousQueue. Note that min is ignored when this is true. */
     public static ExecutorService cachedExecutor(int min, int max, boolean blocking){
-        return new ThreadPoolExecutor(min, max,
+        return cachedExecutor(min, max, blocking, null);
+    }
+
+    /** @param blocking uses a BlockingQueue rather than a SynchronousQueue. Note that min is ignored when this is true. */
+    public static ExecutorService cachedExecutor(int min, int max, boolean blocking, String name){
+        return new ThreadPoolExecutor(blocking ? max : min, max,
         30L, TimeUnit.SECONDS,
         blocking ? new LinkedBlockingQueue<>() : new SynchronousQueue<>(),
         r -> {
-            Thread thread = new Thread(r);
+            Thread thread = name != null ? new Thread(r, name) : new Thread(r);
             thread.setDaemon(true);
             thread.setUncaughtExceptionHandler((t, e) -> e.printStackTrace());
             return thread;
