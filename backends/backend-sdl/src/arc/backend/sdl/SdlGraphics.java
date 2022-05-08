@@ -194,6 +194,15 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public boolean setFullscreen(){
+        int[] bounds = new int[4];
+
+        int index = SDL_GetWindowDisplayIndex(app.window);
+        if(index < 0) return false;
+
+        int result = SDL_GetDisplayBounds(index, bounds);
+        if(result != 0) return false;
+
+        SDL_SetWindowSize(app.window, bounds[2], bounds[3]);
         SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN);
         return true;
     }
