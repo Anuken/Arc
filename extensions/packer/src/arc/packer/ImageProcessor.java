@@ -143,17 +143,18 @@ public class ImageProcessor{
         if(settings.stripWhitespaceCenter && source.width > 3 && source.height > 3){
             int crop = 0;
             int maxCrop = Math.min(source.width, source.height) / 2 - 1;
+            outer:
             while(crop < maxCrop){
                 //bottom and top
                 for(int x = crop; x < source.width - crop; x++){
-                    if(source.getA(x, crop) > thresh) break;
-                    if(source.getA(x, source.height - 1 - crop) > thresh) break;
+                    if(source.getA(x, crop) > thresh) break outer;
+                    if(source.getA(x, source.height - 1 - crop) > thresh) break outer;
                 }
 
                 //sides
                 for(int y = crop; y < source.height - crop; y++){
-                    if(source.getA(crop, y) > thresh) break;
-                    if(source.getA(source.width - 1 - crop, y) > thresh) break;
+                    if(source.getA(crop, y) > thresh) break outer;
+                    if(source.getA(source.width - 1 - crop, y) > thresh) break outer;
                 }
 
                 crop ++;
@@ -163,7 +164,7 @@ public class ImageProcessor{
             int realCrop = Math.max(crop - 1, 0);
 
             if(realCrop > 0){
-                return new Rect(source, realCrop, realCrop, source.width - realCrop, source.height - realCrop, false);
+                return new Rect(source, realCrop, realCrop, source.width - realCrop * 2, source.height - realCrop * 2, false);
             }
         }
 
