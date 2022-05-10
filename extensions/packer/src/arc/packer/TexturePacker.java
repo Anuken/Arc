@@ -578,6 +578,8 @@ public class TexturePacker{
         public boolean stripWhitespaceX, stripWhitespaceY;
         /** Whether to strip whitespace in a way that keeps the region rectangle centered. */
         public boolean stripWhitespaceCenter;
+        /** Paths containing these strings do not have whitespace stripped. */
+        public String[] ignoredWhitespaceStrings = {};
         public int alphaThreshold;
         public TextureFilter filterMin = TextureFilter.nearest, filterMag = TextureFilter.nearest;
         public TextureWrap wrapX = TextureWrap.clampToEdge, wrapY = TextureWrap.clampToEdge;

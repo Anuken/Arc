@@ -4,6 +4,7 @@ import arc.files.*;
 import arc.graphics.*;
 import arc.packer.TexturePacker.*;
 import arc.struct.*;
+import arc.util.*;
 
 import java.io.*;
 import java.math.*;
@@ -128,7 +129,7 @@ public class ImageProcessor{
             rect.pads = pads;
             rect.canRotate = false;
         }else{
-            rect = stripWhitespace(image);
+            rect = stripWhitespace(image, name);
             if(rect == null) return null;
         }
 
@@ -137,8 +138,14 @@ public class ImageProcessor{
     }
 
     /** Strips whitespace and returns the rect, or null if the image should be ignored. */
-    private Rect stripWhitespace(Pixmap source){
+    private Rect stripWhitespace(Pixmap source, String name){
         int thresh = settings.alphaThreshold;
+
+        //TODO remove
+        if(Structs.contains(settings.ignoredWhitespaceStrings, name)){
+            Log.info("Skipping whitespace strip for " + name);
+            return new Rect(source, 0, 0, source.width, source.height, false);
+        }
 
         if(settings.stripWhitespaceCenter && source.width > 3 && source.height > 3){
             int crop = 0;
