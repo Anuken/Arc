@@ -50,7 +50,7 @@ public class SpriteBatch extends Batch{
         if(size > 0){
             projectionMatrix.setOrtho(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
 
-            mesh = new Mesh(false, size * 4, size * 6,
+            mesh = new Mesh(true, false, size * 4, size * 6,
             VertexAttribute.position,
             VertexAttribute.color,
             VertexAttribute.texCoords,

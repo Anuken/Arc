@@ -48,6 +48,16 @@ public class Mesh implements Disposable{
      * @param maxIndices the maximum number of indices this mesh can hold
      */
     public Mesh(boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes){
+        this(false, isStatic, maxVertices, maxIndices, attributes);
+    }
+
+    /**
+     * Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own risk.
+     * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
+     * @param maxVertices the maximum number of vertices this mesh can hold
+     * @param maxIndices the maximum number of indices this mesh can hold
+     */
+    public Mesh(boolean useVertexArray, boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes){
         int count = 0;
         for(VertexAttribute attribute : attributes){
             count += attribute.size;
@@ -57,7 +67,10 @@ public class Mesh implements Disposable{
         this.attributes = attributes;
         this.attributesHash = Arrays.hashCode(attributes);
 
-        if(Core.gl30 != null){
+        if(useVertexArray && Core.gl30 == null){
+            vertices = new VertexArray(maxVertices, this);
+            indices = new IndexArray(maxIndices);
+        }else if(Core.gl30 != null){
             vertices = new VertexBufferObjectWithVAO(isStatic, maxVertices, this);
             indices = new IndexBufferObjectSubData(isStatic, maxIndices);
         }else{
