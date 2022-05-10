@@ -141,9 +141,7 @@ public class ImageProcessor{
     private Rect stripWhitespace(Pixmap source, String name){
         int thresh = settings.alphaThreshold;
 
-        //TODO remove
-        if(Structs.contains(settings.ignoredWhitespaceStrings, name)){
-            Log.info("Skipping whitespace strip for " + name);
+        if(Structs.contains(settings.ignoredWhitespaceStrings, name::contains)){
             return new Rect(source, 0, 0, source.width, source.height, false);
         }
 
