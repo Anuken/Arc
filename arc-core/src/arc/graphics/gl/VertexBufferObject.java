@@ -143,8 +143,8 @@ public class VertexBufferObject implements VertexData{
             offset += attribute.size;
             if(location < 0) continue;
 
-            shader.enableVertexAttribute(location);
-            shader.setVertexAttribute(location, attribute.components, attribute.type, attribute.normalized, mesh.vertexSize, aoffset);
+            Gl.enableVertexAttribArray(location);
+            Gl.vertexAttribPointer(location, attribute.components, attribute.type, attribute.normalized, mesh.vertexSize, aoffset);
         }
     }
 
