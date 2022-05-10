@@ -5,7 +5,6 @@ import arc.graphics.gl.*;
 import arc.util.*;
 
 import java.nio.*;
-import java.util.*;
 
 /**
  * <p>
@@ -30,11 +29,13 @@ import java.util.*;
  * @author mzechner, Dave Clayton <contact@redskyforge.com>, Xoppa
  */
 public class Mesh implements Disposable{
+    /** If true, VAOs will be used on OpenGL 3.0+. This may improve performance. */
+    public static boolean useVAO = true;
+
     /** The size of one vertex, in bytes. */
     public final int vertexSize;
     /** Do not modify. */
     public final VertexAttribute[] attributes;
-    public final int attributesHash;
 
     public final VertexData vertices;
     public final IndexData indices;
@@ -42,12 +43,25 @@ public class Mesh implements Disposable{
     boolean autoBind = true;
 
     /**
+     * Creates a new Mesh with the given attributes.
+     * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
+     * @param maxVertices the maximum number of vertices this mesh can hold
+     * @param maxIndices the maximum number of indices this mesh can hold
+     * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
+     * normal or texture coordinate
+     */
+    public Mesh(boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes){
+        this(false, isStatic, maxVertices, maxIndices, attributes);
+    }
+
+    /**
      * Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own risk.
+     * @param useVertexArray whether to use VBOs or VAOs. Note that the latter is not supported with OpenGL 3.0.
      * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
      * @param maxVertices the maximum number of vertices this mesh can hold
      * @param maxIndices the maximum number of indices this mesh can hold
      */
-    public Mesh(boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes){
+    public Mesh(boolean useVertexArray, boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes){
         int count = 0;
         for(VertexAttribute attribute : attributes){
             count += attribute.size;
@@ -55,9 +69,11 @@ public class Mesh implements Disposable{
 
         this.vertexSize = count;
         this.attributes = attributes;
-        this.attributesHash = Arrays.hashCode(attributes);
 
-        if(Core.gl30 != null){
+        if(useVertexArray && Core.gl30 == null){
+            vertices = new VertexArray(maxVertices, this);
+            indices = new IndexArray(maxIndices);
+        }else if(Core.gl30 != null && useVAO){
             vertices = new VertexBufferObjectWithVAO(isStatic, maxVertices, this);
             indices = new IndexBufferObjectSubData(isStatic, maxIndices);
         }else{
@@ -212,7 +228,7 @@ public class Mesh implements Disposable{
     }
 
     /**
-     * Sets whether to bind the underlying {@link VertexBufferObject} automatically on a call to one of the
+     * Sets whether to bind the underlying {@link VertexArray} or {@link VertexBufferObject} automatically on a call to one of the
      * render methods. Usually you want to use autobind. Manual binding is an expert functionality. There is a driver bug on the
      * MSM720xa chips that will fuck up memory if you manipulate the vertices and indices of a Mesh multiple times while it is
      * bound. Keep this in mind.
