@@ -97,14 +97,14 @@ public class VertexArray implements VertexData{
             int aoffset = offset;
             offset += attribute.size;
             if(location < 0) continue;
-            shader.enableVertexAttribute(location);
+            Gl.enableVertexAttribArray(location);
 
             if(attribute.type == GL20.GL_FLOAT){
                 buffer.position(aoffset / 4);
-                shader.setVertexAttribute(location, attribute.components, attribute.type, attribute.normalized, mesh.vertexSize, buffer);
+                Gl.vertexAttribPointer(location, attribute.components, attribute.type, attribute.normalized, mesh.vertexSize, buffer);
             }else{
                 byteBuffer.position(aoffset);
-                shader.setVertexAttribute(location, attribute.components, attribute.type, attribute.normalized, mesh.vertexSize, byteBuffer);
+                Gl.vertexAttribPointer(location, attribute.components, attribute.type, attribute.normalized, mesh.vertexSize, byteBuffer);
             }
         }
 

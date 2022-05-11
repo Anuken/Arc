@@ -7,8 +7,8 @@ import java.util.*;
 /** A priority queue. */
 @SuppressWarnings("unchecked")
 public class PQueue<E>{
-    private static final double CAPACITY_RATIO_LOW = 1.5f;
-    private static final double CAPACITY_RATIO_HI = 2f;
+    private static final float CAPACITY_RATIO_LOW = 1.5f;
+    private static final float CAPACITY_RATIO_HI = 2f;
 
     /**
      * Priority queue represented as a balanced binary heap: the two children of queue[n] are queue[2*n+1] and queue[2*(n+1)]. The
@@ -44,8 +44,7 @@ public class PQueue<E>{
     }
 
     /**
-     * Inserts the specified element into this priority queue. If {@code uniqueness} is enabled and this priority queue already
-     * contains the element, the call leaves the queue unchanged and returns false.
+     * Inserts the specified element into this priority queue.
      * @return true if the element was added to this queue, else false
      * @throws ClassCastException if the specified element cannot be compared with elements currently in this priority queue
      * according to the priority queue's ordering

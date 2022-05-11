@@ -6,8 +6,7 @@ import arc.util.*;
 import java.nio.*;
 
 /**
- * A VertexData instance holds vertices for rendering with OpenGL. It is implemented as either a {@link VertexArray} or a
- * {@link VertexBufferObject}. Only the later supports OpenGL ES 2.0.
+ * A VertexData instance holds vertices for rendering with OpenGL.
  * @author mzechner
  */
 public interface VertexData extends Disposable{

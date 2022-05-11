@@ -577,8 +577,10 @@ public class PixmapPacker implements Disposable{
         /** Creates a new page filled with the color provided by the {@link PixmapPacker#getTransparentColor()} */
         public Page(PixmapPacker packer){
             image = new Pixmap(packer.pageWidth, packer.pageHeight);
-            final Color transparentColor = packer.getTransparentColor();
-            this.image.fill(transparentColor);
+            Color transparentColor = packer.getTransparentColor();
+            if(transparentColor.rgba() != 0){
+                this.image.fill(transparentColor);
+            }
         }
 
         public Page(Pixmap pixmap){

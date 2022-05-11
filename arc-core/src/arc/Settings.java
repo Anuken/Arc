@@ -137,7 +137,7 @@ public class Settings{
             Log.err("Failed to load base settings file, attempting to load backup.", e);
             writeLog("Failed to load base file " + getSettingsFile() + ":\n" + Strings.getStackTrace(e));
 
-            Seq<Fi> attempts = getBackupFolder().seq().and(getBackupSettingsFile());
+            Seq<Fi> attempts = getBackupFolder().seq().add(getBackupSettingsFile());
             //sort with latest modified file first
             attempts.sort(Structs.comparingLong(f -> -f.lastModified()));
 

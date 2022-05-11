@@ -4,6 +4,7 @@ import arc.files.*;
 import arc.graphics.*;
 import arc.packer.TexturePacker.*;
 import arc.struct.*;
+import arc.util.*;
 
 import java.io.*;
 import java.math.*;
@@ -128,7 +129,7 @@ public class ImageProcessor{
             rect.pads = pads;
             rect.canRotate = false;
         }else{
-            rect = stripWhitespace(image);
+            rect = stripWhitespace(image, name);
             if(rect == null) return null;
         }
 
@@ -137,7 +138,41 @@ public class ImageProcessor{
     }
 
     /** Strips whitespace and returns the rect, or null if the image should be ignored. */
-    private Rect stripWhitespace(Pixmap source){
+    private Rect stripWhitespace(Pixmap source, String name){
+        int thresh = settings.alphaThreshold;
+
+        if(Structs.contains(settings.ignoredWhitespaceStrings, name::contains)){
+            return new Rect(source, 0, 0, source.width, source.height, false);
+        }
+
+        if(settings.stripWhitespaceCenter && source.width > 3 && source.height > 3){
+            int crop = 0;
+            int maxCrop = Math.min(source.width, source.height) / 2 - 1;
+            outer:
+            while(crop < maxCrop){
+                //bottom and top
+                for(int x = crop; x < source.width - crop; x++){
+                    if(source.getA(x, crop) > thresh) break outer;
+                    if(source.getA(x, source.height - 1 - crop) > thresh) break outer;
+                }
+
+                //sides
+                for(int y = crop; y < source.height - crop; y++){
+                    if(source.getA(crop, y) > thresh) break outer;
+                    if(source.getA(source.width - 1 - crop, y) > thresh) break outer;
+                }
+
+                crop ++;
+            }
+
+            //add a pixel of padding
+            int realCrop = Math.max(crop - 1, 0);
+
+            if(realCrop > 0){
+                return new Rect(source, realCrop, realCrop, source.width - realCrop * 2, source.height - realCrop * 2, false);
+            }
+        }
+
         if((!settings.stripWhitespaceX && !settings.stripWhitespaceY))
             return new Rect(source, 0, 0, source.width, source.height, false);
 
@@ -148,7 +183,7 @@ public class ImageProcessor{
             for(int y = 0; y < source.height; y++){
                 for(int x = 0; x < source.width; x++){
                     int alpha = source.getA(x, y);
-                    if(alpha > settings.alphaThreshold) break outer;
+                    if(alpha > thresh) break outer;
                 }
                 top++;
             }
@@ -156,7 +191,7 @@ public class ImageProcessor{
             for(int y = source.height; --y >= top; ){
                 for(int x = 0; x < source.width; x++){
                     int alpha = source.getA(x, y);
-                    if(alpha > settings.alphaThreshold) break outer;
+                    if(alpha > thresh) break outer;
                 }
                 bottom--;
             }
@@ -173,7 +208,7 @@ public class ImageProcessor{
             for(int x = 0; x < source.width; x++){
                 for(int y = top; y < bottom; y++){
                     int alpha = source.getA(x, y);
-                    if(alpha > settings.alphaThreshold) break outer;
+                    if(alpha > thresh) break outer;
                 }
                 left++;
             }
@@ -181,7 +216,7 @@ public class ImageProcessor{
             for(int x = source.width; --x >= left; ){
                 for(int y = top; y < bottom; y++){
                     int alpha = source.getA(x, y);
-                    if(alpha > settings.alphaThreshold) break outer;
+                    if(alpha > thresh) break outer;
                 }
                 right--;
             }

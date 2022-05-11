@@ -148,8 +148,8 @@ public class VertexBufferObjectWithVAO implements VertexData{
                     continue;
                 }
 
-                shader.enableVertexAttribute(location);
-                shader.setVertexAttribute(location, attribute.components, attribute.type, attribute.normalized, mesh.vertexSize, aoffset);
+                Gl.enableVertexAttribArray(location);
+                Gl.vertexAttribPointer(location, attribute.components, attribute.type, attribute.normalized, mesh.vertexSize, aoffset);
             }
         }
     }
@@ -164,7 +164,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
             if(location < 0){
                 continue;
             }
-            shader.disableVertexAttribute(location);
+            Gl.disableVertexAttribArray(location);
         }
     }
 
