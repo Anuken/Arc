@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 
 /** Utility class for making HTTP requests. */
 public class Http{
-    protected static ExecutorService exec = Threads.unboundedExecutor();
+    protected static ExecutorService exec = Threads.unboundedExecutor("HTTP", 1);
 
     /** @return a new HttpRequest that must be configured & submitted. */
     public static HttpRequest request(HttpMethod method, String url){
