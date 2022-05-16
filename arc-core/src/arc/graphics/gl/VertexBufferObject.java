@@ -34,7 +34,7 @@ public class VertexBufferObject implements VertexData{
     public VertexBufferObject(boolean isStatic, int numVertices, Mesh mesh){
         this.mesh = mesh;
         bufferHandle = Gl.genBuffer();
-        usage = isStatic ? Gl.staticDraw : Gl.streamDraw;
+        usage = isStatic ? Gl.staticDraw : Gl.dynamicDraw;
 
         ByteBuffer data = Buffers.newUnsafeByteBuffer(mesh.vertexSize * numVertices);
         data.limit(0);
