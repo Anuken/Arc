@@ -31,7 +31,6 @@ public class VertexBufferObjectWithVAO implements VertexData{
     final ByteBuffer byteBuffer;
     final boolean isStatic;
     final int usage;
-    int allocated;
     int bufferHandle;
     boolean isDirty = false;
     boolean isBound = false;
@@ -73,12 +72,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
     }
 
     private void upload(){
-        if(byteBuffer.limit() > allocated || allocated == 0){
-            Gl.bufferData(Gl.arrayBuffer, byteBuffer.limit(), byteBuffer, usage);
-            allocated = byteBuffer.limit();
-        }else{
-            Gl.bufferSubData(Gl.arrayBuffer, 0, byteBuffer.limit(), byteBuffer);
-        }
+        Gl.bufferData(Gl.arrayBuffer, byteBuffer.limit(), byteBuffer, usage);
     }
 
     private void bufferChanged(){
