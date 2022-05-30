@@ -24,7 +24,6 @@ public class Bloom{
     /** Rebinds the context. Necessary on Android/IOS. TODO or is it? */
     public void resume(){
         bloomShader.bind();
-        bloomShader.setUniformi("u_texture0", 0);
         bloomShader.setUniformi("u_texture1", 1);
 
         setSize(pingPong1.getWidth(), pingPong1.getHeight());
@@ -91,7 +90,6 @@ public class Bloom{
         setThreshold(0.5f);
 
         bloomShader.bind();
-        bloomShader.setUniformi("u_texture0", 0);
         bloomShader.setUniformi("u_texture1", 1);
     }
 
