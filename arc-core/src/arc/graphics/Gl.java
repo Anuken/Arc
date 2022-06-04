@@ -334,6 +334,8 @@ public class Gl{
     private static boolean wasDepthMask = true;
     //blending state
     private static int lastSfactor = -1, lastDfactor = -1;
+    //blend func separate state
+    private static int lastBlendSrc = -1, lastBlendDst = -1, lastBlendSrcAlpha = -1, lastBlendDstAlpha = -1;
 
     static{
         reset();
@@ -587,7 +589,16 @@ public class Gl{
     }
 
     public static void blendFuncSeparate(int srcRGB, int dstRGB, int srcAlpha, int dstAlpha){
+        if(optimize && srcRGB == lastBlendSrc && dstRGB == lastBlendDst && srcAlpha == lastBlendSrcAlpha && dstAlpha == lastBlendDstAlpha){
+            return;
+        }
+
         Core.gl.glBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
+
+        lastBlendSrc = srcRGB;
+        lastBlendDst = dstRGB;
+        lastBlendSrcAlpha = srcAlpha;
+        lastBlendDstAlpha = dstAlpha;
     }
 
     public static void bufferData(int target, int size, Buffer data, int usage){
