@@ -133,7 +133,7 @@ public class Threads{
     private static Thread newThread(Runnable r, @Nullable String name, boolean daemon){
         Thread thread = name == null ? new Thread(r) : new Thread(r, name);
         thread.setDaemon(daemon);
-        thread.setUncaughtExceptionHandler((t, e) -> throwAppException(e));
+        thread.setUncaughtExceptionHandler((t, e) -> Log.err(e));
         return thread;
     }
 }
