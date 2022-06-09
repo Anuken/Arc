@@ -38,52 +38,35 @@ public class Threads{
         }
     }
 
-    public static ExecutorService executor(int threads, boolean daemon){
-        return Executors.newFixedThreadPool(threads, r -> {
-            Thread thread = new Thread(r, "AsyncExecutor-Thread");
-            thread.setDaemon(daemon);
-            thread.setUncaughtExceptionHandler((t, e) -> e.printStackTrace());
-            return thread;
-        });
+    /** @return an executor with a fixed number of threads which do not expire */
+    public static ExecutorService executor(@Nullable String name, int threads){
+        return Executors.newFixedThreadPool(threads, r -> newThread(r, name, true));
     }
 
-    public static ExecutorService executor(int threads){
-        return executor(threads, true);
+    /** @see #executor(String, int) */
+    public static ExecutorService executor(@Nullable String name){
+        return executor(name, OS.cores);
     }
 
+    /** @see #executor(String, int) */
     public static ExecutorService executor(){
-        return executor(Runtime.getRuntime().availableProcessors(), true);
+        return executor(null);
     }
 
-    /** @return an executor that has no limit on the amount of threads it will create. */
+    /** @return an executor with no max thread count. threads expire after 1 minute of inactivity
+     *  @param min the number of threads to keep alive at all times after they are first started */
+    public static ExecutorService unboundedExecutor(@Nullable String name, int min){
+        return new ThreadPoolExecutor(min, Integer.MAX_VALUE, 1, TimeUnit.MINUTES, new SynchronousQueue<>(), r -> newThread(r, name, true));
+    }
+
+    /** @see #unboundedExecutor(String, int) */
+    public static ExecutorService unboundedExecutor(@Nullable String name){
+        return unboundedExecutor(name, 0);
+    }
+
+    /** @see #unboundedExecutor(String, int) */
     public static ExecutorService unboundedExecutor(){
-        return cachedExecutor(1, Integer.MAX_VALUE, false);
-    }
-
-    public static ExecutorService cachedExecutor(){
-        return cachedExecutor(1, Integer.MAX_VALUE, true);
-    }
-
-    public static ExecutorService cachedExecutor(int min){
-        return cachedExecutor(min, Integer.MAX_VALUE, true);
-    }
-
-    /** @param blocking uses a BlockingQueue rather than a SynchronousQueue. Note that min is ignored when this is true. */
-    public static ExecutorService cachedExecutor(int min, int max, boolean blocking){
-        return cachedExecutor(min, max, blocking, null);
-    }
-
-    /** @param blocking uses a BlockingQueue rather than a SynchronousQueue. Note that min is ignored when this is true. */
-    public static ExecutorService cachedExecutor(int min, int max, boolean blocking, String name){
-        return new ThreadPoolExecutor(blocking ? max : min, max,
-        30L, TimeUnit.SECONDS,
-        blocking ? new LinkedBlockingQueue<>() : new SynchronousQueue<>(),
-        r -> {
-            Thread thread = name != null ? new Thread(r, name) : new Thread(r);
-            thread.setDaemon(true);
-            thread.setUncaughtExceptionHandler((t, e) -> e.printStackTrace());
-            return thread;
-        });
+        return unboundedExecutor(null);
     }
 
     /** Shuts down the executor and waits for its termination indefinitely. */
@@ -125,24 +108,32 @@ public class Threads{
 
     /** Starts a new non-daemon thread.*/
     public static Thread thread(Runnable runnable){
-        Thread thread = new Thread(runnable);
+        return thread(null, runnable);
+    }
+
+    /** Starts a new non-daemon thread.*/
+    public static Thread thread(@Nullable String name, Runnable runnable){
+        Thread thread = newThread(runnable, name, false);
         thread.start();
         return thread;
     }
 
     /** Starts a new daemon thread.*/
     public static Thread daemon(Runnable runnable){
-        Thread thread = new Thread(runnable);
-        thread.setDaemon(true);
+        return daemon(null, runnable);
+    }
+
+    /** Starts a new daemon thread.*/
+    public static Thread daemon(@Nullable String name, Runnable runnable){
+        Thread thread = newThread(runnable, name, true);
         thread.start();
         return thread;
     }
 
-    /** Starts a new daemon thread.*/
-    public static Thread daemon(String name, Runnable runnable){
-        Thread thread = new Thread(runnable, name);
-        thread.setDaemon(true);
-        thread.start();
+    private static Thread newThread(Runnable r, @Nullable String name, boolean daemon){
+        Thread thread = name == null ? new Thread(r) : new Thread(r, name);
+        thread.setDaemon(daemon);
+        thread.setUncaughtExceptionHandler((t, e) -> throwAppException(e));
         return thread;
     }
 }
