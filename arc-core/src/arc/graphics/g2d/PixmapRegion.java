@@ -53,4 +53,9 @@ public class PixmapRegion{
     public Pixmap crop(){
         return Pixmaps.crop(pixmap, x, y, width, height);
     }
+
+    /** Allocates a new pixmap with specific offsets. */
+    public Pixmap crop(int x, int y, int width, int height){
+        return Pixmaps.crop(pixmap, this.x + x, this.y + y, width, height);
+    }
 }
