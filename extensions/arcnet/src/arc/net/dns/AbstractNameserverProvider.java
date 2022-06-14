@@ -10,8 +10,7 @@ import arc.util.*;
 import java.net.*;
 
 /**
- * Base class for resolver config providers that provides a default implementation for the lists and
- * utility methods to prevent duplicates.
+ * Simple abstract class for name server resolvers.
  */
 public abstract class AbstractNameserverProvider implements NameServerProvider{
 

@@ -15,7 +15,7 @@ public final class ArcDns{
     public static final int dnsResolverPort = 53;
 
     private static final Seq<InetSocketAddress> nameservers = new Seq<>(3);
-    private static final Seq<NameServerProvider> nameserverProviders = Seq.with(new ResolvConfNameserverProvider(), new JndiContextNameServerProvider());
+    private static final Seq<NameServerProvider> nameserverProviders = Seq.with(new JndiContextNameServerProvider(), new ResolvConfNameserverProvider());
 
     static{
         refreshNameservers();
