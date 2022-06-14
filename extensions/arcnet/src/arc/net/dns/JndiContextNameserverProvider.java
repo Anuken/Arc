@@ -18,10 +18,10 @@ import static arc.net.dns.ArcDns.dnsResolverPort;
  * Resolver config provider that tries to extract the system's DNS servers from the
  * <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/jndi/jndi-dns.html">JNDI DNS Service Provider</a>.
  */
-public final class JndiContextNameServerProvider implements NameServerProvider{
+public final class JndiContextNameserverProvider implements NameserverProvider{
     private InnerJndiContextNameserverProvider inner;
 
-    public JndiContextNameServerProvider(){
+    public JndiContextNameserverProvider(){
         if(!OS.isAndroid){
             try{
                 inner = new InnerJndiContextNameserverProvider();

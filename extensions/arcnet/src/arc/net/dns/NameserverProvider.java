@@ -8,7 +8,7 @@ import arc.struct.*;
 
 import java.net.*;
 
-public interface NameServerProvider{
+public interface NameserverProvider{
     /** Initializes the servers. */
     void initialize() throws InitializationException;
 

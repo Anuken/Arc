@@ -15,18 +15,18 @@ public final class ArcDns{
     public static final int dnsResolverPort = 53;
 
     private static final Seq<InetSocketAddress> nameservers = new Seq<>(3);
-    private static final Seq<NameServerProvider> nameserverProviders = Seq.with(new JndiContextNameServerProvider(), new ResolvConfNameserverProvider());
+    private static final Seq<NameserverProvider> nameserverProviders = Seq.with(new JndiContextNameserverProvider(), new ResolvConfNameserverProvider());
 
     static{
         refreshNameservers();
     }
 
-    public static Seq<NameServerProvider> getNameserverProviders(){
+    public static Seq<NameserverProvider> getNameserverProviders(){
         return nameserverProviders.copy();
     }
 
     /** Set a new ordered list of resolver config providers. */
-    public static void setNameserverProviders(Seq<NameServerProvider> providers){
+    public static void setNameserverProviders(Seq<NameserverProvider> providers){
         nameserverProviders.clear();
         nameserverProviders.addAll(providers);
         refreshNameservers();
@@ -40,7 +40,7 @@ public final class ArcDns{
     public static void refreshNameservers(){
         nameservers.clear();
 
-        for(NameServerProvider provider : nameserverProviders){
+        for(NameserverProvider provider : nameserverProviders){
             if(provider.isEnabled()){
                 try{
                     provider.initialize();

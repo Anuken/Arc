@@ -12,7 +12,7 @@ import java.net.*;
 /**
  * Simple abstract class for name server resolvers.
  */
-public abstract class AbstractNameserverProvider implements NameServerProvider{
+public abstract class AbstractNameserverProvider implements NameserverProvider{
 
     private final Seq<InetSocketAddress> nameservers = new Seq<>(3);
 
