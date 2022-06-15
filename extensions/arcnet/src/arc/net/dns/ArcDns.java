@@ -15,7 +15,11 @@ public final class ArcDns{
     public static final int dnsResolverPort = 53;
 
     private static final Seq<InetSocketAddress> nameservers = new Seq<>(3);
-    private static final Seq<NameserverProvider> nameserverProviders = Seq.with(new JndiContextNameserverProvider(), new ResolvConfNameserverProvider());
+    private static final Seq<NameserverProvider> nameserverProviders = Seq.with(
+    new JndiContextNameserverProvider(),    // Simple JRE installation
+    new ResolvConfNameserverProvider(),     // Unix/Linux
+    new WellKnownNameserverProvider()       // Others
+    );
 
     static{
         refreshNameservers();
@@ -134,7 +138,6 @@ public final class ArcDns{
                     in.readShort();         // Class
                     int ttl = in.readInt(); // TTl
                     in.readShort();         // Data length
-
 
                     short priority = in.readShort();
                     short weight = in.readShort();
