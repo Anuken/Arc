@@ -62,13 +62,13 @@ public final class ArcDns{
     }
 
     /**
-     * Lookup the SRV record of a domain in the format {@code _service._protocol.name} with the list of nameservers from {@link #getNameservers()}.
+     * Lookup the SRV record of a domain in the format {@code _service._protocol.name}
+     * with the list of nameservers from {@link #getNameservers()}.
      */
     public static Seq<SRVRecord> getSrvRecords(String domain){
         for(InetSocketAddress nameserver : nameservers){
             try{
-                Seq<SRVRecord> records = getSrvRecords(domain, nameserver);
-                if(!records.isEmpty()) return records;
+                return getSrvRecords(domain, nameserver);
             }catch(IOException ignored){
             }
         }
