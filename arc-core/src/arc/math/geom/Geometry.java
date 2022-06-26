@@ -346,7 +346,7 @@ public final class Geometry{
             if(Math.abs(yoverlap) > 0){
 
                 // Find out which axis is the axis of least penetration
-                if(Math.abs(xoverlap) < Math.abs(yoverlap)){
+                if(x){ //Math.abs(xoverlap) < Math.abs(yoverlap) ????
                     // Point towards B knowing that n points from A to B
                     tmp1.x = nx < 0 ? 1 : -1;
                     tmp1.y = 0;
@@ -357,7 +357,6 @@ public final class Geometry{
                     tmp1.y = ny < 0 ? 1 : -1;
                     penetration = yoverlap;
                 }
-
             }
         }
 
