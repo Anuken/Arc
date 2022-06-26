@@ -63,6 +63,17 @@ public class Structs{
         return null;
     }
 
+    public static <T> int indexOf(Iterable<T> array, Boolf<T> value){
+        int i = 0;
+        for(T t : array){
+            if(value.get(t)){
+                return i;
+            }
+            i ++;
+        }
+        return -1;
+    }
+
     public static <T> int indexOf(T[] array, T value){
         for(int i = 0; i < array.length; i++){
             if(array[i] == value){
@@ -79,6 +90,37 @@ public class Structs{
             }
         }
         return -1;
+    }
+
+    public static <T> T[] remove(T[] array, T value){
+        return remove(array, indexOf(array, value));
+    }
+
+    public static <T> T[] remove(T[] array, int index){
+        if(index < 0 || index >= array.length){
+            return array;
+        }
+
+        T[] next = Reflect.newArray(array, array.length - 1);
+        System.arraycopy(array, 0, next, 0, index);
+        if(index < array.length - 1){
+            System.arraycopy(array, index + 1, next, index, array.length - 1 - index);
+        }
+
+        return next;
+    }
+
+    public static <T> T[] add(T[] array, T item){
+        T[] next = Reflect.newArray(array, array.length + 1);
+        next[array.length] = item;
+        System.arraycopy(array, 0, next, 0, array.length);
+        return next;
+    }
+
+    public static <T> void swap(T[] array, int a, int b){
+        T temp = array[a];
+        array[a] = array[b];
+        array[b] = temp;
     }
 
     public static <T> T[] filter(Class<T> type, T[] array, Boolf<T> value){

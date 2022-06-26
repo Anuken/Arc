@@ -7,6 +7,14 @@ import java.lang.reflect.*;
 @SuppressWarnings("unchecked")
 public class Reflect{
 
+    public static <T> T[] newArray(Class<T> type, int length){
+        return (T[])java.lang.reflect.Array.newInstance(type, length);
+    }
+
+    public static <T> T[] newArray(T[] oldType, int length){
+        return (T[])java.lang.reflect.Array.newInstance(oldType.getClass().getComponentType(), length);
+    }
+
     public static boolean isWrapper(Class<?> type){
         return type == Byte.class || type == Short.class || type == Integer.class || type == Long.class || type == Character.class || type == Boolean.class || type == Float.class || type == Double.class;
     }
