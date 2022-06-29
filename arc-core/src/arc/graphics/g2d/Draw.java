@@ -171,6 +171,10 @@ public class Draw{
         Core.batch.setMixColor(color.r, color.g, color.b, Mathf.clamp(a));
     }
 
+    public static void mixcol(Color a, Color b, float prog){
+        Core.batch.setMixColor(Tmp.c1.set(a).lerp(b, prog));
+    }
+
     public static void mixcol(){
         Core.batch.setPackedMixColor(Color.clearFloatBits);
     }
