@@ -11,7 +11,7 @@ import static arc.backend.sdl.jni.SDL.*;
 
 public class SdlInput extends Input{
     class EditEvent{
-        int start,length;
+        int start, length;
         String text;
     }
     private final InputEventQueue queue = new InputEventQueue();
@@ -50,14 +50,14 @@ public class SdlInput extends Input{
             int keycode = input[4];
             int x = input[2], y = Core.graphics.getHeight() - input[3];
             KeyCode key =
-            keycode == SDL_BUTTON_LEFT ? KeyCode.mouseLeft :
-            keycode == SDL_BUTTON_RIGHT ? KeyCode.mouseRight :
-            keycode == SDL_BUTTON_MIDDLE ? KeyCode.mouseMiddle :
-            keycode == SDL_BUTTON_X1 ? KeyCode.mouseBack :
-            keycode == SDL_BUTTON_X2 ? KeyCode.mouseForward : null;
+                keycode == SDL_BUTTON_LEFT ? KeyCode.mouseLeft :
+                keycode == SDL_BUTTON_RIGHT ? KeyCode.mouseRight :
+                keycode == SDL_BUTTON_MIDDLE ? KeyCode.mouseMiddle :
+                keycode == SDL_BUTTON_X1 ? KeyCode.mouseBack :
+                keycode == SDL_BUTTON_X2 ? KeyCode.mouseForward : null;
             if(key != null){
                 if(down){
-                    mousePressed++;
+                    mousePressed ++;
                     queue.touchDown(x, y, 0, key);
                 }else{
                     mousePressed = Math.max(0, mousePressed - 1);
@@ -111,9 +111,8 @@ public class SdlInput extends Input{
                 strcpy[i] = (byte)input[i + 3];
             }
 
-            String str = new String(strcpy, 0, length, Strings.utf8);
-
             //defer string edits after string completions
+            String str = new String(strcpy, 0, length, Strings.utf8);
             stringEditEvents.add(new EditEvent(){{
                 start = input[1];
                 this.length = input[2];
