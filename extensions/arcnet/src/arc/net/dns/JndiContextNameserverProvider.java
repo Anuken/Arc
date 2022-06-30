@@ -25,7 +25,7 @@ public final class JndiContextNameserverProvider implements NameserverProvider{
         if(!OS.isAndroid){
             try{
                 inner = new InnerJndiContextNameserverProvider();
-            }catch(NoClassDefFoundError e){
+            }catch(Throwable e){
                 Log.debug("[DNS] JNDI DNS not available");
             }
         }
