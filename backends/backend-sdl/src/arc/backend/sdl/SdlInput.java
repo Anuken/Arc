@@ -134,9 +134,7 @@ public class SdlInput extends Input{
                 //text modified externally, which means this data is invalid, kill it
                 if(data.lastSetText != field.getText()){
                     field.imeData = null;
-                }
-                
-                if(text.length() == 0){
+                } else if(text.length() == 0){
                     field.setText(data.realText);
                     field.clearSelection();
                     field.setCursorPosition(data.cursor);
