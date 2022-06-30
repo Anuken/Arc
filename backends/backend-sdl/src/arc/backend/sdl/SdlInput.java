@@ -135,6 +135,12 @@ public class SdlInput extends Input{
                 if(data.lastSetText != field.getText()){
                     field.imeData = null;
                 }
+                
+                if(text.length() == 0){
+                    field.setText(data.realText);
+                    field.clearSelection();
+                    field.setCursorPosition(data.cursor);
+                }
             }
 
             //there seem to be stray IME events with zero length, ignore those?
