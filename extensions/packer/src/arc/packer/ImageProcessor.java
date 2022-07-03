@@ -146,30 +146,35 @@ public class ImageProcessor{
         }
 
         if(settings.stripWhitespaceCenter && source.width > 3 && source.height > 3){
-            int crop = 0;
+            int cropX = 0, cropY = 0;
             int maxCrop = Math.min(source.width, source.height) / 2 - 1;
             outer:
-            while(crop < maxCrop){
+            while(cropY < maxCrop){
                 //bottom and top
-                for(int x = crop; x < source.width - crop; x++){
-                    if(source.getA(x, crop) > thresh) break outer;
-                    if(source.getA(x, source.height - 1 - crop) > thresh) break outer;
+                for(int x = 0; x < source.width; x++){
+                    if(source.getA(x, cropY) > thresh) break outer;
+                    if(source.getA(x, source.height - 1 - cropY) > thresh) break outer;
                 }
 
+                cropY ++;
+            }
+
+            outer:
+            while(cropX < maxCrop){
                 //sides
-                for(int y = crop; y < source.height - crop; y++){
-                    if(source.getA(crop, y) > thresh) break outer;
-                    if(source.getA(source.width - 1 - crop, y) > thresh) break outer;
+                for(int y = 0; y < source.height; y++){
+                    if(source.getA(cropX, y) > thresh) break outer;
+                    if(source.getA(source.width - 1 - cropX, y) > thresh) break outer;
                 }
 
-                crop ++;
+                cropX ++;
             }
 
             //add a pixel of padding
-            int realCrop = Math.max(crop - 1, 0);
+            int realCropX = Math.max(cropX - 1, 0), realCropY = Math.max(cropY - 1, 0);
 
-            if(realCrop > 0){
-                return new Rect(source, realCrop, realCrop, source.width - realCrop * 2, source.height - realCrop * 2, false);
+            if(realCropX > 0 || realCropY > 0){
+                return new Rect(source, realCropX, realCropY, source.width - realCropX * 2, source.height - realCropY * 2, false);
             }
         }
 

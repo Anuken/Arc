@@ -387,18 +387,22 @@ public class Lines{
         float dddfx = tmp2x * pre5;
         float dddfy = tmp2y * pre5;
 
+        beginLine();
+
         while(segments-- > 0){
-            float fxold = fx, fyold = fy;
+            linePoint(fx, fy);
+
             fx += dfx;
             fy += dfy;
             dfx += ddfx;
             dfy += ddfy;
             ddfx += dddfx;
             ddfy += dddfy;
-            line(fxold, fyold, fx, fy);
         }
 
-        line(fx, fy, x2, y2);
+        linePoint(x2, y2);
+
+        endLine();
     }
 
     public static void arc(float x, float y, float radius, float fraction){
