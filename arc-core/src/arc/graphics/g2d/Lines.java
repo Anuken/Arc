@@ -157,7 +157,6 @@ public class Lines{
         boolean open = !wrap;
 
         for(int i = 2; i < length - 2; i += 2){
-
             A.set(points[i - 2], points[i - 1]);
             B.set(points[i], points[i + 1]);
             C.set(points[i + 2], points[i + 3]);
@@ -238,8 +237,8 @@ public class Lines{
         boolean bendsLeft = angle < 0;
         AB.setLength(len);
         BC.setLength(len);
-        Vector insidePoint = bendsLeft ? D : E;
-        Vector outsidePoint = bendsLeft ? E : D;
+        Vec2 insidePoint = bendsLeft ? D : E;
+        Vec2 outsidePoint = bendsLeft ? E : D;
         insidePoint.set(B).sub(AB).add(BC);
         outsidePoint.set(B).add(AB).sub(BC);
         return angle;
