@@ -133,11 +133,11 @@ public final class ArcDns{
                 in.readShort();
 
                 for(int i = 0; i < answers; i++){
-                    in.readShort();         // OFFSET
-                    in.readShort();         // Type
-                    in.readShort();         // Class
-                    long ttl = in.readInt();// TTl
-                    in.readShort();         // Data length
+                    in.readShort();                         // OFFSET
+                    in.readShort();                         // Type
+                    in.readShort();                         // Class
+                    long ttl = in.readInt() & 0xFFFFFFFFL;  // TTL
+                    in.readShort();                         // Data length
 
                     int priority = in.readUnsignedShort();
                     int weight = in.readUnsignedShort();
