@@ -110,6 +110,9 @@ public class SdlApplication implements Application{
 
         check(() -> SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
 
+        //show native IME candidate UI
+        SDL_SetHint("SDL_IME_SHOW_UI","1");
+        
         //set up openGL 2.0 profile
         check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, config.gl30 ? config.gl30Major : 2));
         check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,  config.gl30 ? config.gl30Minor : 0));
