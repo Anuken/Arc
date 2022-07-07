@@ -120,7 +120,7 @@ public final class ArcDns{
 
                 in.readShort();
                 in.readShort();
-                int answers = in.readShort();
+                int answers = in.readUnsignedShort();
                 in.readShort();
                 in.readShort();
 
@@ -133,15 +133,15 @@ public final class ArcDns{
                 in.readShort();
 
                 for(int i = 0; i < answers; i++){
-                    in.readShort();         // OFFSET
-                    in.readShort();         // Type
-                    in.readShort();         // Class
-                    int ttl = in.readInt(); // TTl
-                    in.readShort();         // Data length
+                    in.readShort();                         // OFFSET
+                    in.readShort();                         // Type
+                    in.readShort();                         // Class
+                    long ttl = in.readInt() & 0xFFFFFFFFL;  // TTL
+                    in.readShort();                         // Data length
 
-                    short priority = in.readShort();
-                    short weight = in.readShort();
-                    short port = in.readShort();
+                    int priority = in.readUnsignedShort();
+                    int weight = in.readUnsignedShort();
+                    int port = in.readUnsignedShort();
 
                     StringBuilder builder = new StringBuilder();
                     while((len = in.readByte()) != 0){
