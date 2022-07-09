@@ -141,6 +141,7 @@ public class SdlInput extends Input{
                     field.imeData = null;
                 }else if(text.length() == 0){
                     //cancel or end composition
+                    field.imeData = null;
                     field.setText(data.realText);
                     field.clearSelection();
                     field.setCursorPosition(data.cursor);
