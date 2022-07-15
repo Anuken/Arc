@@ -1,5 +1,3 @@
-
-
 package arc.graphics.g2d;
 
 import arc.*;
