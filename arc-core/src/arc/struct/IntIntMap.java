@@ -310,6 +310,75 @@ public class IntIntMap implements Iterable<IntIntMap.Entry>{
         return valueTable[index];
     }
 
+    /** Only inserts into the map if value is not present.
+     * @param key The key.
+     * @param value The value.
+     * @return The associated value if key is present in the map, else {@code value}.
+     * */
+    public int getOrPut(final int key, final int value){
+        if(key == 0){
+            if(!hasZeroValue){
+                zeroValue = value;
+                hasZeroValue = true;
+                size++;
+            }
+            return zeroValue;
+        }
+
+        final int[] keyTable = this.keyTable, valueTable = this.valueTable;
+
+        // Check for existing keys.
+        int index1 = key & mask;
+        int key1 = keyTable[index1];
+        if(key == key1){
+            return valueTable[index1];
+        }
+
+        int index2 = hash2(key);
+        int key2 = keyTable[index2];
+        if(key == key2){
+            return valueTable[index2];
+        }
+
+        int index3 = hash3(key);
+        int key3 = keyTable[index3];
+        if(key == key3){
+            return valueTable[index3];
+        }
+
+        // Update key in the stash.
+        for(int i = capacity, n = i + stashSize; i < n; i++){
+            if(key == keyTable[i]){
+                return valueTable[i];
+            }
+        }
+
+        // Check for empty buckets.
+        if(key1 == EMPTY){
+            keyTable[index1] = key;
+            valueTable[index1] = value;
+            if(size++ >= threshold) resize(capacity << 1);
+            return value;
+        }
+
+        if(key2 == EMPTY){
+            keyTable[index2] = key;
+            valueTable[index2] = value;
+            if(size++ >= threshold) resize(capacity << 1);
+            return value;
+        }
+
+        if(key3 == EMPTY){
+            keyTable[index3] = key;
+            valueTable[index3] = value;
+            if(size++ >= threshold) resize(capacity << 1);
+            return value;
+        }
+
+        push(key, value, index1, key1, index2, key2, index3, key3);
+        return value;
+    }
+
     private int getStash(int key, int defaultValue){
         int[] keyTable = this.keyTable;
         for(int i = capacity, n = i + stashSize; i < n; i++)
