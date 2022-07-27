@@ -12,6 +12,7 @@ import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.nio.channels.FileChannel.*;
+import java.nio.file.Files;
 import java.util.zip.*;
 
 /**
@@ -75,9 +76,7 @@ public class Fi{
 
     public static Fi tempDirectory(String prefix){
         try{
-            File file = File.createTempFile(prefix, null);
-            if(!file.delete()) throw new IOException("Unable to delete temp file: " + file);
-            if(!file.mkdir()) throw new IOException("Unable to create temp directory: " + file);
+            File file = Files.createTempDirectory(prefix).toFile();
             return new Fi(file);
         }catch(IOException ex){
             throw new ArcRuntimeException("Unable to create temp file.", ex);
