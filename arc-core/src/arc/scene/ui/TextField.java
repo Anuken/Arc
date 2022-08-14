@@ -432,7 +432,7 @@ public class TextField extends Element implements Disableable{
         }else
             displayText = newDisplayText;
 
-        layout.setText(font, displayText);
+        layout.setText(font, displayText.toString().replace('\n', ' ').replace('\r', ' '));
         glyphPositions.clear();
         float x = 0;
         if(layout.runs.size > 0){
@@ -443,8 +443,9 @@ public class TextField extends Element implements Disableable{
                 glyphPositions.add(x);
                 x += xAdvances.get(i);
             }
-        }else
+        }else{
             fontOffset = 0;
+        }
         glyphPositions.add(x);
 
         visibleTextStart = Math.min(visibleTextStart, glyphPositions.size);
