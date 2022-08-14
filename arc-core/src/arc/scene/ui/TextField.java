@@ -445,7 +445,7 @@ public class TextField extends Element implements Disableable{
             }
         }else{
             fontOffset = 0;
-	}
+        }
         glyphPositions.add(x);
 
         visibleTextStart = Math.min(visibleTextStart, glyphPositions.size);
