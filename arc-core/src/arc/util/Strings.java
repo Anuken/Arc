@@ -576,7 +576,7 @@ public class Strings{
         d = Math.abs(d);
         StringBuilder dec = tmp2;
         dec.setLength(0);
-        dec.append((int)(d * Math.pow(10, decimalPlaces) + 0.000001f));
+        dec.append((int)(float)(d * Math.pow(10, decimalPlaces) + 0.00001f));
 
         int len = dec.length();
         int decimalPosition = len - decimalPlaces;
