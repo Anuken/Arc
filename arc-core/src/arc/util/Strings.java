@@ -560,7 +560,8 @@ public class Strings{
     }
 
     public static String autoFixed(float value, int max){
-        int precision = Math.abs((int)value - value) <= 0.0001f ? 0 : Math.abs((int)(value * 10) - value * 10) <= 0.0001f ? 1 : 2;
+        int precision = Math.abs((int)(value + 0.0001f) - value) <= 0.0001f ? 0 :
+                Math.abs((int)(value * 10 + 0.0001f) - value * 10) <= 0.0001f ? 1 : 2;
         return fixed(value, Math.min(precision, max));
     }
 
@@ -576,7 +577,7 @@ public class Strings{
         d = Math.abs(d);
         StringBuilder dec = tmp2;
         dec.setLength(0);
-        dec.append((int)(float)(d * Math.pow(10, decimalPlaces) + 0.00001f));
+        dec.append((int)(float)(d * Math.pow(10, decimalPlaces) + 0.0001f));
 
         int len = dec.length();
         int decimalPosition = len - decimalPlaces;
