@@ -63,8 +63,8 @@ public class SortedSpriteBatch extends SpriteBatch{
     @Override
     protected void draw(Texture texture, float[] spriteVertices, int offset, int count){
         if(sort && !flushing){
-            float[] requestZ = this.requestZ;
             if(numRequests + count - offset >= this.requests.length) expandRequests();
+            float[] requestZ = this.requestZ;
             DrawRequest[] requests = this.requests;
 
             for(int i = offset; i < count; i += SPRITE_SIZE){
