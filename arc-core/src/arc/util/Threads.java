@@ -43,6 +43,11 @@ public class Threads{
         return Executors.newFixedThreadPool(threads, r -> newThread(r, name, true));
     }
 
+    /** @return an executor with a fixed number of threads which do not expire */
+    public static ExecutorService executor(int threads){
+        return Executors.newFixedThreadPool(threads, r -> newThread(r, null, true));
+    }
+
     /** @see #executor(String, int) */
     public static ExecutorService executor(@Nullable String name){
         return executor(name, OS.cores);
