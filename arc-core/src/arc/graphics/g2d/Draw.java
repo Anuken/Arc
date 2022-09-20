@@ -4,6 +4,7 @@ import arc.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.gl.*;
+import arc.graphics.g2d.TextureAtlas.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
@@ -324,7 +325,7 @@ public class Draw{
     }
 
     public static void rect(TextureRegion region, float x, float y){
-        rect(region, x, y, region.width * scl * xscl, region.height * scl * yscl);
+        rect(region, x, y, 0);
     }
 
     public static void rect(String region, float x, float y){
@@ -335,8 +336,11 @@ public class Draw{
         Core.batch.draw(region, x - w /2f, y - h /2f, originX, originY, w, h, rotation);
     }
 
-    public static void rect(String region, float x, float y, float w, float h, float originX, float originY, float rotation){
-        Core.batch.draw(Core.atlas.find(region), x - w /2f, y - h /2f, originX, originY, w, h, rotation);
+    public static void rect(String regionName, float x, float y, float w, float h, float originX, float originY, float rotation){
+        AtlasRegion region = atlas.find(regionName);
+        w *= region.scale;
+        h *= region.scale;
+        Core.batch.draw(region, x - w /2f, y - h /2f, originX, originY, w, h, rotation);
     }
 
     public static void rect(TextureRegion region, float x, float y, float w, float h, float rotation){
@@ -344,7 +348,7 @@ public class Draw{
     }
 
     public static void rect(String region, float x, float y, float w, float h, float rotation){
-        rect(Core.atlas.find(region), x, y, w, h, w/2f, h/2f, rotation);
+        rect(Core.atlas.find(region), x, y, w, h, rotation);
     }
 
     public static void rect(TextureRegion region, Position pos, float w, float h){
@@ -360,7 +364,9 @@ public class Draw{
     }
 
     public static void rect(TextureRegion region, float x, float y, float rotation){
-        rect(region, x, y, region.width * scl * xscl, region.height * scl * yscl, rotation);
+        float w = region.width * xscl * region.scl();
+        float h = region.height * yscl * region.scl();
+        rect(region, x, y, w, h, rotation);
     }
 
     public static void rect(String region, float x, float y, float rotation){
