@@ -195,7 +195,7 @@ public class Pixmaps{
         Color color = new Color(1, 1, 1, 1);
 
         for(int x = 0; x < width; x++){
-            color.fromHsv(x / (float)width, 1f, 1);
+            color.fromHsv(x / (float)width * 360f, 1f, 1);
             int rgba = color.rgba();
             for(int y = 0; y < height; y++){
                 pixmap.set(x, y, rgba);

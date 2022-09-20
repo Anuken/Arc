@@ -232,6 +232,17 @@ public class KeyBinds{
         }
 
         @Override
+        public boolean equals(Object o){
+            if(this == o) return true;
+            if(o == null || getClass() != o.getClass()) return false;
+
+            Axis axis = (Axis)o;
+
+            if(min != axis.min) return false;
+            if(max != axis.max) return false;
+            return key == axis.key;
+        }
+        @Override
         public String toString(){
             return "Axis{" +
             "min=" + min +

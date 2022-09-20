@@ -29,7 +29,7 @@ public class Settings{
     protected boolean hasErrored;
     protected boolean shouldAutosave = true;
     protected boolean loaded = false;
-    protected ExecutorService executor = Threads.executor(1);
+    protected ExecutorService executor = Threads.executor("Settings Backup", 1);
 
     //IO utility objects
     protected ByteArrayOutputStream byteStream = new ByteArrayOutputStream(32);

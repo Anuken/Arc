@@ -157,7 +157,6 @@ public class Lines{
         boolean open = !wrap;
 
         for(int i = 2; i < length - 2; i += 2){
-
             A.set(points[i - 2], points[i - 1]);
             B.set(points[i], points[i + 1]);
             C.set(points[i + 2], points[i + 3]);
@@ -238,8 +237,8 @@ public class Lines{
         boolean bendsLeft = angle < 0;
         AB.setLength(len);
         BC.setLength(len);
-        Vector insidePoint = bendsLeft ? D : E;
-        Vector outsidePoint = bendsLeft ? E : D;
+        Vec2 insidePoint = bendsLeft ? D : E;
+        Vec2 outsidePoint = bendsLeft ? E : D;
         insidePoint.set(B).sub(AB).add(BC);
         outsidePoint.set(B).add(AB).sub(BC);
         return angle;
@@ -387,18 +386,22 @@ public class Lines{
         float dddfx = tmp2x * pre5;
         float dddfy = tmp2y * pre5;
 
+        beginLine();
+
         while(segments-- > 0){
-            float fxold = fx, fyold = fy;
+            linePoint(fx, fy);
+
             fx += dfx;
             fy += dfy;
             dfx += ddfx;
             dfy += ddfy;
             ddfx += dddfx;
             ddfy += dddfy;
-            line(fxold, fyold, fx, fy);
         }
 
-        line(fx, fy, x2, y2);
+        linePoint(x2, y2);
+
+        endLine();
     }
 
     public static void arc(float x, float y, float radius, float fraction){

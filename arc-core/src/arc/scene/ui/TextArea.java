@@ -15,7 +15,7 @@ import arc.util.pooling.Pools;
 /** A multiple-line text input field, entirely based on {@link TextField} */
 public class TextArea extends TextField{
 
-    /** Array storing lines breaks positions **/
+    /** Array storing starting and ending positions of each line. **/
     protected IntSeq linesBreak;
     /** Current line for the cursor **/
     protected int cursorLine;
@@ -198,10 +198,10 @@ public class TextArea extends TextField{
             if(!((minIndex < lineStart && minIndex < lineEnd && maxIndex < lineStart && maxIndex < lineEnd)
             || (minIndex > lineStart && minIndex > lineEnd && maxIndex > lineStart && maxIndex > lineEnd))){
 
-                int start = Math.max(linesBreak.get(i), minIndex);
-                int end = Math.min(linesBreak.get(i + 1), maxIndex);
+                int start = Math.min(Math.max(linesBreak.get(i), minIndex), glyphPositions.size - 1);
+                int end = Math.min(Math.min(linesBreak.get(i + 1), maxIndex), glyphPositions.size - 1);
 
-                float selectionX = glyphPositions.get(start) - glyphPositions.get(linesBreak.get(i));
+                float selectionX = glyphPositions.get(start) - glyphPositions.get(Math.min(linesBreak.get(i), glyphPositions.size));
                 float selectionWidth = glyphPositions.get(end) - glyphPositions.get(start);
 
                 selection.draw(x + selectionX + fontOffset, y - textHeight - font.getDescent() - offsetY, selectionWidth,

@@ -343,7 +343,7 @@ public class I18NBundle{
     private static Fi toFileHandle(Fi baseFileHandle, Locale locale){
         StringBuilder sb = new StringBuilder(baseFileHandle.name());
         if(!locale.equals(ROOT_LOCALE)){
-            String language = locale.getLanguage();
+            String language = locale.getLanguage().replace("in", "id");
             String country = locale.getCountry();
             String variant = locale.getVariant();
             boolean emptyLanguage = "".equals(language);

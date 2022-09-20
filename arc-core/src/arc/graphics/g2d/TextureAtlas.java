@@ -481,8 +481,8 @@ public class TextureAtlas implements Disposable{
             name = "unknown";
         }
 
-        @Override
         /** Flips the region, adjusting the offset so the image appears to be flip as if no whitespace has been removed for packing. */
+        @Override
         public void flip(boolean x, boolean y){
             super.flip(x, y);
             if(x) offsetX = originalWidth - offsetX - getRotatedPackedWidth();

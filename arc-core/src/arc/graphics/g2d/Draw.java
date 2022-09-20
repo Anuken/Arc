@@ -3,8 +3,8 @@ package arc.graphics.g2d;
 import arc.*;
 import arc.func.*;
 import arc.graphics.*;
-import arc.graphics.g2d.TextureAtlas.*;
 import arc.graphics.gl.*;
+import arc.graphics.g2d.TextureAtlas.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
@@ -170,6 +170,10 @@ public class Draw{
 
     public static void mixcol(Color color, float a){
         Core.batch.setMixColor(color.r, color.g, color.b, Mathf.clamp(a));
+    }
+
+    public static void mixcol(Color a, Color b, float prog){
+        Core.batch.setMixColor(Tmp.c1.set(a).lerp(b, prog));
     }
 
     public static void mixcol(){
@@ -360,8 +364,8 @@ public class Draw{
     }
 
     public static void rect(TextureRegion region, float x, float y, float rotation){
-        float w = region.width * scl * xscl * region.scale;
-        float h = region.height * scl * yscl * region.scale;
+        float w = region.width * xscl * region.scl();
+        float h = region.height * yscl * region.scl();
         rect(region, x, y, w, h, rotation);
     }
 

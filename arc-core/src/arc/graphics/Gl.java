@@ -332,8 +332,8 @@ public class Gl{
     /** enabled bits, from glEnable/disable */
     private static Bits enabled = new Bits();
     private static boolean wasDepthMask = true;
-    //blending state
-    private static int lastSfactor = -1, lastDfactor = -1;
+    //blend func separate state
+    private static int lastBlendSrc = -1, lastBlendDst = -1, lastBlendSrcAlpha = -1, lastBlendDstAlpha = -1;
 
     static{
         reset();
@@ -346,8 +346,6 @@ public class Gl{
         lastUsedProgram = 0;
         enabled.clear();
         wasDepthMask = true;
-        lastSfactor = -1;
-        lastDfactor = -1;
     }
 
     public static void activeTexture(int texture){
@@ -375,11 +373,9 @@ public class Gl{
     }
 
     public static void blendFunc(int sfactor, int dfactor){
-        if(lastSfactor == sfactor && lastDfactor == dfactor) return;
-        Core.gl.glBlendFunc(lastSfactor = sfactor, lastDfactor = dfactor);
+        if(optimize && lastBlendSrc == sfactor && lastBlendDst == dfactor && lastBlendSrcAlpha == sfactor && lastBlendDstAlpha == dfactor) return;
 
-        lastSfactor = sfactor;
-        lastDfactor = dfactor;
+        Core.gl.glBlendFunc(lastBlendSrc = lastBlendSrcAlpha = sfactor, lastBlendDst = lastBlendDstAlpha = dfactor);
     }
 
     public static void clear(int mask){
@@ -587,7 +583,11 @@ public class Gl{
     }
 
     public static void blendFuncSeparate(int srcRGB, int dstRGB, int srcAlpha, int dstAlpha){
-        Core.gl.glBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
+        if(optimize && srcRGB == lastBlendSrc && dstRGB == lastBlendDst && srcAlpha == lastBlendSrcAlpha && dstAlpha == lastBlendDstAlpha){
+            return;
+        }
+
+        Core.gl.glBlendFuncSeparate(lastBlendSrc = srcRGB, lastBlendDst = dstRGB, lastBlendSrcAlpha = srcAlpha, lastBlendDstAlpha = dstAlpha);
     }
 
     public static void bufferData(int target, int size, Buffer data, int usage){

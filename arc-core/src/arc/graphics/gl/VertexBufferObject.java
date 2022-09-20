@@ -18,7 +18,6 @@ import java.nio.*;
 public class VertexBufferObject implements VertexData{
     boolean dirty = false;
     boolean bound = false;
-    private int allocated;
     private Mesh mesh;
     private FloatBuffer buffer;
     private ByteBuffer byteBuffer;
@@ -34,7 +33,7 @@ public class VertexBufferObject implements VertexData{
     public VertexBufferObject(boolean isStatic, int numVertices, Mesh mesh){
         this.mesh = mesh;
         bufferHandle = Gl.genBuffer();
-        usage = isStatic ? Gl.staticDraw : Gl.streamDraw;
+        usage = isStatic ? Gl.staticDraw : Gl.dynamicDraw;
 
         ByteBuffer data = Buffers.newUnsafeByteBuffer(mesh.vertexSize * numVertices);
         data.limit(0);
@@ -78,12 +77,7 @@ public class VertexBufferObject implements VertexData{
     }
 
     private void upload(){
-        if(byteBuffer.limit() > allocated || allocated == 0){
-            Gl.bufferData(Gl.arrayBuffer, byteBuffer.limit(), byteBuffer, usage);
-            allocated = byteBuffer.limit();
-        }else{
-            Gl.bufferSubData(Gl.arrayBuffer, 0, byteBuffer.limit(), byteBuffer);
-        }
+        Gl.bufferData(Gl.arrayBuffer, byteBuffer.limit(), byteBuffer, usage);
     }
 
     private void bufferChanged(){

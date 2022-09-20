@@ -62,7 +62,7 @@ public class AssetManager implements Disposable{
             setLoader(Shader.class, new ShaderProgramLoader(resolver));
             setLoader(Cubemap.class, new CubemapLoader(resolver));
         }
-        executor = Threads.executor(1);
+        executor = Threads.executor("Assets", 1);
     }
 
     /**

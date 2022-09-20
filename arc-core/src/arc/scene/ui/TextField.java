@@ -432,7 +432,7 @@ public class TextField extends Element implements Disableable{
         }else
             displayText = newDisplayText;
 
-        layout.setText(font, displayText);
+        layout.setText(font, displayText.toString().replace('\n', ' ').replace('\r', ' '));
         glyphPositions.clear();
         float x = 0;
         if(layout.runs.size > 0){
@@ -443,8 +443,9 @@ public class TextField extends Element implements Disableable{
                 glyphPositions.add(x);
                 x += xAdvances.get(i);
             }
-        }else
+        }else{
             fontOffset = 0;
+        }
         glyphPositions.add(x);
 
         visibleTextStart = Math.min(visibleTextStart, glyphPositions.size);
@@ -898,6 +899,7 @@ public class TextField extends Element implements Disableable{
     public class TextFieldClickListener extends ClickListener{
         @Override
         public void clicked(InputEvent event, float x, float y){
+            if(imeData != null) return;
             int count = getTapCount() % 4;
             if(count == 0) clearSelection();
             if(count == 2){
@@ -911,7 +913,7 @@ public class TextField extends Element implements Disableable{
         public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
             if(!super.touchDown(event, x, y, pointer, button)) return false;
             if(pointer == 0 && button != KeyCode.mouseLeft) return false;
-            if(disabled) return true;
+            if(disabled || imeData != null) return true;
             setCursorPosition(x, y);
             selectionStart = cursor;
             Scene stage = getScene();
@@ -952,6 +954,7 @@ public class TextField extends Element implements Disableable{
         @Override
         public boolean keyDown(InputEvent event, KeyCode keycode){
             if(disabled) return false;
+            if(imeData != null) return true;
 
             lastBlink = 0;
             cursorOn = false;
@@ -1062,6 +1065,7 @@ public class TextField extends Element implements Disableable{
         @Override
         public boolean keyUp(InputEvent event, KeyCode keycode){
             if(disabled) return false;
+            if(imeData != null) return true;
             keyRepeatTask.cancel();
             return true;
         }
@@ -1076,10 +1080,12 @@ public class TextField extends Element implements Disableable{
 
             // Disallow "typing" most ASCII control characters, which would show up as a space when onlyFontChars is true.
             switch(character){
+                case DELETE:
                 case BACKSPACE:
                 case TAB:
                 case '\r':
                 case '\n':
+                    if(imeData != null) return true;
                     break;
                 default:
                     if(character < 32) return false;

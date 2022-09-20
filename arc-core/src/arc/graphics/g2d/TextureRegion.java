@@ -135,7 +135,12 @@ public class TextureRegion{
     public void set(TextureRegion region){
         texture = region.texture;
         scale = region.scale;
-        set(region.u, region.v, region.u2, region.v2);
+        u = region.u;
+        v = region.v;
+        u2 = region.u2;
+        v2 = region.v2;
+        width = region.width;
+        height = region.height;
     }
 
     /** Sets the texture to that of the specified region and sets the coordinates relative to the specified region. */
@@ -296,6 +301,10 @@ public class TextureRegion{
         }
 
         return tiles;
+    }
+
+    public float scl(){
+        return scale * Draw.scl;
     }
 
     @Override

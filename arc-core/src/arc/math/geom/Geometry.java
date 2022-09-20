@@ -357,7 +357,6 @@ public final class Geometry{
                     tmp1.y = ny < 0 ? 1 : -1;
                     penetration = yoverlap;
                 }
-
             }
         }
 
