@@ -25,8 +25,8 @@ public class TextureAtlas implements Disposable{
     private final ObjectMap<String, Drawable> drawables = new ObjectMap<>();
     private final ObjectMap<String, AtlasRegion> regionmap = new ObjectMap<>();
     private final ObjectMap<Texture, Pixmap> pixmaps = new ObjectMap<>();
-    protected float drawableScale = 1f;
     protected AtlasRegion error, white;
+    protected float drawableScale = 1f;
 
     /** Returns a new texture atlas with only a blank texture region.*/
     public static TextureAtlas blankAtlas(){
