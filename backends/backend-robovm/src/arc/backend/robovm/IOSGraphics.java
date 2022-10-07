@@ -1,15 +1,14 @@
 package arc.backend.robovm;
 
 import arc.*;
-import arc.Graphics;
 import arc.Graphics.Cursor.*;
+import arc.backend.robovm.custom.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.gl.*;
 import arc.math.*;
-import arc.struct.Seq;
+import arc.struct.*;
 import arc.util.*;
-import arc.backend.robovm.custom.*;
 import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.glkit.*;
@@ -19,7 +18,6 @@ import org.robovm.objc.*;
 import org.robovm.objc.annotation.*;
 import org.robovm.rt.bro.annotation.*;
 
-import java.awt.*;
 import java.util.*;
 
 //lots of openGL stuff is deprecated, I don't care about it
@@ -62,8 +60,8 @@ public class IOSGraphics extends Graphics{
         this.config = config;
 
         IOSGraphicsDelegate gdel = new IOSGraphicsDelegate();
+        CGRect bounds = app.getBounds();
 
-        final CGRect bounds = app.getBounds();
         // setup view and OpenGL
         width = (int)bounds.getWidth();
         height = (int)bounds.getHeight();

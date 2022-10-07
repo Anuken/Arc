@@ -12,19 +12,14 @@ import android.view.View.*;
 import android.view.inputmethod.*;
 import android.widget.*;
 import arc.*;
-import arc.Graphics;
-import arc.Graphics.*;
-import arc.struct.*;
 import arc.input.InputDevice;
 import arc.input.*;
 import arc.math.geom.*;
-import arc.util.*;
+import arc.struct.*;
 import arc.util.Log;
 import arc.util.pooling.*;
 
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 /**
  * An implementation of the {@link Input} interface for Android.
@@ -101,7 +96,6 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
         view.setOnGenericMotionListener(this);
         view.requestFocus();
         this.config = config;
-
         Arrays.fill(realId, -1);
         handle = new Handler();
         this.app = activity;
