@@ -472,7 +472,7 @@ public class Pixmap implements Disposable{
                         int a = (int)((c1 & 0xff) * ta + (c2 & 0xff) * tb + (c3 & 0xff) * tc + (c4 & 0xff) * td) & 0xff;
                         int srccol = (r << 24) | (g << 16) | (b << 8) | a;
 
-                        setRaw(dx, dy, srccol);
+                        setRaw(dx, dy, !blending ? srccol : blend(srccol, getRaw(dx, dy)));
                     }
                 }
             }else{
@@ -493,7 +493,7 @@ public class Pixmap implements Disposable{
                         if(sx < 0 || dx < 0) continue;
                         if(sx >= owidth || dx >= width) break;
 
-                        setRaw(dx, dy, pixmap.getRaw(sx, sy));
+                        setRaw(dx, dy, !blending ? pixmap.getRaw(sx, sy) : blend(pixmap.getRaw(sx, sy), getRaw(dx, dy)));
                     }
                 }
             }
