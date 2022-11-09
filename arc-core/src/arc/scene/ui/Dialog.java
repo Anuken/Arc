@@ -289,7 +289,7 @@ public class Dialog extends Table{
         if(stage.getKeyboardFocus() == null) stage.setKeyboardFocus(this);
 
         if(style.stageBackground != null){
-            stageToLocalCoordinates(tmpPosition.set(0, 0));
+            stageToLocalCoordinates(tmpPosition.set(translation.x, translation.y));
             stageToLocalCoordinates(tmpSize.set(stage.getWidth(), stage.getHeight()));
             drawStageBackground(x + tmpPosition.x, y + tmpPosition.y, x + tmpSize.x, y + tmpSize.y);
         }
