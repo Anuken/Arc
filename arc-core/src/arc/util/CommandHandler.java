@@ -7,9 +7,10 @@ import arc.func.Cons;
 
 /** Parses command syntax. */
 public class CommandHandler{
+    public String prefix = "";
+
     private final ObjectMap<String, Command> commands = new ObjectMap<>();
     private final Seq<Command> orderedCommands = new Seq<>();
-    private String prefix;
 
     /** Creates a command handler with a specific command prefix.*/
     public CommandHandler(String prefix){
