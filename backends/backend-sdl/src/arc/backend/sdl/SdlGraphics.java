@@ -52,6 +52,11 @@ public class SdlGraphics extends Graphics{
             Core.gl = Core.gl20 = gl20 = Core.gl30 = gl30 = new SdlGL30();
         }
 
+        String errorMessage = SDLGL.init();
+        if(errorMessage != null){
+            throw new ArcRuntimeException("GLEW failed to initialize: " + errorMessage);
+        }
+
         clear(app.config.initialBackgroundColor);
         SDL_GL_SwapWindow(app.window);
     }
