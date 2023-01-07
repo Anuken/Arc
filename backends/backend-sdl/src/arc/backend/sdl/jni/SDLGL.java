@@ -97,15 +97,8 @@ public class SDLGL{
 
     */
 
-    static{
-        String errorMessage = init();
-        if(errorMessage != null){
-            throw new ArcRuntimeException("GLEW failed to initialize: " + errorMessage);
-        }
-    }
-
     @Nullable
-    private static native String init(); /*
+    public static native String init(); /*
         nativeClassInit(env);
 
         GLenum glewError = glewInit();

@@ -33,6 +33,12 @@ public class SdlGraphics extends Graphics{
 
     SdlGraphics(SdlApplication app){
         this.app = app;
+
+        String errorMessage = SDLGL.init();
+        if(errorMessage != null){
+            throw new ArcRuntimeException("GLEW failed to initialize: " + errorMessage);
+        }
+
         Core.gl = Core.gl20 = gl20 = new SdlGL20();
 
         String versionString = gl20.glGetString(GL20.GL_VERSION);
