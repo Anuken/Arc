@@ -20,16 +20,11 @@ public final class Intersector{
     private static final Vec2 ep2 = new Vec2();
     private static final Vec2 s = new Vec2();
     private static final Vec2 e = new Vec2();
-    private static final Vec3 i = new Vec3();
-    private static final Vec3 dir = new Vec3();
-    private static final Vec3 start = new Vec3();
-    static Vec3 best = new Vec3();
     static Vec3 tmp = new Vec3();
     static Vec3 tmp1 = new Vec3();
     static Vec3 tmp2 = new Vec3();
     static Vec3 tmp3 = new Vec3();
     static Vec2 v2tmp = new Vec2();
-    static Vec3 intersection = new Vec3();
 
     public static boolean intersectPolygons(float[] p1, float[] p2){
         // reusable points to trace edges around polygon
@@ -112,6 +107,17 @@ public final class Intersector{
         return (dy <= a) && (a * dx + 0.25 * dy <= 0.5 * a);
     }
 
+    /** @return whether the specified x,y is inside a regular polygon. */
+    public static boolean isInRegularPolygon(int sides, float cx, float cy, float radius, float rotation, float x, float y){
+        floatArray.clear();
+        for(int i = 0; i < sides; i++){
+            s.trns(i * 360f / sides + rotation, radius);
+            floatArray.add(cx + s.x, cy + s.y);
+        }
+
+        return isInPolygon(floatArray.items, 0, floatArray.size, x, y);
+    }
+
     /** Returns true if the given point is inside the triangle. */
     public static boolean isInTriangle(Vec2 p, Vec2 a, Vec2 b, Vec2 c){
         float px1 = p.x - a.x;
@@ -140,8 +146,7 @@ public final class Intersector{
         (linePoint2.x - linePoint1.x) * (point.y - linePoint1.y) - (linePoint2.y - linePoint1.y) * (point.x - linePoint1.x));
     }
 
-    public static int pointLineSide(float linePoint1X, float linePoint1Y, float linePoint2X, float linePoint2Y, float pointX,
-                                    float pointY){
+    public static int pointLineSide(float linePoint1X, float linePoint1Y, float linePoint2X, float linePoint2Y, float pointX, float pointY){
         return (int)Math
         .signum((linePoint2X - linePoint1X) * (pointY - linePoint1Y) - (linePoint2Y - linePoint1Y) * (pointX - linePoint1X));
     }
