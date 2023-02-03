@@ -13,6 +13,8 @@
 
 package arc.struct;
 
+import arc.util.*;
+
 import java.util.Comparator;
 
 /**
@@ -24,15 +26,14 @@ import java.util.Comparator;
  * @author Nathan Sweet
  */
 public class Sort{
-    private static Sort instance;
+    private static ThreadLocal<Sort> instance = Threads.local(Sort::new);
 
     private TimSort timSort;
     private ComparableTimSort comparableTimSort;
 
     /** Returns a Sort instance for convenience. Multiple threads must not use this instance at the same time. */
     public static Sort instance(){
-        if(instance == null) instance = new Sort();
-        return instance;
+        return instance.get();
     }
 
     public <T> void sort(Seq<T> a){
