@@ -160,7 +160,7 @@ public final class DiscordRPC{
         }
 
         public byte[] toBytes(){
-            byte[] d = data.toString().getBytes();
+            byte[] d = data.toString().getBytes(Strings.utf8);
             ByteBuffer packet = ByteBuffer.allocate(d.length + 2 * Integer.BYTES);
             packet.putInt(Integer.reverseBytes(op.ordinal()));
             packet.putInt(Integer.reverseBytes(d.length));
