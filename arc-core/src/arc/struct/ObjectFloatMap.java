@@ -275,6 +275,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>>{
 
     /** @param defaultValue Returned if the key was not associated with a value. */
     public float get(K key, float defaultValue){
+        if(key == null) return defaultValue;
         int hashCode = key.hashCode();
         int index = hashCode & mask;
         if(!key.equals(keyTable[index])){
