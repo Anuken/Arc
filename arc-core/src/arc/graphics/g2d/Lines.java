@@ -154,7 +154,6 @@ public class Lines{
         if(length < 4) return;
 
         float halfWidth = 0.5f * stroke;
-        boolean open = !wrap;
 
         for(int i = 2; i < length - 2; i += 2){
             A.set(points[i - 2], points[i - 1]);
@@ -170,7 +169,7 @@ public class Lines{
             q4.set(E);
 
             if(i == 2){
-                if(open){
+                if(!wrap){
                     prepareFlatEndpoint(points[2], points[3], points[0], points[1], D, E, halfWidth);
                     q1.set(E);
                     q2.set(D);
@@ -188,7 +187,7 @@ public class Lines{
             q2.set(x3, y3);
         }
 
-        if(open){
+        if(!wrap){
             //draw last link on path
             prepareFlatEndpoint(B, C, D, E, halfWidth);
             q3.set(E);
@@ -225,13 +224,13 @@ public class Lines{
         E.set(-v.y, v.x).add(endPointX, endPointY);
     }
 
-    private static float preparePointyJoin(Vec2 A, Vec2 B, Vec2 C, Vec2 D, Vec2 E, float halfLineWidth){
+    private static void preparePointyJoin(Vec2 A, Vec2 B, Vec2 C, Vec2 D, Vec2 E, float halfLineWidth){
         AB.set(B).sub(A);
         BC.set(C).sub(B);
         float angle = angleRad(AB, BC);
         if(Mathf.equal(angle, 0) || Mathf.equal(angle, Mathf.PI2)){
             prepareStraightJoin(B, D, E, halfLineWidth);
-            return angle;
+            return;
         }
         float len = (float)(halfLineWidth / Math.sin(angle));
         boolean bendsLeft = angle < 0;
@@ -241,7 +240,6 @@ public class Lines{
         Vec2 outsidePoint = bendsLeft ? E : D;
         insidePoint.set(B).sub(AB).add(BC);
         outsidePoint.set(B).add(AB).sub(BC);
-        return angle;
     }
 
     private static float angleRad(Vec2 v, Vec2 reference){
