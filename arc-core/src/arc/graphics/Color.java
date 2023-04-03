@@ -956,7 +956,7 @@ public class Color{
      *
      * @return 3 element int array with hue (0-360), saturation (0-100) and value (0-100)
      */
-    public static int[] RGBtoHSV(Color c) {
+    public static float[] RGBtoHSV(Color c) {
         return RGBtoHSV(c.r, c.g, c.b);
     }
 
@@ -968,7 +968,7 @@ public class Color{
      * @param b blue 0-1
      * @return 3 element int array with hue (0-360), saturation (0-100) and value (0-100)
      */
-    public static int[] RGBtoHSV(float r, float g, float b) {
+    public static float[] RGBtoHSV(float r, float g, float b) {
         float h, s, v;
         float min, max, delta;
 
@@ -983,7 +983,7 @@ public class Color{
         else {
             s = 0;
             h = 0;
-            return new int[]{Mathf.round(h), Mathf.round(s), Mathf.round(v)};
+            return new float[]{h, s, v};
         }
 
         if(delta == 0)
@@ -1005,7 +1005,7 @@ public class Color{
         s *= 100;
         v *= 100;
 
-        return new int[]{Mathf.round(h), Mathf.round(s), Mathf.round(v)};
+        return new float[]{h, s, v};
     }
 
     /** @return a copy of this color */
