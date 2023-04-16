@@ -7,9 +7,11 @@ import arc.struct.*;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.*;
+import java.util.regex.*;
 
 public class Strings{
     private static StringBuilder tmp1 = new StringBuilder(), tmp2 = new StringBuilder();
+    private static Pattern filenamePattern = Pattern.compile("[^a-zA-Z0-9-_\\.]");
 
     public static final Charset utf8 = Charset.forName("UTF-8");
 
@@ -198,6 +200,11 @@ public class Strings{
             }
         }
         return count;
+    }
+
+    /** Replaces non-safe filename characters with '_' - see <a href="https://stackoverflow.com/a/34710967"></a> */
+    public static String sanitizeFilename(String str){
+        return filenamePattern.matcher(str).replaceAll("_");
     }
 
     public static String encode(String str){
