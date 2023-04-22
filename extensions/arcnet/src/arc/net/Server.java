@@ -288,10 +288,9 @@ public class Server implements EndPoint{
                                 // reply over TCP with a RegisterUDP to indicate
                                 // success.
                                 int fromConnectionID = ((RegisterUDP)object).connectionID;
-                                Connection connection = pendingConnections.get(fromConnectionID);
-
-                                if(connection != null && connection.getRemoteAddressTCP().getAddress().equals(fromAddress.getAddress())){
-                                    pendingConnections.remove(fromConnectionID);
+                                Connection connection = pendingConnections
+                                .remove(fromConnectionID);
+                                if(connection != null){
                                     if(connection.udpRemoteAddress != null) continue;
                                     connection.udpRemoteAddress = fromAddress;
                                     addConnection(connection);
