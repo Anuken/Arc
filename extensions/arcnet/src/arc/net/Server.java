@@ -2,6 +2,7 @@
 
 package arc.net;
 
+import arc.math.*;
 import arc.net.FrameworkMessage.*;
 import arc.struct.*;
 import arc.util.*;
@@ -28,7 +29,6 @@ public class Server implements EndPoint{
     private IntMap<Connection> pendingConnections = new IntMap<>();
     NetListener[] listeners = {};
     private Object listenerLock = new Object();
-    private int nextConnectionID = 1;
     private volatile boolean shutdown;
     private final Object updateLock = new Object();
     private Thread updateThread;
@@ -378,13 +378,10 @@ public class Server implements EndPoint{
         if(udp != null)
             connection.udp = udp;
         try{
-            SelectionKey selectionKey = connection.tcp.accept(selector,
-            socketChannel);
+            SelectionKey selectionKey = connection.tcp.accept(selector, socketChannel);
             selectionKey.attach(connection);
 
-            int id = nextConnectionID++;
-            if(nextConnectionID == -1)
-                nextConnectionID = 1;
+            int id = generateId();
             connection.id = id;
             connection.setConnected(true);
             connection.addListener(dispatchListener);
@@ -403,6 +400,15 @@ public class Server implements EndPoint{
         }catch(IOException ex){
             connection.close(DcReason.error);
         }
+    }
+
+    private int generateId(){
+        int[] id = {0}; //java lambda as just amazing aren't they????
+        Rand rand = new Rand(); //not really concerned about allocating an object with two longs
+        do{
+            id[0] = rand.nextInt();
+        }while(pendingConnections.containsKey(id[0]) || Structs.contains(connections, c -> c.id == id[0]));
+        return id[0];
     }
 
     /**
