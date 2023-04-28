@@ -259,7 +259,7 @@ public class Fill{
     }
 
     public static void arc(float x, float y, float radius, float fraction, float rotation, int sides){
-        int max = (int)(sides * fraction);
+        int max = Mathf.ceil(sides * fraction);
         polyBegin();
         polyPoint(x, y);
         

@@ -411,7 +411,7 @@ public class Lines{
     }
 
     public static void arc(float x, float y, float radius, float fraction, float rotation, int sides){
-        int max = (int)(sides * fraction);
+        int max = Mathf.ceil(sides * fraction);
         floats.clear();
 
         for(int i = 0; i <= max; i++){
