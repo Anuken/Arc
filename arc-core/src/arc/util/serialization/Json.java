@@ -606,6 +606,16 @@ public class Json{
                 writeObjectEnd();
                 return;
             }
+            if(value instanceof IntMap){
+                if(knownType == null) knownType = IntMap.class;
+                writeObjectStart(actualType, knownType);
+                for(IntMap.Entry entry : ((IntMap<?>)value).entries()){
+                    writer.name(String.valueOf(entry.key));
+                    writeValue(entry.value, elementType, null);
+                }
+                writeObjectEnd();
+                return;
+            }
             if(value instanceof ArrayMap){
                 if(knownType == null) knownType = ArrayMap.class;
                 writeObjectStart(actualType, knownType);
@@ -1040,6 +1050,14 @@ public class Json{
                     ObjectIntMap result = (ObjectIntMap)object;
                     for(JsonValue child = jsonData.child; child != null; child = child.next){
                         result.put(elementType != null ? readValue(elementType, null, new JsonValue(child.name)) : child.name, child.asInt());
+                    }
+
+                    return (T)result;
+                }
+                if(object instanceof IntMap){
+                    IntMap result = (IntMap)object;
+                    for(JsonValue child = jsonData.child; child != null; child = child.next){
+                        result.put(Integer.parseInt(child.name), readValue(elementType, null, child));
                     }
 
                     return (T)result;
