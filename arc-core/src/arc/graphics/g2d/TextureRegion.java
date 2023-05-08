@@ -2,8 +2,7 @@ package arc.graphics.g2d;
 
 import arc.*;
 import arc.graphics.*;
-import arc.graphics.g2d.TextureAtlas.AtlasRegion;
-import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureAtlas.*;
 
 /**
  * Defines a rectangular area of a texture. The coordinate system used has its origin in the upper left corner with the x-axis
@@ -244,6 +243,11 @@ public class TextureRegion{
             v = v2;
             v2 = temp;
         }
+    }
+
+    /** @return x/y aspect ratio */
+    public float ratio(){
+        return (float)width / height;
     }
 
     public boolean isFlipX(){
