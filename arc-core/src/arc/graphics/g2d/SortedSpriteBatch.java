@@ -14,7 +14,7 @@ import java.util.concurrent.*;
 public class SortedSpriteBatch extends SpriteBatch{
     static ForkJoinHolder commonPool;
 
-    boolean multithreaded = Core.app.getVersion() >= 21 && !Core.app.isIOS();
+    boolean multithreaded = (Core.app.getVersion() >= 21 && !Core.app.isIOS()) || Core.app.isDesktop();
     int[] contiguous = new int[2048], contiguousCopy = new int[2048];
     DrawRequest[] copy = new DrawRequest[0];
     int[] locs = new int[contiguous.length];
