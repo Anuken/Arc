@@ -51,7 +51,7 @@ public class Texture extends GLTexture{
     }
 
     /** For use in mocking only! */
-    private Texture(){
+    protected Texture(){
         super(0, 0);
     }
 
