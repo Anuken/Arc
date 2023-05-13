@@ -3,7 +3,7 @@ ext{
     libraries = [:]
 }
 
-versions.robovm = "2.3.18"
+versions.robovm = "2.3.19"
 versions.junit = "4.11"
 versions.jnigen = "28dd11fa4c33a7ae9e58897912b52ba7d53d54fe"
 
