@@ -76,7 +76,8 @@ public class OS{
         return "C:\\Windows\\TEMP";
     }
 
-    public static String exec(String... args){
+    /** Executes, returns the result output string with the err output optionally tacked on. */
+    public static String exec(boolean logErr, String... args){
         try{
             Process process = Runtime.getRuntime().exec(args);
             BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -86,14 +87,24 @@ public class OS{
                 result.append(line).append("\n");
             }
 
-            BufferedReader inerr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            while((line = inerr.readLine()) != null){
-                result.append(line).append("\n");
+            if(logErr){
+                BufferedReader inerr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                while((line = inerr.readLine()) != null){
+                    result.append(line).append("\n");
+                }
             }
+
+            //trim trailing newline
+            if(result.length() > 0 && result.charAt(result.length() - 1) == '\n') result.setLength(result.length() - 1);
             return result.toString();
         }catch(IOException e){
             throw new RuntimeException(e);
         }
+    }
+
+    /** Executes a process. Does not include the error output stream. */
+    public static String exec(String... args){
+        return exec(false, args);
     }
 
     public static boolean execSafe(String command){
