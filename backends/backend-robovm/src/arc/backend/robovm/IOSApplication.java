@@ -22,7 +22,7 @@ public class IOSApplication implements Application{
     IOSInput input;
 
     /** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
-    float displayScaleFactor;
+    float displayScaleFactor, nativeScale;
     private CGRect lastScreenBounds = null;
 
     final Seq<ApplicationListener> listeners = new Seq<>();
@@ -45,7 +45,7 @@ public class IOSApplication implements Application{
 
         Log.info("[IOSApplication] Running in " + (Bro.IS_64BIT ? "64-bit" : "32-bit") + " mode");
 
-        float scale = (float)UIScreen.getMainScreen().getNativeScale();
+        float scale = nativeScale = (float)UIScreen.getMainScreen().getNativeScale();
         if(scale >= 2.0f){
             Log.info("[IOSApplication] scale: " + scale);
             if(UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad){
@@ -115,7 +115,7 @@ public class IOSApplication implements Application{
      * @return dimensions of space we draw to, adjusted for device orientation
      */
     protected CGRect getBounds(){
-        final CGRect screenBounds = UIScreen.getMainScreen().getBounds();
+        final CGRect screenBounds = uiWindow.getBounds();
         final CGRect statusBarFrame = uiApp.getStatusBarFrame();
         final UIInterfaceOrientation statusBarOrientation = uiApp.getStatusBarOrientation();
 
@@ -149,7 +149,7 @@ public class IOSApplication implements Application{
             Log.info("[IOSApplication] Status bar is not visible");
         }
 
-        Log.info("[IOSApplication] Total computed bounds are w=" + screenWidth + " h=" + screenHeight);
+        Log.info("[IOSApplication] Total computed bounds are w=" + screenWidth + " h=" + screenHeight + " nativeScale=" + nativeScale);
 
         return lastScreenBounds = new CGRect(0.0, statusBarHeight, screenWidth, screenHeight);
     }
