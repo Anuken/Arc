@@ -137,5 +137,12 @@ public class IOSDevice{
         deviceMap.put(machineString, new IOSDevice(classifier, machineString, ppi));
     }
 
-
+    @Override
+    public String toString(){
+        return "IOSDevice{" +
+        "classifier='" + classifier + '\'' +
+        ", machineString='" + machineString + '\'' +
+        ", ppi=" + ppi +
+        '}';
+    }
 }

@@ -2,6 +2,7 @@ package arc.backend.robovm;
 
 import arc.*;
 import arc.audio.*;
+import arc.backend.robovm.custom.*;
 import arc.graphics.*;
 import arc.struct.*;
 import arc.util.*;
@@ -20,6 +21,7 @@ public class IOSApplication implements Application{
     IOSApplicationConfiguration config;
     IOSGraphics graphics;
     IOSInput input;
+    @Nullable IOSDevice device;
 
     /** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
     float displayScaleFactor, nativeScale;
@@ -75,6 +77,8 @@ public class IOSApplication implements Application{
         Core.files = new IOSFiles();
         Core.graphics = this.graphics;
         Core.input = this.input;
+
+        device = IOSDevice.getDevice(HWMachine.getMachineString());
 
         this.input.setupPeripherals();
 
@@ -149,7 +153,7 @@ public class IOSApplication implements Application{
             Log.info("[IOSApplication] Status bar is not visible");
         }
 
-        Log.info("[IOSApplication] Total computed bounds are w=" + screenWidth + " h=" + screenHeight + " nativeScale=" + nativeScale);
+        Log.info("[IOSApplication] Total computed bounds are w=" + screenWidth + " h=" + screenHeight + " nativeScale=" + nativeScale + " device=" + device);
 
         return lastScreenBounds = new CGRect(0.0, statusBarHeight, screenWidth, screenHeight);
     }
