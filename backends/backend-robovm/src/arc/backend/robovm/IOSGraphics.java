@@ -150,7 +150,11 @@ public class IOSGraphics extends Graphics{
             Log.info(tag, "Device: " + device.classifier);
         }
 
-        int ppi = device != null ? device.ppi : 163;
+        int ppi =
+            device != null ? device.ppi :
+            UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad ? 264 :
+            163;
+
         density = device != null ? device.ppi / 160f : scale;
         ppiX = ppi;
         ppiY = ppi;
