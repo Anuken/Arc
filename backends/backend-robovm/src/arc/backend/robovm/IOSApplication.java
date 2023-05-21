@@ -61,10 +61,10 @@ public class IOSApplication implements Application{
             // no retina screen: no scaling!
             if(UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad){
                 // it's an iPad!
-                displayScaleFactor = config.displayScaleLargeScreenIfNonRetina;
+                displayScaleFactor = config.displayScaleLargeScreenIfNonRetina * scale;
             }else{
                 // it's an iPod or iPhone
-                displayScaleFactor = config.displayScaleSmallScreenIfNonRetina;
+                displayScaleFactor = config.displayScaleSmallScreenIfNonRetina * scale;
             }
         }
 
