@@ -119,7 +119,7 @@ public class IOSApplication implements Application{
      * @return dimensions of space we draw to, adjusted for device orientation
      */
     protected CGRect getBounds(){
-        final CGRect screenBounds = uiWindow.getBounds();
+        final CGRect screenBounds =  UIScreen.getMainScreen().getBounds();
         final CGRect statusBarFrame = uiApp.getStatusBarFrame();
         final UIInterfaceOrientation statusBarOrientation = uiApp.getStatusBarOrientation();
 
