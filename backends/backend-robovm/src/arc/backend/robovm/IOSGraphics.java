@@ -287,7 +287,7 @@ public class IOSGraphics extends Graphics{
             insets[2] = (int)(edgeInsets.getTop() * view.getContentScaleFactor());
             insets[3] = (int)(edgeInsets.getBottom() * view.getContentScaleFactor());
 
-            Log.info("Insets: @", Arrays.toString(insets));
+            Log.info("[IOSApplication] Insets: @", Arrays.toString(insets));
         }
     }
 

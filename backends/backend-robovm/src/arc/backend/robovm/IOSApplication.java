@@ -22,6 +22,7 @@ public class IOSApplication implements Application{
     IOSGraphics graphics;
     IOSInput input;
     @Nullable IOSDevice device;
+    float displayScaleFactor;
 
     private CGRect lastScreenBounds = null;
 
@@ -45,8 +46,10 @@ public class IOSApplication implements Application{
 
         Log.info("[IOSApplication] Running in " + (Bro.IS_64BIT ? "64-bit" : "32-bit") + " mode");
 
+        displayScaleFactor = (float)UIScreen.getMainScreen().getNativeScale();
+
         this.input = createInput();
-        this.graphics = createGraphics((float)UIScreen.getMainScreen().getNativeScale());
+        this.graphics = createGraphics(displayScaleFactor);
         Core.gl = Core.gl20 = graphics.gl20;
         Core.gl30 = graphics.gl30;
         Core.audio = new Audio();
