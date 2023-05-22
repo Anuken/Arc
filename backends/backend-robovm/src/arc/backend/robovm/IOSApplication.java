@@ -23,8 +23,6 @@ public class IOSApplication implements Application{
     IOSInput input;
     @Nullable IOSDevice device;
 
-    /** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
-    float nativeScale;
     private CGRect lastScreenBounds = null;
 
     final Seq<ApplicationListener> listeners = new Seq<>();
@@ -47,10 +45,8 @@ public class IOSApplication implements Application{
 
         Log.info("[IOSApplication] Running in " + (Bro.IS_64BIT ? "64-bit" : "32-bit") + " mode");
 
-        nativeScale = (float)UIScreen.getMainScreen().getNativeScale();
-
         this.input = createInput();
-        this.graphics = createGraphics(nativeScale);
+        this.graphics = createGraphics((float)UIScreen.getMainScreen().getNativeScale());
         Core.gl = Core.gl20 = graphics.gl20;
         Core.gl30 = graphics.gl30;
         Core.audio = new Audio();
@@ -102,39 +98,14 @@ public class IOSApplication implements Application{
     protected CGRect getBounds(){
         final CGRect screenBounds =  UIScreen.getMainScreen().getBounds();
         final CGRect statusBarFrame = uiApp.getStatusBarFrame();
-        final UIInterfaceOrientation statusBarOrientation = uiApp.getStatusBarOrientation();
 
-        nativeScale = (float)UIScreen.getMainScreen().getNativeScale();
-
+        double nativeScale = UIScreen.getMainScreen().getNativeScale();
         double statusBarHeight = Math.min(statusBarFrame.getWidth(), statusBarFrame.getHeight()) * nativeScale;
 
         double screenWidth = screenBounds.getWidth() * nativeScale;
-        double screenHeight = screenBounds.getHeight() * nativeScale;
+        double screenHeight = screenBounds.getHeight() * nativeScale - statusBarHeight;
 
-        Log.info("[IOSApplication] raw bounds=" + screenWidth + "x" + screenHeight);
-
-        // Make sure that the orientation is consistent with ratios. Should be, but may not be on older iOS versions
-        switch(statusBarOrientation){
-            case LandscapeLeft:
-            case LandscapeRight:
-                if(screenHeight > screenWidth){
-                    Log.info("[IOSApplication] Switching reported width and height (w=" + screenWidth + " h=" + screenHeight + ")");
-                    double tmp = screenHeight;
-                    // noinspection SuspiciousNameCombination
-                    screenHeight = screenWidth;
-                    screenWidth = tmp;
-                }
-        }
-
-        if(statusBarHeight != 0.0){
-            Log.info("[IOSApplication] Status bar is visible (height = " + statusBarHeight + ")");
-            screenHeight -= statusBarHeight;
-        }else{
-            Log.info("[IOSApplication] Status bar is not visible");
-        }
-
-        Log.info("[IOSApplication] displayScaleFactor=" + nativeScale);
-        Log.info("[IOSApplication] Total computed bounds are w=" + screenWidth + " h=" + screenHeight + " nativeScale=" + nativeScale + " device=" + device);
+        Log.info("[IOSApplication] Total computed bounds are w=" + screenWidth + " h=" + screenHeight + " nativeScale=" + nativeScale + " device=" + device + " statusBarHeight=" + statusBarHeight + " rawWidth=" + screenBounds.getWidth() + " rawHeight=" + screenBounds.getHeight());
 
         return lastScreenBounds = new CGRect(0.0, statusBarHeight, screenWidth, screenHeight);
     }
