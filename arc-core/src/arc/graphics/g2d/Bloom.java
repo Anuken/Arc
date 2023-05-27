@@ -6,10 +6,10 @@ import arc.graphics.Pixmap.*;
 import arc.graphics.gl.*;
 
 /**
+ * Requires bloom shaders in 'bloomshaders' folder.
  * @author kalle_h
  * @author Anuke
- * Requires bloom shaders in 'bloomshaders' folder.
- * */
+ */
 public class Bloom{
     public int blurPasses = 1;
     public boolean blending = false;
@@ -28,8 +28,8 @@ public class Bloom{
 
         setSize(pingPong1.getWidth(), pingPong1.getHeight());
         setThreshold(threshold);
-        setBloomIntesity(bloomIntensity);
-        setOriginalIntesity(originalIntensity);
+        setBloomIntensity(bloomIntensity);
+        setOriginalIntensity(originalIntensity);
     }
 
     /** Creates a bloom instance with no blending, no depth and 1/4 the screen size. */
@@ -42,12 +42,9 @@ public class Bloom{
     }
 
     /**
-     * Initialize bloom class that capsulate original scene capturate,
-     * thresholding, gaussian blurring and blending.
-     *
-     * @param hasDepth do rendering need depth buffer
-     * @param useBlending does fbo need alpha channel and is blending enabled when final image is rendered.
-     * This allows combining background graphics and only doing blooming on certain objects.
+     * Initializes bloom class that encapsulates original scene capturate, thresholding, gaussian blurring and blending.
+     * @param hasDepth Enables depth buffer.
+     * @param useBlending Enables alpha blending, allowing combining background graphics and only doing blooming on certain objects.
      */
     public Bloom(int width, int height, boolean hasDepth, boolean useBlending){
         init(width, height, hasDepth, useBlending);
@@ -85,15 +82,15 @@ public class Bloom{
         blurShader = createShader("blurspace", alpha + "gaussian");
 
         setSize(width, height);
-        setBloomIntesity(2.5f);
-        setOriginalIntesity(1f);
+        setBloomIntensity(2.5f);
+        setOriginalIntensity(1f);
         setThreshold(0.5f);
 
         bloomShader.bind();
         bloomShader.setUniformi("u_texture1", 1);
     }
 
-    /** Set clearing color for capturing buffer */
+    /** Set clearing color for capturing buffer. */
     public void setClearColor(float r, float g, float b, float a){
         this.r = r;
         this.g = g;
@@ -111,7 +108,7 @@ public class Bloom{
         }
     }
 
-    /** Pause capturing to fbo. */
+    /** Pause capturing to the buffer. */
     public void capturePause(){
         if(capturing){
             capturing = false;
@@ -119,7 +116,7 @@ public class Bloom{
         }
     }
 
-    /** Start capturing again after pause, no clearing is done to framebuffer */
+    /** Start capturing again after pause, no clearing is done to the buffer. */
     public void captureContinue(){
         if(!capturing){
             capturing = true;
@@ -146,7 +143,6 @@ public class Bloom{
 
         //blur
         for(int i = 0; i < blurPasses; i++){
-
             // horizontal
             pingPong2.begin();
             blurShader.bind();
@@ -171,36 +167,40 @@ public class Bloom{
         buffer.blit(bloomShader);
     }
 
-    /**
-     * set intensity for bloom. higher mean more brightening for spots that are
-     * over threshold
-     *
-     * @param intensity multiplier for blurred texture in combining phase. must be
-     * positive.
-     */
+    // these typos bother me that much, yes.
+    @Deprecated
     public void setBloomIntesity(float intensity){
+        setBloomIntensity(intensity);
+    }
+
+    @Deprecated
+    public void setOriginalIntesity(float intensity){
+        setOriginalIntensity(intensity);
+    }
+
+    /**
+     * Set intensity for bloom. Higher means more brightening for spots that are over threshold.
+     * @param intensity Multiplier for blurred texture in combining phase. Must be positive.
+     */
+    public void setBloomIntensity(float intensity){
         bloomIntensity = intensity;
         bloomShader.bind();
         bloomShader.setUniformf("BloomIntensity", intensity);
     }
 
     /**
-     * set intensity for original scene. under 1 mean darkening and over 1 means
-     * lightening
-     *
-     * @param intensity multiplier for captured texture in combining phase. must be
-     * positive.
+     * Set intensity for original scene. Under 1 means darkening and over 1 means lightening.
+     * @param intensity Multiplier for captured texture in combining phase. Must be positive.
      */
-    public void setOriginalIntesity(float intensity){
+    public void setOriginalIntensity(float intensity){
         originalIntensity = intensity;
         bloomShader.bind();
         bloomShader.setUniformf("OriginalIntensity", intensity);
     }
 
     /**
-     * threshold for bright parts. everything under threshold is clamped to 0
-     *
-     * @param threshold must be in range 0..1
+     * Threshold for bright parts. Everything under threshold is set to 0.
+     * @param threshold Must be in range [0..1].
      */
     public void setThreshold(float threshold){
         this.threshold = threshold;
@@ -213,6 +213,11 @@ public class Bloom{
         blurShader.setUniformf("size", width, height);
     }
 
+    /** @return The unprocessed frame buffer this bloom captures. Advanced uses only. */
+    public FrameBuffer buffer(){
+        return buffer;
+    }
+
     /** Disposes all resources. */
     public void dispose(){
         try{
@@ -223,13 +228,10 @@ public class Bloom{
             blurShader.dispose();
             bloomShader.dispose();
             thresholdShader.dispose();
-        }catch(Throwable ignored){
-
-        }
+        }catch(Throwable ignored){}
     }
 
     private static Shader createShader(String vertexName, String fragmentName){
         return new Shader(Core.files.internal("bloomshaders/" + vertexName + ".vert"), Core.files.internal("bloomshaders/" + fragmentName + ".frag"));
     }
-
 }
