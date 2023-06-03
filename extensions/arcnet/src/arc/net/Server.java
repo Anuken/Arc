@@ -1,5 +1,3 @@
-
-
 package arc.net;
 
 import arc.math.*;
@@ -36,6 +34,7 @@ public class Server implements EndPoint{
     protected InetAddress multicastGroup;
     protected DiscoveryReceiver discoveryReceiver;
     protected ServerDiscoveryHandler discoveryHandler;
+    private ServerConnectFilter connectFilter;
 
     private NetListener dispatchListener = new NetListener(){
         public void connected(Connection connection){
@@ -113,6 +112,10 @@ public class Server implements EndPoint{
 
     public void setDiscoveryHandler(ServerDiscoveryHandler newDiscoveryHandler){
         discoveryHandler = newDiscoveryHandler;
+    }
+
+    public void setConnectFilter(ServerConnectFilter connectFilter){
+        this.connectFilter = connectFilter;
     }
 
     /**
@@ -370,6 +373,15 @@ public class Server implements EndPoint{
     }
 
     private void acceptOperation(SocketChannel socketChannel){
+        if(connectFilter != null){
+            try{
+                if(!connectFilter.accept(((InetSocketAddress)socketChannel.getRemoteAddress()).getAddress().getHostAddress())){
+                    socketChannel.close();
+                    return;
+                }
+            }catch(IOException ignored){}
+        }
+
         Connection connection = newConnection();
         connection.initialize(serializer,
         writeBufferSize, objectBufferSize);
@@ -640,4 +652,7 @@ public class Server implements EndPoint{
         }
     }
 
+    public interface ServerConnectFilter{
+        boolean accept(String address);
+    }
 }
