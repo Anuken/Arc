@@ -214,7 +214,7 @@ public class IOSInput extends Input{
     @Override
     public void getTextInput(TextInput input){
         if(input.multiline){
-            CGRect rect = new CGRect(0, 0, 300, 250);
+            CGRect rect = new CGRect(0, 0, app.getUIViewController().getView().getBounds().getWidth() * 0.8f, 250);
             UIViewController controller = new UIViewController();
             controller.setPreferredContentSize(rect.getSize());
 
