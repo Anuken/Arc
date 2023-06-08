@@ -228,7 +228,7 @@ public class IOSInput extends Input{
             }
 
             UIAlertController alert = new UIAlertController(input.title, null);
-            alert.getView().addSubview(text);
+            alert.getKeyValueCoder().setValue("contentViewController", controller);
             alert.addAction(new UIAlertAction("Ok", UIAlertActionStyle.Default, action -> Core.app.post(() -> input.accepted.get(text.getText()))));
             alert.addAction(new UIAlertAction("Cancel", UIAlertActionStyle.Destructive, action -> Core.app.post(input.canceled)));
 
