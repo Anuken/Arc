@@ -213,7 +213,65 @@ public class IOSInput extends Input{
 
     @Override
     public void getTextInput(TextInput input){
-        buildUIAlertView(input).show();
+        if(input.multiline){
+            CGRect rect = new CGRect(0, 0, 300, 250);
+            UIViewController controller = new UIViewController();
+            controller.setPreferredContentSize(rect.getSize());
+
+            UITextView text = new UITextView(rect);
+            text.setText(input.text);
+            controller.getView().addSubview(text);
+            controller.getView().setUserInteractionEnabled(true);
+            controller.getView().bringSubviewToFront(text);
+            if(input.numeric){
+                text.setKeyboardType(UIKeyboardType.NumberPad);
+            }
+
+            UIAlertController alert = new UIAlertController(input.title, null);
+            alert.addChildViewController(controller);
+            alert.addAction(new UIAlertAction("Ok", UIAlertActionStyle.Default, action -> Core.app.post(() -> input.accepted.get(text.getText()))));
+            alert.addAction(new UIAlertAction("Cancel", UIAlertActionStyle.Destructive, action -> Core.app.post(input.canceled)));
+
+            app.getUIViewController().presentViewController(alert, true, () -> {});
+        }else{
+            delegate = new UIAlertViewDelegateAdapter(){
+                @Override
+                public void clicked(UIAlertView view, long clicked){
+                    if(clicked == 0){
+                        // user clicked "Cancel" button
+                        input.canceled.run();
+                    }else if(clicked == 1){
+                        // user clicked "Ok" button
+                        UITextField textField = view.getTextField(0);
+                        input.accepted.get(textField.getText());
+                    }
+                    delegate = null;
+                }
+
+                @Override
+                public void cancel(UIAlertView view){
+                    input.canceled.run();
+                    delegate = null;
+                }
+            };
+
+            // build the view
+            UIAlertView uiAlertView = new UIAlertView();
+            uiAlertView.setTitle(input.title);
+            uiAlertView.addButton("Cancel");
+            uiAlertView.addButton("Ok");
+            uiAlertView.setAlertViewStyle(UIAlertViewStyle.PlainTextInput);
+            uiAlertView.setDelegate(delegate);
+
+            //TODO no max length support
+            UITextField textField = uiAlertView.getTextField(0);
+            textField.setText(input.text);
+            if(input.numeric){
+                textField.setKeyboardType(UIKeyboardType.NumberPad);
+            }
+
+            uiAlertView.show();
+        }
     }
 
     @Override
@@ -253,51 +311,6 @@ public class IOSInput extends Input{
         // Text field needs to have at least one symbol - so we can use backspace
         textfield.setText("x");
         app.getUIViewController().getView().addSubview(textfield);
-    }
-
-    /**
-     * Builds an {@link UIAlertView} with an added {@link UITextField} for inputting text.
-
-     * @return UiAlertView
-     */
-    private UIAlertView buildUIAlertView(TextInput input){
-        delegate = new UIAlertViewDelegateAdapter(){
-            @Override
-            public void clicked(UIAlertView view, long clicked){
-                if(clicked == 0){
-                    // user clicked "Cancel" button
-                    input.canceled.run();
-                }else if(clicked == 1){
-                    // user clicked "Ok" button
-                    UITextField textField = view.getTextField(0);
-                    input.accepted.get(textField.getText());
-                }
-                delegate = null;
-            }
-
-            @Override
-            public void cancel(UIAlertView view){
-                input.canceled.run();
-                delegate = null;
-            }
-        };
-
-        // build the view
-        final UIAlertView uiAlertView = new UIAlertView();
-        uiAlertView.setTitle(input.title);
-        uiAlertView.addButton("Cancel");
-        uiAlertView.addButton("Ok");
-        uiAlertView.setAlertViewStyle(UIAlertViewStyle.PlainTextInput);
-        uiAlertView.setDelegate(delegate);
-
-        //TODO no max length support
-        UITextField textField = uiAlertView.getTextField(0);
-        textField.setText(input.text);
-        if(input.numeric){
-            textField.setKeyboardType(UIKeyboardType.NumberPad);
-        }
-
-        return uiAlertView;
     }
 
     @Override
