@@ -1,5 +1,7 @@
 package arc.util;
 
+import java.io.*;
+
 import arc.struct.*;
 
 /** Note that these color codes will only work on linux or mac terminals. */
@@ -36,7 +38,7 @@ public class ColorCodes{
     public static final String[] codes, values;
 
     static{
-        byte exitCode = 0;
+        int exitCode = 0;
         
         if(OS.isWindows){
             /* Enable VT100, ANSI escapes codes, for windows consoles
@@ -68,7 +70,7 @@ public class ColorCodes{
                 }else{
                     // Key exist, so check if value is at 0x1 or more
                     BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                    bool goodValue = false;
+                    boolean goodValue = false;
 
                     for(String line : in.lines().toList()){
                         if(line.contains("VirtualTerminalLevel")){
@@ -87,7 +89,7 @@ public class ColorCodes{
                     }
                 }
 
-            }catch(java.io.IOException | InterruptedException e){} // Error while running commands, don't enable colors
+            }catch(IOException | InterruptedException e){} // Error while running commands, don't enable colors
         }
         
         if(OS.isAndroid || (OS.isWindows && exitCode != 2)){
