@@ -1,9 +1,9 @@
 package arc.util;
 
 
-import arc.struct.Seq;
 import arc.func.*;
-import arc.math.Mathf;
+import arc.math.*;
+import arc.struct.*;
 
 import java.util.*;
 
@@ -34,6 +34,11 @@ public class Structs{
     public static <T> T random(T... array){
         if(array.length == 0) return null;
         return array[Mathf.random(array.length - 1)];
+    }
+
+    public static <T> T random(Rand rand, T... array){
+        if(array.length == 0) return null;
+        return array[rand.random(array.length - 1)];
     }
 
     public static <T> int count(T[] array, Boolf<T> value){
