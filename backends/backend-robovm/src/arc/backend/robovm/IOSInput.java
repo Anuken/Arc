@@ -213,7 +213,8 @@ public class IOSInput extends Input{
 
     @Override
     public void getTextInput(TextInput input){
-        if(input.multiline){
+        if(input.multiline && false){
+            //TODO: Crashes, apparently. https://github.com/Anuken/Mindustry/issues/8745
             CGRect rect = new CGRect(0, 0, app.getUIViewController().getView().getBounds().getWidth(), 250);
             UIViewController controller = new UIViewController();
             controller.setPreferredContentSize(rect.getSize());
