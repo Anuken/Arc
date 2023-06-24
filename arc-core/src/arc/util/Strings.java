@@ -11,7 +11,9 @@ import java.util.regex.*;
 
 public class Strings{
     private static StringBuilder tmp1 = new StringBuilder(), tmp2 = new StringBuilder();
-    private static Pattern filenamePattern = Pattern.compile("[^a-zA-Z0-9-_\\.]");
+    private static Pattern
+        filenamePattern = Pattern.compile("[\0/\"<>|:*?\\\\]"),
+        reservedFilenamePattern = Pattern.compile("(CON|AUX|PRN|NUL|(COM[0-9])|(LPT[0-9]))((\\..*$)|$)", Pattern.CASE_INSENSITIVE);
 
     public static final Charset utf8 = Charset.forName("UTF-8");
 
@@ -202,8 +204,12 @@ public class Strings{
         return count;
     }
 
-    /** Replaces non-safe filename characters with '_' - see <a href="https://stackoverflow.com/a/34710967"></a> */
+    /** Replaces non-safe filename characters with '_'. Handles reserved window file names. */
     public static String sanitizeFilename(String str){
+        //turn things like con.msch -> acon.msch, which is no longer reserved
+        if(reservedFilenamePattern.matcher(str).matches()){
+            return "a" + str;
+        }
         return filenamePattern.matcher(str).replaceAll("_");
     }
 
