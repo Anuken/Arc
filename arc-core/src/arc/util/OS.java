@@ -80,7 +80,7 @@ public class OS{
     public static String exec(boolean logErr, String... args){
         try{
             Process process = Runtime.getRuntime().exec(args);
-            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream(), Strings.utf8));
             StringBuilder result = new StringBuilder();
             String line;
             while((line = in.readLine()) != null){
@@ -88,7 +88,7 @@ public class OS{
             }
 
             if(logErr){
-                BufferedReader inerr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                BufferedReader inerr = new BufferedReader(new InputStreamReader(process.getErrorStream(), Strings.utf8));
                 while((line = inerr.readLine()) != null){
                     result.append(line).append("\n");
                 }
@@ -109,7 +109,7 @@ public class OS{
 
     public static boolean execSafe(String command){
         try{
-            BufferedReader in = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(command).getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(command).getInputStream(), Strings.utf8));
             String line;
             while((line = in.readLine()) != null){
                 System.out.println(line);
@@ -122,7 +122,7 @@ public class OS{
 
     public static boolean execSafe(String... command){
         try{
-            BufferedReader in = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(command).getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(command).getInputStream(), Strings.utf8));
             String line;
             while((line = in.readLine()) != null){
                 System.out.println(line);
