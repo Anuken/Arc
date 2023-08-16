@@ -146,8 +146,10 @@ public class SortedSpriteBatch extends SpriteBatch{
             float preColor = colorPacked, preMixColor = mixColorPacked;
             Blending preBlending = blending;
 
-            for(int j = 0; j < numRequests; j++){
-                final DrawRequest req = requests[j];
+            DrawRequest[] r = requests;
+            int num = numRequests;
+            for(int j = 0; j < num; j++){
+                final DrawRequest req = r[j];
 
                 colorPacked = req.color;
                 mixColorPacked = req.mixColor;

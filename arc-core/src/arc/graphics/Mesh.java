@@ -72,7 +72,7 @@ public class Mesh implements Disposable{
             indices = new IndexArray(maxIndices);
         }else if(Core.gl30 != null){
             vertices = new VertexBufferObjectWithVAO(isStatic, maxVertices, this);
-            indices = new IndexBufferObjectSubData(isStatic, maxIndices);
+            indices = new IndexBufferObject(isStatic, maxIndices);
         }else{
             vertices = new VertexBufferObject(isStatic, maxVertices, this);
             indices = new IndexBufferObject(isStatic, maxIndices);
