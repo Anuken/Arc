@@ -58,9 +58,9 @@ public class CommandHandler {
             } else {
                 splitResponse = CommandParamSplitter.split(message, spaceIndex + 1, 0, command.params);
             }
-            if (splitResponse.tooMany) {
+            if (splitResponse.many) {
                 return new CommandResponse(ResponseType.manyArguments, command, commandstr);
-            } else if (splitResponse.tooFew) {
+            } else if (splitResponse.few) {
                 return new CommandResponse(ResponseType.fewArguments, command, commandstr);
             }
 

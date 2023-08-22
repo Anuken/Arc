@@ -52,24 +52,24 @@ public class CommandParamSplitter {
     }
 
     public static class SplitResponse {
-        public boolean tooMany;
-        public boolean tooFew;
+        public boolean many;
+        public boolean few;
         public String[] args;
 
         public SplitResponse tooMany() {
             reset();
-            this.tooMany = true;
+            this.many = true;
             return this;
         }
 
         private void reset() {
-            tooFew = tooMany = false;
+            few = many = false;
             args = null;
         }
 
         public SplitResponse tooFew() {
             reset();
-            this.tooFew = true;
+            this.few = true;
             return this;
         }
 
