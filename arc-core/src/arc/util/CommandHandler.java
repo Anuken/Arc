@@ -56,7 +56,7 @@ public class CommandHandler {
             if (spaceIndex == -1) {
                 splitResponse = CommandParamSplitter.split("", 0, 0, command.params);
             } else {
-                splitResponse = CommandParamSplitter.split(message, spaceIndex + 1, 0, command.params);
+                splitResponse = CommandParamSplitter.split(message, spaceIndex + 1, message.length(), command.params);
             }
             if (splitResponse.many) {
                 return new CommandResponse(ResponseType.manyArguments, command, commandstr);
