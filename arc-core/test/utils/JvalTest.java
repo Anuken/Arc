@@ -18,6 +18,21 @@ public class JvalTest{
     }
 
     @Test
+    public void parseUnquotedComma(){
+        //unlike the official spec, this JVal implementation discards commas in unquoted strings
+        Jval val = Jval.read("[\n" +
+        "O, T,\n" +
+        "]");
+
+        assertEquals("O", val.asArray().get(0).asString());
+        assertEquals("T", val.asArray().get(1).asString());
+
+        Jval comma = Jval.read("it: it,");
+
+        assertEquals("it", comma.getString("it"));
+    }
+
+    @Test
     public void parseUnquotedString(){
         Jval val = Jval.read("name: Molten Silver\n" +
         "description: Imagine silver, but not solid at all.\n" +
