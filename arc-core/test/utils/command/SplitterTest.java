@@ -19,6 +19,12 @@ public class SplitterTest {
 
         //noinspection ParameterOrder,VariadicParamPosition
         Assert.assertTrue(CommandParamSplitter.split("1 2 3 4", CommandParamParser.parse("<a> <b> <c>")).many);
+
+        Assert.assertTrue(
+                CommandParamSplitter.split("", CommandParamParser.parse("<1>")).few
+        );
+
+
         Assert.assertArrayEquals(
                 array("1", "2"),
                 CommandParamSplitter.split("1 2", params).args
@@ -34,6 +40,10 @@ public class SplitterTest {
         Assert.assertArrayEquals(
                 array("1", "2 3", "4", "5"),
                 CommandParamSplitter.split("1 2 3 4 5", params).args
+        );
+        Assert.assertArrayEquals(
+                array(),
+                CommandParamSplitter.split("", CommandParamParser.parse("")).args
         );
     }
 }
