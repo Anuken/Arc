@@ -4,7 +4,7 @@ import arc.struct.*;
 
 public class CommandParamSplitter{
     private static final SplitResponse response = new SplitResponse();
-    private static final String[] EMPTY_ARRAY = {};
+    private static final String[] emptyStringArray = {};
     private static IntSeq tmpSeq = new IntSeq();
 
     public static SplitResponse split(String text, CommandParams pattern){
@@ -13,7 +13,7 @@ public class CommandParamSplitter{
 
     public static SplitResponse split(String text, int startIndex, int endIndex, CommandParams pattern){
         if(endIndex - startIndex == 0){
-            return pattern.requiredAmount == 0 ? response.args(EMPTY_ARRAY) : response.few();
+            return pattern.requiredAmount == 0 ? response.args(emptyStringArray) : response.few();
         }
         int spaces = 0;
         tmpSeq.clear();

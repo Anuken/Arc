@@ -5,9 +5,9 @@ import arc.util.*;
 import arc.util.pooling.*;
 
 public class CommandParamParser{
-    private static final byte SEARCH_PARAM = 0;
-    private static final byte PARSING_REQUIRED = 1;
-    private static final byte PARSING_OPTIONAL = 2;
+    private static final byte searchParam = 0;
+    private static final byte parsingRequired = 1;
+    private static final byte parsingOptional = 2;
     private static final Seq<TextRegion> tmpRegions = new Seq<>();
     private static final Pool<TextRegion> textRegionPool = new Pool<TextRegion>(){
         @Override
@@ -18,28 +18,28 @@ public class CommandParamParser{
     };
 
     public static CommandParams parse(String text) throws CommandParamParseException{
-        byte state = SEARCH_PARAM;
+        byte state = searchParam;
         int begin = -1;
         clear();
         for(int i = 0; i < text.length(); i++){
             char c = text.charAt(i);
             switch(state){
-                case SEARCH_PARAM:
+                case searchParam:
                     if(c != ' ' && c != '<' && c != '[')
                         throwException("Unexpected char '" + c + "'", i, text);
                     if(c == '<' || c == '['){
-                        state = c == '<' ? PARSING_REQUIRED : PARSING_OPTIONAL;
+                        state = c == '<' ? parsingRequired : parsingOptional;
                         begin = i;
                     }
                     break;
 
-                case PARSING_REQUIRED:
+                case parsingRequired:
                     if(c == '>'){
                         state = completeParam(text, begin, i + 1);
                     }
                     break;
 
-                case PARSING_OPTIONAL:
+                case parsingOptional:
                     if(c == ']'){
                         state = completeParam(text, begin, i + 1);
                     }
@@ -90,7 +90,7 @@ public class CommandParamParser{
             );
         }
         tmpRegions.add(textRegion(begin, end));
-        return SEARCH_PARAM;
+        return searchParam;
     }
 
     private static TextRegion textRegion(int begin, int end){
