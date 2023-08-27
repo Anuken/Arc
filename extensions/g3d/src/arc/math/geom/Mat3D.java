@@ -72,7 +72,7 @@ public class Mat3D{
     /** WW: Typically the value one. On Vec3 multiplication this value is ignored. */
     public static final int M33 = 15;
 
-    private static final float[] tmp = new float[16];
+    private static final float[] tmp = new float[16], tmp2 = new float[16];
     public final float[] val = new float[16];
 
     /** Constructs an identity matrix */
@@ -1425,24 +1425,24 @@ public class Mat3D{
      * @return This matrix for the purpose of chaining methods together.
      */
     public Mat3D translate(float x, float y, float z){
-        tmp[M00] = 1;
-        tmp[M01] = 0;
-        tmp[M02] = 0;
-        tmp[M03] = x;
-        tmp[M10] = 0;
-        tmp[M11] = 1;
-        tmp[M12] = 0;
-        tmp[M13] = y;
-        tmp[M20] = 0;
-        tmp[M21] = 0;
-        tmp[M22] = 1;
-        tmp[M23] = z;
-        tmp[M30] = 0;
-        tmp[M31] = 0;
-        tmp[M32] = 0;
-        tmp[M33] = 1;
+        tmp2[M00] = 1;
+        tmp2[M01] = 0;
+        tmp2[M02] = 0;
+        tmp2[M03] = x;
+        tmp2[M10] = 0;
+        tmp2[M11] = 1;
+        tmp2[M12] = 0;
+        tmp2[M13] = y;
+        tmp2[M20] = 0;
+        tmp2[M21] = 0;
+        tmp2[M22] = 1;
+        tmp2[M23] = z;
+        tmp2[M30] = 0;
+        tmp2[M31] = 0;
+        tmp2[M32] = 0;
+        tmp2[M33] = 1;
 
-        mul(val, tmp);
+        mul(val, tmp2);
         return this;
     }
 
@@ -1508,8 +1508,8 @@ public class Mat3D{
      * @return This matrix for the purpose of chaining methods together.
      */
     public Mat3D rotate(Quat rotation){
-        rotation.toMatrix(tmp);
-        mul(val, tmp);
+        rotation.toMatrix(tmp2);
+        mul(val, tmp2);
         return this;
     }
 
@@ -1536,24 +1536,24 @@ public class Mat3D{
      * @return This matrix for the purpose of chaining methods together.
      */
     public Mat3D scale(float scaleX, float scaleY, float scaleZ){
-        tmp[M00] = scaleX;
-        tmp[M01] = 0;
-        tmp[M02] = 0;
-        tmp[M03] = 0;
-        tmp[M10] = 0;
-        tmp[M11] = scaleY;
-        tmp[M12] = 0;
-        tmp[M13] = 0;
-        tmp[M20] = 0;
-        tmp[M21] = 0;
-        tmp[M22] = scaleZ;
-        tmp[M23] = 0;
-        tmp[M30] = 0;
-        tmp[M31] = 0;
-        tmp[M32] = 0;
-        tmp[M33] = 1;
+        tmp2[M00] = scaleX;
+        tmp2[M01] = 0;
+        tmp2[M02] = 0;
+        tmp2[M03] = 0;
+        tmp2[M10] = 0;
+        tmp2[M11] = scaleY;
+        tmp2[M12] = 0;
+        tmp2[M13] = 0;
+        tmp2[M20] = 0;
+        tmp2[M21] = 0;
+        tmp2[M22] = scaleZ;
+        tmp2[M23] = 0;
+        tmp2[M30] = 0;
+        tmp2[M31] = 0;
+        tmp2[M32] = 0;
+        tmp2[M33] = 1;
 
-        mul(val, tmp);
+        mul(val, tmp2);
         return this;
     }
 
