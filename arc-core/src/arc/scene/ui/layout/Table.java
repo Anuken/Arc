@@ -496,7 +496,7 @@ public class Table extends WidgetGroup{
         return add(field);
     }
 
-    public Cell rect(DrawRect draw){
+    public Cell<?> rect(DrawRect draw){
         return add(new Element(){
             @Override
             public void draw(){
