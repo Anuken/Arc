@@ -198,49 +198,24 @@ public class Pixmap implements Disposable{
     }
 
     /** Draws a line between the given coordinates using the provided RGBA color. */
-    public void drawLine(int x, int y, int x2, int y2, int color){
-        int dy = y - y2;
-        int dx = x - x2;
-        int fraction, stepx, stepy;
+    public void drawLine(int x1, int y1, int x2, int y2, int color){
+        int x = x1, dx = Math.abs(x2 - x), sx = x < x2 ? 1 : -1;
+        int y = y1, dy = Math.abs(y2 - y), sy = y < y2 ? 1 : -1;
+        int e2, err = dx - dy;
 
-        if(dy < 0){
-            dy = -dy;
-            stepy = -1;
-        }else{
-            stepy = 1;
-        }
-        if(dx < 0){
-            dx = -dx;
-            stepx = -1;
-        }else{
-            stepx = 1;
-        }
-        dy <<= 1;
-        dx <<= 1;
+        while(true){
+            set(x, y, color);
+            if(x == x2 && y == y2) return;
 
-        set(x, y, color);
-
-        if(dx > dy){
-            fraction = dy - (dx >> 1);
-            while(x != x2){
-                if(fraction >= 0){
-                    y += stepy;
-                    fraction -= dx;
-                }
-                x += stepx;
-                fraction += dy;
-                set(x, y, color);
+            e2 = 2 * err;
+            if(e2 > -dy){
+                err = err - dy;
+                x = x + sx;
             }
-        }else{
-            fraction = dx - (dy >> 1);
-            while(y != y2){
-                if(fraction >= 0){
-                    x += stepx;
-                    fraction -= dy;
-                }
-                y += stepy;
-                fraction += dx;
-                set(x, y, color);
+
+            if(e2 < dx){
+                err = err + dx;
+                y = y + sy;
             }
         }
     }
