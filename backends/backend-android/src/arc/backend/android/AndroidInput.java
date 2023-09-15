@@ -136,7 +136,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     public void getTextInput(TextInput info){
         handle.post(() -> {
             AlertDialog.Builder alert = new AlertDialog.Builder(context);
-            alert.setMessage(info.message);
+            if(!info.message.isEmpty()) alert.setMessage(info.message);
             //alert.setTitle(info.title);
             final EditText input = new EditText(context);
             input.setImeOptions(EditorInfo.IME_FLAG_NO_FULLSCREEN);
