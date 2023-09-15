@@ -386,6 +386,7 @@ public abstract class Input{
         public boolean allowEmpty = true;
         public String title = "";
         public String text = "";
+        public String message = "";
         public boolean numeric;
         public Cons<String> accepted = s -> { };
         public Runnable canceled = () -> { };
