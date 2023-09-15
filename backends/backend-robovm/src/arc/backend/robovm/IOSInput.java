@@ -229,6 +229,7 @@ public class IOSInput extends Input{
             }
 
             UIAlertController alert = new UIAlertController(input.title, null);
+            if(!input.message.isEmpty()) alert.setMessage(input.message);
             alert.getKeyValueCoder().setValue("contentViewController", controller);
             alert.addAction(new UIAlertAction("Ok", UIAlertActionStyle.Default, action -> Core.app.post(() -> input.accepted.get(text.getText()))));
             alert.addAction(new UIAlertAction("Cancel", UIAlertActionStyle.Destructive, action -> Core.app.post(input.canceled)));
@@ -259,6 +260,7 @@ public class IOSInput extends Input{
             // build the view
             UIAlertView uiAlertView = new UIAlertView();
             uiAlertView.setTitle(input.title);
+            if(!input.message.isEmpty()) uiAlertView.setMessage(input.message);
             uiAlertView.addButton("Cancel");
             uiAlertView.addButton("Ok");
             uiAlertView.setAlertViewStyle(UIAlertViewStyle.PlainTextInput);
