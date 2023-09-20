@@ -547,6 +547,14 @@ public class Json{
                 writeObjectEnd();
                 return;
             }
+            if(value instanceof IntSeq){
+                writeArrayStart();
+                IntSeq array = (IntSeq)value;
+                for(int i = 0, n = array.size; i < n; i++)
+                    writeValue(array.get(i), Integer.class, null);
+                writeArrayEnd();
+                return;
+            }
             if(value instanceof arc.struct.Queue){
                 if(knownType != null && actualType != knownType && actualType != arc.struct.Queue.class)
                     throw new SerializationException("Serialization of a Queue other than the known type is not supported.\n"
@@ -1074,6 +1082,12 @@ public class Json{
                         result.add(child.asInt());
                     return (T)result;
                 }
+                if(object instanceof IntSeq){
+                    IntSeq result = (IntSeq)object;
+                    for(JsonValue child = jsonData.child; child != null; child = child.next)
+                        result.add(child.asInt());
+                    return (T)result;
+                }
                 if(object instanceof ArrayMap){
                     ArrayMap result = (ArrayMap)object;
                     for(JsonValue child = jsonData.child; child != null; child = child.next)
@@ -1116,6 +1130,12 @@ public class Json{
                 Seq result = type == Seq.class ? new Seq() : (Seq)newInstance(type);
                 for(JsonValue child = jsonData.child; child != null; child = child.next)
                     result.add(readValue(elementType, null, child));
+                return (T)result;
+            }
+            if(IntSeq.class.isAssignableFrom(type)){
+                IntSeq result = type == IntSeq.class ? new IntSeq() : (IntSeq)newInstance(type);
+                for(JsonValue child = jsonData.child; child != null; child = child.next)
+                    result.add(child.asInt());
                 return (T)result;
             }
             if(ObjectSet.class.isAssignableFrom(type)){
