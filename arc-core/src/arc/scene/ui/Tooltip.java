@@ -75,6 +75,10 @@ public class Tooltip extends InputListener{
 
     @Override
     public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
+        if(allowMobile && Core.app.isMobile()){
+            show(event.listenerActor, x, y);
+        }
+
         if(instant){
             container.toFront();
             return true;
@@ -121,6 +125,7 @@ public class Tooltip extends InputListener{
 
     @Override
     public void enter(InputEvent event, float x, float y, int pointer, Element fromActor){
+        if(Core.app.isMobile()) return;
         if((pointer != -1 || Core.input.isTouched()) && !allowMobile) return;
         Element element = event.listenerActor;
         if(fromActor != null && fromActor.isDescendantOf(element)) return;
@@ -220,6 +225,12 @@ public class Tooltip extends InputListener{
 
         public Tooltip create(String text){
             return textProvider.get(text);
+        }
+
+        public Tooltip create(String text, boolean mobile){
+            Tooltip result = textProvider.get(text);
+            result.allowMobile = mobile;
+            return result;
         }
 
         public void touchDown(Tooltip tooltip){
