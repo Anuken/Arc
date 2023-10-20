@@ -126,7 +126,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
         }
 
         if(!stillValid){
-            Gl.bindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
+            Gl.bindBuffer(Gl.arrayBuffer, bufferHandle);
             unbindAttributes(shader);
             this.cachedLocations.clear();
 
@@ -164,7 +164,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
 
     private void bindData(){
         if(isDirty){
-            Core.gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
+            Gl.bindBuffer(Gl.arrayBuffer, bufferHandle);
             byteBuffer.limit(buffer.limit() * 4);
             upload();
             isDirty = false;
@@ -182,8 +182,8 @@ public class VertexBufferObjectWithVAO implements VertexData{
      */
     @Override
     public void dispose(){
-        Core.gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
-        Core.gl.glDeleteBuffer(bufferHandle);
+        Gl.bindBuffer(Gl.arrayBuffer, 0);
+        Gl.deleteBuffer(bufferHandle);
         bufferHandle = 0;
         Buffers.disposeUnsafeByteBuffer(byteBuffer);
         deleteVAO();
