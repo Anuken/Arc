@@ -13,6 +13,7 @@ public class Audio implements Disposable{
     public float falloff = 16000f;
 
     boolean initialized;
+    float sfxVolume = 0f;
 
     /** Global bus for all sounds. */
     public AudioBus soundBus = new AudioBus();
@@ -47,6 +48,11 @@ public class Audio implements Disposable{
             musicBus = new AudioBus().init();
 
             Core.app.addListener(new ApplicationListener(){
+
+                @Override
+                public void update(){
+                    sfxVolume = Core.settings.getInt("sfxvol") / 100f;
+                }
 
                 @Override
                 public void pause(){
