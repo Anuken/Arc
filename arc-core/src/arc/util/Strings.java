@@ -1,7 +1,6 @@
 package arc.util;
 
 import arc.graphics.*;
-import arc.math.*;
 import arc.struct.*;
 
 import java.io.*;
@@ -529,7 +528,7 @@ public class Strings{
             if(whole == Long.MIN_VALUE) return defaultValue;
             long power = parseLong(value, 10, e + 1, end, Long.MIN_VALUE);
             if(power == Long.MIN_VALUE) return defaultValue;
-            return whole * Mathf.pow(10, power) * sign;
+            return whole * Math.pow(10, power) * sign;
         }
 
         //parse as standard integer
