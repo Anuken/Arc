@@ -77,11 +77,27 @@ task preJni{
     }
 }
 
+task fixScripts{
+    doFirst{
+        if(System.getProperty("os.name").equals("FreeBSD")) {
+            def f = file("$rootDir/extensions/freetype/jni/build-linux64.xml");
+            if(f.exists()){
+                f.text = f.text
+                    .replace("linux", "freebsd")
+                    .replace('-Ijni-headers/${jniPlatform}', "-Ijni-headers/linux")
+                    .replace("gcc", "cc")
+                    .replace("g++", "c++")
+                    .replace("-Wl,-wrap,memcpy", "")
+            }
+        }
+    }
+}
+
 //copies files into the right locations
 task postJni{
     doLast{
         copy{
-            from "libs/linux64", "libs/windows32", "libs/windows64", "libs/macosx64"
+            from "libs/windows32", "libs/windows64", "libs/macosx64", "libs/freebsd64"
             into "../../natives/natives-freetype-desktop/libs"
             include "**"
         }
@@ -107,4 +123,5 @@ jnigenBuild.finalizedBy postJni
 
 getTasksByName("jnigen", true).each{
     it.dependsOn preJni
+    it.finalizedBy fixScripts
 }
