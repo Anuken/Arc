@@ -79,14 +79,14 @@ public class Sound extends AudioSource{
     }
 
     public float calcVolume(float x, float y){
-        return calcFalloff(x, y) * Core.settings.getInt("sfxvol") / 100f;
+        return calcFalloff(x, y) * Core.audio.sfxVolume;
     }
 
     public float calcFalloff(float x, float y){
         if(Core.app.isHeadless()) return 1f;
 
-        float dst = Mathf.dst(x, y, Core.camera.position.x, Core.camera.position.y);
-        return Mathf.clamp(1f / (dst * dst / Core.audio.falloff));
+        float dst2 = Mathf.dst2(x, y, Core.camera.position.x, Core.camera.position.y);
+        return Mathf.clamp(1f / (dst2 / Core.audio.falloff));
     }
 
     /**
@@ -131,7 +131,7 @@ public class Sound extends AudioSource{
      * @return the id of the sound instance if successful, or -1 on failure.
      */
     public int play(){
-        return play(1f * Core.settings.getInt("sfxvol") / 100f);
+        return play(Core.audio.sfxVolume);
     }
 
     /**

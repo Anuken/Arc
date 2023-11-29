@@ -118,6 +118,10 @@ public class Server implements EndPoint{
         this.connectFilter = connectFilter;
     }
 
+    public ServerConnectFilter getConnectFilter(){
+        return connectFilter;
+    }
+
     /**
      * Opens a TCP only server.
      * @throws IOException if the server could not be opened.

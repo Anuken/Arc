@@ -139,7 +139,11 @@ public class Cell<T extends Element> implements Poolable{
     }
 
     public Cell<T> tooltip(String text){
-        element.addListener(Tooltips.getInstance().create(text));
+        return tooltip(text, false);
+    }
+
+    public Cell<T> tooltip(String text, boolean mobile){
+        element.addListener(Tooltips.getInstance().create(text, mobile));
         return this;
     }
 

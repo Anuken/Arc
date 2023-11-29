@@ -266,20 +266,34 @@ public class Lines{
     }
     
     public static void ellipse(float x, float y, float rad, float width, float height, float rot){
+        ellipse(circleVertices(rad), x, y, width * rad, height * rad, rot);
+
+        beginLine();
         float sides = circleVertices(rad);
-        float space = 360 / sides;
+        float space = 360f / sides;
         for(int i = 0; i < sides; i++){
             float a = space * i;
             u.trns(rot,
                 rad * width * Mathf.cosDeg(a),
                 rad * height * Mathf.sinDeg(a)
             );
-            v.trns(rot,
-                rad * width * Mathf.cosDeg(a + space),
-                rad * height * Mathf.sinDeg(a + space)
-            );
-            line(x + u.x, y + u.y, x + v.x, y + v.y);
+            linePoint(x + u.x, y + u.y);
         }
+        endLine(true);
+    }
+
+    public static void ellipse(int sides, float x, float y, float width, float height, float rot){
+        beginLine();
+        float space = 360f / sides;
+        for(int i = 0; i < sides; i++){
+            float a = space * i;
+            u.trns(rot,
+            width * Mathf.cosDeg(a),
+            height * Mathf.sinDeg(a)
+            );
+            linePoint(x + u.x, y + u.y);
+        }
+        endLine(true);
     }
 
     public static void dashCircle(float x, float y, float radius){

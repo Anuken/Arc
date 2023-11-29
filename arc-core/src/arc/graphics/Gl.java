@@ -322,7 +322,7 @@ public class Gl{
 
     //STATE - optimizes GL calls
 
-    private static IntBuffer ibuf = Buffers.newIntBuffer(1), ibuf2 = Buffers.newIntBuffer(2);
+    private static IntBuffer ibuf = Buffers.newIntBuffer(1);
     //last active texture unit
     private static int lastActiveTexture = -1;
     //last bound texture2ds, mapping from texture unit to texture handle

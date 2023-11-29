@@ -53,6 +53,10 @@ public class UBJsonReader implements BaseJsonReader{
         }
     }
 
+    public JsonValue parseWihoutClosing(final DataInputStream din) throws IOException{
+        return parse(din, din.readByte());
+    }
+
     protected JsonValue parse(final DataInputStream din, final byte type) throws IOException{
         if(type == '[')
             return parseArray(din);

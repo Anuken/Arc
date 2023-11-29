@@ -118,6 +118,7 @@ public class GifRecorder{
                             try{
                                 exportDirectory.mkdirs();
 
+                                //pix_fmt yuv420p -profile:v baseline -level 3.0 -vcodec libx264 -crf 18 -
                                 //linux-only
                                 String args = Strings.format(
                                 "/usr/bin/ffmpeg -r @ -s @x@ -f rawvideo -pix_fmt rgba -i - -frames:v @ -filter:v vflip@ @/@.@",

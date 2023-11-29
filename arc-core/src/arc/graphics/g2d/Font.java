@@ -60,7 +60,7 @@ public class Font implements Disposable{
     private static final int PAGE_SIZE = 1 << LOG2_PAGE_SIZE;
     private static final int PAGES = 0x10000 / PAGE_SIZE;
 
-    final FontData data;
+    public final FontData data;
     private final FontCache cache;
     Seq<TextureRegion> regions;
     boolean integer;
