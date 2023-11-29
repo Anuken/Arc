@@ -18,7 +18,7 @@ public interface Application extends Disposable{
     /** Removes an application listener. */
     default void removeListener(ApplicationListener listener){
         synchronized(getListeners()){
-            getListeners().remove(listener);
+            getListeners().replace(listener, new ApplicationListener() {});
         }
     }
 
