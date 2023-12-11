@@ -158,6 +158,7 @@ public class SortedSpriteBatch extends SpriteBatch{
 
                 if(req.run != null){
                     req.run.run();
+                    req.run = null;
                 }else if(req.texture != null){
                     super.draw(req.texture, req.vertices, 0, req.vertices.length);
                 }else{
