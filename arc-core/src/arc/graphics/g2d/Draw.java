@@ -16,6 +16,7 @@ public class Draw{
     private static final Color[] carr = new Color[3];
     private static final float[] vertices = new float[SpriteBatch.SPRITE_SIZE];
     private static @Nullable FloatFloatf zTransformer;
+    private static float actualZ;
 
     public static float scl = 1f;
     public static float xscl = 1f, yscl = 1f;
@@ -151,12 +152,12 @@ public class Draw{
     }
 
     public static float z(){
-        return batch.sortAscending ? batch.z : -batch.z;
+        return actualZ;
     }
 
     /** Note that this does nothing on most Batch implementations. */
     public static void z(float z){
-        Core.batch.z(zTransformer == null ? z : zTransformer.get(z));
+        Core.batch.z(zTransformer == null ? actualZ = z : zTransformer.get(actualZ = z));
     }
 
     public static Color getColor(){
