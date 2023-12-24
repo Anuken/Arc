@@ -44,7 +44,13 @@ public class ColorCodes{
             = white = backDefault = backRed = backYellow = backBlue = backGreen = italic = "";
         }
 
-        ObjectMap<String, String> map = ObjectMap.of(
+        OrderedMap<String, String> map = OrderedMap.of(
+        "bd", backDefault,
+        "br", backRed,
+        "bg", backGreen,
+        "by", backYellow,
+        "bb", backBlue,
+
         "ff", flush,
         "fr", reset,
         "fb", bold,
@@ -65,16 +71,10 @@ public class ColorCodes{
         "lm", lightMagenta,
         "lb", lightBlue,
         "lc", lightCyan,
-        "w", white,
-
-        "bd", backDefault,
-        "br", backRed,
-        "bg", backGreen,
-        "by", backYellow,
-        "bb", backBlue
+        "w", white
         );
 
-        codes = map.keys().toSeq().toArray(String.class);
+        codes = map.orderedKeys().toArray(String.class);
         values = map.values().toSeq().toArray(String.class);
     }
     
