@@ -410,7 +410,12 @@ public class Draw{
     }
 
     public static void flush(){
-        Core.batch.flush();
+        batch.flush();
+    }
+
+    /** Discards any pending batched sprites. */
+    public static void discard(){
+        batch.discard();
     }
 
     public static void proj(float x, float y, float w, float h){

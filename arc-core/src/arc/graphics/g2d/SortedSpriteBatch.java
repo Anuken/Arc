@@ -139,6 +139,14 @@ public class SortedSpriteBatch extends SpriteBatch{
         super.flush();
     }
 
+    @Override
+    protected void discard(){
+        if(!flushing){
+            numRequests = 0;
+        }
+        super.discard();
+    }
+
     protected void flushRequests(){
         if(!flushing && numRequests > 0){
             flushing = true;

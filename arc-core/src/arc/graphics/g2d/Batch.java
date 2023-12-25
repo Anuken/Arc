@@ -101,6 +101,11 @@ public abstract class Batch implements Disposable{
 
     protected abstract void flush();
 
+    /** Discards any pending sprites. */
+    protected void discard(){
+        idx = 0;
+    }
+
     protected void setBlending(Blending blending){
         if(this.blending != blending){
             flush();
