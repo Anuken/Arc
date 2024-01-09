@@ -157,6 +157,48 @@ public class PixmapPacker implements Disposable{
         return pack(name, image, null, null);
     }
 
+    /** Inserts a named empty rectangle. */
+    public synchronized Rect pack(String name, int width, int height){
+        if(disposed) return null;
+
+        PixmapPackerRect prev = null;
+        Page prevPage = null;
+        if(name != null){
+            PixmapPackerRect stored = (PixmapPackerRect)getRect(name);
+            if(stored != null && (int)stored.width == width && (int)stored.height == height){
+                prev = stored;
+                prevPage = getPage(name);
+            }
+        }
+
+        PixmapPackerRect rect = new PixmapPackerRect(0, 0, width, height);
+        if(rect.width > pageWidth || rect.height > pageHeight){
+            if(name == null) throw new ArcRuntimeException("Page size too small for pixmap.");
+            throw new ArcRuntimeException("Page size too small for pixmap: " + name);
+        }
+
+        Page page;
+        if(prev != null && prevPage != null){
+            page = prevPage;
+            rect = prev;
+
+            page.dirty = true;
+            for(int y = (int)rect.y, ey = y + (int)rect.height; y < ey; y++){
+                for(int x = (int)rect.x, ex = x + (int)rect.width; x < ex; x++){
+                    page.image.setRaw(x, y, Color.clearRgba);
+                }
+            }
+        }else{
+            page = packStrategy.pack(this, name, rect);
+            if(name != null){
+                page.rects.put(name, rect);
+                page.addedRects.add(name);
+            }
+        }
+
+        return rect;
+    }
+
     public synchronized Rect pack(@Nullable String name, PixmapRegion image, int[] splits, int[] pads){
         if(disposed) return null;
 
