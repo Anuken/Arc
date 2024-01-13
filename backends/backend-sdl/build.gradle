@@ -6,6 +6,10 @@ dependencies {
     testImplementation aproj(":arc-core")
 }
 
+ext {
+    windowsVersion = [sdl: "2.0.20", glew: "2.2.0"]
+}
+
 apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 
 file("jni").mkdir()
@@ -14,14 +18,14 @@ task preJni{
     //this absolutely needs to run during configuration so jnigen can run downloaded sdl-config scripts for configuration of library flags
     try{
         if(!file("jni/glew.zip").exists()){
-            println "Fetching GLEW source..."
-            "curl -o $rootDir/backends/backend-sdl/jni/glew.zip -L https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.zip".execute().waitFor()
+            println "Fetching GLEW $windowsVersion.glew source..."
+            "curl -o $rootDir/backends/backend-sdl/jni/glew.zip -L https://github.com/nigels-com/glew/releases/download/glew-$windowsVersion.glew/glew-${windowsVersion.glew}.zip".execute().waitFor()
             "unzip -qq -d $rootDir/backends/backend-sdl/jni $rootDir/backends/backend-sdl/jni/glew.zip".execute().waitFor()
         }
 
         if(!file("jni/sdlmingw.tar.gz").exists()){
-            println "Fetching SDL-mingw builds..."
-            "curl -o $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -L https://www.libsdl.org/release/SDL2-devel-2.0.20-mingw.tar.gz".execute().waitFor()
+            println "Fetching SDL-$windowsVersion.sdl-mingw builds..."
+            "curl -o $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -L https://www.libsdl.org/release/SDL2-devel-$windowsVersion.sdl-mingw.tar.gz".execute().waitFor()
             "tar -xvzf $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -C $rootDir/backends/backend-sdl/jni".execute().waitFor()
         }
     }catch(Exception youAreProbablyOnWindowsOrDontHaveUnzip){}
@@ -72,35 +76,34 @@ jnigen{
     temporaryDir = file("build/target/native").absolutePath
     libsDir = file("libs").absolutePath
 
-    def sdlVersion = "2.0.20"
 
     all{
         cppIncludes = ["*.cpp"]
-        cIncludes = ["*.c", "glew-2.2.0/src/glew.c"]
-        headerDirs += ["glew-2.2.0/include"]
+        cIncludes = ["*.c"]
     }
     add(Linux, x64){
-        cppFlags += " " + execCmd("sdl2-config --cflags")
+        cppFlags += " " + execCmd("pkg-config --cflags glew sdl2")
         cFlags = cppFlags
-        //NOTE: for this to statically link properly, you need to add -L/path/to/folder/with/custom/libSDL2.a
-        //where this folder contains a custom build of SDL2 with the -fPIC flag (added to the makefile in the cflags section after configure)
-        //--static-libs and ?.replace("-lSDL2", "-l:libSDL2.a")
-        libraries = execCmd("sdl2-config --libs") + " -Wl,-Bdynamic -lGL "
+        libraries = execCmd("pkg-config --libs glew sdl2") + " -Wl,-Bdynamic"
         linkerFlags = "-shared -m64"
     }
     add(Windows, x64){
-        def path = "SDL2-$sdlVersion/x86_64-w64-mingw32"
+        def sdlPath = "SDL2-$windowsVersion.sdl/x86_64-w64-mingw32"
+        def glewPath = "glew-$windowsVersion.glew"
         def root = "$rootDir/backends/backend-sdl/jni"
-        headerDirs += ["$path/include/SDL2"]
-        cppFlags += " " + execCmd("sh $root/$path/bin/sdl2-config --cflags")
+        headerDirs += ["$sdlPath/include/SDL2", "$glewPath/include"]
+        cIncludes += ["$glewPath/src/glew.c"]
+        cppFlags += " " + execCmd("sh $root/$sdlPath/bin/sdl2-config --cflags")
         cFlags = cppFlags
-        libraries = execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32"
-        linkerFlags += " -L $root/$path/lib"
+        libraries = execCmd("sh $root/$sdlPath/bin/sdl2-config --static-libs") + " -lopengl32"
+        linkerFlags += " -L $root/$sdlPath/lib"
     }
     add(Windows, x32){
-        def path = "SDL2-$sdlVersion/i686-w64-mingw32"
+        def sdlPath = "SDL2-$windowsVersion.sdl/i686-w64-mingw32"
+        def glewPath = "glew-$windowsVersion.glew"
         def root = "$rootDir/backends/backend-sdl/jni"
-        headerDirs += ["$path/include/SDL2"]
+        headerDirs += ["$sdlPath/include/SDL2", "$glewPath/include"]
+        cIncludes += ["$glewPath/src/glew.c"]
         cppFlags += " " + execCmd("sh $root/$path/bin/sdl2-config --cflags")
         cFlags = cppFlags
         libraries = execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32"
