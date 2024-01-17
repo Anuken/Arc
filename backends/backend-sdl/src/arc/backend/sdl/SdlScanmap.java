@@ -50,6 +50,7 @@ public class SdlScanmap{
             case 206: return KeyCode.at;
             case 47: return KeyCode.leftBracket;
             case 48: return KeyCode.rightBracket;
+            case 100:
             case 49: return KeyCode.backslash;
             case 53: return KeyCode.backtick;
             case 4: return KeyCode.a;
