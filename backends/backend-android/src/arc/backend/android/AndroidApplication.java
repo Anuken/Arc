@@ -16,6 +16,8 @@ import arc.func.*;
 import arc.struct.*;
 import arc.util.*;
 
+import java.net.*;
+
 /**
  * An implementation of the {@link Application} interface for Android. Create an {@link Activity} that derives from this class. In
  * the {@link Activity#onCreate(Bundle)} method call the {@link #initialize(ApplicationListener)} method specifying the
@@ -164,6 +166,31 @@ public class AndroidApplication extends Activity implements Application{
         if(!hide) return;
 
         getWindow().getDecorView().setSystemUiVisibility(0x1);
+    }
+
+    @Override
+    public void getDnsServers(Seq<InetSocketAddress> out){
+        if(getVersion() < 21) return; //needs API level 21
+
+        try{
+            ConnectivityManager cm = getSystemService(ConnectivityManager.class);
+            Network network = cm.getActiveNetwork();
+            if(network == null){
+                // if the device is offline, there's no active network
+                return;
+            }
+
+            LinkProperties lp = cm.getLinkProperties(network);
+            if(lp == null){
+                // can be null for an unknown network, which may happen if networks change
+                return;
+            }
+
+            for(InetAddress address : lp.getDnsServers()){
+                out.add(new InetSocketAddress(address, 53));
+            }
+        }catch(Throwable ignored){
+        }
     }
 
     @Override

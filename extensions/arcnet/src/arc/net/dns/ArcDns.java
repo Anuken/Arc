@@ -1,5 +1,6 @@
 package arc.net.dns;
 
+import arc.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
@@ -7,7 +8,6 @@ import arc.util.io.Streams.*;
 
 import java.io.*;
 import java.net.*;
-import java.nio.charset.*;
 
 public final class ArcDns{
 
@@ -26,7 +26,7 @@ public final class ArcDns{
     }
 
     public static Seq<NameserverProvider> getNameserverProviders(){
-        return nameserverProviders.copy();
+        return nameserverProviders;
     }
 
     /** Set a new ordered list of resolver config providers. */
@@ -38,23 +38,30 @@ public final class ArcDns{
 
     /** Returns all located servers */
     public static Seq<InetSocketAddress> getNameservers(){
-        return nameservers.copy();
+        return nameservers;
     }
 
     public static void refreshNameservers(){
         nameservers.clear();
 
+        if(Core.app != null){
+            Core.app.getDnsServers(nameservers);
+        }
+
         for(NameserverProvider provider : nameserverProviders){
             if(provider.isEnabled()){
                 try{
-                    provider.initialize();
                     nameservers.addAll(provider.getNameservers());
                     // Stop when a name server is found
                     if(!nameservers.isEmpty()) return;
-                }catch(InitializationException e){
+                }catch(Exception e){
                     Log.warn("[DNS] Failed to initialize provider: @", e);
                 }
             }
+        }
+
+        for(InetSocketAddress server : nameservers){
+            Log.debug("[DNS] Added @ to nameservers", server);
         }
 
         // Add localhost as nameserver if no suitable nameserver provider found
@@ -101,7 +108,7 @@ public final class ArcDns{
                 // Domain
                 for(String part : domain.split("\\.")){
                     out.writeByte(part.length());
-                    out.write(part.getBytes(StandardCharsets.UTF_8));
+                    out.write(part.getBytes(Strings.utf8));
                 }
                 out.writeByte(0);
 

@@ -9,9 +9,6 @@ import arc.struct.*;
 import java.net.*;
 
 public interface NameserverProvider{
-    /** Initializes the servers. */
-    void initialize() throws InitializationException;
-
     /** Returns all located servers, which may be empty. */
     Seq<InetSocketAddress> getNameservers();
 

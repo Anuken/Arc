@@ -16,6 +16,17 @@ public final class SRVRecord implements Comparable<SRVRecord>{
     }
 
     @Override
+    public String toString(){
+        return "SRVRecord{" +
+        "ttl=" + ttl +
+        ", priority=" + priority +
+        ", weight=" + weight +
+        ", port=" + port +
+        ", target='" + target + '\'' +
+        '}';
+    }
+
+    @Override
     public int compareTo(SRVRecord o){
         if(this.priority != o.priority){
             return Integer.compare(this.priority, o.priority);

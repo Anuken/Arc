@@ -5,27 +5,29 @@
 package arc.net.dns;
 
 import arc.files.*;
+import arc.struct.*;
 import arc.util.*;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import static arc.net.dns.ArcDns.dnsResolverPort;
+import static arc.net.dns.ArcDns.*;
 
-public final class ResolvConfNameserverProvider extends AbstractNameserverProvider{
+public final class ResolvConfNameserverProvider implements NameserverProvider{
 
     @Override
-    public void initialize(){
-        reset();
+    public Seq<InetSocketAddress> getNameservers(){
+        Seq<InetSocketAddress> out = new Seq<>();
         // first try the default unix config path
-        if(!tryParseResolveConf("/etc/resolv.conf")){
+        if(!tryParseResolveConf("/etc/resolv.conf", out)){
             // then fallback to netware
-            tryParseResolveConf("sys:/etc/resolv.cfg");
+            tryParseResolveConf("sys:/etc/resolv.cfg", out);
         }
+        return out;
     }
 
-    private boolean tryParseResolveConf(String path){
+    private boolean tryParseResolveConf(String path, Seq<InetSocketAddress> out){
         Fi conf = new Fi(path);
 
         if(conf.exists()){
@@ -36,11 +38,11 @@ public final class ResolvConfNameserverProvider extends AbstractNameserverProvid
                     if(!tokenizer.hasMoreTokens()) continue;
 
                     if(tokenizer.nextToken().equals("nameserver")){
-                        addNameServer(new InetSocketAddress(tokenizer.nextToken(), dnsResolverPort));
+                        out.add(new InetSocketAddress(tokenizer.nextToken(), dnsResolverPort));
                     }
                 }
                 return true;
-            }catch(IOException ignored){
+            }catch(Exception ignored){
             }
         }
 

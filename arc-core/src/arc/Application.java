@@ -3,6 +3,8 @@ package arc;
 import arc.struct.*;
 import arc.util.*;
 
+import java.net.*;
+
 public interface Application extends Disposable{
 
     /** Returns a list of all the application listeners used. */
@@ -95,6 +97,8 @@ public interface Application extends Disposable{
     default boolean openURI(String URI){
         return false;
     }
+
+    default void getDnsServers(Seq<InetSocketAddress> out){}
 
     /** Posts a runnable on the main loop thread.*/
     void post(Runnable runnable);
