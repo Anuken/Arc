@@ -23,6 +23,22 @@ public final class JndiContextNameserverProvider implements NameserverProvider{
     @Override
     public Seq<InetSocketAddress> getNameservers(){
         try{
+            return new Inner().getNameservers();
+        }catch(Throwable t){
+            return new Seq<>();
+        }
+    }
+
+    @Override
+    public boolean isEnabled(){
+        return !OS.isAndroid && !OS.isIos;
+    }
+
+    //loading a class fails if it refers to unknown classes (javax.naming is not available on some platforms), so put it in a separate inner class
+    static class Inner implements NameserverProvider{
+
+        @Override
+        public Seq<InetSocketAddress> getNameservers(){
             Seq<InetSocketAddress> result = new Seq<>();
 
             Hashtable<String, String> env = new Hashtable<>();
@@ -63,13 +79,6 @@ public final class JndiContextNameserverProvider implements NameserverProvider{
             }
 
             return result;
-        }catch(Throwable t){
-            return new Seq<>();
         }
-    }
-
-    @Override
-    public boolean isEnabled(){
-        return !OS.isAndroid && !OS.isIos;
     }
 }
