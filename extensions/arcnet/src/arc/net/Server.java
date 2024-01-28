@@ -24,6 +24,7 @@ public class Server implements EndPoint{
     private ServerSocketChannel serverChannel;
     private UdpConnection udp;
     private Connection[] connections = {};
+    private ObjectMap<InetSocketAddress, Connection> udpAddressToConnection = new ObjectMap<>();
     private IntMap<Connection> pendingConnections = new IntMap<>();
     NetListener[] listeners = {};
     private Object listenerLock = new Object();
@@ -273,19 +274,13 @@ public class Server implements EndPoint{
                         if(fromAddress == null)
                             continue;
 
-                        Connection[] connections = this.connections;
-                        for(Connection connection : connections){
-                            if(fromAddress.equals(connection.udpRemoteAddress)){
-                                fromConnection = connection;
-                                break;
-                            }
-                        }
+                        fromConnection = udpAddressToConnection.get(fromAddress);
 
                         Object object;
                         try{
                             object = udp.readObject();
                         }catch(ArcNetException ex){
-                            ArcNet.handleError(new ArcNetException("Error reading UDP from connection: " + (fromConnection == null ? fromAddress : fromAddress), ex));
+                            ArcNet.handleError(new ArcNetException("Error reading UDP from connection: " + fromAddress, ex));
                             continue;
                         }
 
@@ -440,6 +435,10 @@ public class Server implements EndPoint{
         newConnections[0] = connection;
         System.arraycopy(connections, 0, newConnections, 1, connections.length);
         connections = newConnections;
+
+        if(connection.udpRemoteAddress != null){
+            udpAddressToConnection.put(connection.udpRemoteAddress, connection);
+        }
     }
 
     void removeConnection(Connection connection){
@@ -448,6 +447,9 @@ public class Server implements EndPoint{
         connections = temp.toArray(new Connection[0]);
 
         pendingConnections.remove(connection.id);
+        if(connection.udpRemoteAddress != null){
+            udpAddressToConnection.remove(connection.udpRemoteAddress);
+        }
     }
 
     // BOZO - Provide mechanism for sending to multiple clients without
