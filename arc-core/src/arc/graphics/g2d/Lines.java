@@ -72,6 +72,9 @@ public class Lines{
     }
 
     public static void line(TextureRegion region, float x, float y, Color c, float x2, float y2, Color c2, boolean cap){
+        float color1 = c.toFloatBits();
+        float color2 = c2.toFloatBits();
+
         if(useLegacyLine){
             float length = Mathf.dst(x, y, x2, y2) + (!cap ? 0 : stroke);
             float angle = (Mathf.atan2(x2 - x, y2 - y)) * Mathf.radDeg;
@@ -92,19 +95,19 @@ public class Lines{
 
                 x - diffx - diffy,
                 y - diffy + diffx,
-                c,
+                color1,
 
                 x - diffx + diffy,
                 y - diffy - diffx,
-                c,
+                color1,
 
                 x2 + diffx + diffy,
                 y2 + diffy - diffx,
-                c2,
+                color2,
 
                 x2 + diffx - diffy,
                 y2 + diffy + diffx,
-                c2
+                color2
                 );
             }else{
                 Fill.quad(
