@@ -59,11 +59,22 @@ public class Lines{
         line(x, y, x2, y2, true);
     }
 
+    public static void line(float x, float y, Color c, float x2, float y2, Color c2){
+        line(Core.atlas.white(), x, y, c, x2, y2, c2, true);
+    }
+
     public static void line(float x, float y, float x2, float y2, boolean cap){
-        line(Core.atlas.white(), x, y, x2, y2, cap);
+        line(Core.atlas.white(), x, y, Core.batch.color, x2, y2, Core.batch.color, cap);
     }
 
     public static void line(TextureRegion region, float x, float y, float x2, float y2, boolean cap){
+        line(region, x, y, Core.batch.color, x2, y2, Core.batch.color, cap);
+    }
+
+    public static void line(TextureRegion region, float x, float y, Color c, float x2, float y2, Color c2, boolean cap){
+        float color1 = c.toFloatBits();
+        float color2 = c2.toFloatBits();
+
         if(useLegacyLine){
             float length = Mathf.dst(x, y, x2, y2) + (!cap ? 0 : stroke);
             float angle = (Mathf.atan2(x2 - x, y2 - y)) * Mathf.radDeg;
@@ -84,16 +95,19 @@ public class Lines{
 
                 x - diffx - diffy,
                 y - diffy + diffx,
+                color1,
 
                 x - diffx + diffy,
                 y - diffy - diffx,
+                color1,
 
                 x2 + diffx + diffy,
                 y2 + diffy - diffx,
+                color2,
 
                 x2 + diffx - diffy,
-                y2 + diffy + diffx
-
+                y2 + diffy + diffx,
+                color2
                 );
             }else{
                 Fill.quad(
