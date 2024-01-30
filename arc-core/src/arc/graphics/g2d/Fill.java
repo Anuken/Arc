@@ -55,37 +55,53 @@ public class Fill{
     }
 
     public static void quad(TextureRegion region, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4){
-        float u = region.u, v = region.v, u2 = region.u2, v2 = region.v2, color = Core.batch.getPackedColor(), mcolor = Core.batch.getPackedMixColor();
+        Color color = Core.batch.getColor();
+        quad(region, x1, y1, color, x2, y2, color, x3, y3, color, x4, y4, color);
+    }
+
+    public static void quad(TextureRegion region, float x1, float y1, Color c1, float x2, float y2, Color c2, float x3, float y3, Color c3, float x4, float y4, Color c4){
+        quad(region.texture, x1, y1, c1, region.u, region.v,
+        x2, y2, c2, region.u, region.v2,
+        x3, y3, c3, region.u2, region.v2,
+        x4, y4, c4, region.u2, region.v);
+    }
+
+    public static void quad(Texture texture,
+                            float x1, float y1, Color c1, float u1, float v1,
+                            float x2, float y2, Color c2, float u2, float v2,
+                            float x3, float y3, Color c3, float u3, float v3,
+                            float x4, float y4, Color c4, float u4, float v4){
+        float mcolor = Core.batch.getPackedMixColor();
 
         vertices[0] = x1;
         vertices[1] = y1;
-        vertices[2] = color;
-        vertices[3] = u;
-        vertices[4] = v;
+        vertices[2] = c1.toFloatBits();
+        vertices[3] = u1;
+        vertices[4] = v1;
         vertices[5] = mcolor;
 
         vertices[6] = x2;
         vertices[7] = y2;
-        vertices[8] = color;
-        vertices[9] = u;
+        vertices[8] = c2.toFloatBits();
+        vertices[9] = u2;
         vertices[10] = v2;
         vertices[11] = mcolor;
 
         vertices[12] = x3;
         vertices[13] = y3;
-        vertices[14] = color;
-        vertices[15] = u2;
-        vertices[16] = v2;
+        vertices[14] = c3.toFloatBits();
+        vertices[15] = u3;
+        vertices[16] = v3;
         vertices[17] = mcolor;
 
         vertices[18] = x4;
         vertices[19] = y4;
-        vertices[20] = color;
-        vertices[21] = u2;
-        vertices[22] = v;
+        vertices[20] = c4.toFloatBits();
+        vertices[21] = u4;
+        vertices[22] = v4;
         vertices[23] = mcolor;
 
-        Draw.vert(region.texture, vertices, 0, vertices.length);
+        Draw.vert(texture, vertices, 0, vertices.length);
     }
 
     public static void tri(float x1, float y1, float x2, float y2, float x3, float y3){
