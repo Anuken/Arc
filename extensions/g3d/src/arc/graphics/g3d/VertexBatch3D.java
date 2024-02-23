@@ -48,7 +48,7 @@ public class VertexBatch3D{
 
         if(hasNormals){
             normalOffset = offset;
-            offset += 2;
+            offset += 3;
         }else{
             normalOffset = 0;
         }
