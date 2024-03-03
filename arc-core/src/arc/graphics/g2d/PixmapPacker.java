@@ -342,12 +342,22 @@ public class PixmapPacker implements Disposable{
     }
 
     /**
-     * Disposes any pixmap pages which don't have a texture. Page pixmaps that have a texture will not be disposed until their
-     * texture is disposed.
+     * Disposes any pixmap pages which don't have a texture. Page pixmaps that have a texture will not be disposed until their texture is disposed.
      */
+    @Override
     public synchronized void dispose(){
         for(Page page : pages){
             if(page.texture == null){
+                page.image.dispose();
+            }
+        }
+        disposed = true;
+    }
+
+    /** Disposes all images, regardless of whether they have a texture. */
+    public void forceDispose(){
+        for(Page page : pages){
+            if(page.image != null){
                 page.image.dispose();
             }
         }
@@ -364,8 +374,7 @@ public class PixmapPacker implements Disposable{
         return atlas;
     }
 
-    public synchronized void updateTextureAtlas(TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter,
-                                                boolean useMipMaps){
+    public synchronized void updateTextureAtlas(TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter, boolean useMipMaps){
         updateTextureAtlas(atlas, minFilter, magFilter, useMipMaps, true);
     }
 
@@ -375,9 +384,9 @@ public class PixmapPacker implements Disposable{
      * the rendering thread. This method must be called on the rendering thread. After calling this method, disposing the packer
      * will no longer dispose the page pixmaps.
      */
-    public synchronized void updateTextureAtlas(TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter,
-                                                boolean useMipMaps, boolean clearRects){
+    public synchronized void updateTextureAtlas(TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter, boolean useMipMaps, boolean clearRects){
         updatePageTextures(minFilter, magFilter, useMipMaps);
+
         for(Page page : pages){
             if(page.addedRects.size > 0){
                 for(String name : page.addedRects){
@@ -663,9 +672,7 @@ public class PixmapPacker implements Disposable{
                     @Override
                     public void dispose(){
                         super.dispose();
-                        if(!image.isDisposed()){
-                            image.dispose();
-                        }
+                        image.dispose();
                     }
                 };
                 texture.setFilter(minFilter, magFilter);

@@ -763,6 +763,11 @@ public class Pixmap implements Disposable{
         }
     }
 
+    @Override
+    public String toString(){
+        return "Pixmap:" + width + "x" + height;
+    }
+
     /**
      * Different pixel formats.
      * @author mzechner

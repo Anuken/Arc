@@ -251,7 +251,9 @@ public abstract class Graphics implements Disposable{
         out.dispose();
         pixmap.dispose();
 
-        return newCursor(out2, out2.width / 2, out2.height / 2);
+        Cursor cur = newCursor(out2, out2.width / 2, out2.height / 2);
+        out2.dispose();
+        return cur;
     }
 
     /**
@@ -263,7 +265,9 @@ public abstract class Graphics implements Disposable{
         Pixmap base = new Pixmap(Core.files.internal("cursors/" + filename + ".png"));
         Pixmap result = Pixmaps.scale(base, base.width * scale, base.height * scale);
         base.dispose();
-        return newCursor(result, result.width /2, result.height /2);
+        Cursor cur = newCursor(result, result.width /2, result.height /2);
+        result.dispose();
+        return cur;
     }
 
     /**
@@ -272,7 +276,9 @@ public abstract class Graphics implements Disposable{
      */
     public Cursor newCursor(String filename){
         Pixmap p = new Pixmap(Core.files.internal("cursors/" + filename + ".png"));
-        return newCursor(p, p.width /2, p.height /2);
+        Cursor result = newCursor(p, p.width /2, p.height /2);
+        p.dispose();
+        return result;
     }
 
     /**
