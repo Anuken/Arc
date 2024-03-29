@@ -78,6 +78,9 @@ public class SpriteBatch extends Batch{
             }else{
                 shader = defaultShader;
             }
+
+            //mark indices as dirty once for GL30
+            mesh.getIndicesBuffer();
         }else{
             vertices = new float[0];
             shader = null;
@@ -106,8 +109,6 @@ public class SpriteBatch extends Batch{
         lastTexture.bind();
         Mesh mesh = this.mesh;
         mesh.setVertices(vertices, 0, idx);
-        mesh.getIndicesBuffer().position(0);
-        mesh.getIndicesBuffer().limit(count);
         mesh.render(getShader(), Gl.triangles, 0, count);
 
         idx = 0;
