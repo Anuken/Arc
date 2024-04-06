@@ -162,10 +162,9 @@ public class IntQueue{
 
     /**
      * Returns the index of first occurrence of value in the queue, or -1 if no such value exists.
-     * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
      * @return An index of first occurrence of value in queue or -1 if no such value exists
      */
-    public int indexOf(int value, boolean identity){
+    public int indexOf(int value){
         if(size == 0) return -1;
         int[] values = this.values;
         final int head = this.head, tail = this.tail;
@@ -183,11 +182,10 @@ public class IntQueue{
 
     /**
      * Removes the first instance of the specified value in the queue.
-     * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
      * @return true if value was found and removed, false otherwise
      */
-    public boolean removeValue(int value, boolean identity){
-        int index = indexOf(value, identity);
+    public boolean removeValue(int value){
+        int index = indexOf(value);
         if(index == -1) return false;
         removeIndex(index);
         return true;
