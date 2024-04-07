@@ -8,7 +8,7 @@ import java.nio.*;
 
 /** Provides utility methods to copy streams. */
 public final class Streams{
-    public static final int defaultBufferSize = 4096;
+    public static final int defaultBufferSize = 8192;
     public static final byte[] emptyBytes = new byte[0];
 
     /**
