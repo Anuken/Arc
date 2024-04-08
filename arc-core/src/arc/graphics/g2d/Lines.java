@@ -354,13 +354,13 @@ public class Lines{
         polyline(floatBuilder, true);
     }
 
-    public static void poly(float x, float y, int sides, float radius, float angle){
-        float space = 360f / sides;
+    public static void poly(float x, float y, int sides, float radius, float startAngle, float endAngle){
+        float space = (endAngle - startAngle) / sides;
         float hstep = stroke / 2f / Mathf.cosDeg(space/2f);
         float r1 = radius - hstep, r2 = radius + hstep;
 
         for(int i = 0; i < sides; i++){
-            float a = space * i + angle, cos = Mathf.cosDeg(a), sin = Mathf.sinDeg(a), cos2 = Mathf.cosDeg(a + space), sin2 = Mathf.sinDeg(a + space);
+            float a = space * i + startAngle, cos = Mathf.cosDeg(a), sin = Mathf.sinDeg(a), cos2 = Mathf.cosDeg(a + space), sin2 = Mathf.sinDeg(a + space);
             Fill.quad(
             x + r1*cos, y + r1*sin,
             x + r1*cos2, y + r1*sin2,
@@ -368,6 +368,10 @@ public class Lines{
             x + r2*cos, y + r2*sin
             );
         }
+    }
+
+    public static void poly(float x, float y, int sides, float radius, float angle){
+        poly(x, y, sides, radius, angle, angle + 360);
     }
 
     public static void poly(float x, float y, int sides, float radius){
