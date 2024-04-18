@@ -277,8 +277,7 @@ public final class Geometry{
     }
 
     public static Vec2 raycastRect(float startx, float starty, float endx, float endy, Rect rect){
-        return raycastRect(startx, starty, endx, endy, rect.x + rect.width / 2, rect.y + rect.height / 2,
-        rect.width / 2f, rect.height / 2f);
+        return raycastRect(startx, starty, endx, endy, rect.x + rect.width / 2, rect.y + rect.height / 2, rect.width / 2f, rect.height / 2f);
     }
 
     public static Vec2 raycastRect(float startx, float starty, float endx, float endy, float x, float y, float halfx, float halfy){
@@ -286,17 +285,15 @@ public final class Geometry{
 
         Vec2 hit = tmp1;
 
-        float paddingX = 0f;
-        float paddingY = 0f;
 
         float scaleX = 1.0f / deltax;
         float scaleY = 1.0f / deltay;
         int signX = Mathf.sign(scaleX);
         int signY = Mathf.sign(scaleY);
-        float nearTimeX = (x - signX * (halfx + paddingX) - startx) * scaleX;
-        float nearTimeY = (y - signY * (halfy + paddingY) - starty) * scaleY;
-        float farTimeX = (x + signX * (halfx + paddingX) - startx) * scaleX;
-        float farTimeY = (y + signY * (halfy + paddingY) - starty) * scaleY;
+        float nearTimeX = (x - signX * (halfx) - startx) * scaleX;
+        float nearTimeY = (y - signY * (halfy) - starty) * scaleY;
+        float farTimeX = (x + signX * (halfx) - startx) * scaleX;
+        float farTimeY = (y + signY * (halfy) - starty) * scaleY;
 
         if(nearTimeX > farTimeY || nearTimeY > farTimeX)
             return null;

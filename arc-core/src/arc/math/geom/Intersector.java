@@ -462,6 +462,48 @@ public final class Intersector{
         return false;
     }
 
+    /** Experimental method! May be inaccurate, do not use.*/
+    public static boolean intersectSegmentRectangleFast(float startx, float starty, float endx, float endy, float rectX, float rectY, float rectW, float rectH){
+        float
+        deltax = endx - startx,
+        deltay = endy - starty,
+        x = rectX + rectW / 2,
+        y = rectY + rectH / 2,
+        halfx = rectW / 2f,
+        halfy = rectH / 2f;
+
+        float scaleX = 1.0f / deltax;
+        float scaleY = 1.0f / deltay;
+        int signX = Mathf.sign(scaleX);
+        int signY = Mathf.sign(scaleY);
+        float nearTimeX = (x - signX * (halfx) - startx) * scaleX;
+        float nearTimeY = (y - signY * (halfy) - starty) * scaleY;
+        float farTimeX = (x + signX * (halfx) - startx) * scaleX;
+        float farTimeY = (y + signY * (halfy) - starty) * scaleY;
+
+        return nearTimeX < farTimeY && nearTimeY < farTimeX && Math.max(nearTimeX, nearTimeY) < 1 && Math.min(farTimeX, farTimeY) > 0;
+    }
+
+    /**
+     * Determines whether the given rectangle and segment intersect
+     * @param startX x-coordinate start of line segment
+     * @param startY y-coordinate start of line segment
+     * @param endX y-coordinate end of line segment
+     * @param endY y-coordinate end of line segment
+     * @return whether the rectangle intersects with the line segment
+     */
+    public static boolean intersectSegmentRectangle(float startX, float startY, float endX, float endY, float rectX, float rectY, float rectW, float rectH){
+        float rectangleEndX = rectX + rectW;
+        float rectangleEndY = rectY + rectH;
+
+        return
+            intersectSegments(startX, startY, endX, endY, rectX, rectY, rectX, rectangleEndY, null) ||
+            intersectSegments(startX, startY, endX, endY, rectX, rectY, rectangleEndX, rectY, null) ||
+            intersectSegments(startX, startY, endX, endY, rectangleEndX, rectY, rectangleEndX, rectangleEndY, null) ||
+            intersectSegments(startX, startY, endX, endY, rectX, rectangleEndY, rectangleEndX, rectangleEndY, null) ||
+            Rect.contains(rectX, rectY, rectW, rectH, startX, startY);
+    }
+
     /**
      * Determines whether the given rectangle and segment intersect
      * @param startX x-coordinate start of line segment
