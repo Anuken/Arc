@@ -72,7 +72,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
     public ObjectMap(int initialCapacity, float loadFactor){
         if(initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
         initialCapacity = Mathf.nextPowerOfTwo((int)Math.ceil(initialCapacity / loadFactor));
-        if(initialCapacity > 1 << 30)
+        if(initialCapacity > 0x40000000)
             throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
         capacity = initialCapacity;
 
