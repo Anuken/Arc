@@ -654,6 +654,7 @@ public class Scene implements InputProcessor{
      */
     public boolean setKeyboardFocus(Element actor){
         if(keyboardFocus == actor) return true;
+
         FocusEvent event = Pools.obtain(FocusEvent.class, FocusEvent::new);
         event.type = (FocusEvent.Type.keyboard);
         Element oldKeyboardFocus = keyboardFocus;

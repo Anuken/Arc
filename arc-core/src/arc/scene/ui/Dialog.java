@@ -13,6 +13,7 @@ import arc.scene.event.*;
 import arc.scene.style.*;
 import arc.scene.ui.Label.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.pooling.*;
 
@@ -286,7 +287,19 @@ public class Dialog extends Table{
     @Override
     public void draw(){
         Scene stage = getScene();
-        if(stage.getKeyboardFocus() == null) stage.setKeyboardFocus(this);
+
+        if(stage.getKeyboardFocus() == null){
+            //get top dialog in the scene and focus keyboard on that
+            int highestDialog = -1;
+            Seq<Element> children = scene.root.getChildren();
+            for(int i = children.size - 1; i >= 0; i--){
+                if(children.get(i) instanceof Dialog){
+                    highestDialog = i;
+                    break;
+                }
+            }
+            stage.setKeyboardFocus(highestDialog == -1 ? this : children.get(highestDialog));
+        }
 
         if(style.stageBackground != null){
             stageToLocalCoordinates(tmpPosition.set(translation.x, translation.y));
