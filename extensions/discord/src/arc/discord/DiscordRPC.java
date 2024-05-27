@@ -175,7 +175,9 @@ public final class DiscordRPC{
     }
 
     enum PacketOp{
-        handshake, frame, close, ping, pong
+        handshake, frame, close, ping, pong;
+
+        public static final PacketOp[] all = values();
     }
 
     public static class NoDiscordClientException extends RuntimeException{
@@ -348,7 +350,7 @@ public final class DiscordRPC{
             if(status == PipeStatus.disconnected) throw new IOException("Disconnected!");
             if(status == PipeStatus.closed) return new Packet(PacketOp.close, null);
 
-            PacketOp op = PacketOp.values()[Integer.reverseBytes(buffer.getInt())];
+            PacketOp op = PacketOp.all[Integer.reverseBytes(buffer.getInt())];
             byte[] data = new byte[Integer.reverseBytes(buffer.getInt())];
             buffer.get(data);
 
@@ -392,7 +394,7 @@ public final class DiscordRPC{
             if(status == PipeStatus.disconnected) throw new IOException("Disconnected!");
             if(status == PipeStatus.closed) return new Packet(PacketOp.close, null);
 
-            PacketOp op = PacketOp.values()[Integer.reverseBytes(file.readInt())];
+            PacketOp op = PacketOp.all[Integer.reverseBytes(file.readInt())];
             int len = Integer.reverseBytes(file.readInt());
             byte[] d = new byte[len];
 
