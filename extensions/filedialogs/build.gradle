@@ -1,0 +1,63 @@
+apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
+
+file("jni").mkdir()
+
+jnigen{
+    def fdir = "../csrc"
+
+    sharedLibName = "arc-filedialogs"
+    temporaryDir = file("build/target/native").absolutePath
+    libsDir = file("libs").absolutePath
+
+    all{
+        //headerDirs += ["$fdir/"]
+        cIncludes = ["tinyfiledialogs.c"]
+    }
+    add(Windows, x32){
+        libraries = " -lcomdlg32 -lole32"
+    }
+    add(Windows, x64){
+        libraries = " -lcomdlg32 -lole32"
+    }
+    add(Linux, x64)
+    add(MacOsX, x64)
+    add(MacOsX, x64, ARM){
+        cFlags = cppFlags = cppFlags.replace("x86_64", "arm64")
+        linkerFlags = linkerFlags.replace("x86_64", "arm64")
+    }
+}
+
+task preJni{
+
+    doFirst{
+        copy{
+            from "$rootDir/arc-core/build/classes/java/main"
+            into "$rootDir/extensions/filedialogs/build/classes/java/main"
+            include "**"
+        }
+
+        copy{
+            from "csrc/"
+            into "jni/"
+            include "**"
+        }
+    }
+}
+
+//copies files into the right locations
+task postJni{
+    doLast{
+        copy{
+            from "libs/linux64", "libs/windows32", "libs/windows64", "libs/macosx64"
+            into "../../natives/natives-filedialogs/libs"
+            include "**"
+        }
+    }
+}
+
+preJni.dependsOn "compileJava"
+jnigenBuild.finalizedBy postJni
+
+getTasksByName("jnigen", true).each{
+    it.dependsOn preJni
+}

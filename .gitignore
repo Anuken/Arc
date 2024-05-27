@@ -45,6 +45,7 @@ arc-*.zip.MD5
 /backends/arc-backend-robovm/libs/
 /extensions/freetype/libs/
 /extensions/freetype/jni/
+/extensions/filedialogs/jni/
 /backends/backend-sdl/jni
 /arc-core/jni/
 /arc-core/obj/
