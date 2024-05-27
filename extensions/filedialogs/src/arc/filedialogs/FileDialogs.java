@@ -4,6 +4,7 @@ import arc.util.*;
 
 public class FileDialogs{
     /*JNI
+
 	#include <tinyfiledialogs.h>
 
 	 */
@@ -11,17 +12,6 @@ public class FileDialogs{
     public static void loadNatives() throws UnsatisfiedLinkError{
         new SharedLibraryLoader().load("arc-filedialogs");
     }
-
-    /*
-
-    char const * tinyfd_saveFileDialog (
-	char const * const aTitle , /* ""
-    char const * const aDefaultPathAndFile , /* ""
-    int const aNumOfFilterPatterns , /* 0
-    char const * const * const aFilterPatterns , /* NULL | {"*.jpg","*.png"}
-    char const * const aSingleFilterDescription ) ; /* NULL | "text files"
-    /* returns NULL on cancel
-     */
 
     public static native @Nullable String saveFileDialog(String title, String defaultPathAndFile, @Nullable String[] patterns, @Nullable String filterDescription); /*
         const char *param[20];
@@ -43,16 +33,6 @@ public class FileDialogs{
         }
 
         return env->NewStringUTF(result);
-    */
-
-    /*
-    char const * tinyfd_openFileDialog (
-	char const * const aTitle ,  ""
-    char const * const aDefaultPathAndFile ,
-    int const aNumOfFilterPatterns ,  0
-    char const * const * const aFilterPatterns ,  NULL {"*.jpg","*.png"}
-    char const * const aSingleFilterDescription ,  NULL | "image files"
-    int const aAllowMultipleSelects )
     */
 
     public static native @Nullable String openFileDialog(String title, String defaultPathAndFile, @Nullable String[] patterns, @Nullable String filterDescription, boolean allowMultipleSelects); /*
