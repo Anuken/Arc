@@ -4,6 +4,7 @@ import arc.*;
 import arc.files.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.util.*;
 
 import static arc.audio.Soloud.*;
 
@@ -28,7 +29,7 @@ import static arc.audio.Soloud.*;
  */
 public class Sound extends AudioSource{
     public AudioBus bus = Core.audio == null ? null : Core.audio.soundBus;
-    public Fi file;
+    public @Nullable Fi file;
 
     long framePlayed;
 
