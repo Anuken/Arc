@@ -46,6 +46,7 @@ arc-*.zip.MD5
 /extensions/freetype/libs/
 /extensions/freetype/jni/
 /extensions/filedialogs/jni/
+/extensions/filedialogs/libs/
 /backends/backend-sdl/jni
 /arc-core/jni/
 /arc-core/obj/
