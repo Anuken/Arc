@@ -28,9 +28,9 @@ import static arc.audio.Soloud.*;
  */
 public class Sound extends AudioSource{
     public AudioBus bus = Core.audio == null ? null : Core.audio.soundBus;
+    public Fi file;
 
     long framePlayed;
-    Fi file;
 
     /** Creates an empty sound. This sound cannot be played until it is loaded. */
     public Sound(){
