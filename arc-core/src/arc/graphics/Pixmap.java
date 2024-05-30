@@ -401,7 +401,7 @@ public class Pixmap implements Disposable{
                 startX = Math.max(dstx, 0),
                 endX = Math.min(dstx + Math.min(dstWidth, owidth), width),
                 offsetY = dsty - srcy,
-                scanX = Math.max(srcx, -dstx),
+                scanX = Math.max(Math.max(srcx, -dstx), 0),
                 scanWidth = (endX - startX) * 4;
 
                 while(startY < endY){
