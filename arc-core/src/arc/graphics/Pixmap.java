@@ -98,16 +98,16 @@ public class Pixmap implements Disposable{
 
     /** Iterates through every position in this Pixmap. */
     public void each(Intc2 cons){
-        for(int x = 0; x < width; x++){
-            for(int y = 0; y < height; y++){
+        for(int y = 0; y < height; y++){
+            for(int x = 0; x < width; x++){
                 cons.get(x, y);
             }
         }
     }
 
     public void replace(IntIntf func){
-        for(int x = 0; x < width; x++){
-            for(int y = 0; y < height; y++){
+        for(int y = 0; y < height; y++){
+            for(int x = 0; x < width; x++){
                 setRaw(x, y, func.get(getRaw(x, y)));
             }
         }
@@ -143,8 +143,8 @@ public class Pixmap implements Disposable{
         Pixmap copy = new Pixmap(width, height);
 
         //TODO this can be optimized significantly by putting each line
-        for(int x = 0; x < width; x++){
-            for(int y = 0; y < height; y++){
+        for(int y = 0; y < height; y++){
+            for(int x = 0; x < width; x++){
                 copy.setRaw(x, height - 1 - y, getRaw(x, y));
             }
         }
@@ -156,8 +156,8 @@ public class Pixmap implements Disposable{
     public Pixmap flipX(){
         Pixmap copy = new Pixmap(width, height);
 
-        for(int x = 0; x < width; x++){
-            for(int y = 0; y < height; y++){
+        for(int y = 0; y < height; y++){
+            for(int x = 0; x < width; x++){
                 copy.set(width - 1 - x, y, getRaw(x, y));
             }
         }
@@ -175,8 +175,8 @@ public class Pixmap implements Disposable{
         Pixmap pixmap = copy();
 
         //TODO this messes with antialiasing?
-        for(int x = 0; x < width; x++){
-            for(int y = 0; y < height; y++){
+        for(int y = 0; y < height; y++){
+            for(int x = 0; x < width; x++){
                 if(getA(x, y) == 0){
                     boolean found = false;
                     outer:
@@ -353,6 +353,8 @@ public class Pixmap implements Disposable{
         draw(pixmap, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight, filtering, false);
     }
 
+    public static float totalTime = 0f;
+
     /**
      * Draws an area from another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
      * specified target rectangle. Blending is currently unsupported for stretched/scaled pixmaps.
@@ -392,17 +394,39 @@ public class Pixmap implements Disposable{
                     }
                 }
             }else{
-                //TODO this can be optimized with scanlines, potentially
-                for(; sy < srcy + srcHeight; sy++, dy++){
-                    if(sy < 0 || dy < 0) continue;
-                    if(sy >= oheight || dy >= height) break;
+                ByteBuffer pixels = this.pixels, otherPixels = pixmap.pixels;
+                int
+                startY = Math.max(dsty, 0),
+                endY = Math.min(dsty + Math.min(dstHeight, oheight), height),
+                startX = Math.max(dstx, 0),
+                endX = Math.min(dstx + Math.min(dstWidth, owidth), width),
+                offsetY = dsty - srcy,
+                scanX = Math.max(srcx, -dstx),
+                scanWidth = (endX - startX) * 4;
 
-                    for(sx = srcx, dx = dstx; sx < srcx + srcWidth; sx++, dx++){
-                        if(sx < 0 || dx < 0) continue;
-                        if(sx >= owidth || dx >= width) break;
-                        setRaw(dx, dy, pixmap.getRaw(sx, sy));
-                    }
+                while(startY < endY){
+
+                    int offset = (startY * width + startX) * 4;
+                    int otherOffset = ((startY - offsetY) * owidth + scanX) * 4;
+
+                    pixels.position(offset);
+                    otherPixels.limit(otherOffset + scanWidth);
+                    otherPixels.position(otherOffset);
+
+                    pixels.put(otherPixels);
+
+                    //ideally I would use the method below, but it's Java 16 API (how has nobody needed to do this before then?)
+                    //pixels.put(
+                    //    (startY * width + startX) * 4, otherPixels,
+                    //    ((startY - offsetY) * owidth + scanX) * 4, scanWidth
+                    //);
+
+                    startY ++;
                 }
+
+                pixels.position(0);
+                otherPixels.position(0);
+                otherPixels.limit(otherPixels.capacity());
             }
         }else{
             if(filtering){
