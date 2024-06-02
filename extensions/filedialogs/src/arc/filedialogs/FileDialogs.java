@@ -13,7 +13,7 @@ public class FileDialogs{
         new SharedLibraryLoader().load("arc-filedialogs");
     }
 
-    public static native @Nullable String saveFileDialog(String title, String defaultPathAndFile, @Nullable String[] patterns, @Nullable String filterDescription); /*
+    public static native @Nullable String saveFileDialog(String title, String defaultPathAndFile, String[] patterns, String filterDescription); /*
         const char *param[20];
         jsize stringCount = 0;
         if(patterns != NULL){
@@ -35,7 +35,7 @@ public class FileDialogs{
         return env->NewStringUTF(result);
     */
 
-    public static native @Nullable String openFileDialog(String title, String defaultPathAndFile, @Nullable String[] patterns, @Nullable String filterDescription, boolean allowMultipleSelects); /*
+    public static native @Nullable String openFileDialog(String title, String defaultPathAndFile, String[] patterns, String filterDescription, boolean allowMultipleSelects); /*
         const char *param[20];
         jsize stringCount = 0;
         if(patterns != NULL){
