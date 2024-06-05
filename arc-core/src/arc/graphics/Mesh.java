@@ -14,12 +14,6 @@ import java.nio.*;
  * </p>
  *
  * <p>
- * Meshes are automatically managed. If the OpenGL context is lost all vertex buffer objects get invalidated and must be reloaded
- * when the context is recreated. This only happens on Android when a user switches to another application or receives an incoming
- * call. A managed Mesh will be reloaded automagically so you don't have to do this manually.
- * </p>
- *
- * <p>
  * A Mesh consists of vertices and optionally indices which specify which vertices define a triangle. Each vertex is composed of
  * attributes such as position, normal, color or texture coordinate. Note that not all of this attributes must be given, except
  * for position which is non-optional. Each attribute has an alias which is used when rendering a Mesh in OpenGL ES 2.0. The alias
@@ -34,8 +28,8 @@ public class Mesh implements Disposable{
     /** Do not modify. */
     public final VertexAttribute[] attributes;
 
-    public final VertexData vertices;
-    public final IndexData indices;
+    public VertexData vertices;
+    public IndexData indices;
 
     boolean autoBind = true;
 
