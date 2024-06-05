@@ -118,7 +118,7 @@ public class SdlApplication implements Application{
         check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, config.gl30 ? config.gl30Major : 2));
         check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,  config.gl30 ? config.gl30Minor : 0));
 
-        if(config.gl30 && OS.isMac){
+        if(config.gl30 && (OS.isMac || config.coreProfile)){
             check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
         }
 

@@ -18,6 +18,7 @@ public class SdlConfig{
     public boolean fullscreen = false;
     public boolean disableAudio = false;
     public boolean gl30 = false;
+    public boolean coreProfile = false;
     public int gl30Major = 3, gl30Minor = 0;
 
     public String title = "Arc Application";
