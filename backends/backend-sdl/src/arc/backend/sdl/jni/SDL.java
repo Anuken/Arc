@@ -121,17 +121,27 @@ public class SDL{
         new SharedLibraryLoader(){
             @Override
             protected Throwable loadFile(String sourcePath, String sourceCrc, File extractedFile){
-                //skip dynamic load for me because it crashes otherwise
-                if(OS.isLinux && !OS.hasProp("SDL2_STATIC") && !OS.username.equals("anuke")){
-                    //on linux, the SDL shared library isn't statically linked, try to load it first
-                    try{
-                        String name = "libSDL2.so";
-                        File result = new File(extractedFile.getParentFile() == null ? name : (extractedFile.getParentFile() + "/" + name));
-                        extractFile(name, crc(readFile(name)), result);
-                        System.load(result.getAbsolutePath());
-                    }catch(Throwable ignored){
+                //Return early if we're not on linux
+                if(!OS.isLinux)
+                    return super.loadFile(sourcePath, sourceCrc, extractedFile);
+                
+                //We need to load SDL2, GLEW, and their dependencies
+                final String[] libs = {"SDL2", "GLEW", "EGL", "GL", "GLU", "OpenGL"};
+                for(String lib : libs) {
+                    //Try loading system version of each library first
+                    try {
+                        System.loadLibrary(lib);
+                    } catch (Throwable ignored){
+                        //If that fails, load the bundled one as a fallback
+                        try{
+                            final String name = System.mapLibraryName(lib);
+                            File result = new File(extractedFile.getParentFile() == null ? name : (extractedFile.getParentFile() + "/" + name));
+                            extractFile(name, crc(readFile(name)), result);
+                            System.load(result.getAbsolutePath());
+                        } catch (Throwable noLib){}
                     }
                 }
+                
                 return super.loadFile(sourcePath, sourceCrc, extractedFile);
             }
         }.load("sdl-arc");
