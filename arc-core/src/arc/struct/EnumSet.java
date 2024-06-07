@@ -38,4 +38,12 @@ public class EnumSet<T extends Enum<T>>{
     public boolean contains(T t){
         return (mask & (1 << t.ordinal())) != 0;
     }
+
+    public boolean containsAny(EnumSet<T> other){
+        return (mask & other.mask) != 0;
+    }
+
+    public boolean containsAll(EnumSet<T> other){
+        return (mask & other.mask) == other.mask;
+    }
 }
