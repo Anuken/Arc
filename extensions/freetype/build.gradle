@@ -10,7 +10,7 @@ jnigen{
     libsDir = file("libs").absolutePath
 
     all{
-        headerDirs += ["$fdir/include"]
+        headerDirs +=  (String[])["$fdir/include"]
         cIncludes = [
             //BASE
             "$fdir/src/base/ftsystem.c", "$fdir/src/base/ftinit.c", "$fdir/src/base/ftdebug.c",
