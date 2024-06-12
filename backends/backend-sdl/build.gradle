@@ -91,7 +91,7 @@ jnigen{
     add(Windows, x64){
         def path = "SDL2-$sdlVersion/x86_64-w64-mingw32"
         def root = "$rootDir/backends/backend-sdl/jni"
-        headerDirs += ["$path/include/SDL2"]
+        headerDirs += (String[])["$path/include/SDL2"]
         cppFlags += " " + execCmd("sh $root/$path/bin/sdl2-config --cflags")
         cFlags = cppFlags
         libraries = execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32"
