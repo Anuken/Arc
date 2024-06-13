@@ -603,11 +603,20 @@ public class Json{
                 writeObjectEnd();
                 return;
             }
-
             if(value instanceof ObjectIntMap){
                 if(knownType == null) knownType = ObjectIntMap.class;
                 writeObjectStart(actualType, knownType);
                 for(ObjectIntMap.Entry entry : ((ObjectIntMap<?>)value).entries()){
+                    writer.name(convertToString(entry.key));
+                    writer.value(entry.value);
+                }
+                writeObjectEnd();
+                return;
+            }
+            if(value instanceof ObjectFloatMap){
+                if(knownType == null) knownType = ObjectFloatMap.class;
+                writeObjectStart(actualType, knownType);
+                for(ObjectFloatMap.Entry entry : ((ObjectFloatMap<?>)value).entries()){
                     writer.name(convertToString(entry.key));
                     writer.value(entry.value);
                 }
