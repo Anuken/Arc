@@ -205,9 +205,13 @@ public class Strings{
 
     /** Replaces non-safe filename characters with '_'. Handles reserved window file names. */
     public static String sanitizeFilename(String str){
-        //turn things like con.msch -> acon.msch, which is no longer reserved
-        if(reservedFilenamePattern.matcher(str).matches()){
-            return "a" + str;
+        if(str.equals(".")){
+            return "_";
+        }else if(str.equals("..")){
+            return "__";
+        }else if(reservedFilenamePattern.matcher(str).matches()){
+            //turn things like con.msch -> _con.msch, which is no longer reserved
+            str = "_" + str;
         }
         return filenamePattern.matcher(str).replaceAll("_");
     }

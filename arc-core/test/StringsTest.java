@@ -18,6 +18,18 @@ public class StringsTest{
         .each(StringsTest::checkDouble);
     }
 
+    @Test
+    public void testSanitizeFilename(){
+        assertEquals(Strings.sanitizeFilename("test"), "test");
+        assertEquals(Strings.sanitizeFilename("test.txt"), "test.txt");
+        assertEquals(Strings.sanitizeFilename("test/test"), "test_test");
+        assertEquals(Strings.sanitizeFilename("CON"), "_CON");
+        assertEquals(Strings.sanitizeFilename("CON.a/test"), "_CON.a_test");
+        assertEquals(Strings.sanitizeFilename("."), "_");
+        assertEquals(Strings.sanitizeFilename(".."), "__");
+        assertEquals(Strings.sanitizeFilename("..txt"), "..txt");
+    }
+
     static void checkDouble(String value){
         assertEquals(Double.parseDouble(value), Strings.parseDouble(value, 999999), 0.00001);
     }

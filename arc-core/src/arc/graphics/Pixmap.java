@@ -393,7 +393,7 @@ public class Pixmap implements Disposable{
                         setRaw(dx, dy, blend(pixmap.getRaw(sx, sy), getRaw(dx, dy)));
                     }
                 }
-            }else{
+            }else if(this.pixels != pixmap.pixels){ //make sure the buffers are different to prevent a crash
                 ByteBuffer pixels = this.pixels, otherPixels = pixmap.pixels;
                 int
                 startY = Math.max(dsty, 0),
@@ -427,6 +427,17 @@ public class Pixmap implements Disposable{
                 pixels.position(0);
                 otherPixels.position(0);
                 otherPixels.limit(otherPixels.capacity());
+            }else{ //drawing a pixmap onto itself is not a good idea, but it's better than crashing
+                for(; sy < srcy + srcHeight; sy++, dy++){
+                    if(sy < 0 || dy < 0) continue;
+                    if(sy >= oheight || dy >= height) break;
+
+                    for(sx = srcx, dx = dstx; sx < srcx + srcWidth; sx++, dx++){
+                        if(sx < 0 || dx < 0) continue;
+                        if(sx >= owidth || dx >= width) break;
+                        setRaw(dx, dy, pixmap.getRaw(sx, sy));
+                    }
+                }
             }
         }else{
             if(filtering){
