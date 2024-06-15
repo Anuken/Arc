@@ -90,8 +90,8 @@ public class GifRecorder{
 
             if(open){
                 if(Core.input.keyDown(resizeKey) && !recording){
-                    float xs = Math.abs(wx + offsetx - Core.input.mouseX());
-                    float ys = Math.abs(wy + offsety - Core.input.mouseY());
+                    float xs = Mathf.round(Math.abs(wx + offsetx - Core.input.mouseX()), 2);
+                    float ys = Mathf.round(Math.abs(wy + offsety - Core.input.mouseY()), 2);
                     bounds.set(-xs, -ys, xs * 2, ys * 2);
                 }
 
