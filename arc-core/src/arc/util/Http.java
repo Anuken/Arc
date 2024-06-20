@@ -173,9 +173,6 @@ public class Http{
 
         /**The content as a stream to be used for a POST for example, to transmit custom data.*/
         public InputStream contentStream;
-        /** @deprecated Unused. */
-        @Deprecated
-        public long contentLength;
 
         /**Sets whether 301 and 302 redirects are followed. By default true. Can't be changed in the web backend because this uses
          * XmlHttpRequests which always redirect.*/
@@ -235,14 +232,6 @@ public class Http{
 
         public HttpRequest content(InputStream contentStream){
             this.contentStream = contentStream;
-            return this;
-        }
-
-        /** @deprecated The contentLength parameter does nothing. */
-        @Deprecated
-        public HttpRequest content(InputStream contentStream, long contentLength){
-            this.contentStream = contentStream;
-            this.contentLength = contentLength;
             return this;
         }
 

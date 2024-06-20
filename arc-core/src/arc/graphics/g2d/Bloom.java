@@ -167,17 +167,6 @@ public class Bloom{
         buffer.blit(bloomShader);
     }
 
-    // these typos bother me that much, yes.
-    @Deprecated
-    public void setBloomIntesity(float intensity){
-        setBloomIntensity(intensity);
-    }
-
-    @Deprecated
-    public void setOriginalIntesity(float intensity){
-        setOriginalIntensity(intensity);
-    }
-
     /**
      * Set intensity for bloom. Higher means more brightening for spots that are over threshold.
      * @param intensity Multiplier for blurred texture in combining phase. Must be positive.

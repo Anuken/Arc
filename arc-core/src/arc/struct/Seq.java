@@ -875,16 +875,6 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return removeAll(e -> !predicate.get(e));
     }
 
-    /**
-     * Removes everything that does not match this predicate.
-     * @deprecated This name is misleading, as it modifies the collection!
-     * If you want a newly allocated Seq, use select. For a direct replacement, use retainAll.
-     * */
-    @Deprecated
-    public Seq<T> filter(Boolf<T> predicate){
-        return removeAll(e -> !predicate.get(e));
-    }
-
     public int count(Boolf<T> predicate){
         int count = 0;
         for(int i = 0; i < size; i++){
