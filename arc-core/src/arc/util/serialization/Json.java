@@ -1071,6 +1071,14 @@ public class Json{
 
                     return (T)result;
                 }
+                if(object instanceof ObjectFloatMap){
+                    ObjectFloatMap result = (ObjectFloatMap)object;
+                    for(JsonValue child = jsonData.child; child != null; child = child.next){
+                        result.put(elementType != null ? readValue(elementType, null, new JsonValue(child.name)) : child.name, child.asFloat());
+                    }
+
+                    return (T)result;
+                }
                 if(object instanceof IntMap){
                     IntMap result = (IntMap)object;
                     for(JsonValue child = jsonData.child; child != null; child = child.next){
