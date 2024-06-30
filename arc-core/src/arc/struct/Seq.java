@@ -305,6 +305,17 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return result;
     }
 
+    public T min(Boolf<T> filter, Comparator<T> func){
+        T result = null;
+        for(int i = 0; i < size; i++){
+            T t = items[i];
+            if(filter.get(t) && (result == null || func.compare(result, t) > 0)){
+                result = t;
+            }
+        }
+        return result;
+    }
+
     public T min(Floatf<T> func){
         T result = null;
         float min = Float.MAX_VALUE;
