@@ -26,7 +26,7 @@ public class GifRecorder{
         shiftKey = KeyCode.shiftLeft,
         switchModeKey = KeyCode.f12,
         speedMinusKey = KeyCode.minus,
-        speedPlusKeep = KeyCode.plus;
+        speedPlusKey = KeyCode.plus;
 
     public boolean outputMp4 = true;
     public Fi exportDirectory = Core.files == null ? Fi.get("gifs") : Core.files.local("gifs");
@@ -70,7 +70,7 @@ public class GifRecorder{
 
             int change = 0;
             if(Core.input.keyTap(speedMinusKey)) change --;
-            if(Core.input.keyTap(speedPlusKeep)) change ++;
+            if(Core.input.keyTap(speedPlusKey)) change ++;
 
             if(change != 0){
                 int idx = 3;
