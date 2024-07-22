@@ -36,7 +36,6 @@ public class VertexBufferObject implements VertexData{
         usage = isStatic ? Gl.staticDraw : Gl.dynamicDraw;
 
         ByteBuffer data = Buffers.newUnsafeByteBuffer(mesh.vertexSize * numVertices);
-        data.limit(0);
         setBuffer(data, true);
     }
 
@@ -101,7 +100,7 @@ public class VertexBufferObject implements VertexData{
         dirty = true;
         final int pos = byteBuffer.position();
         byteBuffer.position(targetOffset * 4);
-        Buffers.copy(vertices, sourceOffset, count, byteBuffer);
+        Buffers.copy(vertices, sourceOffset, byteBuffer, count);
         byteBuffer.position(pos);
         buffer.position(0);
         bufferChanged();

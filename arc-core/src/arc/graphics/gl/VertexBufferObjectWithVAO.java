@@ -72,7 +72,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
     }
 
     private void upload(){
-        Gl.bufferData(Gl.arrayBuffer, byteBuffer.limit(), byteBuffer, usage);
+        Gl.bufferData(Gl.arrayBuffer, buffer.limit() * 4, byteBuffer, usage);
     }
 
     private void bufferChanged(){
@@ -94,10 +94,9 @@ public class VertexBufferObjectWithVAO implements VertexData{
     @Override
     public void update(int targetOffset, float[] vertices, int sourceOffset, int count){
         isDirty = true;
-        final int pos = byteBuffer.position();
         byteBuffer.position(targetOffset * 4);
-        Buffers.copy(vertices, sourceOffset, byteBuffer, count);
-        byteBuffer.position(pos);
+        Buffers.copy(vertices, sourceOffset, count, byteBuffer);
+        byteBuffer.position(0);
         buffer.position(0);
         bufferChanged();
     }
@@ -165,7 +164,6 @@ public class VertexBufferObjectWithVAO implements VertexData{
     private void bindData(){
         if(isDirty){
             Gl.bindBuffer(Gl.arrayBuffer, bufferHandle);
-            byteBuffer.limit(buffer.limit() * 4);
             upload();
             isDirty = false;
         }

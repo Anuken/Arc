@@ -83,7 +83,7 @@ public class VertexArray implements VertexData{
     public void update(int targetOffset, float[] vertices, int sourceOffset, int count){
         final int pos = byteBuffer.position();
         byteBuffer.position(targetOffset * 4);
-        Buffers.copy(vertices, sourceOffset, count, byteBuffer);
+        Buffers.copy(vertices, sourceOffset, byteBuffer, count);
         byteBuffer.position(pos);
     }
 
