@@ -95,6 +95,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
     public void update(int targetOffset, float[] vertices, int sourceOffset, int count){
         isDirty = true;
         byteBuffer.position(targetOffset * 4);
+        byteBuffer.limit((targetOffset + count) * 4);
         Buffers.copy(vertices, sourceOffset, count, byteBuffer);
         byteBuffer.position(0);
         buffer.position(0);
