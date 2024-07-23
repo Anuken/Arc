@@ -213,100 +213,10 @@ public class SpriteBatch extends Batch{
             drawSuper(region, x, y, originX, originY, width, height, rotation);
             return;
         }
-        float[] data = this.requestVerts;
         int pos = this.requestVertOffset;
         this.requestVertOffset += 24;
         prepare(24);
-
-        float u = region.u;
-        float v = region.v2;
-        float u2 = region.u2;
-        float v2 = region.v;
-
-        float color = this.colorPacked;
-        float mixColor = this.mixColorPacked;
-
-        if(!Mathf.zero(rotation)){
-            //bottom left and top right corner points relative to origin
-            float worldOriginX = x + originX;
-            float worldOriginY = y + originY;
-            float fx = -originX;
-            float fy = -originY;
-            float fx2 = width - originX;
-            float fy2 = height - originY;
-
-            // rotate
-            float cos = Mathf.cosDeg(rotation);
-            float sin = Mathf.sinDeg(rotation);
-
-            float x1 = cos * fx - sin * fy + worldOriginX;
-            float y1 = sin * fx + cos * fy + worldOriginY;
-            float x2 = cos * fx - sin * fy2 + worldOriginX;
-            float y2 = sin * fx + cos * fy2 + worldOriginY;
-            float x3 = cos * fx2 - sin * fy2 + worldOriginX;
-            float y3 = sin * fx2 + cos * fy2 + worldOriginY;
-            float x4 = x1 + (x3 - x2);
-            float y4 = y3 - (y2 - y1);
-
-            data[pos] = x1;
-            data[pos+1] = y1;
-            data[pos+2] = color;
-            data[pos+3] = u;
-            data[pos+4] = v;
-            data[pos+5] = mixColor;
-
-            data[pos+6] = x2;
-            data[pos+7] = y2;
-            data[pos+8] = color;
-            data[pos+9] = u;
-            data[pos+10] = v2;
-            data[pos+11] = mixColor;
-
-            data[pos+12] = x3;
-            data[pos+13] = y3;
-            data[pos+14] = color;
-            data[pos+15] = u2;
-            data[pos+16] = v2;
-            data[pos+17] = mixColor;
-
-            data[pos+18] = x4;
-            data[pos+19] = y4;
-            data[pos+20] = color;
-            data[pos+21] = u2;
-            data[pos+22] = v;
-            data[pos+23] = mixColor;
-        }else{
-            float fx2 = x + width;
-            float fy2 = y + height;
-
-            data[pos] = x;
-            data[pos+1] = y;
-            data[pos+2] = color;
-            data[pos+3] = u;
-            data[pos+4] = v;
-            data[pos+5] = mixColor;
-
-            data[pos+6] = x;
-            data[pos+7] = fy2;
-            data[pos+8] = color;
-            data[pos+9] = u;
-            data[pos+10] = v2;
-            data[pos+11] = mixColor;
-
-            data[pos+12] = fx2;
-            data[pos+13] = fy2;
-            data[pos+14] = color;
-            data[pos+15] = u2;
-            data[pos+16] = v2;
-            data[pos+17] = mixColor;
-
-            data[pos+18] = fx2;
-            data[pos+19] = y;
-            data[pos+20] = color;
-            data[pos+21] = u2;
-            data[pos+22] = v;
-            data[pos+23] = mixColor;
-        }
+        constructVertices(this.requestVerts, pos, region, x, y, originX, originY, width, height, rotation);
         draw(region.texture, emptyVertices, pos, SPRITE_SIZE);
     }
 
@@ -443,8 +353,19 @@ public class SpriteBatch extends Batch{
             flush();
         }
 
-        float[] vertices = this.tmpVertices;
         this.idx += SPRITE_SIZE;
+        constructVertices(this.tmpVertices, 0, region, x, y, originX, originY, width, height, rotation);
+        buffer.put(tmpVertices);
+    }
+
+    protected final void constructVertices(float[] vertices, int idx, TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
+        float u = region.u;
+        float v = region.v2;
+        float u2 = region.u2;
+        float v2 = region.v;
+
+        float color = this.colorPacked;
+        float mixColor = this.mixColorPacked;
 
         if(!Mathf.zero(rotation)){
             //bottom left and top right corner points relative to origin
@@ -468,82 +389,65 @@ public class SpriteBatch extends Batch{
             float x4 = x1 + (x3 - x2);
             float y4 = y3 - (y2 - y1);
 
-            float u = region.u;
-            float v = region.v2;
-            float u2 = region.u2;
-            float v2 = region.v;
+            vertices[idx] = x1;
+            vertices[idx + 1] = y1;
+            vertices[idx + 2] = color;
+            vertices[idx + 3] = u;
+            vertices[idx + 4] = v;
+            vertices[idx + 5] = mixColor;
 
-            float color = this.colorPacked;
-            float mixColor = this.mixColorPacked;
+            vertices[idx + 6] = x2;
+            vertices[idx + 7] = y2;
+            vertices[idx + 8] = color;
+            vertices[idx + 9] = u;
+            vertices[idx + 10] = v2;
+            vertices[idx + 11] = mixColor;
 
-            vertices[0] = x1;
-            vertices[1] = y1;
-            vertices[2] = color;
-            vertices[3] = u;
-            vertices[4] = v;
-            vertices[5] = mixColor;
+            vertices[idx + 12] = x3;
+            vertices[idx + 13] = y3;
+            vertices[idx + 14] = color;
+            vertices[idx + 15] = u2;
+            vertices[idx + 16] = v2;
+            vertices[idx + 17] = mixColor;
 
-            vertices[6] = x2;
-            vertices[7] = y2;
-            vertices[8] = color;
-            vertices[9] = u;
-            vertices[10] = v2;
-            vertices[11] = mixColor;
-
-            vertices[12] = x3;
-            vertices[13] = y3;
-            vertices[14] = color;
-            vertices[15] = u2;
-            vertices[16] = v2;
-            vertices[17] = mixColor;
-
-            vertices[18] = x4;
-            vertices[19] = y4;
-            vertices[20] = color;
-            vertices[21] = u2;
-            vertices[22] = v;
-            vertices[23] = mixColor;
+            vertices[idx + 18] = x4;
+            vertices[idx + 19] = y4;
+            vertices[idx + 20] = color;
+            vertices[idx + 21] = u2;
+            vertices[idx + 22] = v;
+            vertices[idx + 23] = mixColor;
         }else{
             float fx2 = x + width;
             float fy2 = y + height;
-            float u = region.u;
-            float v = region.v2;
-            float u2 = region.u2;
-            float v2 = region.v;
 
-            float color = this.colorPacked;
-            float mixColor = this.mixColorPacked;
+            vertices[idx] = x;
+            vertices[idx + 1] = y;
+            vertices[idx + 2] = color;
+            vertices[idx + 3] = u;
+            vertices[idx + 4] = v;
+            vertices[idx + 5] = mixColor;
 
-            vertices[0] = x;
-            vertices[1] = y;
-            vertices[2] = color;
-            vertices[3] = u;
-            vertices[4] = v;
-            vertices[5] = mixColor;
+            vertices[idx + 6] = x;
+            vertices[idx + 7] = fy2;
+            vertices[idx + 8] = color;
+            vertices[idx + 9] = u;
+            vertices[idx + 10] = v2;
+            vertices[idx + 11] = mixColor;
 
-            vertices[6] = x;
-            vertices[7] = fy2;
-            vertices[8] = color;
-            vertices[9] = u;
-            vertices[10] = v2;
-            vertices[11] = mixColor;
+            vertices[idx + 12] = fx2;
+            vertices[idx + 13] = fy2;
+            vertices[idx + 14] = color;
+            vertices[idx + 15] = u2;
+            vertices[idx + 16] = v2;
+            vertices[idx + 17] = mixColor;
 
-            vertices[12] = fx2;
-            vertices[13] = fy2;
-            vertices[14] = color;
-            vertices[15] = u2;
-            vertices[16] = v2;
-            vertices[17] = mixColor;
-
-            vertices[18] = fx2;
-            vertices[19] = y;
-            vertices[20] = color;
-            vertices[21] = u2;
-            vertices[22] = v;
-            vertices[23] = mixColor;
+            vertices[idx + 18] = fx2;
+            vertices[idx + 19] = y;
+            vertices[idx + 20] = color;
+            vertices[idx + 21] = u2;
+            vertices[idx + 22] = v;
+            vertices[idx + 23] = mixColor;
         }
-
-        buffer.put(tmpVertices);
     }
 
     public static Shader createShader(){
