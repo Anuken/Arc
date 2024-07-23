@@ -30,11 +30,6 @@ public class SpriteBatch extends Batch{
     static ForkJoinHolder commonPool;
     boolean multithreaded = (Core.app.getVersion() >= 21 && !Core.app.isIOS()) || Core.app.isDesktop();
 
-    /** Number of rendering calls, ever. Will not be reset unless set manually. **/
-    int totalRenderCalls = 0;
-    /** The maximum number of sprites rendered in one batch so far. **/
-    int maxSpritesInBatch = 0;
-
     protected Mesh mesh;
     protected FloatBuffer buffer;
 
@@ -50,7 +45,7 @@ public class SpriteBatch extends Batch{
     protected int[] contiguous = new int[2048], contiguousCopy = new int[2048];
     protected int intZ = Float.floatToRawIntBits(z + 16f);
 
-    public static class DrawRequest{
+    protected static class DrawRequest{
         int verticesOffset, verticesLength;
         Texture texture;
         Blending blending;
@@ -361,10 +356,7 @@ public class SpriteBatch extends Batch{
         }
 
         Gl.depthMask(false);
-        totalRenderCalls++;
-        int spritesInBatch = idx / SPRITE_SIZE;
-        if(spritesInBatch > maxSpritesInBatch) maxSpritesInBatch = spritesInBatch;
-        int count = spritesInBatch * 6;
+        int count = idx / SPRITE_SIZE * 6;
 
         blending.apply();
 
@@ -402,9 +394,7 @@ public class SpriteBatch extends Batch{
                 req.run = null;
             }else if(req.texture != null){
                 drawSuper(req.texture, vertices, req.verticesOffset, req.verticesLength);
-            }else{
-                throw new IllegalStateException("No Region Draw");
-            }
+            } // the request is invalid, but crashing wouldn't be very nice, so it is simply ignored
         }
 
         colorPacked = preColor;
