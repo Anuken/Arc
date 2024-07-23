@@ -17,6 +17,7 @@ public class Draw{
     private static final float[] vertices = new float[SpriteBatch.SPRITE_SIZE];
     private static @Nullable FloatFloatf zTransformer;
     private static float actualZ;
+    private static Color retColor = new Color(), retPackedColor = new Color();
 
     public static float scl = 1f;
     public static float xscl = 1f, yscl = 1f;
@@ -160,33 +161,51 @@ public class Draw{
         Core.batch.z(zTransformer == null ? actualZ = z : zTransformer.get(actualZ = z));
     }
 
+    public static float getColorAlpha(){
+        int abgr = Color.floatToIntColor(batch.getPackedColor());
+        return ((abgr & 0xff000000) >>> 24) / 255f;
+    }
+
+    public static float getColorPacked(){
+        return batch.getPackedColor();
+    }
+
+    public static float getMixColorPacked(){
+        return batch.getPackedMixColor();
+    }
+
     public static Color getColor(){
-        return Core.batch.getColor();
+        return retColor.abgr8888(batch.getPackedColor());
     }
 
     public static Color getMixColor(){
-        return Core.batch.getMixColor();
+        return retPackedColor.abgr8888(batch.getPackedMixColor());
     }
 
     public static void mixcol(Color color, float a){
-        Core.batch.setMixColor(color.r, color.g, color.b, Mathf.clamp(a));
+        Core.batch.setPackedMixColor(Color.toFloatBits(color.r, color.g, color.b, Mathf.clamp(a)));
     }
 
     public static void mixcol(Color a, Color b, float prog){
-        Core.batch.setMixColor(Tmp.c1.set(a).lerp(b, prog));
+        Core.batch.setPackedMixColor(Tmp.c1.set(a).lerp(b, prog).toFloatBits());
     }
 
     public static void mixcol(){
         Core.batch.setPackedMixColor(Color.clearFloatBits);
     }
 
+    public static void mixcol(float color){
+        Core.batch.setPackedMixColor(color);
+    }
+
     public static void tint(Color a, Color b, float s){
         Tmp.c1.set(a).lerp(b, s);
-        Core.batch.setColor(Tmp.c1.r, Tmp.c1.g, Tmp.c1.b, Core.batch.getColor().a);
+        Tmp.c1.a = getColorAlpha();
+        color(Tmp.c1);
     }
 
     public static void tint(Color color){
-        Core.batch.setColor(color.r, color.g, color.b, Core.batch.getColor().a);
+        Core.batch.setPackedColor(Color.toFloatBits(color.r, color.g, color.b, getColorAlpha()));
     }
 
     public static void colorMul(Color color, float mul){
@@ -194,15 +213,15 @@ public class Draw{
     }
 
     public static void color(Color color){
-        Core.batch.setColor(color);
+        Core.batch.setPackedColor(color.toFloatBits());
     }
 
     public static void color(Color color, float alpha){
-        Core.batch.setColor(color.r, color.g, color.b, alpha);
+        Core.batch.setPackedColor(Color.toFloatBits(color.r, color.g, color.b, alpha));
     }
 
     public static void color(int color){
-        Core.batch.setColor(Tmp.c1.rgba8888(color));
+        Core.batch.setPackedColor(Tmp.c1.rgba8888(color).toFloatBits());
     }
 
     public static void color(float color){
@@ -218,7 +237,7 @@ public class Draw{
 
     /** Automatically mixes colors. */
     public static void color(Color a, Color b, float s){
-        Core.batch.setColor(Tmp.c1.set(a).lerp(b, s));
+        Core.batch.setPackedColor(Tmp.c1.set(a).lerp(b, s).toFloatBits());
     }
 
     public static void color(){
@@ -226,11 +245,11 @@ public class Draw{
     }
 
     public static void color(float r, float g, float b){
-        Core.batch.setColor(r, g, b, 1f);
+        Core.batch.setPackedColor(Color.toFloatBits(r, g, b, 1f));
     }
 
     public static void color(float r, float g, float b, float a){
-        Core.batch.setColor(r, g, b, a);
+        Core.batch.setPackedColor(Color.toFloatBits(r, g, b, a));
     }
 
     /** Lightness color. */
@@ -263,7 +282,10 @@ public class Draw{
     }
 
     public static void alpha(float alpha){
-        Core.batch.setColor(Core.batch.getColor().r, Core.batch.getColor().g, Core.batch.getColor().b, alpha);
+        int abgr = Color.floatToIntColor(batch.getPackedColor());
+        int rawAlpha = (int)(Mathf.clamp(alpha) * 255);
+
+        batch.setPackedColor(Color.intToFloatColor((abgr & 0x00ffffff) | (rawAlpha << 24)));
     }
 
     /** Draws a portion of a world-sized texture. */

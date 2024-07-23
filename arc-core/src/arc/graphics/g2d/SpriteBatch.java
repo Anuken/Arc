@@ -8,6 +8,7 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 
+import java.nio.*;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -16,20 +17,22 @@ public class SpriteBatch extends Batch{
     public static final int VERTEX_SIZE = 2 + 1 + 2 + 1;
     public static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
 
-    protected final float[] vertices;
-
     /** Number of rendering calls, ever. Will not be reset unless set manually. **/
     int totalRenderCalls = 0;
     /** The maximum number of sprites rendered in one batch so far. **/
     int maxSpritesInBatch = 0;
 
     protected static final int initialSize = 10000;
-    public static boolean renderMerge = true;
 
-    public float[] data = new float[initialSize * SPRITE_SIZE];
+    protected Mesh mesh;
+
+    float[] data = new float[initialSize * SPRITE_SIZE];
+    
+    final float[] tmpVertices = new float[SPRITE_SIZE];
     int pos = 0;
 
     private static final float[] emptyVertices = new float[0];
+    
     static ForkJoinHolder commonPool;
     boolean multithreaded = (Core.app.getVersion() >= 21 && !Core.app.isIOS()) || Core.app.isDesktop();
 
@@ -40,6 +43,8 @@ public class SpriteBatch extends Batch{
     int[] contiguous = new int[2048], contiguousCopy = new int[2048];
     protected int intZ = Float.floatToRawIntBits(z + 16f);
 
+    FloatBuffer buffer;
+
     public void prepare(int i){
         if(pos + i >= data.length) data = Arrays.copyOf(data, data.length << 1);
     }
@@ -49,6 +54,14 @@ public class SpriteBatch extends Batch{
         Texture texture;
         Blending blending;
         Runnable run;
+    }
+
+    @Override
+    public void dispose(){
+        super.dispose();
+        if(mesh != null){
+            mesh.dispose();
+        }
     }
 
     @Override
@@ -83,7 +96,7 @@ public class SpriteBatch extends Batch{
     protected void draw(Texture texture, float[] spriteVertices, int offset, int count){
         if(sort && !flushing){
             int num = numRequests;
-            if(renderMerge && num > 1){
+            if(num > 1){
                 final DrawRequest last = requests[num - 1];
                 if(last.run == null && last.texture == texture && last.blending == blending && requestZ[num - 1] == intZ){
                     if(spriteVertices != emptyVertices){
@@ -270,8 +283,16 @@ public class SpriteBatch extends Batch{
 
         lastTexture.bind();
         Mesh mesh = this.mesh;
-        mesh.setVertices(vertices, 0, idx);
+        //calling buffer() marks it as dirty, so it gets reuploaded upon render
+        mesh.getVerticesBuffer();
+
+        buffer.position(0);
+        buffer.limit(idx);
+
         mesh.render(getShader(), Gl.triangles, 0, count);
+
+        buffer.position(0);
+        buffer.limit(buffer.capacity());
 
         idx = 0;
     }
@@ -283,7 +304,7 @@ public class SpriteBatch extends Batch{
         Blending preBlending = blending;
 
         float[] vertices = this.data;
-        DrawRequest[] r = copy;//MDTX: 'copy' instead requests
+        DrawRequest[] r = copy;
         int num = numRequests;
         for(int j = 0; j < num; j++){
             final DrawRequest req = r[j];
@@ -302,8 +323,6 @@ public class SpriteBatch extends Batch{
 
         colorPacked = preColor;
         mixColorPacked = preMixColor;
-        color.abgr8888(colorPacked);
-        mixColor.abgr8888(mixColorPacked);
         blending = preBlending;
 
         numRequests = 0;
@@ -350,8 +369,6 @@ public class SpriteBatch extends Batch{
             VertexAttribute.mixColor
             );
 
-            vertices = new float[size * SPRITE_SIZE];
-
             int len = size * 6;
             short[] indices = new short[len];
             short j = 0;
@@ -364,6 +381,8 @@ public class SpriteBatch extends Batch{
                 indices[i + 5] = j;
             }
             mesh.setIndices(indices);
+            mesh.getVerticesBuffer().position(0);
+            mesh.getVerticesBuffer().limit(mesh.getVerticesBuffer().capacity());
 
             if(defaultShader == null){
                 shader = createShader();
@@ -374,8 +393,8 @@ public class SpriteBatch extends Batch{
 
             //mark indices as dirty once for GL30
             mesh.getIndicesBuffer();
+            buffer = mesh.getVerticesBuffer();
         }else{
-            vertices = new float[0];
             shader = null;
         }
 
@@ -394,7 +413,7 @@ public class SpriteBatch extends Batch{
 
     protected void drawSuper(Texture texture, float[] spriteVertices, int offset, int count){
 
-        int verticesLength = vertices.length;
+        int verticesLength = buffer.capacity();
         int remainingVertices = verticesLength;
         if(texture != lastTexture){
             switchTexture(texture);
@@ -407,14 +426,15 @@ public class SpriteBatch extends Batch{
         }
         int copyCount = Math.min(remainingVertices, count);
 
-        System.arraycopy(spriteVertices, offset, vertices, idx, copyCount);
+        buffer.put(spriteVertices, offset, copyCount);
+
         idx += copyCount;
         count -= copyCount;
         while(count > 0){
             offset += copyCount;
             flush();
             copyCount = Math.min(verticesLength, count);
-            System.arraycopy(spriteVertices, offset, vertices, 0, copyCount);
+            buffer.put(spriteVertices, offset, copyCount);
             idx += copyCount;
             count -= copyCount;
         }
@@ -425,12 +445,11 @@ public class SpriteBatch extends Batch{
         Texture texture = region.texture;
         if(texture != lastTexture){
             switchTexture(texture);
-        }else if(idx == vertices.length){
+        }else if(idx == buffer.capacity()){
             flush();
         }
 
-        float[] vertices = this.vertices;
-        int idx = this.idx;
+        float[] vertices = this.tmpVertices;
         this.idx += SPRITE_SIZE;
 
         if(!Mathf.zero(rotation)){
@@ -463,33 +482,33 @@ public class SpriteBatch extends Batch{
             float color = this.colorPacked;
             float mixColor = this.mixColorPacked;
 
-            vertices[idx] = x1;
-            vertices[idx + 1] = y1;
-            vertices[idx + 2] = color;
-            vertices[idx + 3] = u;
-            vertices[idx + 4] = v;
-            vertices[idx + 5] = mixColor;
+            vertices[0] = x1;
+            vertices[1] = y1;
+            vertices[2] = color;
+            vertices[3] = u;
+            vertices[4] = v;
+            vertices[5] = mixColor;
 
-            vertices[idx + 6] = x2;
-            vertices[idx + 7] = y2;
-            vertices[idx + 8] = color;
-            vertices[idx + 9] = u;
-            vertices[idx + 10] = v2;
-            vertices[idx + 11] = mixColor;
+            vertices[6] = x2;
+            vertices[7] = y2;
+            vertices[8] = color;
+            vertices[9] = u;
+            vertices[10] = v2;
+            vertices[11] = mixColor;
 
-            vertices[idx + 12] = x3;
-            vertices[idx + 13] = y3;
-            vertices[idx + 14] = color;
-            vertices[idx + 15] = u2;
-            vertices[idx + 16] = v2;
-            vertices[idx + 17] = mixColor;
+            vertices[12] = x3;
+            vertices[13] = y3;
+            vertices[14] = color;
+            vertices[15] = u2;
+            vertices[16] = v2;
+            vertices[17] = mixColor;
 
-            vertices[idx + 18] = x4;
-            vertices[idx + 19] = y4;
-            vertices[idx + 20] = color;
-            vertices[idx + 21] = u2;
-            vertices[idx + 22] = v;
-            vertices[idx + 23] = mixColor;
+            vertices[18] = x4;
+            vertices[19] = y4;
+            vertices[20] = color;
+            vertices[21] = u2;
+            vertices[22] = v;
+            vertices[23] = mixColor;
         }else{
             float fx2 = x + width;
             float fy2 = y + height;
@@ -501,34 +520,36 @@ public class SpriteBatch extends Batch{
             float color = this.colorPacked;
             float mixColor = this.mixColorPacked;
 
-            vertices[idx] = x;
-            vertices[idx + 1] = y;
-            vertices[idx + 2] = color;
-            vertices[idx + 3] = u;
-            vertices[idx + 4] = v;
-            vertices[idx + 5] = mixColor;
+            vertices[0] = x;
+            vertices[1] = y;
+            vertices[2] = color;
+            vertices[3] = u;
+            vertices[4] = v;
+            vertices[5] = mixColor;
 
-            vertices[idx + 6] = x;
-            vertices[idx + 7] = fy2;
-            vertices[idx + 8] = color;
-            vertices[idx + 9] = u;
-            vertices[idx + 10] = v2;
-            vertices[idx + 11] = mixColor;
+            vertices[6] = x;
+            vertices[7] = fy2;
+            vertices[8] = color;
+            vertices[9] = u;
+            vertices[10] = v2;
+            vertices[11] = mixColor;
 
-            vertices[idx + 12] = fx2;
-            vertices[idx + 13] = fy2;
-            vertices[idx + 14] = color;
-            vertices[idx + 15] = u2;
-            vertices[idx + 16] = v2;
-            vertices[idx + 17] = mixColor;
+            vertices[12] = fx2;
+            vertices[13] = fy2;
+            vertices[14] = color;
+            vertices[15] = u2;
+            vertices[16] = v2;
+            vertices[17] = mixColor;
 
-            vertices[idx + 18] = fx2;
-            vertices[idx + 19] = y;
-            vertices[idx + 20] = color;
-            vertices[idx + 21] = u2;
-            vertices[idx + 22] = v;
-            vertices[idx + 23] = mixColor;
+            vertices[18] = fx2;
+            vertices[19] = y;
+            vertices[20] = color;
+            vertices[21] = u2;
+            vertices[22] = v;
+            vertices[23] = mixColor;
         }
+
+        buffer.put(tmpVertices);
     }
 
     public static Shader createShader(){

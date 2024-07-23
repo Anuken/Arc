@@ -1,9 +1,8 @@
 package arc.graphics.g2d;
 
-import arc.graphics.Color;
-import arc.graphics.Texture;
-import arc.graphics.gl.Shader;
-import arc.math.Mat;
+import arc.graphics.*;
+import arc.graphics.gl.*;
+import arc.math.*;
 
 public class CacheBatch extends Batch{
     SpriteCache cache;
@@ -23,28 +22,13 @@ public class CacheBatch extends Batch{
     }
 
     @Override
-    public void setColor(Color tint){
-        cache.setColor(tint);
-    }
-
-    @Override
-    public void setColor(float r, float g, float b, float a){
-        cache.setColor(r, g, b, a);
-    }
-
-    @Override
     public void setPackedColor(float color){
         cache.setPackedColor(color);
     }
 
     @Override
-    public Color getColor(){
-        return cache.getColor();
-    }
-
-    @Override
     public float getPackedColor(){
-        return cache.getColor().toFloatBits();
+        return cache.getPackedColor();
     }
 
     @Override
