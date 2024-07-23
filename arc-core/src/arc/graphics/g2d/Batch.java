@@ -8,7 +8,6 @@ import arc.util.*;
 /** Base batch class. Provides a mesh, texture, shader, and other state. */
 public abstract class Batch implements Disposable{
     protected float z;
-    protected boolean sortAscending = true;
     protected int idx = 0;
     protected Texture lastTexture = null;
 
@@ -27,17 +26,12 @@ public abstract class Batch implements Disposable{
     protected float mixColorPacked = Color.clearFloatBits;
 
     protected void z(float z){
-        this.z = sortAscending ? z : -z;
+        this.z = z;
     }
 
     /** Enables or disables Z-sorting. Flushes the batch. Only does something on supported batches. */
     protected void setSort(boolean sort){
 
-    }
-
-    /** Sets the sorting order. The batch must be flushed for this to take effect properly. */
-    protected void setSortAscending(boolean ascend){
-        sortAscending = ascend;
     }
 
     protected void setPackedColor(float packedColor){

@@ -12,48 +12,131 @@ import java.nio.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+/**
+ *
+ * Class for efficiently batching and sorting sprites.
+ *
+ * Sorting optimizations written by zxtej.
+ * Significant request optimizations done by way-zer.
+ * */
 public class SpriteBatch extends Batch{
     //xy + color + uv + mix_color
     public static final int VERTEX_SIZE = 2 + 1 + 2 + 1;
     public static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
+
+    private static final int initialSize = 10000;
+    private static final float[] emptyVertices = new float[0];
+
+    static ForkJoinHolder commonPool;
+    boolean multithreaded = (Core.app.getVersion() >= 21 && !Core.app.isIOS()) || Core.app.isDesktop();
 
     /** Number of rendering calls, ever. Will not be reset unless set manually. **/
     int totalRenderCalls = 0;
     /** The maximum number of sprites rendered in one batch so far. **/
     int maxSpritesInBatch = 0;
 
-    protected static final int initialSize = 10000;
-
     protected Mesh mesh;
+    protected FloatBuffer buffer;
 
-    float[] data = new float[initialSize * SPRITE_SIZE];
-    
     final float[] tmpVertices = new float[SPRITE_SIZE];
-    int pos = 0;
 
-    private static final float[] emptyVertices = new float[0];
-    
-    static ForkJoinHolder commonPool;
-    boolean multithreaded = (Core.app.getVersion() >= 21 && !Core.app.isIOS()) || Core.app.isDesktop();
+    float[] requestVerts = new float[initialSize * SPRITE_SIZE];
+    int requestVertOffset = 0;
 
     protected boolean sort, flushing;
     protected DrawRequest[] requests = new DrawRequest[initialSize], copy = new DrawRequest[0];
     protected int[] requestZ = new int[initialSize];
     protected int numRequests = 0;
-    int[] contiguous = new int[2048], contiguousCopy = new int[2048];
+    protected int[] contiguous = new int[2048], contiguousCopy = new int[2048];
     protected int intZ = Float.floatToRawIntBits(z + 16f);
-
-    FloatBuffer buffer;
-
-    public void prepare(int i){
-        if(pos + i >= data.length) data = Arrays.copyOf(data, data.length << 1);
-    }
 
     public static class DrawRequest{
         int verticesOffset, verticesLength;
         Texture texture;
         Blending blending;
         Runnable run;
+    }
+
+    /**
+     * Constructs a new SpriteBatch with a size of 4096, one buffer, and the default shader.
+     * @see #SpriteBatch(int, Shader)
+     */
+    public SpriteBatch(){
+        this(4096, null);
+    }
+
+    /**
+     * Constructs a SpriteBatch with one buffer and the default shader.
+     * @see #SpriteBatch(int, Shader)
+     */
+    public SpriteBatch(int size){
+        this(size, null);
+    }
+
+    /**
+     * Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards, x-axis
+     * point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect with
+     * respect to the current screen resolution.
+     * <p>
+     * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
+     * the ones expect for shaders set with {@link #setShader(Shader)}.
+     * @param size The max number of sprites in a single batch. Max of 8191.
+     * @param defaultShader The default shader to use. This is not owned by the SpriteBatch and must be disposed separately.
+     */
+    public SpriteBatch(int size, Shader defaultShader){
+        // 32767 is max vertex index, so 32767 / 4 vertices per sprite = 8191 sprites max.
+        if(size > 8191) throw new IllegalArgumentException("Can't have more than 8191 sprites per batch: " + size);
+
+        if(size > 0){
+            projectionMatrix.setOrtho(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
+
+            mesh = new Mesh(true, false, size * 4, size * 6,
+            VertexAttribute.position,
+            VertexAttribute.color,
+            VertexAttribute.texCoords,
+            VertexAttribute.mixColor
+            );
+
+            int len = size * 6;
+            short[] indices = new short[len];
+            short j = 0;
+            for(int i = 0; i < len; i += 6, j += 4){
+                indices[i] = j;
+                indices[i + 1] = (short)(j + 1);
+                indices[i + 2] = (short)(j + 2);
+                indices[i + 3] = (short)(j + 2);
+                indices[i + 4] = (short)(j + 3);
+                indices[i + 5] = j;
+            }
+            mesh.setIndices(indices);
+            mesh.getVerticesBuffer().position(0);
+            mesh.getVerticesBuffer().limit(mesh.getVerticesBuffer().capacity());
+
+            if(defaultShader == null){
+                shader = createShader();
+                ownsShader = true;
+            }else{
+                shader = defaultShader;
+            }
+
+            //mark indices as dirty once for GL30
+            mesh.getIndicesBuffer();
+            buffer = mesh.getVerticesBuffer();
+        }else{
+            shader = null;
+        }
+
+        for(int i = 0; i < requests.length; i++){
+            requests[i] = new DrawRequest();
+        }
+
+        if(multithreaded){
+            try{
+                commonPool = new ForkJoinHolder();
+            }catch(Throwable t){
+                multithreaded = false;
+            }
+        }
     }
 
     @Override
@@ -88,7 +171,7 @@ public class SpriteBatch extends Batch{
     @Override
     protected void z(float z){
         if(z == this.z) return;
-        super.z(z);
+        this.z = z;
         intZ = Float.floatToRawIntBits(z + 16f);
     }
 
@@ -96,13 +179,13 @@ public class SpriteBatch extends Batch{
     protected void draw(Texture texture, float[] spriteVertices, int offset, int count){
         if(sort && !flushing){
             int num = numRequests;
-            if(num > 1){
+            if(num > 0){
                 final DrawRequest last = requests[num - 1];
                 if(last.run == null && last.texture == texture && last.blending == blending && requestZ[num - 1] == intZ){
                     if(spriteVertices != emptyVertices){
                         prepare(count);
-                        System.arraycopy(spriteVertices, offset, data, pos, count);
-                        pos += count;
+                        System.arraycopy(spriteVertices, offset, requestVerts, requestVertOffset, count);
+                        requestVertOffset += count;
                     }
                     last.verticesLength += count;
                     return;
@@ -111,10 +194,10 @@ public class SpriteBatch extends Batch{
             if(num >= this.requests.length) expandRequests();
             final DrawRequest req = requests[num];
             if(spriteVertices != emptyVertices){
-                req.verticesOffset = pos;
+                req.verticesOffset = requestVertOffset;
                 prepare(count);
-                System.arraycopy(spriteVertices, offset, data, pos, count);
-                pos += count;
+                System.arraycopy(spriteVertices, offset, requestVerts, requestVertOffset, count);
+                requestVertOffset += count;
             }else{
                 req.verticesOffset = offset;
             }
@@ -135,9 +218,9 @@ public class SpriteBatch extends Batch{
             drawSuper(region, x, y, originX, originY, width, height, rotation);
             return;
         }
-        float[] data = this.data;
-        int pos = this.pos;
-        this.pos += 24;
+        float[] data = this.requestVerts;
+        int pos = this.requestVertOffset;
+        this.requestVertOffset += 24;
         prepare(24);
 
         float u = region.u;
@@ -247,6 +330,10 @@ public class SpriteBatch extends Batch{
         }
     }
 
+    protected void prepare(int i){
+        if(requestVertOffset + i >= requestVerts.length) requestVerts = Arrays.copyOf(requestVerts, requestVerts.length << 1);
+    }
+
     protected void expandRequests(){
         final DrawRequest[] requests = this.requests, newRequests = Arrays.copyOf(requests, requests.length * 7 / 4);
         for(int i = requests.length; i < newRequests.length; i++){
@@ -291,7 +378,6 @@ public class SpriteBatch extends Batch{
 
         mesh.render(getShader(), Gl.triangles, 0, count);
 
-        buffer.position(0);
         buffer.limit(buffer.capacity());
 
         idx = 0;
@@ -303,7 +389,7 @@ public class SpriteBatch extends Batch{
         float preColor = colorPacked, preMixColor = mixColorPacked;
         Blending preBlending = blending;
 
-        float[] vertices = this.data;
+        float[] vertices = this.requestVerts;
         DrawRequest[] r = copy;
         int num = numRequests;
         for(int j = 0; j < num; j++){
@@ -326,89 +412,7 @@ public class SpriteBatch extends Batch{
         blending = preBlending;
 
         numRequests = 0;
-        pos = 0;
-    }
-
-    /**
-     * Constructs a new SpriteBatch with a size of 4096, one buffer, and the default shader.
-     * @see #SpriteBatch(int, Shader)
-     */
-    public SpriteBatch(){
-        this(4096, null);
-    }
-
-    /**
-     * Constructs a SpriteBatch with one buffer and the default shader.
-     * @see #SpriteBatch(int, Shader)
-     */
-    public SpriteBatch(int size){
-        this(size, null);
-    }
-
-    /**
-     * Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards, x-axis
-     * point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect with
-     * respect to the current screen resolution.
-     * <p>
-     * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
-     * the ones expect for shaders set with {@link #setShader(Shader)}.
-     * @param size The max number of sprites in a single batch. Max of 8191.
-     * @param defaultShader The default shader to use. This is not owned by the SpriteBatch and must be disposed separately.
-     */
-    public SpriteBatch(int size, Shader defaultShader){
-        // 32767 is max vertex index, so 32767 / 4 vertices per sprite = 8191 sprites max.
-        if(size > 8191) throw new IllegalArgumentException("Can't have more than 8191 sprites per batch: " + size);
-
-        if(size > 0){
-            projectionMatrix.setOrtho(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
-
-            mesh = new Mesh(true, false, size * 4, size * 6,
-            VertexAttribute.position,
-            VertexAttribute.color,
-            VertexAttribute.texCoords,
-            VertexAttribute.mixColor
-            );
-
-            int len = size * 6;
-            short[] indices = new short[len];
-            short j = 0;
-            for(int i = 0; i < len; i += 6, j += 4){
-                indices[i] = j;
-                indices[i + 1] = (short)(j + 1);
-                indices[i + 2] = (short)(j + 2);
-                indices[i + 3] = (short)(j + 2);
-                indices[i + 4] = (short)(j + 3);
-                indices[i + 5] = j;
-            }
-            mesh.setIndices(indices);
-            mesh.getVerticesBuffer().position(0);
-            mesh.getVerticesBuffer().limit(mesh.getVerticesBuffer().capacity());
-
-            if(defaultShader == null){
-                shader = createShader();
-                ownsShader = true;
-            }else{
-                shader = defaultShader;
-            }
-
-            //mark indices as dirty once for GL30
-            mesh.getIndicesBuffer();
-            buffer = mesh.getVerticesBuffer();
-        }else{
-            shader = null;
-        }
-
-        for(int i = 0; i < requests.length; i++){
-            requests[i] = new DrawRequest();
-        }
-
-        if(multithreaded){
-            try{
-                commonPool = new ForkJoinHolder();
-            }catch(Throwable t){
-                multithreaded = false;
-            }
-        }
+        requestVertOffset = 0;
     }
 
     protected void drawSuper(Texture texture, float[] spriteVertices, int offset, int count){

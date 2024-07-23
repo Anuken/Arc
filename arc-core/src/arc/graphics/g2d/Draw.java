@@ -138,11 +138,6 @@ public class Draw{
         batch.setSort(sort);
     }
 
-    /** Sets sorting order to either be ascending or descending in terms of Z. Default: true. */
-    public static void sortAscending(boolean ascend){
-        batch.setSortAscending(ascend);
-    }
-
     /** Sets a Z-transformer function that will modify subsequent calls to Draw.z. Yep, this is as terrible as it sounds. */
     public static void zTransform(FloatFloatf f){
         zTransformer = f;
