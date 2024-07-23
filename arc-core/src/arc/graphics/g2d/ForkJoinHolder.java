@@ -1,6 +1,6 @@
 package arc.graphics.g2d;
 
-import arc.graphics.g2d.SortedSpriteBatch.*;
+import arc.graphics.g2d.SpriteBatch.*;
 
 import java.util.concurrent.*;
 
