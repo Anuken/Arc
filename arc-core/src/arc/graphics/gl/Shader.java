@@ -124,7 +124,7 @@ public class Shader implements Disposable{
         this(vertexShader.readString(), fragmentShader.readString());
 
         if(!log.isEmpty()){
-            Log.warn("Shader " + vertexShader + " | " + fragmentShader + ":\n" + log);
+            Log.debug("Shader " + vertexShader + " | " + fragmentShader + ":\n" + log);
         }
     }
 
