@@ -171,6 +171,13 @@ public class SpriteBatch extends Batch{
     }
 
     @Override
+    protected void discard(){
+        super.discard();
+
+        buffer.position(0);
+    }
+
+    @Override
     protected void draw(Texture texture, float[] spriteVertices, int offset, int count){
         if(sort && !flushing){
             int num = numRequests;
