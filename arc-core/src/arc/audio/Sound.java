@@ -102,10 +102,18 @@ public class Sound extends AudioSource{
      * Plays this sound at a certain position, with correct panning and volume applied.
      * Automatically uses the "sfxvolume" setting.
      */
-    public int at(float x, float y, float pitch, float volume){
+    public int at(float x, float y, float pitch, float volume, boolean checkFrame){
         float vol = calcVolume(x, y) * volume;
         if(vol < 0.01f) return -1; //discard
-        return play(vol, pitch, calcPan(x, y));
+        return play(vol, pitch, calcPan(x, y), false, checkFrame);
+    }
+
+    /**
+     * Plays this sound at a certain position, with correct panning and volume applied.
+     * Automatically uses the "sfxvolume" setting.
+     */
+    public int at(float x, float y, float pitch, float volume){
+        return at(x, y, pitch, volume, true);
     }
 
     /**
