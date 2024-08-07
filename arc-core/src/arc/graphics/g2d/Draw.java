@@ -212,7 +212,7 @@ public class Draw{
     }
 
     public static void color(Color color, float alpha){
-        Core.batch.setPackedColor(Color.toFloatBits(color.r, color.g, color.b, alpha));
+        Core.batch.setPackedColor(Color.toFloatBits(color.r, color.g, color.b, Mathf.clamp(alpha)));
     }
 
     public static void color(int color){
@@ -244,7 +244,7 @@ public class Draw{
     }
 
     public static void color(float r, float g, float b, float a){
-        Core.batch.setPackedColor(Color.toFloatBits(r, g, b, a));
+        Core.batch.setPackedColor(Color.toFloatBits(r, g, b, Mathf.clamp(a)));
     }
 
     /** Lightness color. */
