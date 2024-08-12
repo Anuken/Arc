@@ -288,6 +288,7 @@ public class SpriteBatch extends Batch{
         mesh.render(getShader(), Gl.triangles, 0, count);
 
         buffer.limit(buffer.capacity());
+        buffer.position(0);
 
         idx = 0;
     }
