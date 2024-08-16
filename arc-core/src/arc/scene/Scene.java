@@ -93,12 +93,16 @@ public class Scene implements InputProcessor{
                 .each(f -> f.getName().startsWith("default"), f -> addStyle(f.getType(), Reflect.get(obj, f)));
     }
 
+    public @Nullable Element getHoverElement(){
+        return mouseOverElement;
+    }
+
     public boolean hasField(){
         return getKeyboardFocus() instanceof TextField;
     }
 
     public boolean hasMouse(){
-        return hit(Core.input.mouseX(), Core.input.mouseY(), true) != null;
+        return mouseOverElement != null;
     }
 
     public boolean hasMouse(float mousex, float mousey){
@@ -178,8 +182,11 @@ public class Scene implements InputProcessor{
             pointerOverActors[pointer] = fireEnterAndExit(overLast, pointerScreenX[pointer], pointerScreenY[pointer], pointer);
         }
         // Update over element for the mouse on the desktop.
-        if(Core.app.isDesktop() || Core.app.isWeb())
+        if(Core.app.isDesktop() || Core.app.isWeb()){
             mouseOverElement = fireEnterAndExit(mouseOverElement, mouseScreenX, mouseScreenY, -1);
+        }else{
+            mouseOverElement = hit(mouseScreenX, mouseScreenY, true);
+        }
 
         if(scrollFocus != null && (!scrollFocus.visible || scrollFocus.getScene() == null)) scrollFocus = null;
         if(keyboardFocus != null && (!keyboardFocus.visible || keyboardFocus.getScene() == null)) keyboardFocus = null;
