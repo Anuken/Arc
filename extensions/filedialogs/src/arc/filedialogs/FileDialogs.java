@@ -48,7 +48,7 @@ public class FileDialogs{
 	        env->ReleaseStringChars(obj_defaultPathAndFile, defaultPathAndFile);
 	        env->ReleaseStringChars(obj_filterDescription, filterDescription);
 
-            return env->NewString((jchar*)result, wcslen(result));
+            return result == NULL ? NULL : env->NewString((jchar*)result, wcslen(result));
         #else
             char* title = (char*)env->GetStringUTFChars(obj_title, 0);
             char* defaultPathAndFile = (char*)env->GetStringUTFChars(obj_defaultPathAndFile, 0);
@@ -110,7 +110,7 @@ public class FileDialogs{
 	        env->ReleaseStringChars(obj_defaultPathAndFile, defaultPathAndFile);
 	        env->ReleaseStringChars(obj_filterDescription, filterDescription);
 
-            return env->NewString((jchar*)result, wcslen(result));
+            return result == NULL ? NULL : env->NewString((jchar*)result, wcslen(result));
 
         #else
         	char* title = (char*)env->GetStringUTFChars(obj_title, 0);
