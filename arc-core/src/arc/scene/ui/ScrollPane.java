@@ -752,7 +752,6 @@ public class ScrollPane extends WidgetGroup{
     public void setScrollXForce(float pixels){
         visualAmountX = pixels;
         amountX = pixels;
-        scrollX = true;
     }
 
     /** Returns the x scroll position in pixels, where 0 is the left of the scroll pane. */
@@ -763,7 +762,6 @@ public class ScrollPane extends WidgetGroup{
     public void setScrollYForce(float pixels){
         visualAmountY = pixels;
         amountY = pixels;
-        scrollY = true;
     }
 
     /** Returns the y scroll position in pixels, where 0 is the top of the scroll pane. */
