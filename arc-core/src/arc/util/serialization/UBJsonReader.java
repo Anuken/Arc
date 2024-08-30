@@ -1,13 +1,10 @@
 package arc.util.serialization;
 
-import arc.files.Fi;
-import arc.util.ArcRuntimeException;
-import arc.util.Strings;
-import arc.util.io.Streams;
+import arc.files.*;
+import arc.util.*;
+import arc.util.io.*;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * Lightweight UBJSON parser.<br>
@@ -17,7 +14,6 @@ import java.io.InputStream;
  * @author Xoppa
  */
 public class UBJsonReader implements BaseJsonReader{
-    public boolean oldFormat = true;
 
     /**
      * Parses the UBJSON from the given stream. <br>
@@ -69,15 +65,15 @@ public class UBJsonReader implements BaseJsonReader{
         else if(type == 'F')
             return new JsonValue(false);
         else if(type == 'B')
-            return new JsonValue((long)readUChar(din));
+            return new JsonValue(readUChar(din));
         else if(type == 'U')
-            return new JsonValue((long)readUChar(din));
+            return new JsonValue(readUChar(din));
         else if(type == 'i')
-            return new JsonValue(oldFormat ? (long)din.readShort() : (long)din.readByte());
+            return new JsonValue(din.readByte());
         else if(type == 'I')
-            return new JsonValue(oldFormat ? (long)din.readInt() : (long)din.readShort());
+            return new JsonValue(din.readShort());
         else if(type == 'l')
-            return new JsonValue((long)din.readInt());
+            return new JsonValue(din.readInt());
         else if(type == 'L')
             return new JsonValue(din.readLong());
         else if(type == 'd')
