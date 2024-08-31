@@ -353,8 +353,6 @@ public class Pixmap implements Disposable{
         draw(pixmap, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight, filtering, false);
     }
 
-    public static float totalTime = 0f;
-
     /**
      * Draws an area from another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
      * specified target rectangle. Blending is currently unsupported for stretched/scaled pixmaps.
