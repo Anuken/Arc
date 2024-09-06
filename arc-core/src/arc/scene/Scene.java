@@ -90,11 +90,12 @@ public class Scene implements InputProcessor{
 
     public void registerStyles(Object obj){
         Seq.with(obj.getClass().getFields())
-                .each(f -> f.getName().startsWith("default"), f -> addStyle(f.getType(), Reflect.get(obj, f)));
+        .each(f -> f.getName().startsWith("default"), f -> addStyle(f.getType(), Reflect.get(obj, f)));
     }
 
     public @Nullable Element getHoverElement(){
-        return mouseOverElement;
+        //TODO: this is slow, use mouseOverElement instead?
+        return hit(Core.input.mouseX(), Core.input.mouseY(), true);
     }
 
     public boolean hasField(){
@@ -102,7 +103,7 @@ public class Scene implements InputProcessor{
     }
 
     public boolean hasMouse(){
-        return mouseOverElement != null;
+        return getHoverElement() != null;
     }
 
     public boolean hasMouse(float mousex, float mousey){
