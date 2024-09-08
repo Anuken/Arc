@@ -99,7 +99,7 @@ public class MaxRectsPacker implements Packer{
                     throw new RuntimeException("Image does not fit with max page width " + settings.maxWidth + paddingMessage + ": "
                     + rect.name + "[" + width + "," + height + "]");
                 }
-                if(height > maxHeight && (!settings.rotation || width > maxHeight)){
+                if(height > maxHeight){
                     String paddingMessage = edgePadY ? (" and Y edge padding " + paddingY + "*2") : "";
                     throw new RuntimeException("Image does not fit in max page height " + settings.maxHeight + paddingMessage + ": "
                     + rect.name + "[" + width + "," + height + "]");
@@ -190,16 +190,16 @@ public class MaxRectsPacker implements Packer{
      */
     private Page packAtSize(boolean fully, int width, int height, Seq<Rect> inputRects){
         Page bestResult = null;
-        for(int i = 0, n = methods.length; i < n; i++){
+        for(FreeRectChoiceHeuristic method : methods){
             maxRects.init(width, height);
             Page result;
             if(!settings.fast){
-                result = maxRects.pack(inputRects, methods[i]);
+                result = maxRects.pack(inputRects, method);
             }else{
                 Seq<Rect> remaining = new Seq();
                 for(int ii = 0, nn = inputRects.size; ii < nn; ii++){
                     Rect rect = inputRects.get(ii);
-                    if(maxRects.insert(rect, methods[i]) == null){
+                    if(maxRects.insert(rect, method) == null){
                         while(ii < nn)
                             remaining.add(inputRects.get(ii++));
                     }
@@ -272,8 +272,9 @@ public class MaxRectsPacker implements Packer{
      */
     class MaxRects{
         private int binWidth, binHeight;
-        private final Seq<Rect> usedRectangles = new Seq();
-        private final Seq<Rect> freeRectangles = new Seq();
+        private final Seq<Rect> usedRectangles = new Seq<>();
+        private final Seq<Rect> freeRectangles = new Seq<>();
+        private final Seq<Rect> rectanglesToCheckWhenPruning = new Seq<>();
 
         public void init(int width, int height){
             binWidth = width;
@@ -670,6 +671,7 @@ public class MaxRectsPacker implements Packer{
                     Rect newNode = new Rect(freeNode);
                     newNode.height = usedNode.y - newNode.y;
                     freeRectangles.add(newNode);
+                    rectanglesToCheckWhenPruning.add(newNode);
                 }
 
                 // New node at the bottom side of the used node.
@@ -678,6 +680,7 @@ public class MaxRectsPacker implements Packer{
                     newNode.y = usedNode.y + usedNode.height;
                     newNode.height = freeNode.y + freeNode.height - (usedNode.y + usedNode.height);
                     freeRectangles.add(newNode);
+                    rectanglesToCheckWhenPruning.add(newNode);
                 }
             }
 
@@ -687,6 +690,7 @@ public class MaxRectsPacker implements Packer{
                     Rect newNode = new Rect(freeNode);
                     newNode.width = usedNode.x - newNode.x;
                     freeRectangles.add(newNode);
+                    rectanglesToCheckWhenPruning.add(newNode);
                 }
 
                 // New node at the right side of the used node.
@@ -695,6 +699,7 @@ public class MaxRectsPacker implements Packer{
                     newNode.x = usedNode.x + usedNode.width;
                     newNode.width = freeNode.x + freeNode.width - (usedNode.x + usedNode.width);
                     freeRectangles.add(newNode);
+                    rectanglesToCheckWhenPruning.add(newNode);
                 }
             }
 
@@ -702,24 +707,34 @@ public class MaxRectsPacker implements Packer{
         }
 
         private void pruneFreeList(){
-            // Go through each pair and remove any rectangle that is redundant.
-            Seq<Rect> freeRectangles = this.freeRectangles;
-            for(int i = 0, n = freeRectangles.size; i < n; i++)
-                for(int j = i + 1; j < n; ++j){
-                    Rect rect1 = freeRectangles.get(i);
-                    Rect rect2 = freeRectangles.get(j);
-                    if(isContainedIn(rect1, rect2)){
-                        freeRectangles.remove(i);
-                        --i;
-                        --n;
-                        break;
+            IntSet freeRectanglesToRemove = new IntSet();
+
+            for(Rect checkingRectangle : rectanglesToCheckWhenPruning){
+                for(int i = 0; i < freeRectangles.size; i++){
+                    Rect rect = freeRectangles.get(i);
+                    if(rect == checkingRectangle){
+                        continue;
                     }
-                    if(isContainedIn(rect2, rect1)){
-                        freeRectangles.remove(j);
-                        --j;
-                        --n;
+                    if(isContainedIn(rect, checkingRectangle)){
+                        freeRectanglesToRemove.add(i);
                     }
                 }
+            }
+
+            rectanglesToCheckWhenPruning.clear();
+
+            if(freeRectanglesToRemove.isEmpty()){
+                return;
+            }
+
+            Seq<Rect> temporaryFreeRectangles = new Seq<>(freeRectangles);
+
+            freeRectangles.clear();
+            for(int i = 0; i < temporaryFreeRectangles.size; i++){
+                if(!freeRectanglesToRemove.contains(i)){
+                    freeRectangles.add(temporaryFreeRectangles.get(i));
+                }
+            }
         }
 
         private boolean isContainedIn(Rect a, Rect b){
