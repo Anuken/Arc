@@ -91,7 +91,7 @@ public final class Geometry{
         T closest = null;
         float cdist = 0f;
         for(T t : list){
-            float dst = t.dst(x, y);
+            float dst = t.dst2(x, y);
             if(closest == null || dst < cdist){
                 closest = t;
                 cdist = dst;
@@ -104,7 +104,7 @@ public final class Geometry{
         T closest = null;
         float cdist = 0f;
         for(T t : list){
-            float dst = t.dst(x, y);
+            float dst = t.dst2(x, y);
             if(closest == null || dst < cdist){
                 closest = t;
                 cdist = dst;
@@ -117,7 +117,7 @@ public final class Geometry{
         T furthest = null;
         float fdist = 0f;
         for(T t : list){
-            float dst = t.dst(x, y);
+            float dst = t.dst2(x, y);
             if(furthest == null || dst > fdist){
                 furthest = t;
                 fdist = dst;
