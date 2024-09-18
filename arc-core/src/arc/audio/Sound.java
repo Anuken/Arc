@@ -60,7 +60,7 @@ public class Sound extends AudioSource{
     public int play(float volume, float pitch, float pan, boolean loop, boolean checkFrame){
         if(handle == 0 || (checkFrame && framePlayed == Core.graphics.getFrameId()) || bus == null || !Core.audio.initialized) return -1;
         framePlayed = Core.graphics.getFrameId();
-        return sourcePlayBus(handle, bus.handle, volume, pitch * Core.audio.globalPitch, pan, loop);
+        return sourcePlayBus(handle, bus.handle, volume, Mathf.clamp(pitch * Core.audio.globalPitch, 0.0001f, 10f), Mathf.clamp(pan, -1f, 1f), loop);
     }
 
     /** Sets the bus that will be used for the next play of this SFX. */
