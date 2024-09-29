@@ -1,16 +1,15 @@
 package arc.scene.ui;
 
-import arc.Core;
-import arc.struct.IntSeq;
-import arc.graphics.g2d.Font;
-import arc.graphics.g2d.GlyphLayout;
-import arc.input.KeyCode;
-import arc.scene.Scene;
-import arc.scene.event.InputEvent;
-import arc.scene.event.InputListener;
-import arc.scene.style.Drawable;
-import arc.util.Align;
-import arc.util.pooling.Pools;
+import arc.*;
+import arc.graphics.g2d.*;
+import arc.input.*;
+import arc.math.*;
+import arc.scene.*;
+import arc.scene.event.*;
+import arc.scene.style.*;
+import arc.struct.*;
+import arc.util.*;
+import arc.util.pooling.*;
 
 /** A multiple-line text input field, entirely based on {@link TextField} */
 public class TextArea extends TextField{
@@ -358,6 +357,7 @@ public class TextArea extends TextField{
 
             cursorLine = (int)Math.floor((height - y) / font.getLineHeight()) + firstLineShowing;
             cursorLine = Math.max(0, Math.min(cursorLine, getLines() - 1));
+            cursorLine = Mathf.clamp(cursorLine, firstLineShowing, firstLineShowing + linesShowing - 1);
 
             super.setCursorPosition(x, y);
             updateCurrentLine();
