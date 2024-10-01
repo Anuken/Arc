@@ -280,7 +280,7 @@ public class Lines{
     public static void circle(float x, float y, float rad){
         poly(x, y, circleVertices(rad), rad);
     }
-    
+
     public static void ellipse(float x, float y, float rad, float width, float height, float rot){
         ellipse(circleVertices(rad), x, y, width * rad, height * rad, rot);
 
@@ -490,7 +490,7 @@ public class Lines{
         rect(rect.x, rect.y, rect.width, rect.height, 0);
     }
 
-    public static void rect(float x, float y, float width, float height, int space){
+    public static void rect(float x, float y, float width, float height, float space){
         rect(x, y, width, height, space, space);
     }
 
