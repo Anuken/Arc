@@ -28,7 +28,7 @@ public class SpriteBatch extends Batch{
     private static final float[] emptyVertices = new float[0];
 
     static ForkJoinHolder commonPool;
-    boolean multithreaded = (Core.app.getVersion() >= 21 && !Core.app.isIOS()) || Core.app.isDesktop();
+    boolean multithreaded = Core.app != null && ((Core.app.getVersion() >= 21 && !Core.app.isIOS()) || Core.app.isDesktop());
 
     protected Mesh mesh;
     protected FloatBuffer buffer;
