@@ -1127,7 +1127,7 @@ public class JsonValue implements Iterable<JsonValue>{
             if(object.child == null)
                 buffer.append("{}");
             else{
-                ident++;
+                indent++;
                 boolean newLines = needNewLine(object, 2);
                 int start = buffer.length();
                 outer:
