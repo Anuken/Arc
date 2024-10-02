@@ -718,14 +718,19 @@ public class Strings{
         return major2 > major1 || (major2 == major1 && minor2 > minor1);
     }
 
-
+    public static String repeat(String str, int count) {
+        String result = "";
+        while (count-- > 0) result+=str;
+        return result;
+    }
+    
     public static String rJust(String str, int newLenght) { 
         return rJust(str, newLenght, " "); 
     }
     /** Justify string to the right. E.g. "&emsp; right" */
     public static String rJust(String str, int newLenght, String filler) {
         if (filler.length() == 0) return str; // Cannot fill, so return initial string
-        return filler.repeat((newLenght-str.length())/filler.length())+filler.substring(0, (newLenght-str.length())%filler.length())+str;
+        return repeat(filler, (newLenght-str.length())/filler.length())+filler.substring(0, (newLenght-str.length())%filler.length())+str;
     }
     public static Seq<String> rJust(Seq<String> list, int newLenght) { 
         return rJust(list, newLenght, " "); 
@@ -740,7 +745,7 @@ public class Strings{
     /** Justify string to the left. E.g. "left &emsp;" */
     public static String lJust(String str, int newLenght, String filler) {
         if (filler.length() == 0) return str; // Cannot fill, so return initial string
-        return str+filler.repeat((newLenght-str.length())/filler.length())+filler.substring(0, (newLenght-str.length())%filler.length());
+        return str+repeat(filler, (newLenght-str.length())/filler.length())+filler.substring(0, (newLenght-str.length())%filler.length());
     }
     public static Seq<String> lJust(Seq<String> list, int newLenght) { 
         return lJust(list, newLenght, " "); 
@@ -756,7 +761,7 @@ public class Strings{
     public static String mJust(String left, String right, int newLenght, String filler) {
         if (filler.length() == 0) return left+right; // Cannot fill, return concatened sides
         int s = newLenght-left.length()-right.length();
-        return left+filler.repeat(s/filler.length())+filler.substring(0, s%filler.length())+right;
+        return left+repeat(filler, s/filler.length())+filler.substring(0, s%filler.length())+right;
     }
     public static Seq<String> mJust(Seq<String> left, Seq<String> right, int newLenght) { 
         return mJust(left, right, newLenght, " "); 
