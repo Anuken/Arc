@@ -153,6 +153,11 @@ public class Strings{
         return out.toString();
     }
 
+    /** Remove glyphs and colors */
+    public static String normalize(CharSequence str) {
+      return stripGlyphs(stripColors(str));  
+    }
+
     private static int parseColorMarkup(CharSequence str, int start, int end){
         if(start >= end) return -1; // String ended with "[".
         switch(str.charAt(start)){
@@ -323,8 +328,8 @@ public class Strings{
         return result.toString();
     }
 
-    /**Converts a snake_case or kebab-case string to Upper Case.
-     * For example: "test_string" -> "Test String"*/
+    /**Converts a snake_case or kebab-case string to Title Case.
+     * For example: "test_string" -> "Test String", or "TEST_STRING" -> "Test String"*/
     public static String capitalize(String s){
         StringBuilder result = new StringBuilder(s.length());
 
@@ -335,7 +340,7 @@ public class Strings{
             }else if(i == 0 || s.charAt(i - 1) == '_' || s.charAt(i - 1) == '-'){
                 result.append(Character.toUpperCase(c));
             }else{
-                result.append(c);
+                result.append(Character.toLowerCase(c));
             }
         }
 
@@ -369,7 +374,7 @@ public class Strings{
             if(i == 0){
                 result.append(Character.toLowerCase(c));
             }else if(c != ' '){
-                result.append(c);
+                result.append(Character.toUpperCase(c));
             }
 
         }
@@ -491,6 +496,11 @@ public class Strings{
         }
     }
 
+    /** Returns Double.MIN_VALUE if parsing failed. */
+    public static double parseDouble(String s){
+        return parseDouble(s, Double.MIN_VALUE);
+    }
+
     /** Faster double parser that doesn't throw exceptions. */
     public static double parseDouble(String value, double defaultValue){
         int len = value.length();
@@ -562,7 +572,7 @@ public class Strings{
         }
     }
 
-    /** Returns Float.NEGATIVE_INFINITY if parsing failed. */
+    /** Returns Float.MIN_VALUE if parsing failed. */
     public static float parseFloat(String s){
         return parseFloat(s, Float.MIN_VALUE);
     }
@@ -670,5 +680,96 @@ public class Strings{
             builder.replace(index, index + 1, replace);
             index += replaceLength;
         }
+    }
+
+      
+    /** @return whether the specified string mean true */
+    public static boolean isTrue(String str) {
+        switch(str.toLowerCase()){
+            case "1": case "true": case "on": 
+            case "enable": case "activate":
+                     return true;
+            default: return false;
+        }
+    }
+
+    /** @return whether the specified string mean false */
+    public static boolean isFalse(String str) {
+        switch (str.toLowerCase()) {
+            case "0": case "false": case "off": 
+            case "disable": case "desactivate":
+                     return true;
+            default: return false;
+        }
+    }
+  
+    /** @return whether {@code newVersion} string is greater than {@code currentVersion} string, e.g. "v146" > "120.1" */
+    public static boolean isVersionAtLeast(String currentVersion, String newVersion) {
+        if (currentVersion.startsWith("v")) currentVersion = currentVersion.substring(1);
+        if (newVersion.startsWith("v")) newVersion = newVersion.substring(1);
+        
+        int dot = currentVersion.indexOf('.');
+        int major1 = parseInt(dot == -1 ? currentVersion : currentVersion.substring(0, dot), 0);
+        int minor1 = dot == -1 ? 0 : parseInt(currentVersion.substring(dot + 1), 0);
+        dot = newVersion.indexOf('.');
+        int major2 = parseInt(dot == -1 ? newVersion : newVersion.substring(0, dot), 0);
+        int minor2 = dot == -1 ? 0 : parseInt(newVersion.substring(dot + 1), 0);
+        
+        return major2 > major1 || (major2 == major1 && minor2 > minor1);
+    }
+
+
+    public static String rJust(String str, int newLenght) { 
+        return rJust(str, newLenght, " "); 
+    }
+    /** Justify string to the right. E.g. "&emsp; right" */
+    public static String rJust(String str, int newLenght, String filler) {
+        if (filler.length() == 0) return str; // Cannot fill, so return initial string
+        return filler.repeat((newLenght-str.length())/filler.length())+filler.substring(0, (newLenght-str.length())%filler.length())+str;
+    }
+    public static Seq<String> rJust(Seq<String> list, int newLenght) { 
+        return rJust(list, newLenght, " "); 
+    }
+    public static Seq<String> rJust(Seq<String> list, int newLenght, String filler) {
+        return list.map(str -> rJust(str, newLenght, filler));
+    }
+    
+    public static String lJust(String str, int newLenght) { 
+        return lJust(str, newLenght, " "); 
+    }
+    /** Justify string to the left. E.g. "left &emsp;" */
+    public static String lJust(String str, int newLenght, String filler) {
+        if (filler.length() == 0) return str; // Cannot fill, so return initial string
+        return str+filler.repeat((newLenght-str.length())/filler.length())+filler.substring(0, (newLenght-str.length())%filler.length());
+    }
+    public static Seq<String> lJust(Seq<String> list, int newLenght) { 
+        return lJust(list, newLenght, " "); 
+    }
+    public static Seq<String> lJust(Seq<String> list, int newLenght, String filler) {
+        return list.map(str -> lJust(str, newLenght, filler));
+    }
+    
+    public static String mJust(String left, String right, int newLenght) { 
+        return mJust(left, right, newLenght, " "); 
+    }
+    /** Justify string at middle. E.g. "left &emsp; right" */
+    public static String mJust(String left, String right, int newLenght, String filler) {
+        if (filler.length() == 0) return left+right; // Cannot fill, return concatened sides
+        int s = newLenght-left.length()-right.length();
+        return left+filler.repeat(s/filler.length())+filler.substring(0, s%filler.length())+right;
+    }
+    public static Seq<String> mJust(Seq<String> left, Seq<String> right, int newLenght) { 
+        return mJust(left, right, newLenght, " "); 
+    }
+    public static Seq<String> mJust(Seq<String> left, Seq<String> right, int newLenght, String filler) {
+        Seq<String> arr = new Seq<>(Integer.max(left.size, right.size));
+        int i = 0;
+        
+        for (; i<Integer.min(left.size, right.size); i++) arr.add(mJust(left.get(i), right.get(i), newLenght, filler));
+        // Fill the rest
+        for (; i<left.size; i++) arr.add(lJust(left.get(i), newLenght, filler));
+        for (; i<right.size; i++) arr.add(rJust(right.get(i), newLenght, filler));
+        
+        return arr;
     }
 }
