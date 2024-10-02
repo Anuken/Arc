@@ -72,6 +72,12 @@ public class JsonValue implements Iterable<JsonValue>{
         return true;
     }
 
+    private static boolean needNewLine(JsonValue object, int maxChildren) {
+        for(JsonValue child = object.child; child != null; child = child.next) 
+            if(child.isObject() || child.isArray() || maxChildren-- <= 0) return true;
+        return false;
+    }
+
     private static void indent(int count, StringBuilder buffer){
         for(int i = 0; i < count; i++)
             buffer.append('\t');
@@ -1121,7 +1127,8 @@ public class JsonValue implements Iterable<JsonValue>{
             if(object.child == null)
                 buffer.append("{}");
             else{
-                boolean newLines = !isFlat(object);
+                ident++;
+                boolean newLines = needNewLine(object, 2);
                 int start = buffer.length();
                 outer:
                 while(true){
@@ -1130,7 +1137,7 @@ public class JsonValue implements Iterable<JsonValue>{
                         if(newLines) indent(indent, buffer);
                         buffer.append(outputType.quoteName(child.name));
                         buffer.append(": ");
-                        prettyPrint(child, buffer, indent + 1, settings);
+                        prettyPrint(child, buffer, indent, settings);
                         if((!newLines || outputType != OutputType.minimal) && child.next != null) buffer.append(',');
                         buffer.append(newLines ? '\n' : ' ');
                         if(!newLines && buffer.length() - start > settings.singleLineColumns){
@@ -1148,7 +1155,8 @@ public class JsonValue implements Iterable<JsonValue>{
             if(object.child == null)
                 buffer.append("[]");
             else{
-                boolean newLines = !isFlat(object);
+                indent++;
+                boolean newLines = needNewLine(object, 4);
                 boolean wrap = settings.wrapNumericArrays || !isNumeric(object);
                 int start = buffer.length();
                 outer:
@@ -1156,7 +1164,7 @@ public class JsonValue implements Iterable<JsonValue>{
                     buffer.append(newLines ? "[\n" : "[ ");
                     for(JsonValue child = object.child; child != null; child = child.next){
                         if(newLines) indent(indent, buffer);
-                        prettyPrint(child, buffer, indent + 1, settings);
+                        prettyPrint(child, buffer, indent, settings);
                         if((!newLines || outputType != OutputType.minimal) && child.next != null) buffer.append(',');
                         buffer.append(newLines ? '\n' : ' ');
                         if(wrap && !newLines && buffer.length() - start > settings.singleLineColumns){
@@ -1202,14 +1210,15 @@ public class JsonValue implements Iterable<JsonValue>{
             if(object.child == null)
                 writer.append("{}");
             else{
-                boolean newLines = !isFlat(object) || object.size > 6;
+                indent++;
+                boolean newLines = needNewLine(object, 2);
                 writer.append(newLines ? "{\n" : "{ ");
                 int i = 0;
                 for(JsonValue child = object.child; child != null; child = child.next){
                     if(newLines) indent(indent, writer);
                     writer.append(outputType.quoteName(child.name));
                     writer.append(": ");
-                    prettyPrint(child, writer, indent + 1, settings);
+                    prettyPrint(child, writer, indent, settings);
                     if((!newLines || outputType != OutputType.minimal) && child.next != null) writer.append(',');
                     writer.append(newLines ? '\n' : ' ');
                 }
@@ -1220,12 +1229,13 @@ public class JsonValue implements Iterable<JsonValue>{
             if(object.child == null)
                 writer.append("[]");
             else{
-                boolean newLines = !isFlat(object);
+                indent++;
+                boolean newLines = needNewLine(object, 4);
                 writer.append(newLines ? "[\n" : "[ ");
                 int i = 0;
                 for(JsonValue child = object.child; child != null; child = child.next){
                     if(newLines) indent(indent, writer);
-                    prettyPrint(child, writer, indent + 1, settings);
+                    prettyPrint(child, writer, indent, settings);
                     if((!newLines || outputType != OutputType.minimal) && child.next != null) writer.append(',');
                     writer.append(newLines ? '\n' : ' ');
                 }
