@@ -28,11 +28,11 @@ public class Spacer extends Element{
 
     @Override
     public float getPrefHeight(){
-        return heightFunc.get();
+        return Scl.scl(heightFunc.get());
     }
 
     @Override
     public float getPrefWidth(){
-        return widthFunc.get();
+        return Scl.scl(widthFunc.get());
     }
 }
