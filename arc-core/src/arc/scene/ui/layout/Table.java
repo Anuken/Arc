@@ -366,6 +366,18 @@ public class Table extends WidgetGroup{
         return add(stack);
     }
 
+    public Cell<Spacer> spacer(Floatp width, Floatp height){
+        return add(new Spacer(width, height));
+    }
+
+    public Cell<Spacer> spacerX(Floatp width){
+        return add(new Spacer(width, () -> 0f));
+    }
+
+    public Cell<Spacer> spacerY(Floatp height){
+        return add(new Spacer(() -> 0f, height));
+    }
+
     public Cell<Image> image(Prov<TextureRegion> reg){
         return add(new Image(reg.get())).update(i -> {
             ((TextureRegionDrawable)i.getDrawable()).setRegion(reg.get());
