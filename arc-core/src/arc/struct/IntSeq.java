@@ -125,6 +125,13 @@ public class IntSeq{
         return sum;
     }
 
+    public void chunked(int chunkSize, Cons<int[]> iterator){
+        for(int i = 0; i < size; i += chunkSize){
+            int[] slice = Arrays.copyOfRange(items, i, Math.min(i + chunkSize, size));
+            iterator.get(slice);
+        }
+    }
+
     /**
      * Adds a value if it was already not in this sequence.
      * @return whether this value was not present in this sequence.
