@@ -400,7 +400,7 @@ public final class Mathf{
 
     /** Clamps to [0, 1]. */
     public static float clamp(float value){
-        return clamp(value, 0f, 1f);
+        return Math.max(Math.min(value, 1f), 0f);
     }
 
     public static double clamp(double value, double min, double max){
