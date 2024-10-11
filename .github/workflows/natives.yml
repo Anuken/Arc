@@ -1,6 +1,6 @@
 name: Build Natives
 
-on: [workflow_dispatch]
+on: [push, workflow_dispatch]
 
 jobs:
   buildLinux:
