@@ -21,7 +21,7 @@ jobs:
           ./gradlew extensions:freetype:jnigenBuild
           ./gradlew backends:backend-sdl:jnigenBuild
       - name: Upload natives
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Arc-core desktop natives
           path: |
@@ -35,7 +35,7 @@ jobs:
             natives/natives-freetype-desktop/libs/arc-freetype.dll
             natives/natives-freetype-desktop/libs/arc-freetype64.dll
       - name: Upload Android natives
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Arc-core android natives
           path: |
@@ -61,7 +61,7 @@ jobs:
           ./gradlew extensions:freetype:jnigenBuild
           ./gradlew backends:backend-sdl:jnigenBuild
       - name: Upload natives
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Arc-core MacOS natives
           path: |
