@@ -395,9 +395,9 @@ public class Pixmap implements Disposable{
                 ByteBuffer pixels = this.pixels, otherPixels = pixmap.pixels;
                 int
                 startY = Math.max(dsty, 0),
-                endY = Math.min(dsty + Math.min(dstHeight, oheight), height),
+                endY = Math.min(Math.min(dsty + Math.min(dstHeight, oheight), height), dsty - srcy + oheight),
                 startX = Math.max(dstx, 0),
-                endX = Math.min(dstx + Math.min(dstWidth, owidth), width),
+                endX = Math.min(Math.min(dstx + Math.min(dstWidth, owidth), width), dstx - srcx + owidth),
                 offsetY = dsty - srcy,
                 scanX = Math.max(Math.max(srcx, -dstx), 0),
                 scanWidth = (endX - startX) * 4;

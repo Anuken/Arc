@@ -29,6 +29,16 @@ public class PixmapTest{
         assertEquals(0, pix.get(0, 0));
     }
 
+    @Test
+    public void pixmapBounds(){
+        int x = 176;
+
+        Pixmap base = new Pixmap(176, 269);
+        Pixmap crop = new Pixmap(176, 176);
+
+        crop.draw(base, 0, 176, x, x, 0, 0, x, x, true);
+    }
+
     static  Rect rect = new Rect();
     static Vec2 v1 = new Vec2(), v2 = new Vec2();
 
