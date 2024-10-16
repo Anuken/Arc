@@ -708,12 +708,13 @@ public class Strings{
     * @apiNote can handle multiple dots in the version, and it's very fast because it only does one iteration.
     */
     public static boolean isVersionAtLeast(String currentVersion, String newVersion) {
-        if (currentVersion.startsWith("v")) currentVersion = currentVersion.substring(1);
-        if (newVersion.startsWith("v")) newVersion = newVersion.substring(1);
-        
-        int last1 = 0, last2 = 0, dot1 = 0, dot2 = 0, p1 = 0, p2 = 0;
-        int len1 = currentVersion.length(), len2 = newVersion.length();
-        
+        int last1 = currentVersion.startsWith("v") ? 1 : 0, 
+            last2 = newVersion.startsWith("v") ? 1 : 0, 
+            len1 = currentVersion.length(), 
+            len2 = newVersion.length(),
+            dot1 = 0, dot2 = 0, 
+            p1 = 0, p2 = 0;
+
         while ((dot1 != -1  && dot2 != -1) && (last1 < len1 && last2 < len2)) {
             dot1 = currentVersion.indexOf('.', last1);
             dot2 = newVersion.indexOf('.', last2);
