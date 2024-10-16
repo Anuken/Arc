@@ -703,19 +703,41 @@ public class Strings{
         }
     }
   
-    /** @return whether {@code newVersion} string is greater than {@code currentVersion} string, e.g. "v146" > "120.1" */
+    /** 
+    * @return whether {@code newVersion} is greater than {@code currentVersion} , e.g. "v146" > "124.1"
+    * @apiNote can handle multiple dots in the version, and it's very fast because it only does one iteration.
+    */
     public static boolean isVersionAtLeast(String currentVersion, String newVersion) {
         if (currentVersion.startsWith("v")) currentVersion = currentVersion.substring(1);
         if (newVersion.startsWith("v")) newVersion = newVersion.substring(1);
         
-        int dot = currentVersion.indexOf('.');
-        int major1 = parseInt(dot == -1 ? currentVersion : currentVersion.substring(0, dot), 0);
-        int minor1 = dot == -1 ? 0 : parseInt(currentVersion.substring(dot + 1), 0);
-        dot = newVersion.indexOf('.');
-        int major2 = parseInt(dot == -1 ? newVersion : newVersion.substring(0, dot), 0);
-        int minor2 = dot == -1 ? 0 : parseInt(newVersion.substring(dot + 1), 0);
+        int last1 = 0, last2 = 0, dot1 = 0, dot2 = 0, p1 = 0, p2 = 0;
+        int len1 = currentVersion.length(), len2 = newVersion.length();
         
-        return major2 > major1 || (major2 == major1 && minor2 > minor1);
+        while ((dot1 != -1  && dot2 != -1) && (last1 < len1 && last2 < len2)) {
+            dot1 = currentVersion.indexOf('.', last1);
+            dot2 = newVersion.indexOf('.', last2);
+            if (dot1 == -1) dot1 = len1;
+            if (dot2 == -1) dot2 = len2;
+            
+            p1 = parseInt(currentVersion, 10, 0, last1, dot1);
+            p2 = parseInt(newVersion, 10, 0, last2, dot2);
+            last1 = dot1+1;
+            last2 = dot2+1;
+            
+            if (p1 != p2) return p2 > p1;
+        }
+        
+        // Continue iteration on newVersion to see if it's just leading zeros.
+        while (dot2 != -1 && last2 < len2) {
+            dot2 = newVersion.indexOf('.', last2);
+            if (dot2 == -1) dot2 = len2;
+            p2 = parseInt(newVersion, 10, 0, last2, dot2);
+            last2 = dot2+1;
+            if (p2 > 0) return true;
+        }
+        
+        return false;
     }
 
     public static String repeat(String str, int count) {
