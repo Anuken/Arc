@@ -5,6 +5,14 @@ sourceSets.test.resources.srcDirs = ["test/resources"]
 dependencies{
     testImplementation libraries.junit
     testImplementation aproj(":natives:natives-desktop")
+    
+    if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+        implementation "org.fusesource.jansi:jansi-native:1.1"
+        implementation "org.fusesource.jansi:jansi-native:1.1:windows32"
+        implementation "org.fusesource.jansi:jansi-native:1.1:windows64"
+    } else {
+        compileOnly "org.fusesource.jansi:jansi-native:1.1"
+    }
 }
 
 test{
