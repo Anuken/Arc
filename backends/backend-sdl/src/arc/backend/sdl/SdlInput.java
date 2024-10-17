@@ -195,6 +195,7 @@ public class SdlInput extends Input{
         for(InputDevice device : devices){
             device.postUpdate();
         }
+        deltaX = deltaY = 0;
     }
 
     @Override
