@@ -1,5 +1,5 @@
 sourceSets.main.java.srcDirs = ["src"]
-sourceSets.main.resources.srcDirs = ["libs/linux64", "libs/macosx64","libs/windows32", "libs/windows64", "libs/openal"]
+sourceSets.main.resources.srcDirs = ["libs/linux64", "libs/linuxarm64", "libs/macosx64","libs/windows32", "libs/windows64", "libs/openal"]
 
 dependencies {
     testImplementation libraries.jnigen
@@ -79,15 +79,6 @@ jnigen{
         cIncludes = ["*.c", "glew-2.2.0/src/glew.c"]
         headerDirs += ["glew-2.2.0/include"]
     }
-    add(Linux, x64){
-        cppFlags += " " + execCmd("sdl2-config --cflags")
-        cFlags = cppFlags
-        //NOTE: for this to statically link properly, you need to add -L/path/to/folder/with/custom/libSDL2.a
-        //where this folder contains a custom build of SDL2 with the -fPIC flag (added to the makefile in the cflags section after configure)
-        //--static-libs and ?.replace("-lSDL2", "-l:libSDL2.a")
-        libraries = execCmd("sdl2-config --libs") + " -Wl,-Bdynamic -lGL "
-        linkerFlags = "-shared -m64"
-    }
     add(Windows, x64){
         def path = "SDL2-$sdlVersion/x86_64-w64-mingw32"
         def root = "$rootDir/backends/backend-sdl/jni"
@@ -113,6 +104,15 @@ jnigen{
             linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.9 -stdlib=libc++"
             libraries = "/usr/local/lib/libSDL2.a -lm -liconv -Wl,-framework,CoreAudio -Wl,-framework,CoreHaptics -Wl,-weak_framework,GameController -Wl,-framework,OpenGL,-weak_framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal /usr/local/lib/libGLEW.a"
         }
+        add(Linux, x64){
+            cppFlags += " " + execCmd("sdl2-config --cflags")
+            cFlags = cppFlags
+            //NOTE: for this to statically link properly, you need to add -L/path/to/folder/with/custom/libSDL2.a
+            //where this folder contains a custom build of SDL2 with the -fPIC flag (added to the makefile in the cflags section after configure)
+            //--static-libs and ?.replace("-lSDL2", "-l:libSDL2.a")
+            libraries = execCmd("sdl2-config --libs") + " -Wl,-Bdynamic -lGL "
+            linkerFlags = "-shared -m64"
+        }
     }else{
 
         //doesn't work on CI, have to use native M1
@@ -121,6 +121,15 @@ jnigen{
             linkerFlags = "-shared -arch arm64 -mmacosx-version-min=10.9 -stdlib=libc++"
             //execCmd("sdl2-config --static-libs") + " -Wl,-framework,OpenGL"
             libraries = "/usr/local/lib/libSDL2.a -lm -liconv -Wl,-framework,CoreAudio -Wl,-weak_framework,GameController -Wl,-framework,OpenGL,-weak_framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal /usr/local/lib/libGLEW.a"
+        }
+        add(Linux, x64, ARM){
+            cppFlags += " " + execCmd("sdl2-config --cflags")
+            cFlags = cppFlags
+            //NOTE: for this to statically link properly, you need to add -L/path/to/folder/with/custom/libSDL2.a
+            //where this folder contains a custom build of SDL2 with the -fPIC flag (added to the makefile in the cflags section after configure)
+            //--static-libs and ?.replace("-lSDL2", "-l:libSDL2.a")
+            libraries = execCmd("sdl2-config --libs") + " -Wl,-Bdynamic -lGL "
+            linkerFlags = "-shared -m64"
         }
     }
 
