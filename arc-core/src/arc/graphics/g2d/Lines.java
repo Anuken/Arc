@@ -248,8 +248,7 @@ public class Lines{
             prepareStraightJoin(B, D, E, halfLineWidth);
             return;
         }
-        //clamps length to avoid super sharp edges. this looks pretty bad, but it's better than the alternative of a 1-pixel line to infinity
-        float len = Mathf.clamp((float)(halfLineWidth / Math.sin(angle)), -halfLineWidth*10f, halfLineWidth*10f);
+        float len = (float)(halfLineWidth / Math.sin(angle));
         boolean bendsLeft = angle < 0;
         AB.setLength(len);
         BC.setLength(len);
