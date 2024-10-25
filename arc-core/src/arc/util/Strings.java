@@ -702,7 +702,37 @@ public class Strings{
             default: return false;
         }
     }
-  
+ 
+    public static <T> int best(Iterable<T> list, Intf<T> intifier) {
+        int best = 0;
+        
+        for (T i : list) {
+            int s = intifier.get(i);
+            if (s > best) best = s;
+        }
+        
+        return best;
+    }
+    
+    public static <T> int best(T[] list, Intf<T> intifier) {
+        int best = 0;
+        
+        for (T i : list) {
+            int s = intifier.get(i);
+            if (s > best) best = s;
+        }
+        
+        return best;
+    }
+    
+    public static int bestLength(Iterable<? extends String> list) {
+        return best(list, str -> str.length());
+    }
+    
+    public static int bestLength(String... list) {
+        return best(list, str -> str.length());
+    }
+    
     /** 
     * @return whether {@code newVersion} is greater than {@code currentVersion} , e.g. "v146" > "124.1"
     * @apiNote can handle multiple dots in the version, and it's very fast because it only does one iteration.
@@ -741,62 +771,103 @@ public class Strings{
         return false;
     }
 
+    /** Taken from the {@link String#repeat(int)} method of JDK 11 */
     public static String repeat(String str, int count) {
-        String result = "";
-        while (count-- > 0) result+=str;
-        return result;
+        if (count < 0) {
+            throw new IllegalArgumentException("count is negative: " + count);
+        }
+        if (count == 1) {
+            return str;
+        }
+        final byte[] value = str.getBytes();
+        final int len = value.length;
+        if (len == 0 || count == 0) {
+            return "";
+        }
+        if (Integer.MAX_VALUE / count < len) {
+            throw new OutOfMemoryError("Required length exceeds implementation limit");
+        }
+        if (len == 1) {
+            final byte[] single = new byte[count];
+            java.util.Arrays.fill(single, value[0]);
+            return new String(single);
+        }
+        final int limit = len * count;
+        final byte[] multiple = new byte[limit];
+        System.arraycopy(value, 0, multiple, 0, len);
+        int copied = len;
+        for (; copied < limit - copied; copied <<= 1) {
+            System.arraycopy(multiple, 0, multiple, copied, copied);
+        }
+        System.arraycopy(multiple, 0, multiple, copied, limit - copied);
+        return new String(multiple);
     }
     
-    public static String rJust(String str, int newLenght) { 
-        return rJust(str, newLenght, " "); 
-    }
+    public static String rJust(String str, int length) { return rJust(str, length, " "); }
     /** Justify string to the right. E.g. "&emsp; right" */
-    public static String rJust(String str, int newLenght, String filler) {
-        if (filler.length() == 0) return str; // Cannot fill, so return initial string
-        return repeat(filler, (newLenght-str.length())/filler.length())+filler.substring(0, (newLenght-str.length())%filler.length())+str;
+    public static String rJust(String str, int length, String filler) {
+        int sSize = str.length(), fSize = filler.length();
+        
+        if (fSize == 0 || sSize >= length) return str; 
+        if (fSize == 1) return filler.repeat(length-sSize)+str;   
+        int add = length-sSize;
+        return filler.repeat(add/fSize)+filler.substring(0, add%fSize)+str;
     }
-    public static Seq<String> rJust(Seq<String> list, int newLenght) { 
-        return rJust(list, newLenght, " "); 
-    }
-    public static Seq<String> rJust(Seq<String> list, int newLenght, String filler) {
-        return list.map(str -> rJust(str, newLenght, filler));
+    public static Seq<String> rJust(Seq<String> list, int length) { return rJust(list, length, " "); }
+    public static Seq<String> rJust(Seq<String> list, int length, String filler) {
+        return list.map(str -> rJust(str, length, filler));
     }
     
-    public static String lJust(String str, int newLenght) { 
-        return lJust(str, newLenght, " "); 
-    }
+    public static String lJust(String str, int length) { return lJust(str, length, " "); }
     /** Justify string to the left. E.g. "left &emsp;" */
-    public static String lJust(String str, int newLenght, String filler) {
-        if (filler.length() == 0) return str; // Cannot fill, so return initial string
-        return str+repeat(filler, (newLenght-str.length())/filler.length())+filler.substring(0, (newLenght-str.length())%filler.length());
+    public static String lJust(String str, int length, String filler) {
+        int sSize = str.length(), fSize = filler.length();
+        
+        if (fSize == 0 || sSize >= length) return str;
+        if (fSize == 1) return str+filler.repeat(length-sSize);
+        int add = length-sSize;
+        return str+filler.repeat(add/fSize)+filler.substring(0, add%fSize);
     }
-    public static Seq<String> lJust(Seq<String> list, int newLenght) { 
-        return lJust(list, newLenght, " "); 
-    }
-    public static Seq<String> lJust(Seq<String> list, int newLenght, String filler) {
-        return list.map(str -> lJust(str, newLenght, filler));
+    public static Seq<String> lJust(Seq<String> list, int length) { return lJust(list, length, " "); }
+    public static Seq<String> lJust(Seq<String> list, int length, String filler) {
+        return list.map(str -> lJust(str, length, filler));
     }
     
-    public static String mJust(String left, String right, int newLenght) { 
-        return mJust(left, right, newLenght, " "); 
+    public static String cJust(String str, int length) { return cJust(str, length, " "); }
+    /** Justify string to the center. E.g. "&emsp; center &emsp;". */
+    public static String cJust(String str, int length, String filler) {
+        int sSize = str.length(), fSize = filler.length();
+        
+        if (fSize == 0 || sSize >= length) return str;
+        int add = length-sSize, left = add/2, right = add-add/2;
+        if (fSize == 1) return filler.repeat(left)+str+filler.repeat(right);
+        return filler.repeat(left/fSize)+filler.substring(0, left%fSize)+str+
+               filler.repeat(right/fSize)+filler.substring(0, right%fSize);
     }
-    /** Justify string at middle. E.g. "left &emsp; right" */
-    public static String mJust(String left, String right, int newLenght, String filler) {
-        if (filler.length() == 0) return left+right; // Cannot fill, return concatened sides
-        int s = newLenght-left.length()-right.length();
-        return left+repeat(filler, s/filler.length())+filler.substring(0, s%filler.length())+right;
+    public static Seq<String> cJust(Seq<String> list, int length) { return cJust(list, length, " "); }
+    public static Seq<String> cJust(Seq<String> list, int length, String filler) {
+        return list.map(str -> cJust(str, length, filler));
     }
-    public static Seq<String> mJust(Seq<String> left, Seq<String> right, int newLenght) { 
-        return mJust(left, right, newLenght, " "); 
+    
+    public static String sJust(String left, String right, int length) { return sJust(left, right, length, " "); }
+    /** Justify string to the sides. E.g. "left &emsp; right" */
+    public static String sJust(String left, String right, int length, String filler) {
+        int fSize = filler.length(), lSize = left.length(), rSize = right.length();
+        
+        if (fSize == 0 || lSize+rSize >= length) return left+right; 
+        int add = length-lSize-rSize;
+        if (fSize == 1) return left+filler.repeat(add)+right;
+        return left+filler.repeat(add/fSize)+filler.substring(0, add%fSize)+right;
     }
-    public static Seq<String> mJust(Seq<String> left, Seq<String> right, int newLenght, String filler) {
+    public static Seq<String> sJust(Seq<String> left, Seq<String> right, int length) { return sJust(left, right, length, " "); }
+    public static Seq<String> sJust(Seq<String> left, Seq<String> right, int length, String filler) {
         Seq<String> arr = new Seq<>(Integer.max(left.size, right.size));
         int i = 0;
         
-        for (; i<Integer.min(left.size, right.size); i++) arr.add(mJust(left.get(i), right.get(i), newLenght, filler));
+        for (; i<Integer.min(left.size, right.size); i++) arr.add(sJust(left.get(i), right.get(i), length, filler));
         // Fill the rest
-        for (; i<left.size; i++) arr.add(lJust(left.get(i), newLenght, filler));
-        for (; i<right.size; i++) arr.add(rJust(right.get(i), newLenght, filler));
+        for (; i<left.size; i++) arr.add(lJust(left.get(i), length, filler));
+        for (; i<right.size; i++) arr.add(rJust(right.get(i), length, filler));
         
         return arr;
     }
