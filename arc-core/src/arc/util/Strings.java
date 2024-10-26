@@ -809,9 +809,9 @@ public class Strings{
         int sSize = str.length(), fSize = filler.length();
         
         if (fSize == 0 || sSize >= length) return str; 
-        if (fSize == 1) return filler.repeat(length-sSize)+str;   
+        if (fSize == 1) return repeat(filler, length-sSize)+str;   
         int add = length-sSize;
-        return filler.repeat(add/fSize)+filler.substring(0, add%fSize)+str;
+        return repeat(filler, add/fSize)+filler.substring(0, add%fSize)+str;
     }
     public static Seq<String> rJust(Seq<String> list, int length) { return rJust(list, length, " "); }
     public static Seq<String> rJust(Seq<String> list, int length, String filler) {
@@ -824,9 +824,9 @@ public class Strings{
         int sSize = str.length(), fSize = filler.length();
         
         if (fSize == 0 || sSize >= length) return str;
-        if (fSize == 1) return str+filler.repeat(length-sSize);
+        if (fSize == 1) return str+repeat(filler, length-sSize);
         int add = length-sSize;
-        return str+filler.repeat(add/fSize)+filler.substring(0, add%fSize);
+        return str+repeat(filler, add/fSize)+filler.substring(0, add%fSize);
     }
     public static Seq<String> lJust(Seq<String> list, int length) { return lJust(list, length, " "); }
     public static Seq<String> lJust(Seq<String> list, int length, String filler) {
@@ -840,9 +840,9 @@ public class Strings{
         
         if (fSize == 0 || sSize >= length) return str;
         int add = length-sSize, left = add/2, right = add-add/2;
-        if (fSize == 1) return filler.repeat(left)+str+filler.repeat(right);
-        return filler.repeat(left/fSize)+filler.substring(0, left%fSize)+str+
-               filler.repeat(right/fSize)+filler.substring(0, right%fSize);
+        if (fSize == 1) return repeat(filler, left)+str+repeat(filler, right);
+        return repeat(filler, left/fSize)+filler.substring(0, left%fSize)+str+
+               repeat(filler, right/fSize)+filler.substring(0, right%fSize);
     }
     public static Seq<String> cJust(Seq<String> list, int length) { return cJust(list, length, " "); }
     public static Seq<String> cJust(Seq<String> list, int length, String filler) {
@@ -856,8 +856,8 @@ public class Strings{
         
         if (fSize == 0 || lSize+rSize >= length) return left+right; 
         int add = length-lSize-rSize;
-        if (fSize == 1) return left+filler.repeat(add)+right;
-        return left+filler.repeat(add/fSize)+filler.substring(0, add%fSize)+right;
+        if (fSize == 1) return left+repeat(filler, add)+right;
+        return left+repeat(filler, add/fSize)+filler.substring(0, add%fSize)+right;
     }
     public static Seq<String> sJust(Seq<String> left, Seq<String> right, int length) { return sJust(left, right, length, " "); }
     public static Seq<String> sJust(Seq<String> left, Seq<String> right, int length, String filler) {
