@@ -2,6 +2,7 @@ package arc.util;
 
 import arc.graphics.*;
 import arc.struct.*;
+import arc.func.*;
 
 import java.io.*;
 import java.net.*;
