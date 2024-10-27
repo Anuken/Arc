@@ -26,12 +26,14 @@ jobs:
           name: Arc-core desktop natives
           path: |
             natives/natives-desktop/libs/libarc64.so
+            natives/natives-desktop/libs/libarcarm64.so
             natives/natives-desktop/libs/arc.dll
             natives/natives-desktop/libs/arc64.dll
             backends/backend-sdl/libs/linux64/libsdl-arc64.so
             backends/backend-sdl/libs/windows32/sdl-arc.dll
             backends/backend-sdl/libs/windows64/sdl-arc64.dll
             natives/natives-freetype-desktop/libs/libarc-freetype64.so
+            natives/natives-freetype-desktop/libs/libarcarm-freetype64.so
             natives/natives-freetype-desktop/libs/arc-freetype.dll
             natives/natives-freetype-desktop/libs/arc-freetype64.dll
       - name: Upload Android natives
