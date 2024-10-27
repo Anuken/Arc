@@ -31,7 +31,8 @@ jobs:
           tags: arc-arm-sdl:latest
           load: true
           platforms: linux/arm64
-      - uses: shrink/actions-docker-extract@v3
+      - name: Extract ARM SDL library from the container
+        uses: shrink/actions-docker-extract@v3
         id: extract
         with:
           image: arc-arm-sdl:latest
