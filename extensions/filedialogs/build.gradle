@@ -20,6 +20,7 @@ jnigen{
         libraries = " -lcomdlg32 -lole32"
     }
     add(Linux, x64)
+    add(Linux, x64, ARM)
     add(MacOsX, x64)
     add(MacOsX, x64, ARM){
         cFlags = cppFlags = cppFlags.replace("x86_64", "arm64")
@@ -48,7 +49,7 @@ task preJni{
 task postJni{
     doLast{
         copy{
-            from "libs/linux64", "libs/windows32", "libs/windows64", "libs/macosx64"
+            from "libs/linux64", "libs/linuxarm64", "libs/windows32", "libs/windows64", "libs/macosx64"
             into "../../natives/natives-filedialogs/libs"
             include "**"
         }
