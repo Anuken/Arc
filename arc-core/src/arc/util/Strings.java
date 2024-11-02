@@ -873,17 +873,17 @@ public class Strings{
         return arr;
     }
 
-    public static Seq<String> tableify(Seq<String> lines, int maxLength) {
-        return tableify(lines, maxLength, Strings::lJust);
+    public static Seq<String> tableify(Seq<String> lines, int width) {
+        return tableify(lines, width, Strings::lJust);
     }
     /** 
      * Create a table with given {@code lines} 
      * and automatic columns number calculated with the table's {@code width}.
      */
-    public static Seq<String> tableify(Seq<String> lines, int maxLength, 
+    public static Seq<String> tableify(Seq<String> lines, int width, 
                                        Func2<String, Integer, String> justifier) {
         int spacing = 2, // Additional spacing between columns
-            columns = Math.max(1, maxLength / (bestLength(lines) + 2)); // Estimate the columns
+            columns = Math.max(1, width / (bestLength(lines) + 2)); // Estimate the columns
         Seq<String> result = new Seq<>(lines.size / columns + 1);
         int[] bests = new int[columns];
         StringBuilder builder = new StringBuilder();
@@ -906,5 +906,4 @@ public class Strings{
         
         return result;
     }
-
 }
