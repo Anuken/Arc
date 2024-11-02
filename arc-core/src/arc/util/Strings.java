@@ -872,4 +872,39 @@ public class Strings{
         
         return arr;
     }
+
+    public static Seq<String> tableify(Seq<String> lines, int maxLength) {
+        return tableify(lines, maxLength, Strings::lJust);
+    }
+    /** 
+     * Create a table with given {@code lines} 
+     * and automatic columns number calculated with the table's {@code width}.
+     */
+    public static Seq<String> tableify(Seq<String> lines, int maxLength, 
+                                       Func2<String, Integer, String> justifier) {
+        int spacing = 2, // Additional spacing between columns
+            columns = Math.max(1, maxLength / (bestLength(lines) + 2)); // Estimate the columns
+        Seq<String> result = new Seq<>(lines.size / columns + 1);
+        int[] bests = new int[columns];
+        StringBuilder builder = new StringBuilder();
+        
+        // Calculate the best length for each columns
+        for (int i=0, c=0, s=0; i<lines.size; i++) {
+            s = lines.get(i).length();
+            c = i % columns;
+            if (s > bests[c]) bests[c] = s;
+        }
+        
+        // Now justify lines
+        for (int i=0, c; i<lines.size;) { 
+            for (c=0; c<columns && i<lines.size; c++, i++) 
+                builder.append(justifier.get(lines.get(i), bests[c]+spacing));
+
+            result.add(builder.toString());
+            builder.setLength(0);
+        }
+        
+        return result;
+    }
+
 }
