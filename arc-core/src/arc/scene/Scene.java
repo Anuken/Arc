@@ -95,7 +95,7 @@ public class Scene implements InputProcessor{
 
     public @Nullable Element getHoverElement(){
         //TODO: this is slow, use mouseOverElement instead?
-        return hit(Core.input.mouseX(), Core.input.mouseY(), true);
+        return mouseOverElement;
     }
 
     public boolean hasField(){
