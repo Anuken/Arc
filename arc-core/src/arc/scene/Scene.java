@@ -94,7 +94,6 @@ public class Scene implements InputProcessor{
     }
 
     public @Nullable Element getHoverElement(){
-        //TODO: this is slow, use mouseOverElement instead?
         return mouseOverElement;
     }
 

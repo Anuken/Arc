@@ -194,7 +194,8 @@ public abstract class Group extends Element implements Cullable{
         Element[] childrenArray = children.items;
         for(int i = children.size - 1; i >= 0; i--){
             Element child = childrenArray[i];
-            if(!child.visible) continue;
+            //TODO: this optimization may be incorrect, needs further testing.
+            if(!child.visible || (cullingArea != null && !cullingArea.overlaps(child.x + child.translation.x, child.y + child.translation.y, child.width, child.height))) continue;
             child.parentToLocalCoordinates(point.set(x, y));
             Element hit = child.hit(point.x, point.y, touchable);
             if(hit != null) return hit;
