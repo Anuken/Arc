@@ -190,6 +190,25 @@ public class Fill{
         }
     }
 
+    public static void lightInner(float x, float y, int sides, float innerRadius, float radius, float rotation, Color center, Color edge){
+        float centerf = center.toFloatBits(), edgef = edge.toFloatBits();
+
+        float space = 360f / sides;
+
+        for(int i = 0; i < sides; i ++){
+            float px = Angles.trnsx(space * i + rotation, radius);
+            float py = Angles.trnsy(space * i + rotation, radius);
+            float px2 = Angles.trnsx(space * (i + 1) + rotation, radius);
+            float py2 = Angles.trnsy(space * (i + 1) + rotation, radius);
+            quad(
+                x + Angles.trnsx(space * i + rotation, innerRadius), y + Angles.trnsy(space * i + rotation, innerRadius), centerf,
+                x + px, y + py, edgef,
+                x + px2, y + py2, edgef,
+                x + Angles.trnsx(space * (i+1) + rotation, innerRadius), y + Angles.trnsy(space * (i+1) + rotation, innerRadius), centerf
+            );
+        }
+    }
+
     public static void polyBegin(){
         polyFloats.clear();
     }
@@ -265,7 +284,7 @@ public class Fill{
             tri(x, y, x + px, y + py, x + px2, y + py2);
         }
     }
-    
+
     public static void arc(float x, float y, float radius, float fraction){
         arc(x, y, radius, fraction, 0f);
     }
@@ -278,7 +297,7 @@ public class Fill{
         int max = Mathf.ceil(sides * fraction);
         polyBegin();
         polyPoint(x, y);
-        
+
         for(int i = 0; i <= max; i++){
             float a = (float)i / max * fraction * 360f + rotation;
             float x1 = Angles.trnsx(a, radius);
@@ -287,7 +306,7 @@ public class Fill{
             polyPoint(x + x1, y + y1);
         }
         polyPoint(x, y);
-        
+
         polyEnd();
     }
 
