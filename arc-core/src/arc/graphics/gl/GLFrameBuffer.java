@@ -28,7 +28,7 @@ import java.nio.*;
 public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     protected final static int GL_DEPTH24_STENCIL8_OES = 0x88F0;
     /** the currently bound framebuffer; null for the default one. */
-    protected static GLFrameBuffer currentBoundFramebuffer;
+    protected static GLFrameBuffer<?> currentBoundFramebuffer;
     /** the default framebuffer handle, a.k.a screen. */
     protected static int defaultFramebufferHandle;
     /** # of nested buffers right now */
@@ -38,7 +38,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     /** the color buffer texture **/
     protected Seq<T> textureAttachments = new Seq<>();
     /** the framebuffer that was bound before this one began (null to indicate that nothing was bound) **/
-    protected GLFrameBuffer lastBoundFramebuffer = null;
+    protected GLFrameBuffer<?> lastBoundFramebuffer = null;
     /** the framebuffer handle **/
     protected int framebufferHandle;
     /** the depthbuffer render object handle **/
@@ -87,13 +87,12 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     protected abstract T createTexture(FrameBufferTextureAttachmentSpec attachmentSpec);
 
     /** Override this method in a derived class to dispose the backing texture as you like. */
-    protected abstract void disposeColorTexture(T colorTexture);
+    protected abstract void disposeTexture(T colorTexture);
 
     /** Override this method in a derived class to attach the backing texture to the GL framebuffer object. */
-    protected abstract void attachFrameBufferColorTexture(T texture);
+    protected abstract void attachTexture(int attachment, T texture);
 
     protected void build(){
-
         checkValidBuilder();
 
         // iOS uses a different framebuffer handle! (not necessarily 0)
@@ -143,21 +142,18 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
                 T texture = createTexture(attachmentSpec);
                 textureAttachments.add(texture);
                 if(attachmentSpec.isColorTexture()){
-                    Gl.framebufferTexture2D(Gl.framebuffer, GL30.GL_COLOR_ATTACHMENT0 + colorTextureCounter, GL30.GL_TEXTURE_2D,
-                    texture.getTextureObjectHandle(), 0);
+                    attachTexture(Gl.colorAttachment0 + colorTextureCounter, texture);
                     colorTextureCounter++;
                 }else if(attachmentSpec.isDepth){
-                    Gl.framebufferTexture2D(Gl.framebuffer, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_TEXTURE_2D,
-                    texture.getTextureObjectHandle(), 0);
+                    attachTexture(Gl.depthAttachment, texture);
                 }else if(attachmentSpec.isStencil){
-                    Gl.framebufferTexture2D(Gl.framebuffer, GL20.GL_STENCIL_ATTACHMENT, GL20.GL_TEXTURE_2D,
-                    texture.getTextureObjectHandle(), 0);
+                    attachTexture(Gl.stencilAttachment, texture);
                 }
             }
         }else{
             T texture = createTexture(bufferBuilder.textureAttachmentSpecs.first());
             textureAttachments.add(texture);
-            Gl.bindTexture(texture.glTarget, texture.getTextureObjectHandle());
+            attachTexture(Gl.colorAttachment0, texture);
         }
 
         if(isMRT){
@@ -167,8 +163,6 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
             }
             buffer.position(0);
             Core.gl30.glDrawBuffers(colorTextureCounter, buffer);
-        }else{
-            attachFrameBufferColorTexture(textureAttachments.first());
         }
 
         if(bufferBuilder.hasDepthRenderBuffer){
@@ -225,7 +219,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
 
         if(result != Gl.framebufferComplete){
             for(T texture : textureAttachments){
-                disposeColorTexture(texture);
+                disposeTexture(texture);
             }
 
             if(hasDepthStencilPackedBuffer){
@@ -277,7 +271,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     @Override
     public void dispose(){
         for(T texture : textureAttachments){
-            disposeColorTexture(texture);
+            disposeTexture(texture);
         }
 
         if(hasDepthStencilPackedBuffer){
