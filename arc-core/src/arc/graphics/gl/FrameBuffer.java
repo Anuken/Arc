@@ -139,12 +139,12 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
     }
 
     @Override
-    protected void disposeColorTexture(Texture colorTexture){
+    protected void disposeTexture(Texture colorTexture){
         colorTexture.dispose();
     }
 
     @Override
-    protected void attachFrameBufferColorTexture(Texture texture){
-        Gl.framebufferTexture2D(Gl.framebuffer, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D, texture.getTextureObjectHandle(), 0);
+    protected void attachTexture(int attachment, Texture texture){
+        Gl.framebufferTexture2D(Gl.framebuffer, attachment, Gl.texture2d, texture.getTextureObjectHandle(), 0);
     }
 }

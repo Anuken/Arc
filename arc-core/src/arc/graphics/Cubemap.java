@@ -119,6 +119,9 @@ public class Cubemap extends GLTexture{
         /** The negative Z and sixth side of the cubemap */
         negativeZ(5, GL20.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, -1, 0, 0, 0, -1);
 
+        /** Cached {@link CubemapSide#values()} for performance and ergonomics. */
+        public static final CubemapSide[] all = values();
+
         /** The zero based index of the side in the cubemap */
         public final int index;
         /** The OpenGL target (used for glTexImage2D) of the side. */

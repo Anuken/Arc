@@ -1,5 +1,6 @@
 package arc.graphics.gl;
 
+import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.Cubemap.*;
 import arc.graphics.Texture.*;
@@ -40,14 +41,6 @@ import arc.util.*;
  * @author realitix
  */
 public class FrameBufferCubemap extends GLFrameBuffer<Cubemap>{
-    /** cubemap sides cache */
-    private static final Cubemap.CubemapSide[] cubemapSides = Cubemap.CubemapSide.values();
-    /** the zero-based index of the active side **/
-    private int currentSide;
-
-    FrameBufferCubemap(){
-    }
-
     /**
      * Creates a GLFrameBuffer from the specifications provided by bufferBuilder
      **/
@@ -93,55 +86,30 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap>{
     }
 
     @Override
-    protected void disposeColorTexture(Cubemap colorTexture){
+    protected void disposeTexture(Cubemap colorTexture){
         colorTexture.dispose();
     }
 
     @Override
-    protected void attachFrameBufferColorTexture(Cubemap texture){
+    protected void attachTexture(int attachment, Cubemap texture){
         int glHandle = texture.getTextureObjectHandle();
-        CubemapSide[] sides = CubemapSide.values();
-        for(CubemapSide side : sides){
-            Gl.framebufferTexture2D(Gl.framebuffer, GL20.GL_COLOR_ATTACHMENT0, side.glEnum, glHandle, 0);
+        for(CubemapSide side : CubemapSide.all){
+            Gl.framebufferTexture2D(Gl.framebuffer, attachment, side.glEnum, glHandle, 0);
         }
     }
 
-    /**
-     * Makes the frame buffer current so everything gets drawn to it, must be followed by call to either {@link #nextSide()} or
-     * {@link #bindSide(arc.graphics.Cubemap.CubemapSide)} to activate the side to render onto.
-     */
-    @Override
-    public void bind(){
-        currentSide = -1;
-        super.bind();
-    }
-
-    /**
-     * Bind the next side of cubemap and return false if no more side. Should be called in between a call to {@link #begin()} and
-     * #end to cycle to each side of the cubemap to render on.
-     */
-    public boolean nextSide(){
-        if(currentSide > 5){
-            throw new ArcRuntimeException("No remaining sides.");
-        }else if(currentSide == 5){
-            return false;
+    /** Should be called in between a call to {@link #begin()} and {@link #end()}. */
+    public void eachSide(Cons<CubemapSide> cons){
+        for(CubemapSide side : CubemapSide.all){
+            cons.get(side);
         }
-
-        currentSide++;
-        bindSide(getSide());
-        return true;
     }
 
     /**
      * Bind the side, making it active to render on. Should be called in between a call to {@link #begin()} and {@link #end()}.
      * @param side The side to bind
      */
-    protected void bindSide(final Cubemap.CubemapSide side){
-        Gl.framebufferTexture2D(Gl.framebuffer, GL20.GL_COLOR_ATTACHMENT0, side.glEnum, getTexture().getTextureObjectHandle(), 0);
-    }
-
-    /** Get the currently bound side. */
-    public Cubemap.CubemapSide getSide(){
-        return currentSide < 0 ? null : cubemapSides[currentSide];
+    public void bindSide(CubemapSide side){
+        Gl.framebufferTexture2D(Gl.framebuffer, Gl.colorAttachment0, side.glEnum, getTexture().getTextureObjectHandle(), 0);
     }
 }
