@@ -116,7 +116,7 @@ public class CommandHandler{
         orderedCommands.remove(c -> c.text.equals(text));
 
         Command cmd = new Command(text, params, description, runner);
-        commands.put(text.toLowerCase(), cmd);
+        commands.put(text, cmd);
         orderedCommands.add(cmd);
         return cmd;
     }
