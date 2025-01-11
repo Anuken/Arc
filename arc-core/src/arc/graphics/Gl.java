@@ -323,6 +323,7 @@ public class Gl{
     //STATE - optimizes GL calls
 
     private static IntBuffer ibuf = Buffers.newIntBuffer(1);
+    private static FloatBuffer fbuf = Buffers.newFloatBuffer(1);
     //last active texture unit
     private static int lastActiveTexture = -1;
     //last bound texture2ds, mapping from texture unit to texture handle
@@ -496,6 +497,12 @@ public class Gl{
         ibuf.position(0);
         getIntegerv(name, ibuf);
         return ibuf.get(0);
+    }
+
+    public static float getFloat(int name){
+        fbuf.position(0);
+        getFloatv(name, fbuf);
+        return fbuf.get(0);
     }
 
     public static String getString(int name){

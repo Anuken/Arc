@@ -849,9 +849,9 @@ public class Pixmap implements Disposable{
         //RGB images are generally uncommon and the memory savings don't really matter; formats have to be converted to RGBA for drawing anyway
         const unsigned char* pixels = stbi_load_from_memory(p_buffer + offset, len, &width, &height, &format, STBI_rgb_alpha);
 
-        if(pixels == NULL) return NULL;
-
         env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
+
+        if(pixels == NULL) return NULL;
 
         jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixels, width * height * 4);
         jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
