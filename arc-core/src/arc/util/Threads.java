@@ -77,7 +77,9 @@ public class Threads{
     /** @return an executor with a max thread count. threads expire after 1 minute of inactivity
      *  @param max maximum number of threads to create */
     public static ExecutorService boundedExecutor(@Nullable String name, int max){
-        return new ThreadPoolExecutor(1, max, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<>(), r -> newThread(r, name, true));
+        ThreadPoolExecutor exec = new ThreadPoolExecutor(max, max, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<>(), r -> newThread(r, name, true));
+        exec.allowCoreThreadTimeOut(true);
+        return exec;
     }
 
     /** Shuts down the executor and waits for its termination indefinitely. */
