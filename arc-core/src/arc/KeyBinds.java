@@ -140,13 +140,14 @@ public class KeyBinds{
     }
 
     private Axis load(String name){
+        if(!settings.has(name + "-single")) return null;
         if(settings.getBool(name + "-single", true)){
             KeyCode key = KeyCode.byOrdinal(settings.getInt(name + "-key", KeyCode.unset.ordinal()));
-            return key == KeyCode.unset ? null : new Axis(key);
+            return new Axis(key);
         }else{
             KeyCode min = KeyCode.byOrdinal(settings.getInt(name + "-min", KeyCode.unset.ordinal()));
             KeyCode max = KeyCode.byOrdinal(settings.getInt(name + "-max", KeyCode.unset.ordinal()));
-            return min == KeyCode.unset || max == KeyCode.unset ? null : new Axis(min, max);
+            return new Axis(min, max);
         }
     }
 
