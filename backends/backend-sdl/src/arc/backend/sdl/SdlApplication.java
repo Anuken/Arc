@@ -113,7 +113,7 @@ public class SdlApplication implements Application{
         //show native IME candidate UI
         SDL_SetHint("SDL_IME_SHOW_UI","1");
         SDL_SetHint("SDL_WINDOWS_DPI_SCALING", "1");
-        
+
         //set up openGL 2.0 profile
         check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, config.gl30 ? config.gl30Major : 2));
         check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,  config.gl30 ? config.gl30Minor : 0));
@@ -145,8 +145,24 @@ public class SdlApplication implements Application{
         window = SDL_CreateWindow(config.title, config.width, config.height, flags);
         if(window == 0) throw new SdlError();
 
-        context = SDL_GL_CreateContext(window);
-        if(context == 0) throw new SdlError();
+        try{
+            context = SDL_GL_CreateContext(window);
+            if(context == 0) throw new SdlError();
+        }catch(SdlError error){
+            if(config.gl30){
+                //try creating a GL 2.0 context instead as fallback.
+                config.gl30 = false;
+
+                check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY));
+                check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2));
+                check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,  0));
+
+                context = SDL_GL_CreateContext(window);
+                if(context == 0) throw new SdlError();
+            }else{
+                throw error;
+            }
+        }
 
         if(config.vSyncEnabled){
             SDL_GL_SetSwapInterval(1);
