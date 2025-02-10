@@ -71,11 +71,10 @@ public final class Geometry{
     }
 
     public static void circle(int x, int y, int width, int height, int radius, Intc2 cons){
-        for(int dx = -radius; dx <= radius; dx++){
-            for(int dy = -radius; dy <= radius; dy++){
-                int wx = dx + x, wy = dy + y;
-                if(wx >= 0 && wy >= 0 && wx < width && wy < height && Mathf.within(dx, dy, radius)){
-                    cons.get(wx, wy);
+        for(int dx = Math.max(x - radius, 0); dx <= Math.min(x + radius, width - 1); dx++){
+            for(int dy = Math.max(y - radius, 0); dy <= Math.min(y + radius, height - 1); dy++){
+                if(Mathf.within(dx, dy, x, y, radius)){
+                    cons.get(dx, dy);
                 }
             }
         }
