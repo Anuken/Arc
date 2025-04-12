@@ -57,6 +57,7 @@ allprojects{
             sourceCompatibility = 1.8
             targetCompatibility = 1.8
         }
+        options.compilerArgs.addAll(['--release', '8'])
         options.encoding = "UTF-8"
     }
 }
