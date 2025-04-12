@@ -60,6 +60,14 @@ allprojects{
         options.compilerArgs.addAll(['--release', '8'])
         options.encoding = "UTF-8"
     }
+
+    tasks.withType(Javadoc){
+        options{
+            addStringOption('Xdoclint:none', '-quiet')
+            addStringOption('-release', '17')
+            encoding('UTF-8')
+        }
+    }
 }
 
 subprojects{
