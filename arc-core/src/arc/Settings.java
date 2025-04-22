@@ -214,8 +214,6 @@ public class Settings{
     public synchronized void saveValues(){
         Fi file = getSettingsFile();
 
-        Time.mark();
-
         try(DataOutputStream stream = new DataOutputStream(writeCompressed ? new FastDeflaterOutputStream(file.write(false, 8192)) : file.write(false, 8192))){
             stream.writeInt(values.size());
 
@@ -251,8 +249,6 @@ public class Settings{
             file.delete();
             throw new RuntimeException("Error writing preferences: " + file, e);
         }
-
-        Log.info(Time.elapsed());
 
         if(Time.timeSinceMillis(lastBackupTime) > minBackupIntervalMs){
             lastBackupTime = Time.millis();
