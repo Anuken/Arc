@@ -1,10 +1,10 @@
 package arc.struct;
 
-import arc.math.Mathf;
-import arc.util.ArcRuntimeException;
+import arc.func.*;
+import arc.math.*;
+import arc.util.*;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * An unordered map that uses long keys. This implementation is a cuckoo hash map using 3 hashes, random walking, and a small
@@ -673,6 +673,38 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>>{
         values2.valid = true;
         values1.valid = false;
         return values2;
+    }
+
+    public void eachValue(Cons<V> cons){
+        boolean hasNext = false;
+        final int INDEX_ZERO = -1;
+
+        int nextIndex = INDEX_ZERO;
+
+        long[] keyTable = this.keyTable;
+
+        if(hasZeroValue){
+            hasNext = true;
+        }else{
+            for(int n = capacity + stashSize; ++nextIndex < n; ){
+                if(keyTable[nextIndex] != EMPTY){
+                    hasNext = true;
+                    break;
+                }
+            }
+        }
+
+        while(hasNext){
+            cons.get(nextIndex == INDEX_ZERO ? zeroValue : valueTable[nextIndex]);
+
+            hasNext = false;
+            for(int n = capacity + stashSize; ++nextIndex < n;){
+                if(keyTable[nextIndex] != EMPTY){
+                    hasNext = true;
+                    break;
+                }
+            }
+        }
     }
 
     /**
