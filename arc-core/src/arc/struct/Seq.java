@@ -233,6 +233,18 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return arr;
     }
 
+    /** @return a new int array with the mapped values. */
+    public IntSeq mapInt(Intf<T> mapper, Boolf<T> retain){
+        IntSeq arr = new IntSeq(size);
+        for(int i = 0; i < size; i++){
+            T item = items[i];
+            if(retain.get(item)){
+                arr.add(mapper.get(item));
+            }
+        }
+        return arr;
+    }
+
     /** @return a new float array with the mapped values. */
     public FloatSeq mapFloat(Floatf<T> mapper){
         FloatSeq arr = new FloatSeq(size);
