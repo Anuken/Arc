@@ -127,5 +127,14 @@ public class KeyBind{
             this.max = max;
             this.key = null;
         }
+
+        @Override
+        public boolean equals(Object o){
+            if(this == o) return true;
+            if(o == null || getClass() != o.getClass()) return false;
+
+            Axis axis = (Axis)o;
+            return min == axis.min && max == axis.max && key == axis.key;
+        }
     }
 }
