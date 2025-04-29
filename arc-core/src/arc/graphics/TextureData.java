@@ -3,7 +3,6 @@ package arc.graphics;
 import arc.files.Fi;
 import arc.graphics.Pixmap.Format;
 import arc.graphics.gl.FileTextureData;
-import arc.graphics.gl.MipMapGenerator;
 
 /**
  * Used by a {@link Texture} to load the pixel data. A TextureData can either return a {@link Pixmap} or upload the pixel data
@@ -13,7 +12,7 @@ import arc.graphics.gl.MipMapGenerator;
  * generated and whether the TextureData is able to manage the pixel data if the OpenGL ES context is lost.</p>
  * <p>
  * In case the TextureData implementation is custom, the implementation has to generate the
- * mipmaps itself if necessary. See {@link MipMapGenerator}.</p>
+ * mipmaps itself if necessary.
  * <p>
  * Before a call to either {@link #consumePixmap()} or {@link #consumeCustomData(int)}, Texture will bind the OpenGL ES
  * texture.</p>

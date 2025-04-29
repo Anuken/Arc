@@ -1,7 +1,6 @@
 package arc.graphics;
 
 import arc.graphics.Texture.*;
-import arc.graphics.gl.*;
 import arc.util.*;
 
 /**
@@ -53,10 +52,10 @@ public abstract class GLTexture implements Disposable{
         //note that pixmap data is always 4-byte aligned, no padding between rows; GL_UNPACK_ALIGNMENT is unnecessary
 
         if(data.useMipMaps()){
-            MipMapGenerator.generateMipMap(target, pixmap, pixmap.width, pixmap.height);
+            Gl.texImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.width, pixmap.height, 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.pixels);
+            Gl.generateMipmap(target);
         }else{
-            Gl.texImage2D(target, miplevel, pixmap.getGLInternalFormat(), pixmap.width, pixmap.height, 0,
-            pixmap.getGLFormat(), pixmap.getGLType(), pixmap.pixels);
+            Gl.texImage2D(target, miplevel, pixmap.getGLInternalFormat(), pixmap.width, pixmap.height, 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.pixels);
         }
         if(disposePixmap) pixmap.dispose();
     }
