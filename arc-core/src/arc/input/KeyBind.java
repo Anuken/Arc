@@ -32,41 +32,6 @@ public class KeyBind{
         return new KeyBind(name, defaultValue, null);
     }
 
-    public static void saveAll(){
-        for(KeyBind bind : all){
-            String name = bind.settingsKey();
-            settings.put(name + "-single", bind.value.key != null);
-
-            if(bind.value.key != null){
-                settings.put(name + "-key", bind.value.key.ordinal());
-            }else{
-                settings.put(name + "-min", bind.value.min.ordinal());
-                settings.put(name + "-max", bind.value.max.ordinal());
-            }
-        }
-    }
-
-    /** Loads the internal keybind data from settings' map. Does not call settings.load(). */
-    public static void loadAll(){
-
-        for(KeyBind bind : all){
-            Axis loaded;
-            String name = bind.settingsKey();
-            if(settings.getBool(name + "-single", true)){
-                KeyCode key = KeyCode.byOrdinal(settings.getInt(name + "-key", KeyCode.unset.ordinal()));
-                loaded = key == KeyCode.unset ? null : new Axis(key);
-            }else{
-                KeyCode min = KeyCode.byOrdinal(settings.getInt(name + "-min", KeyCode.unset.ordinal()));
-                KeyCode max = KeyCode.byOrdinal(settings.getInt(name + "-max", KeyCode.unset.ordinal()));
-                loaded = min == KeyCode.unset || max == KeyCode.unset ? null : new Axis(min, max);
-            }
-
-            if(loaded != null){
-                bind.value = loaded;
-            }
-        }
-    }
-
     public static void resetAll(){
         for(KeyBind def : all){
             def.resetToDefault();
@@ -80,6 +45,41 @@ public class KeyBind{
         this.value = defaultValue instanceof Axis ? (Axis)defaultValue : new Axis((KeyCode)defaultValue);
 
         all.add(this);
+
+        load();
+    }
+
+    /** Saves this keybind to Settings. Call after modifying the value. */
+    public void save(){
+        String name = settingsKey();
+        settings.put(name + "-single", value.key != null);
+
+        if(value.key != null){
+            settings.put(name + "-key", value.key.ordinal());
+        }else{
+            settings.put(name + "-min", value.min.ordinal());
+            settings.put(name + "-max", value.max.ordinal());
+        }
+    }
+
+    /** Loads this keybind from settings. Calling this manually should not be necessary in most cases. */
+    public void load(){
+        if(settings == null) return; //headless usage
+
+        Axis loaded;
+        String name = settingsKey();
+        if(settings.getBool(name + "-single", true)){
+            KeyCode key = KeyCode.byOrdinal(settings.getInt(name + "-key", KeyCode.unset.ordinal()));
+            loaded = key == KeyCode.unset ? null : new Axis(key);
+        }else{
+            KeyCode min = KeyCode.byOrdinal(settings.getInt(name + "-min", KeyCode.unset.ordinal()));
+            KeyCode max = KeyCode.byOrdinal(settings.getInt(name + "-max", KeyCode.unset.ordinal()));
+            loaded = min == KeyCode.unset || max == KeyCode.unset ? null : new Axis(min, max);
+        }
+
+        if(loaded != null){
+            value = loaded;
+        }
     }
 
     public void resetToDefault(){
@@ -88,6 +88,12 @@ public class KeyBind{
         settings.remove(name + "-key");
         settings.remove(name + "-min");
         settings.remove(name + "-max");
+
+        if(defaultValue instanceof Axis){
+            value = new Axis(((Axis)defaultValue).min, ((Axis)defaultValue).max);
+        }else{
+            value = new Axis((KeyCode)defaultValue);
+        }
     }
 
     public boolean isDefault(){

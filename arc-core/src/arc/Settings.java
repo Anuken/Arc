@@ -2,7 +2,6 @@ package arc;
 
 import arc.files.*;
 import arc.func.*;
-import arc.input.*;
 import arc.struct.*;
 import arc.struct.ObjectMap.*;
 import arc.util.*;
@@ -75,7 +74,6 @@ public class Settings{
     public synchronized void load(){
         try{
             loadValues();
-            KeyBind.loadAll();
         }catch(Throwable error){
             Log.err("Error loading settings", error);
             if(errorHandler != null){
@@ -94,7 +92,6 @@ public class Settings{
         //never loaded, nothing to save
         if(!loaded) return;
         try{
-            KeyBind.saveAll();
             saveValues();
         }catch(Throwable error){
             Log.err("Error writing settings", error);
