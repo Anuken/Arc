@@ -1,15 +1,11 @@
 package arc;
 
-import arc.KeyBinds.Axis;
-import arc.KeyBinds.KeyBind;
-import arc.math.geom.*;
-import arc.struct.Seq;
-import arc.struct.IntSet;
-import arc.func.Cons;
+import arc.func.*;
 import arc.input.*;
+import arc.input.KeyBind.*;
+import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
-
-import static arc.Core.keybinds;
 
 /**
  * <p>
@@ -199,22 +195,22 @@ public abstract class Input{
 
     /** Returns whether the keybind is pressed. */
     public boolean keyDown(KeyBind key){
-        return keybinds.get(key).key != null && keyboard.isPressed(keybinds.get(key).key);
+        return key.value.key != null && keyboard.isPressed(key.value.key);
     }
 
     /** Returns whether the key has just been pressed. */
     public boolean keyTap(KeyBind key){
-        return keybinds.get(key).key != null && keyboard.isTapped(keybinds.get(key).key);
+        return key.value.key != null && keyboard.isTapped(key.value.key);
     }
 
     /** Returns whether the key has just been released. */
     public boolean keyRelease(KeyBind key){
-        return keybinds.get(key).key != null && keyboard.isReleased(keybinds.get(key).key);
+        return key.value.key != null && keyboard.isReleased(key.value.key);
     }
 
     /** Returns the [-1, 1] axis value of a key. */
     public float axis(KeyBind key){
-        Axis axis = keybinds.get(key);
+        Axis axis = key.value;
         if(axis.key != null){
             return keyboard.getAxis(axis.key);
         }else{
@@ -226,7 +222,7 @@ public abstract class Input{
     /** Returns the [-1, 1] axis value of a key.
      * In the case of keyboard-based axes, this will only return a value if one of the axes was just pressed. */
     public float axisTap(KeyBind key){
-        Axis axis = keybinds.get(key);
+        Axis axis = key.value;
         if(axis.key != null){
             return keyboard.getAxis(axis.key);
         }else{

@@ -2,6 +2,7 @@ package arc;
 
 import arc.files.*;
 import arc.func.*;
+import arc.input.*;
 import arc.struct.*;
 import arc.struct.ObjectMap.*;
 import arc.util.*;
@@ -12,8 +13,6 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.zip.*;
-
-import static arc.Core.*;
 
 public class Settings{
     protected final static byte typeBool = 0, typeInt = 1, typeLong = 2, typeFloat = 3, typeString = 4, typeBinary = 5;
@@ -76,7 +75,7 @@ public class Settings{
     public synchronized void load(){
         try{
             loadValues();
-            keybinds.load();
+            KeyBind.loadAll();
         }catch(Throwable error){
             Log.err("Error loading settings", error);
             if(errorHandler != null){
@@ -95,7 +94,7 @@ public class Settings{
         //never loaded, nothing to save
         if(!loaded) return;
         try{
-            keybinds.save();
+            KeyBind.saveAll();
             saveValues();
         }catch(Throwable error){
             Log.err("Error writing settings", error);

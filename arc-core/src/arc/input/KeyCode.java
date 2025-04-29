@@ -1,6 +1,6 @@
 package arc.input;
 
-import arc.KeyBinds.KeybindValue;
+import arc.input.KeyBind.*;
 
 /** Enum for storing input codes of mouse, keyboard and controllers. */
 public enum KeyCode implements KeybindValue{
