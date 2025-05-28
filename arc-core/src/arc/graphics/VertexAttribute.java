@@ -16,6 +16,7 @@ public final class VertexAttribute{
     position3 = new VertexAttribute(3, Shader.positionAttribute),
     texCoords = new VertexAttribute(2, Shader.texcoordAttribute + "0"),
     normal = new VertexAttribute(3, Shader.normalAttribute),
+    packedNormal = new VertexAttribute(4, GL30.GL_INT_2_10_10_10_REV, true, Shader.normalAttribute),
     color = new VertexAttribute(4, GL20.GL_UNSIGNED_BYTE, true, Shader.colorAttribute),
     mixColor = new VertexAttribute(4, GL20.GL_UNSIGNED_BYTE, true, Shader.mixColorAttribute);
 
@@ -61,6 +62,8 @@ public final class VertexAttribute{
             case GL20.GL_FIXED:
                 realSize = 4 * components;
                 break;
+            case GL30.GL_INT_2_10_10_10_REV:
+            case GL30.GL_UNSIGNED_INT_2_10_10_10_REV:
             case GL20.GL_UNSIGNED_BYTE:
             case GL20.GL_BYTE:
                 realSize = components;
