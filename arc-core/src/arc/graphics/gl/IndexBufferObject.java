@@ -36,6 +36,7 @@ public class IndexBufferObject implements IndexData{
     int bufferHandle;
     boolean dirty = true;
     boolean bound = false;
+    boolean created;
 
     /**
      * Creates a new static IndexBufferObject to be used with vertex arrays.
@@ -51,7 +52,6 @@ public class IndexBufferObject implements IndexData{
      * @param maxIndices the maximum number of indices this buffer can hold
      */
     public IndexBufferObject(boolean isStatic, int maxIndices){
-
         empty = maxIndices == 0;
         if(empty){
             maxIndices = 1; // avoid allocating a zero-sized buffer because of bug in Android's ART < Android 5.0
@@ -63,7 +63,6 @@ public class IndexBufferObject implements IndexData{
         buffer = byteBuffer.asShortBuffer();
         buffer.flip();
         byteBuffer.flip();
-        bufferHandle = Gl.genBuffer();
         usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
     }
 
@@ -155,6 +154,10 @@ public class IndexBufferObject implements IndexData{
     /** Binds this IndexBufferObject for rendering with glDrawElements. */
     @Override
     public void bind(){
+        if(!created){
+            bufferHandle = Gl.genBuffer();
+            created = true;
+        }
         if(bufferHandle == 0) throw new ArcRuntimeException("No buffer allocated!");
 
         Gl.bindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);

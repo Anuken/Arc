@@ -36,6 +36,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
     boolean isBound = false;
     int vaoHandle = -1;
     IntSeq cachedLocations = new IntSeq();
+    boolean created;
 
     /**
      * Constructs a new interleaved VertexBufferObjectWithVAO.
@@ -50,9 +51,7 @@ public class VertexBufferObjectWithVAO implements VertexData{
         buffer = byteBuffer.asFloatBuffer();
         buffer.flip();
         byteBuffer.flip();
-        bufferHandle = Gl.genBuffer();
         usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_STREAM_DRAW;
-        createVAO();
     }
 
     @Override
@@ -104,6 +103,14 @@ public class VertexBufferObjectWithVAO implements VertexData{
 
     @Override
     public void bind(Shader shader){
+        if(!created){
+            bufferHandle = Gl.genBuffer();
+            tmpHandle.clear();
+            Core.gl30.glGenVertexArrays(1, tmpHandle);
+            vaoHandle = tmpHandle.get();
+            created = true;
+        }
+
         Core.gl30.glBindVertexArray(vaoHandle);
 
         bindAttributes(shader);
@@ -187,12 +194,6 @@ public class VertexBufferObjectWithVAO implements VertexData{
         bufferHandle = 0;
         Buffers.disposeUnsafeByteBuffer(byteBuffer);
         deleteVAO();
-    }
-
-    private void createVAO(){
-        tmpHandle.clear();
-        Core.gl30.glGenVertexArrays(1, tmpHandle);
-        vaoHandle = tmpHandle.get();
     }
 
     private void deleteVAO(){
