@@ -475,14 +475,15 @@ public class Simplex{
         return raw4d(nx, ny, nz, nw);
     }
 
-    //hash function: seed (any) + x (0-512) -> 0-256
+    //hash function: seed (any) + x (will be masked to fit in 0-255) -> 0-255
+    //thanks to TEttinger on Discord for the negative coordinate discontinuity fix
     static int perm(int seed, int x){
-        x = ((x >>> 16) ^ x) * 0x45d9f3b;
+        x = (x & 255) * 0x45d9f3b;
         x = ((x >>> 16) ^ x) * (0x45d9f3b + seed);
         x = (x >>> 16) ^ x;
         return x & 0xff;
     }
-    
+
     static int fastfloor(double x){
         return x > 0 ? (int)x : (int)x - 1;
     }
