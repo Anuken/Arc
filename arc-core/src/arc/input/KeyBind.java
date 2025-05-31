@@ -90,7 +90,11 @@ public class KeyBind{
         settings.remove(name + "-max");
 
         if(defaultValue instanceof Axis){
-            value = new Axis(((Axis)defaultValue).min, ((Axis)defaultValue).max);
+            if(((Axis)defaultValue).min == null){
+                value = new Axis(((Axis)defaultValue).key);
+            }else{
+                value = new Axis(((Axis)defaultValue).min, ((Axis)defaultValue).max);
+            }
         }else{
             value = new Axis((KeyCode)defaultValue);
         }
@@ -98,7 +102,11 @@ public class KeyBind{
 
     public boolean isDefault(){
         if(defaultValue instanceof Axis){
-            return ((Axis)defaultValue).max == value.max && ((Axis)defaultValue).min == value.min;
+            if(((Axis)defaultValue).min == null){
+                return ((Axis)defaultValue).key == value.key;
+            }else{
+                return ((Axis)defaultValue).max == value.max && ((Axis)defaultValue).min == value.min;
+            }
         }else{
             return defaultValue == value.key;
         }
