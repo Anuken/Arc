@@ -1,10 +1,14 @@
 package arc.util;
 
+import arc.func.Cons2;
+import arc.struct.Seq;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 public class Log{
     private static final Object[] empty = {};
+    private static final Seq<Cons2<LogLevel, String>> logListeners = new Seq<>();
 
     public static boolean useColors = true;
     public static LogLevel level = LogLevel.info;
@@ -72,6 +76,10 @@ public class Log{
         err(text + ": " + sw);
     }
 
+    public static void addLogListener(Cons2<LogLevel, String> listener){
+        logListeners.add(listener);
+    }
+
     public static String format(String text, Object... args){
         return formatColors(text, useColors, args);
     }
@@ -121,12 +129,17 @@ public class Log{
     public static class DefaultLogHandler implements LogHandler{
         @Override
         public void log(LogLevel level, String text){
-            System.out.println(format((
+            String str = format((
                 level == LogLevel.debug ? "&lc&fb" :
                 level == LogLevel.info ? "&fb" :
                 level == LogLevel.warn ? "&ly&fb" :
                 level == LogLevel.err ? "&lr&fb" :
-                "") + text + "&fr"));
+            "") + text + "&fr");
+            
+            System.out.println(str);
+
+            //REVIEW: provide the raw text, formatted text, or both?
+            logListeners.each(l -> l.get(level, text));
         }
     }
 
