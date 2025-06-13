@@ -3,7 +3,7 @@ package arc.input;
 import arc.struct.*;
 
 public class KeyboardDevice extends InputDevice implements InputProcessor{
-    private final IntSet pressed = new IntSet();
+    private final IntSet pressed = new IntSet(), justReleased = new IntSet();
     private final IntSet lastFramePressed = new IntSet();
     private final IntSet justPressed = new IntSet();
     private final IntFloatMap axes = new IntFloatMap();
@@ -13,6 +13,7 @@ public class KeyboardDevice extends InputDevice implements InputProcessor{
         lastFramePressed.clear();
         lastFramePressed.addAll(pressed);
         justPressed.clear();
+        justReleased.clear();
         axes.clear();
     }
 
@@ -30,7 +31,7 @@ public class KeyboardDevice extends InputDevice implements InputProcessor{
 
     @Override
     public boolean isReleased(KeyCode key){
-        return !isPressed(key) && lastFramePressed.contains(key.ordinal());
+        return justReleased.contains(key.ordinal());
     }
 
     @Override
@@ -48,6 +49,7 @@ public class KeyboardDevice extends InputDevice implements InputProcessor{
     @Override
     public boolean keyUp(KeyCode key){
         pressed.remove(key.ordinal());
+        justReleased.add(key.ordinal());
         return false;
     }
 
