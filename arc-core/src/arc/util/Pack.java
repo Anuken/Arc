@@ -102,4 +102,9 @@ public class Pack{
     public static int intBytes(byte[] array){
         return ((0xFF & array[0]) << 24) | ((0xFF & array[1]) << 16) | ((0xFF & array[2]) << 8) | (0xFF & array[3]);
     }
+
+    public static int bitmask(int bits, int mask, boolean b){
+        return b ? bits | mask : bits & ~mask;
+    }
+
 }
