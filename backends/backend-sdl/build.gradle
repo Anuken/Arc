@@ -21,7 +21,7 @@ task preJni{
 
         if(!file("jni/sdlmingw.tar.gz").exists()){
             println "Fetching SDL-mingw builds..."
-            "curl -o $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -L https://www.libsdl.org/release/SDL2-devel-2.0.20-mingw.tar.gz".execute().waitFor()
+            "curl -o $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -L https://www.libsdl.org/release/SDL2-devel-2.32.8-mingw.tar.gz".execute().waitFor()
             "tar -xvzf $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -C $rootDir/backends/backend-sdl/jni".execute().waitFor()
         }
     }catch(Exception youAreProbablyOnWindowsOrDontHaveUnzip){}
@@ -72,7 +72,7 @@ jnigen{
     temporaryDir = file("build/target/native").absolutePath
     libsDir = file("libs").absolutePath
 
-    def sdlVersion = "2.0.20"
+    def sdlVersion = "2.32.8"
 
     all{
         cppIncludes = ["*.cpp"]
