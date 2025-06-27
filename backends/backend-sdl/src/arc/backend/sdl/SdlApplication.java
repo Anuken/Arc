@@ -108,31 +108,31 @@ public class SdlApplication implements Application{
 
         if(OS.isMac) restartMac();
 
-        check(() -> SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
+        check(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
 
         //show native IME candidate UI
         SDL_SetHint("SDL_IME_SHOW_UI","1");
         SDL_SetHint("SDL_WINDOWS_DPI_SCALING", "1");
 
         //set up openGL 2.0 profile
-        check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, config.gl30 ? config.gl30Major : 2));
-        check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,  config.gl30 ? config.gl30Minor : 0));
+        check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, config.gl30 ? config.gl30Major : 2));
+        check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,  config.gl30 ? config.gl30Minor : 0));
 
         if(config.gl30 && (OS.isMac || config.coreProfile)){
-            check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
+            check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
         }
 
-        check(() -> SDL_GL_SetAttribute(SDL_GL_RED_SIZE, config.r));
-        check(() -> SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, config.g));
-        check(() -> SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, config.b));
-        check(() -> SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, config.depth));
-        check(() -> SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, config.stencil));
-        check(() -> SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1));
+        check(SDL_GL_SetAttribute(SDL_GL_RED_SIZE, config.r));
+        check(SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, config.g));
+        check(SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, config.b));
+        check(SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, config.depth));
+        check(SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, config.stencil));
+        check(SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1));
 
         //this doesn't seem to do anything, but at least I tried
         if(config.samples > 0){
-            check(() -> SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1));
-            check(() -> SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, config.samples));
+            check(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1));
+            check(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, config.samples));
         }
 
         int flags = SDL_WINDOW_OPENGL;
@@ -153,9 +153,9 @@ public class SdlApplication implements Application{
                 //try creating a GL 2.0 context instead as fallback.
                 config.gl30 = false;
 
-                check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY));
-                check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2));
-                check(() -> SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,  0));
+                check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY));
+                check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2));
+                check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0));
 
                 context = SDL_GL_CreateContext(window);
                 if(context == 0) throw new SdlError();
@@ -238,8 +238,8 @@ public class SdlApplication implements Application{
         SDL_Quit();
     }
 
-    private void check(Intp run){
-        if(run.get() != 0){
+    private void check(int code){
+        if(code != 0){
             throw new SdlError();
         }
     }

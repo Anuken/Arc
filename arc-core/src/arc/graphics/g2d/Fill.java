@@ -247,16 +247,28 @@ public class Fill{
     }
 
     public static void poly(float x, float y, int sides, float radius, float rotation){
-        if(sides == 3){
-            float space = 360f / 3;
 
-            float px = Angles.trnsx(rotation, radius);
-            float py = Angles.trnsy(rotation, radius);
-            float px2 = Angles.trnsx(space + rotation, radius);
-            float py2 = Angles.trnsy(space + rotation, radius);
-            float px3 = Angles.trnsx(space * (2) + rotation, radius);
-            float py3 = Angles.trnsy(space * (2) + rotation, radius);
-            tri(x + px, y + py, x + px2, y + py2, x + px3, y + py3);
+        //for 3 and 4 sides, a single quad will suffice, so an alternative optimized implementation is used
+        if(sides == 3){
+            tri(
+                x + Angles.trnsx(rotation, radius),
+                y + Angles.trnsy(rotation, radius),
+                x + Angles.trnsx(120f + rotation, radius),
+                y + Angles.trnsy(120f + rotation, radius),
+                x + Angles.trnsx(240f + rotation, radius),
+                y + Angles.trnsy(240f + rotation, radius)
+            );
+        }else if(sides == 4){
+            quad(
+                x + Angles.trnsx(rotation, radius),
+                y + Angles.trnsy(rotation, radius),
+                x + Angles.trnsx(90f + rotation, radius),
+                y + Angles.trnsy(90f + rotation, radius),
+                x + Angles.trnsx(180f + rotation, radius),
+                y + Angles.trnsy(180f + rotation, radius),
+                x + Angles.trnsx(270f + rotation, radius),
+                y + Angles.trnsy(270f + rotation, radius)
+            );
         }else{
 
             float space = 360f / sides;
@@ -273,7 +285,7 @@ public class Fill{
 
             int mod = sides % 2;
 
-            if(mod == 0 || sides < 4) return;
+            if(mod == 0) return;
 
             int i = sides - 1;
 
