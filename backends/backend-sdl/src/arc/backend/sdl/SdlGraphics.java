@@ -251,8 +251,13 @@ public class SdlGraphics extends Graphics{
     }
 
     @Override
-    public void setResizable(boolean resizable){
-        //this is utterly useless
+    public void setWindowPosition(int x, int y){
+        SDL_SetWindowPosition(app.window, x, y);
+    }
+
+    @Override
+    public void setWindowSize(int width, int height){
+        SDL_SetWindowSize(app.window, width, height);
     }
 
     @Override

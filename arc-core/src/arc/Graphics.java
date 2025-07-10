@@ -141,6 +141,17 @@ public abstract class Graphics implements Disposable{
     }
 
     /**
+     * Sets the window position on its current monitor.
+     */
+    public void setWindowPosition(int x, int y){}
+
+
+    /**
+     * Sets the window size in pixels.
+     */
+    public void setWindowSize(int width, int height){}
+
+    /**
      * Sets the window to windowed mode.
      * @param width the width in pixels
      * @param height the height in pixels
@@ -165,18 +176,7 @@ public abstract class Graphics implements Disposable{
      * Supported on all desktop backends and on Android (to disable the menu bar).
      * @param undecorated true if the window border or status bar should be hidden. false otherwise.
      */
-    public abstract void setBorderless(boolean undecorated);
-
-    /**
-     * Sets whether or not the window should be resizable. Ignored on Android.
-     * <p>
-     * Note that immediate behavior of this method may vary depending on the implementation. It
-     * may be necessary for the window to be recreated in order for the changes to take effect.
-     * Consult the documentation for the backend in use for more information.
-     * <p>
-     * Supported on all desktop backends.
-     */
-    public abstract void setResizable(boolean resizable);
+    public void setBorderless(boolean undecorated){}
 
     /**
      * Enable/Disable vsynching. This is a best-effort attempt which might not work on all platforms.

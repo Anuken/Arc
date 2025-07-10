@@ -452,11 +452,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
     }
 
     @Override
-    public void setResizable(boolean resizable){
-
-    }
-
-    @Override
     public BufferFormat getBufferFormat(){
         return bufferFormat;
     }

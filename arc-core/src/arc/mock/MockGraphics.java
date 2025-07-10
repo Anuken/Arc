@@ -192,9 +192,4 @@ public class MockGraphics extends Graphics{
     public void setBorderless(boolean undecorated){
 
     }
-
-    @Override
-    public void setResizable(boolean resizable){
-
-    }
 }

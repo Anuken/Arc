@@ -404,14 +404,6 @@ public class IOSGraphics extends Graphics{
     }
 
     @Override
-    public void setBorderless(boolean undecorated){
-    }
-
-    @Override
-    public void setResizable(boolean resizable){
-    }
-
-    @Override
     public void setVSync(boolean vsync){
     }
 
