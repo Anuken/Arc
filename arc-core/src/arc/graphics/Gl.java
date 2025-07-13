@@ -329,7 +329,7 @@ public class Gl{
     //last bound texture2ds, mapping from texture unit to texture handle
     private static int[] lastBoundTextures = new int[32];
     //last useProgram call
-    private static int lastUsedProgram = 0;
+    private static int lastUsedProgram = -1;
     /** enabled bits, from glEnable/disable */
     private static Bits enabled = new Bits();
     private static boolean wasDepthMask = true;
@@ -344,7 +344,7 @@ public class Gl{
     public static void reset(){
         lastActiveTexture = -1;
         Arrays.fill(lastBoundTextures, -1);
-        lastUsedProgram = 0;
+        lastUsedProgram = -1;
         enabled.clear();
         wasDepthMask = true;
     }

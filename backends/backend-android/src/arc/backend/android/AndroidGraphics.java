@@ -289,6 +289,8 @@ public class AndroidGraphics extends Graphics implements Renderer{
                         listeners.get(i).resume();
                     }
                 }
+                //additional reset is needed for whatever reason
+                Gl.reset();
                 Log.infoTag(logTag, "[resume]");
             });
         }else{
