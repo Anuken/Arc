@@ -25,7 +25,7 @@ import java.util.*;
  * By default, SpriteCache draws using screen coordinates and uses an x-axis pointing to the right, an y-axis pointing upwards and
  * the origin is the bottom left corner of the screen. The default transformation and projection matrices can be changed. If the
  * screen is {@link ApplicationListener#resize(int, int) resized}, the SpriteCache's matrices must be updated. For example:<br>
- * <code>cache.getProjection().setToOrtho2D(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());</code><br>
+ * <code>cache.getProjection().setOrtho(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());</code><br>
  * <br>
  * Note that SpriteCache does not manage blending. You will need to enable blending (<i>Gl.enable(Gl.blend);</i>) and
  * set the blend func as needed before or between calls to {@link #draw(int)}.<br>
@@ -35,7 +35,6 @@ import java.util.*;
  * <br>
  * SpriteCache is a reasonably heavyweight object. Typically only one instance should be used for an entire application.<br>
  * <br>
- * SpriteCache works with OpenGL ES 1.x and 2.0. For 2.0, it uses its own custom shader to draw.<br>
  * <br>
  * SpriteCache must be disposed once it is no longer needed.
  * @author Nathan Sweet

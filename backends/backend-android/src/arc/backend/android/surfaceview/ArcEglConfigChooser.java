@@ -22,7 +22,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLDisplay;
 
 /**
- * {@link EGLConfigChooser} implementation for GLES 1.x and 2.0. Let's hope this really works for all devices. Includes MSAA/CSAA
+ * {@link EGLConfigChooser} implementation for GLES 2.0. Let's hope this really works for all devices. Includes MSAA/CSAA
  * config selection if requested. Taken from GLSurfaceView20, heavily modified to accommodate MSAA/CSAA.
  * @author mzechner
  */

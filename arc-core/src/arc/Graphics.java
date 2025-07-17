@@ -37,6 +37,17 @@ public abstract class Graphics implements Disposable{
         return Core.gl30 != null;
     }
 
+    /** @return whether instancing with glVertexAttribDivisor and glDrawElementsInstanced is available on this platform. */
+    public boolean supportsInstancing(){
+        if(OS.isAndroid || OS.isIos){
+            //instancing via glDrawElementsInstanced + glVertexAttribDivisor is available on GL ES 3.0
+            return isGL30Available();
+        }else{
+            //otherwise, only >= Gl 3.3 has glVertexAttribDivisor on desktop
+            return getGLVersion().atLeast(3, 3);
+        }
+    }
+
     /** @return the {@link GL20} instance */
     public abstract GL20 getGL20();
 

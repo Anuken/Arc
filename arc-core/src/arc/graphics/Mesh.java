@@ -230,7 +230,6 @@ public class Mesh implements Disposable{
     /**
      * Binds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} if indices where given. Use this with OpenGL
      * ES 2.0 and when auto-bind is disabled.
-     * @param shader the shader (does not bind the shader)
      */
     public void bind(final Shader shader){
         vertices.bind(shader);
@@ -238,9 +237,7 @@ public class Mesh implements Disposable{
     }
 
     /**
-     * Unbinds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} is indices were given. Use this with OpenGL
-     * ES 1.x and when auto-bind is disabled.
-     * @param shader the shader (does not unbind the shader)
+     * Unbinds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} is indices were given. Use this when auto-bind is disabled.
      */
     public void unbind(final Shader shader){
         vertices.unbind(shader);
@@ -273,9 +270,6 @@ public class Mesh implements Disposable{
      * This method must only be called after the {@link Shader#bind()} method has been called!
      * </p>
      *
-     * <p>
-     * This method is intended for use with OpenGL ES 2.0 and will throw an IllegalStateException when OpenGL ES 1.x is used.
-     * </p>
      * @param shader the shader to be used
      * @param primitiveType the primitive type
      * @param offset the offset into the vertex or index buffer
