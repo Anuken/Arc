@@ -10,7 +10,7 @@ public class Collapser extends WidgetGroup{
     Table table;
     @Nullable Boolp collapsedFunc;
     private CollapseAction collapseAction = new CollapseAction();
-    boolean collapsed, autoAnimate;
+    boolean collapsed, autoAnimate, enforceMinSize;
     boolean actionRunning;
     float currentHeight;
     float seconds = 0.4f;
@@ -90,6 +90,11 @@ public class Collapser extends WidgetGroup{
         this.touchable = touchable1;
     }
 
+    public Collapser setEnforceMinSize(boolean enforceMinSize){
+        this.enforceMinSize = enforceMinSize;
+        return this;
+    }
+
     @Override
     public void draw(){
         if(currentHeight > 1){
@@ -155,12 +160,12 @@ public class Collapser extends WidgetGroup{
 
     @Override
     public float getMinWidth(){
-        return 0;
+        return enforceMinSize ? super.getMinWidth() : 0;
     }
 
     @Override
     public float getMinHeight(){
-        return 0;
+        return enforceMinSize ? super.getMinHeight() : 0;
     }
 
     @Override
