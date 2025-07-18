@@ -2,6 +2,7 @@ package arc.util;
 
 import arc.graphics.*;
 import arc.struct.*;
+import arc.func.*;
 
 import java.io.*;
 import java.net.*;
@@ -151,6 +152,11 @@ public class Strings{
         }
 
         return out.toString();
+    }
+
+    /** Remove glyphs and colors */
+    public static String normalize(CharSequence str) {
+      return stripGlyphs(stripColors(str));  
     }
 
     private static int parseColorMarkup(CharSequence str, int start, int end){
@@ -323,8 +329,8 @@ public class Strings{
         return result.toString();
     }
 
-    /**Converts a snake_case or kebab-case string to Upper Case.
-     * For example: "test_string" -> "Test String"*/
+    /**Converts a snake_case or kebab-case string to Title Case.
+     * For example: "test_string" -> "Test String", or "TEST_STRING" -> "Test String"*/
     public static String capitalize(String s){
         StringBuilder result = new StringBuilder(s.length());
 
@@ -335,7 +341,7 @@ public class Strings{
             }else if(i == 0 || s.charAt(i - 1) == '_' || s.charAt(i - 1) == '-'){
                 result.append(Character.toUpperCase(c));
             }else{
-                result.append(c);
+                result.append(Character.toLowerCase(c));
             }
         }
 
@@ -369,7 +375,7 @@ public class Strings{
             if(i == 0){
                 result.append(Character.toLowerCase(c));
             }else if(c != ' '){
-                result.append(c);
+                result.append(Character.toUpperCase(c));
             }
 
         }
@@ -491,6 +497,11 @@ public class Strings{
         }
     }
 
+    /** Returns Double.MIN_VALUE if parsing failed. */
+    public static double parseDouble(String s){
+        return parseDouble(s, Double.MIN_VALUE);
+    }
+
     /** Faster double parser that doesn't throw exceptions. */
     public static double parseDouble(String value, double defaultValue){
         int len = value.length();
@@ -562,7 +573,7 @@ public class Strings{
         }
     }
 
-    /** Returns Float.NEGATIVE_INFINITY if parsing failed. */
+    /** Returns Float.MIN_VALUE if parsing failed. */
     public static float parseFloat(String s){
         return parseFloat(s, Float.MIN_VALUE);
     }
@@ -670,5 +681,229 @@ public class Strings{
             builder.replace(index, index + 1, replace);
             index += replaceLength;
         }
+    }
+
+      
+    /** @return whether the specified string mean true */
+    public static boolean isTrue(String str) {
+        switch(str.toLowerCase()){
+            case "1": case "true": case "on": 
+            case "enable": case "activate":
+                     return true;
+            default: return false;
+        }
+    }
+
+    /** @return whether the specified string mean false */
+    public static boolean isFalse(String str) {
+        switch (str.toLowerCase()) {
+            case "0": case "false": case "off": 
+            case "disable": case "desactivate":
+                     return true;
+            default: return false;
+        }
+    }
+ 
+    public static <T> int best(Iterable<T> list, Intf<T> intifier) {
+        int best = 0;
+        
+        for (T i : list) {
+            int s = intifier.get(i);
+            if (s > best) best = s;
+        }
+        
+        return best;
+    }
+    
+    public static <T> int best(T[] list, Intf<T> intifier) {
+        int best = 0;
+        
+        for (T i : list) {
+            int s = intifier.get(i);
+            if (s > best) best = s;
+        }
+        
+        return best;
+    }
+    
+    public static int bestLength(Iterable<? extends String> list) {
+        return best(list, str -> str.length());
+    }
+    
+    public static int bestLength(String... list) {
+        return best(list, str -> str.length());
+    }
+    
+    /** 
+    * @return whether {@code newVersion} is greater than {@code currentVersion} , e.g. "v146" > "124.1"
+    * @apiNote can handle multiple dots in the version, and it's very fast because it only does one iteration.
+    */
+    public static boolean isVersionAtLeast(String currentVersion, String newVersion) {
+        int last1 = currentVersion.startsWith("v") ? 1 : 0, 
+            last2 = newVersion.startsWith("v") ? 1 : 0, 
+            len1 = currentVersion.length(), 
+            len2 = newVersion.length(),
+            dot1 = 0, dot2 = 0, 
+            p1 = 0, p2 = 0;
+
+        while ((dot1 != -1  && dot2 != -1) && (last1 < len1 && last2 < len2)) {
+            dot1 = currentVersion.indexOf('.', last1);
+            dot2 = newVersion.indexOf('.', last2);
+            if (dot1 == -1) dot1 = len1;
+            if (dot2 == -1) dot2 = len2;
+            
+            p1 = parseInt(currentVersion, 10, 0, last1, dot1);
+            p2 = parseInt(newVersion, 10, 0, last2, dot2);
+            last1 = dot1+1;
+            last2 = dot2+1;
+            
+            if (p1 != p2) return p2 > p1;
+        }
+        
+        // Continue iteration on newVersion to see if it's just leading zeros.
+        while (dot2 != -1 && last2 < len2) {
+            dot2 = newVersion.indexOf('.', last2);
+            if (dot2 == -1) dot2 = len2;
+            p2 = parseInt(newVersion, 10, 0, last2, dot2);
+            last2 = dot2+1;
+            if (p2 > 0) return true;
+        }
+        
+        return false;
+    }
+
+    /** Taken from the {@link String#repeat(int)} method of JDK 11 */
+    public static String repeat(String str, int count) {
+        if (count < 0) {
+            throw new IllegalArgumentException("count is negative: " + count);
+        }
+        if (count == 1) {
+            return str;
+        }
+        final byte[] value = str.getBytes();
+        final int len = value.length;
+        if (len == 0 || count == 0) {
+            return "";
+        }
+        if (Integer.MAX_VALUE / count < len) {
+            throw new OutOfMemoryError("Required length exceeds implementation limit");
+        }
+        if (len == 1) {
+            final byte[] single = new byte[count];
+            java.util.Arrays.fill(single, value[0]);
+            return new String(single);
+        }
+        final int limit = len * count;
+        final byte[] multiple = new byte[limit];
+        System.arraycopy(value, 0, multiple, 0, len);
+        int copied = len;
+        for (; copied < limit - copied; copied <<= 1) {
+            System.arraycopy(multiple, 0, multiple, copied, copied);
+        }
+        System.arraycopy(multiple, 0, multiple, copied, limit - copied);
+        return new String(multiple);
+    }
+    
+    public static String rJust(String str, int length) { return rJust(str, length, " "); }
+    /** Justify string to the right. E.g. "&emsp; right" */
+    public static String rJust(String str, int length, String filler) {
+        int sSize = str.length(), fSize = filler.length();
+        
+        if (fSize == 0 || sSize >= length) return str; 
+        if (fSize == 1) return repeat(filler, length-sSize)+str;   
+        int add = length-sSize;
+        return repeat(filler, add/fSize)+filler.substring(0, add%fSize)+str;
+    }
+    public static Seq<String> rJust(Seq<String> list, int length) { return rJust(list, length, " "); }
+    public static Seq<String> rJust(Seq<String> list, int length, String filler) {
+        return list.map(str -> rJust(str, length, filler));
+    }
+    
+    public static String lJust(String str, int length) { return lJust(str, length, " "); }
+    /** Justify string to the left. E.g. "left &emsp;" */
+    public static String lJust(String str, int length, String filler) {
+        int sSize = str.length(), fSize = filler.length();
+        
+        if (fSize == 0 || sSize >= length) return str;
+        if (fSize == 1) return str+repeat(filler, length-sSize);
+        int add = length-sSize;
+        return str+repeat(filler, add/fSize)+filler.substring(0, add%fSize);
+    }
+    public static Seq<String> lJust(Seq<String> list, int length) { return lJust(list, length, " "); }
+    public static Seq<String> lJust(Seq<String> list, int length, String filler) {
+        return list.map(str -> lJust(str, length, filler));
+    }
+    
+    public static String cJust(String str, int length) { return cJust(str, length, " "); }
+    /** Justify string to the center. E.g. "&emsp; center &emsp;". */
+    public static String cJust(String str, int length, String filler) {
+        int sSize = str.length(), fSize = filler.length();
+        
+        if (fSize == 0 || sSize >= length) return str;
+        int add = length-sSize, left = add/2, right = add-add/2;
+        if (fSize == 1) return repeat(filler, left)+str+repeat(filler, right);
+        return repeat(filler, left/fSize)+filler.substring(0, left%fSize)+str+
+               repeat(filler, right/fSize)+filler.substring(0, right%fSize);
+    }
+    public static Seq<String> cJust(Seq<String> list, int length) { return cJust(list, length, " "); }
+    public static Seq<String> cJust(Seq<String> list, int length, String filler) {
+        return list.map(str -> cJust(str, length, filler));
+    }
+    
+    public static String sJust(String left, String right, int length) { return sJust(left, right, length, " "); }
+    /** Justify string to the sides. E.g. "left &emsp; right" */
+    public static String sJust(String left, String right, int length, String filler) {
+        int fSize = filler.length(), lSize = left.length(), rSize = right.length();
+        
+        if (fSize == 0 || lSize+rSize >= length) return left+right; 
+        int add = length-lSize-rSize;
+        if (fSize == 1) return left+repeat(filler, add)+right;
+        return left+repeat(filler, add/fSize)+filler.substring(0, add%fSize)+right;
+    }
+    public static Seq<String> sJust(Seq<String> left, Seq<String> right, int length) { return sJust(left, right, length, " "); }
+    public static Seq<String> sJust(Seq<String> left, Seq<String> right, int length, String filler) {
+        Seq<String> arr = new Seq<>(Integer.max(left.size, right.size));
+        int i = 0;
+        
+        for (; i<Integer.min(left.size, right.size); i++) arr.add(sJust(left.get(i), right.get(i), length, filler));
+        // Fill the rest
+        for (; i<left.size; i++) arr.add(lJust(left.get(i), length, filler));
+        for (; i<right.size; i++) arr.add(rJust(right.get(i), length, filler));
+        
+        return arr;
+    }
+
+    public static Seq<String> tableify(Seq<String> lines, int width) {
+        return tableify(lines, width, Strings::lJust);
+    }
+    /** 
+     * Create a table with given {@code lines} 
+     * and automatic columns number calculated with the table's {@code width}.
+     */
+    public static Seq<String> tableify(Seq<String> lines, int width, 
+                                       Func2<String, Integer, String> justifier) {
+        int spacing = 2, // Additional spacing between columns
+            columns = Math.max(1, width / (bestLength(lines) + 2)); // Estimate the columns
+        Seq<String> result = new Seq<>(lines.size / columns + 1);
+        int[] bests = new int[columns];
+        StringBuilder builder = new StringBuilder();
+        
+        // Calculate the best length for each columns
+        for (int i=0, c=0, s=0; i<lines.size; i++) {
+            s = lines.get(i).length();
+            c = i % columns;
+            if (s > bests[c]) bests[c] = s;
+        }
+        
+        // Now justify lines
+        for (int i=0, c; i<lines.size;) { 
+            for (c=0; c<columns && i<lines.size; c++, i++) 
+                builder.append(justifier.get(lines.get(i), bests[c]+spacing));
+
+            result.add(builder.toString());
+            builder.setLength(0);
+        }
+        
+        return result;
     }
 }
