@@ -37,10 +37,10 @@ public abstract class Group extends Element implements Cullable{
         super.act(delta);
         Element[] actors = children.begin();
         for(int i = 0, n = children.size; i < n; i++){
+            actors[i].updateVisibility();
             if(actors[i].visible){
                 actors[i].act(delta);
             }
-            actors[i].updateVisibility();
         }
         children.end();
     }
