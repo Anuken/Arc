@@ -24,6 +24,12 @@ public class IOSInput extends Input{
     static final NSObjectWrapper<UIAcceleration> UI_ACCELERATION_WRAPPER = new NSObjectWrapper<>(UIAcceleration.class);
     private static final int POINTER_NOT_FOUND = -1;
     private static final NSObjectWrapper<UITouch> UI_TOUCH_WRAPPER = new NSObjectWrapper<>(UITouch.class);
+    private final Pool<KeyEvent> keyEventPool = new Pool<KeyEvent>(16, 1000){
+        protected KeyEvent newObject(){
+            return new KeyEvent();
+        }
+    };
+    private final Seq<KeyEvent> keyEvents = new Seq<>();
     protected UIAccelerometerDelegate accelerometerDelegate;
     IOSApplication app;
     IOSApplicationConfiguration config;
@@ -47,14 +53,19 @@ public class IOSInput extends Input{
     TouchEvent currentEvent = null;
     float[] rotation = new float[3];
     Vec3 accel = new Vec3();
-
     boolean hasVibrator;
     boolean compassSupported;
     boolean keyboardCloseOnReturn;
+    boolean softkeyboardActive = false;
     // Issue 773 indicates this may solve a premature GC issue
     UIAlertViewDelegate delegate;
+    private long currentEventTimeStamp;
     private UITextField textfield = null;
-    private final UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter(){
+    public IOSInput(IOSApplication app){
+        this.app = app;
+        this.config = app.config;
+        this.keyboardCloseOnReturn = app.config.keyboardCloseOnReturn;
+    }    private final UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter(){
         @Override
         public boolean shouldChangeCharacters(UITextField textField, NSRange range, String string){
             for(int i = 0; i < range.getLength(); i++){
@@ -95,12 +106,6 @@ public class IOSInput extends Input{
             return false;
         }
     };
-
-    public IOSInput(IOSApplication app){
-        this.app = app;
-        this.config = app.config;
-        this.keyboardCloseOnReturn = app.config.keyboardCloseOnReturn;
-    }
 
     void setupPeripherals(){
         setupAccelerometer();
@@ -207,10 +212,6 @@ public class IOSInput extends Input{
         return pressures[pointer];
     }
 
-    // hack for software keyboard support
-    // uses a hidden textfield to capture input
-    // see: http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
-
     @Override
     public void getTextInput(TextInput input){
         if(input.multiline && false){
@@ -234,7 +235,8 @@ public class IOSInput extends Input{
             alert.addAction(new UIAlertAction("Ok", UIAlertActionStyle.Default, action -> Core.app.post(() -> input.accepted.get(text.getText()))));
             alert.addAction(new UIAlertAction("Cancel", UIAlertActionStyle.Destructive, action -> Core.app.post(input.canceled)));
 
-            app.getUIViewController().presentViewController(alert, true, () -> {});
+            app.getUIViewController().presentViewController(alert, true, () -> {
+            });
         }else{
             delegate = new UIAlertViewDelegateAdapter(){
                 @Override
@@ -277,9 +279,14 @@ public class IOSInput extends Input{
         }
     }
 
+    // hack for software keyboard support
+    // uses a hidden textfield to capture input
+    // see: http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
+
     @Override
     public void setOnscreenKeyboardVisible(boolean visible){
         if(textfield == null) createDefaultTextField();
+        softkeyboardActive = visible;
         if(visible){
             textfield.becomeFirstResponder();
             textfield.setDelegate(textDelegate);
@@ -323,7 +330,7 @@ public class IOSInput extends Input{
 
     @Override
     public long getCurrentEventTime(){
-        return currentEvent.timestamp;
+        return currentEventTimeStamp;
     }
 
     @Override
@@ -369,10 +376,62 @@ public class IOSInput extends Input{
         Core.graphics.requestRendering();
     }
 
+    public boolean onKey(UIKey key, boolean down){
+        if(key == null){
+            return false;
+        }
+
+        KeyCode keyCode = IOSKeymap.getKeyCode(key);
+
+        if(keyCode != KeyCode.unknown) synchronized(keyEvents){
+            KeyEvent event = keyEventPool.obtain();
+            long timeStamp = System.nanoTime();
+            event.timeStamp = timeStamp;
+            event.keyChar = 0;
+            event.keyCode = keyCode;
+            event.type = down ? KeyEvent.KEY_DOWN : KeyEvent.KEY_UP;
+            keyEvents.add(event);
+
+            if(!down){
+                char character;
+
+                switch(keyCode){
+                    case del:
+                        character = 8;
+                        break;
+                    case forwardDel:
+                        character = 127;
+                        break;
+                    case enter:
+                        character = 13;
+                        break;
+                    default:
+                        String characters = key.getCharacters();
+                        // special keys return constants like "UIKeyInputF5", so we check for length 1
+                        character = (characters != null && characters.length() == 1) ? characters.charAt(0) : 0;
+                }
+
+                if(character >= 0){
+                    event = keyEventPool.obtain();
+                    event.timeStamp = timeStamp;
+                    event.type = KeyEvent.KEY_TYPED;
+                    event.keyCode = keyCode;
+                    event.keyChar = character;
+                    keyEvents.add(event);
+                }
+
+            }
+
+        }
+
+        return isCatch(keyCode);
+    }
+
     void processEvents(){
         synchronized(touchEvents){
             justTouched = false;
             for(TouchEvent event : touchEvents){
+                currentEventTimeStamp = event.timestamp;
                 currentEvent = event;
                 switch(event.phase){
                     case Began:
@@ -391,6 +450,29 @@ public class IOSInput extends Input{
             }
             touchEventPool.freeAll(touchEvents);
             touchEvents.clear();
+        }
+
+
+        synchronized(keyEvents){
+            for(KeyEvent e : keyEvents){
+                currentEventTimeStamp = e.timeStamp;
+                switch(e.type){
+                    case KeyEvent.KEY_DOWN:
+                        inputMultiplexer.keyDown(e.keyCode);
+
+                        break;
+                    case KeyEvent.KEY_UP:
+                        inputMultiplexer.keyUp(e.keyCode);
+                        break;
+                    case KeyEvent.KEY_TYPED:
+                        // don't process key typed events if soft keyboard is active
+                        // the soft keyboard hook already catches the changes
+                        if(!softkeyboardActive) inputMultiplexer.keyTyped(e.keyChar);
+                }
+
+            }
+            keyEventPool.freeAll(keyEvents);
+            keyEvents.clear();
         }
     }
 
@@ -537,6 +619,17 @@ public class IOSInput extends Input{
         int pointer;
     }
 
+    static class KeyEvent {
+        static final int KEY_DOWN = 0;
+        static final int KEY_UP = 1;
+        static final int KEY_TYPED = 2;
+
+        long timeStamp;
+        int type;
+        KeyCode keyCode;
+        char keyChar;
+    }
+
     private class HiddenTextField extends UITextField{
         public HiddenTextField(CGRect frame){
             super(frame);
@@ -556,4 +649,6 @@ public class IOSInput extends Input{
             Core.graphics.requestRendering();
         }
     }
+
+
 }
