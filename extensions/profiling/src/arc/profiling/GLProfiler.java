@@ -31,7 +31,7 @@ public class GLProfiler{
         }else{
             glInterceptor = new GL20Interceptor(this, graphics.getGL20());
         }
-        listener = GLErrorListener.LOGGING_LISTENER;
+        listener = GLErrorListener.loggingListener;
     }
 
     /** Enables profiling by replacing the {@code GL20} and {@code GL30} instances with profiling ones. */
