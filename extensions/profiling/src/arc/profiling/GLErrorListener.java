@@ -2,8 +2,6 @@ package arc.profiling;
 
 import arc.util.*;
 
-import static arc.profiling.GLInterceptor.resolveErrorNumber;
-
 /**
  * Listener for GL errors detected by {@link GLProfiler}.
  * @author Jan Polák
@@ -16,9 +14,9 @@ public interface GLErrorListener{
         String place = getCallName();
 
         if(place != null){
-            Log.err(new RuntimeException(Strings.format("[GLProfiler] Error @ from @", resolveErrorNumber(error), place)));
+            Log.err(new RuntimeException(Strings.format("[GLProfiler] Error @ from @", error, place)));
         }else{
-            Log.err(new RuntimeException(Strings.format("[GLProfiler] Error @", resolveErrorNumber(error))));
+            Log.err(new RuntimeException(Strings.format("[GLProfiler] Error @", error)));
         }
     };
 
@@ -27,9 +25,9 @@ public interface GLErrorListener{
         String place = getCallName();
 
         if(place != null){
-            throw new RuntimeException(Strings.format("[GLProfiler] Error @ from @", resolveErrorNumber(error), place));
+            throw new RuntimeException(Strings.format("[GLProfiler] Error @ from @", error, place));
         }else{
-            throw new RuntimeException(Strings.format("[GLProfiler] Error @", resolveErrorNumber(error)));
+            throw new RuntimeException(Strings.format("[GLProfiler] Error @", error));
         }
     };
 
@@ -37,7 +35,7 @@ public interface GLErrorListener{
      * Put your error logging code here.
      * @see GLInterceptor#resolveErrorNumber(int)
      */
-    void onError(int error);
+    void onError(String error);
 
     static @Nullable String getCallName(){
         String place = null;
