@@ -60,6 +60,11 @@ public class Sound extends AudioSource{
     public int play(float volume, float pitch, float pan, boolean loop, boolean checkFrame){
         if(handle == 0 || (checkFrame && framePlayed == Core.graphics.getFrameId()) || bus == null || !Core.audio.initialized) return -1;
         framePlayed = Core.graphics.getFrameId();
+
+        if(Float.isInfinite(volume) || Float.isNaN(volume)) volume = 0f;
+        if(Float.isInfinite(pan) || Float.isNaN(pan)) pan = 0f;
+        if(Float.isInfinite(pitch) || Float.isNaN(pitch)) pitch = 1f;
+
         return sourcePlayBus(handle, bus.handle, volume, Mathf.clamp(pitch * Core.audio.globalPitch, 0.0001f, 10f), Mathf.clamp(pan, -1f, 1f), loop);
     }
 

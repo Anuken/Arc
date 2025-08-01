@@ -132,18 +132,18 @@ public class Audio implements Disposable{
 
     public void setPitch(int soundId, float pitch){
         if(!initialized) return;
-        idPitch(soundId, pitch);
+        if(!Float.isInfinite(pitch) && !Float.isNaN(pitch)) idPitch(soundId, pitch);
     }
 
     public void setVolume(int soundId, float volume){
         if(!initialized) return;
-        idVolume(soundId, volume);
+        if(!Float.isInfinite(volume) && !Float.isNaN(volume)) idVolume(soundId, volume);
     }
 
     public void set(int soundId, float pan, float volume){
         if(!initialized) return;
-        idVolume(soundId, volume);
-        idPan(soundId, pan);
+        if(!Float.isInfinite(volume) && !Float.isNaN(volume)) idVolume(soundId, volume);
+        if(!Float.isInfinite(pan) && !Float.isNaN(pan)) idPan(soundId, pan);
     }
 
     public void fadeFilterParam(int voice, int filter, int attribute, float value, float timeSec){
