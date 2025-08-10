@@ -104,6 +104,11 @@ public class HeadlessApplication implements Application{
     }
 
     @Override
+    public Thread getMainThread(){
+        return mainLoopThread;
+    }
+
+    @Override
     public ApplicationType getType(){
         return ApplicationType.headless;
     }

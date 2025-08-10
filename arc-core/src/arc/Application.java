@@ -74,8 +74,21 @@ public interface Application extends Disposable{
         return 0;
     }
 
-    @Nullable
-    String getClipboardText();
+    /** @return the main graphics thread, upon which all ApplicationListener methods are called. May return null if not initialized. */
+    default @Nullable Thread getMainThread(){
+        return null;
+    }
+
+    /**
+     * @return whether the currently executing thread is the main thread.
+     * If the main thread is not initialized, returns true by default. This is used for error checking purposes.
+     * */
+    default boolean isOnMainThread(){
+        Thread thread = getMainThread();
+        return thread == null || Thread.currentThread() == thread;
+    }
+
+    @Nullable String getClipboardText();
 
     void setClipboardText(String text);
 

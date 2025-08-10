@@ -217,6 +217,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
         updatePpi();
         gl.glViewport(0, 0, this.width, this.height);
         if(!created){
+            app.mainThread = Thread.currentThread();
             for(ApplicationListener list : app.getListeners()){
                 list.init();
             }

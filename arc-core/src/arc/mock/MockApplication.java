@@ -4,6 +4,7 @@ import arc.*;
 import arc.struct.*;
 
 public class MockApplication implements Application{
+
     @Override
     public Seq<ApplicationListener> getListeners(){
         return new Seq<>();

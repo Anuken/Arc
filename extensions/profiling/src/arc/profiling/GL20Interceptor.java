@@ -2,7 +2,6 @@ package arc.profiling;
 
 import arc.*;
 import arc.graphics.*;
-import arc.util.*;
 
 import java.nio.*;
 
@@ -12,16 +11,14 @@ import java.nio.*;
  */
 public class GL20Interceptor extends GLInterceptor implements GL20{
     protected final GL20 gl20;
-    protected volatile @Nullable Thread mainThread;
 
     protected GL20Interceptor(GLProfiler glProfiler, GL20 gl20){
         super(glProfiler);
         this.gl20 = gl20;
-        Core.app.post(() -> mainThread = Thread.currentThread());
     }
 
     private void check(){
-        if(mainThread != null && Thread.currentThread() != mainThread){
+        if(!Core.app.isOnMainThread()){
             glProfiler.getListener().onError("GL call on wrong thread: " + Thread.currentThread());
         }
         int error = gl20.glGetError();

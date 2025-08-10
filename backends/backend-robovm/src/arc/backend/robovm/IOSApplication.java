@@ -21,6 +21,7 @@ public class IOSApplication implements Application{
     IOSApplicationConfiguration config;
     IOSGraphics graphics;
     IOSInput input;
+    Thread mainThread;
     @Nullable IOSDevice device;
     float displayScaleFactor;
 
@@ -149,6 +150,11 @@ public class IOSApplication implements Application{
             }
         }
         Gl.finish();
+    }
+
+    @Override
+    public Thread getMainThread(){
+        return mainThread;
     }
 
     @Override

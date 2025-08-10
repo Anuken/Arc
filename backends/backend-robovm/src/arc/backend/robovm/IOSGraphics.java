@@ -201,6 +201,7 @@ public class IOSGraphics extends Graphics{
         gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
 
         if(!created){
+            app.mainThread = Thread.currentThread();
             gl20.glViewport(0, 0, width, height);
 
             String versionString = gl20.glGetString(GL20.GL_VERSION);

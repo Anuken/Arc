@@ -1,14 +1,9 @@
 package arc.profiling;
 
 import arc.*;
-import arc.graphics.GL20;
-import arc.graphics.GL30;
-import arc.util.*;
+import arc.graphics.*;
 
-import java.nio.Buffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.LongBuffer;
+import java.nio.*;
 
 /**
  * @author Daniel Holderbaum
@@ -16,16 +11,14 @@ import java.nio.LongBuffer;
  */
 public class GL30Interceptor extends GLInterceptor implements GL30{
     protected final GL30 gl30;
-    protected volatile @Nullable Thread mainThread;
 
     protected GL30Interceptor(GLProfiler glProfiler, GL30 gl30){
         super(glProfiler);
         this.gl30 = gl30;
-        Core.app.post(() -> mainThread = Thread.currentThread());
     }
 
     private void check(){
-        if(mainThread != null && Thread.currentThread() != mainThread){
+        if(!Core.app.isOnMainThread()){
             glProfiler.getListener().onError("GL call on wrong thread: " + Thread.currentThread());
         }
         int error = gl30.glGetError();

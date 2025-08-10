@@ -24,6 +24,7 @@ public class SdlApplication implements Application{
     final SdlGraphics graphics;
     final SdlInput input;
     final SdlConfig config;
+    final Thread mainThread;
 
     boolean running = true;
     long window, context;
@@ -31,6 +32,8 @@ public class SdlApplication implements Application{
     public SdlApplication(ApplicationListener listener, SdlConfig config){
         this.config = config;
         this.listeners.add(listener);
+
+        mainThread = Thread.currentThread();
 
         init();
 
@@ -246,6 +249,11 @@ public class SdlApplication implements Application{
 
     public long getWindow(){
         return window;
+    }
+
+    @Override
+    public Thread getMainThread(){
+        return mainThread;
     }
 
     @Override

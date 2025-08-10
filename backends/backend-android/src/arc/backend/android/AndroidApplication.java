@@ -41,6 +41,7 @@ public class AndroidApplication extends Activity implements Application{
     protected ClipboardManager clipboard;
     protected boolean useImmersiveMode = false;
     protected boolean hideStatusBar = false;
+    protected @Nullable Thread mainThread;
 
     static{
         ArcNativesLoader.load();
@@ -166,6 +167,11 @@ public class AndroidApplication extends Activity implements Application{
         if(!hide) return;
 
         getWindow().getDecorView().setSystemUiVisibility(0x1);
+    }
+
+    @Override
+    public Thread getMainThread(){
+        return mainThread;
     }
 
     @Override
