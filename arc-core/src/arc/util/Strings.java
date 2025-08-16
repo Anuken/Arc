@@ -1,6 +1,7 @@
 package arc.util;
 
 import arc.graphics.*;
+import arc.math.*;
 import arc.struct.*;
 
 import java.io.*;
@@ -576,9 +577,18 @@ public class Strings{
     }
 
     public static String autoFixed(float value, int max){
-        int precision = Math.abs((int)(value + 0.0001f) - value) <= 0.0001f ? 0 :
-                Math.abs((int)(value * 10 + 0.0001f) - value * 10) <= 0.0001f ? 1 : 2;
-        return fixed(value, Math.min(precision, max));
+
+        //truncate extra digits past the max
+        value = (float)Mathf.floor(value * Mathf.pow(10, max) + 0.001f) / Mathf.pow(10, max);
+
+        int precision =
+                Math.abs(Mathf.floor(value) - value) < 0.0001f ? 0 :
+                Math.abs(Mathf.floor(value * 10) - value * 10) < 0.0001f ? 1 :
+                Math.abs(Mathf.floor(value * 100) - value * 100) < 0.0001f ? 2 :
+                Math.abs(Mathf.floor(value * 1000) - value * 1000) < 0.0001f ? 3 :
+                4;
+
+        return fixed(value, Math.min(max, precision));
     }
 
     public static String fixed(float d, int decimalPlaces){
