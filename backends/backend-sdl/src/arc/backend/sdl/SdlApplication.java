@@ -153,15 +153,27 @@ public class SdlApplication implements Application{
             if(context == 0) throw new SdlError();
         }catch(SdlError error){
             if(config.gl30){
-                //try creating a GL 2.0 context instead as fallback.
-                config.gl30 = false;
+                try{
+                    //try a 3.0 context
+                    Log.info("Failed to initialize with OpenGL @.@, attempting fallback compatibility context: @", config.gl30Major, config.gl30Minor, Strings.getSimpleMessage(error));
 
-                check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY));
-                check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2));
-                check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0));
+                    check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY));
+                    check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3));
+                    check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0));
 
-                context = SDL_GL_CreateContext(window);
-                if(context == 0) throw new SdlError();
+                    context = SDL_GL_CreateContext(window);
+                    if(context == 0) throw new SdlError();
+                }catch(SdlError error2){
+                    //finally, try a 2.0 context
+                    Log.info("Failed to initialize with fallback OpenGL 3.0 context, attempting 2.0 context: @", Strings.getSimpleMessage(error2));
+                    config.gl30 = false;
+
+                    check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2));
+                    check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0));
+
+                    context = SDL_GL_CreateContext(window);
+                    if(context == 0) throw new SdlError();
+                }
             }else{
                 throw error;
             }
