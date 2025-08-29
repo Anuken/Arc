@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 public class GLVersion{
     public final String vendorString;
     public final String rendererString;
+    public final String versionString;
     public final GlType type;
     public int majorVersion;
     public int minorVersion;
@@ -38,6 +39,7 @@ public class GLVersion{
             rendererString = "";
         }
 
+        this.versionString = versionString;
         this.vendorString = vendorString;
         this.rendererString = rendererString;
     }
@@ -90,7 +92,7 @@ public class GLVersion{
 
     @Override
     public String toString(){
-        return type + " " + majorVersion + "." + minorVersion + "." + releaseVersion + " / " + vendorString + " / " + rendererString;
+        return type + " " + majorVersion + "." + minorVersion + "." + releaseVersion + " / " + vendorString + " / " + rendererString + " / " + versionString;
     }
 
     public enum GlType{
