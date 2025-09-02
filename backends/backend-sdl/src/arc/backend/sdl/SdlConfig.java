@@ -17,9 +17,10 @@ public class SdlConfig{
     public boolean maximized = false;
     public boolean fullscreen = false;
     public boolean disableAudio = false;
-    public boolean gl30 = false;
+    /** For MacOS, this is always forced to 'true'. */
     public boolean coreProfile = false;
-    public int gl30Major = 3, gl30Minor = 0;
+    /** Requested OpenGL versions, in order of priority. */
+    public int[][] glVersions = {{2, 0}};
 
     public String title = "Arc Application";
     public Color initialBackgroundColor = Color.black;

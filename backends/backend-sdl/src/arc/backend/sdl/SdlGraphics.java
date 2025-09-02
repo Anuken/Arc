@@ -54,7 +54,7 @@ public class SdlGraphics extends Graphics{
         }
 
         //use GL30 version if possible
-        if(glVersion.atLeast(3, 0) && app.config.gl30){
+        if(glVersion.atLeast(3, 0)){
             Core.gl = Core.gl20 = gl20 = Core.gl30 = gl30 = new SdlGL30();
         }
 
