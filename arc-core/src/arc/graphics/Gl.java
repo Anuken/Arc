@@ -318,7 +318,7 @@ public class Gl{
     renderbufferBinding = 0x8CA7,
     maxRenderbufferSize = 0x84E8,
     invalidFramebufferOperation = 0x0506,
-    vertexProgramPointSize = 0x8642;
+    programPointSize = 0x8642; //same as GL_PROGRAM_POINT_SIZE_ARB
 
     //STATE - optimizes GL calls
 
