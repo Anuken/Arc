@@ -4,17 +4,16 @@ import java.io.*;
 
 /** A wrapper for DataOutput with more concise method names and no IOExceptions. */
 public class Writes implements Closeable{
-    private static Writes instance = new Writes(null);
-
     public DataOutput output;
 
     public Writes(DataOutput output){
         this.output = output;
     }
 
+    /** @deprecated Use the constructor instead. */
+    @Deprecated
     public static Writes get(DataOutput output){
-        instance.output = output;
-        return instance;
+        return new Writes(output);
     }
 
     /** write long */
@@ -47,7 +46,7 @@ public class Writes implements Closeable{
     /** write bytes */
     public void b(byte[] array, int offset, int length){
         try{
-            output.write(array, 0, length);
+            output.write(array, offset, length);
         }catch(IOException e){
             throw new RuntimeException(e);
         }

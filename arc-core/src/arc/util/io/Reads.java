@@ -4,17 +4,16 @@ import java.io.*;
 
 /** A wrapper for DataInput with more concise method names and no IOExceptions. */
 public class Reads implements Closeable{
-    private static Reads instance = new Reads(null);
-
     public DataInput input;
 
     public Reads(DataInput input){
         this.input = input;
     }
 
+    /** @deprecated Use the constructor instead. */
+    @Deprecated
     public static Reads get(DataInput input){
-        instance.input = input;
-        return instance;
+        return new Reads(input);
     }
 
     /** @return -1 if EOF or unsupported, or the next byte. */
