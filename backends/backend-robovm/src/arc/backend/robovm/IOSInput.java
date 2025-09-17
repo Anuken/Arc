@@ -477,9 +477,7 @@ public class IOSInput extends Input{
     }
 
     void processDevices(){
-        for(InputDevice device : devices){
-            device.postUpdate();
-        }
+        keyboard.postUpdate();
     }
 
     private int getFreePointer(){

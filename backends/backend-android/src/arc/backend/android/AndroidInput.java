@@ -12,7 +12,6 @@ import android.view.View.*;
 import android.view.inputmethod.*;
 import android.widget.*;
 import arc.*;
-import arc.input.InputDevice;
 import arc.input.*;
 import arc.math.geom.*;
 import arc.util.Log;
@@ -251,9 +250,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     }
 
     void processDevices(){
-        for(InputDevice device : devices){
-            device.postUpdate();
-        }
+        keyboard.postUpdate();
     }
 
     void processEvents(){

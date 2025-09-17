@@ -2,13 +2,12 @@ package arc.input;
 
 import arc.struct.*;
 
-public class KeyboardDevice extends InputDevice implements InputProcessor{
+public class KeyboardDevice implements InputProcessor{
     private final IntSet pressed = new IntSet(), justReleased = new IntSet();
     private final IntSet lastFramePressed = new IntSet();
     private final IntSet justPressed = new IntSet();
     private final IntFloatMap axes = new IntFloatMap();
 
-    @Override
     public void postUpdate(){
         lastFramePressed.clear();
         lastFramePressed.addAll(pressed);
@@ -17,24 +16,20 @@ public class KeyboardDevice extends InputDevice implements InputProcessor{
         axes.clear();
     }
 
-    @Override
     public boolean isPressed(KeyCode key){
         if(key == KeyCode.anyKey) return pressed.size > 0;
 
         return pressed.contains(key.ordinal());
     }
 
-    @Override
     public boolean isTapped(KeyCode key){
         return justPressed.contains(key.ordinal());
     }
 
-    @Override
     public boolean isReleased(KeyCode key){
         return justReleased.contains(key.ordinal());
     }
 
-    @Override
     public float getAxis(KeyCode keyCode){
         return axes.get(keyCode.ordinal(), 0);
     }
@@ -69,15 +64,5 @@ public class KeyboardDevice extends InputDevice implements InputProcessor{
     public boolean scrolled(float amountX, float amountY){
         axes.put(KeyCode.scroll.ordinal(), -amountY);
         return false;
-    }
-
-    @Override
-    public String name(){
-        return "Keyboard";
-    }
-
-    @Override
-    public DeviceType type(){
-        return DeviceType.keyboard;
     }
 }

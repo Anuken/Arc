@@ -12,12 +12,6 @@ import arc.Input;
  */
 public interface InputProcessor{
 
-    /** Called when an input device is connected. */
-    default void connected(InputDevice device){}
-
-    /** Called when an input device is disconnected. */
-    default void disconnected(InputDevice device){}
-
     /**
      * Called when a key was pressed
      * @return whether the input was processed

@@ -23,8 +23,6 @@ import arc.util.*;
 public abstract class Input{
     /** The default input device (keyboard) */
     protected KeyboardDevice keyboard = new KeyboardDevice();
-    /** All available input devices, including controllers and keyboards. */
-    protected Seq<InputDevice> devices = Seq.with(keyboard);
     /** An input multiplexer to handle events. */
     protected InputMultiplexer inputMultiplexer = new InputMultiplexer(keyboard);
     /** List of caught keys for Android. */
@@ -332,14 +330,6 @@ public abstract class Input{
 
     public InputMultiplexer getInputMultiplexer(){
         return inputMultiplexer;
-    }
-
-    /**
-     * Returns a list of input devices, such as keyboards or controllers.
-     * This list always contains a keyboard device, regardless of whether one is connected or not (on Android).
-     */
-    public Seq<InputDevice> getDevices(){
-        return devices;
     }
 
     /** Returns the default input device (keyboard). */

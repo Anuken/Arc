@@ -59,28 +59,6 @@ public class InputMultiplexer implements InputProcessor{
     }
 
     @Override
-    public void connected(InputDevice device){
-        Object[] items = processors.begin();
-        try{
-            for(int i = 0, n = processors.size; i < n; i++)
-              ((InputProcessor)items[i]).connected(device);
-        }finally{
-            processors.end();
-        }
-    }
-
-    @Override
-    public void disconnected(InputDevice device){
-        Object[] items = processors.begin();
-        try{
-            for(int i = 0, n = processors.size; i < n; i++)
-                ((InputProcessor)items[i]).disconnected(device);
-        }finally{
-            processors.end();
-        }
-    }
-
-    @Override
     public boolean keyDown(KeyCode keycode){
         Object[] items = processors.begin();
         try{

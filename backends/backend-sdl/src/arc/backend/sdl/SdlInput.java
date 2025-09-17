@@ -184,17 +184,11 @@ public class SdlInput extends Input{
             handleFieldCandidate(e);
         }
         stringEditEvents.clear();
-
-        for(InputDevice device : devices){
-            device.preUpdate();
-        }
     }
 
     //called after main loop
     void postUpdate(){
-        for(InputDevice device : devices){
-            device.postUpdate();
-        }
+        keyboard.postUpdate();
         deltaX = deltaY = 0;
     }
 
