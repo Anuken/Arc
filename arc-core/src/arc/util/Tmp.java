@@ -47,6 +47,7 @@ public class Tmp{
     public static final Mat m1 = new Mat();
     public static final Mat m2 = new Mat();
     public static final Mat m3 = new Mat();
+    public static final Mat m4 = new Mat();
 
     public static final Bezier<Vec2> bz2 = new Bezier<>();
     public static final Bezier<Vec3> bz3 = new Bezier<>();

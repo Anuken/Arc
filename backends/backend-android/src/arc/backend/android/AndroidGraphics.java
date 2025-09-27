@@ -1,7 +1,9 @@
 package arc.backend.android;
 
+import android.annotation.*;
 import android.opengl.*;
 import android.opengl.GLSurfaceView.*;
+import android.os.*;
 import android.util.*;
 import android.view.*;
 import arc.*;
@@ -45,6 +47,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
     protected int fps;
     int width;
     int height;
+    int safeInsetLeft, safeInsetTop, safeInsetBottom, safeInsetRight;
     AndroidApplication app;
     GL20 gl20;
     GL30 gl30;
@@ -215,6 +218,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
         this.width = width;
         this.height = height;
         updatePpi();
+        updateSafeAreaInsets();
         gl.glViewport(0, 0, this.width, this.height);
         if(!created){
             app.mainThread = Thread.currentThread();
@@ -238,6 +242,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
         setupGL(gl);
         logConfig(config);
         updatePpi();
+        updateSafeAreaInsets();
 
         Display display = app.getWindowManager().getDefaultDisplay();
         this.width = display.getWidth();
@@ -387,6 +392,35 @@ public class AndroidGraphics extends Graphics implements Renderer{
             frameStart = time;
         }
         frames++;
+    }
+
+    @TargetApi(Build.VERSION_CODES.P)
+    protected void updateSafeAreaInsets(){
+
+        safeInsetLeft = 0;
+        safeInsetTop = 0;
+        safeInsetRight = 0;
+        safeInsetBottom = 0;
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
+            try{
+                DisplayCutout displayCutout = app.getWindow().getDecorView().getRootWindowInsets().getDisplayCutout();
+                if(displayCutout != null){
+                    safeInsetRight = displayCutout.getSafeInsetRight();
+                    safeInsetBottom = displayCutout.getSafeInsetBottom();
+                    safeInsetTop = displayCutout.getSafeInsetTop();
+                    safeInsetLeft = displayCutout.getSafeInsetLeft();
+                }
+            } // Some Application implementations (such as Live Wallpapers) do not implement Application#getApplicationWindow()
+            catch(UnsupportedOperationException e){
+                Log.err("AndroidGraphics", "Unable to get safe area insets", e);
+            }
+        }
+    }
+
+    @Override
+    public int[] getSafeInsets(){
+        return new int[]{safeInsetLeft, safeInsetRight, safeInsetTop, safeInsetBottom};
     }
 
     @Override
