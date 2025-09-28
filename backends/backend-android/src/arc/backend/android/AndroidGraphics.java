@@ -403,17 +403,12 @@ public class AndroidGraphics extends Graphics implements Renderer{
         safeInsetBottom = 0;
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
-            try{
-                DisplayCutout displayCutout = app.getWindow().getDecorView().getRootWindowInsets().getDisplayCutout();
-                if(displayCutout != null){
-                    safeInsetRight = displayCutout.getSafeInsetRight();
-                    safeInsetBottom = displayCutout.getSafeInsetBottom();
-                    safeInsetTop = displayCutout.getSafeInsetTop();
-                    safeInsetLeft = displayCutout.getSafeInsetLeft();
-                }
-            } // Some Application implementations (such as Live Wallpapers) do not implement Application#getApplicationWindow()
-            catch(UnsupportedOperationException e){
-                Log.err("AndroidGraphics", "Unable to get safe area insets", e);
+            DisplayCutout displayCutout = app.getWindow().getDecorView().getRootWindowInsets().getDisplayCutout();
+            if(displayCutout != null){
+                safeInsetRight = displayCutout.getSafeInsetRight();
+                safeInsetBottom = displayCutout.getSafeInsetBottom();
+                safeInsetTop = displayCutout.getSafeInsetTop();
+                safeInsetLeft = displayCutout.getSafeInsetLeft();
             }
         }
     }
