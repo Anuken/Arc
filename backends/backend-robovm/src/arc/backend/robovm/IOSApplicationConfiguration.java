@@ -3,7 +3,7 @@ package arc.backend.robovm;
 import arc.*;
 import arc.func.*;
 import arc.util.*;
-import org.robovm.apple.glkit.*;
+import com.badlogic.gdx.backends.iosrobovm.bindings.metalangle.*;
 import org.robovm.apple.uikit.*;
 
 public class IOSApplicationConfiguration{
@@ -15,16 +15,16 @@ public class IOSApplicationConfiguration{
     public boolean orientationLandscape = true;
 
     /** the color format, RGB565 is the default **/
-    public GLKViewDrawableColorFormat colorFormat = GLKViewDrawableColorFormat.RGBA8888;
+    public MGLDrawableColorFormat colorFormat = MGLDrawableColorFormat.RGBA8888;
 
     /** the depth buffer format, Format16 is default **/
-    public GLKViewDrawableDepthFormat depthFormat = GLKViewDrawableDepthFormat._16;
+    public MGLDrawableDepthFormat depthFormat = MGLDrawableDepthFormat._16;
 
     /** the stencil buffer format, None is default **/
-    public GLKViewDrawableStencilFormat stencilFormat = GLKViewDrawableStencilFormat.None;
+    public MGLDrawableStencilFormat stencilFormat = MGLDrawableStencilFormat.None;
 
     /** the multisample format, None is default **/
-    public GLKViewDrawableMultisample multisample = GLKViewDrawableMultisample.None;
+    public MGLDrawableMultisample multisample = MGLDrawableMultisample.None;
 
     /** number of frames per second, 60 is default **/
     public int preferredFramesPerSecond = 60;

@@ -48,6 +48,8 @@ arc-*.zip.MD5
 /extensions/filedialogs/jni/
 /extensions/filedialogs/libs/
 /backends/backend-sdl/jni
+/backends/backend-robovm/res/META-INF/robovm/ios/libs/
+/arc-core/libs/
 /arc-core/jni/
 /arc-core/obj/
 /arc-core/libs/

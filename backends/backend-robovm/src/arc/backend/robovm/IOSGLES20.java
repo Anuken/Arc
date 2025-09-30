@@ -7,7 +7,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 public class IOSGLES20 implements GL20{
-    /** last viewport set, needed because GLKView resets the viewport on each call to render... amazing **/
+    /** last viewport set, needed because MGLKView resets the viewport on each call to render... amazing **/
     public static int x, y, width, height;
 
     public IOSGLES20(){

@@ -62,6 +62,8 @@ jnigen{
         headerDirs += ["iosgl"]
         cppIncludes += ["soloud/src/backend/coreaudio/*.cpp", "iosgl/**"]
         cppFlags = "-stdlib=libc++ -std=c++11 -DWITH_COREAUDIO " + cppFlags
+        libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
+        linkerFlags += " -undefined dynamic_lookup "
     }
 }
 

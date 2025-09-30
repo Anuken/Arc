@@ -9,6 +9,7 @@ import arc.graphics.gl.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import com.badlogic.gdx.backends.iosrobovm.bindings.metalangle.*;
 import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.glkit.*;
@@ -20,8 +21,6 @@ import org.robovm.rt.bro.annotation.*;
 
 import java.util.*;
 
-//lots of openGL stuff is deprecated, I don't care about it
-@SuppressWarnings("deprecation")
 public class IOSGraphics extends Graphics{
     private static final String tag = "IOSGraphics";
 
@@ -41,9 +40,9 @@ public class IOSGraphics extends Graphics{
     volatile boolean resume = false;
     volatile boolean appPaused;
     IOSApplicationConfiguration config;
-    EAGLContext context;
+    MGLContext context;
     GLVersion glVersion;
-    GLKView view;
+    MGLKView view;
     IOSUIViewController viewController;
     boolean created = false;
     private float ppiX;
@@ -67,16 +66,16 @@ public class IOSGraphics extends Graphics{
         height = (int)bounds.getHeight();
 
         if(useGLES30){
-            context = new EAGLContext(EAGLRenderingAPI.OpenGLES3);
+            context = new MGLContext(MGLRenderingAPI.OpenGLES3);
             gl20 = gl30 = new IOSGLES30();
         }
         if(context == null){
-            context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
+            context = new MGLContext(MGLRenderingAPI.OpenGLES2);
             gl20 = new IOSGLES20();
             gl30 = null;
         }
 
-        view = new GLKView(new CGRect(0, 0, bounds.getWidth(), bounds.getHeight()), context){
+        view = new MGLKView(new CGRect(0, 0, bounds.getWidth(), bounds.getHeight()), context){
             @Method(selector = "touchesBegan:withEvent:")
             public void touchesBegan(@Pointer long touches, UIEvent event){
                 IOSGraphics.this.input.onTouch(touches);
@@ -119,7 +118,7 @@ public class IOSGraphics extends Graphics{
         this.input = input;
 
         int r, g, b, a, depth, stencil = 0, samples = 0;
-        if(config.colorFormat == GLKViewDrawableColorFormat.RGB565){
+        if(config.colorFormat == MGLDrawableColorFormat.RGB565){
             r = 5;
             g = 6;
             b = 5;
@@ -127,17 +126,17 @@ public class IOSGraphics extends Graphics{
         }else{
             r = g = b = a = 8;
         }
-        if(config.depthFormat == GLKViewDrawableDepthFormat._16){
+        if(config.depthFormat == MGLDrawableDepthFormat._16){
             depth = 16;
-        }else if(config.depthFormat == GLKViewDrawableDepthFormat._24){
+        }else if(config.depthFormat == MGLDrawableDepthFormat._24){
             depth = 24;
         }else{
             depth = 0;
         }
-        if(config.stencilFormat == GLKViewDrawableStencilFormat._8){
+        if(config.stencilFormat == MGLDrawableStencilFormat._8){
             stencil = 8;
         }
-        if(config.multisample == GLKViewDrawableMultisample._4X){
+        if(config.multisample == MGLDrawableMultisample._4X){
             samples = 4;
         }
         bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
@@ -194,9 +193,9 @@ public class IOSGraphics extends Graphics{
         }
     }
 
-    public void draw(GLKView view, CGRect rect){
+    public void draw(MGLKView view, CGRect rect){
         makeCurrent();
-        // massive hack, GLKView resets the viewport on each draw call, so IOSGLES20
+        // massive hack, MGLKView resets the viewport on each draw call, so IOSGLES20
         // stores the last known viewport and we reset it here...
         gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
 
@@ -249,13 +248,13 @@ public class IOSGraphics extends Graphics{
     }
 
     void makeCurrent(){
-        EAGLContext.setCurrentContext(context);
+        MGLContext.setCurrentContext(context);
     }
 
-    public void update(GLKViewController controller){
+    public void update(MGLKViewController controller){
         makeCurrent();
         runProtected(app::processRunnables);
-        // pause the GLKViewController render loop if we are no longer continuous
+        // pause the MGLKViewController render loop if we are no longer continuous
         // and if we haven't requested a frame in the last loop iteration
         if(!isContinuous && !isFrameRequested){
             viewController.setPaused(true);
@@ -292,7 +291,7 @@ public class IOSGraphics extends Graphics{
         }
     }
 
-    public void willPause(GLKViewController controller, boolean pause){ }
+    public void willPause(MGLKViewController controller, boolean pause){ }
 
     @Override
     public int[] getSafeInsets(){
@@ -428,7 +427,7 @@ public class IOSGraphics extends Graphics{
     public void setContinuousRendering(boolean isContinuous){
         if(isContinuous != this.isContinuous){
             this.isContinuous = isContinuous;
-            // start the GLKViewController if we go from non-continuous -> continuous
+            // start the MGLKViewController if we go from non-continuous -> continuous
             if(isContinuous) viewController.setPaused(false);
         }
     }
@@ -436,7 +435,7 @@ public class IOSGraphics extends Graphics{
     @Override
     public void requestRendering(){
         isFrameRequested = true;
-        // start the GLKViewController if we are in non-continuous mode
+        // start the MGLKViewController if we are in non-continuous mode
         // (we should already be started in continuous mode)
         if(!isContinuous) viewController.setPaused(false);
     }
@@ -464,7 +463,7 @@ public class IOSGraphics extends Graphics{
     public void setSystemCursor(SystemCursor systemCursor){
     }
 
-    static class IOSUIViewController extends GLKViewController{
+    static class IOSUIViewController extends MGLKViewController{
         final IOSApplication app;
         final IOSGraphics graphics;
         boolean created = false;
@@ -484,7 +483,7 @@ public class IOSGraphics extends Graphics{
         @Override
         public void viewWillAppear(boolean arg0){
             super.viewWillAppear(arg0);
-            // start GLKViewController even though we may only draw a single frame
+            // start MGLKViewController even though we may only draw a single frame
             // (we may be in non-continuous mode)
             setPaused(false);
         }
@@ -564,26 +563,21 @@ public class IOSGraphics extends Graphics{
         }
     }
 
-    class IOSGraphicsDelegate extends NSObject implements GLKViewDelegate, GLKViewControllerDelegate{
+    class IOSGraphicsDelegate extends NSObject implements MGLKViewDelegate, MGLKViewControllerDelegate{
         @Override
-        public void update(GLKViewController glkViewController){
-            IOSGraphics.this.update(glkViewController);
+        public void update(MGLKViewController MGLKViewController){
+            IOSGraphics.this.update(MGLKViewController);
         }
 
         @Override
-        public void willPause(GLKViewController glkViewController, boolean b){
-            IOSGraphics.this.willPause(glkViewController, b);
-        }
-
-        @Override
-        public void draw(GLKView glkView, CGRect cgRect){
-            IOSGraphics.this.draw(glkView, cgRect);
+        public void draw(MGLKView MGLKView, CGRect cgRect){
+            IOSGraphics.this.draw(MGLKView, cgRect);
         }
     }
 
-    static class IOSUIView extends GLKView{
+    static class IOSUIView extends MGLKView{
 
-        public IOSUIView(CGRect frame, EAGLContext context){
+        public IOSUIView(CGRect frame, MGLContext context){
             super(frame, context);
         }
     }
