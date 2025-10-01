@@ -263,4 +263,13 @@ public class Soloud{
         ((AudioSource*)handle)->setFilter(index, ((Filter*)filter));
     */
 
+    //iOS only functions below:
+
+    static native int pauseDevice(); /*
+        return soloud.pause();
+    */
+
+    static native int resumeDevice(); /*
+        return soloud.resume();
+    */
 }
