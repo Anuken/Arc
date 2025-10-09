@@ -204,6 +204,9 @@ public abstract class Graphics implements Disposable{
      */
     public abstract boolean supportsExtension(String extension);
 
+    /** On iOS, sets the preferred frame rate. A value of 0 sets the maximum supported value for this device. */
+    public void setPreferredFPS(int fps){}
+
     /** @return whether rendering is continuous. */
     public abstract boolean isContinuousRendering();
 
