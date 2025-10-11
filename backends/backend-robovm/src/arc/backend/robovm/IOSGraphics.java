@@ -291,8 +291,6 @@ public class IOSGraphics extends Graphics{
         }
     }
 
-    public void willPause(MGLKViewController controller, boolean pause){ }
-
     @Override
     public void setPreferredFPS(int fps){
         viewController.setPreferredFramesPerSecond(fps);

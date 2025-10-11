@@ -49,6 +49,9 @@ public class IOSApplication implements Application{
 
         displayScaleFactor = (float)UIScreen.getMainScreen().getNativeScale();
 
+        this.uiWindow = new UIWindow(UIScreen.getMainScreen().getBounds());
+        this.uiWindow.makeKeyAndVisible();
+
         this.input = createInput();
         this.graphics = createGraphics(displayScaleFactor);
         Core.gl = Core.gl20 = graphics.gl20;
@@ -61,11 +64,9 @@ public class IOSApplication implements Application{
 
         device = IOSDevice.getDevice(HWMachine.getMachineString());
 
+        this.uiWindow.setRootViewController(this.graphics.viewController);
         this.input.setupPeripherals();
 
-        this.uiWindow = new UIWindow(UIScreen.getMainScreen().getBounds());
-        this.uiWindow.setRootViewController(this.graphics.viewController);
-        this.uiWindow.makeKeyAndVisible();
         Log.info("[IOSApplication] created");
         return true;
     }
@@ -100,11 +101,11 @@ public class IOSApplication implements Application{
      * @return dimensions of space we draw to, adjusted for device orientation
      */
     protected CGRect getBounds(){
-        final CGRect screenBounds =  UIScreen.getMainScreen().getBounds();
+        final CGRect screenBounds =  uiWindow.getBounds();
         final CGRect statusBarFrame = uiApp.getStatusBarFrame();
 
         double nativeScale = UIScreen.getMainScreen().getNativeScale();
-        double statusBarHeight = Math.min(statusBarFrame.getWidth(), statusBarFrame.getHeight()) * nativeScale;
+        double statusBarHeight = statusBarFrame.getHeight() * nativeScale;
 
         double screenWidth = screenBounds.getWidth() * nativeScale;
         double screenHeight = screenBounds.getHeight() * nativeScale - statusBarHeight;
