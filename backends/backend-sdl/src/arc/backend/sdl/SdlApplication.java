@@ -276,6 +276,7 @@ public class SdlApplication implements Application{
     public boolean openURI(String url){
 
         //make sure it's a valid URI
+        if(url.isEmpty()) return false;
         try{
             URI.create(url);
         }catch(Exception wrong){
