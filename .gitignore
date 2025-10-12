@@ -45,6 +45,7 @@ arc-*.zip.MD5
 /backends/arc-backend-robovm/libs/
 /extensions/freetype/libs/
 /extensions/freetype/jni/
+/extensions/freetype/Users/
 /extensions/filedialogs/jni/
 /extensions/filedialogs/libs/
 /backends/backend-sdl/jni
@@ -52,7 +53,7 @@ arc-*.zip.MD5
 /arc-core/libs/
 /arc-core/jni/
 /arc-core/obj/
-/arc-core/libs/
+/arc-core/Users/
 /arc-core/csrc/stb_image.h
 /arc-core/csrc/soloud
 #directories created by fetch.xml

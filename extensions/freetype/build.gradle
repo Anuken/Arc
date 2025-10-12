@@ -3,7 +3,7 @@ apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 file("jni").mkdir()
 
 jnigen{
-    def fdir = "freetype-2.10.4"
+    def fdir = "freetype-2.14.1"
 
     sharedLibName = "arc-freetype"
     temporaryDir = file("build/target/native").absolutePath
@@ -16,6 +16,7 @@ jnigen{
             "$fdir/src/base/ftsystem.c", "$fdir/src/base/ftinit.c", "$fdir/src/base/ftdebug.c",
             "$fdir/src/base/ftbase.c", "$fdir/src/base/ftbbox.c", "$fdir/src/base/ftglyph.c",
             "$fdir/src/base/ftbitmap.c", "$fdir/src/base/ftstroke.c",
+            "$fdir/src/base/ftmm.c",
 
             //DRIVERS
             "$fdir/src/truetype/truetype.c", "$fdir/src/sfnt/sfnt.c",
@@ -52,12 +53,12 @@ task preJni{
             include "**"
         }
 
-        if(!file("$project.rootDir/extensions/freetype/jni/freetype-2.10.4").exists()){
+        if(!file("$project.rootDir/extensions/freetype/jni/freetype-2.14.1").exists()){
             println "Fetching freetype source..."
 
             def root = "$project.rootDir/extensions/freetype"
             new File("$root/jni").mkdir()
-            def script = "wget -c https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.gz -O $root/jni/freetype.tar.gz\n" +
+            def script = "wget -c https://download.savannah.gnu.org/releases/freetype/freetype-2.14.1.tar.gz -O $root/jni/freetype.tar.gz\n" +
                     "tar -xf $root/jni/freetype.tar.gz -C $root/jni"
             def scriptFile = new File("$buildDir/getfreetype")
             scriptFile.parentFile.mkdirs()
@@ -65,7 +66,7 @@ task preJni{
             "bash $scriptFile.absolutePath".execute().waitFor()
 
             //overwrite config to use only certain modules.
-            file("$root/jni/freetype-2.10.4/include/freetype/config/ftmodule.h").text =
+            file("$root/jni/freetype-2.14.1/include/freetype/config/ftmodule.h").text =
             """
             FT_USE_MODULE( FT_Module_Class, autofit_module_class )
             FT_USE_MODULE( FT_Driver_ClassRec, tt_driver_class )
