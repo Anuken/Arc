@@ -119,9 +119,9 @@ public class GifRecorder{
                                 exportDirectory.mkdirs();
 
                                 //pix_fmt yuv420p -profile:v baseline -level 3.0 -vcodec libx264 -crf 18 -
-                                //linux-only
                                 String args = Strings.format(
-                                "/usr/bin/ffmpeg -r @ -s @x@ -f rawvideo -pix_fmt rgba -i - -frames:v @ -filter:v vflip@ @@/@.@",
+                                "@ -r @ -s @x@ -f rawvideo -pix_fmt rgba -i - -frames:v @ -filter:v vflip@ @@/@.@",
+                                OS.isLinux ? "/usr/bin/ffmpeg" : "ffmpeg",
                                 recordfps, (int)bounds.width, (int)bounds.height, frames.size, outputMp4 ? "" : ",split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse",
                                 (outputMp4? "-c:v libx264 -pix_fmt yuv420p " : ""),
                                 exportDirectory.absolutePath(), new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()).format(new Date()),
