@@ -1341,12 +1341,17 @@ public class Json{
         public @Nullable Class keyType;
 
         public FieldMetadata(Field field){
-            boolean isMap = ObjectMap.class.isAssignableFrom(field.getType())
-            || Map.class.isAssignableFrom(field.getType());
+            boolean isMap = ObjectMap.class.isAssignableFrom(field.getType()) || Map.class.isAssignableFrom(field.getType());
 
             this.field = field;
             this.elementType = getElementType(field, isMap ? 1 : 0);
             keyType = isMap ? getElementType(field, 0) : null;
+        }
+
+        public FieldMetadata(Field field, @Nullable Class elementType, @Nullable Class keyType){
+            this.field = field;
+            this.elementType = elementType;
+            this.keyType = keyType;
         }
     }
 
