@@ -1347,12 +1347,6 @@ public class Json{
             this.elementType = getElementType(field, isMap ? 1 : 0);
             keyType = isMap ? getElementType(field, 0) : null;
         }
-
-        public FieldMetadata(Field field, @Nullable Class elementType, @Nullable Class keyType){
-            this.field = field;
-            this.elementType = elementType;
-            this.keyType = keyType;
-        }
     }
 
     static Class getElementType(Field field, int index){

@@ -111,6 +111,11 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
         return out;
     }
 
+    public void set(ObjectMap<K, V> value){
+        clear();
+        putAll(value);
+    }
+
     /** Returns the old value associated with the specified key, or null. */
     public V put(K key, V value){
         if(key == null) throw new IllegalArgumentException("key cannot be null.");
