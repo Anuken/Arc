@@ -24,7 +24,7 @@ import java.util.zip.*;
  * @author mzechner
  * @author Nathan Sweet
  */
-public class Fi{
+public class Fi implements Comparable<Fi>{
     protected File file;
     protected FileType type;
 
@@ -925,6 +925,12 @@ public class Fi{
         return hash;
     }
 
+    @Override
+    public int compareTo(Fi fi){
+        return file.compareTo(fi.file);
+    }
+
+    @Override
     public String toString(){
         return file.getPath().replace('\\', '/');
     }
