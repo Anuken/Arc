@@ -77,7 +77,16 @@ task fixWrap{
 
         def f = file("$rootDir/arc-core/jni/build-linux64.xml");
         if(f.exists()){
-            f.text = f.text.replace("-Wl,-wrap,memcpy", "-Wl,-wrap,memcpy,-wrap,pow,-wrap,powf,-wrap,log,-wrap,logf,-wrap,exp,-wrap,expf,-wrap,clock_gettime")
+            if(System.getProperty("os.name").equals("FreeBSD")){ // other BSDs?
+                f.text = f.text
+                    .replace("linux", "freebsd")
+                    .replace('-Ijni-headers/${jniPlatform}', "-Ijni-headers/linux")
+                    .replace("gcc", "cc")
+                    .replace("g++", "c++")
+                    .replace("-Wl,-wrap,memcpy", "")
+            } else {
+                f.text = f.text.replace("-Wl,-wrap,memcpy", "-Wl,-wrap,memcpy,-wrap,pow,-wrap,powf,-wrap,log,-wrap,logf,-wrap,exp,-wrap,expf,-wrap,clock_gettime")
+            }
         }
     }
 }
@@ -120,7 +129,7 @@ task preJni{
 task postJni{
     doLast{
         copy{
-            from "libs/linux64", "libs/windows32", "libs/windows64", "libs/macosx64"
+            from "libs/windows32", "libs/windows64", "libs/macosx64", "libs/freebsd64"
             into "../natives/natives-desktop/libs"
             include "**"
         }

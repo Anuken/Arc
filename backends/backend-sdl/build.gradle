@@ -1,5 +1,5 @@
 sourceSets.main.java.srcDirs = ["src"]
-sourceSets.main.resources.srcDirs = ["libs/linux64", "libs/macosx64","libs/windows32", "libs/windows64", "libs/openal"]
+sourceSets.main.resources.srcDirs = ["libs/macosx64","libs/windows32", "libs/windows64", "libs/freebsd64", "libs/openal"]
 
 dependencies {
     testImplementation libraries.jnigen
@@ -126,8 +126,24 @@ jnigen{
 
 }
 
+task postJni{
+    doFirst{
+        println "--FIXING FREEBSD SCRIPTS--"
+        if(System.getProperty("os.name").equals("FreeBSD")) {
+            def f = file("$rootDir/backends/backend-sdl/jni/build-linux64.xml");
+            if(f.exists()){
+                f.text = f.text
+                    .replace("linux", "freebsd")
+                    .replace('-Ijni-headers/${jniPlatform}', "-Ijni-headers/linux")
+                    .replace("gcc", "cc")
+                    .replace("g++", "c++")
+            }
+        }
+    }
+}
 getTasksByName("jnigen", true).each{
     it.dependsOn preJni
+    it.finalizedBy postJni
     it.dependsOn classes
     it.dependsOn aproj(":arc-core").getTasksByName("compileJava", true)
 }
