@@ -52,6 +52,22 @@ public class Strings{
         return fcause.getMessage() == null ? fcause.getClass().getSimpleName() : fcause.getClass().getSimpleName() + ": " + fcause.getMessage();
     }
 
+    public static String getSimpleMessages(Throwable e){
+        StringBuilder builder = new StringBuilder();
+        while(e != null){
+            if(e.getMessage() != null){
+                builder.append(e.getClass().getSimpleName()).append(": ").append(e.getMessage());
+            }else{
+                builder.append(e.getClass().getSimpleName());
+            }
+            e = e.getCause();
+            if(e != null){
+                builder.append(" -> ");
+            }
+        }
+        return builder.toString();
+    }
+
     public static String getFinalMessage(Throwable e){
         String message = e.getMessage();
         while(e.getCause() != null){

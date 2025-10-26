@@ -1007,7 +1007,6 @@ public class Json{
     public <T> T readValue(Class<T> type, Class elementType, JsonValue jsonData){
         return readValue(type, elementType, jsonData, null);
     }
-
     /**
      * @param type May be null if the type is unknown.
      * @param elementType May be null if the type is unknown.
@@ -1019,15 +1018,7 @@ public class Json{
         if(jsonData.isObject()){
             String className = typeName == null ? null : jsonData.getString(typeName, null);
             if(className != null){
-                type = getClass(className);
-                if(type == null){
-                    try{
-                        type = (Class<T>)Class.forName(className);
-                        if(Timer.class.isAssignableFrom(type)) throw new RuntimeException("Invalid class type.");
-                    }catch(Throwable ex){
-                        throw new SerializationException(ex);
-                    }
-                }
+                type = resolveClass(className);
             }
 
             if(type == null){
@@ -1261,6 +1252,19 @@ public class Json{
                 throw new SerializationException("Error copying field: " + fromField.getName(), ex);
             }
         }
+    }
+
+    protected <T> Class<T> resolveClass(String className){
+        Class<T> type = getClass(className);
+        if(type == null){
+            try{
+                type = (Class<T>)Class.forName(className);
+                if(Timer.class.isAssignableFrom(type)) throw new RuntimeException("Invalid class type.");
+            }catch(Throwable ex){
+                throw new SerializationException(ex);
+            }
+        }
+        return type;
     }
 
     private String convertToString(Enum e){
