@@ -29,7 +29,7 @@ import java.nio.*;
  * @author badlogicgames@gmail.com
  */
 public class Pixmap implements Disposable{
-    private static final boolean supportsBufferCopy = OS.javaVersionNumber >= 16 || (OS.isAndroid && Core.app.getVersion() >= 35);
+    private static final boolean supportsBufferCopy = OS.javaVersionNumber >= 16 || (OS.isAndroid && Core.app != null && Core.app.getVersion() >= 35);
 
     /** Size of the pixmap. Do not modify unless you know what you are doing. */
     public int width, height;
