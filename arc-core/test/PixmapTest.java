@@ -49,6 +49,23 @@ public class PixmapTest{
     }
 
     @Test
+    public void testPixmapDraw(){
+        ArcNativesLoader.load();
+        Pixmap src = new Pixmap(500, 500);
+        Pixmap dst = src.copy();
+
+        for(int x = 0; x < src.width; x++){
+            for(int y = 0; y < src.height; y++){
+                src.setRaw(x, y, Mathf.rand.nextInt());
+            }
+        }
+
+        for(int i = 0; i < 50; i++){
+            dst.draw(src, Mathf.random(src.width), Mathf.random(src.height));
+        }
+    }
+
+    @Test
     public void raycasts(){
 
         Vec2 hole = new Vec2();

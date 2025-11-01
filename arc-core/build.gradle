@@ -5,6 +5,30 @@ sourceSets.test.resources.srcDirs = ["test/resources"]
 dependencies{
     testImplementation libraries.junit
     testImplementation aproj(":natives:natives-desktop")
+    //file generated from UnsafeBuffers.java
+    implementation files("unsafe/unsafe.jar")
+}
+
+//now, you may ask: why don't I make this a new module? why do I include JARs in the repository? why don't I make this a separate build step?
+//the reason is: I don't want to deal with compiler arguments, --add-opens, or whatever else Java throws at you these days
+//this just works and I don't want to touch it, it's a dependency that has already been compiled and won't explode as much as source compilation might
+//"why are you using unsafe, why aren't you using the new memory access APIs?" because they don't work on Android or iOS
+//and no, I cannot work with buffer put() because of Java's idiotic design making it so that you need to put()/limit()/position() to write memory, breaking multithreading
+//this makes Unsafe the only viable option - any "state independent" methods are Java-16 specific, and iOS/Android don't support those
+tasks.register("compileUnsafe", Exec){
+    workingDir "unsafe"
+    commandLine "javac --target 8 --source 8 -d . UnsafeBuffers.java".split(" ")
+}
+
+tasks.register("recompileUnsafe", Exec){
+    dependsOn "compileUnsafe"
+    workingDir "unsafe"
+    commandLine "jar cvf unsafe.jar arc".split(" ")
+    doLast{
+        delete{
+            delete "unsafe/arc"
+        }
+    }
 }
 
 test{

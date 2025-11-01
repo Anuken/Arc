@@ -89,10 +89,7 @@ public class Pixmap implements Disposable{
     /** @return a newly allocated copy with the same pixels. */
     public Pixmap copy(){
         Pixmap out = new Pixmap(width, height);
-        pixels.position(0);
-        out.pixels.position(0);
-        out.pixels.put(pixels);
-        out.pixels.position(0);
+        UnsafeBuffers.copy(pixels, 0, out.pixels, 0, pixels.capacity());
         return out;
     }
 
@@ -403,28 +400,15 @@ public class Pixmap implements Disposable{
                 scanWidth = (endX - startX) * 4;
 
                 while(startY < endY){
-
-                    int offset = (startY * width + startX) * 4;
-                    int otherOffset = ((startY - offsetY) * owidth + scanX) * 4;
-
-                    pixels.position(offset);
-                    otherPixels.limit(otherOffset + scanWidth);
-                    otherPixels.position(otherOffset);
-
-                    pixels.put(otherPixels);
-
-                    //ideally I would use the method below, but it's Java 16 API (how has nobody needed to do this before then?)
-                    //pixels.put(
-                    //    (startY * width + startX) * 4, otherPixels,
-                    //    ((startY - offsetY) * owidth + scanX) * 4, scanWidth
-                    //);
-
+                    UnsafeBuffers.copy(
+                        otherPixels,
+                        ((startY - offsetY) * owidth + scanX) * 4,
+                        pixels,
+                        (startY * width + startX) * 4,
+                        scanWidth
+                    );
                     startY ++;
                 }
-
-                pixels.position(0);
-                otherPixels.position(0);
-                otherPixels.limit(otherPixels.capacity());
             }else{ //drawing a pixmap onto itself is not a good idea, but it's better than crashing
                 for(; sy < srcy + srcHeight; sy++, dy++){
                     if(sy < 0 || dy < 0) continue;
