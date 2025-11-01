@@ -18,7 +18,12 @@ public class UnsafeBuffers{
             theUnsafe.setAccessible(true);
             unsafe = (Unsafe)theUnsafe.get(null);
 
-            Field addressField = Buffer.class.getDeclaredField("address");
+            Field addressField;
+            try{
+                addressField = Buffer.class.getDeclaredField("address");
+            }catch(Throwable f){
+                addressField = Buffer.class.getDeclaredField("effectiveDirectAddress");
+            }
 
             bufferOffset = unsafe.objectFieldOffset(addressField);
             //verify that memory can be copied (in older Android versions, this method doesn't exist)
