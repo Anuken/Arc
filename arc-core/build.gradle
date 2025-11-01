@@ -15,13 +15,19 @@ dependencies{
 //"why are you using unsafe, why aren't you using the new memory access APIs?" because they don't work on Android or iOS
 //and no, I cannot work with buffer put() because of Java's idiotic design making it so that you need to put()/limit()/position() to write memory, breaking multithreading
 //this makes Unsafe the only viable option - any "state independent" methods are Java-16 specific, and iOS/Android don't support those
-tasks.register("compileUnsafe", Exec){
+
+tasks.register("compileBuffersUnsafe", Exec){
     workingDir "unsafe"
     commandLine "javac --target 8 --source 8 -d . UnsafeBuffers.java".split(" ")
 }
 
+tasks.register("compileBuffersSafe", Exec){
+    workingDir "unsafe"
+    commandLine "javac --target 16 --source 16 -d . Java16Buffers.java".split(" ")
+}
+
 tasks.register("recompileUnsafe", Exec){
-    dependsOn "compileUnsafe"
+    dependsOn "compileBuffersUnsafe", "compileBuffersSafe"
     workingDir "unsafe"
     commandLine "jar cvf unsafe.jar arc".split(" ")
     doLast{

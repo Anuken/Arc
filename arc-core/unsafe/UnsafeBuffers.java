@@ -6,19 +6,27 @@ import java.lang.reflect.*;
 import java.nio.*;
 
 public class UnsafeBuffers{
-    private static final Unsafe unsafe;
-    private static final long bufferOffset;
+    private static Unsafe unsafe;
+    private static long bufferOffset;
+    public static boolean failed, initialized;
 
-    static{
+    public static void checkInit(){
+        if(initialized) return;
+        initialized = true;
         try{
             Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
             theUnsafe.setAccessible(true);
             unsafe = (Unsafe)theUnsafe.get(null);
 
             Field addressField = Buffer.class.getDeclaredField("address");
+
             bufferOffset = unsafe.objectFieldOffset(addressField);
-        }catch(Exception e){
-            throw new ExceptionInInitializerError("Cannot access Unsafe");
+            //verify that memory can be copied (in older Android versions, this method doesn't exist)
+            sun.misc.Unsafe.class.getMethod("copyMemory", long.class, long.class, long.class);
+            failed = false;
+        }catch(Throwable e){
+            e.printStackTrace();
+            failed = true;
         }
     }
 

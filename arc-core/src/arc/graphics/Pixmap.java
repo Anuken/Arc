@@ -29,6 +29,7 @@ import java.nio.*;
  * @author badlogicgames@gmail.com
  */
 public class Pixmap implements Disposable{
+    private static final boolean supportsBufferCopy = OS.javaVersionNumber >= 16 || (OS.isAndroid && Core.app.getVersion() >= 35);
 
     /** Size of the pixmap. Do not modify unless you know what you are doing. */
     public int width, height;
@@ -42,6 +43,10 @@ public class Pixmap implements Disposable{
      * When natives are not present, this value is -1.
      */
     long handle;
+
+    static{
+        UnsafeBuffers.checkInit();
+    }
 
     /** Creates a new Pixmap instance with the given width and height. */
     public Pixmap(int width, int height){
@@ -89,7 +94,7 @@ public class Pixmap implements Disposable{
     /** @return a newly allocated copy with the same pixels. */
     public Pixmap copy(){
         Pixmap out = new Pixmap(width, height);
-        UnsafeBuffers.copy(pixels, 0, out.pixels, 0, pixels.capacity());
+        copyMem(pixels, 0, out.pixels, 0, pixels.capacity());
         return out;
     }
 
@@ -400,7 +405,7 @@ public class Pixmap implements Disposable{
                 scanWidth = (endX - startX) * 4;
 
                 while(startY < endY){
-                    UnsafeBuffers.copy(
+                    copyMem(
                         otherPixels,
                         ((startY - offsetY) * owidth + scanX) * 4,
                         pixels,
@@ -804,6 +809,19 @@ public class Pixmap implements Disposable{
         Format(int glType, int glFormat){
             this.glFormat = glFormat;
             this.glType = glType;
+        }
+    }
+
+    static void copyMem(ByteBuffer src, int srcOffset, ByteBuffer dst, int dstOffset, int len){
+        //Java 16 supports direct byte buffer transfer without modifying state. Older versions (+Android/iOS) don't, and likely never will
+        if(supportsBufferCopy){
+            Java16Buffers.copy(src, srcOffset, dst, dstOffset, len);
+        }else{
+            if(!UnsafeBuffers.failed){
+                UnsafeBuffers.copy(src, srcOffset, dst, dstOffset, len);
+            }else{
+                Buffers.copyJni(src, srcOffset, dst, dstOffset, len);
+            }
         }
     }
 

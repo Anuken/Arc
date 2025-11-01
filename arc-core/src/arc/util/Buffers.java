@@ -280,7 +280,7 @@ public final class Buffers{
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	*/
 
-    private native static void copyJni(Buffer src, int srcOffset, Buffer dst, int dstOffset, int numBytes); /*
+    public native static void copyJni(Buffer src, int srcOffset, Buffer dst, int dstOffset, int numBytes); /*
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	*/
 }
