@@ -18,19 +18,14 @@ public class UnsafeBuffers{
             theUnsafe.setAccessible(true);
             unsafe = (Unsafe)theUnsafe.get(null);
 
-            Field addressField;
-            try{
-                addressField = Buffer.class.getDeclaredField("address");
-            }catch(Throwable f){
-                addressField = Buffer.class.getDeclaredField("effectiveDirectAddress");
-            }
-
+            //field doesn't exist on Android/iOS
+            Field addressField = Buffer.class.getDeclaredField("address");
             bufferOffset = unsafe.objectFieldOffset(addressField);
             //verify that memory can be copied (in older Android versions, this method doesn't exist)
             sun.misc.Unsafe.class.getMethod("copyMemory", long.class, long.class, long.class);
             failed = false;
         }catch(Throwable e){
-            e.printStackTrace();
+            //usually happens on Android and iOS
             failed = true;
         }
     }
