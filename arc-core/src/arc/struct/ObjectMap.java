@@ -106,9 +106,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
     }
 
     public ObjectMap<K, V> copy(){
-        ObjectMap<K, V> out = new ObjectMap<>();
-        out.putAll(this);
-        return out;
+        return new ObjectMap<>(this);
     }
 
     public void set(ObjectMap<K, V> value){

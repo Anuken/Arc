@@ -147,11 +147,20 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>>{
         for(Entry<? extends K> entry : map.entries())
             put(entry.key, entry.value);
     }
-    
+
     public void putAll(Object... values){
         for(int i = 0; i < values.length / 2; i++){
             put((K)values[i * 2], (int)values[i * 2 + 1]);
         }
+    }
+
+    public ObjectIntMap<K> copy(){
+        return new ObjectIntMap<>(this);
+    }
+
+    public void set(ObjectIntMap<K> value){
+        clear();
+        putAll(value);
     }
 
     /** Skips checks for existing keys. */
