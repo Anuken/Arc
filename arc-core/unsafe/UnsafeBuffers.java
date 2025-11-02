@@ -5,6 +5,7 @@ import sun.misc.*;
 import java.lang.reflect.*;
 import java.nio.*;
 
+//uses Unsafe, which won't compile with Gradle normally due to module export issues
 public class UnsafeBuffers{
     private static Unsafe unsafe;
     private static long bufferOffset;

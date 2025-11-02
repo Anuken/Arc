@@ -45,7 +45,9 @@ public class Pixmap implements Disposable{
     long handle;
 
     static{
-        UnsafeBuffers.checkInit();
+        if(!supportsBufferCopy){
+            UnsafeBuffers.checkInit();
+        }
     }
 
     /** Creates a new Pixmap instance with the given width and height. */

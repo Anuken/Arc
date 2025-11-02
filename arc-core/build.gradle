@@ -6,7 +6,7 @@ dependencies{
     testImplementation libraries.junit
     testImplementation aproj(":natives:natives-desktop")
     //file generated from UnsafeBuffers.java
-    implementation files("unsafe/unsafe.jar")
+    api files("unsafe/unsafe.jar")
 }
 
 //now, you may ask: why don't I make this a new module? why do I include JARs in the repository? why don't I make this a separate build step?
