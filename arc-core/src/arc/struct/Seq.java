@@ -701,7 +701,15 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
     }
 
     public boolean removeAll(Seq<? extends T> array){
-        return removeAll(array, false);
+        return removeAll(array.items, array.size, false);
+    }
+
+    /**
+     * Removes from this array all of elements contained in the specified array.
+     * @return true if this array was modified.
+     */
+    public boolean removeAll(T... array){
+        return removeAll(array, array.length, false);
     }
 
     /**
@@ -710,12 +718,22 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
      * @return true if this array was modified.
      */
     public boolean removeAll(Seq<? extends T> array, boolean identity){
+        return removeAll(array.items, array.size, identity);
+    }
+
+    /**
+     * Removes from this array all of elements contained in the specified array.
+     * @param length The length of the array for iteration.
+     * @param identity True to use ==, false to use .equals().
+     * @return true if this array was modified.
+     */
+    public boolean removeAll(T[] array, int length, boolean identity){
         int size = this.size;
         int startSize = size;
         T[] items = this.items;
         if(identity){
-            for(int i = 0, n = array.size; i < n; i++){
-                T item = array.get(i);
+            for(int i = 0; i < length; i++){
+                T item = array[i];
                 for(int ii = 0; ii < size; ii++){
                     if(item == items[ii]){
                         remove(ii);
@@ -725,8 +743,8 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
                 }
             }
         }else{
-            for(int i = 0, n = array.size; i < n; i++){
-                T item = array.get(i);
+            for(int i = 0; i < length; i++){
+                T item = array[i];
                 for(int ii = 0; ii < size; ii++){
                     if(item.equals(items[ii])){
                         remove(ii);
