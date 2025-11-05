@@ -110,7 +110,7 @@ public class IOSApplication implements Application{
         double screenWidth = screenBounds.getWidth() * nativeScale;
         double screenHeight = screenBounds.getHeight() * nativeScale - statusBarHeight;
 
-        Log.info("[IOSApplication] Total computed bounds are w=" + screenWidth + " h=" + screenHeight + " nativeScale=" + nativeScale + " device=" + device + " statusBarHeight=" + statusBarHeight + " rawWidth=" + screenBounds.getWidth() + " rawHeight=" + screenBounds.getHeight());
+        Log.info("[IOSApplication] Total computed bounds are w=" + screenWidth + " h=" + screenHeight + " nativeScale=" + nativeScale + " device=" + device + " statusBarHeight=" + statusBarHeight + " rawWidth=" + screenBounds.getWidth() + " rawHeight=" + screenBounds.getHeight() + " windowBounds=" + uiWindow.getBounds() + " mainScreenBounds=" + UIScreen.getMainScreen().getBounds());
 
         return lastScreenBounds = new CGRect(0.0, statusBarHeight, screenWidth, screenHeight);
     }

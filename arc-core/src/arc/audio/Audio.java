@@ -97,7 +97,7 @@ public class Audio implements Disposable{
 
     public boolean isPlaying(int soundId){
         if(!initialized) return false;
-        return idValid(soundId);
+        return soundId > 0 && idValid(soundId);
     }
 
     public void protect(int voice, boolean protect){
@@ -164,6 +164,11 @@ public class Audio implements Disposable{
     public int countPlaying(AudioSource source){
         if(!initialized || source.handle <= 0) return 0;
         return sourceCount(source.handle);
+    }
+
+    public int countTotalPlaying(){
+        if(!initialized) return 0;
+        return activeVoiceCount();
     }
 
     @Override

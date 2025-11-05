@@ -49,6 +49,9 @@ public class Sound extends AudioSource{
         handle = wavLoad(data, data.length);
     }
 
+    int lastVoice;
+    float lastVolume;
+
     /**
      * Plays the sound. If the sound is already playing, it will be played again, concurrently.
      * @param volume the volume in the range [0,1]
@@ -58,14 +61,24 @@ public class Sound extends AudioSource{
      * @return the id of the sound instance if successful, or -1 on failure.
      */
     public int play(float volume, float pitch, float pan, boolean loop, boolean checkFrame){
-        if(handle == 0 || (checkFrame && framePlayed == Core.graphics.getFrameId()) || bus == null || !Core.audio.initialized) return -1;
-        framePlayed = Core.graphics.getFrameId();
+        if(handle == 0 || bus == null || !Core.audio.initialized) return -1;
+
+        if((checkFrame && framePlayed == Core.graphics.getFrameId())){
+            if(volume > lastVolume){
+                Core.audio.set(lastVoice, pan, lastVolume = Math.max(lastVolume, Math.min(lastVolume + volume, volume * 1.5f)));
+            }
+
+            return -1;
+        }
 
         if(Float.isInfinite(volume) || Float.isNaN(volume)) volume = 0f;
         if(Float.isInfinite(pan) || Float.isNaN(pan)) pan = 0f;
         if(Float.isInfinite(pitch) || Float.isNaN(pitch)) pitch = 1f;
 
-        return sourcePlayBus(handle, bus.handle, volume, Mathf.clamp(pitch * Core.audio.globalPitch, 0.0001f, 10f), Mathf.clamp(pan, -1f, 1f), loop);
+        lastVolume = volume;
+        framePlayed = Core.graphics.getFrameId();
+
+        return lastVoice = sourcePlayBus(handle, bus.handle, volume, Mathf.clamp(pitch * Core.audio.globalPitch, 0.0001f, 10f), Mathf.clamp(pan, -1f, 1f), loop);
     }
 
     /** Sets the bus that will be used for the next play of this SFX. */
@@ -199,6 +212,12 @@ public class Sound extends AudioSource{
      */
     public int loop(float volume, float pitch, float pan){
         return play(volume, pitch, pan, true);
+    }
+
+    /** @return length in seconds */
+    public float getLength(){
+        if(handle == 0 || !Core.audio.initialized) return  0f;
+        return (float)Soloud.wavLength(handle);
     }
 
     @Override

@@ -162,14 +162,14 @@ task postJni{
     doLast{
         copy{
             from "libs/linux64", "libs/windows32", "libs/windows64", "libs/macosx64"
-            into "../natives/natives-desktop/libs"
+            into "${project.rootDir}/natives/natives-desktop/libs"
             include "**"
         }
 
         ["arm64-v8a", "x86", "x86_64", "armeabi-v7a"].each{ p ->
             copy{
                 from "libs/$p"
-                into "../natives/natives-android/libs/$p/"
+                into "${project.rootDir}/natives/natives-android/libs/$p/"
                 include "**"
             }
         }
@@ -177,7 +177,7 @@ task postJni{
         [".tvos", ""].each{ p ->
             copy{
                 from "libs/ios32/libarc.a$p"
-                into "../natives/natives-ios/libs/"
+                into "${project.rootDir}/natives/natives-ios/libs/"
                 include "**"
             }
         }

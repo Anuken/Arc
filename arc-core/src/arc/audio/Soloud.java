@@ -66,6 +66,10 @@ public class Soloud{
         return soloud.getVersion();
     */
 
+    static native int activeVoiceCount(); /*
+        return soloud.getActiveVoiceCount();
+    */
+
     static native void stopAll(); /*
         soloud.stopAll();
     */
@@ -208,6 +212,11 @@ public class Soloud{
         return (jdouble)source->getLength();
     */
 
+    static native double wavLength(long handle); /*
+         Wav* source = (Wav*)handle;
+         return (jdouble)source->getLength();
+    */
+
     static native void sourceDestroy(long handle); /*
         AudioSource* source = (AudioSource*)handle;
         delete source;
@@ -231,27 +240,39 @@ public class Soloud{
     static native int sourcePlay(long handle, float volume, float pitch, float pan, boolean loop); /*
         AudioSource* wav = (AudioSource*)handle;
 
-        int voice = soloud.play(*wav, volume, pan, false);
-        soloud.setLooping(voice, loop);
-        soloud.setRelativePlaySpeed(voice, pitch);
-
-        return voice;
+        return soloud.play(*wav, volume, pan, pitch, false, loop);
     */
 
     static native int sourcePlayBus(long handle, long busHandle, float volume, float pitch, float pan, boolean loop); /*
         AudioSource* wav = (AudioSource*)handle;
         Bus* bus = (Bus*)busHandle;
 
-        int voice = bus->play(*wav, volume, pan, false);
-        soloud.setLooping(voice, loop);
-        soloud.setRelativePlaySpeed(voice, pitch);
+        return bus->play(*wav, volume, pan, pitch, false, loop);
+    */
 
-        return voice;
+    static native void sourcePriority(long handle, float priority); /*
+        AudioSource* source = (AudioSource*)handle;
+        source->setPriority(priority);
+    */
+
+    static native void sourceMinConcurrentInterrupt(long handle, float value); /*
+        AudioSource* source = (AudioSource*)handle;
+        source->setMinConcurrentInterrupt(value);
+    */
+
+    static native void sourceMaxConcurrent(long handle, int maxConcurrent); /*
+        AudioSource* source = (AudioSource*)handle;
+        source->setMaxConcurrent(maxConcurrent);
     */
 
     static native void sourceLoop(long handle, boolean loop); /*
         AudioSource* source = (AudioSource*)handle;
         source->setLooping(loop);
+    */
+
+    static native void sourceSingleInstance(long handle, boolean single); /*
+        AudioSource* source = (AudioSource*)handle;
+        source->setSingleInstance(single);
     */
 
     static native void sourceStop(long handle); /*
