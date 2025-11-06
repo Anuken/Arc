@@ -9,6 +9,7 @@ ext{
 
 versions.robovm = "2.3.23"
 versions.junit = "4.11"
+//TODO: upgrade to 3.1.1 and finally get rid of the disease that is ant
 versions.jnigen = "2.5.1"
 
 libraries.robovm = [
@@ -38,7 +39,7 @@ allprojects{
         }
 
         dependencies{
-            classpath "com.github.libgdx.gdx-jnigen:gdx-jnigen-gradle:2.5.1"
+            classpath "com.github.libgdx.gdx-jnigen:gdx-jnigen-gradle:$versions.jnigen"
         }
     }
 
