@@ -9,6 +9,7 @@ configurations{
 dependencies{
     testImplementation libraries.junit
     testImplementation aproj(":natives:natives-desktop")
+    testImplementation files("unsafe/unsafe.jar")
     //file generated from UnsafeBuffers.java
     compileOnly files("unsafe/unsafe.jar")
     extraLibs files("unsafe/unsafe.jar")
