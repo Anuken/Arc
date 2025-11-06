@@ -10,7 +10,7 @@ dependencies{
     testImplementation libraries.junit
     testImplementation aproj(":natives:natives-desktop")
     //file generated from UnsafeBuffers.java
-    api files("unsafe/unsafe.jar")
+    compileOnly files("unsafe/unsafe.jar")
     extraLibs files("unsafe/unsafe.jar")
 }
 
@@ -141,12 +141,12 @@ task preJni{
         if(!file("csrc/stb_image.h").exists()){
             println "Fetching stb_image source..."
             //currently locked to a specific commit
-            "curl -o $rootDir/arc-core/csrc/stb_image.h https://raw.githubusercontent.com/nothings/stb/e140649ccf40818781b7e408f6228a486f6d254b/stb_image.h".execute().waitFor()
+            "curl -o $rootDir/arc-core/csrc/stb_image.h https://raw.githubusercontent.com/nothings/stb/013ac3beddff3dbffafd5177e7972067cd2b5083/stb_image.h".execute().waitFor()
         }
 
         if(!file("csrc/soloud").exists()){
             println "Fetching soloud source..."
-            "git clone --depth 1 --branch v0.12 https://github.com/Anuken/soloud.git $rootDir/arc-core/csrc/soloud".execute().waitFor()
+            "git clone --depth 1 --branch 2025.11.01 https://github.com/Anuken/soloud.git $rootDir/arc-core/csrc/soloud".execute().waitFor()
         }
 
         copy{

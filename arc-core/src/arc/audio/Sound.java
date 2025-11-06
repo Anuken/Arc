@@ -10,8 +10,8 @@ import static arc.audio.Soloud.*;
 
 /**
  * <p>
- * A Sound is a short audio clip that can be played numerous times in parallel. It's completely loaded into memory so only load
- * small audio files. Call the {@link #dispose()} method when you're done using the Sound.
+ * A Sound is a short audio clip that can be played numerous times in parallel. It's completely loaded into memory, so only load
+ * small audio files.
  * </p>
  *
  * <p>
@@ -23,15 +23,14 @@ import static arc.audio.Soloud.*;
  * can use this id to modify the playback of that sound instance.
  * </p>
  *
- * <p>
- * <b>Note</b>: any values provided will not be clamped, it is the developer's responsibility to do so
- * </p>
  */
 public class Sound extends AudioSource{
     public AudioBus bus = Core.audio == null ? null : Core.audio.soundBus;
     public @Nullable Fi file;
 
-    long framePlayed;
+    private long minInterval = 16;
+
+    long lastTimePlayed;
     int lastVoice;
     float lastVolume;
 
@@ -62,7 +61,7 @@ public class Sound extends AudioSource{
     public int play(float volume, float pitch, float pan, boolean loop, boolean checkFrame){
         if(handle == 0 || bus == null || !Core.audio.initialized) return -1;
 
-        if((checkFrame && framePlayed == Core.graphics.getFrameId())){
+        if((checkFrame && Time.timeSinceMillis(lastTimePlayed) <= minInterval)){
             //when a sound was already played this frame, intensify the volume of the last played voice instead of playing a new one
             if(volume > lastVolume){
                 Core.audio.set(lastVoice, pan, lastVolume = Math.max(lastVolume, Math.min(lastVolume + volume, volume * 1.5f)));
@@ -76,7 +75,7 @@ public class Sound extends AudioSource{
         if(Float.isInfinite(pitch) || Float.isNaN(pitch)) pitch = 1f;
 
         lastVolume = volume;
-        framePlayed = Core.graphics.getFrameId();
+        lastTimePlayed = Time.millis();
 
         return lastVoice = sourcePlayBus(handle, bus.handle, volume, Mathf.clamp(pitch * Core.audio.globalPitch, 0.0001f, 10f), Mathf.clamp(pan, -1f, 1f), loop);
     }
@@ -218,6 +217,11 @@ public class Sound extends AudioSource{
     public float getLength(){
         if(handle == 0 || !Core.audio.initialized) return  0f;
         return (float)Soloud.wavLength(handle);
+    }
+
+    /** Sets the minimum interval for playbacks of this sound, in milliseconds. Additional playback within this interval will not play a new sound instance. */
+    public void setMinInterval(long interval){
+        minInterval = interval;
     }
 
     @Override
