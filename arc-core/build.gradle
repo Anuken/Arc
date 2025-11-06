@@ -88,12 +88,12 @@ jnigen{
         cppFlags = "-DWITH_OPENSLES " + cppFlags
     }
     add(MacOsX, x64){
-        cppIncludes += ["soloud/src/backend/coreaudio/*.cpp"]
+        cppIncludes += ["soloud/src/backend/coreaudio/*.mm"]
         cppFlags = "-std=c++11 -DWITH_COREAUDIO " + cppFlags
         libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
     }
     add(MacOsX, x64, ARM){
-        cppIncludes += ["soloud/src/backend/coreaudio/*.cpp"]
+        cppIncludes += ["soloud/src/backend/coreaudio/*.mm"]
         cppFlags = "-std=c++11 -DWITH_COREAUDIO " + cppFlags.replace("x86_64", "arm64")
         cFlags = cFlags.replace("x86_64", "arm64")
         libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
@@ -101,7 +101,7 @@ jnigen{
     }
     add(IOS){
         headerDirs += ["iosgl"]
-        cppIncludes += ["soloud/src/backend/coreaudio/*.cpp", "iosgl/**"]
+        cppIncludes += ["soloud/src/backend/coreaudio/*.mm", "iosgl/**"]
         cppFlags = "-stdlib=libc++ -std=c++11 -DWITH_COREAUDIO " + cppFlags
         libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
         linkerFlags += " -undefined dynamic_lookup "
