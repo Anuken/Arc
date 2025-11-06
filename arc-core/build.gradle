@@ -109,7 +109,7 @@ jnigen{
     }
 }
 
-task fixWrap{
+tasks.register('fixWrap'){
     doFirst{
         println "--FIXING SCRIPTS--"
         copy{
@@ -124,20 +124,31 @@ task fixWrap{
     }
 }
 
-getTasksByName("jnigen", true).each{
-    it.finalizedBy fixWrap
-}
-
-task cleanNatives{
+tasks.register('copyUnsafeStuff'){
     doLast{
-        delete{delete "$rootDir/arc-core/jni"}
-        delete{delete "$rootDir/arc-core/libs"}
-        delete{delete "$rootDir/arc-core/csrc/soloud"}
-        delete{delete "$rootDir/arc-core/csrc/stb_image.h"}
+        copy{
+            from zipTree("unsafe/unsafe.jar")
+            into "build/classes/java/main"
+            include '**/*.class'
+        }
     }
 }
 
-task preJni{
+getTasksByName("jnigen", true).each{
+    it.finalizedBy fixWrap
+    it.dependsOn copyUnsafeStuff
+}
+
+tasks.register('cleanNatives'){
+    doLast{
+        delete{ delete "$rootDir/arc-core/jni" }
+        delete{ delete "$rootDir/arc-core/libs" }
+        delete{ delete "$rootDir/arc-core/csrc/soloud" }
+        delete{ delete "$rootDir/arc-core/csrc/stb_image.h" }
+    }
+}
+
+tasks.register('preJni'){
     doFirst{
         if(!file("csrc/stb_image.h").exists()){
             println "Fetching stb_image source..."
@@ -159,7 +170,7 @@ task preJni{
 }
 
 //copies files into the right locations
-task postJni{
+tasks.register('postJni'){
     doLast{
         copy{
             from "libs/linux64", "libs/windows32", "libs/windows64", "libs/macosx64"
