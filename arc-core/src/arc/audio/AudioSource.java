@@ -29,6 +29,12 @@ public abstract class AudioSource implements Disposable{
         sourceMaxConcurrent(handle, max);
     }
 
+    /** Sets the group ID of this source, for which maxConcurrent will be enforced.  */
+    public void setConcurrentGroup(int group){
+        if(handle == 0) return;
+        sourceConcurrentGroup(handle, group);
+    }
+
     /** Sets the minimum playtime (in seconds) that a sound must have in order to be interrupted when its concurrent limit is reached. */
     public void setMinConcurrentInterrupt(float seconds){
         if(handle == 0) return;

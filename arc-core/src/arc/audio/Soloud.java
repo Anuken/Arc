@@ -265,6 +265,11 @@ public class Soloud{
         source->setMaxConcurrent(maxConcurrent);
     */
 
+    static native void sourceConcurrentGroup(long handle, int group); /*
+        AudioSource* source = (AudioSource*)handle;
+        source->setConcurrentGroup(group);
+    */
+
     static native void sourceLoop(long handle, boolean loop); /*
         AudioSource* source = (AudioSource*)handle;
         source->setLooping(loop);

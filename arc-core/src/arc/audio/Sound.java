@@ -32,6 +32,8 @@ public class Sound extends AudioSource{
     public @Nullable Fi file;
 
     long framePlayed;
+    int lastVoice;
+    float lastVolume;
 
     /** Creates an empty sound. This sound cannot be played until it is loaded. */
     public Sound(){
@@ -49,9 +51,6 @@ public class Sound extends AudioSource{
         handle = wavLoad(data, data.length);
     }
 
-    int lastVoice;
-    float lastVolume;
-
     /**
      * Plays the sound. If the sound is already playing, it will be played again, concurrently.
      * @param volume the volume in the range [0,1]
@@ -64,6 +63,7 @@ public class Sound extends AudioSource{
         if(handle == 0 || bus == null || !Core.audio.initialized) return -1;
 
         if((checkFrame && framePlayed == Core.graphics.getFrameId())){
+            //when a sound was already played this frame, intensify the volume of the last played voice instead of playing a new one
             if(volume > lastVolume){
                 Core.audio.set(lastVoice, pan, lastVolume = Math.max(lastVolume, Math.min(lastVolume + volume, volume * 1.5f)));
             }
