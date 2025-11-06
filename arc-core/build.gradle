@@ -63,7 +63,7 @@ file("jni").mkdir()
 jnigen{
     sharedLibName = "arc"
     temporaryDir = file("build/target/native").absolutePath
-    libsDir = file("libs").absolutePath
+    libsDir = "libs"
 
     all{
         headerDirs += ["soloud/include"]
