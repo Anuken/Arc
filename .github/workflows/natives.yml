@@ -42,7 +42,7 @@ jobs:
             natives/natives-android/libs
             natives/natives-freetype-android/libs
   buildMac:
-    runs-on: macos-14
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 17
