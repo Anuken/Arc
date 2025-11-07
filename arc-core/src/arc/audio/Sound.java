@@ -230,6 +230,6 @@ public class Sound extends AudioSource{
 
     @Override
     public String toString(){
-        return "SoloudSound: " + file;
+        return "Sound: " + (file == null ? "(uninitialized)" : file);
     }
 }

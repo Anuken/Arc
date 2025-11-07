@@ -29,7 +29,7 @@ public abstract class AudioSource implements Disposable{
         sourceMaxConcurrent(handle, max);
     }
 
-    /** Sets the group ID of this source, for which maxConcurrent will be enforced.  */
+    /** Sets the group ID of this source, for which maxConcurrent will be enforced. If unset, a unique group will be created for this sound.  */
     public void setConcurrentGroup(int group){
         if(handle == 0) return;
         sourceConcurrentGroup(handle, group);
