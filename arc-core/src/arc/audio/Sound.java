@@ -48,6 +48,10 @@ public class Sound extends AudioSource{
         byte[] data = file.readBytes();
         this.file = file;
         handle = wavLoad(data, data.length);
+
+        if(Core.audio != null && Core.audio.defaultSoundMaxConcurrent > 0){
+            setMaxConcurrent(Core.audio.defaultSoundMaxConcurrent);
+        }
     }
 
     /**
@@ -64,7 +68,7 @@ public class Sound extends AudioSource{
         if((checkFrame && Time.timeSinceMillis(lastTimePlayed) <= minInterval)){
             //when a sound was already played this frame, intensify the volume of the last played voice instead of playing a new one
             if(volume > lastVolume){
-                Core.audio.set(lastVoice, pan, lastVolume = Math.max(lastVolume, Math.min(lastVolume + volume, volume * 1.5f)));
+                Core.audio.set(lastVoice, pan, lastVolume = Math.max(lastVolume, Math.min(lastVolume + volume, volume * 1.25f)));
             }
 
             return -1;
