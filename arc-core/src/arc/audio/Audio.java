@@ -12,7 +12,7 @@ public class Audio implements Disposable{
     /** Falloff when playing audio.*/
     public float falloff = 16000f;
     /** Default value for maximum instances of a sound. Must be set before a sound is loaded. */
-    public int defaultSoundMaxConcurrent = 7;
+    public int defaultSoundMaxConcurrent = 6;
 
     boolean initialized;
     float sfxVolume = 0f;

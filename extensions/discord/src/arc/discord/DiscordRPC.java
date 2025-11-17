@@ -387,7 +387,8 @@ public final class DiscordRPC{
             while(file.length() == 0 && status == PipeStatus.connected){
                 try{
                     Thread.sleep(100);
-                }catch(InterruptedException ignored){
+                }catch(InterruptedException e){
+                    throw new RuntimeException(e);
                 }
             }
 
