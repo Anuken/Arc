@@ -12,7 +12,7 @@ jobs:
           submodules: 'recursive'
 
       - name: Build Linux Natives in Docker Container
-        uses: ./.github/actions/build-linux-natives
+        uses: ./.github/workflows/build-linux-natives
         id: docker
 
       - name: Upload artifacts
