@@ -37,7 +37,7 @@ jobs:
         run: |
           ./gradlew arc-core:jnigenBuild
           ./gradlew extensions:freetype:jnigenBuild
-          ./gradlew backends:backend-sdl:jnigenBuild
+      #    ./gradlew backends:backend-sdl:jnigenBuild
       - name: Upload natives
         uses: actions/upload-artifact@v5
         with:
@@ -45,8 +45,8 @@ jobs:
           path: |
             natives/natives-desktop/libs/arc.dll
             natives/natives-desktop/libs/arc64.dll
-            backends/backend-sdl/libs/windows32/sdl-arc.dll
-            backends/backend-sdl/libs/windows64/sdl-arc64.dll
+       #     backends/backend-sdl/libs/windows32/sdl-arc.dll
+        #    backends/backend-sdl/libs/windows64/sdl-arc64.dll
             natives/natives-freetype-desktop/libs/arc-freetype.dll
             natives/natives-freetype-desktop/libs/arc-freetype64.dll
       - name: Upload Android natives
@@ -55,7 +55,7 @@ jobs:
           name: Arc-core android natives
           path: |
             natives/natives-android/libs
-            natives/natives-freetype-android/libs
+      #      natives/natives-freetype-android/libs
   natives-mac:
     runs-on: macos-latest
     steps:
