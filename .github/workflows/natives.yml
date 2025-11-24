@@ -30,7 +30,7 @@ jobs:
         with:
           java-version: 17
       - name: Install dependencies
-        run: sudo apt install g++-mingw-w64 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-mingw-w64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 libasound2-dev libsdl2-dev
+        run: sudo apt install g++-mingw-w64 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-mingw-w64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64
       - name: Set env
         run: echo "NDK_HOME=$ANDROID_NDK_HOME" >> $GITHUB_ENV
       - name: Build natives
