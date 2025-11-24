@@ -3,7 +3,25 @@ name: Build Natives
 on: [workflow_dispatch]
 
 jobs:
-  buildLinux:
+  natives-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+
+      - name: Build Linux Natives in Docker Container
+        uses: ./.github/actions/build-linux-natives
+        id: docker
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: natives-linux.zip
+          path: natives-linux.zip
+
+  natives-windows:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -25,13 +43,10 @@ jobs:
         with:
           name: Arc-core desktop natives
           path: |
-            natives/natives-desktop/libs/libarc64.so
             natives/natives-desktop/libs/arc.dll
             natives/natives-desktop/libs/arc64.dll
-            backends/backend-sdl/libs/linux64/libsdl-arc64.so
             backends/backend-sdl/libs/windows32/sdl-arc.dll
             backends/backend-sdl/libs/windows64/sdl-arc64.dll
-            natives/natives-freetype-desktop/libs/libarc-freetype64.so
             natives/natives-freetype-desktop/libs/arc-freetype.dll
             natives/natives-freetype-desktop/libs/arc-freetype64.dll
       - name: Upload Android natives
@@ -41,7 +56,7 @@ jobs:
           path: |
             natives/natives-android/libs
             natives/natives-freetype-android/libs
-  buildMac:
+  natives-mac:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
