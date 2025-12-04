@@ -199,7 +199,7 @@ public class ObjectSet<T> implements Iterable<T>, Eachable<T>{
             remove(array[i]);
     }
 
-    public void removeAll(T[] array){
+    public void removeAll(T... array){
         for(T t : array){
             remove(t);
         }
