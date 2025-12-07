@@ -28,6 +28,7 @@ public class Sound extends AudioSource{
     public AudioBus bus = Core.audio == null ? null : Core.audio.soundBus;
     public @Nullable Fi file;
 
+    private float falloffOffset = 0f;
     private long minInterval = 16;
 
     long lastTimePlayed;
@@ -107,7 +108,7 @@ public class Sound extends AudioSource{
     public float calcFalloff(float x, float y){
         if(Core.app.isHeadless()) return 1f;
 
-        float dst2 = Mathf.dst2(x, y, Core.camera.position.x, Core.camera.position.y);
+        float dst2 = Math.max(Mathf.dst2(x, y, Core.camera.position.x, Core.camera.position.y) - falloffOffset*falloffOffset, 0f);
         return Mathf.clamp(1f / (dst2 / Core.audio.falloff));
     }
 
@@ -127,6 +128,14 @@ public class Sound extends AudioSource{
         float vol = calcVolume(x, y) * volume;
         if(vol < 0.01f) return -1; //discard
         return play(vol, pitch, calcPan(x, y), false, checkFrame);
+    }
+
+    /**
+     * Plays this sound at a certain position, with correct panning and volume applied.
+     * Automatically uses the "sfxvolume" setting.
+     */
+    public int at(Position pos, float pitch, float volume){
+        return at(pos.getX(), pos.getY(), pitch, volume);
     }
 
     /**
@@ -226,6 +235,10 @@ public class Sound extends AudioSource{
     /** Sets the minimum interval for playbacks of this sound, in milliseconds. Additional playback within this interval will not play a new sound instance. */
     public void setMinInterval(long interval){
         minInterval = interval;
+    }
+
+    public void setFalloffOffset(float falloffOffset){
+        this.falloffOffset = falloffOffset;
     }
 
     @Override
