@@ -69,7 +69,7 @@ jnigen{
         headerDirs += ["soloud/include"]
         cppIncludes = ["*.cpp", "soloud/src/core/**", "soloud/src/audiosource/wav/**", "soloud/src/filter/**"]
         cIncludes = ["*.c", "soloud/src/core/**", "soloud/src/audiosource/wav/**", "soloud/src/filter/**"]
-        cppFlags = "-DSOLOUD_MAX_VOICE_COUNT=80 " + cppFlags
+        cppFlags = "-DSOLOUD_MAX_VOICE_COUNT=100 " + cppFlags
     }
     add(Linux, x64){
         cppIncludes += ["soloud/src/backend/miniaudio/*.cpp"]
