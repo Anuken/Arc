@@ -61,11 +61,6 @@ task box2dNatives(dependsOn: [classes, deleteJniFolder]){
         //overwrite incorrect application mkfile
         new File("$jnidir/Application.mk").text = "APP_ABI := all\nAPP_PLATFORM := android-16"
 
-        //set correct memcpy wrap contents...
-        file("$jnidir/memcpy_wrap.c").text = file("$rootDir/natives/memcpy_wrap.c").text
-        //wrap functions with right version of glibc
-        file("$jnidir/build-linux64.xml").text = file("$jnidir/build-linux64.xml").text.replace("-Wl,-wrap,memcpy", "-Wl,-wrap,memcpy,-wrap,expf")
-
         for(BuildTarget target : targets){
             if((target.os == BuildTarget.TargetOs.IOS || target.os == BuildTarget.TargetOs.MacOsX) != System.getProperty("os.name").toLowerCase().contains("mac")) continue
 

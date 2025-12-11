@@ -69,6 +69,7 @@ jnigen{
         headerDirs += ["soloud/include"]
         cppIncludes = ["*.cpp", "soloud/src/core/**", "soloud/src/audiosource/wav/**", "soloud/src/filter/**"]
         cIncludes = ["*.c", "soloud/src/core/**", "soloud/src/audiosource/wav/**", "soloud/src/filter/**"]
+        cppFlags = "-DSOLOUD_MAX_VOICE_COUNT=80 " + cppFlags
     }
     add(Linux, x64){
         cppIncludes += ["soloud/src/backend/miniaudio/*.cpp"]
@@ -109,21 +110,6 @@ jnigen{
     }
 }
 
-tasks.register('fixWrap'){
-    doFirst{
-        println "--FIXING SCRIPTS--"
-        copy{
-            from "../natives/memcpy_wrap.c"
-            into "jni/"
-        }
-
-        def f = file("$rootDir/arc-core/jni/build-linux64.xml");
-        if(f.exists()){
-            f.text = f.text.replace("-Wl,-wrap,memcpy", "-Wl,-wrap,memcpy,-wrap,pow,-wrap,powf,-wrap,log,-wrap,logf,-wrap,exp,-wrap,expf,-wrap,clock_gettime")
-        }
-    }
-}
-
 tasks.register('copyUnsafeStuff'){
     doLast{
         copy{
@@ -135,7 +121,6 @@ tasks.register('copyUnsafeStuff'){
 }
 
 getTasksByName("jnigen", true).each{
-    it.finalizedBy fixWrap
     it.dependsOn copyUnsafeStuff
 }
 
@@ -158,7 +143,7 @@ tasks.register('preJni'){
 
         if(!file("csrc/soloud").exists()){
             println "Fetching soloud source..."
-            "git clone --depth 1 --branch 2025.11.02 https://github.com/Anuken/soloud.git $rootDir/arc-core/csrc/soloud".execute().waitFor()
+            "git clone --depth 1 --branch 2025.12.01 https://github.com/Anuken/soloud.git $rootDir/arc-core/csrc/soloud".execute().waitFor()
         }
 
         copy{

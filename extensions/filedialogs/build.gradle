@@ -3,8 +3,6 @@ apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 file("jni").mkdir()
 
 jnigen{
-    def fdir = "../csrc"
-
     sharedLibName = "arc-filedialogs"
     temporaryDir = file("build/target/native").absolutePath
     libsDir = file("libs").absolutePath
