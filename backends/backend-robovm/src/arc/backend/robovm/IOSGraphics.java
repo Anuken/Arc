@@ -3,7 +3,6 @@ package arc.backend.robovm;
 import arc.*;
 import arc.Graphics.Cursor.*;
 import arc.backend.robovm.custom.*;
-import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.gl.*;
 import arc.math.*;
@@ -12,14 +11,9 @@ import arc.util.*;
 import com.badlogic.gdx.backends.iosrobovm.bindings.metalangle.*;
 import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.foundation.*;
-import org.robovm.apple.glkit.*;
-import org.robovm.apple.opengles.*;
 import org.robovm.apple.uikit.*;
-import org.robovm.objc.*;
 import org.robovm.objc.annotation.*;
 import org.robovm.rt.bro.annotation.*;
-
-import java.util.*;
 
 public class IOSGraphics extends Graphics{
     private static final String tag = "IOSGraphics";
@@ -28,8 +22,7 @@ public class IOSGraphics extends Graphics{
     IOSInput input;
     GL20 gl20;
     GL30 gl30;
-    int width;
-    int height;
+    IOSScreenBounds screenBounds;
     long lastFrameTime;
     float deltaTime;
     long framesStart;
@@ -44,7 +37,7 @@ public class IOSGraphics extends Graphics{
     GLVersion glVersion;
     MGLKView view;
     IOSUIViewController viewController;
-    boolean created = false;
+    boolean firstFrame = true;
     private float ppiX;
     private float ppiY;
     private float ppcX;
@@ -55,15 +48,13 @@ public class IOSGraphics extends Graphics{
     private boolean isFrameRequested = true;
     private int[] insets = new int[4];
 
-    public IOSGraphics(float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, boolean useGLES30){
+    public IOSGraphics(IOSApplication app, IOSApplicationConfiguration config, IOSInput input, boolean useGLES30){
         this.config = config;
 
         IOSGraphicsDelegate gdel = new IOSGraphicsDelegate();
-        CGRect bounds = app.getBounds();
+        screenBounds = app.computeBounds();
 
-        // setup view and OpenGL
-        width = (int)bounds.getWidth();
-        height = (int)bounds.getHeight();
+        //HdpiUtils.setMode(config.hdpiMode);
 
         if(useGLES30){
             context = new MGLContext(MGLRenderingAPI.OpenGLES3);
@@ -75,7 +66,7 @@ public class IOSGraphics extends Graphics{
             gl30 = null;
         }
 
-        view = new MGLKView(new CGRect(0, 0, bounds.getWidth(), bounds.getHeight()), context){
+        view = new MGLKView(new CGRect(0, 0, screenBounds.width, screenBounds.height), context){
             @Method(selector = "touchesBegan:withEvent:")
             public void touchesBegan(@Pointer long touches, UIEvent event){
                 IOSGraphics.this.input.onTouch(touches);
@@ -149,22 +140,25 @@ public class IOSGraphics extends Graphics{
             Log.info(tag, "Device: " + device.classifier);
         }
 
-        int ppi =
-            device != null ? device.ppi :
-            UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad ? 264 :
-            163;
+        int ppi = device != null ? device.ppi : app.guessUnknownPpi();
 
-        density = device != null ? device.ppi / 160f : scale;
+        density = device.ppi / 160f;
         ppiX = ppi;
         ppiY = ppi;
         ppcX = ppiX / 2.54f;
         ppcY = ppiY / 2.54f;
         Log.info(tag, "Display: ppi=" + ppi + ", density=" + density);
-
         // time + FPS
         lastFrameTime = System.nanoTime();
         framesStart = lastFrameTime;
-
+        // enable OpenGL
+        makeCurrent();
+        // OpenGL glViewport() function expects backbuffer coordinates instead of logical coordinates
+        gl20.glViewport(0, 0, screenBounds.backBufferWidth, screenBounds.backBufferHeight);
+        String versionString = gl20.glGetString(GL20.GL_VERSION);
+        String vendorString = gl20.glGetString(GL20.GL_VENDOR);
+        String rendererString = gl20.glGetString(GL20.GL_RENDERER);
+        glVersion = new GLVersion(Application.ApplicationType.iOS, versionString, vendorString, rendererString);
         appPaused = false;
     }
 
@@ -199,22 +193,13 @@ public class IOSGraphics extends Graphics{
         // stores the last known viewport and we reset it here...
         gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
 
-        if(!created){
-            app.mainThread = Thread.currentThread();
-            gl20.glViewport(0, 0, width, height);
-
-            String versionString = gl20.glGetString(GL20.GL_VERSION);
-            String vendorString = gl20.glGetString(GL20.GL_VENDOR);
-            String rendererString = gl20.glGetString(GL20.GL_RENDERER);
-            glVersion = new GLVersion(Application.ApplicationType.iOS, versionString, vendorString, rendererString);
-
-            updateSafeInsets();
-            for(ApplicationListener listener : app.listeners){
-                listener.init();
-                listener.resize(width, height);
-            }
-            created = true;
+        // For default framebuffer, we render a dummy frame during initialization before create
+        // Return early so listener does not process
+        if(firstFrame){
+            firstFrame = false;
+            return;
         }
+
         if(appPaused){
             return;
         }
@@ -239,11 +224,9 @@ public class IOSGraphics extends Graphics{
         input.processEvents();
         frameId++;
         app.defaultUpdate();
-        runProtected(() -> {
-            for(ApplicationListener listener : app.listeners){
-                listener.update();
-            }
-        });
+        for(ApplicationListener listener : app.listeners){
+            listener.update();
+        }
         input.processDevices();
     }
 
@@ -253,7 +236,7 @@ public class IOSGraphics extends Graphics{
 
     public void update(MGLKViewController controller){
         makeCurrent();
-        runProtected(app::processRunnables);
+        app.processRunnables();
         // pause the MGLKViewController render loop if we are no longer continuous
         // and if we haven't requested a frame in the last loop iteration
         if(!isContinuous && !isFrameRequested){
@@ -262,32 +245,18 @@ public class IOSGraphics extends Graphics{
         isFrameRequested = false;
     }
 
-    private void runProtected(Runnable run){
-        try{
-            run.run();
-        }catch(Throwable t){
-            if(config.errorHandler != null){
-                app.getListeners().clear();
-                app.executedRunnables.clear();
-                app.runnables.clear();
-                Cons<Throwable> handler = config.errorHandler;
-                config.errorHandler = null;
-                handler.get(t);
-            }else{
-                throw new RuntimeException(t);
-            }
-        }
-    }
-
     protected void updateSafeInsets() {
         if(Foundation.getMajorSystemVersion() >= 11){
             UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
-            insets[0] = (int)(edgeInsets.getLeft() * view.getContentScaleFactor());
-            insets[1] = (int)(edgeInsets.getRight() * view.getContentScaleFactor());
-            insets[2] = (int)(edgeInsets.getTop() * view.getContentScaleFactor());
-            insets[3] = (int)(edgeInsets.getBottom() * view.getContentScaleFactor());
-
-            Log.info("[IOSApplication] Insets: @", Arrays.toString(insets));
+            insets[2] = (int)edgeInsets.getTop();
+            insets[0] = (int)edgeInsets.getLeft();
+            insets[1] = (int)edgeInsets.getRight();
+            insets[3] = (int)edgeInsets.getBottom();
+            if(config.hdpiMode == HdpiMode.pixels){
+                for(int i = 0; i < 4; i++){
+                    insets[i] *= app.pixelsPerPoint;
+                }
+            }
         }
     }
 
@@ -339,22 +308,22 @@ public class IOSGraphics extends Graphics{
 
     @Override
     public int getWidth(){
-        return width;
+        return config.hdpiMode == HdpiMode.pixels ? getBackBufferWidth() : screenBounds.width;
     }
 
     @Override
     public int getHeight(){
-        return height;
+        return config.hdpiMode == HdpiMode.pixels ? getBackBufferHeight() : screenBounds.height;
     }
 
     @Override
     public int getBackBufferWidth(){
-        return width;
+        return screenBounds.backBufferWidth;
     }
 
     @Override
     public int getBackBufferHeight(){
-        return height;
+        return screenBounds.backBufferHeight;
     }
 
     @Override
@@ -466,106 +435,6 @@ public class IOSGraphics extends Graphics{
     public void setSystemCursor(SystemCursor systemCursor){
     }
 
-    static class IOSUIViewController extends MGLKViewController{
-        final IOSApplication app;
-        final IOSGraphics graphics;
-        boolean created = false;
-
-        IOSUIViewController(IOSApplication app, IOSGraphics graphics){
-            this.app = app;
-            this.graphics = graphics;
-        }
-
-        @Callback
-        @BindSelector("shouldAutorotateToInterfaceOrientation:")
-        private static boolean shouldAutorotateToInterfaceOrientation(IOSUIViewController self, Selector sel,
-                                                                      UIInterfaceOrientation orientation){
-            return self.shouldAutorotateToInterfaceOrientation(orientation);
-        }
-
-        @Override
-        public void viewWillAppear(boolean arg0){
-            super.viewWillAppear(arg0);
-            // start MGLKViewController even though we may only draw a single frame
-            // (we may be in non-continuous mode)
-            setPaused(false);
-        }
-
-        @Override
-        public void viewDidAppear(boolean animated){
-            if(app.viewControllerListener != null) app.viewControllerListener.viewDidAppear(animated);
-        }
-
-        @Override
-        public UIInterfaceOrientationMask getSupportedInterfaceOrientations(){
-            long mask = 0;
-            if(app.config.orientationLandscape){
-                mask |= ((1 << UIInterfaceOrientation.LandscapeLeft.value()) | (1 << UIInterfaceOrientation.LandscapeRight.value()));
-            }
-            if(app.config.orientationPortrait){
-                mask |= ((1 << UIInterfaceOrientation.Portrait.value()) | (1 << UIInterfaceOrientation.PortraitUpsideDown.value()));
-            }
-            return new UIInterfaceOrientationMask(mask);
-        }
-
-        @Override
-        public boolean shouldAutorotate(){
-            return true;
-        }
-
-        public boolean shouldAutorotateToInterfaceOrientation(UIInterfaceOrientation orientation){
-            // we return "true" if we support the orientation
-            switch(orientation){
-                case LandscapeLeft:
-                case LandscapeRight:
-                    return app.config.orientationLandscape;
-                default:
-                    // assume portrait
-                    return app.config.orientationPortrait;
-            }
-        }
-
-        @Override
-        public UIRectEdge getPreferredScreenEdgesDeferringSystemGestures(){
-            return app.config.screenEdgesDeferringSystemGestures;
-        }
-
-        @Override
-        public void viewDidLayoutSubviews(){
-            super.viewDidLayoutSubviews();
-            // get the view size and update graphics
-            CGRect bounds = app.getBounds();
-            graphics.width = (int)bounds.getWidth();
-            graphics.height = (int)bounds.getHeight();
-            graphics.makeCurrent();
-            graphics.updateSafeInsets();
-            if(graphics.created){
-                for(ApplicationListener list : app.listeners){
-                    list.resize(graphics.width, graphics.height);
-                }
-            }
-        }
-
-        @Override
-        public boolean prefersHomeIndicatorAutoHidden(){
-            return app.config.hideHomeIndicator;
-        }
-
-        @Override
-        public void pressesBegan(NSSet<UIPress> presses, UIPressesEvent event){
-            if(presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), true)){
-                super.pressesBegan(presses, event);
-            }
-        }
-
-        @Override
-        public void pressesEnded(NSSet<UIPress> presses, UIPressesEvent event){
-            if(presses == null || presses.isEmpty() || !app.input.onKey(presses.getValues().first().getKey(), false)){
-                super.pressesEnded(presses, event);
-            }
-        }
-    }
-
     class IOSGraphicsDelegate extends NSObject implements MGLKViewDelegate, MGLKViewControllerDelegate{
         @Override
         public void update(MGLKViewController MGLKViewController){
@@ -575,13 +444,6 @@ public class IOSGraphics extends Graphics{
         @Override
         public void draw(MGLKView MGLKView, CGRect cgRect){
             IOSGraphics.this.draw(MGLKView, cgRect);
-        }
-    }
-
-    static class IOSUIView extends MGLKView{
-
-        public IOSUIView(CGRect frame, MGLContext context){
-            super(frame, context);
         }
     }
 }

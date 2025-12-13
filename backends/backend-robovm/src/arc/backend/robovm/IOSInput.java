@@ -4,6 +4,7 @@ import arc.*;
 import arc.backend.robovm.custom.UIAccelerometerDelegate;
 import arc.backend.robovm.custom.UIAccelerometerDelegateAdapter;
 import arc.backend.robovm.custom.*;
+import arc.graphics.gl.*;
 import arc.input.*;
 import arc.math.geom.*;
 import arc.struct.*;
@@ -504,18 +505,21 @@ public class IOSInput extends Input{
     private void toTouchEvents(long touches){
         long array = NSSetExtensions.allObjects(touches);
         int length = (int)NSArrayExtensions.count(array);
+        IOSScreenBounds screenBounds = app.getScreenBounds();
         for(int i = 0; i < length; i++){
             long touchHandle = NSArrayExtensions.objectAtIndex$(array, i);
             UITouch touch = UI_TOUCH_WRAPPER.wrap(touchHandle);
             final int locX, locY;
             // Get and map the location to our drawing space
-            {
-                CGPoint loc = touch.getLocationInView(touch.getWindow());
-                final CGRect bounds = app.getCachedBounds();
-                locX = (int)(loc.getX() * app.displayScaleFactor - bounds.getMinX());
-                locY = (int)bounds.getHeight() - 1 - (int)(loc.getY() * app.displayScaleFactor - bounds.getMinY());
-                // app.debug("IOSInput","pos= "+loc+"  bounds= "+bounds+" x= "+locX+" locY= "+locY);
+            CGPoint loc = touch.getLocationInView(app.graphics.view);
+            if(config.hdpiMode == HdpiMode.pixels){
+                locX = (int)((loc.getX() - screenBounds.x) * app.pixelsPerPoint);
+                locY = screenBounds.backBufferHeight - 1 - (int)((loc.getY() - screenBounds.y) * app.pixelsPerPoint);
+            }else{
+                locX = (int)(loc.getX() - screenBounds.x);
+                locY = screenBounds.height - 1 - (int)(loc.getY() - screenBounds.y);
             }
+
 
             // if its not supported, we will simply use 1.0f when touch is present
             float pressure = 1.0f;

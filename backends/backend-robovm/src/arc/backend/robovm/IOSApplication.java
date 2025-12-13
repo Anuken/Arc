@@ -23,9 +23,9 @@ public class IOSApplication implements Application{
     IOSInput input;
     Thread mainThread;
     @Nullable IOSDevice device;
-    float displayScaleFactor;
+    float pixelsPerPoint;
 
-    private CGRect lastScreenBounds = null;
+    private IOSScreenBounds lastScreenBounds = null;
 
     final Seq<ApplicationListener> listeners = new Seq<>();
     final Seq<Runnable> runnables = new Seq<>(), executedRunnables = new Seq<>();
@@ -43,17 +43,15 @@ public class IOSApplication implements Application{
         UIApplication.getSharedApplication().setIdleTimerDisabled(config.preventScreenDimming);
 
         Log.info("[IOSApplication] iOS version: " + UIDevice.getCurrentDevice().getSystemVersion());
-        // fix the scale factor if we have a retina device (NOTE: iOS screen sizes are in "points" not pixels by default!)
-
         Log.info("[IOSApplication] Running in " + (Bro.IS_64BIT ? "64-bit" : "32-bit") + " mode");
 
-        displayScaleFactor = (float)UIScreen.getMainScreen().getNativeScale();
+        pixelsPerPoint = (float)UIScreen.getMainScreen().getNativeScale();
 
         this.uiWindow = new UIWindow(UIScreen.getMainScreen().getBounds());
         this.uiWindow.makeKeyAndVisible();
 
-        this.input = createInput();
-        this.graphics = createGraphics(displayScaleFactor);
+        this.input = new IOSInput(this);
+        this.graphics = new IOSGraphics(this, config, input, config.useGL30);
         Core.gl = Core.gl20 = graphics.gl20;
         Core.gl30 = graphics.gl30;
         Core.audio = new Audio();
@@ -66,17 +64,19 @@ public class IOSApplication implements Application{
 
         this.uiWindow.setRootViewController(this.graphics.viewController);
         this.input.setupPeripherals();
-
+        this.graphics.updateSafeInsets();
         Log.info("[IOSApplication] created");
+        // Trigger first render, special case that is caught and returned
+        this.graphics.view.display();
+        for(ApplicationListener list : listeners){
+            list.init();
+        }
+        for(ApplicationListener list : listeners){
+            list.resize(graphics.getWidth(), graphics.getHeight());
+        }
+        // make sure the OpenGL view has contents before displaying it
+        this.graphics.view.display();
         return true;
-    }
-
-    protected IOSGraphics createGraphics(float scale){
-        return new IOSGraphics(scale, this, config, input, config.useGL30);
-    }
-
-    protected IOSInput createInput(){
-        return new IOSInput(this);
     }
 
     /**
@@ -100,26 +100,38 @@ public class IOSApplication implements Application{
      * consistently over iOS versions. This method returns, in pixels, rectangle in which Arc draws.
      * @return dimensions of space we draw to, adjusted for device orientation
      */
-    protected CGRect getBounds(){
-        final CGRect screenBounds =  uiWindow.getBounds();
+    protected IOSScreenBounds computeBounds(){
+        CGRect screenBounds = uiWindow.getBounds();
         final CGRect statusBarFrame = uiApp.getStatusBarFrame();
-
-        double nativeScale = UIScreen.getMainScreen().getNativeScale();
-        double statusBarHeight = statusBarFrame.getHeight() * nativeScale;
-
-        double screenWidth = screenBounds.getWidth() * nativeScale;
-        double screenHeight = screenBounds.getHeight() * nativeScale - statusBarHeight;
-
-        Log.info("[IOSApplication] Total computed bounds are w=" + screenWidth + " h=" + screenHeight + " nativeScale=" + nativeScale + " device=" + device + " statusBarHeight=" + statusBarHeight + " rawWidth=" + screenBounds.getWidth() + " rawHeight=" + screenBounds.getHeight() + " windowBounds=" + uiWindow.getBounds() + " mainScreenBounds=" + UIScreen.getMainScreen().getBounds());
-
-        return lastScreenBounds = new CGRect(0.0, statusBarHeight, screenWidth, screenHeight);
+        double statusBarHeight = statusBarFrame.getHeight();
+        double screenWidth = screenBounds.getWidth();
+        double screenHeight = screenBounds.getHeight();
+        if(statusBarHeight != 0.0){
+            Log.debug("IOSApplication", "Status bar is visible (height = " + statusBarHeight + ")");
+            screenHeight -= statusBarHeight;
+        }else{
+            Log.debug("IOSApplication", "Status bar is not visible");
+        }
+        int offsetX = 0;
+        int offsetY = (int)Math.round(statusBarHeight);
+        int width = (int)Math.round(screenWidth);
+        int height = (int)Math.round(screenHeight);
+        int backBufferWidth = (int)Math.round(screenWidth * pixelsPerPoint);
+        int backBufferHeight = (int)Math.round(screenHeight * pixelsPerPoint);
+        Log.debug("IOSApplication", "Computed bounds are x=" + offsetX + " y=" + offsetY + " w=" + width + " h=" + height + " bbW= "
+        + backBufferWidth + " bbH= " + backBufferHeight);
+        return lastScreenBounds = new IOSScreenBounds(offsetX, offsetY, width, height, backBufferWidth, backBufferHeight);
     }
 
-    protected CGRect getCachedBounds(){
-        if(lastScreenBounds == null)
-            return getBounds();
-        else
-            return lastScreenBounds;
+    /** @return area of screen in UIKit points on which Arc draws, with 0,0 being upper left corner */
+    public IOSScreenBounds getScreenBounds () {
+        return lastScreenBounds == null ? computeBounds() : lastScreenBounds;
+    }
+
+    /** Returns device ppi using a best guess approach when device is unknown. Overwrite to customize strategy. */
+    protected int guessUnknownPpi () {
+        return UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad ?
+            132 * (int)pixelsPerPoint : 164 * (int)pixelsPerPoint;
     }
 
     final void didBecomeActive(UIApplication uiApp){
