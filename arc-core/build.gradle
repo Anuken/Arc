@@ -85,7 +85,7 @@ jnigen{
         cppFlags = "-msse -DWITH_MINIAUDIO " + cppFlags
     }
     add(Android){
-        linkerFlags += " -llog -lOpenSLES"
+        linkerFlags += " -llog -lOpenSLES -Wl,-z,max-page-size=0x4000"
         cppIncludes += ["soloud/src/backend/opensles/*.cpp"]
         cppFlags = "-DWITH_OPENSLES " + cppFlags
     }
