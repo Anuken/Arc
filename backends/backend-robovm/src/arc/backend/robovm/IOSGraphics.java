@@ -142,7 +142,7 @@ public class IOSGraphics extends Graphics{
 
         int ppi = device != null ? device.ppi : app.guessUnknownPpi();
 
-        density = device.ppi / 160f;
+        density = ppi / 160f;
         ppiX = ppi;
         ppiY = ppi;
         ppcX = ppiX / 2.54f;
