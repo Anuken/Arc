@@ -31,6 +31,6 @@ public interface NetSerializer{
     }
 
     default int readLength(ByteBuffer buffer){
-        return buffer.getShort();
+        return buffer.getShort() & 0xffff; //convert to unsigned short for a higher max packet size
     }
 }
