@@ -1,6 +1,7 @@
 package arc.audio;
 
 import arc.*;
+import arc.Files.*;
 import arc.files.*;
 import arc.util.*;
 
@@ -46,6 +47,15 @@ public class Music extends AudioSource{
 
     public void load(Fi file) throws Exception{
         this.file = file;
+
+        //on iOS, try to load from internal storage instead, as that prevents unnecessary copies
+        if(OS.isIos && file.type() == FileType.internal){
+            try{
+                String path = Core.files.getInternalStoragePath();
+                handle = streamLoad((path.endsWith("/") ? path : path + "/") + file.path());
+                return;
+            }catch(Exception failed){}
+        }
 
         Exception last = null;
 
