@@ -183,12 +183,15 @@ public class VertexBatch3D{
     }
 
     public void tri(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, Color color){
-        color(color);
-        vertex(x1, y1, z1);
-        color(color);
-        vertex(x2, y2, z2);
-        color(color);
-        vertex(x3, y3, z3);
+        float bits = color.toFloatBits();
+        vertex(x1, y1, z1, bits);
+        vertex(x2, y2, z2, bits);
+        vertex(x3, y3, z3, bits);
+    }
+
+    public void quad(Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4, Color color){
+        tri(v1, v2, v3, color);
+        tri(v1, v3, v4, color);
     }
 
     public void vertex(Vec3 v, Color color){
@@ -198,6 +201,18 @@ public class VertexBatch3D{
 
     public void vertex(Vec3 v){
         vertex(v.x, v.y, v.z);
+    }
+
+    public void vertex(float x, float y, float z, float color){
+        final int idx = vertexIdx;
+        vertices[idx] = x;
+        vertices[idx + 1] = y;
+        vertices[idx + 2] = z;
+        vertices[idx + colorOffset] = color;
+
+        numSetTexCoords = 0;
+        vertexIdx += vertexSize;
+        numVertices++;
     }
 
     public void vertex(float x, float y, float z){
