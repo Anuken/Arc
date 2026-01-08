@@ -53,6 +53,11 @@ public interface Files{
         return local("cache").absolutePath();
     }
 
+    /** @return on IOS, the internal path to the assets directory. Not used on other platforms. */
+    default String getInternalStoragePath(){
+        return "";
+    }
+
     /**
      * @return the external storage path directory. This is the SD card on Android and the home directory of the current user on
      * the desktop.

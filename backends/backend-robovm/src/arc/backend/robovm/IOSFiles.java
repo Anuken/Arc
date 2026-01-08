@@ -19,6 +19,11 @@ public class IOSFiles implements Files{
     }
 
     @Override
+    public String getInternalStoragePath(){
+        return internalPath;
+    }
+
+    @Override
     public String getCachePath(){
         try{
             return NSFileManager.getDefaultManager().getURLsForDirectory(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.AllDomainsMask).get(0).getPath();
