@@ -11,6 +11,13 @@ import static org.junit.Assert.*;
 public class JvalTest{
 
     @Test
+    public void parseExponential(){
+        Jval val = Jval.read("{a: 1e-4, b: 1e92}");
+        assertEquals(1e-4f, val.getDouble("a", 0f), 0.00001f);
+        assertEquals(1e92, val.getDouble("b", 0f), 0.00001f);
+    }
+
+    @Test
     public void parseUnquotedStringArray(){
         Jval val = Jval.read("{\nkey: [result, result2]\n}");
         assertEquals("result", val.get("key").asArray().get(0).asString());
