@@ -7,6 +7,7 @@ import arc.struct.*;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.*;
+import java.util.*;
 import java.util.regex.*;
 
 public class Strings{
@@ -292,6 +293,30 @@ public class Strings{
                 }else if(j == 0){
                     dp[i][j] = i;
                 }else{
+                    dp[i][j] = Math.min(Math.min(dp[i - 1][j - 1] + (x.charAt(i - 1) == y.charAt(j - 1) ? 0 : 1),
+                    dp[i - 1][j] + 1),
+                    dp[i][j - 1] + 1);
+                }
+            }
+        }
+
+        return dp[x.length()][y.length()];
+    }
+
+    /** Returns the case-independent biased levenshtein distance between two strings. */
+    public static float biasedLevenshtein(String x, String y){
+        x = x.toLowerCase(Locale.ROOT);
+        y = y.toLowerCase(Locale.ROOT);
+
+        int[][] dp = new int[x.length() + 1][y.length() + 1];
+
+        for(int i = 0; i <= x.length(); i++){
+            for(int j = 0; j <= y.length(); j++){
+                if(i == 0){
+                    dp[i][j] = j;
+                }else if(j == 0){
+                    dp[i][j] = i;
+                }else{
                     dp[i][j] = Math.min(Math.min(dp[i - 1][j - 1]
                     + (x.charAt(i - 1) == y.charAt(j - 1) ? 0 : 1),
                     dp[i - 1][j] + 1),
@@ -300,7 +325,11 @@ public class Strings{
             }
         }
 
-        return dp[x.length()][y.length()];
+        float output = dp[x.length()][y.length()];
+        if(y.startsWith(x) || x.startsWith(y)){
+            return output / 3f;
+        }
+        return (y.contains(x) || x.contains(y)) ? output / 1.5f : output;
     }
 
     public static String animated(float time, int length, float scale, String replacement){
