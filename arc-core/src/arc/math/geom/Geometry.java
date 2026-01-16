@@ -112,10 +112,38 @@ public final class Geometry{
         return closest;
     }
 
+    public static <T extends Position> T findClosest(float x, float y, Iterable<T> list, Boolf<T> predicate){
+        T closest = null;
+        float cdist = 0f;
+        for(T t : list){
+            if(!predicate.get(t)) continue;
+            float dst = t.dst2(x, y);
+            if(closest == null || dst < cdist){
+                closest = t;
+                cdist = dst;
+            }
+        }
+        return closest;
+    }
+
     public static <T extends Position> T findFurthest(float x, float y, Iterable<T> list){
         T furthest = null;
         float fdist = 0f;
         for(T t : list){
+            float dst = t.dst2(x, y);
+            if(furthest == null || dst > fdist){
+                furthest = t;
+                fdist = dst;
+            }
+        }
+        return furthest;
+    }
+
+    public static <T extends Position> T findFurthest(float x, float y, Iterable<T> list, Boolf<T> predicate){
+        T furthest = null;
+        float fdist = 0f;
+        for(T t : list){
+            if(!predicate.get(t)) continue;
             float dst = t.dst2(x, y);
             if(furthest == null || dst > fdist){
                 furthest = t;
