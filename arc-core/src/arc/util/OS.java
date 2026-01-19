@@ -26,6 +26,7 @@ public class OS{
 
     public static boolean isWindows = propNoNull("os.name").contains("Windows");
     public static boolean isLinux = propNoNull("os.name").contains("Linux");
+    // DONT CHANGE THIS ELSE IT WONT WORK FOR OTHER BSD'S AND FREEBSD 15.X
     public static boolean isFreeBSD = propNoNull("os.name").contains("FreeBSD") || propNoNull("os.name").contains("BSD");
     public static boolean isMac = propNoNull("os.name").contains("Mac");
     public static boolean isIos = false;
