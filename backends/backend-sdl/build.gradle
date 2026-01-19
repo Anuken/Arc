@@ -1,5 +1,5 @@
 sourceSets.main.java.srcDirs = ["src"]
-sourceSets.main.resources.srcDirs = ["libs/linux64", "libs/macosx64","libs/windows32", "libs/windows64", "libs/openal"]
+sourceSets.main.resources.srcDirs = ["libs/linux64", "libs/macosx64","libs/windows32", "libs/windows64", "libs/openal", "libs/freebsd64"]
 
 dependencies {
     testImplementation libraries.jnigen
@@ -130,4 +130,35 @@ getTasksByName("jnigen", true).each{
     it.dependsOn preJni
     it.dependsOn classes
     it.dependsOn aproj(":arc-core").getTasksByName("compileJava", true)
+}
+
+//gdx-jnigen doesnt supports freebsd so this xml needs to stay at here
+
+task natives(type: Exec) {
+    // wait until jnigen
+    dependsOn jnigen
+    
+    def nativesDir = "jni"
+    workingDir nativesDir
+    def osName = System.getProperty("os.name")
+
+    // runs our xml and "ant" crap for freebsd/generic bsd
+    if (osName.contains("FreeBSD") || osName.contains("BSD")) {
+        println "FreeBSD detected, Running build-freebsd64.xml..."
+        commandLine "ant", "-f", "build-freebsd64.xml", "-v"
+    } 
+    // runs "ant" crap for others (why anuke :c)
+    else if (osName.contains("Linux")) {
+        commandLine "ant", "-f", "build-linux64.xml", "-v"
+    } else if (osName.contains("Mac")) {
+        commandLine "ant", "-f", "build-macosx64.xml", "-v"
+    } else if (osName.contains("Windows")) {
+    	//README: idk if this right, ive never used windows since 1968
+        commandLine "cmd", "/c", "ant", "-f", "build-windows64.xml", "-v"
+    }
+}
+
+// runs natives while generating jar
+tasks.named('jar') {
+    dependsOn 'natives'
 }
