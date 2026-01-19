@@ -25,7 +25,9 @@ public class OS{
     public static final int javaVersionNumber = OS.isAndroid || OS.isIos || javaVersion == null || !javaVersion.contains(".") ? 0 : javaVersion.startsWith("1.") ? 8 : Strings.parseInt(javaVersion.substring(0, javaVersion.indexOf('.')), 8);
 
     public static boolean isWindows = propNoNull("os.name").contains("Windows");
-    public static boolean isLinux = propNoNull("os.name").contains("Linux") || propNoNull("os.name").contains("BSD");
+    public static boolean isLinux = propNoNull("os.name").contains("Linux");
+    // DONT CHANGE THIS ELSE IT WONT WORK FOR OTHER BSD'S AND FREEBSD 15.X
+    public static boolean isFreeBSD = propNoNull("os.name").contains("FreeBSD") || propNoNull("os.name").contains("BSD");
     public static boolean isMac = propNoNull("os.name").contains("Mac");
     public static boolean isIos = false;
     public static boolean isAndroid = false;

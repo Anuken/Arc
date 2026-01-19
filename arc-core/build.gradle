@@ -21,12 +21,16 @@ jar{
     }
 }
 
-//now, you may ask: why don't I make this a new module? why do I include JARs in the repository? why don't I make this a separate build step?
-//the reason is: I don't want to deal with compiler arguments, --add-opens, or whatever else Java throws at you these days
-//this just works and I don't want to touch it, it's a dependency that has already been compiled and won't explode as much as source compilation might
-//"why are you using unsafe, why aren't you using the new memory access APIs?" because they don't work on Android or iOS
-//and no, I cannot work with buffer put() because of Java's idiotic design making it so that you need to put()/limit()/position() to write memory, breaking multithreading
-//this makes Unsafe the only viable option - any "state independent" methods are Java-16 specific, and iOS/Android don't support those
+/*
+now, you may ask: why don't I make this a new module? why do I include JARs in the repository? why don't I make this a separate build step?
+the reason is: I don't want to deal with compiler arguments, --add-opens, or whatever else Java throws at you these days
+this just works and I don't want to touch it, it's a dependency that has already been compiled and won't explode as much as source compilation might
+"why are you using unsafe, why aren't you using the new memory access APIs?" because they don't work on Android or iOS
+and no, I cannot work with buffer put() because of Java's idiotic design making it so that you need to put()/limit()/position() to write memory, breaking multithreading
+this makes Unsafe the only viable option - any "state independent" methods are Java-16 specific, and iOS/Android don't support those
+
+tbh skill issue but im not gonna make seperate build for ts
+*/
 
 tasks.register("compileBuffersUnsafe", Exec){
     workingDir "unsafe"
@@ -50,9 +54,11 @@ tasks.register("recompileUnsafe", Exec){
 }
 
 test{
-    testLogging{
-        exceptionFormat = 'full'
-        showStandardStreams = true
+    systemProperty "java.library.path", project(":backends:backend-sdl").file("libs/freebsd64").absolutePath
+    //more more log
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
     }
 }
 
@@ -185,4 +191,8 @@ jnigenBuild.finalizedBy postJni
 
 getTasksByName("jnigen", true).each{
     it.dependsOn preJni
+}
+
+tasks.withType(Jar).all {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
