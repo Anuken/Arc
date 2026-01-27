@@ -18,6 +18,7 @@ include ":backends"
 include ":backends:backend-android"
 include ":backends:backend-headless"
 include ":backends:backend-sdl"
+include ":backends:backend-sdl3"
 include ":backends:backend-robovm"
 
 include ":natives"

@@ -11,6 +11,7 @@ versions.robovm = "2.3.24"
 versions.junit = "4.11"
 //TODO: upgrade to 3.1.1 and finally get rid of the disease that is ant
 versions.jnigen = "2.5.1"
+versions.lwjgl = "3.4.0"
 
 libraries.robovm = [
     "com.mobidevelop.robovm:robovm-rt:${versions.robovm}",
@@ -24,6 +25,42 @@ libraries.junit = [
 
 libraries.jnigen = [
     "com.github.libgdx.gdx-jnigen:gdx-jnigen:$versions.jnigen"
+]
+
+libraries.lwjgl = [
+    "org.lwjgl:lwjgl:${versions.lwjgl}",
+    "org.lwjgl:lwjgl:${versions.lwjgl}:natives-linux",
+    "org.lwjgl:lwjgl:${versions.lwjgl}:natives-linux-arm32",
+    "org.lwjgl:lwjgl:${versions.lwjgl}:natives-linux-arm64",
+    "org.lwjgl:lwjgl:${versions.lwjgl}:natives-macos",
+    "org.lwjgl:lwjgl:${versions.lwjgl}:natives-macos-arm64",
+    "org.lwjgl:lwjgl:${versions.lwjgl}:natives-windows",
+    "org.lwjgl:lwjgl:${versions.lwjgl}:natives-windows-x86",
+    "org.lwjgl:lwjgl-sdl:${versions.lwjgl}",
+    "org.lwjgl:lwjgl-sdl:${versions.lwjgl}:natives-linux",
+    "org.lwjgl:lwjgl-sdl:${versions.lwjgl}:natives-linux-arm32",
+    "org.lwjgl:lwjgl-sdl:${versions.lwjgl}:natives-linux-arm64",
+    "org.lwjgl:lwjgl-sdl:${versions.lwjgl}:natives-macos",
+    "org.lwjgl:lwjgl-sdl:${versions.lwjgl}:natives-macos-arm64",
+    "org.lwjgl:lwjgl-sdl:${versions.lwjgl}:natives-windows",
+    "org.lwjgl:lwjgl-sdl:${versions.lwjgl}:natives-windows-x86",
+    //TODO: why jemalloc?
+    "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl}",
+    "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl}:natives-linux",
+    "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl}:natives-linux-arm32",
+    "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl}:natives-linux-arm64",
+    "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl}:natives-macos",
+    "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl}:natives-macos-arm64",
+    "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl}:natives-windows",
+    "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl}:natives-windows-x86",
+    "org.lwjgl:lwjgl-opengl:${versions.lwjgl}",
+    "org.lwjgl:lwjgl-opengl:${versions.lwjgl}:natives-linux",
+    "org.lwjgl:lwjgl-opengl:${versions.lwjgl}:natives-linux-arm32",
+    "org.lwjgl:lwjgl-opengl:${versions.lwjgl}:natives-linux-arm64",
+    "org.lwjgl:lwjgl-opengl:${versions.lwjgl}:natives-macos",
+    "org.lwjgl:lwjgl-opengl:${versions.lwjgl}:natives-macos-arm64",
+    "org.lwjgl:lwjgl-opengl:${versions.lwjgl}:natives-windows",
+    "org.lwjgl:lwjgl-opengl:${versions.lwjgl}:natives-windows-x86"
 ]
 
 allprojects{

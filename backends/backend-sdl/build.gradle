@@ -1,7 +1,7 @@
 sourceSets.main.java.srcDirs = ["src"]
-sourceSets.main.resources.srcDirs = ["libs/linux64", "libs/macosx64","libs/windows32", "libs/windows64", "libs/openal"]
+sourceSets.main.resources.srcDirs = ["libs/linux64", "libs/macosx64","libs/windows32", "libs/windows64"]
 
-dependencies {
+dependencies{
     testImplementation libraries.jnigen
     testImplementation aproj(":arc-core")
 }
