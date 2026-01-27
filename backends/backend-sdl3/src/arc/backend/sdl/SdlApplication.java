@@ -48,10 +48,7 @@ public class SdlApplication implements Application{
 
         graphics.updateSize(config.width, config.height);
 
-        //can't be bothered to recompile arc for mac
-        if(!OS.isMac){
-            addTextInputListener();
-        }
+        addTextInputListener();
 
         try{
             loop();
