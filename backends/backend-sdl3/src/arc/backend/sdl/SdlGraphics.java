@@ -37,6 +37,8 @@ public class SdlGraphics extends Graphics{
     SdlGraphics(SdlApplication app){
         this.app = app;
 
+        Configuration.OPENGL_EXPLICIT_INIT.set(true);
+        GL.create(SDLVideo::SDL_GL_GetProcAddress);
         GLCapabilities caps = GL.createCapabilities();
 
         Core.gl = Core.gl20 = gl20 = new SdlGL20();
