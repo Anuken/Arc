@@ -59,6 +59,40 @@ public class Color{
     public static final Color purple = new Color(0xa020f0ff);
     public static final Color violet = new Color(0xee82eeff);
     public static final Color maroon = new Color(0xb03060ff);
+    
+    public static final Color copper = new Color(0xd99d73ff);
+    public static final Color lead = new Color(0x8c7fa9ff);
+    public static final Color metaglass = new Color(0xebeef5ff);
+    public static final Color graphite = new Color(0xb2c6d2ff);
+    public static final Color sand = new Color(0xf7cba4ff);
+    public static final Color coal = new Color(0x272727ff);
+    public static final Color titanium = new Color(0x8da1e3ff);
+    public static final Color thorium = new Color(0xf9a3c7ff);
+    public static final Color scrap = new Color(0xa58e7cff);
+    public static final Color silicon = new Color(0x61646Bff);
+    public static final Color plastanium = new Color(0xcbd97fff);
+    public static final Color phase = new Color(0xf4ba6eff);
+    public static final Color surge = new Color(0xf3e979ff);
+    public static final Color spore = new Color(0x7457ceff);
+    public static final Color blast = new Color(0xff795eff);
+    public static final Color pyratite = new Color(0xffaa5fff);
+
+    public static final Color beryllium = new Color(0x3a8f64ff);
+    public static final Color tungsten = new Color(0x768a9aff);
+    public static final Color oxide = new Color(0xe4ffd6ff);
+    public static final Color carbide = new Color(0x89769aff);
+
+    public static final Color water = new Color(0x596ab8ff);
+    public static final Color slag = new Color(0xffa166ff);
+    public static final Color oil = new Color(0x353536ff);
+    public static final Color cryofluid = new Color(0x6ecdecff);
+
+    public static final Color neoplasm = new Color(0xc33e2bff);
+    public static final Color arkycite = new Color(0x84a94bff);
+    public static final Color ozone = new Color(0xec7Cd1ff);
+    public static final Color hydrogen = new Color(0x8e98d7ff);
+    public static final Color nitrogen = new Color(0xd4cbe3ff);
+    public static final Color cyanogen = new Color(0x7ac39fff);
 
     private static final float[] tmpHSV = new float[3];
 
