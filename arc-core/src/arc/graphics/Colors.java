@@ -98,6 +98,40 @@ public final class Colors{
         map.put("VIOLET", Color.violet);
         map.put("MAROON", Color.maroon);
 
+        map.put("COPPER", Color.copper);
+        map.put("LEAD", Color.lead);
+        map.put("METAGLASS", Color.metaglass);
+        map.put("GRAPHITE", Color.graphite);
+        map.put("SAND", Color.sand);
+        map.put("COAL", Color.coal);
+        map.put("TITANIUM", Color.titanium);
+        map.put("THORIUM", Color.thorium);
+        map.put("SCRAP", Color.scrap);
+        map.put("SILICON", Color.silicon);
+        map.put("PLASTANIUM", Color.plastanium);
+        map.put("PHASE", Color.phase);
+        map.put("SURGE", Color.surge);
+        map.put("SPORE", Color.spore);
+        map.put("BLAST", Color.blast);
+        map.put("PYRATITE", Color.pyratite);
+
+        map.put("BERYLLIUM", Color.beryllium);
+        map.put("TUNGSTEN", Color.tungsten);
+        map.put("OXIDE", Color.oxide);
+        map.put("CARBIDE", Color.carbide);
+
+        map.put("WATER", Color.water);
+        map.put("SLAG", Color.slag);
+        map.put("OIL", Color.oil);
+        map.put("CRYOFLUID", Color.cryofluid);
+
+        map.put("NEOPLASM", Color.neoplasm);
+        map.put("ARKYCITE", Color.arkycite);
+        map.put("OZONE", Color.ozone);
+        map.put("HYDROGEN", Color.hydrogen);
+        map.put("NITROGEN", Color.nitrogen);
+        map.put("CYANOGEN", Color.cyanogen);
+
         //lowercase versions
 
         map.copy().each((key, val) -> map.put(key.toLowerCase(Locale.ROOT).replace("_", ""), val));
