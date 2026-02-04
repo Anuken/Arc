@@ -8,13 +8,14 @@ import arc.graphics.*;
 import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.struct.*;
-import arc.util.*;
 import arc.util.TaskQueue;
+import arc.util.*;
 import org.lwjgl.sdl.*;
 import org.lwjgl.system.*;
 
 import java.io.*;
 import java.net.*;
+import java.nio.*;
 import java.util.*;
 
 public class SdlApplication implements Application{
@@ -46,7 +47,12 @@ public class SdlApplication implements Application{
 
         initIcon();
 
-        graphics.updateSize(config.width, config.height);
+        try(MemoryStack ms = MemoryStack.stackPush()){
+            IntBuffer x = ms.mallocInt(1);
+            IntBuffer y = ms.mallocInt(1);
+            check(SDLVideo.SDL_GetWindowSizeInPixels(window, x, y));
+            graphics.updateSize(x.get(0), y.get(0));
+        }
 
         addTextInputListener();
 
@@ -212,6 +218,10 @@ public class SdlApplication implements Application{
                         case SDLEvents.SDL_EVENT_WINDOW_FOCUS_LOST:
                             listen(ApplicationListener::pause);
                             break;
+
+                        case SDLEvents.SDL_EVENT_DROP_FILE:
+                            Fi file = new Fi(event.drop().dataString());
+                            listen(l -> l.fileDropped(file));
 
                         default:
                             input.handleInput(event);
