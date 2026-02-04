@@ -100,11 +100,12 @@ public class SdlApplication implements Application{
             String path = config.windowIconPaths[0];
             try{
                 Pixmap p = new Pixmap(Core.files.get(path, config.windowIconFileType));
-                try(SDL_Surface surface = SDLSurface.SDL_CreateSurfaceFrom(p.width, p.height, SDLPixels.SDL_PIXELFORMAT_RGBA32, p.pixels, 4 * p.width)){
-                    if(surface != null){
-                        SDLVideo.SDL_SetWindowIcon(window, surface);
-                    }
+                SDL_Surface surface = SDLSurface.SDL_CreateSurfaceFrom(p.width, p.height, SDLPixels.SDL_PIXELFORMAT_RGBA32, p.pixels, 4 * p.width);
+                if(surface != null){
+                    SDLVideo.SDL_SetWindowIcon(window, surface);
+                    SDLSurface.nSDL_DestroySurface(surface.address());
                 }
+
                 p.dispose();
             }catch(Exception e){
                 e.printStackTrace();
