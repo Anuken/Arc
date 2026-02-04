@@ -15,8 +15,8 @@ public class Audio implements Disposable{
     public int defaultSoundMaxConcurrent = 6;
 
     boolean initialized;
-    float sfxVolume = 0f;
 
+    public float sfxVolume = 0f;
     /** Global bus for all sounds. */
     public AudioBus soundBus = new AudioBus();
     /** Global bus for all music. */
