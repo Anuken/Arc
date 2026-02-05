@@ -235,7 +235,7 @@ public enum KeyCode implements KeybindValue{
 
     @Override
     public String toString(){
-        return value;
+        return getName();
     }
 
     public enum KeyType{
