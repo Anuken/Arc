@@ -4,11 +4,13 @@ import arc.*;
 import arc.input.*;
 import arc.scene.ui.*;
 import arc.struct.*;
-import arc.util.*;
 import org.lwjgl.sdl.*;
+
+import java.util.*;
 
 public class SdlInput extends Input{
     private final InputEventQueue queue = new InputEventQueue();
+    private int[] keycodeToScancode;
     private int mouseX, mouseY;
     private int deltaX, deltaY;
     private int mousePressed;
@@ -170,6 +172,25 @@ public class SdlInput extends Input{
     }
 
     @Override
+    public String getKeyName(KeyCode code){
+        if(keycodeToScancode == null){
+            keycodeToScancode = new int[KeyCode.all.length];
+            Arrays.fill(keycodeToScancode, -1);
+            for(int i = 0; i < 256; i++){
+                KeyCode keycode = SdlScanmap.getCode(i);
+                if(keycodeToScancode[keycode.ordinal()] == -1){
+                    keycodeToScancode[keycode.ordinal()] = i;
+                }
+            }
+        }
+        int value = keycodeToScancode[code.ordinal()];
+        if(value != -1){
+            return SDLKeyboard.SDL_GetScancodeName(value);
+        }
+        return super.getKeyName(code);
+    }
+
+    @Override
     public int mouseX(){
         return mouseX;
     }
@@ -229,7 +250,7 @@ public class SdlInput extends Input{
         return queue.getCurrentEventTime();
     }
 
-    private static class EditEvent{
+    static class EditEvent{
         int start, length;
         String text;
     }

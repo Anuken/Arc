@@ -357,6 +357,11 @@ public abstract class Input{
         return Orientation.landscape;
     }
 
+    /** Internal method for looking up a key's name based on keyboard layout. Internal use only - use {@link KeyCode#getName()} instead. */
+    public String getKeyName(KeyCode code){
+        return code.value;
+    }
+
     public enum Orientation{
         landscape, portrait
     }

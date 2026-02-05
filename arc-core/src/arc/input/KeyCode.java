@@ -1,5 +1,6 @@
 package arc.input;
 
+import arc.*;
 import arc.input.KeyBind.*;
 
 /** Enum for storing input codes of mouse, keyboard and controllers. */
@@ -206,6 +207,8 @@ public enum KeyCode implements KeybindValue{
     public final String value;
     public final boolean axis;
 
+    private String cachedName;
+
     KeyCode(KeyType type, String value){
         this(type, value, false);
     }
@@ -219,6 +222,15 @@ public enum KeyCode implements KeybindValue{
     public static KeyCode byOrdinal(int id){
         if(id < 0 || id >= all.length) throw new ArrayIndexOutOfBoundsException("Invalid key code: " + id);
         return all[id];
+    }
+
+    /** @return a human-friendly name based on keyboard layout. */
+    public String getName(){
+        if(cachedName == null){
+            cachedName = Core.input == null ? value : Core.input.getKeyName(this);
+            if(cachedName == null || cachedName.isEmpty()) cachedName = value;
+        }
+        return cachedName;
     }
 
     @Override
