@@ -77,6 +77,7 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
     private int mouseLastX = 0;
     private int mouseLastY = 0;
     private boolean justTouched = false;
+    private boolean showingTextInput;
     private long currentEventTimeStamp = System.nanoTime();
     private Vec3 accel = new Vec3(), gyro = new Vec3(), orient = new Vec3();
     private SensorEventListener accelerometerListener;
@@ -157,7 +158,10 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
             alert.setView(input);
             alert.setPositiveButton(context.getString(android.R.string.ok), (dialog, whichButton) -> Core.app.post(() -> info.accepted.get(input.getText().toString())));
             alert.setNegativeButton(context.getString(android.R.string.cancel), (dialog, whichButton) -> Core.app.post(() -> info.canceled.run()));
-            alert.setOnCancelListener(arg0 -> Core.app.post(() -> info.canceled.run()));
+            alert.setOnCancelListener(a -> Core.app.post(() -> info.canceled.run()));
+            alert.setOnDismissListener(a -> showingTextInput = false);
+
+            showingTextInput = true;
             AlertDialog dialog = alert.show();
 
             input.addTextChangedListener(new TextWatcher(){
@@ -188,6 +192,11 @@ public class AndroidInput extends Input implements OnKeyListener, OnTouchListene
             dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
             dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         });
+    }
+
+    @Override
+    public boolean isShowingTextInput(){
+        return showingTextInput;
     }
 
     @Override

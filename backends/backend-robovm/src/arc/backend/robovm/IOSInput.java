@@ -58,6 +58,7 @@ public class IOSInput extends Input{
     boolean compassSupported;
     boolean keyboardCloseOnReturn;
     boolean softkeyboardActive = false;
+    boolean showingTextInput;
     // Issue 773 indicates this may solve a premature GC issue
     UIAlertViewDelegate delegate;
     private long currentEventTimeStamp;
@@ -251,12 +252,14 @@ public class IOSInput extends Input{
                         input.accepted.get(textField.getText());
                     }
                     delegate = null;
+                    showingTextInput = false;
                 }
 
                 @Override
                 public void cancel(UIAlertView view){
                     input.canceled.run();
                     delegate = null;
+                    showingTextInput = false;
                 }
             };
 
@@ -276,8 +279,14 @@ public class IOSInput extends Input{
                 textField.setKeyboardType(UIKeyboardType.NumberPad);
             }
 
+            showingTextInput = true;
             uiAlertView.show();
         }
+    }
+
+    @Override
+    public boolean isShowingTextInput(){
+        return showingTextInput;
     }
 
     // hack for software keyboard support

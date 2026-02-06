@@ -235,6 +235,11 @@ public abstract class Input{
     public void getTextInput(TextInput input){
     }
 
+    /** @return on mobile, whether text input is currently being fetched. Not implemented on other platforms. */
+    public boolean isShowingTextInput(){
+        return false;
+    }
+
     /**
      * Sets the on-screen keyboard visible if available. Only applicable on mobile.
      * @param visible visible or not
