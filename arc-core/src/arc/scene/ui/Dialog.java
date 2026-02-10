@@ -529,11 +529,11 @@ public class Dialog extends Table{
         Scene stage = getScene();
         if(stage != null){
             removeListener(focusListener);
-            if(previousKeyboardFocus != null && previousKeyboardFocus.getScene() == null) previousKeyboardFocus = null;
+            if(previousKeyboardFocus != null && (previousKeyboardFocus.getScene() == null || !previousKeyboardFocus.visible)) previousKeyboardFocus = null;
             Element actor = stage.getKeyboardFocus();
             if(actor == null || actor.isDescendantOf(this)) stage.setKeyboardFocus(previousKeyboardFocus);
 
-            if(previousScrollFocus != null && previousScrollFocus.getScene() == null) previousScrollFocus = null;
+            if(previousScrollFocus != null && (previousScrollFocus.getScene() == null || !previousScrollFocus.visible)) previousScrollFocus = null;
             actor = stage.getScrollFocus();
             if(actor == null || actor.isDescendantOf(this)) stage.setScrollFocus(previousScrollFocus);
         }
