@@ -79,9 +79,7 @@ public class SdlInput extends Input{
             }
 
         }else if(type == SDLEvents.SDL_EVENT_MOUSE_WHEEL){
-            int sx = (int)event.wheel().x();
-            int sy = (int)event.wheel().y();
-            queue.scrolled(-sx, -sy);
+            queue.scrolled(-event.wheel().x(), -event.wheel().y());
         }else if(type == SDLEvents.SDL_EVENT_TEXT_INPUT){
             String text = event.text().textString();
             if(text != null){
