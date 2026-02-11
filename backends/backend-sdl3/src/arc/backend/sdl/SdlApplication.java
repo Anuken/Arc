@@ -185,12 +185,19 @@ public class SdlApplication implements Application{
             SDLVideo.SDL_GL_SetSwapInterval(1);
         }
 
+        SDLVideo.SDL_ShowWindow(window);
+
         String ver = SDLVersion.SDL_GetRevision();
 
         Log.info("[Core] Initialized @", ver);
     }
 
     private void loop(){
+
+        //might be necessary for the window to show up on Wayland
+        if(OS.isLinux){
+            SDLVideo.SDL_GL_SwapWindow(window);
+        }
 
         graphics.updateSize(config.width, config.height);
         listen(ApplicationListener::init);
@@ -222,6 +229,7 @@ public class SdlApplication implements Application{
                         case SDLEvents.SDL_EVENT_DROP_FILE:
                             Fi file = new Fi(event.drop().dataString());
                             listen(l -> l.fileDropped(file));
+                            break;
 
                         default:
                             input.handleInput(event);
@@ -240,8 +248,6 @@ public class SdlApplication implements Application{
                 input.postUpdate();
             }
         }
-
-
     }
 
     private void listen(Cons<ApplicationListener> cons){
