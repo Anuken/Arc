@@ -182,10 +182,10 @@ public class SdlApplication implements Application{
         if(finalError != null && !createdContext) throw finalError;
 
         if(config.vSyncEnabled){
-            SDLVideo.SDL_GL_SetSwapInterval(1);
+            check(SDLVideo.SDL_GL_SetSwapInterval(1));
         }
 
-        SDLVideo.SDL_ShowWindow(window);
+        check(SDLVideo.SDL_ShowWindow(window));
 
         String ver = SDLVersion.SDL_GetRevision();
 
@@ -196,6 +196,8 @@ public class SdlApplication implements Application{
 
         //might be necessary for the window to show up on Wayland
         if(OS.isLinux){
+            Core.graphics.clear(Color.black);
+            Gl.flush();
             SDLVideo.SDL_GL_SwapWindow(window);
         }
 
@@ -244,7 +246,7 @@ public class SdlApplication implements Application{
 
                 runnables.run();
 
-                SDLVideo.SDL_GL_SwapWindow(window);
+                check(SDLVideo.SDL_GL_SwapWindow(window));
                 input.postUpdate();
             }
         }
