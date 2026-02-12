@@ -181,6 +181,8 @@ public class SdlApplication implements Application{
 
         if(finalError != null && !createdContext) throw finalError;
 
+        check(SDLVideo.SDL_GL_MakeCurrent(window, context));
+
         if(config.vSyncEnabled){
             check(SDLVideo.SDL_GL_SetSwapInterval(1));
         }
