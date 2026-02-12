@@ -2,6 +2,7 @@ package arc.backend.sdl;
 
 import arc.*;
 import arc.input.*;
+import arc.math.*;
 import arc.scene.ui.*;
 import arc.struct.*;
 import org.lwjgl.sdl.*;
@@ -79,7 +80,7 @@ public class SdlInput extends Input{
             }
 
         }else if(type == SDLEvents.SDL_EVENT_MOUSE_WHEEL){
-            queue.scrolled(-event.wheel().x(), -event.wheel().y());
+            queue.scrolled(-fixSign(event.wheel().x()), -fixSign(event.wheel().y()));
         }else if(type == SDLEvents.SDL_EVENT_TEXT_INPUT){
             String text = event.text().textString();
             if(text != null){
@@ -96,6 +97,10 @@ public class SdlInput extends Input{
                 this.text = editString;
             }});
         }
+    }
+
+    static float fixSign(float scroll){
+        return Mathf.equal(scroll, 0f) ? 0f : Mathf.sign(scroll);
     }
 
     //note: start and length parameters seem useless, ignore those
