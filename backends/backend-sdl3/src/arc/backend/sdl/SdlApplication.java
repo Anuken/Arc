@@ -124,6 +124,14 @@ public class SdlApplication implements Application{
 
         if(OS.isMac) restartMac();
 
+        if(OS.isLinux){
+
+            //Prefer x11 on Nvidia systems, as Wayland seems to be broken: https://github.com/Anuken/Mindustry/issues/11657
+            if(new File("/sys/module/nvidia").exists() && "wayland".equalsIgnoreCase(System.getenv("XDG_SESSION_TYPE"))){
+                SDLHints.SDL_SetHint(SDLHints.SDL_HINT_VIDEO_DRIVER, "x11,wayland");
+            }
+        }
+
         check(SDLInit.SDL_Init(SDLInit.SDL_INIT_VIDEO | SDLInit.SDL_INIT_EVENTS));
 
         //show native IME candidate UI
@@ -180,8 +188,6 @@ public class SdlApplication implements Application{
         }
 
         if(finalError != null && !createdContext) throw finalError;
-
-        check(SDLVideo.SDL_GL_MakeCurrent(window, context));
 
         if(config.vSyncEnabled){
             check(SDLVideo.SDL_GL_SetSwapInterval(1));
