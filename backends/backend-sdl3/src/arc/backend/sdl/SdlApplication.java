@@ -189,17 +189,10 @@ public class SdlApplication implements Application{
 
         String ver = SDLVersion.SDL_GetRevision();
 
-        Log.info("[Core] Initialized @", ver);
+        Log.info("[Core] Initialized @ (@)", ver, SDLVideo.SDL_GetCurrentVideoDriver());
     }
 
     private void loop(){
-
-        //might be necessary for the window to show up on Wayland
-        if(OS.isLinux){
-            Core.graphics.clear(Color.black);
-            Gl.flush();
-            SDLVideo.SDL_GL_SwapWindow(window);
-        }
 
         graphics.updateSize(config.width, config.height);
         listen(ApplicationListener::init);
