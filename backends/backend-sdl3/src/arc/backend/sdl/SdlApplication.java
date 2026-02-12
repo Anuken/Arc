@@ -124,8 +124,7 @@ public class SdlApplication implements Application{
 
         if(OS.isMac) restartMac();
 
-        if(OS.isLinux){
-
+        if(OS.isLinux && !OS.hasEnvFlag("MINDUSTRY_FORCE_WAYLAND")){
             //Prefer x11 on Nvidia systems, as Wayland seems to be broken: https://github.com/Anuken/Mindustry/issues/11657
             if(new File("/sys/module/nvidia").exists() && "wayland".equalsIgnoreCase(System.getenv("XDG_SESSION_TYPE"))){
                 SDLHints.SDL_SetHint(SDLHints.SDL_HINT_VIDEO_DRIVER, "x11,wayland");

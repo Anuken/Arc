@@ -147,6 +147,11 @@ public class OS{
         return System.getProperty(name);
     }
 
+    /** @return whether the specified environment variable exists and is set to "1". */
+    public static boolean hasEnvFlag(String name){
+        return "1".equals(System.getenv(name));
+    }
+
     public static boolean hasEnv(String name){
         return System.getenv(name) != null;
     }
