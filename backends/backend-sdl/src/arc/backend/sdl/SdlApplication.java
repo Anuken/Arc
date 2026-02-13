@@ -147,6 +147,7 @@ public class SdlApplication implements Application{
         check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_DEPTH_SIZE, config.depth));
         check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_STENCIL_SIZE, config.stencil));
         check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_DOUBLEBUFFER, 1));
+        check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 0));
 
         //this doesn't seem to do anything, but at least I tried
         if(config.samples > 0){
@@ -166,6 +167,9 @@ public class SdlApplication implements Application{
 
         SdlError finalError = null;
         boolean createdContext = false;
+
+        //might be necessary after window creation
+        SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 0);
 
         for(int[] attemptedVersion : config.glVersions){
             //always run a compatibility profile for 2.x; only 3.2+ allows core profiles
