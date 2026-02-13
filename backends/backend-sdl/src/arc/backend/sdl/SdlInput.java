@@ -1,36 +1,32 @@
 package arc.backend.sdl;
 
 import arc.*;
-import arc.backend.sdl.jni.*;
 import arc.input.*;
+import arc.math.*;
 import arc.scene.ui.*;
 import arc.struct.*;
-import arc.util.*;
+import org.lwjgl.sdl.*;
 
-import static arc.backend.sdl.jni.SDL.*;
+import java.util.*;
 
 public class SdlInput extends Input{
-    class EditEvent{
-        int start, length;
-        String text;
-    }
     private final InputEventQueue queue = new InputEventQueue();
+    private int[] keycodeToScancode;
     private int mouseX, mouseY;
     private int deltaX, deltaY;
     private int mousePressed;
-    private byte[] strcpy = new byte[32];
     private Seq<EditEvent> stringEditEvents = new Seq<>();
 
     //handle encoded input data
-    void handleInput(int[] input){
-        int type = input[0];
-        if(type == SDL_EVENT_KEYBOARD){
-            boolean down = input[1] == 1;
-            int keycode = input[4];
+    void handleInput(SDL_Event event){
+        int type = event.type();
+        if(type == SDLEvents.SDL_EVENT_KEY_DOWN || type == SDLEvents.SDL_EVENT_KEY_UP){
+            boolean down = type == SDLEvents.SDL_EVENT_KEY_DOWN;
+            int keycode = event.key().scancode();
 
             KeyCode key = SdlScanmap.getCode(keycode);
             //only process non-repeats
-            if(input[3] == 0){
+            if(!event.key().repeat()){
                 if(down){
                     queue.keyDown(key);
                 }else{
@@ -45,16 +41,19 @@ public class SdlInput extends Input{
                 if(key == KeyCode.enter) queue.keyTyped((char)13);
                 if(key == KeyCode.forwardDel || key == KeyCode.del) queue.keyTyped((char)127);
             }
-        }else if(type == SDL_EVENT_MOUSE_BUTTON){
-            boolean down = input[1] == 1;
-            int keycode = input[4];
-            int x = input[2], y = Core.graphics.getHeight() - input[3];
+
+        }else if(type == SDLEvents.SDL_EVENT_MOUSE_BUTTON_DOWN || type == SDLEvents.SDL_EVENT_MOUSE_BUTTON_UP){
+            boolean down = type == SDLEvents.SDL_EVENT_MOUSE_BUTTON_DOWN;
+            int keycode = event.button().button();
+            int x = (int)event.button().x(), y = Core.graphics.getHeight() - (int)event.button().y();
+
             KeyCode key =
-                keycode == SDL_BUTTON_LEFT ? KeyCode.mouseLeft :
-                keycode == SDL_BUTTON_RIGHT ? KeyCode.mouseRight :
-                keycode == SDL_BUTTON_MIDDLE ? KeyCode.mouseMiddle :
-                keycode == SDL_BUTTON_X1 ? KeyCode.mouseBack :
-                keycode == SDL_BUTTON_X2 ? KeyCode.mouseForward : null;
+            keycode == SDLMouse.SDL_BUTTON_LEFT ? KeyCode.mouseLeft :
+            keycode == SDLMouse.SDL_BUTTON_RIGHT ? KeyCode.mouseRight :
+            keycode == SDLMouse.SDL_BUTTON_MIDDLE ? KeyCode.mouseMiddle :
+            keycode == SDLMouse.SDL_BUTTON_X1 ? KeyCode.mouseBack :
+            keycode == SDLMouse.SDL_BUTTON_X2 ? KeyCode.mouseForward : null;
+
             if(key != null){
                 if(down){
                     mousePressed ++;
@@ -64,9 +63,10 @@ public class SdlInput extends Input{
                     queue.touchUp(x, y, 0, key);
                 }
             }
-        }else if(type == SDL_EVENT_MOUSE_MOTION){
-            int x = input[1];
-            int y = Core.graphics.getHeight() - input[2];
+
+        }else if(type == SDLEvents.SDL_EVENT_MOUSE_MOTION){
+            int x = (int)event.motion().x();
+            int y = Core.graphics.getHeight() - (int)event.motion().y();
 
             deltaX = x - mouseX;
             deltaY = y - mouseY;
@@ -78,47 +78,29 @@ public class SdlInput extends Input{
             }else{
                 queue.mouseMoved(mouseX, mouseY);
             }
-        }else if(type == SDL_EVENT_MOUSE_WHEEL){
-            int sx = input[1];
-            int sy = input[2];
-            queue.scrolled(-sx, -sy);
-        }else if(type == SDL.SDL_EVENT_TEXT_INPUT){
-            int length = 0;
-            for(int i = 0; i < 32; i++){
-                char c = (char)input[i + 1];
-                if(c == '\0'){
-                    length = i;
-                    break;
+
+        }else if(type == SDLEvents.SDL_EVENT_MOUSE_WHEEL){
+            queue.scrolled(-fixSign(event.wheel().x()), -fixSign(event.wheel().y()));
+        }else if(type == SDLEvents.SDL_EVENT_TEXT_INPUT){
+            String text = event.text().textString();
+            if(text != null){
+                for(int i = 0; i < text.length(); i++){
+                    queue.keyTyped(text.charAt(i));
                 }
-            }
-            for(int i = 0; i < length; i++){
-                strcpy[i] = (byte)input[i + 1];
-            }
-            String s = new String(strcpy, 0, length, Strings.utf8);
-            for(int i = 0; i < s.length(); i++){
-                queue.keyTyped(s.charAt(i));
-            }
-        }else if(type == SDL.SDL_EVENT_TEXT_EDIT){
-            int length = 0;
-            for(int i = 0; i < 32; i++){
-                char c = (char)input[i + 3];
-                if(c == '\0'){
-                    length = i;
-                    break;
-                }
-            }
-            for(int i = 0; i < length; i++){
-                strcpy[i] = (byte)input[i + 3];
             }
 
-            //defer string edits after string completions
-            String str = new String(strcpy, 0, length, Strings.utf8);
+        }else if(type == SDLEvents.SDL_EVENT_TEXT_EDITING){
+            String editString = event.edit().textString();
             stringEditEvents.add(new EditEvent(){{
-                start = input[1];
-                this.length = input[2];
-                this.text = str;
+                start = event.edit().start();
+                this.length = event.edit().length();
+                this.text = editString;
             }});
         }
+    }
+
+    static float fixSign(float scroll){
+        return Mathf.equal(scroll, 0f) ? 0f : Mathf.sign(scroll);
     }
 
     //note: start and length parameters seem useless, ignore those
@@ -167,9 +149,9 @@ public class SdlInput extends Input{
 
             field.setText(targetText.substring(0, Math.min(insertPos, targetText.length())) + text + targetText.substring(Math.min(insertPos, targetText.length())));
             field.setSelection(insertPos, insertPos + text.length());
-            //fixme: setCursor will clearSelection, but IME cursor can inside selection.
-            //  And TextField seems not support that.
-//            field.setCursorPosition(insertPos+e.start);
+            //fixme: setCursor will clearSelection, but the IME cursor can inside selection.
+            //  And TextField seems not to support that.
+            //field.setCursorPosition(insertPos+e.start);
 
             data.lastSetText = field.getText();
         }
@@ -190,6 +172,25 @@ public class SdlInput extends Input{
     void postUpdate(){
         keyboard.postUpdate();
         deltaX = deltaY = 0;
+    }
+
+    @Override
+    public String getKeyName(KeyCode code){
+        if(keycodeToScancode == null){
+            keycodeToScancode = new int[KeyCode.all.length];
+            Arrays.fill(keycodeToScancode, -1);
+            for(int i = 0; i < 256; i++){
+                KeyCode keycode = SdlScanmap.getCode(i);
+                if(keycodeToScancode[keycode.ordinal()] == -1){
+                    keycodeToScancode[keycode.ordinal()] = i;
+                }
+            }
+        }
+        int value = keycodeToScancode[code.ordinal()];
+        if(value != -1){
+            return SDLKeyboard.SDL_GetScancodeName(value);
+        }
+        return super.getKeyName(code);
     }
 
     @Override
@@ -250,5 +251,10 @@ public class SdlInput extends Input{
     @Override
     public long getCurrentEventTime(){
         return queue.getCurrentEventTime();
+    }
+
+    static class EditEvent{
+        int start, length;
+        String text;
     }
 }

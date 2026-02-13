@@ -2,25 +2,25 @@ package arc.backend.sdl;
 
 import arc.*;
 import arc.audio.*;
-import arc.backend.sdl.jni.*;
 import arc.files.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.struct.*;
+import arc.util.TaskQueue;
 import arc.util.*;
+import org.lwjgl.sdl.*;
+import org.lwjgl.system.*;
 
 import java.io.*;
 import java.net.*;
+import java.nio.*;
 import java.util.*;
-
-import static arc.backend.sdl.jni.SDL.*;
 
 public class SdlApplication implements Application{
     private final Seq<ApplicationListener> listeners = new Seq<>();
     private final TaskQueue runnables = new TaskQueue();
-    private final int[] inputs = new int[64];
 
     final SdlGraphics graphics;
     final SdlInput input;
@@ -47,12 +47,14 @@ public class SdlApplication implements Application{
 
         initIcon();
 
-        graphics.updateSize(config.width, config.height);
-
-        //can't be bothered to recompile arc for mac
-        if(!OS.isMac){
-            addTextInputListener();
+        try(MemoryStack ms = MemoryStack.stackPush()){
+            IntBuffer x = ms.mallocInt(1);
+            IntBuffer y = ms.mallocInt(1);
+            check(SDLVideo.SDL_GetWindowSizeInPixels(window, x, y));
+            graphics.updateSize(x.get(0), y.get(0));
         }
+
+        addTextInputListener();
 
         try{
             loop();
@@ -76,17 +78,24 @@ public class SdlApplication implements Application{
                 if(Core.scene != null && Core.scene.getKeyboardFocus() instanceof TextField){
                     TextField next = (TextField)Core.scene.getKeyboardFocus();
                     if(lastFocus == null){
-                        SDL_StartTextInput();
+                        SDLKeyboard.SDL_StartTextInput(window);
                     }
                     lastFocus = next;
                 }else if(lastFocus != null){
-                    SDL_StopTextInput();
+                    SDLKeyboard.SDL_StopTextInput(window);
                     lastFocus = null;
                 }
 
                 if(lastFocus != null){
                     Vec2 pos = lastFocus.localToStageCoordinates(Tmp.v1.setZero());
-                    SDL_SetTextInputRect((int)pos.x, Core.graphics.getHeight() - 1 - (int)(pos.y + lastFocus.getHeight()), (int)lastFocus.getWidth(), (int)lastFocus.getHeight());
+                    try(MemoryStack stack = MemoryStack.stackPush()){
+                        SDL_Rect rect = SDL_Rect.malloc(stack)
+                        .set((int)pos.x,
+                        Core.graphics.getHeight() - 1 - (int)(pos.y + lastFocus.getHeight()),
+                        (int)lastFocus.getWidth(), (int)lastFocus.getHeight());
+
+                        SDLKeyboard.nSDL_SetTextInputArea(window, rect.address(), 0);
+                    }
                 }
             }
         });
@@ -97,9 +106,12 @@ public class SdlApplication implements Application{
             String path = config.windowIconPaths[0];
             try{
                 Pixmap p = new Pixmap(Core.files.get(path, config.windowIconFileType));
-                long surface = SDL_CreateRGBSurfaceFrom(p.pixels, p.width, p.height);
-                SDL_SetWindowIcon(window, surface);
-                SDL_FreeSurface(surface);
+                SDL_Surface surface = SDLSurface.SDL_CreateSurfaceFrom(p.width, p.height, SDLPixels.SDL_PIXELFORMAT_RGBA32, p.pixels, 4 * p.width);
+                if(surface != null){
+                    SDLVideo.SDL_SetWindowIcon(window, surface);
+                    SDLSurface.nSDL_DestroySurface(surface.address());
+                }
+
                 p.dispose();
             }catch(Exception e){
                 e.printStackTrace();
@@ -112,35 +124,44 @@ public class SdlApplication implements Application{
 
         if(OS.isMac) restartMac();
 
-        check(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
+        if(OS.isLinux && !OS.hasEnvFlag("MINDUSTRY_FORCE_WAYLAND")){
+            //Prefer x11 on Nvidia systems, as Wayland seems to be broken: https://github.com/Anuken/Mindustry/issues/11657
+            if(new File("/sys/module/nvidia").exists() && "wayland".equalsIgnoreCase(System.getenv("XDG_SESSION_TYPE"))){
+                Log.warn("[Core] Forcing x11 due to Wayland being broken on NVIDIA systems - see https://github.com/Anuken/Mindustry/issues/11657. Set MINDUSTRY_FORCE_WAYLAND=1 to disable this behavior.");
+                SDLHints.SDL_SetHint(SDLHints.SDL_HINT_VIDEO_DRIVER, "x11,wayland");
+            }
+        }
+
+        check(SDLInit.SDL_Init(SDLInit.SDL_INIT_VIDEO | SDLInit.SDL_INIT_EVENTS));
 
         //show native IME candidate UI
-        SDL_SetHint("SDL_IME_SHOW_UI","1");
-        SDL_SetHint("SDL_WINDOWS_DPI_SCALING", "1");
+        SDLHints.SDL_SetHint("SDL_IME_SHOW_UI","1");
+        SDLHints.SDL_SetHint("SDL_WINDOWS_DPI_SCALING", "1");
 
-        check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, OS.isMac || config.coreProfile ? SDL_GL_CONTEXT_PROFILE_CORE : SDL.SDL_GL_CONTEXT_PROFILE_COMPATIBILITY));
+        check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_CONTEXT_PROFILE_MASK, OS.isMac || config.coreProfile ? SDLVideo.SDL_GL_CONTEXT_PROFILE_CORE : SDLVideo.SDL_GL_CONTEXT_PROFILE_COMPATIBILITY));
 
-        check(SDL_GL_SetAttribute(SDL_GL_RED_SIZE, config.r));
-        check(SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, config.g));
-        check(SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, config.b));
-        check(SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, config.depth));
-        check(SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, config.stencil));
-        check(SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1));
+        check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_RED_SIZE, config.r));
+        check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_GREEN_SIZE, config.g));
+        check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_BLUE_SIZE, config.b));
+        check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_ALPHA_SIZE, config.a));
+        check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_DEPTH_SIZE, config.depth));
+        check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_STENCIL_SIZE, config.stencil));
+        check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_DOUBLEBUFFER, 1));
 
         //this doesn't seem to do anything, but at least I tried
         if(config.samples > 0){
-            check(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1));
-            check(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, config.samples));
+            check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_MULTISAMPLEBUFFERS, 1));
+            check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_MULTISAMPLESAMPLES, config.samples));
         }
 
-        int flags = SDL_WINDOW_OPENGL;
-        if(config.initialVisible) flags |= SDL_WINDOW_SHOWN;
-        if(!config.decorated) flags |= SDL_WINDOW_BORDERLESS;
-        if(config.resizable) flags |= SDL_WINDOW_RESIZABLE;
-        if(config.maximized) flags |= SDL_WINDOW_MAXIMIZED;
-        if(config.fullscreen) flags |= SDL_WINDOW_FULLSCREEN;
+        long flags = SDLVideo.SDL_WINDOW_OPENGL;
+        if(!config.initialVisible) flags |= SDLVideo.SDL_WINDOW_HIDDEN;
+        if(!config.decorated) flags |= SDLVideo.SDL_WINDOW_BORDERLESS;
+        if(config.resizable) flags |= SDLVideo.SDL_WINDOW_RESIZABLE;
+        if(config.maximized) flags |= SDLVideo.SDL_WINDOW_MAXIMIZED;
+        if(config.fullscreen) flags |= SDLVideo.SDL_WINDOW_FULLSCREEN;
 
-        window = SDL_CreateWindow(config.title, config.width, config.height, flags);
+        window = SDLVideo.SDL_CreateWindow(config.title, config.width, config.height, flags);
         if(window == 0) throw new SdlError();
 
         SdlError finalError = null;
@@ -149,14 +170,14 @@ public class SdlApplication implements Application{
         for(int[] attemptedVersion : config.glVersions){
             //always run a compatibility profile for 2.x; only 3.2+ allows core profiles
             if(attemptedVersion[0] == 2){
-                check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY));
+                check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_CONTEXT_PROFILE_MASK, SDLVideo.SDL_GL_CONTEXT_PROFILE_COMPATIBILITY));
             }
 
-            check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, attemptedVersion[0]));
-            check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, attemptedVersion[1]));
+            check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_CONTEXT_MAJOR_VERSION, attemptedVersion[0]));
+            check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_CONTEXT_MINOR_VERSION, attemptedVersion[1]));
 
             try{
-                context = SDL_GL_CreateContext(window);
+                context = SDLVideo.SDL_GL_CreateContext(window);
                 if(context == 0) throw new SdlError();
 
                 createdContext = true;
@@ -170,53 +191,66 @@ public class SdlApplication implements Application{
         if(finalError != null && !createdContext) throw finalError;
 
         if(config.vSyncEnabled){
-            SDL_GL_SetSwapInterval(1);
+            check(SDLVideo.SDL_GL_SetSwapInterval(1));
         }
 
-        int[] ver = new int[3];
-        SDL_GetVersion(ver);
-        Log.info("[Core] Initialized SDL v@.@.@", ver[0], ver[1], ver[2]);
+        check(SDLVideo.SDL_ShowWindow(window));
+
+        String ver = SDLVersion.SDL_GetRevision();
+
+        Log.info("[Core] Initialized @ (@)", ver, SDLVideo.SDL_GetCurrentVideoDriver());
     }
 
     private void loop(){
 
         graphics.updateSize(config.width, config.height);
         listen(ApplicationListener::init);
+        try(MemoryStack stack = MemoryStack.stackPush()){
+            SDL_Event event = SDL_Event.malloc(stack);
 
-        while(running){
-            while(SDL_PollEvent(inputs)){
-                if(inputs[0] == SDL_EVENT_QUIT){
-                    running = false;
-                }else if(inputs[0] == SDL_EVENT_WINDOW){
-                    int type = inputs[1];
-                    if(type == SDL_WINDOWEVENT_SIZE_CHANGED){
-                        graphics.updateSize(inputs[2], inputs[3]);
-                        listen(l -> l.resize(inputs[2], inputs[3]));
-                    }else if(type == SDL_WINDOWEVENT_FOCUS_GAINED){
-                        listen(ApplicationListener::resume);
-                    }else if(type == SDL_WINDOWEVENT_FOCUS_LOST){
-                        listen(ApplicationListener::pause);
+            while(running){
+                while(SDLEvents.SDL_PollEvent(event)){
+                    int type = event.type();
+                    switch(type){
+                        case SDLEvents.SDL_EVENT_QUIT:
+                            running = false;
+                            break;
+
+                        case SDLEvents.SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
+                            int w = event.window().data1(), h = event.window().data2();
+                            graphics.updateSize(w, h);
+                            listen(l -> l.resize(w, h));
+                            break;
+
+                        case SDLEvents.SDL_EVENT_WINDOW_FOCUS_GAINED:
+                            listen(ApplicationListener::resume);
+                            break;
+
+                        case SDLEvents.SDL_EVENT_WINDOW_FOCUS_LOST:
+                            listen(ApplicationListener::pause);
+                            break;
+
+                        case SDLEvents.SDL_EVENT_DROP_FILE:
+                            Fi file = new Fi(event.drop().dataString());
+                            listen(l -> l.fileDropped(file));
+                            break;
+
+                        default:
+                            input.handleInput(event);
                     }
-                }else if(inputs[0] == SDL_EVENT_MOUSE_MOTION ||
-                    inputs[0] == SDL_EVENT_MOUSE_BUTTON ||
-                    inputs[0] == SDL_EVENT_MOUSE_WHEEL ||
-                    inputs[0] == SDL_EVENT_KEYBOARD ||
-                    inputs[0] == SDL_EVENT_TEXT_INPUT ||
-                    inputs[0] == SDL_EVENT_TEXT_EDIT){
-                    input.handleInput(inputs);
                 }
+
+                graphics.update();
+                input.update();
+                defaultUpdate();
+
+                listen(ApplicationListener::update);
+
+                runnables.run();
+
+                check(SDLVideo.SDL_GL_SwapWindow(window));
+                input.postUpdate();
             }
-
-            graphics.update();
-            input.update();
-            defaultUpdate();
-
-            listen(ApplicationListener::update);
-
-            runnables.run();
-
-            SDL_GL_SwapWindow(window);
-            input.postUpdate();
         }
     }
 
@@ -239,12 +273,12 @@ public class SdlApplication implements Application{
         });
         dispose();
 
-        SDL_DestroyWindow(window);
-        SDL_Quit();
+        SDLVideo.SDL_DestroyWindow(window);
+        SDLInit.SDL_Quit();
     }
 
-    private void check(int code){
-        if(code != 0){
+    private void check(boolean code){
+        if(!code){
             throw new SdlError();
         }
     }
@@ -307,12 +341,12 @@ public class SdlApplication implements Application{
 
     @Override
     public String getClipboardText(){
-        return SDL_GetClipboardText();
+        return SDLClipboard.SDL_GetClipboardText();
     }
 
     @Override
     public void setClipboardText(String text){
-        SDL_SetClipboardText(text);
+        SDLClipboard.SDL_SetClipboardText(text);
     }
 
     @Override
@@ -327,7 +361,7 @@ public class SdlApplication implements Application{
 
     public static class SdlError extends RuntimeException{
         public SdlError(){
-            super(SDL_GetError());
+            super(SDLError.SDL_GetError());
         }
     }
 
