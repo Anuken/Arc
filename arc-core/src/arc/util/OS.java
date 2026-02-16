@@ -16,11 +16,11 @@ public class OS{
     /** Version of the OS being used; format varies based on OS. */
     public static final String osVersion = prop("os.version");
     /** Operating system architecture, e.g. "amd64" */
-    public static final String osArch = prop("os.arch");
+    public static final String osArch = propNoNull("os.arch");
     /** Either 32 or 64. */
-    public static final String osArchBits = prop("sun.arch.data.model");
+    public static final String osArchBits = propNoNull("sun.arch.data.model");
     /** JVM version; may contain underscores. Examples: 1.8.0_211 (Java 8 update 211), 12.0.1 (Java 12)*/
-    public static final String javaVersion = prop("java.version");
+    public static final String javaVersion = propNoNull("java.version");
     /** Java version as a single number; 0 on iOS or Android. Examples: 8, 10, 17 */
     public static final int javaVersionNumber = OS.isAndroid || OS.isIos || javaVersion == null || !javaVersion.contains(".") ? 0 : javaVersion.startsWith("1.") ? 8 : Strings.parseInt(javaVersion.substring(0, javaVersion.indexOf('.')), 8);
 

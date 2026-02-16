@@ -61,11 +61,6 @@ public class SdlGraphics extends Graphics{
             Core.gl = Core.gl20 = gl20 = Core.gl30 = gl30 = new SdlGL30();
         }
 
-        //disable GL_FRAMEBUFFER_SRGB https://github.com/libsdl-org/SDL/issues/14898
-        if(caps.GL_ARB_framebuffer_sRGB || caps.GL_EXT_framebuffer_sRGB || glVersion.atLeast(3, 0)){
-            Core.gl.glDisable(0x8DB9);
-        }
-
         clear(app.config.initialBackgroundColor);
         SDLVideo.SDL_GL_SwapWindow(app.window);
     }
