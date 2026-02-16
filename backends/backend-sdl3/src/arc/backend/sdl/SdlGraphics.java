@@ -2,13 +2,17 @@ package arc.backend.sdl;
 
 import arc.*;
 import arc.Graphics.Cursor.*;
-import arc.backend.sdl.jni.*;
 import arc.graphics.*;
+import arc.graphics.GL20;
+import arc.graphics.GL30;
 import arc.graphics.gl.*;
 import arc.struct.*;
 import arc.util.*;
+import org.lwjgl.opengl.*;
+import org.lwjgl.sdl.*;
+import org.lwjgl.system.*;
 
-import static arc.backend.sdl.jni.SDL.*;
+import java.nio.*;
 
 public class SdlGraphics extends Graphics{
     private GL20 gl20;
@@ -24,7 +28,6 @@ public class SdlGraphics extends Graphics{
     private long frameCounterStart = 0;
     private int frames;
     private int fps;
-    private int[] wh = new int[2];
 
     int backBufferWidth;
     int backBufferHeight;
@@ -34,10 +37,9 @@ public class SdlGraphics extends Graphics{
     SdlGraphics(SdlApplication app){
         this.app = app;
 
-        String errorMessage = SDLGL.init();
-        if(errorMessage != null){
-            throw new ArcRuntimeException("GLEW failed to initialize: " + errorMessage);
-        }
+        Configuration.OPENGL_EXPLICIT_INIT.set(true);
+        GL.create(SDLVideo::SDL_GL_GetProcAddress);
+        GLCapabilities caps = GL.createCapabilities();
 
         Core.gl = Core.gl20 = gl20 = new SdlGL20();
 
@@ -49,7 +51,8 @@ public class SdlGraphics extends Graphics{
         glVersion = new GLVersion(Application.ApplicationType.desktop, versionString, vendorString, rendererString);
         bufferFormat = new BufferFormat(app.config.r, app.config.g, app.config.b, app.config.a, app.config.depth, app.config.stencil, app.config.samples, false);
 
-        if(!glVersion.atLeast(2, 0) || !supportsFBO()){
+        if(!glVersion.atLeast(2, 0) ||
+            !(glVersion.atLeast(3, 0) || caps.GL_EXT_framebuffer_object)){
             throw new ArcRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + versionString);
         }
 
@@ -59,11 +62,7 @@ public class SdlGraphics extends Graphics{
         }
 
         clear(app.config.initialBackgroundColor);
-        SDL_GL_SwapWindow(app.window);
-    }
-
-    boolean supportsFBO(){
-        return glVersion.atLeast(3, 0) || SDL_GL_ExtensionSupported("GL_EXT_framebuffer_object");
+        SDLVideo.SDL_GL_SwapWindow(app.window);
     }
 
     void update(){
@@ -87,9 +86,12 @@ public class SdlGraphics extends Graphics{
         logicalHeight = height;
 
         if(OS.isMac){
-            SDL_GL_GetDrawableSize(app.window, wh);
-            backBufferWidth = wh[0];
-            backBufferHeight = wh[1];
+            try(MemoryStack stack = MemoryStack.stackPush()){
+                IntBuffer w = stack.mallocInt(1), h = stack.mallocInt(1);
+                SDLVideo.SDL_GetWindowSizeInPixels(app.window, w, h);
+                backBufferWidth = w.get(0);
+                backBufferHeight = h.get(0);
+            }
         }else{
             backBufferWidth = width;
             backBufferHeight = height;
@@ -200,69 +202,74 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public boolean setFullscreen(){
-        int[] bounds = new int[4];
+        try(MemoryStack stack = MemoryStack.stackPush()){
+            SDL_Rect rect = SDL_Rect.malloc(stack);
 
-        int index = SDL_GetWindowDisplayIndex(app.window);
-        if(index < 0) return false;
+            int index = SDLVideo.SDL_GetDisplayForWindow(app.window);
+            if(index < 0) return false;
 
-        int result = SDL_GetDisplayBounds(index, bounds);
-        if(result != 0) return false;
+            boolean result = SDLVideo.SDL_GetDisplayBounds(index, rect);
+            if(!result) return false;
 
-        SDL_SetWindowSize(app.window, bounds[2], bounds[3]);
-        SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN);
+            SDLVideo.SDL_SetWindowSize(app.window, rect.w(), rect.h());
+            SDLVideo.SDL_SetWindowFullscreen(app.window, true);
+        }
+
         return true;
     }
 
     @Override
     public boolean setWindowedMode(int width, int height){
-        SDL_SetWindowFullscreen(app.window, 0);
-        SDL_SetWindowSize(app.window, width, height);
+        SDLVideo.SDL_SetWindowFullscreen(app.window, false);
+        SDLVideo.SDL_SetWindowSize(app.window, width, height);
         return true;
     }
 
     @Override
     public void setTitle(String title){
-        SDL_SetWindowTitle(app.window, title);
+        SDLVideo.SDL_SetWindowTitle(app.window, title);
     }
 
     @Override
     public void setBorderless(boolean borderless){
-        boolean maximized = (SDL_GetWindowFlags(app.window) & SDL_WINDOW_MAXIMIZED) == SDL_WINDOW_MAXIMIZED;
+        boolean maximized = (SDLVideo.SDL_GetWindowFlags(app.window) & SDLVideo.SDL_WINDOW_MAXIMIZED) == SDLVideo.SDL_WINDOW_MAXIMIZED;
         if(maximized && OS.isLinux){
-            SDL_RestoreWindow(app.window);
+            SDLVideo.SDL_RestoreWindow(app.window);
         }
 
-        int index = SDL_GetWindowDisplayIndex(app.window);
+        int index = SDLVideo.SDL_GetDisplayForWindow(app.window);
         if(index < 0) return;
 
-        int[] bounds = new int[4];
+        try(MemoryStack stack = MemoryStack.stackPush()){
+            SDL_Rect rect = SDL_Rect.malloc(stack);
 
-        int result = borderless ? SDL_GetDisplayBounds(index, bounds) : SDL_GetDisplayUsableBounds(index, bounds);
-        if(result != 0) return;
+            boolean result = borderless ? SDLVideo.SDL_GetDisplayBounds(index, rect) : SDLVideo.SDL_GetDisplayUsableBounds(index, rect);
+            if(!result) return;
 
-        SDL_SetWindowBordered(app.window, !borderless);
+            SDLVideo.SDL_SetWindowBordered(app.window, !borderless);
 
-        if(maximized && OS.isLinux){
-            SDL_MaximizeWindow(app.window);
+            if(maximized && OS.isLinux){
+                SDLVideo.SDL_MaximizeWindow(app.window);
+            }
+
+            SDLVideo.SDL_SetWindowPosition(app.window, rect.x(), rect.y());
+            SDLVideo.SDL_SetWindowSize(app.window, rect.w(), rect.h());
         }
-
-        SDL_SetWindowPosition(app.window, bounds[0], bounds[1]);
-        SDL_SetWindowSize(app.window, bounds[2], bounds[3]);
     }
 
     @Override
     public void setWindowPosition(int x, int y){
-        SDL_SetWindowPosition(app.window, x, y);
+        SDLVideo.SDL_SetWindowPosition(app.window, x, y);
     }
 
     @Override
     public void setWindowSize(int width, int height){
-        SDL_SetWindowSize(app.window, width, height);
+        SDLVideo.SDL_SetWindowSize(app.window, width, height);
     }
 
     @Override
     public void setVSync(boolean vsync){
-        SDL_GL_SetSwapInterval(vsync ? 1 : 0);
+        SDLVideo.SDL_GL_SetSwapInterval(vsync ? 1 : 0);
     }
 
     @Override
@@ -272,7 +279,7 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public boolean supportsExtension(String extension){
-        return SDL_GL_ExtensionSupported(extension);
+        return SDLVideo.SDL_GL_ExtensionSupported(extension);
     }
 
     @Override
@@ -292,28 +299,28 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public boolean isFullscreen(){
-        return (SDL_GetWindowFlags(app.window) & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN;
+        return (SDLVideo.SDL_GetWindowFlags(app.window) & SDLVideo.SDL_WINDOW_FULLSCREEN) == SDLVideo.SDL_WINDOW_FULLSCREEN;
     }
 
     @Override
     public Cursor newCursor(Pixmap pixmap, int xHotspot, int yHotspot){
-        long surface = SDL_CreateRGBSurfaceFrom(pixmap.pixels, pixmap.width, pixmap.height);
-        long cursor = SDL_CreateColorCursor(surface, xHotspot, yHotspot);
+        SDL_Surface surface = SDLSurface.SDL_CreateSurfaceFrom(pixmap.width, pixmap.height, SDLPixels.SDL_PIXELFORMAT_RGBA32, pixmap.pixels, 4 * pixmap.width);
+        long cursor = SDLMouse.SDL_CreateColorCursor(surface, xHotspot, yHotspot);
         return new SdlCursor(surface, cursor);
     }
 
     @Override
     protected void setCursor(Cursor cursor){
-        SDL_SetCursor(((SdlCursor)cursor).cursorHandle);
+        SDLMouse.SDL_SetCursor(((SdlCursor)cursor).cursorHandle);
     }
 
     @Override
     protected void setSystemCursor(SystemCursor cursor){
         if(!cursors.containsKey(cursor)){
-            long handle = SDL_CreateSystemCursor(mapCursor(cursor));
-            cursors.put(cursor, new SdlCursor(0, handle));
+            long handle = SDLMouse.SDL_CreateSystemCursor(mapCursor(cursor));
+            cursors.put(cursor, new SdlCursor(null, handle));
         }
-        SDL_SetCursor(cursors.get(cursor).cursorHandle);
+        SDLMouse.SDL_SetCursor(cursors.get(cursor).cursorHandle);
     }
 
     @Override
@@ -325,28 +332,31 @@ public class SdlGraphics extends Graphics{
 
     private int mapCursor(SystemCursor cursor){
         switch(cursor){
-            case arrow: return SDL_SYSTEM_CURSOR_ARROW;
-            case ibeam: return SDL_SYSTEM_CURSOR_IBEAM;
-            case crosshair: return SDL_SYSTEM_CURSOR_CROSSHAIR;
-            case hand: return SDL_SYSTEM_CURSOR_HAND;
-            case horizontalResize: return SDL_SYSTEM_CURSOR_SIZEWE;
-            case verticalResize: return SDL_SYSTEM_CURSOR_SIZENS;
+            case arrow: return SDLMouse.SDL_SYSTEM_CURSOR_DEFAULT;
+            case ibeam: return SDLMouse.SDL_SYSTEM_CURSOR_TEXT;
+            case crosshair: return SDLMouse.SDL_SYSTEM_CURSOR_CROSSHAIR;
+            case hand: return SDLMouse.SDL_SYSTEM_CURSOR_POINTER;
+            case horizontalResize: return SDLMouse.SDL_SYSTEM_CURSOR_EW_RESIZE;
+            case verticalResize: return SDLMouse.SDL_SYSTEM_CURSOR_NS_RESIZE;
         }
         throw new IllegalArgumentException("this is impossible.");
     }
 
     public static class SdlCursor implements Cursor{
-        final long surfaceHandle, cursorHandle;
+        SDL_Surface surfaceHandle;
+        long cursorHandle;
 
-        public SdlCursor(long surfaceHandle, long cursorHandle){
+        public SdlCursor(SDL_Surface surfaceHandle, long cursorHandle){
             this.surfaceHandle = surfaceHandle;
             this.cursorHandle = cursorHandle;
         }
 
         @Override
         public void dispose(){
-            if(cursorHandle != 0) SDL_FreeCursor(cursorHandle);
-            if(surfaceHandle != 0) SDL.SDL_FreeSurface(surfaceHandle);
+            if(cursorHandle != 0) SDLMouse.SDL_DestroyCursor(cursorHandle);
+            if(surfaceHandle != null) surfaceHandle.free();
+            surfaceHandle = null;
+            cursorHandle = 0;
         }
     }
 }

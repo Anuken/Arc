@@ -1,17 +1,133 @@
 sourceSets.main.java.srcDirs = ["src"]
+sourceSets.main.resources.srcDirs = ["libs/linux64", "libs/macosx64","libs/windows32", "libs/windows64"]
 
-configurations{
-    natives
+dependencies{
+    testImplementation libraries.jnigen
+    testImplementation aproj(":arc-core")
 }
 
-jar{
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from{
-        configurations.natives.collect{ it.isDirectory() ? it : zipTree(it) }
+apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
+
+file("jni").mkdir()
+
+task preJni{
+    //this absolutely needs to run during configuration so jnigen can run downloaded sdl-config scripts for configuration of library flags
+    try{
+        if(!file("jni/glew.zip").exists()){
+            println "Fetching GLEW source..."
+            "curl -o $rootDir/backends/backend-sdl/jni/glew.zip -L https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.zip".execute().waitFor()
+            "unzip -qq -d $rootDir/backends/backend-sdl/jni $rootDir/backends/backend-sdl/jni/glew.zip".execute().waitFor()
+        }
+
+        if(!file("jni/sdlmingw.tar.gz").exists()){
+            println "Fetching SDL-mingw builds..."
+            "curl -o $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -L https://www.libsdl.org/release/SDL2-devel-2.32.8-mingw.tar.gz".execute().waitFor()
+            "tar -xvzf $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -C $rootDir/backends/backend-sdl/jni".execute().waitFor()
+        }
+    }catch(Exception youAreProbablyOnWindowsOrDontHaveUnzip){}
+
+    doFirst{
+        copy{
+            from "$rootDir/arc-core/build/classes/java/main"
+            into "$rootDir/backends/backend-sdl/build/classes/java/main"
+            include "**"
+        }
     }
 }
 
-dependencies{
-    natives libraries.lwjgl
-    api libraries.lwjgl
+/*
+
+PACKAGES: Linux (Ubuntu)
+
+- libdrm-dev
+- libsdl2-dev
+- libgbm-dev
+- ant
+
+PACKAGES: Linux -> Windows Cross-Compilation
+
+- mingw32
+- ant
+
+PACKAGES: Mac
+
+- sdl2
+- glew
+- ant
+
+ */
+
+jnigen{
+    def execCmd = { cmd ->
+        try{
+            Scanner s = new Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A")
+            return s.hasNext() ? s.next().trim() : ""
+        }catch(Exception ignored){
+            //fail silently, because this is run during standard arc builds and it shouldn't fail
+            //TODO don't do anything at all in certain situations?
+        }
+    }
+
+    sharedLibName = "sdl-arc"
+    temporaryDir = file("build/target/native").absolutePath
+    libsDir = file("libs").absolutePath
+
+    def sdlVersion = "2.32.8"
+
+    all{
+        cppIncludes = ["*.cpp"]
+        cIncludes = ["*.c", "glew-2.2.0/src/glew.c"]
+        headerDirs += ["glew-2.2.0/include"]
+    }
+    add(Linux, x64){
+        cppFlags += " " + execCmd("sdl2-config --cflags")
+        cFlags = cppFlags
+        //NOTE: for this to statically link properly, you need to add -L/path/to/folder/with/custom/libSDL2.a
+        //where this folder contains a custom build of SDL2 with the -fPIC flag (added to the makefile in the cflags section after configure)
+        //--static-libs and ?.replace("-lSDL2", "-l:libSDL2.a")
+        libraries = execCmd("sdl2-config --libs") + " -Wl,-Bdynamic -lGL "
+        linkerFlags = "-shared -m64"
+    }
+    add(Windows, x64){
+        def path = "SDL2-$sdlVersion/x86_64-w64-mingw32"
+        def root = "$rootDir/backends/backend-sdl/jni"
+        headerDirs += (String[])["$path/include/SDL2"]
+        cppFlags += " " + execCmd("sh $root/$path/bin/sdl2-config --cflags")
+        cFlags = cppFlags
+        libraries = execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32"
+        linkerFlags += " -L $root/$path/lib"
+    }
+    add(Windows, x32){
+        def path = "SDL2-$sdlVersion/i686-w64-mingw32"
+        def root = "$rootDir/backends/backend-sdl/jni"
+        headerDirs +=  (String[])["$path/include/SDL2"]
+        cppFlags += " " + execCmd("sh $root/$path/bin/sdl2-config --cflags")
+        cFlags = cppFlags
+        libraries = execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32"
+        linkerFlags += " -L $root/$path/lib"
+    }
+
+    if(System.getProperty("os.arch") != "aarch64"){
+        add(MacOsX, x64){
+            cppFlags = cFlags= execCmd("sdl2-config --cflags") + " -c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.9 -stdlib=libc++"
+            linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.9 -stdlib=libc++"
+            libraries = "/usr/local/lib/libSDL2.a -lm -liconv -Wl,-framework,CoreAudio -Wl,-framework,CoreHaptics -Wl,-weak_framework,GameController -Wl,-framework,OpenGL,-weak_framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal /usr/local/lib/libGLEW.a"
+        }
+    }else{
+
+        //doesn't work on CI, have to use native M1
+        add(MacOsX, x64, ARM){
+            cppFlags = cFlags = execCmd("sdl2-config --cflags") + " -c -Wall -O2 -arch arm64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.9 -stdlib=libc++"
+            linkerFlags = "-shared -arch arm64 -mmacosx-version-min=10.9 -stdlib=libc++"
+            //execCmd("sdl2-config --static-libs") + " -Wl,-framework,OpenGL"
+            libraries = "/usr/local/lib/libSDL2.a -lm -liconv -Wl,-framework,CoreAudio -Wl,-weak_framework,GameController -Wl,-framework,OpenGL,-weak_framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal /usr/local/lib/libGLEW.a"
+        }
+    }
+
+}
+
+getTasksByName("jnigen", true).each{
+    it.dependsOn preJni
+    it.dependsOn classes
+    it.dependsOn aproj(":arc-core").getTasksByName("compileJava", true)
 }
