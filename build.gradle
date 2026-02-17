@@ -12,6 +12,7 @@ versions.junit = "4.11"
 //TODO: upgrade to 3.1.1 and finally get rid of the disease that is ant
 versions.jnigen = "2.5.1"
 versions.lwjgl = "3.4.2-SNAPSHOT"
+versions.soloud = "2026.02.03"
 
 libraries.robovm = [
     "com.mobidevelop.robovm:robovm-rt:${versions.robovm}",
