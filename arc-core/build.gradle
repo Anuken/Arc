@@ -76,10 +76,6 @@ jnigen{
         cppFlags = "-DWITH_MINIAUDIO " + cppFlags
         libraries += " -lpthread -lrt -lm -ldl"
     }
-    add(Windows, x32){
-        cppIncludes += ["soloud/src/backend/miniaudio/*.cpp"]
-        cppFlags = "-msse -DWITH_MINIAUDIO " + cppFlags
-    }
     add(Windows, x64){
         cppIncludes += ["soloud/src/backend/miniaudio/*.cpp"]
         cppFlags = "-msse -DWITH_MINIAUDIO " + cppFlags
@@ -158,7 +154,7 @@ tasks.register('preJni'){
 tasks.register('postJni'){
     doLast{
         copy{
-            from "libs/linux64", "libs/windows32", "libs/windows64", "libs/macosx64"
+            from "libs/linux64", "libs/windows64", "libs/macosx64"
             into "${project.rootDir}/natives/natives-desktop/libs"
             include "**"
         }

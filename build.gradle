@@ -35,28 +35,24 @@ libraries.lwjgl = [
     "org.lwjgl:lwjgl:${versions.lwjgl}:natives-macos",
     "org.lwjgl:lwjgl:${versions.lwjgl}:natives-macos-arm64",
     "org.lwjgl:lwjgl:${versions.lwjgl}:natives-windows",
-    "org.lwjgl:lwjgl:${versions.lwjgl}:natives-windows-x86",
     "org.lwjgl:lwjgl-sdl:${versions.lwjgl}",
     "org.lwjgl:lwjgl-sdl:${versions.lwjgl}:natives-linux",
     "org.lwjgl:lwjgl-sdl:${versions.lwjgl}:natives-linux-arm64",
     "org.lwjgl:lwjgl-sdl:${versions.lwjgl}:natives-macos",
     "org.lwjgl:lwjgl-sdl:${versions.lwjgl}:natives-macos-arm64",
     "org.lwjgl:lwjgl-sdl:${versions.lwjgl}:natives-windows",
-    "org.lwjgl:lwjgl-sdl:${versions.lwjgl}:natives-windows-x86",
     "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl}",
     "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl}:natives-linux",
     "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl}:natives-linux-arm64",
     "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl}:natives-macos",
     "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl}:natives-macos-arm64",
     "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl}:natives-windows",
-    "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl}:natives-windows-x86",
     "org.lwjgl:lwjgl-opengl:${versions.lwjgl}",
     "org.lwjgl:lwjgl-opengl:${versions.lwjgl}:natives-linux",
     "org.lwjgl:lwjgl-opengl:${versions.lwjgl}:natives-linux-arm64",
     "org.lwjgl:lwjgl-opengl:${versions.lwjgl}:natives-macos",
     "org.lwjgl:lwjgl-opengl:${versions.lwjgl}:natives-macos-arm64",
     "org.lwjgl:lwjgl-opengl:${versions.lwjgl}:natives-windows",
-    "org.lwjgl:lwjgl-opengl:${versions.lwjgl}:natives-windows-x86"
 ]
 
 allprojects{

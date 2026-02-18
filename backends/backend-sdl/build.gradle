@@ -97,15 +97,6 @@ jnigen{
         libraries = execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32"
         linkerFlags += " -L $root/$path/lib"
     }
-    add(Windows, x32){
-        def path = "SDL2-$sdlVersion/i686-w64-mingw32"
-        def root = "$rootDir/backends/backend-sdl/jni"
-        headerDirs +=  (String[])["$path/include/SDL2"]
-        cppFlags += " " + execCmd("sh $root/$path/bin/sdl2-config --cflags")
-        cFlags = cppFlags
-        libraries = execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32"
-        linkerFlags += " -L $root/$path/lib"
-    }
 
     if(System.getProperty("os.arch") != "aarch64"){
         add(MacOsX, x64){
