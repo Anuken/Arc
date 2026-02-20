@@ -206,10 +206,8 @@ public class Button extends Table implements Disableable{
         return buttonGroup;
     }
 
-    @Override
-    public void draw(){
-        validate();
-
+    /** Updates the background with the appropriate Drawable from the style before it is drawn. */
+    public void updateBackground(){
         boolean isDisabled = isDisabled();
         boolean isPressed = isPressed();
         boolean isChecked = isChecked();
@@ -228,6 +226,14 @@ public class Button extends Table implements Disableable{
             background = style.up;
 
         setBackground(background);
+    }
+
+    @Override
+    public void draw(){
+        validate();
+
+        boolean isPressed = isPressed();
+        updateBackground();
 
         float offsetX, offsetY;
         if(isPressed && !isDisabled){
