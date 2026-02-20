@@ -22,7 +22,11 @@ public class OS{
     /** JVM version; may contain underscores. Examples: 1.8.0_211 (Java 8 update 211), 12.0.1 (Java 12)*/
     public static final String javaVersion = propNoNull("java.version");
     /** Java version as a single number; 0 on iOS or Android. Examples: 8, 10, 17 */
-    public static final int javaVersionNumber = OS.isAndroid || OS.isIos || javaVersion == null || !javaVersion.contains(".") ? 0 : javaVersion.startsWith("1.") ? 8 : Strings.parseInt(javaVersion.substring(0, javaVersion.indexOf('.')), 8);
+    public static final int javaVersionNumber = OS.isAndroid || OS.isIos ? 0 :
+        javaVersion.startsWith("1.") ? 8 :
+        javaVersion.contains(".") ?
+        Strings.parseInt(javaVersion.substring(0, javaVersion.indexOf('.')), 8) :
+        Strings.parseInt(javaVersion, 8);
 
     public static boolean isWindows = propNoNull("os.name").contains("Windows");
     public static boolean isLinux = propNoNull("os.name").contains("Linux") || propNoNull("os.name").contains("BSD");
