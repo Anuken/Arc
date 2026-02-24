@@ -13,6 +13,7 @@ task preJni{
     def root = "build/jnigen/sources"
     //this absolutely needs to run during configuration so jnigen can run downloaded sdl-config scripts for configuration of library flags
     try{
+        file(root).mkdirs()
         if(!file("$root/glew.zip").exists()){
             println "Fetching GLEW source..."
             "curl -o $rootDir/backends/backend-sdl/$root/glew.zip -L https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.zip".execute().waitFor()
