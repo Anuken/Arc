@@ -9,21 +9,20 @@ dependencies{
     testImplementation aproj(":arc-core")
 }
 
-file("jni").mkdir()
-
 task preJni{
+    def root = "build/jnigen/jni"
     //this absolutely needs to run during configuration so jnigen can run downloaded sdl-config scripts for configuration of library flags
     try{
-        if(!file("jni/glew.zip").exists()){
+        if(!file("$root/glew.zip").exists()){
             println "Fetching GLEW source..."
-            "curl -o $rootDir/backends/backend-sdl/jni/glew.zip -L https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.zip".execute().waitFor()
-            "unzip -qq -d $rootDir/backends/backend-sdl/jni $rootDir/backends/backend-sdl/jni/glew.zip".execute().waitFor()
+            "curl -o $rootDir/backends/backend-sdl/$root/glew.zip -L https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.zip".execute().waitFor()
+            "unzip -qq -d $rootDir/backends/backend-sdl/$root $rootDir/backends/backend-sdl/$root/glew.zip".execute().waitFor()
         }
 
-        if(!file("jni/sdlmingw.tar.gz").exists()){
+        if(!file("$root/sdlmingw.tar.gz").exists()){
             println "Fetching SDL-mingw builds..."
-            "curl -o $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -L https://www.libsdl.org/release/SDL2-devel-2.32.8-mingw.tar.gz".execute().waitFor()
-            "tar -xvzf $rootDir/backends/backend-sdl/jni/sdlmingw.tar.gz -C $rootDir/backends/backend-sdl/jni".execute().waitFor()
+            "curl -o $rootDir/backends/backend-sdl/$root/sdlmingw.tar.gz -L https://www.libsdl.org/release/SDL2-devel-2.32.8-mingw.tar.gz".execute().waitFor()
+            "tar -xvzf $rootDir/backends/backend-sdl/$root/sdlmingw.tar.gz -C $rootDir/backends/backend-sdl/$root".execute().waitFor()
         }
     }catch(Exception youAreProbablyOnWindowsOrDontHaveUnzip){}
 
@@ -43,18 +42,15 @@ PACKAGES: Linux (Ubuntu)
 - libdrm-dev
 - libsdl2-dev
 - libgbm-dev
-- ant
 
 PACKAGES: Linux -> Windows Cross-Compilation
 
 - mingw32
-- ant
 
 PACKAGES: Mac
 
 - sdl2
 - glew
-- ant
 
  */
 
@@ -70,49 +66,47 @@ jnigen{
     }
 
     sharedLibName = "sdl-arc"
-    temporaryDir = file("build/target/native").absolutePath
-    libsDir = file("libs").absolutePath
+    libsDir = "libs"
 
     def sdlVersion = "2.32.8"
 
     all{
-        cppIncludes = ["*.cpp"]
-        cIncludes = ["*.c", "glew-2.2.0/src/glew.c"]
+        cppIncludes = [""]
+        cIncludes = ["glew-2.2.0/src/glew.c"]
         headerDirs += ["glew-2.2.0/include"]
     }
+
     addLinux(x64, x86){
-        cppFlags += " " + execCmd("sdl2-config --cflags")
+        cppFlags += execCmd("sdl2-config --cflags").split(" ")
         cFlags = cppFlags
-        //NOTE: for this to statically link properly, you need to add -L/path/to/folder/with/custom/libSDL2.a
-        //where this folder contains a custom build of SDL2 with the -fPIC flag (added to the makefile in the cflags section after configure)
-        //--static-libs and ?.replace("-lSDL2", "-l:libSDL2.a")
-        libraries = execCmd("sdl2-config --libs") + " -Wl,-Bdynamic -lGL "
-        linkerFlags = "-shared -m64"
+        libraries = (execCmd("sdl2-config --libs") + " -Wl,-Bdynamic -lGL ").split(" ")
+        linkerFlags = "-shared -m64".split(" ")
     }
+
     addWindows(x64, x86){
         def path = "SDL2-$sdlVersion/x86_64-w64-mingw32"
-        def root = "$rootDir/backends/backend-sdl/jni"
+        def root = "$rootDir/backends/backend-sdl/build/jnigen/jni"
         headerDirs += (String[])["$path/include/SDL2"]
         cppFlags += " " + execCmd("sh $root/$path/bin/sdl2-config --cflags")
         cFlags = cppFlags
-        libraries = execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32"
+        libraries = (execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32").split(" ")
         linkerFlags += (String[])[" -L $root/$path/lib"]
     }
 
     if(System.getProperty("os.arch") != "aarch64"){
         addMac(x64, ARM){
-            cppFlags = cFlags= execCmd("sdl2-config --cflags") + " -c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.9 -stdlib=libc++"
-            linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.9 -stdlib=libc++"
-            libraries = "/usr/local/lib/libSDL2.a -lm -liconv -Wl,-framework,CoreAudio -Wl,-framework,CoreHaptics -Wl,-weak_framework,GameController -Wl,-framework,OpenGL,-weak_framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal /usr/local/lib/libGLEW.a"
+            cppFlags = cFlags = (execCmd("sdl2-config --cflags") + " -c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.9 -stdlib=libc++").split(" ")
+            linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.9 -stdlib=libc++".split(" ")
+            libraries = "/usr/local/lib/libSDL2.a -lm -liconv -Wl,-framework,CoreAudio -Wl,-framework,CoreHaptics -Wl,-weak_framework,GameController -Wl,-framework,OpenGL,-weak_framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal /usr/local/lib/libGLEW.a".split(" ")
         }
     }else{
 
         //doesn't work on CI, have to use native M1
         addMac(x64, x86){
-            cppFlags = cFlags = execCmd("sdl2-config --cflags") + " -c -Wall -O2 -arch arm64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.9 -stdlib=libc++"
-            linkerFlags = "-shared -arch arm64 -mmacosx-version-min=10.9 -stdlib=libc++"
+            cppFlags = cFlags = (execCmd("sdl2-config --cflags") + " -c -Wall -O2 -arch arm64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.9 -stdlib=libc++").split(" ")
+            linkerFlags = "-shared -arch arm64 -mmacosx-version-min=10.9 -stdlib=libc++".split(" ")
             //execCmd("sdl2-config --static-libs") + " -Wl,-framework,OpenGL"
-            libraries = "/usr/local/lib/libSDL2.a -lm -liconv -Wl,-framework,CoreAudio -Wl,-weak_framework,GameController -Wl,-framework,OpenGL,-weak_framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal /usr/local/lib/libGLEW.a"
+            libraries = "/usr/local/lib/libSDL2.a -lm -liconv -Wl,-framework,CoreAudio -Wl,-weak_framework,GameController -Wl,-framework,OpenGL,-weak_framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal /usr/local/lib/libGLEW.a".split(" ")
         }
     }
 

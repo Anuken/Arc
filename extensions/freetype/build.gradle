@@ -2,17 +2,14 @@ plugins{
     id "com.badlogicgames.jnigen.jnigen-gradle"
 }
 
-file("jni").mkdir()
-
 jnigen{
-    def fdir = "freetype-2.14.1"
+    def fdir = "build/jnigen/jni/freetype-2.14.1"
 
     sharedLibName = "arc-freetype"
-    temporaryDir = file("build/target/native").absolutePath
-    libsDir = file("libs").absolutePath
+    libsDir = "build/natives"
 
     all{
-        headerDirs +=  (String[])["$fdir/include"]
+        headerDirs +=  ["$fdir/include", "$fdir/include/freetype", "$fdir/include/freetype/config", "$fdir/include/freetype/internal", "$fdir/include/freetype/internal/services"]
         cIncludes = [
             //BASE
             "$fdir/src/base/ftsystem.c", "$fdir/src/base/ftinit.c", "$fdir/src/base/ftdebug.c",
@@ -31,8 +28,8 @@ jnigen{
             "$fdir/src/psnames/psnames.c"
         ]
 
-        cFlags += " -DFT2_BUILD_LIBRARY"
-        cppFlags += " -DFT2_BUILD_LIBRARY"
+        cFlags += "-DFT2_BUILD_LIBRARY"
+        cppFlags += "-DFT2_BUILD_LIBRARY"
     }
     addWindows(x64, x86)
     addLinux(x64, x86)
@@ -53,14 +50,14 @@ task preJni{
             include "**"
         }
 
-        if(!file("$project.rootDir/extensions/freetype/jni/freetype-2.14.1").exists()){
+        if(!file("build/jnigen/jni/freetype-2.14.1").exists()){
             println "Fetching freetype source..."
 
-            def root = "$project.rootDir/extensions/freetype"
-            new File("$root/jni").mkdir()
+            def root = "$projectDir/build/jnigen"
+            file("$root/jni").mkdirs()
             def script = "wget -c https://download.savannah.gnu.org/releases/freetype/freetype-2.14.1.tar.gz -O $root/jni/freetype.tar.gz\n" +
                     "tar -xf $root/jni/freetype.tar.gz -C $root/jni"
-            def scriptFile = new File("$buildDir/getfreetype")
+            def scriptFile = file("build/getfreetype")
             scriptFile.parentFile.mkdirs()
             scriptFile.text = script
             "bash $scriptFile.absolutePath".execute().waitFor()

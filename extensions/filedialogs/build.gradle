@@ -4,21 +4,20 @@ plugins{
 
 jnigen{
     sharedLibName = "arc-filedialogs"
+    libsDir = "build/natives"
 
     all{
-        //headerDirs += ["$fdir/"]
         cIncludes = ["tinyfiledialogs.c"]
     }
     addWindows(x64, x86){
-        libraries = " -lcomdlg32 -lole32"
+        libraries += "-lcomdlg32 -lole32".split(" ")
     }
     addLinux(x64, x86)
     addMac(x64, x86)
     addMac(x64, ARM)
 }
 
-//TODO: make this work
-task preJni{
+tasks.register('preJni'){
 
     doFirst{
         copy{
@@ -29,8 +28,12 @@ task preJni{
 
         copy{
             from "csrc/"
-            into "jni/"
+            into "build/jnigen/jni/"
             include "**"
         }
     }
+}
+
+getTasksByName("jnigen", true).each{
+    it.dependsOn preJni
 }

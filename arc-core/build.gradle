@@ -127,8 +127,6 @@ tasks.register('copyUnsafeStuff'){
 
 tasks.register('cleanNatives'){
     doLast{
-        delete{ delete "$rootDir/arc-core/jni" }
-        delete{ delete "$rootDir/arc-core/libs" }
         delete{ delete "$rootDir/arc-core/csrc/soloud" }
         delete{ delete "$rootDir/arc-core/csrc/stb_image.h" }
     }
