@@ -1,4 +1,6 @@
-apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
+plugins{
+    id "com.badlogicgames.jnigen.jnigen-gradle"
+}
 
 file("jni").mkdir()
 
@@ -32,18 +34,14 @@ jnigen{
         cFlags += " -DFT2_BUILD_LIBRARY"
         cppFlags += " -DFT2_BUILD_LIBRARY"
     }
-    add(Windows, x32)
-    add(Windows, x64)
-    add(Linux, x64)
-    add(MacOsX, x64)
-    add(MacOsX, x64, ARM){
-        cFlags = cppFlags = cppFlags.replace("x86_64", "arm64")
-        linkerFlags = linkerFlags.replace("x86_64", "arm64")
-    }
-    add(Android){
+    addWindows(x64, x86)
+    addLinux(x64, x86)
+    addMac(x64, x86)
+    addMac(x64, ARM)
+    addAndroid(){
         linkerFlags += " -Wl,-z,max-page-size=0x4000"
     }
-    add(IOS)
+    addIOS()
 }
 
 task preJni{
@@ -80,33 +78,7 @@ task preJni{
     }
 }
 
-//copies files into the right locations
-task postJni{
-    doLast{
-        copy{
-            from "libs/linux64", "libs/windows32", "libs/windows64", "libs/macosx64"
-            into "../../natives/natives-freetype-desktop/libs"
-            include "**"
-        }
-
-        ["arm64-v8a", "x86", "x86_64", "armeabi-v7a"].each{ p ->
-            copy{
-                from "libs/$p"
-                into "../../natives/natives-freetype-android/libs/$p/"
-                include "**"
-            }
-        }
-
-        copy{
-            from "libs/ios32/libarc-freetype.a"
-            into "../../natives/natives-freetype-ios/libs/"
-            include "**"
-        }
-    }
-}
-
 preJni.dependsOn "compileJava"
-jnigenBuild.finalizedBy postJni
 
 getTasksByName("jnigen", true).each{
     it.dependsOn preJni

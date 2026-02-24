@@ -1,12 +1,13 @@
+plugins{
+    id "com.badlogicgames.jnigen.jnigen-gradle"
+}
+
 sourceSets.main.java.srcDirs = ["src"]
 sourceSets.main.resources.srcDirs = ["libs/linux64", "libs/macosx64","libs/windows32", "libs/windows64"]
 
 dependencies{
-    testImplementation libraries.jnigen
     testImplementation aproj(":arc-core")
 }
-
-apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 
 file("jni").mkdir()
 
@@ -79,7 +80,7 @@ jnigen{
         cIncludes = ["*.c", "glew-2.2.0/src/glew.c"]
         headerDirs += ["glew-2.2.0/include"]
     }
-    add(Linux, x64){
+    addLinux(x64, x86){
         cppFlags += " " + execCmd("sdl2-config --cflags")
         cFlags = cppFlags
         //NOTE: for this to statically link properly, you need to add -L/path/to/folder/with/custom/libSDL2.a
@@ -88,18 +89,18 @@ jnigen{
         libraries = execCmd("sdl2-config --libs") + " -Wl,-Bdynamic -lGL "
         linkerFlags = "-shared -m64"
     }
-    add(Windows, x64){
+    addWindows(x64, x86){
         def path = "SDL2-$sdlVersion/x86_64-w64-mingw32"
         def root = "$rootDir/backends/backend-sdl/jni"
         headerDirs += (String[])["$path/include/SDL2"]
         cppFlags += " " + execCmd("sh $root/$path/bin/sdl2-config --cflags")
         cFlags = cppFlags
         libraries = execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32"
-        linkerFlags += " -L $root/$path/lib"
+        linkerFlags += (String[])[" -L $root/$path/lib"]
     }
 
     if(System.getProperty("os.arch") != "aarch64"){
-        add(MacOsX, x64){
+        addMac(x64, ARM){
             cppFlags = cFlags= execCmd("sdl2-config --cflags") + " -c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.9 -stdlib=libc++"
             linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.9 -stdlib=libc++"
             libraries = "/usr/local/lib/libSDL2.a -lm -liconv -Wl,-framework,CoreAudio -Wl,-framework,CoreHaptics -Wl,-weak_framework,GameController -Wl,-framework,OpenGL,-weak_framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal /usr/local/lib/libGLEW.a"
@@ -107,7 +108,7 @@ jnigen{
     }else{
 
         //doesn't work on CI, have to use native M1
-        add(MacOsX, x64, ARM){
+        addMac(x64, x86){
             cppFlags = cFlags = execCmd("sdl2-config --cflags") + " -c -Wall -O2 -arch arm64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.9 -stdlib=libc++"
             linkerFlags = "-shared -arch arm64 -mmacosx-version-min=10.9 -stdlib=libc++"
             //execCmd("sdl2-config --static-libs") + " -Wl,-framework,OpenGL"

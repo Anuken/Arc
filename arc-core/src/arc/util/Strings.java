@@ -250,7 +250,7 @@ public class Strings{
             for(int i = 0; i < text.length(); i++){
                 char c = text.charAt(i);
                 if(c == '@' &&  argi < args.length){
-                    out.append(args[argi++]);
+                    out.append(stringify(args[argi++]));
                 }else{
                     out.append(c);
                 }
@@ -260,6 +260,19 @@ public class Strings{
         }
 
         return text;
+    }
+
+    static String stringify(Object o){
+        if(o instanceof Object[]) return Arrays.deepToString((Object[])o);
+        else if(o instanceof int[]) return Arrays.toString((int[])o);
+        else if(o instanceof long[]) return Arrays.toString((long[])o);
+        else if(o instanceof float[]) return Arrays.toString((float[])o);
+        else if(o instanceof double[]) return Arrays.toString((double[])o);
+        else if(o instanceof char[]) return Arrays.toString((char[])o);
+        else if(o instanceof short[]) return Arrays.toString((short[])o);
+        else if(o instanceof byte[]) return Arrays.toString((byte[])o);
+        else if(o instanceof boolean[]) return Arrays.toString((boolean[])o);
+        return String.valueOf(o);
     }
 
     public static String join(String separator, String... strings){

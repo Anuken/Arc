@@ -221,10 +221,12 @@ public abstract class Group extends Element implements Cullable{
         Element e = new Element(){
             @Override
             public void draw(){
-                rect.draw(x, y, width, height);
+                rect.draw(0f, 0f, Group.this.width, Group.this.height);
             }
         };
         e.setFillParent(true);
+        //usually this area is used for drawing, and should not capture touch events
+        e.touchable = Touchable.disabled;
         addChild(e);
         return e;
     }

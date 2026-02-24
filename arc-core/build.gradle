@@ -1,3 +1,7 @@
+plugins{
+    id "com.badlogicgames.jnigen.jnigen-gradle"
+}
+
 sourceSets.main.java.srcDirs = ["src"]
 sourceSets.test.java.srcDirs = ["test"]
 sourceSets.test.resources.srcDirs = ["test/resources"]
@@ -49,6 +53,10 @@ tasks.register("recompileUnsafe", Exec){
     }
 }
 
+jar{
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 test{
     testLogging{
         exceptionFormat = 'full'
@@ -56,53 +64,48 @@ test{
     }
 }
 
-apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
-
-file("jni").mkdir()
-
 jnigen{
     sharedLibName = "arc"
-    temporaryDir = file("build/target/native").absolutePath
-    libsDir = "libs"
+    libsDir = "../natives/natives-desktop/libs"
+    def root = "build/jnigen/jni"
 
     all{
-        headerDirs += ["soloud/include"]
+        headerDirs += ["$root/soloud/include", "$root/soloud/src/audiosource/wav"]
         cppIncludes = ["*.cpp", "soloud/src/core/**", "soloud/src/audiosource/wav/**", "soloud/src/filter/**"]
-        cIncludes = ["*.c", "soloud/src/core/**", "soloud/src/audiosource/wav/**", "soloud/src/filter/**"]
-        cppFlags = "-DSOLOUD_MAX_VOICE_COUNT=100 " + cppFlags
+        cIncludes += ["*.c", "soloud/src/core/**", "soloud/src/audiosource/wav/**", "soloud/src/filter/**"]
+        cppFlags += "-DSOLOUD_MAX_VOICE_COUNT=100 "
     }
-    add(Linux, x64){
+    addLinux(x64, x86){
         cppIncludes += ["soloud/src/backend/miniaudio/*.cpp"]
-        cppFlags = "-DWITH_MINIAUDIO " + cppFlags
-        libraries += " -lpthread -lrt -lm -ldl"
+        cppFlags += "-DWITH_MINIAUDIO"
+        libraries += "-lpthread -lrt -lm -ldl".split(" ")
     }
-    add(Windows, x64){
+    addWindows(x64, x86){
+        headerDirs += ["$root/soloud/src/backend/miniaudio/"]
         cppIncludes += ["soloud/src/backend/miniaudio/*.cpp"]
-        cppFlags = "-msse -DWITH_MINIAUDIO " + cppFlags
+        cppFlags += ["-msse", "-DWITH_MINIAUDIO"]
     }
-    add(Android){
-        linkerFlags += " -llog -lOpenSLES -Wl,-z,max-page-size=0x4000"
+    addAndroid(){
+        linkerFlags += "-llog -lOpenSLES -Wl,-z,max-page-size=0x4000".split(" ")
         cppIncludes += ["soloud/src/backend/opensles/*.cpp"]
-        cppFlags = "-DWITH_OPENSLES " + cppFlags
+        cppFlags += ["-DWITH_OPENSLES"]
     }
-    add(MacOsX, x64){
+    addMac(x64, x86){
         cppIncludes += ["soloud/src/backend/coreaudio/*.mm"]
-        cppFlags = "-std=c++11 -DWITH_COREAUDIO " + cppFlags
-        libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
+        cppFlags = ["-std=c++11", "-DWITH_COREAUDIO"]
+        libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox".split(" ")
     }
-    add(MacOsX, x64, ARM){
+    addMac(x64, ARM){
         cppIncludes += ["soloud/src/backend/coreaudio/*.mm"]
-        cppFlags = "-std=c++11 -DWITH_COREAUDIO " + cppFlags.replace("x86_64", "arm64")
-        cFlags = cFlags.replace("x86_64", "arm64")
-        libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
-        linkerFlags = linkerFlags.replace("x86_64", "arm64")
+        cppFlags = ["-std=c++11", "-DWITH_COREAUDIO"]
+        libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox".split(" ")
     }
-    add(IOS){
+    addIOS(){
         headerDirs += ["iosgl"]
         cppIncludes += ["soloud/src/backend/coreaudio/*.mm", "iosgl/**"]
-        cppFlags = "-stdlib=libc++ -std=c++11 -DWITH_COREAUDIO " + cppFlags
-        libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox"
-        linkerFlags += " -undefined dynamic_lookup "
+        cppFlags += ["-stdlib=libc+", "-std=c++11", "-DWITH_COREAUDIO"]
+        libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox".split(" ")
+        linkerFlags += "-undefined dynamic_lookup"
     }
 }
 
@@ -114,10 +117,6 @@ tasks.register('copyUnsafeStuff'){
             include '**/*.class'
         }
     }
-}
-
-getTasksByName("jnigen", true).each{
-    it.dependsOn copyUnsafeStuff
 }
 
 tasks.register('cleanNatives'){
@@ -144,41 +143,12 @@ tasks.register('preJni'){
 
         copy{
             from "csrc/"
-            into "jni/"
+            into "build/jnigen/jni/"
             include "**"
         }
     }
 }
-
-//copies files into the right locations
-tasks.register('postJni'){
-    doLast{
-        copy{
-            from "libs/linux64", "libs/windows64", "libs/macosx64"
-            into "${project.rootDir}/natives/natives-desktop/libs"
-            include "**"
-        }
-
-        ["arm64-v8a", "x86", "x86_64", "armeabi-v7a"].each{ p ->
-            copy{
-                from "libs/$p"
-                into "${project.rootDir}/natives/natives-android/libs/$p/"
-                include "**"
-            }
-        }
-
-        [".tvos", ""].each{ p ->
-            copy{
-                from "libs/ios32/libarc.a$p"
-                into "${project.rootDir}/natives/natives-ios/libs/"
-                include "**"
-            }
-        }
-    }
-}
-
-jnigenBuild.finalizedBy postJni
 
 getTasksByName("jnigen", true).each{
-    it.dependsOn preJni
+    it.dependsOn copyUnsafeStuff, preJni
 }
