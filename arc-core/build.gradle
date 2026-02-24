@@ -66,16 +66,21 @@ test{
 
 jnigen{
     sharedLibName = "arc"
-    libsDir = "../natives/natives-desktop/libs"
+    libsDir = "build/natives"
     def root = "build/jnigen/jni"
 
     all{
         headerDirs += ["$root/soloud/include", "$root/soloud/src/audiosource/wav"]
         cppIncludes = ["*.cpp", "soloud/src/core/**", "soloud/src/audiosource/wav/**", "soloud/src/filter/**"]
         cIncludes += ["*.c", "soloud/src/core/**", "soloud/src/audiosource/wav/**", "soloud/src/filter/**"]
-        cppFlags += "-DSOLOUD_MAX_VOICE_COUNT=100 "
+        cppFlags += "-DSOLOUD_MAX_VOICE_COUNT=100"
+
+        cFlags += ["-flto"]
+        cppFlags += ["-flto"]
+        linkerFlags += ["-flto"]
     }
     addLinux(x64, x86){
+        headerDirs += ["$root/soloud/src/backend/miniaudio/"]
         cppIncludes += ["soloud/src/backend/miniaudio/*.cpp"]
         cppFlags += "-DWITH_MINIAUDIO"
         libraries += "-lpthread -lrt -lm -ldl".split(" ")
@@ -86,9 +91,10 @@ jnigen{
         cppFlags += ["-msse", "-DWITH_MINIAUDIO"]
     }
     addAndroid(){
-        linkerFlags += "-llog -lOpenSLES -Wl,-z,max-page-size=0x4000".split(" ")
+        linkerFlags += "-llog -lOpenSLES".split(" ")
         cppIncludes += ["soloud/src/backend/opensles/*.cpp"]
         cppFlags += ["-DWITH_OPENSLES"]
+        androidApplicationMk += ["APP_STL := c++_static"]
     }
     addMac(x64, x86){
         cppIncludes += ["soloud/src/backend/coreaudio/*.mm"]
@@ -101,7 +107,7 @@ jnigen{
         libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox".split(" ")
     }
     addIOS(){
-        headerDirs += ["iosgl"]
+        headerDirs += ["$root/iosgl"]
         cppIncludes += ["soloud/src/backend/coreaudio/*.mm", "iosgl/**"]
         cppFlags += ["-stdlib=libc+", "-std=c++11", "-DWITH_COREAUDIO"]
         libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox".split(" ")
