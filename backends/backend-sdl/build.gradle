@@ -10,7 +10,7 @@ dependencies{
 }
 
 task preJni{
-    def root = "build/jnigen/jni"
+    def root = "build/jnigen/sources"
     //this absolutely needs to run during configuration so jnigen can run downloaded sdl-config scripts for configuration of library flags
     try{
         if(!file("$root/glew.zip").exists()){
@@ -69,28 +69,29 @@ jnigen{
     libsDir = "libs"
 
     def sdlVersion = "2.32.8"
+    def mainRoot = "build/jnigen/sources"
 
     all{
         cppIncludes = [""]
-        cIncludes = ["glew-2.2.0/src/glew.c"]
-        headerDirs += ["glew-2.2.0/include"]
+        cIncludes = ["$mainRoot/glew-2.2.0/src/glew.c"]
+        headerDirs += ["$mainRoot/glew-2.2.0/include"]
     }
 
     addLinux(x64, x86){
         cppFlags += execCmd("sdl2-config --cflags").split(" ")
         cFlags = cppFlags
-        libraries = (execCmd("sdl2-config --libs") + " -Wl,-Bdynamic -lGL ").split(" ")
+        libraries = (execCmd("sdl2-config --libs") + " -Wl,-Bdynamic -lGL").split(" ")
         linkerFlags = "-shared -m64".split(" ")
     }
 
     addWindows(x64, x86){
-        def path = "SDL2-$sdlVersion/x86_64-w64-mingw32"
-        def root = "$rootDir/backends/backend-sdl/build/jnigen/jni"
-        headerDirs += (String[])["$path/include/SDL2"]
-        cppFlags += " " + execCmd("sh $root/$path/bin/sdl2-config --cflags")
+        def path = "$mainRoot/SDL2-$sdlVersion/x86_64-w64-mingw32"
+        def root = "$rootDir/backends/backend-sdl/build/jnigen/sources"
+        headerDirs += ["$path/include/SDL2"]
+        cppFlags += execCmd("sh $root/$path/bin/sdl2-config --cflags").split(" ")
         cFlags = cppFlags
         libraries = (execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32").split(" ")
-        linkerFlags += (String[])[" -L $root/$path/lib"]
+        linkerFlags += ["-L $root/$path/lib"]
     }
 
     if(System.getProperty("os.arch") != "aarch64"){

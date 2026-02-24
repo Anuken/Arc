@@ -67,48 +67,46 @@ test{
 jnigen{
     sharedLibName = "arc"
     libsDir = "build/natives"
-    def root = "build/jnigen/jni"
+    def root = "csrc"
 
     all{
-        headerDirs += ["$root/soloud/include", "$root/soloud/src/audiosource/wav"]
-        cppIncludes = ["*.cpp", "soloud/src/core/**", "soloud/src/audiosource/wav/**", "soloud/src/filter/**"]
-        cIncludes += ["*.c", "soloud/src/core/**", "soloud/src/audiosource/wav/**", "soloud/src/filter/**"]
+        headerDirs += ["$root/soloud/include", "$root/soloud/src/audiosource/wav", "$root"]
+        cppIncludes = ["$root/*.cpp", "$root/soloud/src/core/**.cpp", "$root/soloud/src/audiosource/wav/**.cpp", "$root/soloud/src/filter/**.cpp"]
         cppFlags += "-DSOLOUD_MAX_VOICE_COUNT=100"
-
         cFlags += ["-flto"]
         cppFlags += ["-flto"]
         linkerFlags += ["-flto"]
     }
     addLinux(x64, x86){
         headerDirs += ["$root/soloud/src/backend/miniaudio/"]
-        cppIncludes += ["soloud/src/backend/miniaudio/*.cpp"]
+        cppIncludes += ["$root/soloud/src/backend/miniaudio/*.cpp"]
         cppFlags += "-DWITH_MINIAUDIO"
         libraries += "-lpthread -lrt -lm -ldl".split(" ")
     }
     addWindows(x64, x86){
         headerDirs += ["$root/soloud/src/backend/miniaudio/"]
-        cppIncludes += ["soloud/src/backend/miniaudio/*.cpp"]
+        cppIncludes += ["$root/soloud/src/backend/miniaudio/*.cpp"]
         cppFlags += ["-msse", "-DWITH_MINIAUDIO"]
     }
     addAndroid(){
         linkerFlags += "-llog -lOpenSLES".split(" ")
-        cppIncludes += ["soloud/src/backend/opensles/*.cpp"]
+        cppIncludes += ["$root/soloud/src/backend/opensles/*.cpp"]
         cppFlags += ["-DWITH_OPENSLES"]
         androidApplicationMk += ["APP_STL := c++_static"]
     }
     addMac(x64, x86){
-        cppIncludes += ["soloud/src/backend/coreaudio/*.mm"]
+        cppIncludes += ["$root/soloud/src/backend/coreaudio/*.mm"]
         cppFlags = ["-std=c++11", "-DWITH_COREAUDIO"]
         libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox".split(" ")
     }
     addMac(x64, ARM){
-        cppIncludes += ["soloud/src/backend/coreaudio/*.mm"]
+        cppIncludes += ["$root/soloud/src/backend/coreaudio/*.mm"]
         cppFlags = ["-std=c++11", "-DWITH_COREAUDIO"]
         libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox".split(" ")
     }
     addIOS(){
         headerDirs += ["$root/iosgl"]
-        cppIncludes += ["soloud/src/backend/coreaudio/*.mm", "iosgl/**"]
+        cppIncludes += ["$root/soloud/src/backend/coreaudio/*.mm", "$root/iosgl/**"]
         cppFlags += ["-stdlib=libc+", "-std=c++11", "-DWITH_COREAUDIO"]
         libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox".split(" ")
         linkerFlags += "-undefined dynamic_lookup"
@@ -143,12 +141,6 @@ tasks.register('preJni'){
         if(!file("csrc/soloud").exists()){
             println "Fetching soloud source..."
             "git clone --depth 1 --branch $versions.soloud https://github.com/Anuken/soloud.git $rootDir/arc-core/csrc/soloud".execute().waitFor()
-        }
-
-        copy{
-            from "csrc/"
-            into "build/jnigen/jni/"
-            include "**"
         }
     }
 }

@@ -7,7 +7,8 @@ jnigen{
     libsDir = "build/natives"
 
     all{
-        cIncludes = ["tinyfiledialogs.c"]
+        headerDirs = ["csrc/"]
+        cIncludes = ["csrc/tinyfiledialogs.c"]
     }
     addWindows(x64, x86){
         libraries += "-lcomdlg32 -lole32".split(" ")
@@ -18,17 +19,10 @@ jnigen{
 }
 
 tasks.register('preJni'){
-
     doFirst{
         copy{
             from "$rootDir/arc-core/build/classes/java/main"
             into "$rootDir/extensions/filedialogs/build/classes/java/main"
-            include "**"
-        }
-
-        copy{
-            from "csrc/"
-            into "build/jnigen/jni/"
             include "**"
         }
     }
