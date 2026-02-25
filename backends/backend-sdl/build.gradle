@@ -61,7 +61,6 @@ jnigen{
         }catch(Exception ignored){
             return ""
             //fail silently, because this is run during standard arc builds and it shouldn't fail
-            //TODO don't do anything at all in certain situations?
         }
     }
 
