@@ -78,35 +78,35 @@ jnigen{
         linkerFlags += ["-flto"]
     }
     addLinux(x64, x86){
-        headerDirs += ["$root/soloud/src/backend/miniaudio/"]
-        cppIncludes += ["$root/soloud/src/backend/miniaudio/*.cpp"]
+        headerDirs += (String[])["$root/soloud/src/backend/miniaudio/"]
+        cppIncludes += (String[])["$root/soloud/src/backend/miniaudio/*.cpp"]
         cppFlags += "-DWITH_MINIAUDIO"
         libraries += "-lpthread -lrt -lm -ldl".split(" ")
     }
     addWindows(x64, x86){
-        headerDirs += ["$root/soloud/src/backend/miniaudio/"]
-        cppIncludes += ["$root/soloud/src/backend/miniaudio/*.cpp"]
+        headerDirs += (String[])["$root/soloud/src/backend/miniaudio/"]
+        cppIncludes += (String[])["$root/soloud/src/backend/miniaudio/*.cpp"]
         cppFlags += ["-msse", "-DWITH_MINIAUDIO"]
     }
     addAndroid(){
         linkerFlags += "-llog -lOpenSLES".split(" ")
-        cppIncludes += ["$root/soloud/src/backend/opensles/*.cpp"]
+        cppIncludes += (String[])["$root/soloud/src/backend/opensles/*.cpp"]
         cppFlags += ["-DWITH_OPENSLES"]
         androidApplicationMk += ["APP_STL := c++_static"]
     }
     addMac(x64, x86){
-        cppIncludes += ["$root/soloud/src/backend/coreaudio/*.mm"]
+        cppIncludes += (String[])["$root/soloud/src/backend/coreaudio/*.mm"]
         cppFlags = ["-std=c++11", "-DWITH_COREAUDIO"]
         libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox".split(" ")
     }
     addMac(x64, ARM){
-        cppIncludes += ["$root/soloud/src/backend/coreaudio/*.mm"]
+        cppIncludes += (String[])["$root/soloud/src/backend/coreaudio/*.mm"]
         cppFlags = ["-std=c++11", "-DWITH_COREAUDIO"]
         libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox".split(" ")
     }
     addIOS(){
-        headerDirs += ["$root/iosgl"]
-        cppIncludes += ["$root/soloud/src/backend/coreaudio/*.mm", "$root/iosgl/**"]
+        headerDirs += (String[])["$root/iosgl"]
+        cppIncludes += (String[])["$root/soloud/src/backend/coreaudio/*.mm", "$root/iosgl/**"]
         cppFlags += ["-stdlib=libc+", "-std=c++11", "-DWITH_COREAUDIO"]
         libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox".split(" ")
         linkerFlags += "-undefined dynamic_lookup"

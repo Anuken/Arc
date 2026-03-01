@@ -9,7 +9,7 @@ jnigen{
     libsDir = "build/natives"
 
     all{
-        headerDirs +=  ["$fdir/include", "$fdir/include/freetype", "$fdir/include/freetype/config", "$fdir/include/freetype/internal", "$fdir/include/freetype/internal/services"]
+        headerDirs = ["$fdir/include", "$fdir/include/freetype", "$fdir/include/freetype/config", "$fdir/include/freetype/internal", "$fdir/include/freetype/internal/services"]
         cIncludes = [
             //BASE
             "$fdir/src/base/ftsystem.c", "$fdir/src/base/ftinit.c", "$fdir/src/base/ftdebug.c",

@@ -72,7 +72,7 @@ jnigen{
 
     all{
         cIncludes = ["$mainRoot/glew-2.2.0/src/glew.c"]
-        headerDirs += ["$mainRoot/glew-2.2.0/include"]
+        headerDirs = ["$mainRoot/glew-2.2.0/include"]
     }
 
     addLinux(x64, x86){
@@ -85,11 +85,11 @@ jnigen{
     addWindows(x64, x86){
         def path = "$mainRoot/SDL2-$sdlVersion/x86_64-w64-mingw32"
         def root = "$rootDir/backends/backend-sdl/build/jnigen/sources"
-        headerDirs += ["$path/include/SDL2"]
+        headerDirs += (String[])["$path/include/SDL2"]
         cppFlags += execCmd("sh $root/$path/bin/sdl2-config --cflags").split(" ")
         cFlags = cppFlags
         libraries = (execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32").split(" ")
-        linkerFlags += ["-L $root/$path/lib"]
+        linkerFlags += (String[])["-L $root/$path/lib"]
     }
 
     if(System.getProperty("os.arch") != "aarch64"){
