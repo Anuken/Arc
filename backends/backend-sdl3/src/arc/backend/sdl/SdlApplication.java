@@ -132,11 +132,13 @@ public class SdlApplication implements Application{
             }
         }
 
+        if(config.appName != null){
+            SDLInit.SDL_SetAppMetadata(config.appName, config.appVersion, config.appIdentifier);
+        }
+
         check(SDLInit.SDL_Init(SDLInit.SDL_INIT_VIDEO | SDLInit.SDL_INIT_EVENTS));
 
-        //show native IME candidate UI
-        SDLHints.SDL_SetHint("SDL_IME_SHOW_UI","1");
-        SDLHints.SDL_SetHint("SDL_WINDOWS_DPI_SCALING", "1");
+        check(SDLHints.SDL_SetHint(SDLHints.SDL_HINT_MOUSE_DPI_SCALE_CURSORS, "1"));
 
         check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_CONTEXT_PROFILE_MASK, OS.isMac || config.coreProfile ? SDLVideo.SDL_GL_CONTEXT_PROFILE_CORE : SDLVideo.SDL_GL_CONTEXT_PROFILE_COMPATIBILITY));
 

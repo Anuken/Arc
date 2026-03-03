@@ -28,6 +28,7 @@ public class SdlConfig{
     public Color initialBackgroundColor = Color.black;
     public boolean initialVisible = true;
     public boolean vSyncEnabled = true;
+    public String appName, appVersion, appIdentifier;
 
     public FileType windowIconFileType;
     public String[] windowIconPaths;
