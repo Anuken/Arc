@@ -10,6 +10,7 @@ import arc.scene.ui.*;
 import arc.struct.*;
 import arc.util.TaskQueue;
 import arc.util.*;
+import org.lwjgl.*;
 import org.lwjgl.sdl.*;
 import org.lwjgl.system.*;
 
@@ -204,7 +205,7 @@ public class SdlApplication implements Application{
 
         String ver = SDLVersion.SDL_GetRevision();
 
-        Log.info("[Core] Initialized @ (@)", ver, SDLVideo.SDL_GetCurrentVideoDriver());
+        Log.info("[Core] Initialized @ (@) / LWJGL @", ver, SDLVideo.SDL_GetCurrentVideoDriver(), Version.getVersion());
     }
 
     private void loop(){
