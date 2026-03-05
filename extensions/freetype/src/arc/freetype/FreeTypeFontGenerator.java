@@ -690,6 +690,14 @@ public class FreeTypeFontGenerator implements Disposable{
         PixmapPacker packer;
         Seq<Glyph> glyphs;
         private boolean dirty;
+        Seq<FontData> fallback = new Seq<>();
+
+        @Override
+        public void addFallback(FontData data){
+            if(data != this){
+                fallback.add(data);
+            }
+        }
 
         @Override
         public Glyph getGlyph(char ch){
@@ -698,7 +706,17 @@ public class FreeTypeFontGenerator implements Disposable{
                 generator.setPixelSizes(0, parameter.size);
                 float baseline = ((flipped ? -ascent : ascent) + capHeight) / scaleY;
                 glyph = generator.createGlyph(ch, this, parameter, stroker, baseline, packer);
-                if(glyph == null) return missingGlyph;
+                if(glyph == null){
+                    //look through fallbacks for other glyphs
+                    for(FontData other : fallback){
+                        Glyph result = other.getGlyph(ch);
+                        if(result != other.missingGlyph){
+                            setGlyph(ch, result);
+                            return result;
+                        }
+                    }
+                    return missingGlyph;
+                }
 
                 setGlyphRegion(glyph, regions.get(glyph.page));
                 setGlyph(ch, glyph);

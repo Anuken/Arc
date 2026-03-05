@@ -452,6 +452,14 @@ public class Font implements Disposable{
         return super.toString();
     }
 
+    /**
+     * Adds a fallback font. If this font is missing characters, the fallback will be used instead.
+     * This is experimental, and only tested and functional for freetype fonts using a single shared page. Expect immediate crashes in other scenarios!
+     * */
+    public void addFallback(Font other){
+        data.addFallback(other.data);
+    }
+
     /** Represents a single character in a font page. */
     public static class Glyph{
         public int id;
@@ -545,6 +553,10 @@ public class Font implements Disposable{
             this.fontFile = fontFile;
             this.flipped = flip;
             load(fontFile, flip);
+        }
+
+        public void addFallback(FontData data){
+            //not implemented for non-freetype fonts
         }
 
         public void load(Fi fontFile, boolean flip){
