@@ -555,6 +555,10 @@ public class Font implements Disposable{
             load(fontFile, flip);
         }
 
+        public void setOverride(FontData override){
+            //not implemented for non-freetype fonts
+        }
+
         public void addFallback(FontData data){
             //not implemented for non-freetype fonts
         }

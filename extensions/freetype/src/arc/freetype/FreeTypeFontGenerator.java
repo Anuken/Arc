@@ -691,6 +691,14 @@ public class FreeTypeFontGenerator implements Disposable{
         Seq<Glyph> glyphs;
         private boolean dirty;
         Seq<FontData> fallback = new Seq<>();
+        @Nullable FontData override;
+
+        /** Sets a font to override the glyphs of this one, if they are available. This is the opposite of a fallback. */
+        @Override
+        public void setOverride(FontData override){
+            this.override = override;
+            override.capHeight = capHeight;
+        }
 
         @Override
         public void addFallback(FontData data){
@@ -701,6 +709,15 @@ public class FreeTypeFontGenerator implements Disposable{
 
         @Override
         public Glyph getGlyph(char ch){
+            if(override != null){
+                Glyph result = override.getGlyph(ch);
+                if(result != override.missingGlyph){
+                    setGlyph(ch, result);
+                    dirty = true;
+                    return result;
+                }
+            }
+
             Glyph glyph = super.getGlyph(ch);
             if(glyph == null && generator != null){
                 generator.setPixelSizes(0, parameter.size);
