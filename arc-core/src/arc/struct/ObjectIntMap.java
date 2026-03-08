@@ -307,6 +307,15 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>>{
         return defaultValue;
     }
 
+    /** @return the sum of all entry values. */
+    public int sum(){
+        int sum = 0;
+        for(Entry<K> entry : entries()){
+            sum += entry.value;
+        }
+        return sum;
+    }
+
     public int increment(K key){
         return increment(key, 0, 1);
     }
