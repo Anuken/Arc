@@ -402,10 +402,31 @@ public class Queue<T> implements Iterable<T>, Eachable<T>{
 
     @Override
     public void each(Cons<? super T> c){
+        final T[] values = this.values;
 
-        for(int i = 0; i < size; i++){
-            c.get(get(i));
+        for(int index = 0; index < size; index++){
+            int i = head + index;
+            if(i >= values.length){
+                i -= values.length;
+            }
+            c.get(values[i]);
         }
+    }
+
+    public T find(Boolf<T> func){
+        final T[] values = this.values;
+
+        for(int index = 0; index < size; index++){
+            int i = head + index;
+            if(i >= values.length){
+                i -= values.length;
+            }
+            T val = values[i];
+            if(func.get(val)){
+                return val;
+            }
+        }
+        return null;
     }
 
     public String toString(){

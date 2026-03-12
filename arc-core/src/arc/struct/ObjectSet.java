@@ -119,6 +119,15 @@ public class ObjectSet<T> implements Iterable<T>, Eachable<T>{
         }
     }
 
+    public T find(Boolf<T> predicate){
+        for(T t : this){
+            if(predicate.get(t)){
+                return t;
+            }
+        }
+        return null;
+    }
+
     /**
      * Returns true if the key was not already in the set. If this set already contains the key, the call leaves the set unchanged
      * and returns false.

@@ -220,6 +220,32 @@ public class QuadTree<T extends QuadTreeObject>{
     }
 
     /**
+     * Tries to find any object matching the predicate in this tree.
+     * <p>
+     * This will never result in false positives.
+     */
+    public T find(float x, float y, float width, float height, Boolf<T> out){
+        if(!leaf){
+            T result;
+            if(topLeft.bounds.overlaps(x, y, width, height) && (result = topLeft.find(x, y, width, height, out)) != null) return result;
+            if(topRight.bounds.overlaps(x, y, width, height) && (result = topRight.find(x, y, width, height, out)) != null) return result;
+            if(botLeft.bounds.overlaps(x, y, width, height) && (result = botLeft.find(x, y, width, height, out)) != null) return result;
+            if(botRight.bounds.overlaps(x, y, width, height)&& (result = botRight.find(x, y, width, height, out)) != null) return result;
+        }
+
+        Seq<?> objects = this.objects;
+
+        for(int i = 0; i < objects.size; i++){
+            T item = (T)objects.items[i];
+            hitbox(item);
+            if(tmp.overlaps(x, y, width, height) && out.get(item)){
+                return item;
+            }
+        }
+        return null;
+    }
+
+    /**
      * @return whether an object overlaps this rectangle.
      * This will never result in false positives.
      */
