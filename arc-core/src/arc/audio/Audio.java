@@ -134,7 +134,7 @@ public class Audio implements Disposable{
 
     public void setPitch(int soundId, float pitch){
         if(!initialized) return;
-        if(!Float.isInfinite(pitch) && !Float.isNaN(pitch)) idPitch(soundId, pitch);
+        if(!Float.isInfinite(pitch) && !Float.isNaN(pitch)) idPitch(soundId, Math.max(pitch, 0.001f));
     }
 
     public void setVolume(int soundId, float volume){
