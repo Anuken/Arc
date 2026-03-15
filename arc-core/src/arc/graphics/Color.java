@@ -660,6 +660,11 @@ public class Color{
         return this;
     }
 
+    /** @return Euclidean distance from the other color, based on RGB components. */
+    public float dst(Color other){
+        return Vec3.dst(r, g, b, other.r, other.g, other.b);
+    }
+
     public Color write(Color to){
         return to.set(this);
     }
