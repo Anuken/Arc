@@ -83,11 +83,6 @@ jnigen{
         cppFlags += "-DWITH_MINIAUDIO"
         libraries += "-lpthread -lrt -lm -ldl".split(" ")
     }
-    addWindows(x64, x86){
-        headerDirs += (String[])["$root/soloud/src/backend/miniaudio/"]
-        cppIncludes += (String[])["$root/soloud/src/backend/miniaudio/*.cpp"]
-        cppFlags += ["-msse", "-DWITH_MINIAUDIO"]
-    }
     addAndroid(){
         linkerFlags += "-llog -lOpenSLES".split(" ")
         cppIncludes += (String[])["$root/soloud/src/backend/opensles/*.cpp"]
