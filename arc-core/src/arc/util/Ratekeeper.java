@@ -19,4 +19,9 @@ public class Ratekeeper{
         occurences ++;
         return occurences <= cap;
     }
+
+    public void reset(){
+        occurences = 0;
+        lastTime = 0;
+    }
 }

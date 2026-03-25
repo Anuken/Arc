@@ -88,7 +88,7 @@ class UdpConnection{
                     + object);
                 return object;
             }catch(Exception ex){
-                throw new ArcNetException("Error during deserialization.", ex);
+                throw new ArcNetException("Error during UDP deserialization.", ex);
             }
         }finally{
             readBuffer.clear();
