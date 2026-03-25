@@ -345,6 +345,7 @@ public class Settings{
             byteInputStream.setBytes(getBytes(name));
             return json.readValue(type, elementType, ureader.parse(byteInputStream));
         }catch(Throwable e){
+            Log.err("Error reading JSON with key '" + name + "'", e);
             return def.get();
         }
     }
