@@ -321,6 +321,7 @@ public class Json{
 
     private Object[] getDefaultValues(Class type){
         if(!usePrototypes) return null;
+        if(type.isAnonymousClass()) type = type.getSuperclass();
         if(classToDefaultValues.containsKey(type)) return classToDefaultValues.get(type);
         Object object;
         try{
