@@ -634,6 +634,21 @@ public class Strings{
         }
     }
 
+    /** Returns a new, blank color if parsing failed. */
+    public static Color parseColor(String s){
+        return parseColor(s, new Color());
+    }
+
+    public static Color parseColor(String s, Color defaultValue){
+        Color col = Colors.get(s);
+        try{
+            if(col == null) col = Color.valueOf(s);
+        }catch(Exception e){
+            col = defaultValue;
+        }
+        return col;
+    }
+
     public static String autoFixed(float value, int max){
 
         //truncate extra digits past the max

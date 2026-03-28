@@ -12,6 +12,11 @@ public abstract class FEffect{
     public String endToken;
     protected float totalTime;
 
+    /** Applies token parameters from the parsed FLabel. Uses semicolons as separators. */
+    public void applyParams(String[] params){
+
+    }
+
     public void update(float delta){
         totalTime += delta;
     }

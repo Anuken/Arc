@@ -4,15 +4,20 @@ import arc.func.*;
 import arc.struct.*;
 import arc.util.*;
 
+import java.util.regex.*;
+
 /** Utility class to parse tokens from a {@link FLabel}. */
 class FParser{
     private static String resetReplacement;
+    // Handles separating the parameters from the effect name
+    static final Pattern parameterParser = Pattern.compile("(\\w+)(?:=([;:?=^_ #-'*-..\\w]+))?", Pattern.CASE_INSENSITIVE);
 
     /** Parses all tokens from the given {@link FLabel}. */
     static void parseTokens(FLabel label){
         // Compile patterns if necessary
         if(resetReplacement == null || FConfig.dirtyEffectMaps){
             resetReplacement = getResetReplacement();
+            FConfig.dirtyEffectMaps = false;
         }
 
         // Adjust and check markup color
@@ -74,7 +79,6 @@ class FParser{
     }
 
     private static void parseReplacements(FLabel label){
-
         baseParse(label, (text, index) -> {
             String replacement = null;
 
@@ -110,12 +114,17 @@ class FParser{
             FEffect effect = null;
             int indexOffset = 0;
 
+            Matcher params = parameterParser.matcher(text);
+            String paramsString = params.find() ? params.group(2) : null;
+            boolean hasParams = paramsString != null;
+            String textNoParams = hasParams ? text.substring(0, text.indexOf('=')) : text;
+
             TokenCategory tokenCategory = TokenCategory.event;
-            InternalToken tmpToken = InternalToken.fromName(text);
+            InternalToken tmpToken = InternalToken.fromName(textNoParams);
             if(tmpToken == null){
-                if(FConfig.effects.containsKey(text)){
+                if(FConfig.effects.containsKey(textNoParams)){
                     tokenCategory = TokenCategory.effectStart;
-                }else if(!text.isEmpty() && FConfig.effects.containsKey(text.substring(1))){
+                }else if(!textNoParams.isEmpty() && FConfig.effects.containsKey(textNoParams.substring(1))){
                     tokenCategory = TokenCategory.effectEnd;
                 }
             }else{
@@ -124,14 +133,19 @@ class FParser{
 
             switch(tokenCategory){
                 case wait:
-                    floatValue = FConfig.defaultWaitValue;
+                    floatValue = hasParams ? Strings.parseFloat(paramsString.split(";")[0], FConfig.defaultWaitValue) : FConfig.defaultWaitValue;
                     break;
                 case event:
-                    stringValue = text;
+                    //use the entire parameter list as a string
+                    //if there isn't any params, use the raw token text (usually {event})
+                    stringValue = hasParams ? paramsString : text;
                     indexOffset = -1;
                     break;
                 case speed:
-                    switch(text){
+                    switch(textNoParams){
+                        case "speed":
+                            floatValue = FConfig.defaultSpeedPerChar / (hasParams ? Strings.parseFloat(paramsString.split(";")[0], 1f) : 1f);
+                            break;
                         case "slower":
                             floatValue = FConfig.defaultSpeedPerChar / 0.500f;
                             break;
@@ -150,14 +164,20 @@ class FParser{
                     }
                     break;
                 case effectStart:
-                    effect = FConfig.effects.get(text).get();
-                    effect.endToken = "/" + text;
+                    effect = FConfig.effects.get(textNoParams).get();
+                    try{
+                        if(paramsString != null) effect.applyParams(paramsString.split(";"));
+                    }catch(Exception e){
+                        //if parsing fails for a parameter, stop parsing entirely
+                        //any parameters successfully parsed beforehand will stay
+                    }
+                    effect.endToken = "/" + textNoParams;
                     break;
                 case effectEnd:
                     break;
             }
 
-            TokenEntry entry = new TokenEntry(text, tokenCategory, index + indexOffset - 1, floatValue, stringValue);
+            TokenEntry entry = new TokenEntry(textNoParams, tokenCategory, index + indexOffset - 1, floatValue, stringValue);
             entry.effect = effect;
             label.tokenEntries.add(entry);
 

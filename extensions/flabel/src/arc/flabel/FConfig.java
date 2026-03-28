@@ -46,7 +46,7 @@ public class FConfig{
     static boolean dirtyEffectMaps = true;
 
     /**
-     * Registers a new effect to TypeLabel.
+     * Registers a new effect to FLabel.
      *
      * @param tokenName Name of the token that starts the effect, such as WAVE.
      */
@@ -56,12 +56,13 @@ public class FConfig{
     }
 
     /**
-     * Unregisters an effect from TypeLabel.
+     * Unregisters an effect from FLabel.
      *
      * @param tokenName Name of the token that starts the effect, such as WAVE.
      */
     public static void unregisterEffect(String tokenName){
         effects.remove(tokenName);
+        dirtyEffectMaps = true;
     }
 
     static{

@@ -2,6 +2,7 @@ package arc.flabel.effects;
 
 import arc.flabel.*;
 import arc.math.*;
+import arc.util.*;
 
 /** Moves the text vertically in a sine wave pattern. */
 public class WaveEffect extends FEffect{
@@ -10,6 +11,13 @@ public class WaveEffect extends FEffect{
     public float distance = 1; // How much of their height they should move
     public float frequency = 1; // How frequently the wave pattern repeats
     public float intensity = 1; // How fast the glyphs should move
+
+    @Override
+    public void applyParams(String[] params){
+        if(params.length > 0) distance = Strings.parseFloat(params[0], 1f);
+        if(params.length > 1) frequency = Strings.parseFloat(params[1], 1f);
+        if(params.length > 2) intensity = Strings.parseFloat(params[2], 1f);
+    }
 
     @Override
     protected void onApply(FLabel label, FGlyph glyph, int localIndex, float delta){

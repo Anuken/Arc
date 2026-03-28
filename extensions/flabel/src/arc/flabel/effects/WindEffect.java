@@ -1,6 +1,7 @@
 package arc.flabel.effects;
 
 import arc.flabel.*;
+import arc.util.*;
 import arc.util.noise.Simplex;
 
 /** Moves the text in a wind pattern. */
@@ -14,6 +15,14 @@ public class WindEffect extends FEffect{
     public float distanceY = 1; // How much of their line height glyphs should move in the Y axis
     public float spacing = 1; // How much space there should be between waves
     public float intensity = 1; // How strong the wind should be
+
+    @Override
+    public void applyParams(String[] params){
+        if(params.length > 0) distanceX = Strings.parseFloat(params[0], 1f);
+        if(params.length > 1) distanceY = Strings.parseFloat(params[1], 1f);
+        if(params.length > 2) spacing = Strings.parseFloat(params[2], 1f);
+        if(params.length > 3) intensity = Strings.parseFloat(params[3], 1f);
+    }
 
     @Override
     public void update(float delta){

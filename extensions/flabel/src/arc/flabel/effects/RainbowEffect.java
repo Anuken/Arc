@@ -2,6 +2,7 @@ package arc.flabel.effects;
 
 import arc.flabel.*;
 import arc.graphics.Color;
+import arc.util.*;
 
 /** Tints the text in a rainbow pattern. */
 public class RainbowEffect extends FEffect{
@@ -11,6 +12,14 @@ public class RainbowEffect extends FEffect{
     public float frequency = 1; // How frequently the color pattern should move through the text.
     public float saturation = 1; // Color saturation
     public float brightness = 1; // Color brightness
+
+    @Override
+    public void applyParams(String[] params){
+        if(params.length > 0) distance = Strings.parseFloat(params[0], 1f);
+        if(params.length > 1) frequency = Strings.parseFloat(params[1], 1f);
+        if(params.length > 2) saturation = Strings.parseFloat(params[2], 1f);
+        if(params.length > 3) brightness = Strings.parseFloat(params[3], 1f);
+    }
 
     @Override
     protected void onApply(FLabel label, FGlyph glyph, int localIndex, float delta){

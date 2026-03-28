@@ -1,9 +1,10 @@
 package arc.flabel.effects;
 
 import arc.flabel.*;
+import arc.graphics.*;
 import arc.struct.IntFloatMap;
-import arc.graphics.Color;
 import arc.math.Mathf;
+import arc.util.*;
 
 /** Fades the text's color from between colors or alphas. Doesn't repeat itself. */
 public class FadeEffect extends FEffect{
@@ -14,6 +15,15 @@ public class FadeEffect extends FEffect{
     public float fadeDuration = 1; // Duration of the fade effect
 
     private IntFloatMap timePassedByGlyphIndex = new IntFloatMap();
+
+    @Override
+    public void applyParams(String[] params){
+        if(params.length > 0) color1 = Strings.parseColor(params[0], color1);
+        if(params.length > 1) color2 = Strings.parseColor(params[1], color2);
+        if(params.length > 2) alpha1 = Strings.parseFloat(params[2], 0f);
+        if(params.length > 3) alpha2 = Strings.parseFloat(params[3], 1f);
+        if(params.length > 4) fadeDuration = Strings.parseFloat(params[4], 1f);
+    }
 
     @Override
     protected void onApply(FLabel label, FGlyph glyph, int localIndex, float delta){
