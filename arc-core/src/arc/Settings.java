@@ -406,7 +406,7 @@ public class Settings{
     public boolean getBoolOnce(String name){
         boolean val = getBool(name, false);
         put(name, true);
-        return val;
+        return !val;
     }
 
     public byte[] getBytes(String name){
