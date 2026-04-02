@@ -193,8 +193,10 @@ public class SdlApplication implements Application{
                         graphics.updateSize(inputs[2], inputs[3]);
                         listen(l -> l.resize(inputs[2], inputs[3]));
                     }else if(type == SDL_WINDOWEVENT_FOCUS_GAINED){
+                        graphics.handleFocusChanged(true);
                         listen(ApplicationListener::resume);
                     }else if(type == SDL_WINDOWEVENT_FOCUS_LOST){
+                        graphics.handleFocusChanged(false);
                         listen(ApplicationListener::pause);
                     }
                 }else if(inputs[0] == SDL_EVENT_MOUSE_MOTION ||

@@ -262,6 +262,10 @@ public class SDL{
         SDL_SetWindowTitle((SDL_Window*)handle, title);
     */
 
+    public static native void SDL_SetWindowAlwaysOnTop(long handle, boolean onTop); /*
+        SDL_SetWindowAlwaysOnTop((SDL_Window*)handle, (SDL_bool)onTop);
+    */
+
     //expects RGBA format of bytes.
     public static native long SDL_CreateRGBSurfaceFrom(ByteBuffer bytes, int width, int height); /*
         return (jlong)SDL_CreateRGBSurfaceFrom(bytes, width, height, 32, 4 * width, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
