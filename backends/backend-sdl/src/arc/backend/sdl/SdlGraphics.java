@@ -86,7 +86,9 @@ public class SdlGraphics extends Graphics{
         logicalWidth = width;
         logicalHeight = height;
 
-        if(OS.isMac){
+        // On Windows, SDL_WINDOWS_DPI_SCALING makes window sizes logical points, while
+        // the drawable size remains the real pixel backbuffer that OpenGL renders to.
+        if(OS.isMac || OS.isWindows){
             SDL_GL_GetDrawableSize(app.window, wh);
             backBufferWidth = wh[0];
             backBufferHeight = wh[1];
