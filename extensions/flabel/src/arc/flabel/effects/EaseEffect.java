@@ -3,6 +3,7 @@ package arc.flabel.effects;
 import arc.flabel.*;
 import arc.math.*;
 import arc.struct.*;
+import arc.util.*;
 
 /** Moves the text vertically easing it into the final position. Doesn't repeat itself. */
 public class EaseEffect extends FEffect{
@@ -14,6 +15,13 @@ public class EaseEffect extends FEffect{
     public boolean elastic = false; // Whether or not the glyphs have an elastic movement
 
     private IntFloatMap timePassedByGlyphIndex = new IntFloatMap();
+
+    @Override
+    public void applyParams(String[] params){
+        if(params.length > 0) distance = Strings.parseFloat(params[0], 1f);
+        if(params.length > 1) intensity = Strings.parseFloat(params[1], 1f);
+        if(params.length > 2) elastic = Boolean.parseBoolean(params[2]);
+    }
 
     @Override
     protected void onApply(FLabel label, FGlyph glyph, int localIndex, float delta){

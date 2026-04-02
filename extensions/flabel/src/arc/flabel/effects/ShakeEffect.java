@@ -3,6 +3,7 @@ package arc.flabel.effects;
 import arc.flabel.*;
 import arc.struct.FloatSeq;
 import arc.math.*;
+import arc.util.*;
 
 /** Shakes the text in a random pattern. */
 public class ShakeEffect extends FEffect{
@@ -12,6 +13,12 @@ public class ShakeEffect extends FEffect{
 
     public float distance = 1; // How far the glyphs should move
     public float intensity = 1; // How fast the glyphs should move
+
+    @Override
+    public void applyParams(String[] params){
+        if(params.length > 0) distance = Strings.parseFloat(params[0], 1f);
+        if(params.length > 1) intensity = Strings.parseFloat(params[1], 1f);
+    }
 
     @Override
     protected void onApply(FLabel label, FGlyph glyph, int localIndex, float delta){

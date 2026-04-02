@@ -3,6 +3,7 @@ package arc.flabel.effects;
 import arc.flabel.*;
 import arc.math.*;
 import arc.struct.*;
+import arc.util.*;
 
 /** Drips the text in a random pattern. */
 public class SickEffect extends FEffect{
@@ -12,6 +13,12 @@ public class SickEffect extends FEffect{
     public float intensity = 1; // How fast the glyphs should move
 
     private IntSeq indices = new IntSeq();
+
+    @Override
+    public void applyParams(String[] params){
+        if(params.length > 0) distance = Strings.parseFloat(params[0], 1f);
+        if(params.length > 1) intensity = Strings.parseFloat(params[1], 1f);
+    }
 
     @Override
     protected void onApply(FLabel label, FGlyph glyph, int localIndex, float delta){
