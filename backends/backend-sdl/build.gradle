@@ -56,12 +56,29 @@ PACKAGES: Mac
 jnigen{
     def execCmd = { cmd ->
         try{
-            Scanner s = new Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A")
+            def process = cmd instanceof List ? new ProcessBuilder(cmd).redirectErrorStream(true).start() : Runtime.getRuntime().exec(cmd)
+            process.waitFor()
+            Scanner s = new Scanner(process.getInputStream()).useDelimiter("\\A")
             return s.hasNext() ? s.next().trim() : ""
         }catch(Exception ignored){
             return ""
             //fail silently, because this is run during standard arc builds and it shouldn't fail
         }
+    }
+
+    def splitArgs = { value ->
+        return value == null || value.isBlank() ? [] : value.trim().split(/\s+/).findAll{ !it.isBlank() }
+    }
+
+    def normalizeWindowsArg = { value ->
+        if(value == null) return value
+        if(value ==~ /^\/[A-Za-z]\/.*/){
+            return value.substring(1, 2).toUpperCase() + ":/" + value.substring(3)
+        }
+        if(value ==~ /^-[IL]\/[A-Za-z]\/.*/){
+            return value.substring(0, 2) + value.substring(3, 4).toUpperCase() + ":/" + value.substring(5)
+        }
+        return value
     }
 
     sharedLibName = "sdl-arc"
@@ -83,13 +100,16 @@ jnigen{
     }
 
     addWindows(x64, x86){
-        def path = "$mainRoot/SDL2-$sdlVersion/x86_64-w64-mingw32"
+        def path = "SDL2-$sdlVersion/x86_64-w64-mingw32"
         def root = "$rootDir/backends/backend-sdl/build/jnigen/sources"
-        headerDirs += (String[])["$path/include/SDL2"]
-        cppFlags += execCmd("sh $root/$path/bin/sdl2-config --cflags").split(" ")
+        def sdlRoot = "$root/$path"
+        def gitSh = new File("C:/Program Files/Git/bin/sh.exe").exists() ? "C:/Program Files/Git/bin/sh.exe" :
+            new File("C:/Program Files/Git/usr/bin/sh.exe").exists() ? "C:/Program Files/Git/usr/bin/sh.exe" : "sh"
+        headerDirs += (String[])["$mainRoot/$path/include/SDL2"]
+        cppFlags += splitArgs(execCmd([gitSh, sdlRoot.replace("\\", "/") + "/bin/sdl2-config", "--cflags"])).collect(normalizeWindowsArg)
         cFlags = cppFlags
-        libraries = (execCmd("sh $root/$path/bin/sdl2-config --static-libs") + " -lopengl32").split(" ")
-        linkerFlags += (String[])["-L $root/$path/lib"]
+        libraries = splitArgs(execCmd([gitSh, sdlRoot.replace("\\", "/") + "/bin/sdl2-config", "--static-libs"]) + " -lopengl32").collect(normalizeWindowsArg)
+        linkerFlags += (String[])["-L${sdlRoot.replace("\\", "/")}/lib"]
     }
 
     if(System.getProperty("os.arch") != "aarch64"){
