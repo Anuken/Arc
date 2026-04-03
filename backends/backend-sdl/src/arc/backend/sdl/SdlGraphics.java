@@ -98,8 +98,6 @@ public class SdlGraphics extends Graphics{
         }
 
         gl20.glViewport(0, 0, backBufferWidth, backBufferHeight);
-        Log.info("[Core][DPI] updateSize input=@x@ logical=@x@ backBuffer=@x@ hdpiMode=@ graphicsReported=@x@",
-            width, height, logicalWidth, logicalHeight, backBufferWidth, backBufferHeight, app.config.hdpiMode, getWidth(), getHeight());
     }
 
     @Override
@@ -211,7 +209,6 @@ public class SdlGraphics extends Graphics{
 
         if(!getDisplayBounds(index, bounds)) return false;
 
-        Log.info("[Core][DPI] setFullscreen display=@ bounds=@,@ @x@", index, bounds[0], bounds[1], bounds[2], bounds[3]);
         SDL_SetWindowSize(app.window, bounds[2], bounds[3]);
         SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN);
         return true;
@@ -219,7 +216,6 @@ public class SdlGraphics extends Graphics{
 
     @Override
     public boolean setWindowedMode(int width, int height){
-        Log.info("[Core][DPI] setWindowedMode request=@x@", width, height);
         SDL_SetWindowFullscreen(app.window, 0);
         SDL_SetWindowSize(app.window, width, height);
         return true;
@@ -245,7 +241,6 @@ public class SdlGraphics extends Graphics{
         boolean foundBounds = borderless ? getDisplayBounds(index, bounds) : SDL_GetDisplayUsableBounds(index, bounds) == 0;
         if(!foundBounds) return;
 
-        Log.info("[Core][DPI] setBorderless borderless=@ display=@ bounds=@,@ @x@", borderless, index, bounds[0], bounds[1], bounds[2], bounds[3]);
         SDL_SetWindowBordered(app.window, !borderless);
 
         if(maximized && OS.isLinux){
@@ -278,14 +273,12 @@ public class SdlGraphics extends Graphics{
         if(OS.isWindows){
             int[] currentMode = new int[2];
             int[] desktopMode = new int[2];
-            int currentResult = SDL_GetCurrentDisplayMode(index, currentMode);
+            SDL_GetCurrentDisplayMode(index, currentMode);
             int desktopResult = SDL_GetDesktopDisplayMode(index, desktopMode);
 
             int modeWidth = desktopResult == 0 && desktopMode[0] > 0 ? desktopMode[0] : currentMode[0];
             int modeHeight = desktopResult == 0 && desktopMode[1] > 0 ? desktopMode[1] : currentMode[1];
             if(modeWidth > 0 && modeHeight > 0 && (modeWidth != bounds[2] || modeHeight != bounds[3])){
-                Log.info("[Core][DPI] display-mode-override display=@ bounds=@x@ currentResult=@ current=@x@ desktopResult=@ desktop=@x@ -> override=@x@",
-                    index, bounds[2], bounds[3], currentResult, currentMode[0], currentMode[1], desktopResult, desktopMode[0], desktopMode[1], modeWidth, modeHeight);
                 bounds[2] = modeWidth;
                 bounds[3] = modeHeight;
             }

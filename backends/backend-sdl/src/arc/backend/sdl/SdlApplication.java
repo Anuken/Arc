@@ -149,7 +149,6 @@ public class SdlApplication implements Application{
 
         window = SDL_CreateWindow(config.title, config.width, config.height, flags);
         if(window == 0) throw new SdlError();
-        logDisplayInfo("create-window");
 
         SdlError finalError = null;
         boolean createdContext = false;
@@ -184,8 +183,6 @@ public class SdlApplication implements Application{
         int[] ver = new int[3];
         SDL_GetVersion(ver);
         Log.info("[Core] Initialized SDL v@.@.@", ver[0], ver[1], ver[2]);
-        Log.info("[Core][DPI] hdpiMode=@ windowsScalingHint=@ windowsAwareness=@",
-            config.hdpiMode, OS.isWindows ? "0" : "n/a", OS.isWindows ? "permonitorv2" : "n/a");
     }
 
     private void loop(){
@@ -200,7 +197,6 @@ public class SdlApplication implements Application{
                 }else if(inputs[0] == SDL_EVENT_WINDOW){
                     int type = inputs[1];
                     if(type == SDL_WINDOWEVENT_SIZE_CHANGED){
-                        Log.info("[Core][DPI] SDL_WINDOWEVENT_SIZE_CHANGED raw=@x@", inputs[2], inputs[3]);
                         graphics.updateSize(inputs[2], inputs[3]);
                         listen(l -> l.resize(inputs[2], inputs[3]));
                     }else if(type == SDL_WINDOWEVENT_FOCUS_GAINED){
@@ -258,25 +254,6 @@ public class SdlApplication implements Application{
         if(code != 0){
             throw new SdlError();
         }
-    }
-
-    private void logDisplayInfo(String reason){
-        int index = SDL_GetWindowDisplayIndex(window);
-        int[] bounds = new int[4];
-        int[] usable = new int[4];
-        int[] currentMode = new int[2];
-        int[] desktopMode = new int[2];
-        int boundsResult = index < 0 ? -1 : SDL_GetDisplayBounds(index, bounds);
-        int usableResult = index < 0 ? -1 : SDL_GetDisplayUsableBounds(index, usable);
-        int currentResult = index < 0 ? -1 : SDL_GetCurrentDisplayMode(index, currentMode);
-        int desktopResult = index < 0 ? -1 : SDL_GetDesktopDisplayMode(index, desktopMode);
-        Log.info("[Core][DPI] @ display=@ boundsResult=@ bounds=@,@ @x@ usableResult=@ usable=@,@ @x@ currentResult=@ current=@x@ desktopResult=@ desktop=@x@ flags=0x@",
-            reason, index,
-            boundsResult, bounds[0], bounds[1], bounds[2], bounds[3],
-            usableResult, usable[0], usable[1], usable[2], usable[3],
-            currentResult, currentMode[0], currentMode[1],
-            desktopResult, desktopMode[0], desktopMode[1],
-            Integer.toHexString(SDL_GetWindowFlags(window)));
     }
 
     public long getWindow(){
