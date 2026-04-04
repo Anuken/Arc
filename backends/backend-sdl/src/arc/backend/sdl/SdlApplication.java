@@ -6,6 +6,7 @@ import arc.backend.sdl.jni.*;
 import arc.files.*;
 import arc.func.*;
 import arc.graphics.*;
+import arc.graphics.gl.*;
 import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.struct.*;
@@ -112,11 +113,16 @@ public class SdlApplication implements Application{
 
         if(OS.isMac) restartMac();
 
-        check(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
-
         //show native IME candidate UI
         SDL_SetHint("SDL_IME_SHOW_UI","1");
-        SDL_SetHint("SDL_WINDOWS_DPI_SCALING", "1");
+        if(OS.isWindows){
+            // SDL only applies Windows DPI awareness hints before the video subsystem starts.
+            SDL_SetHint("SDL_WINDOWS_DPI_SCALING", "0");
+            SDL_SetHint("SDL_WINDOWS_DPI_AWARENESS", "permonitorv2");
+            config.hdpiMode = HdpiMode.pixels;
+        }
+
+        check(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
 
         check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, OS.isMac || config.coreProfile ? SDL_GL_CONTEXT_PROFILE_CORE : SDL.SDL_GL_CONTEXT_PROFILE_COMPATIBILITY));
 
@@ -134,6 +140,7 @@ public class SdlApplication implements Application{
         }
 
         int flags = SDL_WINDOW_OPENGL;
+        if(OS.isMac || OS.isWindows) flags |= SDL_WINDOW_ALLOW_HIGHDPI;
         if(config.initialVisible) flags |= SDL_WINDOW_SHOWN;
         if(!config.decorated) flags |= SDL_WINDOW_BORDERLESS;
         if(config.resizable) flags |= SDL_WINDOW_RESIZABLE;

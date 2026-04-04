@@ -250,6 +250,26 @@ public class SDL{
         return result;
     */
 
+    public static native int SDL_GetCurrentDisplayMode(int display, int[] wh); /*
+        SDL_DisplayMode mode;
+        int result = SDL_GetCurrentDisplayMode(display, &mode);
+
+        wh[0] = mode.w;
+        wh[1] = mode.h;
+
+        return result;
+    */
+
+    public static native int SDL_GetDesktopDisplayMode(int display, int[] wh); /*
+        SDL_DisplayMode mode;
+        int result = SDL_GetDesktopDisplayMode(display, &mode);
+
+        wh[0] = mode.w;
+        wh[1] = mode.h;
+
+        return result;
+    */
+
     public static native int SDL_GetNumVideoDisplays(); /*
         return SDL_GetNumVideoDisplays();
     */

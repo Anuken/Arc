@@ -86,7 +86,9 @@ public class SdlGraphics extends Graphics{
         logicalWidth = width;
         logicalHeight = height;
 
-        if(OS.isMac){
+        // Query the drawable size directly on platforms where the backbuffer may differ
+        // from the window size SDL reports.
+        if(OS.isMac || OS.isWindows){
             SDL_GL_GetDrawableSize(app.window, wh);
             backBufferWidth = wh[0];
             backBufferHeight = wh[1];
@@ -205,8 +207,7 @@ public class SdlGraphics extends Graphics{
         int index = SDL_GetWindowDisplayIndex(app.window);
         if(index < 0) return false;
 
-        int result = SDL_GetDisplayBounds(index, bounds);
-        if(result != 0) return false;
+        if(!getDisplayBounds(index, bounds)) return false;
 
         SDL_SetWindowSize(app.window, bounds[2], bounds[3]);
         SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN);
@@ -237,8 +238,8 @@ public class SdlGraphics extends Graphics{
 
         int[] bounds = new int[4];
 
-        int result = borderless ? SDL_GetDisplayBounds(index, bounds) : SDL_GetDisplayUsableBounds(index, bounds);
-        if(result != 0) return;
+        boolean foundBounds = borderless ? getDisplayBounds(index, bounds) : SDL_GetDisplayUsableBounds(index, bounds) == 0;
+        if(!foundBounds) return;
 
         SDL_SetWindowBordered(app.window, !borderless);
 
@@ -263,6 +264,27 @@ public class SdlGraphics extends Graphics{
     @Override
     public void setVSync(boolean vsync){
         SDL_GL_SetSwapInterval(vsync ? 1 : 0);
+    }
+
+    private boolean getDisplayBounds(int index, int[] bounds){
+        int boundsResult = SDL_GetDisplayBounds(index, bounds);
+        if(boundsResult != 0) return false;
+
+        if(OS.isWindows){
+            int[] currentMode = new int[2];
+            int[] desktopMode = new int[2];
+            SDL_GetCurrentDisplayMode(index, currentMode);
+            int desktopResult = SDL_GetDesktopDisplayMode(index, desktopMode);
+
+            int modeWidth = desktopResult == 0 && desktopMode[0] > 0 ? desktopMode[0] : currentMode[0];
+            int modeHeight = desktopResult == 0 && desktopMode[1] > 0 ? desktopMode[1] : currentMode[1];
+            if(modeWidth > 0 && modeHeight > 0 && (modeWidth != bounds[2] || modeHeight != bounds[3])){
+                bounds[2] = modeWidth;
+                bounds[3] = modeHeight;
+            }
+        }
+
+        return true;
     }
 
     @Override
