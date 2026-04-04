@@ -109,16 +109,6 @@ public class MockGraphics extends Graphics{
     }
 
     @Override
-    public boolean setFullscreen(){
-        return false;
-    }
-
-    @Override
-    public boolean setWindowedMode(int width, int height){
-        return false;
-    }
-
-    @Override
     public void setTitle(String title){
 
     }
@@ -186,10 +176,5 @@ public class MockGraphics extends Graphics{
 
     @Override
     public void setSystemCursor(SystemCursor systemCursor){
-    }
-
-    @Override
-    public void setBorderless(boolean undecorated){
-
     }
 }

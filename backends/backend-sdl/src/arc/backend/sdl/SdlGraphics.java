@@ -86,16 +86,9 @@ public class SdlGraphics extends Graphics{
         logicalWidth = width;
         logicalHeight = height;
 
-        // Query the drawable size directly on platforms where the backbuffer may differ
-        // from the window size SDL reports.
-        if(OS.isMac || OS.isWindows){
-            SDL_GL_GetDrawableSize(app.window, wh);
-            backBufferWidth = wh[0];
-            backBufferHeight = wh[1];
-        }else{
-            backBufferWidth = width;
-            backBufferHeight = height;
-        }
+        SDL_GL_GetDrawableSize(app.window, wh);
+        backBufferWidth = wh[0];
+        backBufferHeight = wh[1];
 
         gl20.glViewport(0, 0, backBufferWidth, backBufferHeight);
     }
@@ -201,54 +194,13 @@ public class SdlGraphics extends Graphics{
     }
 
     @Override
-    public boolean setFullscreen(){
-        int[] bounds = new int[4];
-
-        int index = SDL_GetWindowDisplayIndex(app.window);
-        if(index < 0) return false;
-
-        if(!getDisplayBounds(index, bounds)) return false;
-
-        SDL_SetWindowSize(app.window, bounds[2], bounds[3]);
-        SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN);
-        return true;
-    }
-
-    @Override
-    public boolean setWindowedMode(int width, int height){
-        SDL_SetWindowFullscreen(app.window, 0);
-        SDL_SetWindowSize(app.window, width, height);
-        return true;
+    public boolean setFullscreen(boolean fullscreen){
+        return SDL_SetWindowFullscreen(app.window, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0) == 0;
     }
 
     @Override
     public void setTitle(String title){
         SDL_SetWindowTitle(app.window, title);
-    }
-
-    @Override
-    public void setBorderless(boolean borderless){
-        boolean maximized = (SDL_GetWindowFlags(app.window) & SDL_WINDOW_MAXIMIZED) == SDL_WINDOW_MAXIMIZED;
-        if(maximized && OS.isLinux){
-            SDL_RestoreWindow(app.window);
-        }
-
-        int index = SDL_GetWindowDisplayIndex(app.window);
-        if(index < 0) return;
-
-        int[] bounds = new int[4];
-
-        boolean foundBounds = borderless ? getDisplayBounds(index, bounds) : SDL_GetDisplayUsableBounds(index, bounds) == 0;
-        if(!foundBounds) return;
-
-        SDL_SetWindowBordered(app.window, !borderless);
-
-        if(maximized && OS.isLinux){
-            SDL_MaximizeWindow(app.window);
-        }
-
-        SDL_SetWindowPosition(app.window, bounds[0], bounds[1]);
-        SDL_SetWindowSize(app.window, bounds[2], bounds[3]);
     }
 
     @Override
@@ -264,27 +216,6 @@ public class SdlGraphics extends Graphics{
     @Override
     public void setVSync(boolean vsync){
         SDL_GL_SetSwapInterval(vsync ? 1 : 0);
-    }
-
-    private boolean getDisplayBounds(int index, int[] bounds){
-        int boundsResult = SDL_GetDisplayBounds(index, bounds);
-        if(boundsResult != 0) return false;
-
-        if(OS.isWindows){
-            int[] currentMode = new int[2];
-            int[] desktopMode = new int[2];
-            SDL_GetCurrentDisplayMode(index, currentMode);
-            int desktopResult = SDL_GetDesktopDisplayMode(index, desktopMode);
-
-            int modeWidth = desktopResult == 0 && desktopMode[0] > 0 ? desktopMode[0] : currentMode[0];
-            int modeHeight = desktopResult == 0 && desktopMode[1] > 0 ? desktopMode[1] : currentMode[1];
-            if(modeWidth > 0 && modeHeight > 0 && (modeWidth != bounds[2] || modeHeight != bounds[3])){
-                bounds[2] = modeWidth;
-                bounds[3] = modeHeight;
-            }
-        }
-
-        return true;
     }
 
     @Override

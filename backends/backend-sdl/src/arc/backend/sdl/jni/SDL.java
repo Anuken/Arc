@@ -270,6 +270,10 @@ public class SDL{
         return result;
     */
 
+    public static native void SDL_SetWindowAlwaysOnTop(long handle, boolean onTop); /*
+        SDL_SetWindowAlwaysOnTop((SDL_Window*)handle, (SDL_bool)onTop);
+    */
+
     public static native int SDL_GetNumVideoDisplays(); /*
         return SDL_GetNumVideoDisplays();
     */

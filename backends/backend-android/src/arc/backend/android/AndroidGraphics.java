@@ -471,16 +471,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
     }
 
     @Override
-    public boolean setWindowedMode(int width, int height){
-        return false;
-    }
-
-    @Override
     public void setTitle(String title){
-    }
-
-    @Override
-    public void setBorderless(boolean undecorated){
     }
 
     @Override

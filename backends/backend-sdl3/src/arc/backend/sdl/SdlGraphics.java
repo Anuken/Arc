@@ -2,9 +2,9 @@ package arc.backend.sdl;
 
 import arc.*;
 import arc.Graphics.Cursor.*;
-import arc.graphics.*;
 import arc.graphics.GL20;
 import arc.graphics.GL30;
+import arc.graphics.*;
 import arc.graphics.gl.*;
 import arc.struct.*;
 import arc.util.*;
@@ -85,16 +85,11 @@ public class SdlGraphics extends Graphics{
         logicalWidth = width;
         logicalHeight = height;
 
-        if(OS.isMac){
-            try(MemoryStack stack = MemoryStack.stackPush()){
-                IntBuffer w = stack.mallocInt(1), h = stack.mallocInt(1);
-                SDLVideo.SDL_GetWindowSizeInPixels(app.window, w, h);
-                backBufferWidth = w.get(0);
-                backBufferHeight = h.get(0);
-            }
-        }else{
-            backBufferWidth = width;
-            backBufferHeight = height;
+        try(MemoryStack stack = MemoryStack.stackPush()){
+            IntBuffer w = stack.mallocInt(1), h = stack.mallocInt(1);
+            SDLVideo.SDL_GetWindowSizeInPixels(app.window, w, h);
+            backBufferWidth = w.get(0);
+            backBufferHeight = h.get(0);
         }
 
         gl20.glViewport(0, 0, backBufferWidth, backBufferHeight);
@@ -201,60 +196,13 @@ public class SdlGraphics extends Graphics{
     }
 
     @Override
-    public boolean setFullscreen(){
-        try(MemoryStack stack = MemoryStack.stackPush()){
-            SDL_Rect rect = SDL_Rect.malloc(stack);
-
-            int index = SDLVideo.SDL_GetDisplayForWindow(app.window);
-            if(index < 0) return false;
-
-            boolean result = SDLVideo.SDL_GetDisplayBounds(index, rect);
-            if(!result) return false;
-
-            SDLVideo.SDL_SetWindowSize(app.window, rect.w(), rect.h());
-            SDLVideo.SDL_SetWindowFullscreen(app.window, true);
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean setWindowedMode(int width, int height){
-        SDLVideo.SDL_SetWindowFullscreen(app.window, false);
-        SDLVideo.SDL_SetWindowSize(app.window, width, height);
-        return true;
-    }
-
-    @Override
     public void setTitle(String title){
         SDLVideo.SDL_SetWindowTitle(app.window, title);
     }
 
     @Override
-    public void setBorderless(boolean borderless){
-        boolean maximized = (SDLVideo.SDL_GetWindowFlags(app.window) & SDLVideo.SDL_WINDOW_MAXIMIZED) == SDLVideo.SDL_WINDOW_MAXIMIZED;
-        if(maximized && OS.isLinux){
-            SDLVideo.SDL_RestoreWindow(app.window);
-        }
-
-        int index = SDLVideo.SDL_GetDisplayForWindow(app.window);
-        if(index < 0) return;
-
-        try(MemoryStack stack = MemoryStack.stackPush()){
-            SDL_Rect rect = SDL_Rect.malloc(stack);
-
-            boolean result = borderless ? SDLVideo.SDL_GetDisplayBounds(index, rect) : SDLVideo.SDL_GetDisplayUsableBounds(index, rect);
-            if(!result) return;
-
-            SDLVideo.SDL_SetWindowBordered(app.window, !borderless);
-
-            if(maximized && OS.isLinux){
-                SDLVideo.SDL_MaximizeWindow(app.window);
-            }
-
-            SDLVideo.SDL_SetWindowPosition(app.window, rect.x(), rect.y());
-            SDLVideo.SDL_SetWindowSize(app.window, rect.w(), rect.h());
-        }
+    public boolean setFullscreen(boolean fullscreen){
+        return SDLVideo.SDL_SetWindowFullscreen(app.window, fullscreen);
     }
 
     @Override

@@ -147,7 +147,7 @@ public abstract class Graphics implements Disposable{
      * Sets the window to full-screen mode.
      * @return whether the operation succeeded.
      */
-    public boolean setFullscreen(){
+    public boolean setFullscreen(boolean fullscreen){
         return false;
     }
 
@@ -163,31 +163,10 @@ public abstract class Graphics implements Disposable{
     public void setWindowSize(int width, int height){}
 
     /**
-     * Sets the window to windowed mode.
-     * @param width the width in pixels
-     * @param height the height in pixels
-     * @return whether the operation succeeded
-     */
-    public abstract boolean setWindowedMode(int width, int height);
-
-    /**
      * Sets the title of the window. Ignored on Android.
      * @param title the title.
      */
     public abstract void setTitle(String title);
-
-    /**
-     * Sets the window decoration as enabled or disabled. On Android, this will enable/disable
-     * the menu bar.
-     * <p>
-     * Note that immediate behavior of this method may vary depending on the implementation. It
-     * may be necessary for the window to be recreated in order for the changes to take effect.
-     * Consult the documentation for the backend in use for more information.
-     * <p>
-     * Supported on all desktop backends and on Android (to disable the menu bar).
-     * @param undecorated true if the window border or status bar should be hidden. false otherwise.
-     */
-    public void setBorderless(boolean undecorated){}
 
     /**
      * Enable/Disable vsynching. This is a best-effort attempt which might not work on all platforms.
