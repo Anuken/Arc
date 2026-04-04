@@ -42,9 +42,7 @@ jobs:
         with:
           name: Arc-core desktop natives
           path: |
-            natives/natives-desktop/libs/arc.dll
             natives/natives-desktop/libs/arc64.dll
-            natives/natives-freetype-desktop/libs/arc-freetype.dll
             natives/natives-freetype-desktop/libs/arc-freetype64.dll
       - name: Upload Android natives
         uses: actions/upload-artifact@v5
