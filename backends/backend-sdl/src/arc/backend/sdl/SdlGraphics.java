@@ -86,14 +86,9 @@ public class SdlGraphics extends Graphics{
         logicalWidth = width;
         logicalHeight = height;
 
-        if(OS.isMac){
-            SDL_GL_GetDrawableSize(app.window, wh);
-            backBufferWidth = wh[0];
-            backBufferHeight = wh[1];
-        }else{
-            backBufferWidth = width;
-            backBufferHeight = height;
-        }
+        SDL_GL_GetDrawableSize(app.window, wh);
+        backBufferWidth = wh[0];
+        backBufferHeight = wh[1];
 
         gl20.glViewport(0, 0, backBufferWidth, backBufferHeight);
     }

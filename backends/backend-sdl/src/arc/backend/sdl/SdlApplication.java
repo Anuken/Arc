@@ -114,7 +114,6 @@ public class SdlApplication implements Application{
 
         //show native IME candidate UI
         SDL_SetHint("SDL_IME_SHOW_UI","1");
-        SDL_SetHint("SDL_WINDOWS_DPI_SCALING", "1");
 
         check(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
 
