@@ -7,6 +7,7 @@ import arc.struct.IntSeq;
 import arc.graphics.g2d.Font.FontData;
 import arc.graphics.g2d.Font.Glyph;
 import arc.graphics.g2d.GlyphLayout.GlyphRun;
+import arc.math.Mathf;
 import arc.util.Align;
 import arc.util.pooling.Pools;
 
@@ -94,6 +95,30 @@ public class FontCache{
             for(int ii = 0, nn = idx[i]; ii < nn; ii += 6){
                 vertices[ii] += xAmount;
                 vertices[ii + 1] += yAmount;
+            }
+        }
+    }
+
+    /**
+     * Sets the rotation of the text, relative to the anchor points given.
+     * @param angleDeg Angle amount in degrees
+     * @param anchorX the anchor's x coordinate
+     * @param anchorY the anchor's y coordinate
+     */
+    public void setRotation(float angleDeg, float anchorX, float anchorY){
+        if(angleDeg == 0) return;
+        float rad = angleDeg * Mathf.degreesToRadians;
+        float cos = (float)Math.cos(rad);
+        float sin = (float)Math.sin(rad);
+
+        float[][] pageVertices = this.pageVertices;
+        for(int i = 0, n = pageVertices.length; i < n; i++){
+            float[] vertices = pageVertices[i];
+            for(int ii = 0, nn = idx[i]; ii < nn; ii += 6){
+                float dx = vertices[ii] - anchorX;
+                float dy = vertices[ii + 1] - anchorY;
+                vertices[ii] = anchorX + dx * cos - dy * sin;
+                vertices[ii + 1] = anchorY + dx * sin + dy * cos;
             }
         }
     }
