@@ -114,7 +114,8 @@ public class SdlApplication implements Application{
 
         check(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
 
-        SDL_SetHint("SDL_IME_SHOW_UI","1");
+        SDL_SetHint("SDL_IME_SHOW_UI", "1");
+        //this must be AFTER SDL_Init; otherwise, it causes issues. removing it entirely may lead to other issues, so don't touch it.
         SDL_SetHint("SDL_WINDOWS_DPI_SCALING", "1");
 
         check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, OS.isMac || config.coreProfile ? SDL_GL_CONTEXT_PROFILE_CORE : SDL.SDL_GL_CONTEXT_PROFILE_COMPATIBILITY));
