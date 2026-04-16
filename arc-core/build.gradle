@@ -71,7 +71,7 @@ jnigen{
 
     all{
         headerDirs = ["$root/soloud/include", "$root/soloud/src/audiosource/wav", "$root"]
-        cppIncludes = ["$root/*.cpp", "$root/soloud/src/core/**.cpp", "$root/soloud/src/audiosource/wav/**.cpp", "$root/soloud/src/filter/**.cpp"]
+        cppIncludes = ["$root/*.cpp", "$root/soloud/src/core/**.cpp", "$root/soloud/src/audiosource/wav/**.cpp", "$root/soloud/src/audiosource/wav/**.c", "$root/soloud/src/filter/**.cpp"]
         cppFlags += "-DSOLOUD_MAX_VOICE_COUNT=100"
         cFlags += ["-flto"]
         cppFlags += ["-flto"]

@@ -35,9 +35,7 @@ jnigen{
     addLinux(x64, x86)
     addMac(x64, x86)
     addMac(x64, ARM)
-    addAndroid(){
-        linkerFlags += " -Wl,-z,max-page-size=0x4000"
-    }
+    addAndroid()
     addIOS()
 }
 
