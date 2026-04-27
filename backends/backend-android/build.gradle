@@ -1,3 +1,11 @@
+repositories{
+    ivy{
+        url 'https://github.com/Anuken/Arc/raw'
+        patternLayout{artifact '/[revision]/backends/[organisation]/libs/[module].jar'}
+        metadataSources{ artifact() }
+    }
+}
+
 dependencies{
-   compileOnly fileTree(dir: 'libs', include: ['*.jar'])
+    compileOnly "backend-android:android:4d9760e2647f350e49fe6ac3b7f81256ccd71ef0"
 }
