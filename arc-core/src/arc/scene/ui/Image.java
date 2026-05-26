@@ -15,9 +15,9 @@ import arc.util.*;
  */
 public class Image extends Element{
     protected float imageX, imageY, imageWidth, imageHeight;
-    private Scaling scaling;
-    private int align;
-    private Drawable drawable;
+    protected Scaling scaling;
+    protected int align;
+    protected Drawable drawable;
 
     /** Creates an image with no region or patch, stretched, and aligned center. */
     public Image(){

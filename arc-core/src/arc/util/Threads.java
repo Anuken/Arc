@@ -28,7 +28,7 @@ public class Threads{
         }
     }
 
-    public static void awaitAll(Seq<Future<?>> futures){
+    public static void awaitAll(Seq<? extends Future<?>> futures){
         try{
             for(Future<?> f : futures){
                 f.get();

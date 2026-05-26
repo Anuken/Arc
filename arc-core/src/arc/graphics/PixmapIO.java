@@ -33,6 +33,22 @@ public class PixmapIO{
         }
     }
 
+    /**
+     * Writes the pixmap as a PNG with compression. See {@link PngWriter} to configure the compression level, more efficiently flip the
+     * pixmap vertically, and to write out multiple PNGs with minimal allocation.
+     */
+    public static byte[] writePngBytes(Pixmap pixmap) throws IOException{
+        PngWriter writer = new PngWriter((int)(pixmap.width * pixmap.height * 1.5f)); // Guess at deflated size.
+        try{
+            writer.setFlipY(false);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            writer.write(stream, pixmap);
+            return stream.toByteArray();
+        }finally{
+            writer.dispose();
+        }
+    }
+
     /** Reads a PNG file using a pure-Java PNG decoder. */
     public static Pixmap readPNG(Fi file){
         try{
@@ -41,6 +57,17 @@ public class PixmapIO{
             return new Pixmap(result, reader.width, reader.height);
         }catch(Exception e){
             throw new ArcRuntimeException("Error reading PNG: " + file, e);
+        }
+    }
+
+    /** Reads a PNG file using a pure-Java PNG decoder. */
+    public static Pixmap readPNG(byte[] bytes){
+        try{
+            PngReader reader = new PngReader();
+            ByteBuffer result = reader.read(new ByteArrayInputStream(bytes));
+            return new Pixmap(result, reader.width, reader.height);
+        }catch(Exception e){
+            throw new ArcRuntimeException("Error reading PNG", e);
         }
     }
 
