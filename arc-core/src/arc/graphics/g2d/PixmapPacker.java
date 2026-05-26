@@ -619,10 +619,10 @@ public class PixmapPacker implements Disposable{
      * @author Rob Rendell
      */
     public static class Page{
-        final Seq<String> addedRects = new Seq<>();
-        OrderedMap<String, PixmapPackerRect> rects = new OrderedMap<>();
-        Pixmap image;
-        Texture texture;
+        public final Seq<String> addedRects = new Seq<>();
+        public OrderedMap<String, PixmapPackerRect> rects = new OrderedMap<>();
+        public Pixmap image;
+        public Texture texture;
         boolean dirty;
 
         /** Creates a new page filled with the color provided by the {@link PixmapPacker#getTransparentColor()} */
@@ -872,8 +872,8 @@ public class PixmapPacker implements Disposable{
     public static class PixmapPackerRect extends Rect{
         public int[] splits;
         public int[] pads;
-        int offsetX, offsetY;
-        int originalWidth, originalHeight;
+        public int offsetX, offsetY;
+        public int originalWidth, originalHeight;
 
         public PixmapPackerRect(int x, int y, int width, int height){
             super(x, y, width, height);

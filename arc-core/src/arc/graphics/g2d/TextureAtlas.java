@@ -21,7 +21,7 @@ import java.io.*;
  */
 public class TextureAtlas implements Disposable{
     private final ObjectSet<Texture> textures = new ObjectSet<>(4);
-    private final Seq<AtlasRegion> regions = new Seq<>();
+    private final Seq<AtlasRegion> regions = new Seq<>(false);
     private final ObjectMap<String, Drawable> drawables = new ObjectMap<>();
     private final ObjectMap<String, AtlasRegion> regionmap = new ObjectMap<>();
     private final ObjectMap<Texture, Pixmap> pixmaps = new ObjectMap<>();
