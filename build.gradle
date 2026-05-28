@@ -83,10 +83,10 @@ allprojects{
 
     tasks.withType(JavaCompile){
         java{
-            sourceCompatibility = 1.8
-            targetCompatibility = 1.8
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
         }
-        options.compilerArgs.addAll(['--release', '8'])
+        options.compilerArgs.addAll(['--release', '17'])
         options.encoding = "UTF-8"
     }
 
