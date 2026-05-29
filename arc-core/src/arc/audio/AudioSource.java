@@ -54,6 +54,7 @@ public abstract class AudioSource implements Disposable{
 
     @Override
     public void dispose(){
-        //TODO does nothing
+        if(handle != 0) sourceDestroy(handle);
+        handle = 0;
     }
 }

@@ -105,6 +105,19 @@ public class AssetManager implements Disposable{
     }
 
     /**
+     * @param fileName the asset file name
+     * @param type the asset type
+     * @return the asset, or null if not found
+     */
+    public synchronized <T> T getOrNull(String fileName, Class<T> type){
+        ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
+        if(assetsByType == null) return null;
+        RefCountedContainer assetContainer = assetsByType.get(fileName);
+        if(assetContainer == null) return null;
+        return (T)assetContainer.object;
+    }
+
+    /**
      * @param type the asset type
      * @return all the assets matching the specified type
      */
@@ -565,7 +578,7 @@ public class AssetManager implements Disposable{
     }
 
     /** Adds an asset to this AssetManager */
-    protected <T> void addAsset(final String fileName, Class<T> type, T asset){
+    public <T> void addAsset(final String fileName, Class<T> type, T asset){
         // add the asset to the filename lookup
         assetTypes.put(fileName, type);
 

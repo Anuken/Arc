@@ -26,14 +26,22 @@ import static arc.audio.Soloud.*;
  */
 public class Sound extends AudioSource{
     public AudioBus bus = Core.audio == null ? null : Core.audio.soundBus;
+
     public @Nullable Fi file;
 
-    private float falloffOffset = 0f;
-    private long minInterval = 16;
-
+    @Nullable byte[] lazyData;
+    float falloffOffset = 0f;
+    long minInterval = 16;
     long lastTimePlayed;
     int lastVoice;
     float lastVolume;
+
+    public static Sound createLazy(String name, byte[] data){
+        Sound sound = new Sound();
+        sound.file = new Fi(name);
+        sound.lazyData = data;
+        return sound;
+    }
 
     /** Creates an empty sound. This sound cannot be played until it is loaded. */
     public Sound(){
@@ -45,14 +53,17 @@ public class Sound extends AudioSource{
         load(file);
     }
 
-    public void load(Fi file){
-        byte[] data = file.readBytes();
-        this.file = file;
-        handle = wavLoad(data, data.length);
+    public void load(byte[] data, boolean stream){
+        handle = stream ? streamLoadBytes(data, data.length) : wavLoadBytes(data, data.length);
 
         if(Core.audio != null && Core.audio.defaultSoundMaxConcurrent > 0){
             setMaxConcurrent(Core.audio.defaultSoundMaxConcurrent);
         }
+    }
+
+    public void load(Fi file){
+        this.file = file;
+        load(file.readBytes(), false);
     }
 
     /**
@@ -64,6 +75,18 @@ public class Sound extends AudioSource{
      * @return the id of the sound instance if successful, or -1 on failure.
      */
     public int play(float volume, float pitch, float pan, boolean loop, boolean checkFrame){
+        //attempt lazy loading
+        if(handle == 0 && lazyData != null && Core.audio.initialized){
+            try{
+                //remove reference to lazy data - only attempt loading once
+                byte[] data = lazyData;
+                lazyData = null;
+                load(data, true); //TODO it is always streamed for now
+            }catch(Throwable e){
+                Log.err("Failed to load sound " + file, e);
+            }
+        }
+
         if(handle == 0 || bus == null || !Core.audio.initialized) return -1;
 
         if((checkFrame && Time.timeSinceMillis(lastTimePlayed) <= minInterval)){

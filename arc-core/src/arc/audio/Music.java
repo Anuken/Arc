@@ -30,10 +30,19 @@ import static arc.audio.Soloud.*;
  * @author mzechner
  */
 public class Music extends AudioSource{
-    @Nullable Fi file;
+    public @Nullable Fi file;
+
+    @Nullable byte[] lazyData;
     int voice = -1;
     boolean looping;
     float volume = 1f, pitch = 1f, pan = 0f;
+
+    public static Music createLazy(String name, byte[] data){
+        Music sound = new Music();
+        sound.file = new Fi(name);
+        sound.lazyData = data;
+        return sound;
+    }
 
     /** Loads music from a file. */
     public Music(Fi file) throws Exception{
@@ -45,6 +54,10 @@ public class Music extends AudioSource{
 
     }
 
+    public void load(byte[] bytes) throws Exception{
+        handle = streamLoadBytes(bytes, bytes.length);
+    }
+
     public void load(Fi file) throws Exception{
         this.file = file;
 
@@ -52,7 +65,7 @@ public class Music extends AudioSource{
         if(OS.isIos && file.type() == FileType.internal){
             try{
                 String path = Core.files.getInternalStoragePath();
-                handle = streamLoad((path.endsWith("/") ? path : path + "/") + file.path());
+                handle = streamLoadFile((path.endsWith("/") ? path : path + "/") + file.path());
                 return;
             }catch(Exception failed){}
         }
@@ -67,11 +80,11 @@ public class Music extends AudioSource{
             }
 
             try{
-                handle = streamLoad(result.file().getCanonicalPath());
+                handle = streamLoadFile(result.file().getCanonicalPath());
                 return;
             }catch(Exception e){
                 try{
-                    handle = streamLoad(result.file().getAbsolutePath());
+                    handle = streamLoadFile(result.file().getAbsolutePath());
                     return;
                 }catch(Exception ignored){
                 }
@@ -83,6 +96,18 @@ public class Music extends AudioSource{
     }
 
     public void play(){
+        //attempt lazy loading
+        if(handle == 0 && lazyData != null && Core.audio.initialized){
+            try{
+                //remove reference to lazy data - only attempt loading once
+                byte[] data = lazyData;
+                lazyData = null;
+                load(data);
+            }catch(Throwable e){
+                Log.err("Failed to load music " + file, e);
+            }
+        }
+
         if(handle == 0 || !Core.audio.initialized) return;
 
         if(idValid(voice) && idGetPause(voice)){

@@ -135,16 +135,6 @@ public class Soloud{
         return (jlong)(new Bus());
     */
 
-    static native long wavLoad(byte[] bytes, int length); /*
-        Wav* wav = new Wav();
-
-        int result = wav->loadMem((unsigned char*)bytes, length, true, true);
-
-        if(result != 0) throwError(env, result);
-
-        return (jlong)wav;
-    */
-
     static native void idSeek(int id, float seconds); /*
         soloud.seek(id, seconds);
     */
@@ -197,7 +187,37 @@ public class Soloud{
         return soloud.isValidVoiceHandle(voice);
     */
 
-    static native long streamLoad(String path); /*
+    static native long wavLoadBytes(byte[] bytes, int length); /*
+        Wav* wav = new Wav();
+
+        int result = wav->loadMem((unsigned char*)bytes, length, true, true);
+
+        if(result != 0) throwError(env, result);
+
+        return (jlong)wav;
+    */
+
+    static native long wavLoadFile(String path); /*
+        Wav* wav = new Wav();
+
+        int result = wav->load(path);
+
+        if(result != 0) throwError(env, result);
+
+        return (jlong)wav;
+    */
+
+    static native long streamLoadBytes(byte[] bytes, int length); /*
+        WavStream* stream = new WavStream();
+
+        int result = stream->loadMem((unsigned char*)bytes, length, true, true);
+
+        if(result != 0) throwError(env, result);
+
+        return (jlong)stream;
+    */
+
+    static native long streamLoadFile(String path); /*
         WavStream* stream = new WavStream();
 
         int result = stream->load(path);
