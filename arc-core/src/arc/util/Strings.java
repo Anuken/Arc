@@ -18,6 +18,17 @@ public class Strings{
 
     public static final Charset utf8 = Charset.forName("UTF-8");
 
+    public static String getFileName(String path){
+        int index = path.lastIndexOf('/');
+        return index < 0 ? path : path.substring(index + 1);
+    }
+
+    public static String getFileNameWithoutExtension(String path){
+        String name = getFileName(path);
+        int dotIndex = name.lastIndexOf('.');
+        return dotIndex == -1 ? name : name.substring(0, dotIndex);
+    }
+
     /** @return whether the name matches the query; case-insensitive. Always returns true if query is empty. */
     public static boolean matches(String query, String name){
         return query == null || query.isEmpty() || (name != null && name.toLowerCase().contains(query.toLowerCase()));
