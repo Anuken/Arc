@@ -468,6 +468,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
 
     /** Sets this array's contents to the specified array. */
     public void set(Seq<? extends T> array){
+        if(array == this) return;
         clear();
         addAll(array);
     }
