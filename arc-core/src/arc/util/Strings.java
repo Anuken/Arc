@@ -11,12 +11,25 @@ import java.util.*;
 import java.util.regex.*;
 
 public class Strings{
+    public static final Charset utf8 = Charset.forName("UTF-8");
+    public static final Charset ascii = Charset.forName("US-ASCII");
+
+    private static final byte[] hexArray = "0123456789ABCDEF".getBytes(ascii);
     private static StringBuilder tmp1 = new StringBuilder(), tmp2 = new StringBuilder();
     private static Pattern
         filenamePattern = Pattern.compile("[\0/\"<>|:*?\\\\]"),
         reservedFilenamePattern = Pattern.compile("(CON|AUX|PRN|NUL|(COM[0-9])|(LPT[0-9]))((\\..*$)|$)", Pattern.CASE_INSENSITIVE);
 
-    public static final Charset utf8 = Charset.forName("UTF-8");
+    //https://stackoverflow.com/a/9855338
+    public static String bytesToHex(byte[] bytes){
+        byte[] hexChars = new byte[bytes.length * 2];
+        for(int j = 0; j < bytes.length; j++){
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars, utf8);
+    }
 
     public static String getFileName(String path){
         int index = path.lastIndexOf('/');

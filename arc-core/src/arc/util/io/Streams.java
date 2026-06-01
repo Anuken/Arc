@@ -5,6 +5,7 @@ import arc.util.*;
 
 import java.io.*;
 import java.nio.*;
+import java.security.*;
 
 /** Provides utility methods to copy streams. */
 public final class Streams{
@@ -140,6 +141,17 @@ public final class Streams{
                 c.close();
             }catch(Throwable ignored){
             }
+        }
+    }
+
+    /** @return sha256 hash of provided byte array */
+    public static byte[] sha256(byte[] bytes){
+        try{
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            digest.update(bytes);
+            return digest.digest();
+        }catch(NoSuchAlgorithmException e){
+            throw new ArcRuntimeException(e);
         }
     }
 

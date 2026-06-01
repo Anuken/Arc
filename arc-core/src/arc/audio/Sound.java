@@ -43,6 +43,18 @@ public class Sound extends AudioSource{
         return sound;
     }
 
+    /** Creates music from an external file without copying it. */
+    public static Sound createStream(Fi file){
+        Sound sound = new Sound();
+        try{
+            sound.file = file;
+            sound.handle = streamLoadFile(file.path());
+        }catch(Exception e){
+            Log.err("Failed loading sound from " + file, e);
+        }
+        return sound;
+    }
+
     /** Creates an empty sound. This sound cannot be played until it is loaded. */
     public Sound(){
 

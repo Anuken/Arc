@@ -44,6 +44,18 @@ public class Music extends AudioSource{
         return sound;
     }
 
+    /** Creates music from an external file without copying it. */
+    public static Music create(Fi file){
+        Music music = new Music();
+        try{
+            music.file = file;
+            music.handle = streamLoadFile(file.path());
+        }catch(Exception e){
+            Log.err("Failed loading music from " + file, e);
+        }
+        return music;
+    }
+
     /** Loads music from a file. */
     public Music(Fi file) throws Exception{
         load(file);

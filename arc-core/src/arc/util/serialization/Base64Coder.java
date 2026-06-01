@@ -79,6 +79,10 @@ public class Base64Coder{
         return encode(in, regularMap.encodingMap);
     }
 
+    public static char[] encode(byte[] in, boolean urlSafe){
+        return encode(in, urlSafe ? urlsafeMap.encodingMap : regularMap.encodingMap);
+    }
+
     public static char[] encode(byte[] in, CharMap charMap){
         return encode(in, 0, in.length, charMap);
     }

@@ -2,9 +2,9 @@ package arc.files;
 
 import arc.*;
 import arc.Files.*;
-import arc.struct.*;
 import arc.func.*;
 import arc.graphics.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 
@@ -12,6 +12,7 @@ import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.nio.channels.FileChannel.*;
+import java.security.*;
 import java.util.zip.*;
 
 /**
@@ -186,6 +187,21 @@ public class Fi implements Comparable<Fi>{
     public File file(){
         if(type == FileType.external) return new File(Core.files.getExternalStoragePath(), file.getPath());
         return file;
+    }
+
+    /** @return the sha256 hash of this file. */
+    public byte[] sha256(){
+        try{
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            try(InputStream fis = read(); DigestInputStream dis = new DigestInputStream(fis, digest)){
+                byte[] buffer = new byte[8192];
+                while(dis.read(buffer) != -1) ;
+            }
+
+            return digest.digest();
+        }catch(IOException | NoSuchAlgorithmException e){
+            throw new ArcRuntimeException(e);
+        }
     }
 
     /**
