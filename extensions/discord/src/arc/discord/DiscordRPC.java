@@ -145,9 +145,9 @@ public final class DiscordRPC{
      */
     private static void checkConnected(boolean connected){
         if(connected && getStatus() != PipeStatus.connected)
-            throw new IllegalStateException(String.format("IPCClient (ID: %d) is not connected!", clientId));
+            throw new IllegalStateException("IPCClient (ID: " + clientId + ") is not connected!");
         if(!connected && getStatus() == PipeStatus.connected)
-            throw new IllegalStateException(String.format("IPCClient (ID: %d) is already connected!", clientId));
+            throw new IllegalStateException("IPCClient (ID: " + clientId + ") is already connected!");
     }
 
     static class Packet{

@@ -7,6 +7,7 @@ import arc.struct.*;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.*;
+import java.text.*;
 import java.util.*;
 import java.util.regex.*;
 
@@ -19,6 +20,18 @@ public class Strings{
     private static Pattern
         filenamePattern = Pattern.compile("[\0/\"<>|:*?\\\\]"),
         reservedFilenamePattern = Pattern.compile("(CON|AUX|PRN|NUL|(COM[0-9])|(LPT[0-9]))((\\..*$)|$)", Pattern.CASE_INSENSITIVE);
+
+    //https://stackoverflow.com/a/3758880
+    public static String formatByteCount(long bytes){
+        if(-1000 < bytes && bytes < 1000) return bytes + " B";
+
+        CharacterIterator ci = new StringCharacterIterator("kMGTPE");
+        while(bytes <= -999_950 || bytes >= 999_950){
+            bytes /= 1000;
+            ci.next();
+        }
+        return String.format("%.1f %cB", bytes / 1000.0, ci.current());
+    }
 
     //https://stackoverflow.com/a/9855338
     public static String bytesToHex(byte[] bytes){
