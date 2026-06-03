@@ -75,9 +75,7 @@ class TcpConnection{
             lastReadTime = lastWriteTime = System.currentTimeMillis();
         }catch(IOException ex){
             close();
-            IOException ioEx = new IOException(
-            "Unable to connect to: " + remoteAddress, ex);
-            throw ioEx;
+            throw new IOException("Unable to connect to: " + remoteAddress, ex);
         }
     }
 
