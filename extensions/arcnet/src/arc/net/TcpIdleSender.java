@@ -10,11 +10,15 @@ abstract public class TcpIdleSender implements NetListener{
             started = true;
             start();
         }
-        Object object = next();
-        if(object == null)
-            connection.removeListener(this);
-        else
-            connection.sendTCP(object);
+        do{
+            Object object = next();
+            if(object == null){
+                connection.removeListener(this);
+                break;
+            }else{
+                connection.sendTCP(object);
+            }
+        }while(connection.isIdle());
     }
 
     /**
