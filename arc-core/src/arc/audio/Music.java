@@ -32,17 +32,9 @@ import static arc.audio.Soloud.*;
 public class Music extends AudioSource{
     public @Nullable Fi file;
 
-    @Nullable byte[] lazyData;
     int voice = -1;
     boolean looping;
     float volume = 1f, pitch = 1f, pan = 0f;
-
-    public static Music createLazy(String name, byte[] data){
-        Music sound = new Music();
-        sound.file = new Fi(name);
-        sound.lazyData = data;
-        return sound;
-    }
 
     /** Creates music from an external file without copying it. */
     public static Music create(Fi file){
@@ -50,7 +42,7 @@ public class Music extends AudioSource{
         try{
             music.file = file;
             music.handle = streamLoadFile(file.path());
-        }catch(Exception e){
+        }catch(Throwable e){
             Log.err("Failed loading music from " + file, e);
         }
         return music;
@@ -108,18 +100,6 @@ public class Music extends AudioSource{
     }
 
     public void play(){
-        //attempt lazy loading
-        if(handle == 0 && lazyData != null && Core.audio.initialized){
-            try{
-                //remove reference to lazy data - only attempt loading once
-                byte[] data = lazyData;
-                lazyData = null;
-                load(data);
-            }catch(Throwable e){
-                Log.err("Failed to load music " + file, e);
-            }
-        }
-
         if(handle == 0 || !Core.audio.initialized) return;
 
         if(idValid(voice) && idGetPause(voice)){
