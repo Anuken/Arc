@@ -117,10 +117,9 @@ public class Music extends AudioSource{
         idPause(voice, pause);
     }
 
+    @Override
     public void stop(){
-        if(handle == 0 || voice <= 0) return;
-
-        sourceStop(handle);
+        super.stop();
         voice = 0;
     }
 
@@ -172,6 +171,13 @@ public class Music extends AudioSource{
         if(handle == 0 || voice <= 0) return;
 
         idSeek(voice, position);
+    }
+
+    /** @return length in seconds */
+    @Override
+    public float getLength(){
+        if(handle == 0 || !Core.audio.initialized) return 0f;
+        return (float)Soloud.streamLength(handle);
     }
 
     @Override

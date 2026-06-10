@@ -2,6 +2,7 @@ package arc.net;
 
 import arc.math.*;
 import arc.net.FrameworkMessage.*;
+import arc.net.Server.DiscoveryReceiver.*;
 import arc.struct.*;
 import arc.util.*;
 
@@ -652,7 +653,9 @@ public class Server implements EndPoint{
                         });
                     }
                 }catch(IOException e){
-                    ArcNet.handleError(e);
+                    if(!(e instanceof SocketException && "Socket closed".equals(e.getMessage()))){
+                        ArcNet.handleError(e);
+                    }
                 }
             });
         }

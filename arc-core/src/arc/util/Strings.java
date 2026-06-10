@@ -44,6 +44,11 @@ public class Strings{
         return new String(hexChars, utf8);
     }
 
+    public static String getFileExtension(String path){
+        int dotIndex = path.lastIndexOf('.');
+        return dotIndex == -1 ? "" : path.substring(dotIndex + 1);
+    }
+
     public static String getFileName(String path){
         int index = path.lastIndexOf('/');
         return index < 0 ? path : path.substring(index + 1);

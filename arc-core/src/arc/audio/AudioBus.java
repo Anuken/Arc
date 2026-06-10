@@ -36,9 +36,15 @@ public class AudioBus extends AudioSource{
         id = sourcePlay(handle);
     }
 
+    @Override
     public void stop(){
         Core.audio.stop(id);
         id = 0;
+    }
+
+    @Override
+    public float getLength(){
+        return 0;
     }
 
     public void fadeFilterParam(int filter, int attribute, float value, float timeSec){

@@ -239,20 +239,25 @@ public class ProgressBar extends Element implements Disableable{
      * listener.
      */
     public boolean setValue(float value){
+        return setValue(value, true);
+    }
+
+    /** Sets the value, optionally skipping the changed event. */
+    public boolean setValue(float value, boolean fireChanged){
         value = clamp(Math.round(value / stepSize) * stepSize);
         float oldValue = this.value;
         if(value == oldValue) return false;
         float oldVisualValue = getVisualValue();
         this.value = value;
-        ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class, ChangeEvent::new);
-        boolean cancelled = fire(changeEvent);
+        ChangeEvent changeEvent = fireChanged ? Pools.obtain(ChangeEvent.class, ChangeEvent::new) : null;
+        boolean cancelled = fireChanged && fire(changeEvent);
         if(cancelled)
             this.value = oldValue;
         else if(animateDuration > 0){
             animateFromValue = oldVisualValue;
             animateTime = animateDuration;
         }
-        Pools.free(changeEvent);
+        if(fireChanged) Pools.free(changeEvent);
         return !cancelled;
     }
 

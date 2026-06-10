@@ -34,12 +34,14 @@ public class Sound extends AudioSource{
     long lastTimePlayed;
     int lastVoice;
     float lastVolume;
+    boolean stream;
 
     /** Creates music from an external file without copying it. */
     public static Sound createStream(Fi file){
         Sound sound = new Sound();
         try{
             sound.file = file;
+            sound.stream = true;
             sound.handle = streamLoadFile(file.path());
         }catch(Throwable e){
             Log.err("Failed loading sound from " + file, e);
@@ -58,6 +60,7 @@ public class Sound extends AudioSource{
     }
 
     public void load(byte[] data, boolean stream){
+        this.stream = stream;
         handle = stream ? streamLoadBytes(data, data.length) : wavLoadBytes(data, data.length);
 
         if(Core.audio != null && Core.audio.defaultSoundMaxConcurrent > 0){
@@ -103,11 +106,6 @@ public class Sound extends AudioSource{
     /** Sets the bus that will be used for the next play of this SFX. */
     public void setBus(AudioBus bus){
         this.bus = bus;
-    }
-
-    public void stop(){
-        if(handle == 0) return;
-        sourceStop(handle);
     }
 
     public float calcPan(float x, float y){
@@ -242,9 +240,10 @@ public class Sound extends AudioSource{
     }
 
     /** @return length in seconds */
+    @Override
     public float getLength(){
-        if(handle == 0 || !Core.audio.initialized) return  0f;
-        return (float)Soloud.wavLength(handle);
+        if(handle == 0 || !Core.audio.initialized) return 0f;
+        return stream ? (float)Soloud.streamLength(handle) : (float)Soloud.wavLength(handle);
     }
 
     /** Sets the minimum interval for playbacks of this sound, in milliseconds. Additional playback within this interval will not play a new sound instance. */

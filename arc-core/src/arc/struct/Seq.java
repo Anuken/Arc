@@ -143,6 +143,23 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return map;
     }
 
+    public <K> ObjectMap<K, Seq<T>> groupBy(Func<T, K> keygen){
+        ObjectMap<K, Seq<T>> map = new ObjectMap<>();
+        for(int i = 0; i < size; i++){
+            T item = items[i];
+            map.get(keygen.get(item), Seq::new).add(item);
+        }
+        return map;
+    }
+
+    public <K> ObjectIntMap<K> groupByCount(Func<T, K> keygen){
+        ObjectIntMap<K> map = new ObjectIntMap<>();
+        for(int i = 0; i < size; i++){
+            map.increment(keygen.get(items[i]));
+        }
+        return map;
+    }
+
     public <K> ObjectMap<K, T> asMap(Func<T, K> keygen){
         return asMap(keygen, t -> t);
     }

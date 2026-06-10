@@ -8,6 +8,10 @@ import static arc.audio.Soloud.*;
 public abstract class AudioSource implements Disposable{
     protected long handle;
 
+    public boolean valid(){
+        return handle != 0;
+    }
+
     public void setFilter(int index, @Nullable AudioFilter filter){
         if(handle == 0) return;
         sourceFilter(handle, index, filter == null ? 0 : filter.handle);
@@ -51,6 +55,13 @@ public abstract class AudioSource implements Disposable{
         if(handle == 0 || !Core.audio.initialized) return;
         sourceSingleInstance(handle, singleInstance);
     }
+
+    public void stop(){
+        if(handle == 0) return;
+        sourceStop(handle);
+    }
+
+    public abstract float getLength();
 
     @Override
     public void dispose(){
