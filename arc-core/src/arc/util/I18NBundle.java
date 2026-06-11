@@ -76,6 +76,7 @@ public class I18NBundle{
     public static I18NBundle createEmptyBundle(){
         I18NBundle bundle = new I18NBundle();
         bundle.locale = ROOT_LOCALE;
+        bundle.formatter = new TextFormatter(Locale.ROOT, false);
         bundle.properties = new ObjectMap<>();
         return bundle;
     }
