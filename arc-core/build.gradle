@@ -96,20 +96,13 @@ jnigen{
     }
     addMac(x64, x86){
         cppIncludes += (String[])["$root/soloud/src/backend/coreaudio/*.mm"]
-        cppFlags = ["-std=c++11", "-DWITH_COREAUDIO"]
+        cppFlags += ["-std=c++11", "-DWITH_COREAUDIO"]
         libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox".split(" ")
     }
     addMac(x64, ARM){
         cppIncludes += (String[])["$root/soloud/src/backend/coreaudio/*.mm"]
-        cppFlags = ["-std=c++11", "-DWITH_COREAUDIO"]
+        cppFlags += ["-std=c++11", "-DWITH_COREAUDIO"]
         libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox".split(" ")
-    }
-    addIOS(){
-        headerDirs += (String[])["$root/iosgl"]
-        cppIncludes += (String[])["$root/soloud/src/backend/coreaudio/*.mm", "$root/iosgl/**"]
-        cppFlags += ["-stdlib=libc+", "-std=c++11", "-DWITH_COREAUDIO"]
-        libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox".split(" ")
-        linkerFlags += "-undefined dynamic_lookup"
     }
 }
 
