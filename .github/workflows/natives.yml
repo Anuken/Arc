@@ -3,7 +3,7 @@ name: Build Natives
 on: [workflow_dispatch]
 
 jobs:
-  natives-linux-arm:
+  natives-linux:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -15,13 +15,15 @@ jobs:
         uses: ./.github/workflows/build-linux-natives
         id: docker
 
-      - name: Upload artifacts
+      - name: Upload natives
         uses: actions/upload-artifact@v5
         with:
-          name: natives-linux.zip
-          path: natives-linux.zip
+          name: Arc-core MacOS natives
+          path: |
+            arc-core/build/natives
+            extensions/filedialogs/build/natives
 
-  natives-main:
+  natives-windows-android:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -37,27 +39,15 @@ jobs:
         run: |
           ./gradlew arc-core:jnigenBuildAllWindows
           ./gradlew arc-core:jnigenBuildAllAndroid
-          ./gradlew arc-core:jnigenBuildAllLinux
-          ./gradlew extensions:freetype:jnigenBuildAllWindows
-          ./gradlew extensions:freetype:jnigenBuildAllAndroid
-          ./gradlew extensions:freetype:jnigenBuildAllLinux
           ./gradlew extensions:filedialogs:jnigenBuildAllWindows
-          ./gradlew extensions:filedialogs:jnigenBuildAllLinux
         #  the SDL2 backend is being phased out
         #  ./gradlew backends:backend-sdl:jnigenBuildAllWindows
-        #  ./gradlew backends:backend-sdl:jnigenBuildAllLinux
       - name: Upload arc-core natives
         uses: actions/upload-artifact@v5
         with:
           name: Arc-core natives
           path: |
             arc-core/build/natives
-      - name: Upload freetype natives
-        uses: actions/upload-artifact@v5
-        with:
-          name: Freetype natives
-          path: |
-            extensions/freetype/build/natives
       - name: Upload filedialog natives
         uses: actions/upload-artifact@v5
         with:
