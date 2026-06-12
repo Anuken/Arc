@@ -40,6 +40,5 @@ apt-get -yq --force-yes install gcc-riscv64-linux-gnu g++-riscv64-linux-gnu libc
 ./gradlew arc-core:jnigenBuildHost extensions:filedialogs:jnigenBuildHost --no-daemon
 
 # Pack artifacts
-find .  -name "*.so" | grep "arc-core/build/natives" > native-files-list
-find .  -name "*.so" | grep "extensions/filedialogs/build/natives" > native-files-list
+find .  -name "*.so" | grep "arc-core/build/natives" "extensions/filedialogs/build/natives" > native-files-list
 zip natives-linux -@ < native-files-list
