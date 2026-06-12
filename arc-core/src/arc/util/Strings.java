@@ -19,6 +19,7 @@ public class Strings{
     private static StringBuilder tmp1 = new StringBuilder(), tmp2 = new StringBuilder();
     private static Pattern
         filenamePattern = Pattern.compile("[\0/\"<>|:*?\\\\]"),
+        unsafeFilenamePattern = Pattern.compile("[\0/\"'<>|:*!?\\\\]"),
         reservedFilenamePattern = Pattern.compile("(CON|AUX|PRN|NUL|(COM[0-9])|(LPT[0-9]))((\\..*$)|$)", Pattern.CASE_INSENSITIVE);
 
     //https://stackoverflow.com/a/3758880
@@ -274,6 +275,10 @@ public class Strings{
             str = "_" + str;
         }
         return filenamePattern.matcher(str).replaceAll("_");
+    }
+
+    public static boolean isSafeFilename(String name){
+        return !name.equals(".") && !name.equals("..") && !reservedFilenamePattern.matcher(name).matches() && !unsafeFilenamePattern.matcher(name).find();
     }
 
     public static String encode(String str){

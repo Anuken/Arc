@@ -37,8 +37,8 @@ apt-get -yq --force-yes install gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf 
 apt-get -yq --force-yes install gcc-riscv64-linux-gnu g++-riscv64-linux-gnu libc6-dev-riscv64-cross
 
 # Build Linux natives
-./gradlew arc-core:jnigenBuildAllLinux --no-daemon
+./gradlew arc-core:jnigenBuildHost --no-daemon
 
 # Pack artifacts
-find .  -name "*.so" | grep "arc-core/libs" > native-files-list
+find .  -name "*.so" | grep "arc-core/build/natives" > native-files-list
 zip natives-linux -@ < native-files-list

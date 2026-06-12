@@ -43,7 +43,7 @@ jobs:
           ./gradlew extensions:freetype:jnigenBuildAllLinux
           ./gradlew extensions:filedialogs:jnigenBuildAllWindows
           ./gradlew extensions:filedialogs:jnigenBuildAllLinux
-        #  the SDL2 backend is being phased out  
+        #  the SDL2 backend is being phased out
         #  ./gradlew backends:backend-sdl:jnigenBuildAllWindows
         #  ./gradlew backends:backend-sdl:jnigenBuildAllLinux
       - name: Upload arc-core natives
@@ -80,24 +80,14 @@ jobs:
         env:
           MACOSX_DEPLOYMENT_TARGET: '10.9'
         run: |
-          ./gradlew arc-core:jnigenBuildAllMacOS
-          ./gradlew backends:backend-sdl:jnigenBuildAllMacOS
-      #   ./gradlew extensions:freetype:jnigenBuildAllMacOS
+          ./gradlew arc-core:jnigenBuildAllMacOsX
+          ./gradlew extensions:freetype:jnigenBuildAllMacOsX
+          ./gradlew extensions:filedialogs:jnigenBuildAllMacOsX
       - name: Upload natives
         uses: actions/upload-artifact@v5
         with:
           name: Arc-core MacOS natives
           path: |
-            natives/natives-desktop/libs/libarc64.dylib
-            natives/natives-desktop/libs/libarcarm64.dylib
-          #  natives/natives-freetype-desktop/libs/libarc-freetype64.dylib
-          #  natives/natives-freetype-desktop/libs/libarc-freetypearm64.dylib
-          #  backends/backend-sdl/libs/macosx64/libsdl-arc64.dylib
-         #   backends/backend-sdl/libs/macosx64/libsdl-arcarm64.dylib
-      - name: Upload iOS natives
-        uses: actions/upload-artifact@v5
-        with:
-          name: Arc-core iOS natives
-          path: |
-            natives/natives-ios/libs/libarc.a
-            natives/natives-freetype-ios/libs/libarc-freetype.a
+            arc-core/build/natives
+            extensions/freetype/build/natives
+            extensions/filedialogs/build/natives
