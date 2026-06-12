@@ -15,11 +15,13 @@ jobs:
         uses: ./.github/workflows/build-linux-natives
         id: docker
 
-      - name: Upload artifacts
+      - name: Upload natives
         uses: actions/upload-artifact@v5
         with:
-          name: natives-linux.zip
-          path: natives-linux.zip
+          name: Arc-core MacOS natives
+          path: |
+            arc-core/build/natives
+            extensions/filedialogs/build/natives
 
   natives-windows-android:
     runs-on: ubuntu-latest
