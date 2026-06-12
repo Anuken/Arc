@@ -38,9 +38,6 @@ jobs:
           ./gradlew arc-core:jnigenBuildAllWindows
           ./gradlew arc-core:jnigenBuildAllAndroid
           ./gradlew arc-core:jnigenBuildAllLinux
-          ./gradlew extensions:freetype:jnigenBuildAllWindows
-          ./gradlew extensions:freetype:jnigenBuildAllAndroid
-          ./gradlew extensions:freetype:jnigenBuildAllLinux
           ./gradlew extensions:filedialogs:jnigenBuildAllWindows
           ./gradlew extensions:filedialogs:jnigenBuildAllLinux
         #  the SDL2 backend is being phased out
