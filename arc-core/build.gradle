@@ -106,9 +106,9 @@ jnigen{
     }
     addIOS(){
         headerDirs += (String[])["$root/iosgl"]
-        cppIncludes += (String[])["$root/soloud/src/backend/coreaudio/*.mm", "$root/iosgl/**"]
-        cppFlags += ["-stdlib=libc+", "-std=c++11", "-DWITH_COREAUDIO"]
-        libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox".split(" ")
+        cppIncludes += (String[])["$root/soloud/src/backend/coreaudio/*.mm", "$root/iosgl/**.cpp"]
+        cppFlags += ["-stdlib=libc++", "-std=c++11", "-DWITH_COREAUDIO"]
+        libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox -Wl,-framework,OpenGLES -Wl,-framework,AVFoundation -Wl,-framework,Foundation".split(" ")
         linkerFlags += "-undefined dynamic_lookup"
     }
 }
