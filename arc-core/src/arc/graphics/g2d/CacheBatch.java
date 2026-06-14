@@ -5,7 +5,7 @@ import arc.graphics.gl.*;
 import arc.math.*;
 
 public class CacheBatch extends Batch{
-    SpriteCache cache;
+    public SpriteCache cache;
     float[] tmpVertices = new float[20];
 
     public CacheBatch(int size){
