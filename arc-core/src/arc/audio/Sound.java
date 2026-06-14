@@ -36,6 +36,9 @@ public class Sound extends AudioSource{
     float lastVolume;
     boolean stream;
 
+    boolean lazyLoad = false;
+    volatile boolean currentlyLoading;
+
     /** Creates music from an external file without copying it. */
     public static Sound createStream(Fi file){
         Sound sound = new Sound();
@@ -73,6 +76,11 @@ public class Sound extends AudioSource{
         load(file.readBytes(), false);
     }
 
+    public void loadLazy(Fi file){
+        this.file = file;
+        this.lazyLoad = true;
+    }
+
     /**
      * Plays the sound. If the sound is already playing, it will be played again, concurrently.
      * @param volume the volume in the range [0,1]
@@ -82,6 +90,27 @@ public class Sound extends AudioSource{
      * @return the id of the sound instance if successful, or -1 on failure.
      */
     public int play(float volume, float pitch, float pan, boolean loop, boolean checkFrame){
+        if(handle == 0 && lazyLoad && !currentlyLoading && file != null){
+            currentlyLoading = true;
+            float fvolume = volume, fpitch = pitch, fpan = pan;
+            Core.executor.submit(() -> {
+                try{
+                    //make sure it doesn't attempt lazy loading again
+                    lazyLoad = false;
+                    load(file);
+                    setParamsAfterLoad();
+                    currentlyLoading = false;
+
+                    if(!loop){
+                        play(fvolume, fpitch, fpan, loop, checkFrame);
+                    }
+                }catch(Exception err){
+                    Log.err("Error loading sound: " + file, err);
+                }
+            });
+        }
+        if(currentlyLoading) return -1;
+
         if(handle == 0 || bus == null || !Core.audio.initialized) return -1;
 
         if((checkFrame && Time.timeSinceMillis(lastTimePlayed) <= minInterval)){

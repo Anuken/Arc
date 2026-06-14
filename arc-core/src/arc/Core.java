@@ -8,7 +8,9 @@ import arc.graphics.GL30;
 import arc.graphics.g2d.Batch;
 import arc.graphics.g2d.TextureAtlas;
 import arc.scene.Scene;
-import arc.util.I18NBundle;
+import arc.util.*;
+
+import java.util.concurrent.*;
 
 /**
  * Global references to all of Arc's core modules.
@@ -27,6 +29,7 @@ public class Core{
     public static Scene scene;
     public static AssetManager assets;
     public static TextureAtlas atlas;
+    public static ExecutorService executor = Threads.executor("Main Executor", OS.cores);
 
     public static GL20 gl;
     public static GL20 gl20;
