@@ -260,7 +260,7 @@ public class SpriteCache implements Disposable{
     }
 
     public int getSpritesUsed(){
-        return mesh.getVerticesBuffer().position() / (vertexSize * (mesh.getNumIndices() > 0 ? 4 : 6));
+        return (caches.isEmpty() ? 0 : caches.peek().offset + caches.peek().maxCount) / (vertexSize * (mesh.getNumIndices() > 0 ? 4 : 6));
     }
 
     public int getSpriteCapacity(){
