@@ -90,6 +90,8 @@ public class Sound extends AudioSource{
      * @return the id of the sound instance if successful, or -1 on failure.
      */
     public int play(float volume, float pitch, float pan, boolean loop, boolean checkFrame){
+        if(!Core.audio.initialized || currentlyLoading) return -1;
+
         if(handle == 0 && lazyLoad && !currentlyLoading && file != null){
             currentlyLoading = true;
             float fvolume = volume, fpitch = pitch, fpan = pan;
@@ -104,14 +106,13 @@ public class Sound extends AudioSource{
                     if(!loop){
                         play(fvolume, fpitch, fpan, loop, checkFrame);
                     }
-                }catch(Exception err){
+                }catch(Throwable err){
                     Log.err("Error loading sound: " + file, err);
                 }
             });
         }
-        if(currentlyLoading) return -1;
 
-        if(handle == 0 || bus == null || !Core.audio.initialized) return -1;
+        if(handle == 0 || bus == null) return -1;
 
         if((checkFrame && Time.timeSinceMillis(lastTimePlayed) <= minInterval)){
             //when a sound was already played this frame, intensify the volume of the last played voice instead of playing a new one
