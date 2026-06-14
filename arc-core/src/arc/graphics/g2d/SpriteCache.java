@@ -571,7 +571,7 @@ public class SpriteCache implements Disposable{
     @Override
     public void dispose(){
         mesh.dispose();
-        if(shader != null) shader.dispose();
+        if(shader != null && shader != getDefaultShader()) shader.dispose();
     }
 
     public Mat getProjectionMatrix(){
