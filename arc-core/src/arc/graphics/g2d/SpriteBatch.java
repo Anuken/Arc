@@ -27,6 +27,9 @@ public class SpriteBatch extends Batch{
     private static final int initialSize = 10000;
     private static final float[] emptyVertices = new float[0];
 
+    /** Counts up for every draw call. Only ever reset by the user. */
+    public static long totalDrawCalls = 0;
+
     static ForkJoinHolder commonPool;
     boolean multithreaded = Core.app != null && ((Core.app.getVersion() >= 21 && !Core.app.isIOS()) || Core.app.isDesktop());
 
@@ -179,6 +182,8 @@ public class SpriteBatch extends Batch{
 
     @Override
     protected void draw(Texture texture, float[] spriteVertices, int offset, int count){
+        totalDrawCalls += count / SPRITE_SIZE;
+
         if(sort && !flushing){
             int num = numRequests;
             if(num > 0){
@@ -229,6 +234,8 @@ public class SpriteBatch extends Batch{
 
     @Override
     protected void draw(Runnable request){
+        totalDrawCalls ++; //not accurate since there can be multiple draws inside the runnable, but it's the best that can be done
+
         if(sort && !flushing){
             if(numRequests >= requests.length) expandRequests();
             final DrawRequest req = requests[numRequests];
