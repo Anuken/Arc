@@ -7,6 +7,7 @@ import arc.struct.*;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.*;
+import java.security.*;
 import java.text.*;
 import java.util.*;
 import java.util.regex.*;
@@ -21,6 +22,16 @@ public class Strings{
         filenamePattern = Pattern.compile("[\0/\"<>|:*?\\\\]"),
         unsafeFilenamePattern = Pattern.compile("[\0/\"'<>|:*!?\\\\]"),
         reservedFilenamePattern = Pattern.compile("(CON|AUX|PRN|NUL|(COM[0-9])|(LPT[0-9]))((\\..*$)|$)", Pattern.CASE_INSENSITIVE);
+
+    /** @return sha256 hash of the given string */
+    public static byte[] sha256(String str){
+        try{
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            return digest.digest(str.getBytes(utf8));
+        }catch(NoSuchAlgorithmException e){
+            throw new ArcRuntimeException(e);
+        }
+    }
 
     //https://stackoverflow.com/a/3758880
     public static String formatByteCount(long bytes){

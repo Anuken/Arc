@@ -129,6 +129,10 @@ public class TextureAtlas implements Disposable{
         return region.pixmapRegion;
     }
 
+    public PixmapRegion getPixmap(TextureRegion region){
+        return getPixmap((AtlasRegion)region);
+    }
+
     public ObjectMap<Texture, Pixmap> getPixmaps(){
         return pixmaps;
     }
@@ -138,10 +142,6 @@ public class TextureAtlas implements Disposable{
             pixmaps.get(texture).dispose();
         }
         pixmaps.remove(texture);
-    }
-
-    public PixmapRegion getPixmap(TextureRegion region){
-        return getPixmap((AtlasRegion)region);
     }
 
     /** Adds a region to the atlas. The specified texture will be disposed when the atlas is disposed. */

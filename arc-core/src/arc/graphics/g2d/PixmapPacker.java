@@ -718,6 +718,7 @@ public class PixmapPacker implements Disposable{
                 packer.pages.add(page);
                 node = insert(page.root, rect);
             }
+            if(node == null) throw new ArcRuntimeException("Failed to pack sprite '" + name + "' of size " + (int)rect.width + "x" + (int)rect.height + " into page of size " + (int)page.root.rect.width + "x" + (int)page.root.rect.height);
             node.full = true;
             rect.set(node.rect.x, node.rect.y, node.rect.width - padding, node.rect.height - padding);
             return page;
