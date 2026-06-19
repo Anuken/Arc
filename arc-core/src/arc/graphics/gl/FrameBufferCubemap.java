@@ -78,8 +78,14 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap>{
 
     @Override
     protected Cubemap createTexture(FrameBufferTextureAttachmentSpec attachmentSpec){
-        GLOnlyTextureData data = new GLOnlyTextureData(bufferBuilder.width, bufferBuilder.height, 0, attachmentSpec.internalFormat, attachmentSpec.format, attachmentSpec.type);
-        Cubemap result = new Cubemap(data, data, data, data, data, data);
+        Cubemap result = new Cubemap();
+        result.bind();
+
+        //TODO: probably doesn't work
+        for(int i = 0; i < 6; i++){
+            Gl.texImage2D(GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, attachmentSpec.internalFormat,bufferBuilder.width, bufferBuilder.height, 0, attachmentSpec.format, attachmentSpec.type, null);
+        }
+
         result.setFilter(TextureFilter.linear, TextureFilter.linear);
         result.setWrap(TextureWrap.clampToEdge, TextureWrap.clampToEdge);
         return result;

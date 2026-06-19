@@ -4,7 +4,7 @@ import arc.assets.*;
 import arc.files.*;
 import arc.graphics.*;
 import arc.graphics.Texture.*;
-import arc.struct.*;
+import arc.util.*;
 
 /**
  * {@link AssetLoader} for {@link Texture} instances. The pixel data is loaded asynchronously. The texture is then created on the
@@ -14,7 +14,7 @@ import arc.struct.*;
  * @author mzechner
  */
 public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoader.TextureParameter>{
-    TextureLoaderInfo info = new TextureLoaderInfo();
+    final TextureLoaderInfo info = new TextureLoaderInfo();
 
     public TextureLoader(FileHandleResolver resolver){
         super(resolver);
@@ -22,33 +22,17 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 
     @Override
     public void loadAsync(AssetManager manager, String fileName, Fi file, TextureParameter parameter){
-        info.filename = fileName;
-        if(parameter == null || parameter.textureData == null){
-            boolean genMipMaps = false;
-            info.texture = null;
-
-            if(parameter != null){
-                genMipMaps = parameter.genMipMaps;
-                info.texture = parameter.texture;
-            }
-
-            info.data = TextureData.load(file, genMipMaps);
-        }else{
-            info.data = parameter.textureData;
-            info.texture = parameter.texture;
-        }
-        if(!info.data.isPrepared()) info.data.prepare();
+        info.pixmap = new Pixmap(file);
     }
 
     @Override
     public Texture loadSync(AssetManager manager, String fileName, Fi file, TextureParameter parameter){
-        if(info == null) return null;
-        Texture texture = info.texture;
-        if(texture != null){
-            texture.load(info.data);
-        }else{
-            texture = new Texture(info.data);
-        }
+
+        Texture texture = parameter == null ? null : parameter.texture;
+        if(texture == null) texture = new Texture();
+
+        texture.load(info.pixmap, true, parameter != null && parameter.genMipMaps);
+
         if(parameter != null){
             texture.setFilter(parameter.minFilter, parameter.magFilter);
             texture.setWrap(parameter.wrapU, parameter.wrapV);
@@ -56,24 +40,15 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
         return texture;
     }
 
-    @Override
-    public Seq<AssetDescriptor> getDependencies(String fileName, Fi file, TextureParameter parameter){
-        return null;
-    }
-
     public static class TextureLoaderInfo{
-        String filename;
-        TextureData data;
-        Texture texture;
+        Pixmap pixmap;
     }
 
     public static class TextureParameter extends AssetLoaderParameters<Texture>{
         /** whether to generate mipmaps **/
         public boolean genMipMaps = false;
-        /** The texture to put the {@link TextureData} in, optional. **/
-        public Texture texture = null;
-        /** TextureData for textures created on the fly, optional. When set, all format and genMipMaps are ignored */
-        public TextureData textureData = null;
+        /** The texture to put the data in, optional. **/
+        public @Nullable Texture texture = null;
         public TextureFilter minFilter = TextureFilter.nearest;
         public TextureFilter magFilter = TextureFilter.nearest;
         public TextureWrap wrapU = TextureWrap.clampToEdge;

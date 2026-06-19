@@ -2,8 +2,6 @@ package arc.graphics;
 
 import arc.*;
 import arc.files.*;
-import arc.graphics.Texture.*;
-import arc.graphics.gl.*;
 import arc.math.geom.*;
 
 /**
@@ -11,13 +9,9 @@ import arc.math.geom.*;
  * @author Xoppa
  */
 public class Cubemap extends GLTexture{
-    protected CubemapData data;
 
-    /** Construct a Cubemap based on the given CubemapData. */
-    public Cubemap(CubemapData data){
+    public Cubemap(){
         super(GL20.GL_TEXTURE_CUBE_MAP);
-        this.data = data;
-        load(data);
     }
 
     public Cubemap(String base){
@@ -37,71 +31,39 @@ public class Cubemap extends GLTexture{
 
     /** Construct a Cubemap with the specified texture files for the sides, optionally generating mipmaps. */
     public Cubemap(Fi positiveX, Fi negativeX, Fi positiveY, Fi negativeY, Fi positiveZ, Fi negativeZ, boolean useMipMaps){
-        this(TextureData.load(positiveX, useMipMaps), TextureData.load(negativeX, useMipMaps),
-        TextureData.load(positiveY, useMipMaps), TextureData.load(negativeY, useMipMaps),
-        TextureData.load(positiveZ, useMipMaps), TextureData.load(negativeZ, useMipMaps));
-    }
+        this();
 
-    /** Construct a Cubemap with the specified {@link Pixmap}s for the sides, does not generate mipmaps. */
-    public Cubemap(Pixmap positiveX, Pixmap negativeX, Pixmap positiveY, Pixmap negativeY, Pixmap positiveZ, Pixmap negativeZ){
-        this(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ, false);
+        load(new Pixmap[]{
+            new Pixmap(positiveX),
+            new Pixmap(negativeX),
+            new Pixmap(positiveY),
+            new Pixmap(negativeY),
+            new Pixmap(positiveZ),
+            new Pixmap(negativeZ)
+        }, useMipMaps, true);
     }
 
     /** Construct a Cubemap with the specified {@link Pixmap}s for the sides, optionally generating mipmaps. */
     public Cubemap(Pixmap positiveX, Pixmap negativeX, Pixmap positiveY, Pixmap negativeY, Pixmap positiveZ, Pixmap negativeZ, boolean useMipMaps){
-        this(
-        positiveX == null ? null : new PixmapTextureData(positiveX, useMipMaps, false),
-        negativeX == null ? null : new PixmapTextureData(negativeX, useMipMaps, false),
-        positiveY == null ? null : new PixmapTextureData(positiveY, useMipMaps, false),
-        negativeY == null ? null : new PixmapTextureData(negativeY, useMipMaps, false),
-        positiveZ == null ? null : new PixmapTextureData(positiveZ, useMipMaps, false),
-        negativeZ == null ? null : new PixmapTextureData(negativeZ, useMipMaps, false)
-        );
+        this();
+
+        load(new Pixmap[]{positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ}, useMipMaps, false);
     }
 
-    /** Construct a Cubemap with {@link Pixmap}s for each side of the specified size. */
-    public Cubemap(int width, int height, int depth){
-        this(
-        new PixmapTextureData(new Pixmap(depth, height), false, true),
-        new PixmapTextureData(new Pixmap(depth, height), false, true),
-        new PixmapTextureData(new Pixmap(width, depth), false, true),
-        new PixmapTextureData(new Pixmap(width, depth), false, true),
-        new PixmapTextureData(new Pixmap(width, height), false, true),
-        new PixmapTextureData(new Pixmap(width, height), false, true)
-        );
-    }
-
-    /** Construct a Cubemap with the specified {@link TextureData}'s for the sides */
-    public Cubemap(TextureData positiveX, TextureData negativeX, TextureData positiveY, TextureData negativeY,
-                   TextureData positiveZ, TextureData negativeZ){
-        super(GL20.GL_TEXTURE_CUBE_MAP);
-        minFilter = TextureFilter.nearest;
-        magFilter = TextureFilter.nearest;
-        uWrap = TextureWrap.clampToEdge;
-        vWrap = TextureWrap.clampToEdge;
-        data = new FacedCubemapData(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ);
-        load(data);
-    }
-
-    /** Sets the sides of this cubemap to the specified {@link CubemapData}. */
-    public void load(CubemapData data){
-        if(!data.isPrepared()) data.prepare();
-        this.width = data.getWidth();
-        this.height = data.getHeight();
+    public void load(Pixmap[] pixmaps, boolean useMipMaps, boolean disposePixmaps){
+        this.width = pixmaps[0].getWidth();
+        this.height = pixmaps[0].getHeight();
         bind();
         setFilter(minFilter, magFilter);
         setWrap(uWrap, vWrap);
-        data.consumeCubemapData();
-        Gl.bindTexture(glTarget, 0);
-    }
 
-    public CubemapData getCubemapData(){
-        return data;
-    }
+        for(int i = 0; i < pixmaps.length; i++){
+            Pixmap pixmap = pixmaps[i];
+            Gl.texImage2D(GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, pixmap.getGLInternalFormat(), pixmap.width, pixmap.height, 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.pixels);
+            if(disposePixmaps) pixmap.dispose();
+        }
 
-    @Override
-    public int getDepth(){
-        return 0;
+        if(useMipMaps) Gl.generateMipmap(glTarget);
     }
 
     /** Enum to identify each side of a Cubemap */
@@ -136,11 +98,6 @@ public class Cubemap extends GLTexture{
             this.glEnum = glEnum;
             this.up = new Vec3(upX, upY, upZ);
             this.direction = new Vec3(directionX, directionY, directionZ);
-        }
-
-        /** @return The OpenGL target (used for glTexImage2D) of the side. */
-        public int getGLEnum(){
-            return glEnum;
         }
 
         /** @return The up vector of the side. */

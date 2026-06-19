@@ -5,7 +5,7 @@ import arc.files.*;
 import arc.graphics.*;
 import arc.graphics.Pixmap.*;
 import arc.graphics.Texture.*;
-import arc.struct.*;
+import arc.util.*;
 
 /**
  * {@link AssetLoader} for {@link Cubemap} instances. The pixel data is loaded asynchronously. The texture is then created on the
@@ -15,7 +15,8 @@ import arc.struct.*;
  * @author mzechner, Vincent Bousquet
  */
 public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoader.CubemapParameter>{
-    CubemapLoaderInfo info = new CubemapLoaderInfo();
+    private static final String[] names = {"right.png", "left.png", "top.png", "bottom.png", "front.png", "back.png"};
+    final CubemapLoaderInfo info = new CubemapLoaderInfo();
 
     public CubemapLoader(FileHandleResolver resolver){
         super(resolver);
@@ -23,29 +24,20 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
 
     @Override
     public void loadAsync(AssetManager manager, String fileName, Fi file, CubemapParameter parameter){
-        info.filename = fileName;
-        if(parameter == null || parameter.cubemapData == null){
-            info.cubemap = null;
-
-            if(parameter != null){
-                info.cubemap = parameter.cubemap;
-            }
-        }else{
-            info.data = parameter.cubemapData;
-            info.cubemap = parameter.cubemap;
+        info.pixmaps = new Pixmap[6];
+        for(int i = 0; i < 6; i++){
+            info.pixmaps[i] = new Pixmap(file.sibling(file.nameWithoutExtension() + names[i]));
         }
-        if(!info.data.isPrepared()) info.data.prepare();
     }
 
     @Override
     public Cubemap loadSync(AssetManager manager, String fileName, Fi file, CubemapParameter parameter){
-        if(info == null) return null;
-        Cubemap cubemap = info.cubemap;
-        if(cubemap != null){
-            cubemap.load(info.data);
-        }else{
-            cubemap = new Cubemap(info.data);
-        }
+        if(info.pixmaps == null) return null;
+
+        Cubemap cubemap = parameter == null ? null : parameter.cubemap;
+        if(cubemap == null) cubemap = new Cubemap();
+        cubemap.load(info.pixmaps, parameter != null && parameter.mipmaps, true);
+
         if(parameter != null){
             cubemap.setFilter(parameter.minFilter, parameter.magFilter);
             cubemap.setWrap(parameter.wrapU, parameter.wrapV);
@@ -53,24 +45,16 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
         return cubemap;
     }
 
-    @Override
-    public Seq<AssetDescriptor> getDependencies(String fileName, Fi file, CubemapParameter parameter){
-        return null;
-    }
-
     public static class CubemapLoaderInfo{
-        String filename;
-        CubemapData data;
-        Cubemap cubemap;
+        Pixmap[] pixmaps;
     }
 
     public static class CubemapParameter extends AssetLoaderParameters<Cubemap>{
         /** the format of the final Texture. Uses the source images format if null **/
         public Format format = null;
-        /** The texture to put the {@link TextureData} in, optional. **/
-        public Cubemap cubemap = null;
-        /** CubemapData for textures created on the fly, optional. When set, all format and genMipMaps are ignored */
-        public CubemapData cubemapData = null;
+        /** The texture to put the data in, optional. **/
+        public @Nullable Cubemap cubemap = null;
+        public boolean mipmaps;
         public TextureFilter minFilter = TextureFilter.nearest;
         public TextureFilter magFilter = TextureFilter.nearest;
         public TextureWrap wrapU = TextureWrap.clampToEdge;

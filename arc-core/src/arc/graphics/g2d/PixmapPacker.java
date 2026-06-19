@@ -3,7 +3,6 @@ package arc.graphics.g2d;
 import arc.graphics.*;
 import arc.graphics.Texture.*;
 import arc.graphics.g2d.PixmapPacker.SkylineStrategy.SkylinePage.*;
-import arc.graphics.gl.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
@@ -82,6 +81,7 @@ public class PixmapPacker implements Disposable{
     boolean stripWhitespaceX, stripWhitespaceY;
     Color transparentColor = new Color(0f, 0f, 0f, 0f);
     PackStrategy packStrategy;
+    @Nullable Texture targetTexture;
 
     /**
      * Uses {@link GuillotineStrategy}.
@@ -116,6 +116,10 @@ public class PixmapPacker implements Disposable{
         this.stripWhitespaceX = stripWhitespaceX;
         this.stripWhitespaceY = stripWhitespaceY;
         this.packStrategy = packStrategy;
+    }
+
+    public void setTargetTexture(Texture targetTexture){
+        this.targetTexture = targetTexture;
     }
 
     /**
@@ -408,7 +412,6 @@ public class PixmapPacker implements Disposable{
                     atlas.getRegionMap().put(name, region);
                 }
                 if(clearRects) page.addedRects.clear();
-                atlas.getTextures().add(page.texture);
             }
         }
     }
@@ -632,10 +635,10 @@ public class PixmapPacker implements Disposable{
             if(transparentColor.rgba() != 0){
                 this.image.fill(transparentColor);
             }
-        }
 
-        public Page(Pixmap pixmap){
-            this.image = pixmap;
+            if(packer.targetTexture != null){
+                this.texture = packer.targetTexture;
+            }
         }
 
         public void setDirty(boolean dirty){
@@ -666,15 +669,11 @@ public class PixmapPacker implements Disposable{
         public boolean updateTexture(TextureFilter minFilter, TextureFilter magFilter, boolean useMipMaps){
             if(texture != null){
                 if(!dirty) return false;
-                texture.load(texture.getTextureData());
+
+                //this doesn't update mipmaps, but for UI, I don't care
+                texture.draw(image);
             }else{
-                texture = new Texture(new PixmapTextureData(image, useMipMaps, false)){
-                    @Override
-                    public void dispose(){
-                        super.dispose();
-                        image.dispose();
-                    }
-                };
+                texture = new Texture(image, useMipMaps);
                 texture.setFilter(minFilter, magFilter);
             }
             dirty = false;
@@ -777,15 +776,6 @@ public class PixmapPacker implements Disposable{
 
             public GuillotinePage(PixmapPacker packer){
                 super(packer);
-                root = new Node();
-                root.rect.x = packer.padding;
-                root.rect.y = packer.padding;
-                root.rect.width = packer.pageWidth - packer.padding * 2;
-                root.rect.height = packer.pageHeight - packer.padding * 2;
-            }
-
-            public GuillotinePage(PixmapPacker packer, Pixmap base){
-                super(base);
                 root = new Node();
                 root.rect.x = packer.padding;
                 root.rect.y = packer.padding;

@@ -2,7 +2,6 @@ package arc.graphics;
 
 import arc.*;
 import arc.files.*;
-import arc.graphics.gl.*;
 
 /**
  * A Texture wraps a standard OpenGL ES texture.
@@ -20,7 +19,14 @@ import arc.graphics.gl.*;
  * @author badlogicgames@gmail.com
  */
 public class Texture extends GLTexture{
-    TextureData data;
+
+    protected Texture(int target, int handle){
+        super(target, handle);
+    }
+
+    public Texture(){
+        super(Gl.texture2d, Gl.genTexture());
+    }
 
     public Texture(String internalPath){
         this(Core.files.internal(internalPath));
@@ -31,54 +37,40 @@ public class Texture extends GLTexture{
     }
 
     public Texture(Fi file, boolean useMipMaps){
-        this(TextureData.load(file, useMipMaps));
+        this();
+        load(file, useMipMaps);
     }
 
     public Texture(Pixmap pixmap){
-        this(new PixmapTextureData(pixmap, false, false));
+        this(pixmap, false);
     }
 
     public Texture(Pixmap pixmap, boolean useMipMaps){
-        this(new PixmapTextureData(pixmap, useMipMaps, false));
+        this();
+        load(pixmap, useMipMaps, false);
     }
 
-    public Texture(int width, int height){
-        this(new PixmapTextureData(new Pixmap(width, height), false, true));
+    public void load(Fi file, boolean mipmaps){
+        load(new Pixmap(file), mipmaps, true);
     }
 
-    public Texture(TextureData data){
-        this(GL20.GL_TEXTURE_2D, Gl.genTexture(), data);
+    public void load(Pixmap pixmap){
+        load(pixmap, false, false);
     }
 
-    /** For use in mocking only! */
-    protected Texture(){
-        super(0, 0);
-    }
-
-    protected Texture(int glTarget, int glHandle, TextureData data){
-        super(glTarget, glHandle);
-        load(data);
-    }
-
-    public static Texture createEmpty(TextureData data){
-        Texture tex = new Texture();
-        tex.data = data;
-        return tex;
-    }
-
-    public void load(TextureData data){
-        this.data = data;
-        this.width = data.getWidth();
-        this.height = data.getHeight();
-
-        if(!data.isPrepared()) data.prepare();
+    public void load(Pixmap pixmap, boolean mipmaps, boolean dispose){
+        this.width = pixmap.getWidth();
+        this.height = pixmap.getHeight();
 
         bind();
-        uploadImageData(Gl.texture2d, data);
-
         setFilter(minFilter, magFilter);
         setWrap(uWrap, vWrap);
-        Gl.bindTexture(glTarget, 0);
+
+        Gl.texImage2D(glTarget, 0, pixmap.getGLInternalFormat(), pixmap.width, pixmap.height, 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.pixels);
+
+        if(mipmaps) Gl.generateMipmap(glTarget);
+
+        if(dispose) pixmap.dispose();
     }
 
     public void draw(Pixmap pixmap){
@@ -102,19 +94,9 @@ public class Texture extends GLTexture{
         return 0;
     }
 
-    public TextureData getTextureData(){
-        return data;
-    }
-
     @Override
     public boolean isDisposed(){
         return glHandle == 0;
-    }
-
-    @Override
-    public String toString(){
-        if(data instanceof FileTextureData) return data.toString();
-        return super.toString();
     }
 
     public enum TextureFilter{

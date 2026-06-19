@@ -82,6 +82,7 @@ public final class PingPongBuffer{
         this.buffer1.resize(width, height);
         this.buffer2.resize(width, height);
         rebind();
+        clear(Color.clear);
     }
 
     /**

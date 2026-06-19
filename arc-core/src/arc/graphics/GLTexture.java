@@ -30,38 +30,10 @@ public abstract class GLTexture implements Disposable{
         this.glHandle = glHandle;
     }
 
-    protected static void uploadImageData(int target, TextureData data){
-        uploadImageData(target, data, 0);
-    }
-
-    public static void uploadImageData(int target, TextureData data, int miplevel){
-        if(data == null){
-            return;
-        }
-
-        if(!data.isPrepared()) data.prepare();
-
-        if(data.isCustom()){
-            data.consumeCustomData(target);
-            return;
-        }
-
-        Pixmap pixmap = data.consumePixmap();
-        boolean disposePixmap = data.disposePixmap();
-
-        //note that pixmap data is always 4-byte aligned, no padding between rows; GL_UNPACK_ALIGNMENT is unnecessary
-
-        if(data.useMipMaps()){
-            Gl.texImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.width, pixmap.height, 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.pixels);
-            Gl.generateMipmap(target);
-        }else{
-            Gl.texImage2D(target, miplevel, pixmap.getGLInternalFormat(), pixmap.width, pixmap.height, 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.pixels);
-        }
-        if(disposePixmap) pixmap.dispose();
-    }
-
     /** @return the depth of the texture in pixels */
-    public abstract int getDepth();
+    public int getDepth(){
+        return 0;
+    }
 
     /**
      * Binds this texture. The texture will be bound to the currently active texture unit specified via

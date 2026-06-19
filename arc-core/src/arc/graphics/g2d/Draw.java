@@ -433,7 +433,7 @@ public class Draw{
     }
 
     public static void flush(){
-        batch.flush();
+        if(batch != null) batch.flush();
     }
 
     /** Discards any pending batched sprites. */

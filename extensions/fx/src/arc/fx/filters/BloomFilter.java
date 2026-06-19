@@ -1,5 +1,6 @@
 package arc.fx.filters;
 
+import arc.*;
 import arc.fx.*;
 import arc.fx.util.*;
 import arc.graphics.Blending;
@@ -67,6 +68,7 @@ public class BloomFilter extends FxFilter{
         Gl.disable(Gl.blend);
 
         buffer.begin();
+        Core.graphics.clear(Color.clear);
 
         // Threshold / high-pass filter
         // Only areas with pixels >= threshold are blit to smaller FBO
