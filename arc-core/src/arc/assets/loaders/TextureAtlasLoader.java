@@ -44,8 +44,6 @@ public class TextureAtlasLoader extends AsynchronousAssetLoader<TextureAtlas, Te
     @Override
     public TextureAtlas loadSync(AssetManager manager, String fileName, Fi file, TextureAtlasParameter parameter){
         try{
-            int maxWidth = data.pages.max(a -> a.width).width;
-            int maxHeight = data.pages.max(a -> a.height).height;
             Pixmap[] pixmaps = new Pixmap[data.pages.size];
 
             for(Future<AsyncResult> result : textureLoaders){
@@ -53,51 +51,10 @@ public class TextureAtlasLoader extends AsynchronousAssetLoader<TextureAtlas, Te
                 pixmaps[data.pages.indexOf(res.page)] = res.pixmap;
             }
 
-            data.texture = new TextureArray(new TextureArrayData(){
-                @Override
-                public boolean isPrepared(){
-                    return false;
-                }
-
-                @Override
-                public void prepare(){
-
-                }
-
-                @Override
-                public void consumeTextureArrayData(){
-                    for(int i = 0; i < pixmaps.length; i++){
-                        Pixmap pixmap = pixmaps[i];
-                        Core.gl30.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, pixmap.width, pixmap.height, 1, pixmap.getGLInternalFormat(), pixmap.getGLType(), pixmap.pixels);
-                        pixmap.dispose();
-                    }
-                }
-
-                @Override
-                public int getWidth(){
-                    return maxWidth;
-                }
-
-                @Override
-                public int getHeight(){
-                    return maxHeight;
-                }
-
-                @Override
-                public int getDepth(){
-                    return pixmaps.length;
-                }
-
-                @Override
-                public int getInternalFormat(){
-                    return Gl.unsignedByte;
-                }
-
-                @Override
-                public int getGLType(){
-                    return Gl.rgba;
-                }
-            });
+            data.texture = new TextureArray(pixmaps);
+            for(Pixmap pix : pixmaps){
+                pix.dispose();
+            }
 
             TextureAtlas atlas = new TextureAtlas(data);
             data = null;

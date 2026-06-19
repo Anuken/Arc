@@ -190,10 +190,8 @@ public class SpriteBatch extends Batch{
         if(sort && !flushing){
             int num = numRequests;
             if(num > 0){
-                TextureArray arr = texture instanceof ArraySliceTexture ? ((ArraySliceTexture)texture).array : null;
-
                 final DrawRequest last = requests[num - 1];
-                if(last.run == null && (last.texture == texture || (arr != null && last.texture instanceof ArraySliceTexture && ((ArraySliceTexture)last.texture).array == arr)) && last.blending == blending && requestZ[num - 1] == intZ){
+                if(last.run == null && (last.texture.getTextureObjectHandle() == texture.getTextureObjectHandle()) && last.blending == blending && requestZ[num - 1] == intZ){
                     if(spriteVertices != emptyVertices){
                         prepare(count);
                         System.arraycopy(spriteVertices, offset, requestVerts, requestVertOffset, count);
@@ -243,7 +241,7 @@ public class SpriteBatch extends Batch{
 
         if(sort && !flushing){
             if(numRequests >= requests.length) expandRequests();
-            final DrawRequest req = requests[numRequests];
+            final SpriteBatch.DrawRequest req = requests[numRequests];
             req.run = request;
             req.blending = blending;
             requestZ[numRequests] = intZ;
@@ -342,7 +340,7 @@ public class SpriteBatch extends Batch{
 
         int verticesLength = buffer.capacity();
         int remainingVertices = verticesLength;
-        if(texture != lastTexture && !(lastTexture instanceof ArraySliceTexture && texture instanceof ArraySliceTexture && ((ArraySliceTexture)lastTexture).array == ((ArraySliceTexture)texture).array)){
+        if(lastTexture == null || texture.getTextureObjectHandle() != lastTexture.getTextureObjectHandle()){
             switchTexture(texture);
         }else{
             remainingVertices -= idx;
@@ -370,7 +368,7 @@ public class SpriteBatch extends Batch{
     protected void drawSuper(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
 
         Texture texture = region.texture;
-        if(texture != lastTexture && !(lastTexture instanceof ArraySliceTexture && texture instanceof ArraySliceTexture && ((ArraySliceTexture)lastTexture).array == ((ArraySliceTexture)texture).array)){
+        if(lastTexture == null || texture.getTextureObjectHandle() != lastTexture.getTextureObjectHandle()){
             switchTexture(texture);
         }else if(idx == buffer.capacity()){
             flush();

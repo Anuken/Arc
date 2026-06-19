@@ -375,14 +375,14 @@ public class NinePatch{
         int n = this.idx;
         float[] vertices = this.vertices;
         if(rotation != 0){
-            for(int i = 0; i < n; i += 6){
+            for(int i = 0; i < n; i += SpriteBatch.vertexSize){
                 float vx = (vertices[i] - worldOriginX) * scaleX, vy = (vertices[i + 1] - worldOriginY) * scaleY;
                 float cos = Mathf.cosDeg(rotation), sin = Mathf.sinDeg(rotation);
                 vertices[i] = cos * vx - sin * vy + worldOriginX;
                 vertices[i + 1] = sin * vx + cos * vy + worldOriginY;
             }
         }else if(scaleX != 1 || scaleY != 1){
-            for(int i = 0; i < n; i += 6){
+            for(int i = 0; i < n; i += SpriteBatch.vertexSize){
                 vertices[i] = (vertices[i] - worldOriginX) * scaleX + worldOriginX;
                 vertices[i + 1] = (vertices[i + 1] - worldOriginY) * scaleY + worldOriginY;
             }

@@ -85,7 +85,7 @@ public class TextureAtlas implements Disposable{
         if(data.texture != null){
             textureArray = data.texture;
         }else{
-            textureArray = new TextureArray(first.useMipMaps, data.pages.map(p -> p.textureFile).toArray(Fi.class));
+            textureArray = new TextureArray(data.pages.map(p -> p.textureFile).toArray(Fi.class), first.useMipMaps);
         }
 
         textureArray.setWrap(first.uWrap, first.vWrap);

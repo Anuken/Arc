@@ -13,7 +13,7 @@ public class ArraySliceTexture extends Texture{
     public final int index;
 
     public ArraySliceTexture(TextureArray array, int index){
-        super(GL30.GL_TEXTURE_2D_ARRAY, 0, new ArraySliceTextureData());
+        super(GL30.GL_TEXTURE_2D_ARRAY, array.getTextureObjectHandle(), new ArraySliceTextureData());
         if(index >= array.getDepth()) throw new IllegalArgumentException("Array slice texture index out of bounds: " + index + " >= " + array.getDepth());
 
         this.array = array;
@@ -44,12 +44,8 @@ public class ArraySliceTexture extends Texture{
     }
 
     @Override
-    public String toString(){
-        //point to specific file texture data for descriptive name of image
-        if(array.getData() instanceof FileTextureArrayData){
-            return ((FileTextureArrayData)array.getData()).textureDatas[index].toString();
-        }
-        return super.toString();
+    public int getDepth(){
+        return index;
     }
 
     @Override

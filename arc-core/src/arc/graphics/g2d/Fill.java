@@ -2,12 +2,11 @@ package arc.graphics.g2d;
 
 import arc.*;
 import arc.graphics.*;
-import arc.graphics.gl.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 
 public class Fill{
     private static float[] vertices = new float[SpriteBatch.spriteSize];
@@ -79,7 +78,7 @@ public class Fill{
                             float x3, float y3, float c3, float u3, float v3,
                             float x4, float y4, float c4, float u4, float v4){
         float mcolor = Core.batch.getPackedMixColor();
-        float depth = texture instanceof ArraySliceTexture ? ((ArraySliceTexture)texture).index : 0f;
+        float depth = texture.getDepth();
 
         vertices[0]  = x1;
         vertices[1]  = y1;

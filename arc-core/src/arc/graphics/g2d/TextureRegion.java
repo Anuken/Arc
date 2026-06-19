@@ -3,7 +3,6 @@ package arc.graphics.g2d;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.TextureAtlas.*;
-import arc.graphics.gl.*;
 
 /**
  * Defines a rectangular area of a texture. The coordinate system used has its origin in the upper left corner with the x-axis
@@ -314,7 +313,7 @@ public class TextureRegion{
     }
 
     public float getDepth(){
-        return texture instanceof ArraySliceTexture ? ((ArraySliceTexture)texture).index : 0f;
+        return texture.getDepth();
     }
 
     @Override
