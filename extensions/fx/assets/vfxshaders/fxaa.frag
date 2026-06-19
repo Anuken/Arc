@@ -9,16 +9,16 @@ uniform float u_fxaaSpanMax;
 
 varying vec2 v_texCoords;
 
-vec4 fxaa(sampler2D texture, vec2 texCoords, vec2 viewportInv) {
-	vec3 rgbNW = texture2D(texture, texCoords.xy + (vec2(-1.0, -1.0) * viewportInv)).xyz;
-	vec3 rgbNE = texture2D(texture, texCoords.xy + (vec2(+1.0, -1.0) * viewportInv)).xyz;
-	vec3 rgbSW = texture2D(texture, texCoords.xy + (vec2(-1.0, +1.0) * viewportInv)).xyz;
-	vec3 rgbSE = texture2D(texture,	texCoords.xy + (vec2(+1.0, +1.0) * viewportInv)).xyz;
-	vec3 rgbN = texture2D(texture, texCoords.xy + (vec2(0.0, -1.0) * viewportInv)).xyz;
-	vec3 rgbS = texture2D(texture, texCoords.xy + (vec2(0.0, 1.0) * viewportInv)).xyz;
-	vec3 rgbE= texture2D(texture, texCoords.xy + (vec2(1.0, 0.0) * viewportInv)).xyz;
-	vec3 rgbW= texture2D(texture, texCoords.xy + (vec2(-1.0, 0.0) * viewportInv)).xyz;
-	vec3 rgbM = texture2D(texture, texCoords.xy).xyz;
+vec4 fxaa(sampler2D tex, vec2 texCoords, vec2 viewportInv) {
+	vec3 rgbNW = texture2D(tex, texCoords.xy + (vec2(-1.0, -1.0) * viewportInv)).xyz;
+	vec3 rgbNE = texture2D(tex, texCoords.xy + (vec2(+1.0, -1.0) * viewportInv)).xyz;
+	vec3 rgbSW = texture2D(tex, texCoords.xy + (vec2(-1.0, +1.0) * viewportInv)).xyz;
+	vec3 rgbSE = texture2D(tex,	texCoords.xy + (vec2(+1.0, +1.0) * viewportInv)).xyz;
+	vec3 rgbN = texture2D(tex, texCoords.xy + (vec2(0.0, -1.0) * viewportInv)).xyz;
+	vec3 rgbS = texture2D(tex, texCoords.xy + (vec2(0.0, 1.0) * viewportInv)).xyz;
+	vec3 rgbE= texture2D(tex, texCoords.xy + (vec2(1.0, 0.0) * viewportInv)).xyz;
+	vec3 rgbW= texture2D(tex, texCoords.xy + (vec2(-1.0, 0.0) * viewportInv)).xyz;
+	vec3 rgbM = texture2D(tex, texCoords.xy).xyz;
 
 	vec3 luma = vec3(0.299, 0.587, 0.114);
 	float lumaNW = dot(rgbNW, luma);
@@ -52,10 +52,10 @@ vec4 fxaa(sampler2D texture, vec2 texCoords, vec2 viewportInv) {
 			max(vec2(-u_fxaaSpanMax, -u_fxaaSpanMax), dir * rcpDirMin))
 			* viewportInv;
 
-	vec3 rgbA =	0.5	* (texture2D(texture, texCoords.xy + dir * (1.0 / 3.0 - 0.5)).xyz +
-					   texture2D(texture, texCoords.xy + dir * (2.0 / 3.0 - 0.5)).xyz);
-	vec3 rgbB =	rgbA * 0.5 + 0.25 * (texture2D(texture, texCoords.xy + dir * (0.0 / 3.0 - 0.5)).xyz +
-									 texture2D(texture, texCoords.xy + dir * (3.0 / 3.0 - 0.5)).xyz);
+	vec3 rgbA =	0.5	* (texture2D(tex, texCoords.xy + dir * (1.0 / 3.0 - 0.5)).xyz +
+					   texture2D(tex, texCoords.xy + dir * (2.0 / 3.0 - 0.5)).xyz);
+	vec3 rgbB =	rgbA * 0.5 + 0.25 * (texture2D(tex, texCoords.xy + dir * (0.0 / 3.0 - 0.5)).xyz +
+									 texture2D(tex, texCoords.xy + dir * (3.0 / 3.0 - 0.5)).xyz);
 	float lumaB = dot(rgbB, luma);
 
 	vec4 color = vec4(0.0);
@@ -67,7 +67,7 @@ vec4 fxaa(sampler2D texture, vec2 texCoords, vec2 viewportInv) {
 	}
 
 #ifdef SUPPORT_ALPHA
-	color.a = texture2D(texture, texCoords.xy).a;
+	color.a = texture2D(tex, texCoords.xy).a;
 #else
 	color.a = 1.0;
 #endif
