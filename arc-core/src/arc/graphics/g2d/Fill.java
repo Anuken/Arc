@@ -2,6 +2,7 @@ package arc.graphics.g2d;
 
 import arc.*;
 import arc.graphics.*;
+import arc.graphics.gl.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
@@ -9,7 +10,7 @@ import arc.struct.*;
 import static arc.Core.atlas;
 
 public class Fill{
-    private static float[] vertices = new float[24];
+    private static float[] vertices = new float[SpriteBatch.spriteSize];
     private static TextureRegion circleRegion;
     private static FloatSeq polyFloats = new FloatSeq();
 
@@ -23,33 +24,39 @@ public class Fill{
         float mcolor = Core.batch.getPackedMixColor();
         float u = region.u;
         float v = region.v;
-        vertices[0] = x1;
-        vertices[1] = y1;
-        vertices[2] = c1;
-        vertices[3] = u;
-        vertices[4] = v;
-        vertices[5] = mcolor;
+        float depth = region.getDepth();
 
-        vertices[6] = x2;
-        vertices[7] = y2;
-        vertices[8] = c2;
-        vertices[9] = u;
+        vertices[0]  = x1;
+        vertices[1]  = y1;
+        vertices[2]  = u;
+        vertices[3]  = v;
+        vertices[4]  = depth;
+        vertices[5]  = c1;
+        vertices[6]  = mcolor;
+
+        vertices[7]  = x2;
+        vertices[8]  = y2;
+        vertices[9]  = u;
         vertices[10] = v;
-        vertices[11] = mcolor;
+        vertices[11] = depth;
+        vertices[12] = c2;
+        vertices[13] = mcolor;
 
-        vertices[12] = x3;
-        vertices[13] = y3;
-        vertices[14] = c3;
-        vertices[15] = u;
-        vertices[16] = v;
-        vertices[17] = mcolor;
+        vertices[14] = x3;
+        vertices[15] = y3;
+        vertices[16] = u;
+        vertices[17] = v;
+        vertices[18] = depth;
+        vertices[19] = c3;
+        vertices[20] = mcolor;
 
-        vertices[18] = x4;
-        vertices[19] = y4;
-        vertices[20] = c4;
-        vertices[21] = u;
-        vertices[22] = v;
-        vertices[23] = mcolor;
+        vertices[21] = x4;
+        vertices[22] = y4;
+        vertices[23] = u;
+        vertices[24] = v;
+        vertices[25] = depth;
+        vertices[26] = c4;
+        vertices[27] = mcolor;
 
         Draw.vert(region.texture, vertices, 0, vertices.length);
     }
@@ -72,34 +79,39 @@ public class Fill{
                             float x3, float y3, float c3, float u3, float v3,
                             float x4, float y4, float c4, float u4, float v4){
         float mcolor = Core.batch.getPackedMixColor();
+        float depth = texture instanceof ArraySliceTexture ? ((ArraySliceTexture)texture).index : 0f;
 
-        vertices[0] = x1;
-        vertices[1] = y1;
-        vertices[2] = c1;
-        vertices[3] = u1;
-        vertices[4] = v1;
-        vertices[5] = mcolor;
+        vertices[0]  = x1;
+        vertices[1]  = y1;
+        vertices[2]  = u1;
+        vertices[3]  = v1;
+        vertices[4]  = depth;
+        vertices[5]  = c1;
+        vertices[6]  = mcolor;
 
-        vertices[6] = x2;
-        vertices[7] = y2;
-        vertices[8] = c2;
-        vertices[9] = u2;
+        vertices[7]  = x2;
+        vertices[8]  = y2;
+        vertices[9]  = u2;
         vertices[10] = v2;
-        vertices[11] = mcolor;
+        vertices[11] = depth;
+        vertices[12] = c2;
+        vertices[13] = mcolor;
 
-        vertices[12] = x3;
-        vertices[13] = y3;
-        vertices[14] = c3;
-        vertices[15] = u3;
-        vertices[16] = v3;
-        vertices[17] = mcolor;
+        vertices[14] = x3;
+        vertices[15] = y3;
+        vertices[16] = u3;
+        vertices[17] = v3;
+        vertices[18] = depth;
+        vertices[19] = c3;
+        vertices[20] = mcolor;
 
-        vertices[18] = x4;
-        vertices[19] = y4;
-        vertices[20] = c4;
-        vertices[21] = u4;
-        vertices[22] = v4;
-        vertices[23] = mcolor;
+        vertices[21] = x4;
+        vertices[22] = y4;
+        vertices[23] = u4;
+        vertices[24] = v4;
+        vertices[25] = depth;
+        vertices[26] = c4;
+        vertices[27] = mcolor;
 
         Draw.vert(texture, vertices, 0, vertices.length);
     }

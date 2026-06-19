@@ -2,10 +2,10 @@ package arc.graphics.gl;
 
 public class SpriteIndices{
     private static final int maxIndices = 8192*2;
-    private static IndexData indexData;
+    private static IndexBufferObject indexData;
 
     /** @return a globally shared IndexData instance for drawing sprites in the same pattern as SpriteBatch/SpriteCache does. */
-    public static IndexData get(){
+    public static IndexBufferObject get(){
         if(indexData == null){
             int j = 0;
             short[] indices = new short[maxIndices * 6];

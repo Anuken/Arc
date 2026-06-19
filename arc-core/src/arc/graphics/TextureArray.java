@@ -48,7 +48,7 @@ public class TextureArray extends GLTexture{
         this.height = data.getHeight();
 
         bind();
-        Core.gl30.glTexImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, data.getInternalFormat(), data.getWidth(), data.getHeight(), data.getDepth(), 0, data.getInternalFormat(), data.getGLType(), null);
+        Core.gl30.glTexImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, GL30.GL_RGBA8, data.getWidth(), data.getHeight(), data.getDepth(), 0,  GL30.GL_RGBA, GL30.GL_UNSIGNED_BYTE, null);
 
         if(!data.isPrepared()) data.prepare();
 
@@ -57,6 +57,10 @@ public class TextureArray extends GLTexture{
         setFilter(minFilter, magFilter);
         setWrap(uWrap, vWrap);
         Gl.bindTexture(glTarget, 0);
+    }
+
+    public TextureArrayData getData(){
+        return data;
     }
 
     @Override

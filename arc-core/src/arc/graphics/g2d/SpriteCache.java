@@ -40,8 +40,8 @@ import java.util.*;
  * @author Nathan Sweet
  */
 public class SpriteCache implements Disposable{
-    //xy + color + uv
-    static final int vertexSize = 2 + 1 + 2;
+    //xy + uv + depth + color
+    static final int vertexSize = 2 + 2 + 1 + 1;
 
     private static final float[] tempVertices = new float[vertexSize * 6];
 
@@ -95,14 +95,13 @@ public class SpriteCache implements Disposable{
 
         mesh = new Mesh(true, size * (useIndices ? 4 : 6), 0,
         VertexAttribute.position,
-        VertexAttribute.color,
-        VertexAttribute.texCoords
+        VertexAttribute.texCoords3,
+        VertexAttribute.color
         );
         if(useIndices){
             mesh.indices = SpriteIndices.get();
         }
 
-        mesh.setAutoBind(false);
         caches = new Seq<>(cacheSize);
 
         projectionMatrix.setOrtho(0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
@@ -114,10 +113,10 @@ public class SpriteCache implements Disposable{
         if(defaultShader != null) return defaultShader;
         String vertexShader = "attribute vec4 " + Shader.positionAttribute + ";\n" //
         + "attribute vec4 " + Shader.colorAttribute + ";\n" //
-        + "attribute vec2 " + Shader.texcoordAttribute + "0;\n" //
+        + "attribute vec3 " + Shader.texcoordAttribute + "0;\n" //
         + "uniform mat4 u_projectionViewMatrix;\n" //
         + "varying vec4 v_color;\n" //
-        + "varying vec2 v_texCoords;\n" //
+        + "varying vec3 v_texCoords;\n" //
         + "\n" //
         + "void main(){\n" //
         + "   v_color = " + Shader.colorAttribute + ";\n" //
@@ -127,8 +126,8 @@ public class SpriteCache implements Disposable{
         + "}\n";
         String fragmentShader =
           "varying vec4 v_color;\n" //
-        + "varying vec2 v_texCoords;\n" //
-        + "uniform sampler2D u_texture;\n" //
+        + "varying vec3 v_texCoords;\n" //
+        + "uniform highp sampler2DArray u_texture;\n"
         + "void main(){\n" //
         + "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
         + "}";
@@ -165,10 +164,10 @@ public class SpriteCache implements Disposable{
     public void beginCache(){
         if(drawing) throw new IllegalStateException("end must be called before beginCache");
         if(currentCache != null) throw new IllegalStateException("endCache must be called before begin.");
-        mesh.getVerticesBuffer().position(caches.isEmpty() ? 0 : caches.peek().offset + caches.peek().maxCount);
-        currentCache = new Cache(caches.size, mesh.getVerticesBuffer().position());
+        mesh.getVertices().position(caches.isEmpty() ? 0 : caches.peek().offset + caches.peek().maxCount);
+        currentCache = new Cache(caches.size, mesh.getVertices().position());
         caches.add(currentCache);
-        mesh.getVerticesBuffer().limit(mesh.getVerticesBuffer().capacity());
+        mesh.getVertices().limit(mesh.getVertices().capacity());
     }
 
     /**
@@ -180,14 +179,14 @@ public class SpriteCache implements Disposable{
         if(currentCache != null) throw new IllegalStateException("endCache must be called before begin.");
         currentCache = caches.get(cacheID);
         Arrays.fill(currentCache.counts, 0);
-        mesh.getVerticesBuffer().position(currentCache.offset);
+        mesh.getVertices().position(currentCache.offset);
     }
 
     /** Ends the definition of a cache, returning the cache ID to be used with {@link #draw(int)}. */
     public int endCache(){
         if(currentCache == null) throw new IllegalStateException("beginCache must be called before endCache.");
         Cache cache = currentCache;
-        int cacheCount = mesh.getVerticesBuffer().position() - cache.offset;
+        int cacheCount = mesh.getVertices().position() - cache.offset;
         if(cache.textures == null){
             // New cache.
             cache.maxCount = cacheCount;
@@ -214,7 +213,7 @@ public class SpriteCache implements Disposable{
             for(int i = 0, n = cache.textureCount; i < n; i++)
                 cache.counts[i] = counts.get(i);
 
-            FloatBuffer vertices = mesh.getVerticesBuffer();
+            FloatBuffer vertices = mesh.getVertices();
             vertices.position(0);
             Cache lastCache = caches.get(caches.size - 1);
             vertices.limit(lastCache.offset + lastCache.maxCount);
@@ -226,7 +225,7 @@ public class SpriteCache implements Disposable{
 
         //fixes teaVM bug, since it draws based on offset apparently
         if(Core.app.isWeb()){
-            mesh.getVerticesBuffer().position(0);
+            mesh.getVertices().position(0);
         }
 
         return cache.id;
@@ -235,7 +234,7 @@ public class SpriteCache implements Disposable{
     /** Invalidates all cache IDs and resets the SpriteCache so new caches can be added. */
     public void clear(){
         caches.clear();
-        mesh.getVerticesBuffer().clear().flip();
+        mesh.getVertices().clear().flip();
     }
 
     /** Ensures that this cache can hold this amount of sprites. Only call at the end of cache.
@@ -253,7 +252,7 @@ public class SpriteCache implements Disposable{
         int toAdd = required - currentUsed;
         if(toAdd > 0){
             currentCache.maxCount += toAdd;
-            mesh.getVerticesBuffer().position(currentCache.offset + currentCache.maxCount);
+            mesh.getVertices().position(currentCache.offset + currentCache.maxCount);
             return toAdd / spriteSize;
         }
         return 0;
@@ -264,7 +263,7 @@ public class SpriteCache implements Disposable{
     }
 
     public int getSpriteCapacity(){
-        return mesh.getVerticesBuffer().limit() / (vertexSize * (mesh.getNumIndices() > 0 ? 4 : 6));
+        return mesh.getVertices().limit() / (vertexSize * (mesh.getNumIndices() > 0 ? 4 : 6));
     }
 
     /**
@@ -274,19 +273,19 @@ public class SpriteCache implements Disposable{
      */
     public void add(Texture texture, float[] vertices, int offset, int length){
         if(currentCache == null) throw new IllegalStateException("beginCache must be called before add.");
-        if(mesh.getVerticesBuffer().position() + length >= mesh.getVerticesBuffer().limit())
-            throw new IllegalStateException("Out of vertex space! Size: " + mesh.getVerticesBuffer().capacity() + " Required: " + (mesh.getVerticesBuffer().position() + length));
+        if(mesh.getVertices().position() + length >= mesh.getVertices().limit())
+            throw new IllegalStateException("Out of vertex space! Size: " + mesh.getVertices().capacity() + " Required: " + (mesh.getVertices().position() + length));
 
         int verticesPerImage = mesh.getNumIndices() > 0 ? 4 : 6;
         int count = length / (verticesPerImage * vertexSize) * 6;
         int lastIndex = textures.size - 1;
-        if(lastIndex < 0 || textures.get(lastIndex) != texture){
+        if(lastIndex < 0 || (textures.get(lastIndex) != texture && !(textures.get(lastIndex) instanceof ArraySliceTexture && texture instanceof ArraySliceTexture && ((ArraySliceTexture)textures.get(lastIndex)).array == ((ArraySliceTexture)texture).array))){
             textures.add(texture);
             counts.add(count);
         }else
             counts.incr(lastIndex, count);
 
-        mesh.getVerticesBuffer().put(vertices, offset, length);
+        mesh.getVertices().put(vertices, offset, length);
     }
 
     /** Adds the specified region to the cache. */
@@ -302,51 +301,59 @@ public class SpriteCache implements Disposable{
         final float v = region.v2;
         final float u2 = region.u2;
         final float v2 = region.v;
+        float depth = region.getDepth();
 
         tempVertices[0] = x;
         tempVertices[1] = y;
-        tempVertices[2] = colorPacked;
-        tempVertices[3] = u;
-        tempVertices[4] = v;
+        tempVertices[2] = u;
+        tempVertices[3] = v;
+        tempVertices[4] = depth;
+        tempVertices[5] = colorPacked;
 
-        tempVertices[5] = x;
-        tempVertices[6] = fy2;
-        tempVertices[7] = colorPacked;
+        tempVertices[6] = x;
+        tempVertices[7] = fy2;
         tempVertices[8] = u;
         tempVertices[9] = v2;
+        tempVertices[10] = depth;
+        tempVertices[11] = colorPacked;
 
-        tempVertices[10] = fx2;
-        tempVertices[11] = fy2;
-        tempVertices[12] = colorPacked;
-        tempVertices[13] = u2;
-        tempVertices[14] = v2;
+        tempVertices[12] = fx2;
+        tempVertices[13] = fy2;
+        tempVertices[14] = u2;
+        tempVertices[15] = v2;
+        tempVertices[16] = depth;
+        tempVertices[17] = colorPacked;
 
         if(mesh.getNumIndices() > 0){
-            tempVertices[15] = fx2;
-            tempVertices[16] = y;
-            tempVertices[17] = colorPacked;
-            tempVertices[18] = u2;
-            tempVertices[19] = v;
-            add(region.texture, tempVertices, 0, 20);
+            tempVertices[18] = fx2;
+            tempVertices[19] = y;
+            tempVertices[20] = u2;
+            tempVertices[21] = v;
+            tempVertices[22] = depth;
+            tempVertices[23] = colorPacked;
+            add(region.texture, tempVertices, 0, 24);
         }else{
-            tempVertices[15] = fx2;
-            tempVertices[16] = fy2;
-            tempVertices[17] = colorPacked;
-            tempVertices[18] = u2;
-            tempVertices[19] = v2;
+            tempVertices[18] = fx2;
+            tempVertices[19] = fy2;
+            tempVertices[20] = u2;
+            tempVertices[21] = v2;
+            tempVertices[22] = depth;
+            tempVertices[23] = colorPacked;
 
-            tempVertices[20] = fx2;
-            tempVertices[21] = y;
-            tempVertices[22] = colorPacked;
-            tempVertices[23] = u2;
-            tempVertices[24] = v;
+            tempVertices[24] = fx2;
+            tempVertices[25] = y;
+            tempVertices[26] = u2;
+            tempVertices[27] = v;
+            tempVertices[28] = depth;
+            tempVertices[29] = colorPacked;
 
-            tempVertices[25] = x;
-            tempVertices[26] = y;
-            tempVertices[27] = colorPacked;
-            tempVertices[28] = u;
-            tempVertices[29] = v;
-            add(region.texture, tempVertices, 0, 30);
+            tempVertices[30] = x;
+            tempVertices[31] = y;
+            tempVertices[32] = u;
+            tempVertices[33] = v;
+            tempVertices[34] = depth;
+            tempVertices[35] = colorPacked;
+            add(region.texture, tempVertices, 0, 36);
         }
     }
 
@@ -432,51 +439,59 @@ public class SpriteCache implements Disposable{
         final float v = region.v2;
         final float u2 = region.u2;
         final float v2 = region.v;
+        float depth = region.getDepth();
 
         tempVertices[0] = x1;
         tempVertices[1] = y1;
-        tempVertices[2] = colorPacked;
-        tempVertices[3] = u;
-        tempVertices[4] = v;
+        tempVertices[2] = u;
+        tempVertices[3] = v;
+        tempVertices[4] = depth;
+        tempVertices[5] = colorPacked;
 
-        tempVertices[5] = x2;
-        tempVertices[6] = y2;
-        tempVertices[7] = colorPacked;
+        tempVertices[6] = x2;
+        tempVertices[7] = y2;
         tempVertices[8] = u;
         tempVertices[9] = v2;
+        tempVertices[10] = depth;
+        tempVertices[11] = colorPacked;
 
-        tempVertices[10] = x3;
-        tempVertices[11] = y3;
-        tempVertices[12] = colorPacked;
-        tempVertices[13] = u2;
-        tempVertices[14] = v2;
+        tempVertices[12] = x3;
+        tempVertices[13] = y3;
+        tempVertices[14] = u2;
+        tempVertices[15] = v2;
+        tempVertices[16] = depth;
+        tempVertices[17] = colorPacked;
 
         if(mesh.getNumIndices() > 0){
-            tempVertices[15] = x4;
-            tempVertices[16] = y4;
-            tempVertices[17] = colorPacked;
-            tempVertices[18] = u2;
-            tempVertices[19] = v;
-            add(region.texture, tempVertices, 0, 20);
+            tempVertices[18] = x4;
+            tempVertices[19] = y4;
+            tempVertices[20] = u2;
+            tempVertices[21] = v;
+            tempVertices[22] = depth;
+            tempVertices[23] = colorPacked;
+            add(region.texture, tempVertices, 0, 24);
         }else{
-            tempVertices[15] = x3;
-            tempVertices[16] = y3;
-            tempVertices[17] = colorPacked;
-            tempVertices[18] = u2;
-            tempVertices[19] = v2;
+            tempVertices[18] = x3;
+            tempVertices[19] = y3;
+            tempVertices[20] = u2;
+            tempVertices[21] = v2;
+            tempVertices[22] = depth;
+            tempVertices[23] = colorPacked;
 
-            tempVertices[20] = x4;
-            tempVertices[21] = y4;
-            tempVertices[22] = colorPacked;
-            tempVertices[23] = u2;
-            tempVertices[24] = v;
+            tempVertices[24] = x4;
+            tempVertices[25] = y4;
+            tempVertices[26] = u2;
+            tempVertices[27] = v;
+            tempVertices[28] = depth;
+            tempVertices[29] = colorPacked;
 
-            tempVertices[25] = x1;
-            tempVertices[26] = y1;
-            tempVertices[27] = colorPacked;
-            tempVertices[28] = u;
-            tempVertices[29] = v;
-            add(region.texture, tempVertices, 0, 30);
+            tempVertices[30] = x1;
+            tempVertices[31] = y1;
+            tempVertices[32] = u;
+            tempVertices[33] = v;
+            tempVertices[34] = depth;
+            tempVertices[35] = colorPacked;
+            add(region.texture, tempVertices, 0, 36);
         }
     }
 
@@ -528,7 +543,7 @@ public class SpriteCache implements Disposable{
             int count = counts[i];
             textures[i].bind();
 
-            mesh.render(shader, Gl.triangles, offset, count);
+            mesh.render(shader, Gl.triangles, offset, count, false);
             offset += count;
         }
         renderCalls += textureCount;
@@ -558,9 +573,9 @@ public class SpriteCache implements Disposable{
             }else
                 length -= count;
             if(customShader != null)
-                mesh.render(customShader, Gl.triangles, offset, count);
+                mesh.render(customShader, Gl.triangles, offset, count, false);
             else
-                mesh.render(shader, Gl.triangles, offset, count);
+                mesh.render(shader, Gl.triangles, offset, count, false);
             offset += count;
         }
         renderCalls += cache.textureCount;

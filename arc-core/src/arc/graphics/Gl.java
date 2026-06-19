@@ -327,7 +327,7 @@ public class Gl{
     //last active texture unit
     private static int lastActiveTexture = -1;
     //last bound texture2ds, mapping from texture unit to texture handle
-    private static int[] lastBoundTextures = new int[32];
+    private static int[] lastBoundTextures = new int[32], lastBoundTexturesArray = new int[32];
     //last useProgram call
     private static int lastUsedProgram = -1;
     /** enabled bits, from glEnable/disable */
@@ -344,6 +344,7 @@ public class Gl{
     public static void reset(){
         lastActiveTexture = -1;
         Arrays.fill(lastBoundTextures, -1);
+        Arrays.fill(lastBoundTexturesArray, -1);
         lastUsedProgram = -1;
         enabled.clear();
         wasDepthMask = true;
@@ -357,6 +358,7 @@ public class Gl{
     }
 
     public static void bindTexture(int target, int texture){
+        //TODO optimize 3d array
         if(optimize && target == texture2d){
             //current bound texture unit
             int index = lastActiveTexture - texture0;
@@ -367,6 +369,17 @@ public class Gl{
                     return;
                 }
                 lastBoundTextures[index] = texture;
+            }
+        }else if(optimize && target == GL30.GL_TEXTURE_2D_ARRAY){
+            //current bound texture unit
+            int index = lastActiveTexture - texture0;
+            //make sure it's valid
+            if(index >= 0 && index < lastBoundTexturesArray.length){
+                if(lastBoundTexturesArray[index] == texture){
+                    //skip double bindings
+                    return;
+                }
+                lastBoundTexturesArray[index] = texture;
             }
         }
 

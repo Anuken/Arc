@@ -1,13 +1,16 @@
 package arc.assets.loaders;
 
+import arc.*;
 import arc.assets.*;
-import arc.assets.loaders.TextureLoader.*;
 import arc.files.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.g2d.TextureAtlas.*;
 import arc.graphics.g2d.TextureAtlas.TextureAtlasData.*;
 import arc.struct.*;
+import arc.util.*;
+
+import java.util.concurrent.*;
 
 /**
  * {@link AssetLoader} to load {@link TextureAtlas} instances. Passing a {@link TextureAtlasParameter} to
@@ -15,43 +18,109 @@ import arc.struct.*;
  * on the y-axis or not.
  * @author mzechner
  */
-public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, TextureAtlasLoader.TextureAtlasParameter>{
+public class TextureAtlasLoader extends AsynchronousAssetLoader<TextureAtlas, TextureAtlasLoader.TextureAtlasParameter>{
     TextureAtlasData data;
+    Seq<Future<AsyncResult>> textureLoaders = new Seq<>();
 
     public TextureAtlasLoader(FileHandleResolver resolver){
         super(resolver);
     }
 
     @Override
-    public TextureAtlas load(AssetManager assetManager, String fileName, Fi file, TextureAtlasParameter parameter){
-        for(AtlasPage page : data.getPages()){
-            page.texture = assetManager.get(page.textureFile.path(), Texture.class);
+    public void loadAsync(AssetManager manager, String fileName, Fi file, TextureAtlasParameter parameter){
+        Fi imgDir = file.parent();
+
+        if(parameter != null){
+            data = new TextureAtlasData(file, imgDir, parameter.flip);
+        }else{
+            data = new TextureAtlasData(file, imgDir, false);
         }
 
-        TextureAtlas atlas = new TextureAtlas(data);
-        data = null;
-        return atlas;
+        for(AtlasPage page : data.pages){
+            textureLoaders.add(Core.executor.submit(() -> new AsyncResult(page, new Pixmap(page.textureFile))));
+        }
     }
 
     @Override
-    public Seq<AssetDescriptor> getDependencies(String fileName, Fi atlasFile, TextureAtlasParameter parameter){
-        Fi imgDir = atlasFile.parent();
+    public TextureAtlas loadSync(AssetManager manager, String fileName, Fi file, TextureAtlasParameter parameter){
+        try{
+            int maxWidth = data.pages.max(a -> a.width).width;
+            int maxHeight = data.pages.max(a -> a.height).height;
+            Pixmap[] pixmaps = new Pixmap[data.pages.size];
 
-        if(parameter != null){
-            data = new TextureAtlasData(atlasFile, imgDir, parameter.flip);
-        }else{
-            data = new TextureAtlasData(atlasFile, imgDir, false);
-        }
+            for(Future<AsyncResult> result : textureLoaders){
+                AsyncResult res = result.get();
+                pixmaps[data.pages.indexOf(res.page)] = res.pixmap;
+            }
 
-        Seq<AssetDescriptor> dependencies = new Seq<>();
-        for(AtlasPage page : data.getPages()){
-            TextureParameter params = new TextureParameter();
-            params.genMipMaps = page.useMipMaps;
-            params.minFilter = page.minFilter;
-            params.magFilter = page.magFilter;
-            dependencies.add(new AssetDescriptor<>(page.textureFile, Texture.class, params));
+            data.texture = new TextureArray(new TextureArrayData(){
+                @Override
+                public boolean isPrepared(){
+                    return false;
+                }
+
+                @Override
+                public void prepare(){
+
+                }
+
+                @Override
+                public void consumeTextureArrayData(){
+                    for(int i = 0; i < pixmaps.length; i++){
+                        Pixmap pixmap = pixmaps[i];
+                        Core.gl30.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, pixmap.width, pixmap.height, 1, pixmap.getGLInternalFormat(), pixmap.getGLType(), pixmap.pixels);
+                        pixmap.dispose();
+                    }
+                }
+
+                @Override
+                public int getWidth(){
+                    return maxWidth;
+                }
+
+                @Override
+                public int getHeight(){
+                    return maxHeight;
+                }
+
+                @Override
+                public int getDepth(){
+                    return pixmaps.length;
+                }
+
+                @Override
+                public int getInternalFormat(){
+                    return Gl.unsignedByte;
+                }
+
+                @Override
+                public int getGLType(){
+                    return Gl.rgba;
+                }
+            });
+
+            TextureAtlas atlas = new TextureAtlas(data);
+            data = null;
+
+            return atlas;
+        }catch(Exception e){
+            throw new ArcRuntimeException(e);
         }
-        return dependencies;
+    }
+
+    @Override
+    public Seq<AssetDescriptor> getDependencies(String fileName, Fi file, TextureAtlasParameter parameter){
+        return null;
+    }
+
+    static class AsyncResult{
+        final AtlasPage page;
+        final Pixmap pixmap;
+
+        public AsyncResult(AtlasPage page, Pixmap pixmap){
+            this.page = page;
+            this.pixmap = pixmap;
+        }
     }
 
     public static class TextureAtlasParameter extends AssetLoaderParameters<TextureAtlas>{

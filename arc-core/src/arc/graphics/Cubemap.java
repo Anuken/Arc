@@ -89,8 +89,8 @@ public class Cubemap extends GLTexture{
         this.width = data.getWidth();
         this.height = data.getHeight();
         bind();
-        unsafeSetFilter(minFilter, magFilter, true);
-        unsafeSetWrap(uWrap, vWrap, true);
+        setFilter(minFilter, magFilter);
+        setWrap(uWrap, vWrap);
         data.consumeCubemapData();
         Gl.bindTexture(glTarget, 0);
     }

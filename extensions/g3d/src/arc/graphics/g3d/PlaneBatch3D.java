@@ -126,7 +126,7 @@ public class PlaneBatch3D extends Batch{
             switchTexture(texture);
         }
 
-        for(int i = offset; i < count; i += SpriteBatch.SPRITE_SIZE){
+        for(int i = offset; i < count; i += SpriteBatch.spriteSize){
             checkFlush();
 
             vertex(v[i], v[i + 1], v[i + 2], v[i + 3], v[i + 4]);

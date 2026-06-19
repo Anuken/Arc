@@ -19,8 +19,7 @@ public abstract class Batch implements Disposable{
 
     protected Blending blending = Blending.normal;
 
-    protected Shader shader, customShader = null;
-    protected boolean ownsShader;
+    protected @Nullable Shader customShader;
 
     protected float colorPacked = Color.whiteFloatBits;
     protected float mixColorPacked = Color.clearFloatBits;
@@ -78,7 +77,6 @@ public abstract class Batch implements Disposable{
 
     @Override
     public void dispose(){
-        if(ownsShader && shader != null) shader.dispose();
     }
 
     protected Mat getProjection(){
@@ -120,6 +118,6 @@ public abstract class Batch implements Disposable{
     }
 
     protected Shader getShader(){
-        return customShader == null ? shader : customShader;
+        return customShader;
     }
 }

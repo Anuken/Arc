@@ -7,11 +7,10 @@ import arc.util.*;
 
 /** @author Tomski **/
 public class FileTextureArrayData implements TextureArrayData{
-
     boolean useMipMaps;
-    private TextureData[] textureDatas;
-    private boolean prepared;
-    private int depth;
+    TextureData[] textureDatas;
+    boolean prepared;
+    int depth;
 
     public FileTextureArrayData(boolean useMipMaps, Fi[] files){
         this.useMipMaps = useMipMaps;

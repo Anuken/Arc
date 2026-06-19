@@ -92,7 +92,7 @@ public class FontCache{
         float[][] pageVertices = this.pageVertices;
         for(int i = 0, n = pageVertices.length; i < n; i++){
             float[] vertices = pageVertices[i];
-            for(int ii = 0, nn = idx[i]; ii < nn; ii += 6){
+            for(int ii = 0, nn = idx[i]; ii < nn; ii += SpriteBatch.vertexSize){
                 vertices[ii] += xAmount;
                 vertices[ii + 1] += yAmount;
             }
@@ -114,7 +114,7 @@ public class FontCache{
         float[][] pageVertices = this.pageVertices;
         for(int i = 0, n = pageVertices.length; i < n; i++){
             float[] vertices = pageVertices[i];
-            for(int ii = 0, nn = idx[i]; ii < nn; ii += 6){
+            for(int ii = 0, nn = idx[i]; ii < nn; ii += SpriteBatch.vertexSize){
                 float dx = vertices[ii] - anchorX;
                 float dy = vertices[ii + 1] - anchorY;
                 vertices[ii] = anchorX + dx * cos - dy * sin;
@@ -142,10 +142,10 @@ public class FontCache{
                 for(int iii = 0, nnn = glyphs.size; iii < nnn; iii++){
                     Glyph glyph = glyphs.get(iii);
                     int page = glyph.page;
-                    int offset = tempGlyphCount[page] * 24 + 2;
+                    int offset = tempGlyphCount[page] * SpriteBatch.spriteSize + 5;
                     tempGlyphCount[page]++;
                     float[] vertices = pageVertices[page];
-                    for(int v = 0; v < 24; v += 6)
+                    for(int v = 0; v < SpriteBatch.spriteSize; v += SpriteBatch.vertexSize)
                         vertices[offset + v] = colorFloat;
                 }
             }
@@ -158,9 +158,9 @@ public class FontCache{
         float prev = 0, newColor = 0;
         for(int j = 0, length = pageVertices.length; j < length; j++){
             float[] vertices = pageVertices[j];
-            for(int i = 2, n = idx[j]; i < n; i += 6){
+            for(int i = 5, n = idx[j]; i < n; i += SpriteBatch.vertexSize){
                 float c = vertices[i];
-                if(c == prev && i != 2){
+                if(c == prev && i != 5){
                     vertices[i] = newColor;
                 }else{
                     prev = c;
@@ -177,7 +177,7 @@ public class FontCache{
     public void setColors(float color){
         for(int j = 0, length = pageVertices.length; j < length; j++){
             float[] vertices = pageVertices[j];
-            for(int i = 2, n = idx[j]; i < n; i += 6)
+            for(int i = 5, n = idx[j]; i < n; i += SpriteBatch.vertexSize)
                 vertices[i] = color;
         }
     }
@@ -208,7 +208,7 @@ public class FontCache{
     public void setColors(float color, int start, int end){
         if(pageVertices.length == 1){ // One page.
             float[] vertices = pageVertices[0];
-            for(int i = start * 24 + 2, n = end * 24; i < n; i += 6)
+            for(int i = start * SpriteBatch.spriteSize + 5, n = end * SpriteBatch.spriteSize; i < n; i += SpriteBatch.vertexSize)
                 vertices[i] = color;
             return;
         }
@@ -226,8 +226,8 @@ public class FontCache{
 
                 // If inside start and end, change its colour.
                 if(glyphIndex >= start){ // && glyphIndex < end
-                    for(int off = 0; off < 24; off += 6)
-                        vertices[off + (j * 24 + 2)] = color;
+                    for(int off = 0; off < SpriteBatch.spriteSize; off += SpriteBatch.vertexSize)
+                        vertices[off + (j * SpriteBatch.spriteSize + 5)] = color;
                 }
             }
         }
@@ -263,7 +263,7 @@ public class FontCache{
 
     public void draw(int start, int end){
         if(pageVertices.length == 1){ // 1 page.
-            Draw.vert(font.getRegion().texture, pageVertices[0], start * 24, (end - start) * 24);
+            Draw.vert(font.getRegion().texture, pageVertices[0], start * SpriteBatch.spriteSize, (end - start) * SpriteBatch.spriteSize);
             return;
         }
 
@@ -292,7 +292,7 @@ public class FontCache{
             if(offset == -1 || count == 0) continue;
 
             // Render the page vertex data with the offset and count.
-            Draw.vert(regions.get(i).texture, pageVertices[i], offset * 24, count * 24);
+            Draw.vert(regions.get(i).texture, pageVertices[i], offset * SpriteBatch.spriteSize, count * SpriteBatch.spriteSize);
         }
     }
 
@@ -352,7 +352,7 @@ public class FontCache{
                 pageGlyphIndices[page].ensureCapacity(glyphCount - pageGlyphIndices[page].items.length);
         }
 
-        int vertexCount = idx[page] + glyphCount * 24;
+        int vertexCount = idx[page] + glyphCount * SpriteBatch.spriteSize;
         float[] vertices = pageVertices[page];
         if(vertices == null){
             pageVertices[page] = new float[vertexCount];
@@ -423,38 +423,43 @@ public class FontCache{
 
         final int page = glyph.page;
         int idx = this.idx[page];
-        this.idx[page] += 24;
+        this.idx[page] += SpriteBatch.spriteSize;
 
         if(pageGlyphIndices != null) pageGlyphIndices[page].add(glyphCount++);
 
         final float[] vertices = pageVertices[page];
+        float depth = font.getRegion().getDepth(); //assumes font spans 1 texture
+
         vertices[idx++] = x;
         vertices[idx++] = y;
-        vertices[idx++] = color;
         vertices[idx++] = u;
         vertices[idx++] = v;
+        vertices[idx++] = depth;
+        vertices[idx++] = color;
         idx++; //mix color = 0
 
         vertices[idx++] = x;
         vertices[idx++] = y2;
-        vertices[idx++] = color;
         vertices[idx++] = u;
         vertices[idx++] = v2;
+        vertices[idx++] = depth;
+        vertices[idx++] = color;
         idx++; //mix color = 0
 
         vertices[idx++] = x2;
         vertices[idx++] = y2;
-        vertices[idx++] = color;
         vertices[idx++] = u2;
         vertices[idx++] = v2;
+        vertices[idx++] = depth;
+        vertices[idx++] = color;
         idx++; //mix color = 0
 
         vertices[idx++] = x2;
         vertices[idx++] = y;
-        vertices[idx++] = color;
         vertices[idx++] = u2;
-        vertices[idx] = v;
-
+        vertices[idx++] = v;
+        vertices[idx++] = depth;
+        vertices[idx++] = color;
         //idx++; //mix color = 0
     }
 

@@ -76,8 +76,8 @@ public class Texture extends GLTexture{
         bind();
         uploadImageData(Gl.texture2d, data);
 
-        unsafeSetFilter(minFilter, magFilter, true);
-        unsafeSetWrap(uWrap, vWrap, true);
+        setFilter(minFilter, magFilter);
+        setWrap(uWrap, vWrap);
         Gl.bindTexture(glTarget, 0);
     }
 
@@ -86,7 +86,7 @@ public class Texture extends GLTexture{
     }
 
     /**
-     * Draws the given {@link Pixmap} to the texture at position x, y. No clipping is performed so you have to make sure that you
+     * Draws the given {@link Pixmap} to the texture at position x, y. No clipping is performed, so you have to make sure that you
      * draw only inside the texture region. Note that this will only draw to mipmap level 0!
      * @param pixmap The Pixmap
      * @param x The x coordinate in pixels
@@ -111,6 +111,7 @@ public class Texture extends GLTexture{
         return glHandle == 0;
     }
 
+    @Override
     public String toString(){
         if(data instanceof FileTextureData) return data.toString();
         return super.toString();

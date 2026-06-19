@@ -40,7 +40,7 @@ public class NinePatch{
     private int middleLeft = -1, middleCenter = -1, middleRight = -1;
     private int topLeft = -1, topCenter = -1, topRight = -1;
     private float leftWidth, rightWidth, middleWidth, middleHeight, topHeight, bottomHeight;
-    private float[] vertices = new float[9 * 4 * 6];
+    private float[] vertices = new float[9 * 4 * SpriteBatch.vertexSize];
     private int idx;
     private float padLeft = -1, padRight = -1, padTop = -1, padBottom = -1;
 
@@ -279,6 +279,7 @@ public class NinePatch{
         float v = region.v2;
         float u2 = region.u2;
         float v2 = region.v;
+        float depth = region.getDepth();
 
         // Add half pixel offsets on stretchable dimensions to avoid color bleeding when GL_LINEAR
         // filtering is used for the texture. This nudges the texture coordinate to the center
@@ -297,30 +298,29 @@ public class NinePatch{
         }
 
         final float[] vertices = this.vertices;
-        final float mixColor = Color.clearFloatBits;
 
-        vertices[idx + 2] = color;
-        vertices[idx + 3] = u;
-        vertices[idx + 4] = v;
-        vertices[idx + 5] = mixColor;
+        vertices[idx + 2]  = u;
+        vertices[idx + 3]  = v;
+        vertices[idx + 4]  = depth;
+        vertices[idx + 5]  = color;
 
-        vertices[idx + 8] = color;
-        vertices[idx + 9] = u;
+        vertices[idx + 9]  = u;
         vertices[idx + 10] = v2;
-        vertices[idx + 11] = mixColor;
+        vertices[idx + 11] = depth;
+        vertices[idx + 12] = color;
 
-        vertices[idx + 14] = color;
-        vertices[idx + 15] = u2;
-        vertices[idx + 16] = v2;
-        vertices[idx + 17] = mixColor;
+        vertices[idx + 16] = u2;
+        vertices[idx + 17] = v2;
+        vertices[idx + 18] = depth;
+        vertices[idx + 19] = color;
 
-        vertices[idx + 20] = color;
-        vertices[idx + 21] = u2;
-        vertices[idx + 22] = v;
-        vertices[idx + 23] = mixColor;
-        idx += 24;
+        vertices[idx + 23] = u2;
+        vertices[idx + 24] = v;
+        vertices[idx + 25] = depth;
+        vertices[idx + 26] = color;
+        idx += SpriteBatch.spriteSize;
 
-        return idx - 24;
+        return idx - SpriteBatch.spriteSize;
     }
 
     /** Set the coordinates and color of a ninth of the patch. */
@@ -328,26 +328,21 @@ public class NinePatch{
         final float fx2 = x + width;
         final float fy2 = y + height;
         final float[] vertices = this.vertices;
-        final float mixColor = Color.clearFloatBits;
-        vertices[idx] = x;
-        vertices[idx + 1] = y;
-        vertices[idx + 2] = color;
-        vertices[idx + 5] = mixColor;
+        vertices[idx]      = x;
+        vertices[idx + 1]  = y;
+        vertices[idx + 5]  = color;
 
-        vertices[idx + 6] = x;
-        vertices[idx + 7] = fy2;
-        vertices[idx + 8] = color;
-        vertices[idx + 11] = mixColor;
+        vertices[idx + 7]  = x;
+        vertices[idx + 8]  = fy2;
+        vertices[idx + 12] = color;
 
-        vertices[idx + 12] = fx2;
-        vertices[idx + 13] = fy2;
-        vertices[idx + 14] = color;
-        vertices[idx + 17] = mixColor;
+        vertices[idx + 14] = fx2;
+        vertices[idx + 15] = fy2;
+        vertices[idx + 19] = color;
 
-        vertices[idx + 18] = fx2;
-        vertices[idx + 19] = y;
-        vertices[idx + 20] = color;
-        vertices[idx + 23] = mixColor;
+        vertices[idx + 21] = fx2;
+        vertices[idx + 22] = y;
+        vertices[idx + 26] = color;
     }
 
     private void prepareVertices(float x, float y, float width, float height){

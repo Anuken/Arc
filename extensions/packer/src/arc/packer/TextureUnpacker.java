@@ -57,12 +57,12 @@ public class TextureUnpacker{
             if(!quiet) System.out.printf("Creating directory: %s%n", outputDirFile.getPath());
         }
 
-        for(AtlasPage page : atlas.getPages()){
+        for(AtlasPage page : atlas.pages){
             // load the image file belonging to this page as a Buffered Image
             File file = page.textureFile.file();
             if(!file.exists()) throw new RuntimeException("Unable to find atlas image: " + file.getAbsolutePath());
             Pixmap img = new Pixmap(new Fi(file));
-            for(Region region : atlas.getRegions()){
+            for(Region region : atlas.regions){
                 if(!quiet) System.out.printf("Processing image for %s: x[%s] y[%s] w[%s] h[%s], rotate[%s]%n",
                 region.name, region.left, region.top, region.width, region.height, region.rotate);
 

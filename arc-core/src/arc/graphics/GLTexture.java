@@ -105,32 +105,6 @@ public abstract class GLTexture implements Disposable{
         return glHandle;
     }
 
-    /**
-     * Sets the {@link TextureWrap} for this texture on the u and v axis. Assumes the texture is bound and active!
-     * @param u the u wrap
-     * @param v the v wrap
-     */
-    public void unsafeSetWrap(TextureWrap u, TextureWrap v){
-        unsafeSetWrap(u, v, false);
-    }
-
-    /**
-     * Sets the {@link TextureWrap} for this texture on the u and v axis. Assumes the texture is bound and active!
-     * @param u the u wrap
-     * @param v the v wrap
-     * @param force True to always set the values, even if they are the same as the current values.
-     */
-    public void unsafeSetWrap(TextureWrap u, TextureWrap v, boolean force){
-        if(u != null && (force || uWrap != u)){
-            Gl.texParameteri(glTarget, GL20.GL_TEXTURE_WRAP_S, u.getGLEnum());
-            uWrap = u;
-        }
-        if(v != null && (force || vWrap != v)){
-            Gl.texParameteri(glTarget, GL20.GL_TEXTURE_WRAP_T, v.getGLEnum());
-            vWrap = v;
-        }
-    }
-
     public void setWrap(TextureWrap wrap){
         setWrap(wrap, wrap);
     }
@@ -146,32 +120,6 @@ public abstract class GLTexture implements Disposable{
         bind();
         Gl.texParameteri(glTarget, GL20.GL_TEXTURE_WRAP_S, u.getGLEnum());
         Gl.texParameteri(glTarget, GL20.GL_TEXTURE_WRAP_T, v.getGLEnum());
-    }
-
-    /**
-     * Sets the {@link TextureFilter} for this texture for minification and magnification. Assumes the texture is bound and active!
-     * @param minFilter the minification filter
-     * @param magFilter the magnification filter
-     */
-    public void unsafeSetFilter(TextureFilter minFilter, TextureFilter magFilter){
-        unsafeSetFilter(minFilter, magFilter, false);
-    }
-
-    /**
-     * Sets the {@link TextureFilter} for this texture for minification and magnification. Assumes the texture is bound and active!
-     * @param minFilter the minification filter
-     * @param magFilter the magnification filter
-     * @param force True to always set the values, even if they are the same as the current values.
-     */
-    public void unsafeSetFilter(TextureFilter minFilter, TextureFilter magFilter, boolean force){
-        if(minFilter != null && (force || this.minFilter != minFilter)){
-            Gl.texParameteri(glTarget, GL20.GL_TEXTURE_MIN_FILTER, minFilter.glEnum);
-            this.minFilter = minFilter;
-        }
-        if(magFilter != null && (force || this.magFilter != magFilter)){
-            Gl.texParameteri(glTarget, GL20.GL_TEXTURE_MAG_FILTER, magFilter.glEnum);
-            this.magFilter = magFilter;
-        }
     }
 
     public void setFilter(TextureFilter filter){

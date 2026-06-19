@@ -14,7 +14,7 @@ public class Draw{
     private static ScreenQuad squad;
 
     private static final Color[] carr = new Color[3];
-    private static final float[] vertices = new float[SpriteBatch.SPRITE_SIZE];
+    private static final float[] vertices = new float[SpriteBatch.spriteSize];
     private static @Nullable FloatFloatf zTransformer;
     private static float actualZ;
     private static Color retColor = new Color(), retPackedColor = new Color();
@@ -334,33 +334,39 @@ public class Draw{
         float v = region.v2;
         float u2 = region.u2;
         float v2 = region.v;
-        vertices[0] = x1;
-        vertices[1] = y1;
-        vertices[2] = c1;
-        vertices[3] = u;
-        vertices[4] = v;
-        vertices[5] = mcolor;
+        float depth = region.getDepth();
 
-        vertices[6] = x2;
-        vertices[7] = y2;
-        vertices[8] = c2;
-        vertices[9] = u;
+        vertices[0]  = x1;
+        vertices[1]  = y1;
+        vertices[2]  = u;
+        vertices[3]  = v;
+        vertices[4]  = depth;
+        vertices[5]  = c1;
+        vertices[6]  = mcolor;
+
+        vertices[7]  = x2;
+        vertices[8]  = y2;
+        vertices[9]  = u;
         vertices[10] = v2;
-        vertices[11] = mcolor;
+        vertices[11] = depth;
+        vertices[12] = c2;
+        vertices[13] = mcolor;
 
-        vertices[12] = x3;
-        vertices[13] = y3;
-        vertices[14] = c3;
-        vertices[15] = u2;
-        vertices[16] = v2;
-        vertices[17] = mcolor;
+        vertices[14] = x3;
+        vertices[15] = y3;
+        vertices[16] = u2;
+        vertices[17] = v2;
+        vertices[18] = depth;
+        vertices[19] = c3;
+        vertices[20] = mcolor;
 
-        vertices[18] = x4;
-        vertices[19] = y4;
-        vertices[20] = c4;
-        vertices[21] = u2;
-        vertices[22] = v;
-        vertices[23] = mcolor;
+        vertices[21] = x4;
+        vertices[22] = y4;
+        vertices[23] = u2;
+        vertices[24] = v;
+        vertices[25] = depth;
+        vertices[26] = c4;
+        vertices[27] = mcolor;
 
         Draw.vert(region.texture, vertices, 0, vertices.length);
     }
@@ -521,33 +527,39 @@ public class Draw{
 
         final float color = batch.getPackedColor();
         final float mixColor = batch.getPackedMixColor();
-        vertices[0] = x1;
-        vertices[1] = y1;
-        vertices[2] = color;
-        vertices[3] = u;
-        vertices[4] = v;
-        vertices[5] = mixColor;
+        final float depth = region.getDepth();
 
-        vertices[6] = x2;
-        vertices[7] = y2;
-        vertices[8] = color;
-        vertices[9] = u;
+        vertices[0]  = x1;
+        vertices[1]  = y1;
+        vertices[2]  = u;
+        vertices[3]  = v;
+        vertices[4]  = depth;
+        vertices[5]  = color;
+        vertices[6]  = mixColor;
+
+        vertices[7]  = x2;
+        vertices[8]  = y2;
+        vertices[9]  = u;
         vertices[10] = v2;
-        vertices[11] = mixColor;
+        vertices[11] = depth;
+        vertices[12] = color;
+        vertices[13] = mixColor;
 
-        vertices[12] = x3;
-        vertices[13] = y3;
-        vertices[14] = color;
-        vertices[15] = u2;
-        vertices[16] = v2;
-        vertices[17] = mixColor;
+        vertices[14] = x3;
+        vertices[15] = y3;
+        vertices[16] = u2;
+        vertices[17] = v2;
+        vertices[18] = depth;
+        vertices[19] = color;
+        vertices[20] = mixColor;
 
-        vertices[18] = x4;
-        vertices[19] = y4;
-        vertices[20] = color;
-        vertices[21] = u2;
-        vertices[22] = v;
-        vertices[23] = mixColor;
+        vertices[21] = x4;
+        vertices[22] = y4;
+        vertices[23] = u2;
+        vertices[24] = v;
+        vertices[25] = depth;
+        vertices[26] = color;
+        vertices[27] = mixColor;
 
         Draw.vert(region.texture, vertices, 0, vertices.length);
     }

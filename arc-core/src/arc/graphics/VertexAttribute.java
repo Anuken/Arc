@@ -17,6 +17,8 @@ public final class VertexAttribute{
     packedPosition = new VertexAttribute(2, GL20.GL_UNSIGNED_SHORT, true, Shader.positionAttribute),
     texCoords = new VertexAttribute(2, Shader.texcoordAttribute + "0"),
     packedTexCoords = new VertexAttribute(2, GL20.GL_UNSIGNED_SHORT, true, Shader.texcoordAttribute + "0"),
+    depthCoords = new VertexAttribute(1, "a_depth"),
+    texCoords3 = new VertexAttribute(3, Shader.texcoordAttribute + "0"),
     normal = new VertexAttribute(3, Shader.normalAttribute),
     packedNormal = new VertexAttribute(4, GL30.GL_INT_2_10_10_10_REV, true, Shader.normalAttribute),
     color = new VertexAttribute(4, GL20.GL_UNSIGNED_BYTE, true, Shader.colorAttribute),

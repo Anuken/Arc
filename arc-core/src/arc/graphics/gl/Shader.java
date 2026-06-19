@@ -736,7 +736,6 @@ public class Shader implements Disposable{
 
     private static final float[] val = new float[16];
 
-
     //mistakes were made
     public static float[] copyTransform(Mat matrix){
         val[4] = matrix.val[Mat.M01];
