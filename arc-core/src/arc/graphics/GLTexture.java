@@ -77,6 +77,11 @@ public abstract class GLTexture implements Disposable{
         return glHandle;
     }
 
+    /** advanced usage only */
+    public void overwriteHandle(int handle){
+        this.glHandle = handle;
+    }
+
     public void setWrap(TextureWrap wrap){
         setWrap(wrap, wrap);
     }

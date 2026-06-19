@@ -3,6 +3,7 @@ package arc.graphics.g2d;
 import arc.graphics.*;
 import arc.graphics.Texture.*;
 import arc.graphics.g2d.PixmapPacker.SkylineStrategy.SkylinePage.*;
+import arc.graphics.gl.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
@@ -120,6 +121,10 @@ public class PixmapPacker implements Disposable{
 
     public void setTargetTexture(Texture targetTexture){
         this.targetTexture = targetTexture;
+    }
+
+    public @Nullable Texture getTargetTexture(){
+        return targetTexture;
     }
 
     /**
@@ -369,33 +374,26 @@ public class PixmapPacker implements Disposable{
     }
 
     /**
-     * Generates a new {@link TextureAtlas} from the pixmaps inserted so far. After calling this method, disposing the packer will
-     * no longer dispose the page pixmaps.
-     */
-    public synchronized TextureAtlas generateTextureAtlas(TextureFilter minFilter, TextureFilter magFilter, boolean useMipMaps){
-        TextureAtlas atlas = new TextureAtlas();
-        updateTextureAtlas(atlas, minFilter, magFilter, useMipMaps, true);
-        return atlas;
-    }
-
-    public synchronized void updateTextureAtlas(TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter, boolean useMipMaps){
-        updateTextureAtlas(atlas, minFilter, magFilter, useMipMaps, true);
-    }
-
-    /**
      * Updates the {@link TextureAtlas}, adding any new {@link Pixmap} instances packed since the last call to this method. This
      * can be used to insert Pixmap instances on a separate thread via {@link #pack(String, Pixmap)} and update the TextureAtlas on
      * the rendering thread. This method must be called on the rendering thread. After calling this method, disposing the packer
      * will no longer dispose the page pixmaps.
      */
-    public synchronized void updateTextureAtlas(TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter, boolean useMipMaps, boolean clearRects){
-        updatePageTextures(minFilter, magFilter, useMipMaps);
+    public synchronized TextureAtlas generateTextureAtlas(TextureFilter minFilter, TextureFilter magFilter, boolean useMipMaps, boolean clearRects, int extraPages){
+        TextureAtlas atlas = new TextureAtlas();
+        TextureArray array = new TextureArray(getPageWidth(), getPageHeight(), pages.size + extraPages);
+        atlas.setTexture(array);
+        array.setFilter(minFilter, magFilter);
 
+        int i = 0;
         for(Page page : pages){
             if(page.addedRects.size > 0){
+                ArraySliceTexture tex = new ArraySliceTexture(array, i);
+                tex.draw(page.image);
+
                 for(String name : page.addedRects){
                     PixmapPackerRect rect = page.rects.get(name);
-                    TextureAtlas.AtlasRegion region = new TextureAtlas.AtlasRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
+                    TextureAtlas.AtlasRegion region = new TextureAtlas.AtlasRegion(tex, (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
 
                     if(rect.splits != null){
                         region.splits = rect.splits;
@@ -413,7 +411,11 @@ public class PixmapPacker implements Disposable{
                 }
                 if(clearRects) page.addedRects.clear();
             }
+
+            i ++;
         }
+
+        return atlas;
     }
 
     /**

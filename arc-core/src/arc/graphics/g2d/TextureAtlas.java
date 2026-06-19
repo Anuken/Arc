@@ -76,7 +76,7 @@ public class TextureAtlas implements Disposable{
     }
 
     private void load(TextureAtlasData data){
-        this.pages.set(pages);
+        this.pages.set(data.pages);
         AtlasPage first = data.pages.first();
         if(data.texture != null){
             textureArray = data.texture;
@@ -115,6 +115,10 @@ public class TextureAtlas implements Disposable{
 
     public TextureArray getTexture(){
         return textureArray;
+    }
+
+    public void setTexture(TextureArray textureArray){
+        this.textureArray = textureArray;
     }
 
     public Seq<AtlasPage> getPages(){

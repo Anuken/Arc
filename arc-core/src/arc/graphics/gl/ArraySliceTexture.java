@@ -8,8 +8,8 @@ import arc.graphics.*;
  * This is used in batches, and needs special instanceof checks to work properly. It doesn't have a real handle. The whole abstraction falls apart, really.
  * */
 public class ArraySliceTexture extends Texture{
-    public final TextureArray array;
-    public final int index;
+    public TextureArray array;
+    public int index;
 
     public ArraySliceTexture(TextureArray array, int index){
         super(GL30.GL_TEXTURE_2D_ARRAY, array.getTextureObjectHandle());
