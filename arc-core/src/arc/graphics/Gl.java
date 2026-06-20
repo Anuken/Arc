@@ -439,6 +439,11 @@ public class Gl{
                 lastBoundTextures[i] = -1;
             }
         }
+        for(int i = 0; i < lastBoundTexturesArray.length; i++){
+            if(lastBoundTexturesArray[i] == texture){
+                lastBoundTexturesArray[i] = -1;
+            }
+        }
         Core.gl.glDeleteTexture(texture);
     }
 

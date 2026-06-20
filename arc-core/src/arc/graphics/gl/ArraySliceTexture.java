@@ -22,6 +22,36 @@ public class ArraySliceTexture extends Texture{
     }
 
     @Override
+    public TextureFilter getMinFilter(){
+        return array.getMinFilter();
+    }
+
+    @Override
+    public TextureWrap getUWrap(){
+        return array.getUWrap();
+    }
+
+    @Override
+    public TextureFilter getMagFilter(){
+        return array.getMagFilter();
+    }
+
+    @Override
+    public TextureWrap getVWrap(){
+        return array.getVWrap();
+    }
+
+    @Override
+    public void setWrap(TextureWrap u, TextureWrap v){
+        array.setWrap(u, v);
+    }
+
+    @Override
+    public void setFilter(TextureFilter minFilter, TextureFilter magFilter){
+        array.setFilter(minFilter, magFilter);
+    }
+
+    @Override
     public void draw(Pixmap pixmap, int x, int y){
         bind();
         Core.gl30.glTexSubImage3D(glTarget, 0, x, y, index, pixmap.width, pixmap.height, 1, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.pixels);
