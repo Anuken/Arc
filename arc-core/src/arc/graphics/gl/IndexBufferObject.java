@@ -62,7 +62,7 @@ public class IndexBufferObject implements Disposable{
         buffer = byteBuffer.asShortBuffer();
         buffer.flip();
         byteBuffer.flip();
-        usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
+        usage = isStatic ? Gl.staticDraw : Gl.dynamicDraw;
     }
 
     /** @return the number of indices currently stored in this buffer */
@@ -101,7 +101,7 @@ public class IndexBufferObject implements Disposable{
         byteBuffer.limit(count << 1);
 
         if(bound){
-            Gl.bufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+            Gl.bufferData(Gl.elementArrayBuffer, byteBuffer.limit(), byteBuffer, usage);
             dirty = false;
         }
     }
@@ -117,7 +117,7 @@ public class IndexBufferObject implements Disposable{
         byteBuffer.limit(buffer.limit() << 1);
 
         if(bound){
-            Gl.bufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+            Gl.bufferData(Gl.elementArrayBuffer, byteBuffer.limit(), byteBuffer, usage);
             dirty = false;
         }
     }
@@ -131,7 +131,7 @@ public class IndexBufferObject implements Disposable{
         buffer.position(0);
 
         if(bound){
-            Gl.bufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+            Gl.bufferData(Gl.elementArrayBuffer, byteBuffer.limit(), byteBuffer, usage);
             dirty = false;
         }
     }
@@ -156,10 +156,10 @@ public class IndexBufferObject implements Disposable{
         }
         if(bufferHandle == 0) throw new ArcRuntimeException("No buffer allocated!");
 
-        Gl.bindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
+        Gl.bindBuffer(Gl.elementArrayBuffer, bufferHandle);
         if(dirty){
             byteBuffer.limit(buffer.limit() * 2);
-            Gl.bufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+            Gl.bufferData(Gl.elementArrayBuffer, byteBuffer.limit(), byteBuffer, usage);
             dirty = false;
         }
         bound = true;
@@ -167,14 +167,14 @@ public class IndexBufferObject implements Disposable{
 
     /** Unbinds this IndexBufferObject. */
     public void unbind(){
-        Gl.bindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
+        Gl.bindBuffer(Gl.elementArrayBuffer, 0);
         bound = false;
     }
 
     /** Disposes this IndexBufferObject and all its associated OpenGL resources. */
     @Override
     public void dispose(){
-        Gl.bindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
+        Gl.bindBuffer(Gl.elementArrayBuffer, 0);
         Gl.deleteBuffer(bufferHandle);
         bufferHandle = 0;
 

@@ -1,6 +1,5 @@
 package arc.graphics.gl;
 
-import arc.*;
 import arc.graphics.*;
 import arc.struct.*;
 import arc.util.*;
@@ -50,7 +49,7 @@ public class VertexBufferObject implements Disposable{
         buffer = byteBuffer.asFloatBuffer();
         buffer.flip();
         byteBuffer.flip();
-        usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_STREAM_DRAW;
+        usage = isStatic ? Gl.staticDraw: Gl.streamDraw;
     }
 
     public void render(IndexBufferObject indices, int primitiveType, int offset, int count){
@@ -61,7 +60,7 @@ public class VertexBufferObject implements Disposable{
                 + count + ", offset: " + offset + ", max: " + indices.max() + ")");
             }
 
-            Gl.drawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2);
+            Gl.drawElements(primitiveType, count, Gl.unsignedShort, offset * 2);
         }else{
             Gl.drawArrays(primitiveType, offset, count);
         }
@@ -113,12 +112,12 @@ public class VertexBufferObject implements Disposable{
         if(!created){
             bufferHandle = Gl.genBuffer();
             tmpHandle.clear();
-            Core.gl30.glGenVertexArrays(1, tmpHandle);
+            Gl.genVertexArrays(1, tmpHandle);
             vaoHandle = tmpHandle.get();
             created = true;
         }
 
-        Core.gl30.glBindVertexArray(vaoHandle);
+        Gl.bindVertexArray(vaoHandle);
 
         bindAttributes(shader);
 
@@ -186,7 +185,7 @@ public class VertexBufferObject implements Disposable{
     }
 
     public void unbind(Shader shader){
-        Core.gl30.glBindVertexArray(0);
+        Gl.bindVertexArray(0);
         isBound = false;
     }
 
@@ -204,7 +203,7 @@ public class VertexBufferObject implements Disposable{
             tmpHandle.clear();
             tmpHandle.put(vaoHandle);
             tmpHandle.flip();
-            Core.gl30.glDeleteVertexArrays(1, tmpHandle);
+            Gl.deleteVertexArrays(1, tmpHandle);
             vaoHandle = -1;
         }
     }

@@ -4,7 +4,6 @@ import arc.*;
 import arc.fx.util.*;
 import arc.graphics.*;
 import arc.graphics.Pixmap.*;
-import arc.graphics.Texture.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.struct.*;

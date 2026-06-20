@@ -103,7 +103,7 @@ public class AndroidApplication extends Activity implements Application{
         if(this.getVersion() < MINIMUM_SDK){
             throw new ArcRuntimeException("Arc requires Android API Level " + MINIMUM_SDK + " or later.");
         }
-        graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy);
+        graphics = new AndroidGraphics(this, config);
         input = new AndroidInput(this, this, graphics.view, config);
 
         this.getFilesDir(); // workaround for Android bug #10515463
@@ -176,7 +176,7 @@ public class AndroidApplication extends Activity implements Application{
 
     @Override
     public void getDnsServers(Seq<InetSocketAddress> out){
-        if(getVersion() < 21) return; //needs API level 21
+        if(getVersion() < 23) return; //needs API level 21
 
         try{
             ConnectivityManager cm = getSystemService(ConnectivityManager.class);

@@ -11,8 +11,6 @@ import arc.util.*;
 import static arc.backend.sdl.jni.SDL.*;
 
 public class SdlGraphics extends Graphics{
-    private GL20 gl20;
-    private GL30 gl30;
     private GLVersion glVersion;
     private BufferFormat bufferFormat;
     private SdlApplication app;
@@ -39,31 +37,22 @@ public class SdlGraphics extends Graphics{
             throw new ArcRuntimeException("GLEW failed to initialize: " + errorMessage);
         }
 
-        Core.gl = Core.gl20 = gl20 = new SdlGL20();
+        Core.gl = new SdlGL30();
 
-        String versionString = gl20.glGetString(GL20.GL_VERSION);
-        String vendorString = gl20.glGetString(GL20.GL_VENDOR);
-        String rendererString = gl20.glGetString(GL20.GL_RENDERER);
+        String versionString = Gl.getString(Gl.version);
+        String vendorString = Gl.getString(Gl.vendor);
+        String rendererString = Gl.getString(Gl.renderer);
 
         cursors = new ObjectMap<>();
         glVersion = new GLVersion(Application.ApplicationType.desktop, versionString, vendorString, rendererString);
         bufferFormat = new BufferFormat(app.config.r, app.config.g, app.config.b, app.config.a, app.config.depth, app.config.stencil, app.config.samples, false);
 
-        if(!glVersion.atLeast(2, 0) || !supportsFBO()){
-            throw new ArcRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + versionString);
-        }
-
-        //use GL30 version if possible
-        if(glVersion.atLeast(3, 0) && app.config.allowGl30){
-            Core.gl = Core.gl20 = gl20 = Core.gl30 = gl30 = new SdlGL30();
+        if(!glVersion.atLeast(3, 0)){
+            throw new ArcRuntimeException("OpenGL 3.0 or higher is required. OpenGL version: " + versionString);
         }
 
         clear(app.config.initialBackgroundColor);
         SDL_GL_SwapWindow(app.window);
-    }
-
-    boolean supportsFBO(){
-        return glVersion.atLeast(3, 0) || SDL_GL_ExtensionSupported("GL_EXT_framebuffer_object");
     }
 
     void update(){
@@ -90,34 +79,7 @@ public class SdlGraphics extends Graphics{
         backBufferWidth = wh[0];
         backBufferHeight = wh[1];
 
-        gl20.glViewport(0, 0, backBufferWidth, backBufferHeight);
-    }
-
-    @Override
-    public boolean isGL30Available(){
-        return gl30 != null;
-    }
-
-    @Override
-    public GL20 getGL20(){
-        return gl20;
-    }
-
-    @Override
-    public void setGL20(GL20 gl20){
-        this.gl20 = gl20;
-        Core.gl = Core.gl20 = gl20;
-    }
-
-    @Override
-    public GL30 getGL30(){
-        return gl30;
-    }
-
-    @Override
-    public void setGL30(GL30 gl30){
-        this.gl20 = this.gl30 = gl30;
-        Core.gl = Core.gl20 = gl30;
+        Gl.viewport(0, 0, backBufferWidth, backBufferHeight);
     }
 
     @Override

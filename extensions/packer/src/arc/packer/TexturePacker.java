@@ -2,7 +2,6 @@ package arc.packer;
 
 import arc.files.*;
 import arc.graphics.*;
-import arc.graphics.Texture.*;
 import arc.graphics.g2d.TextureAtlas.*;
 import arc.math.*;
 import arc.struct.*;

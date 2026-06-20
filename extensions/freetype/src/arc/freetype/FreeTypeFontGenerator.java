@@ -5,7 +5,6 @@ import arc.files.*;
 import arc.freetype.FreeType.*;
 import arc.func.*;
 import arc.graphics.*;
-import arc.graphics.Texture.*;
 import arc.graphics.g2d.*;
 import arc.graphics.g2d.Font.Glyph;
 import arc.graphics.g2d.Font.*;

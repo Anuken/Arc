@@ -318,7 +318,313 @@ public class Gl{
     renderbufferBinding = 0x8CA7,
     maxRenderbufferSize = 0x84E8,
     invalidFramebufferOperation = 0x0506,
-    programPointSize = 0x8642; //same as GL_PROGRAM_POINT_SIZE_ARB
+    programPointSize = 0x8642, //same as GL_PROGRAM_POINT_SIZE_ARB
+
+    //GL3 constants
+    readBuffer = 0x0C02,
+    unpackRowLength = 0x0CF2,
+    unpackSkipRows = 0x0CF3,
+    unpackSkipPixels = 0x0CF4,
+    packRowLength = 0x0D02,
+    packSkipRows = 0x0D03,
+    packSkipPixels = 0x0D04,
+    color = 0x1800,
+    depth = 0x1801,
+    stencil = 0x1802,
+    red = 0x1903,
+    rgb8 = 0x8051,
+    rgba8 = 0x8058,
+    rgb10A2 = 0x8059,
+    textureBinding3d = 0x806A,
+    unpackSkipImages = 0x806D,
+    unpackImageHeight = 0x806E,
+    texture3d = 0x806F,
+    textureWrapR = 0x8072,
+    max3dTextureSize = 0x8073,
+    unsignedInt2101010Rev = 0x8368,
+    maxElementsVertices = 0x80E8,
+    maxElementsIndices = 0x80E9,
+    textureMinLod = 0x813A,
+    textureMaxLod = 0x813B,
+    textureBaseLevel = 0x813C,
+    textureMaxLevel = 0x813D,
+    depthComponent24 = 0x81A6,
+    maxTextureLodBias = 0x84FD,
+    textureCompareMode = 0x884C,
+    textureCompareFunc = 0x884D,
+    currentQuery = 0x8865,
+    queryResult = 0x8866,
+    queryResultAvailable = 0x8867,
+    bufferMapped = 0x88BC,
+    bufferMapPointer = 0x88BD,
+    streamRead = 0x88E1,
+    streamCopy = 0x88E2,
+    staticRead = 0x88E5,
+    staticCopy = 0x88E6,
+    dynamicRead = 0x88E9,
+    dynamicCopy = 0x88EA,
+    maxDrawBuffers = 0x8824,
+    drawBuffer0 = 0x8825,
+    drawBuffer1 = 0x8826,
+    drawBuffer2 = 0x8827,
+    drawBuffer3 = 0x8828,
+    drawBuffer4 = 0x8829,
+    drawBuffer5 = 0x882A,
+    drawBuffer6 = 0x882B,
+    drawBuffer7 = 0x882C,
+    drawBuffer8 = 0x882D,
+    drawBuffer9 = 0x882E,
+    drawBuffer10 = 0x882F,
+    drawBuffer11 = 0x8830,
+    drawBuffer12 = 0x8831,
+    drawBuffer13 = 0x8832,
+    drawBuffer14 = 0x8833,
+    drawBuffer15 = 0x8834,
+    maxFragmentUniformComponents = 0x8B49,
+    maxVertexUniformComponents = 0x8B4A,
+    sampler3d = 0x8B5F,
+    sampler2dShadow = 0x8B62,
+    fragmentShaderDerivativeHint = 0x8B8B,
+    pixelPackBuffer = 0x88EB,
+    pixelUnpackBuffer = 0x88EC,
+    pixelPackBufferBinding = 0x88ED,
+    pixelUnpackBufferBinding = 0x88EF,
+    floatMat2x3 = 0x8B65,
+    floatMat2x4 = 0x8B66,
+    floatMat3x2 = 0x8B67,
+    floatMat3x4 = 0x8B68,
+    floatMat4x2 = 0x8B69,
+    floatMat4x3 = 0x8B6A,
+    srgb = 0x8C40,
+    srgb8 = 0x8C41,
+    srgb8Alpha8 = 0x8C43,
+    compareRefToTexture = 0x884E,
+    majorVersion = 0x821B,
+    minorVersion = 0x821C,
+    numExtensions = 0x821D,
+    rgba32f = 0x8814,
+    rgb32f = 0x8815,
+    rgba16f = 0x881A,
+    rgb16f = 0x881B,
+    vertexAttribArrayInteger = 0x88FD,
+    maxArrayTextureLayers = 0x88FF,
+    minProgramTexelOffset = 0x8904,
+    maxProgramTexelOffset = 0x8905,
+    maxVaryingComponents = 0x8B4B,
+    texture2dArray = 0x8C1A,
+    textureBinding2dArray = 0x8C1D,
+    r11fG11fB10f = 0x8C3A,
+    unsignedInt10f11f11fRev = 0x8C3B,
+    rgb9E5 = 0x8C3D,
+    unsignedInt5999Rev = 0x8C3E,
+    transformFeedbackVaryingMaxLength = 0x8C76,
+    transformFeedbackBufferMode = 0x8C7F,
+    maxTransformFeedbackSeparateComponents = 0x8C80,
+    transformFeedbackVaryings = 0x8C83,
+    transformFeedbackBufferStart = 0x8C84,
+    transformFeedbackBufferSize = 0x8C85,
+    transformFeedbackPrimitivesWritten = 0x8C88,
+    rasterizerDiscard = 0x8C89,
+    maxTransformFeedbackInterleavedComponents = 0x8C8A,
+    maxTransformFeedbackSeparateAttribs = 0x8C8B,
+    interleavedAttribs = 0x8C8C,
+    separateAttribs = 0x8C8D,
+    transformFeedbackBuffer = 0x8C8E,
+    transformFeedbackBufferBinding = 0x8C8F,
+    rgba32ui = 0x8D70,
+    rgb32ui = 0x8D71,
+    rgba16ui = 0x8D76,
+    rgb16ui = 0x8D77,
+    rgba8ui = 0x8D7C,
+    rgb8ui = 0x8D7D,
+    rgba32i = 0x8D82,
+    rgb32i = 0x8D83,
+    rgba16i = 0x8D88,
+    rgb16i = 0x8D89,
+    rgba8i = 0x8D8E,
+    rgb8i = 0x8D8F,
+    redInteger = 0x8D94,
+    rgbInteger = 0x8D98,
+    rgbaInteger = 0x8D99,
+    sampler2dArray = 0x8DC1,
+    sampler2dArrayShadow = 0x8DC4,
+    samplerCubeShadow = 0x8DC5,
+    unsignedIntVec2 = 0x8DC6,
+    unsignedIntVec3 = 0x8DC7,
+    unsignedIntVec4 = 0x8DC8,
+    intSampler2d = 0x8DCA,
+    intSampler3d = 0x8DCB,
+    intSamplerCube = 0x8DCC,
+    intSampler2dArray = 0x8DCF,
+    unsignedIntSampler2d = 0x8DD2,
+    unsignedIntSampler3d = 0x8DD3,
+    unsignedIntSamplerCube = 0x8DD4,
+    unsignedIntSampler2dArray = 0x8DD7,
+    bufferAccessFlags = 0x911F,
+    bufferMapLength = 0x9120,
+    bufferMapOffset = 0x9121,
+    depthComponent32f = 0x8CAC,
+    depth32fStencil8 = 0x8CAD,
+    float32UnsignedInt248Rev = 0x8DAD,
+    framebufferAttachmentColorEncoding = 0x8210,
+    framebufferAttachmentComponentType = 0x8211,
+    framebufferAttachmentRedSize = 0x8212,
+    framebufferAttachmentGreenSize = 0x8213,
+    framebufferAttachmentBlueSize = 0x8214,
+    framebufferAttachmentAlphaSize = 0x8215,
+    framebufferAttachmentDepthSize = 0x8216,
+    framebufferAttachmentStencilSize = 0x8217,
+    framebufferDefault = 0x8218,
+    framebufferUndefined = 0x8219,
+    depthStencilAttachment = 0x821A,
+    depthStencil = 0x84F9,
+    unsignedInt248 = 0x84FA,
+    depth24Stencil8 = 0x88F0,
+    unsignedNormalized = 0x8C17,
+    drawFramebufferBinding = framebufferBinding,
+    readFramebuffer = 0x8CA8,
+    drawFramebuffer = 0x8CA9,
+    readFramebufferBinding = 0x8CAA,
+    renderbufferSamples = 0x8CAB,
+    framebufferAttachmentTextureLayer = 0x8CD4,
+    maxColorAttachments = 0x8CDF,
+    colorAttachment1 = 0x8CE1,
+    colorAttachment2 = 0x8CE2,
+    colorAttachment3 = 0x8CE3,
+    colorAttachment4 = 0x8CE4,
+    colorAttachment5 = 0x8CE5,
+    colorAttachment6 = 0x8CE6,
+    colorAttachment7 = 0x8CE7,
+    colorAttachment8 = 0x8CE8,
+    colorAttachment9 = 0x8CE9,
+    colorAttachment10 = 0x8CEA,
+    colorAttachment11 = 0x8CEB,
+    colorAttachment12 = 0x8CEC,
+    colorAttachment13 = 0x8CED,
+    colorAttachment14 = 0x8CEE,
+    colorAttachment15 = 0x8CEF,
+    framebufferIncompleteMultisample = 0x8D56,
+    maxSamples = 0x8D57,
+    halfFloat = 0x140B,
+    mapReadBit = 0x0001,
+    mapWriteBit = 0x0002,
+    mapInvalidateRangeBit = 0x0004,
+    mapInvalidateBufferBit = 0x0008,
+    mapFlushExplicitBit = 0x0010,
+    mapUnsynchronizedBit = 0x0020,
+    rg = 0x8227,
+    rgInteger = 0x8228,
+    r8 = 0x8229,
+    rg8 = 0x822B,
+    r16f = 0x822D,
+    r32f = 0x822E,
+    rg16f = 0x822F,
+    rg32f = 0x8230,
+    r8i = 0x8231,
+    r8ui = 0x8232,
+    r16i = 0x8233,
+    r16ui = 0x8234,
+    r32i = 0x8235,
+    r32ui = 0x8236,
+    rg8i = 0x8237,
+    rg8ui = 0x8238,
+    rg16i = 0x8239,
+    rg16ui = 0x823A,
+    rg32i = 0x823B,
+    rg32ui = 0x823C,
+    vertexArrayBinding = 0x85B5,
+    r8Snorm = 0x8F94,
+    rg8Snorm = 0x8F95,
+    rgb8Snorm = 0x8F96,
+    rgba8Snorm = 0x8F97,
+    signedNormalized = 0x8F9C,
+    primitiveRestartFixedIndex = 0x8D69,
+    copyReadBuffer = 0x8F36,
+    copyWriteBuffer = 0x8F37,
+    copyReadBufferBinding = copyReadBuffer,
+    copyWriteBufferBinding = copyWriteBuffer,
+    uniformBuffer = 0x8A11,
+    uniformBufferBinding = 0x8A28,
+    uniformBufferStart = 0x8A29,
+    uniformBufferSize = 0x8A2A,
+    maxVertexUniformBlocks = 0x8A2B,
+    maxFragmentUniformBlocks = 0x8A2D,
+    maxCombinedUniformBlocks = 0x8A2E,
+    maxUniformBufferBindings = 0x8A2F,
+    maxUniformBlockSize = 0x8A30,
+    maxCombinedVertexUniformComponents = 0x8A31,
+    maxCombinedFragmentUniformComponents = 0x8A33,
+    uniformBufferOffsetAlignment = 0x8A34,
+    activeUniformBlockMaxNameLength = 0x8A35,
+    activeUniformBlocks = 0x8A36,
+    uniformType = 0x8A37,
+    uniformSize = 0x8A38,
+    uniformNameLength = 0x8A39,
+    uniformBlockIndex = 0x8A3A,
+    uniformOffset = 0x8A3B,
+    uniformArrayStride = 0x8A3C,
+    uniformMatrixStride = 0x8A3D,
+    uniformIsRowMajor = 0x8A3E,
+    uniformBlockBinding = 0x8A3F,
+    uniformBlockDataSize = 0x8A40,
+    uniformBlockNameLength = 0x8A41,
+    uniformBlockActiveUniforms = 0x8A42,
+    uniformBlockActiveUniformIndices = 0x8A43,
+    uniformBlockReferencedByVertexShader = 0x8A44,
+    uniformBlockReferencedByFragmentShader = 0x8A46,
+    invalidIndex = -1,
+    maxVertexOutputComponents = 0x9122,
+    maxFragmentInputComponents = 0x9125,
+    maxServerWaitTimeout = 0x9111,
+    objectType = 0x9112,
+    syncCondition = 0x9113,
+    syncStatus = 0x9114,
+    syncFlags = 0x9115,
+    syncFence = 0x9116,
+    syncGpuCommandsComplete = 0x9117,
+    unsignaled = 0x9118,
+    signaled = 0x9119,
+    alreadySignaled = 0x911A,
+    timeoutExpired = 0x911B,
+    conditionSatisfied = 0x911C,
+    waitFailed = 0x911D,
+    syncFlushCommandsBit = 0x00000001,
+    vertexAttribArrayDivisor = 0x88FE,
+    anySamplesPassed = 0x8C2F,
+    anySamplesPassedConservative = 0x8D6A,
+    samplerBinding = 0x8919,
+    rgb10A2ui = 0x906F,
+    textureSwizzleR = 0x8E42,
+    textureSwizzleG = 0x8E43,
+    textureSwizzleB = 0x8E44,
+    textureSwizzleA = 0x8E45,
+    green = 0x1904,
+    blue = 0x1905,
+    int2101010Rev = 0x8D9F,
+    transformFeedback = 0x8E22,
+    transformFeedbackPaused = 0x8E23,
+    transformFeedbackActive = 0x8E24,
+    transformFeedbackBinding = 0x8E25,
+    programBinaryRetrievableHint = 0x8257,
+    programBinaryLength = 0x8741,
+    numProgramBinaryFormats = 0x87FE,
+    programBinaryFormats = 0x87FF,
+    compressedR11Eac = 0x9270,
+    compressedSignedR11Eac = 0x9271,
+    compressedRg11Eac = 0x9272,
+    compressedSignedRg11Eac = 0x9273,
+    compressedRgb8Etc2 = 0x9274,
+    compressedSrgb8Etc2 = 0x9275,
+    compressedRgb8PunchthroughAlpha1Etc2 = 0x9276,
+    compressedSrgb8PunchthroughAlpha1Etc2 = 0x9277,
+    compressedRgba8Etc2Eac = 0x9278,
+    compressedSrgb8Alpha8Etc2Eac = 0x9279,
+    textureImmutableFormat = 0x912F,
+    maxElementIndex = 0x8D6B,
+    numSampleCounts = 0x9380,
+    textureImmutableLevels = 0x82DF;
+
+    public static final long timeoutIgnored = -1;
 
     //STATE - optimizes GL calls
 
@@ -370,7 +676,7 @@ public class Gl{
                 }
                 lastBoundTextures[index] = texture;
             }
-        }else if(optimize && target == GL30.GL_TEXTURE_2D_ARRAY){
+        }else if(optimize && target == Gl.texture2dArray){
             //current bound texture unit
             int index = lastActiveTexture - texture0;
             //make sure it's valid
@@ -1021,5 +1327,339 @@ public class Gl{
 
     public static void vertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, int ptr){
         Core.gl.glVertexAttribPointer(indx, size, type, normalized, stride, ptr);
+    }
+
+    //GL30 methods below
+
+    public static void readBuffer(int mode){
+        Core.gl.glReadBuffer(mode);
+    }
+
+    public static void drawRangeElements(int mode, int start, int end, int count, int type, java.nio.Buffer indices){
+        Core.gl.glDrawRangeElements(mode, start, end, count, type, indices);
+    }
+
+    public static void drawRangeElements(int mode, int start, int end, int count, int type, int offset){
+        Core.gl.glDrawRangeElements(mode, start, end, count, type, offset);
+    }
+
+    public static void texImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, java.nio.Buffer pixels){
+        Core.gl.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+    }
+
+    public static void texImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, int offset){
+        Core.gl.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, offset);
+    }
+
+    public static void texSubImage3D(int target, int level, int xoffset, int yoffset, int zoffset, int width, int height, int depth, int format, int type, java.nio.Buffer pixels){
+        Core.gl.glTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
+    }
+
+    public static void texSubImage3D(int target, int level, int xoffset, int yoffset, int zoffset, int width, int height, int depth, int format, int type, int offset){
+        Core.gl.glTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, offset);
+    }
+
+    public static void copyTexSubImage3D(int target, int level, int xoffset, int yoffset, int zoffset, int x, int y, int width, int height){
+        Core.gl.glCopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
+    }
+
+    public static void genQueries(int n, java.nio.IntBuffer ids){
+        Core.gl.glGenQueries(n, ids);
+    }
+
+    public static void deleteQueries(int n, java.nio.IntBuffer ids){
+        Core.gl.glDeleteQueries(n, ids);
+    }
+
+    public static boolean isQuery(int id){
+        return Core.gl.glIsQuery(id);
+    }
+
+    public static void beginQuery(int target, int id){
+        Core.gl.glBeginQuery(target, id);
+    }
+
+    public static void endQuery(int target){
+        Core.gl.glEndQuery(target);
+    }
+
+    public static void getQueryiv(int target, int pname, java.nio.IntBuffer params){
+        Core.gl.glGetQueryiv(target, pname, params);
+    }
+
+    public static void getQueryObjectuiv(int id, int pname, java.nio.IntBuffer params){
+        Core.gl.glGetQueryObjectuiv(id, pname, params);
+    }
+
+    public static boolean unmapBuffer(int target){
+        return Core.gl.glUnmapBuffer(target);
+    }
+
+    public static java.nio.Buffer getBufferPointerv(int target, int pname){
+        return Core.gl.glGetBufferPointerv(target, pname);
+    }
+
+    public static void drawBuffers(int n, java.nio.IntBuffer bufs){
+        Core.gl.glDrawBuffers(n, bufs);
+    }
+
+    public static void uniformMatrix2x3fv(int location, int count, boolean transpose, java.nio.FloatBuffer value){
+        Core.gl.glUniformMatrix2x3fv(location, count, transpose, value);
+    }
+
+    public static void uniformMatrix3x2fv(int location, int count, boolean transpose, java.nio.FloatBuffer value){
+        Core.gl.glUniformMatrix3x2fv(location, count, transpose, value);
+    }
+
+    public static void uniformMatrix2x4fv(int location, int count, boolean transpose, java.nio.FloatBuffer value){
+        Core.gl.glUniformMatrix2x4fv(location, count, transpose, value);
+    }
+
+    public static void uniformMatrix4x2fv(int location, int count, boolean transpose, java.nio.FloatBuffer value){
+        Core.gl.glUniformMatrix4x2fv(location, count, transpose, value);
+    }
+
+    public static void uniformMatrix3x4fv(int location, int count, boolean transpose, java.nio.FloatBuffer value){
+        Core.gl.glUniformMatrix3x4fv(location, count, transpose, value);
+    }
+
+    public static void uniformMatrix4x3fv(int location, int count, boolean transpose, java.nio.FloatBuffer value){
+        Core.gl.glUniformMatrix4x3fv(location, count, transpose, value);
+    }
+
+    public static void blitFramebuffer(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, int mask, int filter){
+        Core.gl.glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+    }
+
+    public static void renderbufferStorageMultisample(int target, int samples, int internalformat, int width, int height){
+        Core.gl.glRenderbufferStorageMultisample(target, samples, internalformat, width, height);
+    }
+
+    public static void framebufferTextureLayer(int target, int attachment, int texture, int level, int layer){
+        Core.gl.glFramebufferTextureLayer(target, attachment, texture, level, layer);
+    }
+
+    public static void flushMappedBufferRange(int target, int offset, int length){
+        Core.gl.glFlushMappedBufferRange(target, offset, length);
+    }
+
+    public static void bindVertexArray(int array){
+        Core.gl.glBindVertexArray(array);
+    }
+
+    public static void deleteVertexArrays(int n, java.nio.IntBuffer arrays){
+        Core.gl.glDeleteVertexArrays(n, arrays);
+    }
+
+    public static void genVertexArrays(int n, java.nio.IntBuffer arrays){
+        Core.gl.glGenVertexArrays(n, arrays);
+    }
+
+    public static boolean isVertexArray(int array){
+        return Core.gl.glIsVertexArray(array);
+    }
+
+    public static void beginTransformFeedback(int primitiveMode){
+        Core.gl.glBeginTransformFeedback(primitiveMode);
+    }
+
+    public static void endTransformFeedback(){
+        Core.gl.glEndTransformFeedback();
+    }
+
+    public static void bindBufferRange(int target, int index, int buffer, int offset, int size){
+        Core.gl.glBindBufferRange(target, index, buffer, offset, size);
+    }
+
+    public static void bindBufferBase(int target, int index, int buffer){
+        Core.gl.glBindBufferBase(target, index, buffer);
+    }
+
+    public static void transformFeedbackVaryings(int program, String[] varyings, int bufferMode){
+        Core.gl.glTransformFeedbackVaryings(program, varyings, bufferMode);
+    }
+
+    public static void vertexAttribIPointer(int index, int size, int type, int stride, int offset){
+        Core.gl.glVertexAttribIPointer(index, size, type, stride, offset);
+    }
+
+    public static void getVertexAttribIiv(int index, int pname, java.nio.IntBuffer params){
+        Core.gl.glGetVertexAttribIiv(index, pname, params);
+    }
+
+    public static void getVertexAttribIuiv(int index, int pname, java.nio.IntBuffer params){
+        Core.gl.glGetVertexAttribIuiv(index, pname, params);
+    }
+
+    public static void vertexAttribI4i(int index, int x, int y, int z, int w){
+        Core.gl.glVertexAttribI4i(index, x, y, z, w);
+    }
+
+    public static void vertexAttribI4ui(int index, int x, int y, int z, int w){
+        Core.gl.glVertexAttribI4ui(index, x, y, z, w);
+    }
+
+    public static void getUniformuiv(int program, int location, java.nio.IntBuffer params){
+        Core.gl.glGetUniformuiv(program, location, params);
+    }
+
+    public static int getFragDataLocation(int program, String name){
+        return Core.gl.glGetFragDataLocation(program, name);
+    }
+
+    public static void uniform1uiv(int location, int count, java.nio.IntBuffer value){
+        Core.gl.glUniform1uiv(location, count, value);
+    }
+
+    public static void uniform3uiv(int location, int count, java.nio.IntBuffer value){
+        Core.gl.glUniform3uiv(location, count, value);
+    }
+
+    public static void uniform4uiv(int location, int count, java.nio.IntBuffer value){
+        Core.gl.glUniform4uiv(location, count, value);
+    }
+
+    public static void clearBufferiv(int buffer, int drawbuffer, java.nio.IntBuffer value){
+        Core.gl.glClearBufferiv(buffer, drawbuffer, value);
+    }
+
+    public static void clearBufferuiv(int buffer, int drawbuffer, java.nio.IntBuffer value){
+        Core.gl.glClearBufferuiv(buffer, drawbuffer, value);
+    }
+
+    public static void clearBufferfv(int buffer, int drawbuffer, java.nio.FloatBuffer value){
+        Core.gl.glClearBufferfv(buffer, drawbuffer, value);
+    }
+
+    public static void clearBufferfi(int buffer, int drawbuffer, float depth, int stencil){
+        Core.gl.glClearBufferfi(buffer, drawbuffer, depth, stencil);
+    }
+
+    public static String getStringi(int name, int index){
+        return Core.gl.glGetStringi(name, index);
+    }
+
+    public static void copyBufferSubData(int readTarget, int writeTarget, int readOffset, int writeOffset, int size){
+        Core.gl.glCopyBufferSubData(readTarget, writeTarget, readOffset, writeOffset, size);
+    }
+
+    public static void getUniformIndices(int program, String[] uniformNames, java.nio.IntBuffer uniformIndices){
+        Core.gl.glGetUniformIndices(program, uniformNames, uniformIndices);
+    }
+
+    public static void getActiveUniformsiv(int program, int uniformCount, java.nio.IntBuffer uniformIndices, int pname, java.nio.IntBuffer params){
+        Core.gl.glGetActiveUniformsiv(program, uniformCount, uniformIndices, pname, params);
+    }
+
+    public static int getUniformBlockIndex(int program, String uniformBlockName){
+        return Core.gl.glGetUniformBlockIndex(program, uniformBlockName);
+    }
+
+    public static void getActiveUniformBlockiv(int program, int uniformBlockIndex, int pname, java.nio.IntBuffer params){
+        Core.gl.glGetActiveUniformBlockiv(program, uniformBlockIndex, pname, params);
+    }
+
+    public static void getActiveUniformBlockName(int program, int uniformBlockIndex, java.nio.Buffer length, java.nio.Buffer uniformBlockName){
+        Core.gl.glGetActiveUniformBlockName(program, uniformBlockIndex, length, uniformBlockName);
+    }
+
+    public static void uniformBlockBinding(int program, int uniformBlockIndex, int uniformBlockBinding){
+        Core.gl.glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);
+    }
+
+    public static void drawArraysInstanced(int mode, int first, int count, int instanceCount){
+        Core.gl.glDrawArraysInstanced(mode, first, count, instanceCount);
+    }
+
+    public static void drawElementsInstanced(int mode, int count, int type, int indicesOffset, int instanceCount){
+        Core.gl.glDrawElementsInstanced(mode, count, type, indicesOffset, instanceCount);
+    }
+
+    public static void getInteger64v(int pname, java.nio.LongBuffer params){
+        Core.gl.glGetInteger64v(pname, params);
+    }
+
+    public static void getBufferParameteri64v(int target, int pname, java.nio.LongBuffer params){
+        Core.gl.glGetBufferParameteri64v(target, pname, params);
+    }
+
+    public static void genSamplers(int count, java.nio.IntBuffer samplers){
+        Core.gl.glGenSamplers(count, samplers);
+    }
+
+    public static void deleteSamplers(int count, java.nio.IntBuffer samplers){
+        Core.gl.glDeleteSamplers(count, samplers);
+    }
+
+    public static boolean isSampler(int sampler){
+        return Core.gl.glIsSampler(sampler);
+    }
+
+    public static void bindSampler(int unit, int sampler){
+        Core.gl.glBindSampler(unit, sampler);
+    }
+
+    public static void samplerParameteri(int sampler, int pname, int param){
+        Core.gl.glSamplerParameteri(sampler, pname, param);
+    }
+
+    public static void samplerParameteriv(int sampler, int pname, java.nio.IntBuffer param){
+        Core.gl.glSamplerParameteriv(sampler, pname, param);
+    }
+
+    public static void samplerParameterf(int sampler, int pname, float param){
+        Core.gl.glSamplerParameterf(sampler, pname, param);
+    }
+
+    public static void samplerParameterfv(int sampler, int pname, java.nio.FloatBuffer param){
+        Core.gl.glSamplerParameterfv(sampler, pname, param);
+    }
+
+    public static void getSamplerParameteriv(int sampler, int pname, java.nio.IntBuffer params){
+        Core.gl.glGetSamplerParameteriv(sampler, pname, params);
+    }
+
+    public static void getSamplerParameterfv(int sampler, int pname, java.nio.FloatBuffer params){
+        Core.gl.glGetSamplerParameterfv(sampler, pname, params);
+    }
+
+    public static void vertexAttribDivisor(int index, int divisor){
+        Core.gl.glVertexAttribDivisor(index, divisor);
+    }
+
+    public static void bindTransformFeedback(int target, int id){
+        Core.gl.glBindTransformFeedback(target, id);
+    }
+
+    public static void deleteTransformFeedbacks(int n, java.nio.IntBuffer ids){
+        Core.gl.glDeleteTransformFeedbacks(n, ids);
+    }
+
+    public static void genTransformFeedbacks(int n, java.nio.IntBuffer ids){
+        Core.gl.glGenTransformFeedbacks(n, ids);
+    }
+
+    public static boolean isTransformFeedback(int id){
+        return Core.gl.glIsTransformFeedback(id);
+    }
+
+    public static void pauseTransformFeedback(){
+        Core.gl.glPauseTransformFeedback();
+    }
+
+    public static void resumeTransformFeedback(){
+        Core.gl.glResumeTransformFeedback();
+    }
+
+    public static void programParameteri(int program, int pname, int value){
+        Core.gl.glProgramParameteri(program, pname, value);
+    }
+
+    public static void invalidateFramebuffer(int target, int numAttachments, java.nio.IntBuffer attachments){
+        Core.gl.glInvalidateFramebuffer(target, numAttachments, attachments);
+    }
+
+    public static void invalidateSubFramebuffer(int target, int numAttachments, java.nio.IntBuffer attachments, int x, int y, int width, int height){
+        Core.gl.glInvalidateSubFramebuffer(target, numAttachments, attachments, x, y, width, height);
     }
 }

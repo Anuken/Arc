@@ -1,7 +1,6 @@
 package arc.fx.util;
 
 import arc.graphics.*;
-import arc.graphics.Texture.*;
 import arc.graphics.gl.*;
 import arc.struct.*;
 import arc.util.*;

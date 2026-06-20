@@ -3,7 +3,6 @@ package arc.fx.util;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.Pixmap.*;
-import arc.graphics.Texture.*;
 import arc.graphics.gl.*;
 
 /**

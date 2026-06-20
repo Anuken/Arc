@@ -6,16 +6,13 @@ import arc.files.*;
 /**
  * A Texture wraps a standard OpenGL ES texture.
  * <p>
- * A Texture can be managed. If the OpenGL context is lost all managed textures get invalidated. This happens when a user switches
- * to another application or receives an incoming call. Managed textures get reloaded automatically.
- * <p>
  * A Texture has to be bound via the {@link Texture#bind()} method in order for it to be applied to geometry. The texture will be
  * bound to the currently active texture unit specified via {@link GL20#glActiveTexture(int)}.
  * <p>
  * You can draw {@link Pixmap}s to a texture at any time. The changes will be automatically uploaded to texture memory. This is of
- * course not extremely fast so use it with care. It also only works with unmanaged textures.
+ * course not extremely fast so use it with care.
  * <p>
- * A Texture must be disposed when it is no longer used
+ * A Texture must be disposed when it is no longer used.
  * @author badlogicgames@gmail.com
  */
 public class Texture extends GLTexture{
@@ -99,66 +96,4 @@ public class Texture extends GLTexture{
         return glHandle == 0;
     }
 
-    public enum TextureFilter{
-        /** Fetch the nearest texel that best maps to the pixel on screen. */
-        nearest(GL20.GL_NEAREST),
-
-        /** Fetch four nearest texels that best maps to the pixel on screen. */
-        linear(GL20.GL_LINEAR),
-
-        /** @see TextureFilter#mipMapLinearLinear */
-        mipMap(GL20.GL_LINEAR_MIPMAP_LINEAR),
-
-        /**
-         * Fetch the best fitting image from the mip map chain based on the pixel/texel ratio and then sample the texels with a
-         * nearest filter.
-         */
-        mipMapNearestNearest(GL20.GL_NEAREST_MIPMAP_NEAREST),
-
-        /**
-         * Fetch the best fitting image from the mip map chain based on the pixel/texel ratio and then sample the texels with a
-         * Linear filter.
-         */
-        mipMapLinearNearest(GL20.GL_LINEAR_MIPMAP_NEAREST),
-
-        /**
-         * Fetch the two best fitting images from the mip map chain and then sample the nearest texel from each of the two images,
-         * combining them to the final output pixel.
-         */
-        mipMapNearestLinear(GL20.GL_NEAREST_MIPMAP_LINEAR),
-
-        /**
-         * Fetch the two best fitting images from the mip map chain and then sample the four nearest texels from each of the two
-         * images, combining them to the final output pixel.
-         */
-        mipMapLinearLinear(GL20.GL_LINEAR_MIPMAP_LINEAR);
-
-        public static final TextureFilter[] all = values();
-
-        public final int glEnum;
-
-        TextureFilter(int glEnum){
-            this.glEnum = glEnum;
-        }
-
-        public boolean isMipMap(){
-            return glEnum != GL20.GL_NEAREST && glEnum != GL20.GL_LINEAR;
-        }
-    }
-
-    public enum TextureWrap{
-        mirroredRepeat(GL20.GL_MIRRORED_REPEAT), clampToEdge(GL20.GL_CLAMP_TO_EDGE), repeat(GL20.GL_REPEAT);
-
-        public static final TextureWrap[] all = values();
-
-        final int glEnum;
-
-        TextureWrap(int glEnum){
-            this.glEnum = glEnum;
-        }
-
-        public int getGLEnum(){
-            return glEnum;
-        }
-    }
 }

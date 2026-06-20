@@ -1,4 +1,4 @@
-package arc.profiling;
+package arc.graphics.gl;
 
 import arc.util.*;
 
@@ -31,10 +31,7 @@ public interface GLErrorListener{
         }
     };
 
-    /**
-     * Put your error logging code here.
-     * @see GLInterceptor#resolveErrorNumber(int)
-     */
+    /** Put your error logging code here. */
     void onError(String error);
 
     static @Nullable String getCallName(){

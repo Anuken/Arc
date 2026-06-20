@@ -7,7 +7,7 @@ import arc.assets.loaders.FontLoader.*;
 import arc.struct.Seq;
 import arc.files.Fi;
 import arc.graphics.Texture;
-import arc.graphics.Texture.TextureFilter;
+import arc.graphics.TextureFilter;
 import arc.graphics.g2d.Font;
 import arc.graphics.g2d.Font.FontData;
 import arc.graphics.g2d.TextureAtlas;

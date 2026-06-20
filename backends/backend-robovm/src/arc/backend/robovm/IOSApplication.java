@@ -51,9 +51,7 @@ public class IOSApplication implements Application{
         this.uiWindow.makeKeyAndVisible();
 
         this.input = new IOSInput(this);
-        this.graphics = new IOSGraphics(this, config, input, config.useGL30);
-        Core.gl = Core.gl20 = graphics.gl20;
-        Core.gl30 = graphics.gl30;
+        this.graphics = new IOSGraphics(this, config, input);
         Core.audio = new Audio();
         Core.settings = new Settings();
         Core.files = new IOSFiles();

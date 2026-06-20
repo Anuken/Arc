@@ -2,7 +2,6 @@ package arc.graphics.gl;
 
 import arc.graphics.*;
 import arc.graphics.Pixmap.*;
-import arc.graphics.Texture.*;
 import arc.graphics.g2d.*;
 import arc.util.*;
 
@@ -14,12 +13,7 @@ import arc.util.*;
  * </p>
  *
  * <p>
- * FrameBuffers are managed. In case of an OpenGL context loss, which only happens on Android when a user switches to another
- * application or receives an incoming call, the framebuffer will be automatically recreated.
- * </p>
- *
- * <p>
- * A FrameBuffer must be disposed if it is no longer needed
+ * A FrameBuffer must be disposed if it is no longer needed.
  * </p>
  * @author mzechner, realitix
  */

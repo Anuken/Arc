@@ -27,7 +27,7 @@ import arc.graphics.*;
 import arc.struct.Seq;
 import arc.struct.FloatSeq;
 import arc.files.Fi;
-import arc.graphics.Texture.TextureFilter;
+import arc.graphics.TextureFilter;
 import arc.graphics.g2d.GlyphLayout.GlyphRun;
 import arc.graphics.g2d.TextureAtlas.AtlasRegion;
 import arc.util.ArcRuntimeException;
@@ -48,8 +48,7 @@ import java.util.regex.Pattern;
  * saves needing to compute the location of each glyph each frame.
  * <p>
  * * The texture for a BitmapFont loaded from a file is managed. {@link #dispose()} must be called to free the texture when no
- * longer needed. A BitmapFont loaded using a {@link TextureRegion} is managed if the region's texture is managed. Disposing the
- * BitmapFont disposes the region's texture, which may not be desirable if the texture is still being used elsewhere.
+ * longer needed. Disposing the BitmapFont disposes the region's texture, which may not be desirable if the texture is still being used elsewhere.
  * <p>
  * The code was originally based on Matthias Mann's TWL BitmapFont class. Thanks for sharing, Matthias! :)
  * @author Nathan Sweet

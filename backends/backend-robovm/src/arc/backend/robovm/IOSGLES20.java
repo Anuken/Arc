@@ -1,12 +1,10 @@
 package arc.backend.robovm;
 
-import arc.graphics.GL20;
-
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-public class IOSGLES20 implements GL20{
+public class IOSGLES20{
     /** last viewport set, needed because MGLKView resets the viewport on each call to render... amazing **/
     public static int x, y, width, height;
 

@@ -2,7 +2,6 @@ package arc.backend.android;
 
 import android.hardware.*;
 import arc.*;
-import arc.backend.android.surfaceview.*;
 
 /**
  * Class defining the configuration of an {@link AndroidApplication}. Allows you to disable the use of the accelerometer to save
@@ -64,15 +63,6 @@ public class AndroidApplicationConfiguration{
     /** whether to disable Android audio support. default: false */
     public boolean disableAudio = false;
 
-    /** the {@link ResolutionStrategy}. default: {@link FillResolutionStrategy} **/
-    public ResolutionStrategy resolutionStrategy = new FillResolutionStrategy();
-
     /** set this to true to enable Android 4.4 KitKat's 'Immersive mode' **/
     public boolean useImmersiveMode = true;
-
-    /**
-     * Whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0.
-     * When GL ES 3* is enabled, {@link Core#gl30} can be used to access its functionality. Requires at least Android 4.3 (API level 18).
-     */
-    public boolean useGL30 = false;
 }

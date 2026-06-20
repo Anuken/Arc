@@ -20,8 +20,6 @@ public class IOSGraphics extends Graphics{
 
     IOSApplication app;
     IOSInput input;
-    GL20 gl20;
-    GL30 gl30;
     IOSScreenBounds screenBounds;
     long lastFrameTime;
     float deltaTime;
@@ -48,7 +46,7 @@ public class IOSGraphics extends Graphics{
     private boolean isFrameRequested = true;
     private int[] insets = new int[4];
 
-    public IOSGraphics(IOSApplication app, IOSApplicationConfiguration config, IOSInput input, boolean useGLES30){
+    public IOSGraphics(IOSApplication app, IOSApplicationConfiguration config, IOSInput input){
         this.config = config;
 
         IOSGraphicsDelegate gdel = new IOSGraphicsDelegate();
@@ -56,15 +54,8 @@ public class IOSGraphics extends Graphics{
 
         //HdpiUtils.setMode(config.hdpiMode);
 
-        if(useGLES30){
-            context = new MGLContext(MGLRenderingAPI.OpenGLES3);
-            gl20 = gl30 = new IOSGLES30();
-        }
-        if(context == null){
-            context = new MGLContext(MGLRenderingAPI.OpenGLES2);
-            gl20 = new IOSGLES20();
-            gl30 = null;
-        }
+        context = new MGLContext(MGLRenderingAPI.OpenGLES3);
+        Core.gl = new IOSGLES30();
 
         view = new MGLKView(new CGRect(0, 0, screenBounds.width, screenBounds.height), context){
             @Method(selector = "touchesBegan:withEvent:")
@@ -154,10 +145,10 @@ public class IOSGraphics extends Graphics{
         // enable OpenGL
         makeCurrent();
         // OpenGL glViewport() function expects backbuffer coordinates instead of logical coordinates
-        gl20.glViewport(0, 0, screenBounds.backBufferWidth, screenBounds.backBufferHeight);
-        String versionString = gl20.glGetString(GL20.GL_VERSION);
-        String vendorString = gl20.glGetString(GL20.GL_VENDOR);
-        String rendererString = gl20.glGetString(GL20.GL_RENDERER);
+        Core.gl.glViewport(0, 0, screenBounds.backBufferWidth, screenBounds.backBufferHeight);
+        String versionString = Gl.getString(Gl.version);
+        String vendorString = Gl.getString(Gl.vendor);
+        String rendererString = Gl.getString(Gl.renderer);
         glVersion = new GLVersion(Application.ApplicationType.iOS, versionString, vendorString, rendererString);
         appPaused = false;
     }
@@ -191,7 +182,7 @@ public class IOSGraphics extends Graphics{
         makeCurrent();
         // massive hack, MGLKView resets the viewport on each draw call, so IOSGLES20
         // stores the last known viewport and we reset it here...
-        gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
+        Core.gl.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
 
         // For default framebuffer, we render a dummy frame during initialization before create
         // Return early so listener does not process
@@ -268,42 +259,6 @@ public class IOSGraphics extends Graphics{
     @Override
     public int[] getSafeInsets(){
         return insets;
-    }
-
-    @Override
-    public GL20 getGL20(){
-        return gl20;
-    }
-
-    @Override
-    public void setGL20(GL20 gl20){
-        this.gl20 = gl20;
-        if(gl30 == null){
-            Core.gl = gl20;
-            Core.gl20 = gl20;
-        }
-    }
-
-    @Override
-    public boolean isGL30Available(){
-        return gl30 != null;
-    }
-
-    @Override
-    public GL30 getGL30(){
-        return gl30;
-    }
-
-    @Override
-    public void setGL30(GL30 gl30){
-        this.gl30 = gl30;
-        if(gl30 != null){
-            this.gl20 = gl30;
-
-            Core.gl = gl20;
-            Core.gl20 = gl20;
-            Core.gl30 = gl30;
-        }
     }
 
     @Override

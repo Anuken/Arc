@@ -11,7 +11,7 @@ import arc.math.geom.*;
 public class Cubemap extends GLTexture{
 
     public Cubemap(){
-        super(GL20.GL_TEXTURE_CUBE_MAP);
+        super(Gl.textureCubeMap);
     }
 
     public Cubemap(String base){
@@ -59,7 +59,7 @@ public class Cubemap extends GLTexture{
 
         for(int i = 0; i < pixmaps.length; i++){
             Pixmap pixmap = pixmaps[i];
-            Gl.texImage2D(GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, pixmap.getGLInternalFormat(), pixmap.width, pixmap.height, 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.pixels);
+            Gl.texImage2D(Gl.textureCubeMapPositiveX + i, 0, pixmap.getGLInternalFormat(), pixmap.width, pixmap.height, 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.pixels);
             if(disposePixmaps) pixmap.dispose();
         }
 
@@ -69,17 +69,17 @@ public class Cubemap extends GLTexture{
     /** Enum to identify each side of a Cubemap */
     public enum CubemapSide{
         /** The positive X and first side of the cubemap */
-        positiveX(0, GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, -1, 0, 1, 0, 0),
+        positiveX(0, Gl.textureCubeMapPositiveX, 0, -1, 0, 1, 0, 0),
         /** The negative X and second side of the cubemap */
-        negativeX(1, GL20.GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, -1, 0, -1, 0, 0),
+        negativeX(1, Gl.textureCubeMapNegativeX, 0, -1, 0, -1, 0, 0),
         /** The positive Y and third side of the cubemap */
-        positiveY(2, GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, 0, 1, 0, 1, 0),
+        positiveY(2, Gl.textureCubeMapPositiveY, 0, 0, 1, 0, 1, 0),
         /** The negative Y and fourth side of the cubemap */
-        negativeY(3, GL20.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, 0, -1, 0, -1, 0),
+        negativeY(3, Gl.textureCubeMapNegativeY, 0, 0, -1, 0, -1, 0),
         /** The positive Z and fifth side of the cubemap */
-        positiveZ(4, GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, -1, 0, 0, 0, 1),
+        positiveZ(4, Gl.textureCubeMapPositiveZ, 0, -1, 0, 0, 0, 1),
         /** The negative Z and sixth side of the cubemap */
-        negativeZ(5, GL20.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, -1, 0, 0, 0, -1);
+        negativeZ(5, Gl.textureCubeMapNegativeZ, 0, -1, 0, 0, 0, -1);
 
         /** Cached {@link CubemapSide#values()} for performance and ergonomics. */
         public static final CubemapSide[] all = values();

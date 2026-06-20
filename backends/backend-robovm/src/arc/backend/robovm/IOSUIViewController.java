@@ -3,11 +3,8 @@ package arc.backend.robovm;
 import arc.*;
 import arc.graphics.gl.*;
 import com.badlogic.gdx.backends.iosrobovm.bindings.metalangle.*;
-import org.robovm.apple.coregraphics.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.uikit.*;
-import org.robovm.objc.*;
-import org.robovm.objc.annotation.*;
 
 public class IOSUIViewController extends MGLKViewController{
     final IOSApplication app;
@@ -69,7 +66,7 @@ public class IOSUIViewController extends MGLKViewController{
         if(newBounds.width != oldBounds.width || newBounds.height != oldBounds.height){
             graphics.makeCurrent();
             graphics.updateSafeInsets();
-            graphics.gl20.glViewport(0, 0, newBounds.backBufferWidth, newBounds.backBufferHeight);
+            Core.gl.glViewport(0, 0, newBounds.backBufferWidth, newBounds.backBufferHeight);
 
             if(graphics.config.hdpiMode == HdpiMode.pixels){
                 for(ApplicationListener list : app.listeners){

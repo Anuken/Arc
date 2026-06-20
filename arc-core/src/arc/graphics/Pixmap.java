@@ -644,7 +644,7 @@ public class Pixmap implements Disposable{
     /**
      * Returns the OpenGL ES type of this Pixmap. Used as the eighth parameter to
      * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
-     * @return GL_UNSIGNED_BYTE
+     * @return Gl.unsignedByte
      */
     public int getGLType(){
         return Gl.unsignedByte;

@@ -3,7 +3,6 @@ package arc.graphics.gl;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.Cubemap.*;
-import arc.graphics.Texture.*;
 import arc.util.*;
 
 /**
@@ -14,12 +13,7 @@ import arc.util.*;
  * </p>
  *
  * <p>
- * FrameBuffers are managed. In case of an OpenGL context loss, which only happens on Android when a user switches to another
- * application or receives an incoming call, the framebuffer will be automatically recreated.
- * </p>
- *
- * <p>
- * A FrameBuffer must be disposed if it is no longer needed
+ * A FrameBuffer must be disposed if it is no longer needed.
  * </p>
  *
  * <p>
@@ -80,10 +74,12 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap>{
     protected Cubemap createTexture(FrameBufferTextureAttachmentSpec attachmentSpec){
         Cubemap result = new Cubemap();
         result.bind();
+        result.width = bufferBuilder.width;
+        result.height = bufferBuilder.height;
 
         //TODO: probably doesn't work
         for(int i = 0; i < 6; i++){
-            Gl.texImage2D(GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, attachmentSpec.internalFormat,bufferBuilder.width, bufferBuilder.height, 0, attachmentSpec.format, attachmentSpec.type, null);
+            Gl.texImage2D(Gl.textureCubeMapPositiveX + i, 0, attachmentSpec.internalFormat,bufferBuilder.width, bufferBuilder.height, 0, attachmentSpec.format, attachmentSpec.type, null);
         }
 
         result.setFilter(TextureFilter.linear, TextureFilter.linear);

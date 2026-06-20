@@ -1,6 +1,5 @@
 package arc.graphics;
 
-import arc.graphics.Texture.*;
 import arc.util.*;
 
 /**
@@ -35,16 +34,13 @@ public abstract class GLTexture implements Disposable{
         return 0;
     }
 
-    /**
-     * Binds this texture. The texture will be bound to the currently active texture unit specified via
-     * {@link GL20#glActiveTexture(int)}.
-     */
+    /** Binds this texture. The texture will be bound to the currently active texture unit specified. */
     public void bind(){
         Gl.bindTexture(glTarget, glHandle);
     }
 
     /**
-     * Binds the texture to the given texture unit. Sets the currently active texture unit via {@link GL20#glActiveTexture(int)}.
+     * Binds the texture to the given texture unit. Sets the currently active texture unit.
      * @param unit the unit (0 to MAX_TEXTURE_UNITS).
      */
     public void bind(int unit){
@@ -52,22 +48,22 @@ public abstract class GLTexture implements Disposable{
         Gl.bindTexture(glTarget, glHandle);
     }
 
-    /** @return The {@link Texture.TextureFilter} used for minification. */
+    /** @return The {@link TextureFilter} used for minification. */
     public TextureFilter getMinFilter(){
         return minFilter;
     }
 
-    /** @return The {@link Texture.TextureFilter} used for magnification. */
+    /** @return The {@link TextureFilter} used for magnification. */
     public TextureFilter getMagFilter(){
         return magFilter;
     }
 
-    /** @return The {@link Texture.TextureWrap} used for horizontal (U) texture coordinates. */
+    /** @return The {@link TextureWrap} used for horizontal (U) texture coordinates. */
     public TextureWrap getUWrap(){
         return uWrap;
     }
 
-    /** @return The {@link Texture.TextureWrap} used for vertical (V) texture coordinates. */
+    /** @return The {@link TextureWrap} used for vertical (V) texture coordinates. */
     public TextureWrap getVWrap(){
         return vWrap;
     }
@@ -95,8 +91,8 @@ public abstract class GLTexture implements Disposable{
         this.uWrap = u;
         this.vWrap = v;
         bind();
-        Gl.texParameteri(glTarget, GL20.GL_TEXTURE_WRAP_S, u.getGLEnum());
-        Gl.texParameteri(glTarget, GL20.GL_TEXTURE_WRAP_T, v.getGLEnum());
+        Gl.texParameteri(glTarget, Gl.textureWrapS, u.getGLEnum());
+        Gl.texParameteri(glTarget, Gl.textureWrapT, v.getGLEnum());
     }
 
     public void setFilter(TextureFilter filter){
@@ -112,8 +108,8 @@ public abstract class GLTexture implements Disposable{
         this.minFilter = minFilter;
         this.magFilter = magFilter;
         bind();
-        Gl.texParameteri(glTarget, GL20.GL_TEXTURE_MIN_FILTER, minFilter.glEnum);
-        Gl.texParameteri(glTarget, GL20.GL_TEXTURE_MAG_FILTER, magFilter.glEnum);
+        Gl.texParameteri(glTarget, Gl.textureMinFilter, minFilter.glEnum);
+        Gl.texParameteri(glTarget, Gl.textureMagFilter, magFilter.glEnum);
     }
 
     @Override

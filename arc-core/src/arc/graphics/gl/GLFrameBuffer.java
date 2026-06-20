@@ -12,16 +12,11 @@ import java.nio.*;
  * <p>
  * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper class which should cover most FBO uses. It will
  * automatically create a gltexture for the color attachment and a renderbuffer for the depth buffer. You can get a hold of the
- * gltexture by {@link GLFrameBuffer#getTexture()}. This class will only work with OpenGL ES 2.0.
+ * gltexture by {@link GLFrameBuffer#getTexture()}.
  * </p>
  *
  * <p>
- * FrameBuffers are managed. In case of an OpenGL context loss, which only happens on Android when a user switches to another
- * application or receives an incoming call, the framebuffer will be automatically recreated.
- * </p>
- *
- * <p>
- * A FrameBuffer must be disposed if it is no longer needed
+ * A FrameBuffer must be disposed if it is no longer needed.
  * </p>
  * @author mzechner, realitix
  */
@@ -93,7 +88,6 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     protected abstract void attachTexture(int attachment, T texture);
 
     protected void build(){
-        checkValidBuilder();
 
         // iOS uses a different framebuffer handle! (not necessarily 0)
         if(!defaultFramebufferHandleInitialized){
@@ -159,22 +153,22 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
         if(isMRT){
             IntBuffer buffer = Buffers.newIntBuffer(colorTextureCounter);
             for(int i = 0; i < colorTextureCounter; i++){
-                buffer.put(GL30.GL_COLOR_ATTACHMENT0 + i);
+                buffer.put(Gl.colorAttachment0 + i);
             }
             buffer.position(0);
-            Core.gl30.glDrawBuffers(colorTextureCounter, buffer);
+            Gl.drawBuffers(colorTextureCounter, buffer);
         }
 
         if(bufferBuilder.hasDepthRenderBuffer){
-            Gl.framebufferRenderbuffer(Gl.framebuffer, GL20.GL_DEPTH_ATTACHMENT, Gl.renderbuffer, depthbufferHandle);
+            Gl.framebufferRenderbuffer(Gl.framebuffer, Gl.depthAttachment, Gl.renderbuffer, depthbufferHandle);
         }
 
         if(bufferBuilder.hasStencilRenderBuffer){
-            Gl.framebufferRenderbuffer(Gl.framebuffer, GL20.GL_STENCIL_ATTACHMENT, Gl.renderbuffer, stencilbufferHandle);
+            Gl.framebufferRenderbuffer(Gl.framebuffer, Gl.stencilAttachment, Gl.renderbuffer, stencilbufferHandle);
         }
 
         if(bufferBuilder.hasPackedStencilDepthRenderBuffer){
-            Gl.framebufferRenderbuffer(Gl.framebuffer, GL30.GL_DEPTH_STENCIL_ATTACHMENT, Gl.renderbuffer,
+            Gl.framebufferRenderbuffer(Gl.framebuffer, Gl.depthStencilAttachment, Gl.renderbuffer,
             depthStencilPackedBufferHandle);
         }
 
@@ -207,9 +201,9 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
             Gl.renderbufferStorage(Gl.renderbuffer, GL_DEPTH24_STENCIL8_OES, width, height);
             Gl.bindRenderbuffer(Gl.renderbuffer, 0);
 
-            Gl.framebufferRenderbuffer(Gl.framebuffer, GL20.GL_DEPTH_ATTACHMENT, Gl.renderbuffer,
+            Gl.framebufferRenderbuffer(Gl.framebuffer, Gl.depthAttachment, Gl.renderbuffer,
             depthStencilPackedBufferHandle);
-            Gl.framebufferRenderbuffer(Gl.framebuffer, GL20.GL_STENCIL_ATTACHMENT, Gl.renderbuffer,
+            Gl.framebufferRenderbuffer(Gl.framebuffer, Gl.stencilAttachment, Gl.renderbuffer,
             depthStencilPackedBufferHandle);
             result = Gl.checkFramebufferStatus(Gl.framebuffer);
         }
@@ -240,30 +234,6 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
             if(result == Gl.framebufferUnsupported)
                 throw new IllegalStateException("Frame buffer couldn't be constructed: unsupported combination of formats");
             throw new IllegalStateException("Frame buffer couldn't be constructed: unknown error " + result);
-        }
-    }
-
-    private void checkValidBuilder(){
-        boolean runningGL30 = Core.graphics.isGL30Available();
-
-        if(!runningGL30){
-            if(bufferBuilder.hasPackedStencilDepthRenderBuffer){
-                throw new ArcRuntimeException("Packed Stencil/Render render buffers are not available on GLES 2.0");
-            }
-            if(bufferBuilder.textureAttachmentSpecs.size > 1){
-                throw new ArcRuntimeException("Multiple render targets not available on GLES 2.0");
-            }
-            for(FrameBufferTextureAttachmentSpec spec : bufferBuilder.textureAttachmentSpecs){
-                if(spec.isDepth)
-                    throw new ArcRuntimeException("Depth texture FrameBuffer Attachment not available on GLES 2.0");
-                if(spec.isStencil)
-                    throw new ArcRuntimeException("Stencil texture FrameBuffer Attachment not available on GLES 2.0");
-                if(spec.isFloat){
-                    if(!Core.graphics.supportsExtension("OES_texture_float")){
-                        throw new ArcRuntimeException("Float texture FrameBuffer Attachment not available on GLES 2.0");
-                    }
-                }
-            }
         }
     }
 
@@ -364,13 +334,13 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
         lastBoundFramebuffer = null;
     }
 
-    /** @return The OpenGL handle of the framebuffer (see {@link GL20#glGenFramebuffer()}) */
+    /** @return The OpenGL handle of the framebuffer */
     public int getFramebufferHandle(){
         return framebufferHandle;
     }
 
     /**
-     * @return The OpenGL handle of the (optional) depth buffer (see {@link GL20#glGenRenderbuffer()}). May return 0 even if depth
+     * @return The OpenGL handle of the (optional) depth buffer. May return 0 even if depth
      * buffer enabled
      */
     public int getDepthBufferHandle(){
@@ -378,7 +348,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
     }
 
     /**
-     * @return The OpenGL handle of the (optional) stencil buffer (see {@link GL20#glGenRenderbuffer()}). May return 0 even if
+     * @return The OpenGL handle of the (optional) stencil buffer. May return 0 even if
      * stencil buffer enabled
      */
     public int getStencilBufferHandle(){
@@ -463,16 +433,14 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
         }
 
         public GLFrameBufferBuilder<U> addDepthTextureAttachment(int internalFormat, int type){
-            FrameBufferTextureAttachmentSpec spec = new FrameBufferTextureAttachmentSpec(internalFormat, GL30.GL_DEPTH_COMPONENT,
-            type);
+            FrameBufferTextureAttachmentSpec spec = new FrameBufferTextureAttachmentSpec(internalFormat, Gl.depthComponent, type);
             spec.isDepth = true;
             textureAttachmentSpecs.add(spec);
             return this;
         }
 
         public GLFrameBufferBuilder<U> addStencilTextureAttachment(int internalFormat, int type){
-            FrameBufferTextureAttachmentSpec spec = new FrameBufferTextureAttachmentSpec(internalFormat, GL30.GL_STENCIL_ATTACHMENT,
-            type);
+            FrameBufferTextureAttachmentSpec spec = new FrameBufferTextureAttachmentSpec(internalFormat, Gl.stencilAttachment, type);
             spec.isStencil = true;
             textureAttachmentSpecs.add(spec);
             return this;
@@ -497,15 +465,15 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
         }
 
         public GLFrameBufferBuilder<U> addBasicDepthRenderBuffer(){
-            return addDepthRenderBuffer(GL20.GL_DEPTH_COMPONENT16);
+            return addDepthRenderBuffer(Gl.depthComponent16);
         }
 
         public GLFrameBufferBuilder<U> addBasicStencilRenderBuffer(){
-            return addStencilRenderBuffer(GL20.GL_STENCIL_INDEX8);
+            return addStencilRenderBuffer(Gl.stencilIndex8);
         }
 
         public GLFrameBufferBuilder<U> addBasicStencilDepthPackedRenderBuffer(){
-            return addStencilDepthPackedRenderBuffer(GL30.GL_DEPTH24_STENCIL8);
+            return addStencilDepthPackedRenderBuffer(Gl.depth24Stencil8);
         }
 
         public abstract U build();

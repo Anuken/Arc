@@ -24,7 +24,7 @@ package arc.graphics.g2d;
 
 import arc.struct.Seq;
 import arc.files.Fi;
-import arc.graphics.Texture.TextureFilter;
+import arc.graphics.TextureFilter;
 import arc.graphics.gl.Shader;
 
 /**

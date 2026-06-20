@@ -30,12 +30,6 @@ import java.util.*;
  * Note that SpriteCache does not manage blending. You will need to enable blending (<i>Gl.enable(Gl.blend);</i>) and
  * set the blend func as needed before or between calls to {@link #draw(int)}.<br>
  * <br>
- * SpriteCache is managed. If the OpenGL context is lost and the restored, all OpenGL resources a SpriteCache uses internally are
- * restored.<br>
- * <br>
- * SpriteCache is a reasonably heavyweight object. Typically only one instance should be used for an entire application.<br>
- * <br>
- * <br>
  * SpriteCache must be disposed once it is no longer needed.
  * @author Nathan Sweet
  */

@@ -1,7 +1,6 @@
 package arc.graphics.g2d;
 
 import arc.graphics.*;
-import arc.graphics.Texture.*;
 import arc.graphics.g2d.PixmapPacker.SkylineStrategy.SkylinePage.*;
 import arc.graphics.gl.*;
 import arc.math.geom.*;

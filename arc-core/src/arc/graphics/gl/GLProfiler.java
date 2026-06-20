@@ -1,7 +1,8 @@
-package arc.profiling;
+package arc.graphics.gl;
 
 import arc.*;
 import arc.graphics.*;
+import arc.math.*;
 
 import java.nio.*;
 
@@ -9,21 +10,76 @@ import java.nio.*;
  * @author Daniel Holderbaum
  * @author Jan Polák
  */
-public class GL30Interceptor extends GLInterceptor implements GL30{
-    protected final GL30 gl30;
+public class GLProfiler implements GL30{
+    private static GL30 gl30;
+    private static boolean enabled = false;
+    private static GLErrorListener listener = GLErrorListener.loggingListener;
 
-    protected GL30Interceptor(GLProfiler glProfiler, GL30 gl30){
-        super(glProfiler);
-        this.gl30 = gl30;
+    public static final FloatCounter vertexCount = new FloatCounter(0);
+    public static int calls;
+    public static int textureBindings;
+    public static int drawCalls;
+    public static int shaderSwitches;
+    public static int stateChanges;
+
+    /** Enabled profiling with a logging listener. */
+    public static void enable(){
+        enable(GLErrorListener.loggingListener);
+    }
+
+    /** Enables profiling with the specified error listener. */
+    public static void enable(GLErrorListener errorListener){
+        if(enabled) return;
+
+        listener = errorListener;
+        gl30 = Core.gl;
+        Core.gl = new GLProfiler();
+
+        enabled = true;
+    }
+
+    /** Disables profiling. */
+    public static void disable(){
+        if(!enabled) return;
+
+        Core.gl = gl30;
+
+        enabled = false;
+        gl30 = null;
+    }
+
+    public static void setListener(GLErrorListener errorListener){
+        listener = errorListener;
+    }
+
+    public static String resolveErrorNumber(int error){
+        switch(error){
+            case Gl.invalidValue: return "GL_INVALID_VALUE";
+            case Gl.invalidOperation: return "GL_INVALID_OPERATION";
+            case Gl.invalidFramebufferOperation: return "GL_INVALID_FRAMEBUFFER_OPERATION";
+            case Gl.invalidEnum: return "GL_INVALID_ENUM";
+            case Gl.outOfMemory: return "GL_OUT_OF_MEMORY";
+            default: return "number " + error;
+        }
+    }
+
+    /** Resets all statistics. Should generally be called at the end of a frame. */
+    public static void reset(){
+        calls = 0;
+        textureBindings = 0;
+        drawCalls = 0;
+        shaderSwitches = 0;
+        stateChanges = 0;
+        vertexCount.reset();
     }
 
     private void check(){
         if(!Core.app.isOnMainThread()){
-            glProfiler.getListener().onError("GL call on wrong thread: " + Thread.currentThread());
+            listener.onError("GL call on wrong thread: " + Thread.currentThread());
         }
         int error = gl30.glGetError();
-        while(error != GL20.GL_NO_ERROR){
-            glProfiler.getListener().onError(resolveErrorNumber(error));
+        while(error != Gl.noError){
+            listener.onError(resolveErrorNumber(error));
             error = gl30.glGetError();
         }
     }

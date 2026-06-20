@@ -19,31 +19,6 @@ public class MockGraphics extends Graphics{
     GLVersion glVersion = new GLVersion(Application.ApplicationType.headless, "", "", "");
 
     @Override
-    public boolean isGL30Available(){
-        return false;
-    }
-
-    @Override
-    public GL20 getGL20(){
-        return null;
-    }
-
-    @Override
-    public void setGL20(GL20 gl20){
-
-    }
-
-    @Override
-    public GL30 getGL30(){
-        return null;
-    }
-
-    @Override
-    public void setGL30(GL30 gl30){
-
-    }
-
-    @Override
     public int getWidth(){
         return 0;
     }

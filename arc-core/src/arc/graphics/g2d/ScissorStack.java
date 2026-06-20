@@ -9,7 +9,7 @@ import arc.struct.*;
 import arc.util.*;
 
 /**
- * A stack of {@link Rect} objects to be used for clipping via {@link GL20#glScissor(int, int, int, int)}. When a new
+ * A stack of {@link Rect} objects to be used for clipping via glScissor. When a new
  * Rectangle is pushed onto the stack, it will be merged with the current top of stack. The minimum area of overlap is then set as
  * the real top of the stack.
  * @author mzechner
@@ -22,8 +22,8 @@ public class ScissorStack{
     /**
      * Pushes a new scissor {@link Rect} onto the stack, merging it with the current top of the stack. The minimal area of
      * overlap between the top of stack rectangle and the provided rectangle is pushed onto the stack. This will invoke
-     * {@link GL20#glScissor(int, int, int, int)} with the final top of stack rectangle. In case no scissor is yet on the stack
-     * this will also enable {@link GL20#GL_SCISSOR_TEST} automatically.
+     * glScissor with the final top of stack rectangle. In case no scissor is yet on the stack
+     * this will also enable glScissorTest automatically.
      * <p>
      * Any drawing should be flushed before pushing scissors.
      * @return true if the scissors were pushed. false if the scissor area was zero, in this case the scissors were not pushed and
@@ -35,7 +35,7 @@ public class ScissorStack{
         if(scissors.size == 0){
             if(scissor.width < 1 || scissor.height < 1) return false;
             Draw.flush();
-            Gl.enable(GL20.GL_SCISSOR_TEST);
+            Gl.enable(Gl.scissorTest);
         }else{
             // merge scissors
             Rect parent = scissors.get(scissors.size - 1);
@@ -61,7 +61,7 @@ public class ScissorStack{
 
     /**
      * Pops the current scissor rectangle from the stack and sets the new scissor area to the new top of stack rectangle. In case
-     * no more rectangles are on the stack, {@link GL20#GL_SCISSOR_TEST} is disabled.
+     * no more rectangles are on the stack, glScissorTest is disabled.
      * <p>
      * Any drawing should be flushed before popping scissors.
      */
@@ -69,7 +69,7 @@ public class ScissorStack{
         Draw.flush();
         Rect old = scissors.pop();
         if(scissors.size == 0)
-            Gl.disable(GL20.GL_SCISSOR_TEST);
+            Gl.disable(Gl.scissorTest);
         else{
             Rect scissor = scissors.peek();
             HdpiUtils.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);
@@ -113,8 +113,7 @@ public class ScissorStack{
      * Calculates a scissor rectangle in OpenGL ES window coordinates from a {@link Camera}, a transformation {@link Mat} and
      * an axis aligned {@link Rect}. The rectangle will get transformed by the camera and transform matrices and is then
      * projected to screen coordinates. Note that only axis aligned rectangles will work with this method. If either the Camera or
-     * the Matrix4 have rotational components, the output of this method will not be suitable for
-     * {@link GL20#glScissor(int, int, int, int)}.
+     * the Matrix4 have rotational components, the output of this method will not be suitable for glScissor.
      * @param camera the {@link Camera}
      * @param batchTransform the transformation {@link Mat}
      * @param area the {@link Rect} to transform to window coordinates

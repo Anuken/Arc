@@ -21,19 +21,14 @@ import java.nio.*;
  * </p>
  *
  * <p>
- * When a Shader is bound one can set uniforms, vertex attributes and attributes as needed via the respective methods.
+ * When a Shader is bound, one can set uniforms, vertex attributes and attributes as needed via the respective methods.
  * </p>
  *
  *
  * <p>
- * A Shader must be disposed via a call to {@link Shader#dispose()} when it is no longer needed
+ * A Shader must be disposed via a call to {@link Shader#dispose()} when it is no longer needed.
  * </p>
  *
- * <p>
- * ShaderPrograms are managed. In case the OpenGL context is lost all shaders get invalidated and have to be reloaded. This
- * happens on Android when a user switches to another application or receives an incoming call. Managed ShaderPrograms are
- * automatically reloaded when the OpenGL context is recreated so you don't have to do this manually.
- * </p>
  * @author mzechner
  */
 public class Shader implements Disposable{
@@ -166,35 +161,32 @@ public class Shader implements Disposable{
 
         //preprocess source to function correctly with OpenGL 3.x core
         //note that this is required on Mac
-        if(Core.gl30 != null){
 
-            //if there already is a version, do nothing
-            //if on a desktop platform, pick 150 or 130 depending on supported version
-            //if on anything else, it's GLES, so pick 300 ES
-            String version =
-                source.contains("#version ") ? "" :
-                Core.app.isDesktop() ? (Core.graphics.getGLVersion().atLeast(3, 2) ? "150" : "130") :
-                "300 es";
+        //if there already is a version, do nothing
+        //if on a desktop platform, pick 150 or 130 depending on supported version
+        //if on anything else, it's GLES, so pick 300 ES
+        String version =
+            source.contains("#version ") ? "" :
+            Core.app.isDesktop() ? (Core.graphics.getGLVersion().atLeast(3, 2) ? "150" : "130") :
+            "300 es";
 
-            return
-                "#version " + version + "\n"
-                + (fragment ? "out" + (Core.app.isMobile() ? " lowp" : "") + " vec4 fragColor;\n" : "")
-                + source
-                .replace("varying", fragment ? "in" : "out")
-                .replace("attribute", fragment ? "???" : "in")
-                .replace("texture2D(", "texture(")
-                .replace("textureCube(", "texture(")
-                .replace("gl_FragColor", "fragColor");
-        }
-        return source;
+        return
+            "#version " + version + "\n"
+            + (fragment ? "out" + (Core.app.isMobile() ? " lowp" : "") + " vec4 fragColor;\n" : "")
+            + source
+            .replace("varying", fragment ? "in" : "out")
+            .replace("attribute", fragment ? "???" : "in")
+            .replace("texture2D(", "texture(")
+            .replace("textureCube(", "texture(")
+            .replace("gl_FragColor", "fragColor");
     }
 
     /**
      * Loads and compiles the shaders, creates a new program and links the shaders.
      */
     private void compileShaders(String vertexShader, String fragmentShader){
-        vertexShaderHandle = loadShader(GL20.GL_VERTEX_SHADER, vertexShader);
-        fragmentShaderHandle = loadShader(GL20.GL_FRAGMENT_SHADER, fragmentShader);
+        vertexShaderHandle = loadShader(Gl.vertexShader, vertexShader);
+        fragmentShaderHandle = loadShader(Gl.fragmentShader, fragmentShader);
 
         if(vertexShaderHandle == -1 || fragmentShaderHandle == -1){
             isCompiled = false;
@@ -218,11 +210,11 @@ public class Shader implements Disposable{
 
         Gl.shaderSource(shader, source);
         Gl.compileShader(shader);
-        Gl.getShaderiv(shader, GL20.GL_COMPILE_STATUS, intbuf);
+        Gl.getShaderiv(shader, Gl.compileStatus, intbuf);
 
         String infoLog = Gl.getShaderInfoLog(shader);
         if(!infoLog.isEmpty()){
-            log += type == GL20.GL_VERTEX_SHADER ? "Vertex shader\n" : "Fragment shader:\n";
+            log += type == Gl.vertexShader ? "Vertex shader\n" : "Fragment shader:\n";
             log += infoLog;
         }
 
@@ -250,7 +242,7 @@ public class Shader implements Disposable{
         tmp.order(ByteOrder.nativeOrder());
         IntBuffer intbuf = tmp.asIntBuffer();
 
-        Gl.getProgramiv(program, GL20.GL_LINK_STATUS, intbuf);
+        Gl.getProgramiv(program, Gl.linkStatus, intbuf);
         int linked = intbuf.get(0);
         if(linked == 0){
             log = Gl.getProgramInfoLog(program);
@@ -612,7 +604,7 @@ public class Shader implements Disposable{
 
     private void fetchUniforms(){
         params.clear();
-        Gl.getProgramiv(program, GL20.GL_ACTIVE_UNIFORMS, params);
+        Gl.getProgramiv(program, Gl.activeUniforms, params);
         int numUniforms = params.get(0);
 
         uniformNames = new String[numUniforms];
@@ -632,7 +624,7 @@ public class Shader implements Disposable{
 
     private void fetchAttributes(){
         params.clear();
-        Gl.getProgramiv(program, GL20.GL_ACTIVE_ATTRIBUTES, params);
+        Gl.getProgramiv(program, Gl.activeAttributes, params);
         int numAttributes = params.get(0);
 
         attributeNames = new String[numAttributes];
@@ -660,7 +652,7 @@ public class Shader implements Disposable{
 
     /**
      * @param name the name of the attribute
-     * @return the type of the attribute, one of {@link GL20#GL_FLOAT}, {@link GL20#GL_FLOAT_VEC2} etc.
+     * @return the type of the attribute
      */
     public int getAttributeType(String name){
         return attributeTypes.get(name, 0);
@@ -692,7 +684,7 @@ public class Shader implements Disposable{
 
     /**
      * @param name the name of the uniform
-     * @return the type of the uniform, one of {@link GL20#GL_FLOAT}, {@link GL20#GL_FLOAT_VEC2} etc.
+     * @return the type of the uniform
      */
     public int getUniformType(String name){
         return uniformTypes.get(name, 0);

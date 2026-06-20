@@ -1,7 +1,7 @@
 package arc.graphics.g2d;
 
 import arc.graphics.*;
-import arc.graphics.Texture.TextureFilter;
+import arc.graphics.TextureFilter;
 import arc.math.Mathf;
 import arc.util.ArcRuntimeException;
 

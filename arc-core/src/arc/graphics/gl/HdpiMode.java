@@ -1,7 +1,6 @@
 package arc.graphics.gl;
 
 import arc.Graphics;
-import arc.graphics.GL20;
 
 public enum HdpiMode{
     /**

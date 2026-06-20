@@ -1,6 +1,5 @@
 package arc.backend.robovm;
 
-import arc.*;
 import arc.func.*;
 import arc.graphics.gl.*;
 import arc.util.*;
@@ -45,12 +44,6 @@ public class IOSApplicationConfiguration{
     public float accelerometerUpdate = 0.05f;
     /** whether or not the onScreenKeyboard should be closed on return key **/
     public boolean keyboardCloseOnReturn = true;
-
-    /**
-     * Whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0.
-     * When GLES3 is enabled, {@link Core#gl30} can be used to access its functionality.
-     */
-    public boolean useGL30 = false;
 
     /** whether the home indicator should be hidden or not **/
     public boolean hideHomeIndicator = true;

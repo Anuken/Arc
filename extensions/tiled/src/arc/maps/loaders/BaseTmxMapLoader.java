@@ -7,7 +7,7 @@ import arc.maps.loaders.XmlReader.*;
 import arc.struct.Seq;
 import arc.files.Fi;
 import arc.graphics.Color;
-import arc.graphics.Texture.TextureFilter;
+import arc.graphics.TextureFilter;
 import arc.graphics.g2d.TextureRegion;
 import arc.maps.*;
 import arc.maps.objects.*;

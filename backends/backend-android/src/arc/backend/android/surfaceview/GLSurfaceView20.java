@@ -13,22 +13,19 @@
 
 package arc.backend.android.surfaceview;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.graphics.PixelFormat;
-import android.opengl.GLSurfaceView;
-import android.os.SystemClock;
-import android.util.Log;
-import android.view.KeyCharacterMap;
-import android.view.KeyEvent;
-import android.view.inputmethod.BaseInputConnection;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
+import android.annotation.*;
+import android.content.*;
+import android.graphics.*;
+import android.opengl.*;
+import android.os.*;
+import android.util.*;
+import android.view.*;
+import android.view.inputmethod.*;
 
-import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
+import javax.microedition.khronos.egl.*;
 
 /**
  * A simple GLSurfaceView sub-class that demonstrates how to perform OpenGL ES 2.0 rendering into a GL Surface. Note the following
@@ -47,22 +44,19 @@ public class GLSurfaceView20 extends GLSurfaceView{
     private static final boolean DEBUG = false;
     static String TAG = "GL2JNIView";
     static int targetGLESVersion;
-    final ResolutionStrategy resolutionStrategy;
 
-    public GLSurfaceView20(Context context, ResolutionStrategy resolutionStrategy, int targetGLESVersion){
+    public GLSurfaceView20(Context context, int targetGLESVersion){
         super(context);
         GLSurfaceView20.targetGLESVersion = targetGLESVersion;
-        this.resolutionStrategy = resolutionStrategy;
         init(false, 16, 0);
     }
 
-    public GLSurfaceView20(Context context, ResolutionStrategy resolutionStrategy){
-        this(context, resolutionStrategy, 2);
+    public GLSurfaceView20(Context context){
+        this(context, 2);
     }
 
-    public GLSurfaceView20(Context context, boolean translucent, int depth, int stencil, ResolutionStrategy resolutionStrategy){
+    public GLSurfaceView20(Context context, boolean translucent, int depth, int stencil){
         super(context);
-        this.resolutionStrategy = resolutionStrategy;
         init(translucent, depth, stencil);
 
     }
@@ -79,8 +73,7 @@ public class GLSurfaceView20 extends GLSurfaceView{
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
-        ResolutionStrategy.MeasuredDimension measures = resolutionStrategy.calcMeasures(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(measures.width, measures.height);
+        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec));
     }
 
     @Override
@@ -148,6 +141,7 @@ public class GLSurfaceView20 extends GLSurfaceView{
     static class ContextFactory implements GLSurfaceView.EGLContextFactory{
         private static int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
 
+        @Override
         public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig){
             Log.w(TAG, "creating OpenGL ES " + GLSurfaceView20.targetGLESVersion + ".0 context");
             checkEglError("Before eglCreateContext " + targetGLESVersion, egl);

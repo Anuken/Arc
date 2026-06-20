@@ -49,8 +49,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
     int height;
     int safeInsetLeft, safeInsetTop, safeInsetBottom, safeInsetRight;
     AndroidApplication app;
-    GL20 gl20;
-    GL30 gl30;
     EGLContext eglContext;
     GLVersion glVersion;
     String extensions;
@@ -65,16 +63,14 @@ public class AndroidGraphics extends Graphics implements Renderer{
     private BufferFormat bufferFormat = new BufferFormat(8, 8, 8, 0, 16, 0, 0, false);
     private boolean isContinuous = true;
 
-    public AndroidGraphics(AndroidApplication application, AndroidApplicationConfiguration config,
-                           ResolutionStrategy resolutionStrategy){
-        this(application, config, resolutionStrategy, true);
+    public AndroidGraphics(AndroidApplication application, AndroidApplicationConfiguration config){
+        this(application, config, true);
     }
 
-    public AndroidGraphics(AndroidApplication application, AndroidApplicationConfiguration config,
-                           ResolutionStrategy resolutionStrategy, boolean focusableView){
+    public AndroidGraphics(AndroidApplication application, AndroidApplicationConfiguration config, boolean focusableView){
         this.config = config;
         this.app = application;
-        view = createGLSurfaceView(application, resolutionStrategy);
+        view = createGLSurfaceView(application);
         view.setPreserveEGLContextOnPause(true);
         if(focusableView){
             view.setFocusable(true);
@@ -82,12 +78,10 @@ public class AndroidGraphics extends Graphics implements Renderer{
         }
     }
 
-    protected GLSurfaceView20 createGLSurfaceView(AndroidApplication application, final ResolutionStrategy resolutionStrategy){
-        if(!checkGL20()) throw new ArcRuntimeException("Arc requires OpenGL ES 2.0");
-
+    protected GLSurfaceView20 createGLSurfaceView(AndroidApplication application){
         Gl.reset();
         EGLConfigChooser configChooser = getEglConfigChooser();
-        GLSurfaceView20 view = new GLSurfaceView20(application, resolutionStrategy, config.useGL30 ? 3 : 2);
+        GLSurfaceView20 view = new GLSurfaceView20(application, 3);
         if(configChooser != null)
             view.setEGLConfigChooser(configChooser);
         else
@@ -109,59 +103,6 @@ public class AndroidGraphics extends Graphics implements Renderer{
         ppcX = metrics.xdpi / 2.54f;
         ppcY = metrics.ydpi / 2.54f;
         density = metrics.density;
-    }
-
-    protected boolean checkGL20(){
-        EGL10 egl = (EGL10)EGLContext.getEGL();
-        EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
-
-        int[] version = new int[2];
-        egl.eglInitialize(display, version);
-
-        int EGL_OPENGL_ES2_BIT = 4;
-        int[] configAttribs = {EGL10.EGL_RED_SIZE, 4, EGL10.EGL_GREEN_SIZE, 4, EGL10.EGL_BLUE_SIZE, 4, EGL10.EGL_RENDERABLE_TYPE,
-        EGL_OPENGL_ES2_BIT, EGL10.EGL_NONE};
-
-        EGLConfig[] configs = new EGLConfig[10];
-        int[] num_config = new int[1];
-        egl.eglChooseConfig(display, configAttribs, configs, 10, num_config);
-        egl.eglTerminate(display);
-        return num_config[0] > 0;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public GL20 getGL20(){
-        return gl20;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setGL20(GL20 gl20){
-        this.gl20 = gl20;
-        if(gl30 == null){
-            Core.gl = gl20;
-            Core.gl20 = gl20;
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public GL30 getGL30(){
-        return gl30;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setGL30(GL30 gl30){
-        this.gl30 = gl30;
-        if(gl30 != null){
-            this.gl20 = gl30;
-
-            Core.gl = gl20;
-            Core.gl20 = gl20;
-            Core.gl30 = gl30;
-        }
     }
 
     /** {@inheritDoc} */
@@ -192,19 +133,10 @@ public class AndroidGraphics extends Graphics implements Renderer{
         String vendorString = gl.glGetString(GL10.GL_VENDOR);
         String rendererString = gl.glGetString(GL10.GL_RENDERER);
         glVersion = new GLVersion(Application.ApplicationType.android, versionString, vendorString, rendererString);
-        if(config.useGL30 && glVersion.majorVersion > 2){
-            if(gl30 != null) return;
-            gl20 = gl30 = new AndroidGL30();
-
-            Core.gl = gl30;
-            Core.gl20 = gl30;
-            Core.gl30 = gl30;
+        if(glVersion.majorVersion > 2){
+            Core.gl = new AndroidGL30();
         }else{
-            if(gl20 != null) return;
-            gl20 = new AndroidGL20();
-
-            Core.gl = gl20;
-            Core.gl20 = gl20;
+            throw new ArcRuntimeException("GLES 3.0 is required!");
         }
 
         Log.infoTag(logTag, "OGL renderer: " + gl.glGetString(GL10.GL_RENDERER));

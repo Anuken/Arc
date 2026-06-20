@@ -3,7 +3,6 @@ package arc.assets.loaders;
 import arc.assets.*;
 import arc.files.*;
 import arc.graphics.*;
-import arc.graphics.Texture.*;
 import arc.util.*;
 
 /**
