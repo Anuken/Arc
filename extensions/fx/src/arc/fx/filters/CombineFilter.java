@@ -2,7 +2,6 @@ package arc.fx.filters;
 
 import arc.fx.*;
 import arc.graphics.*;
-import arc.graphics.gl.*;
 
 public final class CombineFilter extends FxFilter{
     public float src1int = 1f, src1sat = 1f, src2int = 1f, src2sat = 1f;

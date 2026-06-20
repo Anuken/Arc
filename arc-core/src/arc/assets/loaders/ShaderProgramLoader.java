@@ -1,12 +1,10 @@
 package arc.assets.loaders;
 
-import arc.assets.AssetDescriptor;
-import arc.assets.AssetLoaderParameters;
-import arc.assets.AssetManager;
-import arc.struct.Seq;
-import arc.files.Fi;
-import arc.graphics.gl.Shader;
-import arc.util.Log;
+import arc.assets.*;
+import arc.files.*;
+import arc.graphics.*;
+import arc.struct.*;
+import arc.util.*;
 
 /**
  * {@link AssetLoader} for {@link Shader} instances loaded from text files. If the file suffix is ".vert", it is assumed

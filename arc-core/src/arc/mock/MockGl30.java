@@ -1,6 +1,6 @@
 package arc.mock;
 
-import arc.graphics.*;
+import arc.graphics.gl.*;
 
 import java.nio.*;
 

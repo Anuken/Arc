@@ -1,7 +1,6 @@
 package arc.graphics.g3d;
 
 import arc.graphics.*;
-import arc.graphics.gl.*;
 import arc.math.geom.*;
 import arc.struct.*;
 

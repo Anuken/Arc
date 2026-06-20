@@ -1,7 +1,6 @@
 package arc.graphics.g2d;
 
 import arc.graphics.*;
-import arc.graphics.gl.*;
 import arc.math.*;
 
 public class CacheBatch extends Batch{

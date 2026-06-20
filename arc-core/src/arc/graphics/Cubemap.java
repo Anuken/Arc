@@ -2,6 +2,7 @@ package arc.graphics;
 
 import arc.*;
 import arc.files.*;
+import arc.graphics.gl.*;
 import arc.math.geom.*;
 
 /**

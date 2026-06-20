@@ -1,7 +1,6 @@
 package arc.fx.util;
 
 import arc.*;
-import arc.graphics.*;
 import arc.graphics.gl.*;
 import arc.util.*;
 
@@ -10,11 +9,11 @@ import arc.util.*;
  * <p>
  */
 public class FxBufferRenderer implements Disposable{
-    private final Shader shader;
+    private final arc.graphics.Shader shader;
 
     public FxBufferRenderer(){
 
-        shader = new Shader(
+        shader = new arc.graphics.Shader(
         "attribute vec4 a_position;\n" +
         "attribute vec2 a_texCoord0;\n" +
         "varying vec2 v_texCoords;\n" +
@@ -43,17 +42,17 @@ public class FxBufferRenderer implements Disposable{
         shader.setUniformi("u_texture0", 0);
     }
 
-    public void renderToScreen(FrameBuffer input){
+    public void renderToScreen(arc.graphics.FrameBuffer input){
         renderToScreen(input, 0, 0, Core.graphics.getBackBufferWidth(), Core.graphics.getBackBufferHeight());
     }
 
-    public void renderToScreen(FrameBuffer input, int x, int y, int width, int height){
+    public void renderToScreen(arc.graphics.FrameBuffer input, int x, int y, int width, int height){
         Gl.viewport(x, y, width, height);
 
         input.blit(shader);
     }
 
-    public void renderToFbo(FrameBuffer input, FrameBuffer output){
+    public void renderToFbo(arc.graphics.FrameBuffer input, arc.graphics.FrameBuffer output){
         output.begin();
         input.blit(shader);
         output.end();

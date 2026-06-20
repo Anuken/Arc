@@ -3,7 +3,7 @@ package arc.backend.robovm;
 import arc.*;
 import arc.audio.*;
 import arc.backend.robovm.custom.*;
-import arc.graphics.*;
+import arc.graphics.gl.*;
 import arc.struct.*;
 import arc.util.*;
 import org.robovm.apple.coregraphics.*;
@@ -145,7 +145,7 @@ public class IOSApplication implements Application{
         Log.info("[IOSApplication] paused");
         graphics.makeCurrent();
         graphics.pause();
-        Gl.finish();
+        arc.graphics.gl.Gl.finish();
     }
 
     final void willTerminate(UIApplication uiApp){

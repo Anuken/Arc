@@ -2,12 +2,13 @@ package arc.graphics;
 
 import arc.*;
 import arc.files.*;
+import arc.graphics.gl.*;
 
 /**
  * A Texture wraps a standard OpenGL ES texture.
  * <p>
  * A Texture has to be bound via the {@link Texture#bind()} method in order for it to be applied to geometry. The texture will be
- * bound to the currently active texture unit specified via {@link GL20#glActiveTexture(int)}.
+ * bound to the currently active texture unit specified via glActiveTexture.
  * <p>
  * You can draw {@link Pixmap}s to a texture at any time. The changes will be automatically uploaded to texture memory. This is of
  * course not extremely fast so use it with care.
@@ -84,16 +85,6 @@ public class Texture extends GLTexture{
     public void draw(Pixmap pixmap, int x, int y){
         bind();
         Gl.texSubImage2D(glTarget, 0, x, y, pixmap.width, pixmap.height, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.pixels);
-    }
-
-    @Override
-    public int getDepth(){
-        return 0;
-    }
-
-    @Override
-    public boolean isDisposed(){
-        return glHandle == 0;
     }
 
 }

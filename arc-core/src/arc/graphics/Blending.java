@@ -1,5 +1,7 @@
 package arc.graphics;
 
+import arc.graphics.gl.*;
+
 /** Blending modes, can be instantiated to make custom blending. */
 public class Blending{
     public static final Blending

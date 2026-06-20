@@ -2,6 +2,7 @@ package arc.graphics.g3d;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.graphics.gl.*;
 import arc.math.*;
 import arc.math.geom.*;
 
@@ -43,10 +44,10 @@ public class PlaneBatch3D extends Batch{
         }
 
         //disable depth mask when flushing to prevent Z fighting
-        Gl.depthMask(false);
+        arc.graphics.gl.Gl.depthMask(false);
 
         lastTexture.bind();
-        batch.flush(Gl.triangles);
+        batch.flush(arc.graphics.gl.Gl.triangles);
         idx = 0;
 
         Gl.depthMask(true);

@@ -1,6 +1,5 @@
 package arc.graphics.gl;
 
-import arc.graphics.*;
 import arc.util.*;
 
 import java.nio.*;

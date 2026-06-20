@@ -22,10 +22,9 @@
 
 package arc.graphics.g2d;
 
-import arc.struct.Seq;
-import arc.files.Fi;
-import arc.graphics.TextureFilter;
-import arc.graphics.gl.Shader;
+import arc.files.*;
+import arc.graphics.*;
+import arc.struct.*;
 
 /**
  * Renders bitmap fonts using distance field textures, see the <a

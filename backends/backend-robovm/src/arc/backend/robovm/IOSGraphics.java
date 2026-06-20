@@ -243,7 +243,7 @@ public class IOSGraphics extends Graphics{
             insets[0] = (int)edgeInsets.getLeft();
             insets[1] = (int)edgeInsets.getRight();
             insets[3] = (int)edgeInsets.getBottom();
-            if(config.hdpiMode == HdpiMode.pixels){
+            if(config.hdpiMode == HdpiUtils.HdpiMode.pixels){
                 for(int i = 0; i < 4; i++){
                     insets[i] *= app.pixelsPerPoint;
                 }
@@ -263,12 +263,12 @@ public class IOSGraphics extends Graphics{
 
     @Override
     public int getWidth(){
-        return config.hdpiMode == HdpiMode.pixels ? getBackBufferWidth() : screenBounds.width;
+        return config.hdpiMode == HdpiUtils.HdpiMode.pixels ? getBackBufferWidth() : screenBounds.width;
     }
 
     @Override
     public int getHeight(){
-        return config.hdpiMode == HdpiMode.pixels ? getBackBufferHeight() : screenBounds.height;
+        return config.hdpiMode == HdpiUtils.HdpiMode.pixels ? getBackBufferHeight() : screenBounds.height;
     }
 
     @Override
@@ -336,7 +336,7 @@ public class IOSGraphics extends Graphics{
 
     @Override
     public boolean supportsExtension(String extension){
-        if(extensions == null) extensions = Gl.getString(GL20.GL_EXTENSIONS);
+        if(extensions == null) extensions = Gl.getString(Gl.extensions);
         return extensions.contains(extension);
     }
 

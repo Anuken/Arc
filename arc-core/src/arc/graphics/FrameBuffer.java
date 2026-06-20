@@ -1,8 +1,8 @@
-package arc.graphics.gl;
+package arc.graphics;
 
-import arc.graphics.*;
 import arc.graphics.Pixmap.*;
 import arc.graphics.g2d.*;
+import arc.graphics.gl.*;
 import arc.util.*;
 
 /**
@@ -23,7 +23,7 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
     /**
      * Creates a GLFrameBuffer from the specifications provided by bufferBuilder
      **/
-    protected FrameBuffer(GLFrameBufferBuilder<? extends GLFrameBuffer<Texture>> bufferBuilder){
+    public FrameBuffer(GLFrameBufferBuilder<? extends GLFrameBuffer<Texture>> bufferBuilder){
         super(bufferBuilder);
     }
 

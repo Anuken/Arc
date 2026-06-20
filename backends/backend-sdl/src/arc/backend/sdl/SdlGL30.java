@@ -1,7 +1,7 @@
 package arc.backend.sdl;
 
 import arc.backend.sdl.jni.*;
-import arc.graphics.*;
+import arc.graphics.gl.*;
 
 import java.nio.*;
 

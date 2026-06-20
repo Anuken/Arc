@@ -4,7 +4,7 @@ import arc.*;
 import arc.backend.robovm.custom.UIAccelerometerDelegate;
 import arc.backend.robovm.custom.UIAccelerometerDelegateAdapter;
 import arc.backend.robovm.custom.*;
-import arc.graphics.gl.*;
+import arc.graphics.*;
 import arc.input.*;
 import arc.math.geom.*;
 import arc.struct.*;
@@ -521,7 +521,7 @@ public class IOSInput extends Input{
             final int locX, locY;
             // Get and map the location to our drawing space
             CGPoint loc = touch.getLocationInView(app.graphics.view);
-            if(config.hdpiMode == HdpiMode.pixels){
+            if(config.hdpiMode == HdpiUtils.HdpiMode.pixels){
                 locX = (int)((loc.getX() - screenBounds.x) * app.pixelsPerPoint);
                 locY = screenBounds.backBufferHeight - 1 - (int)((loc.getY() - screenBounds.y) * app.pixelsPerPoint);
             }else{

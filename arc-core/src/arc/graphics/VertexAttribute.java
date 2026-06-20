@@ -1,6 +1,6 @@
 package arc.graphics;
 
-import arc.graphics.gl.Shader;
+import arc.graphics.gl.*;
 
 /**
  * A single vertex attribute defined by its number of components and its shader alias. The number of components

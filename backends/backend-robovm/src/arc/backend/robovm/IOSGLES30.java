@@ -1,11 +1,8 @@
 package arc.backend.robovm;
 
-import arc.graphics.GL30;
+import arc.graphics.gl.*;
 
-import java.nio.Buffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.LongBuffer;
+import java.nio.*;
 
 public class IOSGLES30 extends IOSGLES20 implements GL30{
 

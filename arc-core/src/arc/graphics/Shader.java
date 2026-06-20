@@ -1,8 +1,8 @@
-package arc.graphics.gl;
+package arc.graphics;
 
 import arc.*;
 import arc.files.*;
-import arc.graphics.*;
+import arc.graphics.gl.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;

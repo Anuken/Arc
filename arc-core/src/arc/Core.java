@@ -4,6 +4,7 @@ import arc.assets.*;
 import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.graphics.gl.*;
 import arc.scene.*;
 import arc.util.*;
 

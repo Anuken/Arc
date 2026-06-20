@@ -1,4 +1,4 @@
-package arc.graphics;
+package arc.graphics.gl;
 
 import arc.*;
 import arc.struct.Bits;

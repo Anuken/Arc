@@ -1,14 +1,11 @@
 package arc.backend.sdl;
 
-import arc.graphics.*;
 import arc.util.*;
 import org.lwjgl.opengl.*;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
 
 import java.nio.*;
 
-class SdlGL30 implements arc.graphics.GL30{
+class SdlGL30 implements arc.graphics.gl.GL30{
     private ByteBuffer buffer = null;
     private FloatBuffer floatBuffer = null;
     private IntBuffer intBuffer = null;
@@ -252,21 +249,21 @@ class SdlGL30 implements arc.graphics.GL30{
 
     @Override
     public void glDrawElements(int mode, int count, int type, Buffer indices){
-        if(indices instanceof ShortBuffer && type == Gl.unsignedShort){
+        if(indices instanceof ShortBuffer && type == arc.graphics.gl.Gl.unsignedShort){
             ShortBuffer sb = (ShortBuffer)indices;
             int position = sb.position();
             int oldLimit = sb.limit();
             sb.limit(position + count);
             GL11.glDrawElements(mode, sb);
             sb.limit(oldLimit);
-        }else if(indices instanceof ByteBuffer && type == Gl.unsignedShort){
+        }else if(indices instanceof ByteBuffer && type == arc.graphics.gl.Gl.unsignedShort){
             ShortBuffer sb = ((ByteBuffer)indices).asShortBuffer();
             int position = sb.position();
             int oldLimit = sb.limit();
             sb.limit(position + count);
             GL11.glDrawElements(mode, sb);
             sb.limit(oldLimit);
-        }else if(indices instanceof ByteBuffer && type == Gl.unsignedByte){
+        }else if(indices instanceof ByteBuffer && type == arc.graphics.gl.Gl.unsignedByte){
             ByteBuffer bb = (ByteBuffer)indices;
             int position = bb.position();
             int oldLimit = bb.limit();
@@ -839,21 +836,21 @@ class SdlGL30 implements arc.graphics.GL30{
     @Override
     public void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, Buffer buffer){
         if(buffer instanceof ByteBuffer){
-            if(type == Gl.byteV)
+            if(type == arc.graphics.gl.Gl.byteV)
                 GL20.glVertexAttribPointer(indx, size, type, normalized, stride, (ByteBuffer)buffer);
-            else if(type == Gl.unsignedByte)
+            else if(type == arc.graphics.gl.Gl.unsignedByte)
                 GL20.glVertexAttribPointer(indx, size, type, normalized, stride, (ByteBuffer)buffer);
-            else if(type == Gl.shortV)
+            else if(type == arc.graphics.gl.Gl.shortV)
                 GL20.glVertexAttribPointer(indx, size, type, normalized, stride, ((ByteBuffer)buffer).asShortBuffer());
-            else if(type == Gl.unsignedShort)
+            else if(type == arc.graphics.gl.Gl.unsignedShort)
                 GL20.glVertexAttribPointer(indx, size, type, normalized, stride, ((ByteBuffer)buffer).asShortBuffer());
-            else if(type == Gl.floatV)
+            else if(type == arc.graphics.gl.Gl.floatV)
                 GL20.glVertexAttribPointer(indx, size, type, normalized, stride, ((ByteBuffer)buffer).asFloatBuffer());
             else
                 throw new ArcRuntimeException("Can't use " + buffer.getClass().getName() + " with type " + type
                 + " with this method. Use ByteBuffer and one of Gl.byteV, Gl.unsignedByte, Gl.shortV, Gl.unsignedShort or Gl.floatV for type. Blame LWJGL");
         }else if(buffer instanceof FloatBuffer){
-            if(type == Gl.floatV)
+            if(type == arc.graphics.gl.Gl.floatV)
                 GL20.glVertexAttribPointer(indx, size, type, normalized, stride, (FloatBuffer)buffer);
             else
                 throw new ArcRuntimeException(

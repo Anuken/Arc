@@ -1,7 +1,7 @@
 package arc.backend.robovm;
 
 import arc.func.*;
-import arc.graphics.gl.*;
+import arc.graphics.*;
 import arc.util.*;
 import com.badlogic.gdx.backends.iosrobovm.bindings.metalangle.*;
 import org.robovm.apple.uikit.*;
@@ -17,7 +17,7 @@ public class IOSApplicationConfiguration{
     /** whether the status bar should be visible or not * */
     public boolean statusBarVisible = false;
 
-    public HdpiMode hdpiMode = HdpiMode.pixels;
+    public arc.graphics.HdpiUtils.HdpiMode hdpiMode = HdpiUtils.HdpiMode.pixels;
 
     /** the color format, RGB565 is the default **/
     public MGLDrawableColorFormat colorFormat = MGLDrawableColorFormat.RGBA8888;

@@ -1,5 +1,7 @@
 package arc.graphics;
 
+import arc.graphics.gl.*;
+
 public enum TextureWrap{
     mirroredRepeat(Gl.mirroredRepeat), clampToEdge(Gl.clampToEdge), repeat(Gl.repeat);
 

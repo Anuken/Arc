@@ -5,6 +5,7 @@ import arc.files.*;
 import arc.func.*;
 import arc.graphics.PixmapIO.*;
 import arc.graphics.g2d.*;
+import arc.graphics.gl.*;
 import arc.math.*;
 import arc.util.*;
 

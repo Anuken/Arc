@@ -1,5 +1,7 @@
 package arc.graphics;
 
+import arc.graphics.gl.*;
+
 public enum TextureFilter{
     /** Fetch the nearest texel that best maps to the pixel on screen. */
     nearest(Gl.nearest),

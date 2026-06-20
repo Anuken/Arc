@@ -1,13 +1,14 @@
 package arc.util;
 
-import arc.Core;
-import arc.files.Fi;
+import arc.*;
+import arc.files.*;
 import arc.graphics.*;
-import arc.graphics.Pixmap.Format;
-import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
+import arc.graphics.Pixmap.*;
+import arc.graphics.g2d.*;
+import arc.graphics.gl.*;
+import arc.math.*;
 
-import java.nio.ByteBuffer;
+import java.nio.*;
 
 /**
  * Class with static helper methods that provide access to the default OpenGL FrameBuffer. These methods can be used to get the

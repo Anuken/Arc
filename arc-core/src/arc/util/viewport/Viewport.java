@@ -1,11 +1,9 @@
 package arc.util.viewport;
 
-import arc.ApplicationListener;
-import arc.Core;
-import arc.graphics.Camera;
-import arc.graphics.g2d.ScissorStack;
-import arc.graphics.gl.HdpiUtils;
-import arc.math.Mat;
+import arc.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.math.geom.*;
 
 /**

@@ -1,6 +1,7 @@
 package arc.graphics;
 
 import arc.files.*;
+import arc.graphics.gl.*;
 
 /**
  * OpenGL ES wrapper for TextureArray

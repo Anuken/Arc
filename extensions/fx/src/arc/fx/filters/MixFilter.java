@@ -3,7 +3,6 @@ package arc.fx.filters;
 import arc.*;
 import arc.fx.*;
 import arc.graphics.*;
-import arc.graphics.gl.*;
 
 public final class MixFilter extends FxFilter{
     private Texture inputTexture2 = null;

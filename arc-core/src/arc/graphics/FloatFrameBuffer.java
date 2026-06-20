@@ -1,7 +1,7 @@
-package arc.graphics.gl;
+package arc.graphics;
 
 import arc.*;
-import arc.graphics.*;
+import arc.graphics.gl.*;
 import arc.graphics.gl.GLVersion.*;
 import arc.util.*;
 
@@ -17,7 +17,7 @@ public class FloatFrameBuffer extends FrameBuffer{
     /**
      * Creates a GLFrameBuffer from the specifications provided by bufferBuilder
      **/
-    protected FloatFrameBuffer(GLFrameBufferBuilder<? extends GLFrameBuffer<Texture>> bufferBuilder){
+    public FloatFrameBuffer(GLFrameBufferBuilder<? extends GLFrameBuffer<Texture>> bufferBuilder){
         super(bufferBuilder);
     }
 

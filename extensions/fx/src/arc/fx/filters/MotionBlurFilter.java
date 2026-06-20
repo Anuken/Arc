@@ -3,9 +3,8 @@ package arc.fx.filters;
 import arc.*;
 import arc.fx.*;
 import arc.fx.util.*;
-import arc.graphics.Pixmap.*;
 import arc.graphics.*;
-import arc.graphics.gl.*;
+import arc.graphics.Pixmap.*;
 
 /**
  * Motion blur filter that draws the last frame (motion filter included) with a lower opacity.

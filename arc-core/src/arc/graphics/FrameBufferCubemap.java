@@ -1,8 +1,8 @@
-package arc.graphics.gl;
+package arc.graphics;
 
 import arc.func.*;
-import arc.graphics.*;
 import arc.graphics.Cubemap.*;
+import arc.graphics.gl.*;
 import arc.util.*;
 
 /**
@@ -38,7 +38,7 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap>{
     /**
      * Creates a GLFrameBuffer from the specifications provided by bufferBuilder
      **/
-    protected FrameBufferCubemap(GLFrameBufferBuilder<? extends GLFrameBuffer<Cubemap>> bufferBuilder){
+    public FrameBufferCubemap(GLFrameBufferBuilder<? extends GLFrameBuffer<Cubemap>> bufferBuilder){
         super(bufferBuilder);
     }
 

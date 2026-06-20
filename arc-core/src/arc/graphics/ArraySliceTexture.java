@@ -1,6 +1,6 @@
-package arc.graphics.gl;
+package arc.graphics;
 
-import arc.graphics.*;
+import arc.graphics.gl.*;
 
 /**
  * This class exists to wrap Texture in a way that can be used in TextureRegions, where it actually refers to a specific level of a texture array.

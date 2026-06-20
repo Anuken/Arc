@@ -5,7 +5,6 @@ import arc.Files.*;
 import arc.files.*;
 import arc.graphics.*;
 import arc.graphics.g2d.TextureAtlas.TextureAtlasData.*;
-import arc.graphics.gl.*;
 import arc.scene.style.*;
 import arc.struct.*;
 import arc.util.*;

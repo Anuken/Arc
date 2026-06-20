@@ -1,5 +1,6 @@
-package arc.graphics;
+package arc.graphics.gl;
 
+import arc.graphics.*;
 import arc.util.*;
 
 /**
@@ -88,11 +89,9 @@ public abstract class GLTexture implements Disposable{
      * @param v the v wrap
      */
     public void setWrap(TextureWrap u, TextureWrap v){
-        this.uWrap = u;
-        this.vWrap = v;
         bind();
-        Gl.texParameteri(glTarget, Gl.textureWrapS, u.getGLEnum());
-        Gl.texParameteri(glTarget, Gl.textureWrapT, v.getGLEnum());
+        Gl.texParameteri(glTarget, Gl.textureWrapS, (this.uWrap = u).getGLEnum());
+        Gl.texParameteri(glTarget, Gl.textureWrapT, (this.vWrap = v).getGLEnum());
     }
 
     public void setFilter(TextureFilter filter){
@@ -105,11 +104,14 @@ public abstract class GLTexture implements Disposable{
      * @param magFilter the magnification filter
      */
     public void setFilter(TextureFilter minFilter, TextureFilter magFilter){
-        this.minFilter = minFilter;
-        this.magFilter = magFilter;
         bind();
-        Gl.texParameteri(glTarget, Gl.textureMinFilter, minFilter.glEnum);
-        Gl.texParameteri(glTarget, Gl.textureMagFilter, magFilter.glEnum);
+        Gl.texParameteri(glTarget, Gl.textureMinFilter, (this.minFilter = minFilter).glEnum);
+        Gl.texParameteri(glTarget, Gl.textureMagFilter, (this.magFilter = magFilter).glEnum);
+    }
+
+    @Override
+    public boolean isDisposed(){
+        return glHandle == 0;
     }
 
     @Override

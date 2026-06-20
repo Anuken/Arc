@@ -1,7 +1,7 @@
 package arc.backend.robovm;
 
 import arc.*;
-import arc.graphics.gl.*;
+import arc.graphics.*;
 import com.badlogic.gdx.backends.iosrobovm.bindings.metalangle.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.uikit.*;
@@ -68,7 +68,7 @@ public class IOSUIViewController extends MGLKViewController{
             graphics.updateSafeInsets();
             Core.gl.glViewport(0, 0, newBounds.backBufferWidth, newBounds.backBufferHeight);
 
-            if(graphics.config.hdpiMode == HdpiMode.pixels){
+            if(graphics.config.hdpiMode == HdpiUtils.HdpiMode.pixels){
                 for(ApplicationListener list : app.listeners){
                     list.resize(newBounds.backBufferWidth, newBounds.backBufferHeight);
                 }
