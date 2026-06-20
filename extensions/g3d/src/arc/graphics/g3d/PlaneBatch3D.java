@@ -9,7 +9,7 @@ import arc.math.geom.*;
 public class PlaneBatch3D extends Batch{
     protected final Vec3 up = new Vec3(), right = new Vec3(), origin = new Vec3(), vec = new Vec3();
     protected final VertexBatch3D batch;
-    protected final float[] vertex = new float[6]; //format: xyzcuv
+    protected final float[] vertex = new float[7]; //format: xyzcuvd
     protected float scaling = 1f;
 
     public PlaneBatch3D(){
@@ -17,7 +17,7 @@ public class PlaneBatch3D extends Batch{
     }
 
     public PlaneBatch3D(int vertices){
-        batch = new VertexBatch3D(vertices, false, true, 1);
+        batch = new VertexBatch3D(vertices, false, true, true);
     }
 
     /** Sets scaling of sprite units. */
@@ -56,9 +56,11 @@ public class PlaneBatch3D extends Batch{
     protected void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
 
         Texture texture = region.texture;
-        if(texture != lastTexture){
+        if(lastTexture == null || texture.getTextureObjectHandle()  != lastTexture.getTextureObjectHandle()){
             switchTexture(texture);
         }
+
+        float depth = texture.getDepth();
 
         checkFlush();
 
@@ -109,33 +111,33 @@ public class PlaneBatch3D extends Batch{
         final float v2 = region.v;
         final float color = this.colorPacked;
 
-        vertex(x2, y2, color, u, v2);
-        vertex(x1, y1, color, u, v);
-        vertex(x3, y3, color, u2, v2);
+        vertex(x2, y2, color, u, v2, depth);
+        vertex(x1, y1, color, u, v, depth);
+        vertex(x3, y3, color, u2, v2, depth);
 
-        vertex(x4, y4, color, u2, v);
-        vertex(x3, y3, color, u2, v2);
-        vertex(x1, y1, color, u, v);
+        vertex(x4, y4, color, u2, v, depth);
+        vertex(x3, y3, color, u2, v2, depth);
+        vertex(x1, y1, color, u, v, depth);
 
         idx ++;
     }
 
     @Override
     protected void draw(Texture texture, float[] v, int offset, int count){
-        if(texture != lastTexture){
+        if(lastTexture == null || texture.getTextureObjectHandle() != lastTexture.getTextureObjectHandle()){
             switchTexture(texture);
         }
 
         for(int i = offset; i < count; i += SpriteBatch.spriteSize){
             checkFlush();
 
-            vertex(v[i], v[i + 1], v[i + 2], v[i + 3], v[i + 4]);
-            vertex(v[i + 12], v[i + 13], v[i + 14], v[i + 15], v[i + 16]);
-            vertex(v[i + 6], v[i + 7], v[i + 8], v[i + 9], v[i + 10]);
+            vertex(v, i);
+            vertex(v, i + SpriteBatch.vertexSize * 2);
+            vertex(v, i + SpriteBatch.vertexSize);
 
-            vertex(v[i + 12], v[i + 13], v[i + 14], v[i + 15], v[i + 16]);
-            vertex(v[i], v[i + 1], v[i + 2], v[i + 3], v[i + 4]);
-            vertex(v[i + 18], v[i + 19], v[i + 20], v[i + 21], v[i + 22]);
+            vertex(v, i + SpriteBatch.vertexSize * 2);
+            vertex(v, i);
+            vertex(v, i + SpriteBatch.vertexSize * 3);
 
             idx ++;
         }
@@ -147,7 +149,11 @@ public class PlaneBatch3D extends Batch{
         }
     }
 
-    private void vertex(float x1, float y1, float c1, float u1, float v1){
+    private void vertex(float[] v, int offset){
+        vertex(v[offset], v[offset + 1], v[offset + 5], v[offset + 2], v[offset + 3], v[offset + 4]);
+    }
+
+    private void vertex(float x1, float y1, float c1, float u1, float v1, float depth){
         vec.set(origin).add(right, x1 * scaling).add(up, y1 * scaling);
         vertex[0] = vec.x;
         vertex[1] = vec.y;
@@ -155,6 +161,7 @@ public class PlaneBatch3D extends Batch{
         vertex[3] = c1;
         vertex[4] = u1;
         vertex[5] = v1;
+        vertex[6] = depth;
         batch.vertex(vertex);
     }
 }

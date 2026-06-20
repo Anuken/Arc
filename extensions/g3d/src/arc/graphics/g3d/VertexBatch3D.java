@@ -8,14 +8,13 @@ import arc.struct.*;
 public class VertexBatch3D{
     private final int maxVertices;
     private final Mesh mesh;
-    private final int numTexCoords;
+    private final boolean hasTexCoords;
     private final int vertexSize;
     private final int normalOffset;
     private final int colorOffset;
     private final int texCoordOffset;
     private final Mat3D proj = new Mat3D();
     private final float[] vertices;
-    private final String[] shaderUniformNames;
 
     private int vertexIdx;
     private int numSetTexCoords;
@@ -23,22 +22,22 @@ public class VertexBatch3D{
     private Shader shader;
     private boolean ownsShader;
 
-    public VertexBatch3D(boolean hasNormals, boolean hasColors, int numTexCoords){
-        this(5000, hasNormals, hasColors, numTexCoords, createDefaultShader(hasNormals, hasColors, numTexCoords));
+    public VertexBatch3D(boolean hasNormals, boolean hasColors, boolean hasTexCoords){
+        this(5000, hasNormals, hasColors, hasTexCoords, createDefaultShader(hasNormals, hasColors, hasTexCoords));
         ownsShader = true;
     }
 
-    public VertexBatch3D(int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords){
-        this(maxVertices, hasNormals, hasColors, numTexCoords, createDefaultShader(hasNormals, hasColors, numTexCoords));
+    public VertexBatch3D(int maxVertices, boolean hasNormals, boolean hasColors, boolean hasTexCoords){
+        this(maxVertices, hasNormals, hasColors, hasTexCoords, createDefaultShader(hasNormals, hasColors, hasTexCoords));
         ownsShader = true;
     }
 
-    public VertexBatch3D(int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords, Shader shader){
+    public VertexBatch3D(int maxVertices, boolean hasNormals, boolean hasColors, boolean hasTexCoords, Shader shader){
         this.maxVertices = maxVertices;
-        this.numTexCoords = numTexCoords;
+        this.hasTexCoords = hasTexCoords;
         this.shader = shader;
 
-        VertexAttribute[] attribs = buildVertexAttributes(hasNormals, hasColors, numTexCoords);
+        VertexAttribute[] attribs = buildVertexAttributes(hasNormals, hasColors, hasTexCoords);
         mesh = new Mesh(false, maxVertices, 0, attribs);
 
         vertices = new float[maxVertices * (mesh.vertexSize / 4)];
@@ -61,58 +60,50 @@ public class VertexBatch3D{
         }
 
         texCoordOffset = offset;
-
-        shaderUniformNames = new String[numTexCoords];
-        for(int i = 0; i < numTexCoords; i++){
-            shaderUniformNames[i] = "u_sampler" + i;
-        }
     }
 
-    private static String createVertexShader(boolean hasNormals, boolean hasColors, int numTexCoords){
+    private static String createVertexShader(boolean hasNormals, boolean hasColors, boolean hasTexCoords){
         StringBuilder shader = new StringBuilder("attribute vec4 " + Shader.positionAttribute + ";\n"
         + (hasNormals ? "attribute vec3 " + Shader.normalAttribute + ";\n" : "")
         + (hasColors ? "attribute vec4 " + Shader.colorAttribute + ";\n" : ""));
 
-        for(int i = 0; i < numTexCoords; i++){
-            shader.append("attribute vec2 " + Shader.texcoordAttribute).append(i).append(";\n");
+        if(hasTexCoords){
+            shader.append("attribute vec3 " + Shader.texcoordAttribute + "0").append(";\n");
         }
 
         shader.append("uniform mat4 u_proj;\n");
         shader.append(hasColors ? "varying vec4 v_col;\n" : "");
 
-        for(int i = 0; i < numTexCoords; i++){
-            shader.append("varying vec2 v_tex").append(i).append(";\n");
+        if(hasTexCoords){
+            shader.append("varying vec3 v_tex").append(";\n");
         }
 
         shader.append("void main() {\n" + "   gl_Position = u_proj * " + Shader.positionAttribute + ";\n").append(hasColors ? "   v_col = " + Shader.colorAttribute + ";\n" : "");
 
-        for(int i = 0; i < numTexCoords; i++){
-            shader.append("   v_tex").append(i).append(" = ").append(Shader.texcoordAttribute).append(i).append(";\n");
+        if(hasTexCoords){
+            shader.append("   v_tex").append(" = ").append(Shader.texcoordAttribute + "0").append(";\n");
         }
+
         shader.append("   gl_PointSize = 1.0;\n");
         shader.append("}\n");
         return shader.toString();
     }
 
-    private static String createFragmentShader(boolean hasNormals, boolean hasColors, int numTexCoords){
+    private static String createFragmentShader(boolean hasNormals, boolean hasColors, boolean hasTexCoords){
         StringBuilder shader = new StringBuilder();
 
         if(hasColors) shader.append("varying vec4 v_col;\n");
-        for(int i = 0; i < numTexCoords; i++){
-            shader.append("varying vec2 v_tex").append(i).append(";\n");
-            shader.append("uniform sampler2D u_sampler").append(i).append(";\n");
+        if(hasTexCoords){
+            shader.append("varying vec3 v_tex").append(";\n");
+            shader.append("uniform sampler2DArray u_sampler").append(";\n");
         }
 
         shader.append("void main(){\n   gl_FragColor = ").append(hasColors ? "v_col" : "vec4(1, 1, 1, 1)");
 
-        if(numTexCoords > 0) shader.append(" * ");
+        if(hasTexCoords) shader.append(" * ");
 
-        for(int i = 0; i < numTexCoords; i++){
-            if(i == numTexCoords - 1){
-                shader.append(" texture2D(u_sampler").append(i).append(",  v_tex").append(i).append(")");
-            }else{
-                shader.append(" texture2D(u_sampler").append(i).append(",  v_tex").append(i).append(") *");
-            }
+        if(hasTexCoords){
+            shader.append(" texture(u_sampler, v_tex)");
         }
 
         shader.append(";\n}");
@@ -120,20 +111,16 @@ public class VertexBatch3D{
     }
 
     /** Returns a new instance of the default shader used by SpriteBatch for GL2 when no shader is specified. */
-    public static Shader createDefaultShader(boolean hasNormals, boolean hasColors, int numTexCoords){
-        String vertexShader = createVertexShader(hasNormals, hasColors, numTexCoords);
-        String fragmentShader = createFragmentShader(hasNormals, hasColors, numTexCoords);
-        return new Shader(vertexShader, fragmentShader);
+    public static Shader createDefaultShader(boolean hasNormals, boolean hasColors, boolean hasTexCoords){
+        return new Shader(createVertexShader(hasNormals, hasColors, hasTexCoords), createFragmentShader(hasNormals, hasColors, hasTexCoords));
     }
 
-    private VertexAttribute[] buildVertexAttributes(boolean hasNormals, boolean hasColor, int numTexCoords){
+    private VertexAttribute[] buildVertexAttributes(boolean hasNormals, boolean hasColor, boolean hasTexCoords){
         Seq<VertexAttribute> attribs = new Seq<>();
         attribs.add(VertexAttribute.position3);
         if(hasNormals) attribs.add(VertexAttribute.normal);
         if(hasColor) attribs.add(VertexAttribute.color);
-        for(int i = 0; i < numTexCoords; i++){
-            attribs.add(new VertexAttribute(2, Shader.texcoordAttribute + i));
-        }
+        if(hasTexCoords) attribs.add(new VertexAttribute(3, Shader.texcoordAttribute + "0"));
         return attribs.toArray(VertexAttribute.class);
     }
 
@@ -249,8 +236,7 @@ public class VertexBatch3D{
         shader.bind();
         shader.apply();
         shader.setUniformMatrix4("u_proj", proj.val);
-        for(int i = 0; i < numTexCoords; i++)
-            shader.setUniformi(shaderUniformNames[i], i);
+        shader.setUniformi("u_sampler", 0);
         mesh.setVertices(vertices, 0, vertexIdx);
         mesh.render(shader, primitiveType);
 
