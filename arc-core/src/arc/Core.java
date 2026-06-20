@@ -10,9 +10,7 @@ import arc.util.*;
 
 import java.util.concurrent.*;
 
-/**
- * Global references to all of Arc's core modules.
- * */
+/** Global references to all of Arc's core modules. */
 public class Core{
     public static Application app;
     public static Graphics graphics;
@@ -29,5 +27,6 @@ public class Core{
     public static TextureAtlas atlas;
     public static ExecutorService executor = Threads.executor("Main Executor", OS.cores);
 
-    public static GL30 gl;
+    /** This class should never be used directly - use {@link Gl} instead. */
+    public static GLProvider glProvider;
 }

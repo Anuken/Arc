@@ -5,7 +5,7 @@ import arc.graphics.gl.*;
 
 import java.nio.*;
 
-public class SdlGL30 implements GL30{
+public class SdlGLProvider implements GLProvider{
     @Override public void glActiveTexture(int texture){ SDLGL.glActiveTexture(texture);}
     @Override public void glBindTexture(int target, int texture){ SDLGL.glBindTexture(target, texture);}
     @Override public void glBlendFunc(int sfactor, int dfactor){ SDLGL.glBlendFunc(sfactor, dfactor);}

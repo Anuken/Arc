@@ -1,11 +1,13 @@
 package arc.backend.sdl;
 
+import arc.graphics.gl.*;
 import arc.util.*;
 import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL30;
 
 import java.nio.*;
 
-class SdlGL30 implements arc.graphics.gl.GL30{
+class SdlGLProvider implements GLProvider{
     private ByteBuffer buffer = null;
     private FloatBuffer floatBuffer = null;
     private IntBuffer intBuffer = null;

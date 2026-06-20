@@ -2,7 +2,8 @@ package arc.graphics.gl;
 
 import java.nio.*;
 
-public interface GL30{
+/** Provides implementations for GLES 3.0 functions. This class should never be used directly outside backends - use {@link Gl} to call OpenGL functions instead. */
+public interface GLProvider{
 
     //GL 20
 

@@ -55,7 +55,7 @@ public class IOSGraphics extends Graphics{
         //HdpiUtils.setMode(config.hdpiMode);
 
         context = new MGLContext(MGLRenderingAPI.OpenGLES3);
-        Core.gl = new IOSGLES30();
+        Core.glProvider = new IOSGLES30();
 
         view = new MGLKView(new CGRect(0, 0, screenBounds.width, screenBounds.height), context){
             @Method(selector = "touchesBegan:withEvent:")
@@ -145,7 +145,7 @@ public class IOSGraphics extends Graphics{
         // enable OpenGL
         makeCurrent();
         // OpenGL glViewport() function expects backbuffer coordinates instead of logical coordinates
-        Core.gl.glViewport(0, 0, screenBounds.backBufferWidth, screenBounds.backBufferHeight);
+        Core.glProvider.glViewport(0, 0, screenBounds.backBufferWidth, screenBounds.backBufferHeight);
         String versionString = Gl.getString(Gl.version);
         String vendorString = Gl.getString(Gl.vendor);
         String rendererString = Gl.getString(Gl.renderer);
@@ -182,7 +182,7 @@ public class IOSGraphics extends Graphics{
         makeCurrent();
         // massive hack, MGLKView resets the viewport on each draw call, so IOSGLES20
         // stores the last known viewport and we reset it here...
-        Core.gl.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
+        Core.glProvider.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
 
         // For default framebuffer, we render a dummy frame during initialization before create
         // Return early so listener does not process

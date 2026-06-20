@@ -134,7 +134,7 @@ public class AndroidGraphics extends Graphics implements Renderer{
         String rendererString = gl.glGetString(GL10.GL_RENDERER);
         glVersion = new GLVersion(Application.ApplicationType.android, versionString, vendorString, rendererString);
         if(glVersion.majorVersion > 2){
-            Core.gl = new AndroidGL30();
+            Core.glProvider = new AndroidGLProvider();
         }else{
             throw new ArcRuntimeException("GLES 3.0 is required!");
         }

@@ -37,7 +37,7 @@ public class SdlGraphics extends Graphics{
         GL.create(SDLVideo::SDL_GL_GetProcAddress);
         GL.createCapabilities();
 
-        Core.gl = new SdlGL30();
+        Core.glProvider = new SdlGLProvider();
 
         String versionString = Gl.getString(Gl.version);
         String vendorString = Gl.getString(Gl.vendor);

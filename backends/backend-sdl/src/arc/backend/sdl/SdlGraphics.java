@@ -37,7 +37,7 @@ public class SdlGraphics extends Graphics{
             throw new ArcRuntimeException("GLEW failed to initialize: " + errorMessage);
         }
 
-        Core.gl = new SdlGL30();
+        Core.glProvider = new SdlGLProvider();
 
         String versionString = Gl.getString(Gl.version);
         String vendorString = Gl.getString(Gl.vendor);

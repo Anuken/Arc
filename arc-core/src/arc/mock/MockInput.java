@@ -2,10 +2,6 @@ package arc.mock;
 
 import arc.*;
 
-/**
- * The headless backend does its best to mock elements. This is intended to make code-sharing between
- * server and client as simple as possible.
- */
 public class MockInput extends Input{
     @Override
     public int mouseX(){

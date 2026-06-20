@@ -8,7 +8,7 @@ import arc.util.*;
 
 /**
  * This interface encapsulates communication with the graphics processor. Depending on the available hardware and the current
- * {@link Application} configuration, access to {@link GL30} are provided here.
+ * {@link Application} configuration, access to {@link GLProvider} are provided here.
  * <p>
  * If supported by the backend, this interface lets you query the available display modes (graphics resolution and color depth)
  * and change it.

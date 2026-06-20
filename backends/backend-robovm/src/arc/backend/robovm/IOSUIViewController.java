@@ -66,7 +66,7 @@ public class IOSUIViewController extends MGLKViewController{
         if(newBounds.width != oldBounds.width || newBounds.height != oldBounds.height){
             graphics.makeCurrent();
             graphics.updateSafeInsets();
-            Core.gl.glViewport(0, 0, newBounds.backBufferWidth, newBounds.backBufferHeight);
+            Core.glProvider.glViewport(0, 0, newBounds.backBufferWidth, newBounds.backBufferHeight);
 
             if(graphics.config.hdpiMode == HdpiUtils.HdpiMode.pixels){
                 for(ApplicationListener list : app.listeners){

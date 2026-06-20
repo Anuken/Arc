@@ -5,7 +5,7 @@ import arc.graphics.gl.*;
 
 import java.nio.*;
 
-public class AndroidGL30 implements GL30{
+public class AndroidGLProvider implements GLProvider{
     private int[] ints = {0}, ints2 = {0}, ints3 = {0};
     private byte[] buffer = new byte[512];
 

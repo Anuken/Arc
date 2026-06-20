@@ -33,7 +33,7 @@ public class HdpiUtils{
     }
 
     /**
-     * Calls {@link GL20#glScissor(int, int, int, int)}, expecting the coordinates and sizes given in logical coordinates and
+     * Calls {@link Gl#scissor(int, int, int, int)}, expecting the coordinates and sizes given in logical coordinates and
      * automatically converts them to backbuffer coordinates, which may be bigger on HDPI screens.
      */
     public static void glScissor(int x, int y, int width, int height){
@@ -46,7 +46,7 @@ public class HdpiUtils{
     }
 
     /**
-     * Calls {@link GL20#glViewport(int, int, int, int)}, expecting the coordinates and sizes given in logical coordinates and
+     * Calls {@link Gl#viewport(int, int, int, int)}, expecting the coordinates and sizes given in logical coordinates and
      * automatically converts them to backbuffer coordinates, which may be bigger on HDPI screens.
      */
     public static void glViewport(int x, int y, int width, int height){
@@ -96,7 +96,7 @@ public class HdpiUtils{
          * {@link Graphics#getHeight()} will return logical coordinates
          * according to the system defined HDPI scaling. Rendering will be
          * performed to a backbuffer at raw resolution. Use {@link HdpiUtils}
-         * when calling {@link GL20#glScissor} or {@link GL20#glViewport} which
+         * when calling {@link Gl#scissor} or {@link Gl#viewport} which
          * expect raw coordinates.
          */
         logical,

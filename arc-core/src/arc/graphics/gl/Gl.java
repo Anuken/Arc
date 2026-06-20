@@ -659,7 +659,7 @@ public class Gl{
     public static void activeTexture(int texture){
         if(optimize && lastActiveTexture == texture) return;
 
-        Core.gl.glActiveTexture(texture);
+        Core.glProvider.glActiveTexture(texture);
         lastActiveTexture = texture;
     }
 
@@ -689,53 +689,53 @@ public class Gl{
             }
         }
 
-        Core.gl.glBindTexture(target, texture);
+        Core.glProvider.glBindTexture(target, texture);
     }
 
     public static void blendFunc(int sfactor, int dfactor){
         if(optimize && lastBlendSrc == sfactor && lastBlendDst == dfactor && lastBlendSrcAlpha == sfactor && lastBlendDstAlpha == dfactor) return;
 
-        Core.gl.glBlendFunc(lastBlendSrc = lastBlendSrcAlpha = sfactor, lastBlendDst = lastBlendDstAlpha = dfactor);
+        Core.glProvider.glBlendFunc(lastBlendSrc = lastBlendSrcAlpha = sfactor, lastBlendDst = lastBlendDstAlpha = dfactor);
     }
 
     public static void clear(int mask){
-        Core.gl.glClear(mask);
+        Core.glProvider.glClear(mask);
     }
 
     public static void clearColor(float red, float green, float blue, float alpha){
-        Core.gl.glClearColor(red, green, blue, alpha);
+        Core.glProvider.glClearColor(red, green, blue, alpha);
     }
 
     public static void clearDepthf(float depth){
-        Core.gl.glClearDepthf(depth);
+        Core.glProvider.glClearDepthf(depth);
     }
 
     public static void clearStencil(int s){
-        Core.gl.glClearStencil(s);
+        Core.glProvider.glClearStencil(s);
     }
 
     public static void colorMask(boolean red, boolean green, boolean blue, boolean alpha){
-        Core.gl.glColorMask(red, green, blue, alpha);
+        Core.glProvider.glColorMask(red, green, blue, alpha);
     }
 
     public static void compressedTexImage2D(int target, int level, int internalformat, int width, int height, int border, int imageSize, Buffer data){
-        Core.gl.glCompressedTexImage2D(target, level, internalformat, width, height, border, imageSize, data);
+        Core.glProvider.glCompressedTexImage2D(target, level, internalformat, width, height, border, imageSize, data);
     }
 
     public static void compressedTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int imageSize, Buffer data){
-        Core.gl.glCompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, data);
+        Core.glProvider.glCompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, data);
     }
 
     public static void copyTexImage2D(int target, int level, int internalformat, int x, int y, int width, int height, int border){
-        Core.gl.glCopyTexImage2D(target, level, internalformat, x, y, width, height, border);
+        Core.glProvider.glCopyTexImage2D(target, level, internalformat, x, y, width, height, border);
     }
 
     public static void copyTexSubImage2D(int target, int level, int xoffset, int yoffset, int x, int y, int width, int height){
-        Core.gl.glCopyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
+        Core.glProvider.glCopyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
     }
 
     public static void cullFace(int mode){
-        Core.gl.glCullFace(mode);
+        Core.glProvider.glCullFace(mode);
     }
 
     public static void deleteTexture(int texture){
@@ -750,11 +750,11 @@ public class Gl{
                 lastBoundTexturesArray[i] = -1;
             }
         }
-        Core.gl.glDeleteTexture(texture);
+        Core.glProvider.glDeleteTexture(texture);
     }
 
     public static void depthFunc(int func){
-        Core.gl.glDepthFunc(func);
+        Core.glProvider.glDepthFunc(func);
     }
 
     public static void depthMask(boolean flag){
@@ -762,59 +762,59 @@ public class Gl{
         if(optimize && flag == wasDepthMask) return;
         wasDepthMask = flag;
 
-        Core.gl.glDepthMask(flag);
+        Core.glProvider.glDepthMask(flag);
     }
 
     public static void depthRangef(float zNear, float zFar){
-        Core.gl.glDepthRangef(zNear, zFar);
+        Core.glProvider.glDepthRangef(zNear, zFar);
     }
 
     public static void disable(int cap){
         if(optimize && !enabled.get(cap)){
             return;
         }
-        Core.gl.glDisable(cap);
+        Core.glProvider.glDisable(cap);
         enabled.clear(cap);
     }
 
     public static void drawArrays(int mode, int first, int count){
-        Core.gl.glDrawArrays(mode, first, count);
+        Core.glProvider.glDrawArrays(mode, first, count);
     }
 
     public static void drawElements(int mode, int count, int type, Buffer indices){
-        Core.gl.glDrawElements(mode, count, type, indices);
+        Core.glProvider.glDrawElements(mode, count, type, indices);
     }
 
     public static void enable(int cap){
         if(optimize && enabled.get(cap)){
             return;
         }
-        Core.gl.glEnable(cap);
+        Core.glProvider.glEnable(cap);
         enabled.set(cap);
     }
 
     public static void finish(){
-        Core.gl.glFinish();
+        Core.glProvider.glFinish();
     }
 
     public static void flush(){
-        Core.gl.glFlush();
+        Core.glProvider.glFlush();
     }
 
     public static void frontFace(int mode){
-        Core.gl.glFrontFace(mode);
+        Core.glProvider.glFrontFace(mode);
     }
 
     public static int genTexture(){
-        return Core.gl.glGenTexture();
+        return Core.glProvider.glGenTexture();
     }
 
     public static int getError(){
-        return Core.gl.glGetError();
+        return Core.glProvider.glGetError();
     }
 
     public static void getIntegerv(int pname, IntBuffer params){
-        Core.gl.glGetIntegerv(pname, params);
+        Core.glProvider.glGetIntegerv(pname, params);
     }
 
     public static int getInt(int name){
@@ -830,87 +830,87 @@ public class Gl{
     }
 
     public static String getString(int name){
-        return Core.gl.glGetString(name);
+        return Core.glProvider.glGetString(name);
     }
 
     public static void hint(int target, int mode){
-        Core.gl.glHint(target, mode);
+        Core.glProvider.glHint(target, mode);
     }
 
     public static void pixelStorei(int pname, int param){
-        Core.gl.glPixelStorei(pname, param);
+        Core.glProvider.glPixelStorei(pname, param);
     }
 
     public static void polygonOffset(float factor, float units){
-        Core.gl.glPolygonOffset(factor, units);
+        Core.glProvider.glPolygonOffset(factor, units);
     }
 
     public static void readPixels(int x, int y, int width, int height, int format, int type, Buffer pixels){
-        Core.gl.glReadPixels(x, y, width, height, format, type, pixels);
+        Core.glProvider.glReadPixels(x, y, width, height, format, type, pixels);
     }
 
     public static void scissor(int x, int y, int width, int height){
-        Core.gl.glScissor(x, y, width, height);
+        Core.glProvider.glScissor(x, y, width, height);
     }
 
     public static void stencilFunc(int func, int ref, int mask){
-        Core.gl.glStencilFunc(func, ref, mask);
+        Core.glProvider.glStencilFunc(func, ref, mask);
     }
 
     public static void stencilMask(int mask){
-        Core.gl.glStencilMask(mask);
+        Core.glProvider.glStencilMask(mask);
     }
 
     public static void stencilOp(int fail, int zfail, int zpass){
-        Core.gl.glStencilOp(fail, zfail, zpass);
+        Core.glProvider.glStencilOp(fail, zfail, zpass);
     }
 
     public static void texImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, Buffer pixels){
-        Core.gl.glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
+        Core.glProvider.glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
     }
 
     public static void texParameterf(int target, int pname, float param){
-        Core.gl.glTexParameterf(target, pname, param);
+        Core.glProvider.glTexParameterf(target, pname, param);
     }
 
     public static void texSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, Buffer pixels){
-        Core.gl.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
+        Core.glProvider.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
     }
 
     public static void viewport(int x, int y, int width, int height){
-        Core.gl.glViewport(x, y, width, height);
+        Core.glProvider.glViewport(x, y, width, height);
     }
 
     public static void attachShader(int program, int shader){
-        Core.gl.glAttachShader(program, shader);
+        Core.glProvider.glAttachShader(program, shader);
     }
 
     public static void bindAttribLocation(int program, int index, String name){
-        Core.gl.glBindAttribLocation(program, index, name);
+        Core.glProvider.glBindAttribLocation(program, index, name);
     }
 
     public static void bindBuffer(int target, int buffer){
-        Core.gl.glBindBuffer(target, buffer);
+        Core.glProvider.glBindBuffer(target, buffer);
     }
 
     public static void bindFramebuffer(int target, int framebuffer){
-        Core.gl.glBindFramebuffer(target, framebuffer);
+        Core.glProvider.glBindFramebuffer(target, framebuffer);
     }
 
     public static void bindRenderbuffer(int target, int renderbuffer){
-        Core.gl.glBindRenderbuffer(target, renderbuffer);
+        Core.glProvider.glBindRenderbuffer(target, renderbuffer);
     }
 
     public static void blendColor(float red, float green, float blue, float alpha){
-        Core.gl.glBlendColor(red, green, blue, alpha);
+        Core.glProvider.glBlendColor(red, green, blue, alpha);
     }
 
     public static void blendEquation(int mode){
-        Core.gl.glBlendEquation(mode);
+        Core.glProvider.glBlendEquation(mode);
     }
 
     public static void blendEquationSeparate(int modeRGB, int modeAlpha){
-        Core.gl.glBlendEquationSeparate(modeRGB, modeAlpha);
+        Core.glProvider.glBlendEquationSeparate(modeRGB, modeAlpha);
     }
 
     public static void blendFuncSeparate(int srcRGB, int dstRGB, int srcAlpha, int dstAlpha){
@@ -918,748 +918,749 @@ public class Gl{
             return;
         }
 
-        Core.gl.glBlendFuncSeparate(lastBlendSrc = srcRGB, lastBlendDst = dstRGB, lastBlendSrcAlpha = srcAlpha, lastBlendDstAlpha = dstAlpha);
+        Core.glProvider.glBlendFuncSeparate(lastBlendSrc = srcRGB, lastBlendDst = dstRGB, lastBlendSrcAlpha = srcAlpha, lastBlendDstAlpha = dstAlpha);
     }
 
     public static void bufferData(int target, int size, Buffer data, int usage){
-        Core.gl.glBufferData(target, size, data, usage);
+        Core.glProvider.glBufferData(target, size, data, usage);
     }
 
     public static void bufferSubData(int target, int offset, int size, Buffer data){
-        Core.gl.glBufferSubData(target, offset, size, data);
+        Core.glProvider.glBufferSubData(target, offset, size, data);
     }
 
     public static int checkFramebufferStatus(int target){
-        return Core.gl.glCheckFramebufferStatus(target);
+        return Core.glProvider.glCheckFramebufferStatus(target);
     }
 
     public static void compileShader(int shader){
-        Core.gl.glCompileShader(shader);
+        Core.glProvider.glCompileShader(shader);
     }
 
     public static int createProgram(){
-        return Core.gl.glCreateProgram();
+        return Core.glProvider.glCreateProgram();
     }
 
     public static int createShader(int type){
-        return Core.gl.glCreateShader(type);
+        return Core.glProvider.glCreateShader(type);
     }
 
     public static void deleteBuffer(int buffer){
-        Core.gl.glDeleteBuffer(buffer);
+        Core.glProvider.glDeleteBuffer(buffer);
     }
 
     public static void deleteFramebuffer(int framebuffer){
-        Core.gl.glDeleteFramebuffer(framebuffer);
+        Core.glProvider.glDeleteFramebuffer(framebuffer);
     }
 
     public static void deleteProgram(int program){
-        Core.gl.glDeleteProgram(program);
+        if(lastUsedProgram == program) lastUsedProgram = -1;
+        Core.glProvider.glDeleteProgram(program);
     }
 
     public static void deleteRenderbuffer(int renderbuffer){
-        Core.gl.glDeleteRenderbuffer(renderbuffer);
+        Core.glProvider.glDeleteRenderbuffer(renderbuffer);
     }
 
     public static void deleteShader(int shader){
-        Core.gl.glDeleteShader(shader);
+        Core.glProvider.glDeleteShader(shader);
     }
 
     public static void detachShader(int program, int shader){
-        Core.gl.glDetachShader(program, shader);
+        Core.glProvider.glDetachShader(program, shader);
     }
 
     public static void disableVertexAttribArray(int index){
-        Core.gl.glDisableVertexAttribArray(index);
+        Core.glProvider.glDisableVertexAttribArray(index);
     }
 
     public static void drawElements(int mode, int count, int type, int indices){
-        Core.gl.glDrawElements(mode, count, type, indices);
+        Core.glProvider.glDrawElements(mode, count, type, indices);
     }
 
     public static void enableVertexAttribArray(int index){
-        Core.gl.glEnableVertexAttribArray(index);
+        Core.glProvider.glEnableVertexAttribArray(index);
     }
 
     public static void framebufferRenderbuffer(int target, int attachment, int renderbuffertarget, int renderbuffer){
-        Core.gl.glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
+        Core.glProvider.glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
     }
 
     public static void framebufferTexture2D(int target, int attachment, int textarget, int texture, int level){
-        Core.gl.glFramebufferTexture2D(target, attachment, textarget, texture, level);
+        Core.glProvider.glFramebufferTexture2D(target, attachment, textarget, texture, level);
     }
 
     public static int genBuffer(){
-        return Core.gl.glGenBuffer();
+        return Core.glProvider.glGenBuffer();
     }
 
     public static void generateMipmap(int target){
-        Core.gl.glGenerateMipmap(target);
+        Core.glProvider.glGenerateMipmap(target);
     }
 
     public static int genFramebuffer(){
-        return Core.gl.glGenFramebuffer();
+        return Core.glProvider.glGenFramebuffer();
     }
 
     public static int genRenderbuffer(){
-        return Core.gl.glGenRenderbuffer();
+        return Core.glProvider.glGenRenderbuffer();
     }
 
     public static String getActiveAttrib(int program, int index, IntBuffer size, IntBuffer type){
-        return Core.gl.glGetActiveAttrib(program, index, size, type);
+        return Core.glProvider.glGetActiveAttrib(program, index, size, type);
     }
 
     public static String getActiveUniform(int program, int index, IntBuffer size, IntBuffer type){
-        return Core.gl.glGetActiveUniform(program, index, size, type);
+        return Core.glProvider.glGetActiveUniform(program, index, size, type);
     }
 
     public static int getAttribLocation(int program, String name){
-        return Core.gl.glGetAttribLocation(program, name);
+        return Core.glProvider.glGetAttribLocation(program, name);
     }
 
     public static void getBooleanv(int pname, Buffer params){
-        Core.gl.glGetBooleanv(pname, params);
+        Core.glProvider.glGetBooleanv(pname, params);
     }
 
     public static void getBufferParameteriv(int target, int pname, IntBuffer params){
-        Core.gl.glGetBufferParameteriv(target, pname, params);
+        Core.glProvider.glGetBufferParameteriv(target, pname, params);
     }
 
     public static void getFloatv(int pname, FloatBuffer params){
-        Core.gl.glGetFloatv(pname, params);
+        Core.glProvider.glGetFloatv(pname, params);
     }
 
     public static void getFramebufferAttachmentParameteriv(int target, int attachment, int pname, IntBuffer params){
-        Core.gl.glGetFramebufferAttachmentParameteriv(target, attachment, pname, params);
+        Core.glProvider.glGetFramebufferAttachmentParameteriv(target, attachment, pname, params);
     }
 
     public static void getProgramiv(int program, int pname, IntBuffer params){
-        Core.gl.glGetProgramiv(program, pname, params);
+        Core.glProvider.glGetProgramiv(program, pname, params);
     }
 
     public static String getProgramInfoLog(int program){
-        return Core.gl.glGetProgramInfoLog(program);
+        return Core.glProvider.glGetProgramInfoLog(program);
     }
 
     public static void getRenderbufferParameteriv(int target, int pname, IntBuffer params){
-        Core.gl.glGetRenderbufferParameteriv(target, pname, params);
+        Core.glProvider.glGetRenderbufferParameteriv(target, pname, params);
     }
 
     public static void getShaderiv(int shader, int pname, IntBuffer params){
-        Core.gl.glGetShaderiv(shader, pname, params);
+        Core.glProvider.glGetShaderiv(shader, pname, params);
     }
 
     public static String getShaderInfoLog(int shader){
-        return Core.gl.glGetShaderInfoLog(shader);
+        return Core.glProvider.glGetShaderInfoLog(shader);
     }
 
     public static void getShaderPrecisionFormat(int shadertype, int precisiontype, IntBuffer range, IntBuffer precision){
-        Core.gl.glGetShaderPrecisionFormat(shadertype, precisiontype, range, precision);
+        Core.glProvider.glGetShaderPrecisionFormat(shadertype, precisiontype, range, precision);
     }
 
     public static void getTexParameterfv(int target, int pname, FloatBuffer params){
-        Core.gl.glGetTexParameterfv(target, pname, params);
+        Core.glProvider.glGetTexParameterfv(target, pname, params);
     }
 
     public static void getTexParameteriv(int target, int pname, IntBuffer params){
-        Core.gl.glGetTexParameteriv(target, pname, params);
+        Core.glProvider.glGetTexParameteriv(target, pname, params);
     }
 
     public static void getUniformfv(int program, int location, FloatBuffer params){
-        Core.gl.glGetUniformfv(program, location, params);
+        Core.glProvider.glGetUniformfv(program, location, params);
     }
 
     public static void getUniformiv(int program, int location, IntBuffer params){
-        Core.gl.glGetUniformiv(program, location, params);
+        Core.glProvider.glGetUniformiv(program, location, params);
     }
 
     public static int getUniformLocation(int program, String name){
-        return Core.gl.glGetUniformLocation(program, name);
+        return Core.glProvider.glGetUniformLocation(program, name);
     }
 
     public static void getVertexAttribfv(int index, int pname, FloatBuffer params){
-        Core.gl.glGetVertexAttribfv(index, pname, params);
+        Core.glProvider.glGetVertexAttribfv(index, pname, params);
     }
 
     public static void getVertexAttribiv(int index, int pname, IntBuffer params){
-        Core.gl.glGetVertexAttribiv(index, pname, params);
+        Core.glProvider.glGetVertexAttribiv(index, pname, params);
     }
 
     public static boolean isBuffer(int buffer){
-        return Core.gl.glIsBuffer(buffer);
+        return Core.glProvider.glIsBuffer(buffer);
     }
 
     public static boolean isEnabled(int cap){
-        return Core.gl.glIsEnabled(cap);
+        return Core.glProvider.glIsEnabled(cap);
     }
 
     public static boolean isFramebuffer(int framebuffer){
-        return Core.gl.glIsFramebuffer(framebuffer);
+        return Core.glProvider.glIsFramebuffer(framebuffer);
     }
 
     public static boolean isProgram(int program){
-        return Core.gl.glIsProgram(program);
+        return Core.glProvider.glIsProgram(program);
     }
 
     public static boolean isRenderbuffer(int renderbuffer){
-        return Core.gl.glIsRenderbuffer(renderbuffer);
+        return Core.glProvider.glIsRenderbuffer(renderbuffer);
     }
 
     public static boolean isShader(int shader){
-        return Core.gl.glIsShader(shader);
+        return Core.glProvider.glIsShader(shader);
     }
 
     public static boolean isTexture(int texture){
-        return Core.gl.glIsTexture(texture);
+        return Core.glProvider.glIsTexture(texture);
     }
 
     public static void linkProgram(int program){
-        Core.gl.glLinkProgram(program);
+        Core.glProvider.glLinkProgram(program);
     }
 
     public static void releaseShaderCompiler(){
-        Core.gl.glReleaseShaderCompiler();
+        Core.glProvider.glReleaseShaderCompiler();
     }
 
     public static void renderbufferStorage(int target, int internalformat, int width, int height){
-        Core.gl.glRenderbufferStorage(target, internalformat, width, height);
+        Core.glProvider.glRenderbufferStorage(target, internalformat, width, height);
     }
 
     public static void sampleCoverage(float value, boolean invert){
-        Core.gl.glSampleCoverage(value, invert);
+        Core.glProvider.glSampleCoverage(value, invert);
     }
 
     public static void shaderSource(int shader, String string){
-        Core.gl.glShaderSource(shader, string);
+        Core.glProvider.glShaderSource(shader, string);
     }
 
     public static void stencilFuncSeparate(int face, int func, int ref, int mask){
-        Core.gl.glStencilFuncSeparate(face, func, ref, mask);
+        Core.glProvider.glStencilFuncSeparate(face, func, ref, mask);
     }
 
     public static void stencilMaskSeparate(int face, int mask){
-        Core.gl.glStencilMaskSeparate(face, mask);
+        Core.glProvider.glStencilMaskSeparate(face, mask);
     }
 
     public static void stencilOpSeparate(int face, int fail, int zfail, int zpass){
-        Core.gl.glStencilOpSeparate(face, fail, zfail, zpass);
+        Core.glProvider.glStencilOpSeparate(face, fail, zfail, zpass);
     }
 
     public static void texParameterfv(int target, int pname, FloatBuffer params){
-        Core.gl.glTexParameterfv(target, pname, params);
+        Core.glProvider.glTexParameterfv(target, pname, params);
     }
 
     public static void texParameteri(int target, int pname, int param){
-        Core.gl.glTexParameteri(target, pname, param);
+        Core.glProvider.glTexParameteri(target, pname, param);
     }
 
     public static void texParameteriv(int target, int pname, IntBuffer params){
-        Core.gl.glTexParameteriv(target, pname, params);
+        Core.glProvider.glTexParameteriv(target, pname, params);
     }
 
     public static void uniform1f(int location, float x){
-        Core.gl.glUniform1f(location, x);
+        Core.glProvider.glUniform1f(location, x);
     }
 
     public static void uniform1fv(int location, int count, FloatBuffer v){
-        Core.gl.glUniform1fv(location, count, v);
+        Core.glProvider.glUniform1fv(location, count, v);
     }
 
     public static void uniform1fv(int location, int count, float[] v, int offset){
-        Core.gl.glUniform1fv(location, count, v, offset);
+        Core.glProvider.glUniform1fv(location, count, v, offset);
     }
 
     public static void uniform1i(int location, int x){
-        Core.gl.glUniform1i(location, x);
+        Core.glProvider.glUniform1i(location, x);
     }
 
     public static void uniform1iv(int location, int count, IntBuffer v){
-        Core.gl.glUniform1iv(location, count, v);
+        Core.glProvider.glUniform1iv(location, count, v);
     }
 
     public static void uniform1iv(int location, int count, int[] v, int offset){
-        Core.gl.glUniform1iv(location, count, v, offset);
+        Core.glProvider.glUniform1iv(location, count, v, offset);
     }
 
     public static void uniform2f(int location, float x, float y){
-        Core.gl.glUniform2f(location, x, y);
+        Core.glProvider.glUniform2f(location, x, y);
     }
 
     public static void uniform2fv(int location, int count, FloatBuffer v){
-        Core.gl.glUniform2fv(location, count, v);
+        Core.glProvider.glUniform2fv(location, count, v);
     }
 
     public static void uniform2fv(int location, int count, float[] v, int offset){
-        Core.gl.glUniform2fv(location, count, v, offset);
+        Core.glProvider.glUniform2fv(location, count, v, offset);
     }
 
     public static void uniform2i(int location, int x, int y){
-        Core.gl.glUniform2i(location, x, y);
+        Core.glProvider.glUniform2i(location, x, y);
     }
 
     public static void uniform2iv(int location, int count, IntBuffer v){
-        Core.gl.glUniform2iv(location, count, v);
+        Core.glProvider.glUniform2iv(location, count, v);
     }
 
     public static void uniform2iv(int location, int count, int[] v, int offset){
-        Core.gl.glUniform2iv(location, count, v, offset);
+        Core.glProvider.glUniform2iv(location, count, v, offset);
     }
 
     public static void uniform3f(int location, float x, float y, float z){
-        Core.gl.glUniform3f(location, x, y, z);
+        Core.glProvider.glUniform3f(location, x, y, z);
     }
 
     public static void uniform3fv(int location, int count, FloatBuffer v){
-        Core.gl.glUniform3fv(location, count, v);
+        Core.glProvider.glUniform3fv(location, count, v);
     }
 
     public static void uniform3fv(int location, int count, float[] v, int offset){
-        Core.gl.glUniform3fv(location, count, v, offset);
+        Core.glProvider.glUniform3fv(location, count, v, offset);
     }
 
     public static void uniform3i(int location, int x, int y, int z){
-        Core.gl.glUniform3i(location, x, y, z);
+        Core.glProvider.glUniform3i(location, x, y, z);
     }
 
     public static void uniform3iv(int location, int count, IntBuffer v){
-        Core.gl.glUniform3iv(location, count, v);
+        Core.glProvider.glUniform3iv(location, count, v);
     }
 
     public static void uniform3iv(int location, int count, int[] v, int offset){
-        Core.gl.glUniform3iv(location, count, v, offset);
+        Core.glProvider.glUniform3iv(location, count, v, offset);
     }
 
     public static void uniform4f(int location, float x, float y, float z, float w){
-        Core.gl.glUniform4f(location, x, y, z, w);
+        Core.glProvider.glUniform4f(location, x, y, z, w);
     }
 
     public static void uniform4fv(int location, int count, FloatBuffer v){
-        Core.gl.glUniform4fv(location, count, v);
+        Core.glProvider.glUniform4fv(location, count, v);
     }
 
     public static void uniform4fv(int location, int count, float[] v, int offset){
-        Core.gl.glUniform4fv(location, count, v, offset);
+        Core.glProvider.glUniform4fv(location, count, v, offset);
     }
 
     public static void uniform4i(int location, int x, int y, int z, int w){
-        Core.gl.glUniform4i(location, x, y, z, w);
+        Core.glProvider.glUniform4i(location, x, y, z, w);
     }
 
     public static void uniform4iv(int location, int count, IntBuffer v){
-        Core.gl.glUniform4iv(location, count, v);
+        Core.glProvider.glUniform4iv(location, count, v);
     }
 
     public static void uniform4iv(int location, int count, int[] v, int offset){
-        Core.gl.glUniform4iv(location, count, v, offset);
+        Core.glProvider.glUniform4iv(location, count, v, offset);
     }
 
     public static void uniformMatrix2fv(int location, int count, boolean transpose, FloatBuffer value){
-        Core.gl.glUniformMatrix2fv(location, count, transpose, value);
+        Core.glProvider.glUniformMatrix2fv(location, count, transpose, value);
     }
 
     public static void uniformMatrix2fv(int location, int count, boolean transpose, float[] value, int offset){
-        Core.gl.glUniformMatrix2fv(location, count, transpose, value, offset);
+        Core.glProvider.glUniformMatrix2fv(location, count, transpose, value, offset);
     }
 
     public static void uniformMatrix3fv(int location, int count, boolean transpose, FloatBuffer value){
-        Core.gl.glUniformMatrix3fv(location, count, transpose, value);
+        Core.glProvider.glUniformMatrix3fv(location, count, transpose, value);
     }
 
     public static void uniformMatrix3fv(int location, int count, boolean transpose, float[] value, int offset){
-        Core.gl.glUniformMatrix3fv(location, count, transpose, value, offset);
+        Core.glProvider.glUniformMatrix3fv(location, count, transpose, value, offset);
     }
 
     public static void uniformMatrix4fv(int location, int count, boolean transpose, FloatBuffer value){
-        Core.gl.glUniformMatrix4fv(location, count, transpose, value);
+        Core.glProvider.glUniformMatrix4fv(location, count, transpose, value);
     }
 
     public static void uniformMatrix4fv(int location, int count, boolean transpose, float[] value, int offset){
-        Core.gl.glUniformMatrix4fv(location, count, transpose, value, offset);
+        Core.glProvider.glUniformMatrix4fv(location, count, transpose, value, offset);
     }
 
     public static void useProgram(int program){
         if(optimize && lastUsedProgram == program){
             return;
         }
-        Core.gl.glUseProgram(program);
+        Core.glProvider.glUseProgram(program);
         lastUsedProgram = program;
     }
 
     public static void validateProgram(int program){
-        Core.gl.glValidateProgram(program);
+        Core.glProvider.glValidateProgram(program);
     }
 
     public static void vertexAttrib1f(int indx, float x){
-        Core.gl.glVertexAttrib1f(indx, x);
+        Core.glProvider.glVertexAttrib1f(indx, x);
     }
 
     public static void vertexAttrib1fv(int indx, FloatBuffer values){
-        Core.gl.glVertexAttrib1fv(indx, values);
+        Core.glProvider.glVertexAttrib1fv(indx, values);
     }
 
     public static void vertexAttrib2f(int indx, float x, float y){
-        Core.gl.glVertexAttrib2f(indx, x, y);
+        Core.glProvider.glVertexAttrib2f(indx, x, y);
     }
 
     public static void vertexAttrib2fv(int indx, FloatBuffer values){
-        Core.gl.glVertexAttrib2fv(indx, values);
+        Core.glProvider.glVertexAttrib2fv(indx, values);
     }
 
     public static void vertexAttrib3f(int indx, float x, float y, float z){
-        Core.gl.glVertexAttrib3f(indx, x, y, z);
+        Core.glProvider.glVertexAttrib3f(indx, x, y, z);
     }
 
     public static void vertexAttrib3fv(int indx, FloatBuffer values){
-        Core.gl.glVertexAttrib3fv(indx, values);
+        Core.glProvider.glVertexAttrib3fv(indx, values);
     }
 
     public static void vertexAttrib4f(int indx, float x, float y, float z, float w){
-        Core.gl.glVertexAttrib4f(indx, x, y, z, w);
+        Core.glProvider.glVertexAttrib4f(indx, x, y, z, w);
     }
 
     public static void vertexAttrib4fv(int indx, FloatBuffer values){
-        Core.gl.glVertexAttrib4fv(indx, values);
+        Core.glProvider.glVertexAttrib4fv(indx, values);
     }
 
     public static void vertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, Buffer ptr){
-        Core.gl.glVertexAttribPointer(indx, size, type, normalized, stride, ptr);
+        Core.glProvider.glVertexAttribPointer(indx, size, type, normalized, stride, ptr);
     }
 
     public static void vertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, int ptr){
-        Core.gl.glVertexAttribPointer(indx, size, type, normalized, stride, ptr);
+        Core.glProvider.glVertexAttribPointer(indx, size, type, normalized, stride, ptr);
     }
 
     //GL30 methods below
 
     public static void readBuffer(int mode){
-        Core.gl.glReadBuffer(mode);
+        Core.glProvider.glReadBuffer(mode);
     }
 
     public static void drawRangeElements(int mode, int start, int end, int count, int type, java.nio.Buffer indices){
-        Core.gl.glDrawRangeElements(mode, start, end, count, type, indices);
+        Core.glProvider.glDrawRangeElements(mode, start, end, count, type, indices);
     }
 
     public static void drawRangeElements(int mode, int start, int end, int count, int type, int offset){
-        Core.gl.glDrawRangeElements(mode, start, end, count, type, offset);
+        Core.glProvider.glDrawRangeElements(mode, start, end, count, type, offset);
     }
 
     public static void texImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, java.nio.Buffer pixels){
-        Core.gl.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+        Core.glProvider.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
     }
 
     public static void texImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, int offset){
-        Core.gl.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, offset);
+        Core.glProvider.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, offset);
     }
 
     public static void texSubImage3D(int target, int level, int xoffset, int yoffset, int zoffset, int width, int height, int depth, int format, int type, java.nio.Buffer pixels){
-        Core.gl.glTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
+        Core.glProvider.glTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
     }
 
     public static void texSubImage3D(int target, int level, int xoffset, int yoffset, int zoffset, int width, int height, int depth, int format, int type, int offset){
-        Core.gl.glTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, offset);
+        Core.glProvider.glTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, offset);
     }
 
     public static void copyTexSubImage3D(int target, int level, int xoffset, int yoffset, int zoffset, int x, int y, int width, int height){
-        Core.gl.glCopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
+        Core.glProvider.glCopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
     }
 
     public static void genQueries(int n, java.nio.IntBuffer ids){
-        Core.gl.glGenQueries(n, ids);
+        Core.glProvider.glGenQueries(n, ids);
     }
 
     public static void deleteQueries(int n, java.nio.IntBuffer ids){
-        Core.gl.glDeleteQueries(n, ids);
+        Core.glProvider.glDeleteQueries(n, ids);
     }
 
     public static boolean isQuery(int id){
-        return Core.gl.glIsQuery(id);
+        return Core.glProvider.glIsQuery(id);
     }
 
     public static void beginQuery(int target, int id){
-        Core.gl.glBeginQuery(target, id);
+        Core.glProvider.glBeginQuery(target, id);
     }
 
     public static void endQuery(int target){
-        Core.gl.glEndQuery(target);
+        Core.glProvider.glEndQuery(target);
     }
 
     public static void getQueryiv(int target, int pname, java.nio.IntBuffer params){
-        Core.gl.glGetQueryiv(target, pname, params);
+        Core.glProvider.glGetQueryiv(target, pname, params);
     }
 
     public static void getQueryObjectuiv(int id, int pname, java.nio.IntBuffer params){
-        Core.gl.glGetQueryObjectuiv(id, pname, params);
+        Core.glProvider.glGetQueryObjectuiv(id, pname, params);
     }
 
     public static boolean unmapBuffer(int target){
-        return Core.gl.glUnmapBuffer(target);
+        return Core.glProvider.glUnmapBuffer(target);
     }
 
     public static java.nio.Buffer getBufferPointerv(int target, int pname){
-        return Core.gl.glGetBufferPointerv(target, pname);
+        return Core.glProvider.glGetBufferPointerv(target, pname);
     }
 
     public static void drawBuffers(int n, java.nio.IntBuffer bufs){
-        Core.gl.glDrawBuffers(n, bufs);
+        Core.glProvider.glDrawBuffers(n, bufs);
     }
 
     public static void uniformMatrix2x3fv(int location, int count, boolean transpose, java.nio.FloatBuffer value){
-        Core.gl.glUniformMatrix2x3fv(location, count, transpose, value);
+        Core.glProvider.glUniformMatrix2x3fv(location, count, transpose, value);
     }
 
     public static void uniformMatrix3x2fv(int location, int count, boolean transpose, java.nio.FloatBuffer value){
-        Core.gl.glUniformMatrix3x2fv(location, count, transpose, value);
+        Core.glProvider.glUniformMatrix3x2fv(location, count, transpose, value);
     }
 
     public static void uniformMatrix2x4fv(int location, int count, boolean transpose, java.nio.FloatBuffer value){
-        Core.gl.glUniformMatrix2x4fv(location, count, transpose, value);
+        Core.glProvider.glUniformMatrix2x4fv(location, count, transpose, value);
     }
 
     public static void uniformMatrix4x2fv(int location, int count, boolean transpose, java.nio.FloatBuffer value){
-        Core.gl.glUniformMatrix4x2fv(location, count, transpose, value);
+        Core.glProvider.glUniformMatrix4x2fv(location, count, transpose, value);
     }
 
     public static void uniformMatrix3x4fv(int location, int count, boolean transpose, java.nio.FloatBuffer value){
-        Core.gl.glUniformMatrix3x4fv(location, count, transpose, value);
+        Core.glProvider.glUniformMatrix3x4fv(location, count, transpose, value);
     }
 
     public static void uniformMatrix4x3fv(int location, int count, boolean transpose, java.nio.FloatBuffer value){
-        Core.gl.glUniformMatrix4x3fv(location, count, transpose, value);
+        Core.glProvider.glUniformMatrix4x3fv(location, count, transpose, value);
     }
 
     public static void blitFramebuffer(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, int mask, int filter){
-        Core.gl.glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+        Core.glProvider.glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
     }
 
     public static void renderbufferStorageMultisample(int target, int samples, int internalformat, int width, int height){
-        Core.gl.glRenderbufferStorageMultisample(target, samples, internalformat, width, height);
+        Core.glProvider.glRenderbufferStorageMultisample(target, samples, internalformat, width, height);
     }
 
     public static void framebufferTextureLayer(int target, int attachment, int texture, int level, int layer){
-        Core.gl.glFramebufferTextureLayer(target, attachment, texture, level, layer);
+        Core.glProvider.glFramebufferTextureLayer(target, attachment, texture, level, layer);
     }
 
     public static void flushMappedBufferRange(int target, int offset, int length){
-        Core.gl.glFlushMappedBufferRange(target, offset, length);
+        Core.glProvider.glFlushMappedBufferRange(target, offset, length);
     }
 
     public static void bindVertexArray(int array){
-        Core.gl.glBindVertexArray(array);
+        Core.glProvider.glBindVertexArray(array);
     }
 
     public static void deleteVertexArrays(int n, java.nio.IntBuffer arrays){
-        Core.gl.glDeleteVertexArrays(n, arrays);
+        Core.glProvider.glDeleteVertexArrays(n, arrays);
     }
 
     public static void genVertexArrays(int n, java.nio.IntBuffer arrays){
-        Core.gl.glGenVertexArrays(n, arrays);
+        Core.glProvider.glGenVertexArrays(n, arrays);
     }
 
     public static boolean isVertexArray(int array){
-        return Core.gl.glIsVertexArray(array);
+        return Core.glProvider.glIsVertexArray(array);
     }
 
     public static void beginTransformFeedback(int primitiveMode){
-        Core.gl.glBeginTransformFeedback(primitiveMode);
+        Core.glProvider.glBeginTransformFeedback(primitiveMode);
     }
 
     public static void endTransformFeedback(){
-        Core.gl.glEndTransformFeedback();
+        Core.glProvider.glEndTransformFeedback();
     }
 
     public static void bindBufferRange(int target, int index, int buffer, int offset, int size){
-        Core.gl.glBindBufferRange(target, index, buffer, offset, size);
+        Core.glProvider.glBindBufferRange(target, index, buffer, offset, size);
     }
 
     public static void bindBufferBase(int target, int index, int buffer){
-        Core.gl.glBindBufferBase(target, index, buffer);
+        Core.glProvider.glBindBufferBase(target, index, buffer);
     }
 
     public static void transformFeedbackVaryings(int program, String[] varyings, int bufferMode){
-        Core.gl.glTransformFeedbackVaryings(program, varyings, bufferMode);
+        Core.glProvider.glTransformFeedbackVaryings(program, varyings, bufferMode);
     }
 
     public static void vertexAttribIPointer(int index, int size, int type, int stride, int offset){
-        Core.gl.glVertexAttribIPointer(index, size, type, stride, offset);
+        Core.glProvider.glVertexAttribIPointer(index, size, type, stride, offset);
     }
 
     public static void getVertexAttribIiv(int index, int pname, java.nio.IntBuffer params){
-        Core.gl.glGetVertexAttribIiv(index, pname, params);
+        Core.glProvider.glGetVertexAttribIiv(index, pname, params);
     }
 
     public static void getVertexAttribIuiv(int index, int pname, java.nio.IntBuffer params){
-        Core.gl.glGetVertexAttribIuiv(index, pname, params);
+        Core.glProvider.glGetVertexAttribIuiv(index, pname, params);
     }
 
     public static void vertexAttribI4i(int index, int x, int y, int z, int w){
-        Core.gl.glVertexAttribI4i(index, x, y, z, w);
+        Core.glProvider.glVertexAttribI4i(index, x, y, z, w);
     }
 
     public static void vertexAttribI4ui(int index, int x, int y, int z, int w){
-        Core.gl.glVertexAttribI4ui(index, x, y, z, w);
+        Core.glProvider.glVertexAttribI4ui(index, x, y, z, w);
     }
 
     public static void getUniformuiv(int program, int location, java.nio.IntBuffer params){
-        Core.gl.glGetUniformuiv(program, location, params);
+        Core.glProvider.glGetUniformuiv(program, location, params);
     }
 
     public static int getFragDataLocation(int program, String name){
-        return Core.gl.glGetFragDataLocation(program, name);
+        return Core.glProvider.glGetFragDataLocation(program, name);
     }
 
     public static void uniform1uiv(int location, int count, java.nio.IntBuffer value){
-        Core.gl.glUniform1uiv(location, count, value);
+        Core.glProvider.glUniform1uiv(location, count, value);
     }
 
     public static void uniform3uiv(int location, int count, java.nio.IntBuffer value){
-        Core.gl.glUniform3uiv(location, count, value);
+        Core.glProvider.glUniform3uiv(location, count, value);
     }
 
     public static void uniform4uiv(int location, int count, java.nio.IntBuffer value){
-        Core.gl.glUniform4uiv(location, count, value);
+        Core.glProvider.glUniform4uiv(location, count, value);
     }
 
     public static void clearBufferiv(int buffer, int drawbuffer, java.nio.IntBuffer value){
-        Core.gl.glClearBufferiv(buffer, drawbuffer, value);
+        Core.glProvider.glClearBufferiv(buffer, drawbuffer, value);
     }
 
     public static void clearBufferuiv(int buffer, int drawbuffer, java.nio.IntBuffer value){
-        Core.gl.glClearBufferuiv(buffer, drawbuffer, value);
+        Core.glProvider.glClearBufferuiv(buffer, drawbuffer, value);
     }
 
     public static void clearBufferfv(int buffer, int drawbuffer, java.nio.FloatBuffer value){
-        Core.gl.glClearBufferfv(buffer, drawbuffer, value);
+        Core.glProvider.glClearBufferfv(buffer, drawbuffer, value);
     }
 
     public static void clearBufferfi(int buffer, int drawbuffer, float depth, int stencil){
-        Core.gl.glClearBufferfi(buffer, drawbuffer, depth, stencil);
+        Core.glProvider.glClearBufferfi(buffer, drawbuffer, depth, stencil);
     }
 
     public static String getStringi(int name, int index){
-        return Core.gl.glGetStringi(name, index);
+        return Core.glProvider.glGetStringi(name, index);
     }
 
     public static void copyBufferSubData(int readTarget, int writeTarget, int readOffset, int writeOffset, int size){
-        Core.gl.glCopyBufferSubData(readTarget, writeTarget, readOffset, writeOffset, size);
+        Core.glProvider.glCopyBufferSubData(readTarget, writeTarget, readOffset, writeOffset, size);
     }
 
     public static void getUniformIndices(int program, String[] uniformNames, java.nio.IntBuffer uniformIndices){
-        Core.gl.glGetUniformIndices(program, uniformNames, uniformIndices);
+        Core.glProvider.glGetUniformIndices(program, uniformNames, uniformIndices);
     }
 
     public static void getActiveUniformsiv(int program, int uniformCount, java.nio.IntBuffer uniformIndices, int pname, java.nio.IntBuffer params){
-        Core.gl.glGetActiveUniformsiv(program, uniformCount, uniformIndices, pname, params);
+        Core.glProvider.glGetActiveUniformsiv(program, uniformCount, uniformIndices, pname, params);
     }
 
     public static int getUniformBlockIndex(int program, String uniformBlockName){
-        return Core.gl.glGetUniformBlockIndex(program, uniformBlockName);
+        return Core.glProvider.glGetUniformBlockIndex(program, uniformBlockName);
     }
 
     public static void getActiveUniformBlockiv(int program, int uniformBlockIndex, int pname, java.nio.IntBuffer params){
-        Core.gl.glGetActiveUniformBlockiv(program, uniformBlockIndex, pname, params);
+        Core.glProvider.glGetActiveUniformBlockiv(program, uniformBlockIndex, pname, params);
     }
 
     public static void getActiveUniformBlockName(int program, int uniformBlockIndex, java.nio.Buffer length, java.nio.Buffer uniformBlockName){
-        Core.gl.glGetActiveUniformBlockName(program, uniformBlockIndex, length, uniformBlockName);
+        Core.glProvider.glGetActiveUniformBlockName(program, uniformBlockIndex, length, uniformBlockName);
     }
 
     public static void uniformBlockBinding(int program, int uniformBlockIndex, int uniformBlockBinding){
-        Core.gl.glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);
+        Core.glProvider.glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);
     }
 
     public static void drawArraysInstanced(int mode, int first, int count, int instanceCount){
-        Core.gl.glDrawArraysInstanced(mode, first, count, instanceCount);
+        Core.glProvider.glDrawArraysInstanced(mode, first, count, instanceCount);
     }
 
     public static void drawElementsInstanced(int mode, int count, int type, int indicesOffset, int instanceCount){
-        Core.gl.glDrawElementsInstanced(mode, count, type, indicesOffset, instanceCount);
+        Core.glProvider.glDrawElementsInstanced(mode, count, type, indicesOffset, instanceCount);
     }
 
     public static void getInteger64v(int pname, java.nio.LongBuffer params){
-        Core.gl.glGetInteger64v(pname, params);
+        Core.glProvider.glGetInteger64v(pname, params);
     }
 
     public static void getBufferParameteri64v(int target, int pname, java.nio.LongBuffer params){
-        Core.gl.glGetBufferParameteri64v(target, pname, params);
+        Core.glProvider.glGetBufferParameteri64v(target, pname, params);
     }
 
     public static void genSamplers(int count, java.nio.IntBuffer samplers){
-        Core.gl.glGenSamplers(count, samplers);
+        Core.glProvider.glGenSamplers(count, samplers);
     }
 
     public static void deleteSamplers(int count, java.nio.IntBuffer samplers){
-        Core.gl.glDeleteSamplers(count, samplers);
+        Core.glProvider.glDeleteSamplers(count, samplers);
     }
 
     public static boolean isSampler(int sampler){
-        return Core.gl.glIsSampler(sampler);
+        return Core.glProvider.glIsSampler(sampler);
     }
 
     public static void bindSampler(int unit, int sampler){
-        Core.gl.glBindSampler(unit, sampler);
+        Core.glProvider.glBindSampler(unit, sampler);
     }
 
     public static void samplerParameteri(int sampler, int pname, int param){
-        Core.gl.glSamplerParameteri(sampler, pname, param);
+        Core.glProvider.glSamplerParameteri(sampler, pname, param);
     }
 
     public static void samplerParameteriv(int sampler, int pname, java.nio.IntBuffer param){
-        Core.gl.glSamplerParameteriv(sampler, pname, param);
+        Core.glProvider.glSamplerParameteriv(sampler, pname, param);
     }
 
     public static void samplerParameterf(int sampler, int pname, float param){
-        Core.gl.glSamplerParameterf(sampler, pname, param);
+        Core.glProvider.glSamplerParameterf(sampler, pname, param);
     }
 
     public static void samplerParameterfv(int sampler, int pname, java.nio.FloatBuffer param){
-        Core.gl.glSamplerParameterfv(sampler, pname, param);
+        Core.glProvider.glSamplerParameterfv(sampler, pname, param);
     }
 
     public static void getSamplerParameteriv(int sampler, int pname, java.nio.IntBuffer params){
-        Core.gl.glGetSamplerParameteriv(sampler, pname, params);
+        Core.glProvider.glGetSamplerParameteriv(sampler, pname, params);
     }
 
     public static void getSamplerParameterfv(int sampler, int pname, java.nio.FloatBuffer params){
-        Core.gl.glGetSamplerParameterfv(sampler, pname, params);
+        Core.glProvider.glGetSamplerParameterfv(sampler, pname, params);
     }
 
     public static void vertexAttribDivisor(int index, int divisor){
-        Core.gl.glVertexAttribDivisor(index, divisor);
+        Core.glProvider.glVertexAttribDivisor(index, divisor);
     }
 
     public static void bindTransformFeedback(int target, int id){
-        Core.gl.glBindTransformFeedback(target, id);
+        Core.glProvider.glBindTransformFeedback(target, id);
     }
 
     public static void deleteTransformFeedbacks(int n, java.nio.IntBuffer ids){
-        Core.gl.glDeleteTransformFeedbacks(n, ids);
+        Core.glProvider.glDeleteTransformFeedbacks(n, ids);
     }
 
     public static void genTransformFeedbacks(int n, java.nio.IntBuffer ids){
-        Core.gl.glGenTransformFeedbacks(n, ids);
+        Core.glProvider.glGenTransformFeedbacks(n, ids);
     }
 
     public static boolean isTransformFeedback(int id){
-        return Core.gl.glIsTransformFeedback(id);
+        return Core.glProvider.glIsTransformFeedback(id);
     }
 
     public static void pauseTransformFeedback(){
-        Core.gl.glPauseTransformFeedback();
+        Core.glProvider.glPauseTransformFeedback();
     }
 
     public static void resumeTransformFeedback(){
-        Core.gl.glResumeTransformFeedback();
+        Core.glProvider.glResumeTransformFeedback();
     }
 
     public static void programParameteri(int program, int pname, int value){
-        Core.gl.glProgramParameteri(program, pname, value);
+        Core.glProvider.glProgramParameteri(program, pname, value);
     }
 
     public static void invalidateFramebuffer(int target, int numAttachments, java.nio.IntBuffer attachments){
-        Core.gl.glInvalidateFramebuffer(target, numAttachments, attachments);
+        Core.glProvider.glInvalidateFramebuffer(target, numAttachments, attachments);
     }
 
     public static void invalidateSubFramebuffer(int target, int numAttachments, java.nio.IntBuffer attachments, int x, int y, int width, int height){
-        Core.gl.glInvalidateSubFramebuffer(target, numAttachments, attachments, x, y, width, height);
+        Core.glProvider.glInvalidateSubFramebuffer(target, numAttachments, attachments, x, y, width, height);
     }
 }

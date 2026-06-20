@@ -4,7 +4,7 @@ import arc.graphics.gl.*;
 
 import java.nio.*;
 
-public class IOSGLES30 extends IOSGLES20 implements GL30{
+public class IOSGLES30 extends IOSGLES20 implements GLProvider{
 
     public IOSGLES30(){
         init();

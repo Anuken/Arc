@@ -1,9 +1,8 @@
 package arc.graphics;
 
-import arc.Core;
-import arc.Graphics;
-import arc.Input;
-import arc.math.Mat;
+import arc.*;
+import arc.graphics.gl.*;
+import arc.math.*;
 import arc.math.geom.*;
 
 public class Camera{
@@ -38,7 +37,7 @@ public class Camera{
      * rely on OpenGL. The x- and y-coordinate of vec are assumed to be in screen coordinates (origin is the bottom left corner, y
      * pointing up, x pointing to the right) as reported by the touch methods in {@link Input}. A z-coordinate of 0 will return a
      * point on the near plane, a z-coordinate of 1 will return a point on the far plane. This method allows you to specify the
-     * viewport position and dimensions in the coordinate system expected by {@link GL20#glViewport(int, int, int, int)}, with the
+     * viewport position and dimensions in the coordinate system expected by {@link Gl#viewport(int, int, int, int)}, with the
      * origin in the bottom left corner of the screen.
      * @param screenCoords the point in screen coordinates (origin top left)
      * @param viewportX the coordinate of the bottom left corner of the viewport in glViewport coordinates.
@@ -97,7 +96,7 @@ public class Camera{
      * deviation: The viewport is assumed to span the whole screen. The screen coordinate system has its origin in the
      * <b>bottom</b> left, with the y-axis pointing <b>upwards</b> and the x-axis pointing to the right.
      * This method allows you to specify the viewport position and
-     * dimensions in the coordinate system expected by {@link GL20#glViewport(int, int, int, int)}, with the origin in the bottom
+     * dimensions in the coordinate system expected by {@link Gl#viewport(int, int, int, int)}, with the origin in the bottom
      * left corner of the screen.
      * @param viewportX the coordinate of the bottom left corner of the viewport in glViewport coordinates.
      * @param viewportY the coordinate of the bottom left corner of the viewport in glViewport coordinates.

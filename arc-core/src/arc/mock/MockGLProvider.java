@@ -4,7 +4,7 @@ import arc.graphics.gl.*;
 
 import java.nio.*;
 
-public class MockGl30 implements GL30{
+public class MockGLProvider implements GLProvider{
     @Override
     public void glActiveTexture(int texture){
 
