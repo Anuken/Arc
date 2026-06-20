@@ -1,12 +1,12 @@
-package arc.util;
+package arc.graphics;
 
 import arc.*;
 import arc.files.*;
-import arc.graphics.*;
 import arc.graphics.Pixmap.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.math.*;
+import arc.util.*;
 
 import java.nio.*;
 
