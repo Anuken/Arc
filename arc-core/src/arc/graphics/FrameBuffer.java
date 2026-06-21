@@ -198,6 +198,18 @@ public class FrameBuffer implements Disposable{
         return framebufferHandle;
     }
 
+    public int getWidth(){
+        return width;
+    }
+
+    public int getHeight(){
+        return height;
+    }
+
+    public @Nullable Texture getTexture(){
+        return texture;
+    }
+
     protected void disposeTextures(){
         for(Texture texture : textureAttachments){
             texture.dispose();
