@@ -103,7 +103,7 @@ public class FrameBuffer implements Disposable{
             textureAttachments.add(result);
 
             int point = format.isColor() ? Gl.colorAttachment0 + (colorTextureCounter ++) : format.attachmentPoint;
-            Gl.framebufferTexture2D(Gl.framebuffer, point, Gl.texture2d, result.getTextureObjectHandle(), 0);
+            Gl.framebufferTexture2D(Gl.framebuffer, point, Gl.texture2d, result.getHandle(), 0);
 
             index ++;
         }

@@ -11,7 +11,7 @@ public class ArraySliceTexture extends Texture{
     public int index;
 
     public ArraySliceTexture(TextureArray array, int index){
-        super(Gl.texture2dArray, array.getTextureObjectHandle());
+        super(Gl.texture2dArray, array.getHandle());
         if(index >= array.getDepth()) throw new IllegalArgumentException("Array slice texture index out of bounds: " + index + " >= " + array.getDepth());
 
         this.array = array;

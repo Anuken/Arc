@@ -191,7 +191,7 @@ public class SpriteBatch extends Batch{
             int num = numRequests;
             if(num > 0){
                 final DrawRequest last = requests[num - 1];
-                if(last.run == null && (last.texture.getTextureObjectHandle() == texture.getTextureObjectHandle()) && last.blending == blending && requestZ[num - 1] == intZ){
+                if(last.run == null && (last.texture.getHandle() == texture.getHandle()) && last.blending == blending && requestZ[num - 1] == intZ){
                     if(spriteVertices != emptyVertices){
                         prepare(count);
                         System.arraycopy(spriteVertices, offset, requestVerts, requestVertOffset, count);
@@ -340,7 +340,7 @@ public class SpriteBatch extends Batch{
 
         int verticesLength = buffer.capacity();
         int remainingVertices = verticesLength;
-        if(lastTexture == null || texture.getTextureObjectHandle() != lastTexture.getTextureObjectHandle()){
+        if(lastTexture == null || texture.getHandle() != lastTexture.getHandle()){
             switchTexture(texture);
         }else{
             remainingVertices -= idx;
@@ -368,7 +368,7 @@ public class SpriteBatch extends Batch{
     protected void drawSuper(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
 
         Texture texture = region.texture;
-        if(lastTexture == null || texture.getTextureObjectHandle() != lastTexture.getTextureObjectHandle()){
+        if(lastTexture == null || texture.getHandle() != lastTexture.getHandle()){
             switchTexture(texture);
         }else if(idx == buffer.capacity()){
             flush();

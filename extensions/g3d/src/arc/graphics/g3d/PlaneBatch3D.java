@@ -57,7 +57,7 @@ public class PlaneBatch3D extends Batch{
     protected void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
 
         Texture texture = region.texture;
-        if(lastTexture == null || texture.getTextureObjectHandle()  != lastTexture.getTextureObjectHandle()){
+        if(lastTexture == null || texture.getHandle()  != lastTexture.getHandle()){
             switchTexture(texture);
         }
 
@@ -125,7 +125,7 @@ public class PlaneBatch3D extends Batch{
 
     @Override
     protected void draw(Texture texture, float[] v, int offset, int count){
-        if(lastTexture == null || texture.getTextureObjectHandle() != lastTexture.getTextureObjectHandle()){
+        if(lastTexture == null || texture.getHandle() != lastTexture.getHandle()){
             switchTexture(texture);
         }
 
