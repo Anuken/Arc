@@ -3,7 +3,6 @@ package arc.fx;
 import arc.*;
 import arc.fx.util.*;
 import arc.graphics.*;
-import arc.graphics.Pixmap.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.struct.*;
@@ -27,7 +26,7 @@ public final class FxProcessor implements Disposable{
     /** A mesh that is shared among basic filters to draw to full screen. */
     private final FxBufferRenderer bufferRenderer = new FxBufferRenderer();
 
-    private final Format fboFormat;
+    private final Format[] fboFormat;
     private final PingPongBuffer pingPongBuffer;
 
     private boolean disabled = false;
@@ -40,20 +39,16 @@ public final class FxProcessor implements Disposable{
     private int width, height;
 
     public FxProcessor(){
-        this(Format.rgba8888, Core.graphics.getBackBufferWidth(), Core.graphics.getBackBufferHeight());
+        this(Core.graphics.getBackBufferWidth(), Core.graphics.getBackBufferHeight(), Format.defaultColor);
     }
 
     public FxProcessor(int w, int h){
-        this(Format.rgba8888, w, h);
+        this(w, h, Format.defaultColor);
     }
 
-    public FxProcessor(Format fboFormat, int bufferWidth, int bufferHeight){
-        this(fboFormat, bufferWidth, bufferHeight, false, false);
-    }
-
-    public FxProcessor(Format fboFormat, int bufferWidth, int bufferHeight, boolean depth, boolean stencil){
+    public FxProcessor(int bufferWidth, int bufferHeight, Format[] fboFormat){
         this.fboFormat = fboFormat;
-        this.pingPongBuffer = new PingPongBuffer(fboFormat, bufferWidth, bufferHeight, depth, stencil);
+        this.pingPongBuffer = new PingPongBuffer(bufferWidth, bufferHeight, fboFormat);
         this.width = bufferWidth;
         this.height = bufferHeight;
     }
@@ -118,7 +113,7 @@ public final class FxProcessor implements Disposable{
      * Returns the internal framebuffer format, computed from the parameters specified during construction. NOTE: the returned
      * Format will be valid after construction and NOT early!
      */
-    public Format getFramebufferFormat(){
+    public Format[] getFramebufferFormat(){
         return fboFormat;
     }
 

@@ -49,7 +49,7 @@ public abstract class FxFilter implements Disposable{
     }
 
     public FxFilter setInput(FrameBuffer input){
-        return setInput(input.getTexture());
+        return setInput(input.texture);
     }
 
     public FxFilter setOutput(FrameBuffer output){

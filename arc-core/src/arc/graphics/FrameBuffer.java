@@ -1,15 +1,16 @@
 package arc.graphics;
 
-import arc.graphics.Pixmap.*;
+import arc.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
+import arc.struct.*;
 import arc.util.*;
+
+import java.nio.*;
 
 /**
  * <p>
- * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper class which should cover most FBO uses. It will
- * automatically create a texture for the color attachment and a renderbuffer for the depth buffer. You can get a hold of the
- * texture by {@link FrameBuffer#getTexture()}. This class will only work with OpenGL ES 2.0.
+ * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper class which should cover most FBO uses.
  * </p>
  *
  * <p>
@@ -17,153 +18,207 @@ import arc.util.*;
  * </p>
  * @author mzechner, realitix
  */
-public class FrameBuffer extends GLFrameBuffer<Texture>{
-    protected Format format;
-    protected boolean hasDepth, hasStencil;
-    protected @Nullable Texture depthTexture, stencilTexture;
+public class FrameBuffer implements Disposable{
+    /** the currently bound framebuffer; null for the default one. */
+    protected static FrameBuffer currentBoundFramebuffer;
+    /** the default framebuffer handle, a.k.a screen. */
+    protected static int defaultFramebufferHandle = -1;
+    /** # of nested buffers right now */
+    protected static int bufferNesting;
 
-    /**
-     * Creates a GLFrameBuffer from the specifications provided by bufferBuilder
-     **/
-    public FrameBuffer(GLFrameBufferBuilder<? extends GLFrameBuffer<Texture>> bufferBuilder){
-        super(bufferBuilder);
+    /** all texture attachments, defined in the same order as the formats were specified. **/
+    protected Seq<Texture> textureAttachments = new Seq<>();
+    /** the framebuffer that was bound before this one began (null to indicate that nothing was bound) **/
+    protected FrameBuffer lastBoundFramebuffer = null;
+
+    public int width, height;
+    public @Nullable Texture texture, depthTexture, stencilTexture;
+
+    protected Format[] formats;
+    /** the framebuffer handle **/
+    protected int framebufferHandle;
+
+    public FrameBuffer(int width, int height, Format... formats){
+        init(width, height, formats.length == 0 ? Format.defaultColor : formats);
     }
 
-    /** Creates a new 2x2 buffer. Resize before use. */
-    public FrameBuffer(){
-        this(2, 2);
+    public FrameBuffer(Format... formats){
+        this(2, 2, formats);
     }
 
-    /** Creates a new FrameBuffer having the given dimensions in the format RGBA8888 and no depth buffer.*/
-    public FrameBuffer(int width, int height){
-        this(Format.rgba8888, width, height, false, false);
-    }
-
-    /** Creates a new FrameBuffer having the given dimensions and no depth buffer. */
-    public FrameBuffer(Pixmap.Format format, int width, int height){
-        this(format, width, height, false, false);
-    }
-
-    /** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached. */
-    public FrameBuffer(Pixmap.Format format, int width, int height, boolean hasDepth){
-        this(format, width, height, hasDepth, false);
-    }
-
-    /** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached. */
-    public FrameBuffer(int width, int height, boolean hasDepth){
-        this(Format.rgba8888, width, height, hasDepth, false);
-    }
-
-    /**
-     * Creates a new FrameBuffer having the given dimensions and potentially a depth and a stencil buffer attached.
-     * @param format the format of the color buffer; according to the OpenGL ES 2.0 spec, only RGB565, RGBA4444 and RGB5_A1 are
-     * color-renderable
-     * @param width the width of the framebuffer in pixels
-     * @param height the height of the framebuffer in pixels
-     * @param hasDepth whether to attach a depth buffer
-     * @throws ArcRuntimeException in case the FrameBuffer could not be created
-     */
-    public FrameBuffer(Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil){
-        create(format, width, height, hasDepth, hasStencil);
-    }
-
-    public @Nullable Texture getDepthTexture(){
-        return depthTexture;
-    }
-
-    public @Nullable Texture getStencilTexture(){
-        return stencilTexture;
-    }
-
-    protected void create(Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil){
-        this.hasDepth = hasDepth;
-        this.hasStencil = hasStencil;
-        width = Math.max(width, 2);
-        height = Math.max(height, 2);
-        this.format = format;
-        FrameBufferBuilder frameBufferBuilder = new FrameBufferBuilder(width, height);
-        frameBufferBuilder.addBasicColorTextureAttachment(format);
-        if(hasDepth) frameBufferBuilder.addDepthTextureAttachment(Gl.depthComponent24, Gl.unsignedInt);
-        if(hasStencil) frameBufferBuilder.addBasicStencilRenderBuffer();
-        this.bufferBuilder = frameBufferBuilder;
-        build();
-    }
-
-    /** Blits this buffer onto the screen using the specified shader. */
-    public void blit(Shader shader){
-        Draw.blit(this, shader);
-    }
-
-    public boolean resizeCheck(int width, int height){
-        int lastWidth = getWidth(), lastHeight = getHeight();
-        resize(width, height);
-        return lastWidth != getWidth() || lastHeight != getHeight();
-    }
-
-    /**
-     * Note that this does nothing if the width and height are the same.
-     * */
-    public void resize(int width, int height){
+    /** Note that this does nothing if the width and height are the same. */
+    public boolean resize(int width, int height){
         //prevent incomplete attachment issues.
         width = Math.max(width, 2);
         height = Math.max(height, 2);
 
         //ignore pointless resizing
-        if(width == getWidth() && height == getHeight()) return;
+        if(width == this.width && height == this.height) return false;
 
-        TextureFilter min = getTexture().getMinFilter(), mag = getTexture().getMagFilter();
-        dispose();
+        init(width, height, formats);
 
-        FrameBufferBuilder frameBufferBuilder = new FrameBufferBuilder(width, height);
-        frameBufferBuilder.addBasicColorTextureAttachment(format);
-        if(hasDepth) frameBufferBuilder.addDepthTextureAttachment(Gl.depthComponent24, Gl.unsignedInt);
-        if(hasStencil) frameBufferBuilder.addBasicStencilRenderBuffer();
-        this.bufferBuilder = frameBufferBuilder;
-        this.textureAttachments.clear();
-        this.framebufferHandle = 0;
-        this.depthbufferHandle = 0;
-        this.stencilbufferHandle = 0;
-        this.depthStencilPackedBufferHandle = 0;
-        this.hasDepthStencilPackedBuffer = this.isMRT = false;
-        build();
-        getTexture().setFilter(min, mag);
+        return true;
     }
 
-    /** See {@link GLFrameBuffer#unbind()} */
-    public static void unbind(){
-        GLFrameBuffer.unbind();
+    protected void init(int width, int height, Format[] formats){
+        Seq<Texture> oldFilters = textureAttachments.isEmpty() ? null : textureAttachments.copy();
+
+        //init() can be called multiple times, so dispose the old textures
+        disposeTextures();
+
+        this.formats = formats;
+        this.width = width;
+        this.height = height;
+
+        //save last buffer's handle
+        int lastHandle = currentBoundFramebuffer == null ? getDefaultFramebufferHandle() : currentBoundFramebuffer.framebufferHandle;
+
+        if(framebufferHandle == 0) framebufferHandle = Gl.genFramebuffer();
+        Gl.bindFramebuffer(Gl.framebuffer, framebufferHandle);
+
+        int index = 0;
+        int colorTextureCounter = 0;
+        for(Format format : formats){
+            Texture result = new Texture();
+            result.width = width;
+            result.height = height;
+            result.bind();
+
+            Gl.texImage2D(Gl.texture2d, 0, format.glType, width, height, 0, format.baseFormat, format.baseType, null);
+
+            if(format.isColor()) texture = result;
+            if(format.isDepth()) depthTexture = result;
+            if(format.isStencil()) stencilTexture = result;
+
+            //preserve filters from previous init
+            if(oldFilters != null && index < oldFilters.size){
+                Texture prev = oldFilters.get(index);
+                result.setFilter(prev.getMinFilter(), prev.getMagFilter());
+                result.setWrap(prev.getUWrap(), prev.getVWrap());
+            }else{
+                result.setFilter(format.isLinearFilterable() ? TextureFilter.linear : TextureFilter.nearest);
+                result.setWrap(TextureWrap.clampToEdge);
+            }
+
+            textureAttachments.add(result);
+
+            int point = format.isColor() ? Gl.colorAttachment0 + (colorTextureCounter ++) : format.attachmentPoint;
+            Gl.framebufferTexture2D(Gl.framebuffer, point, Gl.texture2d, result.getTextureObjectHandle(), 0);
+
+            index ++;
+        }
+
+        //specify active buffers with MRT
+        if(colorTextureCounter > 1){
+            IntBuffer buffer = Buffers.newIntBuffer(colorTextureCounter);
+            for(int i = 0; i < colorTextureCounter; i++){
+                buffer.put(Gl.colorAttachment0 + i);
+            }
+            buffer.position(0);
+            Gl.drawBuffers(colorTextureCounter, buffer);
+        }
+
+        int result = Gl.checkFramebufferStatus(Gl.framebuffer);
+
+        //restore old bound buffer
+        Gl.bindFramebuffer(Gl.framebuffer, lastHandle);
+
+        if(result != Gl.framebufferComplete){
+            dispose();
+
+            if(result == Gl.framebufferIncompleteAttachment) throw new IllegalStateException("Frame buffer couldn't be constructed: incomplete attachment (" + width + "x" + height + ")");
+            if(result == Gl.framebufferIncompleteDimensions) throw new IllegalStateException("Frame buffer couldn't be constructed: incomplete dimensions");
+            if(result == Gl.framebufferIncompleteMissingAttachment) throw new IllegalStateException("Frame buffer couldn't be constructed: missing attachment");
+            if(result == Gl.framebufferUnsupported) throw new IllegalStateException("Frame buffer couldn't be constructed: unsupported combination of formats");
+            throw new IllegalStateException("Frame buffer couldn't be constructed: unknown error " + result);
+        }
     }
 
-    @Override
+    public void blit(Shader shader){
+        Draw.blit(this, shader);
+    }
+
+    /** Makes the frame buffer current so everything gets drawn to it. */
+    public void bind(){
+        Gl.bindFramebuffer(Gl.framebuffer, framebufferHandle);
+    }
+
+    public boolean isBound(){
+        return currentBoundFramebuffer == this;
+    }
+
+    /** Flushes the batch, begins this buffer and clears the screen.*/
     public void begin(Color clearColor){
         begin();
         Gl.clearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-        Gl.clear(hasDepth ? Gl.colorBufferBit | Gl.depthBufferBit : Gl.colorBufferBit);
+        Gl.clear(Gl.colorBufferBit | (depthTexture != null ? Gl.depthBufferBit : 0) | (stencilTexture != null ? Gl.stencilBufferBit : 0));
     }
 
+    /** Binds the frame buffer and sets the viewport accordingly, so everything gets drawn to it. */
+    public void begin(){
+        Draw.flush();
+        //save last buffer
+        if(currentBoundFramebuffer == this) throw new IllegalArgumentException("Do not begin() twice.");
+        //save last buffer
+        lastBoundFramebuffer = currentBoundFramebuffer;
+        currentBoundFramebuffer = this;
+        bufferNesting ++;
+        bind();
+        Gl.viewport(0, 0, width, height);
+    }
+
+    /** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
+    public void end(){
+        Draw.flush();
+        //there was a buffer before this one
+        if(lastBoundFramebuffer != null){
+            //rebind the last framebuffer and set its viewport
+            lastBoundFramebuffer.bind();
+            Gl.viewport(0, 0, lastBoundFramebuffer.width, lastBoundFramebuffer.height);
+        }else{
+            //bind to default buffer and viewport
+            Gl.bindFramebuffer(Gl.framebuffer, getDefaultFramebufferHandle());
+            Gl.viewport(0, 0, Core.graphics.getBackBufferWidth(), Core.graphics.getBackBufferHeight());
+        }
+
+        bufferNesting --;
+
+        //set last bound framebuffer as current
+        currentBoundFramebuffer = lastBoundFramebuffer;
+        //no longer bound, so nothing came last
+        lastBoundFramebuffer = null;
+    }
+
+    public Seq<Texture> getTextureAttachments(){
+        return textureAttachments;
+    }
+
+    /** @return The OpenGL handle of the framebuffer */
+    public int getHandle(){
+        return framebufferHandle;
+    }
+
+    protected void disposeTextures(){
+        for(Texture texture : textureAttachments){
+            texture.dispose();
+        }
+        textureAttachments.clear();
+    }
+
+    /** Releases all resources associated with the FrameBuffer. */
     @Override
-    protected Texture createTexture(FrameBufferTextureAttachmentSpec attachmentSpec){
-        Texture result = new Texture();
-        result.width = bufferBuilder.width;
-        result.height = bufferBuilder.height;
-        result.bind();
-        Gl.texImage2D(Gl.texture2d, 0, attachmentSpec.internalFormat, bufferBuilder.width, bufferBuilder.height, 0, attachmentSpec.format, attachmentSpec.type, null);
+    public void dispose(){
+        disposeTextures();
 
-        if(attachmentSpec.isDepth) depthTexture = result;
-        if(attachmentSpec.isStencil) stencilTexture = result;
-
-        result.setFilter(attachmentSpec.isColorTexture() ? TextureFilter.linear : TextureFilter.nearest);
-        result.setWrap(TextureWrap.clampToEdge);
-        return result;
+        Gl.deleteFramebuffer(framebufferHandle);
     }
 
-    @Override
-    protected void disposeTexture(Texture colorTexture){
-        colorTexture.dispose();
+    protected static int getDefaultFramebufferHandle(){
+        // iOS uses a different framebuffer handle! (not necessarily 0)
+        if(defaultFramebufferHandle == -1){
+            defaultFramebufferHandle = Core.app.isIOS() ? Gl.getInt(Gl.framebufferBinding) : 0;
+        }
+        return defaultFramebufferHandle;
     }
 
-    @Override
-    protected void attachTexture(int attachment, Texture texture){
-        Gl.framebufferTexture2D(Gl.framebuffer, attachment, Gl.texture2d, texture.getTextureObjectHandle(), 0);
-    }
 }

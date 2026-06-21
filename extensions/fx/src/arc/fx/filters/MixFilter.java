@@ -17,8 +17,8 @@ public final class MixFilter extends FxFilter{
     }
 
     public MixFilter setInput(FrameBuffer buffer1, FrameBuffer buffer2){
-        this.inputTexture = buffer1.getTexture();
-        this.inputTexture2 = buffer2.getTexture();
+        this.inputTexture = buffer1.texture;
+        this.inputTexture2 = buffer2.texture;
         return this;
     }
 

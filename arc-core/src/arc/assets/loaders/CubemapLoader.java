@@ -3,7 +3,6 @@ package arc.assets.loaders;
 import arc.assets.*;
 import arc.files.*;
 import arc.graphics.*;
-import arc.graphics.Pixmap.*;
 import arc.util.*;
 
 /**
@@ -49,8 +48,6 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
     }
 
     public static class CubemapParameter extends AssetLoaderParameters<Cubemap>{
-        /** the format of the final Texture. Uses the source images format if null **/
-        public Format format = null;
         /** The texture to put the data in, optional. **/
         public @Nullable Cubemap cubemap = null;
         public boolean mipmaps;

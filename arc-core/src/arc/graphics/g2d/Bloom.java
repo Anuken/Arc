@@ -2,7 +2,6 @@ package arc.graphics.g2d;
 
 import arc.*;
 import arc.graphics.*;
-import arc.graphics.Pixmap.*;
 import arc.graphics.gl.*;
 
 /**
@@ -26,7 +25,7 @@ public class Bloom{
         bloomShader.bind();
         bloomShader.setUniformi("u_texture1", 1);
 
-        setSize(pingPong1.getWidth(), pingPong1.getHeight());
+        setSize(pingPong1.width, pingPong1.height);
         setThreshold(threshold);
         setBloomIntensity(bloomIntensity);
         setOriginalIntensity(originalIntensity);
@@ -55,7 +54,7 @@ public class Bloom{
     }
 
     public void resize(int width, int height, int scaling){
-        boolean changed = (pingPong1.getWidth() != width / scaling || pingPong1.getHeight() != height / scaling);
+        boolean changed = (pingPong1.width != width / scaling || pingPong1.height != height / scaling);
 
         if(changed){
             pingPong1.resize(width / scaling, height / scaling);
@@ -67,12 +66,10 @@ public class Bloom{
 
     private void init(int width, int height, boolean hasDepth, boolean useBlending){
         blending = useBlending;
-        //rgba8888 is generally well-supported, rgb888 may be slower
-        Format format = Format.rgba8888;
 
-        buffer = new FrameBuffer(format, Core.graphics.getWidth(), Core.graphics.getHeight(), hasDepth);
-        pingPong1 = new FrameBuffer(format, width, height, false);
-        pingPong2 = new FrameBuffer(format, width, height, false);
+        buffer = new FrameBuffer(Core.graphics.getWidth(), Core.graphics.getHeight(), hasDepth ? Format.defaultColorDepth : Format.defaultColor);
+        pingPong1 = new FrameBuffer(width, height);
+        pingPong2 = new FrameBuffer(width, height);
 
         final String alpha = useBlending ? "alpha_" : "";
 
@@ -163,7 +160,7 @@ public class Bloom{
             Gl.blendFunc(Gl.srcAlpha, Gl.oneMinusSrcAlpha);
         }
 
-        pingPong1.getTexture().bind(1);
+        pingPong1.texture.bind(1);
         buffer.blit(bloomShader);
     }
 

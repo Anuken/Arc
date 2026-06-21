@@ -20,7 +20,7 @@ public class BlurFilter extends FxFilter{
     }
 
     public BlurFilter(int blurPasses, GaussianBlurFilter.BlurType blurType){
-        pingPongBuffer = new PingPongBuffer(Pixmap.Format.rgba8888);
+        pingPongBuffer = new PingPongBuffer();
 
         copy = new CopyFilter();
 

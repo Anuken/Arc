@@ -793,28 +793,6 @@ public class Pixmap implements Disposable{
         return "Pixmap:" + width + "x" + height;
     }
 
-    /**
-     * Different pixel formats.
-     * @author mzechner
-     */
-    public enum Format{
-        alpha(Gl.unsignedByte, Gl.alpha),
-        intensity(Gl.unsignedByte, Gl.alpha),
-        luminanceAlpha(Gl.unsignedByte, Gl.luminanceAlpha),
-        rgb565(Gl.unsignedShort565, Gl.rgb),
-        rgba4444(Gl.unsignedShort4444, Gl.rgba),
-        rgb888(Gl.unsignedByte, Gl.rgb),
-        rgba8888(Gl.unsignedByte, Gl.rgba);
-
-        public static final Format[] all = values();
-        public final int glFormat, glType;
-
-        Format(int glType, int glFormat){
-            this.glFormat = glFormat;
-            this.glType = glType;
-        }
-    }
-
     static void copyMem(ByteBuffer src, int srcOffset, ByteBuffer dst, int dstOffset, int len){
         //Java 16 supports direct byte buffer transfer without modifying state. Older versions (+Android/iOS) don't, and likely never will
         if(supportsBufferCopy){

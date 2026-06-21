@@ -13,8 +13,8 @@ public final class CombineFilter extends FxFilter{
     }
 
     public CombineFilter setInput(FrameBuffer buffer1, FrameBuffer buffer2){
-        this.inputTexture = buffer1.getTexture();
-        this.inputTexture2 = buffer2.getTexture();
+        this.inputTexture = buffer1.texture;
+        this.inputTexture2 = buffer2.texture;
         return this;
     }
 

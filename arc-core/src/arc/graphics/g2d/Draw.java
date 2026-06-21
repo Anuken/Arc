@@ -47,7 +47,7 @@ public class Draw{
     /** Blits a framebuffer onto the screen with a shader.
      * This does not use a spritebatch! */
     public static void blit(FrameBuffer buffer, Shader shader){
-        blit(buffer.getTexture(), shader);
+        blit(buffer.texture, shader);
     }
 
     public static void batch(Batch nextBatch){
@@ -285,7 +285,7 @@ public class Draw{
 
     /** Draws a portion of a world-sized texture. */
     public static void fbo(FrameBuffer buffer, int worldWidth, int worldHeight, int tilesize){
-        fbo(buffer.getTexture(), worldWidth, worldHeight, tilesize);
+        fbo(buffer.texture, worldWidth, worldHeight, tilesize);
     }
 
     /** Draws a portion of a world-sized texture. */

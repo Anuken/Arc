@@ -2,7 +2,6 @@ package arc.fx.util;
 
 import arc.*;
 import arc.graphics.*;
-import arc.graphics.Pixmap.*;
 import arc.graphics.gl.*;
 
 /**
@@ -43,27 +42,25 @@ public final class PingPongBuffer{
     private TextureFilter filterMin = TextureFilter.linear;
     private TextureFilter filterMag = TextureFilter.linear;
 
-    /**
-     * Initializes ping-pong buffer with the size of the client's area (usually window size).
-     * If you use different OpenGL viewport, better use {@link #PingPongBuffer(Format, int, int)}
-     * and specify the size manually.
-     * @param fbFormat Pixel format of buffer.
-     */
-    public PingPongBuffer(Format fbFormat){
-        this(fbFormat, Core.graphics.getWidth(), Core.graphics.getHeight());
+    public PingPongBuffer(){
+        this(Format.defaultColor);
     }
 
-    public PingPongBuffer(Format fbFormat, int width, int height){
-        this(fbFormat, width, height, false, false);
+    /**
+     * Initializes ping-pong buffer with the size of the client's area (usually window size).
+     * @param fbFormat Pixel format of buffer.
+     */
+    public PingPongBuffer(Format[] fbFormat){
+        this(Core.graphics.getWidth(), Core.graphics.getHeight(), fbFormat);
     }
 
     /**
      * Initializes ping-pong buffer with the given size.
      * @param fbFormat Pixel format of buffer.
      */
-    public PingPongBuffer(Format fbFormat, int width, int height, boolean depth, boolean stencil){
-        this.buffer1 = new FrameBuffer(fbFormat, width, height, depth, stencil);
-        this.buffer2 = new FrameBuffer(fbFormat, width, height, depth, stencil);
+    public PingPongBuffer(int width, int height, Format[] fbFormat){
+        this.buffer1 = new FrameBuffer(width, height, fbFormat);
+        this.buffer2 = new FrameBuffer( width, height, fbFormat);
         rebind();
 
         // Setup src/dst buffers.
@@ -90,12 +87,12 @@ public final class PingPongBuffer{
     public void rebind(){
         // FBOs might be null if the instance wasn't initialized with #resize(int, int) yet.
         if(buffer1 != null){
-            Texture texture = buffer1.getTexture();
+            Texture texture = buffer1.texture;
             texture.setWrap(wrapU, wrapV);
             texture.setFilter(filterMin, filterMag);
         }
         if(buffer2 != null){
-            Texture texture = buffer2.getTexture();
+            Texture texture = buffer2.texture;
             texture.setWrap(wrapU, wrapV);
             texture.setFilter(filterMin, filterMag);
         }
@@ -153,7 +150,7 @@ public final class PingPongBuffer{
 
     /** @return the source texture of the current ping-pong chain. */
     public Texture getSrcTexture(){
-        return bufSrc.getTexture();
+        return bufSrc.texture;
     }
 
     /** @return the source buffer of the current ping-pong chain. */
@@ -163,7 +160,7 @@ public final class PingPongBuffer{
 
     /** @return the result's texture of the latest {@link #swap()}. */
     public Texture getDstTexture(){
-        return bufDst.getTexture();
+        return bufDst.texture;
     }
 
     /** @return Returns the result's buffer of the latest {@link #swap()}. */

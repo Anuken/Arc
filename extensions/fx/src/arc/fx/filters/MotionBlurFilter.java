@@ -4,7 +4,6 @@ import arc.*;
 import arc.fx.*;
 import arc.fx.util.*;
 import arc.graphics.*;
-import arc.graphics.Pixmap.*;
 
 /**
  * Motion blur filter that draws the last frame (motion filter included) with a lower opacity.
@@ -24,7 +23,7 @@ public class MotionBlurFilter extends FxFilter{
 
         copyFilter = new CopyFilter();
 
-        localBuffer = new FxBufferQueue(Format.rgba8888,
+        localBuffer = new FxBufferQueue(Format.defaultColor,
         // On WebGL (GWT) we cannot render from/into the same texture simultaneously.
         // Will use ping-pong approach to avoid "writing into itself".
         Core.app.getType() == Application.ApplicationType.web ? 2 : 1);
@@ -73,7 +72,7 @@ public class MotionBlurFilter extends FxFilter{
     public void render(FrameBuffer src, FrameBuffer dst){
         FrameBuffer prevFrame = this.localBuffer.changeToNext();
         setInput(src).setOutput(prevFrame).render();
-        lastFrameTex = prevFrame.getTexture();
+        lastFrameTex = prevFrame.texture;
         copyFilter.setInput(prevFrame).setOutput(dst).render();
     }
 

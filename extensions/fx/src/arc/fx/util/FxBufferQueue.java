@@ -14,13 +14,13 @@ public class FxBufferQueue implements Disposable{
     private TextureFilter filterMin = TextureFilter.nearest;
     private TextureFilter filterMag = TextureFilter.nearest;
 
-    public FxBufferQueue(Pixmap.Format pixelFormat, int fboAmount){
+    public FxBufferQueue(Format[] pixelFormat, int fboAmount){
         if(fboAmount < 1){
             throw new IllegalArgumentException("FBO amount should be a positive number.");
         }
         buffers = new Seq<>(true, fboAmount);
         for(int i = 0; i < fboAmount; i++){
-            buffers.add(new FrameBuffer(pixelFormat, 4, 4));
+            buffers.add(new FrameBuffer(4, 4, pixelFormat));
         }
     }
 
@@ -46,7 +46,7 @@ public class FxBufferQueue implements Disposable{
             // FBOs might be null if the instance wasn't initialized with #resize(int, int) yet.
             if(wrapper == null) continue;
 
-            Texture texture = wrapper.getTexture();
+            Texture texture = wrapper.texture;
             texture.setWrap(wrapU, wrapV);
             texture.setFilter(filterMin, filterMag);
         }

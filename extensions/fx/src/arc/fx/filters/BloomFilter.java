@@ -5,7 +5,6 @@ import arc.fx.*;
 import arc.fx.util.*;
 import arc.graphics.Blending;
 import arc.graphics.*;
-import arc.graphics.Pixmap.*;
 import arc.graphics.gl.*;
 
 public class BloomFilter extends FxFilter{
@@ -19,7 +18,7 @@ public class BloomFilter extends FxFilter{
     public int scaling = 4;
 
     public BloomFilter(){
-        buffer = new PingPongBuffer(Format.rgba8888);
+        buffer = new PingPongBuffer();
 
         blur = new GaussianBlurFilter();
         threshold = new ThresholdFilter();
@@ -63,7 +62,7 @@ public class BloomFilter extends FxFilter{
 
     @Override
     public void render(final FrameBuffer src, final FrameBuffer dst){
-        Texture texSrc = src.getTexture();
+        Texture texSrc = src.texture;
 
         Gl.disable(Gl.blend);
 
