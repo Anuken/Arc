@@ -21,7 +21,6 @@ import java.nio.*;
  * @author mzechner, realitix
  */
 public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
-    protected final static int GL_DEPTH24_STENCIL8_OES = 0x88F0;
     /** the currently bound framebuffer; null for the default one. */
     protected static GLFrameBuffer<?> currentBoundFramebuffer;
     /** the default framebuffer handle, a.k.a screen. */
@@ -177,9 +176,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
 
         int result = Gl.checkFramebufferStatus(Gl.framebuffer);
 
-        if(result == Gl.framebufferUnsupported && bufferBuilder.hasDepthRenderBuffer && bufferBuilder.hasStencilRenderBuffer
-        && (Core.graphics.supportsExtension("GL_OES_packed_depth_stencil")
-        || Core.graphics.supportsExtension("GL_EXT_packed_depth_stencil"))){
+        if(result == Gl.framebufferUnsupported && bufferBuilder.hasDepthRenderBuffer && bufferBuilder.hasStencilRenderBuffer){
             if(bufferBuilder.hasDepthRenderBuffer){
                 Gl.deleteRenderbuffer(depthbufferHandle);
                 depthbufferHandle = 0;
@@ -196,7 +193,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
             depthStencilPackedBufferHandle = Gl.genRenderbuffer();
             hasDepthStencilPackedBuffer = true;
             Gl.bindRenderbuffer(Gl.renderbuffer, depthStencilPackedBufferHandle);
-            Gl.renderbufferStorage(Gl.renderbuffer, GL_DEPTH24_STENCIL8_OES, width, height);
+            Gl.renderbufferStorage(Gl.renderbuffer, Gl.depth24Stencil8, width, height);
             Gl.bindRenderbuffer(Gl.renderbuffer, 0);
 
             Gl.framebufferRenderbuffer(Gl.framebuffer, Gl.depthAttachment, Gl.renderbuffer,
