@@ -78,6 +78,7 @@ public class PixmapPacker implements Disposable{
     boolean disposed;
     int pageWidth, pageHeight;
     int padding;
+    boolean allowMultiplePages;
     boolean duplicateBorder;
     boolean stripWhitespaceX, stripWhitespaceY;
     Color transparentColor = new Color(0f, 0f, 0f, 0f);
@@ -116,6 +117,10 @@ public class PixmapPacker implements Disposable{
         this.stripWhitespaceX = stripWhitespaceX;
         this.stripWhitespaceY = stripWhitespaceY;
         this.packStrategy = packStrategy;
+    }
+
+    public void setAllowMultiplePages(boolean allowMultiplePages){
+        this.allowMultiplePages = allowMultiplePages;
     }
 
     /**
@@ -690,6 +695,7 @@ public class PixmapPacker implements Disposable{
      * @author Rob Rendell
      */
     public static class GuillotineStrategy implements PackStrategy{
+        boolean full;
 
         @Override
         public void sort(Seq<PixmapRegion> pixmaps){
@@ -713,6 +719,7 @@ public class PixmapPacker implements Disposable{
             rect.height += padding;
             Node node = insert(page.root, rect);
             if(node == null){
+                if(!packer.allowMultiplePages) throw new ArcRuntimeException("Failed to fit sprites into one page");
                 // Didn't fit, pack into a new page.
                 page = new GuillotinePage(packer);
                 packer.pages.add(page);
