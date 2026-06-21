@@ -93,9 +93,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable{
         if(!defaultFramebufferHandleInitialized){
             defaultFramebufferHandleInitialized = true;
             if(Core.app.isIOS()){
-                IntBuffer intbuf = ByteBuffer.allocateDirect(16 * Integer.SIZE / 8).order(ByteOrder.nativeOrder()).asIntBuffer();
-                Gl.getIntegerv(Gl.framebufferBinding, intbuf);
-                defaultFramebufferHandle = intbuf.get(0);
+                defaultFramebufferHandle = Gl.getInt(Gl.framebufferBinding);
             }else{
                 defaultFramebufferHandle = 0;
             }

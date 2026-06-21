@@ -18,7 +18,9 @@ import arc.util.*;
  * @author mzechner, realitix
  */
 public class FrameBuffer extends GLFrameBuffer<Texture>{
-    private Format format;
+    protected Format format;
+    protected boolean hasDepth, hasStencil;
+    protected @Nullable Texture depthTexture, stencilTexture;
 
     /**
      * Creates a GLFrameBuffer from the specifications provided by bufferBuilder
@@ -65,13 +67,23 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
         create(format, width, height, hasDepth, hasStencil);
     }
 
+    public @Nullable Texture getDepthTexture(){
+        return depthTexture;
+    }
+
+    public @Nullable Texture getStencilTexture(){
+        return stencilTexture;
+    }
+
     protected void create(Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil){
+        this.hasDepth = hasDepth;
+        this.hasStencil = hasStencil;
         width = Math.max(width, 2);
         height = Math.max(height, 2);
         this.format = format;
         FrameBufferBuilder frameBufferBuilder = new FrameBufferBuilder(width, height);
         frameBufferBuilder.addBasicColorTextureAttachment(format);
-        if(hasDepth) frameBufferBuilder.addBasicDepthRenderBuffer();
+        if(hasDepth) frameBufferBuilder.addDepthTextureAttachment(Gl.depthComponent24, Gl.unsignedInt);
         if(hasStencil) frameBufferBuilder.addBasicStencilRenderBuffer();
         this.bufferBuilder = frameBufferBuilder;
         build();
@@ -100,12 +112,11 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
         if(width == getWidth() && height == getHeight()) return;
 
         TextureFilter min = getTexture().getMinFilter(), mag = getTexture().getMagFilter();
-        boolean hasDepth = depthbufferHandle != 0, hasStencil = stencilbufferHandle != 0;
         dispose();
 
         FrameBufferBuilder frameBufferBuilder = new FrameBufferBuilder(width, height);
         frameBufferBuilder.addBasicColorTextureAttachment(format);
-        if(hasDepth) frameBufferBuilder.addBasicDepthRenderBuffer();
+        if(hasDepth) frameBufferBuilder.addDepthTextureAttachment(Gl.depthComponent24, Gl.unsignedInt);
         if(hasStencil) frameBufferBuilder.addBasicStencilRenderBuffer();
         this.bufferBuilder = frameBufferBuilder;
         this.textureAttachments.clear();
@@ -124,6 +135,13 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
     }
 
     @Override
+    public void begin(Color clearColor){
+        begin();
+        Gl.clearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+        Gl.clear(hasDepth ? Gl.colorBufferBit | Gl.depthBufferBit : Gl.colorBufferBit);
+    }
+
+    @Override
     protected Texture createTexture(FrameBufferTextureAttachmentSpec attachmentSpec){
         Texture result = new Texture();
         result.width = bufferBuilder.width;
@@ -131,8 +149,11 @@ public class FrameBuffer extends GLFrameBuffer<Texture>{
         result.bind();
         Gl.texImage2D(Gl.texture2d, 0, attachmentSpec.internalFormat, bufferBuilder.width, bufferBuilder.height, 0, attachmentSpec.format, attachmentSpec.type, null);
 
-        result.setFilter(TextureFilter.linear, TextureFilter.linear);
-        result.setWrap(TextureWrap.clampToEdge, TextureWrap.clampToEdge);
+        if(attachmentSpec.isDepth) depthTexture = result;
+        if(attachmentSpec.isStencil) stencilTexture = result;
+
+        result.setFilter(attachmentSpec.isColorTexture() ? TextureFilter.linear : TextureFilter.nearest);
+        result.setWrap(TextureWrap.clampToEdge);
         return result;
     }
 
