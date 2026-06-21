@@ -78,7 +78,7 @@ public class PixmapPacker implements Disposable{
     boolean disposed;
     int pageWidth, pageHeight;
     int padding;
-    boolean allowMultiplePages;
+    boolean allowMultiplePages = true;
     boolean duplicateBorder;
     boolean stripWhitespaceX, stripWhitespaceY;
     Color transparentColor = new Color(0f, 0f, 0f, 0f);
