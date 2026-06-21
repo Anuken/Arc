@@ -94,7 +94,7 @@ public class VertexBatch3D{
         if(hasColors) shader.append("varying vec4 v_col;\n");
         if(hasTexCoords){
             shader.append("varying vec3 v_tex").append(";\n");
-            shader.append("uniform sampler2DArray u_sampler").append(";\n");
+            shader.append("uniform highp sampler2DArray u_sampler").append(";\n");
         }
 
         shader.append("void main(){\n   gl_FragColor = ").append(hasColors ? "v_col" : "vec4(1, 1, 1, 1)");
