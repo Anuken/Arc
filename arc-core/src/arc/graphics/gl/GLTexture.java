@@ -70,7 +70,7 @@ public abstract class GLTexture implements Disposable{
     }
 
     /** @return The OpenGL handle for this texture. */
-    public int getTextureObjectHandle(){
+    public int getHandle(){
         return glHandle;
     }
 

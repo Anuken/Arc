@@ -273,7 +273,7 @@ public class SpriteCache implements Disposable{
         int verticesPerImage = mesh.getNumIndices() > 0 ? 4 : 6;
         int count = length / (verticesPerImage * vertexSize) * 6;
         int lastIndex = textures.size - 1;
-        if(lastIndex < 0 || (textures.get(lastIndex) != texture && !(textures.get(lastIndex) instanceof ArraySliceTexture && texture instanceof ArraySliceTexture && ((ArraySliceTexture)textures.get(lastIndex)).array == ((ArraySliceTexture)texture).array))){
+        if(lastIndex < 0 || textures.get(lastIndex).getHandle() != texture.getHandle()){
             textures.add(texture);
             counts.add(count);
         }else
