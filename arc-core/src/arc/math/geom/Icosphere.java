@@ -60,4 +60,9 @@ public class Icosphere{
     private static Vec3 v(float x, float y, float z){
         return new Vec3(x, y, z).nor();
     }
+
+    public static class MeshResult{
+        public FloatSeq vertices = new FloatSeq();
+        public IntSeq indices = new IntSeq();
+    }
 }

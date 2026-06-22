@@ -1,6 +1,7 @@
 package arc.graphics.g3d;
 
 import arc.*;
+import arc.math.*;
 import arc.math.geom.*;
 
 public class Camera3D{

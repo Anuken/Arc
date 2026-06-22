@@ -1,4 +1,4 @@
-package arc.gif;
+package arc.util;
 
 import arc.*;
 import arc.files.*;
@@ -9,7 +9,6 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.ui.Label.*;
 import arc.struct.*;
-import arc.util.*;
 
 import java.io.*;
 import java.text.*;
@@ -18,6 +17,7 @@ import java.util.*;
 /** Records and saves GIFs. */
 public class GifRecorder{
     private static final float defaultSize = 300;
+    private static GifRecorder instance;
 
     public KeyCode
         resizeKey = KeyCode.controlLeft,
@@ -40,6 +40,14 @@ public class GifRecorder{
     private float offsetx, offsety;
     private Seq<byte[]> frames = new Seq<>();
     private float frametime, saveprogress;
+
+    public static void record(){
+        if(instance == null){
+            instance = new GifRecorder();
+            instance.exportDirectory = Core.files.local("../../gifs");
+        }
+        instance.update();
+    }
 
     /** Updates the recorder and draws the GUI */
     public void update(){
@@ -117,15 +125,15 @@ public class GifRecorder{
 
                             try{
                                 exportDirectory.mkdirs();
+                                String outputFile = exportDirectory.absolutePath()  + "/" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()).format(new Date()) + (outputMp4 ? ".mp4" : ".gif");
 
                                 //pix_fmt yuv420p -profile:v baseline -level 3.0 -vcodec libx264 -crf 18 -
                                 String args = Strings.format(
-                                "@ -r @ -s @x@ -f rawvideo -pix_fmt rgba -i - -frames:v @ -filter:v vflip@ @@/@.@",
+                                "@ -r @ -s @x@ -f rawvideo -pix_fmt rgba -i - -frames:v @ -filter:v vflip@ @@",
                                 OS.isLinux ? "/usr/bin/ffmpeg" : "ffmpeg",
                                 recordfps, (int)bounds.width, (int)bounds.height, frames.size, outputMp4 ? "" : ",split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse",
-                                (outputMp4? "-c:v libx264 -pix_fmt yuv420p " : ""),
-                                exportDirectory.absolutePath(), new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()).format(new Date()),
-                                outputMp4 ? "mp4" : "gif"
+                                (outputMp4 ? "-c:v libx264 -pix_fmt yuv420p " : ""),
+                                outputFile
                                 );
 
                                 ProcessBuilder builder = new ProcessBuilder(args.split(" ")).redirectErrorStream(true);
@@ -140,6 +148,8 @@ public class GifRecorder{
 
                                 out.close();
                                 process.waitFor();
+
+                                Runtime.getRuntime().exec(new String[]{"bash", "-c", "echo \"file://" + outputFile + "\" | xclip -sel clip -t text/uri-list -i"});
                             }catch(Exception e){
                                 Log.err(e);
                             }

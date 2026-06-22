@@ -1,5 +1,6 @@
 package arc.math.geom;
 
+import arc.math.*;
 import arc.math.geom.Plane.*;
 
 /** A truncated rectangular pyramid. Used to define the viewable region and its projection onto the screen. */
