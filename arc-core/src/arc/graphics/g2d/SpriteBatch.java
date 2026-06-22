@@ -20,7 +20,7 @@ import java.util.concurrent.*;
  * Significant request optimizations done by way-zer.
  * */
 public class SpriteBatch extends Batch{
-    private static final boolean validateDrawCalls = true;
+    private static final boolean validateDrawCalls = false;
     //xy + uv + depth + color + mix_color
     public static final int vertexSize = 2 + 2 + 1 + 1 + 1;
     public static final int spriteSize = 4 * vertexSize;

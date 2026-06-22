@@ -149,7 +149,7 @@ public class GifRecorder{
                                 out.close();
                                 process.waitFor();
 
-                                Runtime.getRuntime().exec(new String[]{"bash", "-c", "echo \"file://" + outputFile + "\" | xclip -sel clip -t text/uri-list -i"});
+                                if(OS.isLinux) Runtime.getRuntime().exec(new String[]{"bash", "-c", "echo \"file://" + outputFile + "\" | xclip -sel clip -t text/uri-list -i"});
                             }catch(Exception e){
                                 Log.err(e);
                             }
