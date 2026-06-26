@@ -246,11 +246,11 @@ public class Selection<T> implements Disableable, Iterable<T>{
         return selected.iterator();
     }
 
-    public Seq<T> toArray(){
+    public Seq<T> toSeq(){
         return selected.iterator().toSeq();
     }
 
-    public Seq<T> toArray(Seq<T> array){
+    public Seq<T> toSeq(Seq<T> array){
         return selected.iterator().toSeq(array);
     }
 

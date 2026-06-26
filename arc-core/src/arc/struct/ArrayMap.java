@@ -596,11 +596,11 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
             index = 0;
         }
 
-        public Seq<V> toArray(){
+        public Seq<V> toSeq(){
             return new Seq(true, map.values, index, map.size - index);
         }
 
-        public Seq<V> toArray(Seq array){
+        public Seq<V> toSeq(Seq array){
             array.addAll(map.values, index, map.size - index);
             return array;
         }
@@ -639,11 +639,11 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
             index = 0;
         }
 
-        public Seq<K> toArray(){
+        public Seq<K> toSeq(){
             return new Seq(true, map.keys, index, map.size - index);
         }
 
-        public Seq<K> toArray(Seq array){
+        public Seq<K> toSeq(Seq array){
             array.addAll(map.keys, index, map.size - index);
             return array;
         }

@@ -705,7 +705,7 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
         }
 
         /** Returns a new array containing the remaining values. */
-        public FloatSeq toArray(){
+        public FloatSeq toSeq(){
             FloatSeq array = new FloatSeq(true, map.size);
             while(hasNext)
                 array.add(next());
@@ -713,7 +713,7 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
         }
 
         /** Adds the remaining values to the specified array. */
-        public FloatSeq toArray(FloatSeq array){
+        public FloatSeq toSeq(FloatSeq array){
             while(hasNext)
                 array.add(next());
             return array;

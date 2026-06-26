@@ -428,7 +428,7 @@ public class IntSet{
         }
 
         /** Returns a new array containing the remaining keys. */
-        public IntSeq toArray(){
+        public IntSeq toSeq(){
             IntSeq array = new IntSeq(true, set.size);
             while(hasNext)
                 array.add(next());

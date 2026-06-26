@@ -594,7 +594,7 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>>{
         }
 
         /** Adds the remaining values to the specified array. */
-        public Seq<Entry<K>> toArray(){
+        public Seq<Entry<K>> toSeq(){
             Seq<Entry<K>> array = new Seq<>(map.size);
             while(hasNext)
                 array.add(next());
