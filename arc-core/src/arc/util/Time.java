@@ -25,6 +25,14 @@ public class Time{
     private static LongSeq marks = new LongSeq();
     private static Floatp deltaimpl = () -> Math.min(Core.graphics.getDeltaTime() * 60f, 3f);
 
+    public static Seq<DelayRun> getRuns(){
+        return runs;
+    }
+
+    public static void setRuns(Seq<DelayRun> runs){
+        Time.runs = runs;
+    }
+
     /** Runs a task with a delay of several ticks. If Time.clear() is called, this task will be cancelled. */
     public static void run(float delay, Runnable r){
         DelayRun run = Pools.obtain(DelayRun.class, DelayRun::new);
@@ -63,7 +71,6 @@ public class Time{
         globalTime = (float)globalTimeRaw;
     }
 
-    /** Use normal delta time (e. g. delta * 60) */
     public static void update(){
         timeRaw += delta;
         removal.clear();
@@ -86,6 +93,15 @@ public class Time{
         }
 
         runs.removeAll(removal);
+    }
+
+    public static double getInternalTime(){
+        return timeRaw;
+    }
+
+    public static void setInternalTime(double timeInternal){
+        timeRaw = timeInternal;
+        time = (float)timeInternal;
     }
 
     public static void clear(){
