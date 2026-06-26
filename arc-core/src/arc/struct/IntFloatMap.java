@@ -1,10 +1,10 @@
 package arc.struct;
 
-import arc.math.Mathf;
-import arc.util.ArcRuntimeException;
+import arc.util.*;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
+
+import static arc.struct.ObjectSet.*;
 
 /**
  * An unordered map where the keys are ints and values are floats. This implementation is a cuckoo hash map using 3 hashes, random
@@ -17,27 +17,39 @@ import java.util.NoSuchElementException;
  * @author Nathan Sweet
  */
 public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
-    private static final int PRIME1 = 0xbe1f14b1;
-    private static final int PRIME2 = 0xb4b82e39;
-    private static final int PRIME3 = 0xced1c241;
-    private static final int EMPTY = 0;
-
     public int size;
 
     int[] keyTable;
     float[] valueTable;
-    int capacity, stashSize;
+
     float zeroValue;
     boolean hasZeroValue;
 
-    private float loadFactor;
-    private int hashShift, mask, threshold;
-    private int stashCapacity;
-    private int pushIterations;
+    private final float loadFactor;
+    private int threshold;
 
-    private Entries entries1, entries2;
-    private Values values1, values2;
-    private Keys keys1, keys2;
+    /**
+     * Used by {@link #place(int)} to bit shift the upper bits of a {@code long} into a usable range (&gt;= 0 and &lt;=
+     * {@link #mask}). The shift can be negative, which is convenient to match the number of bits in mask: if mask is a 7-bit
+     * number, a shift of -7 shifts the upper 7 bits into the lowest 7 positions. This class sets the shift &gt; 32 and &lt; 64,
+     * which if used with an int will still move the upper bits of an int to the lower bits due to Java's implicit modulus on
+     * shifts.
+     * <p>
+     * {@link #mask} can also be used to mask the low bits of a number, which may be faster for some hashcodes, if
+     * {@link #place(int)} is overridden.
+     */
+    protected int shift;
+
+    /**
+     * A bitmask used to confine hashcodes to the size of the table. Must be all 1 bits in its low positions, ie a power of two
+     * minus 1. If {@link #place(int)} is overridden, this can be used instead of {@link #shift} to isolate usable bits of a
+     * hash.
+     */
+    protected int mask;
+
+    private transient Entries entries1, entries2;
+    private transient Values values1, values2;
+    private transient Keys keys1, keys2;
 
     /** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
     public IntFloatMap(){
@@ -46,7 +58,7 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
 
     /**
      * Creates a new map with a load factor of 0.8.
-     * @param initialCapacity If not a power of two, it is increased to the next nearest power of two.
+     * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two.
      */
     public IntFloatMap(int initialCapacity){
         this(initialCapacity, 0.8f);
@@ -55,37 +67,60 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
     /**
      * Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
      * growing the backing table.
-     * @param initialCapacity If not a power of two, it is increased to the next nearest power of two.
+     * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two.
      */
     public IntFloatMap(int initialCapacity, float loadFactor){
-        if(initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
-        initialCapacity = Mathf.nextPowerOfTwo((int)Math.ceil(initialCapacity / loadFactor));
-        if(initialCapacity > 1 << 30)
-            throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
-        capacity = initialCapacity;
-
-        if(loadFactor <= 0) throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
+        if(loadFactor <= 0f || loadFactor >= 1f)
+            throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);
         this.loadFactor = loadFactor;
 
-        threshold = (int)(capacity * loadFactor);
-        mask = capacity - 1;
-        hashShift = 31 - Integer.numberOfTrailingZeros(capacity);
-        stashCapacity = Math.max(3, (int)Math.ceil(Math.log(capacity)) * 2);
-        pushIterations = Math.max(Math.min(capacity, 8), (int)Math.sqrt(capacity) / 8);
+        int tableSize = tableSize(initialCapacity, loadFactor);
+        threshold = (int)(tableSize * loadFactor);
+        mask = tableSize - 1;
+        shift = Long.numberOfLeadingZeros(mask);
 
-        keyTable = new int[capacity + stashCapacity];
-        valueTable = new float[keyTable.length];
+        keyTable = new int[tableSize];
+        valueTable = new float[tableSize];
     }
 
     /** Creates a new map identical to the specified map. */
     public IntFloatMap(IntFloatMap map){
-        this((int)Math.floor(map.capacity * map.loadFactor), map.loadFactor);
-        stashSize = map.stashSize;
+        this((int)(map.keyTable.length * map.loadFactor), map.loadFactor);
         System.arraycopy(map.keyTable, 0, keyTable, 0, map.keyTable.length);
         System.arraycopy(map.valueTable, 0, valueTable, 0, map.valueTable.length);
         size = map.size;
         zeroValue = map.zeroValue;
         hasZeroValue = map.hasZeroValue;
+    }
+
+    /**
+     * Returns an index >= 0 and <= {@link #mask} for the specified {@code item}.
+     * <p>
+     * The default implementation uses Fibonacci hashing on the item's {@link Object#hashCode()}: the hashcode is multiplied by a
+     * long constant (2 to the 64th, divided by the golden ratio) then the uppermost bits are shifted into the lowest positions to
+     * obtain an index in the desired range. Multiplication by a long may be slower than int (eg on GWT) but greatly improves
+     * rehashing, allowing even very poor hashcodes, such as those that only differ in their upper bits, to be used without high
+     * collision rates. Fibonacci hashing has increased collision rates when all or most hashcodes are multiples of larger
+     * Fibonacci numbers (see <a href=
+     * "https://probablydance.com/2018/06/16/fibonacci-hashing-the-optimization-that-the-world-forgot-or-a-better-alternative-to-integer-modulo/">Malte
+     * Skarupke's blog post</a>).
+     * <p>
+     * This method can be overridden to customizing hashing. This may be useful eg in the unlikely event that most hashcodes are
+     * Fibonacci numbers, if keys provide poor or incorrect hashcodes, or to simplify hashing if keys provide high quality
+     * hashcodes and don't need Fibonacci hashing.
+     */
+    protected int place(int item){
+        return (int)(item * 0x9E3779B97F4A7C15L >>> shift);
+    }
+
+    /** Returns the index of the key if already present, else -(index + 1) for the next empty index. */
+    private int locateKey(int key){
+        int[] keyTable = this.keyTable;
+        for(int i = place(key); ; i = i + 1 & mask){
+            int other = keyTable[i];
+            if(other == 0) return -(i + 1); // Empty space is available.
+            if(other == key) return i; // Same key was found.
+        }
     }
 
     public void put(int key, float value){
@@ -97,218 +132,117 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
             }
             return;
         }
+        int i = locateKey(key);
+        if(i >= 0){ // Existing key was found.
+            valueTable[i] = value;
+            return;
+        }
+        i = -(i + 1); // Empty space was found.
+        keyTable[i] = key;
+        valueTable[i] = value;
+        if(++size >= threshold) resize(keyTable.length << 1);
+    }
 
+    /**
+     * Returns the old value associated with the specified key, or the specified default value.
+     * @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map.
+     */
+    public float put(int key, float value, float defaultValue){
+        if(key == 0){
+            float oldValue = zeroValue;
+            zeroValue = value;
+            if(!hasZeroValue){
+                hasZeroValue = true;
+                size++;
+                return defaultValue;
+            }
+            return oldValue;
+        }
+        int i = locateKey(key);
+        if(i >= 0){ // Existing key was found.
+            float oldValue = valueTable[i];
+            valueTable[i] = value;
+            return oldValue;
+        }
+        i = -(i + 1); // Empty space was found.
+        keyTable[i] = key;
+        valueTable[i] = value;
+        if(++size >= threshold) resize(keyTable.length << 1);
+        return defaultValue;
+    }
+
+    public void putMissing(int key, float value){
+        if(key == 0){
+            if(!hasZeroValue){
+                zeroValue = value;
+                hasZeroValue = true;
+                size++;
+            }
+            return;
+        }
+        int i = locateKey(key);
+        if(i >= 0) return; // Existing key was found.
+        i = -(i + 1); // Empty space was found.
+        keyTable[i] = key;
+        valueTable[i] = value;
+        if(++size >= threshold) resize(keyTable.length << 1);
+    }
+
+    public float putMissing(int key, float value, float defaultValue){
+        if(key == 0){
+            if(!hasZeroValue){
+                zeroValue = value;
+                hasZeroValue = true;
+                size++;
+                return defaultValue;
+            }
+            return zeroValue;
+        }
+        int i = locateKey(key);
+        if(i >= 0) return valueTable[i]; // Existing key was found.
+        i = -(i + 1); // Empty space was found.
+        keyTable[i] = key;
+        valueTable[i] = value;
+        if(++size >= threshold) resize(keyTable.length << 1);
+        return defaultValue;
+    }
+
+    public void putAll(IntFloatMap map){
+        ensureCapacity(map.size);
+        if(map.hasZeroValue) put(0, map.zeroValue);
+        int[] keyTable = map.keyTable;
+        float[] valueTable = map.valueTable;
+        for(int i = 0, n = keyTable.length; i < n; i++){
+            int key = keyTable[i];
+            if(key != 0) put(key, valueTable[i]);
+        }
+    }
+
+    /** Skips checks for existing keys, doesn't increment size, doesn't need to handle key 0. */
+    private void putResize(int key, float value){
         int[] keyTable = this.keyTable;
-
-        // Check for existing keys.
-        int index1 = key & mask;
-        int key1 = keyTable[index1];
-        if(key == key1){
-            valueTable[index1] = value;
-            return;
-        }
-
-        int index2 = hash2(key);
-        int key2 = keyTable[index2];
-        if(key == key2){
-            valueTable[index2] = value;
-            return;
-        }
-
-        int index3 = hash3(key);
-        int key3 = keyTable[index3];
-        if(key == key3){
-            valueTable[index3] = value;
-            return;
-        }
-
-        // Update key in the stash.
-        for(int i = capacity, n = i + stashSize; i < n; i++){
-            if(key == keyTable[i]){
+        for(int i = place(key); ; i = (i + 1) & mask){
+            if(keyTable[i] == 0){
+                keyTable[i] = key;
                 valueTable[i] = value;
                 return;
             }
         }
-
-        // Check for empty buckets.
-        if(key1 == EMPTY){
-            keyTable[index1] = key;
-            valueTable[index1] = value;
-            if(size++ >= threshold) resize(capacity << 1);
-            return;
-        }
-
-        if(key2 == EMPTY){
-            keyTable[index2] = key;
-            valueTable[index2] = value;
-            if(size++ >= threshold) resize(capacity << 1);
-            return;
-        }
-
-        if(key3 == EMPTY){
-            keyTable[index3] = key;
-            valueTable[index3] = value;
-            if(size++ >= threshold) resize(capacity << 1);
-            return;
-        }
-
-        push(key, value, index1, key1, index2, key2, index3, key3);
-    }
-
-    public void putAll(IntFloatMap map){
-        for(Entry entry : map.entries())
-            put(entry.key, entry.value);
-    }
-
-    /** Skips checks for existing keys. */
-    private void putResize(int key, float value){
-        if(key == 0){
-            zeroValue = value;
-            hasZeroValue = true;
-            return;
-        }
-
-        // Check for empty buckets.
-        int index1 = key & mask;
-        int key1 = keyTable[index1];
-        if(key1 == EMPTY){
-            keyTable[index1] = key;
-            valueTable[index1] = value;
-            if(size++ >= threshold) resize(capacity << 1);
-            return;
-        }
-
-        int index2 = hash2(key);
-        int key2 = keyTable[index2];
-        if(key2 == EMPTY){
-            keyTable[index2] = key;
-            valueTable[index2] = value;
-            if(size++ >= threshold) resize(capacity << 1);
-            return;
-        }
-
-        int index3 = hash3(key);
-        int key3 = keyTable[index3];
-        if(key3 == EMPTY){
-            keyTable[index3] = key;
-            valueTable[index3] = value;
-            if(size++ >= threshold) resize(capacity << 1);
-            return;
-        }
-
-        push(key, value, index1, key1, index2, key2, index3, key3);
-    }
-
-    private void push(int insertKey, float insertValue, int index1, int key1, int index2, int key2, int index3, int key3){
-        int[] keyTable = this.keyTable;
-        float[] valueTable = this.valueTable;
-        int mask = this.mask;
-
-        // Push keys until an empty bucket is found.
-        int evictedKey;
-        float evictedValue;
-        int i = 0, pushIterations = this.pushIterations;
-        do{
-            // Replace the key and value for one of the hashes.
-            switch(Mathf.random(2)){
-                case 0:
-                    evictedKey = key1;
-                    evictedValue = valueTable[index1];
-                    keyTable[index1] = insertKey;
-                    valueTable[index1] = insertValue;
-                    break;
-                case 1:
-                    evictedKey = key2;
-                    evictedValue = valueTable[index2];
-                    keyTable[index2] = insertKey;
-                    valueTable[index2] = insertValue;
-                    break;
-                default:
-                    evictedKey = key3;
-                    evictedValue = valueTable[index3];
-                    keyTable[index3] = insertKey;
-                    valueTable[index3] = insertValue;
-                    break;
-            }
-
-            // If the evicted key hashes to an empty bucket, put it there and stop.
-            index1 = evictedKey & mask;
-            key1 = keyTable[index1];
-            if(key1 == EMPTY){
-                keyTable[index1] = evictedKey;
-                valueTable[index1] = evictedValue;
-                if(size++ >= threshold) resize(capacity << 1);
-                return;
-            }
-
-            index2 = hash2(evictedKey);
-            key2 = keyTable[index2];
-            if(key2 == EMPTY){
-                keyTable[index2] = evictedKey;
-                valueTable[index2] = evictedValue;
-                if(size++ >= threshold) resize(capacity << 1);
-                return;
-            }
-
-            index3 = hash3(evictedKey);
-            key3 = keyTable[index3];
-            if(key3 == EMPTY){
-                keyTable[index3] = evictedKey;
-                valueTable[index3] = evictedValue;
-                if(size++ >= threshold) resize(capacity << 1);
-                return;
-            }
-
-            if(++i == pushIterations) break;
-
-            insertKey = evictedKey;
-            insertValue = evictedValue;
-        }while(true);
-
-        putStash(evictedKey, evictedValue);
-    }
-
-    private void putStash(int key, float value){
-        if(stashSize == stashCapacity){
-            // Too many pushes occurred and the stash is full, increase the table size.
-            resize(capacity << 1);
-            putResize(key, value);
-            return;
-        }
-        // Store key in the stash.
-        int index = capacity + stashSize;
-        keyTable[index] = key;
-        valueTable[index] = value;
-        stashSize++;
-        size++;
     }
 
     public float get(int key){
-        return get(key, 0);
+        return get(key, 0f);
     }
 
-    /** @param defaultValue Returned if the key was not associated with a value. */
+    /** @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map. */
     public float get(int key, float defaultValue){
-        if(key == 0){
-            if(!hasZeroValue) return defaultValue;
-            return zeroValue;
-        }
-        int index = key & mask;
-        if(keyTable[index] != key){
-            index = hash2(key);
-            if(keyTable[index] != key){
-                index = hash3(key);
-                if(keyTable[index] != key) return getStash(key, defaultValue);
-            }
-        }
-        return valueTable[index];
+        if(key == 0) return hasZeroValue ? zeroValue : defaultValue;
+        int i = locateKey(key);
+        return i >= 0 ? valueTable[i] : defaultValue;
     }
 
-    private float getStash(int key, float defaultValue){
-        int[] keyTable = this.keyTable;
-        for(int i = capacity, n = i + stashSize; i < n; i++)
-            if(key == keyTable[i]) return valueTable[i];
-        return defaultValue;
+    public float increment(int key){
+        return increment(key, 0, 1f);
     }
 
     public float increment(int key, float increment){
@@ -317,46 +251,37 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
 
     /**
      * Returns the key's current value and increments the stored value. If the key is not in the map, defaultValue + increment is
-     * put into the map.
+     * put into the map and defaultValue is returned.
      */
     public float increment(int key, float defaultValue, float increment){
         if(key == 0){
-            if(hasZeroValue){
-                float value = zeroValue;
-                zeroValue += increment;
-                return value;
-            }else{
+            if(!hasZeroValue){
                 hasZeroValue = true;
                 zeroValue = defaultValue + increment;
-                ++size;
+                size++;
                 return defaultValue;
             }
+            float oldValue = zeroValue;
+            zeroValue += increment;
+            return oldValue;
         }
-        int index = key & mask;
-        if(key != keyTable[index]){
-            index = hash2(key);
-            if(key != keyTable[index]){
-                index = hash3(key);
-                if(key != keyTable[index]) return getAndIncrementStash(key, defaultValue, increment);
-            }
+        int i = locateKey(key);
+        if(i >= 0){ // Existing key was found.
+            float oldValue = valueTable[i];
+            valueTable[i] += increment;
+            return oldValue;
         }
-        float value = valueTable[index];
-        valueTable[index] = value + increment;
-        return value;
-    }
-
-    private float getAndIncrementStash(int key, float defaultValue, float increment){
-        int[] keyTable = this.keyTable;
-        for(int i = capacity, n = i + stashSize; i < n; i++)
-            if(key == keyTable[i]){
-                float value = valueTable[i];
-                valueTable[i] = value + increment;
-                return value;
-            }
-        put(key, defaultValue + increment);
+        i = -(i + 1); // Empty space was found.
+        keyTable[i] = key;
+        valueTable[i] = defaultValue + increment;
+        if(++size >= threshold) resize(keyTable.length << 1);
         return defaultValue;
     }
 
+    /**
+     * Returns the value for the removed key, or the default value if the key is not in the map.
+     * @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map.
+     */
     public float remove(int key, float defaultValue){
         if(key == 0){
             if(!hasZeroValue) return defaultValue;
@@ -365,54 +290,29 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
             return zeroValue;
         }
 
-        int index = key & mask;
-        if(key == keyTable[index]){
-            keyTable[index] = EMPTY;
-            float oldValue = valueTable[index];
-            size--;
-            return oldValue;
-        }
-
-        index = hash2(key);
-        if(key == keyTable[index]){
-            keyTable[index] = EMPTY;
-            float oldValue = valueTable[index];
-            size--;
-            return oldValue;
-        }
-
-        index = hash3(key);
-        if(key == keyTable[index]){
-            keyTable[index] = EMPTY;
-            float oldValue = valueTable[index];
-            size--;
-            return oldValue;
-        }
-
-        return removeStash(key, defaultValue);
-    }
-
-    float removeStash(int key, float defaultValue){
+        int i = locateKey(key);
+        if(i < 0) return defaultValue;
         int[] keyTable = this.keyTable;
-        for(int i = capacity, n = i + stashSize; i < n; i++){
-            if(key == keyTable[i]){
-                float oldValue = valueTable[i];
-                removeStashIndex(i);
-                size--;
-                return oldValue;
+        float[] valueTable = this.valueTable;
+        float oldValue = valueTable[i];
+        int mask = this.mask, next = i + 1 & mask;
+        while((key = keyTable[next]) != 0){
+            int placement = place(key);
+            if((next - placement & mask) > (i - placement & mask)){
+                keyTable[i] = key;
+                valueTable[i] = valueTable[next];
+                i = next;
             }
+            next = next + 1 & mask;
         }
-        return defaultValue;
+        keyTable[i] = 0;
+        size--;
+        return oldValue;
     }
 
-    void removeStashIndex(int index){
-        // If the removed location was not last, move the last tuple to the removed location.
-        stashSize--;
-        int lastIndex = capacity + stashSize;
-        if(index < lastIndex){
-            keyTable[index] = keyTable[lastIndex];
-            valueTable[index] = valueTable[lastIndex];
-        }
+    /** Returns true if the map has one or more items. */
+    public boolean notEmpty(){
+        return size > 0;
     }
 
     /** Returns true if the map is empty. */
@@ -421,159 +321,129 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
     }
 
     /**
-     * Reduces the size of the backing arrays to be the specified capacity or less. If the capacity is already less, nothing is
-     * done. If the map contains more items than the specified capacity, the next highest power of two capacity is used instead.
+     * Reduces the size of the backing arrays to be the specified capacity / loadFactor, or less. If the capacity is already less,
+     * nothing is done. If the map contains more items than the specified capacity, the next highest power of two capacity is used
+     * instead.
      */
     public void shrink(int maximumCapacity){
         if(maximumCapacity < 0) throw new IllegalArgumentException("maximumCapacity must be >= 0: " + maximumCapacity);
-        if(size > maximumCapacity) maximumCapacity = size;
-        if(capacity <= maximumCapacity) return;
-        maximumCapacity = Mathf.nextPowerOfTwo(maximumCapacity);
-        resize(maximumCapacity);
+        int tableSize = tableSize(maximumCapacity, loadFactor);
+        if(keyTable.length > tableSize) resize(tableSize);
     }
 
-    /** Clears the map and reduces the size of the backing arrays to be the specified capacity if they are larger. */
+    /** Clears the map and reduces the size of the backing arrays to be the specified capacity / loadFactor, if they are larger. */
     public void clear(int maximumCapacity){
-        if(capacity <= maximumCapacity){
+        int tableSize = tableSize(maximumCapacity, loadFactor);
+        if(keyTable.length <= tableSize){
             clear();
             return;
         }
-        hasZeroValue = false;
         size = 0;
-        resize(maximumCapacity);
+        hasZeroValue = false;
+        resize(tableSize);
     }
 
     public void clear(){
         if(size == 0) return;
-        int[] keyTable = this.keyTable;
-        for(int i = capacity + stashSize; i-- > 0; )
-            keyTable[i] = EMPTY;
-        hasZeroValue = false;
+        Arrays.fill(keyTable, 0);
         size = 0;
-        stashSize = 0;
+        hasZeroValue = false;
     }
 
     /**
-     * Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may be
-     * an expensive operation.
+     * Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
+     * be an expensive operation.
      */
     public boolean containsValue(float value){
         if(hasZeroValue && zeroValue == value) return true;
         int[] keyTable = this.keyTable;
         float[] valueTable = this.valueTable;
-        for(int i = capacity + stashSize; i-- > 0; )
+        for(int i = valueTable.length - 1; i >= 0; i--)
             if(keyTable[i] != 0 && valueTable[i] == value) return true;
         return false;
     }
 
     /**
-     * Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may be
-     * an expensive operation.
+     * Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
+     * be an expensive operation.
      */
     public boolean containsValue(float value, float epsilon){
         if(hasZeroValue && Math.abs(zeroValue - value) <= epsilon) return true;
+        int[] keyTable = this.keyTable;
         float[] valueTable = this.valueTable;
-        for(int i = capacity + stashSize; i-- > 0; )
-            if(Math.abs(valueTable[i] - value) <= epsilon) return true;
+        for(int i = valueTable.length - 1; i >= 0; i--)
+            if(keyTable[i] != 0 && Math.abs(valueTable[i] - value) <= epsilon) return true;
         return false;
     }
 
     public boolean containsKey(int key){
         if(key == 0) return hasZeroValue;
-        int index = key & mask;
-        if(keyTable[index] != key){
-            index = hash2(key);
-            if(keyTable[index] != key){
-                index = hash3(key);
-                if(keyTable[index] != key) return containsKeyStash(key);
-            }
-        }
-        return true;
-    }
-
-    private boolean containsKeyStash(int key){
-        int[] keyTable = this.keyTable;
-        for(int i = capacity, n = i + stashSize; i < n; i++)
-            if(key == keyTable[i]) return true;
-        return false;
+        return locateKey(key) >= 0;
     }
 
     /**
-     * Returns the key for the specified value, or null if it is not in the map. Note this traverses the entire map and compares
-     * every value, which may be an expensive operation.
+     * Returns the key for the specified value, or notFound if it is not in the map. Note this traverses the entire map and
+     * compares every value, which may be an expensive operation.
      */
     public int findKey(float value, int notFound){
         if(hasZeroValue && zeroValue == value) return 0;
         int[] keyTable = this.keyTable;
         float[] valueTable = this.valueTable;
-        for(int i = capacity + stashSize; i-- > 0; )
+        for(int i = valueTable.length - 1; i >= 0; i--)
             if(keyTable[i] != 0 && valueTable[i] == value) return keyTable[i];
         return notFound;
     }
 
     /**
-     * Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
-     * items to avoid multiple backing array resizes.
+     * Returns the key for the specified value, or notFound if it is not in the map. Note this traverses the entire map and
+     * compares every value, which may be an expensive operation.
+     */
+    public int findKey(float value, float epsilon, int notFound){
+        if(hasZeroValue && Math.abs(zeroValue - value) <= epsilon) return 0;
+        int[] keyTable = this.keyTable;
+        float[] valueTable = this.valueTable;
+        for(int i = valueTable.length - 1; i >= 0; i--)
+            if(keyTable[i] != 0 && Math.abs(valueTable[i] - value) <= epsilon) return keyTable[i];
+        return notFound;
+    }
+
+    /**
+     * Increases the size of the backing array to accommodate the specified number of additional items / loadFactor. Useful before
+     * adding many items to avoid multiple backing array resizes.
      */
     public void ensureCapacity(int additionalCapacity){
-        if(additionalCapacity < 0)
-            throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
-        int sizeNeeded = size + additionalCapacity;
-        if(sizeNeeded >= threshold) resize(Mathf.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
+        int tableSize = tableSize(size + additionalCapacity, loadFactor);
+        if(keyTable.length < tableSize) resize(tableSize);
     }
 
     private void resize(int newSize){
-        int oldEndIndex = capacity + stashSize;
-
-        capacity = newSize;
+        int oldCapacity = keyTable.length;
         threshold = (int)(newSize * loadFactor);
         mask = newSize - 1;
-        hashShift = 31 - Integer.numberOfTrailingZeros(newSize);
-        stashCapacity = Math.max(3, (int)Math.ceil(Math.log(newSize)) * 2);
-        pushIterations = Math.max(Math.min(newSize, 8), (int)Math.sqrt(newSize) / 8);
+        shift = Long.numberOfLeadingZeros(mask);
 
         int[] oldKeyTable = keyTable;
         float[] oldValueTable = valueTable;
 
-        keyTable = new int[newSize + stashCapacity];
-        valueTable = new float[newSize + stashCapacity];
+        keyTable = new int[newSize];
+        valueTable = new float[newSize];
 
-        int oldSize = size;
-        size = hasZeroValue ? 1 : 0;
-        stashSize = 0;
-        if(oldSize > 0){
-            for(int i = 0; i < oldEndIndex; i++){
+        if(size > 0){
+            for(int i = 0; i < oldCapacity; i++){
                 int key = oldKeyTable[i];
-                if(key != EMPTY) putResize(key, oldValueTable[i]);
+                if(key != 0) putResize(key, oldValueTable[i]);
             }
         }
-    }
-
-    private int hash2(int h){
-        h *= PRIME2;
-        return (h ^ h >>> hashShift) & mask;
-    }
-
-    private int hash3(int h){
-        h *= PRIME3;
-        return (h ^ h >>> hashShift) & mask;
     }
 
     public int hashCode(){
-        int h = 0;
-        if(hasZeroValue){
-            h += Float.floatToIntBits(zeroValue);
-        }
+        int h = size;
+        if(hasZeroValue) h += Float.floatToRawIntBits(zeroValue);
         int[] keyTable = this.keyTable;
         float[] valueTable = this.valueTable;
-        for(int i = 0, n = capacity + stashSize; i < n; i++){
+        for(int i = 0, n = keyTable.length; i < n; i++){
             int key = keyTable[i];
-            if(key != EMPTY){
-                h += key * 31;
-
-                float value = valueTable[i];
-                h += Float.floatToIntBits(value);
-            }
+            if(key != 0) h += key * 31 + Float.floatToRawIntBits(valueTable[i]);
         }
         return h;
     }
@@ -584,27 +454,26 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
         IntFloatMap other = (IntFloatMap)obj;
         if(other.size != size) return false;
         if(other.hasZeroValue != hasZeroValue) return false;
-        if(hasZeroValue && other.zeroValue != zeroValue){
-            return false;
+        if(hasZeroValue){
+            if(other.zeroValue != zeroValue) return false;
         }
         int[] keyTable = this.keyTable;
         float[] valueTable = this.valueTable;
-        for(int i = 0, n = capacity + stashSize; i < n; i++){
+        for(int i = 0, n = keyTable.length; i < n; i++){
             int key = keyTable[i];
-            if(key != EMPTY){
+            if(key != 0){
                 float otherValue = other.get(key, 0f);
                 if(otherValue == 0f && !other.containsKey(key)) return false;
-                float value = valueTable[i];
-                if(otherValue != value) return false;
+                if(otherValue != valueTable[i]) return false;
             }
         }
         return true;
     }
 
     public String toString(){
-        if(size == 0) return "{}";
-        StringBuilder buffer = new StringBuilder(32);
-        buffer.append('{');
+        if(size == 0) return "[]";
+        java.lang.StringBuilder buffer = new java.lang.StringBuilder(32);
+        buffer.append('[');
         int[] keyTable = this.keyTable;
         float[] valueTable = this.valueTable;
         int i = keyTable.length;
@@ -614,7 +483,7 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
         }else{
             while(i-- > 0){
                 int key = keyTable[i];
-                if(key == EMPTY) continue;
+                if(key == 0) continue;
                 buffer.append(key);
                 buffer.append('=');
                 buffer.append(valueTable[i]);
@@ -623,13 +492,13 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
         }
         while(i-- > 0){
             int key = keyTable[i];
-            if(key == EMPTY) continue;
+            if(key == 0) continue;
             buffer.append(", ");
             buffer.append(key);
             buffer.append('=');
             buffer.append(valueTable[i]);
         }
-        buffer.append('}');
+        buffer.append(']');
         return buffer.toString();
     }
 
@@ -638,8 +507,9 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
     }
 
     /**
-     * Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
-     * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
+     * Returns an iterator for the entries in the map. Remove is supported.
+     * <p>
+     * Use the {@link Entries} constructor for nested or multithreaded iteration.
      */
     public Entries entries(){
         if(entries1 == null){
@@ -659,8 +529,9 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
     }
 
     /**
-     * Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
-     * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
+     * Returns an iterator for the values in the map. Remove is supported.
+     * <p>
+     * Use the {@link Entries} constructor for nested or multithreaded iteration.
      */
     public Values values(){
         if(values1 == null){
@@ -680,8 +551,9 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
     }
 
     /**
-     * Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each time
-     * this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
+     * Returns an iterator for the keys in the map. Remove is supported.
+     * <p>
+     * Use the {@link Entries} constructor for nested or multithreaded iteration.
      */
     public Keys keys(){
         if(keys1 == null){
@@ -700,7 +572,7 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
         return keys2;
     }
 
-    public static class Entry{
+    static public class Entry{
         public int key;
         public float value;
 
@@ -709,11 +581,13 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
         }
     }
 
-    private static class MapIterator{
-        static final int INDEX_ILLEGAL = -2;
+    static private class MapIterator{
+        static private final int INDEX_ILLEGAL = -2;
         static final int INDEX_ZERO = -1;
-        final IntFloatMap map;
+
         public boolean hasNext;
+
+        final IntFloatMap map;
         int nextIndex, currentIndex;
         boolean valid = true;
 
@@ -732,35 +606,45 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
         }
 
         void findNextIndex(){
-            hasNext = false;
             int[] keyTable = map.keyTable;
-            for(int n = map.capacity + map.stashSize; ++nextIndex < n; ){
-                if(keyTable[nextIndex] != EMPTY){
+            for(int n = keyTable.length; ++nextIndex < n; ){
+                if(keyTable[nextIndex] != 0){
                     hasNext = true;
-                    break;
+                    return;
                 }
             }
+            hasNext = false;
         }
 
         public void remove(){
-            if(currentIndex == INDEX_ZERO && map.hasZeroValue){
+            int i = currentIndex;
+            if(i == INDEX_ZERO && map.hasZeroValue){
                 map.hasZeroValue = false;
-            }else if(currentIndex < 0){
+            }else if(i < 0){
                 throw new IllegalStateException("next must be called before remove.");
-            }else if(currentIndex >= map.capacity){
-                map.removeStashIndex(currentIndex);
-                nextIndex = currentIndex - 1;
-                findNextIndex();
             }else{
-                map.keyTable[currentIndex] = EMPTY;
+                int[] keyTable = map.keyTable;
+                float[] valueTable = map.valueTable;
+                int mask = map.mask, next = i + 1 & mask, key;
+                while((key = keyTable[next]) != 0){
+                    int placement = map.place(key);
+                    if((next - placement & mask) > (i - placement & mask)){
+                        keyTable[i] = key;
+                        valueTable[i] = valueTable[next];
+                        i = next;
+                    }
+                    next = next + 1 & mask;
+                }
+                keyTable[i] = 0;
+                if(i != currentIndex) --nextIndex;
             }
             currentIndex = INDEX_ILLEGAL;
             map.size--;
         }
     }
 
-    public static class Entries extends MapIterator implements Iterable<Entry>, Iterator<Entry>{
-        private Entry entry = new Entry();
+    static public class Entries extends MapIterator implements Iterable<Entry>, Iterator<Entry>{
+        private final Entry entry = new Entry();
 
         public Entries(IntFloatMap map){
             super(map);
@@ -797,7 +681,7 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
         }
     }
 
-    public static class Values extends MapIterator{
+    static public class Values extends MapIterator{
         public Values(IntFloatMap map){
             super(map);
         }
@@ -810,14 +694,14 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
         public float next(){
             if(!hasNext) throw new NoSuchElementException();
             if(!valid) throw new ArcRuntimeException("#iterator() cannot be used nested.");
-            float value;
-            if(nextIndex == INDEX_ZERO)
-                value = map.zeroValue;
-            else
-                value = map.valueTable[nextIndex];
+            float value = nextIndex == INDEX_ZERO ? map.zeroValue : map.valueTable[nextIndex];
             currentIndex = nextIndex;
             findNextIndex();
             return value;
+        }
+
+        public Values iterator(){
+            return this;
         }
 
         /** Returns a new array containing the remaining values. */
@@ -827,16 +711,18 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
                 array.add(next());
             return array;
         }
+
+        /** Adds the remaining values to the specified array. */
+        public FloatSeq toArray(FloatSeq array){
+            while(hasNext)
+                array.add(next());
+            return array;
+        }
     }
 
-    public static class Keys extends MapIterator{
+    static public class Keys extends MapIterator{
         public Keys(IntFloatMap map){
             super(map);
-        }
-
-        public boolean hasNext(){
-            if(!valid) throw new ArcRuntimeException("#iterator() cannot be used nested.");
-            return hasNext;
         }
 
         public int next(){
@@ -851,6 +737,13 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry>{
         /** Returns a new array containing the remaining keys. */
         public IntSeq toArray(){
             IntSeq array = new IntSeq(true, map.size);
+            while(hasNext)
+                array.add(next());
+            return array;
+        }
+
+        /** Adds the remaining values to the specified array. */
+        public IntSeq toArray(IntSeq array){
             while(hasNext)
                 array.add(next());
             return array;

@@ -1,8 +1,8 @@
 package arc.struct;
 
-import arc.util.ArcRuntimeException;
+import arc.util.*;
 
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * An {@link ObjectMap} that also stores keys in an {@link Seq} using the insertion order. Iteration over the
@@ -25,30 +25,74 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
         return map;
     }
 
+    /** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
     public OrderedMap(){
         keys = new Seq<>();
     }
 
+    /**
+     * Creates a new map with a load factor of 0.8.
+     * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two.
+     */
     public OrderedMap(int initialCapacity){
         super(initialCapacity);
-        keys = new Seq<>(capacity);
+        keys = new Seq<>(initialCapacity);
     }
 
+    /**
+     * Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
+     * growing the backing table.
+     * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two.
+     */
     public OrderedMap(int initialCapacity, float loadFactor){
         super(initialCapacity, loadFactor);
-        keys = new Seq<>(capacity);
+        keys = new Seq<>(initialCapacity);
     }
 
+    /** Creates a new map containing the items in the specified map. */
     public OrderedMap(OrderedMap<? extends K, ? extends V> map){
         super(map);
         keys = new Seq<>(map.keys);
     }
 
+    @Override
     public V put(K key, V value){
-        if(!containsKey(key)) keys.add(key);
-        return super.put(key, value);
+        int i = locateKey(key);
+        if(i >= 0){ // Existing key was found.
+            V oldValue = valueTable[i];
+            valueTable[i] = value;
+            return oldValue;
+        }
+        i = -(i + 1); // Empty space was found.
+        keyTable[i] = key;
+        valueTable[i] = value;
+        keys.add(key);
+        if(++size >= threshold) resize(keyTable.length << 1);
+        return null;
     }
 
+    @Override
+    public @Nullable V putMissing(K key, @Nullable V value){
+        int i = locateKey(key);
+        if(i >= 0) return valueTable[i]; // Existing key was found.
+        i = -(i + 1); // Empty space was found.
+        keyTable[i] = key;
+        valueTable[i] = value;
+        keys.add(key);
+        if(++size >= threshold) resize(keyTable.length << 1);
+        return null;
+    }
+
+    public <T extends K> void putAll(OrderedMap<T, ? extends V> map){
+        ensureCapacity(map.size);
+        K[] keys = map.keys.items;
+        for(int i = 0, n = map.keys.size; i < n; i++){
+            K key = keys[i];
+            put(key, map.get((T)key));
+        }
+    }
+
+    @Override
     public V remove(K key){
         keys.remove(key, false);
         return super.remove(key);
@@ -58,11 +102,46 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
         return super.remove(keys.remove(index));
     }
 
+    /**
+     * Changes the key {@code before} to {@code after} without changing its position in the order or its value. Returns true if
+     * {@code after} has been added to the OrderedMap and {@code before} has been removed; returns false if {@code after} is
+     * already present or {@code before} is not present. If you are iterating over an OrderedMap and have an index, you should
+     * prefer {@link #alterIndex(int, Object)}, which doesn't need to search for an index like this does and so can be faster.
+     * @param before a key that must be present for this to succeed
+     * @param after a key that must not be in this map for this to succeed
+     * @return true if {@code before} was removed and {@code after} was added, false otherwise
+     */
+    public boolean alter(K before, K after){
+        if(containsKey(after)) return false;
+        int index = keys.indexOf(before, false);
+        if(index == -1) return false;
+        super.put(after, super.remove(before));
+        keys.set(index, after);
+        return true;
+    }
+
+    /**
+     * Changes the key at the given {@code index} in the order to {@code after}, without changing the ordering of other entries or
+     * any values. If {@code after} is already present, this returns false; it will also return false if {@code index} is invalid
+     * for the size of this map. Otherwise, it returns true. Unlike {@link #alter(Object, Object)}, this operates in constant time.
+     * @param index the index in the order of the key to change; must be non-negative and less than {@link #size}
+     * @param after the key that will replace the contents at {@code index}; this key must not be present for this to succeed
+     * @return true if {@code after} successfully replaced the key at {@code index}, false otherwise
+     */
+    public boolean alterIndex(int index, K after){
+        if(index < 0 || index >= size || containsKey(after)) return false;
+        super.put(after, super.remove(keys.get(index)));
+        keys.set(index, after);
+        return true;
+    }
+
+    @Override
     public void clear(int maximumCapacity){
         keys.clear();
         super.clear(maximumCapacity);
     }
 
+    @Override
     public void clear(){
         keys.clear();
         super.clear();
@@ -72,14 +151,17 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
         return keys;
     }
 
+    @Override
     public Entries<K, V> iterator(){
         return entries();
     }
 
     /**
-     * Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
-     * time this method is called. Use the {@link OrderedMapEntries} constructor for nested or multithreaded iteration.
+     * Returns an iterator for the entries in the map. Remove is supported.
+     * <p>
+     * Use the {@link OrderedMapEntries} constructor for nested or multithreaded iteration.
      */
+    @Override
     public Entries<K, V> entries(){
         if(entries1 == null){
             entries1 = new OrderedMapEntries<>(this);
@@ -98,9 +180,11 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
     }
 
     /**
-     * Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
-     * time this method is called. Use the {@link OrderedMapValues} constructor for nested or multithreaded iteration.
+     * Returns an iterator for the values in the map. Remove is supported.
+     * <p>
+     * Use the {@link OrderedMapValues} constructor for nested or multithreaded iteration.
      */
+    @Override
     public Values<V> values(){
         if(values1 == null){
             values1 = new OrderedMapValues<>(this);
@@ -119,9 +203,11 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
     }
 
     /**
-     * Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
-     * time this method is called. Use the {@link OrderedMapKeys} constructor for nested or multithreaded iteration.
+     * Returns an iterator for the keys in the map. Remove is supported.
+     * <p>
+     * Use the {@link OrderedMapKeys} constructor for nested or multithreaded iteration.
      */
+    @Override
     public Keys<K> keys(){
         if(keys1 == null){
             keys1 = new OrderedMapKeys<>(this);
@@ -139,19 +225,21 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
         return keys2;
     }
 
-    public String toString(){
-        if(size == 0) return "{}";
+    @Override
+    public String toString(String separator, boolean braces){
+        if(size == 0) return braces ? "{}" : "";
         StringBuilder buffer = new StringBuilder(32);
-        buffer.append('{');
+        if(braces) buffer.append('{');
         Seq<K> keys = this.keys;
         for(int i = 0, n = keys.size; i < n; i++){
             K key = keys.get(i);
-            if(i > 0) buffer.append(", ");
-            buffer.append(key);
+            if(i > 0) buffer.append(separator);
+            buffer.append(key == this ? "(this)" : key);
             buffer.append('=');
-            buffer.append(get(key));
+            V value = get(key);
+            buffer.append(value == this ? "(this)" : value);
         }
-        buffer.append('}');
+        if(braces) buffer.append('}');
         return buffer.toString();
     }
 
@@ -163,14 +251,18 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
             keys = map.keys;
         }
 
+        @Override
         public void reset(){
+            currentIndex = -1;
             nextIndex = 0;
             hasNext = map.size > 0;
         }
 
+        @Override
         public Entry<K, V> next(){
             if(!hasNext) throw new NoSuchElementException();
             if(!valid) throw new ArcRuntimeException("#iterator() cannot be used nested.");
+            currentIndex = nextIndex;
             entry.key = keys.get(nextIndex);
             entry.value = map.get(entry.key);
             nextIndex++;
@@ -178,10 +270,12 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
             return entry;
         }
 
+        @Override
         public void remove(){
             if(currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
             map.remove(entry.key);
             nextIndex--;
+            currentIndex = -1;
         }
     }
 
@@ -193,11 +287,14 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
             keys = map.keys;
         }
 
+        @Override
         public void reset(){
+            currentIndex = -1;
             nextIndex = 0;
             hasNext = map.size > 0;
         }
 
+        @Override
         public K next(){
             if(!hasNext) throw new NoSuchElementException();
             if(!valid) throw new ArcRuntimeException("#iterator() cannot be used nested.");
@@ -208,27 +305,44 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
             return key;
         }
 
+        @Override
         public void remove(){
             if(currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
-            ((OrderedMap)map).removeIndex(nextIndex - 1);
+            ((OrderedMap)map).removeIndex(currentIndex);
             nextIndex = currentIndex;
             currentIndex = -1;
+        }
+
+        @Override
+        public Seq<K> toSeq(Seq<K> array){
+            array.addAll(keys, nextIndex, keys.size - nextIndex);
+            nextIndex = keys.size;
+            hasNext = false;
+            return array;
+        }
+
+        @Override
+        public Seq<K> toSeq(){
+            return toSeq(new Seq<>(true, keys.size - nextIndex));
         }
     }
 
     public static class OrderedMapValues<V> extends Values<V>{
-        private Seq keys;
+        private Seq<V> keys;
 
         public OrderedMapValues(OrderedMap<?, V> map){
             super(map);
-            keys = map.keys;
+            keys = (Seq<V>)map.keys;
         }
 
+        @Override
         public void reset(){
+            currentIndex = -1;
             nextIndex = 0;
             hasNext = map.size > 0;
         }
 
+        @Override
         public V next(){
             if(!hasNext) throw new NoSuchElementException();
             if(!valid) throw new ArcRuntimeException("#iterator() cannot be used nested.");
@@ -239,11 +353,30 @@ public class OrderedMap<K, V> extends ObjectMap<K, V>{
             return value;
         }
 
+        @Override
         public void remove(){
             if(currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
             ((OrderedMap)map).removeIndex(currentIndex);
             nextIndex = currentIndex;
             currentIndex = -1;
+        }
+
+        @Override
+        public Seq<V> toSeq(Seq<V> array){
+            int n = keys.size;
+            array.ensureCapacity(n - nextIndex);
+            Object[] keys = this.keys.items;
+            for(int i = nextIndex; i < n; i++)
+                array.add(map.get(keys[i]));
+            currentIndex = n - 1;
+            nextIndex = n;
+            hasNext = false;
+            return array;
+        }
+
+        @Override
+        public Seq<V> toSeq(){
+            return toSeq(new Seq<>(true, keys.size - nextIndex));
         }
     }
 }
