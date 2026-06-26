@@ -238,6 +238,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
 
     /** Returns the value for the specified key, or the default value if the key is not in the map. */
     public V get(K key, @Nullable V defaultValue){
+        if(key == null) return defaultValue;
         int i = locateKey(key);
         return i < 0 ? defaultValue : valueTable[i];
     }

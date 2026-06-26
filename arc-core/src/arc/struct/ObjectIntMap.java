@@ -213,6 +213,7 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>>{
 
     /** Returns the value for the specified key, or the default value if the key is not in the map. */
     public int get(K key, int defaultValue){
+        if(key == null) return defaultValue;
         int i = locateKey(key);
         return i < 0 ? defaultValue : valueTable[i];
     }

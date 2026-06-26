@@ -215,6 +215,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>>{
      * @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map.
      */
     public float get(K key, float defaultValue){
+        if(key == null) return defaultValue;
         int i = locateKey(key);
         return i < 0 ? defaultValue : valueTable[i];
     }
