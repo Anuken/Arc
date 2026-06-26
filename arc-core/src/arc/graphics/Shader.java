@@ -172,7 +172,7 @@ public class Shader implements Disposable{
 
         return
             "#version " + version + "\n"
-            + (fragment ? "out" + (Core.app.isMobile() ? " lowp" : "") + " vec4 fragColor;\n" : "")
+            + (fragment && !source.contains("out vec4 fragColor") ? "out" + (Core.app.isMobile() ? " lowp" : "") + " vec4 fragColor;\n" : "")
             + source
             .replace("varying", fragment ? "in" : "out")
             .replace("attribute", fragment ? "???" : "in")
