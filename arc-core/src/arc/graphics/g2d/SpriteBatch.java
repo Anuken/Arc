@@ -647,7 +647,7 @@ public class SpriteBatch extends Batch{
                 counts.clear();
                 int unique = 0;
                 for(int i = start; i < end; i++){
-                    int loc = counts.getOrPut(arr[i * 3], unique);
+                    int loc = counts.putMissing(arr[i * 3], unique);
                     arr[i * 3] = loc;
                     if(loc == unique){
                         if(unique >= locs.length){
@@ -777,7 +777,7 @@ public class SpriteBatch extends Batch{
             int unique = 0;
             final int end3 = end * 3;
             for(int i = 0; i < end3; i += 3){
-                int loc = counts.getOrPut(arr[i], unique);
+                int loc = counts.putMissing(arr[i], unique);
                 arr[i] = loc;
                 if(loc == unique){
                     if(unique >= locs.length){
