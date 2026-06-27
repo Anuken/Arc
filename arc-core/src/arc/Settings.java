@@ -423,6 +423,11 @@ public class Settings{
         }
     }
 
+    /** Toggles a boolean value. */
+    public void toggle(String name){
+        put(name, !getBool(name));
+    }
+
     /** Stores an object in the preference map. */
     public synchronized void put(String name, Object object){
         if(object instanceof Float || object instanceof Integer || object instanceof Boolean || object instanceof Long
