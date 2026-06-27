@@ -465,6 +465,7 @@ public class Font implements Disposable{
         public int srcX;
         public int srcY;
         public int width, height;
+        public Texture texture;
         public float u, v, u2, v2;
         public int xoffset, yoffset;
         public int xadvance;
@@ -805,6 +806,7 @@ public class Font implements Disposable{
                 }
             }
 
+            glyph.texture = texture;
             glyph.u = u + x * invTexWidth;
             glyph.u2 = u + x2 * invTexWidth;
             if(flipped){

@@ -13,13 +13,14 @@ public class FGlyph extends Glyph implements Poolable{
     int internalIndex = -1;
     /** Color of this glyph. If set to null, the run's color will be used. Defaults to null. */
     public Color color = null;
-    
+
     public void set(Glyph from){
         id = from.id;
         srcX = from.srcX;
         srcY = from.srcY;
         width = from.width;
         height = from.height;
+        texture = from.texture;
         u = from.u;
         v = from.v;
         u2 = from.u2;
@@ -34,7 +35,7 @@ public class FGlyph extends Glyph implements Poolable{
         internalIndex = -1;
         color = null;
     }
-    
+
     @Override
     public void reset(){
         id = 0;
@@ -42,6 +43,7 @@ public class FGlyph extends Glyph implements Poolable{
         srcY = 0;
         width = 0;
         height = 0;
+        texture = null;
         u = 0;
         v = 0;
         u2 = 0;

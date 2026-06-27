@@ -411,7 +411,7 @@ public class FontCache{
         x += glyph.xoffset * scaleX;
         y += glyph.yoffset * scaleY;
         float width = glyph.width * scaleX, height = glyph.height * scaleY;
-        final float u = glyph.u, u2 = glyph.u2, v = glyph.v, v2 = glyph.v2;
+        final float u = glyph.u, u2 = glyph.u2, v = glyph.v, v2 = glyph.v2, depth = glyph.texture.getDepth();
 
         if(integer){
             x = Math.round(x);
@@ -428,7 +428,6 @@ public class FontCache{
         if(pageGlyphIndices != null) pageGlyphIndices[page].add(glyphCount++);
 
         final float[] vertices = pageVertices[page];
-        float depth = font.getRegion().getDepth(); //assumes font spans 1 texture
 
         vertices[idx++] = x;
         vertices[idx++] = y;
