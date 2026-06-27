@@ -44,10 +44,10 @@ public class PlaneBatch3D extends Batch{
         }
 
         //disable depth mask when flushing to prevent Z fighting
-        arc.graphics.gl.Gl.depthMask(false);
+        Gl.depthMask(false);
 
         lastTexture.bind();
-        batch.flush(arc.graphics.gl.Gl.triangles);
+        batch.flush(Gl.triangles);
         idx = 0;
 
         Gl.depthMask(true);

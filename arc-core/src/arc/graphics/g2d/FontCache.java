@@ -1,15 +1,12 @@
 package arc.graphics.g2d;
 
 import arc.graphics.*;
-import arc.struct.Seq;
-import arc.struct.FloatSeq;
-import arc.struct.IntSeq;
-import arc.graphics.g2d.Font.FontData;
-import arc.graphics.g2d.Font.Glyph;
-import arc.graphics.g2d.GlyphLayout.GlyphRun;
-import arc.math.Mathf;
-import arc.util.Align;
-import arc.util.pooling.Pools;
+import arc.graphics.g2d.Font.*;
+import arc.graphics.g2d.GlyphLayout.*;
+import arc.math.*;
+import arc.struct.*;
+import arc.util.*;
+import arc.util.pooling.*;
 
 /**
  * Caches glyph geometry for a BitmapFont, providing a fast way to render static text. This saves needing to compute the glyph

@@ -145,7 +145,7 @@ public class IOSApplication implements Application{
         Log.info("[IOSApplication] paused");
         graphics.makeCurrent();
         graphics.pause();
-        arc.graphics.gl.Gl.finish();
+        Gl.finish();
     }
 
     final void willTerminate(UIApplication uiApp){

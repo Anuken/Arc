@@ -20,6 +20,14 @@ public class ArraySliceTexture extends Texture{
         this.height = array.height;
     }
 
+    public void overwrite(TextureArray array, int index){
+        this.array = array;
+        this.index = index;
+        this.glHandle = array.getHandle();
+        this.width = array.width;
+        this.height = array.height;
+    }
+
     @Override
     public TextureFilter getMinFilter(){
         return array.getMinFilter();
@@ -74,5 +82,10 @@ public class ArraySliceTexture extends Texture{
     @Override
     public void dispose(){
         //slices shouldn't need to be disposed, dispose the whole array instead
+    }
+
+    @Override
+    public boolean isDisposed(){
+        return array.isDisposed();
     }
 }
