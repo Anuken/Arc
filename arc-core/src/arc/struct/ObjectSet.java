@@ -198,8 +198,10 @@ public class ObjectSet<T> implements Iterable<T>, Eachable<T>{
     public boolean addAll(T[] array, int offset, int length){
         ensureCapacity(length);
         int oldSize = size;
-        for(int i = offset, n = i + length; i < n; i++)
-            add(array[i]);
+        for(int i = offset, n = i + length; i < n; i++){
+            T value = array[i];
+            if(value != null) add(value);
+        }
         return oldSize != size;
     }
 
