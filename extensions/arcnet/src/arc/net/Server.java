@@ -211,7 +211,6 @@ public class Server implements EndPoint{
             synchronized(keys){
                 UdpConnection udp = this.udp;
                 for(Iterator<SelectionKey> iter = keys.iterator(); iter.hasNext();){
-                    keepAlive();
                     SelectionKey selectionKey = iter.next();
                     iter.remove();
                     Connection fromConnection = (Connection)selectionKey.attachment();
@@ -337,15 +336,6 @@ public class Server implements EndPoint{
             }
             if(connection.isIdle())
                 connection.notifyIdle();
-        }
-    }
-
-    private void keepAlive(){
-        long time = System.currentTimeMillis();
-        Connection[] connections = this.connections;
-        for(Connection connection : connections){
-            if(connection.tcp.needsKeepAlive(time))
-                connection.sendTCP(FrameworkMessage.keepAlive);
         }
     }
 
