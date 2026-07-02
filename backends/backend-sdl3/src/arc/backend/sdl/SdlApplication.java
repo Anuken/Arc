@@ -171,11 +171,6 @@ public class SdlApplication implements Application{
         boolean createdContext = false;
 
         for(int[] attemptedVersion : config.glVersions){
-            //always run a compatibility profile for 2.x; only 3.2+ allows core profiles
-            if(attemptedVersion[0] == 2){
-                check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_CONTEXT_PROFILE_MASK, SDLVideo.SDL_GL_CONTEXT_PROFILE_COMPATIBILITY));
-            }
-
             check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_CONTEXT_MAJOR_VERSION, attemptedVersion[0]));
             check(SDLVideo.SDL_GL_SetAttribute(SDLVideo.SDL_GL_CONTEXT_MINOR_VERSION, attemptedVersion[1]));
 
