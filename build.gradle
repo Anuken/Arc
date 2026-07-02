@@ -59,6 +59,9 @@ libraries.lwjgl = [
     "org.lwjgl:lwjgl-opengl:${versions.lwjgl}:natives-macos",
     "org.lwjgl:lwjgl-opengl:${versions.lwjgl}:natives-macos-arm64",
     "org.lwjgl:lwjgl-opengl:${versions.lwjgl}:natives-windows",
+
+    //used for ANGLE, no natives included
+    "org.lwjgl:lwjgl-opengles:${versions.lwjgl}",
 ]
 
 allprojects{

@@ -7,6 +7,7 @@ import arc.graphics.gl.*;
 import arc.struct.*;
 import arc.util.*;
 import org.lwjgl.opengl.*;
+import org.lwjgl.opengles.*;
 import org.lwjgl.sdl.*;
 import org.lwjgl.system.*;
 
@@ -34,8 +35,13 @@ public class SdlGraphics extends Graphics{
         this.app = app;
 
         Configuration.OPENGL_EXPLICIT_INIT.set(true);
-        GL.create(SDLVideo::SDL_GL_GetProcAddress);
-        GL.createCapabilities();
+        if(SdlApplication.useAngle){
+            GLES.create(SDLVideo::SDL_GL_GetProcAddress);
+            GLES.createCapabilities();
+        }else{
+            GL.create(SDLVideo::SDL_GL_GetProcAddress);
+            GL.createCapabilities();
+        }
 
         Core.glProvider = new SdlGLProvider();
 

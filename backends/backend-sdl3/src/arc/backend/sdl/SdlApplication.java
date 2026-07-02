@@ -28,6 +28,8 @@ import static org.lwjgl.sdl.SDLVersion.*;
 import static org.lwjgl.sdl.SDLVideo.*;
 
 public class SdlApplication implements Application{
+    public static final boolean useAngle = OS.isWindows;
+
     private final Seq<ApplicationListener> listeners = new Seq<>();
     private final TaskQueue runnables = new TaskQueue();
 
@@ -128,6 +130,18 @@ public class SdlApplication implements Application{
         }
     }
 
+    //ANGLE currently only implemented on Windows
+    private void setupANGLE(){
+        SDL_SetHint(SDL_HINT_OPENGL_ES_DRIVER, "1");
+        SDL_SetHint(SDL_HINT_VIDEO_FORCE_EGL, "1");
+
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+
+        ANGLELoader.load();
+    }
+
     private void init(){
         ArcNativesLoader.load();
 
@@ -145,11 +159,17 @@ public class SdlApplication implements Application{
             SDL_SetAppMetadata(config.appName, config.appVersion, config.appIdentifier);
         }
 
+        if(useAngle){
+            setupANGLE();
+        }
+
         check(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
 
         check(SDL_SetHint(SDL_HINT_MOUSE_DPI_SCALE_CURSORS, "1"));
 
-        check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, OS.isMac || config.coreProfile ? SDL_GL_CONTEXT_PROFILE_CORE : SDL_GL_CONTEXT_PROFILE_COMPATIBILITY));
+        if(!useAngle){
+            check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, OS.isMac || config.coreProfile ? SDL_GL_CONTEXT_PROFILE_CORE : SDL_GL_CONTEXT_PROFILE_COMPATIBILITY));
+        }
 
         check(SDL_GL_SetAttribute(SDL_GL_RED_SIZE, config.r));
         check(SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, config.g));
@@ -179,8 +199,11 @@ public class SdlApplication implements Application{
         boolean createdContext = false;
 
         for(int[] attemptedVersion : config.glVersions){
-            check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, attemptedVersion[0]));
-            check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, attemptedVersion[1]));
+            //windows uses GLES 3.0, don't set it here
+            if(!useAngle){
+                check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, attemptedVersion[0]));
+                check(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, attemptedVersion[1]));
+            }
 
             try{
                 context = SDL_GL_CreateContext(window);
@@ -191,6 +214,7 @@ public class SdlApplication implements Application{
             }catch(SdlError error){
                 finalError = error;
                 Log.err("Failed to initialize OpenGL @.@: @", attemptedVersion[0], attemptedVersion[1], Strings.getSimpleMessage(error));
+                if(useAngle) break; //windows only gets one chance since it uses ANGLE, don't try other versions
             }
         }
 
