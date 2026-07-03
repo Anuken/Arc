@@ -155,7 +155,6 @@ public class SdlGLProvider implements GLProvider{
     @Override public void glVertexAttrib3fv(int indx, FloatBuffer values){ SDLGL.glVertexAttrib3fv(indx, values);}
     @Override public void glVertexAttrib4f(int indx, float x, float y, float z, float w){ SDLGL.glVertexAttrib4f(indx, x, y, z, w);}
     @Override public void glVertexAttrib4fv(int indx, FloatBuffer values){ SDLGL.glVertexAttrib4fv(indx, values);}
-    @Override public void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, Buffer ptr){ SDLGL.glVertexAttribPointer(indx, size, type, normalized, stride, ptr);}
     @Override public void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, int ptr){ SDLGL.glVertexAttribPointer(indx, size, type, normalized, stride, ptr);}
 
     @Override public void glReadBuffer(int mode){ SDLGL.glReadBuffer(mode); }

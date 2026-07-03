@@ -281,17 +281,9 @@ class SdlGLESProvider implements GLProvider{
         GLES20.glFrontFace(mode);
     }
 
-    public void glGenBuffers(int n, IntBuffer buffers){
-        GLES20.glGenBuffers(buffers);
-    }
-
     @Override
     public int glGenBuffer(){
         return GLES20.glGenBuffers();
-    }
-
-    public void glGenTextures(int n, IntBuffer textures){
-        GLES20.glGenTextures(textures);
     }
 
     @Override
@@ -307,10 +299,6 @@ class SdlGLESProvider implements GLProvider{
     @Override
     public String glGetActiveUniform(int program, int index, IntBuffer size, IntBuffer type){
         return GLES20.glGetActiveUniform(program, index, 256, size, type);
-    }
-
-    public void glGetAttachedShaders(int program, int maxcount, Buffer count, IntBuffer shaders){
-        GLES20.glGetAttachedShaders(program, (IntBuffer)count, shaders);
     }
 
     @Override
@@ -423,10 +411,6 @@ class SdlGLESProvider implements GLProvider{
         GLES20.glGetUniformiv(program, location, params);
     }
 
-    public void glGetVertexAttribPointerv(int index, int pname, Buffer pointer){
-        throw new UnsupportedOperationException("unsupported, won't implement");
-    }
-
     @Override
     public void glGetVertexAttribfv(int index, int pname, FloatBuffer params){
         GLES20.glGetVertexAttribfv(index, pname, params);
@@ -515,10 +499,6 @@ class SdlGLESProvider implements GLProvider{
     @Override
     public void glScissor(int x, int y, int width, int height){
         GLES20.glScissor(x, y, width, height);
-    }
-
-    public void glShaderBinary(int n, IntBuffer shaders, int binaryformat, Buffer binary, int length){
-        throw new UnsupportedOperationException("unsupported, won't implement");
     }
 
     @Override
@@ -816,33 +796,6 @@ class SdlGLESProvider implements GLProvider{
     }
 
     @Override
-    public void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, Buffer buffer){
-        if(buffer instanceof ByteBuffer){
-            if(type == Gl.byteV)
-                GLES20.glVertexAttribPointer(indx, size, type, normalized, stride, (ByteBuffer)buffer);
-            else if(type == Gl.unsignedByte)
-                GLES20.glVertexAttribPointer(indx, size, type, normalized, stride, (ByteBuffer)buffer);
-            else if(type == Gl.shortV)
-                GLES20.glVertexAttribPointer(indx, size, type, normalized, stride, ((ByteBuffer)buffer).asShortBuffer());
-            else if(type == Gl.unsignedShort)
-                GLES20.glVertexAttribPointer(indx, size, type, normalized, stride, ((ByteBuffer)buffer).asShortBuffer());
-            else if(type == Gl.floatV)
-                GLES20.glVertexAttribPointer(indx, size, type, normalized, stride, ((ByteBuffer)buffer).asFloatBuffer());
-            else
-                throw new ArcRuntimeException("Can't use " + buffer.getClass().getName() + " with type " + type
-                + " with this method. Use ByteBuffer and one of Gl.byteV, Gl.unsignedByte, Gl.shortV, Gl.unsignedShort or Gl.floatV for type. Blame LWJGL");
-        }else if(buffer instanceof FloatBuffer){
-            if(type == Gl.floatV)
-                GLES20.glVertexAttribPointer(indx, size, type, normalized, stride, (FloatBuffer)buffer);
-            else
-                throw new ArcRuntimeException(
-                "Can't use " + buffer.getClass().getName() + " with type " + type + " with this method.");
-        }else
-            throw new ArcRuntimeException(
-            "Can't use " + buffer.getClass().getName() + " with this method. Use ByteBuffer instead. Blame LWJGL");
-    }
-
-    @Override
     public void glViewport(int x, int y, int width, int height){
         GLES20.glViewport(x, y, width, height);
     }
@@ -983,7 +936,6 @@ class SdlGLESProvider implements GLProvider{
 
     @Override
     public Buffer glGetBufferPointerv(int target, int pname){
-        // FIXME glGetBufferPointerv needs a proper translation
         throw new UnsupportedOperationException("Not implemented");
     }
 
@@ -1383,7 +1335,7 @@ class SdlGLESProvider implements GLProvider{
 
     @Override
     public void glProgramParameteri(int program, int pname, int value){
-        throw new IllegalArgumentException("Not implemented");
+        //not implemented, and it's a hint anyway
     }
 
     @Override

@@ -1160,13 +1160,6 @@ public class GLProfiler implements GLProvider{
     }
 
     @Override
-    public void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, Buffer ptr){
-        calls++;
-        glProvider.glVertexAttribPointer(indx, size, type, normalized, stride, ptr);
-        check();
-    }
-
-    @Override
     public void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, int ptr){
         calls++;
         glProvider.glVertexAttribPointer(indx, size, type, normalized, stride, ptr);

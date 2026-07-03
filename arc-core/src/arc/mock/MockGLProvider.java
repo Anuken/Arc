@@ -751,11 +751,6 @@ public class MockGLProvider implements GLProvider{
     }
 
     @Override
-    public void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, Buffer ptr){
-
-    }
-
-    @Override
     public void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, int ptr){
 
     }

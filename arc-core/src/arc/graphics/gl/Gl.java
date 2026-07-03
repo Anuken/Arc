@@ -1322,10 +1322,6 @@ public class Gl{
         Core.glProvider.glVertexAttrib4fv(indx, values);
     }
 
-    public static void vertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, Buffer ptr){
-        Core.glProvider.glVertexAttribPointer(indx, size, type, normalized, stride, ptr);
-    }
-
     public static void vertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, int ptr){
         Core.glProvider.glVertexAttribPointer(indx, size, type, normalized, stride, ptr);
     }

@@ -191,10 +191,6 @@ class SdlGLProvider implements GLProvider{
         GL11.glCullFace(mode);
     }
 
-    public void glDeleteBuffers(int n, IntBuffer buffers){
-        GL15.glDeleteBuffers(buffers);
-    }
-
     @Override
     public void glDeleteBuffer(int buffer){
         GL15.glDeleteBuffers(buffer);
@@ -203,10 +199,6 @@ class SdlGLProvider implements GLProvider{
     @Override
     public void glDeleteShader(int shader){
         GL20.glDeleteShader(shader);
-    }
-
-    public void glDeleteTextures(int n, IntBuffer textures){
-        GL11.glDeleteTextures(textures);
     }
 
     @Override
@@ -302,16 +294,9 @@ class SdlGLProvider implements GLProvider{
         GL11.glFrontFace(mode);
     }
 
-    public void glGenBuffers(int n, IntBuffer buffers){
-        GL15.glGenBuffers(buffers);
-    }
-
     @Override
     public int glGenBuffer(){
         return GL15.glGenBuffers();
-    }
-    public void glGenTextures(int n, IntBuffer textures){
-        GL11.glGenTextures(textures);
     }
 
     @Override
@@ -327,10 +312,6 @@ class SdlGLProvider implements GLProvider{
     @Override
     public String glGetActiveUniform(int program, int index, IntBuffer size, IntBuffer type){
         return GL20.glGetActiveUniform(program, index, 256, size, type);
-    }
-
-    public void glGetAttachedShaders(int program, int maxcount, Buffer count, IntBuffer shaders){
-        GL20.glGetAttachedShaders(program, (IntBuffer)count, shaders);
     }
 
     @Override
@@ -443,10 +424,6 @@ class SdlGLProvider implements GLProvider{
         GL20.glGetUniformiv(program, location, params);
     }
 
-    public void glGetVertexAttribPointerv(int index, int pname, Buffer pointer){
-        throw new UnsupportedOperationException("unsupported, won't implement");
-    }
-
     @Override
     public void glGetVertexAttribfv(int index, int pname, FloatBuffer params){
         GL20.glGetVertexAttribfv(index, pname, params);
@@ -535,10 +512,6 @@ class SdlGLProvider implements GLProvider{
     @Override
     public void glScissor(int x, int y, int width, int height){
         GL11.glScissor(x, y, width, height);
-    }
-
-    public void glShaderBinary(int n, IntBuffer shaders, int binaryformat, Buffer binary, int length){
-        throw new UnsupportedOperationException("unsupported, won't implement");
     }
 
     @Override
@@ -836,33 +809,6 @@ class SdlGLProvider implements GLProvider{
     }
 
     @Override
-    public void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, Buffer buffer){
-        if(buffer instanceof ByteBuffer){
-            if(type == Gl.byteV)
-                GL20.glVertexAttribPointer(indx, size, type, normalized, stride, (ByteBuffer)buffer);
-            else if(type == Gl.unsignedByte)
-                GL20.glVertexAttribPointer(indx, size, type, normalized, stride, (ByteBuffer)buffer);
-            else if(type == Gl.shortV)
-                GL20.glVertexAttribPointer(indx, size, type, normalized, stride, ((ByteBuffer)buffer).asShortBuffer());
-            else if(type == Gl.unsignedShort)
-                GL20.glVertexAttribPointer(indx, size, type, normalized, stride, ((ByteBuffer)buffer).asShortBuffer());
-            else if(type == Gl.floatV)
-                GL20.glVertexAttribPointer(indx, size, type, normalized, stride, ((ByteBuffer)buffer).asFloatBuffer());
-            else
-                throw new ArcRuntimeException("Can't use " + buffer.getClass().getName() + " with type " + type
-                + " with this method. Use ByteBuffer and one of Gl.byteV, Gl.unsignedByte, Gl.shortV, Gl.unsignedShort or Gl.floatV for type. Blame LWJGL");
-        }else if(buffer instanceof FloatBuffer){
-            if(type == Gl.floatV)
-                GL20.glVertexAttribPointer(indx, size, type, normalized, stride, (FloatBuffer)buffer);
-            else
-                throw new ArcRuntimeException(
-                "Can't use " + buffer.getClass().getName() + " with type " + type + " with this method.");
-        }else
-            throw new ArcRuntimeException(
-            "Can't use " + buffer.getClass().getName() + " with this method. Use ByteBuffer instead. Blame LWJGL");
-    }
-
-    @Override
     public void glViewport(int x, int y, int width, int height){
         GL11.glViewport(x, y, width, height);
     }
@@ -1007,17 +953,15 @@ class SdlGLProvider implements GLProvider{
 
     @Override
     public Buffer glGetBufferPointerv(int target, int pname){
-        // FIXME glGetBufferPointerv needs a proper translation
-        // return GL15.glGetBufferPointer(target, pname);
         throw new UnsupportedOperationException("Not implemented");
     }
 
     @Override
     public void glDrawBuffers(int n, IntBuffer bufs){
         int limit = bufs.limit();
-        ((Buffer)bufs).limit(n);
+        bufs.limit(n);
         GL20.glDrawBuffers(bufs);
-        ((Buffer)bufs).limit(limit);
+        bufs.limit(limit);
     }
 
     @Override

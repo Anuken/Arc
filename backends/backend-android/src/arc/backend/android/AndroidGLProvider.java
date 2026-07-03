@@ -774,11 +774,6 @@ public class AndroidGLProvider implements GLProvider{
     }
 
     @Override
-    public void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, Buffer ptr){
-        GLES20.glVertexAttribPointer(indx, size, type, normalized, stride, ptr);
-    }
-
-    @Override
     public void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, int ptr){
         GLES20.glVertexAttribPointer(indx, size, type, normalized, stride, ptr);
     }
@@ -794,7 +789,7 @@ public class AndroidGLProvider implements GLProvider{
     }
 
     @Override
-    public void glDrawRangeElements(int mode, int start, int end, int count, int type, java.nio.Buffer indices){
+    public void glDrawRangeElements(int mode, int start, int end, int count, int type, Buffer indices){
         GLES30.glDrawRangeElements(mode, start, end, count, type, indices);
     }
 
@@ -805,7 +800,7 @@ public class AndroidGLProvider implements GLProvider{
 
     @Override
     public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format,
-                             int type, java.nio.Buffer pixels){
+                             int type, Buffer pixels){
         if(pixels == null)
             GLES30.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, 0);
         else GLES30.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
@@ -819,7 +814,7 @@ public class AndroidGLProvider implements GLProvider{
 
     @Override
     public void glTexSubImage3D(int target, int level, int xoffset, int yoffset, int zoffset, int width, int height, int depth,
-                                int format, int type, java.nio.Buffer pixels){
+                                int format, int type, Buffer pixels){
         GLES30.glTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
     }
 
@@ -836,12 +831,12 @@ public class AndroidGLProvider implements GLProvider{
     }
 
     @Override
-    public void glGenQueries(int n, java.nio.IntBuffer ids){
+    public void glGenQueries(int n, IntBuffer ids){
         GLES30.glGenQueries(n, ids);
     }
 
     @Override
-    public void glDeleteQueries(int n, java.nio.IntBuffer ids){
+    public void glDeleteQueries(int n, IntBuffer ids){
         GLES30.glDeleteQueries(n, ids);
     }
 
@@ -861,12 +856,12 @@ public class AndroidGLProvider implements GLProvider{
     }
 
     @Override
-    public void glGetQueryiv(int target, int pname, java.nio.IntBuffer params){
+    public void glGetQueryiv(int target, int pname, IntBuffer params){
         GLES30.glGetQueryiv(target, pname, params);
     }
 
     @Override
-    public void glGetQueryObjectuiv(int id, int pname, java.nio.IntBuffer params){
+    public void glGetQueryObjectuiv(int id, int pname, IntBuffer params){
         GLES30.glGetQueryObjectuiv(id, pname, params);
     }
 
@@ -876,42 +871,42 @@ public class AndroidGLProvider implements GLProvider{
     }
 
     @Override
-    public java.nio.Buffer glGetBufferPointerv(int target, int pname){
+    public Buffer glGetBufferPointerv(int target, int pname){
         return GLES30.glGetBufferPointerv(target, pname);
     }
 
     @Override
-    public void glDrawBuffers(int n, java.nio.IntBuffer bufs){
+    public void glDrawBuffers(int n, IntBuffer bufs){
         GLES30.glDrawBuffers(n, bufs);
     }
 
     @Override
-    public void glUniformMatrix2x3fv(int location, int count, boolean transpose, java.nio.FloatBuffer value){
+    public void glUniformMatrix2x3fv(int location, int count, boolean transpose, FloatBuffer value){
         GLES30.glUniformMatrix2x3fv(location, count, transpose, value);
     }
 
     @Override
-    public void glUniformMatrix3x2fv(int location, int count, boolean transpose, java.nio.FloatBuffer value){
+    public void glUniformMatrix3x2fv(int location, int count, boolean transpose, FloatBuffer value){
         GLES30.glUniformMatrix3x2fv(location, count, transpose, value);
     }
 
     @Override
-    public void glUniformMatrix2x4fv(int location, int count, boolean transpose, java.nio.FloatBuffer value){
+    public void glUniformMatrix2x4fv(int location, int count, boolean transpose, FloatBuffer value){
         GLES30.glUniformMatrix2x4fv(location, count, transpose, value);
     }
 
     @Override
-    public void glUniformMatrix4x2fv(int location, int count, boolean transpose, java.nio.FloatBuffer value){
+    public void glUniformMatrix4x2fv(int location, int count, boolean transpose, FloatBuffer value){
         GLES30.glUniformMatrix4x2fv(location, count, transpose, value);
     }
 
     @Override
-    public void glUniformMatrix3x4fv(int location, int count, boolean transpose, java.nio.FloatBuffer value){
+    public void glUniformMatrix3x4fv(int location, int count, boolean transpose, FloatBuffer value){
         GLES30.glUniformMatrix3x4fv(location, count, transpose, value);
     }
 
     @Override
-    public void glUniformMatrix4x3fv(int location, int count, boolean transpose, java.nio.FloatBuffer value){
+    public void glUniformMatrix4x3fv(int location, int count, boolean transpose, FloatBuffer value){
         GLES30.glUniformMatrix4x3fv(location, count, transpose, value);
     }
 
@@ -942,12 +937,12 @@ public class AndroidGLProvider implements GLProvider{
     }
 
     @Override
-    public void glDeleteVertexArrays(int n, java.nio.IntBuffer arrays){
+    public void glDeleteVertexArrays(int n, IntBuffer arrays){
         GLES30.glDeleteVertexArrays(n, arrays);
     }
 
     @Override
-    public void glGenVertexArrays(int n, java.nio.IntBuffer arrays){
+    public void glGenVertexArrays(int n, IntBuffer arrays){
         GLES30.glGenVertexArrays(n, arrays);
     }
 
@@ -987,12 +982,12 @@ public class AndroidGLProvider implements GLProvider{
     }
 
     @Override
-    public void glGetVertexAttribIiv(int index, int pname, java.nio.IntBuffer params){
+    public void glGetVertexAttribIiv(int index, int pname, IntBuffer params){
         GLES30.glGetVertexAttribIiv(index, pname, params);
     }
 
     @Override
-    public void glGetVertexAttribIuiv(int index, int pname, java.nio.IntBuffer params){
+    public void glGetVertexAttribIuiv(int index, int pname, IntBuffer params){
         GLES30.glGetVertexAttribIuiv(index, pname, params);
     }
 
@@ -1007,7 +1002,7 @@ public class AndroidGLProvider implements GLProvider{
     }
 
     @Override
-    public void glGetUniformuiv(int program, int location, java.nio.IntBuffer params){
+    public void glGetUniformuiv(int program, int location, IntBuffer params){
         GLES30.glGetUniformuiv(program, location, params);
     }
 
@@ -1017,32 +1012,32 @@ public class AndroidGLProvider implements GLProvider{
     }
 
     @Override
-    public void glUniform1uiv(int location, int count, java.nio.IntBuffer value){
+    public void glUniform1uiv(int location, int count, IntBuffer value){
         GLES30.glUniform1uiv(location, count, value);
     }
 
     @Override
-    public void glUniform3uiv(int location, int count, java.nio.IntBuffer value){
+    public void glUniform3uiv(int location, int count, IntBuffer value){
         GLES30.glUniform3uiv(location, count, value);
     }
 
     @Override
-    public void glUniform4uiv(int location, int count, java.nio.IntBuffer value){
+    public void glUniform4uiv(int location, int count, IntBuffer value){
         GLES30.glUniform4uiv(location, count, value);
     }
 
     @Override
-    public void glClearBufferiv(int buffer, int drawbuffer, java.nio.IntBuffer value){
+    public void glClearBufferiv(int buffer, int drawbuffer, IntBuffer value){
         GLES30.glClearBufferiv(buffer, drawbuffer, value);
     }
 
     @Override
-    public void glClearBufferuiv(int buffer, int drawbuffer, java.nio.IntBuffer value){
+    public void glClearBufferuiv(int buffer, int drawbuffer, IntBuffer value){
         GLES30.glClearBufferuiv(buffer, drawbuffer, value);
     }
 
     @Override
-    public void glClearBufferfv(int buffer, int drawbuffer, java.nio.FloatBuffer value){
+    public void glClearBufferfv(int buffer, int drawbuffer, FloatBuffer value){
         GLES30.glClearBufferfv(buffer, drawbuffer, value);
     }
 
@@ -1062,13 +1057,13 @@ public class AndroidGLProvider implements GLProvider{
     }
 
     @Override
-    public void glGetUniformIndices(int program, String[] uniformNames, java.nio.IntBuffer uniformIndices){
+    public void glGetUniformIndices(int program, String[] uniformNames, IntBuffer uniformIndices){
         GLES30.glGetUniformIndices(program, uniformNames, uniformIndices);
     }
 
     @Override
-    public void glGetActiveUniformsiv(int program, int uniformCount, java.nio.IntBuffer uniformIndices, int pname,
-                                      java.nio.IntBuffer params){
+    public void glGetActiveUniformsiv(int program, int uniformCount, IntBuffer uniformIndices, int pname,
+                                      IntBuffer params){
         GLES30.glGetActiveUniformsiv(program, uniformCount, uniformIndices, pname, params);
     }
 
@@ -1078,13 +1073,13 @@ public class AndroidGLProvider implements GLProvider{
     }
 
     @Override
-    public void glGetActiveUniformBlockiv(int program, int uniformBlockIndex, int pname, java.nio.IntBuffer params){
+    public void glGetActiveUniformBlockiv(int program, int uniformBlockIndex, int pname, IntBuffer params){
         GLES30.glGetActiveUniformBlockiv(program, uniformBlockIndex, pname, params);
     }
 
     @Override
-    public void glGetActiveUniformBlockName(int program, int uniformBlockIndex, java.nio.Buffer length,
-                                            java.nio.Buffer uniformBlockName){
+    public void glGetActiveUniformBlockName(int program, int uniformBlockIndex, Buffer length,
+                                            Buffer uniformBlockName){
         GLES30.glGetActiveUniformBlockName(program, uniformBlockIndex, length, uniformBlockName);
     }
 
@@ -1104,22 +1099,22 @@ public class AndroidGLProvider implements GLProvider{
     }
 
     @Override
-    public void glGetInteger64v(int pname, java.nio.LongBuffer params){
+    public void glGetInteger64v(int pname, LongBuffer params){
         GLES30.glGetInteger64v(pname, params);
     }
 
     @Override
-    public void glGetBufferParameteri64v(int target, int pname, java.nio.LongBuffer params){
+    public void glGetBufferParameteri64v(int target, int pname, LongBuffer params){
         GLES30.glGetBufferParameteri64v(target, pname, params);
     }
 
     @Override
-    public void glGenSamplers(int count, java.nio.IntBuffer samplers){
+    public void glGenSamplers(int count, IntBuffer samplers){
         GLES30.glGenSamplers(count, samplers);
     }
 
     @Override
-    public void glDeleteSamplers(int count, java.nio.IntBuffer samplers){
+    public void glDeleteSamplers(int count, IntBuffer samplers){
         GLES30.glDeleteSamplers(count, samplers);
     }
 
@@ -1139,7 +1134,7 @@ public class AndroidGLProvider implements GLProvider{
     }
 
     @Override
-    public void glSamplerParameteriv(int sampler, int pname, java.nio.IntBuffer param){
+    public void glSamplerParameteriv(int sampler, int pname, IntBuffer param){
         GLES30.glSamplerParameteriv(sampler, pname, param);
     }
 
@@ -1149,17 +1144,17 @@ public class AndroidGLProvider implements GLProvider{
     }
 
     @Override
-    public void glSamplerParameterfv(int sampler, int pname, java.nio.FloatBuffer param){
+    public void glSamplerParameterfv(int sampler, int pname, FloatBuffer param){
         GLES30.glSamplerParameterfv(sampler, pname, param);
     }
 
     @Override
-    public void glGetSamplerParameteriv(int sampler, int pname, java.nio.IntBuffer params){
+    public void glGetSamplerParameteriv(int sampler, int pname, IntBuffer params){
         GLES30.glGetSamplerParameteriv(sampler, pname, params);
     }
 
     @Override
-    public void glGetSamplerParameterfv(int sampler, int pname, java.nio.FloatBuffer params){
+    public void glGetSamplerParameterfv(int sampler, int pname, FloatBuffer params){
         GLES30.glGetSamplerParameterfv(sampler, pname, params);
     }
 
@@ -1174,12 +1169,12 @@ public class AndroidGLProvider implements GLProvider{
     }
 
     @Override
-    public void glDeleteTransformFeedbacks(int n, java.nio.IntBuffer ids){
+    public void glDeleteTransformFeedbacks(int n, IntBuffer ids){
         GLES30.glDeleteTransformFeedbacks(n, ids);
     }
 
     @Override
-    public void glGenTransformFeedbacks(int n, java.nio.IntBuffer ids){
+    public void glGenTransformFeedbacks(int n, IntBuffer ids){
         GLES30.glGenTransformFeedbacks(n, ids);
     }
 
@@ -1204,12 +1199,12 @@ public class AndroidGLProvider implements GLProvider{
     }
 
     @Override
-    public void glInvalidateFramebuffer(int target, int numAttachments, java.nio.IntBuffer attachments){
+    public void glInvalidateFramebuffer(int target, int numAttachments, IntBuffer attachments){
         GLES30.glInvalidateFramebuffer(target, numAttachments, attachments);
     }
 
     @Override
-    public void glInvalidateSubFramebuffer(int target, int numAttachments, java.nio.IntBuffer attachments, int x, int y,
+    public void glInvalidateSubFramebuffer(int target, int numAttachments, IntBuffer attachments, int x, int y,
                                            int width, int height){
         GLES30.glInvalidateSubFramebuffer(target, numAttachments, attachments, x, y, width, height);
     }
