@@ -3,6 +3,7 @@ package arc.graphics;
 import arc.*;
 import arc.files.*;
 import arc.graphics.gl.*;
+import arc.graphics.gl.GLVersion.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
@@ -148,7 +149,9 @@ public class Shader implements Disposable{
             "#define lowp  \n" +
             "#define mediump \n" +
             "#define highp \n" +
-            "#endif\n" + source;
+            "#endif\n" +
+            (!source.contains("out vec4 fragColor") ? "out lowp vec4 fragColor;\n" : "") +
+            source;
         }else{
             //strip away precision qualifiers
             source =
@@ -167,12 +170,11 @@ public class Shader implements Disposable{
         //if on anything else, it's GLES, so pick 300 ES
         String version =
             source.contains("#version ") ? "" :
-            Core.app.isDesktop() ? (Core.graphics.getGLVersion().atLeast(3, 2) ? "150" : "130") :
+            Core.graphics.getGLVersion().type == GlType.OpenGL ? (Core.graphics.getGLVersion().atLeast(3, 2) ? "150" : "130") :
             "300 es";
 
         return
             "#version " + version + "\n"
-            + (fragment && !source.contains("out vec4 fragColor") ? "out" + (Core.app.isMobile() ? " lowp" : "") + " vec4 fragColor;\n" : "")
             + source
             .replace("varying", fragment ? "in" : "out")
             .replace("attribute", fragment ? "???" : "in")

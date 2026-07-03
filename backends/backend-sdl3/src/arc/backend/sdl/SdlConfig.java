@@ -20,6 +20,8 @@ public class SdlConfig{
     public boolean coreProfile = false;
     /** Requested OpenGL versions, in order of priority. */
     public int[][] glVersions = {{3, 0}};
+    /** If true, ANGLE is used on Windows. */
+    public boolean useAngle = true;
 
     public String title = "Arc Application";
     public Color initialBackgroundColor = Color.black;

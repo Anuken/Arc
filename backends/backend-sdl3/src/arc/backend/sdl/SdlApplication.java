@@ -11,6 +11,8 @@ import arc.struct.*;
 import arc.util.TaskQueue;
 import arc.util.*;
 import org.lwjgl.*;
+import org.lwjgl.opengl.*;
+import org.lwjgl.opengles.*;
 import org.lwjgl.sdl.*;
 import org.lwjgl.system.*;
 
@@ -28,8 +30,6 @@ import static org.lwjgl.sdl.SDLVersion.*;
 import static org.lwjgl.sdl.SDLVideo.*;
 
 public class SdlApplication implements Application{
-    public static final boolean useAngle = OS.isWindows;
-
     private final Seq<ApplicationListener> listeners = new Seq<>();
     private final TaskQueue runnables = new TaskQueue();
 
@@ -130,19 +130,9 @@ public class SdlApplication implements Application{
         }
     }
 
-    //ANGLE currently only implemented on Windows
-    private void setupANGLE(){
-        SDL_SetHint(SDL_HINT_OPENGL_ES_DRIVER, "1");
-        SDL_SetHint(SDL_HINT_VIDEO_FORCE_EGL, "1");
-
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-
-        ANGLELoader.load();
-    }
-
     private void init(){
+        boolean useAngle = config.useAngle && OS.isWindows;
+
         ArcNativesLoader.load();
 
         if(OS.isMac) restartMac();
@@ -160,10 +150,18 @@ public class SdlApplication implements Application{
         }
 
         if(useAngle){
-            setupANGLE();
+            SDL_SetHint(SDL_HINT_OPENGL_ES_DRIVER, "1");
+            SDL_SetHint(SDL_HINT_VIDEO_FORCE_EGL, "1");
+            ANGLELoader.load();
         }
 
         check(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
+
+        if(useAngle){
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+        }
 
         check(SDL_SetHint(SDL_HINT_MOUSE_DPI_SCALE_CURSORS, "1"));
 
@@ -224,7 +222,17 @@ public class SdlApplication implements Application{
             check(SDL_GL_SetSwapInterval(1));
         }
 
-        check(SDL_ShowWindow(window));
+        if(useAngle){
+            GLES.createCapabilities();
+
+            Core.glProvider = new SdlGLESProvider();
+        }else{
+            Configuration.OPENGL_EXPLICIT_INIT.set(true);
+            GL.create(SDLVideo::SDL_GL_GetProcAddress);
+            GL.createCapabilities();
+
+            Core.glProvider = new SdlGLProvider();
+        }
 
         String ver = SDL_GetRevision();
 

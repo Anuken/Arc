@@ -1,10 +1,12 @@
 package arc.graphics.gl;
 
-import arc.Application;
-import arc.util.Log;
+import arc.Application.*;
+import arc.util.*;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
+import java.util.regex.*;
+
+import static arc.Application.ApplicationType.*;
 
 public class GLVersion{
     public final String vendorString;
@@ -15,11 +17,10 @@ public class GLVersion{
     public int minorVersion;
     public int releaseVersion;
 
-    public GLVersion(Application.ApplicationType appType, String versionString, String vendorString, String rendererString){
-        if(appType == Application.ApplicationType.android) this.type = GlType.GLES;
-        else if(appType == Application.ApplicationType.iOS) this.type = GlType.GLES;
-        else if(appType == Application.ApplicationType.desktop) this.type = GlType.OpenGL;
-        else if(appType == Application.ApplicationType.web) this.type = GlType.WebGL;
+    public GLVersion(ApplicationType appType, String versionString, String vendorString, String rendererString){
+        if(appType == android || appType == iOS || versionString.toLowerCase(Locale.ROOT).startsWith("opengl es")) this.type = GlType.GLES;
+        else if(appType == desktop) this.type = GlType.OpenGL;
+        else if(appType == web) this.type = GlType.WebGL;
         else this.type = GlType.NONE;
 
         if(type == GlType.GLES){
