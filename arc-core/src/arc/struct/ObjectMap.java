@@ -591,7 +591,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
     }
 
     static public class Entries<K, V> extends MapIterator<K, V, Entry<K, V>>{
-        Entry<K, V> entry = new Entry<K, V>();
+        Entry<K, V> entry = new Entry<>();
 
         public Entries(ObjectMap<K, V> map){
             super(map);

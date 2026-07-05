@@ -95,9 +95,7 @@ class UdpConnection{
         }
     }
 
-    /**
-     * This method is thread safe.
-     */
+    /** Serializes the specified object. This method is thread safe. */
     public int send(Object object, SocketAddress address) throws IOException{
         DatagramChannel datagramChannel = this.datagramChannel;
         if(datagramChannel == null)
@@ -115,12 +113,24 @@ class UdpConnection{
 
                 lastCommunicationTime = System.currentTimeMillis();
 
-                boolean wasFullWrite = !writeBuffer.hasRemaining();
-                return wasFullWrite ? length : -1;
+                return !writeBuffer.hasRemaining() ? length : -1;
             }finally{
                 writeBuffer.clear();
             }
         }
+    }
+
+    /** Directly sends an entire buffer to this address. No serialization is performed. */
+    public int sendBuffer(ByteBuffer buffer, SocketAddress address) throws IOException{
+        DatagramChannel datagramChannel = this.datagramChannel;
+        if(datagramChannel == null) throw new SocketException("Connection is closed.");
+
+        //note: writeBuffer is not used and thus writeLock is not needed
+        buffer.rewind();
+        int length = buffer.remaining();
+        datagramChannel.send(buffer, address);
+        lastCommunicationTime = System.currentTimeMillis();
+        return !buffer.hasRemaining() ? length : -1;
     }
 
     public void close(){

@@ -7,6 +7,7 @@ import arc.files.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.struct.*;
+import arc.struct.ObjectMap.*;
 import arc.util.*;
 
 import java.util.concurrent.*;
@@ -131,6 +132,23 @@ public class AssetManager implements Disposable{
     }
 
     /**
+     * @param type the asset type
+     * @return all the assets matching the specified type as entries by file name
+     */
+    public synchronized <T> Seq<Entry<String, T>> getAllEntries(Class<T> type, Seq<Entry<String, T>> out){
+        ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
+        if(assetsByType != null){
+            for(ObjectMap.Entry<String, RefCountedContainer> asset : assetsByType.entries()){
+                Entry<String, T> entry = new Entry<>();
+                entry.key = asset.key;
+                entry.value = (T)asset.value.object;
+                out.add(entry);
+            }
+        }
+        return out;
+    }
+
+    /**
      * @param assetDescriptor the asset descriptor
      * @return the asset
      */
@@ -168,8 +186,7 @@ public class AssetManager implements Disposable{
      * @param fileName the file name
      */
     public synchronized void unload(String fileName){
-        // check if it's currently processed (and the first element in the stack, thus not a dependency)
-        // and cancel if necessary
+        // check if it's currently processed (and the first element in the stack, thus not a dependency) and cancel if necessary
         if(tasks.size > 0){
             AssetLoadingTask currAsset = tasks.first();
             if(currAsset.assetDesc.fileName.equals(fileName)){
@@ -194,9 +211,11 @@ public class AssetManager implements Disposable{
 
         // get the asset and its type
         Class type = assetTypes.get(fileName);
-        if(type == null) throw new ArcRuntimeException("Asset not loaded: " + fileName);
+        if(type == null) return;
 
         RefCountedContainer assetRef = assets.get(type).get(fileName);
+
+        if(assetRef == null) return;
 
         // if it is reference counted, decrement ref count and check if we can really get rid of it.
         assetRef.count--;

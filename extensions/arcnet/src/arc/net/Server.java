@@ -38,6 +38,9 @@ public class Server implements EndPoint{
     protected ServerDiscoveryHandler discoveryHandler;
     private ServerConnectFilter connectFilter;
 
+    private final ByteBuffer bulkWriteBuffer;
+    private final Object bulkWriteLock = new Object();
+
     private NetListener dispatchListener = new NetListener(){
         @Override
         public void connected(Connection connection){
@@ -93,6 +96,8 @@ public class Server implements EndPoint{
         this.writeBufferSize = writeBufferSize;
         this.objectBufferSize = objectBufferSize;
         this.serializer = serializer;
+
+        bulkWriteBuffer = ByteBuffer.allocateDirect(writeBufferSize);
 
         this.discoveryHandler = (address, handler) -> handler.respond(ByteBuffer.allocate(0));
 
@@ -440,56 +445,181 @@ public class Server implements EndPoint{
         }
     }
 
-    // BOZO - Provide mechanism for sending to multiple clients without
-    // serializing multiple times.
-
     public void sendToAllTCP(Object object){
-        Connection[] connections = this.connections;
-        for(Connection connection : connections){
-            connection.sendTCP(object);
+        synchronized(bulkWriteLock){
+            ByteBuffer buffer;
+            try{
+                buffer = serializeTCP(object);
+            }catch(Throwable ex){
+                ArcNet.handleError(ex);
+                return;
+            }
+
+            Connection[] connections = this.connections;
+            for(Connection con : connections){
+                try{
+                    con.sendTCPBuffer(buffer);
+                }catch(Exception e){
+                    ArcNet.handleError(e);
+                    con.close(DcReason.error);
+                }
+            }
         }
     }
 
     public void sendToAllExceptTCP(int connectionID, Object object){
-        Connection[] connections = this.connections;
-        for(Connection connection : connections){
-            if(connection.id != connectionID)
-                connection.sendTCP(object);
-        }
-    }
+        synchronized(bulkWriteLock){
+            ByteBuffer buffer;
+            try{
+                buffer = serializeTCP(object);
+            }catch(Throwable ex){
+                ArcNet.handleError(ex);
+                return;
+            }
 
-    public void sendToTCP(int connectionID, Object object){
-        Connection[] connections = this.connections;
-        for(Connection connection : connections){
-            if(connection.id == connectionID){
-                connection.sendTCP(object);
-                break;
+            Connection[] connections = this.connections;
+            for(Connection con : connections){
+                if(con.id == connectionID) continue;
+                try{
+                    con.sendTCPBuffer(buffer);
+                }catch(Exception e){
+                    ArcNet.handleError(e);
+                    con.close(DcReason.error);
+                }
             }
         }
     }
 
+    /** Sends the object over TCP to every connection in the list, serializing it only once. */
+    public void sendToAllTCP(Object object, Iterable<Connection> connections){
+        synchronized(bulkWriteLock){
+            ByteBuffer buffer;
+            try{
+                buffer = serializeTCP(object);
+            }catch(Throwable ex){
+                ArcNet.handleError(ex);
+                return;
+            }
+
+            for(Connection con : connections){
+                if(!con.isConnected()) continue;
+                try{
+                    con.sendTCPBuffer(buffer);
+                }catch(Exception e){
+                    ArcNet.handleError(e);
+                    con.close(DcReason.error);
+                }
+            }
+        }
+    }
+
+
     public void sendToAllUDP(Object object){
-        Connection[] connections = this.connections;
-        for(Connection connection : connections){
-            connection.sendUDP(object);
+        if(udp == null) return;
+
+        synchronized(bulkWriteLock){
+            ByteBuffer buffer;
+            try{
+                buffer = serializeUDP(object);
+            }catch(Throwable ex){
+                ArcNet.handleError(ex);
+                return;
+            }
+
+            Connection[] connections = this.connections;
+            for(Connection con : connections){
+                try{
+                    con.sendUDPBuffer(buffer);
+                }catch(Exception e){
+                    //note: 'vanilla' kryonet doesn't do this, but mindustry does this in ArcConnection#send upon error, so it's probably best to close upon error here as well and not let it propagate
+                    ArcNet.handleError(e);
+                    con.close(DcReason.error);
+                }
+            }
         }
     }
 
     public void sendToAllExceptUDP(int connectionID, Object object){
-        Connection[] connections = this.connections;
-        for(Connection connection : connections){
-            if(connection.id != connectionID)
-                connection.sendUDP(object);
+        if(udp == null) return;
+
+        synchronized(bulkWriteLock){
+            ByteBuffer buffer;
+            try{
+                buffer = serializeUDP(object);
+            }catch(Throwable ex){
+                ArcNet.handleError(ex);
+                return;
+            }
+
+            Connection[] connections = this.connections;
+            for(Connection con : connections){
+                if(con.id == connectionID) continue;
+                try{
+                    con.sendUDPBuffer(buffer);
+                }catch(Exception e){
+                    ArcNet.handleError(e);
+                    con.close(DcReason.error);
+                }
+            }
         }
     }
 
-    public void sendToUDP(int connectionID, Object object){
-        Connection[] connections = this.connections;
-        for(Connection connection : connections){
-            if(connection.id == connectionID){
-                connection.sendUDP(object);
-                break;
+    /** Sends the object over UDP to every connection in the list, serializing it only once. */
+    public void sendToAllUDP(Object object, Iterable<Connection> connections){
+        if(udp == null) return;
+
+        synchronized(bulkWriteLock){
+            ByteBuffer buffer;
+            try{
+                buffer = serializeUDP(object);
+            }catch(Throwable ex){
+                ArcNet.handleError(ex);
+                return;
             }
+
+            for(Connection con : connections){
+                if(!con.isConnected()) continue; //note: since this method accepts a list of connections, there may be stale connections, so filter for that (not possible otherwise)
+                try{
+                    con.sendUDPBuffer(buffer);
+                }catch(Exception e){
+                    ArcNet.handleError(e);
+                    con.close(DcReason.error);
+                }
+            }
+        }
+    }
+
+    /** Writes an object to the bulk-write buffer for TCP, including the length prefix. */
+    private ByteBuffer serializeTCP(Object object){
+        synchronized(bulkWriteLock){
+            bulkWriteBuffer.clear();
+            int lengthLength = serializer.getLengthLength();
+            try{
+                bulkWriteBuffer.position(lengthLength);
+                serializer.write(bulkWriteBuffer, object);
+            }catch(Exception ex){
+                throw new ArcNetException("Error serializing object of type: " + object.getClass().getName(), ex);
+            }
+            int end = bulkWriteBuffer.position();
+            bulkWriteBuffer.position(0);
+            serializer.writeLength(bulkWriteBuffer, end - lengthLength);
+            bulkWriteBuffer.position(end);
+            bulkWriteBuffer.flip();
+            return bulkWriteBuffer;
+        }
+    }
+
+    /** Writes an object to the bulk-write buffer. No length prefix. */
+    private ByteBuffer serializeUDP(Object object){
+        synchronized(bulkWriteLock){
+            bulkWriteBuffer.clear();
+            try{
+                serializer.write(bulkWriteBuffer, object);
+            }catch(Exception ex){
+                throw new ArcNetException("Error serializing object of type: " + object.getClass().getName(), ex);
+            }
+            bulkWriteBuffer.flip();
+            return bulkWriteBuffer;
         }
     }
 

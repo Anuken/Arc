@@ -174,8 +174,7 @@ class TcpConnection{
      */
     public int send(Object object) throws IOException{
         SocketChannel socketChannel = this.socketChannel;
-        if(socketChannel == null)
-            throw new SocketException("Connection is closed.");
+        if(socketChannel == null) throw new SocketException("Connection is closed.");
         synchronized(writeLock){
 
             int start = writeBuffer.position();
@@ -204,6 +203,35 @@ class TcpConnection{
                 selectionKey.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
             }else{
                 // Full write, wake up selector so idle event will be fired.
+                selectionKey.selector().wakeup();
+            }
+
+            lastWriteTime = System.currentTimeMillis();
+            return end - start;
+        }
+    }
+
+    /**
+     * Writes a pre-serialized, length-prefixed buffer directly into this connection's write buffer.
+     * Note that this cannot use a raw buffer like UDP, it must contain length!
+     */
+    public int sendBuffer(ByteBuffer buffer) throws IOException{
+        SocketChannel socketChannel = this.socketChannel;
+        if(socketChannel == null) throw new SocketException("Connection is closed.");
+        synchronized(writeLock){
+            buffer.rewind();
+            int length = buffer.remaining();
+
+            int start = writeBuffer.position();
+            if(length > writeBuffer.remaining()){
+                throw new ArcNetException("Bulk buffer too large for write buffer: " + length + " > " + writeBuffer.remaining());
+            }
+            writeBuffer.put(buffer);
+            int end = writeBuffer.position();
+
+            if(start == 0 && !writeToSocket()){
+                selectionKey.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+            }else{
                 selectionKey.selector().wakeup();
             }
 

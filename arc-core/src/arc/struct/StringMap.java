@@ -40,14 +40,14 @@ public class StringMap extends ObjectMap<String, String>{
     }
 
     public int getInt(String name, int def){
-        return containsKey(name) ? Strings.parseInt(get(name), def) : def;
+        return Strings.parseInt(get(name, ""), def);
     }
 
     public float getFloat(String name, float def){
-        return containsKey(name) ? Strings.parseFloat(get(name), def) : def;
+        return Strings.parseFloat(get(name, ""), def);
     }
 
     public long getLong(String name, long def){
-        return containsKey(name) ? Strings.parseLong(get(name), def) : def;
+        return Strings.parseLong(get(name, ""), def);
     }
 }

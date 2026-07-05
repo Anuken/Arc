@@ -663,6 +663,7 @@ public class Strings{
     }
 
     public static boolean canParseFloat(String s){
+        if(s.isEmpty()) return false;
         try{
             Float.parseFloat(s);
             return true;
@@ -685,6 +686,7 @@ public class Strings{
     }
 
     public static float parseFloat(String s, float defaultValue){
+        if(s.isEmpty()) return defaultValue;
         try{
             return Float.parseFloat(s);
         }catch(Exception e){
