@@ -3,6 +3,7 @@ package arc;
 import arc.Graphics.Cursor.*;
 import arc.graphics.*;
 import arc.graphics.gl.*;
+import arc.graphics.gl.GLVersion.*;
 import arc.math.*;
 import arc.util.*;
 
@@ -24,13 +25,8 @@ public abstract class Graphics implements Disposable{
 
     /** @return whether instancing with glVertexAttribDivisor and glDrawElementsInstanced is available on this platform. */
     public boolean supportsInstancing(){
-        if(OS.isAndroid || OS.isIos){
-            //instancing via glDrawElementsInstanced + glVertexAttribDivisor is available on GL ES 3.0
-            return true;
-        }else{
-            //otherwise, only >= Gl 3.3 has glVertexAttribDivisor on desktop
-            return getGLVersion().atLeast(3, 3);
-        }
+        //instancing via glDrawElementsInstanced + glVertexAttribDivisor is available on GL ES 3.0; otherwise, only >= Gl 3.3 has glVertexAttribDivisor on desktop
+        return getGLVersion().type == GlType.GLES || getGLVersion().atLeast(3, 3);
     }
 
     /** Clears the color buffer using the specified color. */
