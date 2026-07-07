@@ -89,6 +89,14 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>>{
         size = map.size;
     }
 
+    public ObjectFloatMap<K> putAll(Object... values){
+        for(int i = 0; i < values.length / 2; i++){
+            put((K)values[i * 2], (float)values[i * 2 + 1]);
+        }
+
+        return this;
+    }
+
     /**
      * Returns an index >= 0 and <= {@link #mask} for the specified {@code item}.
      * <p>
@@ -280,6 +288,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>>{
      */
     public void shrink(int maximumCapacity){
         if(maximumCapacity < 0) throw new IllegalArgumentException("maximumCapacity must be >= 0: " + maximumCapacity);
+        if(size > maximumCapacity) maximumCapacity = size;
         int tableSize = tableSize(maximumCapacity, loadFactor);
         if(keyTable.length > tableSize) resize(tableSize);
     }

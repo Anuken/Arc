@@ -318,6 +318,7 @@ public class IntIntMap implements Iterable<IntIntMap.Entry>{
      */
     public void shrink(int maximumCapacity){
         if(maximumCapacity < 0) throw new IllegalArgumentException("maximumCapacity must be >= 0: " + maximumCapacity);
+        if(size > maximumCapacity) maximumCapacity = size;
         int tableSize = tableSize(maximumCapacity, loadFactor);
         if(keyTable.length > tableSize) resize(tableSize);
     }

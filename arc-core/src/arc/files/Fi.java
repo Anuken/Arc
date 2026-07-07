@@ -108,18 +108,7 @@ public class Fi implements Comparable<Fi>{
 
     private static void copyFile(Fi source, Fi dest){
         try{
-            if(source.file.exists() && dest.file.exists() && (!(source instanceof ZipFi))){
-                //FileChannel is faster than the InputStream method
-                try(FileInputStream is = new FileInputStream(source.file);
-                     FileOutputStream os = new FileOutputStream(dest.file);
-                     FileChannel inChannel = is.getChannel();
-                     FileChannel outChannel = os.getChannel()){
-
-                    inChannel.transferTo(0, inChannel.size(), outChannel);
-                }
-            }else{
-                dest.write(source.read(), false);
-            }
+            dest.write(source.read(), false);
         }catch(Exception ex){
             throw new ArcRuntimeException("Error copying source file: " + source.file + " (" + source.type + ")\n" //
             + "To destination: " + dest.file + " (" + dest.type + ")", ex);
