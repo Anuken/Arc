@@ -134,6 +134,7 @@ public class SdlApplication implements Application{
         boolean useAngle = config.useAngle && OS.isWindows;
 
         ArcNativesLoader.load();
+        NativeUtils.forceUtf8Locale();
 
         if(OS.isMac) restartMac();
 

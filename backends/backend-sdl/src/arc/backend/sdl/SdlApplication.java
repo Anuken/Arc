@@ -109,6 +109,7 @@ public class SdlApplication implements Application{
 
     private void init(){
         ArcNativesLoader.load();
+        NativeUtils.forceUtf8Locale();
 
         if(OS.isMac) restartMac();
 
