@@ -16,12 +16,13 @@ jobs:
         id: docker
 
       - name: Upload natives
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
-          name: Arc Linux natives
+          name: Linux natives
           path: |
             arc-core/build/natives
             extensions/filedialogs/build/natives
+            extensions/freetype/build/natives
 
   natives-windows-android:
     runs-on: ubuntu-latest
@@ -37,23 +38,17 @@ jobs:
         run: echo "NDK_HOME=$ANDROID_NDK_HOME" >> $GITHUB_ENV
       - name: Build natives
         run: |
-          ./gradlew arc-core:jnigenBuildAllWindows
-          ./gradlew arc-core:jnigenBuildAllAndroid
-          ./gradlew extensions:filedialogs:jnigenBuildAllWindows
+          ./gradlew arc-core:jnigenBuildAllWindows arc-core:jnigenBuildAllAndroid extensions:filedialogs:jnigenBuildAllWindows extensions:freetype:jnigenBuildAllWindows extensions:freetype:jnigenBuildAllAndroid
         #  the SDL2 backend is being phased out
         #  ./gradlew backends:backend-sdl:jnigenBuildAllWindows
       - name: Upload arc-core natives
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
-          name: Arc-core natives
+          name: Windows and Android natives
           path: |
             arc-core/build/natives
-      - name: Upload filedialog natives
-        uses: actions/upload-artifact@v5
-        with:
-          name: Filedialogs natives
-          path: |
             extensions/filedialogs/build/natives
+            extensions/freetype/build/natives
   natives-mac:
     runs-on: macos-latest
     steps:
@@ -71,13 +66,11 @@ jobs:
         env:
           MACOSX_DEPLOYMENT_TARGET: '10.9'
         run: |
-          ./gradlew arc-core:jnigenBuildAllMacOsX
-          ./gradlew extensions:freetype:jnigenBuildAllMacOsX
-          ./gradlew extensions:filedialogs:jnigenBuildAllMacOsX
+          ./gradlew arc-core:jnigenBuildAllMacOsX extensions:filedialogs:jnigenBuildAllMacOsX extensions:freetype:jnigenBuildAllMacOsX
       - name: Upload natives
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
-          name: Arc-core MacOS natives
+          name: MacOS natives
           path: |
             arc-core/build/natives
             extensions/freetype/build/natives

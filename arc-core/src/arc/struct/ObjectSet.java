@@ -168,11 +168,16 @@ public class ObjectSet<T> implements Iterable<T>, Eachable<T>{
         }
     }
 
+    public boolean any(){
+        return size > 0;
+    }
+
     /**
      * Returns true if the key was added to the set or false if it was already in the set. If this set already contains the key,
      * the call leaves the set unchanged and returns false.
      */
     public boolean add(T key){
+        if(key == null) return false;
         int i = locateKey(key);
         if(i >= 0) return false; // Existing key was found.
         i = -(i + 1); // Empty space was found.

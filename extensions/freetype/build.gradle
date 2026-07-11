@@ -3,7 +3,7 @@ plugins{
 }
 
 jnigen{
-    def fdir = "build/jnigen/sources/freetype-2.14.1"
+    def fdir = "build/jnigen/sources/freetype-2.14.3"
 
     sharedLibName = "arc-freetype"
     libsDir = "build/natives"
@@ -33,6 +33,7 @@ jnigen{
     }
     addWindows(x64, x86)
     addLinux(x64, x86)
+    addLinux(x64, ARM)
     addMac(x64, x86)
     addMac(x64, ARM)
     addAndroid()
@@ -48,12 +49,12 @@ tasks.register('preJni'){
             include "**"
         }
 
-        if(!file("build/jnigen/sources/freetype-2.14.1").exists()){
+        if(!file("build/jnigen/sources/freetype-2.14.3").exists()){
             println "Fetching freetype source..."
 
             def root = "$projectDir/build/jnigen/sources"
             file(root).mkdirs()
-            def script = "wget -c https://download.savannah.gnu.org/releases/freetype/freetype-2.14.1.tar.gz -O $root/freetype.tar.gz\n" +
+            def script = "wget -c https://sourceforge.net/projects/freetype/files/freetype2/2.14.3/freetype-2.14.3.tar.gz/download -O $root/freetype.tar.gz\n" +
                     "tar -xf $root/freetype.tar.gz -C $root"
             def scriptFile = file("build/getfreetype")
             scriptFile.parentFile.mkdirs()
@@ -61,7 +62,7 @@ tasks.register('preJni'){
             "bash $scriptFile.absolutePath".execute().waitFor()
 
             //overwrite config to use only certain modules.
-            file("$root/freetype-2.14.1/include/freetype/config/ftmodule.h").text =
+            file("$root/freetype-2.14.3/include/freetype/config/ftmodule.h").text =
                     """
             FT_USE_MODULE( FT_Module_Class, autofit_module_class )
             FT_USE_MODULE( FT_Driver_ClassRec, tt_driver_class )

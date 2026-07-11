@@ -814,4 +814,72 @@ public class Strings{
             index += replaceLength;
         }
     }
+
+    private static boolean isDigitsOnly(String part){
+        for(int i = 0; i < part.length(); i++){
+            if(!Character.isDigit(part.charAt(i))){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Strips leading/trailing non-numeric, non-dot characters, normalizes a loose version string (e.g. "v1", "2.0", "alpha 2.0.0 release") into an array.
+     * This can handle semver, but is adapted for a maximum of 4 components, since people do that for some reason.
+     * @return the parsed {major, minor, patch, build} array, or null upon failure.
+     */
+    public static @Nullable int[] sanitizeVersion(String raw){
+        if(raw == null){
+            return null;
+        }
+        String trimmed = raw.trim();
+        //strip leading chars until first digit
+        int start = 0;
+        while(start < trimmed.length() && !Character.isDigit(trimmed.charAt(start))){
+            start++;
+        }
+        //strip trailing chars after last digit
+        int end = trimmed.length() - 1;
+        while(end >= 0 && !Character.isDigit(trimmed.charAt(end))){
+            end--;
+        }
+        if(start > end){
+            return null; //no digits at all
+        }
+        String core = trimmed.substring(start, end + 1);
+        String[] parts = core.split("\\.", -1);
+        if(parts.length < 1 || parts.length > 4){
+            return null;
+        }
+        int[] nums = new int[4]; //major, minor, patch, build
+        for(int i = 0; i < 4; i++){
+            if(i < parts.length){
+                String part = parts[i];
+                if(part.isEmpty() || !isDigitsOnly(part)){
+                    return null;
+                }
+                nums[i] = Strings.parseInt(part);
+                if(nums[i] == Integer.MIN_VALUE) return null;
+            }
+        }
+        return nums;
+    }
+
+    /** @return true if semver {@param version} > {@param target}. If either parameter is not a valid (or sanitizable) semver string, just returns (version != target). */
+    public static boolean checkNewerSemver(String version, String target){
+        if(version == null || target == null) return false;
+
+        int[] versionNums = sanitizeVersion(version);
+        int[] targetNums = sanitizeVersion(target);
+        if(versionNums == null || targetNums == null){
+            return !version.equals(target);
+        }
+        for(int i = 0; i < 4; i++){
+            if(versionNums[i] != targetNums[i]){
+                return versionNums[i] > targetNums[i];
+            }
+        }
+        return false;
+    }
 }

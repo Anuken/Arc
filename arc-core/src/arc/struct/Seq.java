@@ -124,6 +124,14 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return out;
     }
 
+    public static <T, V> Seq<V> map(T[] array, Func<T, V> mapper){
+        Seq<V> result = new Seq<>(array.length);
+        for(int i = 0; i < array.length; i++){
+            result.add(mapper.get(array[i]));
+        }
+        return result;
+    }
+
     /** @see #Seq(Object[]) */
     public static <T> Seq<T> select(T[] array, Boolf<T> test){
         Seq<T> out = new Seq<>(array.length);

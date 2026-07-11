@@ -77,7 +77,9 @@ jnigen{
         cppFlags += ["-flto"]
         linkerFlags += ["-flto"]
     }
-    addLinux(x64, x86){
+    addLinux(x64, x86)
+    addLinux(x64, ARM)
+    each({it.os == Linux}){
         headerDirs += (String[])["$root/soloud/src/backend/miniaudio/"]
         cppIncludes += (String[])["$root/soloud/src/backend/miniaudio/*.cpp"]
         cppFlags += "-DWITH_MINIAUDIO"
@@ -94,12 +96,9 @@ jnigen{
         cppFlags += ["-DWITH_OPENSLES"]
         androidApplicationMk += ["APP_STL := c++_static"]
     }
-    addMac(x64, x86){
-        cppIncludes += (String[])["$root/soloud/src/backend/coreaudio/*.mm"]
-        cppFlags += ["-std=c++11", "-DWITH_COREAUDIO"]
-        libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox".split(" ")
-    }
-    addMac(x64, ARM){
+    addMac(x64, x86)
+    addMac(x64, ARM)
+    each({it.os == MacOsX}){
         cppIncludes += (String[])["$root/soloud/src/backend/coreaudio/*.mm"]
         cppFlags += (String[])["-std=c++11", "-DWITH_COREAUDIO"]
         libraries += "-Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox".split(" ")

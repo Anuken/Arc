@@ -28,7 +28,7 @@ curl -s https://repos.azul.com/azul-repo.key | gpg --dearmor -o /usr/share/keyri
 echo "deb [signed-by=/usr/share/keyrings/azul.gpg] https://repos.azul.com/zulu/deb stable main" | tee /etc/apt/sources.list.d/zulu.list
 apt-get -q update
 # install zulu JDK and Java build tools
-apt-get -yq install zulu17-jdk-headless maven ant
+apt-get -yq install zulu17-jdk-headless
 
 # Install cross-compilation toolchains
 apt-get -yq --force-yes install gcc g++
@@ -37,4 +37,4 @@ apt-get -yq --force-yes install gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf 
 apt-get -yq --force-yes install gcc-riscv64-linux-gnu g++-riscv64-linux-gnu libc6-dev-riscv64-cross
 
 # Build Linux natives
-./gradlew arc-core:jnigenBuildHost extensions:filedialogs:jnigenBuildHost --no-daemon
+./gradlew arc-core:jnigenBuildAllLinux extensions:filedialogs:jnigenBuildAllLinux extensions:freetype:jnigenBuildAllLinux --no-daemon
