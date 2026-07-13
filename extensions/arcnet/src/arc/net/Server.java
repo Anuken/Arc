@@ -41,6 +41,7 @@ public class Server implements EndPoint{
     private final ByteBuffer bulkWriteBuffer;
     private final Object bulkWriteLock = new Object();
     private MultiUdpSender multi;
+    public static boolean useSyscall = true;
 
     private NetListener dispatchListener = new NetListener(){
         @Override
@@ -541,7 +542,7 @@ public class Server implements EndPoint{
             }
 
             Connection[] connections = this.connections;
-            if(multi != null){
+            if(multi != null && useSyscall){
                 try{
                     multi.connect(connections); //TODO: optimize this call out sometimes?
                     multi.send(buffer);
@@ -601,7 +602,7 @@ public class Server implements EndPoint{
                 return;
             }
 
-            if(multi != null){
+            if(multi != null && useSyscall){
                 multi.connect(connections); //TODO: optimize this call out sometimes?
                 multi.send(buffer);
             } else {
