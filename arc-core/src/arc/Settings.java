@@ -428,6 +428,16 @@ public class Settings{
         put(name, !getBool(name));
     }
 
+    /** JS compatibility method. */
+    public void putInt(String name, int value){
+        put(name, value);
+    }
+
+    /** JS compatibility method. */
+    public void putFloat(String name, float value){
+        put(name, value);
+    }
+
     /** Stores an object in the preference map. */
     public synchronized void put(String name, Object object){
         if(object instanceof Float || object instanceof Integer || object instanceof Boolean || object instanceof Long

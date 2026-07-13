@@ -11,7 +11,7 @@ import java.nio.channels.*;
 /**
  * @author Nathan Sweet <misc@n4te.com>
  */
-class TcpConnection{
+public class TcpConnection{
     SocketChannel socketChannel;
     int keepAliveMillis = 8000;
     final ByteBuffer readBuffer, writeBuffer;

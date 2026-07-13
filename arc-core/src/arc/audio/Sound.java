@@ -89,7 +89,7 @@ public class Sound extends AudioSource{
      * @param checkFrame if true, this sound will not be able to be played twice in the same frame.
      * @return the id of the sound instance if successful, or -1 on failure.
      */
-    public int play(float volume, float pitch, float pan, boolean loop, boolean checkFrame){
+    public int play(float volume, float pitch, float pan, boolean loop, boolean checkFrame, AudioBus bus){
         if(!Core.audio.initialized || currentlyLoading) return -1;
 
         if(handle == 0 && lazyLoad && !currentlyLoading && file != null){
@@ -104,7 +104,7 @@ public class Sound extends AudioSource{
                     currentlyLoading = false;
 
                     if(!loop){
-                        play(fvolume, fpitch, fpan, loop, checkFrame);
+                        play(fvolume, fpitch, fpan, loop, checkFrame, bus);
                     }
                 }catch(Throwable err){
                     Log.err("Error loading sound: " + file, err);
@@ -131,6 +131,10 @@ public class Sound extends AudioSource{
         lastTimePlayed = Time.millis();
 
         return lastVoice = sourcePlayBus(handle, bus.handle, volume, Mathf.clamp(pitch * Core.audio.globalPitch, 0.0001f, 10f), Mathf.clamp(pan, -1f, 1f), loop);
+    }
+
+    public int play(float volume, float pitch, float pan, boolean loop, boolean checkFrame){
+        return play(volume, pitch, pan, loop, checkFrame, this.bus);
     }
 
     /** Sets the bus that will be used for the next play of this SFX. */
@@ -169,8 +173,18 @@ public class Sound extends AudioSource{
      */
     public int at(float x, float y, float pitch, float volume, boolean checkFrame){
         float vol = calcVolume(x, y) * volume;
-        if(vol < 0.01f) return -1; //discard
+        if(vol < 0.005f) return -1; //discard
         return play(vol, pitch, calcPan(x, y), false, checkFrame);
+    }
+
+    /**
+     * Plays this sound at a certain position, with correct panning and volume applied.
+     * Automatically uses the "sfxvolume" setting.
+     */
+    public int at(float x, float y, float pitch, float volume, AudioBus bus){
+        float vol = calcVolume(x, y) * volume;
+        if(vol < 0.005f) return -1; //discard
+        return play(vol, pitch, calcPan(x, y), false, true, bus);
     }
 
     /**
@@ -214,6 +228,16 @@ public class Sound extends AudioSource{
      */
     public int play(){
         return play(Core.audio.sfxVolume);
+    }
+
+
+    /**
+     * Plays the sound. If the sound is already playing, it will be played again, concurrently.
+     * Automatically uses the "sfxvolume" setting.
+     * @return the id of the sound instance if successful, or -1 on failure.
+     */
+    public int play(AudioBus bus){
+        return play(Core.audio.sfxVolume, 1f, 0f, false, true, bus);
     }
 
     /**

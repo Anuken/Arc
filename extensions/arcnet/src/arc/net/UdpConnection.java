@@ -10,7 +10,7 @@ import java.nio.channels.*;
 /**
  * @author Nathan Sweet <misc@n4te.com>
  */
-class UdpConnection{
+public class UdpConnection{
     InetSocketAddress connectedAddress;
     DatagramChannel datagramChannel;
     int keepAliveMillis = 19000;

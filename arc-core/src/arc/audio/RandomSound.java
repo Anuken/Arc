@@ -18,9 +18,9 @@ public class RandomSound extends Sound{
     public void load(Fi file){}
 
     @Override
-    public int play(float volume, float pitch, float pan, boolean loop, boolean checkFrame){
+    public int play(float volume, float pitch, float pan, boolean loop, boolean checkFrame, AudioBus bus){
         if(sounds.length > 0){
-            return Structs.random(sounds).play(volume, pitch, pan, loop, checkFrame);
+            return Structs.random(sounds).play(volume, pitch, pan, loop, checkFrame, bus);
         }
         return -1;
     }
