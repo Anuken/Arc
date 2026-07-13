@@ -186,20 +186,21 @@ public class MultiUdpSender implements AutoCloseable {
 		//Point the iovec at the provided ByteBuffer
 		buffer.rewind();
 		var dataSize = buffer.remaining();
-		Log.info(dataSize);
 		iovec_ptr.set(data, 0L, MemorySegment.ofBuffer(buffer));
 		iovec_len.set(data, 0L, dataSize);
 
 		int sent;
 		try {
-			Log.info("fdi: @, numConnectedAddresses: @", fdi, numConnectedAddresses);
 			sent = (int) sendmmsg.invokeExact(captureState, fdi, msgvec, numConnectedAddresses, 0);
 		} catch(Throwable t){
 			//this should never happen
+			Log.err("this should never happen");
 			throw new RuntimeException(t);
 		}
 		if(sent == -1){
-			throw new RuntimeException("sendmmsg returned -1, errno is " + errno.get(captureState, 0L));
+			String error = "sendmmsg returned -1, errno is " + errno.get(captureState, 0L);
+			Log.debug(error);
+			throw new RuntimeException(error);
 		}
 		return sent;
 	}
