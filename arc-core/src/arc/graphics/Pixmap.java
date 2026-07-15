@@ -564,6 +564,11 @@ public class Pixmap implements Disposable{
         return in(x, y) ? pixels.getInt((x + y * width) * 4) : 0;
     }
 
+    /** @return The pixel color in RGBA8888 format, clamped to image bounds. */
+    public int getClamp(int x, int y){
+        return getRaw(Math.max(Math.min(x, width - 1), 0), Math.max(Math.min(y, height - 1), 0));
+    }
+
     /** @return The pixel color in RGBA8888 format. No bounds checks are done! */
     public int getRaw(int x, int y){
         return pixels.getInt((x + y * width) * 4);

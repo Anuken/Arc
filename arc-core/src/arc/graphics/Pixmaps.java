@@ -282,22 +282,20 @@ public class Pixmaps{
     public static void antialias(Pixmap pixmap){
         Pixmap prev = pixmap.copy();
 
-        Color color = new Color();
-        Color sum = new Color();
-        Color suma = new Color();
         int[] p = new int[9];
 
         for(int y = 0; y < prev.height; y++){
             for(int x = 0; x < prev.width; x++){
-                int A = prev.get(x - 1, y + 1),
-                B = prev.get(x, y + 1),
-                C = prev.get(x + 1, y + 1),
-                D = prev.get(x - 1, y),
-                E = prev.get(x, y),
-                F = prev.get(x + 1, y),
-                G = prev.get(x - 1, y - 1),
-                H = prev.get(x, y - 1),
-                I = prev.get(x + 1, y - 1);
+                int
+                A = prev.getClamp(x - 1, y + 1),
+                B = prev.getClamp(x, y + 1),
+                C = prev.getClamp(x + 1, y + 1),
+                D = prev.getClamp(x - 1, y),
+                E = prev.getClamp(x, y),
+                F = prev.getClamp(x + 1, y),
+                G = prev.getClamp(x - 1, y - 1),
+                H = prev.getClamp(x, y - 1),
+                I = prev.getClamp(x + 1, y - 1);
 
                 Arrays.fill(p, E);
 
@@ -310,38 +308,49 @@ public class Pixmaps{
                 if((F == H && F != B && H != D && E != G) || (H == D && H != F && D != B && E != I)) p[7] = H;
                 if(F == H && F != B && H != D) p[8] = F;
 
-                suma.set(0);
+                float sumr = 0f, sumg = 0f, sumb = 0f, suma = 0f;
 
                 for(int val : p){
-                    color.rgba8888(val);
-                    color.premultiplyAlpha();
-                    suma.r += color.r;
-                    suma.g += color.g;
-                    suma.b += color.b;
-                    suma.a += color.a;
+                    float r = ((val & 0xff000000) >>> 24) / 255f;
+                    float g = ((val & 0x00ff0000) >>> 16) / 255f;
+                    float b = ((val & 0x0000ff00) >>> 8) / 255f;
+                    float a = ((val & 0x000000ff)) / 255f;
+
+                    sumr += r * a;
+                    sumg += g * a;
+                    sumb += b * a;
+                    suma += a;
                 }
 
-                float fm = suma.a <= 0.001f ? 0f : (1f / suma.a);
-                suma.mul(fm, fm, fm, fm);
+                float fm = suma <= 0.001f ? 0f : (1f / suma);
+                sumr *= fm;
+                sumg *= fm;
+                sumb *= fm;
 
                 float total = 0;
-                sum.set(0);
+                float tr = 0f, tg = 0f, tb = 0f, ta = 0f;
 
                 for(int val : p){
-                    color.rgba8888(val);
-                    float a = color.a;
-                    color.lerp(suma, (1f - a));
-                    sum.r += color.r;
-                    sum.g += color.g;
-                    sum.b += color.b;
-                    sum.a += a;
+                    float r = ((val & 0xff000000) >>> 24) / 255f;
+                    float g = ((val & 0x00ff0000) >>> 16) / 255f;
+                    float b = ((val & 0x0000ff00) >>> 8) / 255f;
+                    float a = ((val & 0x000000ff)) / 255f;
+
+                    float t = (1f - a);
+
+                    r += t * (sumr - r);
+                    g += t * (sumg - g);
+                    b += t * (sumb - b);
+
+                    tr += r;
+                    tg += g;
+                    tb += b;
+                    ta += a;
                     total += 1f;
                 }
 
                 fm = (1f / total);
-                sum.mul(fm, fm, fm, fm);
-                pixmap.setRaw(x, y, sum.rgba8888());
-                sum.set(0);
+                pixmap.setRaw(x, y, Color.rgba8888(tr * fm, tg * fm, tb * fm, ta * fm));
             }
         }
 
