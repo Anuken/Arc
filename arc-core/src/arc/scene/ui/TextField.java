@@ -302,7 +302,7 @@ public class TextField extends Element implements Disableable{
         Scene stage = getScene();
         boolean focused = stage != null && stage.getKeyboardFocus() == this;
         return (disabled && style.disabledBackground != null) ? style.disabledBackground
-        : (!isValid() && style.invalidBackground != null) ? style.invalidBackground
+        : (style.invalidBackground != null) && !isValid() ? style.invalidBackground
         : ((focused && style.focusedBackground != null) ? style.focusedBackground : style.background);
     }
 
