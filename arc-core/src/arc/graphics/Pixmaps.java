@@ -98,8 +98,14 @@ public class Pixmaps{
     }
 
     public static Pixmap outline(PixmapRegion region, Color color, int radius){
+        return outline(region, color, radius, 0);
+    }
+
+    public static Pixmap outline(PixmapRegion region, Color color, int radius, int padding){
         int outlineColor = color.rgba8888();
-        Pixmap out = region.crop();
+        Pixmap out = new Pixmap(region.width + padding*2, region.height + padding*2);
+        out.draw(region.pixmap, padding, padding, region.x, region.y, region.width, region.height);
+
         for(int y = 0; y < region.height; y++){
             for(int x = 0; x < region.width; x++){
 
@@ -115,7 +121,7 @@ public class Pixmaps{
                         }
                     }
                     if(found){
-                        out.set(x, y, outlineColor);
+                        out.set(x + padding, y + padding, outlineColor);
                     }
                 }
             }
