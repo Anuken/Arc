@@ -100,6 +100,15 @@ public class KeyBind{
         }
     }
 
+    public void unset(){
+        String name = settingsKey();
+        settings.remove(name + "-single");
+        settings.remove(name + "-key");
+        settings.remove(name + "-min");
+        settings.remove(name + "-max");
+        value = new Axis(KeyCode.unset);
+    }
+
     public boolean isDefault(){
         if(defaultValue instanceof Axis){
             if(((Axis)defaultValue).min == null){
@@ -110,6 +119,10 @@ public class KeyBind{
         }else{
             return defaultValue == value.key;
         }
+    }
+
+    public boolean isUnset(){
+        return value.key == KeyCode.unset;
     }
 
     String settingsKey(){

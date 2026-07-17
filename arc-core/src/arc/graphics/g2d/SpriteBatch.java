@@ -4,9 +4,7 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.gl.*;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.struct.*;
-import arc.util.*;
 
 import java.nio.*;
 import java.util.*;
@@ -657,10 +655,11 @@ public class SpriteBatch extends Batch{
 
         static final IntIntMap[] countses = new IntIntMap[processors];
 
-        private static Point2[] entries = new Point2[100];
-
         private static int[] entries3 = new int[300], entries3a = new int[300];
-        private static Integer[] entriesBacking = new Integer[100];
+
+        //packed (key << 32 | payload) longs, used to order unique z-keys without boxing
+        private static long[] packedKeys = new long[100];
+        private static long[] packedKeysMT = new long[100];
 
         private static final CountingSort.CountingSortTask[] tasks = new CountingSort.CountingSortTask[processors];
         private static final CountingSort.CountingSortTask2[] task2s = new CountingSort.CountingSortTask2[processors];
@@ -668,7 +667,6 @@ public class SpriteBatch extends Batch{
 
         static{
             for(int i = 0; i < countses.length; i++) countses[i] = new IntIntMap();
-            for(int i = 0; i < entries.length; i++) entries[i] = new Point2();
 
             for(int i = 0; i < processors; i++){
                 tasks[i] = new CountingSort.CountingSortTask();
@@ -764,13 +762,16 @@ public class SpriteBatch extends Batch{
             }
 
             final int L = unique;
-            if(entriesBacking.length < L){
-                entriesBacking = new Integer[L * 3 / 2];
+            if(entries3.length < L * 3){
                 entries3 = new int[L * 3 * 3 / 2];
                 entries3a = new int[L * 3 * 3 / 2];
             }
+            if(packedKeysMT.length < L){
+                packedKeysMT = new long[L * 3 / 2];
+            }
             final int[] entries = CountingSort.entries3, entries3a = CountingSort.entries3a;
-            final Integer[] entriesBacking = CountingSort.entriesBacking;
+            final long[] packed = CountingSort.packedKeysMT;
+
             int j = 0;
             for(int i = 0; i < threads; i++){
                 if(countses[i].size == 0) continue;
@@ -789,12 +790,14 @@ public class SpriteBatch extends Batch{
                 }
             }
 
+            //argsort the L unique entries by key: pack (key, original index) into one long
             for(int i = 0; i < L; i++){
-                entriesBacking[i] = i;
+                packed[i] = (((long)entries[i * 3]) << 32) | (i & 0xFFFFFFFFL);
             }
-            Arrays.sort(entriesBacking, 0, L, Structs.comparingInt(i -> entries[i * 3]));
+            Arrays.sort(packed, 0, L);
+
             for(int i = 0; i < L; i++){
-                int from = entriesBacking[i] * 3, to = i * 3;
+                int from = (int)packed[i] * 3, to = i * 3;
                 entries3a[to] = entries[from];
                 entries3a[to + 1] = entries[from + 1];
                 entries3a[to + 2] = entries[from + 2];
@@ -838,27 +841,28 @@ public class SpriteBatch extends Batch{
             }
             CountingSort.locs = locs;
 
-            if(entries.length < unique){
-                final int prevLength = entries.length;
-                entries = Arrays.copyOf(entries, unique * 3 / 2);
-                final Point2[] entries = CountingSort.entries;
-                for(int i = prevLength; i < entries.length; i++) entries[i] = new Point2();
+            if(packedKeys.length < unique){
+                packedKeys = new long[unique * 3 / 2];
             }
-            final Point2[] entries = CountingSort.entries;
+            final long[] packed = CountingSort.packedKeys;
 
+            //pack (key, compactIndex) for every unique z-key
             final IntIntMap.Entries countEntries = counts.entries();
             final IntIntMap.Entry entry = countEntries.next();
-            entries[0].set(entry.key, entry.value);
+            packed[0] = (((long)entry.key) << 32) | (entry.value & 0xFFFFFFFFL);
             int j = 1;
             while(countEntries.hasNext){
                 countEntries.next(); // it returns the same entry over and over again.
-                entries[j++].set(entry.key, entry.value);
+                packed[j++] = (((long)entry.key) << 32) | (entry.value & 0xFFFFFFFFL);
             }
-            Arrays.sort(entries, 0, unique, Structs.comparingInt(p -> p.x));
 
-            int prev = entries[0].y, next;
+            //primitive sort: high 32 bits (key) fully determine order since keys are unique
+            Arrays.sort(packed, 0, unique);
+
+            int prev = (int)packed[0], next;
             for(int i = 1; i < unique; i++){
-                locs[next = entries[i].y] += locs[prev];
+                next = (int)packed[i];
+                locs[next] += locs[prev];
                 prev = next;
             }
             for(int i = end - 1, i3 = i * 3; i >= 0; i--, i3 -= 3){
