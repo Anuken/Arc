@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.graphics.gl.*;
 import arc.math.*;
 import arc.struct.*;
+import arc.util.*;
 
 import java.nio.*;
 import java.util.*;

@@ -119,8 +119,8 @@ public class SpriteCache implements Disposable{
         + "   gl_Position =  u_projectionViewMatrix * " + Shader.positionAttribute + ";\n" //
         + "}\n";
         String fragmentShader =
-          "varying vec4 v_color;\n" //
-        + "varying vec3 v_texCoords;\n" //
+          "varying lowp vec4 v_color;\n" //
+        + "varying highp vec3 v_texCoords;\n" //
         + "uniform highp sampler2DArray u_texture;\n"
         + "void main(){\n" //
         + "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
