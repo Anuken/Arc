@@ -371,7 +371,8 @@ public class Settings{
     }
 
     public boolean getBool(String name, boolean def){
-        return (boolean)get(name, def);
+        Object val = get(name, def);
+        return val instanceof Boolean ? (Boolean)val : def;
     }
 
     public byte[] getBytes(String name, byte[] def){
