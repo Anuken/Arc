@@ -33,6 +33,8 @@ public class OS{
     public static boolean isAndroid = false;
     public static boolean isARM = propNoNull("os.arch").startsWith("arm") || propNoNull("os.arch").startsWith("aarch64");
     public static boolean is64Bit = propNoNull("os.arch").contains("64") || propNoNull("os.arch").startsWith("armv8");
+    public static boolean isMobile;
+    public static boolean isDesktop;
 
     static{
         if(propNoNull("java.runtime.name").contains("Android Runtime") || propNoNull("java.vm.vendor").contains("The Android Project") || propNoNull("java.vendor").contains("The Android Project")){
@@ -51,6 +53,8 @@ public class OS{
             isMac = false;
             is64Bit = false;
         }
+        isMobile = isAndroid || isIos;
+        isDesktop = !isMobile;
     }
 
     public static String getAppDataDirectoryString(String appname){
