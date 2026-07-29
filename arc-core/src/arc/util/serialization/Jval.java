@@ -4,6 +4,7 @@ import arc.struct.*;
 import arc.util.*;
 
 import java.io.*;
+import java.util.*;
 import java.util.regex.*;
 
 /** An hsjon parser. Can be used as a standard json value.
@@ -91,13 +92,80 @@ public class Jval{
 
     public JsonMap asObject(){ if(!(value instanceof JsonMap)) throw new UnsupportedOperationException("Not an object: " + this); return (JsonMap)value; }
     public JsonArray asArray(){ if(!(value instanceof JsonArray)) throw new UnsupportedOperationException("Not an array: " + this); return (JsonArray)value; }
-    public int asInt(){ return asNumber().intValue(); }
-    public long asLong(){ return asNumber().longValue(); }
-    public float asFloat(){ return asNumber().floatValue(); }
-    public double asDouble(){ return asNumber().doubleValue(); }
-    public String asString(){ if(!(value instanceof String) && !(value instanceof Number)) throw new UnsupportedOperationException("Not a string: " + this); return String.valueOf(value); }
-    public boolean asBool(){ if(!(value instanceof Boolean)) throw new UnsupportedOperationException("Not a bool: " + this); return (Boolean)value; }
-    public Number asNumber(){ if(!(value instanceof Number)) throw new UnsupportedOperationException("Not a number: " + this); return ((Number)value); }
+
+    public byte asByte(){
+        if(value instanceof Number){
+            return ((Number)value).byteValue();
+        }else if(value instanceof String){
+            return Byte.parseByte((String)value);
+        }else{
+            throw new UnsupportedOperationException("Not a number: " + this);
+        }
+    }
+
+    public short asShort(){
+        if(value instanceof Number){
+            return ((Number)value).shortValue();
+        }else if(value instanceof String){
+            return Short.parseShort((String)value);
+        }else{
+            throw new UnsupportedOperationException("Not a number: " + this);
+        }
+    }
+
+    public int asInt(){
+        if(value instanceof Number){
+            return ((Number)value).intValue();
+        }else if(value instanceof String){
+            return Integer.parseInt((String)value);
+        }else{
+            throw new UnsupportedOperationException("Not a number: " + this);
+        }
+    }
+
+    public long asLong(){
+        if(value instanceof Number){
+            return ((Number)value).longValue();
+        }else if(value instanceof String){
+            return Long.parseLong((String)value);
+        }else{
+            throw new UnsupportedOperationException("Not a number: " + this);
+        }
+    }
+
+    public float asFloat(){
+        if(value instanceof Number){
+            return ((Number)value).floatValue();
+        }else if(value instanceof String){
+            return Float.parseFloat((String)value);
+        }else{
+            throw new UnsupportedOperationException("Not a number: " + this);
+        }
+    }
+
+    public double asDouble(){
+        if(value instanceof Number){
+            return ((Number)value).doubleValue();
+        }else if(value instanceof String){
+            return Double.parseDouble((String)value);
+        }else{
+            throw new UnsupportedOperationException("Not a number: " + this);
+        }
+    }
+
+    public String asString(){
+        if(!(value instanceof String) && !(value instanceof Number)) throw new UnsupportedOperationException("Not a string: " + this);
+        return String.valueOf(value);
+    }
+
+    public boolean asBool(){
+        if(value instanceof Boolean){
+            return (Boolean)value;
+        }else if(value instanceof String){
+            return Boolean.parseBoolean((String)value);
+        }
+        throw new UnsupportedOperationException("Not a bool: " + this);
+    }
 
     public Jval get(String name){
         if(name == null) throw new NullPointerException("name is null");
@@ -376,26 +444,27 @@ public class Jval{
         private int lineOffset;
         private int current;
         private StringBuilder captureBuffer;
-        private boolean capture;
+        private int captureStart;
+        private int rawStart;
+        private boolean escaped;
         private boolean isArray;
 
         Hparser(String string){
             buffer = string.toCharArray();
-            bufferLength = string.length();
+            bufferLength = buffer.length;
             reset();
         }
 
         Hparser(Reader reader) throws IOException{
-            this(readToEnd(reader));
-        }
-
-        static String readToEnd(Reader reader) throws IOException{
-            // read everything into a buffer
-            int n;
-            char[] part = new char[8 * 1024];
-            StringBuilder sb = new StringBuilder();
-            while((n = reader.read(part, 0, part.length)) != -1) sb.append(part, 0, n);
-            return sb.toString();
+            char[] data = new char[8 * 1024];
+            int size = 0, n;
+            while((n = reader.read(data, size, data.length - size)) != -1){
+                size += n;
+                if(size == data.length) data = Arrays.copyOf(data, data.length * 2);
+            }
+            buffer = size == data.length ? data : Arrays.copyOf(data, size);
+            bufferLength = buffer.length;
+            reset();
         }
 
         static boolean isWhiteSpace(int ch){
@@ -405,8 +474,8 @@ public class Jval{
         void reset(){
             index = lineOffset = current = 0;
             line = 1;
-            capture = false;
             captureBuffer = null;
+            escaped = false;
         }
 
         Jval parse(){
@@ -458,46 +527,121 @@ public class Jval{
         }
 
         private Jval readTfnns(){
-            // Hjson strings can be quoteless
-            // returns string, true, false, or null.
-            StringBuilder value = new StringBuilder();
+            int start = index - 1;
             int first = current;
             if(Hwriter.isPunctuatorChar(first))
                 throw error("Found a punctuator character '" + (char)first + "' when expecting a quoteless string (check your syntax)");
-            value.append((char)current);
+
             while(true){
                 read();
-                boolean isEol = current < 0 || current == '\r' || current == '\n' || (current == ',' && isArray) || current == ']';
-                if(isEol || current == ',' || current == '}' || current == '#' || current == '/' && (peek() == '/' || peek() == '*')
-                ){
+                boolean isComment = current == '#' || (current == '/' && (peek() == '/' || peek() == '*'));
+                boolean isEol = current < 0 || current == '\r' || current == '\n' || (current == ',' && isArray) || current == ']' || isComment;
+                if(isEol || current == ',' || current == '}'){
+                    int stop = current < 0 ? index : index - 1; // position of the stopping char, not yet part of the value
+
                     switch(first){
                         case 'f':
                         case 'n':
-                        case 't':
-                            String svalue = value.toString().trim();
-                            switch(svalue){
-                                case "false": return FALSE;
-                                case "null": return NULL;
-                                case "true": return TRUE;
-                            }
+                        case 't': {
+                            int s = start, e = stop;
+                            while(s < e && isTrimChar(buffer[s])) s++;
+                            while(e > s && isTrimChar(buffer[e - 1])) e--;
+                            int len = e - s;
+                            if(len == 5 && regionMatches(s, "false")) return FALSE;
+                            if(len == 4 && regionMatches(s, "null")) return NULL;
+                            if(len == 4 && regionMatches(s, "true")) return TRUE;
                             break;
+                        }
                         default:
                             if(first == '-' || first >= '0' && first <= '9'){
-                                Jval n = tryParseNumber(value, false);
+                                Jval n = tryParseNumber(buffer, start, stop, false);
                                 if(n != null) return n;
                             }
                     }
                     if(isEol){
-                        //remove trailing commas
-                        if(value.length() > 0 && value.charAt(value.length() - 1) == ','){
-                            value.setLength(value.length() - 1);
-                        }
-                        //remove any whitespace at the end (ignored in quoteless strings)
-                        return new Jval(value.toString().trim());
+                        int end = stop;
+                        //remove trailing comma
+                        if(end > start && buffer[end - 1] == ',') end--;
+                        //trim like String.trim() (<= 0x20), matching original .trim() behavior
+                        int s = start, e = end;
+                        while(s < e && isTrimChar(buffer[s])) s++;
+                        while(e > s && isTrimChar(buffer[e - 1])) e--;
+                        return new Jval(new String(buffer, s, e - s));
                     }
                 }
-                value.append((char)current);
             }
+        }
+
+        static Jval tryParseNumber(char[] buf, int from, int to, boolean stopAtNext){
+            int idx = from, len = to;
+            if(idx < len && buf[idx] == '-') idx++;
+
+            if(idx >= len) return null;
+            char first = buf[idx++];
+            if(!isDigit(first)) return null;
+
+            if(first == '0' && idx < len && isDigit(buf[idx]))
+                return null; // leading zero is not allowed
+
+            while(idx < len && isDigit(buf[idx])) idx++;
+
+            // frac
+            if(idx < len && buf[idx] == '.'){
+                idx++;
+                if(idx >= len || !isDigit(buf[idx++])) return null;
+                while(idx < len && isDigit(buf[idx])) idx++;
+            }
+
+            // exp
+            if(idx < len && Character.toLowerCase(buf[idx]) == 'e'){
+                idx++;
+                if(idx < len && (buf[idx] == '+' || buf[idx] == '-')) idx++;
+                if(idx >= len || !isDigit(buf[idx++])) return null;
+                while(idx < len && isDigit(buf[idx])) idx++;
+            }
+
+            int last = idx;
+            while(idx < len && isWhiteSpace(buf[idx])) idx++;
+
+            boolean foundStop = false;
+            if(idx < len && stopAtNext){
+                char ch = buf[idx];
+                if(ch == ',' || ch == '}' || ch == ']' || ch == '#' || ch == '/' && (len > idx + 1 && (buf[idx + 1] == '/' || buf[idx + 1] == '*')))
+                    foundStop = true;
+            }
+
+            if(idx < len && !foundStop) return null;
+
+            boolean isDecimal = false;
+            for(int i = from; i < last; i++){
+                char c = buf[i];
+                if(c == '.' || c == 'e' || c == 'E'){
+                    isDecimal = true;
+                    break;
+                }
+            }
+
+            String str = new String(buf, from, last - from);
+
+            if(!isDecimal){
+                try{
+                    return new Jval(Long.parseLong(str));
+                }catch(NumberFormatException ignored){
+                }
+            }
+
+            return new Jval(Double.parseDouble(str));
+        }
+
+        private boolean regionMatches(int off, String kw){
+            int n = kw.length();
+            for(int i = 0; i < n; i++) if(buffer[off + i] != kw.charAt(i)) return false;
+            return true;
+        }
+
+        /** Matches String.trim()'s definition (chars <= 0x20), used where the original relied on .trim(). */
+        private static boolean isTrimChar(char c){
+            return c <= ' ';
         }
 
         private Jval readArray(){
@@ -633,7 +777,6 @@ public class Jval{
             startCapture();
             while(current >= 0 && current != exitCh){
                 if(current == '\\') readEscape();
-                //else if(current < 0x20) throw expected("valid string character");
                 else read();
             }
             String string = endCapture();
@@ -646,9 +789,20 @@ public class Jval{
             }else return string;
         }
 
+        private void startCapture(){
+            captureStart = index - 1; // current already holds buffer[index-1]
+            rawStart = captureStart;
+            escaped = false;
+        }
+
         private void readEscape(){
-            pauseCapture();
-            read();
+            // flush the raw (unescaped) run seen so far, up to this backslash
+            int backslashPos = index - 1;
+            if(captureBuffer == null) captureBuffer = new StringBuilder(32);
+            captureBuffer.append(buffer, rawStart, backslashPos - rawStart);
+            escaped = true;
+
+            read(); // consume '\', current -> escape designator
             switch(current){
                 case '"':
                 case '\'':
@@ -686,8 +840,21 @@ public class Jval{
                 default:
                     throw expected("valid escape sequence");
             }
-            capture = true;
-            read();
+            read(); // advance past the escape sequence
+            rawStart = index - 1; // next raw run starts here
+        }
+
+        private String endCapture(){
+            int end = index - 1; // current is exitCh (or -1 on unterminated input, pre-existing edge case)
+            String result;
+            if(escaped){
+                captureBuffer.append(buffer, rawStart, end - rawStart);
+                result = captureBuffer.toString();
+                captureBuffer.setLength(0); // reuse the builder for the next escaped string, if any
+            }else{
+                result = new String(buffer, captureStart, end - captureStart); // single copy, common case
+            }
+            return result;
         }
 
         private static boolean isDigit(char ch){
@@ -789,7 +956,6 @@ public class Jval{
         private void read(){
             if(current == '\n'){ line++; lineOffset = index; }
             current = index < bufferLength ? buffer[index++] : -1;
-            if(capture) captureBuffer.append((char)current);
         }
 
         private int peek(int idx){
@@ -799,32 +965,6 @@ public class Jval{
 
         private int peek(){
             return peek(0);
-        }
-
-        private void startCapture(){
-            if(captureBuffer == null)
-                captureBuffer = new StringBuilder();
-            capture = true;
-            captureBuffer.append((char)current);
-        }
-
-        private void pauseCapture(){
-            int len = captureBuffer.length();
-            if(len > 0) captureBuffer.deleteCharAt(len - 1);
-            capture = false;
-        }
-
-        private String endCapture(){
-            pauseCapture();
-            String captured;
-            if(captureBuffer.length() > 0){
-                captured = captureBuffer.toString();
-                captureBuffer.setLength(0);
-            }else{
-                captured = "";
-            }
-            capture = false;
-            return captured;
         }
 
         private JsonParseException expected(String expected){
