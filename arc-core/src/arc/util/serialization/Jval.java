@@ -1038,7 +1038,7 @@ public class Jval{
         }
 
         static boolean needsQuotes(char c){
-            return c == '\t' || c == '\f' || c == '\b' || c == '\n' || c == '\r'/* || c == ']' || c == ','*/;
+            return c == '\t' || c == '\f' || c == '\b' || c == '\n' || c == '\r' || c == ']' || c == '[' || c == ',';
         }
 
         static boolean needsEscape(char c){
