@@ -371,12 +371,11 @@ public class Jval{
 
     static class Hparser{
         private final String buffer;
-        private Reader reader;
         private int index;
         private int line;
         private int lineOffset;
         private int current;
-        private StringBuilder captureBuffer, peek;
+        private StringBuilder captureBuffer;
         private boolean capture;
         private boolean isArray;
 
@@ -405,8 +404,6 @@ public class Jval{
         void reset(){
             index = lineOffset = current = 0;
             line = 1;
-            peek = new StringBuilder();
-            reader = new StringReader(buffer);
             capture = false;
             captureBuffer = null;
         }
@@ -779,38 +776,19 @@ public class Jval{
             }
         }
 
-        private int peek(int idx) throws IOException{
-            while(idx >= peek.length()){
-                int c = reader.read();
-                if(c < 0) return c;
-                peek.append((char)c);
-            }
-            return peek.charAt(idx);
+        private void read(){
+            if(current == '\n'){ line++; lineOffset = index; }
+            current = index < buffer.length() ? buffer.charAt(index++) : -1;
+            if(capture) captureBuffer.append((char)current);
+        }
+
+        private int peek(int idx){
+            int p = index + idx;
+            return p < buffer.length() ? buffer.charAt(p) : -1;
         }
 
         private int peek() throws IOException{
             return peek(0);
-        }
-
-        private boolean read() throws IOException{
-
-            if(current == '\n'){
-                line++;
-                lineOffset = index;
-            }
-
-            if(peek.length() > 0){
-                // normally peek will only hold not more than one character so this should not matter for performance
-                current = peek.charAt(0);
-                peek.deleteCharAt(0);
-            }else current = reader.read();
-
-            if(current < 0) return false;
-
-            index++;
-            if(capture) captureBuffer.append((char)current);
-
-            return true;
         }
 
         private void startCapture(){
