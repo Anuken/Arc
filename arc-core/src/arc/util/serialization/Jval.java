@@ -19,8 +19,6 @@ public class Jval{
 
     Jval(Object value){
         this.value = value;
-
-        if(getType() == null) throw new IllegalArgumentException("Invalid JSON value: " + value);
     }
 
     public static Jval newObject(){
@@ -277,6 +275,13 @@ public class Jval{
     /** Alias class of whatever is used to store json maps (objects). */
     public static class JsonMap extends ArrayMap<String, Jval>{
 
+        /** Puts a value without checking if it's in the map first. This is unsafe, but prevents O(n) put. */
+        protected void putAdd(String key, Jval value){
+            if(size == ((Object[])keys).length) resize(Math.max(8, (int)(size * 1.75f)));
+            int index = size++;
+            ((Object[])keys)[index] = key;
+            ((Object[])values)[index] = value;
+        }
     }
 
     /** Alias class of json arrays. */
@@ -365,7 +370,7 @@ public class Jval{
     }
 
     static class Hparser{
-        private final String buffer;
+        private final char[] buffer;
         private int index, bufferLength;
         private int line;
         private int lineOffset;
@@ -375,7 +380,7 @@ public class Jval{
         private boolean isArray;
 
         Hparser(String string){
-            buffer = string;
+            buffer = string.toCharArray();
             bufferLength = string.length();
             reset();
         }
@@ -532,7 +537,7 @@ public class Jval{
                     throw expected("':'");
                 }
                 skipWhiteSpace();
-                object.put(name, readValue());
+                object.putAdd(name, readValue());
                 skipWhiteSpace();
                 if(readIf(',')) skipWhiteSpace(); // , is optional
             }
@@ -783,13 +788,13 @@ public class Jval{
 
         private void read(){
             if(current == '\n'){ line++; lineOffset = index; }
-            current = index < bufferLength ? buffer.charAt(index++) : -1;
+            current = index < bufferLength ? buffer[index++] : -1;
             if(capture) captureBuffer.append((char)current);
         }
 
         private int peek(int idx){
             int p = index + idx;
-            return p < bufferLength ? buffer.charAt(p) : -1;
+            return p < bufferLength ? buffer[p] : -1;
         }
 
         private int peek(){
