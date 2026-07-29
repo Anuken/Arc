@@ -63,12 +63,7 @@ public class Jval{
      * @return the Hjson value that has been read
      */
     public static Jval read(String text){
-        try{
-            return new Hparser(text).parse();
-        }catch(IOException exception){
-            // JsonParser does not throw IOException for String
-            throw new RuntimeException(exception);
-        }
+        return new Hparser(text).parse();
     }
 
     public Jtype getType(){
@@ -371,7 +366,7 @@ public class Jval{
 
     static class Hparser{
         private final String buffer;
-        private int index;
+        private int index, bufferLength;
         private int line;
         private int lineOffset;
         private int current;
@@ -381,6 +376,7 @@ public class Jval{
 
         Hparser(String string){
             buffer = string;
+            bufferLength = string.length();
             reset();
         }
 
@@ -408,7 +404,7 @@ public class Jval{
             captureBuffer = null;
         }
 
-        Jval parse() throws IOException{
+        Jval parse(){
             //braces for the root object are optional
 
             read();
@@ -436,13 +432,13 @@ public class Jval{
             }
         }
 
-        Jval checkTrailing(Jval v) throws JsonParseException, IOException{
+        Jval checkTrailing(Jval v) throws JsonParseException{
             skipWhiteSpace();
             if(!isEndOfText()) throw error("Extra characters in input: " + current);
             return v;
         }
 
-        private Jval readValue() throws IOException{
+        private Jval readValue(){
             switch(current){
                 case '\'':
                 case '"':
@@ -456,7 +452,7 @@ public class Jval{
             }
         }
 
-        private Jval readTfnns() throws IOException{
+        private Jval readTfnns(){
             // Hjson strings can be quoteless
             // returns string, true, false, or null.
             StringBuilder value = new StringBuilder();
@@ -499,7 +495,7 @@ public class Jval{
             }
         }
 
-        private Jval readArray() throws IOException{
+        private Jval readArray(){
             isArray = true;
             read();
             JsonArray array = new JsonArray();
@@ -519,7 +515,7 @@ public class Jval{
             return new Jval(array);
         }
 
-        private Jval readObject(boolean objectWithoutBraces) throws IOException{
+        private Jval readObject(boolean objectWithoutBraces){
             if(!objectWithoutBraces) read();
             JsonMap object = new JsonMap();
             skipWhiteSpace();
@@ -543,7 +539,7 @@ public class Jval{
             return new Jval(object);
         }
 
-        private String readName() throws IOException{
+        private String readName(){
             if(current == '"' || current == '\'') return readStringInternal(false);
 
             StringBuilder name = new StringBuilder();
@@ -567,7 +563,7 @@ public class Jval{
             }
         }
 
-        private String readMlString() throws IOException{
+        private String readMlString(){
 
             // Parse a multiline string value.
             StringBuilder sb = new StringBuilder();
@@ -614,18 +610,18 @@ public class Jval{
             }
         }
 
-        private void skipIndent(int indent) throws IOException{
+        private void skipIndent(int indent){
             while(indent-- > 0){
                 if(isWhiteSpace(current) && current != '\n') read();
                 else break;
             }
         }
 
-        private Jval readString() throws IOException{
+        private Jval readString(){
             return new Jval(readStringInternal(true));
         }
 
-        private String readStringInternal(boolean allowML) throws IOException{
+        private String readStringInternal(boolean allowML){
             // callees make sure that (current=='"' || current=='\'')
             int exitCh = current;
             read();
@@ -645,7 +641,7 @@ public class Jval{
             }else return string;
         }
 
-        private void readEscape() throws IOException{
+        private void readEscape(){
             pauseCapture();
             read();
             switch(current){
@@ -727,16 +723,25 @@ public class Jval{
 
             boolean foundStop = false;
             if(idx < len && stopAtNext){
-                // end scan if we find a control character like ,}] or a comment
                 char ch = value.charAt(idx);
                 if(ch == ',' || ch == '}' || ch == ']' || ch == '#' || ch == '/' && (len > idx + 1 && (value.charAt(idx + 1) == '/' || value.charAt(idx + 1) == '*')))
                     foundStop = true;
             }
 
             if(idx < len && !foundStop) return null;
+
+            boolean isDecimal = false;
+            for(int i = 0; i < last; i++){
+                char c = value.charAt(i);
+                if(c == '.' || c == 'e' || c == 'E'){
+                    isDecimal = true;
+                    break;
+                }
+            }
+
             String str = value.substring(0, last);
 
-            if(!str.contains(".") && !str.contains(",") && !str.contains("e")){
+            if(!isDecimal){
                 try{
                     return new Jval(Long.parseLong(str));
                 }catch(NumberFormatException ignored){
@@ -746,11 +751,11 @@ public class Jval{
             return new Jval(Double.parseDouble(str));
         }
 
-        static Jval tryParseNumber(String value) throws IOException{
+        static Jval tryParseNumber(String value){
             return tryParseNumber(new StringBuilder(value), true);
         }
 
-        private boolean readIf(char ch) throws IOException{
+        private boolean readIf(char ch){
             if(current != ch){
                 return false;
             }
@@ -758,7 +763,7 @@ public class Jval{
             return true;
         }
 
-        private void skipWhiteSpace() throws IOException{
+        private void skipWhiteSpace(){
             while(!isEndOfText()){
                 while(isWhiteSpace()) read();
                 if(current == '#' || current == '/' && peek() == '/'){
@@ -778,16 +783,16 @@ public class Jval{
 
         private void read(){
             if(current == '\n'){ line++; lineOffset = index; }
-            current = index < buffer.length() ? buffer.charAt(index++) : -1;
+            current = index < bufferLength ? buffer.charAt(index++) : -1;
             if(capture) captureBuffer.append((char)current);
         }
 
         private int peek(int idx){
             int p = index + idx;
-            return p < buffer.length() ? buffer.charAt(p) : -1;
+            return p < bufferLength ? buffer.charAt(p) : -1;
         }
 
-        private int peek() throws IOException{
+        private int peek(){
             return peek(0);
         }
 
