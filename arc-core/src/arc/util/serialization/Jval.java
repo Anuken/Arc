@@ -535,8 +535,8 @@ public class Jval{
             while(true){
                 read();
                 boolean isComment = current == '#' || (current == '/' && (peek() == '/' || peek() == '*'));
-                boolean isEol = current < 0 || current == '\r' || current == '\n' || (current == ',' && isArray) || current == ']' || isComment;
-                if(isEol || current == ',' || current == '}'){
+                boolean isEol = current < 0 || current == '\r' || current == '\n' || (current == ',' && isArray) || current == ']'  || current == '}' || isComment;
+                if(isEol || current == ','){
                     int stop = current < 0 ? index : index - 1; // position of the stopping char, not yet part of the value
 
                     switch(first){

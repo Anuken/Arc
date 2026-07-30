@@ -1224,7 +1224,7 @@ public class Json{
                 }
             }
             if(type == CharSequence.class) return (T)string;
-            throw new SerializationException("Unable to convert value to required type: " + jsonData + " (" + type.getName() + ")");
+            throw new SerializationException("Unable to convert '" + jsonData + "' to " + (type.isArray() ? type.getComponentType() + "[]" : type.getName()));
         }
 
         return null;
