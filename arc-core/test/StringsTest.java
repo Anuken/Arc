@@ -52,6 +52,11 @@ public class StringsTest{
         assertEquals(Strings.sanitizeFilename("..txt"), "..txt");
     }
 
+    @Test
+    public void testFormatMillisHandlesLongMinValue(){
+        assertEquals("-2562047788015:12:55", Strings.formatMillis(Long.MIN_VALUE));
+    }
+
     static void checkDouble(String value){
         assertEquals(Double.parseDouble(value), Strings.parseDouble(value, 999999), 0.00001);
     }

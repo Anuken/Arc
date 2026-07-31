@@ -1,5 +1,7 @@
 package arc.util;
 
+import java.math.BigInteger;
+
 import arc.graphics.*;
 import arc.math.*;
 import arc.struct.*;
@@ -764,16 +766,15 @@ public class Strings{
 
     public static String formatMillis(long val){
         StringBuilder buf = new StringBuilder(20);
-        String sgn = "";
+        BigInteger millis = BigInteger.valueOf(val);
+        String sgn = millis.signum() < 0 ? "-" : "";
+        millis = millis.abs();
 
-        if(val < 0) sgn = "-";
-        val = Math.abs(val);
-
-        append(buf, sgn, 0, (val / 3600000));
-        val %= 3600000;
-        append(buf, ":", 2, (val / 60000));
-        val %= 60000;
-        append(buf, ":", 2, (val / 1000));
+        BigInteger[] hours = millis.divideAndRemainder(BigInteger.valueOf(3600000));
+        BigInteger[] minutes = hours[1].divideAndRemainder(BigInteger.valueOf(60000));
+        append(buf, sgn, 0, hours[0].longValue());
+        append(buf, ":", 2, minutes[0].longValue());
+        append(buf, ":", 2, minutes[1].divide(BigInteger.valueOf(1000)).longValue());
         return buf.toString();
     }
 
