@@ -5,7 +5,6 @@ import arc.util.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.regex.*;
 
 /** An hsjon parser. Can be used as a standard json value.
  * Output can be converted to standard JSON. This class is heavily based upon the Hjson Java implementation.*/
@@ -291,13 +290,16 @@ public class Jval{
         WritingBuffer buffer = new WritingBuffer(writer, 128);
         switch(format){
             case plain:
-                new Jwriter(false).save(this, buffer, 0);
+                Jwriter.save(this, false, true, buffer, 0);
+                break;
+            case minimal:
+                Jwriter.save(this, false, false, buffer, 0);
                 break;
             case formatted:
-                new Jwriter(true).save(this, buffer, 0);
+                Jwriter.save(this, true, true, buffer, 0);
                 break;
             case hjson:
-                new Hwriter().save(this, buffer, -1, "", true);
+                Hwriter.save(this, buffer, -1, "", true);
                 break;
         }
         buffer.flush();
@@ -309,7 +311,11 @@ public class Jval{
         Jtype type = getType();
         switch(type){
             case nil: return "null";
-            case number: return (value.toString().endsWith(".0") ? value.toString().replace(".0", "") : value.toString()).replace('E', 'e');
+            case number:{
+                String s = value.toString();
+                if(s.endsWith(".0")) s = s.substring(0, s.length() - 2);
+                return s.replace('E', 'e');
+            }
             case string:
             case bool: return value.toString();
         }
@@ -423,9 +429,11 @@ public class Jval{
     public enum Jformat{
         /** JSON (no whitespace). */
         plain,
+        /** Minimal quote-less JSON. Equivalent to libGDX's minimal output type. */
+        minimal,
         /** Formatted JSON. */
         formatted,
-        /** Hjson. */
+        /** Formatted HJSON. */
         hjson,
     }
 
@@ -1010,14 +1018,13 @@ public class Jval{
     }
 
     static class Hwriter{
-        static Pattern needsEscapeName = Pattern.compile("[,\\{\\[\\}\\]\\s:#\"']|//|/\\*");
 
-        void nl(Writer tw, int level) throws IOException{
+        static void nl(Writer tw, int level) throws IOException{
             tw.write('\n');
             for(int i = 0; i < level; i++) tw.write("  ");
         }
 
-        public void save(Jval value, Writer tw, int level, String separator, boolean noIndent) throws IOException{
+        public static void save(Jval value, Writer tw, int level, String separator, boolean noIndent) throws IOException{
             if(value == null){
                 tw.write(separator);
                 tw.write("null");
@@ -1072,64 +1079,85 @@ public class Jval{
         }
 
         static String escapeName(String name){
-            if(name.length() == 0 || needsEscapeName.matcher(name).find())
+            if(name.length() == 0 || needsEscapeName(name))
                 return "\"" + Jwriter.escapeString(name) + "\"";
             else
                 return name;
         }
 
-        void writeString(String value, Writer tw, int level, String separator) throws IOException{
-            if(value.length() == 0){
-                tw.write(separator + "\"\"");
+        static boolean needsEscapeName(String name){
+            int len = name.length();
+            for(int i = 0; i < len; i++){
+                char c = name.charAt(i);
+                switch(c){
+                    case ',': case '{': case '[': case '}': case ']': case ':': case '"': case '\'':
+                    case ' ': case '\t': case '\n': case '\u000B': case '\f': case '\r':
+                        return true;
+                }
+                if(c == '/' && i + 1 < len && (name.charAt(i + 1) == '/' || name.charAt(i + 1) == '*')) return true;
+            }
+            return false;
+        }
+
+        static void writeString(String value, Writer tw, int level, String separator) throws IOException{
+            int len = value.length();
+            if(len == 0){
+                tw.write(separator);
+                tw.write("\"\"");
                 return;
             }
 
-            char left = value.charAt(0), right = value.charAt(value.length() - 1);
-            char left1 = value.length() > 1 ? value.charAt(1) : '\0';
-            boolean doEscape = false;
-            char[] valuec = value.toCharArray();
-            for(char ch : valuec){
-                if(needsQuotes(ch)){
-                    doEscape = true;
-                    break;
-                }
-            }
+            char left = value.charAt(0), right = value.charAt(len - 1);
+            char left1 = len > 1 ? value.charAt(1) : '\0';
 
-            if(doEscape ||
-            Hparser.isWhiteSpace(left) || Hparser.isWhiteSpace(right) ||
+            if(Hparser.isWhiteSpace(left) || Hparser.isWhiteSpace(right) ||
             left == '"' ||
             left == '\'' ||
             left == '#' ||
             left == '/' && (left1 == '*' || left1 == '/') ||
             isPunctuatorChar(left) ||
+            startsWithKeyword(value) ||
             Hparser.tryParseNumber(value) != null ||
-            startsWithKeyword(value)){
+            containsQuoteChar(value)){
 
-                boolean noEscape = true;
-                for(char ch : valuec){
-                    if(needsEscape(ch)){
-                        noEscape = false;
-                        break;
-                    }
+                boolean noEscape = true, noEscapeML = true, allWhite = true;
+                for(int i = 0; i < len && (noEscape || noEscapeML || allWhite); i++){
+                    char ch = value.charAt(i);
+                    if(noEscape && needsEscape(ch)) noEscape = false;
+                    if(noEscapeML && needsEscapeML(ch)) noEscapeML = false;
+                    if(allWhite && !Hparser.isWhiteSpace(ch)) allWhite = false;
                 }
+
                 if(noEscape){
-                    tw.write(separator + "\"" + value + "\"");
+                    tw.write(separator);
+                    tw.write('"');
+                    tw.write(value);
+                    tw.write('"');
                     return;
                 }
 
-                boolean noEscapeML = true, allWhite = true;
-                for(char ch : valuec){
-                    if(needsEscapeML(ch)){
-                        noEscapeML = false;
-                        break;
-                    }else if(!Hparser.isWhiteSpace(ch)) allWhite = false;
+                if(noEscapeML && !allWhite && value.indexOf("'''") < 0) writeMLString(value, tw, level, separator);
+                else{
+                    tw.write(separator);
+                    tw.write('"');
+                    tw.write(Jwriter.escapeString(value));
+                    tw.write('"');
                 }
-                if(noEscapeML && !allWhite && !value.contains("'''")) writeMLString(value, tw, level, separator);
-                else tw.write(separator + "\"" + Jwriter.escapeString(value) + "\"");
-            }else tw.write(separator + value);
+            }else{
+                tw.write(separator);
+                tw.write(value);
+            }
         }
 
-        void writeMLString(String value, Writer tw, int level, String separator) throws IOException{
+        static boolean containsQuoteChar(String value){
+            int len = value.length();
+            for(int i = 0; i < len; i++){
+                if(needsQuotes(value.charAt(i))) return true;
+            }
+            return false;
+        }
+
+        static void writeMLString(String value, Writer tw, int level, String separator) throws IOException{
             String[] lines = value.replace("\r", "").split("\n", -1);
 
             if(lines.length == 1){
@@ -1186,20 +1214,13 @@ public class Jval{
     }
 
     static class Jwriter{
-        boolean format;
 
-        public Jwriter(boolean format){
-            this.format = format;
+        static void nl(Writer tw, int level) throws IOException{
+            tw.write('\n');
+            for(int i = 0; i < level; i++) tw.write("  ");
         }
 
-        void nl(Writer tw, int level) throws IOException{
-            if(format){
-                tw.write('\n');
-                for(int i = 0; i < level; i++) tw.write("  ");
-            }
-        }
-
-        public void save(Jval value, Writer tw, int level) throws IOException{
+        public static void save(Jval value, boolean format, boolean includeQuotes, Writer tw, int level) throws IOException{
             boolean following = false;
             switch(value.getType()){
                 case object:
@@ -1207,42 +1228,52 @@ public class Jval{
                     tw.write('{');
                     for(ObjectMap.Entry<String, Jval> pair : obj){
                         if(following) tw.write(",");
-                        nl(tw, level + 1);
-                        tw.write('\"');
-                        tw.write(escapeString(pair.key));
-                        tw.write("\":");
+                        if(format) nl(tw, level + 1);
+                        if(includeQuotes){
+                            tw.write('\"');
+                            tw.write(escapeString(pair.key));
+                            tw.write("\":");
+                        }else{
+                            tw.write(Hwriter.escapeName(pair.key));
+                            tw.write(':');
+                        }
+
                         Jval v = pair.value;
                         Jtype vType = v.getType();
                         if(format && vType != Jtype.array && vType != Jtype.object) tw.write(" ");
-                        save(v, tw, level + 1);
+                        save(v, format, includeQuotes, tw, level + 1);
                         following = true;
                     }
-                    if(following) nl(tw, level);
+                    if(following && format) nl(tw, level);
                     tw.write('}');
                     break;
                 case array:
                     JsonArray arr = value.asArray();
                     int n = arr.size;
-                    if(level != 0) tw.write(' ');
                     tw.write('[');
                     for(int i = 0; i < n; i++){
                         if(following) tw.write(",");
                         Jval v = arr.get(i);
                         Jtype vType = v.getType();
-                        if(vType != Jtype.array) nl(tw, level + 1);
-                        save(v, tw, level + 1);
+                        if(vType != Jtype.array && format) nl(tw, level + 1);
+                        save(v, format, includeQuotes, tw, level + 1);
                         following = true;
                     }
-                    if(following) nl(tw, level);
+                    if(following && format) nl(tw, level);
                     tw.write(']');
                     break;
                 case bool:
                     tw.write(value.isTrue() ? "true" : "false");
                     break;
                 case string:
-                    tw.write('"');
-                    tw.write(escapeString(value.asString()));
-                    tw.write('"');
+                    if(includeQuotes){
+                        tw.write('"');
+                        tw.write(escapeString(value.asString()));
+                        tw.write('"');
+                    }else{
+                        tw.write(Hwriter.escapeName(value.asString()));
+                    }
+
                     break;
                 default:
                     tw.write(value.toString());
