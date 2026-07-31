@@ -1,215 +1,303 @@
 package arc.util.serialization;
 
-import arc.struct.Seq;
-import arc.util.Strings;
+import arc.struct.*;
+import arc.util.serialization.Jval.*;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.regex.Pattern;
+import java.io.*;
 
-/**
- * Builder style API for emitting JSON.
- * @author Nathan Sweet
- */
-public class JsonWriter extends Writer implements BaseJsonWriter{
-    final Writer writer;
-    private final Seq<JsonObject> stack = new Seq<>();
-    private JsonObject current;
-    private boolean named;
-    private OutputType outputType = OutputType.json;
-    private boolean quoteLongValues = false;
+class JsonWriter{
 
-    public JsonWriter(Writer writer){
-        this.writer = writer;
+    static void writeJson(Jval value, boolean format, boolean includeQuotes, Writer tw, int level) throws IOException{
+        boolean following = false;
+        switch(value.getType()){
+            case object:
+                JsonMap obj = value.asObject();
+                tw.write('{');
+                for(ObjectMap.Entry<String, Jval> pair : obj){
+                    if(following) tw.write(",");
+                    if(format) nl(tw, level + 1);
+                    if(includeQuotes){
+                        tw.write('\"');
+                        tw.write(escapeString(pair.key));
+                        tw.write("\":");
+                    }else{
+                        tw.write(escapeName(pair.key));
+                        tw.write(':');
+                    }
+
+                    Jval v = pair.value;
+                    Jtype vType = v.getType();
+                    if(format && vType != Jtype.array && vType != Jtype.object) tw.write(" ");
+                    writeJson(v, format, includeQuotes, tw, level + 1);
+                    following = true;
+                }
+                if(following && format) nl(tw, level);
+                tw.write('}');
+                break;
+            case array:
+                JsonArray arr = value.asArray();
+                int n = arr.size;
+                tw.write('[');
+                for(int i = 0; i < n; i++){
+                    if(following) tw.write(",");
+                    Jval v = arr.get(i);
+                    Jtype vType = v.getType();
+                    if(vType != Jtype.array && format) nl(tw, level + 1);
+                    writeJson(v, format, includeQuotes, tw, level + 1);
+                    following = true;
+                }
+                if(following && format) nl(tw, level);
+                tw.write(']');
+                break;
+            case bool:
+                tw.write(value.isTrue() ? "true" : "false");
+                break;
+            case string:
+                if(includeQuotes){
+                    tw.write('"');
+                    tw.write(escapeString(value.asString()));
+                    tw.write('"');
+                }else{
+                    tw.write(escapeName(value.asString()));
+                }
+
+                break;
+            default:
+                tw.write(value.toString());
+                break;
+        }
     }
 
-    public Writer getWriter(){
-        return writer;
+    static void writeHjson(Jval value, Writer tw, int level, String separator, boolean noIndent) throws IOException{
+        if(value == null){
+            tw.write(separator);
+            tw.write("null");
+            return;
+        }
+
+        switch(value.getType()){
+            case object:
+                JsonMap obj = value.asObject();
+                if(!noIndent){
+                    tw.write(" ");
+                }
+                if(level >= 0) tw.write('{');
+                int index = 0;
+
+                for(ObjectMap.Entry<String, Jval> pair : obj){
+                    if(!(index++ == 0 && level < 0)) nl(tw, level + 1);
+                    tw.write(escapeName(pair.key));
+                    tw.write(":");
+                    writeHjson(pair.value, tw, level + 1, " ", false);
+                }
+
+                if(obj.size > 0) nl(tw, level);
+                if(level >= 0) tw.write('}');
+                break;
+            case array:
+                JsonArray arr = value.asArray();
+                int n = arr.size;
+                if(!noIndent){
+                    tw.write(" ");
+                }
+                tw.write('[');
+                for(int i = 0; i < n; i++){
+                    nl(tw, level + 1);
+                    writeHjson(arr.get(i), tw, level + 1, "", true);
+                }
+                if(n > 0) nl(tw, level);
+                tw.write(']');
+                break;
+            case bool:
+                tw.write(separator);
+                tw.write(value.isTrue() ? "true" : "false");
+                break;
+            case string:
+                writeString(value.asString(), tw, level, separator);
+                break;
+            default:
+                tw.write(separator);
+                tw.write(value.toString());
+                break;
+        }
     }
 
-    /** Sets the type of JSON output. Default is {@link OutputType#minimal}. */
-    @Override
-    public void setOutputType(OutputType outputType){
-        this.outputType = outputType;
-    }
-
-    /**
-     * When true, quotes long, double, BigInteger, BigDecimal types to prevent truncation in languages like JavaScript and PHP.
-     * This is not necessary when using arc, which handles these types without truncation. Default is false.
-     */
-    @Override
-    public void setQuoteLongValues(boolean quoteLongValues){
-        this.quoteLongValues = quoteLongValues;
-    }
-
-    @Override
-    public BaseJsonWriter name(String name) throws IOException{
-        if(current == null || current.array) throw new IllegalStateException("Current item must be an object.");
-        if(!current.needsComma)
-            current.needsComma = true;
+    static String escapeName(String name){
+        if(name.length() == 0 || needsEscapeName(name))
+            return "\"" + escapeString(name) + "\"";
         else
-            writer.write(',');
-        writer.write(outputType.quoteName(name));
-        writer.write(':');
-        named = true;
-        return this;
+            return name;
     }
 
-    @Override
-    public BaseJsonWriter object() throws IOException{
-        requireCommaOrName();
-        stack.add(current = new JsonObject(false));
-        return this;
-    }
-
-    @Override
-    public BaseJsonWriter array() throws IOException{
-        requireCommaOrName();
-        stack.add(current = new JsonObject(true));
-        return this;
-    }
-
-    @Override
-    public BaseJsonWriter value(Object value) throws IOException{
-        if(quoteLongValues
-        && (value instanceof Long || value instanceof Double || value instanceof BigDecimal || value instanceof BigInteger)){
-            value = value.toString();
-        }else if(value instanceof Number){
-            Number number = (Number)value;
-            long longValue = number.longValue();
-            if(number.doubleValue() == longValue) value = longValue;
+    static boolean needsEscapeName(String name){
+        int len = name.length();
+        for(int i = 0; i < len; i++){
+            char c = name.charAt(i);
+            switch(c){
+                case ',': case '{': case '[': case '}': case ']': case ':': case '"': case '\'':
+                case ' ': case '\t': case '\n': case '\u000B': case '\f': case '\r':
+                    return true;
+            }
+            if(c == '/' && i + 1 < len && (name.charAt(i + 1) == '/' || name.charAt(i + 1) == '*')) return true;
         }
-        requireCommaOrName();
-        writer.write(outputType.quoteValue(value));
-        return this;
+        return false;
     }
 
-    private void requireCommaOrName() throws IOException{
-        if(current == null) return;
-        if(current.array){
-            if(!current.needsComma)
-                current.needsComma = true;
-            else
-                writer.write(',');
+    static void writeString(String value, Writer tw, int level, String separator) throws IOException{
+        int len = value.length();
+        if(len == 0){
+            tw.write(separator);
+            tw.write("\"\"");
+            return;
+        }
+
+        char left = value.charAt(0), right = value.charAt(len - 1);
+        char left1 = len > 1 ? value.charAt(1) : '\0';
+
+        if(JsonReader.isWhiteSpace(left) || JsonReader.isWhiteSpace(right) ||
+        left == '"' ||
+        left == '\'' ||
+        left == '#' ||
+        left == '/' && (left1 == '*' || left1 == '/') ||
+        isPunctuatorChar(left) ||
+        startsWithKeyword(value) ||
+        JsonReader.tryParseNumber(value) != null ||
+        containsQuoteChar(value)){
+
+            boolean noEscape = true, noEscapeML = true, allWhite = true;
+            for(int i = 0; i < len && (noEscape || noEscapeML || allWhite); i++){
+                char ch = value.charAt(i);
+                if(noEscape && needsEscape(ch)) noEscape = false;
+                if(noEscapeML && needsEscapeML(ch)) noEscapeML = false;
+                if(allWhite && !JsonReader.isWhiteSpace(ch)) allWhite = false;
+            }
+
+            if(noEscape){
+                tw.write(separator);
+                tw.write('"');
+                tw.write(value);
+                tw.write('"');
+                return;
+            }
+
+            if(noEscapeML && !allWhite && value.indexOf("'''") < 0) writeMLString(value, tw, level, separator);
+            else{
+                tw.write(separator);
+                tw.write('"');
+                tw.write(escapeString(value));
+                tw.write('"');
+            }
         }else{
-            if(!named) throw new IllegalStateException("Name must be set.");
-            named = false;
+            tw.write(separator);
+            tw.write(value);
         }
     }
 
-    @Override
-    public BaseJsonWriter object(String name) throws IOException{
-        return name(name).object();
+    static boolean containsQuoteChar(String value){
+        int len = value.length();
+        for(int i = 0; i < len; i++){
+            if(needsQuotes(value.charAt(i))) return true;
+        }
+        return false;
     }
 
-    @Override
-    public BaseJsonWriter array(String name) throws IOException{
-        return name(name).array();
-    }
+    static void writeMLString(String value, Writer tw, int level, String separator) throws IOException{
+        String[] lines = value.replace("\r", "").split("\n", -1);
 
-    @Override
-    public BaseJsonWriter set(String name, Object value) throws IOException{
-        return name(name).value(value);
-    }
+        if(lines.length == 1){
+            tw.write(separator + "'''");
+            tw.write(lines[0]);
+            tw.write("'''");
+        }else{
+            level++;
+            nl(tw, level);
+            tw.write("'''");
 
-    @Override
-    public BaseJsonWriter pop() throws IOException{
-        if(named) throw new IllegalStateException("Expected an object, array, or value since a name was set.");
-        stack.pop().close();
-        current = stack.size == 0 ? null : stack.peek();
-        return this;
-    }
-
-    @Override
-    public void write(char[] cbuf, int off, int len) throws IOException{
-        writer.write(cbuf, off, len);
-    }
-
-    @Override
-    public void flush() throws IOException{
-        writer.flush();
-    }
-
-    @Override
-    public void close() throws IOException{
-        while(stack.size > 0)
-            pop();
-        writer.close();
-    }
-
-    public enum OutputType{
-        /** Normal JSON, with all its double quotes. */
-        json,
-        /** Like JSON, but names are only double quoted if necessary. */
-        javascript,
-        /**
-         * Like JSON, but:
-         * <ul>
-         * <li>Names only require double quotes if they start with <code>space</code> or any of <code>":,}/</code> or they contain
-         * <code>//</code> or <code>/*</code> or <code>:</code>.
-         * <li>Values only require double quotes if they start with <code>space</code> or any of <code>":,{[]/</code> or they
-         * contain <code>//</code> or <code>/*</code> or any of <code>}],</code> or they are equal to <code>true</code>,
-         * <code>false</code> , or <code>null</code>.
-         * <li>Newlines are treated as commas, making commas optional in many cases.
-         * <li>C style comments may be used: <code>//...</code> or <code>/*...*<b></b>/</code>
-         * </ul>
-         */
-        minimal;
-
-        private static Pattern javascriptPattern = Pattern.compile("^[a-zA-Z_$][a-zA-Z_$0-9]*$");
-        private static Pattern minimalNamePattern = Pattern.compile("^[^\":,}/ ][^:]*$");
-        private static Pattern minimalValuePattern = Pattern.compile("^[^\":,{\\[\\]/ ][^}\\],]*$");
-
-        public String quoteValue(Object value){
-            if(value == null) return "null";
-            String string = value.toString();
-            if(value instanceof Number || value instanceof Boolean) return string;
-            StringBuilder buffer = new StringBuilder(string);
-            Strings.replace(buffer, '\\', "\\\\");
-            Strings.replace(buffer, '\r', "\\r");
-            Strings.replace(buffer, '\n', "\\n");
-            Strings.replace(buffer, '\t', "\\t");
-            if(this == OutputType.minimal && !string.equals("true") && !string.equals("false") && !string.equals("null")
-            && !string.contains("//") && !string.contains("/*")){
-                int length = buffer.length();
-                if(length > 0 && buffer.charAt(length - 1) != ' ' && minimalValuePattern.matcher(buffer).matches())
-                    return buffer.toString();
+            for(String line : lines){
+                nl(tw, line.length() > 0 ? level : 0);
+                tw.write(line);
             }
-            Strings.replace(buffer, '"', "\\\"");
-            return '"' + buffer.toString() + '"';
-        }
-
-        public String quoteName(String value){
-            StringBuilder buffer = new StringBuilder(value);
-            Strings.replace(buffer, '\\', "\\\\");
-            Strings.replace(buffer, '\r', "\\r");
-            Strings.replace(buffer, '\n', "\\n");
-            Strings.replace(buffer, '\t', "\\t");
-            switch(this){
-                case minimal:
-                    if(!value.contains("//") && !value.contains("/*") && minimalNamePattern.matcher(buffer).matches())
-                        return buffer.toString();
-                case javascript:
-                    if(javascriptPattern.matcher(buffer).matches()) return buffer.toString();
-            }
-            Strings.replace(buffer, '"', "\\\"");
-            return '"' + buffer.toString() + '"';
+            nl(tw, level);
+            tw.write("'''");
         }
     }
 
-    private class JsonObject{
-        final boolean array;
-        boolean needsComma;
+    static boolean startsWithKeyword(String text){
+        int p;
+        if(text.startsWith("true") || text.startsWith("null")) p = 4;
+        else if(text.startsWith("false")) p = 5;
+        else return false;
+        while(p < text.length() && JsonReader.isWhiteSpace(text.charAt(p))) p++;
+        if(p == text.length()) return true;
+        char ch = text.charAt(p);
+        return ch == ',' || ch == '}' || ch == ']' || ch == '#' || ch == '/' && (text.length() > p + 1 && (text.charAt(p + 1) == '/' || text.charAt(p + 1) == '*'));
+    }
 
-        JsonObject(boolean array) throws IOException{
-            this.array = array;
-            writer.write(array ? '[' : '{');
+    static boolean isPunctuatorChar(int c){
+        return c == '{' || c == '}' || c == '[' || c == ']' || c == ',' || c == ':';
+    }
+
+    static boolean needsQuotes(char c){
+        return c == '\t' || c == '\f' || c == '\b' || c == '\n' || c == '\r' || c == ']' || c == '[' || c == ',';
+    }
+
+    static boolean needsEscape(char c){
+        return c == '\"' || c == '\\' || needsQuotes(c);
+    }
+
+    static boolean needsEscapeML(char c){
+        switch(c){
+            case '\n':
+            case '\r':
+            case '\t':
+                return false;
+            default:
+                return needsQuotes(c);
         }
+    }
 
-        void close() throws IOException{
-            writer.write(array ? ']' : '}');
+    static void nl(Writer tw, int level) throws IOException{
+        tw.write('\n');
+        for(int i = 0; i < level; i++) tw.write("  ");
+    }
+
+    static String escapeString(String src){
+        if(src == null) return null;
+
+        for(int i = 0; i < src.length(); i++){
+            if(getEscapedChar(src.charAt(i)) != null){
+                StringBuilder sb = new StringBuilder();
+                if(i > 0) sb.append(src, 0, i);
+                return doEscapeString(sb, src, i);
+            }
+        }
+        return src;
+    }
+
+    private static String doEscapeString(StringBuilder sb, String src, int cur){
+        int start = cur;
+        for(int i = cur; i < src.length(); i++){
+            String escaped = getEscapedChar(src.charAt(i));
+            if(escaped != null){
+                sb.append(src, start, i);
+                sb.append(escaped);
+                start = i + 1;
+            }
+        }
+        sb.append(src, start, src.length());
+        return sb.toString();
+    }
+
+    private static String getEscapedChar(char c){
+        switch(c){
+            case '\"': return "\\\"";
+            case '\t': return "\\t";
+            case '\n': return "\\n";
+            case '\r': return "\\r";
+            case '\f': return "\\f";
+            case '\b': return "\\b";
+            case '\\': return "\\\\";
+            default: return null;
         }
     }
 }
