@@ -152,8 +152,12 @@ public class Lines{
     }
 
     public static void endLine(boolean wrap){
+        endLine(wrap, false);
+    }
+
+    public static void endLine(boolean wrap, boolean flatEnd){
         if(!building) throw new IllegalStateException("Not building");
-        polyline(floatBuilder, wrap);
+        polyline(floatBuilder.items, floatBuilder.size, wrap, flatEnd);
         building = false;
     }
 
@@ -163,10 +167,16 @@ public class Lines{
 
     private static final Vec2 AB = new Vec2(), BC = new Vec2(),
     A = new Vec2(), B = new Vec2(), C = new Vec2(), E = new Vec2(), D = new Vec2(), vec1 = new Vec2(),
-    D0 = new Vec2(), E0 = new Vec2(), q1 = new Vec2(), q2 = new Vec2(), q3 = new Vec2(), q4 = new Vec2();
+    D0 = new Vec2(), E0 = new Vec2(), q1 = new Vec2(), q2 = new Vec2(), q3 = new Vec2(), q4 = new Vec2(),
+    D2 = new Vec2(), E2 = new Vec2(), D02 = new Vec2(), E02 = new Vec2();
+    private static final float miterLimit = 4f;
+
+    public static void polyline(float[] points, int length, boolean wrap){
+        polyline(points, length, wrap, false);
+    }
 
     //implementation taken from https://github.com/earlygrey/shapedrawer/blob/master/drawer/src/space/earlygrey/shapedrawer/ShapeDrawer.java
-    public static void polyline(float[] points, int length, boolean wrap){
+    public static void polyline(float[] points, int length, boolean wrap, boolean flatEnd){
         if(length < 4) return;
 
         float halfWidth = 0.5f * stroke;
@@ -176,10 +186,11 @@ public class Lines{
             B.set(points[i], points[i + 1]);
             C.set(points[i + 2], points[i + 3]);
 
-            preparePointyJoin(A, B, C, D, E, halfWidth);
+            preparePointyJoin(A, B, C, D, E, D2, E2, halfWidth, flatEnd);
 
-            float x3 = D.x, y3 = D.y;
-            float x4 = E.x, y4 = E.y;
+            //D2/E2 are the points to be reused as the start of the NEXT quad (may differ from D/E if beveled)
+            float x3 = D2.x, y3 = D2.y;
+            float x4 = E2.x, y4 = E2.y;
 
             q3.set(D);
             q4.set(E);
@@ -191,10 +202,10 @@ public class Lines{
                     q2.set(D);
                 }else{
                     vec1.set(points[length - 2], points[length - 1]);
-                    preparePointyJoin(vec1, A, B, D0, E0, halfWidth);
+                    preparePointyJoin(vec1, A, B, D0, E0, D02, E02, halfWidth, flatEnd);
 
-                    q1.set(E0);
-                    q2.set(D0);
+                    q1.set(E02);
+                    q2.set(D02);
                 }
             }
 
@@ -212,14 +223,14 @@ public class Lines{
         }else{
             //draw last link on path
             A.set(points[0], points[1]);
-            preparePointyJoin(B, C, A, D, E, halfWidth);
+            preparePointyJoin(B, C, A, D, E, D2, E2, halfWidth, flatEnd);
             q3.set(D);
             q4.set(E);
             pushQuad();
 
             //draw connection back to first vertex
-            q1.set(D);
-            q2.set(E);
+            q1.set(D2);
+            q2.set(E2);
             q3.set(E0);
             q4.set(D0);
             pushQuad();
@@ -228,6 +239,10 @@ public class Lines{
 
     private static void pushQuad(){
         Fill.quad(q1.x, q1.y, q2.x, q2.y, q3.x, q3.y, q4.x, q4.y);
+    }
+
+    private static void pushBevelFill(Vec2 p1, Vec2 p2, Vec2 apex){
+        Fill.quad(p1.x, p1.y, apex.x, apex.y, apex.x, apex.y, p2.x, p2.y);
     }
 
     private static void prepareFlatEndpoint(Vec2 pathPoint, Vec2 endPoint, Vec2 D, Vec2 E, float halfLineWidth){
@@ -240,22 +255,46 @@ public class Lines{
         E.set(-v.y, v.x).add(endPointX, endPointY);
     }
 
-    private static void preparePointyJoin(Vec2 A, Vec2 B, Vec2 C, Vec2 D, Vec2 E, float halfLineWidth){
+    private static void preparePointyJoin(Vec2 A, Vec2 B, Vec2 C, Vec2 D, Vec2 E, Vec2 D2, Vec2 E2, float halfLineWidth, boolean flatEnd){
         AB.set(B).sub(A);
         BC.set(C).sub(B);
         float angle = angleRad(AB, BC);
+
         if(Mathf.equal(angle, 0) || Mathf.equal(angle, Mathf.PI2)){
             prepareStraightJoin(B, D, E, halfLineWidth);
+            D2.set(D);
+            E2.set(E);
             return;
         }
-        float len = (float)(halfLineWidth / Math.sin(angle));
+
         boolean bendsLeft = angle < 0;
-        AB.setLength(len);
-        BC.setLength(len);
-        Vec2 insidePoint = bendsLeft ? D : E;
-        Vec2 outsidePoint = bendsLeft ? E : D;
-        insidePoint.set(B).sub(AB).add(BC);
-        outsidePoint.set(B).add(AB).sub(BC);
+        float sin = (float)Math.sin(angle);
+
+        if(!flatEnd && 1f / Math.abs(sin) <= miterLimit){
+            float len = halfLineWidth / sin;
+            AB.setLength(len);
+            BC.setLength(len);
+
+            Vec2 insidePoint = bendsLeft ? D : E;
+            Vec2 outsidePoint = bendsLeft ? E : D;
+            insidePoint.set(B).sub(AB).add(BC);
+            outsidePoint.set(B).add(AB).sub(BC);
+
+            D2.set(D);
+            E2.set(E);
+        }else{
+            AB.setLength(halfLineWidth);
+            D.set(-AB.y, AB.x).add(B);
+            E.set(AB.y, -AB.x).add(B);
+
+            BC.setLength(halfLineWidth);
+            D2.set(-BC.y, BC.x).add(B);
+            E2.set(BC.y, -BC.x).add(B);
+
+            Vec2 outsideAB = bendsLeft ? E : D;
+            Vec2 outsideBC = bendsLeft ? E2 : D2;
+            pushBevelFill(outsideAB, outsideBC, B);
+        }
     }
 
     private static float angleRad(Vec2 v, Vec2 reference){

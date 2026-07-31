@@ -32,25 +32,25 @@ public class Table extends WidgetGroup{
     private static float[] columnWeightedWidth, rowWeightedHeight;
     private static Pool<Cell> cellPool = Pools.get(Cell.class, Cell::new);
 
-    private final Seq<Cell> cells = new Seq<>(4);
-    private final Cell cellDefaults;
+    protected final Seq<Cell> cells = new Seq<>(4);
+    protected final Cell cellDefaults;
 
     float marginTop = unset, marginLeft = unset, marginBot = unset, marginRight = unset;
     int align = Align.center;
     Drawable background;
     boolean round = true;
 
-    private int columns, rows;
-    private boolean implicitEndRow;
-    private Cell rowDefaults;
-    private boolean sizeInvalid = true;
-    private float[] columnMinWidth, rowMinHeight;
-    private float[] columnPrefWidth, rowPrefHeight;
-    private float tableMinWidth, tableMinHeight;
-    private float tablePrefWidth, tablePrefHeight;
-    private float[] columnWidth, rowHeight;
-    private float[] expandWidth, expandHeight;
-    private boolean clip;
+    protected int columns, rows;
+    protected boolean implicitEndRow;
+    protected Cell rowDefaults;
+    protected boolean sizeInvalid = true;
+    protected float[] columnMinWidth, rowMinHeight;
+    protected float[] columnPrefWidth, rowPrefHeight;
+    protected float tableMinWidth, tableMinHeight;
+    protected float tablePrefWidth, tablePrefHeight;
+    protected float[] columnWidth, rowHeight;
+    protected float[] expandWidth, expandHeight;
+    protected boolean clip;
 
     public Table(){
         cellDefaults = obtainCell();
@@ -75,7 +75,7 @@ public class Table extends WidgetGroup{
         cons.get(this);
     }
 
-    private Cell obtainCell(){
+    protected Cell obtainCell(){
         Cell cell = cellPool.obtain();
         cell.setLayout(this);
         return cell;
@@ -261,6 +261,12 @@ public class Table extends WidgetGroup{
 
     public Cell<Table> table(Cons<Table> cons){
         Table table = new Table();
+        cons.get(table);
+        return add(table);
+    }
+
+    public Cell<WrapTable> wrapTable(Cons<WrapTable> cons){
+        WrapTable table = new WrapTable();
         cons.get(table);
         return add(table);
     }
@@ -903,7 +909,7 @@ public class Table extends WidgetGroup{
         }
     }
 
-    private void computeSize(){
+    protected void computeSize(){
         sizeInvalid = false;
 
         Seq<Cell> cells = this.cells;
@@ -1064,7 +1070,7 @@ public class Table extends WidgetGroup{
      * Positions and sizes children of the table using the cell associated with each child. The values given are the position
      * within the parent and size of the table.
      */
-    private void layout(float layoutX, float layoutY, float layoutWidth, float layoutHeight){
+    protected void layout(float layoutX, float layoutY, float layoutWidth, float layoutHeight){
         Seq<Cell> cells = this.cells;
         int cellCount = cells.size;
 

@@ -25,7 +25,7 @@ import java.net.*;
  * @author mzechner
  */
 public class AndroidApplication extends Activity implements Application{
-    public static final int MINIMUM_SDK = 14;
+    public static final int MINIMUM_SDK = 21;
 
     protected final Seq<ApplicationListener> listeners = new Seq<>();
     protected final Seq<Runnable> runnables = new Seq<>();
@@ -136,7 +136,7 @@ public class AndroidApplication extends Activity implements Application{
         createWakeLock(config.useWakelock);
         hideStatusBar(this.hideStatusBar);
         useImmersiveMode(this.useImmersiveMode);
-        if(this.useImmersiveMode && getVersion() >= Build.VERSION_CODES.KITKAT){
+        if(this.useImmersiveMode){
             try{
                 View rootView = this.getWindow().getDecorView();
                 rootView.setOnSystemUiVisibilityChangeListener(arg0 -> this.handler.post(() -> useImmersiveMode(true)));
@@ -208,7 +208,7 @@ public class AndroidApplication extends Activity implements Application{
 
     @TargetApi(19)
     public void useImmersiveMode(boolean use){
-        if(!use || getVersion() < Build.VERSION_CODES.KITKAT) return;
+        if(!use) return;
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -326,7 +326,7 @@ public class AndroidApplication extends Activity implements Application{
 
     @Override
     public void exit(){
-        handler.post(Build.VERSION.SDK_INT < 21 ? AndroidApplication.this::finish : AndroidApplication.this::finishAndRemoveTask);
+        handler.post(AndroidApplication.this::finishAndRemoveTask);
     }
 
     @Override

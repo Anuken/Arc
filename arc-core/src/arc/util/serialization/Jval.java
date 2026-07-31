@@ -4,7 +4,7 @@ import arc.struct.*;
 import arc.util.*;
 
 import java.io.*;
-import java.util.regex.*;
+import java.util.*;
 
 /** An hsjon parser. Can be used as a standard json value.
  * Output can be converted to standard JSON. This class is heavily based upon the Hjson Java implementation.*/
@@ -19,8 +19,6 @@ public class Jval{
 
     Jval(Object value){
         this.value = value;
-
-        if(getType() == null) throw new IllegalArgumentException("Invalid JSON value: " + value);
     }
 
     public static Jval newObject(){
@@ -63,12 +61,7 @@ public class Jval{
      * @return the Hjson value that has been read
      */
     public static Jval read(String text){
-        try{
-            return new Hparser(text).parse();
-        }catch(IOException exception){
-            // JsonParser does not throw IOException for String
-            throw new RuntimeException(exception);
-        }
+        return new Hparser(text).parse();
     }
 
     public Jtype getType(){
@@ -98,13 +91,80 @@ public class Jval{
 
     public JsonMap asObject(){ if(!(value instanceof JsonMap)) throw new UnsupportedOperationException("Not an object: " + this); return (JsonMap)value; }
     public JsonArray asArray(){ if(!(value instanceof JsonArray)) throw new UnsupportedOperationException("Not an array: " + this); return (JsonArray)value; }
-    public int asInt(){ return asNumber().intValue(); }
-    public long asLong(){ return asNumber().longValue(); }
-    public float asFloat(){ return asNumber().floatValue(); }
-    public double asDouble(){ return asNumber().doubleValue(); }
-    public String asString(){ if(!(value instanceof String) && !(value instanceof Number)) throw new UnsupportedOperationException("Not a string: " + this); return String.valueOf(value); }
-    public boolean asBool(){ if(!(value instanceof Boolean)) throw new UnsupportedOperationException("Not a bool: " + this); return (Boolean)value; }
-    public Number asNumber(){ if(!(value instanceof Number)) throw new UnsupportedOperationException("Not a number: " + this); return ((Number)value); }
+
+    public byte asByte(){
+        if(value instanceof Number){
+            return ((Number)value).byteValue();
+        }else if(value instanceof String){
+            return Byte.parseByte((String)value);
+        }else{
+            throw new UnsupportedOperationException("Not a number: " + this);
+        }
+    }
+
+    public short asShort(){
+        if(value instanceof Number){
+            return ((Number)value).shortValue();
+        }else if(value instanceof String){
+            return Short.parseShort((String)value);
+        }else{
+            throw new UnsupportedOperationException("Not a number: " + this);
+        }
+    }
+
+    public int asInt(){
+        if(value instanceof Number){
+            return ((Number)value).intValue();
+        }else if(value instanceof String){
+            return Integer.parseInt((String)value);
+        }else{
+            throw new UnsupportedOperationException("Not a number: " + this);
+        }
+    }
+
+    public long asLong(){
+        if(value instanceof Number){
+            return ((Number)value).longValue();
+        }else if(value instanceof String){
+            return Long.parseLong((String)value);
+        }else{
+            throw new UnsupportedOperationException("Not a number: " + this);
+        }
+    }
+
+    public float asFloat(){
+        if(value instanceof Number){
+            return ((Number)value).floatValue();
+        }else if(value instanceof String){
+            return Float.parseFloat((String)value);
+        }else{
+            throw new UnsupportedOperationException("Not a number: " + this);
+        }
+    }
+
+    public double asDouble(){
+        if(value instanceof Number){
+            return ((Number)value).doubleValue();
+        }else if(value instanceof String){
+            return Double.parseDouble((String)value);
+        }else{
+            throw new UnsupportedOperationException("Not a number: " + this);
+        }
+    }
+
+    public String asString(){
+        if(!(value instanceof String) && !(value instanceof Number)) throw new UnsupportedOperationException("Not a string: " + this);
+        return String.valueOf(value);
+    }
+
+    public boolean asBool(){
+        if(value instanceof Boolean){
+            return (Boolean)value;
+        }else if(value instanceof String){
+            return Boolean.parseBoolean((String)value);
+        }
+        throw new UnsupportedOperationException("Not a bool: " + this);
+    }
 
     public Jval get(String name){
         if(name == null) throw new NullPointerException("name is null");
@@ -230,13 +290,16 @@ public class Jval{
         WritingBuffer buffer = new WritingBuffer(writer, 128);
         switch(format){
             case plain:
-                new Jwriter(false).save(this, buffer, 0);
+                Jwriter.save(this, false, true, buffer, 0);
+                break;
+            case minimal:
+                Jwriter.save(this, false, false, buffer, 0);
                 break;
             case formatted:
-                new Jwriter(true).save(this, buffer, 0);
+                Jwriter.save(this, true, true, buffer, 0);
                 break;
             case hjson:
-                new Hwriter().save(this, buffer, -1, "", true);
+                Hwriter.save(this, buffer, -1, "", true);
                 break;
         }
         buffer.flush();
@@ -248,7 +311,11 @@ public class Jval{
         Jtype type = getType();
         switch(type){
             case nil: return "null";
-            case number: return (value.toString().endsWith(".0") ? value.toString().replace(".0", "") : value.toString()).replace('E', 'e');
+            case number:{
+                String s = value.toString();
+                if(s.endsWith(".0")) s = s.substring(0, s.length() - 2);
+                return s.replace('E', 'e');
+            }
             case string:
             case bool: return value.toString();
         }
@@ -282,6 +349,13 @@ public class Jval{
     /** Alias class of whatever is used to store json maps (objects). */
     public static class JsonMap extends ArrayMap<String, Jval>{
 
+        /** Puts a value without checking if it's in the map first. This is unsafe, but prevents O(n) put. */
+        protected void putAdd(String key, Jval value){
+            if(size == ((Object[])keys).length) resize(Math.max(8, (int)(size * 1.75f)));
+            int index = size++;
+            ((Object[])keys)[index] = key;
+            ((Object[])values)[index] = value;
+        }
     }
 
     /** Alias class of json arrays. */
@@ -355,9 +429,11 @@ public class Jval{
     public enum Jformat{
         /** JSON (no whitespace). */
         plain,
+        /** Minimal quote-less JSON. Equivalent to libGDX's minimal output type. */
+        minimal,
         /** Formatted JSON. */
         formatted,
-        /** Hjson. */
+        /** Formatted HJSON. */
         hjson,
     }
 
@@ -370,32 +446,33 @@ public class Jval{
     }
 
     static class Hparser{
-        private final String buffer;
-        private Reader reader;
-        private int index;
+        private final char[] buffer;
+        private int index, bufferLength;
         private int line;
         private int lineOffset;
         private int current;
-        private StringBuilder captureBuffer, peek;
-        private boolean capture;
+        private StringBuilder captureBuffer;
+        private int captureStart;
+        private int rawStart;
+        private boolean escaped;
         private boolean isArray;
 
         Hparser(String string){
-            buffer = string;
+            buffer = string.toCharArray();
+            bufferLength = buffer.length;
             reset();
         }
 
         Hparser(Reader reader) throws IOException{
-            this(readToEnd(reader));
-        }
-
-        static String readToEnd(Reader reader) throws IOException{
-            // read everything into a buffer
-            int n;
-            char[] part = new char[8 * 1024];
-            StringBuilder sb = new StringBuilder();
-            while((n = reader.read(part, 0, part.length)) != -1) sb.append(part, 0, n);
-            return sb.toString();
+            char[] data = new char[8 * 1024];
+            int size = 0, n;
+            while((n = reader.read(data, size, data.length - size)) != -1){
+                size += n;
+                if(size == data.length) data = Arrays.copyOf(data, data.length * 2);
+            }
+            buffer = size == data.length ? data : Arrays.copyOf(data, size);
+            bufferLength = buffer.length;
+            reset();
         }
 
         static boolean isWhiteSpace(int ch){
@@ -405,13 +482,11 @@ public class Jval{
         void reset(){
             index = lineOffset = current = 0;
             line = 1;
-            peek = new StringBuilder();
-            reader = new StringReader(buffer);
-            capture = false;
             captureBuffer = null;
+            escaped = false;
         }
 
-        Jval parse() throws IOException{
+        Jval parse(){
             //braces for the root object are optional
 
             read();
@@ -439,13 +514,13 @@ public class Jval{
             }
         }
 
-        Jval checkTrailing(Jval v) throws JsonParseException, IOException{
+        Jval checkTrailing(Jval v) throws JsonParseException{
             skipWhiteSpace();
             if(!isEndOfText()) throw error("Extra characters in input: " + current);
             return v;
         }
 
-        private Jval readValue() throws IOException{
+        private Jval readValue(){
             switch(current){
                 case '\'':
                 case '"':
@@ -459,50 +534,125 @@ public class Jval{
             }
         }
 
-        private Jval readTfnns() throws IOException{
-            // Hjson strings can be quoteless
-            // returns string, true, false, or null.
-            StringBuilder value = new StringBuilder();
+        private Jval readTfnns(){
+            int start = index - 1;
             int first = current;
             if(Hwriter.isPunctuatorChar(first))
                 throw error("Found a punctuator character '" + (char)first + "' when expecting a quoteless string (check your syntax)");
-            value.append((char)current);
+
             while(true){
                 read();
-                boolean isEol = current < 0 || current == '\r' || current == '\n' || (current == ',' && isArray) || current == ']';
-                if(isEol || current == ',' || current == '}' || current == '#' || current == '/' && (peek() == '/' || peek() == '*')
-                ){
+                boolean isComment = current == '#' || (current == '/' && (peek() == '/' || peek() == '*'));
+                boolean isEol = current < 0 || current == '\r' || current == '\n' || (current == ',' && isArray) || current == ']'  || current == '}' || isComment;
+                if(isEol || current == ','){
+                    int stop = current < 0 ? index : index - 1; // position of the stopping char, not yet part of the value
+
                     switch(first){
                         case 'f':
                         case 'n':
-                        case 't':
-                            String svalue = value.toString().trim();
-                            switch(svalue){
-                                case "false": return FALSE;
-                                case "null": return NULL;
-                                case "true": return TRUE;
-                            }
+                        case 't': {
+                            int s = start, e = stop;
+                            while(s < e && isTrimChar(buffer[s])) s++;
+                            while(e > s && isTrimChar(buffer[e - 1])) e--;
+                            int len = e - s;
+                            if(len == 5 && regionMatches(s, "false")) return FALSE;
+                            if(len == 4 && regionMatches(s, "null")) return NULL;
+                            if(len == 4 && regionMatches(s, "true")) return TRUE;
                             break;
+                        }
                         default:
                             if(first == '-' || first >= '0' && first <= '9'){
-                                Jval n = tryParseNumber(value, false);
+                                Jval n = tryParseNumber(buffer, start, stop, false);
                                 if(n != null) return n;
                             }
                     }
                     if(isEol){
-                        //remove trailing commas
-                        if(value.length() > 0 && value.charAt(value.length() - 1) == ','){
-                            value.setLength(value.length() - 1);
-                        }
-                        //remove any whitespace at the end (ignored in quoteless strings)
-                        return new Jval(value.toString().trim());
+                        int end = stop;
+                        //remove trailing comma
+                        if(end > start && buffer[end - 1] == ',') end--;
+                        //trim like String.trim() (<= 0x20), matching original .trim() behavior
+                        int s = start, e = end;
+                        while(s < e && isTrimChar(buffer[s])) s++;
+                        while(e > s && isTrimChar(buffer[e - 1])) e--;
+                        return new Jval(new String(buffer, s, e - s));
                     }
                 }
-                value.append((char)current);
             }
         }
 
-        private Jval readArray() throws IOException{
+        static Jval tryParseNumber(char[] buf, int from, int to, boolean stopAtNext){
+            int idx = from, len = to;
+            if(idx < len && buf[idx] == '-') idx++;
+
+            if(idx >= len) return null;
+            char first = buf[idx++];
+            if(!isDigit(first)) return null;
+
+            if(first == '0' && idx < len && isDigit(buf[idx]))
+                return null; // leading zero is not allowed
+
+            while(idx < len && isDigit(buf[idx])) idx++;
+
+            // frac
+            if(idx < len && buf[idx] == '.'){
+                idx++;
+                if(idx >= len || !isDigit(buf[idx++])) return null;
+                while(idx < len && isDigit(buf[idx])) idx++;
+            }
+
+            // exp
+            if(idx < len && Character.toLowerCase(buf[idx]) == 'e'){
+                idx++;
+                if(idx < len && (buf[idx] == '+' || buf[idx] == '-')) idx++;
+                if(idx >= len || !isDigit(buf[idx++])) return null;
+                while(idx < len && isDigit(buf[idx])) idx++;
+            }
+
+            int last = idx;
+            while(idx < len && isWhiteSpace(buf[idx])) idx++;
+
+            boolean foundStop = false;
+            if(idx < len && stopAtNext){
+                char ch = buf[idx];
+                if(ch == ',' || ch == '}' || ch == ']' || ch == '#' || ch == '/' && (len > idx + 1 && (buf[idx + 1] == '/' || buf[idx + 1] == '*')))
+                    foundStop = true;
+            }
+
+            if(idx < len && !foundStop) return null;
+
+            boolean isDecimal = false;
+            for(int i = from; i < last; i++){
+                char c = buf[i];
+                if(c == '.' || c == 'e' || c == 'E'){
+                    isDecimal = true;
+                    break;
+                }
+            }
+
+            String str = new String(buf, from, last - from);
+
+            if(!isDecimal){
+                try{
+                    return new Jval(Long.parseLong(str));
+                }catch(NumberFormatException ignored){
+                }
+            }
+
+            return new Jval(Double.parseDouble(str));
+        }
+
+        private boolean regionMatches(int off, String kw){
+            int n = kw.length();
+            for(int i = 0; i < n; i++) if(buffer[off + i] != kw.charAt(i)) return false;
+            return true;
+        }
+
+        /** Matches String.trim()'s definition (chars <= 0x20), used where the original relied on .trim(). */
+        private static boolean isTrimChar(char c){
+            return c <= ' ';
+        }
+
+        private Jval readArray(){
             isArray = true;
             read();
             JsonArray array = new JsonArray();
@@ -522,7 +672,7 @@ public class Jval{
             return new Jval(array);
         }
 
-        private Jval readObject(boolean objectWithoutBraces) throws IOException{
+        private Jval readObject(boolean objectWithoutBraces){
             if(!objectWithoutBraces) read();
             JsonMap object = new JsonMap();
             skipWhiteSpace();
@@ -539,14 +689,14 @@ public class Jval{
                     throw expected("':'");
                 }
                 skipWhiteSpace();
-                object.put(name, readValue());
+                object.putAdd(name, readValue());
                 skipWhiteSpace();
                 if(readIf(',')) skipWhiteSpace(); // , is optional
             }
             return new Jval(object);
         }
 
-        private String readName() throws IOException{
+        private String readName(){
             if(current == '"' || current == '\'') return readStringInternal(false);
 
             StringBuilder name = new StringBuilder();
@@ -570,7 +720,7 @@ public class Jval{
             }
         }
 
-        private String readMlString() throws IOException{
+        private String readMlString(){
 
             // Parse a multiline string value.
             StringBuilder sb = new StringBuilder();
@@ -617,25 +767,24 @@ public class Jval{
             }
         }
 
-        private void skipIndent(int indent) throws IOException{
+        private void skipIndent(int indent){
             while(indent-- > 0){
                 if(isWhiteSpace(current) && current != '\n') read();
                 else break;
             }
         }
 
-        private Jval readString() throws IOException{
+        private Jval readString(){
             return new Jval(readStringInternal(true));
         }
 
-        private String readStringInternal(boolean allowML) throws IOException{
+        private String readStringInternal(boolean allowML){
             // callees make sure that (current=='"' || current=='\'')
             int exitCh = current;
             read();
             startCapture();
             while(current >= 0 && current != exitCh){
                 if(current == '\\') readEscape();
-                //else if(current < 0x20) throw expected("valid string character");
                 else read();
             }
             String string = endCapture();
@@ -648,9 +797,20 @@ public class Jval{
             }else return string;
         }
 
-        private void readEscape() throws IOException{
-            pauseCapture();
-            read();
+        private void startCapture(){
+            captureStart = index - 1; // current already holds buffer[index-1]
+            rawStart = captureStart;
+            escaped = false;
+        }
+
+        private void readEscape(){
+            // flush the raw (unescaped) run seen so far, up to this backslash
+            int backslashPos = index - 1;
+            if(captureBuffer == null) captureBuffer = new StringBuilder(32);
+            captureBuffer.append(buffer, rawStart, backslashPos - rawStart);
+            escaped = true;
+
+            read(); // consume '\', current -> escape designator
             switch(current){
                 case '"':
                 case '\'':
@@ -688,8 +848,21 @@ public class Jval{
                 default:
                     throw expected("valid escape sequence");
             }
-            capture = true;
-            read();
+            read(); // advance past the escape sequence
+            rawStart = index - 1; // next raw run starts here
+        }
+
+        private String endCapture(){
+            int end = index - 1; // current is exitCh (or -1 on unterminated input, pre-existing edge case)
+            String result;
+            if(escaped){
+                captureBuffer.append(buffer, rawStart, end - rawStart);
+                result = captureBuffer.toString();
+                captureBuffer.setLength(0); // reuse the builder for the next escaped string, if any
+            }else{
+                result = new String(buffer, captureStart, end - captureStart); // single copy, common case
+            }
+            return result;
         }
 
         private static boolean isDigit(char ch){
@@ -730,16 +903,25 @@ public class Jval{
 
             boolean foundStop = false;
             if(idx < len && stopAtNext){
-                // end scan if we find a control character like ,}] or a comment
                 char ch = value.charAt(idx);
                 if(ch == ',' || ch == '}' || ch == ']' || ch == '#' || ch == '/' && (len > idx + 1 && (value.charAt(idx + 1) == '/' || value.charAt(idx + 1) == '*')))
                     foundStop = true;
             }
 
             if(idx < len && !foundStop) return null;
+
+            boolean isDecimal = false;
+            for(int i = 0; i < last; i++){
+                char c = value.charAt(i);
+                if(c == '.' || c == 'e' || c == 'E'){
+                    isDecimal = true;
+                    break;
+                }
+            }
+
             String str = value.substring(0, last);
 
-            if(!str.contains(".") && !str.contains(",") && !str.contains("e")){
+            if(!isDecimal){
                 try{
                     return new Jval(Long.parseLong(str));
                 }catch(NumberFormatException ignored){
@@ -749,11 +931,11 @@ public class Jval{
             return new Jval(Double.parseDouble(str));
         }
 
-        static Jval tryParseNumber(String value) throws IOException{
+        static Jval tryParseNumber(String value){
             return tryParseNumber(new StringBuilder(value), true);
         }
 
-        private boolean readIf(char ch) throws IOException{
+        private boolean readIf(char ch){
             if(current != ch){
                 return false;
             }
@@ -761,7 +943,7 @@ public class Jval{
             return true;
         }
 
-        private void skipWhiteSpace() throws IOException{
+        private void skipWhiteSpace(){
             while(!isEndOfText()){
                 while(isWhiteSpace()) read();
                 if(current == '#' || current == '/' && peek() == '/'){
@@ -779,64 +961,18 @@ public class Jval{
             }
         }
 
-        private int peek(int idx) throws IOException{
-            while(idx >= peek.length()){
-                int c = reader.read();
-                if(c < 0) return c;
-                peek.append((char)c);
-            }
-            return peek.charAt(idx);
+        private void read(){
+            if(current == '\n'){ line++; lineOffset = index; }
+            current = index < bufferLength ? buffer[index++] : -1;
         }
 
-        private int peek() throws IOException{
+        private int peek(int idx){
+            int p = index + idx;
+            return p < bufferLength ? buffer[p] : -1;
+        }
+
+        private int peek(){
             return peek(0);
-        }
-
-        private boolean read() throws IOException{
-
-            if(current == '\n'){
-                line++;
-                lineOffset = index;
-            }
-
-            if(peek.length() > 0){
-                // normally peek will only hold not more than one character so this should not matter for performance
-                current = peek.charAt(0);
-                peek.deleteCharAt(0);
-            }else current = reader.read();
-
-            if(current < 0) return false;
-
-            index++;
-            if(capture) captureBuffer.append((char)current);
-
-            return true;
-        }
-
-        private void startCapture(){
-            if(captureBuffer == null)
-                captureBuffer = new StringBuilder();
-            capture = true;
-            captureBuffer.append((char)current);
-        }
-
-        private void pauseCapture(){
-            int len = captureBuffer.length();
-            if(len > 0) captureBuffer.deleteCharAt(len - 1);
-            capture = false;
-        }
-
-        private String endCapture(){
-            pauseCapture();
-            String captured;
-            if(captureBuffer.length() > 0){
-                captured = captureBuffer.toString();
-                captureBuffer.setLength(0);
-            }else{
-                captured = "";
-            }
-            capture = false;
-            return captured;
         }
 
         private JsonParseException expected(String expected){
@@ -882,14 +1018,13 @@ public class Jval{
     }
 
     static class Hwriter{
-        static Pattern needsEscapeName = Pattern.compile("[,\\{\\[\\}\\]\\s:#\"']|//|/\\*");
 
-        void nl(Writer tw, int level) throws IOException{
+        static void nl(Writer tw, int level) throws IOException{
             tw.write('\n');
             for(int i = 0; i < level; i++) tw.write("  ");
         }
 
-        public void save(Jval value, Writer tw, int level, String separator, boolean noIndent) throws IOException{
+        public static void save(Jval value, Writer tw, int level, String separator, boolean noIndent) throws IOException{
             if(value == null){
                 tw.write(separator);
                 tw.write("null");
@@ -944,64 +1079,85 @@ public class Jval{
         }
 
         static String escapeName(String name){
-            if(name.length() == 0 || needsEscapeName.matcher(name).find())
+            if(name.length() == 0 || needsEscapeName(name))
                 return "\"" + Jwriter.escapeString(name) + "\"";
             else
                 return name;
         }
 
-        void writeString(String value, Writer tw, int level, String separator) throws IOException{
-            if(value.length() == 0){
-                tw.write(separator + "\"\"");
+        static boolean needsEscapeName(String name){
+            int len = name.length();
+            for(int i = 0; i < len; i++){
+                char c = name.charAt(i);
+                switch(c){
+                    case ',': case '{': case '[': case '}': case ']': case ':': case '"': case '\'':
+                    case ' ': case '\t': case '\n': case '\u000B': case '\f': case '\r':
+                        return true;
+                }
+                if(c == '/' && i + 1 < len && (name.charAt(i + 1) == '/' || name.charAt(i + 1) == '*')) return true;
+            }
+            return false;
+        }
+
+        static void writeString(String value, Writer tw, int level, String separator) throws IOException{
+            int len = value.length();
+            if(len == 0){
+                tw.write(separator);
+                tw.write("\"\"");
                 return;
             }
 
-            char left = value.charAt(0), right = value.charAt(value.length() - 1);
-            char left1 = value.length() > 1 ? value.charAt(1) : '\0';
-            boolean doEscape = false;
-            char[] valuec = value.toCharArray();
-            for(char ch : valuec){
-                if(needsQuotes(ch)){
-                    doEscape = true;
-                    break;
-                }
-            }
+            char left = value.charAt(0), right = value.charAt(len - 1);
+            char left1 = len > 1 ? value.charAt(1) : '\0';
 
-            if(doEscape ||
-            Hparser.isWhiteSpace(left) || Hparser.isWhiteSpace(right) ||
+            if(Hparser.isWhiteSpace(left) || Hparser.isWhiteSpace(right) ||
             left == '"' ||
             left == '\'' ||
             left == '#' ||
             left == '/' && (left1 == '*' || left1 == '/') ||
             isPunctuatorChar(left) ||
+            startsWithKeyword(value) ||
             Hparser.tryParseNumber(value) != null ||
-            startsWithKeyword(value)){
+            containsQuoteChar(value)){
 
-                boolean noEscape = true;
-                for(char ch : valuec){
-                    if(needsEscape(ch)){
-                        noEscape = false;
-                        break;
-                    }
+                boolean noEscape = true, noEscapeML = true, allWhite = true;
+                for(int i = 0; i < len && (noEscape || noEscapeML || allWhite); i++){
+                    char ch = value.charAt(i);
+                    if(noEscape && needsEscape(ch)) noEscape = false;
+                    if(noEscapeML && needsEscapeML(ch)) noEscapeML = false;
+                    if(allWhite && !Hparser.isWhiteSpace(ch)) allWhite = false;
                 }
+
                 if(noEscape){
-                    tw.write(separator + "\"" + value + "\"");
+                    tw.write(separator);
+                    tw.write('"');
+                    tw.write(value);
+                    tw.write('"');
                     return;
                 }
 
-                boolean noEscapeML = true, allWhite = true;
-                for(char ch : valuec){
-                    if(needsEscapeML(ch)){
-                        noEscapeML = false;
-                        break;
-                    }else if(!Hparser.isWhiteSpace(ch)) allWhite = false;
+                if(noEscapeML && !allWhite && value.indexOf("'''") < 0) writeMLString(value, tw, level, separator);
+                else{
+                    tw.write(separator);
+                    tw.write('"');
+                    tw.write(Jwriter.escapeString(value));
+                    tw.write('"');
                 }
-                if(noEscapeML && !allWhite && !value.contains("'''")) writeMLString(value, tw, level, separator);
-                else tw.write(separator + "\"" + Jwriter.escapeString(value) + "\"");
-            }else tw.write(separator + value);
+            }else{
+                tw.write(separator);
+                tw.write(value);
+            }
         }
 
-        void writeMLString(String value, Writer tw, int level, String separator) throws IOException{
+        static boolean containsQuoteChar(String value){
+            int len = value.length();
+            for(int i = 0; i < len; i++){
+                if(needsQuotes(value.charAt(i))) return true;
+            }
+            return false;
+        }
+
+        static void writeMLString(String value, Writer tw, int level, String separator) throws IOException{
             String[] lines = value.replace("\r", "").split("\n", -1);
 
             if(lines.length == 1){
@@ -1038,7 +1194,7 @@ public class Jval{
         }
 
         static boolean needsQuotes(char c){
-            return c == '\t' || c == '\f' || c == '\b' || c == '\n' || c == '\r'/* || c == ']' || c == ','*/;
+            return c == '\t' || c == '\f' || c == '\b' || c == '\n' || c == '\r' || c == ']' || c == '[' || c == ',';
         }
 
         static boolean needsEscape(char c){
@@ -1058,20 +1214,13 @@ public class Jval{
     }
 
     static class Jwriter{
-        boolean format;
 
-        public Jwriter(boolean format){
-            this.format = format;
+        static void nl(Writer tw, int level) throws IOException{
+            tw.write('\n');
+            for(int i = 0; i < level; i++) tw.write("  ");
         }
 
-        void nl(Writer tw, int level) throws IOException{
-            if(format){
-                tw.write('\n');
-                for(int i = 0; i < level; i++) tw.write("  ");
-            }
-        }
-
-        public void save(Jval value, Writer tw, int level) throws IOException{
+        public static void save(Jval value, boolean format, boolean includeQuotes, Writer tw, int level) throws IOException{
             boolean following = false;
             switch(value.getType()){
                 case object:
@@ -1079,42 +1228,52 @@ public class Jval{
                     tw.write('{');
                     for(ObjectMap.Entry<String, Jval> pair : obj){
                         if(following) tw.write(",");
-                        nl(tw, level + 1);
-                        tw.write('\"');
-                        tw.write(escapeString(pair.key));
-                        tw.write("\":");
+                        if(format) nl(tw, level + 1);
+                        if(includeQuotes){
+                            tw.write('\"');
+                            tw.write(escapeString(pair.key));
+                            tw.write("\":");
+                        }else{
+                            tw.write(Hwriter.escapeName(pair.key));
+                            tw.write(':');
+                        }
+
                         Jval v = pair.value;
                         Jtype vType = v.getType();
                         if(format && vType != Jtype.array && vType != Jtype.object) tw.write(" ");
-                        save(v, tw, level + 1);
+                        save(v, format, includeQuotes, tw, level + 1);
                         following = true;
                     }
-                    if(following) nl(tw, level);
+                    if(following && format) nl(tw, level);
                     tw.write('}');
                     break;
                 case array:
                     JsonArray arr = value.asArray();
                     int n = arr.size;
-                    if(level != 0) tw.write(' ');
                     tw.write('[');
                     for(int i = 0; i < n; i++){
                         if(following) tw.write(",");
                         Jval v = arr.get(i);
                         Jtype vType = v.getType();
-                        if(vType != Jtype.array) nl(tw, level + 1);
-                        save(v, tw, level + 1);
+                        if(vType != Jtype.array && format) nl(tw, level + 1);
+                        save(v, format, includeQuotes, tw, level + 1);
                         following = true;
                     }
-                    if(following) nl(tw, level);
+                    if(following && format) nl(tw, level);
                     tw.write(']');
                     break;
                 case bool:
                     tw.write(value.isTrue() ? "true" : "false");
                     break;
                 case string:
-                    tw.write('"');
-                    tw.write(escapeString(value.asString()));
-                    tw.write('"');
+                    if(includeQuotes){
+                        tw.write('"');
+                        tw.write(escapeString(value.asString()));
+                        tw.write('"');
+                    }else{
+                        tw.write(Hwriter.escapeName(value.asString()));
+                    }
+
                     break;
                 default:
                     tw.write(value.toString());
