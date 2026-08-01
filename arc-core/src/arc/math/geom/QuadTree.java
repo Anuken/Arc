@@ -104,9 +104,7 @@ public class QuadTree<T extends QuadTreeObject>{
         }
     }
 
-    /**
-     * Rebuilds this tree from scratch using the given list of objects.
-     */
+    /** Rebuilds this tree from scratch using the given list of objects. */
     public void fill(Seq<T> list){
         clear();
         totalObjects = list.size;
