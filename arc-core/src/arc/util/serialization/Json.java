@@ -21,13 +21,18 @@ import java.util.*;
  */
 @SuppressWarnings("unchecked")
 public class Json{
+    private static final Object[] noDefaultValues = new Object[0];
+
     private final ObjectMap<Class, OrderedMap<String, FieldMetadata>> typeToFields = new ObjectMap();
     private final ObjectMap<String, Class> tagToClass = new ObjectMap();
     private final ObjectMap<Class, String> classToTag = new ObjectMap();
     private final ObjectMap<Class, Serializer> classToSerializer = new ObjectMap();
     private final ObjectMap<Class, Object[]> classToDefaultValues = new ObjectMap();
+    private final ObjectMap<Class, Constructor> classToConstructor = new ObjectMap();
+    private final ObjectMap<String, Class> nameToClass = new ObjectMap();
+    private final ObjectMap<Class, ObjectMap<String, Enum>> classToEnumConstants = new ObjectMap();
     private final Object[] equals1 = {null}, equals2 = {null};
-    protected JsonWriter writer; //<--- should I remove this field and pass it to every single method?
+    protected JsonWriter writer;
 
     /** Sets the serializer to use when the type being deserialized is not known (null). */
     public @Nullable Serializer<?> defaultSerializer;
@@ -243,12 +248,15 @@ public class Json{
     private Object[] getDefaultValues(Class type){
         if(!skipDefaultValues) return null;
         if(type.isAnonymousClass()) type = type.getSuperclass();
-        if(classToDefaultValues.containsKey(type)) return classToDefaultValues.get(type);
+
+        Object[] cached = classToDefaultValues.get(type);
+        if(cached != null) return cached == noDefaultValues ? null : cached;
+
         Object object;
         try{
             object = newInstance(type);
         }catch(Exception ex){
-            classToDefaultValues.put(type, null);
+            classToDefaultValues.put(type, noDefaultValues);
             return null;
         }
 
@@ -829,7 +837,7 @@ public class Json{
         for(ObjectMap.Entry<String, Jval> entry : jsonMap.asObject()){
             String name = entry.key;
             Jval child = entry.value;
-            FieldMetadata metadata = fields.get(name.replace(" ", "_"));
+            FieldMetadata metadata = fields.get(name.indexOf(' ') < 0 ? name : name.replace(" ", "_"));
             if(metadata == null){
                 if(name.equals(typeName)) continue;
                 if(ignoreUnknownFields || ignoreUnknownField(type, name)){
@@ -1138,17 +1146,25 @@ public class Json{
             if(type == boolean.class || type == Boolean.class) return (T)Boolean.valueOf(string);
             if(type == char.class || type == Character.class) return (T)(Character)string.charAt(0);
             if(Enum.class.isAssignableFrom(type)){
-                Enum[] constants = (Enum[])type.getEnumConstants();
-                for(int i = 0, n = constants.length; i < n; i++){
-                    Enum e = constants[i];
-                    if(string.equals(convertToString(e))) return (T)e;
-                }
+                Enum result = enumValue(type, string);
+                if(result != null) return (T)result;
             }
             if(type == CharSequence.class) return (T)string;
             throw new SerializationException("Unable to convert value to required type: " + jsonData + " (" + type.getName() + ")");
         }
 
         return null;
+    }
+
+    private Enum enumValue(Class type, String string){
+        ObjectMap<String, Enum> values = classToEnumConstants.get(type);
+        if(values == null){
+            Enum[] constants = (Enum[])type.getEnumConstants();
+            values = new ObjectMap<>(constants.length);
+            for(Enum e : constants) values.put(convertToString(e), e);
+            classToEnumConstants.put(type, values);
+        }
+        return values.get(string);
     }
 
     /**
@@ -1178,13 +1194,17 @@ public class Json{
 
     protected <T> Class<T> resolveClass(String className){
         Class<T> type = getClass(className);
-        if(type == null){
-            try{
-                type = (Class<T>)Class.forName(className);
-                if(Timer.class.isAssignableFrom(type)) throw new RuntimeException("Invalid class type.");
-            }catch(Throwable ex){
-                throw new SerializationException(ex);
-            }
+        if(type != null) return type;
+
+        type = (Class<T>)nameToClass.get(className);
+        if(type != null) return type;
+
+        try{
+            type = (Class<T>)Class.forName(className);
+            if(Timer.class.isAssignableFrom(type)) throw new RuntimeException("Invalid class type.");
+            nameToClass.put(className, type);
+        }catch(Throwable ex){
+            throw new SerializationException(ex);
         }
         return type;
     }
@@ -1200,14 +1220,28 @@ public class Json{
     }
 
     protected Object newInstance(Class type){
+        Constructor cached = classToConstructor.get(type);
+        if(cached != null){
+            try{
+                return cached.newInstance();
+            }catch(Exception ex){
+                throw new SerializationException("Error constructing instance of class: " + type.getName(), ex);
+            }
+        }
+
         try{
-            return type.getDeclaredConstructor().newInstance();
+            Constructor constructor = type.getDeclaredConstructor();
+            Object result = constructor.newInstance();
+            classToConstructor.put(type, constructor);
+            return result;
         }catch(Exception ex){
             try{
                 // Try a private constructor.
                 Constructor constructor = type.getDeclaredConstructor();
                 constructor.setAccessible(true);
-                return constructor.newInstance();
+                Object result = constructor.newInstance();
+                classToConstructor.put(type, constructor);
+                return result;
             }catch(SecurityException ignored){
             }catch(IllegalAccessException ignored){
                 if(Enum.class.isAssignableFrom(type)){
