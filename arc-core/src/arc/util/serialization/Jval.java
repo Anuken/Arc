@@ -418,6 +418,11 @@ public interface Jval{
     /** Alias class of whatever is used to store json maps (objects). */
     class JsonMap extends ArrayMap<String, Jval> implements Jval{
 
+        public JsonMap(){
+            //maps have no capacity until actually used; this calls resize() after the first put(), but that's fine, there is no initial allocation with 0 capacity
+            super(0);
+        }
+
         @Override public Jtype getType(){ return Jtype.object; }
         @Override public JsonMap asObject(){ return this; }
         @Override public String toString(){ return toString(Jformat.minimal); }
@@ -451,6 +456,10 @@ public interface Jval{
 
     /** Alias class of json arrays. */
     class JsonArray extends Seq<Jval> implements Jval{
+
+        public JsonArray(){
+            super(false, 8);
+        }
 
         @Override
         public JsonArray add(Jval value){

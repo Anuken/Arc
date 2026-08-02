@@ -17,6 +17,8 @@ import java.util.*;
  */
 @SuppressWarnings("unchecked")
 public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
+    private static final Object[] empty = {};
+
     public K[] keys;
     public V[] values;
     public int size;
@@ -43,8 +45,9 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
      */
     public ArrayMap(boolean ordered, int capacity){
         this.ordered = ordered;
-        keys = (K[])new Object[capacity];
-        values = (V[])new Object[capacity];
+        //optimization: don't allocate anything until it's used
+        keys = capacity == 0 ?  (K[])empty : (K[])new Object[capacity];
+        values = capacity == 0 ?  (V[])empty : (V[])new Object[capacity];
     }
 
     /**
