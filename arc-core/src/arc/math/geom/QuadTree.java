@@ -23,6 +23,9 @@ public class QuadTree<T extends QuadTreeObject>{
     public boolean leaf = true;
     public int totalObjects;
 
+    //scratch partitioning lists reused across fill() calls to avoid allocating every rebuild
+    private Seq<T> fillBL, fillBR, fillTL, fillTR;
+
     public QuadTree(Rect bounds){
         this.bounds = bounds;
     }
@@ -99,6 +102,59 @@ public class QuadTree<T extends QuadTreeObject>{
                 objects.add(obj);
             }
         }
+    }
+
+    /** Rebuilds this tree from scratch using the given list of objects. */
+    public void fill(Seq<T> list){
+        clear();
+        totalObjects = list.size;
+
+        if(list.size <= maxObjectsPerNode){
+            objects.addAll(list);
+            return;
+        }
+
+        if(botLeft == null){
+            float subW = bounds.width / 2;
+            float subH = bounds.height / 2;
+            botLeft = newChild(new Rect(bounds.x, bounds.y, subW, subH));
+            botRight = newChild(new Rect(bounds.x + subW, bounds.y, subW, subH));
+            topLeft = newChild(new Rect(bounds.x, bounds.y + subH, subW, subH));
+            topRight = newChild(new Rect(bounds.x + subW, bounds.y + subH, subW, subH));
+        }
+        leaf = false;
+
+        if(fillBL == null){
+            fillBL = new Seq<>(false);
+            fillBR = new Seq<>(false);
+            fillTL = new Seq<>(false);
+            fillTR = new Seq<>(false);
+        }
+        fillBL.clear();
+        fillBR.clear();
+        fillTL.clear();
+        fillTR.clear();
+
+        Object[] items = list.items;
+        int size = list.size;
+
+        //single partitioning pass instead of one split()-check per insert
+        for(int i = 0; i < size; i++){
+            T obj = (T)items[i];
+            hitbox(obj);
+            QuadTree<T> child = getFittingChild(tmp);
+
+            if(child == botLeft) fillBL.add(obj);
+            else if(child == botRight) fillBR.add(obj);
+            else if(child == topLeft) fillTL.add(obj);
+            else if(child == topRight) fillTR.add(obj);
+            else objects.add(obj); //doesn't fit any quadrant, stays in this node
+        }
+
+        botLeft.fill(fillBL);
+        botRight.fill(fillBR);
+        topLeft.fill(fillTL);
+        topRight.fill(fillTR);
     }
 
     /**
