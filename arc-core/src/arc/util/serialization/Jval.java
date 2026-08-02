@@ -410,7 +410,7 @@ public class Jval{
             case bool: return value.toString();
         }
 
-        return toString(Jformat.plain);
+        return toString(Jformat.minimal);
     }
 
     /**
