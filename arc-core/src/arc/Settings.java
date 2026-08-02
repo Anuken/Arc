@@ -330,8 +330,7 @@ public class Settings{
     public synchronized void putJson(String name, Class<?> elementType, Object value){
         byteStream.reset();
 
-        json.setWriter(new UBJsonWriter(byteStream));
-        json.writeValue(value, value == null ? null : value.getClass(), elementType);
+        json.toUBJson(value, value == null ? null : value.getClass(), elementType, byteStream);
 
         put(name, byteStream.toByteArray());
 

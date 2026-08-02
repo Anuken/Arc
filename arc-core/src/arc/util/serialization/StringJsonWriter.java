@@ -23,43 +23,59 @@ public class StringJsonWriter extends Writer implements JsonWriter{
     }
 
     @Override
-    public JsonWriter name(String name) throws IOException{
-        if(current == null || current.array) throw new IllegalStateException("Current item must be an object.");
-        if(!current.needsComma)
-            current.needsComma = true;
-        else
-            writer.write(',');
-        newline(current.level + 1);
-        writer.write(quoteName(name));
-        writer.write(':');
-        if(format == Jformat.formatted || format == Jformat.hjson) writer.write(' ');
-        named = true;
-        return this;
+    public JsonWriter name(String name){
+        try{
+            if(current == null || current.array) throw new IllegalStateException("Current item must be an object.");
+            if(!current.needsComma)
+                current.needsComma = true;
+            else
+                writer.write(',');
+            newline(current.level + 1);
+            writer.write(quoteName(name));
+            writer.write(':');
+            if(format == Jformat.formatted || format == Jformat.hjson) writer.write(' ');
+            named = true;
+            return this;
+        }catch(IOException ex){
+            throw new SerializationException(ex);
+        }
     }
 
     @Override
-    public JsonWriter object() throws IOException{
-        requireCommaOrName();
-        int level = current == null ? 0 : current.level + 1;
-        writer.write('{');
-        stack.add(current = new JsonObject(false, level));
-        return this;
+    public JsonWriter object(){
+        try{
+            requireCommaOrName();
+            int level = current == null ? 0 : current.level + 1;
+            writer.write('{');
+            stack.add(current = new JsonObject(false, level));
+            return this;
+        }catch(IOException ex){
+            throw new SerializationException(ex);
+        }
     }
 
     @Override
-    public JsonWriter array() throws IOException{
-        requireCommaOrName();
-        int level = current == null ? 0 : current.level + 1;
-        writer.write('[');
-        stack.add(current = new JsonObject(true, level));
-        return this;
+    public JsonWriter array(){
+        try{
+            requireCommaOrName();
+            int level = current == null ? 0 : current.level + 1;
+            writer.write('[');
+            stack.add(current = new JsonObject(true, level));
+            return this;
+        }catch(IOException ex){
+            throw new SerializationException(ex);
+        }
     }
 
     @Override
-    public JsonWriter value(Object value) throws IOException{
-        requireCommaOrName();
-        writer.write(quoteValue(value));
-        return this;
+    public JsonWriter value(Object value){
+        try{
+            requireCommaOrName();
+            writer.write(quoteValue(value));
+            return this;
+        }catch(IOException ex){
+            throw new SerializationException(ex);
+        }
     }
 
     private void requireCommaOrName() throws IOException{
@@ -83,28 +99,32 @@ public class StringJsonWriter extends Writer implements JsonWriter{
     }
 
     @Override
-    public JsonWriter object(String name) throws IOException{
+    public JsonWriter object(String name){
         return name(name).object();
     }
 
     @Override
-    public JsonWriter array(String name) throws IOException{
+    public JsonWriter array(String name){
         return name(name).array();
     }
 
     @Override
-    public JsonWriter set(String name, Object value) throws IOException{
+    public JsonWriter set(String name, Object value){
         return name(name).value(value);
     }
 
     @Override
-    public JsonWriter pop() throws IOException{
-        if(named) throw new IllegalStateException("Expected an object, array, or value since a name was set.");
-        JsonObject pop = stack.pop();
-        current = stack.size == 0 ? null : stack.peek();
-        if(pop.needsComma) newline(pop.level);
-        writer.write(pop.array ? ']' : '}');
-        return this;
+    public JsonWriter pop(){
+        try{
+            if(named) throw new IllegalStateException("Expected an object, array, or value since a name was set.");
+            JsonObject pop = stack.pop();
+            current = stack.size == 0 ? null : stack.peek();
+            if(pop.needsComma) newline(pop.level);
+            writer.write(pop.array ? ']' : '}');
+            return this;
+        }catch(IOException ex){
+            throw new SerializationException(ex);
+        }
     }
 
     @Override

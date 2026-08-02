@@ -6,7 +6,6 @@ import arc.struct.IntSet.*;
 import arc.struct.ObjectMap.*;
 import arc.struct.Queue;
 import arc.struct.OrderedMap.*;
-import arc.util.Timer;
 import arc.util.*;
 import arc.util.io.*;
 import arc.util.serialization.Jval.*;
@@ -32,7 +31,6 @@ public class Json{
     private final ObjectMap<String, Class> nameToClass = new ObjectMap();
     private final ObjectMap<Class, ObjectMap<String, Enum>> classToEnumConstants = new ObjectMap();
     private final Object[] equals1 = {null}, equals2 = {null};
-    protected JsonWriter writer;
 
     /** Sets the serializer to use when the type being deserialized is not known (null). */
     public @Nullable JsonSerializer<?> defaultSerializer;
@@ -48,6 +46,8 @@ public class Json{
     public boolean ignoreUnknownFields = true;
     /** When true, {@link Enum#name()} is used to write enum values. When false, {@link Enum#toString()} is used which may not be unique. Default is true. */
     public boolean enumNames = true;
+    /** When true, classes not implementing Serializable are allowed. This is very unsafe! */
+    public boolean allowNonSerializableClasses = false;
 
     /** Sets a tag to use instead of the fully qualifier class name. This can make the JSON easier to read. */
     public void addClassTag(String tag, Class type){
@@ -138,8 +138,11 @@ public class Json{
     }
 
     public void toUBJson(Object object, Class knownType, OutputStream stream){
-        this.writer = new UBJsonWriter(stream);
-        toJson(object, knownType, (Class)null);
+        writeValue(new UBJsonWriter(stream), object, knownType, null);
+    }
+
+    public void toUBJson(Object object, Class knownType, Class elementType, OutputStream stream){
+        writeValue(new UBJsonWriter(stream), object, knownType, elementType);
     }
 
     /**
@@ -191,22 +194,16 @@ public class Json{
      * @param elementType May be null if the type is unknown.
      */
     public void toJson(Object object, Class knownType, Class elementType, Writer writer){
-        setWriter(new StringJsonWriter(writer, Jformat.minimal));
+        JsonWriter jsonWriter = new StringJsonWriter(writer, Jformat.minimal);
         try{
-            writeValue(object, knownType, elementType);
+            writeValue(jsonWriter, object, knownType, elementType);
         }finally{
-            Streams.close(this.writer);
-            this.writer = null;
+            Streams.close(jsonWriter);
         }
     }
 
-    /** Sets the writer where JSON output will be written. This is only necessary when not using the toJson methods. */
-    public void setWriter(JsonWriter writer){
-        this.writer = writer;
-    }
-
     /** Writes all fields of the specified object to the current JSON object. */
-    public void writeFields(Object object){
+    public void writeFields(JsonWriter writer, Object object){
         Class type = object.getClass();
 
         Object[] defaultValues = getDefaultValues(type);
@@ -231,7 +228,7 @@ public class Json{
                 }
 
                 writer.name(field.getName());
-                writeValue(value, field.getType(), metadata.elementType);
+                writeValue(writer, value, field.getType(), metadata.elementType);
             }catch(IllegalAccessException ex){
                 throw new SerializationException("Error accessing field: " + field.getName() + " (" + type.getName() + ")", ex);
             }catch(SerializationException ex){
@@ -283,29 +280,29 @@ public class Json{
         return values;
     }
 
-    /** @see #writeField(Object, String, String, Class) */
-    public void writeField(Object object, String name){
-        writeField(object, name, name, null);
+    /** @see #writeField(JsonWriter, Object, String, String, Class) */
+    public void writeField(JsonWriter writer, Object object, String name){
+        writeField(writer, object, name, name, null);
     }
 
     /**
      * @param elementType May be null if the type is unknown.
-     * @see #writeField(Object, String, String, Class)
+     * @see #writeField(JsonWriter, Object, String, String, Class)
      */
-    public void writeField(Object object, String name, Class elementType){
-        writeField(object, name, name, elementType);
+    public void writeField(JsonWriter writer, Object object, String name, Class elementType){
+        writeField(writer, object, name, name, elementType);
     }
 
-    /** @see #writeField(Object, String, String, Class) */
-    public void writeField(Object object, String fieldName, String jsonName){
-        writeField(object, fieldName, jsonName, null);
+    /** @see #writeField(JsonWriter, Object, String, String, Class) */
+    public void writeField(JsonWriter writer, Object object, String fieldName, String jsonName){
+        writeField(writer, object, fieldName, jsonName, null);
     }
 
     /**
      * Writes the specified field to the current JSON object.
      * @param elementType May be null if the type is unknown.
      */
-    public void writeField(Object object, String fieldName, String jsonName, Class elementType){
+    public void writeField(JsonWriter writer, Object object, String fieldName, String jsonName, Class elementType){
         Class type = object.getClass();
         ObjectMap<String, FieldMetadata> fields = getFields(type);
         FieldMetadata metadata = fields.get(fieldName);
@@ -315,7 +312,7 @@ public class Json{
         if(elementType == null) elementType = metadata.elementType;
         try{
             writer.name(jsonName);
-            writeValue(field.get(object), field.getType(), elementType);
+            writeValue(writer, field.get(object), field.getType(), elementType);
         }catch(IllegalAccessException ex){
             throw new SerializationException("Error accessing field: " + field.getName() + " (" + type.getName() + ")", ex);
         }catch(SerializationException ex){
@@ -331,18 +328,14 @@ public class Json{
     /**
      * Writes the value as a field on the current JSON object, without writing the actual class.
      * @param value May be null.
-     * @see #writeValue(String, Object, Class, Class)
+     * @see #writeValue(JsonWriter, String, Object, Class, Class)
      */
-    public void writeValue(String name, Object value){
-        try{
-            writer.name(name);
-        }catch(IOException ex){
-            throw new SerializationException(ex);
-        }
+    public void writeValue(JsonWriter writer, String name, Object value){
+        writer.name(name);
         if(value == null)
-            writeValue(value, null, null);
+            writeValue(writer, value, null, null);
         else
-            writeValue(value, value.getClass(), null);
+            writeValue(writer, value, value.getClass(), null);
     }
 
     /**
@@ -350,15 +343,11 @@ public class Json{
      * known type.
      * @param value May be null.
      * @param knownType May be null if the type is unknown.
-     * @see #writeValue(String, Object, Class, Class)
+     * @see #writeValue(JsonWriter, String, Object, Class, Class)
      */
-    public void writeValue(String name, Object value, Class knownType){
-        try{
-            writer.name(name);
-        }catch(IOException ex){
-            throw new SerializationException(ex);
-        }
-        writeValue(value, knownType, null);
+    public void writeValue(JsonWriter writer, String name, Object value, Class knownType){
+        writer.name(name);
+        writeValue(writer, value, knownType, null);
     }
 
     /**
@@ -368,24 +357,20 @@ public class Json{
      * @param knownType May be null if the type is unknown.
      * @param elementType May be null if the type is unknown.
      */
-    public void writeValue(String name, Object value, Class knownType, Class elementType){
-        try{
-            writer.name(name);
-        }catch(IOException ex){
-            throw new SerializationException(ex);
-        }
-        writeValue(value, knownType, elementType);
+    public void writeValue(JsonWriter writer, String name, Object value, Class knownType, Class elementType){
+        writer.name(name);
+        writeValue(writer, value, knownType, elementType);
     }
 
     /**
      * Writes the value, without writing the class of the object.
      * @param value May be null.
      */
-    public void writeValue(Object value){
+    public void writeValue(JsonWriter writer, Object value){
         if(value == null)
-            writeValue(value, null, null);
+            writeValue(writer, value, null, null);
         else
-            writeValue(value, value.getClass(), null);
+            writeValue(writer, value, value.getClass(), null);
     }
 
     /**
@@ -393,8 +378,8 @@ public class Json{
      * @param value May be null.
      * @param knownType May be null if the type is unknown.
      */
-    public void writeValue(Object value, Class knownType){
-        writeValue(value, knownType, null);
+    public void writeValue(JsonWriter writer, Object value, Class knownType){
+        writeValue(writer, value, knownType, null);
     }
 
     /**
@@ -404,292 +389,230 @@ public class Json{
      * @param knownType May be null if the type is unknown.
      * @param elementType May be null if the type is unknown.
      */
-    public void writeValue(Object value, Class knownType, Class elementType){
+    public void writeValue(JsonWriter writer, Object value, Class knownType, Class elementType){
         if(knownType != null && knownType.isAnonymousClass()){
             knownType = knownType.getSuperclass();
         }
 
-        try{
-            if(value == null){
-                writer.value(null);
-                return;
-            }
-
-            if((knownType != null && knownType.isPrimitive()) || knownType == String.class || Reflect.isWrapper(knownType)){
-                writer.value(value);
-                return;
-            }
-
-            Class actualType = value.getClass().isAnonymousClass() ? value.getClass().getSuperclass() : value.getClass();
-
-            if(actualType.isPrimitive() || actualType == String.class || Reflect.isWrapper(actualType)){
-                writeObjectStart(actualType, null);
-                writeValue("value", value);
-                writeObjectEnd();
-                return;
-            }
-
-            if(value instanceof JsonSerializable){
-                writeObjectStart(actualType, knownType);
-                ((JsonSerializable)value).write(this);
-                writeObjectEnd();
-                return;
-            }
-
-            JsonSerializer serializer = classToSerializer.get(actualType);
-            if(serializer != null){
-                serializer.write(this, value, knownType);
-                return;
-            }
-
-            // JSON array special cases.
-            if(value instanceof Seq){
-                if(knownType != null && actualType != knownType && actualType != Seq.class)
-                    throw new SerializationException("Serialization of an Array other than the known type is not supported.\n"
-                    + "Known type: " + knownType + "\nActual type: " + actualType);
-                writeArrayStart();
-                Seq array = (Seq)value;
-                for(int i = 0, n = array.size; i < n; i++)
-                    writeValue(array.get(i), elementType, null);
-                writeArrayEnd();
-                return;
-            }
-            if(value instanceof ObjectSet){
-                if(knownType == null) knownType = ObjectSet.class;
-                writeObjectStart(actualType, knownType);
-                writer.name("values");
-                writeArrayStart();
-                for(Object entry : (ObjectSet)value)
-                    writeValue(entry, elementType, null);
-                writeArrayEnd();
-                writeObjectEnd();
-                return;
-            }
-            if(value instanceof IntSet){
-                if(knownType == null) knownType = IntSet.class;
-                writeObjectStart(actualType, knownType);
-                writer.name("values");
-                writeArrayStart();
-                for(IntSetIterator iter = ((IntSet)value).iterator(); iter.hasNext; )
-                    writeValue(iter.next(), Integer.class, null);
-                writeArrayEnd();
-                writeObjectEnd();
-                return;
-            }
-            if(value instanceof IntSeq){
-                writeArrayStart();
-                IntSeq array = (IntSeq)value;
-                for(int i = 0, n = array.size; i < n; i++)
-                    writeValue(array.get(i), Integer.class, null);
-                writeArrayEnd();
-                return;
-            }
-            if(value instanceof arc.struct.Queue){
-                if(knownType != null && actualType != knownType && actualType != arc.struct.Queue.class)
-                    throw new SerializationException("Serialization of a Queue other than the known type is not supported.\n"
-                    + "Known type: " + knownType + "\nActual type: " + actualType);
-                writeArrayStart();
-                arc.struct.Queue queue = (arc.struct.Queue)value;
-                for(int i = 0, n = queue.size; i < n; i++)
-                    writeValue(queue.get(i), elementType, null);
-                writeArrayEnd();
-                return;
-            }
-            if(value instanceof Collection){
-                if(typeName != null && actualType != ArrayList.class && (knownType == null || knownType != actualType)){
-                    writeObjectStart(actualType, knownType);
-                    writeArrayStart("items");
-                    for(Object item : (Collection)value)
-                        writeValue(item, elementType, null);
-                    writeArrayEnd();
-                    writeObjectEnd();
-                }else{
-                    writeArrayStart();
-                    for(Object item : (Collection)value)
-                        writeValue(item, elementType, null);
-                    writeArrayEnd();
-                }
-                return;
-            }
-            if(actualType.isArray()){
-                if(elementType == null) elementType = actualType.getComponentType();
-                int length = java.lang.reflect.Array.getLength(value);
-                writeArrayStart();
-                for(int i = 0; i < length; i++)
-                    writeValue(java.lang.reflect.Array.get(value, i), elementType, null);
-                writeArrayEnd();
-                return;
-            }
-
-            // JSON object special cases.
-            if(value instanceof ObjectMap){
-                if(knownType == null) knownType = ObjectMap.class;
-                writeObjectStart(actualType, knownType);
-                for(Entry entry : ((ObjectMap<?, ?>)value).entries()){
-                    writer.name(convertToString(entry.key));
-                    writeValue(entry.value, elementType, null);
-                }
-                writeObjectEnd();
-                return;
-            }
-            if(value instanceof ObjectIntMap){
-                if(knownType == null) knownType = ObjectIntMap.class;
-                writeObjectStart(actualType, knownType);
-                for(ObjectIntMap.Entry entry : ((ObjectIntMap<?>)value).entries()){
-                    writer.name(convertToString(entry.key));
-                    writer.value(entry.value);
-                }
-                writeObjectEnd();
-                return;
-            }
-            if(value instanceof ObjectFloatMap){
-                if(knownType == null) knownType = ObjectFloatMap.class;
-                writeObjectStart(actualType, knownType);
-                for(ObjectFloatMap.Entry entry : ((ObjectFloatMap<?>)value).entries()){
-                    writer.name(convertToString(entry.key));
-                    writer.value(entry.value);
-                }
-                writeObjectEnd();
-                return;
-            }
-            if(value instanceof IntMap){
-                if(knownType == null) knownType = IntMap.class;
-                writeObjectStart(actualType, knownType);
-                for(IntMap.Entry entry : ((IntMap<?>)value).entries()){
-                    writer.name(String.valueOf(entry.key));
-                    writeValue(entry.value, elementType, null);
-                }
-                writeObjectEnd();
-                return;
-            }
-            if(value instanceof ArrayMap){
-                if(knownType == null) knownType = ArrayMap.class;
-                writeObjectStart(actualType, knownType);
-                ArrayMap map = (ArrayMap)value;
-                for(int i = 0, n = map.size; i < n; i++){
-                    writer.name(convertToString(map.keys[i]));
-                    writeValue(map.values[i], elementType, null);
-                }
-                writeObjectEnd();
-                return;
-            }
-            if(value instanceof Map){
-                if(knownType == null) knownType = HashMap.class;
-                writeObjectStart(actualType, knownType);
-                for(Map.Entry entry : ((Map<?, ?>)value).entrySet()){
-                    writer.name(convertToString(entry.getKey()));
-                    writeValue(entry.getValue(), elementType, null);
-                }
-                writeObjectEnd();
-                return;
-            }
-
-            // Enum special case.
-            if(Enum.class.isAssignableFrom(actualType)){
-                if(typeName != null && (knownType == null || knownType != actualType)){
-                    // Ensures that enums with specific implementations (abstract logic) serialize correctly.
-                    if(actualType.getEnumConstants() == null) actualType = actualType.getSuperclass();
-
-                    writeObjectStart(actualType, null);
-                    writer.name("value");
-                    writer.value(convertToString((Enum)value));
-                    writeObjectEnd();
-                }else{
-                    writer.value(convertToString((Enum)value));
-                }
-                return;
-            }
-
-            writeObjectStart(actualType, knownType);
-            writeFields(value);
-            writeObjectEnd();
-        }catch(IOException ex){
-            throw new SerializationException(ex);
+        if(value == null){
+            writer.value(null);
+            return;
         }
-    }
 
-    public void writeObjectStart(String name){
-        try{
-            writer.name(name);
-        }catch(IOException ex){
-            throw new SerializationException(ex);
+        if((knownType != null && knownType.isPrimitive()) || knownType == String.class || Reflect.isWrapper(knownType)){
+            writer.value(value);
+            return;
         }
-        writeObjectStart();
+
+        Class actualType = value.getClass().isAnonymousClass() ? value.getClass().getSuperclass() : value.getClass();
+
+        if(actualType.isPrimitive() || actualType == String.class || Reflect.isWrapper(actualType)){
+            writeObjectStart(writer, actualType, null);
+            writeValue(writer, "value", value);
+            writeObjectEnd(writer);
+            return;
+        }
+
+        if(value instanceof JsonSerializable){
+            writeObjectStart(writer, actualType, knownType);
+            ((JsonSerializable)value).write(this, writer);
+            writeObjectEnd(writer);
+            return;
+        }
+
+        JsonSerializer serializer = classToSerializer.get(actualType);
+        if(serializer != null){
+            serializer.write(this, writer, value, knownType);
+            return;
+        }
+
+        // JSON array special cases.
+        if(value instanceof Seq){
+            if(knownType != null && actualType != knownType && actualType != Seq.class)
+                throw new SerializationException("Serialization of an Array other than the known type is not supported.\n"
+                + "Known type: " + knownType + "\nActual type: " + actualType);
+            writer.writeArrayStart();
+            Seq array = (Seq)value;
+            for(int i = 0, n = array.size; i < n; i++)
+                writeValue(writer, array.get(i), elementType, null);
+            writer.writeArrayEnd();
+            return;
+        }
+        if(value instanceof ObjectSet){
+            if(knownType == null) knownType = ObjectSet.class;
+            writeObjectStart(writer, actualType, knownType);
+            writer.name("values");
+            writer.writeArrayStart();
+            for(Object entry : (ObjectSet)value)
+                writeValue(writer, entry, elementType, null);
+            writer.writeArrayEnd();
+            writeObjectEnd(writer);
+            return;
+        }
+        if(value instanceof IntSet){
+            if(knownType == null) knownType = IntSet.class;
+            writeObjectStart(writer, actualType, knownType);
+            writer.name("values");
+            writer.writeArrayStart();
+            for(IntSetIterator iter = ((IntSet)value).iterator(); iter.hasNext; )
+                writeValue(writer, iter.next(), Integer.class, null);
+            writer.writeArrayEnd();
+            writeObjectEnd(writer);
+            return;
+        }
+        if(value instanceof IntSeq){
+            writer.writeArrayStart();
+            IntSeq array = (IntSeq)value;
+            for(int i = 0, n = array.size; i < n; i++)
+                writeValue(writer, array.get(i), Integer.class, null);
+            writer.writeArrayEnd();
+            return;
+        }
+        if(value instanceof arc.struct.Queue){
+            if(knownType != null && actualType != knownType && actualType != arc.struct.Queue.class)
+                throw new SerializationException("Serialization of a Queue other than the known type is not supported.\n"
+                + "Known type: " + knownType + "\nActual type: " + actualType);
+            writer.writeArrayStart();
+            arc.struct.Queue queue = (arc.struct.Queue)value;
+            for(int i = 0, n = queue.size; i < n; i++)
+                writeValue(writer, queue.get(i), elementType, null);
+            writer.writeArrayEnd();
+            return;
+        }
+        if(value instanceof Collection){
+            if(typeName != null && actualType != ArrayList.class && (knownType == null || knownType != actualType)){
+                writeObjectStart(writer, actualType, knownType);
+                writer.writeArrayStart("items");
+                for(Object item : (Collection)value)
+                    writeValue(writer, item, elementType, null);
+                writer.writeArrayEnd();
+                writeObjectEnd(writer);
+            }else{
+                writer.writeArrayStart();
+                for(Object item : (Collection)value)
+                    writeValue(writer, item, elementType, null);
+                writer.writeArrayEnd();
+            }
+            return;
+        }
+        if(actualType.isArray()){
+            if(elementType == null) elementType = actualType.getComponentType();
+            int length = java.lang.reflect.Array.getLength(value);
+            writer.writeArrayStart();
+            for(int i = 0; i < length; i++)
+                writeValue(writer, java.lang.reflect.Array.get(value, i), elementType, null);
+            writer.writeArrayEnd();
+            return;
+        }
+
+        // JSON object special cases.
+        if(value instanceof ObjectMap){
+            if(knownType == null) knownType = ObjectMap.class;
+            writeObjectStart(writer, actualType, knownType);
+            for(Entry entry : ((ObjectMap<?, ?>)value).entries()){
+                writer.name(convertToString(entry.key));
+                writeValue(writer, entry.value, elementType, null);
+            }
+            writeObjectEnd(writer);
+            return;
+        }
+        if(value instanceof ObjectIntMap){
+            if(knownType == null) knownType = ObjectIntMap.class;
+            writeObjectStart(writer, actualType, knownType);
+            for(ObjectIntMap.Entry entry : ((ObjectIntMap<?>)value).entries()){
+                writer.name(convertToString(entry.key));
+                writer.value(entry.value);
+            }
+            writeObjectEnd(writer);
+            return;
+        }
+        if(value instanceof ObjectFloatMap){
+            if(knownType == null) knownType = ObjectFloatMap.class;
+            writeObjectStart(writer, actualType, knownType);
+            for(ObjectFloatMap.Entry entry : ((ObjectFloatMap<?>)value).entries()){
+                writer.name(convertToString(entry.key));
+                writer.value(entry.value);
+            }
+            writeObjectEnd(writer);
+            return;
+        }
+        if(value instanceof IntMap){
+            if(knownType == null) knownType = IntMap.class;
+            writeObjectStart(writer, actualType, knownType);
+            for(IntMap.Entry entry : ((IntMap<?>)value).entries()){
+                writer.name(String.valueOf(entry.key));
+                writeValue(writer, entry.value, elementType, null);
+            }
+            writeObjectEnd(writer);
+            return;
+        }
+        if(value instanceof ArrayMap){
+            if(knownType == null) knownType = ArrayMap.class;
+            writeObjectStart(writer, actualType, knownType);
+            ArrayMap map = (ArrayMap)value;
+            for(int i = 0, n = map.size; i < n; i++){
+                writer.name(convertToString(map.keys[i]));
+                writeValue(writer, map.values[i], elementType, null);
+            }
+            writeObjectEnd(writer);
+            return;
+        }
+        if(value instanceof Map){
+            if(knownType == null) knownType = HashMap.class;
+            writeObjectStart(writer, actualType, knownType);
+            for(Map.Entry entry : ((Map<?, ?>)value).entrySet()){
+                writer.name(convertToString(entry.getKey()));
+                writeValue(writer, entry.getValue(), elementType, null);
+            }
+            writeObjectEnd(writer);
+            return;
+        }
+
+        // Enum special case.
+        if(Enum.class.isAssignableFrom(actualType)){
+            if(typeName != null && (knownType == null || knownType != actualType)){
+                // Ensures that enums with specific implementations (abstract logic) serialize correctly.
+                if(actualType.getEnumConstants() == null) actualType = actualType.getSuperclass();
+
+                writeObjectStart(writer, actualType, null);
+                writer.name("value");
+                writer.value(convertToString((Enum)value));
+                writeObjectEnd(writer);
+            }else{
+                writer.value(convertToString((Enum)value));
+            }
+            return;
+        }
+
+        writeObjectStart(writer, actualType, knownType);
+        writeFields(writer, value);
+        writeObjectEnd(writer);
     }
 
     /** @param knownType May be null if the type is unknown. */
-    public void writeObjectStart(String name, Class actualType, Class knownType){
-        try{
-            writer.name(name);
-        }catch(IOException ex){
-            throw new SerializationException(ex);
-        }
-        writeObjectStart(actualType, knownType);
-    }
-
-    public void writeObjectStart(){
-        try{
-            writer.object();
-        }catch(IOException ex){
-            throw new SerializationException(ex);
-        }
+    public void writeObjectStart(JsonWriter writer, String name, Class actualType, Class knownType){
+        writer.name(name);
+        writeObjectStart(writer, actualType, knownType);
     }
 
     /**
      * Starts writing an object, writing the actualType to a field if needed.
      * @param knownType May be null if the type is unknown.
      */
-    public void writeObjectStart(Class actualType, Class knownType){
-        try{
-            writer.object();
-        }catch(IOException ex){
-            throw new SerializationException(ex);
-        }
-        if(knownType == null || knownType != actualType) writeType(actualType);
+    public void writeObjectStart(JsonWriter writer, Class actualType, Class knownType){
+        writer.writeObjectStart();
+        if(knownType == null || knownType != actualType) writeType(writer, actualType);
     }
 
-    public void writeObjectEnd(){
-        try{
-            writer.pop();
-        }catch(IOException ex){
-            throw new SerializationException(ex);
-        }
+    public void writeObjectEnd(JsonWriter writer){
+        writer.writeObjectEnd();
     }
 
-    public void writeArrayStart(String name){
-        try{
-            writer.name(name);
-            writer.array();
-        }catch(IOException ex){
-            throw new SerializationException(ex);
-        }
-    }
-
-    public void writeArrayStart(){
-        try{
-            writer.array();
-        }catch(IOException ex){
-            throw new SerializationException(ex);
-        }
-    }
-
-    public void writeArrayEnd(){
-        try{
-            writer.pop();
-        }catch(IOException ex){
-            throw new SerializationException(ex);
-        }
-    }
-
-    public void writeType(Class type){
+    public void writeType(JsonWriter writer, Class type){
         if(typeName == null) return;
         String className = getTag(type);
         if(className == null) className = type.getName();
-        try{
-            writer.set(typeName, className);
-        }catch(IOException ex){
-            throw new SerializationException(ex);
-        }
+        writer.set(typeName, className);
     }
 
     /**
@@ -1201,12 +1124,15 @@ public class Json{
 
         try{
             type = (Class<T>)Class.forName(className);
-            if(Timer.class.isAssignableFrom(type)) throw new RuntimeException("Invalid class type.");
-            nameToClass.put(className, type);
+            if(allowNonSerializableClasses || Serializable.class.isAssignableFrom(type) || JsonSerializable.class.isAssignableFrom(type)){
+                nameToClass.put(className, type);
+                return type;
+            }else{
+                throw new SerializationException("Class deserialization not allowed: " + type);
+            }
         }catch(Throwable ex){
             throw new SerializationException(ex);
         }
-        return type;
     }
 
     private String convertToString(Enum e){
@@ -1262,12 +1188,12 @@ public class Json{
     }
 
     public interface JsonSerializer<T>{
-        void write(Json json, T object, Class knownType);
+        void write(Json json, JsonWriter writer, T object, Class knownType);
         T read(Json json, Jval jsonData, Class type);
     }
 
     public interface JsonSerializable{
-        void write(Json json);
+        void write(Json json, JsonWriter writer);
         void read(Json json, Jval jsonData);
     }
 
