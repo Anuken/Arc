@@ -34,7 +34,6 @@ public class Settings{
     //IO utility objects
     protected ByteArrayOutputStream byteStream = new ByteArrayOutputStream(32);
     protected ReusableByteInStream byteInputStream = new ReusableByteInStream();
-    protected UBJsonReader ureader = new UBJsonReader();
     protected Json json = new Json();
 
     public void setJson(Json json){
@@ -343,7 +342,7 @@ public class Settings{
         try{
             if(!has(name)) return def.get();
             byteInputStream.setBytes(getBytes(name));
-            return json.readValue(type, elementType, ureader.parse(byteInputStream));
+            return json.readValue(type, elementType, UBJson.read(byteInputStream));
         }catch(Throwable e){
             Log.err("Error reading JSON with key '" + name + "'", e);
             return def.get();

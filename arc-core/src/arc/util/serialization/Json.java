@@ -27,6 +27,7 @@ public class Json{
     private final ObjectMap<Class, Serializer> classToSerializer = new ObjectMap();
     private final ObjectMap<Class, Object[]> classToDefaultValues = new ObjectMap();
     private final Object[] equals1 = {null}, equals2 = {null};
+    protected JsonWriter writer; //<--- should I remove this field and pass it to every single method?
 
     /** Sets the serializer to use when the type being deserialized is not known (null). */
     public @Nullable Serializer<?> defaultSerializer;
@@ -185,12 +186,18 @@ public class Json{
      * @param elementType May be null if the type is unknown.
      */
     public void toJson(Object object, Class knownType, Class elementType, Writer writer){
+        setWriter(new StringJsonWriter(writer, Jformat.minimal));
         try{
             writeValue(object, knownType, elementType);
         }finally{
             Streams.close(this.writer);
             this.writer = null;
         }
+    }
+
+    /** Sets the writer where JSON output will be written. This is only necessary when not using the toJson methods. */
+    public void setWriter(JsonWriter writer){
+        this.writer = writer;
     }
 
     /** Writes all fields of the specified object to the current JSON object. */

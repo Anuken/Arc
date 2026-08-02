@@ -5,94 +5,483 @@ import arc.util.*;
 
 import java.io.*;
 
-/** Writes a {@link Jval} tree as UBJSON to a stream. */
-public class UBJsonWriter{
+/**
+ * Builder style API for emitting UBJSON.
+ * @author Justin Shapcott
+ */
+public class UBJsonWriter implements JsonWriter{
+    final DataOutputStream out;
+    private final Seq<JsonObject> stack = new Seq<>();
+    private JsonObject current;
+    private boolean named;
 
-    public static void write(Jval value, OutputStream output) throws IOException{
-        DataOutputStream out = output instanceof DataOutputStream ? (DataOutputStream)output : new DataOutputStream(output);
-        writeValue(value, out);
+    public UBJsonWriter(OutputStream out){
+        if(!(out instanceof DataOutputStream)) out = new DataOutputStream(out);
+        this.out = (DataOutputStream)out;
+    }
+
+    public void reset(){
+        stack.clear();
+        current = null;
+        named = false;
+    }
+
+    /**
+     * Begins a new object container. To finish the object call {@link #pop()}.
+     * @return This writer, for chaining
+     */
+    @Override
+    public UBJsonWriter object() throws IOException{
+        if(current != null){
+            if(!current.array){
+                if(!named) throw new IllegalStateException("Name must be set.");
+                named = false;
+            }
+        }
+        stack.add(current = new JsonObject(false));
+        return this;
+    }
+
+    /**
+     * Begins a new named object container, having the given name. To finish the object call {@link #pop()}.
+     * @return This writer, for chaining
+     */
+    @Override
+    public UBJsonWriter object(String name) throws IOException{
+        name(name).object();
+        return this;
+    }
+
+    /**
+     * Begins a new array container. To finish the array call {@link #pop()}.
+     * @return this writer, for chaining.
+     */
+    @Override
+    public UBJsonWriter array() throws IOException{
+        if(current != null){
+            if(!current.array){
+                if(!named) throw new IllegalStateException("Name must be set.");
+                named = false;
+            }
+        }
+        stack.add(current = new JsonObject(true));
+        return this;
+    }
+
+    /**
+     * Begins a new named array container, having the given name. To finish the array call {@link #pop()}.
+     * @return this writer, for chaining.
+     */
+    @Override
+    public UBJsonWriter array(String name) throws IOException{
+        name(name).array();
+        return this;
+    }
+
+    /**
+     * Appends a name for the next object, array, or value.
+     * @return this writer, for chaining
+     */
+    @Override
+    public UBJsonWriter name(String name) throws IOException{
+        if(current == null || current.array) throw new IllegalStateException("Current item must be an object.");
+        byte[] bytes = name.getBytes(Strings.utf8);
+        if(bytes.length <= Byte.MAX_VALUE){
+            out.writeByte('i');
+            out.writeByte(bytes.length);
+        }else if(bytes.length <= Short.MAX_VALUE){
+            out.writeByte('I');
+            out.writeShort(bytes.length);
+        }else{
+            out.writeByte('l');
+            out.writeInt(bytes.length);
+        }
+        out.write(bytes);
+        named = true;
+        return this;
+    }
+
+    /**
+     * Appends a {@code byte} value to the stream. This corresponds to the {@code int8} value type in the UBJSON specification.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value(byte value) throws IOException{
+        checkName();
+        out.writeByte('i');
+        out.writeByte(value);
+        return this;
+    }
+
+    /**
+     * Appends a {@code short} value to the stream. This corresponds to the {@code int16} value type in the UBJSON specification.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value(short value) throws IOException{
+        checkName();
+        out.writeByte('I');
+        out.writeShort(value);
+        return this;
+    }
+
+    /**
+     * Appends an {@code int} value to the stream. This corresponds to the {@code int32} value type in the UBJSON specification.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value(int value) throws IOException{
+        checkName();
+        out.writeByte('l');
+        out.writeInt(value);
+        return this;
+    }
+
+    /**
+     * Appends a {@code long} value to the stream. This corresponds to the {@code int64} value type in the UBJSON specification.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value(long value) throws IOException{
+        checkName();
+        out.writeByte('L');
+        out.writeLong(value);
+        return this;
+    }
+
+    /**
+     * Appends a {@code float} value to the stream. This corresponds to the {@code float32} value type in the UBJSON specification.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value(float value) throws IOException{
+        checkName();
+        out.writeByte('d');
+        out.writeFloat(value);
+        return this;
+    }
+
+    /**
+     * Appends a {@code double} value to the stream. This corresponds to the {@code float64} value type in the UBJSON
+     * specification.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value(double value) throws IOException{
+        checkName();
+        out.writeByte('D');
+        out.writeDouble(value);
+        return this;
+    }
+
+    /**
+     * Appends a {@code boolean} value to the stream. This corresponds to the {@code boolean} value type in the UBJSON
+     * specification.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value(boolean value) throws IOException{
+        checkName();
+        out.writeByte(value ? 'T' : 'F');
+        return this;
+    }
+
+    /**
+     * Appends a {@code char} value to the stream. Because, in Java, a {@code char} is 16 bytes, this corresponds to the
+     * {@code int16} value type in the UBJSON specification.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value(char value) throws IOException{
+        checkName();
+        out.writeByte('I');
+        out.writeChar(value);
+        return this;
+    }
+
+    /**
+     * Appends a {@code String} value to the stream. This corresponds to the {@code string} value type in the UBJSON specification.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value(String value) throws IOException{
+        checkName();
+        byte[] bytes = value.getBytes(Strings.utf8);
+        out.writeByte('S');
+        if(bytes.length <= Byte.MAX_VALUE){
+            out.writeByte('i');
+            out.writeByte(bytes.length);
+        }else if(bytes.length <= Short.MAX_VALUE){
+            out.writeByte('I');
+            out.writeShort(bytes.length);
+        }else{
+            out.writeByte('l');
+            out.writeInt(bytes.length);
+        }
+        out.write(bytes);
+        return this;
+    }
+
+    /**
+     * Appends an optimized {@code byte array} value to the stream. As an optimized array, the {@code int8} value type marker and
+     * element count are encoded once at the array marker instead of repeating the type marker for each element.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value(byte[] values) throws IOException{
+        array();
+        out.writeByte('$');
+        out.writeByte('i');
+        out.writeByte('#');
+        value(values.length);
+        for(int i = 0, n = values.length; i < n; i++){
+            out.writeByte(values[i]);
+        }
+        pop(true);
+        return this;
+    }
+
+    /**
+     * Appends an optimized {@code short array} value to the stream. As an optimized array, the {@code int16} value type marker and
+     * element count are encoded once at the array marker instead of repeating the type marker for each element.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value(short[] values) throws IOException{
+        array();
+        out.writeByte('$');
+        out.writeByte('I');
+        out.writeByte('#');
+        value(values.length);
+        for(int i = 0, n = values.length; i < n; i++){
+            out.writeShort(values[i]);
+        }
+        pop(true);
+        return this;
+    }
+
+    /**
+     * Appends an optimized {@code int array} value to the stream. As an optimized array, the {@code int32} value type marker and
+     * element count are encoded once at the array marker instead of repeating the type marker for each element.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value(int[] values) throws IOException{
+        array();
+        out.writeByte('$');
+        out.writeByte('l');
+        out.writeByte('#');
+        value(values.length);
+        for(int i = 0, n = values.length; i < n; i++){
+            out.writeInt(values[i]);
+        }
+        pop(true);
+        return this;
+    }
+
+    /**
+     * Appends an optimized {@code long array} value to the stream. As an optimized array, the {@code int64} value type marker and
+     * element count are encoded once at the array marker instead of repeating the type marker for each element.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value(long[] values) throws IOException{
+        array();
+        out.writeByte('$');
+        out.writeByte('L');
+        out.writeByte('#');
+        value(values.length);
+        for(int i = 0, n = values.length; i < n; i++){
+            out.writeLong(values[i]);
+        }
+        pop(true);
+        return this;
+    }
+
+    /**
+     * Appends an optimized {@code float array} value to the stream. As an optimized array, the {@code float32} value type marker
+     * and element count are encoded once at the array marker instead of repeating the type marker for each element.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value(float[] values) throws IOException{
+        array();
+        out.writeByte('$');
+        out.writeByte('d');
+        out.writeByte('#');
+        value(values.length);
+        for(int i = 0, n = values.length; i < n; i++){
+            out.writeFloat(values[i]);
+        }
+        pop(true);
+        return this;
+    }
+
+    /**
+     * Appends an optimized {@code double array} value to the stream. As an optimized array, the {@code float64} value type marker
+     * and element count are encoded once at the array marker instead of repeating the type marker for each element. element count
+     * are encoded once at the array marker instead of for each element.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value(double[] values) throws IOException{
+        array();
+        out.writeByte('$');
+        out.writeByte('D');
+        out.writeByte('#');
+        value(values.length);
+        for(int i = 0, n = values.length; i < n; i++){
+            out.writeDouble(values[i]);
+        }
+        pop(true);
+        return this;
+    }
+
+    /**
+     * Appends a {@code boolean array} value to the stream.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value(boolean[] values) throws IOException{
+        array();
+        for(int i = 0, n = values.length; i < n; i++){
+            out.writeByte(values[i] ? 'T' : 'F');
+        }
+        pop();
+        return this;
+    }
+
+    /**
+     * Appends an optimized {@code char array} value to the stream. As an optimized array, the {@code int16} value type marker and
+     * element count are encoded once at the array marker instead of repeating the type marker for each element.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value(char[] values) throws IOException{
+        array();
+        out.writeByte('$');
+        out.writeByte('C');
+        out.writeByte('#');
+        value(values.length);
+        for(int i = 0, n = values.length; i < n; i++){
+            out.writeChar(values[i]);
+        }
+        pop(true);
+        return this;
+    }
+
+    /**
+     * Appends an optimized {@code String array} value to the stream. As an optimized array, the {@code String} value type marker
+     * and element count are encoded once at the array marker instead of repeating the type marker for each element.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value(String[] values) throws IOException{
+        array();
+        out.writeByte('$');
+        out.writeByte('S');
+        out.writeByte('#');
+        value(values.length);
+        for(int i = 0, n = values.length; i < n; i++){
+            byte[] bytes = values[i].getBytes(Strings.utf8);
+            if(bytes.length <= Byte.MAX_VALUE){
+                out.writeByte('i');
+                out.writeByte(bytes.length);
+            }else if(bytes.length <= Short.MAX_VALUE){
+                out.writeByte('I');
+                out.writeShort(bytes.length);
+            }else{
+                out.writeByte('l');
+                out.writeInt(bytes.length);
+            }
+            out.write(bytes);
+        }
+        pop(true);
+        return this;
+    }
+
+    /**
+     * Appends the object to the stream, if it is a known value type. This is a convenience method that calls through to the
+     * appropriate value method.
+     * @return this writer, for chaining
+     */
+    @Override
+    public UBJsonWriter value(Object object) throws IOException{
+        if(object == null){
+            return value();
+        }else if(object instanceof Number){
+            Number number = (Number)object;
+            if(object instanceof Byte) return value(number.byteValue());
+            if(object instanceof Short) return value(number.shortValue());
+            if(object instanceof Integer) return value(number.intValue());
+            if(object instanceof Long) return value(number.longValue());
+            if(object instanceof Float) return value(number.floatValue());
+            if(object instanceof Double) return value(number.doubleValue());
+        }else if(object instanceof Character){
+            return value(((Character)object).charValue());
+        }else if(object instanceof CharSequence){
+            return value(object.toString());
+        }else if(object instanceof Boolean){
+            return value((boolean)object);
+        }else
+            throw new IOException("Unknown object type.");
+
+        return this;
+    }
+
+    /**
+     * Appends a {@code null} value to the stream.
+     * @return this writer, for chaining
+     */
+    public UBJsonWriter value() throws IOException{
+        checkName();
+        out.writeByte('Z');
+        return this;
+    }
+
+    /**
+     * Appends a named value to the stream.
+     * @return this writer, for chaining
+     */
+    @Override
+    public UBJsonWriter set(String name, Object value) throws IOException{
+        return name(name).value(value);
+    }
+
+    private void checkName(){
+        if(current != null){
+            if(!current.array){
+                if(!named) throw new IllegalStateException("Name must be set.");
+                named = false;
+            }
+        }
+    }
+
+    /**
+     * Ends the current object or array and pops it off of the element stack.
+     * @return This writer, for chaining
+     */
+    @Override
+    public UBJsonWriter pop() throws IOException{
+        return pop(false);
+    }
+
+    protected UBJsonWriter pop(boolean silent) throws IOException{
+        if(named) throw new IllegalStateException("Expected an object, array, or value since a name was set.");
+        if(silent)
+            stack.pop();
+        else
+            stack.pop().close();
+        current = stack.size == 0 ? null : stack.peek();
+        return this;
+    }
+
+    /** Flushes the underlying stream. This forces any buffered output bytes to be written out to the stream. */
+    public void flush() throws IOException{
         out.flush();
     }
 
-    private static void writeValue(Jval value, DataOutputStream out) throws IOException{
-        switch(value.getType()){
-            case object:
-                writeObject(value, out);
-                break;
-            case array:
-                writeArray(value, out);
-                break;
-            case string:
-                writeString(value.asString(), out);
-                break;
-            case number:
-                writeNumber(value.asDouble(), out);
-                break;
-            case bool:
-                out.writeByte(value.isTrue() ? 'T' : 'F');
-                break;
-            default:
-                out.writeByte('Z');
-                break;
+    /** Closes the underlying output stream and releases any system resources associated with the stream. */
+    @Override
+    public void close() throws IOException{
+        while(stack.size > 0)
+            pop();
+        out.close();
+    }
+
+    private class JsonObject{
+        final boolean array;
+
+        JsonObject(boolean array) throws IOException{
+            this.array = array;
+            out.writeByte(array ? '[' : '{');
+        }
+
+        void close() throws IOException{
+            out.writeByte(array ? ']' : '}');
         }
     }
 
-    private static void writeObject(Jval value, DataOutputStream out) throws IOException{
-        out.writeByte('{');
-        for(ObjectMap.Entry<String, Jval> entry : value.asObject()){
-            writeSize(entry.key.getBytes(Strings.utf8).length, out);
-            out.write(entry.key.getBytes(Strings.utf8));
-            writeValue(entry.value, out);
-        }
-        out.writeByte('}');
-    }
-
-    private static void writeArray(Jval value, DataOutputStream out) throws IOException{
-        out.writeByte('[');
-        Jval.JsonArray arr = value.asArray();
-        for(int i = 0; i < arr.size; i++) writeValue(arr.get(i), out);
-        out.writeByte(']');
-    }
-
-    private static void writeString(String value, DataOutputStream out) throws IOException{
-        byte[] bytes = value.getBytes(Strings.utf8);
-        out.writeByte('S');
-        writeSize(bytes.length, out);
-        out.write(bytes);
-    }
-
-    private static void writeSize(int size, DataOutputStream out) throws IOException{
-        if(size <= Byte.MAX_VALUE){
-            out.writeByte('i');
-            out.writeByte(size);
-        }else if(size <= Short.MAX_VALUE){
-            out.writeByte('I');
-            out.writeShort(size);
-        }else{
-            out.writeByte('l');
-            out.writeInt(size);
-        }
-    }
-
-    private static void writeNumber(double value, DataOutputStream out) throws IOException{
-        if(value == Math.rint(value) && !Double.isInfinite(value)){
-            long l = (long)value;
-            if(l >= Byte.MIN_VALUE && l <= Byte.MAX_VALUE){
-                out.writeByte('i');
-                out.writeByte((int)l);
-            }else if(l >= Short.MIN_VALUE && l <= Short.MAX_VALUE){
-                out.writeByte('I');
-                out.writeShort((int)l);
-            }else if(l >= Integer.MIN_VALUE && l <= Integer.MAX_VALUE){
-                out.writeByte('l');
-                out.writeInt((int)l);
-            }else{
-                out.writeByte('L');
-                out.writeLong(l);
-            }
-        }else{
-            out.writeByte('D');
-            out.writeDouble(value);
-        }
-    }
 }

@@ -83,7 +83,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
 
     void merge(Settings settings, File settingsFile){
         try{
-            json.readFields(settings, new JsonReader().parse(new FileReader(settingsFile)));
+            json.readFields(settings, Jval.read(new FileReader(settingsFile)));
         }catch(Exception ex){
             throw new ArcRuntimeException("Error reading settings file: " + settingsFile, ex);
         }

@@ -1,5 +1,6 @@
 package arc.util.serialization;
 
+import arc.files.*;
 import arc.struct.*;
 import arc.util.*;
 
@@ -40,7 +41,7 @@ public class Jval{
      */
     public static Jval read(Reader reader){
         try{
-            return new JsonReader(reader).parse();
+            return new JvalReader(reader).parse();
         }catch(IOException e){
             throw new ArcRuntimeException(e);
         }
@@ -48,7 +49,7 @@ public class Jval{
 
     public static Jval read(byte[] bytes){
         try{
-            return new JsonReader(new InputStreamReader(new ByteArrayInputStream(bytes))).parse();
+            return new JvalReader(new InputStreamReader(new ByteArrayInputStream(bytes))).parse();
         }catch(IOException e){
             throw new ArcRuntimeException(e);
         }
@@ -60,7 +61,11 @@ public class Jval{
      * @return the Hjson value that has been read
      */
     public static Jval read(String text){
-        return new JsonReader(text).parse();
+        return new JvalReader(text).parse();
+    }
+
+    public static Jval read(Fi file){
+        return read(file.reader());
     }
 
     public Jtype getType(){
@@ -151,7 +156,8 @@ public class Jval{
         }
     }
 
-    public String asString(){
+    public @Nullable String asString(){
+        if(value == null) return null;
         if(!(value instanceof String) && !(value instanceof Number)) throw new UnsupportedOperationException("Not a string: " + this);
         return String.valueOf(value);
     }
@@ -163,6 +169,66 @@ public class Jval{
             return Boolean.parseBoolean((String)value);
         }
         throw new UnsupportedOperationException("Not a bool: " + this);
+    }
+
+    public byte[] asByteArray(){
+        JsonArray arr = asArray();
+        byte[] out = new byte[arr.size];
+        for(int i = 0; i < out.length; i++) out[i] = arr.get(i).asByte();
+        return out;
+    }
+
+    public short[] asShortArray(){
+        JsonArray arr = asArray();
+        short[] out = new short[arr.size];
+        for(int i = 0; i < out.length; i++) out[i] = arr.get(i).asShort();
+        return out;
+    }
+
+    public int[] asIntArray(){
+        JsonArray arr = asArray();
+        int[] out = new int[arr.size];
+        for(int i = 0; i < out.length; i++) out[i] = arr.get(i).asInt();
+        return out;
+    }
+
+    public long[] asLongArray(){
+        JsonArray arr = asArray();
+        long[] out = new long[arr.size];
+        for(int i = 0; i < out.length; i++) out[i] = arr.get(i).asLong();
+        return out;
+    }
+
+    public float[] asFloatArray(){
+        JsonArray arr = asArray();
+        float[] out = new float[arr.size];
+        for(int i = 0; i < out.length; i++) out[i] = arr.get(i).asFloat();
+        return out;
+    }
+
+    public double[] asDoubleArray(){
+        JsonArray arr = asArray();
+        double[] out = new double[arr.size];
+        for(int i = 0; i < out.length; i++) out[i] = arr.get(i).asDouble();
+        return out;
+    }
+
+    public boolean[] asBooleanArray(){
+        JsonArray arr = asArray();
+        boolean[] out = new boolean[arr.size];
+        for(int i = 0; i < out.length; i++) out[i] = arr.get(i).asBool();
+        return out;
+    }
+
+    public String[] asStringArray(){
+        JsonArray arr = asArray();
+        String[] out = new String[arr.size];
+        for(int i = 0; i < out.length; i++) out[i] = arr.get(i).asString();
+        return out;
+    }
+
+    public Jval get(int i){
+        return asArray().get(i);
     }
 
     public Jval get(String name){
@@ -219,6 +285,11 @@ public class Jval{
         return this;
     }
 
+    public Jval clear(){
+        asObject().clear();
+        return this;
+    }
+
     public Jval remove(String name){
         if(name == null) throw new NullPointerException("name is null");
         return asObject().removeKey(name);
@@ -227,6 +298,10 @@ public class Jval{
     public boolean has(String name){
         if(name == null) throw new NullPointerException("name is null");
         return asObject().containsKey(name);
+    }
+
+    public int getInt(String name){
+        return getInt(name, 0);
     }
 
     public int getInt(String name, int defaultValue){
@@ -252,6 +327,22 @@ public class Jval{
     public boolean getBool(String name, boolean defaultValue){
         Jval value = get(name);
         return value != null ? value.asBool() : defaultValue;
+    }
+
+    public long getLong(String name){
+        return getLong(name, 0L);
+    }
+
+    public float getFloat(String name){
+        return getFloat(name, 0f);
+    }
+
+    public double getDouble(String name){
+        return getDouble(name, 0);
+    }
+
+    public boolean getBool(String name){
+        return getBool(name, false);
     }
 
     public @Nullable String getString(String name){
@@ -289,16 +380,16 @@ public class Jval{
         WritingBuffer buffer = new WritingBuffer(writer, 128);
         switch(format){
             case plain:
-                JsonWriter.writeJson(this, false, true, buffer, 0);
+                JvalWriter.writeJson(this, false, true, buffer, 0);
                 break;
             case minimal:
-                JsonWriter.writeJson(this, false, false, buffer, 0);
+                JvalWriter.writeJson(this, false, false, buffer, 0);
                 break;
             case formatted:
-                JsonWriter.writeJson(this, true, true, buffer, 0);
+                JvalWriter.writeJson(this, true, true, buffer, 0);
                 break;
             case hjson:
-                JsonWriter.writeHjson(this, buffer, -1, "", true);
+                JvalWriter.writeHjson(this, buffer, -1, "", true);
                 break;
         }
         buffer.flush();

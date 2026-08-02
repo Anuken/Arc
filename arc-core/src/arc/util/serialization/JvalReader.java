@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.*;
 
 /** Used internally by Jval. Don't use directly. */
-class JsonReader{
+class JvalReader{
     private final char[] buffer;
     private int index, bufferLength;
     private int line;
@@ -16,15 +16,16 @@ class JsonReader{
     private int captureStart;
     private int rawStart;
     private boolean escaped;
-    private boolean isArray;
+    /** True while reading a value that sits inside a container (object or array), where ',' acts as a terminator/separator. */
+    private boolean inContainer;
 
-    JsonReader(String string){
+    JvalReader(String string){
         buffer = string.toCharArray();
         bufferLength = buffer.length;
         reset();
     }
 
-    JsonReader(Reader reader) throws IOException{
+    JvalReader(Reader reader) throws IOException{
         char[] data = new char[8 * 1024];
         int size = 0, n;
         while((n = reader.read(data, size, data.length - size)) != -1){
@@ -45,6 +46,7 @@ class JsonReader{
         line = 1;
         captureBuffer = null;
         escaped = false;
+        inContainer = false;
     }
 
     Jval parse(){
@@ -98,13 +100,13 @@ class JsonReader{
     private Jval readTfnns(){
         int start = index - 1;
         int first = current;
-        if(JsonWriter.isPunctuatorChar(first))
+        if(JvalWriter.isPunctuatorChar(first))
             throw error("Found a punctuator character '" + (char)first + "' when expecting a quoteless string (check your syntax)");
 
         while(true){
             read();
             boolean isComment = current == '#' || (current == '/' && (peek() == '/' || peek() == '*'));
-            boolean isEol = current < 0 || current == '\r' || current == '\n' || (current == ',' && isArray) || current == ']' || current == '}' || isComment;
+            boolean isEol = current < 0 || current == '\r' || current == '\n' || (current == ',' && inContainer) || current == ']' || current == '}' || isComment;
             if(isEol || current == ','){
                 int stop = current < 0 ? index : index - 1; // position of the stopping char, not yet part of the value
 
@@ -214,11 +216,13 @@ class JsonReader{
     }
 
     private Jval readArray(){
-        isArray = true;
+        boolean previousInContainer = inContainer;
+        inContainer = true;
         read();
         JsonArray array = new JsonArray();
         skipWhiteSpace();
         if(readIf(']')){
+            inContainer = previousInContainer;
             return new Jval(array);
         }
         while(true){
@@ -229,11 +233,16 @@ class JsonReader{
             if(readIf(']')) break;
             else if(isEndOfText()) throw error("End of input while parsing an array (did you forget a closing ']'?)");
         }
-        isArray = false;
+        inContainer = previousInContainer;
         return new Jval(array);
     }
 
     private Jval readObject(boolean objectWithoutBraces){
+        boolean previousInContainer = inContainer;
+        // Only an explicitly braced object relies on ',' to separate same-line entries.
+        // The braceless root object is line-oriented (newline-separated), so a ',' inside
+        // a quoteless value there (e.g. "description: a, b, c") is just literal text.
+        if(!objectWithoutBraces) inContainer = true;
         if(!objectWithoutBraces) read();
         JsonMap object = new JsonMap();
         skipWhiteSpace();
@@ -254,6 +263,7 @@ class JsonReader{
             skipWhiteSpace();
             if(readIf(',')) skipWhiteSpace(); // , is optional
         }
+        inContainer = previousInContainer;
         return new Jval(object);
     }
 
@@ -274,7 +284,7 @@ class JsonReader{
                 if(space < 0) space = name.length();
             }else if(current < ' '){
                 throw error("Name is not closed");
-            }else if(JsonWriter.isPunctuatorChar(current)){
+            }else if(JvalWriter.isPunctuatorChar(current)){
                 throw error("Found '" + (char)current + "' where a key name was expected (check your syntax or use quotes if the key name includes {}[],: or whitespace)");
             }else name.append((char)current);
             read();
