@@ -137,7 +137,7 @@ class JvalReader{
                     int s = start, e = end;
                     while(s < e && isTrimChar(buffer[s])) s++;
                     while(e > s && isTrimChar(buffer[e - 1])) e--;
-                    return new Jval(new String(buffer, s, e - s));
+                    return new JsonString(new String(buffer, s, e - s));
                 }
             }
         }
@@ -196,12 +196,12 @@ class JvalReader{
 
         if(!isDecimal){
             try{
-                return new Jval(Long.parseLong(str));
+                return new JsonLong(Long.parseLong(str));
             }catch(NumberFormatException ignored){
             }
         }
 
-        return new Jval(Double.parseDouble(str));
+        return new JsonDouble(Double.parseDouble(str));
     }
 
     private boolean regionMatches(int off, String kw){
@@ -223,7 +223,7 @@ class JvalReader{
         skipWhiteSpace();
         if(readIf(']')){
             inContainer = previousInContainer;
-            return new Jval(array);
+            return array;
         }
         while(true){
             skipWhiteSpace();
@@ -234,14 +234,11 @@ class JvalReader{
             else if(isEndOfText()) throw error("End of input while parsing an array (did you forget a closing ']'?)");
         }
         inContainer = previousInContainer;
-        return new Jval(array);
+        return array;
     }
 
     private Jval readObject(boolean objectWithoutBraces){
         boolean previousInContainer = inContainer;
-        // Only an explicitly braced object relies on ',' to separate same-line entries.
-        // The braceless root object is line-oriented (newline-separated), so a ',' inside
-        // a quoteless value there (e.g. "description: a, b, c") is just literal text.
         if(!objectWithoutBraces) inContainer = true;
         if(!objectWithoutBraces) read();
         JsonMap object = new JsonMap();
@@ -264,7 +261,7 @@ class JvalReader{
             if(readIf(',')) skipWhiteSpace(); // , is optional
         }
         inContainer = previousInContainer;
-        return new Jval(object);
+        return object;
     }
 
     private String readName(){
@@ -346,7 +343,7 @@ class JvalReader{
     }
 
     private Jval readString(){
-        return new Jval(readStringInternal(true));
+        return new JsonString(readStringInternal(true));
     }
 
     private String readStringInternal(boolean allowML){
@@ -494,12 +491,12 @@ class JvalReader{
 
         if(!isDecimal){
             try{
-                return new Jval(Long.parseLong(str));
+                return new JsonLong(Long.parseLong(str));
             }catch(NumberFormatException ignored){
             }
         }
 
-        return new Jval(Double.parseDouble(str));
+        return new JsonDouble(Double.parseDouble(str));
     }
 
     static Jval tryParseNumber(String value){

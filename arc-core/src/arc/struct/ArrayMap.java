@@ -75,7 +75,7 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
         System.arraycopy(array.values, 0, values, 0, size);
     }
 
-    public int put(K key, V value){
+    public int putIndex(K key, V value){
         int index = indexOfKey(key);
         if(index == -1){
             if(size == keys.length) resize(Math.max(8, (int)(size * 1.75f)));
@@ -84,6 +84,12 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
         keys[index] = key;
         values[index] = value;
         return index;
+    }
+
+
+    public ArrayMap<K, V> put(K key, V value){
+        putIndex(key, value);
+        return this;
     }
 
     public int put(K key, V value, int index){
@@ -328,7 +334,7 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
         resize(maximumCapacity);
     }
 
-    public void clear(){
+    public ArrayMap<K, V> clear(){
         K[] keys = this.keys;
         V[] values = this.values;
         for(int i = 0, n = size; i < n; i++){
@@ -336,6 +342,7 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>{
             values[i] = null;
         }
         size = 0;
+        return this;
     }
 
     /**

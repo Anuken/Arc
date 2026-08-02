@@ -3,6 +3,7 @@ package arc.util.serialization;
 import arc.files.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.serialization.Jval.*;
 
 import java.io.*;
 
@@ -158,11 +159,11 @@ public class UBJson{
     }
 
     private static Jval readObject(DataInputStream in) throws IOException{
-        Jval result = Jval.newObject();
+        JsonMap result = Jval.newObject();
         byte type = in.readByte();
         while(type != '}'){
             String key = readBytes(in, readSize(in, type));
-            result.add(key, readValue(in, in.readByte()));
+            result.putAdd(key, readValue(in, in.readByte()));
             type = in.readByte();
         }
         return result;
