@@ -26,7 +26,7 @@ public class Json{
     private final ObjectMap<Class, OrderedMap<String, FieldMetadata>> typeToFields = new ObjectMap();
     private final ObjectMap<String, Class> tagToClass = new ObjectMap();
     private final ObjectMap<Class, String> classToTag = new ObjectMap();
-    private final ObjectMap<Class, Serializer> classToSerializer = new ObjectMap();
+    private final ObjectMap<Class, JsonSerializer> classToSerializer = new ObjectMap();
     private final ObjectMap<Class, Object[]> classToDefaultValues = new ObjectMap();
     private final ObjectMap<Class, Constructor> classToConstructor = new ObjectMap();
     private final ObjectMap<String, Class> nameToClass = new ObjectMap();
@@ -35,7 +35,7 @@ public class Json{
     protected JsonWriter writer;
 
     /** Sets the serializer to use when the type being deserialized is not known (null). */
-    public @Nullable Serializer<?> defaultSerializer;
+    public @Nullable JsonSerializer<?> defaultSerializer;
     /**
      * Sets the name of the JSON field to store the Java class name or class tag when required to avoid ambiguity during
      * deserialization. Set to null to never output this information, but be warned that deserialization may fail. Default is
@@ -69,11 +69,11 @@ public class Json{
      * Registers a serializer to use for the specified type instead of the default behavior of serializing all of an objects
      * fields.
      */
-    public <T> void setSerializer(Class<T> type, Serializer<T> serializer){
+    public <T> void setSerializer(Class<T> type, JsonSerializer<T> serializer){
         classToSerializer.put(type, serializer);
     }
 
-    public <T> Serializer<T> getSerializer(Class<T> type){
+    public <T> JsonSerializer<T> getSerializer(Class<T> type){
         return classToSerializer.get(type);
     }
 
@@ -436,7 +436,7 @@ public class Json{
                 return;
             }
 
-            Serializer serializer = classToSerializer.get(actualType);
+            JsonSerializer serializer = classToSerializer.get(actualType);
             if(serializer != null){
                 serializer.write(this, value, knownType);
                 return;
@@ -960,7 +960,7 @@ public class Json{
                 if(jsonData == null) throw new SerializationException(
                 "Unable to convert object to struct: " + jsonData + " (" + type.getName() + ")");
             }else{
-                Serializer serializer = classToSerializer.get(type);
+                JsonSerializer serializer = classToSerializer.get(type);
                 if(serializer != null) return (T)serializer.read(this, jsonData, type);
 
                 if(type == String.class || Reflect.isWrapper(type) || Enum.class.isAssignableFrom(type)){
@@ -1051,7 +1051,7 @@ public class Json{
         }
 
         if(type != null){
-            Serializer serializer = classToSerializer.get(type);
+            JsonSerializer serializer = classToSerializer.get(type);
             if(serializer != null) return (T)serializer.read(this, jsonData, type);
 
             if(JsonSerializable.class.isAssignableFrom(type)){
@@ -1261,7 +1261,7 @@ public class Json{
         }
     }
 
-    public interface Serializer<T>{
+    public interface JsonSerializer<T>{
         void write(Json json, T object, Class knownType);
         T read(Json json, Jval jsonData, Class type);
     }
