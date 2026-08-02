@@ -118,9 +118,9 @@ class JvalReader{
                         while(s < e && isTrimChar(buffer[s])) s++;
                         while(e > s && isTrimChar(buffer[e - 1])) e--;
                         int len = e - s;
-                        if(len == 5 && regionMatches(s, "false")) return Jval.FALSE;
-                        if(len == 4 && regionMatches(s, "null")) return Jval.NULL;
-                        if(len == 4 && regionMatches(s, "true")) return Jval.TRUE;
+                        if(len == 5 && regionMatches(s, "false")) return Jval.falseValue;
+                        if(len == 4 && regionMatches(s, "null")) return Jval.nullValue;
+                        if(len == 4 && regionMatches(s, "true")) return Jval.trueValue;
                         break;
                     }
                     default:

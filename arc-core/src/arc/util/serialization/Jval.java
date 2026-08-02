@@ -9,9 +9,10 @@ import java.io.*;
 /** An hsjon parser. Can be used as a standard json value.
  * Output can be converted to standard JSON. This class is heavily based upon the Hjson Java implementation.*/
 public interface Jval{
-    Jval TRUE = new JsonBool(true);
-    Jval FALSE = new JsonBool(false);
-    Jval NULL = new JsonNull();
+    Jval
+    trueValue = new JsonBool(true),
+    falseValue = new JsonBool(false),
+    nullValue = new JsonNull();
 
     static JsonMap newObject(){
         return new JsonMap();
@@ -64,12 +65,11 @@ public interface Jval{
     static Jval valueOf(long value){ return new JsonLong(value); }
     static Jval valueOf(float value){ return new JsonDouble(value); }
     static Jval valueOf(double value){ return new JsonDouble(value); }
-    static Jval valueOf(String string){ return string == null ? NULL : new JsonString(string); }
-    static Jval valueOf(boolean value){ return value ? TRUE : FALSE; }
+    static Jval valueOf(String string){ return string == null ? nullValue : new JsonString(string); }
+    static Jval valueOf(boolean value){ return value ? trueValue : falseValue; }
     /** Buckets any Number into a long or double value, depending on its kind. */
     static Jval valueOf(Number value){ return value instanceof Float || value instanceof Double ? valueOf(value.doubleValue()) : valueOf(value.longValue()); }
 
-    /** The only method every value type must define itself. */
     Jtype getType();
 
     default boolean isObject(){ return getType() == Jtype.object; }
@@ -77,8 +77,8 @@ public interface Jval{
     default boolean isNumber(){ return getType() == Jtype.number; }
     default boolean isString(){ return getType() == Jtype.string; }
     default boolean isBoolean(){ return getType() == Jtype.bool; }
-    default boolean isTrue(){ return this == TRUE; }
-    default boolean isFalse(){ return this == FALSE; }
+    default boolean isTrue(){ return this == trueValue; }
+    default boolean isFalse(){ return this == falseValue; }
     default boolean isNull(){ return getType() == Jtype.nil; }
 
     default JsonMap asObject(){ throw new UnsupportedOperationException("Not an object: " + this); }
@@ -437,7 +437,7 @@ public interface Jval{
         @Override
         public void add(String name, Jval val){
             if(name == null) throw new NullPointerException("name is null");
-            put(name, val == null ? NULL : val);
+            put(name, val == null ? nullValue : val);
         }
 
         /** Puts a value without checking if it's in the map first. This is unsafe, but prevents O(n) put. */
@@ -469,7 +469,7 @@ public interface Jval{
         @Override public String toString(){ return toString(Jformat.minimal); }
     }
 
-    /** The ToString format. */
+    /** The toString format. */
     enum Jformat{
         /** JSON (no whitespace). */
         plain,
@@ -481,10 +481,7 @@ public interface Jval{
         hjson,
     }
 
-    /**
-     * Defines the known json types.
-     * There is no null type as the primitive will be null instead of the Jval containing null.
-     */
+    /** Defines the known json types. */
     enum Jtype{
         string, number, object, array, bool, nil,
     }

@@ -118,11 +118,11 @@ public class UBJson{
             case '{':
                 return readObject(in);
             case 'Z':
-                return Jval.NULL;
+                return Jval.nullValue;
             case 'T':
-                return Jval.TRUE;
+                return Jval.trueValue;
             case 'F':
-                return Jval.FALSE;
+                return Jval.falseValue;
             case 'B':
             case 'U':
                 return Jval.valueOf(readUChar(in));
