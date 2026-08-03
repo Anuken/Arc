@@ -7,6 +7,18 @@ import static org.junit.Assert.*;
 public class StringsTest{
 
     @Test
+    public void testSanitizeFilename(){
+        assertEquals(Strings.sanitizeFilename("test"), "test");
+        assertEquals(Strings.sanitizeFilename("test.txt"), "test.txt");
+        assertEquals(Strings.sanitizeFilename("test/test"), "test_test");
+        assertEquals(Strings.sanitizeFilename("CON"), "_CON");
+        assertEquals(Strings.sanitizeFilename("CON.a/test"), "_CON.a_test");
+        assertEquals(Strings.sanitizeFilename("."), "_");
+        assertEquals(Strings.sanitizeFilename(".."), "__");
+        assertEquals(Strings.sanitizeFilename("..txt"), "..txt");
+    }
+
+    @Test
     public void testFixed(){
         Object[] values = {
         3, 1.327f,  "1.327",
@@ -35,25 +47,38 @@ public class StringsTest{
     }
 
     @Test
-    public void testDoubleParse(){
-        Seq.with("0", "0.0", "123.456", "123f", "145.6", "1e10", "-512515", "-535.646", "999.9344", "0.24324", ".325235", "3424324.", "+.31245", "-.51354", ".0", "-.0", "+.0", "0.000002", "200000.2000", "2000.00004", "-0.5")
-        .each(StringsTest::checkDouble);
+    public void testDoubleFloatParse(){
+        Seq.with(
+        "0", "0.0", "123.456", "123f", "145.6", "1e10", "-512515", "-535.646", "999.9344", "0.24324",
+        ".325235", "3424324.", "+.31245", "-.51354", ".0", "-.0", "+.0", "0.000002", "200000.2000",
+        "2000.00004", "-0.5", "1e10", "1e154", "1.5e3", "1.32e-6", "6e10",
+
+        //decimal + exponent together
+        "1.5e10", "-1.5e10", "1.5E10", "-1.5E-10", "3.14e2", "-3.14e-2", "2.5e0", "0.5e5", "-0.5e-5",
+
+        //trailing dot combined with exponent / suffix
+        "1.e5", "-1.e5", "5.e-3", "3.f", "-3.f", "10.F",
+
+        //leading-dot combined with exponent
+        ".5e3", "-.5e3", "+.5e-3",
+
+        //plain signed integers/decimals
+        "+123.456", "+5", "5", "-5", "1234567890.123456", "-1234567890.123456",
+
+        //zero variants
+        "0e0", "-0e0", "0.0e0", "0e10", "0.000e5",
+
+        //small/negative exponents
+        "1.32E-6", "9.999e-3", "-9.999e-3",
+
+        //multi-digit exponents
+        "1.234e12", "-1.234e12", "5.5e20", "-5.5e20"
+        ).each(StringsTest::checkFloat);
     }
 
-    @Test
-    public void testSanitizeFilename(){
-        assertEquals(Strings.sanitizeFilename("test"), "test");
-        assertEquals(Strings.sanitizeFilename("test.txt"), "test.txt");
-        assertEquals(Strings.sanitizeFilename("test/test"), "test_test");
-        assertEquals(Strings.sanitizeFilename("CON"), "_CON");
-        assertEquals(Strings.sanitizeFilename("CON.a/test"), "_CON.a_test");
-        assertEquals(Strings.sanitizeFilename("."), "_");
-        assertEquals(Strings.sanitizeFilename(".."), "__");
-        assertEquals(Strings.sanitizeFilename("..txt"), "..txt");
-    }
-
-    static void checkDouble(String value){
-        assertEquals(Double.parseDouble(value), Strings.parseDouble(value, 999999), 0.00001);
+    static void checkFloat(String value){
+        assertEquals("For value: " + value, Double.parseDouble(value), Strings.parseDouble(value, Double.NaN), 0.00001);
+        assertEquals("For value: " + value, Float.parseFloat(value), Strings.parseFloat(value, Float.NaN), 0.00001);
     }
 
     static void checkLong(String value){

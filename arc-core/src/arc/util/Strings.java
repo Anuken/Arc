@@ -626,30 +626,46 @@ public class Strings{
             start = 1;
             sign = -1;
         }
+        if(start >= end) return defaultValue;
 
         int dot = -1, e = -1;
+        int dotCount = 0, eCount = 0;
         for(int i = start; i < end; i++){
             char c = value.charAt(i);
-            if(c == '.') dot = i;
-            if(c == 'e' || c == 'E') e = i;
+            if(c == '.'){ dot = i; dotCount++; }
+            if(c == 'e' || c == 'E'){ e = i; eCount++; }
+        }
+        if(dotCount > 1 || eCount > 1) return defaultValue;
+        if(dot != -1 && e != -1 && dot > e) return defaultValue;
+
+        int mantissaEnd = (e != -1) ? e : end;
+
+        long exponent = 0;
+        if(e != -1){
+            if(e + 1 >= end) return defaultValue;
+            exponent = parseLong(value, 10, e + 1, end, Long.MIN_VALUE);
+            if(exponent == Long.MIN_VALUE) return defaultValue;
         }
 
         if(dot != -1 && dot < end){
             //negation as first character
             long whole = start == dot ? 0 : parseLong(value, 10, start, dot, Long.MIN_VALUE);
             if(whole == Long.MIN_VALUE) return defaultValue;
-            long dec = parseLong(value, 10, dot + 1, end, Long.MIN_VALUE);
+            int decDigits = mantissaEnd - (dot + 1);
+            if(decDigits == 0){
+                return whole * Math.pow(10, exponent) * sign;
+            }
+            long dec = parseLong(value, 10, dot + 1, mantissaEnd, Long.MIN_VALUE);
             if(dec < 0) return defaultValue;
-            return (whole + Math.copySign(dec / Math.pow(10, (end - dot - 1)), whole)) * sign;
+            long scaled = whole * (long)Math.pow(10, decDigits) + dec;
+            return (scaled / Math.pow(10, decDigits)) * Math.pow(10, exponent) * sign;
         }
 
         //check scientific notation
         if(e != -1){
             long whole = parseLong(value, 10, start, e, Long.MIN_VALUE);
             if(whole == Long.MIN_VALUE) return defaultValue;
-            long power = parseLong(value, 10, e + 1, end, Long.MIN_VALUE);
-            if(power == Long.MIN_VALUE) return defaultValue;
-            return whole * Math.pow(10, power) * sign;
+            return whole * Math.pow(10, exponent) * sign;
         }
 
         //parse as standard integer
@@ -663,35 +679,81 @@ public class Strings{
     }
 
     public static boolean canParseFloat(String s){
-        if(s.isEmpty()) return false;
-        try{
-            Float.parseFloat(s);
-            return true;
-        }catch(Exception e){
-            return false;
-        }
+        return parseFloat(s, Float.NEGATIVE_INFINITY) != Float.NEGATIVE_INFINITY;
     }
 
     public static boolean canParsePositiveFloat(String s){
-        try{
-            return Float.parseFloat(s) >= 0;
-        }catch(Exception e){
-            return false;
-        }
+        return parseFloat(s) >= 0f;
     }
 
     /** Returns Float.NEGATIVE_INFINITY if parsing failed. */
     public static float parseFloat(String s){
-        return parseFloat(s, Float.MIN_VALUE);
+        return parseFloat(s, Float.NEGATIVE_INFINITY);
     }
 
-    public static float parseFloat(String s, float defaultValue){
-        if(s.isEmpty()) return defaultValue;
-        try{
-            return Float.parseFloat(s);
-        }catch(Exception e){
-            return defaultValue;
+    /** Faster float parser that doesn't throw exceptions. */
+    public static float parseFloat(String value, float defaultValue){
+        int len = value.length();
+        if(len == 0) return defaultValue;
+
+        int sign = 1;
+        int start = 0, end = len;
+        char last = value.charAt(len - 1), first = value.charAt(0);
+        if(last == 'F' || last == 'f' || last == '.'){
+            end --;
         }
+        if(first == '+'){
+            start = 1;
+        }
+        if(first == '-'){
+            start = 1;
+            sign = -1;
+        }
+        if(start >= end) return defaultValue;
+
+        int dot = -1, e = -1;
+        int dotCount = 0, eCount = 0;
+        for(int i = start; i < end; i++){
+            char c = value.charAt(i);
+            if(c == '.'){ dot = i; dotCount++; }
+            if(c == 'e' || c == 'E'){ e = i; eCount++; }
+        }
+        if(dotCount > 1 || eCount > 1) return defaultValue;
+        if(dot != -1 && e != -1 && dot > e) return defaultValue;
+
+        int mantissaEnd = (e != -1) ? e : end;
+
+        long exponent = 0;
+        if(e != -1){
+            if(e + 1 >= end) return defaultValue;
+            exponent = parseLong(value, 10, e + 1, end, Long.MIN_VALUE);
+            if(exponent == Long.MIN_VALUE) return defaultValue;
+        }
+
+        if(dot != -1 && dot < end){
+            //negation as first character
+            long whole = start == dot ? 0 : parseLong(value, 10, start, dot, Long.MIN_VALUE);
+            if(whole == Long.MIN_VALUE) return defaultValue;
+            int decDigits = mantissaEnd - (dot + 1);
+            if(decDigits == 0){
+                return (float)(whole * Math.pow(10, exponent) * sign);
+            }
+            long dec = parseLong(value, 10, dot + 1, mantissaEnd, Long.MIN_VALUE);
+            if(dec < 0) return defaultValue;
+            long scaled = whole * (long)Math.pow(10, decDigits) + dec;
+            return (float)((scaled / Math.pow(10, decDigits)) * Math.pow(10, exponent) * sign);
+        }
+
+        //check scientific notation
+        if(e != -1){
+            long whole = parseLong(value, 10, start, e, Long.MIN_VALUE);
+            if(whole == Long.MIN_VALUE) return defaultValue;
+            return (float)(whole * Math.pow(10, exponent) * sign);
+        }
+
+        //parse as standard integer
+        long out = parseLong(value, 10, start, end, Long.MIN_VALUE);
+        return out == Long.MIN_VALUE ? defaultValue : (float)(out*sign);
     }
 
     /** Returns a new, blank color if parsing failed. */
