@@ -41,9 +41,17 @@ public class StringsTest{
     }
 
     @Test
-    public void testLongParse(){
-        Seq.with("0", "+0", "-0", "235235", "99424", "1234", "1", "-24242", "170589", "-289157", "4246", "19284", "-672396", "-42412042040945", "1592835012852095")
-        .each(StringsTest::checkLong);
+    public void testIntegerParse(){
+        Seq.with("0", "+0", "-0", "235235", "99424", "1234", "1", "-24242", "170589", "-289157", "4246", "19284", "-672396", "-42412042040945", "1592835012852095", "9999999999999999999", "99999999999")
+        .each(StringsTest::checkInteger);
+    }
+
+    @Test
+    public void testInvalidFloat(){
+        //parseFloat uses parseDouble and casts, so make sure the default value is returned correctly
+        for(float f : new float[]{Float.NaN, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, Float.MAX_VALUE, Float.MIN_VALUE}){
+            assertEquals("For value: " + f, f, Strings.parseFloat("garbage", f), 0.001f);
+        }
     }
 
     @Test
@@ -81,8 +89,24 @@ public class StringsTest{
         assertEquals("For value: " + value, Float.parseFloat(value), Strings.parseFloat(value, Float.NaN), 0.00001);
     }
 
-    static void checkLong(String value){
-        assertEquals(Long.parseLong(value), Strings.parseLong(value, 999999));
-    }
+    static void checkInteger(String value){
+        long expectedLong = 67;
 
+        try{
+            expectedLong = Long.parseLong(value);
+        }catch(Exception e){
+            //out-of-range values should fail, so retain the placedholder 'wrong' value (essentially, checks if both failed)
+        }
+
+        assertEquals("Long parse: " + value, expectedLong, Strings.parseLong(value, 67));
+
+        int expected = 67;
+        try{
+            expected = Integer.parseInt(value);
+        }catch(Exception e){
+            //ditto
+        }
+
+        assertEquals("Int parse: " + value, expected, Strings.parseInt(value, 67));
+    }
 }
