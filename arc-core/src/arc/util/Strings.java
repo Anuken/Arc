@@ -704,7 +704,7 @@ public class Strings{
 
     public static Color parseColor(String s, Color defaultValue){
         Color col = Colors.get(s);
-        if(col == null) col = parseColorOrNull(col, s);
+        if(col == null) col = parseColorOrNull(new Color(), s);
         if(col == null) return defaultValue;
         return col;
     }
