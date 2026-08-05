@@ -1258,8 +1258,9 @@ public class Json{
         Class<T> type = getClass(className);
         if(type == null){
             try{
-                type = (Class<T>)Class.forName(className);
-                if(JsonSerializable.class.isAssignableFrom(type) || AllowSerialization.class.isAssignableFrom(type) || type == String.class || type == Boolean.class || type == Character.class || Number.class.isAssignableFrom(type)){
+                type = (Class<T>)Class.forName(className, false, getClass().getClassLoader());
+                if(JsonSerializable.class.isAssignableFrom(type) || AllowSerialization.class.isAssignableFrom(type)
+                    || type == String.class || type == Long.class || type == Integer.class || type == Short.class || type == Byte.class|| type == Boolean.class || type == Character.class){
                     return type;
                 }
                 throw new SerializationException("Class must implement JsonSerializable or AllowSerialization: " + className);
