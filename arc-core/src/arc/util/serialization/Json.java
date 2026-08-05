@@ -7,7 +7,6 @@ import arc.struct.ObjectMap.*;
 import arc.struct.Queue;
 import arc.struct.OrderedMap.*;
 import arc.util.*;
-import arc.util.Timer;
 import arc.util.io.*;
 import arc.util.serialization.JsonValue.*;
 import arc.util.serialization.JsonWriter.*;
@@ -1260,7 +1259,10 @@ public class Json{
         if(type == null){
             try{
                 type = (Class<T>)Class.forName(className);
-                if(Timer.class.isAssignableFrom(type)) throw new RuntimeException("Invalid class type.");
+                if(JsonSerializable.class.isAssignableFrom(type) || AllowSerialization.class.isAssignableFrom(type) || type == String.class || type == Boolean.class || type == Character.class || Number.class.isAssignableFrom(type)){
+                    return type;
+                }
+                throw new SerializationException("Class must implement JsonSerializable or AllowSerialization: " + className);
             }catch(Throwable ex){
                 throw new SerializationException(ex);
             }
