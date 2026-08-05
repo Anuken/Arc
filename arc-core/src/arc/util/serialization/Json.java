@@ -1124,7 +1124,7 @@ public class Json{
 
         try{
             type = (Class<T>)Class.forName(className);
-            if(allowNonSerializableClasses || Serializable.class.isAssignableFrom(type) || JsonSerializable.class.isAssignableFrom(type)){
+            if(allowNonSerializableClasses || JsonSerializable.class.isAssignableFrom(type) || AllowSerialization.class.isAssignableFrom(type) || type == String.class || type == Boolean.class || type == Character.class || Number.class.isAssignableFrom(type)){
                 nameToClass.put(className, type);
                 return type;
             }else{
