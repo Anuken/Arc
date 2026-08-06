@@ -220,7 +220,7 @@ public class TextureAtlas implements Disposable{
         return (T)drawable(name);
     }
 
-    /** Always creates a new drawable by name.
+    /** Creates and caches a new drawable by name.
      * If nothing is found, returns an 'error' texture region drawable. */
     public Drawable drawable(String name){
         if(drawables.containsKey(name)){
@@ -248,6 +248,10 @@ public class TextureAtlas implements Disposable{
         drawables.put(name, out);
 
         return out;
+    }
+
+    public ObjectMap<String, Drawable> getDrawables(){
+        return drawables;
     }
 
     /**
