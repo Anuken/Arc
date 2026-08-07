@@ -271,8 +271,7 @@ public class PixmapIO{
                         palette[i] = (palette[i] & 0xffffff00) | in.readUnsignedByte();
                     }
                 }else{
-                    byte[] chunkData = new byte[chunkLen];
-                    in.readFully(chunkData);
+                    in.skipBytes(chunkLen);
                 }
                 in.readInt(); // checksum skip
             }
