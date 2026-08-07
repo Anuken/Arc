@@ -22,7 +22,7 @@ ext{
 versions.robovm = "2.3.24"
 versions.junit = "4.11"
 versions.lwjgl = "3.4.2"
-versions.soloud = "2026.06.01"
+versions.soloud = "2026.08.02"
 
 libraries.robovm = [
     "com.mobidevelop.robovm:robovm-rt:${versions.robovm}",

@@ -704,12 +704,38 @@ public class Strings{
 
     public static Color parseColor(String s, Color defaultValue){
         Color col = Colors.get(s);
-        try{
-            if(col == null) col = Color.valueOf(s);
-        }catch(Exception e){
-            col = defaultValue;
-        }
+        if(col == null) col = parseColorOrNull(new Color(), s);
+        if(col == null) return defaultValue;
         return col;
+    }
+
+    public static @Nullable Color parseColorOrNull(Color color, String hex){
+        if(hex == null || hex.isEmpty()) return null;
+
+        int offset = hex.charAt(0) == '#' ? 1 : 0;
+
+        int len = hex.length() - offset;
+        if(len != 6 && len != 8) return null;
+
+        int r = parseHex(hex, offset, offset + 2);
+        int g = parseHex(hex, offset + 2, offset + 4);
+        int b = parseHex(hex, offset + 4, offset + 6);
+        int a = len != 8 ? 255 : parseHex(hex, offset + 6, offset + 8);
+
+        if(r < 0 || g < 0 || b < 0 || a < 0) return null;
+
+        return color.set(r / 255f, g / 255f, b / 255f, a / 255f);
+    }
+
+    private static int parseHex(String string, int from, int to){
+        int total = 0;
+        for(int i = from; i < to; i++){
+            char c = string.charAt(i);
+            int digit = Character.digit(c, 16);
+            if(digit < 0) return -1;
+            total += digit * (i == from ? 16 : 1);
+        }
+        return total;
     }
 
     public static String autoFixed(float value, int max){
