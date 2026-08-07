@@ -3,6 +3,7 @@ package arc.backend.robovm;
 import arc.*;
 import arc.audio.*;
 import arc.backend.robovm.custom.*;
+import arc.graphics.*;
 import arc.graphics.gl.*;
 import arc.struct.*;
 import arc.util.*;
@@ -227,6 +228,14 @@ public class IOSApplication implements Application{
     @Override
     public void setClipboardText(String text){
         UIPasteboard.getGeneralPasteboard().setString(text);
+    }
+
+    @Override
+    public void setClipboardImage(Pixmap pixmap){
+        try{
+            UIPasteboard.getGeneralPasteboard().setData(new NSData(PixmapIO.writePngBytes(pixmap)), "public.png");
+        }catch(Throwable ignored){
+        }
     }
 
     @Override

@@ -389,6 +389,48 @@ public class SdlApplication implements Application{
     }
 
     @Override
+    public void setClipboardImage(Pixmap pixmap){
+        ByteBuffer data = null;
+        ByteBuffer mime = null;
+        PointerBuffer mimeTypes = null;
+        try{
+            byte[] png = PixmapIO.writePngBytes(pixmap);
+
+            data = MemoryUtil.memAlloc(png.length);
+            data.put(png).flip();
+
+            mime = MemoryUtil.memUTF8("image/png");
+            mimeTypes = MemoryUtil.memAllocPointer(1);
+            mimeTypes.put(0, mime);
+
+            ByteBuffer fData = data;
+            ByteBuffer fMime = mime;
+            PointerBuffer fMimeTypes = mimeTypes;
+
+            SDL_ClipboardDataCallbackI dataCallback = (userdata, mimeType, size) -> {
+                MemoryUtil.memPutAddress(size, fData.remaining());
+                return MemoryUtil.memAddress(fData);
+            };
+
+            SDL_ClipboardCleanupCallbackI cleanupCallback = userdata -> {
+                MemoryUtil.memFree(fData);
+                MemoryUtil.memFree(fMime);
+                MemoryUtil.memFree(fMimeTypes);
+            };
+
+            if(!SDLClipboard.SDL_SetClipboardData(dataCallback, cleanupCallback, 0L, mimeTypes)){
+                MemoryUtil.memFree(data);
+                MemoryUtil.memFree(mime);
+                MemoryUtil.memFree(mimeTypes);
+            }
+        }catch(Throwable ignored){
+            if(data != null) MemoryUtil.memFree(data);
+            if(mime != null) MemoryUtil.memFree(mime);
+            if(mimeTypes != null) MemoryUtil.memFree(mimeTypes);
+        }
+    }
+
+    @Override
     public void post(Runnable runnable){
         runnables.post(runnable);
     }

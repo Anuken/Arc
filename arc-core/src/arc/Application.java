@@ -1,5 +1,6 @@
 package arc;
 
+import arc.graphics.*;
 import arc.struct.*;
 import arc.util.*;
 
@@ -91,6 +92,10 @@ public interface Application extends Disposable{
     @Nullable String getClipboardText();
 
     void setClipboardText(String text);
+
+    default void setClipboardImage(Pixmap pixmap){
+        //no-op
+    }
 
     /** Open a folder in the system's file browser.
      * @return whether this operation was successful. */
