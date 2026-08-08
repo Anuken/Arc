@@ -63,11 +63,14 @@ public class IOSInput extends Input{
     UIAlertViewDelegate delegate;
     private long currentEventTimeStamp;
     private UITextField textfield = null;
+
     public IOSInput(IOSApplication app){
         this.app = app;
         this.config = app.config;
         this.keyboardCloseOnReturn = app.config.keyboardCloseOnReturn;
-    }    private final UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter(){
+    }
+
+    private final UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter(){
         @Override
         public boolean shouldChangeCharacters(UITextField textField, NSRange range, String string){
             for(int i = 0; i < range.getLength(); i++){
@@ -222,8 +225,7 @@ public class IOSInput extends Input{
     }
 
     private void showSinglelineTextInput(TextInput input){
-        UIAlertController alert = new UIAlertController(input.title, null);
-        if(!input.message.isEmpty()) alert.setMessage(input.message);
+        UIAlertController alert = new UIAlertController(input.title, input.message.isEmpty() ? null : input.message, UIAlertControllerStyle.Alert);
 
         UITextField[] fieldRef = new UITextField[1];
         alert.addTextField(field -> {
@@ -247,66 +249,85 @@ public class IOSInput extends Input{
     }
 
     private void showMultilineTextInput(TextInput input){
-        double width = 300, height = 320, pad = 12, buttonHeight = 40;
-
-        UIViewController controller = new UIViewController();
-        controller.setModalPresentationStyle(UIModalPresentationStyle.FormSheet);
-        controller.setPreferredContentSize(new CGSize(width, height));
-
-        UIView root = controller.getView();
-        root.setBackgroundColor(UIColor.white());
-
-        double y = pad;
-
-        UILabel titleLabel = new UILabel(new CGRect(pad, y, width - pad * 2, 22));
-        titleLabel.setText(input.title);
-        titleLabel.setFont(UIFont.getBoldSystemFont(16));
-        root.addSubview(titleLabel);
-        y += 26;
-
+        MultilineDialogController controller = new MultilineDialogController();
+        controller.titleLabel.setText(input.title);
         if(!input.message.isEmpty()){
-            UILabel messageLabel = new UILabel(new CGRect(pad, y, width - pad * 2, 20));
-            messageLabel.setText(input.message);
-            messageLabel.setFont(UIFont.getSystemFont(13));
-            messageLabel.setTextColor(UIColor.darkGray());
-            root.addSubview(messageLabel);
-            y += 24;
+            controller.messageLabel = new UILabel();
+            controller.messageLabel.setText(input.message);
+            controller.messageLabel.setFont(UIFont.getSystemFont(13));
+            controller.messageLabel.setTextColor(UIColor.darkGray());
         }
+        controller.textView.setText(input.text);
+        if(input.numeric) controller.textView.setKeyboardType(UIKeyboardType.NumberPad);
 
-        double textHeight = height - y - buttonHeight - pad * 2;
-        UITextView text = new UITextView(new CGRect(pad, y, width - pad * 2, textHeight));
-        text.setText(input.text);
-        text.getLayer().setBorderWidth(1);
-        text.getLayer().setBorderColor(UIColor.lightGray().getCGColor());
-        if(input.numeric) text.setKeyboardType(UIKeyboardType.NumberPad);
-        root.addSubview(text);
+        controller.setModalPresentationStyle(UIModalPresentationStyle.FormSheet);
+        controller.setPreferredContentSize(new CGSize(340, 360));
 
-        double buttonY = height - buttonHeight - pad;
-        double buttonWidth = (width - pad * 3) / 2;
-
-        UIButton cancel = new UIButton(UIButtonType.System);
-        cancel.setFrame(new CGRect(pad, buttonY, buttonWidth, buttonHeight));
-        cancel.setTitle("Cancel", UIControlState.Normal);
-        cancel.addOnTouchUpInsideListener((control, event) -> {
+        controller.cancelButton.addOnTouchUpInsideListener((c, e) -> {
             showingTextInput = false;
             controller.dismissViewController(true, null);
             Core.app.post(input.canceled);
         });
-        root.addSubview(cancel);
-
-        UIButton ok = new UIButton(UIButtonType.System);
-        ok.setFrame(new CGRect(pad * 2 + buttonWidth, buttonY, buttonWidth, buttonHeight));
-        ok.setTitle("Ok", UIControlState.Normal);
-        ok.addOnTouchUpInsideListener((control, event) -> {
+        controller.okButton.addOnTouchUpInsideListener((c, e) -> {
             showingTextInput = false;
-            String result = text.getText();
+            String result = controller.textView.getText();
             controller.dismissViewController(true, null);
             Core.app.post(() -> input.accepted.get(result));
         });
-        root.addSubview(ok);
 
         showingTextInput = true;
-        app.getUIViewController().presentViewController(controller, true, () -> text.becomeFirstResponder());
+        app.getUIViewController().presentViewController(controller, true, () -> controller.textView.becomeFirstResponder());
+    }
+
+    private static final class MultilineDialogController extends UIViewController{
+        final UILabel titleLabel = new UILabel();
+        UILabel messageLabel;
+        final UITextView textView = new UITextView();
+        final UIButton cancelButton = new UIButton(UIButtonType.System);
+        final UIButton okButton = new UIButton(UIButtonType.System);
+
+        @Override
+        public void viewDidLoad(){
+            super.viewDidLoad();
+            UIView root = getView();
+            root.setBackgroundColor(UIColor.white());
+            titleLabel.setFont(UIFont.getBoldSystemFont(16));
+            root.addSubview(titleLabel);
+            if(messageLabel != null) root.addSubview(messageLabel);
+            textView.getLayer().setBorderWidth(1);
+            textView.getLayer().setBorderColor(UIColor.lightGray().getCGColor());
+            root.addSubview(textView);
+            cancelButton.setTitle("Cancel", UIControlState.Normal);
+            root.addSubview(cancelButton);
+            okButton.setTitle("Ok", UIControlState.Normal);
+            root.addSubview(okButton);
+        }
+
+        @Override
+        public void viewDidLayoutSubviews(){
+            super.viewDidLayoutSubviews();
+            CGRect bounds = getView().getBounds();
+            UIEdgeInsets safe = getView().getSafeAreaInsets();
+            double width = bounds.getWidth(), height = bounds.getHeight();
+            double pad = 16, buttonHeight = 44;
+            double y = pad + safe.getTop();
+
+            titleLabel.setFrame(new CGRect(pad, y, width - pad * 2, 22));
+            y += 26;
+
+            if(messageLabel != null){
+                messageLabel.setFrame(new CGRect(pad, y, width - pad * 2, 20));
+                y += 24;
+            }
+
+            double buttonY = height - buttonHeight - pad - safe.getBottom();
+            double textHeight = Math.max(buttonY - y - pad, 60);
+            textView.setFrame(new CGRect(pad, y, width - pad * 2, textHeight));
+
+            double buttonWidth = (width - pad * 3) / 2;
+            cancelButton.setFrame(new CGRect(pad, buttonY, buttonWidth, buttonHeight));
+            okButton.setFrame(new CGRect(pad * 2 + buttonWidth, buttonY, buttonWidth, buttonHeight));
+        }
     }
 
     @Override
@@ -332,7 +353,7 @@ public class IOSInput extends Input{
 
     /**
      * Set the keyboard to close when the UITextField return key is pressed
-     * @param shouldClose Whether or not the keyboard should clsoe on return key press
+     * @param shouldClose Whether or not the keyboard should close on return key press
      */
     public void setKeyboardCloseOnReturnKey(boolean shouldClose){
         keyboardCloseOnReturn = shouldClose;
