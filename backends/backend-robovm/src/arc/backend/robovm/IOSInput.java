@@ -261,7 +261,7 @@ public class IOSInput extends Input{
         if(input.numeric) controller.textView.setKeyboardType(UIKeyboardType.NumberPad);
 
         controller.setModalPresentationStyle(UIModalPresentationStyle.FormSheet);
-        controller.setPreferredContentSize(new CGSize(340, 360));
+        controller.setPreferredContentSize(new CGSize(340, 300));
 
         controller.cancelButton.addOnTouchUpInsideListener((c, e) -> {
             showingTextInput = false;
@@ -274,6 +274,22 @@ public class IOSInput extends Input{
             controller.dismissViewController(true, null);
             Core.app.post(() -> input.accepted.get(result));
         });
+
+        UIAdaptivePresentationControllerDelegateAdapter adaptiveDelegate = new UIAdaptivePresentationControllerDelegateAdapter(){
+            @Override
+            public UIModalPresentationStyle getAdaptivePresentationStyle(UIPresentationController presentationController, UITraitCollection traitCollection){
+                return UIModalPresentationStyle.None;
+            }
+
+            @Override
+            public void presentationControllerDidDismiss(UIPresentationController presentationController){
+                if(showingTextInput){
+                    showingTextInput = false;
+                    Core.app.post(input.canceled);
+                }
+            }
+        };
+        controller.getPresentationController().setDelegate(adaptiveDelegate);
 
         showingTextInput = true;
         app.getUIViewController().presentViewController(controller, true, () -> controller.textView.becomeFirstResponder());
@@ -307,10 +323,9 @@ public class IOSInput extends Input{
         public void viewDidLayoutSubviews(){
             super.viewDidLayoutSubviews();
             CGRect bounds = getView().getBounds();
-            UIEdgeInsets safe = getView().getSafeAreaInsets();
             double width = bounds.getWidth(), height = bounds.getHeight();
             double pad = 16, buttonHeight = 44;
-            double y = pad + safe.getTop();
+            double y = pad;
 
             titleLabel.setFrame(new CGRect(pad, y, width - pad * 2, 22));
             y += 26;
@@ -320,7 +335,7 @@ public class IOSInput extends Input{
                 y += 24;
             }
 
-            double buttonY = height - buttonHeight - pad - safe.getBottom();
+            double buttonY = height - buttonHeight - pad;
             double textHeight = Math.max(buttonY - y - pad, 60);
             textView.setFrame(new CGRect(pad, y, width - pad * 2, textHeight));
 
