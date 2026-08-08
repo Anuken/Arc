@@ -246,16 +246,14 @@ public class IOSGraphics extends Graphics{
     }
 
     protected void updateSafeInsets() {
-        if(Foundation.getMajorSystemVersion() >= 11){
-            UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
-            insets[2] = (int)edgeInsets.getTop();
-            insets[0] = (int)edgeInsets.getLeft();
-            insets[1] = (int)edgeInsets.getRight();
-            insets[3] = (int)edgeInsets.getBottom();
-            if(config.hdpiMode == HdpiMode.pixels){
-                for(int i = 0; i < 4; i++){
-                    insets[i] *= app.pixelsPerPoint;
-                }
+        UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
+        insets[2] = (int)edgeInsets.getTop();
+        insets[0] = (int)edgeInsets.getLeft();
+        insets[1] = (int)edgeInsets.getRight();
+        insets[3] = (int)edgeInsets.getBottom();
+        if(config.hdpiMode == HdpiMode.pixels){
+            for(int i = 0; i < 4; i++){
+                insets[i] *= app.pixelsPerPoint;
             }
         }
     }
