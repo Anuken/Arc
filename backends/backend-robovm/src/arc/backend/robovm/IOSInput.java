@@ -260,8 +260,8 @@ public class IOSInput extends Input{
         controller.textView.setText(input.text);
         if(input.numeric) controller.textView.setKeyboardType(UIKeyboardType.NumberPad);
 
-        controller.setModalPresentationStyle(UIModalPresentationStyle.FormSheet);
-        controller.setPreferredContentSize(new CGSize(340, 300));
+        controller.setModalPresentationStyle(UIModalPresentationStyle.PageSheet);
+        controller.setPreferredContentSize(new CGSize(340, 340));
 
         controller.cancelButton.addOnTouchUpInsideListener((c, e) -> {
             showingTextInput = false;
@@ -302,6 +302,9 @@ public class IOSInput extends Input{
         final UIButton cancelButton = new UIButton(UIButtonType.System);
         final UIButton okButton = new UIButton(UIButtonType.System);
 
+        private NSObject keyboardWillChangeObserver;
+        private double keyboardOverlap = 0;
+
         @Override
         public void viewDidLoad(){
             super.viewDidLoad();
@@ -317,6 +320,18 @@ public class IOSInput extends Input{
             root.addSubview(cancelButton);
             okButton.setTitle("Ok", UIControlState.Normal);
             root.addSubview(okButton);
+
+            keyboardWillChangeObserver = UIWindow.Notifications.observeKeyboardWillChangeFrame(anim -> {
+                CGRect endFrame = anim.getEndFrame();
+                CGRect localFrame = getView().convertRectFromView(endFrame, null);
+                double overlap = Math.max(0, getView().getBounds().getHeight() - localFrame.getY());
+
+                keyboardOverlap = overlap;
+                UIView.animate(anim.getAnimationDuration(), () -> {
+                    getView().layoutIfNeeded();
+                });
+                getView().setNeedsLayout();
+            });
         }
 
         @Override
@@ -335,13 +350,23 @@ public class IOSInput extends Input{
                 y += 24;
             }
 
-            double buttonY = height - buttonHeight - pad;
+            double bottomInset = Math.max(keyboardOverlap, getView().getSafeAreaInsets().getBottom());
+            double buttonY = height - buttonHeight - pad - bottomInset;
             double textHeight = Math.max(buttonY - y - pad, 60);
             textView.setFrame(new CGRect(pad, y, width - pad * 2, textHeight));
 
             double buttonWidth = (width - pad * 3) / 2;
             cancelButton.setFrame(new CGRect(pad, buttonY, buttonWidth, buttonHeight));
             okButton.setFrame(new CGRect(pad * 2 + buttonWidth, buttonY, buttonWidth, buttonHeight));
+        }
+
+        @Override
+        public void viewDidDisappear(boolean animated){
+            super.viewDidDisappear(animated);
+            if(keyboardWillChangeObserver != null){
+                NSNotificationCenter.getDefaultCenter().removeObserver(keyboardWillChangeObserver);
+                keyboardWillChangeObserver = null;
+            }
         }
     }
 
