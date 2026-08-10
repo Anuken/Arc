@@ -17,6 +17,7 @@ import static org.robovm.apple.foundation.NSPathUtilities.*;
 
 public class IOSApplication implements Application{
     UIApplication uiApp;
+    UIWindowScene uiWindowScene;
     UIWindow uiWindow;
     IOSViewControllerListener viewControllerListener;
     IOSApplicationConfiguration config;
@@ -46,25 +47,33 @@ public class IOSApplication implements Application{
         Log.info("[IOSApplication] iOS version: " + UIDevice.getCurrentDevice().getSystemVersion());
         Log.info("[IOSApplication] Running in " + (Bro.IS_64BIT ? "64-bit" : "32-bit") + " mode");
 
-        pixelsPerPoint = (float)UIScreen.getMainScreen().getNativeScale();
-
-        this.uiWindow = new UIWindow(UIScreen.getMainScreen().getBounds());
-        this.uiWindow.makeKeyAndVisible();
-
         this.input = new IOSInput(this);
-        this.graphics = new IOSGraphics(this, config, input);
         Core.audio = new Audio();
         Core.settings = new Settings();
         Core.files = new IOSFiles();
-        Core.graphics = this.graphics;
         Core.input = this.input;
 
         device = IOSDevice.getDevice(HWMachine.getMachineString());
 
+        Log.info("[IOSApplication] created");
+        return true;
+    }
+
+    /** called once a UIWindowScene has connected; this is where graphics, window and listeners are set up */
+    final void handleSceneConnection(UIWindowScene scene){
+        this.uiWindowScene = scene;
+        this.uiWindow = new UIWindow(scene);
+        this.uiWindow.makeKeyAndVisible();
+        ((UIWindowSceneDelegate)scene.getDelegate()).setWindow(uiWindow);
+
+        pixelsPerPoint = (float)uiWindowScene.getScreen().getNativeScale();
+
+        this.graphics = new IOSGraphics(this, config, input);
+        Core.graphics = this.graphics;
+
         this.uiWindow.setRootViewController(this.graphics.viewController);
         this.input.setupPeripherals();
         this.graphics.updateSafeInsets();
-        Log.info("[IOSApplication] created");
         // Trigger first render, special case that is caught and returned
         this.graphics.view.display();
         for(ApplicationListener list : listeners){
@@ -75,7 +84,6 @@ public class IOSApplication implements Application{
         }
         // make sure the OpenGL view has contents before displaying it
         this.graphics.view.display();
-        return true;
     }
 
     /**
@@ -101,8 +109,11 @@ public class IOSApplication implements Application{
      */
     protected IOSScreenBounds computeBounds(){
         CGRect screenBounds = uiWindow.getBounds();
-        final CGRect statusBarFrame = uiApp.getStatusBarFrame();
-        double statusBarHeight = statusBarFrame.getHeight();
+        double statusBarHeight = 0.0;
+        UIStatusBarManager uiStatusBarManager = uiWindowScene.getStatusBarManager();
+        if(uiStatusBarManager != null){
+            statusBarHeight = uiStatusBarManager.getStatusBarFrame().getHeight();
+        }
         double screenWidth = screenBounds.getWidth();
         double screenHeight = screenBounds.getHeight();
         if(statusBarHeight != 0.0){
@@ -130,19 +141,19 @@ public class IOSApplication implements Application{
     /** Returns device ppi using a best guess approach when device is unknown. Overwrite to customize strategy. */
     protected int guessUnknownPpi () {
         return UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad ?
-            132 * (int)pixelsPerPoint : 164 * (int)pixelsPerPoint;
+        132 * (int)pixelsPerPoint : 164 * (int)pixelsPerPoint;
     }
 
-    final void didBecomeActive(UIApplication uiApp){
+    final void didBecomeActive(UIScene uiScene){
         Log.info("[IOSApplication] resumed");
         graphics.makeCurrent();
         graphics.resume();
     }
 
-    final void willEnterForeground(UIApplication uiApp){
+    final void willEnterForeground(UIScene uiScene){
     }
 
-    final void willResignActive(UIApplication uiApp){
+    final void willResignActive(UIScene uiScene){
         Log.info("[IOSApplication] paused");
         graphics.makeCurrent();
         graphics.pause();
@@ -151,7 +162,8 @@ public class IOSApplication implements Application{
 
     final void willTerminate(UIApplication uiApp){
         Log.info("[IOSApplication] disposed");
-        graphics.makeCurrent();
+        // willTerminate can be called before a scene is connected and graphics initialized
+        if(graphics != null) graphics.makeCurrent();
         Seq<ApplicationListener> listeners = this.listeners;
         synchronized(listeners){
             for(ApplicationListener listener : listeners){
@@ -161,7 +173,7 @@ public class IOSApplication implements Application{
                 listener.exit();
             }
         }
-        Gl.finish();
+        if(graphics != null) Gl.finish();
     }
 
     @Override
@@ -189,7 +201,7 @@ public class IOSApplication implements Application{
                 });
                 return true;
             }catch(Throwable t){
-                t.printStackTrace();
+                Log.err(t);
                 return false;
             }
         }
@@ -200,7 +212,7 @@ public class IOSApplication implements Application{
     public void post(Runnable runnable){
         synchronized(runnables){
             runnables.add(runnable);
-            Core.graphics.requestRendering();
+            if(Core.graphics != null) Core.graphics.requestRendering();
         }
     }
 
@@ -258,6 +270,11 @@ public class IOSApplication implements Application{
 
         @Override
         public boolean didFinishLaunching(UIApplication application, UIApplicationLaunchOptions options){
+            // TODO remove once MobiVM ships @CustomClass "preload"; forces RoboVM to preload the scene delegate class
+            try{
+                Class.forName(IOSSceneDelegate.class.getName());
+            }catch(ClassNotFoundException ignored){
+            }
             application.addStrongRef(this); // Prevent this from being GCed until the ObjC UIApplication is deallocated
             this.app = createApplication();
 
@@ -269,23 +286,40 @@ public class IOSApplication implements Application{
         }
 
         @Override
-        public void didBecomeActive(UIApplication application){
-            app.didBecomeActive(application);
-        }
-
-        @Override
-        public void willEnterForeground(UIApplication application){
-            app.willEnterForeground(application);
-        }
-
-        @Override
-        public void willResignActive(UIApplication application){
-            app.willResignActive(application);
-        }
-
-        @Override
         public void willTerminate(UIApplication application){
             app.willTerminate(application);
+        }
+
+        @Override
+        public UISceneConfiguration getConfigurationForConnectingSceneSession(UIApplication application,
+                                                                              UISceneSession connectingSceneSession, UISceneConnectionOptions options){
+            // ignore screen mirroring/external display sessions, see https://developer.apple.com/forums/thread/815376
+            if(Foundation.getMajorSystemVersion() < 16){
+                if(connectingSceneSession.getRole() == UISceneSessionRole.ExternalDisplay) return null;
+            }else{
+                if(connectingSceneSession.getRole() == UISceneSessionRole.ExternalDisplayNonInteractive) return null;
+            }
+            UISceneConfiguration config = new UISceneConfiguration(null, connectingSceneSession.getRole());
+            config.setDelegateClass(IOSSceneDelegate.class);
+            return config;
+        }
+
+        public void willConnect(UIScene scene, UISceneSession session, UISceneConnectionOptions connectionOptions){
+        }
+
+        public void sceneDidBecomeActive(UIScene scene){
+        }
+
+        public void sceneWillResignActive(UIScene scene){
+        }
+
+        public void sceneWillEnterForeground(UIScene scene){
+        }
+
+        public void sceneDidEnterBackground(UIScene scene){
+        }
+
+        public void sceneDidDisconnect(UIScene scene){
         }
 
         @Override

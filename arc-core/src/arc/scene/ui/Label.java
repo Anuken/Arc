@@ -228,9 +228,14 @@ public class Label extends Element{
     }
 
     @Override
+    public float getMinWidth(){
+        //wrapped labels don't use their 'pref' width as their min width, as that would be the incorrect, unwrapped width
+        return wrap ? 0 : super.getMinWidth();
+    }
+
+    @Override
     public float getPrefWidth(){
         if(style == null) return 0;
-        if(wrap) return 0;
         if(prefSizeInvalid) scaleAndComputePrefSize();
         float width = prefSize.x;
         Drawable background = style.background;
