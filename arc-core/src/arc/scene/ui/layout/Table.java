@@ -13,7 +13,6 @@ import arc.scene.ui.Label.*;
 import arc.scene.ui.ScrollPane.*;
 import arc.scene.ui.TextButton.*;
 import arc.scene.ui.TextField.*;
-import arc.scene.utils.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.pooling.*;
@@ -417,18 +416,18 @@ public class Table extends WidgetGroup{
     }
 
     public Cell<CheckBox> check(String text, Boolc listener){
-        CheckBox button = Elem.newCheck(text, listener);
+        CheckBox button = new CheckBox(text, listener);
         return add(button);
     }
 
     public Cell<CheckBox> check(String text, boolean checked, Boolc listener){
-        CheckBox button = Elem.newCheck(text, listener);
+        CheckBox button = new CheckBox(text, listener);
         button.setChecked(checked);
         return add(button);
     }
 
     public Cell<CheckBox> check(String text, float imagesize, boolean checked, Boolc listener){
-        CheckBox button = Elem.newCheck(text, listener);
+        CheckBox button = new CheckBox(text, listener);
         button.getImageCell().size(imagesize);
         button.setChecked(checked);
         return add(button);
@@ -451,22 +450,27 @@ public class Table extends WidgetGroup{
     }
 
     public Cell<TextButton> button(String text, Runnable listener){
-        TextButton button = Elem.newButton(text, listener);
+        TextButton button = new TextButton(text);
+        if(listener != null) button.changed(listener);
         return add(button);
     }
 
     public Cell<TextButton> button(String text, TextButtonStyle style, Runnable listener){
-        TextButton button = Elem.newButton(text, style, listener);
+        TextButton button = new TextButton(text, style);
+        if(listener != null) button.changed(listener);
+
         return add(button);
     }
 
     public Cell<ImageButton> button(Drawable icon, Runnable listener){
-        ImageButton button = Elem.newImageButton(icon, listener);
+        ImageButton button = new ImageButton(icon);
+        if(listener != null) button.changed(listener);
         return add(button);
     }
 
     public Cell<ImageButton> button(Drawable icon, float isize, Runnable listener){
-        ImageButton button = Elem.newImageButton(icon, listener);
+        ImageButton button = new ImageButton(icon);
+        if(listener != null) button.changed(listener);
         button.resizeImage(isize);
         return add(button);
     }
@@ -486,7 +490,7 @@ public class Table extends WidgetGroup{
     }
 
     public Cell<TextField> field(String text, Cons<String> listener){
-        TextField field = Elem.newField(text, listener);
+        TextField field = new TextField(text, listener);
         return add(field);
     }
 
@@ -503,13 +507,13 @@ public class Table extends WidgetGroup{
     }
 
     public Cell<TextField> field(String text, TextFieldFilter filter, Cons<String> listener){
-        TextField field = Elem.newField(text, listener);
+        TextField field = new TextField(text, listener);
         field.setFilter(filter);
         return add(field);
     }
 
     public Cell<TextField> field(String text, TextFieldStyle style, Cons<String> listener){
-        TextField field = Elem.newField(text, listener);
+        TextField field = new TextField(text, listener);
         field.setStyle(style);
         return add(field);
     }

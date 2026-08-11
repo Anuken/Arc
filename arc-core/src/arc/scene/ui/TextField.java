@@ -93,6 +93,18 @@ public class TextField extends Element implements Disableable{
         this(text, scene.getStyle(TextFieldStyle.class));
     }
 
+    public TextField(String text, @Nullable Cons<String> listener){
+        this(text);
+
+        if(listener != null){
+            changed(() -> {
+                if(isValid()){
+                    listener.get(getText());
+                }
+            });
+        }
+    }
+
     public TextField(String text, TextFieldStyle style){
         setStyle(style);
         initialize();

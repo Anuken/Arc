@@ -1,9 +1,9 @@
 package arc.scene.ui;
 
+import arc.func.*;
 import arc.scene.style.Drawable;
 import arc.scene.ui.layout.Cell;
-import arc.util.Align;
-import arc.util.Scaling;
+import arc.util.*;
 
 import static arc.Core.scene;
 
@@ -18,6 +18,11 @@ public class CheckBox extends TextButton{
 
     public CheckBox(String text){
         this(text, scene.getStyle(CheckBoxStyle.class));
+    }
+
+    public CheckBox(String text, @Nullable Boolc listener){
+        this(text);
+        if(listener != null) changed(() -> listener.get(isChecked()));
     }
 
     public CheckBox(String text, CheckBoxStyle style){
