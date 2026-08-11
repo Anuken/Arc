@@ -26,7 +26,7 @@ public class IOSUIViewController extends MGLKViewController{
     @Override
     public void viewDidAppear(boolean animated){
         super.viewDidAppear(animated);
-        getView().setContentScaleFactor(UIScreen.getMainScreen().getNativeScale());
+        getView().setContentScaleFactor(app.uiWindowScene.getScreen().getNativeScale());
         if(app.viewControllerListener != null) app.viewControllerListener.viewDidAppear(animated);
     }
 

@@ -63,11 +63,14 @@ public class IOSInput extends Input{
     UIAlertViewDelegate delegate;
     private long currentEventTimeStamp;
     private UITextField textfield = null;
+
     public IOSInput(IOSApplication app){
         this.app = app;
         this.config = app.config;
         this.keyboardCloseOnReturn = app.config.keyboardCloseOnReturn;
-    }    private final UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter(){
+    }
+
+    private final UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter(){
         @Override
         public boolean shouldChangeCharacters(UITextField textField, NSRange range, String string){
             for(int i = 0; i < range.getLength(); i++){
@@ -114,10 +117,8 @@ public class IOSInput extends Input{
         UIDevice device = UIDevice.getCurrentDevice();
         if(device.getModel().equalsIgnoreCase("iphone")) hasVibrator = true;
 
-        if(app.getVersion() >= 9){
-            UIForceTouchCapability forceTouchCapability = UIScreen.getMainScreen().getTraitCollection().getForceTouchCapability();
-            pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
-        }
+        UIForceTouchCapability forceTouchCapability = app.uiWindowScene.getScreen().getTraitCollection().getForceTouchCapability();
+        pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
     }
 
     protected void setupAccelerometer(){
@@ -216,71 +217,156 @@ public class IOSInput extends Input{
 
     @Override
     public void getTextInput(TextInput input){
-        if(input.multiline && false){
-            //TODO: Crashes, apparently. https://github.com/Anuken/Mindustry/issues/8745
-            CGRect rect = new CGRect(0, 0, app.getUIViewController().getView().getBounds().getWidth(), 250);
-            UIViewController controller = new UIViewController();
-            controller.setPreferredContentSize(rect.getSize());
-
-            UITextView text = new UITextView(rect);
-            text.setText(input.text);
-            controller.getView().addSubview(text);
-            controller.getView().setUserInteractionEnabled(true);
-            controller.getView().bringSubviewToFront(text);
-            if(input.numeric){
-                text.setKeyboardType(UIKeyboardType.NumberPad);
-            }
-
-            UIAlertController alert = new UIAlertController(input.title, null);
-            if(!input.message.isEmpty()) alert.setMessage(input.message);
-            alert.getKeyValueCoder().setValue("contentViewController", controller);
-            alert.addAction(new UIAlertAction("Ok", UIAlertActionStyle.Default, action -> Core.app.post(() -> input.accepted.get(text.getText()))));
-            alert.addAction(new UIAlertAction("Cancel", UIAlertActionStyle.Destructive, action -> Core.app.post(input.canceled)));
-
-            app.getUIViewController().presentViewController(alert, true, () -> {
-            });
+        if(input.multiline){
+            showMultilineTextInput(input);
         }else{
-            delegate = new UIAlertViewDelegateAdapter(){
-                @Override
-                public void clicked(UIAlertView view, long clicked){
-                    if(clicked == 0){
-                        // user clicked "Cancel" button
-                        input.canceled.run();
-                    }else if(clicked == 1){
-                        // user clicked "Ok" button
-                        UITextField textField = view.getTextField(0);
-                        input.accepted.get(textField.getText());
-                    }
-                    delegate = null;
-                    showingTextInput = false;
-                }
+            showSinglelineTextInput(input);
+        }
+    }
 
-                @Override
-                public void cancel(UIAlertView view){
-                    input.canceled.run();
-                    delegate = null;
-                    showingTextInput = false;
-                }
-            };
+    private void showSinglelineTextInput(TextInput input){
+        UIAlertController alert = new UIAlertController(input.title, input.message.isEmpty() ? null : input.message, UIAlertControllerStyle.Alert);
 
-            // build the view
-            UIAlertView uiAlertView = new UIAlertView();
-            uiAlertView.setTitle(input.title);
-            if(!input.message.isEmpty()) uiAlertView.setMessage(input.message);
-            uiAlertView.addButton("Cancel");
-            uiAlertView.addButton("Ok");
-            uiAlertView.setAlertViewStyle(UIAlertViewStyle.PlainTextInput);
-            uiAlertView.setDelegate(delegate);
+        UITextField[] fieldRef = new UITextField[1];
+        alert.addTextField(field -> {
+            fieldRef[0] = field;
+            field.setText(input.text);
+            if(input.numeric) field.setKeyboardType(UIKeyboardType.NumberPad);
+        });
 
-            //TODO no max length support
-            UITextField textField = uiAlertView.getTextField(0);
-            textField.setText(input.text);
-            if(input.numeric){
-                textField.setKeyboardType(UIKeyboardType.NumberPad);
+        alert.addAction(new UIAlertAction("Cancel", UIAlertActionStyle.Cancel, action -> {
+            showingTextInput = false;
+            Core.app.post(input.canceled);
+        }));
+        alert.addAction(new UIAlertAction("Ok", UIAlertActionStyle.Default, action -> {
+            showingTextInput = false;
+            String result = fieldRef[0].getText();
+            Core.app.post(() -> input.accepted.get(result));
+        }));
+
+        showingTextInput = true;
+        app.getUIViewController().presentViewController(alert, true, null);
+    }
+
+    private void showMultilineTextInput(TextInput input){
+        MultilineDialogController controller = new MultilineDialogController();
+        controller.titleLabel.setText(input.title);
+        if(!input.message.isEmpty()){
+            controller.messageLabel = new UILabel();
+            controller.messageLabel.setText(input.message);
+            controller.messageLabel.setFont(UIFont.getSystemFont(13));
+            controller.messageLabel.setTextColor(UIColor.darkGray());
+        }
+        controller.textView.setText(input.text);
+        if(input.numeric) controller.textView.setKeyboardType(UIKeyboardType.NumberPad);
+
+        controller.setModalPresentationStyle(UIModalPresentationStyle.PageSheet);
+        controller.setPreferredContentSize(new CGSize(340, 340));
+
+        controller.cancelButton.addOnTouchUpInsideListener((c, e) -> {
+            showingTextInput = false;
+            controller.dismissViewController(true, null);
+            Core.app.post(input.canceled);
+        });
+        controller.okButton.addOnTouchUpInsideListener((c, e) -> {
+            showingTextInput = false;
+            String result = controller.textView.getText();
+            controller.dismissViewController(true, null);
+            Core.app.post(() -> input.accepted.get(result));
+        });
+
+        UIAdaptivePresentationControllerDelegateAdapter adaptiveDelegate = new UIAdaptivePresentationControllerDelegateAdapter(){
+            @Override
+            public UIModalPresentationStyle getAdaptivePresentationStyle(UIPresentationController presentationController, UITraitCollection traitCollection){
+                return UIModalPresentationStyle.None;
             }
 
-            showingTextInput = true;
-            uiAlertView.show();
+            @Override
+            public void presentationControllerDidDismiss(UIPresentationController presentationController){
+                if(showingTextInput){
+                    showingTextInput = false;
+                    Core.app.post(input.canceled);
+                }
+            }
+        };
+        controller.getPresentationController().setDelegate(adaptiveDelegate);
+
+        showingTextInput = true;
+        app.getUIViewController().presentViewController(controller, true, () -> controller.textView.becomeFirstResponder());
+    }
+
+    private static final class MultilineDialogController extends UIViewController{
+        final UILabel titleLabel = new UILabel();
+        UILabel messageLabel;
+        final UITextView textView = new UITextView();
+        final UIButton cancelButton = new UIButton(UIButtonType.System);
+        final UIButton okButton = new UIButton(UIButtonType.System);
+
+        private NSObject keyboardWillChangeObserver;
+        private double keyboardOverlap = 0;
+
+        @Override
+        public void viewDidLoad(){
+            super.viewDidLoad();
+            UIView root = getView();
+            root.setBackgroundColor(UIColor.white());
+            titleLabel.setFont(UIFont.getBoldSystemFont(16));
+            root.addSubview(titleLabel);
+            if(messageLabel != null) root.addSubview(messageLabel);
+            textView.getLayer().setBorderWidth(1);
+            textView.getLayer().setBorderColor(UIColor.lightGray().getCGColor());
+            root.addSubview(textView);
+            cancelButton.setTitle("Cancel", UIControlState.Normal);
+            root.addSubview(cancelButton);
+            okButton.setTitle("Ok", UIControlState.Normal);
+            root.addSubview(okButton);
+
+            keyboardWillChangeObserver = UIWindow.Notifications.observeKeyboardWillChangeFrame(anim -> {
+                CGRect endFrame = anim.getEndFrame();
+                CGRect localFrame = getView().convertRectFromView(endFrame, null);
+                double overlap = Math.max(0, getView().getBounds().getHeight() - localFrame.getY());
+
+                keyboardOverlap = overlap;
+                UIView.animate(anim.getAnimationDuration(), () -> {
+                    getView().layoutIfNeeded();
+                });
+                getView().setNeedsLayout();
+            });
+        }
+
+        @Override
+        public void viewDidLayoutSubviews(){
+            super.viewDidLayoutSubviews();
+            CGRect bounds = getView().getBounds();
+            double width = bounds.getWidth(), height = bounds.getHeight();
+            double pad = 16, buttonHeight = 44;
+            double y = pad;
+
+            titleLabel.setFrame(new CGRect(pad, y, width - pad * 2, 22));
+            y += 26;
+
+            if(messageLabel != null){
+                messageLabel.setFrame(new CGRect(pad, y, width - pad * 2, 20));
+                y += 24;
+            }
+
+            double bottomInset = Math.max(keyboardOverlap, getView().getSafeAreaInsets().getBottom());
+            double buttonY = height - buttonHeight - pad - bottomInset;
+            double textHeight = Math.max(buttonY - y - pad, 60);
+            textView.setFrame(new CGRect(pad, y, width - pad * 2, textHeight));
+
+            double buttonWidth = (width - pad * 3) / 2;
+            cancelButton.setFrame(new CGRect(pad, buttonY, buttonWidth, buttonHeight));
+            okButton.setFrame(new CGRect(pad * 2 + buttonWidth, buttonY, buttonWidth, buttonHeight));
+        }
+
+        @Override
+        public void viewDidDisappear(boolean animated){
+            super.viewDidDisappear(animated);
+            if(keyboardWillChangeObserver != null){
+                NSNotificationCenter.getDefaultCenter().removeObserver(keyboardWillChangeObserver);
+                keyboardWillChangeObserver = null;
+            }
         }
     }
 
@@ -307,7 +393,7 @@ public class IOSInput extends Input{
 
     /**
      * Set the keyboard to close when the UITextField return key is pressed
-     * @param shouldClose Whether or not the keyboard should clsoe on return key press
+     * @param shouldClose Whether or not the keyboard should close on return key press
      */
     public void setKeyboardCloseOnReturnKey(boolean shouldClose){
         keyboardCloseOnReturn = shouldClose;
@@ -357,7 +443,7 @@ public class IOSInput extends Input{
     @Override
     public int getRotation(){
         // we measure orientation counter clockwise, just like on Android
-        switch(app.uiApp.getStatusBarOrientation()){
+        switch(app.uiWindowScene.getInterfaceOrientation()){
             case LandscapeLeft:
                 return 270;
             case PortraitUpsideDown:
@@ -372,7 +458,7 @@ public class IOSInput extends Input{
 
     @Override
     public Orientation getNativeOrientation(){
-        switch(app.uiApp.getStatusBarOrientation()){
+        switch(app.uiWindowScene.getInterfaceOrientation()){
             case LandscapeLeft:
             case LandscapeRight:
                 return Orientation.landscape;
