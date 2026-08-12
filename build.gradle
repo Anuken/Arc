@@ -120,3 +120,11 @@ subprojects{
         }
     }
 }
+
+if(System.getProperty("compileMethodParams") != null){
+    allprojects{
+        tasks.withType(JavaCompile).configureEach{
+            options.compilerArgs << '-parameters'
+        }
+    }
+}
