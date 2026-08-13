@@ -19,7 +19,7 @@ ext{
     libraries = [:]
 }
 
-versions.robovm = "2.3.24"
+versions.robovm = "2.3.26"
 versions.junit = "4.11"
 versions.lwjgl = "3.4.2-SNAPSHOT"
 versions.soloud = "2026.08.02"
