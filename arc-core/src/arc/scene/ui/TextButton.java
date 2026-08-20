@@ -51,8 +51,9 @@ public class TextButton extends Button{
         }
     }
 
-    @Override
-    public void draw(){
+
+    /** Updates the font color with the appropriate font color from the style before it is drawn. */
+    protected void updateFontColor(){
         Color fontColor;
         if(isDisabled() && style.disabledFontColor != null)
             fontColor = style.disabledFontColor;
@@ -65,6 +66,11 @@ public class TextButton extends Button{
         else
             fontColor = style.fontColor;
         if(fontColor != null) label.getStyle().fontColor = fontColor;
+    }
+
+    @Override
+    public void draw(){
+        updateFontColor();
         super.draw();
     }
 
