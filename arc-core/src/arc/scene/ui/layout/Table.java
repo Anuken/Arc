@@ -1045,6 +1045,18 @@ public class Table extends WidgetGroup{
             }
         }
 
+        // Round before accumulating so that rounding drift doesn't occur.
+        if(round){
+            for(int i = 0; i < columns; i++){
+                columnMinWidth[i] = Math.round(columnMinWidth[i]);
+                columnPrefWidth[i] = Math.round(columnPrefWidth[i]);
+            }
+            for(int i = 0; i < rows; i++){
+                rowMinHeight[i] = Math.round(rowMinHeight[i]);
+                rowPrefHeight[i] = Math.round(rowPrefHeight[i]);
+            }
+        }
+
         // Determine table min and pref size.
         tableMinWidth = 0;
         tableMinHeight = 0;
@@ -1199,6 +1211,12 @@ public class Table extends WidgetGroup{
                 for(int column = c.column, nn = column + colspan; column < nn; column++)
                     columnWidth[column] += extraWidth;
             }
+        }
+
+        // Round before accumulating so that rounding drift doesn't occur.
+        if(round){
+            for(int i = 0; i < columns; i++) columnWidth[i] = Math.round(columnWidth[i]);
+            for(int i = 0; i < rows; i++) rowHeight[i] = Math.round(rowHeight[i]);
         }
 
         // Determine table size.
