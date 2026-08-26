@@ -11,6 +11,7 @@ import java.security.*;
 import java.text.*;
 import java.util.*;
 import java.util.regex.*;
+import java.util.zip.*;
 
 public class Strings{
     public static final Charset utf8 = Charset.forName("UTF-8");
@@ -910,5 +911,40 @@ public class Strings{
             }
         }
         return false;
+    }
+
+    public static byte[] deflate(String str){
+        try{
+            Deflater deflater = new Deflater();
+            deflater.setInput(str.getBytes(utf8));
+            deflater.finish();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            while(!deflater.finished()){
+                int count = deflater.deflate(buffer);
+                out.write(buffer, 0, count);
+            }
+            deflater.end();
+            return out.toByteArray();
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String undeflate(byte[] bytes){
+        try{
+            Inflater inflater = new Inflater();
+            inflater.setInput(bytes);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            while(!inflater.finished()){
+                int count = inflater.inflate(buffer);
+                out.write(buffer, 0, count);
+            }
+            inflater.end();
+            return new String(out.toByteArray(), utf8);
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -207,11 +207,7 @@ public class Connection{
         tcp.timeoutMillis = timeoutMillis;
     }
 
-    /**
-     * Adds a listener to the connection. If the listener already exists, it is
-     * not added again.
-     * @param listener The listener to add.
-     */
+    /** Adds a listener to the connection, after existing listeners. If the listener already exists, it is not added again. */
     public void addListener(NetListener listener){
         if(listener == null)
             throw new IllegalArgumentException("listener cannot be null.");
@@ -222,8 +218,8 @@ public class Connection{
                 if(listener == listeners[i])
                     return;
             NetListener[] newListeners = new NetListener[n + 1];
-            newListeners[0] = listener;
-            System.arraycopy(listeners, 0, newListeners, 1, n);
+            System.arraycopy(listeners, 0, newListeners, 0, n);
+            newListeners[n] = listener;
             this.listeners = newListeners;
         }
     }

@@ -28,11 +28,6 @@ import static arc.Core.*;
  * The preferred height of a text field is the height of the {@link TextFieldStyle#font} and {@link TextFieldStyle#background}.
  * The preferred width of a text field is 150, a relatively arbitrary size.
  * <p>
- * The text field will copy the currently selected text when ctrl+c is pressed, and paste any text in the clipboard when ctrl+v is
- * pressed. Clipboard functionality is provided via the Clipboard interface. Currently there are two standard
- * implementations, one for the desktop and one for Android. The Android clipboard is a stub, as copy & pasting on Android is not
- * supported yet.
- * <p>
  * @author mzechner
  * @author Nathan Sweet
  */
