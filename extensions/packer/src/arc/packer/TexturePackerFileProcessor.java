@@ -49,7 +49,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
                 settingsFiles.add(inputFile.inputFile);
             }
         };
-        settingsProcessor.addInputRegex("pack\\.json");
+        settingsProcessor.addInputRegex("pack\\.h?json");
         settingsProcessor.process(inputFile, null);
         // Sort parent first.
         settingsFiles.sort(Structs.comparingInt(file -> file.toString().length()));
@@ -98,7 +98,9 @@ public class TexturePackerFileProcessor extends FileProcessor{
 
     protected void deleteOutput(File outputRoot) throws Exception{
         // Load root settings to get scale.
-        File settingsFile = new File(root, "pack.json");
+        File settingsFile = new File(root, "pack.hjson");
+        //use JSON as fallback
+        if(!settingsFile.exists()) settingsFile = new File(root, "pack.json");
         Settings rootSettings = defaultSettings;
         if(settingsFile.exists()){
             rootSettings = rootSettings.copy();
@@ -155,7 +157,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
             files = new FileProcessor(this){
                 @Override
                 protected void processDir(Entry entryDir, Seq<Entry> files){
-                    if(!entryDir.inputFile.equals(inputDir.inputFile) && new File(entryDir.inputFile, "pack.json").exists()){
+                    if(!entryDir.inputFile.equals(inputDir.inputFile) && (new File(entryDir.inputFile, "pack.json").exists() || new File(entryDir.inputFile, "pack.hjson").exists())){
                         files.clear();
                         return;
                     }
