@@ -1,5 +1,6 @@
 package arc.graphics;
 
+import arc.*;
 import arc.graphics.gl.*;
 
 /** Framebuffer attachment formats. */
@@ -82,7 +83,7 @@ public enum Format{
     }
 
     public boolean isLinearFilterable(){
-        return isColor() && baseType != Gl.floatV && !isIntegerFormat();
+        return isColor() && !isIntegerFormat() && (baseType != Gl.floatV || Core.graphics.getGLVersion().type != GLVersion.GlType.GLES || supportsLinearFloatExtension());
     }
 
     public boolean isIntegerFormat(){
@@ -99,5 +100,15 @@ public enum Format{
 
     public boolean isStencil(){
         return attachmentPoint == Gl.stencilAttachment || attachmentPoint == Gl.depthStencilAttachment;
+    }
+
+    private static boolean queriedFloatExt, supportsLinearFloat;
+
+    private static boolean supportsLinearFloatExtension(){
+        if(!queriedFloatExt){
+            supportsLinearFloat = Core.graphics.supportsExtension("OES_texture_float_linear");
+            queriedFloatExt = true;
+        }
+        return supportsLinearFloat;
     }
 }
