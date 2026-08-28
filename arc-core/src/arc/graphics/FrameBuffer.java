@@ -26,11 +26,11 @@ public class FrameBuffer implements Disposable{
     /** # of nested buffers right now */
     protected static int bufferNesting;
 
-    /** all texture attachments, defined in the same order as the formats were specified. **/
-    protected Seq<Texture> textureAttachments = new Seq<>();
     /** the framebuffer that was bound before this one began (null to indicate that nothing was bound) **/
     protected FrameBuffer lastBoundFramebuffer = null;
 
+    /** all texture attachments, defined in the same order as the formats were specified. **/
+    public Seq<Texture> textureAttachments = new Seq<>();
     public int width, height;
     public @Nullable Texture texture, depthTexture, stencilTexture;
 
@@ -187,10 +187,6 @@ public class FrameBuffer implements Disposable{
         currentBoundFramebuffer = lastBoundFramebuffer;
         //no longer bound, so nothing came last
         lastBoundFramebuffer = null;
-    }
-
-    public Seq<Texture> getTextureAttachments(){
-        return textureAttachments;
     }
 
     /** @return The OpenGL handle of the framebuffer */
