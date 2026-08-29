@@ -15,12 +15,6 @@ public class Reads implements Closeable{
         this.input = input;
     }
 
-    /** @deprecated Use the constructor instead. */
-    @Deprecated
-    public static Reads get(DataInput input){
-        return new Reads(input);
-    }
-
     /** @return -1 if EOF or unsupported, or the next byte. */
     public int checkEOF(){
         try{

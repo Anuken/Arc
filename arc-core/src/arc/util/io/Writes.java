@@ -10,12 +10,6 @@ public class Writes implements Closeable{
         this.output = output;
     }
 
-    /** @deprecated Use the constructor instead. */
-    @Deprecated
-    public static Writes get(DataOutput output){
-        return new Writes(output);
-    }
-
     /** write long */
     public void l(long i){
         try{
