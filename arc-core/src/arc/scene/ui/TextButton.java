@@ -23,7 +23,7 @@ public class TextButton extends Button{
 
     public TextButton(String text, TextButtonStyle style){
         super();
-        setStyle(style);
+        setStyle(new TextButtonStyle(style));
         this.style = style;
         label = new Label(text, new LabelStyle(style.font, style.fontColor));
         label.setAlignment(Align.center);
