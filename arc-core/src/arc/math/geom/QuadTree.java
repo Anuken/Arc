@@ -15,6 +15,8 @@ import arc.struct.*;
  */
 public class QuadTree<T extends QuadTreeObject>{
     protected final Rect tmp = new Rect();
+    //if many objects are stacked on a point, it may split infinitely, so floor the size
+    protected static final float minNodeSize = 10f;
     protected static final int maxObjectsPerNode = 5;
 
     public Rect bounds;
@@ -31,7 +33,7 @@ public class QuadTree<T extends QuadTreeObject>{
     }
 
     protected void split(){
-        if(!leaf) return;
+        if(!leaf || bounds.width <= minNodeSize || bounds.height <= minNodeSize) return;
 
         float subW = bounds.width / 2;
         float subH = bounds.height / 2;
@@ -109,7 +111,7 @@ public class QuadTree<T extends QuadTreeObject>{
         clear();
         totalObjects = list.size;
 
-        if(list.size <= maxObjectsPerNode){
+        if(list.size <= maxObjectsPerNode || bounds.width <= minNodeSize || bounds.height <= minNodeSize){
             objects.addAll(list);
             return;
         }
