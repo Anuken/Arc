@@ -19,6 +19,7 @@ public class MultiUdpSender implements AutoCloseable {
 	public static final int maxSimultaneousAddresses = 50;
 
 	public static final short AF_INET = 2;
+	public static final long EWOULDBLOCK = 11L;
 
 	public static final Linker linker = Linker.nativeLinker();
 	public static final SymbolLookup stdlib = linker.defaultLookup();
@@ -198,9 +199,15 @@ public class MultiUdpSender implements AutoCloseable {
 			throw new RuntimeException(t);
 		}
 		if(sent == -1){
-			String error = "sendmmsg returned -1, errno is " + errno.get(captureState, 0L);
-			Log.debug(error);
-			throw new RuntimeException(error);
+			long errnoValue = errno.get(captureState, 0L);
+			if(errnoValue == EWOULDBLOCK){
+				//since this is UDP we can just let the packet get dropped
+				Log.debug("Dropped UDP packet because the network buffer was full. Consider increasing the buffer size or decreasing the entity snapshot rate.");
+			} else {
+				String error = "sendmmsg returned -1, errno is " + errnoValue;
+				Log.debug(error);
+				throw new RuntimeException(error);
+			}
 		}
 		return sent;
 	}
