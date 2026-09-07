@@ -40,6 +40,8 @@ public class Server implements EndPoint{
 
     private final ByteBuffer bulkWriteBuffer;
     private final Object bulkWriteLock = new Object();
+    private MultiUdpSender multi;
+    public static boolean useSyscall = true;
 
     private NetListener dispatchListener = new NetListener(){
         @Override
@@ -151,6 +153,11 @@ public class Server implements EndPoint{
      */
     public void bind(InetSocketAddress tcpPort, InetSocketAddress udpPort) throws IOException{
         close();
+        try {
+            multi = new MultiUdpSender();
+        } catch(Exception e){
+            e.printStackTrace();
+        }
         synchronized(updateLock){
             selector.wakeup();
             try{
@@ -164,6 +171,14 @@ public class Server implements EndPoint{
                     serializer,
                     objectBufferSize);
                     udp.bind(selector, udpPort);
+                    if(multi != null){
+                        try {
+                            multi.bind(udp.datagramChannel);
+                        } catch(Exception e){
+                            e.printStackTrace();
+                            multi = null;
+                        }
+                    }
                 }
 
                 if(multicastGroup != null && (udpPort == null || multicastPort != udpPort.getPort())){
@@ -527,13 +542,23 @@ public class Server implements EndPoint{
             }
 
             Connection[] connections = this.connections;
-            for(Connection con : connections){
+            if(multi != null && useSyscall){
                 try{
-                    con.sendUDPBuffer(buffer);
+                    multi.connect(connections); //TODO: optimize this call out sometimes?
+                    multi.send(buffer);
                 }catch(Exception e){
                     //note: 'vanilla' kryonet doesn't do this, but mindustry does this in ArcConnection#send upon error, so it's probably best to close upon error here as well and not let it propagate
                     ArcNet.handleError(e);
-                    con.close(DcReason.error);
+                }
+            } else {
+                for(Connection con : connections){
+                    try{
+                        con.sendUDPBuffer(buffer);
+                    }catch(Exception e){
+                        //note: 'vanilla' kryonet doesn't do this, but mindustry does this in ArcConnection#send upon error, so it's probably best to close upon error here as well and not let it propagate
+                        ArcNet.handleError(e);
+                        con.close(DcReason.error);
+                    }
                 }
             }
         }
@@ -577,13 +602,18 @@ public class Server implements EndPoint{
                 return;
             }
 
-            for(Connection con : connections){
-                if(!con.isConnected()) continue; //note: since this method accepts a list of connections, there may be stale connections, so filter for that (not possible otherwise)
-                try{
-                    con.sendUDPBuffer(buffer);
-                }catch(Exception e){
-                    ArcNet.handleError(e);
-                    con.close(DcReason.error);
+            if(multi != null && useSyscall){
+                multi.connect(connections); //TODO: optimize this call out sometimes?
+                multi.send(buffer);
+            } else {
+                for(Connection con : connections){
+                    if(!con.isConnected()) continue; //note: since this method accepts a list of connections, there may be stale connections, so filter for that (not possible otherwise)
+                    try{
+                        con.sendUDPBuffer(buffer);
+                    }catch(Exception e){
+                        ArcNet.handleError(e);
+                        con.close(DcReason.error);
+                    }
                 }
             }
         }
