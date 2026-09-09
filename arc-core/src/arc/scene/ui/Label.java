@@ -34,7 +34,7 @@ public class Label extends Element{
     protected int labelAlign = Align.left;
     protected int lineAlign = Align.left;
 
-    protected boolean wrap;
+    protected boolean wrap, wrapFit;
     protected float lastPrefHeight;
     protected boolean prefSizeInvalid = true;
     protected float fontScaleX = 1, fontScaleY = 1;
@@ -235,7 +235,7 @@ public class Label extends Element{
 
     @Override
     public float getPrefWidth(){
-        if(style == null) return 0;
+        if(style == null || (wrap && wrapFit)) return 0;
         if(prefSizeInvalid) scaleAndComputePrefSize();
         float width = prefSize.x;
         Drawable background = style.background;
@@ -259,6 +259,10 @@ public class Label extends Element{
         return layout;
     }
 
+    public void setWrap(boolean wrap){
+        setWrap(wrap, false);
+    }
+
     /**
      * If false, the text will only wrap where it contains newlines (\n). The preferred size of the label will be the text bounds.
      * If true, the text will word wrap using the width of the label. The preferred width of the label will be 0, it is expected
@@ -267,9 +271,11 @@ public class Label extends Element{
      * When wrap is enabled, the label's preferred height depends on the width of the label. In some cases the parent of the label
      * will need to layout twice: once to set the width of the label and a second time to adjust to the label's new preferred
      * height.
+     * @param wrapFit if true, labels will have a prefWidth of 0, and need to have an explicit wrap size set. if false, they will occupy all horizontal space unless an explicit size is set.
      */
-    public void setWrap(boolean wrap){
+    public void setWrap(boolean wrap, boolean wrapFit){
         this.wrap = wrap;
+        this.wrapFit = wrapFit;
         invalidateHierarchy();
     }
 

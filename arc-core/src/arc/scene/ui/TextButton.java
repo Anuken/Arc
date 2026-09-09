@@ -3,6 +3,7 @@ package arc.scene.ui;
 import arc.graphics.Color;
 import arc.graphics.g2d.Font;
 import arc.scene.style.Drawable;
+import arc.scene.ui.CheckBox.*;
 import arc.scene.ui.Label.LabelStyle;
 import arc.scene.ui.layout.Cell;
 import arc.util.Align;
@@ -23,7 +24,7 @@ public class TextButton extends Button{
 
     public TextButton(String text, TextButtonStyle style){
         super();
-        setStyle(style);
+        setStyle(style instanceof CheckBoxStyle ? style : new TextButtonStyle(style));
         this.style = style;
         label = new Label(text, new LabelStyle(style.font, style.fontColor));
         label.setAlignment(Align.center);

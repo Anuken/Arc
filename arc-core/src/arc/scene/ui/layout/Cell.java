@@ -258,10 +258,15 @@ public class Cell<T extends Element> implements Poolable{
     }
 
     public Cell<T> wrap(){
+        return wrap(false);
+    }
+
+    /** @param wrapFit if true, labels will have a prefWidth of 0, and need to have an explicit wrap size set. if false, they will occupy all horizontal space unless an explicit size is set. */
+    public Cell<T> wrap(boolean wrapFit){
         if(get() instanceof Label){
-            ((Label)get()).setWrap(true);
+            ((Label)get()).setWrap(true, wrapFit);
         }else if(get() instanceof TextButton){
-            ((TextButton)get()).getLabel().setWrap(true);
+            ((TextButton)get()).getLabel().setWrap(true, wrapFit);
         }
         return this;
     }
