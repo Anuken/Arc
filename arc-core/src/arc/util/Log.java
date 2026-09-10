@@ -142,7 +142,8 @@ public class Log{
 
     public static class NoopLogHandler implements LogHandler{
         @Override public void log(LogLevel level, String text){}
-        @Override public void logException(LogLevel level, String tag, String text, Throwable th){}
         @Override public void log(LogLevel level, String tag, String text, Object... args){}
+        @Override public void logList(LogLevel level, String tag, Object... args) {}
+        @Override public void logException(LogLevel level, String tag, String text, Throwable th){}
     }
 }
