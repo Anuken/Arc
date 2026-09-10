@@ -113,12 +113,12 @@ public class Log{
         default void log(LogLevel level, String tag, String text, Throwable th){
             if(Log.level.ordinal() > level.ordinal()) return;
             text += (text.isEmpty() ? "" : ": ") + Strings.getStackTrace(th);
-            this.log(level, (tag.isEmpty() ? "" : "[" + tag + "] ") + format(text, empty));
+            this.log(level, format((tag.isEmpty() ? "" : "[" + tag + "] ") + text, empty));
         }
 
         default void log(LogLevel level, String tag, String text, Object... args){
             if(Log.level.ordinal() > level.ordinal()) return;
-            this.log(level, (tag.isEmpty() ? "" : "[" + tag + "] ") + format(text, args));
+            this.log(level, format((tag.isEmpty() ? "" : "[" + tag + "] ") + text, args));
         }
     }
 
