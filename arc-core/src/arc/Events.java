@@ -38,21 +38,14 @@ public class Events{
     /** Handle an event by enum trigger with the specified priority. */
     public static void run(Object type, Priority priority, Runnable listener){
         events.get(type, () -> new SnapshotSeq<>(Cons.class))
-                .add(priority == Priority.normal ? e -> listener.run() : new ConsWithPriority<>(e -> listener.run(), priority))
+                .add(priority == Priority.normal
+                        ? new ConsWithRunnable<>(listener)
+                        : new ConsWithPriority<>(new ConsWithRunnable<>(listener), priority))
                 .sort(comparator);
     }
 
     /** Removes the event listener from the specified event type. */
     public static <T> boolean remove(Class<T> type, Cons<T> listener){
-        return remove0(type, listener);
-    }
-
-    /** Removes the event listener from the specified event type. */
-    public static <T> boolean remove(T type, Cons<T> listener){
-        return remove0(type, listener);
-    }
-
-    private static boolean remove0(Object type, Cons<?> listener){
         Seq<Cons<?>> listeners = events.get(type);
         if (listeners == null){
             return false;
@@ -63,6 +56,23 @@ public class Events{
             }else{
                 return l.equals(listener);
             }
+        });
+    }
+
+    /** Removes the event listener from the specified event type. */
+    public static <T> boolean remove(T type, Runnable listener){
+        Seq<Cons<?>> listeners = events.get(type);
+        if (listeners == null){
+            return false;
+        }
+        return listeners.remove(l -> {
+            if(l instanceof ConsWithPriority<?>){
+                l = ((ConsWithPriority<?>) l).cons;
+            }
+            if(l instanceof ConsWithRunnable<?>){
+                return ((ConsWithRunnable<?>)l).runnable.equals(listener);
+            }
+            return false;
         });
     }
 
@@ -121,6 +131,19 @@ public class Events{
         @Override
         public void get(T t) {
             this.cons.get(t);
+        }
+    }
+
+    private static final class ConsWithRunnable<T> implements Cons<T>{
+        private final Runnable runnable;
+
+        private ConsWithRunnable(Runnable runnable){
+            this.runnable = runnable;
+        }
+
+        @Override
+        public void get(T t){
+            this.runnable.run();
         }
     }
 }
