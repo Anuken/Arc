@@ -118,7 +118,7 @@ public class Log{
                 build.append(args[i]);
                 if(i + 1 < args.length) build.append(" ");
             }
-            this.log(level, format(build.toString(), args));
+            this.log(level, format(build.toString(), empty));
         }
 
         default void logException(LogLevel level, String tag, String text, Throwable th){
