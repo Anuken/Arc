@@ -6,6 +6,7 @@ import arc.struct.ObjectMap;
 import arc.func.Cons;
 import arc.struct.SnapshotSeq;
 import arc.util.Priority;
+
 import java.util.Comparator;
 
 /** Simple global event listener system. */
@@ -47,12 +48,12 @@ public class Events{
     /** Removes the event listener from the specified event type. */
     public static <T> boolean remove(Class<T> type, Cons<T> listener){
         Seq<Cons<?>> listeners = events.get(type);
-        if (listeners == null){
+        if(listeners == null){
             return false;
         }
         return listeners.remove(l -> {
             if(l instanceof ConsWithPriority<?>){
-                return ((ConsWithPriority<?>) l).cons.equals(listener);
+                return ((ConsWithPriority<?>)l).cons.equals(listener);
             }else{
                 return l.equals(listener);
             }
@@ -62,12 +63,12 @@ public class Events{
     /** Removes the event listener from the specified event type. */
     public static <T> boolean remove(T type, Runnable listener){
         Seq<Cons<?>> listeners = events.get(type);
-        if (listeners == null){
+        if(listeners == null){
             return false;
         }
         return listeners.remove(l -> {
             if(l instanceof ConsWithPriority<?>){
-                l = ((ConsWithPriority<?>) l).cons;
+                l = ((ConsWithPriority<?>)l).cons;
             }
             if(l instanceof ConsWithRunnable<?>){
                 return ((ConsWithRunnable<?>)l).runnable.equals(listener);
@@ -129,7 +130,7 @@ public class Events{
         }
 
         @Override
-        public void get(T t) {
+        public void get(T t){
             this.cons.get(t);
         }
     }
