@@ -25,12 +25,7 @@ public class Log{
     }
 
     public static void infoList(Object... args){
-        StringBuilder build = new StringBuilder();
-        for(int i = 0; i < args.length; i++){
-            build.append(args[i]);
-            if(i + 1 < args.length) build.append(" ");
-        }
-        logger.log(LogLevel.info, "", build.toString(), empty);
+        logger.logList(LogLevel.info, "", args);
     }
 
     public static void infoTag(String tag, String text){
@@ -58,11 +53,11 @@ public class Log{
     }
 
     public static void err(Throwable th){
-        logger.log(LogLevel.err, "", "", th);
+        logger.logException(LogLevel.err, "", "", th);
     }
 
     public static void err(String text, Throwable th){
-        logger.log(LogLevel.err, "", text, th);
+        logger.logException(LogLevel.err, "", text, th);
     }
 
     public static String format(String text, Object... args){
@@ -110,15 +105,26 @@ public class Log{
     public interface LogHandler{
         void log(LogLevel level, String text);
 
-        default void log(LogLevel level, String tag, String text, Throwable th){
-            if(Log.level.ordinal() > level.ordinal()) return;
-            text += (text.isEmpty() ? "" : ": ") + Strings.getStackTrace(th);
-            this.log(level, format((tag.isEmpty() ? "" : "[" + tag + "] ") + text, empty));
-        }
-
         default void log(LogLevel level, String tag, String text, Object... args){
             if(Log.level.ordinal() > level.ordinal()) return;
             this.log(level, format((tag.isEmpty() ? "" : "[" + tag + "] ") + text, args));
+        }
+
+        default void logList(LogLevel level, String tag, Object... args){
+            if(Log.level.ordinal() > level.ordinal()) return;
+            StringBuilder build = new StringBuilder();
+            build.append(tag.isEmpty() ? "" : "[" + tag + "] ");
+            for(int i = 0; i < args.length; i++){
+                build.append(args[i]);
+                if(i + 1 < args.length) build.append(" ");
+            }
+            this.log(level, format(build.toString(), args));
+        }
+
+        default void logException(LogLevel level, String tag, String text, Throwable th){
+            if(Log.level.ordinal() > level.ordinal()) return;
+            text += (text.isEmpty() ? "" : ": ") + Strings.getStackTrace(th);
+            this.log(level, format((tag.isEmpty() ? "" : "[" + tag + "] ") + text, empty));
         }
     }
 
@@ -136,7 +142,7 @@ public class Log{
 
     public static class NoopLogHandler implements LogHandler{
         @Override public void log(LogLevel level, String text){}
-        @Override public void log(LogLevel level, String tag, String text, Throwable th){}
+        @Override public void logException(LogLevel level, String tag, String text, Throwable th){}
         @Override public void log(LogLevel level, String tag, String text, Object... args){}
     }
 }
