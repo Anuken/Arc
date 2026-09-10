@@ -44,6 +44,15 @@ public class Events{
 
     /** Removes the event listener from the specified event type. */
     public static <T> boolean remove(Class<T> type, Cons<T> listener){
+        return remove0(type, listener);
+    }
+
+    /** Removes the event listener from the specified event type. */
+    public static <T> boolean remove(T type, Cons<T> listener){
+        return remove0(type, listener);
+    }
+
+    private static boolean remove0(Object type, Cons<?> listener){
         Seq<Cons<?>> listeners = events.get(type);
         if (listeners == null){
             return false;
