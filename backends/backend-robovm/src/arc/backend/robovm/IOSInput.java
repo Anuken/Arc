@@ -1,9 +1,6 @@
 package arc.backend.robovm;
 
 import arc.*;
-import arc.backend.robovm.custom.UIAccelerometerDelegate;
-import arc.backend.robovm.custom.UIAccelerometerDelegateAdapter;
-import arc.backend.robovm.custom.*;
 import arc.graphics.*;
 import arc.input.*;
 import arc.math.geom.*;
@@ -12,6 +9,7 @@ import arc.util.*;
 import arc.util.pooling.*;
 import org.robovm.apple.audiotoolbox.*;
 import org.robovm.apple.coregraphics.*;
+import org.robovm.apple.coremotion.*;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.uikit.*;
 import org.robovm.objc.annotation.*;
@@ -19,10 +17,8 @@ import org.robovm.rt.*;
 import org.robovm.rt.bro.*;
 import org.robovm.rt.bro.annotation.*;
 
-@SuppressWarnings("deprecation")
 public class IOSInput extends Input{
     static final int MAX_TOUCHES = 20;
-    static final NSObjectWrapper<UIAcceleration> UI_ACCELERATION_WRAPPER = new NSObjectWrapper<>(UIAcceleration.class);
     private static final int POINTER_NOT_FOUND = -1;
     private static final NSObjectWrapper<UITouch> UI_TOUCH_WRAPPER = new NSObjectWrapper<>(UITouch.class);
     private final Pool<KeyEvent> keyEventPool = new Pool<KeyEvent>(16, 1000){
@@ -31,7 +27,7 @@ public class IOSInput extends Input{
         }
     };
     private final Seq<KeyEvent> keyEvents = new Seq<>();
-    protected UIAccelerometerDelegate accelerometerDelegate;
+    protected CMMotionManager motionManager;
     IOSApplication app;
     IOSApplicationConfiguration config;
     int[] deltaX = new int[MAX_TOUCHES];
@@ -123,21 +119,46 @@ public class IOSInput extends Input{
 
     protected void setupAccelerometer(){
         if(config.useAccelerometer){
-            accelerometerDelegate = new UIAccelerometerDelegateAdapter(){
+            motionManager = new CMMotionManager();
+            if(!motionManager.isAccelerometerAvailable()){
+                motionManager = null;
+                return;
+            }
 
-                @Method(selector = "accelerometer:didAccelerate:")
-                public void didAccelerate(UIAccelerometer accelerometer, @Pointer long valuesPtr){
-                    UIAcceleration values = UI_ACCELERATION_WRAPPER.wrap(valuesPtr);
-                    float x = (float)values.getX() * 10;
-                    float y = (float)values.getY() * 10;
-                    float z = (float)values.getZ() * 10;
-
-                    accel.set(-x, -y, -z);
-                }
-            };
-            UIAccelerometer.getSharedAccelerometer().setDelegate(accelerometerDelegate);
-            UIAccelerometer.getSharedAccelerometer().setUpdateInterval(config.accelerometerUpdate);
+            motionManager.setAccelerometerUpdateInterval(config.accelerometerUpdate);
+            startAccelerometerUpdates();
         }
+    }
+
+    private void startAccelerometerUpdates(){
+        motionManager.startAccelerometerUpdates(NSOperationQueue.getMainQueue(), (data, error) -> {
+            if(data == null) return;
+
+            CMAcceleration values = data.getAcceleration();
+            float x = (float)values.getX() * 10;
+            float y = (float)values.getY() * 10;
+            float z = (float)values.getZ() * 10;
+
+            accel.set(-x, -y, -z);
+        });
+    }
+
+    /** Stops accelerometer updates. Safe to call even if the accelerometer was never started, or already stopped. */
+    public void disposeAccelerometer(){
+        if(motionManager != null){
+            motionManager.stopAccelerometerUpdates();
+            motionManager = null;
+        }
+    }
+
+    /** Pauses accelerometer updates without discarding config, e.g. when entering the background. */
+    public void pauseAccelerometer(){
+        if(motionManager != null) motionManager.stopAccelerometerUpdates();
+    }
+
+    /** Resumes accelerometer updates after {@link #pauseAccelerometer()}, e.g. when returning to the foreground. */
+    public void resumeAccelerometer(){
+        if(motionManager != null && config.useAccelerometer) startAccelerometerUpdates();
     }
 
     @Override

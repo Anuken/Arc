@@ -106,13 +106,11 @@ public class FxWidgetGroup extends WidgetGroup{
         }
     }
 
-    @Deprecated
     @Override
     public void setCullingArea(Rect cullingArea){
         throw new UnsupportedOperationException("VfxWidgetGroup doesn't support culling area.");
     }
 
-    @Deprecated
     @Override
     public void setTransform(boolean transform){
         throw new UnsupportedOperationException("VfxWidgetGroup doesn't support transform.");

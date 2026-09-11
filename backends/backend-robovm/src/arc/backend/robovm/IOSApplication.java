@@ -148,6 +148,7 @@ public class IOSApplication implements Application{
         Log.info("[IOSApplication] resumed");
         graphics.makeCurrent();
         graphics.resume();
+        input.resumeAccelerometer();
     }
 
     final void willEnterForeground(UIScene uiScene){
@@ -158,12 +159,14 @@ public class IOSApplication implements Application{
         graphics.makeCurrent();
         graphics.pause();
         Gl.finish();
+        input.pauseAccelerometer();
     }
 
     final void willTerminate(UIApplication uiApp){
         Log.info("[IOSApplication] disposed");
         // willTerminate can be called before a scene is connected and graphics initialized
         if(graphics != null) graphics.makeCurrent();
+        input.disposeAccelerometer();
         Seq<ApplicationListener> listeners = this.listeners;
         synchronized(listeners){
             for(ApplicationListener listener : listeners){

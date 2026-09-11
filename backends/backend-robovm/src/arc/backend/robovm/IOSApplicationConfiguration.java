@@ -39,7 +39,7 @@ public class IOSApplicationConfiguration{
     public Cons<Throwable> errorHandler;
 
     /** whether to use the accelerometer, default true **/
-    public boolean useAccelerometer = true;
+    public boolean useAccelerometer = false;
     /** the update interval to poll the accelerometer with, in seconds **/
     public float accelerometerUpdate = 0.05f;
     /** whether or not the onScreenKeyboard should be closed on return key **/
