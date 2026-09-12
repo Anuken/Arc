@@ -534,7 +534,7 @@ public class Table extends WidgetGroup{
     }
 
     public Cell<TextButton> button(String text, Drawable image, Runnable clicked){
-        return button(text, image, image.imageSize() / Scl.scl(1f), clicked);
+        return button(text, image, image.imageSize(), clicked);
     }
 
     public Cell<TextButton> button(String text, Drawable image, float imagesize, Runnable clicked){
@@ -550,7 +550,7 @@ public class Table extends WidgetGroup{
     }
 
     public Cell<TextButton> button(String text, Drawable image, TextButtonStyle style, Runnable clicked){
-        return button(text, image, style, image.imageSize() / Scl.scl(1f), clicked);
+        return button(text, image, style, image.imageSize(), clicked);
     }
 
     public Cell<TextButton> buttonCenter(String text, Drawable image, float imagesize, Runnable clicked){
