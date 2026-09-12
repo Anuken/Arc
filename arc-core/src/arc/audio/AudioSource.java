@@ -91,6 +91,11 @@ public abstract class AudioSource implements Disposable{
 
     public abstract float getLength();
 
+    /** @return true if this is a lazily loaded source (only loaded once played) */
+    public boolean isLazy(){
+        return false;
+    }
+
     @Override
     public void dispose(){
         if(handle != 0) sourceDestroy(handle);
