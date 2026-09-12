@@ -69,8 +69,8 @@ public class KeyBind{
         Axis loaded;
         String name = settingsKey();
         if(settings.getBool(name + "-single", true)){
-            KeyCode key = KeyCode.byOrdinal(settings.getInt(name + "-key", KeyCode.unset.ordinal()));
-            loaded = key == KeyCode.unset ? null : new Axis(key);
+            int ordinal = settings.getInt(name + "-key", -1);
+            loaded = ordinal < 0 ? null : new Axis(KeyCode.byOrdinal(ordinal));
         }else{
             KeyCode min = KeyCode.byOrdinal(settings.getInt(name + "-min", KeyCode.unset.ordinal()));
             KeyCode max = KeyCode.byOrdinal(settings.getInt(name + "-max", KeyCode.unset.ordinal()));
@@ -101,11 +101,6 @@ public class KeyBind{
     }
 
     public void unset(){
-        String name = settingsKey();
-        settings.remove(name + "-single");
-        settings.remove(name + "-key");
-        settings.remove(name + "-min");
-        settings.remove(name + "-max");
         value = new Axis(KeyCode.unset);
     }
 

@@ -52,6 +52,13 @@ public class Sound extends AudioSource{
         return sound;
     }
 
+    /** Creates a sound that only loads itself once played. */
+    public static Sound createLazy(Fi file){
+        Sound sound = new Sound();
+        sound.loadLazy(file);
+        return sound;
+    }
+
     /** Creates an empty sound. This sound cannot be played until it is loaded. */
     public Sound(){
 
@@ -81,6 +88,31 @@ public class Sound extends AudioSource{
         this.lazyLoad = true;
     }
 
+    @Override
+    public boolean isLazy(){
+        return lazyLoad || currentlyLoading;
+    }
+
+    public void checkLazyLoad(Runnable complete){
+        if(handle == 0 && lazyLoad && !currentlyLoading && file != null){
+            currentlyLoading = true;
+            Core.executor.submit(() -> {
+                try{
+                    //make sure it doesn't attempt lazy loading again
+                    lazyLoad = false;
+                    load(file);
+                    setParamsAfterLoad();
+                    currentlyLoading = false;
+
+                    complete.run();
+                }catch(Throwable err){
+                    currentlyLoading = false;
+                    Log.err("Error loading sound: " + file, err);
+                }
+            });
+        }
+    }
+
     /**
      * Plays the sound. If the sound is already playing, it will be played again, concurrently.
      * @param volume the volume in the range [0,1]
@@ -92,22 +124,11 @@ public class Sound extends AudioSource{
     public int play(float volume, float pitch, float pan, boolean loop, boolean checkFrame, AudioBus bus){
         if(!Core.audio.initialized || currentlyLoading) return -1;
 
-        if(handle == 0 && lazyLoad && !currentlyLoading && file != null){
-            currentlyLoading = true;
+        if(handle == 0 && lazyLoad){
             float fvolume = volume, fpitch = pitch, fpan = pan;
-            Core.executor.submit(() -> {
-                try{
-                    //make sure it doesn't attempt lazy loading again
-                    lazyLoad = false;
-                    load(file);
-                    setParamsAfterLoad();
-                    currentlyLoading = false;
-
-                    if(!loop){
-                        play(fvolume, fpitch, fpan, loop, checkFrame, bus);
-                    }
-                }catch(Throwable err){
-                    Log.err("Error loading sound: " + file, err);
+            checkLazyLoad(() -> {
+                if(!loop){
+                    play(fvolume, fpitch, fpan, loop, checkFrame, bus);
                 }
             });
         }
