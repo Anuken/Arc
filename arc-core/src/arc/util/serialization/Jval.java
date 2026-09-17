@@ -64,6 +64,69 @@ public class Jval{
         return new Hparser(text).parse();
     }
 
+    public static Jval fromJsonValue(JsonValue json){
+        switch(json.type()){
+            case object:
+                Jval map = newObject();
+                for(JsonValue j : json) map.add(j.name, fromJsonValue(j));
+                return map;
+            case array:
+                Jval array = newArray();
+                for(JsonValue j : json) array.add(fromJsonValue(j));
+                return array;
+            case stringValue: return valueOf(json.asString());
+            case doubleValue: return valueOf(json.asDouble());
+            case longValue: return valueOf(json.asLong());
+            case booleanValue: return valueOf(json.asBoolean());
+            case nullValue: return valueOf(null);
+        }
+        throw new IllegalArgumentException("Unable to convert to Jval");
+    }
+
+    public JsonValue toJsonValue(){
+        if(isNull()) return new JsonValue((String)null);
+        else if(isInt() || isLong()) return new JsonValue(asLong());
+        else if(isFloat() || isDouble()) return new JsonValue(asDouble());
+        else if(isBoolean()) return new JsonValue(asBool());
+        else if(isObject()){
+            JsonValue json = new JsonValue(JsonValue.ValueType.object), current = null;
+            json.size = asObject().size;
+            for(ObjectMap.Entry<String, Jval> e : asObject()){
+                if(current == null){
+                    current = json.child = e.value.toJsonValue();
+                    current.name = e.key;
+                    current.parent = json;
+                }else{
+                    current.next = e.value.toJsonValue();
+                    current.name = e.key;
+                    current.next.prev = current;
+                    current = current.next;
+                }
+            }
+            return json;
+        }
+        else if(isArray()){
+            JsonValue json = new JsonValue(JsonValue.ValueType.array), current = null;
+            json.size = asArray().size;
+            for(Jval j : asArray()){
+                if(current == null){
+                    current = json.child = j.toJsonValue();
+                    current.parent = json;
+                }else{
+                    current.next = j.toJsonValue();
+                    current.next.prev = current;
+                    current = current.next;
+                }
+            }
+            return json;
+        }
+        throw new IllegalStateException("Unable to convert to JsonValue. corrupted Jval?");
+    }
+
+    public Object value(){
+        return value;
+    }
+    
     public Jtype getType(){
         return value == null ? Jtype.nil :
                 value instanceof Number ? Jtype.number :
@@ -82,7 +145,10 @@ public class Jval{
 
     public boolean isObject(){ return value instanceof JsonMap; }
     public boolean isArray(){ return value instanceof JsonArray; }
-    public boolean isNumber(){ return value instanceof Number; }
+    public boolean isInt(){ return value instanceof Integer; }
+    public boolean isLong(){ return value instanceof Long; }
+    public boolean isFloat(){ return value instanceof Float; }
+    public boolean isDouble(){ return value instanceof Double; }
     public boolean isString(){ return value instanceof String; }
     public boolean isBoolean(){ return value instanceof Boolean; }
     public boolean isTrue(){ return value == Boolean.TRUE; }
@@ -91,26 +157,6 @@ public class Jval{
 
     public JsonMap asObject(){ if(!(value instanceof JsonMap)) throw new UnsupportedOperationException("Not an object: " + this); return (JsonMap)value; }
     public JsonArray asArray(){ if(!(value instanceof JsonArray)) throw new UnsupportedOperationException("Not an array: " + this); return (JsonArray)value; }
-
-    public byte asByte(){
-        if(value instanceof Number){
-            return ((Number)value).byteValue();
-        }else if(value instanceof String){
-            return Byte.parseByte((String)value);
-        }else{
-            throw new UnsupportedOperationException("Not a number: " + this);
-        }
-    }
-
-    public short asShort(){
-        if(value instanceof Number){
-            return ((Number)value).shortValue();
-        }else if(value instanceof String){
-            return Short.parseShort((String)value);
-        }else{
-            throw new UnsupportedOperationException("Not a number: " + this);
-        }
-    }
 
     public int asInt(){
         if(value instanceof Number){
@@ -344,6 +390,11 @@ public class Jval{
         return object != null && object.getClass() == getClass() &&
             ((value == null && ((Jval)object).value == null)
             || (((Jval)object).value != null && value != null && value.equals(((Jval)object).value)));
+    }
+
+    @Override
+    public int hashCode(){
+        return value.hashCode();
     }
 
     /** Alias class of whatever is used to store json maps (objects). */
