@@ -47,6 +47,37 @@ public class StringsTest{
     }
 
     @Test
+    public void testUnsignedHexParse(){
+        Seq.with("0", "9", "A", "F", "FF", "100", "FFF",
+        "00000000000000FF",
+        "FFFFFFFFFFFFFFFF",
+        "FFFFFFFFFFFFFFFE",
+        "FFFFFFFFFFFFFFFA",
+        "FFFFFFFFFFFFFFF0",
+        "8000000000000000",
+        "8000000000000001",
+        "800000000000000E",
+        "800000000000000F",
+        "7FFFFFFFFFFFFFF0",
+        "7FFFFFFFFFFFFFFA",
+        "7FFFFFFFFFFFFFFE",
+        "7FFFFFFFFFFFFFFF",
+        "0FFFFFFFFFFFFFFFF"
+        ).each(StringsTest::checkUnsignedHex);
+    }
+
+    @Test
+    public void testUnsignedBinaryParse(){
+        Seq.with("0", "1", "010", "101", "111111", "001100", "010101",
+        "1111111111111111111111111111111111111111111111111111111111111111",
+        "1111111111111111111111111111111111111111111111111111111111111110",
+        "1000000000000000000000000000000000000000000000000000000000000000",
+        "1000000000000000000000000000000000000000000000000000000000000001",
+        "01111111111111111111111111111111111111111111111111111111111111111"
+        ).each(StringsTest::checkUnsignedBinary);
+    }
+
+    @Test
     public void testInvalidFloat(){
         //parseFloat uses parseDouble and casts, so make sure the default value is returned correctly
         for(float f : new float[]{Float.NaN, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, Float.MAX_VALUE, Float.MIN_VALUE}){
@@ -108,5 +139,25 @@ public class StringsTest{
         }
 
         assertEquals("Int parse: " + value, expected, Strings.parseInt(value, 67));
+    }
+
+    static void checkUnsignedBinary(String value){
+        checkUnsignedLong(value, 2);
+    }
+
+    static void checkUnsignedHex(String value){
+        checkUnsignedLong(value, 16);
+    }
+
+    static void checkUnsignedLong(String value, int radix){
+        long expectedLong = 67;
+
+        try{
+            expectedLong = Long.parseUnsignedLong(value, radix);
+        }catch(Exception e){
+            //out-of-range values should fail, so retain the placedholder 'wrong' value (essentially, checks if both failed)
+        }
+
+        assertEquals("Long parse: " + value, expectedLong, Strings.parseLong(value, radix, 67));
     }
 }
