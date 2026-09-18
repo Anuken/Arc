@@ -571,10 +571,6 @@ public class Strings{
     }
 
     public static long parseLong(String s, int radix, int start, int end, long defaultValue){
-        if((radix == 2 || radix == 16) && s.charAt(start) != '-'){
-            return parseUnsignedLong(s, radix, start, end, defaultValue);
-        }
-
         boolean negative = false;
         int i = start, len = end - start;
         long limit = -9223372036854775807L;
@@ -616,14 +612,15 @@ public class Strings{
 
     //Parses an unsigned long in binary or hexadecial format
     //Detects overflow by input string length and uses bit manipulation to avoid signed arithmetics
-    public static long parseUnsignedLong(String s, int radix, int start, int end, long defaultValue){
+    public static long parseHexOrBin(String s, boolean binary, int start, int end, long defaultValue){
         if(start >= end) return defaultValue;
         while(start < end && s.charAt(start) == '0') start++;       // Skip leading zeros
 
-        int shift = radix == 2 ? 1 : 4;
+        int shift = binary ? 1 : 4;
         if(end - start > 64 / shift) return defaultValue;
 
         long acc = 0;
+        int radix = 1 << shift;
         for(int i = start; i < end; i++){
             int digit = Character.digit(s.charAt(i), radix);
             if(digit < 0) return defaultValue;

@@ -3,6 +3,7 @@ import arc.util.*;
 import org.junit.*;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class StringsTest{
 
@@ -42,13 +43,14 @@ public class StringsTest{
 
     @Test
     public void testIntegerParse(){
-        Seq.with("0", "+0", "-0", "235235", "99424", "1234", "1", "-24242", "170589", "-289157", "4246", "19284", "-672396", "-42412042040945", "1592835012852095", "9999999999999999999", "99999999999")
+        Seq.with("", "0", "+0", "-0", "235235", "99424", "1234", "1", "-24242", "170589", "-289157", "4246", "19284", "-672396", "-42412042040945", "1592835012852095", "9999999999999999999", "99999999999")
         .each(StringsTest::checkInteger);
     }
 
     @Test
     public void testUnsignedHexParse(){
-        Seq.with("0", "9", "A", "F", "FF", "100", "FFF",
+        Seq.with(
+        "0", "9", "A", "F", "FF", "100", "FFF",
         "00000000000000FF",
         "FFFFFFFFFFFFFFFF",
         "FFFFFFFFFFFFFFFE",
@@ -64,6 +66,11 @@ public class StringsTest{
         "7FFFFFFFFFFFFFFF",
         "0FFFFFFFFFFFFFFFF"
         ).each(StringsTest::checkUnsignedHex);
+
+        //invalid values
+        Seq.with("", "g", "+0", "-0",
+        "10000000000000000" //out of range
+        ).each(StringsTest::checkInvalidHex);
     }
 
     @Test
@@ -75,6 +82,11 @@ public class StringsTest{
         "1000000000000000000000000000000000000000000000000000000000000001",
         "01111111111111111111111111111111111111111111111111111111111111111"
         ).each(StringsTest::checkUnsignedBinary);
+
+        //invalid values
+        Seq.with("", "2", "+0", "-0",
+        "10000000000000000000000000000000000000000000000000000000000000000" //out of range
+        ).each(StringsTest::checkInvalidBinary);
     }
 
     @Test
@@ -113,11 +125,20 @@ public class StringsTest{
         //multi-digit exponents
         "1.234e12", "-1.234e12", "5.5e20", "-5.5e20"
         ).each(StringsTest::checkFloat);
+
+        //invalid values (note that Java doesn't parse '++1' or '--1', but parseDouble/parseFloat does, fortunately correctly)
+        Seq.with("", ".", "e", "e10").each(StringsTest::checkInvalidFloat);
+
     }
 
     static void checkFloat(String value){
-        assertEquals("For value: " + value, Double.parseDouble(value), Strings.parseDouble(value, Double.NaN), 0.00001);
-        assertEquals("For value: " + value, Float.parseFloat(value), Strings.parseFloat(value, Float.NaN), 0.00001);
+        assertEquals("For double value: " + value, Double.parseDouble(value), Strings.parseDouble(value, Double.NaN), 0.00001);
+        assertEquals("For float value: " + value, Float.parseFloat(value), Strings.parseFloat(value, Float.NaN), 0.00001);
+    }
+
+    static void checkInvalidFloat(String value){
+        assertEquals("For double value: " + value, Double.NaN, Strings.parseDouble(value, Double.NaN), 0.00001);
+        assertEquals("For float value: " + value, Float.NaN, Strings.parseFloat(value, Float.NaN), 0.00001);
     }
 
     static void checkInteger(String value){
@@ -142,22 +163,18 @@ public class StringsTest{
     }
 
     static void checkUnsignedBinary(String value){
-        checkUnsignedLong(value, 2);
+        assertEquals("Binary parse: " + value, Long.parseUnsignedLong(value, 2), Strings.parseHexOrBin(value, true, 0, value.length(), 67));
     }
 
     static void checkUnsignedHex(String value){
-        checkUnsignedLong(value, 16);
+        assertEquals("Hex parse: " + value, Long.parseUnsignedLong(value, 16), Strings.parseHexOrBin(value, false, 0, value.length(), 67));
     }
 
-    static void checkUnsignedLong(String value, int radix){
-        long expectedLong = 67;
+    static void checkInvalidBinary(String value){
+        assertEquals("Binary parse: " + value, 67, Strings.parseHexOrBin(value, true, 0, value.length(), 67));
+    }
 
-        try{
-            expectedLong = Long.parseUnsignedLong(value, radix);
-        }catch(Exception e){
-            //out-of-range values should fail, so retain the placedholder 'wrong' value (essentially, checks if both failed)
-        }
-
-        assertEquals("Long parse: " + value, expectedLong, Strings.parseLong(value, radix, 67));
+    static void checkInvalidHex(String value){
+        assertEquals("Hex parse: " + value, 67, Strings.parseHexOrBin(value, false, 0, value.length(), 67));
     }
 }
