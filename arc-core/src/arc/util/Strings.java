@@ -652,15 +652,34 @@ public class Strings{
         if(dot != -1 && dot < end){
             //negation as first character
             long whole = start == dot ? 0 : parseLong(value, 10, start, dot, Long.MIN_VALUE);
-            if(whole == Long.MIN_VALUE) return defaultValue;
+            if(whole == Long.MIN_VALUE || whole < 0) return defaultValue;
+
             int decDigits = mantissaEnd - (dot + 1);
             if(decDigits == 0){
                 return whole * Math.pow(10, exponent) * sign;
             }
-            long dec = parseLong(value, 10, dot + 1, mantissaEnd, Long.MIN_VALUE);
+
+            //a long holds 18 decimal digits safely, and a double can't represent more precision than that anyway
+            int used = Math.min(decDigits, 18);
+            long dec = parseLong(value, 10, dot + 1, dot + 1 + used, Long.MIN_VALUE);
             if(dec < 0) return defaultValue;
-            long scaled = whole * (long)Math.pow(10, decDigits) + dec;
-            return (scaled / Math.pow(10, decDigits)) * Math.pow(10, exponent) * sign;
+
+            //truncated digits still have to be valid digits
+            for(int i = dot + 1 + used; i < mantissaEnd; i++){
+                char c = value.charAt(i);
+                if(c < '0' || c > '9') return defaultValue;
+            }
+
+            double pow = Math.pow(10, used);
+            long p = (long)pow;
+            double mantissa;
+            if(whole <= (Long.MAX_VALUE - dec) / p){
+                //fits in a long, keeps the original (more accurate) path
+                mantissa = (whole * p + dec) / pow;
+            }else{
+                mantissa = whole + dec / pow;
+            }
+            return mantissa * Math.pow(10, exponent) * sign;
         }
 
         //check scientific notation
