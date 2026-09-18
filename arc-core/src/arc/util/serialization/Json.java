@@ -1349,7 +1349,7 @@ public class Json{
         public @Nullable Class keyType;
 
         public FieldMetadata(Field field){
-            boolean isMap = ObjectMap.class.isAssignableFrom(field.getType()) || Map.class.isAssignableFrom(field.getType());
+            boolean isMap = ObjectMap.class.isAssignableFrom(field.getType()) || Map.class.isAssignableFrom(field.getType()) || ArrayMap.class.isAssignableFrom(field.getType());
 
             this.field = field;
             this.elementType = getElementType(field, isMap ? 1 : 0);
