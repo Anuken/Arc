@@ -80,12 +80,15 @@ public class StringsTest{
         "1.32E-6", "9.999e-3", "-9.999e-3",
 
         //multi-digit exponents
-        "1.234e12", "-1.234e12", "5.5e20", "-5.5e20"
+        "1.234e12", "-1.234e12", "5.5e20", "-5.5e20",
+
+        //extraneous decimal digits
+        "123456.1234567890123456789", "3.14159265358979323846", "00000000000000000000009.90000000000000000000000"
         ).each(StringsTest::checkFloat);
     }
 
     static void checkFloat(String value){
-        assertEquals("For value: " + value, Double.parseDouble(value), Strings.parseDouble(value, Double.NaN), 0.00001);
+        assertEquals("For value: " + value, Double.parseDouble(value), Strings.parseDouble(value, Double.NaN), 1e-15);
         assertEquals("For value: " + value, Float.parseFloat(value), Strings.parseFloat(value, Float.NaN), 0.00001);
     }
 

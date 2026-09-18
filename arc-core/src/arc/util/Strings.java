@@ -653,13 +653,13 @@ public class Strings{
             //negation as first character
             long whole = start == dot ? 0 : parseLong(value, 10, start, dot, Long.MIN_VALUE);
             if(whole == Long.MIN_VALUE) return defaultValue;
-            int decDigits = mantissaEnd - (dot + 1);
+            int decDigits = Math.min(mantissaEnd - (dot + 1), 18);
             if(decDigits == 0){
                 return whole * Math.pow(10, exponent) * sign;
             }
-            long dec = parseLong(value, 10, dot + 1, mantissaEnd, Long.MIN_VALUE);
+            long dec = parseLong(value, 10, dot + 1, dot + 1 + decDigits, Long.MIN_VALUE);
             if(dec < 0) return defaultValue;
-            long scaled = whole * (long)Math.pow(10, decDigits) + dec;
+            double scaled = whole * Math.pow(10, decDigits) + dec;
             return (scaled / Math.pow(10, decDigits)) * Math.pow(10, exponent) * sign;
         }
 
