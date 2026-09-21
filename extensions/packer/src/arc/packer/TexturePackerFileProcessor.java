@@ -6,6 +6,8 @@ import arc.util.*;
 import arc.util.serialization.*;
 
 import java.io.*;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.regex.*;
 
 /** @author Nathan Sweet */
@@ -18,6 +20,8 @@ public class TexturePackerFileProcessor extends FileProcessor{
     Seq<File> ignoreDirs = new Seq<>();
     boolean countOnly;
     int packCount;
+    /** Runs the packing of directories in the background. Only exists while the actual processing pass is running. */
+    private PackQueue queue;
 
     public TexturePackerFileProcessor(){
         this(new Settings(), "pack.aatls");
@@ -93,7 +97,18 @@ public class TexturePackerFileProcessor extends FileProcessor{
     public Seq<Entry> process(File[] files, File outputRoot) throws Exception{
         // Delete pack file and images.
         if(countOnly && outputRoot.exists()) deleteOutput(outputRoot);
-        return super.process(files, outputRoot);
+        if(countOnly) return super.process(files, outputRoot);
+
+        //directories are packed in the background as they are found, and the results are written out in order once they're ready
+        PackQueue queue = this.queue = new PackQueue();
+        try{
+            Seq<Entry> result = super.process(files, outputRoot);
+            queue.finish();
+            return result;
+        }finally{
+            this.queue = null;
+            queue.close();
+        }
     }
 
     protected void deleteOutput(File outputRoot) throws Exception{
@@ -181,55 +196,157 @@ public class TexturePackerFileProcessor extends FileProcessor{
         final Pattern digitSuffix = Pattern.compile("(.*?)(\\d+)$");
 
         // Sort by name using numeric suffix, then alpha.
-        files.sort((entry1, entry2) -> {
-            String full1 = entry1.inputFile.getName();
-            int dotIndex = full1.lastIndexOf('.');
-            if(dotIndex != -1) full1 = full1.substring(0, dotIndex);
-
-            String full2 = entry2.inputFile.getName();
-            dotIndex = full2.lastIndexOf('.');
-            if(dotIndex != -1) full2 = full2.substring(0, dotIndex);
-
-            String name1 = full1, name2 = full2;
-            int num1 = 0, num2 = 0;
-
-            Matcher matcher = digitSuffix.matcher(full1);
-            if(matcher.matches()){
-                try{
-                    num1 = Integer.parseInt(matcher.group(2));
-                    name1 = matcher.group(1);
-                }catch(Exception ignored){
-                }
-            }
-            matcher = digitSuffix.matcher(full2);
-            if(matcher.matches()){
-                try{
-                    num2 = Integer.parseInt(matcher.group(2));
-                    name2 = matcher.group(1);
-                }catch(Exception ignored){
-                }
-            }
-            int compare = name1.compareTo(name2);
-            if(compare != 0 || num1 == num2) return compare;
-            return num1 - num2;
+        // The name and number are worked out once per file, rather than on every comparison.
+        Seq<SortKey> keys = new Seq<>(files.size);
+        for(Entry entry : files){
+            keys.add(new SortKey(entry, digitSuffix));
+        }
+        keys.sort((key1, key2) -> {
+            int compare = key1.name.compareTo(key2.name);
+            if(compare != 0 || key1.number == key2.number) return compare;
+            return key1.number - key2.number;
         });
+        files.clear();
+        for(SortKey key : keys){
+            files.add(key.entry);
+        }
 
         // Pack.
+        TexturePacker packer = new TexturePacker(root, settings);
+        //messages are held back until it's this directory's turn, so output from directories packed at the same time stays readable
+        packer.bufferLog();
         if(!settings.silent){
             try{
-                System.out.println(inputDir.inputFile.getCanonicalPath());
+                packer.log().println(inputDir.inputFile.getCanonicalPath());
             }catch(IOException ignored){
-                System.out.println(inputDir.inputFile.getAbsolutePath());
+                packer.log().println(inputDir.inputFile.getAbsolutePath());
             }
         }
 
-        TexturePacker packer = new TexturePacker(root, settings);
         for(Entry file : files){
             packer.addImage(file.inputFile);
         }
 
-        //this part can be multithreaded
-        packer.pack(inputDir.outputDir, packFileName);
+        queue.add(inputDir, packer, inputDir.outputDir, packFileName);
+    }
+
+    /** Sort key for an input file, see {@link #processDir(Entry, Seq)}. */
+    private static class SortKey{
+        final Entry entry;
+        final String name;
+        int number;
+
+        SortKey(Entry entry, Pattern digitSuffix){
+            this.entry = entry;
+
+            String full = entry.inputFile.getName();
+            int dotIndex = full.lastIndexOf('.');
+            if(dotIndex != -1) full = full.substring(0, dotIndex);
+
+            String name = full;
+            Matcher matcher = digitSuffix.matcher(full);
+            if(matcher.matches()){
+                try{
+                    number = Integer.parseInt(matcher.group(2));
+                    name = matcher.group(1);
+                }catch(Exception ignored){
+                }
+            }
+            this.name = name;
+        }
+    }
+
+    /**
+     * Packs directories concurrently, but hands out page names and writes atlases in the order the directories were added. Output
+     * is therefore identical to processing them one after another.
+     */
+    private class PackQueue{
+        //Mostly waits on Core.executor, which does the real work, so this doesn't need many threads. It's kept small as every
+        //directory in progress keeps all of its images in memory.
+        final ExecutorService pool = Threads.executor("Packer Directories", Math.max(1, Math.min(OS.cores, 4)));
+        final Seq<Job> jobs = new Seq<>();
+        /** Page images claimed so far, shared by all jobs, as rendering doesn't create the files immediately. */
+        final Set<File> claimed = Collections.synchronizedSet(new HashSet<File>());
+        volatile boolean failed;
+        Job last;
+
+        void add(Entry dir, TexturePacker packer, File outputDir, String packFileName){
+            final Job job = new Job(dir, packer, outputDir, packFileName);
+            final Job previous = last;
+            last = job;
+            packer.setClaimedFiles(claimed);
+            jobs.add(job);
+            //jobs are started in the order they're submitted, so the one being waited on has always started already
+            job.result = pool.submit(() -> run(job, previous));
+        }
+
+        void run(Job job, Job previous){
+            Seq<FutureTask<Void>> renders = null;
+            try{
+                if(failed) return;
+
+                //the slow part: loading and packing, independent of anything else
+                Seq<Seq<Page>> pages = job.packer.packScales();
+
+                //wait for our turn to touch the output directory
+                if(previous != null) previous.named.join();
+                if(failed) return;
+
+                job.packer.flushLog();
+                renders = job.packer.write(job.outputDir, job.packFileName, pages);
+            }catch(RuntimeException | Error t){
+                failed = true;
+                throw t;
+            }finally{
+                job.named.complete(null);
+            }
+
+            try{
+                Tasks.joinAll(renders);
+            }catch(RuntimeException | Error t){
+                failed = true;
+                throw t;
+            }
+        }
+
+        /** Waits for every directory to be completely written. */
+        void finish() throws Exception{
+            for(Job job : jobs){
+                try{
+                    job.result.get();
+                }catch(ExecutionException e){
+                    failed = true;
+                    Throwable cause = e.getCause() == null ? e : e.getCause();
+                    throw new Exception("Error processing directory: " + job.dir.inputFile.getAbsolutePath(), cause);
+                }
+            }
+        }
+
+        /** Stops accepting work and waits for anything in progress, so nothing is being written once processing ends. */
+        void close(){
+            //if we get here due to an error, make queued directories bail out instead of packing pointlessly
+            for(Job job : jobs){
+                if(!job.result.isDone()) failed = true;
+            }
+            Threads.await(pool);
+        }
+    }
+
+    private static class Job{
+        final Entry dir;
+        final TexturePacker packer;
+        final File outputDir;
+        final String packFileName;
+        /** Completed once page names and atlas contents have been decided. */
+        final CompletableFuture<Void> named = new CompletableFuture<>();
+        Future<?> result;
+
+        Job(Entry dir, TexturePacker packer, File outputDir, String packFileName){
+            this.dir = dir;
+            this.packer = packer;
+            this.outputDir = outputDir;
+            this.packFileName = packFileName;
+        }
     }
 
 }

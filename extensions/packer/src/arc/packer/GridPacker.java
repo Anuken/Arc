@@ -3,9 +3,13 @@ package arc.packer;
 import arc.packer.TexturePacker.*;
 import arc.struct.*;
 
+import java.io.*;
+
 /** @author Nathan Sweet */
 public class GridPacker implements Packer{
     private final Settings settings;
+    /** Where progress is printed. Null means System.out. */
+    PrintStream log;
 
     public GridPacker(Settings settings){
         this.settings = settings;
@@ -13,7 +17,7 @@ public class GridPacker implements Packer{
 
     @Override
     public Seq<Page> pack(Seq<Rect> inputRects){
-        if(!settings.silent) System.out.print("| Packing");
+        if(!settings.silent) (log == null ? System.out : log).print("| Packing");
 
         // Rects are packed with right and top padding, so the max size is increased to match. After packing the padding is
         // subtracted from the page size.

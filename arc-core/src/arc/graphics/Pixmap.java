@@ -631,7 +631,7 @@ public class Pixmap implements Disposable{
 
     /**
      * Returns the OpenGL ES format of this Pixmap. Used as the seventh parameter to
-     * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
+     * {@link Gl#texImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
      * @return GL_RGBA
      */
     public int getGLFormat(){
@@ -640,7 +640,7 @@ public class Pixmap implements Disposable{
 
     /**
      * Returns the OpenGL ES format of this Pixmap. Used as the third parameter to
-     * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
+     * {@link Gl#texImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
      * @return GL_RGBA
      */
     public int getGLInternalFormat(){
@@ -649,7 +649,7 @@ public class Pixmap implements Disposable{
 
     /**
      * Returns the OpenGL ES type of this Pixmap. Used as the eighth parameter to
-     * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
+     * {@link Gl#texImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
      * @return Gl.unsignedByte
      */
     public int getGLType(){
@@ -820,6 +820,15 @@ public class Pixmap implements Disposable{
     #define STB_IMAGE_IMPLEMENTATION
     #define STBI_FAILURE_USERMSG
     #define STBI_NO_STDIO
+    #define STBI_MAX_DIMENSIONS 32768
+    #define STBI_NO_BMP
+    #define STBI_NO_PSD
+    #define STBI_NO_TGA
+    #define STBI_NO_GIF
+    #define STBI_NO_HDR
+    #define STBI_NO_PIC
+    #define STBI_NO_PNM
+
     #ifdef __APPLE__
     #define STBI_NO_THREAD_LOCALS
     #endif

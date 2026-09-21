@@ -4,8 +4,10 @@ import arc.files.*;
 import arc.graphics.*;
 import arc.graphics.g2d.TextureAtlas.*;
 import arc.graphics.g2d.TextureAtlas.TextureAtlasData.*;
+import arc.struct.*;
 
 import java.io.*;
+import java.util.concurrent.*;
 
 /**
  * Unpacks a texture atlas into individual image files.
@@ -62,41 +64,63 @@ public class TextureUnpacker{
             File file = page.textureFile.file();
             if(!file.exists()) throw new RuntimeException("Unable to find atlas image: " + file.getAbsolutePath());
             Pixmap img = new Pixmap(new Fi(file));
-            for(Region region : atlas.regions){
-                if(!quiet) System.out.printf("Processing image for %s: x[%s] y[%s] w[%s] h[%s], rotate[%s]%n",
-                region.name, region.left, region.top, region.width, region.height, region.rotate);
 
-                // check if the page this region is in is currently loaded in a Buffered Image
-                if(region.page == page){
-                    Pixmap splitImage = null;
-                    String extension = null;
+            // regions are independent of each other, so they are extracted and written in parallel
+            Seq<FutureTask<Void>> tasks = new Seq<>();
+            try{
+                for(Region region : atlas.regions){
+                    // only regions on this page are of interest
+                    if(region.page != page) continue;
 
-                    // check if the region is a ninepatch or a normal image and delegate accordingly
-                    if(region.splits == null){
-                        splitImage = extractImage(img, region, 0);
-                        if(region.width != region.originalWidth || region.height != region.originalHeight){
-                            Pixmap originalImg = new Pixmap(region.originalWidth, region.originalHeight);
-                            originalImg.draw(splitImage, (int)region.offsetX, (int)(region.originalHeight - region.height - region.offsetY));
-                            splitImage = originalImg;
-                        }
-                        extension = ".png";
-                    }else{
-                        splitImage = extractNinePatch(img, region);
-                        extension = "9.png";
-                    }
+                    if(!quiet) System.out.printf("Processing image for %s: x[%s] y[%s] w[%s] h[%s], rotate[%s]%n",
+                    region.name, region.left, region.top, region.width, region.height, region.rotate);
 
-                    // check if the parent directories of this image file exist and create them if not
-                    File imgOutput = new File(outputDirFile,
-                    region.name + extension);
-                    File imgDir = imgOutput.getParentFile();
-                    if(!imgDir.exists()){
-                        if(!quiet) System.out.printf("Creating directory: %s%n", imgDir.getPath());
-                        imgDir.mkdirs();
-                    }
-
-                    new Fi(imgOutput).writePng(splitImage);
+                    tasks.add(Tasks.submit(() -> {
+                        splitRegion(img, region, outputDirFile, quiet);
+                        return null;
+                    }));
                 }
+                Tasks.joinAll(tasks);
+            }finally{
+                Tasks.cancelAll(tasks);
+                //don't dispose while regions might still be reading the page
+                Tasks.awaitAll(tasks);
+                img.dispose();
             }
+        }
+    }
+
+    private void splitRegion(Pixmap img, Region region, File outputDirFile, boolean quiet){
+        Pixmap splitImage = null;
+        String extension = null;
+
+        // check if the region is a ninepatch or a normal image and delegate accordingly
+        if(region.splits == null){
+            splitImage = extractImage(img, region, 0);
+            if(region.width != region.originalWidth || region.height != region.originalHeight){
+                Pixmap originalImg = new Pixmap(region.originalWidth, region.originalHeight);
+                originalImg.draw(splitImage, (int)region.offsetX, (int)(region.originalHeight - region.height - region.offsetY));
+                splitImage.dispose();
+                splitImage = originalImg;
+            }
+            extension = ".png";
+        }else{
+            splitImage = extractNinePatch(img, region);
+            extension = "9.png";
+        }
+
+        try{
+            // check if the parent directories of this image file exist and create them if not
+            File imgOutput = new File(outputDirFile, region.name + extension);
+            File imgDir = imgOutput.getParentFile();
+            if(!imgDir.exists()){
+                //several regions may want the same directory at once, mkdirs is safe with that
+                if(imgDir.mkdirs() && !quiet) System.out.printf("Creating directory: %s%n", imgDir.getPath());
+            }
+
+            new Fi(imgOutput).writePng(splitImage);
+        }finally{
+            splitImage.dispose();
         }
     }
 
@@ -117,6 +141,7 @@ public class TextureUnpacker{
         if(padding > 0){
             Pixmap paddedImage = new Pixmap(splitImage.getWidth() + padding * 2, splitImage.getHeight() + padding * 2);
             paddedImage.draw(splitImage, padding, padding);
+            splitImage.dispose();
             return paddedImage;
         }else{
             return splitImage;

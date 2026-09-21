@@ -166,13 +166,14 @@ public class FileProcessor{
         }
 
         for(File file : files){
-            if(file.isFile()){
+            boolean isFile = file.isFile();
+            if(isFile){
                 if(inputRegex.size > 0){
                     boolean found = false;
                     for(Pattern pattern : inputRegex){
                         if(pattern.matcher(file.getName()).matches()){
                             found = true;
-                            continue;
+                            break;
                         }
                     }
                     if(!found) continue;
@@ -197,7 +198,7 @@ public class FileProcessor{
 
                 dirToEntries.get(dir).add(entry);
             }
-            if(recursive && file.isDirectory()){
+            if(!isFile && recursive && file.isDirectory()){
                 File subdir = outputDir.getPath().length() == 0 ? new File(file.getName()) : new File(outputDir, file.getName());
                 process(file.listFiles(inputFilter), outputRoot, subdir, dirToEntries, depth + 1);
             }

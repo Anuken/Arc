@@ -11,6 +11,7 @@ import arc.util.serialization.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 /** @author Nathan Sweet */
 public class TexturePacker{
@@ -19,6 +20,11 @@ public class TexturePacker{
     private final Packer packer;
     private final ImageProcessor imageProcessor;
     private final Seq<InputImage> inputImages = new Seq<>();
+
+    /** Page image names claimed by this packer, or by every packer taking part in the same batch. Page rendering is asynchronous, so a claimed file may not exist on disk yet. */
+    private Set<File> claimedFiles = Collections.synchronizedSet(new HashSet<File>());
+    /** Buffers messages so that the output of packers running concurrently doesn't interleave. Null if messages are printed directly. */
+    private ByteArrayOutputStream logBuffer;
 
     /** @param rootDir See {@link #setRootDir(File)}. */
     public TexturePacker(File rootDir, Settings settings){
@@ -61,6 +67,43 @@ public class TexturePacker{
         if(!rootPath.endsWith("/")) rootPath += "/";
     }
 
+    /** Shares the set of claimed page files between packers that write to the same directory, see {@link #claimedFiles}. */
+    void setClaimedFiles(Set<File> claimedFiles){
+        this.claimedFiles = claimedFiles;
+    }
+
+    /** Messages are held back until {@link #flushLog()} is called. */
+    void bufferLog(){
+        logBuffer = new ByteArrayOutputStream();
+        setLog(new PrintStream(logBuffer));
+    }
+
+    /** Prints held back messages, and everything from here on is printed directly. */
+    void flushLog(){
+        if(logBuffer == null) return;
+        ByteArrayOutputStream buffer = logBuffer;
+        logBuffer = null;
+        PrintStream stream = log();
+        stream.flush();
+        setLog(System.out);
+        System.out.print(buffer.toString());
+        System.out.flush();
+    }
+
+    private PrintStream log;
+
+    /** @return the stream messages should be printed to. */
+    PrintStream log(){
+        return log == null ? System.out : log;
+    }
+
+    private void setLog(PrintStream stream){
+        log = stream;
+        imageProcessor.log = stream;
+        if(packer instanceof MaxRectsPacker) ((MaxRectsPacker)packer).log = stream;
+        if(packer instanceof GridPacker) ((GridPacker)packer).log = stream;
+    }
+
     public void addImage(File file){
         InputImage inputImage = new InputImage();
         inputImage.file = file;
@@ -76,45 +119,72 @@ public class TexturePacker{
     }
 
     public void pack(File outputDir, String packFileName){
-        if(packFileName.endsWith(settings.atlasExtension))
-            packFileName = packFileName.substring(0, packFileName.length() - settings.atlasExtension.length());
         outputDir.mkdirs();
 
+        Seq<Seq<Page>> scaled = packScales();
+        Seq<FutureTask<Void>> renders = write(outputDir, packFileName, scaled);
+        Tasks.joinAll(renders);
+    }
+
+    /**
+     * Loads and packs the images for every scale. No files are written, so this can run concurrently with other packers.
+     * @return the pages for each scale, in the order of {@link Settings#scale}.
+     */
+    Seq<Seq<Page>> packScales(){
         int n = settings.scale.length;
+        Seq<Seq<Page>> result = new Seq<>(n);
         for(int i = 0; i < n; i++){
 
             imageProcessor.setScale(settings.scale[i]);
             imageProcessor.setResampling(settings.scaleResampling);
 
-            for(int ii = 0, nn = inputImages.size; ii < nn; ii++){
-                InputImage inputImage = inputImages.get(ii);
-                if(inputImage.file != null){
-                    imageProcessor.addImage(inputImage.file, inputImage.rootPath);
-                }else{
-                    imageProcessor.addImage(inputImage.image, inputImage.name);
-                }
-            }
-            Seq<Page> pages = packer.pack(imageProcessor.getImages());
+            imageProcessor.addAll(inputImages);
+            result.add(packer.pack(imageProcessor.getImages()));
 
-            String scaledPackFileName = settings.getScaledPackFileName(packFileName, i);
-            writeImages(outputDir, scaledPackFileName, pages);
-            try{
-                writePackFile(outputDir, scaledPackFileName, pages);
-            }catch(IOException ex){
-                throw new RuntimeException("Error writing pack file.", ex);
-            }
             imageProcessor.clear();
         }
+        return result;
     }
 
-    private void writeImages(File outputDir, String scaledPackFileName, Seq<Page> pages){
+    /**
+     * Assigns page file names, writes the pack files and starts rendering the page images in the background. This is the only
+     * part of packing which depends on what is already in the output directory, so when several packers write to the same place
+     * it must be called for each of them in the same order every time. Rendering does not depend on any shared state.
+     * @return the running page renders. Wait for all of them before using the output.
+     */
+    Seq<FutureTask<Void>> write(File outputDir, String packFileName, Seq<Seq<Page>> scaled){
+        if(packFileName.endsWith(settings.atlasExtension))
+            packFileName = packFileName.substring(0, packFileName.length() - settings.atlasExtension.length());
+        outputDir.mkdirs();
+
+        Seq<FutureTask<Void>> renders = new Seq<>();
+        try{
+            for(int i = 0, n = scaled.size; i < n; i++){
+                Seq<Page> pages = scaled.get(i);
+                String scaledPackFileName = settings.getScaledPackFileName(packFileName, i);
+                writeImages(outputDir, scaledPackFileName, pages, renders);
+                try{
+                    writePackFile(outputDir, scaledPackFileName, pages);
+                }catch(IOException ex){
+                    throw new RuntimeException("Error writing pack file.", ex);
+                }
+            }
+        }catch(RuntimeException | Error e){
+            Tasks.cancelAll(renders);
+            throw e;
+        }
+        return renders;
+    }
+
+    /** Computes page sizes and names, then queues rendering of each page into the list. */
+    private void writeImages(File outputDir, String scaledPackFileName, Seq<Page> pages, Seq<FutureTask<Void>> renders){
         File packFileNoExt = new File(outputDir, scaledPackFileName);
         File packDir = packFileNoExt.getParentFile();
         String imageName = packFileNoExt.getName();
 
         int fileIndex = 0;
         for(int p = 0, pn = pages.size; p < pn; p++){
-            Page page = pages.get(p);
+            final Page page = pages.get(p);
 
             int width = page.width, height = page.height;
             int edgePadX, edgePadY;
@@ -143,21 +213,36 @@ public class TexturePacker{
             page.imageWidth = width;
             page.imageHeight = height;
 
-            //sync point (touch file here)
-            File outputFile;
+            //sync point: pick a free file name and claim it, since the file itself isn't written until later
+            final File outputFile;
             while(true){
-                outputFile = new File(packDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + ".png");
-                if(!outputFile.exists()) break;
+                File candidate = new File(packDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + ".png");
+                if(!candidate.exists() && claimedFiles.add(candidate)){
+                    outputFile = candidate;
+                    break;
+                }
             }
             new Fi(outputFile).parent().mkdirs();
             page.imageName = outputFile.getName();
 
-            Pixmap canvas = new Pixmap(width, height);
+            if(!settings.silent) log().println("| Writing " + width + "x" + height + ": " + outputFile);
 
-            if(!settings.silent) System.out.println("| Writing " + canvas.width + "x" + canvas.height + ": " + outputFile);
+            //take a snapshot of the draw order, as writing the pack file re-sorts the page's rects
+            final Seq<Rect> drawOrder = new Seq<>(page.outputRects);
+            final int canvasWidth = width, canvasHeight = height;
+            renders.add(Tasks.submit(() -> {
+                renderPage(page, drawOrder, outputFile, canvasWidth, canvasHeight);
+                return null;
+            }));
+        }
+    }
 
-            for(int r = 0, rn = page.outputRects.size; r < rn; r++){
-                Rect rect = page.outputRects.get(r);
+    /** Draws all rects onto a canvas and saves it. Must be safe to run on any thread, at the same time as other pages. */
+    private void renderPage(Page page, Seq<Rect> drawOrder, File outputFile, int width, int height){
+        Pixmap canvas = new Pixmap(width, height);
+        try{
+            for(int r = 0, rn = drawOrder.size; r < rn; r++){
+                Rect rect = drawOrder.get(r);
                 Pixmap image = rect.getImage(imageProcessor);
                 int iw = image.width;
                 int ih = image.height;
@@ -210,6 +295,9 @@ public class TexturePacker{
                     }
                 }
                 copy(image, 0, 0, iw, ih, canvas, rectX, rectY, rect.rotated);
+
+                //the source image has been fully drawn, release its memory right away
+                if(rect.ownsPixmap) image.dispose();
             }
 
             if(settings.bleed){
@@ -217,6 +305,8 @@ public class TexturePacker{
             }
 
             PixmapIO.writePng(new Fi(outputFile), canvas);
+        }finally{
+            canvas.dispose();
         }
     }
 
@@ -369,17 +459,20 @@ public class TexturePacker{
         public int x, y;
         public int width, height; // Portion of page taken by this region, including padding.
         public boolean rotated;
-        public Set<Alias> aliases = new HashSet<>();
+        public Set<Alias> aliases;
         public int[] splits;
         public int[] pads;
         public boolean canRotate = true;
 
         boolean isPatch;
         Pixmap pixmap;
+        /** Whether pixmap was created by the packer, and can be disposed once it has been drawn. */
+        boolean ownsPixmap;
         Fi file;
         int score1, score2;
 
         Rect(Pixmap source, int left, int top, int newWidth, int newHeight, boolean isPatch){
+            aliases = new HashSet<>();
             if(source.width ==  newWidth && source.height == newHeight && left == 0 && top == 0){
                 this.pixmap = source;
             }else{
@@ -405,10 +498,13 @@ public class TexturePacker{
             return imageProcessor.processImage(image, name).getImage(null);
         }
 
+        /** Creates a bare node for use by the packing algorithm. Node rects never have aliases. */
         Rect(){
+            aliases = Collections.emptySet();
         }
 
         Rect(Rect rect){
+            aliases = Collections.emptySet();
             x = rect.x;
             y = rect.y;
             width = rect.width;
@@ -418,6 +514,7 @@ public class TexturePacker{
         void set(Rect rect){
             name = rect.name;
             pixmap = rect.pixmap;
+            ownsPixmap = rect.ownsPixmap;
             offsetX = rect.offsetX;
             offsetY = rect.offsetY;
             regionWidth = rect.regionWidth;

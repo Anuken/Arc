@@ -7,9 +7,10 @@ import arc.struct.*;
 import arc.util.*;
 
 import java.io.*;
-import java.math.*;
+import java.nio.*;
 import java.security.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 public class ImageProcessor{
     private static final Pixmap emptyImage = new Pixmap(1, 1);
@@ -19,30 +20,22 @@ public class ImageProcessor{
     private final Seq<Rect> rects = new Seq<>();
     private float scale = 1;
     private boolean resampling;
+    /** Where messages are printed. Null means System.out. */
+    PrintStream log;
 
     public ImageProcessor(Settings settings){
         this.settings = settings;
+    }
+
+    private PrintStream out(){
+        return log == null ? System.out : log;
     }
 
     /**
      * @param rootPath Used to strip the root directory prefix from image file names, can be null.
      */
     public void addImage(File file, String rootPath){
-        Pixmap image = new Pixmap(new Fi(file));
-
-        String name = file.getAbsolutePath().replace('\\', '/');
-
-        // Strip root dir off front of image path.
-        if(rootPath != null){
-            if(!name.startsWith(rootPath)) throw new RuntimeException("Path '" + name + "' does not start with root: " + rootPath);
-            name = name.substring(rootPath.length());
-        }
-
-        // Strip extension.
-        int dotIndex = name.lastIndexOf('.');
-        if(dotIndex != -1) name = name.substring(0, dotIndex);
-
-        addImage(image, name);
+        merge(prepare(file, rootPath));
     }
 
     /**
@@ -50,24 +43,95 @@ public class ImageProcessor{
      * @see #addImage(File, String)
      */
     public Rect addImage(Pixmap image, String name){
-        Rect rect = processImage(image, name);
+        return merge(prepare(image, name, false));
+    }
+
+    /** Loads, processes and hashes all inputs in parallel, then adds them in the order given. */
+    void addAll(Seq<InputImage> inputs){
+        Seq<FutureTask<Prepared>> tasks = new Seq<>(inputs.size);
+        try{
+            for(int i = 0; i < inputs.size; i++){
+                final InputImage input = inputs.get(i);
+                Callable<Prepared> callable;
+                if(input.file != null){
+                    callable = () -> prepare(input.file, input.rootPath);
+                }else{
+                    callable = () -> prepare(input.image, input.name, false);
+                }
+                tasks.add(Tasks.submit(callable));
+            }
+
+            for(int i = 0; i < tasks.size; i++){
+                merge(Tasks.join(tasks.get(i)));
+            }
+        }finally{
+            //only matters on failure: don't keep decoding images nobody is going to use
+            Tasks.cancelAll(tasks);
+        }
+    }
+
+    /** The result of loading and processing a single image. Safe to create on any thread. */
+    private static final class Prepared{
+        final String name;
+        /** Null if the image is to be ignored. */
+        final Rect rect;
+        /** Only set if aliasing is enabled and rect is not null. */
+        final String hash;
+
+        Prepared(String name, Rect rect, String hash){
+            this.name = name;
+            this.rect = rect;
+            this.hash = hash;
+        }
+    }
+
+    private Prepared prepare(File file, String rootPath){
+        Pixmap image = new Pixmap(new Fi(file));
+
+        String name = file.getAbsolutePath().replace('\\', '/');
+
+        // Strip root dir off front of image path.
+        if(rootPath != null){
+            if(!name.startsWith(rootPath)){
+                image.dispose();
+                throw new RuntimeException("Path '" + name + "' does not start with root: " + rootPath);
+            }
+            name = name.substring(rootPath.length());
+        }
+
+        // Strip extension.
+        int dotIndex = name.lastIndexOf('.');
+        if(dotIndex != -1) name = name.substring(0, dotIndex);
+
+        //the pixmap was loaded here, so it is ours to dispose
+        return prepare(image, name, true);
+    }
+
+    private Prepared prepare(Pixmap image, String name, boolean owned){
+        Rect rect = processImage(image, name, owned);
+        return new Prepared(name, rect, rect != null && settings.alias ? hash(rect.pixmap) : null);
+    }
+
+    /** Sequential part of adding an image: alias detection and bookkeeping. */
+    private Rect merge(Prepared prepared){
+        Rect rect = prepared.rect;
 
         if(rect == null){
-            if(!settings.silent) System.out.println("Ignoring blank input image: " + name);
+            if(!settings.silent) out().println("Ignoring blank input image: " + prepared.name);
             return null;
         }
 
         if(settings.alias){
-            String crc = hash(rect.getImage(this));
-            Rect existing = crcs.get(crc);
+            Rect existing = crcs.get(prepared.hash);
             if(existing != null){
                 if(!settings.silent && settings.printAliases){
-                    System.out.println(rect.name + " (alias of " + existing.name + ")");
+                    out().println(rect.name + " (alias of " + existing.name + ")");
                 }
                 existing.aliases.add(new Alias(rect));
+                if(rect.ownsPixmap) rect.pixmap.dispose();
                 return null;
             }
-            crcs.put(crc, rect);
+            crcs.put(prepared.hash, rect);
         }
 
         rects.add(rect);
@@ -93,8 +157,16 @@ public class ImageProcessor{
 
     /** Returns a rect for the image describing the texture region to be packed, or null if the image should not be packed. */
     Rect processImage(Pixmap image, String name){
+        return processImage(image, name, false);
+    }
+
+    /**
+     * @param owned whether the input pixmap may be disposed once it is no longer needed. Intermediate pixmaps created here are always disposed.
+     */
+    private Rect processImage(Pixmap input, String name, boolean owned){
         if(scale <= 0) throw new IllegalArgumentException("scale cannot be <= 0: " + scale);
 
+        Pixmap image = input;
         int width = image.width, height = image.height;
 
         boolean isPatch = name.endsWith(".9");
@@ -110,6 +182,7 @@ public class ImageProcessor{
             height -= 2;
             Pixmap newImage = new Pixmap(width, height);
             newImage.draw(image, 1, 1, width + 1, height + 1, 0, 0, width, height);
+            if(owned) image.dispose();
             image = newImage;
         }
 
@@ -119,8 +192,12 @@ public class ImageProcessor{
             height = Math.max(1, Math.round(height * scale));
             Pixmap newImage = new Pixmap(width, height);
             newImage.draw(image, 0, 0, width, height, resampling);
+            if(image != input || owned) image.dispose();
             image = newImage;
         }
+
+        //whether the current image is something this method may dispose
+        boolean ownsImage = image != input || owned;
 
         if(isPatch){
             // Ninepatches aren't rotated or whitespace stripped.
@@ -130,10 +207,21 @@ public class ImageProcessor{
             rect.canRotate = false;
         }else{
             rect = stripWhitespace(image, name);
-            if(rect == null) return null;
+            if(rect == null){
+                if(ownsImage) image.dispose();
+                return null;
+            }
         }
 
         rect.name = name;
+
+        if(rect.pixmap == image){
+            rect.ownsPixmap = ownsImage;
+        }else{
+            //the rect got a cropped copy (or the shared empty image), so the source is no longer needed
+            rect.ownsPixmap = rect.pixmap != emptyImage;
+            if(ownsImage) image.dispose();
+        }
         return rect;
     }
 
@@ -385,23 +473,27 @@ public class ImageProcessor{
         return 0;
     }
 
+    private static final char[] hex = "0123456789abcdef".toCharArray();
+
     private static String hash(Pixmap image){
         try{
-            MessageDigest digest = MessageDigest.getInstance("SHA1");
+            MessageDigest digest = MessageDigest.getInstance("SHA-1");
 
-            int width = image.width;
-            int height = image.height;
+            //hash straight from the native buffer through a view, no copying and no shared position state
+            ByteBuffer pixels = image.pixels.duplicate();
+            pixels.clear();
+            digest.update(pixels);
 
-            byte[] bytes = new byte[image.pixels.capacity()];
-            image.pixels.position(0);
-            image.pixels.get(bytes);
-            digest.update(bytes);
-            image.pixels.position(0);
+            hash(digest, image.width);
+            hash(digest, image.height);
 
-            hash(digest, width);
-            hash(digest, height);
-
-            return new BigInteger(1, digest.digest()).toString(16);
+            byte[] bytes = digest.digest();
+            char[] chars = new char[bytes.length * 2];
+            for(int i = 0; i < bytes.length; i++){
+                chars[i * 2] = hex[(bytes[i] >> 4) & 0xf];
+                chars[i * 2 + 1] = hex[bytes[i] & 0xf];
+            }
+            return new String(chars);
         }catch(NoSuchAlgorithmException ex){
             throw new RuntimeException(ex);
         }
