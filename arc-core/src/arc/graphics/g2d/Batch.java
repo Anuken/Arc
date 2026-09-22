@@ -78,6 +78,10 @@ public abstract class Batch implements Disposable{
     public void dispose(){
     }
 
+    public boolean hasPending(){
+        return idx > 0;
+    }
+
     protected Mat getProjection(){
         return projectionMatrix;
     }
