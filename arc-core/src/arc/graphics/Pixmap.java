@@ -501,6 +501,141 @@ public class Pixmap implements Disposable{
     }
 
     /**
+     * Draws an area from another Pixmap to this Pixmap, resampled with a high quality filter that stays correct for large size reductions.
+     * Unlike {@link #draw(Pixmap, int, int, int, int, int, int, int, int, boolean, boolean)}, this never takes a shortcut, not even for equal sizes.
+     * <ul>
+     * <li>When shrinking, every source pixel that overlaps a target pixel contributes, weighted by how much of it is covered (area averaging / box filter).
+     * Nothing is skipped, so thin details fade out instead of aliasing or vanishing.</li>
+     * <li>When enlarging, source pixels are bilinearly interpolated.</li>
+     * </ul>
+     * Colors are averaged premultiplied by alpha, so fully transparent pixels never darken or tint the edges of opaque ones.
+     * Averaging is done directly on the stored color values, not in linear light.
+     * Source pixels outside of this pixmap's bounds count as transparent; target pixels outside of this pixmap are not drawn.
+     * @param pixmap The other Pixmap
+     * @param srcx The source x-coordinate (top left corner)
+     * @param srcy The source y-coordinate (top left corner)
+     * @param srcWidth The width of the area from the other Pixmap in pixels
+     * @param srcHeight The height of the area from the other Pixmap in pixels
+     * @param dstx The target x-coordinate (top left corner)
+     * @param dsty The target y-coordinate (top left corner)
+     * @param dstWidth The target width
+     * @param dstHeight The target height
+     * @param blending Whether to blend the result over the existing contents, instead of replacing them
+     */
+    public void drawScaled(Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth, int dstHeight, boolean blending){
+        if(srcWidth <= 0 || srcHeight <= 0 || dstWidth <= 0 || dstHeight <= 0) return;
+
+        int owidth = pixmap.width, oheight = pixmap.height;
+
+        int[] xStart = new int[dstWidth], yStart = new int[dstHeight];
+        float[][] xWeights = resampleWeights(srcWidth, dstWidth, xStart), yWeights = resampleWeights(srcHeight, dstHeight, yStart);
+
+        //horizontal pass: every source row is reduced to dstWidth columns of premultiplied rgba (0-255 scale)
+        float[] rows = new float[srcHeight * dstWidth * 4];
+
+        for(int sy = 0; sy < srcHeight; sy++){
+            int py = srcy + sy;
+            if(py < 0 || py >= oheight) continue;
+
+            for(int dx = 0; dx < dstWidth; dx++){
+                float[] weights = xWeights[dx];
+                float r = 0f, g = 0f, b = 0f, a = 0f;
+
+                for(int i = 0; i < weights.length; i++){
+                    int px = srcx + xStart[dx] + i;
+                    if(px < 0 || px >= owidth) continue;
+
+                    int color = pixmap.getRaw(px, py);
+                    float w = weights[i], alpha = color & 0xff, pre = w * alpha / 255f;
+                    r += ((color >>> 24) & 0xff) * pre;
+                    g += ((color >>> 16) & 0xff) * pre;
+                    b += ((color >>> 8) & 0xff) * pre;
+                    a += w * alpha;
+                }
+
+                int index = (sy * dstWidth + dx) * 4;
+                rows[index] = r;
+                rows[index + 1] = g;
+                rows[index + 2] = b;
+                rows[index + 3] = a;
+            }
+        }
+
+        //vertical pass, then un-premultiply and write
+        for(int dy = 0; dy < dstHeight; dy++){
+            int ty = dsty + dy;
+            if(ty < 0 || ty >= height) continue;
+
+            float[] weights = yWeights[dy];
+
+            for(int dx = 0; dx < dstWidth; dx++){
+                int tx = dstx + dx;
+                if(tx < 0 || tx >= width) continue;
+
+                float r = 0f, g = 0f, b = 0f, a = 0f;
+                for(int i = 0; i < weights.length; i++){
+                    int index = ((yStart[dy] + i) * dstWidth + dx) * 4;
+                    float w = weights[i];
+                    r += rows[index] * w;
+                    g += rows[index + 1] * w;
+                    b += rows[index + 2] * w;
+                    a += rows[index + 3] * w;
+                }
+
+                int result = 0;
+                if(a > 0f){
+                    float unpremultiply = 255f / a;
+                    result = (scaledByte(r * unpremultiply) << 24) | (scaledByte(g * unpremultiply) << 16) | (scaledByte(b * unpremultiply) << 8) | scaledByte(a);
+                }
+
+                setRaw(tx, ty, blending ? blend(result, getRaw(tx, ty)) : result);
+            }
+        }
+    }
+
+    private static int scaledByte(float value){
+        return Math.min((int)(value + 0.5f), 255);
+    }
+
+    /**
+     * Computes how each of {@code dstSize} target pixels is built from a run of consecutive source pixels along one axis.
+     * @param starts filled with the index of the first source pixel of each run
+     * @return the weights of every pixel in each run; they always sum to 1
+     */
+    private static float[][] resampleWeights(int srcSize, int dstSize, int[] starts){
+        float[][] result = new float[dstSize][];
+        double scale = (double)srcSize / dstSize;
+
+        for(int d = 0; d < dstSize; d++){
+            if(scale >= 1.0){
+                //shrinking: overlap of the source span [lo, hi) covered by this target pixel with each source pixel
+                double lo = d * scale, hi = Math.min((d + 1) * scale, srcSize);
+                int first = Math.min((int)lo, srcSize - 1), last = Math.min((int)Math.ceil(hi) - 1, srcSize - 1);
+                last = Math.max(last, first);
+
+                float[] weights = new float[last - first + 1];
+                for(int s = first; s <= last; s++){
+                    weights[s - first] = (float)((Math.min(hi, s + 1) - Math.max(lo, s)) / scale);
+                }
+
+                starts[d] = first;
+                result[d] = weights;
+            }else{
+                //enlarging: bilinear between the two source pixel centers surrounding this target pixel's center
+                double center = (d + 0.5) * scale - 0.5;
+                int i0 = (int)Math.floor(center);
+                float f = (float)(center - i0);
+                int a = Math.max(Math.min(i0, srcSize - 1), 0), b = Math.max(Math.min(i0 + 1, srcSize - 1), 0);
+
+                starts[d] = a;
+                result[d] = a == b ? new float[]{1f} : new float[]{1f - f, f};
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Fills a rectangle starting at x, y extending by width to the right and by height downwards (y-axis points downwards) using
      * the current color.
      * @param x The x coordinate
