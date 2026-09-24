@@ -1,5 +1,6 @@
 package arc.packer;
 
+import arc.files.*;
 import arc.packer.TexturePacker.*;
 import arc.struct.*;
 import arc.util.*;
@@ -87,7 +88,7 @@ public class TexturePackerFileProcessor extends FileProcessor{
 
     void merge(Settings settings, File settingsFile){
         try{
-            json.readFields(settings, Jval.read(new FileReader(settingsFile)));
+            json.readFields(settings, Jval.read(new Fi(settingsFile)));
         }catch(Exception ex){
             throw new ArcRuntimeException("Error reading settings file: " + settingsFile, ex);
         }
