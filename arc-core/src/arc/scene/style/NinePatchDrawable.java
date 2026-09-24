@@ -60,4 +60,11 @@ public class NinePatchDrawable extends BaseDrawable implements TransformDrawable
         drawable.setPatch(new NinePatch(drawable.getPatch(), tint));
         return drawable;
     }
+
+    /** Creates a new drawable that renders the same as this drawable with a top-to-bottom gradient tint. */
+    public NinePatchDrawable tint(Color top, Color bottom){
+        NinePatchDrawable drawable = new NinePatchDrawable(this);
+        drawable.setPatch(new NinePatch(drawable.getPatch(), top, bottom));
+        return drawable;
+    }
 }

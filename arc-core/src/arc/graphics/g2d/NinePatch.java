@@ -34,6 +34,8 @@ public class NinePatch{
 
     private static final Color tmpDrawColor = new Color();
     private final Color color = new Color(Color.white);
+    /** Bottom tint for a top-to-bottom gradient; equal to {@link #color} unless a gradient is set. */
+    private final Color color2 = new Color(Color.white);
     private Texture texture;
     private int bottomLeft = -1, bottomCenter = -1, bottomRight = -1;
     private int middleLeft = -1, middleCenter = -1, middleRight = -1;
@@ -179,10 +181,15 @@ public class NinePatch{
     }
 
     public NinePatch(NinePatch ninePatch){
-        this(ninePatch, ninePatch.color);
+        this(ninePatch, ninePatch.color, ninePatch.color2);
     }
 
     public NinePatch(NinePatch ninePatch, Color color){
+        this(ninePatch, color, color);
+    }
+
+    /** Copies {@code ninePatch}, gradient-tinted from {@code top} to {@code bottom}. */
+    public NinePatch(NinePatch ninePatch, Color top, Color bottom){
         texture = ninePatch.texture;
 
         bottomLeft = ninePatch.bottomLeft;
@@ -210,7 +217,8 @@ public class NinePatch{
         vertices = new float[ninePatch.vertices.length];
         System.arraycopy(ninePatch.vertices, 0, vertices, 0, ninePatch.vertices.length);
         idx = ninePatch.idx;
-        this.color.set(color);
+        this.color.set(top);
+        this.color2.set(bottom);
     }
 
     private void load(TextureRegion[] patches){
@@ -321,26 +329,32 @@ public class NinePatch{
         return idx - SpriteBatch.spriteSize;
     }
 
-    /** Set the coordinates and color of a ninth of the patch. */
-    private void set(int idx, float x, float y, float width, float height, float color){
+    /** Set the coordinates of a ninth of the patch, with separate bottom/top edge vertex colors. */
+    private void set(int idx, float x, float y, float width, float height, float colorBottom, float colorTop){
         final float fx2 = x + width;
         final float fy2 = y + height;
         final float[] vertices = this.vertices;
         vertices[idx]      = x;
         vertices[idx + 1]  = y;
-        vertices[idx + 5]  = color;
+        vertices[idx + 5]  = colorBottom;
 
         vertices[idx + 7]  = x;
         vertices[idx + 8]  = fy2;
-        vertices[idx + 12] = color;
+        vertices[idx + 12] = colorTop;
 
         vertices[idx + 14] = fx2;
         vertices[idx + 15] = fy2;
-        vertices[idx + 19] = color;
+        vertices[idx + 19] = colorTop;
 
         vertices[idx + 21] = fx2;
         vertices[idx + 22] = y;
-        vertices[idx + 26] = color;
+        vertices[idx + 26] = colorBottom;
+    }
+
+    /** @return the vertex color at absolute height {@code rowY}, lerped from {@link #color2} to {@link #color}. */
+    private float rowColor(float rowY, float baseY, float totalHeight){
+        float t = totalHeight > 0.0001f ? (rowY - baseY) / totalHeight : 1f;
+        return tmpDrawColor.set(color2).lerp(color, t).mul(Draw.getColor()).toFloatBits();
     }
 
     private void prepareVertices(float x, float y, float width, float height){
@@ -348,17 +362,21 @@ public class NinePatch{
         final float rightColumnX = x + width - rightWidth;
         final float middleRowY = y + bottomHeight;
         final float topRowY = y + height - topHeight;
-        final float c = tmpDrawColor.set(color).mul(Draw.getColor()).toFloatBits();
 
-        if(bottomLeft != -1) set(bottomLeft, x, y, centerColumnX - x, middleRowY - y, c);
-        if(bottomCenter != -1) set(bottomCenter, centerColumnX, y, rightColumnX - centerColumnX, middleRowY - y, c);
-        if(bottomRight != -1) set(bottomRight, rightColumnX, y, x + width - rightColumnX, middleRowY - y, c);
-        if(middleLeft != -1) set(middleLeft, x, middleRowY, centerColumnX - x, topRowY - middleRowY, c);
-        if(middleCenter != -1) set(middleCenter, centerColumnX, middleRowY, rightColumnX - centerColumnX, topRowY - middleRowY, c);
-        if(middleRight != -1) set(middleRight, rightColumnX, middleRowY, x + width - rightColumnX, topRowY - middleRowY, c);
-        if(topLeft != -1) set(topLeft, x, topRowY, centerColumnX - x, y + height - topRowY, c);
-        if(topCenter != -1) set(topCenter, centerColumnX, topRowY, rightColumnX - centerColumnX, y + height - topRowY, c);
-        if(topRight != -1) set(topRight, rightColumnX, topRowY, x + width - rightColumnX, y + height - topRowY, c);
+        final float cBottom = rowColor(y, y, height);
+        final float cMiddleBottom = rowColor(middleRowY, y, height);
+        final float cMiddleTop = rowColor(topRowY, y, height);
+        final float cTop = rowColor(y + height, y, height);
+
+        if(bottomLeft != -1) set(bottomLeft, x, y, centerColumnX - x, middleRowY - y, cBottom, cMiddleBottom);
+        if(bottomCenter != -1) set(bottomCenter, centerColumnX, y, rightColumnX - centerColumnX, middleRowY - y, cBottom, cMiddleBottom);
+        if(bottomRight != -1) set(bottomRight, rightColumnX, y, x + width - rightColumnX, middleRowY - y, cBottom, cMiddleBottom);
+        if(middleLeft != -1) set(middleLeft, x, middleRowY, centerColumnX - x, topRowY - middleRowY, cMiddleBottom, cMiddleTop);
+        if(middleCenter != -1) set(middleCenter, centerColumnX, middleRowY, rightColumnX - centerColumnX, topRowY - middleRowY, cMiddleBottom, cMiddleTop);
+        if(middleRight != -1) set(middleRight, rightColumnX, middleRowY, x + width - rightColumnX, topRowY - middleRowY, cMiddleBottom, cMiddleTop);
+        if(topLeft != -1) set(topLeft, x, topRowY, centerColumnX - x, y + height - topRowY, cMiddleTop, cTop);
+        if(topCenter != -1) set(topCenter, centerColumnX, topRowY, rightColumnX - centerColumnX, y + height - topRowY, cMiddleTop, cTop);
+        if(topRight != -1) set(topRight, rightColumnX, topRowY, x + width - rightColumnX, y + height - topRowY, cMiddleTop, cTop);
     }
 
     public void draw(float x, float y, float width, float height){
@@ -392,12 +410,24 @@ public class NinePatch{
         return color;
     }
 
+    /** @return the bottom tint of a top-to-bottom gradient, same as {@link #getColor()} if none is set. */
+    public Color getColor2(){
+        return color2;
+    }
+
     /**
      * Copy given color. The color will be blended with the batch color, then combined with the texture colors at draw time.
      * Default is {@link Color#white}.
      */
     public void setColor(Color color){
         this.color.set(color);
+        this.color2.set(color);
+    }
+
+    /** Sets a top-to-bottom gradient tint from {@code top} to {@code bottom}. */
+    public void setColor(Color top, Color bottom){
+        this.color.set(top);
+        this.color2.set(bottom);
     }
 
     public float getLeftWidth(){
