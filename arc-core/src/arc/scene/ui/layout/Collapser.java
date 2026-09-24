@@ -13,7 +13,7 @@ public class Collapser extends WidgetGroup{
     boolean collapsed, autoAnimate, enforceMinSize;
     boolean actionRunning;
     float currentHeight;
-    float seconds = 0.4f;
+    float seconds = 0.1f;
 
     public Collapser(Cons<Table> cons, boolean collapsed){
         this(new Table(), collapsed);

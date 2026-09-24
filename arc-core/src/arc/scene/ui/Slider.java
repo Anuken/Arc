@@ -114,13 +114,21 @@ public class Slider extends ProgressBar{
         : ((mouseOver && style.knobOver != null) ? style.knobOver : style.knob);
     }
 
+    private float valueAt(float position, float span, float min, float max){
+        if(!(span > 0)) return min;
+        return min + (max - min) * visualInterpolationInverse.apply(position / span);
+    }
+
     boolean calculatePositionAndValue(float x, float y){
+        if(!Float.isFinite(x) || !Float.isFinite(y)) return false;
+
         final SliderStyle style = getStyle();
         final Drawable knob = getKnobDrawable();
         final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
 
         float value;
         float oldPosition = position;
+        float span;
 
         final float min = getMinValue();
         final float max = getMaxValue();
@@ -128,18 +136,24 @@ public class Slider extends ProgressBar{
         if(vertical){
             float height = getHeight() - bg.getTopHeight() - bg.getBottomHeight();
             float knobHeight = knob == null ? 0 : knob.getMinHeight();
+            span = height - knobHeight;
             position = y - bg.getBottomHeight() - knobHeight * 0.5f;
-            value = min + (max - min) * visualInterpolationInverse.apply(position / (height - knobHeight));
-            position = Math.max(0, position);
-            position = Math.min(height - knobHeight, position);
         }else{
             float width = getWidth() - bg.getLeftWidth() - bg.getRightWidth();
             float knobWidth = knob == null ? 0 : knob.getMinWidth();
+            span = width - knobWidth;
             position = x - bg.getLeftWidth() - knobWidth * 0.5f;
-            value = min + (max - min) * visualInterpolationInverse.apply(position / (width - knobWidth));
-            position = Math.max(0, position);
-            position = Math.min(width - knobWidth, position);
         }
+
+        value = valueAt(position, span, min, max);
+
+        if(!Float.isFinite(value) || !Float.isFinite(position)){
+            position = oldPosition;
+            return false;
+        }
+
+        position = Math.max(0, position);
+        position = Math.min(span, position);
 
         float oldValue = value;
         if(!Core.input.keyDown(KeyCode.shiftLeft) && !Core.input.keyDown(KeyCode.shiftRight))

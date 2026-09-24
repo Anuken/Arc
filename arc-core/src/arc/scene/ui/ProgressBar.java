@@ -49,7 +49,7 @@ public class ProgressBar extends Element implements Disableable{
      */
     public ProgressBar(float min, float max, float stepSize, boolean vertical, ProgressBarStyle style){
         if(min > max) throw new IllegalArgumentException("max must be > min. min,max: " + min + ", " + max);
-        if(stepSize <= 0) throw new IllegalArgumentException("stepSize must be > 0: " + stepSize);
+        if(stepSize < 0) throw new IllegalArgumentException("stepSize must be finite and >= 0: " + stepSize);
         setStyle(style);
         this.min = min;
         this.max = max;
@@ -210,17 +210,23 @@ public class ProgressBar extends Element implements Disableable{
 
     /** If {@link #setAnimateDuration(float) animating} the progress bar value, this returns the value current displayed. */
     public float getVisualValue(){
-        if(animateTime > 0)
+        if(animateTime > 0 && animateDuration > 0)
             return animateInterpolation.apply(animateFromValue, value, 1 - animateTime / animateDuration);
         return value;
     }
 
     public float getPercent(){
-        return (value - min) / (max - min);
+        return percentOf(value);
     }
 
     public float getVisualPercent(){
-        return visualInterpolation.apply((getVisualValue() - min) / (max - min));
+        return visualInterpolation.apply(percentOf(getVisualValue()));
+    }
+
+    private float percentOf(float value){
+        double range = (double)max - min;
+        if(!(range > 0)) return 0f;
+        return (float)(((double)value - min) / range);
     }
 
     protected Drawable getKnobDrawable(){
@@ -244,7 +250,9 @@ public class ProgressBar extends Element implements Disableable{
 
     /** Sets the value, optionally skipping the changed event. */
     public boolean setValue(float value, boolean fireChanged){
-        value = clamp(Math.round(value / stepSize) * stepSize);
+        if(Float.isNaN(value)) return false;
+        if(stepSize > 0 && !Float.isInfinite(value)) value = Math.round(value / stepSize) * stepSize;
+        value = clamp(value);
         float oldValue = this.value;
         if(value == oldValue) return false;
         float oldVisualValue = getVisualValue();
@@ -313,7 +321,7 @@ public class ProgressBar extends Element implements Disableable{
     }
 
     public void setStepSize(float stepSize){
-        if(stepSize <= 0) throw new IllegalArgumentException("steps must be > 0: " + stepSize);
+        if(stepSize < 0) throw new IllegalArgumentException("steps must be finite and >= 0: " + stepSize);
         this.stepSize = stepSize;
     }
 

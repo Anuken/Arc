@@ -1,9 +1,8 @@
 package arc.graphics.g2d;
 
 import arc.graphics.*;
-import arc.graphics.TextureFilter;
-import arc.math.Mathf;
-import arc.util.ArcRuntimeException;
+import arc.math.*;
+import arc.util.*;
 
 /**
  * A 3x3 grid of texture regions. Any of the regions may be omitted. Padding may be set as a hint on how to inset content on top
@@ -284,17 +283,16 @@ public class NinePatch{
         // Add half pixel offsets on stretchable dimensions to avoid color bleeding when GL_LINEAR
         // filtering is used for the texture. This nudges the texture coordinate to the center
         // of the texel where the neighboring pixel has 0% contribution in Linear blending mode.
-        if(texture.getMagFilter() == TextureFilter.linear || texture.getMinFilter() == TextureFilter.linear){
-            if(isStretchW){
-                float halfTexelWidth = 0.5f / texture.width;
-                u += halfTexelWidth;
-                u2 -= halfTexelWidth;
-            }
-            if(isStretchH){
-                float halfTexelHeight = 0.5f / texture.height;
-                v -= halfTexelHeight;
-                v2 += halfTexelHeight;
-            }
+        //NOTE: This is now unconditional. If you are using this for pixel art, you will have a bad time, but Mindustry isn't, so good luck.
+        if(isStretchW){
+            float halfTexelWidth = 0.5f / texture.width;
+            u += halfTexelWidth;
+            u2 -= halfTexelWidth;
+        }
+        if(isStretchH){
+            float halfTexelHeight = 0.5f / texture.height;
+            v -= halfTexelHeight;
+            v2 += halfTexelHeight;
         }
 
         final float[] vertices = this.vertices;
