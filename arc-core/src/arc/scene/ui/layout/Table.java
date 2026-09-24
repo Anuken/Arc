@@ -890,7 +890,8 @@ public class Table extends WidgetGroup{
                 float actorWidth = Math.round(c.elementWidth);
                 float actorHeight = Math.round(c.elementHeight);
                 float actorX = Math.round(c.elementX);
-                float actorY = height - Math.round(c.elementY) - actorHeight;
+                //the table's own height may be fractional (e.g. a ScrollPane widget sized to its pref height), so round the flipped y as a whole
+                float actorY = Math.round(height - c.elementY - actorHeight);
                 c.setBounds(actorX, actorY, actorWidth, actorHeight);
                 Element actor = c.element;
                 if(actor != null) actor.setBounds(actorX, actorY, actorWidth, actorHeight);
