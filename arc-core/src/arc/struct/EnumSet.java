@@ -2,7 +2,7 @@ package arc.struct;
 
 /** Tiny array wrapper with a mask int for fast contains() checks. */
 public class EnumSet<T extends Enum<T>>{
-    private int mask;
+    private long mask;
 
     /** Array, for iterating over. Do not change. */
     public T[] array;
@@ -19,7 +19,7 @@ public class EnumSet<T extends Enum<T>>{
         EnumSet<T> set = new EnumSet<>(arr.length);
         set.array = arr;
         for(T t : arr){
-            set.mask |= (1 << t.ordinal());
+            set.mask |= (1L << t.ordinal());
         }
         return set;
     }
@@ -36,7 +36,7 @@ public class EnumSet<T extends Enum<T>>{
     }
 
     public boolean contains(T t){
-        return (mask & (1 << t.ordinal())) != 0;
+        return (mask & (1L << t.ordinal())) != 0;
     }
 
     public boolean containsAny(EnumSet<T> other){
