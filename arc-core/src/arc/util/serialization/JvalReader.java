@@ -16,8 +16,8 @@ class JvalReader{
     private int captureStart;
     private int rawStart;
     private boolean escaped;
-    /** True while reading a value that sits inside a container (object or array), where ',' acts as a terminator/separator. */
-    private boolean inContainer;
+    /** True while reading an array element, where ',' always acts as a terminator/separator. */
+    private boolean inArray;
 
     JvalReader(String string){
         buffer = string.toCharArray();
@@ -46,7 +46,7 @@ class JvalReader{
         line = 1;
         captureBuffer = null;
         escaped = false;
-        inContainer = false;
+        inArray = false;
     }
 
     Jval parse(){
@@ -106,8 +106,10 @@ class JvalReader{
         while(true){
             read();
             boolean isComment = current == '#' || (current == '/' && (peek() == '/' || peek() == '*'));
-            boolean isEol = current < 0 || current == '\r' || current == '\n' || (current == ',' && inContainer) || current == ']' || current == '}' || isComment;
-            if(isEol || current == ','){
+            // in objects, only treat ',' as a separator if it looks like it precedes another 'key:'
+            boolean commaStop = current == ',' && (inArray || commaEndsValue());
+            boolean isEol = current < 0 || current == '\r' || current == '\n' || commaStop || current == ']' || current == '}' || isComment;
+            if(isEol){
                 int stop = current < 0 ? index : index - 1; // position of the stopping char, not yet part of the value
 
                 switch(first){
@@ -141,6 +143,39 @@ class JvalReader{
                 }
             }
         }
+    }
+
+    /** current == ',': peeks ahead (skipping comments) for ':'/'}'/']', or a bare trailing comma before EOL, to confirm a real separator; cap that to prevent ridiculously long lookahead */
+    private static final int commaLookaheadLimit = 256;
+
+    private boolean commaEndsValue(){
+        int i = 0;
+        boolean sawContent = false;
+        while(i < commaLookaheadLimit){
+            int ch = peek(i);
+            if(ch < 0 || ch == '\n') return !sawContent;
+            if(ch == ':' || ch == '}' || ch == ']') return true;
+            if(isWhiteSpace(ch)){ i++; continue; }
+            if(ch == '#'){
+                i++;
+                while(i < commaLookaheadLimit && peek(i) >= 0 && peek(i) != '\n') i++;
+                continue;
+            }
+            if(ch == '/' && peek(i + 1) == '/'){
+                i += 2;
+                while(i < commaLookaheadLimit && peek(i) >= 0 && peek(i) != '\n') i++;
+                continue;
+            }
+            if(ch == '/' && peek(i + 1) == '*'){
+                i += 2;
+                while(i < commaLookaheadLimit && peek(i) >= 0 && !(peek(i) == '*' && peek(i + 1) == '/')) i++;
+                if(peek(i) >= 0) i += 2;
+                continue;
+            }
+            sawContent = true;
+            i++;
+        }
+        return false; // no resolution within the bound -> treat as literal, not a separator
     }
 
     static Jval tryParseNumber(char[] buf, int from, int to, boolean stopAtNext){
@@ -216,13 +251,13 @@ class JvalReader{
     }
 
     private Jval readArray(){
-        boolean previousInContainer = inContainer;
-        inContainer = true;
+        boolean previousInArray = inArray;
+        inArray = true;
         read();
         JsonArray array = new JsonArray();
         skipWhiteSpace();
         if(readIf(']')){
-            inContainer = previousInContainer;
+            inArray = previousInArray;
             return array;
         }
         while(true){
@@ -233,13 +268,13 @@ class JvalReader{
             if(readIf(']')) break;
             else if(isEndOfText()) throw error("End of input while parsing an array (did you forget a closing ']'?)");
         }
-        inContainer = previousInContainer;
+        inArray = previousInArray;
         return array;
     }
 
     private Jval readObject(boolean objectWithoutBraces){
-        boolean previousInContainer = inContainer;
-        if(!objectWithoutBraces) inContainer = true;
+        boolean previousInArray = inArray;
+        inArray = false; // object values use commaEndsValue() instead, regardless of outer context
         if(!objectWithoutBraces) read();
         JsonMap object = new JsonMap();
         skipWhiteSpace();
@@ -260,7 +295,7 @@ class JvalReader{
             skipWhiteSpace();
             if(readIf(',')) skipWhiteSpace(); // , is optional
         }
-        inContainer = previousInContainer;
+        inArray = previousInArray;
         return object;
     }
 
