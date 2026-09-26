@@ -7,6 +7,9 @@ import java.util.*;
 
 /** Used internally by Jval. Don't use directly. */
 class JvalReader{
+    /** current == ',': peeks ahead (skipping comments) for ':'/'}'/']', or a bare trailing comma before EOL, to confirm a real separator; cap that to prevent ridiculously long lookahead */
+    private static final int commaLookaheadLimit = 256;
+
     private final char[] buffer;
     private int index, bufferLength;
     private int line;
@@ -144,9 +147,6 @@ class JvalReader{
             }
         }
     }
-
-    /** current == ',': peeks ahead (skipping comments) for ':'/'}'/']', or a bare trailing comma before EOL, to confirm a real separator; cap that to prevent ridiculously long lookahead */
-    private static final int commaLookaheadLimit = 256;
 
     private boolean commaEndsValue(){
         int i = 0;
