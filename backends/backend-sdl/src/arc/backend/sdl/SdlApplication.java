@@ -112,6 +112,8 @@ public class SdlApplication implements Application{
         NativeUtils.forceUtf8Locale();
 
         if(OS.isMac) restartMac();
+        //wayland is broken and newer SDL versions force it
+        if(OS.isLinux && !OS.hasEnvFlag("MINDUSTRY_FORCE_WAYLAND")) SDL_SetHint("SDL_VIDEO_DRIVER", "x11");
 
         check(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
 
