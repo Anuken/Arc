@@ -95,39 +95,67 @@ public class Pixmaps{
         return pixmap;
     }
 
+    public static Pixmap outline(Pixmap pixmap, Color color, int radius){
+        return outline(new PixmapRegion(pixmap), color, radius, 0);
+    }
+
     public static Pixmap outline(PixmapRegion region, Color color, int radius){
         return outline(region, color, radius, 0);
     }
 
     public static Pixmap outline(PixmapRegion region, Color color, int radius, int padding){
         int outlineColor = color.rgba8888();
-        Pixmap out = new Pixmap(region.width + padding*2, region.height + padding*2);
-        out.draw(region.pixmap, padding, padding, region.x, region.y, region.width, region.height);
+        int outlineAlpha = outlineColor & 0xff;
+        int width = region.width, height = region.height;
 
-        for(int y = 0; y < region.height; y++){
-            for(int x = 0; x < region.width; x++){
+        Pixmap out = new Pixmap(width + padding*2, height + padding*2);
+        out.draw(region.pixmap, padding, padding, region.x, region.y, width, height);
 
-                if(region.getA(x, y) < 255){
-                    boolean found = false;
-                    outer:
-                    for(int rx = -radius; rx <= radius; rx++){
-                        for(int ry = -radius; ry <= radius; ry++){
-                            if(Structs.inBounds(rx + x, ry + y, region.width, region.height) && (rx*rx + ry*ry <= radius*radius) && region.getA(rx + x, ry + y) != 0){
-                                found = true;
-                                break outer;
-                            }
+        //search one extra pixel beyond the outline radius so the edge can be feathered instead of cut off hard
+        int search = radius + 1;
+        int searchSq = search * search;
+
+        for(int y = 0; y < out.height; y++){
+            for(int x = 0; x < out.width; x++){
+                int sx = x - padding, sy = y - padding;
+                int alphaHere = Structs.inBounds(sx, sy, width, height) ? region.getA(sx, sy) : 0;
+
+                //fully opaque source pixels are interior; nothing to outline there
+                if(alphaHere >= 255) continue;
+
+                //find the distance (squared) to the nearest opaque-ish source pixel
+                int minDistSq = Integer.MAX_VALUE;
+                outer:
+                for(int rx = -search; rx <= search; rx++){
+                    for(int ry = -search; ry <= search; ry++){
+                        int distSq = rx*rx + ry*ry;
+                        if(distSq >= minDistSq || distSq > searchSq) continue;
+
+                        if(Structs.inBounds(rx + sx, ry + sy, width, height) && region.getA(rx + sx, ry + sy) != 0){
+                            minDistSq = distSq;
+                            if(minDistSq == 0) break outer;
                         }
                     }
-                    if(found){
-                        out.set(x + padding, y + padding, outlineColor);
-                    }
                 }
+
+                if(minDistSq == Integer.MAX_VALUE) continue;
+
+                //1px feather centered on the radius boundary: full strength inside `radius`, fading to 0 by `radius + 1`
+                float dist = (float)Math.sqrt(minDistSq);
+                float coverage = Mathf.clamp(radius + 1f - dist, 0f, 1f);
+                if(coverage <= 0f) continue;
+
+                int layerAlpha = Math.round(coverage * outlineAlpha);
+                int layer = (outlineColor & 0xffffff00) | layerAlpha;
+
+                //blend the (possibly semi-transparent) existing pixel over the feathered outline layer, rather than overwriting it
+                out.setRaw(x, y, Pixmap.blend(out.getRaw(x, y), layer));
             }
         }
         return out;
     }
 
-    /** Outlines the input pixmap by 1 pixel. */
+    /** Outlines the input pixmap by 1 pixel. Useful for pixel art. */
     public static Pixmap outline(Pixmap input, Color color){
         Pixmap pixmap = input.copy();
         int col = color.rgba();
@@ -176,7 +204,7 @@ public class Pixmaps{
 
     public static Pixmap rotate(Pixmap input, float angle){
         Vec2 vector = new Vec2();
-        Pixmap pixmap = new Pixmap(input.height, input.width);
+        Pixmap pixmap = new Pixmap(input.width, input.height);
 
         for(int y = 0; y < input.height; y++){
             for(int x = 0; x < input.width; x++){

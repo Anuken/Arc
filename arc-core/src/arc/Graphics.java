@@ -201,7 +201,7 @@ public abstract class Graphics implements Disposable{
      * @param outlineColor The color of the cursor's outline.
      */
     public Cursor newCursor(Pixmap pixmap, int scaling, Color outlineColor, int outlineThickness){
-        Pixmap out = pixmap.outline(outlineColor, outlineThickness);
+        Pixmap out = Pixmaps.outline(pixmap, outlineColor, outlineThickness);
         Pixmap out2 = Pixmaps.scale(out, scaling);
 
         if(!Mathf.isPowerOfTwo(out2.width)){

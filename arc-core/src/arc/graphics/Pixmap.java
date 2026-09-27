@@ -170,38 +170,6 @@ public class Pixmap implements Disposable{
         return copy;
     }
 
-    /** @return a newly allocated pixmap with the specified outline. */
-    public Pixmap outline(Color color, int radius){
-        return outline(color.rgba(), radius);
-    }
-
-    /** @return a newly allocated pixmap with the specified outline. */
-    public Pixmap outline(int color, int radius){
-        Pixmap pixmap = copy();
-
-        //TODO this messes with antialiasing?
-        for(int y = 0; y < height; y++){
-            for(int x = 0; x < width; x++){
-                if(getA(x, y) == 0){
-                    boolean found = false;
-                    outer:
-                    for(int dx = -radius; dx <= radius; dx++){
-                        for(int dy = -radius; dy <= radius; dy++){
-                            if((dx*dx + dy*dy <= radius*radius) && !empty(get(x + dx, y + dy))){
-                                found = true;
-                                break outer;
-                            }
-                        }
-                    }
-                    if(found){
-                        pixmap.setRaw(x, y, color);
-                    }
-                }
-            }
-        }
-        return pixmap;
-    }
-
     /** Draws a line between the given coordinates using the provided RGBA color. */
     public void drawLine(int x1, int y1, int x2, int y2, int color){
         int x = x1, dx = Math.abs(x2 - x), sx = x < x2 ? 1 : -1;
