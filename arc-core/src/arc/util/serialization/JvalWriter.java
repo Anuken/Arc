@@ -135,10 +135,9 @@ class JvalWriter{
             char c = name.charAt(i);
             switch(c){
                 case ',': case '{': case '[': case '}': case ']': case ':': case '"': case '\'':
-                case ' ': case '\t': case '\n': case '\u000B': case '\f': case '\r':
+                case ' ': case '\t': case '\n': case '\u000B': case '\f': case '\r': case '#': case '/':
                     return true;
             }
-            if(c == '/' && i + 1 < len && (name.charAt(i + 1) == '/' || name.charAt(i + 1) == '*')) return true;
         }
         return false;
     }
@@ -238,7 +237,7 @@ class JvalWriter{
     }
 
     static boolean needsQuotes(char c){
-        return c == '\t' || c == '\f' || c == '\b' || c == '\n' || c == '\r' || c == ']' || c == '[' || c == ',';
+        return c == '\t' || c == '\f' || c == '\b' || c == '\n' || c == '\r' || c == ']' || c == '[' || c == ',' || c == '/' || c == '#' || c == ':';
     }
 
     static boolean needsEscape(char c){
