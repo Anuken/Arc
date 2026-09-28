@@ -170,6 +170,21 @@ public class Pixmaps{
         return pixmap;
     }
 
+    public static Pixmap tint(Pixmap base, Color color){
+        return tint(new PixmapRegion(base), color);
+    }
+
+    public static Pixmap tint(PixmapRegion base, Color color){
+        int rgba = color.rgba8888();
+        Pixmap tinted = new Pixmap(base.width, base.height);
+        for(int x = 0; x < base.width; x++){
+            for(int y = 0; y < base.height; y++){
+                tinted.setRaw(x, y, Color.muli(base.getRaw(x, y), rgba));
+            }
+        }
+        return tinted;
+    }
+
     public static Pixmap zoom(Pixmap input, int scale){
         Pixmap pixmap = new Pixmap(input.width, input.height);
         for(int x = 0; x < pixmap.width; x++){
