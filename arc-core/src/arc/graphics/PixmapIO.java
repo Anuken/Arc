@@ -204,6 +204,7 @@ public class PixmapIO{
         private byte[] imgData = null;
         private ByteBuffer buf = null;
         private int[] palette;
+        private boolean foundHeader;
 
         public ByteBuffer read(InputStream in) throws IOException{
             readChunks(new DataInputStream(in));
@@ -243,6 +244,7 @@ public class PixmapIO{
                     in.readFully(imgData, dataLen, chunkLen);
                     dataLen += chunkLen;
                 }else if(chunkType == 0x49484452){ //IHDR
+                    if(foundHeader) throw new IOException("Multiple IHDR chunks are not allowed.");
                     width = in.readInt();
                     height = in.readInt();
                     bitDepth = in.readByte();
@@ -253,6 +255,7 @@ public class PixmapIO{
 
                     cs = 4 * width * height;
                     imgData = new byte[in.available()]; //initialize image array
+                    foundHeader = true;
 
                     //validation
                     if(bitDepth == 16) throw new IOException("16-bit depth is not supported.");
