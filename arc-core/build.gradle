@@ -96,7 +96,6 @@ jnigen{
         cppFlags += ["-DWITH_OPENSLES"]
         androidApplicationMk += ["APP_STL := c++_static"]
     }
-    addMac(x64, x86)
     addMac(x64, ARM)
     each({it.os == MacOsX}){
         cppIncludes += (String[])["$root/soloud/src/backend/coreaudio/*.mm"]

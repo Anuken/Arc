@@ -34,7 +34,6 @@ jnigen{
     addWindows(x64, x86)
     addLinux(x64, x86)
     addLinux(x64, ARM)
-    addMac(x64, x86)
     addMac(x64, ARM)
     addAndroid()
     addIOS()
