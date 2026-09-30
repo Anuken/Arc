@@ -8,6 +8,8 @@ import arc.struct.*;
 import arc.util.*;
 import arc.util.pooling.*;
 
+import java.util.Arrays;
+
 /**
  * Caches glyph geometry for a BitmapFont, providing a fast way to render static text. This saves needing to compute the glyph
  * geometry each frame.
@@ -27,6 +29,8 @@ public class FontCache{
     private float x, y;
     private float currentTint;
 
+    /** Texture for each page slot; slots are keyed by glyph texture so fallback glyphs from other fonts can be drawn. */
+    private final Seq<Texture> pageTextures = new Seq<>();
     /** Vertex data per page. */
     private float[][] pageVertices;
     /** Number of vertex data entries per page. */
@@ -48,19 +52,60 @@ public class FontCache{
         this.font = font;
         this.integer = integer;
 
-        int pageCount = font.regions.size;
-        if(pageCount == 0)
+        if(font.regions.size == 0)
             throw new IllegalArgumentException("The specified font must contain at least one texture page.");
 
+        for(TextureRegion region : font.regions){
+            if(!pageTextures.contains(region.texture, true)) pageTextures.add(region.texture);
+        }
+
+        int pageCount = pageTextures.size;
         pageVertices = new float[pageCount][];
         idx = new int[pageCount];
         if(pageCount > 1){
             // Contains the indices of the glyph in the cache as they are added.
             pageGlyphIndices = new IntSeq[pageCount];
-            for(int i = 0, n = pageGlyphIndices.length; i < n; i++)
+            for(int i = 0; i < pageCount; i++)
                 pageGlyphIndices[i] = new IntSeq();
         }
         tempGlyphCount = new int[pageCount];
+    }
+
+    /** @return the page slot for the glyph's texture, adding one if this texture hasn't been seen yet. */
+    private int pageOf(Glyph glyph){
+        Texture[] textures = pageTextures.items;
+        for(int i = 0, n = pageTextures.size; i < n; i++){
+            if(textures[i] == glyph.texture) return i;
+        }
+        return addPage(glyph.texture);
+    }
+
+    private int addPage(Texture texture){
+        int page = pageTextures.size, count = page + 1;
+        pageTextures.add(texture);
+
+        pageVertices = Arrays.copyOf(pageVertices, count);
+        idx = Arrays.copyOf(idx, count);
+        tempGlyphCount = Arrays.copyOf(tempGlyphCount, count);
+
+        if(count > 1){
+            IntSeq[] indices = new IntSeq[count];
+            if(pageGlyphIndices != null){
+                System.arraycopy(pageGlyphIndices, 0, indices, 0, pageGlyphIndices.length);
+            }else{
+                // Going multi-page: everything cached so far is on page 0, in glyph order.
+                indices[0] = new IntSeq();
+                for(int i = 0; i < glyphCount; i++) indices[0].add(i);
+            }
+            indices[page] = new IntSeq();
+            pageGlyphIndices = indices;
+        }
+        return page;
+    }
+
+    /** Like {@link #pageOf(Glyph)}, for glyphs already registered by {@link #requireGlyphs(GlyphLayout)}. */
+    private int knownPageOf(Glyph glyph){
+        return pageVertices.length == 1 ? 0 : pageOf(glyph);
     }
 
     /**
@@ -138,7 +183,7 @@ public class FontCache{
                 float colorFloat = tempColor.set(run.color).mul(tint).toFloatBits();
                 for(int iii = 0, nnn = glyphs.size; iii < nnn; iii++){
                     Glyph glyph = glyphs.get(iii);
-                    int page = glyph.page;
+                    int page = knownPageOf(glyph);
                     int offset = tempGlyphCount[page] * SpriteBatch.spriteSize + 5;
                     tempGlyphCount[page]++;
                     float[] vertices = pageVertices[page];
@@ -249,23 +294,21 @@ public class FontCache{
     }
 
     public void draw(){
-        Seq<TextureRegion> regions = font.getRegions();
         for(int j = 0, n = pageVertices.length; j < n; j++){
             if(idx[j] > 0){ // ignore if this texture has no glyphs
                 float[] vertices = pageVertices[j];
-                Draw.vert(regions.get(j).texture, vertices, 0, idx[j]);
+                Draw.vert(pageTextures.get(j), vertices, 0, idx[j]);
             }
         }
     }
 
     public void draw(int start, int end){
         if(pageVertices.length == 1){ // 1 page.
-            Draw.vert(font.getRegion().texture, pageVertices[0], start * SpriteBatch.spriteSize, (end - start) * SpriteBatch.spriteSize);
+            Draw.vert(pageTextures.get(0), pageVertices[0], start * SpriteBatch.spriteSize, (end - start) * SpriteBatch.spriteSize);
             return;
         }
 
         // Determine vertex offset and count to render for each page. Some pages might not need to be rendered at all.
-        Seq<TextureRegion> regions = font.getRegions();
         for(int i = 0, pageCount = pageVertices.length; i < pageCount; i++){
             int offset = -1, count = 0;
 
@@ -289,7 +332,7 @@ public class FontCache{
             if(offset == -1 || count == 0) continue;
 
             // Render the page vertex data with the offset and count.
-            Draw.vert(regions.get(i).texture, pageVertices[i], offset * SpriteBatch.spriteSize, count * SpriteBatch.spriteSize);
+            Draw.vert(pageTextures.get(i), pageVertices[i], offset * SpriteBatch.spriteSize, count * SpriteBatch.spriteSize);
         }
     }
 
@@ -311,6 +354,7 @@ public class FontCache{
     public void clear(){
         x = 0;
         y = 0;
+        glyphCount = 0;
         Pools.freeAll(pooledLayouts, true);
         pooledLayouts.clear();
         layouts.clear();
@@ -321,6 +365,7 @@ public class FontCache{
     }
 
     private void requireGlyphs(GlyphLayout layout){
+        //TODO: this will break if fallbacks are spread across pages, not handled for the sake of performance for now
         if(pageVertices.length == 1){
             // Simpler counting if we just have one page.
             int newGlyphCount = 0;
@@ -328,14 +373,15 @@ public class FontCache{
                 newGlyphCount += layout.runs.get(i).glyphs.size;
             requirePageGlyphs(0, newGlyphCount);
         }else{
-            int[] tempGlyphCount = this.tempGlyphCount;
             for(int i = 0, n = tempGlyphCount.length; i < n; i++)
                 tempGlyphCount[i] = 0;
-            // Determine # of glyphs in each page.
+            // Determine # of glyphs in each page; this may add pages, so re-read tempGlyphCount each time.
             for(int i = 0, n = layout.runs.size; i < n; i++){
                 Seq<Glyph> glyphs = layout.runs.get(i).glyphs;
-                for(int ii = 0, nn = glyphs.size; ii < nn; ii++)
-                    tempGlyphCount[glyphs.get(ii).page]++;
+                for(int ii = 0, nn = glyphs.size; ii < nn; ii++){
+                    int page = pageOf(glyphs.get(ii));
+                    tempGlyphCount[page]++;
+                }
             }
             // Require that many for each page.
             for(int i = 0, n = tempGlyphCount.length; i < n; i++)
@@ -361,30 +407,6 @@ public class FontCache{
     }
 
     private void addToCache(GlyphLayout layout, float x, float y){
-        // Check if the number of font pages has changed.
-        int pageCount = font.regions.size;
-        if(pageVertices.length < pageCount){
-            float[][] newPageVertices = new float[pageCount][];
-            System.arraycopy(pageVertices, 0, newPageVertices, 0, pageVertices.length);
-            pageVertices = newPageVertices;
-
-            int[] newIdx = new int[pageCount];
-            System.arraycopy(idx, 0, newIdx, 0, idx.length);
-            idx = newIdx;
-
-            IntSeq[] newPageGlyphIndices = new IntSeq[pageCount];
-            int pageGlyphIndicesLength = 0;
-            if(pageGlyphIndices != null){
-                pageGlyphIndicesLength = pageGlyphIndices.length;
-                System.arraycopy(pageGlyphIndices, 0, newPageGlyphIndices, 0, pageGlyphIndices.length);
-            }
-            for(int i = pageGlyphIndicesLength; i < pageCount; i++)
-                newPageGlyphIndices[i] = new IntSeq();
-            pageGlyphIndices = newPageGlyphIndices;
-
-            tempGlyphCount = new int[pageCount];
-        }
-
         layouts.add(layout);
         requireGlyphs(layout);
         for(int i = 0, n = layout.runs.size; i < n; i++){
@@ -418,11 +440,12 @@ public class FontCache{
         }
         final float x2 = x + width, y2 = y + height;
 
-        final int page = glyph.page;
+        final int page = knownPageOf(glyph);
         int idx = this.idx[page];
         this.idx[page] += SpriteBatch.spriteSize;
 
-        if(pageGlyphIndices != null) pageGlyphIndices[page].add(glyphCount++);
+        if(pageGlyphIndices != null) pageGlyphIndices[page].add(glyphCount);
+        glyphCount++;
 
         final float[] vertices = pageVertices[page];
 

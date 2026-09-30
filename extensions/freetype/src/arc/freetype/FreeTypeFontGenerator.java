@@ -468,9 +468,9 @@ public class FreeTypeFontGenerator implements Disposable{
 
         if(stroker != null && !incremental) stroker.dispose();
 
+        data.parameter = parameter;
         if(incremental){
             data.generator = this;
-            data.parameter = parameter;
             data.stroker = stroker;
             data.packer = packer;
         }
@@ -694,57 +694,89 @@ public class FreeTypeFontGenerator implements Disposable{
         Stroker stroker;
         PixmapPacker packer;
         Seq<Glyph> glyphs;
-        private boolean dirty;
+        private boolean dirty, flushQueued;
         Seq<FontData> fallback = new Seq<>();
         @Nullable FontData override;
+        /** Characters that neither this font, its override nor its fallbacks can provide. */
+        private final Bits missed = new Bits();
+        /** The unscaled override glyph each cached override glyph was made from. */
+        private final IntMap<Glyph> overrideSources = new IntMap<>();
 
         /** Sets a font to override the glyphs of this one, if they are available. This is the opposite of a fallback. */
         @Override
         public void setOverride(FontData override){
             this.override = override;
-            override.capHeight = capHeight;
+            overrideSources.clear();
+            missed.clear();
         }
 
         @Override
         public void addFallback(FontData data){
             if(data != this){
                 fallback.add(data);
+                missed.clear();
             }
+        }
+
+        private float baseline(){
+            return ((flipped ? -ascent : ascent) + capHeight) / scaleY;
+        }
+
+        /** Queues a texture upload for this font's own packer, regardless of which font's layout requested the glyph. */
+        private void markDirty(){
+            dirty = true;
+            if(ignoreDirty || flushQueued || packer == null) return;
+            flushQueued = true;
+            //queuing font updates fixes a crash on iOS.
+            Core.app.post(() -> {
+                flushQueued = false;
+                if(dirty){
+                    dirty = false;
+                    packer.updateTextureRegions(regions, parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
+                }
+            });
+        }
+
+        @Override
+        public boolean hasGlyph(char ch){
+            Glyph glyph = getGlyph(ch);
+            return glyph != null && glyph != missingGlyph;
         }
 
         @Override
         public Glyph getGlyph(char ch){
             if(override != null){
-                Glyph result = override.getGlyph(ch);
-                if(result != override.missingGlyph){
-                    setGlyph(ch, result);
-                    dirty = true;
-                    return result;
+                Glyph result = sourceGlyph(override, ch);
+                if(result != null && result != override.missingGlyph){
+                    if(overrideSources.get(ch) != result){ // only on first use, not every lookup
+                        overrideSources.put(ch, result);
+                        setGlyph(ch, rescaleGlyph(override, result, ch));
+                        markDirty();
+                    }
+                    return super.getGlyph(ch);
                 }
             }
 
             Glyph glyph = super.getGlyph(ch);
             if(glyph == null && generator != null){
+                if(missed.get(ch)) return missingGlyph;
+
                 generator.setPixelSizes(0, parameter.size);
-                float baseline = ((flipped ? -ascent : ascent) + capHeight) / scaleY;
-                glyph = generator.createGlyph(ch, this, parameter, stroker, baseline, packer);
+                glyph = generator.createGlyph(ch, this, parameter, stroker, baseline(), packer);
                 if(glyph == null){
-                    //look through fallbacks for other glyphs
-                    for(FontData other : fallback){
-                        Glyph result = other.getGlyph(ch);
-                        if(result != null && result != other.missingGlyph){
-                            setGlyph(ch, result);
-                            dirty = true;
-                            return result;
-                        }
+                    glyph = fallbackGlyph(ch);
+                    if(glyph != null){
+                        setGlyph(ch, glyph);
+                        return glyph;
                     }
+                    missed.set(ch);
                     return missingGlyph;
                 }
 
                 setGlyphRegion(glyph, regions.get(glyph.page));
                 setGlyph(ch, glyph);
                 glyphs.add(glyph);
-                dirty = true;
+                markDirty();
 
                 Face face = generator.face;
                 if(parameter.kerning){
@@ -764,18 +796,61 @@ public class FreeTypeFontGenerator implements Disposable{
             return glyph;
         }
 
+        /** @return a glyph for the character from the first fallback that has it, sized for this font; null if none do. */
+        private @Nullable Glyph fallbackGlyph(char ch){
+            for(FontData other : fallback){
+                Glyph result = sourceGlyph(other, ch);
+                if(result == null || result == other.missingGlyph) continue;
+                return rescaleGlyph(other, result, ch);
+            }
+            return null;
+        }
+
+        /** Looks up a glyph in another font, which never gets its own getGlyphs call, so it must pack straight to its texture. */
+        private @Nullable Glyph sourceGlyph(FontData other, char ch){
+            if(other instanceof FreeTypeFontData && ((FreeTypeFontData)other).packer != null){
+                ((FreeTypeFontData)other).packer.setPackToTexture(true);
+            }
+            return other.getGlyph(ch);
+        }
+
+        /** Rescales another font's glyph to this font's size and baseline. Fonts that can't be compared are returned as-is. */
+        private Glyph rescaleGlyph(FontData other, Glyph src, char ch){
+            if(!(other instanceof FreeTypeFontData) || parameter == null) return src;
+            FreeTypeFontData o = (FreeTypeFontData)other;
+            if(o.parameter == null || o.parameter.size <= 0 || o.flipped != flipped) return src;
+
+            //createGlyph truncates the baseline, so do the same here
+            float ratio = (float)parameter.size / o.parameter.size;
+            int base = (int)baseline(), otherBase = (int)o.baseline();
+            if(ratio == 1f && base == otherBase) return src;
+
+            Glyph glyph = new Glyph();
+            glyph.id = ch;
+            glyph.page = src.page;
+            glyph.texture = src.texture;
+            glyph.srcX = src.srcX;
+            glyph.srcY = src.srcY;
+            glyph.u = src.u;
+            glyph.v = src.v;
+            glyph.u2 = src.u2;
+            glyph.v2 = src.v2;
+            glyph.fixedWidth = src.fixedWidth;
+            glyph.width = Math.round(src.width * ratio);
+            glyph.height = Math.round(src.height * ratio);
+            glyph.xoffset = Math.round(src.xoffset * ratio);
+            glyph.xadvance = Math.round(src.xadvance * ratio);
+
+            //strip the source baseline, scale the glyph-relative offset, then apply ours
+            float raw = flipped ? src.yoffset - otherBase : src.yoffset + otherBase;
+            glyph.yoffset = Math.round(flipped ? raw * ratio + base : raw * ratio - base);
+            return glyph;
+        }
+
+        @Override
         public void getGlyphs(GlyphRun run, CharSequence str, int start, int end, Glyph lastGlyph){
             if(packer != null) packer.setPackToTexture(true); // All glyphs added after this are packed directly to the texture.
             super.getGlyphs(run, str, start, end, lastGlyph);
-            if(dirty && !ignoreDirty){
-                //queuing font updates fixes a crash on iOS.
-                Core.app.post(() -> {
-                    if(dirty){
-                        dirty = false;
-                        packer.updateTextureRegions(regions, parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
-                    }
-                });
-            }
         }
 
         @Override
@@ -786,7 +861,7 @@ public class FreeTypeFontGenerator implements Disposable{
     }
 
     /**
-     * Parameter container class that helps configure how {@link FreeTypeFontGenerator.FreeTypeFontData} and {@link Font} instances are
+     * Parameter container class that helps configure how {@link FreeTypeFontData} and {@link Font} instances are
      * generated.
      * <p>
      * The packer field is for advanced usage, where it is necessary to pack multiple BitmapFonts (i.e. styles, sizes, families)
