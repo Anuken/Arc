@@ -732,8 +732,9 @@ public class FreeTypeFontGenerator implements Disposable{
                     //look through fallbacks for other glyphs
                     for(FontData other : fallback){
                         Glyph result = other.getGlyph(ch);
-                        if(result != other.missingGlyph){
+                        if(result != null && result != other.missingGlyph){
                             setGlyph(ch, result);
+                            dirty = true;
                             return result;
                         }
                     }
@@ -785,7 +786,7 @@ public class FreeTypeFontGenerator implements Disposable{
     }
 
     /**
-     * Parameter container class that helps configure how {@link FreeTypeFontData} and {@link Font} instances are
+     * Parameter container class that helps configure how {@link FreeTypeFontGenerator.FreeTypeFontData} and {@link Font} instances are
      * generated.
      * <p>
      * The packer field is for advanced usage, where it is necessary to pack multiple BitmapFonts (i.e. styles, sizes, families)
