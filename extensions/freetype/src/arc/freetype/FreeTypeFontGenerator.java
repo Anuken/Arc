@@ -722,12 +722,9 @@ public class FreeTypeFontGenerator implements Disposable{
             return ((flipped ? -ascent : ascent) + capHeight) / scaleY;
         }
 
-        /** Queues a texture upload for this font's own packer, regardless of which font's layout requested the glyph. */
-        private void markDirty(){
-            dirty = true;
-            if(ignoreDirty || flushQueued || packer == null) return;
+        private void queueFlush(){
+            if(!dirty || ignoreDirty || flushQueued || packer == null) return;
             flushQueued = true;
-            //queuing font updates fixes a crash on iOS.
             Core.app.post(() -> {
                 flushQueued = false;
                 if(dirty){
@@ -735,6 +732,21 @@ public class FreeTypeFontGenerator implements Disposable{
                     packer.updateTextureRegions(regions, parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
                 }
             });
+        }
+
+        private void markDirty(){
+            dirty = true;
+            queueFlush();
+        }
+
+        @Override
+        public void getGlyphs(GlyphRun run, CharSequence str, int start, int end, Glyph lastGlyph){
+            if(packer != null) packer.setPackToTexture(true);
+            super.getGlyphs(run, str, start, end, lastGlyph);
+            queueFlush();
+            for(FontData other : fallback){
+                if(other instanceof FreeTypeFontData) ((FreeTypeFontData)other).queueFlush();
+            }
         }
 
         @Override
@@ -845,12 +857,6 @@ public class FreeTypeFontGenerator implements Disposable{
             float raw = flipped ? src.yoffset - otherBase : src.yoffset + otherBase;
             glyph.yoffset = Math.round(flipped ? raw * ratio + base : raw * ratio - base);
             return glyph;
-        }
-
-        @Override
-        public void getGlyphs(GlyphRun run, CharSequence str, int start, int end, Glyph lastGlyph){
-            if(packer != null) packer.setPackToTexture(true); // All glyphs added after this are packed directly to the texture.
-            super.getGlyphs(run, str, start, end, lastGlyph);
         }
 
         @Override
