@@ -272,6 +272,7 @@ public class Draw{
     public static void reset(){
         color();
         mixcol();
+        blend();
         xscl = yscl = 1f;
         Lines.stroke(1f);
     }
