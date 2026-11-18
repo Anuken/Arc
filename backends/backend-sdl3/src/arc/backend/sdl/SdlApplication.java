@@ -317,8 +317,8 @@ public class SdlApplication implements Application{
     @Override
     public boolean openURI(String url){
 
-        //make sure it's a valid URI
-        if(url.isEmpty()) return false;
+        //make sure it's a valid URI; a leading dash would be interpreted as an option by the commands below
+        if(url.isEmpty() || url.startsWith("-")) return false;
         try{
             URI.create(url);
         }catch(Exception wrong){
